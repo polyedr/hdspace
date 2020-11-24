@@ -4,15 +4,13 @@ import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import { splitWords } from '../../../utils/stringHelper';
-import { isAvailableChild } from '../../../utils/AvailableChildrenHelper';
-import { createElements } from '../../../redux/project/actions';
-import {
-  selectActiveElement,
-  selectCurrentScreenId,
-} from '../../../redux/project/selectors';
-import { ElementType } from '../../../constants/dragAndDrop';
-import { ElementData } from '../../../types';
+import { splitWords } from '@Utils/stringHelper';
+import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
+import { createElements } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { ElementType } from '@Constants/dragAndDrop';
+import { ElementData } from '@Src/types';
 
 type Props = {
   elementData: ElementData;

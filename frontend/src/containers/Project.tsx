@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useHistory } from 'react-router';
 import { CircularProgress } from '@material-ui/core';
-import NNProcessingModal from '../components/Dialogs/NNProcessing';
+import NNProcessingModal from '@Components/Dialogs/NNProcessing';
 import {
   selectCurrentProjectId,
   selectProjectById,
   selectProjectLoader,
-} from '../redux/project/selectors';
-import { getProject, resetProjectState } from '../redux/project/actions';
-import LeftPanel from '../components/LeftPanel';
+} from '@Redux/project/selectors/base';
+import { getProject, resetProjectState } from '@Redux/project/actions';
+import LeftPanel from '@Components/LeftPanel';
 import Screen from './Screen';
 
 const useStyles = makeStyles({

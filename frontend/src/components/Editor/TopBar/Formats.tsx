@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
@@ -6,16 +7,12 @@ import TabletMacIcon from '@material-ui/icons/TabletMac';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   selectScreenFormat,
   selectScreenRotated,
-} from '../../../redux/project/selectors';
-import {
-  changeScreenFormat,
-  rotateScreenFormat,
-} from '../../../redux/project/actions';
-import { SCREEN_FORMATS } from '../../../types';
+} from '@Redux/project/selectors/base';
+import { changeScreenFormat, rotateScreenFormat } from '@Redux/project/actions';
+import { SCREEN_FORMATS } from '@Src/types';
 
 const useStyles = makeStyles({
   root: {

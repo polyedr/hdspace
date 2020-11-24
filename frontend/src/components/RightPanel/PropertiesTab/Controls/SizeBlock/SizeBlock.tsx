@@ -6,17 +6,14 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import {
   selectActiveElementId,
   selectCurrentEditableStyles,
-} from '../../../../../redux/project/selectors';
+} from '@Redux/project/selectors/element';
+
 import StylesHeader from '../../helperComponents/StylesHeader';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -47,16 +44,6 @@ type SelectedUnit = {
 };
 
 type SizeName = keyof SelectedUnit;
-
-/* function mapState(state: AppReduxState) {
-  return {
-    width: selectCurrentEditableStyles(state, 'width'),
-    height: selectCurrentEditableStyles(state, 'height'),
-  };
-}
-
-type Props = ReturnType<typeof mapState> &
-  PropertiesChangeProps<LibraryElement<Entity>>; */
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');

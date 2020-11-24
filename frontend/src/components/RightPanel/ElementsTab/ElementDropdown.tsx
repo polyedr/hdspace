@@ -4,8 +4,8 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Menu from '@material-ui/core/Menu';
+import { splitWords } from '@Utils/stringHelper';
 import ElementButton from './ElementButton';
-import { splitWords } from '../../../utils/stringHelper';
 import Button from '../../UI/Button';
 import { ElementData } from '../../../types';
 

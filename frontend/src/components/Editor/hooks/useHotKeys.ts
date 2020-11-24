@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElementId,
-  selectCurrentScreenId,
   selectElementBeingEditedState,
-} from '../../../redux/project/selectors';
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   copyActiveElement,
   deleteItem,
@@ -12,7 +12,7 @@ import {
   redoAction,
   undoAction,
   wrapIntoContainer,
-} from '../../../redux/project/actions';
+} from '@Redux/project/actions';
 
 const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
   const currentScreenId = useSelector(selectCurrentScreenId);

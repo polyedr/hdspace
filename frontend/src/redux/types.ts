@@ -1,6 +1,7 @@
 import { RouterState } from 'connected-react-router';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
+import { DropPosition } from '@Constants/dragAndDrop';
 import {
   BorderedElementsRef,
   CreatedElement,
@@ -28,7 +29,6 @@ import {
   UploadedImageInfo,
 } from '../types';
 import TYPES from './actionTypes';
-import { DropPosition } from '../constants/dragAndDrop';
 
 export type ProjectDataState = {
   projectsData: PaginatedData<Project>;

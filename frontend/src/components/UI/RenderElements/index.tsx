@@ -1,4 +1,5 @@
 import React from 'react';
+import withAction from '@Utils/withAction';
 import Action from './Action/Action';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
@@ -27,7 +28,6 @@ import Section from './Section/Section';
 import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
 import { Entity, NNBlockType } from '../../../types';
-import withAction from '../../../utils/withAction';
 import withSmartContainer from './SmartContainer/withSmartContainer';
 
 export const RENDERERS: Record<Entity, React.FC<any>> = {

@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ParagraphElement, PropertiesChangeProps } from '../../../../../types';
 
 const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({

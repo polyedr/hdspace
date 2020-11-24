@@ -3,18 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import cn from 'classnames';
 import {
-  selectActiveElementId,
-  selectCurrentRoot,
-  selectCurrentScreenId,
-  selectDirectRootChildren,
-} from '../../../redux/project/selectors';
-import {
   setActiveElement,
   updateElementParameters,
-} from '../../../redux/project/actions';
+} from '@Redux/project/actions';
+
+import { Normalized, StateElement } from '@Src/types';
+import {
+  selectActiveElementId,
+  selectCurrentRoot,
+  selectDirectRootChildren,
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import FREE_CANVAS_RENDERERS from './FreeRenderers';
 import { useElementClassNames } from './helpers';
-import { Normalized, StateElement } from '../../../types';
 
 const FreeCanvas = () => {
   const dispatch = useDispatch();

@@ -32,6 +32,16 @@ module.exports = ({ MODE }) => {
       // Fix webpack's default behavior to not load packages with jsnext:main module
       // (jsnext:main directs not usually distributable es6 format, but es6 sources)
       mainFields: ['module', 'browser', 'main'],
+      alias: {
+        '@Components': path.resolve(__dirname, 'src', 'components'),
+        '@Constants': path.resolve(__dirname, 'src', 'constants'),
+        '@Utils': path.resolve(__dirname, 'src', 'utils'),
+        '@Redux': path.resolve(__dirname, 'src', 'redux'),
+        '@Api': path.resolve(__dirname, 'src', 'api'),
+        '@Types': path.resolve(__dirname, 'src', 'types'),
+        '@Domain': path.resolve(__dirname, 'src', 'domain'),
+        '@Src': path.resolve(__dirname, 'src'),
+      },
     },
     module: {
       rules: [

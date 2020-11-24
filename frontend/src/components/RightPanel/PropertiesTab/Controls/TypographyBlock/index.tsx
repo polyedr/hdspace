@@ -14,20 +14,16 @@ import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import * as CSS from 'csstype';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { getPermissibleValue } from '../../../../../utils/NumberHelper';
-import FONTS from '../../../../../constants/fonts';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { getPermissibleValue } from '@Utils/NumberHelper';
 import {
   selectActiveElementId,
   selectCurrentEditableStyles,
-} from '../../../../../redux/project/selectors';
+} from '@Redux/project/selectors/element';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import FONTS from '@Constants/fonts';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;

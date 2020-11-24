@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import {
-  selectCustomElementsHasNext,
   selectCustomLibraryElements,
-} from '../../../redux/project/selectors';
-import { loadCustomElements } from '../../../redux/project/actions';
+  selectCustomElementsHasNext,
+} from '@Redux/project/selectors/element';
+import { loadCustomElements } from '@Redux/project/actions';
 
 import {
   useStyles as useElementBlockStyles,

@@ -10,16 +10,11 @@ import {
   safeMatch,
   safeParseFloat,
   strToNumber,
-} from '../../../../../utils/NumberHelper';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
-import StylesHeader from '../../helperComponents/StylesHeader';
-import ColorSettings from '../../helperComponents/ColorSettings';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+} from '@Utils/NumberHelper';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
+
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 
 import {
   MAX_BORDER_WIDTH,
@@ -27,7 +22,9 @@ import {
   MAX_BORDER_RADIUS,
   MAX_BORDER_RADIUS_PERCENT,
   MIN_BORDER_RADIUS,
-} from '../../../../../constants/defaultParams';
+} from '@Constants/defaultParams';
+import StylesHeader from '../../helperComponents/StylesHeader';
+import ColorSettings from '../../helperComponents/ColorSettings';
 
 const useStyles = makeStyles({
   wrapper: {

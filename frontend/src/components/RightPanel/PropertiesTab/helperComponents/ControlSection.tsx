@@ -1,12 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { splitWords } from '@Utils/stringHelper';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
 } from '../../ElementsTab/ElementsBlock';
-import { splitWords } from '../../../../utils/stringHelper';
 
 const useStyles = makeStyles({
   section: {},

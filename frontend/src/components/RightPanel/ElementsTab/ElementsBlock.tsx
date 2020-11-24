@@ -5,7 +5,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
-import { splitWords } from '../../../utils/stringHelper';
+import { splitWords } from '@Utils/stringHelper';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
 import { ElementData } from '../../../types';

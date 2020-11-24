@@ -4,18 +4,14 @@ import { FormControl } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { PropertiesChangeProps, SelectElement, StateElement } from '@Src/types';
+import { AppReduxState } from '@Redux/types';
 import {
-  selectActiveItemChildren,
   selectActiveElementParams,
+  selectActiveItemChildren,
   selectElementsByIds,
-} from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  PropertiesChangeProps,
-  SelectElement,
-  StateElement,
-} from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
+} from '@Redux/project/selectors/element';
 
 const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,

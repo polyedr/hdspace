@@ -1,13 +1,13 @@
 // @ts-nocheck
 
 import React, { ChangeEvent } from 'react';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import { makeStyles, TextField, MenuItem } from '@material-ui/core';
 import * as R from 'ramda';
-import { useSelector } from 'react-redux';
+import { selectElementAsTree } from '@Redux/project/selectors/element';
+import { LibraryElement } from '@Src/types';
 import { SelectRendererProps } from '../types';
-import { selectElementAsTree } from '../../../../redux/project/selectors';
-import { LibraryElement } from '../../../../types';
 
 const styles = require('../styles.scss');
 

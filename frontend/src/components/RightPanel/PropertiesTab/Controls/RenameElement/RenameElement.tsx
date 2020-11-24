@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import { selectActiveElement } from '../../../../../redux/project/selectors';
-import { updateElement } from '../../../../../redux/project/actions';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { updateElement } from '@Redux/project/actions';
 
 const RenameElement: React.FC = () => {
   const dispatch = useDispatch();

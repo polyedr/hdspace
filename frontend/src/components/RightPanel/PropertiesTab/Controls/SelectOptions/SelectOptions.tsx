@@ -12,18 +12,15 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
+import { addChildToElement, deleteItem } from '@Redux/project/actions';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import generateUniqueName from '@Utils/generateUniqueName';
+import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
 import {
   selectActiveItemChildren,
-  selectCurrentScreenId,
   selectElementsByIds,
-} from '../../../../../redux/project/selectors';
-import {
-  addChildToElement,
-  deleteItem,
-} from '../../../../../redux/project/actions';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import generateUniqueName from '../../../../../utils/generateUniqueName';
-import { PropertiesChangeProps, SelectItemElement } from '../../../../../types';
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 const useStyles = makeStyles({
   row: {

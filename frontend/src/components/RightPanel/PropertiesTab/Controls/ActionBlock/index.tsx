@@ -9,11 +9,9 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  selectActiveElementParams,
-  selectScreens,
-} from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { selectActiveElementParams } from '@Redux/project/selectors/element';
+import { selectScreens } from '@Redux/project/selectors/screen';
 import {
   ExternalLink,
   HyperlinkElement,
@@ -21,8 +19,8 @@ import {
   LinkParams,
   PropertiesChangeProps,
   Screen,
-} from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
+} from '@Src/types';
+import { AppReduxState } from '@Redux/types';
 
 type StateProps = {
   screens: Screen[];

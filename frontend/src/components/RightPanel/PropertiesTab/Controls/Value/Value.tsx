@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { PropertiesChangeProps, SelectElement } from '../../../../../types';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { PropertiesChangeProps, SelectElement } from '@Src/types';
 
 const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,

@@ -5,10 +5,10 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Switch from '@material-ui/core/Switch';
-import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { extractPlayerLinkInfo } from '../../../../../utils/extractVideoLink';
-import { PropertiesChangeProps, VideoElement } from '../../../../../types';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { extractPlayerLinkInfo } from '@Utils/extractVideoLink';
+import { PropertiesChangeProps, VideoElement } from '@Src/types';
 
 const useStyles = makeStyles({
   wrapper: {

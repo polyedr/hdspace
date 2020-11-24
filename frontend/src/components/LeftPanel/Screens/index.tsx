@@ -8,17 +8,16 @@ import { lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ScreenListItem from './ScreenListItem';
-import {
-  createScreen,
-  changeScreensOrder,
-} from '../../../redux/project/actions';
+import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import {
   selectCurrentProjectId,
-  selectCurrentScreenId,
   selectScreenCreateLoader,
+} from '@Redux/project/selectors/base';
+import {
+  selectCurrentScreenId,
   selectScreens,
-} from '../../../redux/project/selectors';
+} from '@Redux/project/selectors/screen';
+import ScreenListItem from './ScreenListItem';
 import { Scrollbar } from '../../UI';
 import {
   Accordion,

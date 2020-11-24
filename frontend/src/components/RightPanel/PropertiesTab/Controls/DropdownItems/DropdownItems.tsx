@@ -7,19 +7,13 @@ import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
   selectActiveElementId,
-  selectCurrentScreenId,
   selectElementAsTree,
-} from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  addChildToElement,
-  deleteItem,
-} from '../../../../../redux/project/actions';
-import {
-  DropdownItemElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { addChildToElement, deleteItem } from '@Redux/project/actions';
+import { DropdownItemElement, PropertiesChangeProps } from '@Src/types';
+import { AppReduxState } from '@Redux/types';
 
 const useStyles = makeStyles({
   row: {

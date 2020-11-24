@@ -5,19 +5,19 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
-import { changePrototypeMode } from '../../../redux/user/actions';
-import { selectIsPrototypeMode } from '../../../redux/user/selectors';
-import Formats from './Formats';
-import Actions from './Actions';
+import { changePrototypeMode } from '@Redux/user/actions';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
   changeFreeCanvasMode,
   toggleContainersBorders,
-} from '../../../redux/project/actions';
+} from '@Redux/project/actions';
 import {
-  selectCurrentScreenId,
   selectFreeCanvasMode,
   selectShowingBorders,
-} from '../../../redux/project/selectors';
+} from '@Redux/project/selectors/base';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import Formats from './Formats';
+import Actions from './Actions';
 
 const useStyles = makeStyles((theme) => ({
   root: {

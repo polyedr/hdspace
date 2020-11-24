@@ -1,10 +1,8 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { selectEditableStyles } from '@Redux/project/selectors/base';
 import Button from '../../../../UI/Button';
-import {
-  selectActiveElement,
-  selectEditableStyles,
-} from '../../../../../redux/project/selectors';
 
 const styles = require('./RemoveStyles.scss');
 

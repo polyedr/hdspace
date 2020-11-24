@@ -1,4 +1,6 @@
 // import * as R from 'ramda';
+import getDefaultStyles from '@Utils/getDefaultStyles';
+import { cssDecamelize } from '@Utils/CSSConverter';
 import { DEFAULT_ELEMENTS_STYLES } from '../../domain/libraryElements/defaultStyles';
 import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
 import {
@@ -14,8 +16,6 @@ import {
   ServerUserData,
   UserData,
 } from '../../types';
-import getDefaultStyles from '../../utils/getDefaultStyles';
-import { cssDecamelize } from '../../utils/CSSConverter';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,

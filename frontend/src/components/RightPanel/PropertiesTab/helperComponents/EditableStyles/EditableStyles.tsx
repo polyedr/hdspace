@@ -4,12 +4,10 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import {
-  selectActiveElement,
-  selectEditableStyles,
-} from '../../../../../redux/project/selectors';
-import { setEditableStyles } from '../../../../../redux/project/actions';
-import { AppReduxState } from '../../../../../redux/types';
+import { setEditableStyles } from '@Redux/project/actions';
+import { AppReduxState } from '@Redux/types';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { selectEditableStyles } from '@Redux/project/selectors/base';
 
 type StateProps = {
   editableStyles: string;

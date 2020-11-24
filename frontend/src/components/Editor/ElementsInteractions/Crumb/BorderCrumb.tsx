@@ -5,10 +5,10 @@ import {
   selectActiveElementId,
   selectCurrentRootId,
   selectElementById,
-  selectShowingBorders,
-} from '../../../../redux/project/selectors';
+} from '@Redux/project/selectors/element';
+import { selectShowingBorders } from '@Redux/project/selectors/base';
+import { BorderStyles } from '@Src/types';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
-import { BorderStyles } from '../../../../types';
 
 type Props = {
   elementId: string;

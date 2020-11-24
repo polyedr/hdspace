@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { updateElementImage } from '../../../redux/project/actions';
-import { selectCurrentScreenId } from '../../../redux/project/selectors';
+import { updateElementImage } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 const useImageUpload = (elementId: string) => {
   const currentScreenId = useSelector(selectCurrentScreenId);

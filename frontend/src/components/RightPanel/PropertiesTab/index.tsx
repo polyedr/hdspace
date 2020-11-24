@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import { AVAILABLE_CONTROLS } from '../../../domain/core';
@@ -32,10 +34,6 @@ import VideoSettings from './Controls/VideoSettings/VideoSettings';
 import FlexGrow from './Controls/FlexGrow';
 import BackgroundSize from './Controls/BackgroundSize';
 import Scrollbar from '../../UI/Scrollbar';
-import {
-  selectActiveElement,
-  selectFreeCanvasMode,
-} from '../../../redux/project/selectors';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
 import { Control, Entity, NNBlockType } from '../../../types';

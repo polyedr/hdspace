@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
-import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import { selectActiveElementParams } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { AppReduxState } from '@Redux/types';
 import {
   PropertiesChangeProps,
   RadiobuttonElement,
 } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
 
 const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   updateParams,

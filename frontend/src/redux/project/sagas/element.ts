@@ -2,7 +2,6 @@
 import { put, call, select } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
-  selectCurrentProject,
   selectElementParameters,
   selectElementStyles,
   selectElementsForScreen,
@@ -11,24 +10,25 @@ import {
   selectAllElements,
   selectCurrentRootId,
   selectActiveElementId,
-} from '../selectors';
-import * as Actions from '../actions';
-import { convertElementToPatchRequest } from '../../../api/converters/toRequest';
+} from '@Redux/project/selectors/element';
+import { selectCurrentProject } from '@Redux/project/selectors/base';
+
+import { convertElementToPatchRequest } from '@Api/converters/toRequest';
 import {
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
-} from '../../../utils/ElementsTreeHelper';
+} from '@Utils/ElementsTreeHelper';
 import {
   apiUpdateElement,
   apiChangeRecursiveElement,
   apiUpdateElements,
   parseImgUsingNN,
   apiGetCustomLibraryElements,
-} from '../../../api/element';
-import generateUniqueName from '../../../utils/generateUniqueName';
-import getSavedValue from '../../../utils/getSavedValue';
-import { addProjectStyles } from '../../../utils/ProjectClassesHelper';
-import { KEEP_RP_TAB_ELEMENTS } from '../../../constants/defaultParams';
+} from '@Api/element';
+import generateUniqueName from '@Utils/generateUniqueName';
+import getSavedValue from '@Utils/getSavedValue';
+import { addProjectStyles } from '@Utils/ProjectClassesHelper';
+import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
 import {
   Entity,
   LibraryElement,
@@ -40,9 +40,10 @@ import {
   RightPanelTab,
   ServerElement,
   StateElement,
-} from '../../../types';
+} from '@Src/types';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
+import * as Actions from '../actions';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,

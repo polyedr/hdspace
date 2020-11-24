@@ -1,16 +1,18 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { DropPosition } from '../../../../constants/dragAndDrop';
+import { DropPosition } from '@Constants/dragAndDrop';
+import { BorderStyles } from '@Src/types';
 import {
   selectActiveElementId,
-  selectCurrentDropTargetParams,
   selectElementById,
   selectHoveredElementId,
+} from '@Redux/project/selectors/element';
+import {
   selectShowingBorders,
-} from '../../../../redux/project/selectors';
+  selectCurrentDropTargetParams,
+} from '@Redux/project/selectors/base';
 import { BorderPosition } from '../constants';
 import Border from './Border';
-import { BorderStyles } from '../../../../types';
 
 type Props = {
   elementId: string;

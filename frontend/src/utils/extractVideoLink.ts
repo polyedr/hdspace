@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { PLAYERS } from '../constants/players';
+import { PLAYERS } from '@Constants/players';
 import { VideoSettingsType } from '../types';
 
 type LinkInfo = {

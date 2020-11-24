@@ -1,28 +1,28 @@
-import { call, put, select, take } from 'redux-saga/effects';
+import { convertProjectToPatchRequest } from '@Api/converters/toRequest';
+import { apiUpdateProject } from '@Api/project';
+import { apiRefreshToken } from '@Api/user';
+import getSavedValue from '@Utils/getSavedValue';
 import * as R from 'ramda';
-import { selectIsTokenLoaded, selectTokenPair } from '../../user/selectors';
+import { call, put, select, take } from 'redux-saga/effects';
+import { MAX_TOKEN_TRIALS } from '../../../config/settings';
 import {
   LibraryElementUnion,
   Project,
   Result,
   SavedElementsValues,
 } from '../../../types';
+import TYPES from '../../actionTypes';
+import { openSignScreen } from '../../history';
+import { enqueueSnackbar } from '../../notification/actions';
 import {
   logout,
-  setUserError,
   setLoadedToken,
   setTokenPair,
+  setUserError,
 } from '../../user/actions';
-import { MAX_TOKEN_TRIALS } from '../../../config/settings';
+import { selectIsTokenLoaded, selectTokenPair } from '../../user/selectors';
 import * as Actions from '../actions';
-import { convertProjectToPatchRequest } from '../../../api/converters/toRequest';
-import { apiUpdateProject } from '../../../api/project';
-import getSavedValue from '../../../utils/getSavedValue';
-import { openSignScreen } from '../../history';
-import { apiRefreshToken } from '../../../api/user';
-import TYPES from '../../actionTypes';
-import { selectSavedElementsValues } from '../selectors';
-import { enqueueSnackbar } from '../../notification/actions';
+import { selectSavedElementsValues } from '../selectors/element';
 
 // eslint-disable-next-line consistent-return
 export function* refreshUserTokenPairSaga() {

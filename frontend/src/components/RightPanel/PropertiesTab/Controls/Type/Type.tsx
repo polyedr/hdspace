@@ -4,9 +4,10 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import TYPE from './constants';
-import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+
 import {
   InputType,
   PropertiesChangeProps,

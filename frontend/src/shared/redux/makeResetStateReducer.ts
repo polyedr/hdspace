@@ -1,4 +1,4 @@
-import { IPlainAction } from '../../redux/types';
+import { IPlainAction } from '@Redux/types';
 
 function makeResetStateReducer<A extends IPlainAction<string>, S>(
   type: A['type'],

@@ -10,9 +10,9 @@ import Divider from '@material-ui/core/Divider';
 import {
   setActiveElement,
   updateElementParameters,
-} from '../../../redux/project/actions';
-import { selectCurrentScreenId } from '../../../redux/project/selectors';
-import { splitWords } from '../../../utils/stringHelper';
+} from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { splitWords } from '@Utils/stringHelper';
 import { StateElement } from '../../../types';
 
 const useStyles = makeStyles({

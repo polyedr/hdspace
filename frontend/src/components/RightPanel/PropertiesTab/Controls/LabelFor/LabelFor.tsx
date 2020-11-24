@@ -4,9 +4,9 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
-import { selectActiveLabelInputs } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { LabelElement, PropertiesChangeProps } from '../../../../../types';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { LabelElement, PropertiesChangeProps } from '@Src/types';
+import { selectActiveLabelInputs } from '@Redux/project/selectors/element';
 
 const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
   updateParams,

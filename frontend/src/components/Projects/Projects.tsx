@@ -14,14 +14,14 @@ import Button from '@material-ui/core/Button';
 import TableContainer from '@material-ui/core/TableContainer';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ProjectListItem from './ProjectListItem';
-import { createProject, getProjectList } from '../../redux/project/actions';
+import { createProject, getProjectList } from '@Redux/project/actions';
 import {
   selectAreProjectsLoading,
   selectProjectCreateLoader,
   selectProjects,
   selectProjectsDataNext,
-} from '../../redux/project/selectors';
+} from '@Redux/project/selectors/base';
+import ProjectListItem from './ProjectListItem';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

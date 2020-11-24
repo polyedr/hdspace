@@ -1,10 +1,8 @@
 import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectElementById,
-  selectCurrentScreenId,
-} from '../../../redux/project/selectors';
-import { uploadFile } from '../../../redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectElementById } from '@Redux/project/selectors/element';
+import { uploadFile } from '@Redux/project/actions';
 import { NNBlockType } from '../../../types';
 
 const useNNProcessing = (

@@ -7,16 +7,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { CircularProgress } from '@material-ui/core';
 import {
-  selectCurrentScreenId,
   selectRedoActions,
   selectUndoActions,
   selectUpdateScreenImageLoader,
-} from '../../../redux/project/selectors';
+} from '@Redux/project/selectors/base';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   redoAction,
   updateScreenImage,
   undoAction,
-} from '../../../redux/project/actions';
+} from '@Redux/project/actions';
 
 const useStyles = makeStyles({
   root: {
