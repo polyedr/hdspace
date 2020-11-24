@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import SubjectIcon from '@material-ui/icons/Subject';
 import WebIcon from '@material-ui/icons/Web';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
+import { createStyles, lighten } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import Navigator from './Navigator';
@@ -13,22 +13,22 @@ import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
 import { LEFT_PANEL_WIDTH, LEFT_PANEL_WIDTH_MIN } from '../../styles/Theme';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles(({ palette }) =>
   createStyles({
     root: {
       maxHeight: '100%',
       width: (minimized: boolean) =>
         minimized ? LEFT_PANEL_WIDTH_MIN : LEFT_PANEL_WIDTH,
-      backgroundColor: theme.palette.panel.main,
+      backgroundColor: palette.panel.main,
       transition: 'width 0.25s ease',
     },
     iconContainer: {
       textAlign: 'center',
     },
     iconButton: {
+      color: palette.common.white,
       '&:hover': {
-        color: theme.palette.panel.main,
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: lighten(palette.panel.main, 0.1),
       },
     },
     content: {
@@ -40,7 +40,10 @@ const useStyles = makeStyles((theme) =>
     },
     toggleButton: {
       alignSelf: 'flex-start',
-      color: '#fff',
+      color: palette.common.white,
+      '&:hover': {
+        backgroundColor: lighten(palette.panel.main, 0.1),
+      },
       '& svg': {
         transform: (minimized: boolean) => `rotate(${minimized ? 90 : -90}deg)`,
         transition: 'transform 0.25s ease',

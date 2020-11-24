@@ -13,7 +13,7 @@ import { selectFreeCanvasMode } from '../../../redux/project/selectors';
 
 const sections = ['elements', 'templates', 'library'];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ typography, palette }) => ({
   root: {
     height: '100%',
     display: 'flex',
@@ -21,8 +21,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'stretch',
   },
   title: {
-    fontSize: theme.typography.fontSize,
-    fontFamily: theme.typography.fontFamily,
+    fontSize: typography.fontSize,
+    fontFamily: typography.fontFamily,
+  },
+  section: {
+    backgroundColor: palette.panel.light,
   },
 }));
 
@@ -119,7 +122,11 @@ const ElementsTab = () => {
             ))}
           </Section>
 
-          <Section title="templates" activeSection={section}>
+          <Section
+            title="templates"
+            activeSection={section}
+            className={classes.section}
+          >
             <ElementsBlock elements={templates} />
           </Section>
 

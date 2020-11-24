@@ -73,14 +73,21 @@ const useAccordionDetailsStyles = makeStyles(({ palette }) =>
 const useTextFieldStyles = makeStyles(({ palette }) =>
   createStyles({
     root: {
-      '& label, & label.Mui-focused, & label.Mui-disabled': {
+      '& label, & label.Mui-focused': {
         color: palette.grey.A200,
+      },
+      '& label.Mui-disabled': {
+        color: palette.grey.A400,
       },
       '& .MuiInput-underline:after': {
         borderBottomColor: palette.grey.A200,
       },
       '& .MuiOutlinedInput-root, & .MuiInput-root': {
         color: palette.common.white,
+
+        '&.Mui-disabled': {
+          color: palette.grey.A200,
+        },
         '&:before, &:hover:before': {
           borderBottomColor: palette.grey.A200,
         },

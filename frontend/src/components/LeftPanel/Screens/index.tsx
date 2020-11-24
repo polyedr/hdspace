@@ -26,14 +26,14 @@ import {
   StyledAccordionSummary,
 } from '../../styledComponents';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ palette, typography }) => ({
   name: {
-    fontSize: theme.typography.fontSize,
+    fontSize: typography.fontSize,
   },
   button: {
-    color: '#eee',
+    color: palette.common.white,
     '&:hover': {
-      backgroundColor: lighten(theme.palette.panel.main, 0.1),
+      backgroundColor: lighten(palette.panel.main, 0.1),
     },
   },
   list: {

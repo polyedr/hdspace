@@ -37,6 +37,7 @@ const useTabsStyles = makeStyles(({ palette }) => ({
 const useTabStyles = makeStyles(({ palette }) => ({
   root: {
     minWidth: 72,
+    fontWeight: 'bold',
     '&:hover': {},
     '&$selected': {},
     '&:focus': {},

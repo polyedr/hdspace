@@ -13,7 +13,7 @@ import {
 } from '../../../../../types';
 import { StyledTextField } from '../../../../styledComponents';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   marginGrid: {
     display: 'grid',
     gridTemplateAreas: `
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
         '.  pg pg pg . '
         '.  .  mb .  . '  
         `,
-    border: '1px solid grey',
+    border: `1px solid ${palette.grey.A200}`,
     position: 'relative',
   },
   paddingGrid: {
@@ -34,7 +34,7 @@ const useStyles = makeStyles({
       'pl .  pr'
       '.  pb . '
     `,
-    border: '1px solid grey',
+    border: `1px solid ${palette.grey.A200}`,
     position: 'relative',
   },
   capture: {
@@ -43,6 +43,7 @@ const useStyles = makeStyles({
     left: 0,
     fontStyle: 'italic',
     fontSize: '0.8em',
+    color: palette.grey.A200,
   },
   input: {
     '& .MuiInputBase-input': {
@@ -75,7 +76,7 @@ const useStyles = makeStyles({
   paddingLeft: {
     gridArea: 'pl',
   },
-});
+}));
 
 const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   updateStyles,

@@ -3,6 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { lighten } from '@material-ui/core';
 import {
   selectActiveElementId,
   selectCurrentScreenId,
@@ -20,12 +21,18 @@ import {
 import { AppReduxState } from '../../../../../redux/types';
 import DropdownItem from './DropdownItem';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',
   },
-});
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
+}));
 
 type StateProps = {
   dropdownMenuID: string;
@@ -97,8 +104,8 @@ const DropdownItems: React.FC<Props> = ({
       <div className={classes.row}>
         <IconButton
           onClick={handleAddButtonClick}
-          color="primary"
           title="Add new item"
+          className={classes.iconButton}
         >
           <AddIcon />
         </IconButton>

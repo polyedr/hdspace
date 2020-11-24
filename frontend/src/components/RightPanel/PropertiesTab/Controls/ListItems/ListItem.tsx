@@ -1,23 +1,24 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Checkbox,
-} from '@material-ui/core';
+import { Checkbox, lighten } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteItem } from '../../../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
+import {
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+  StyledTextField,
+} from '../../../../styledComponents';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette, spacing }) => ({
   details: {
+    padding: spacing(0.5),
     display: 'flex',
     flexDirection: 'column',
   },
@@ -25,8 +26,15 @@ const useStyles = makeStyles({
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
-});
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
+}));
 
 type Props = {
   id: string;
@@ -65,8 +73,8 @@ const ListItem: React.FC<Props> = ({
   };
 
   return (
-    <Accordion key={id}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <StyledAccordion>
+      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
         <div className={classes.wrapper}>
           {textContent}
 
@@ -75,15 +83,17 @@ const ListItem: React.FC<Props> = ({
               title="Delete item"
               onClick={handleDeleteButtonClick}
               size="small"
+              color="primary"
+              className={classes.iconButton}
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
           )}
         </div>
-      </AccordionSummary>
+      </StyledAccordionSummary>
 
-      <AccordionDetails className={classes.details}>
-        <TextField
+      <StyledAccordionDetails className={classes.details}>
+        <StyledTextField
           variant="outlined"
           defaultValue={textContent}
           onChange={(ev) => debouncedText.callback(ev.target.value)}
@@ -106,8 +116,7 @@ const ListItem: React.FC<Props> = ({
         />
 
         {isLink && (
-          <TextField
-            variant="outlined"
+          <StyledTextField
             defaultValue={link}
             onChange={(ev) => debouncedLink.callback(ev.target.value)}
             label="Item URL"
@@ -116,8 +125,8 @@ const ListItem: React.FC<Props> = ({
             multiline
           />
         )}
-      </AccordionDetails>
-    </Accordion>
+      </StyledAccordionDetails>
+    </StyledAccordion>
   );
 };
 
