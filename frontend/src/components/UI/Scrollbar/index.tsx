@@ -18,7 +18,7 @@ interface IScrollbarProps {
   hideTracksWhenNotNeeded?: boolean;
 }
 
-const renderTrack = ({ style, trackStylesBg, show, ...props }: any) => {
+const renderTrack = ({ style, trackStylesBg, scroll, show, ...props }: any) => {
   const trackStyle = {
     zIndex: 10,
     backgroundColor: trackStylesBg || 'rgb(0, 0, 0, .01)',
@@ -26,11 +26,12 @@ const renderTrack = ({ style, trackStylesBg, show, ...props }: any) => {
     right: 0,
     width: '6px',
     height: '100%',
-    opacity: show ? 1 : 0.3,
-    transition: show ? 'none' : 'opacity 0.5s ease',
+    opacity: scroll ? 1 : 0.3,
+    transition: scroll ? 'none' : 'opacity 0.5s ease',
   };
   return (
     <div
+      hidden={!show}
       style={{ ...style, ...trackStyle }}
       className="track-vertical"
       {...props}
@@ -41,6 +42,7 @@ const renderTrack = ({ style, trackStylesBg, show, ...props }: any) => {
 const renderTrackHorizontal = ({
   style,
   trackStylesBg,
+  scroll,
   show,
   ...props
 }: any) => {
@@ -50,11 +52,12 @@ const renderTrackHorizontal = ({
     left: 0,
     width: '100%',
     height: '6px',
-    opacity: show ? 1 : 0.3,
-    transition: show ? 'none' : 'opacity 0.5s ease',
+    opacity: scroll ? 1 : 0.3,
+    transition: scroll ? 'none' : 'opacity 0.5s ease',
   };
   return (
     <div
+      hidden={!show}
       style={{ ...style, ...trackStyle }}
       className="track-horizontal"
       {...props}
@@ -105,11 +108,12 @@ const Scrollbar: React.FC<IScrollbarProps> = ({
   hideTracksWhenNotNeeded = true,
 }) => {
   const [show, setShow] = useState(false);
+  const [scroll, setScroll] = useState(false);
 
   const handleScroll = () => {
-    setShow(true);
+    setScroll(true);
     setTimeout(() => {
-      setShow(false);
+      setScroll(false);
     }, 500);
   };
 
@@ -121,16 +125,18 @@ const Scrollbar: React.FC<IScrollbarProps> = ({
       autoHeightMin={autoHeightMin}
       autoHeightMax={autoHeightMax}
       renderTrackVertical={(args) =>
-        renderTrack({ ...args, trackStylesBg, show })
+        renderTrack({ ...args, trackStylesBg, scroll, show })
       } // TODO: find typings for all elements!
       renderTrackHorizontal={(args) =>
-        renderTrackHorizontal({ ...args, trackStylesBg, show })
+        renderTrackHorizontal({ ...args, trackStylesBg, scroll, show })
       }
       renderView={(args) => renderView({ ...args })}
       renderThumbVertical={renderThumb}
       renderThumbHorizontal={renderThumb}
       hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
       onScroll={handleScroll}
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
     >
       {children}
     </Scrollbars>
