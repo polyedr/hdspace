@@ -46,7 +46,6 @@ const BorderCrumb: React.FC<Props> = ({ elementId, styles, children }) => {
     !ELEMENTS_WITHOUT_CRUMB.includes(element.type) &&
     (showBorders || elementId === activeElementId);
 
-  console.log('CRUMB STYLES!!', styles);
   return element && showCrumb ? (
     <div
       className={classes.crumb}
