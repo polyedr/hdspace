@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
 import LinkIcon from '@material-ui/icons/Link';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useDebouncedCallback } from 'use-debounce';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
@@ -22,6 +17,10 @@ import {
   LinkParams,
   PropertiesChangeProps,
 } from '../../../../../types';
+import {
+  StyledTextField,
+  StyledToggleButton,
+} from '../../../../styledComponents';
 
 const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
   updateParams,
@@ -87,18 +86,18 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
         size="small"
         exclusive
       >
-        <ToggleButton value="internal-link" title="Internal link">
+        <StyledToggleButton value="internal-link" title="Internal link">
           <LinkIcon />
-        </ToggleButton>
+        </StyledToggleButton>
 
-        <ToggleButton value="external-link" title="External link">
+        <StyledToggleButton value="external-link" title="External link">
           <InsertDriveFileIcon />
-        </ToggleButton>
+        </StyledToggleButton>
       </ToggleButtonGroup>
 
       <div>
         {linkType === 'external-link' ? (
-          <TextField
+          <StyledTextField
             fullWidth
             label="URL"
             placeholder="Enter a page URL"
@@ -110,25 +109,24 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
             margin="dense"
           />
         ) : (
-          <FormControl margin="dense" fullWidth>
-            <InputLabel>Screen Id</InputLabel>
+          <StyledTextField
+            fullWidth
+            label="Screen Id"
+            value={getCurrentUrl('internal-link')}
+            onChange={handleUrlChange}
+            margin="dense"
+            select
+          >
+            <MenuItem value="noScreen" dense>
+              No screen
+            </MenuItem>
 
-            <Select
-              label="Screen Id"
-              value={getCurrentUrl('internal-link')}
-              onChange={handleUrlChange}
-            >
-              <MenuItem value="noScreen" dense>
-                No screen
+            {screens.map(({ name, id }) => (
+              <MenuItem key={id} value={id} dense>
+                {name}
               </MenuItem>
-
-              {screens.map(({ name, id }) => (
-                <MenuItem key={id} value={id} dense>
-                  {name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            ))}
+          </StyledTextField>
         )}
       </div>
     </div>

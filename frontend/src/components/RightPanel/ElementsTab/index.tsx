@@ -3,6 +3,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSelector } from 'react-redux';
+import { lighten } from '@material-ui/core';
 import ElementsBlock from './ElementsBlock';
 import Section from './Section';
 import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
@@ -35,14 +36,22 @@ const useToggleButtonGroupStyles = makeStyles({
   },
 });
 
-const useToggleButtonStyles = makeStyles({
+const useToggleButtonStyles = makeStyles(({ palette }) => ({
   root: {
     textTransform: 'none',
+    '&.Mui-selected': {
+      backgroundColor: palette.panel.light,
+    },
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.03),
+    },
   },
   disabled: {},
   selected: {},
-  label: {},
-});
+  label: {
+    color: palette.common.white,
+  },
+}));
 
 const ElementsTab = () => {
   const classes = useStyles();

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
@@ -9,6 +8,7 @@ import {
   RadiobuttonElement,
 } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   updateParams,
@@ -25,7 +25,7 @@ const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   }, 500);
 
   return (
-    <TextField
+    <StyledTextField
       variant="outlined"
       value={state}
       onChange={({ target: { value } }) => {

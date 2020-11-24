@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { PropertiesChangeProps, SelectElement } from '../../../../../types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,
@@ -26,7 +26,7 @@ const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({
   };
 
   return (
-    <TextField
+    <StyledTextField
       variant="outlined"
       value={state}
       onChange={handleChange}

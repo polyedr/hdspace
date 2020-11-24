@@ -14,10 +14,10 @@ import ScreenLogo from './ScreenLogo';
 import { renameScreen } from '../../../redux/project/actions';
 import { selectCurrentProjectId } from '../../../redux/project/selectors';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ palette, typography }) => ({
   listItem: {
     '&:hover': {
-      backgroundColor: lighten('#2f4050', 0.2),
+      backgroundColor: lighten(palette.panel.main, 0.3),
     },
     '&, &:hover, &:active, &:link, &:visited, &:focus': {
       color: 'inherit',
@@ -30,20 +30,20 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   active: {
-    backgroundColor: lighten('#2f4050', 0.3),
+    backgroundColor: lighten(palette.panel.main, 0.2),
   },
   screenData: {
     display: 'flex',
     alignItems: 'center',
   },
   icon: {
-    color: '#eee',
+    color: palette.common.white,
     minWidth: 0,
     paddingRight: '.5em',
   },
   name: {
-    fontFamily: theme.typography.fontFamily,
-    fontSize: theme.typography.fontSize,
+    fontFamily: typography.fontFamily,
+    fontSize: typography.fontSize,
   },
 }));
 

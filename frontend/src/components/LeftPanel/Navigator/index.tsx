@@ -37,10 +37,10 @@ import {
 import Scrollbar from '../../UI/Scrollbar';
 import { canElementBeAdded } from '../../../utils/normalizedStateHelpers';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-} from '../StyledAccordion';
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+} from '../../styledComponents';
 import { enqueueSnackbar } from '../../../redux/notification/actions';
 
 const useStyles = makeStyles({
@@ -276,12 +276,12 @@ const Navigator: React.FC = () => {
   };
 
   return currentScreenId !== -1 ? (
-    <Accordion defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <StyledAccordion defaultExpanded>
+      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
         Navigator
-      </AccordionSummary>
+      </StyledAccordionSummary>
 
-      <AccordionDetails>
+      <StyledAccordionDetails>
         <div className={classes.tree} onKeyDown={handleKeyDown}>
           <Scrollbar
             style={{
@@ -303,8 +303,8 @@ const Navigator: React.FC = () => {
             />
           </Scrollbar>
         </div>
-      </AccordionDetails>
-    </Accordion>
+      </StyledAccordionDetails>
+    </StyledAccordion>
   ) : null;
 };
 

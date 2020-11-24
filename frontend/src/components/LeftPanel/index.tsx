@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) =>
       flexDirection: 'column',
       justifyContent: 'space-between',
     },
-    wrapper: {},
     toggleButton: {
       alignSelf: 'flex-start',
       color: '#fff',
@@ -71,7 +70,7 @@ const LeftPanel: React.FC = () => {
       >
         <div className={classes.content}>
           {minimized ? (
-            <div className={classes.wrapper}>
+            <div>
               <div className={classes.iconContainer}>
                 <IconButton
                   onClick={toggleLeftPanel}
@@ -95,7 +94,7 @@ const LeftPanel: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className={classes.wrapper}>
+            <div>
               <Screens />
 
               <Navigator />

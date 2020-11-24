@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElement } from '../../../../../redux/project/selectors';
 import { updateElement } from '../../../../../redux/project/actions';
+import { StyledTextField } from '../../../../styledComponents';
 
 const RenameElement: React.FC = () => {
   const dispatch = useDispatch();
@@ -20,7 +20,9 @@ const RenameElement: React.FC = () => {
   }, 500);
 
   return (
-    <TextField
+    <StyledTextField
+      fullWidth
+      margin="dense"
       label="Name"
       value={state}
       onChange={({ target: { value } }) => {

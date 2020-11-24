@@ -1,8 +1,5 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import { DISPLAY } from './constants';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
@@ -15,6 +12,7 @@ import {
   PropertiesChangeProps,
 } from '../../../../../types';
 import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
+import { StyledTextField } from '../../../../styledComponents';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>>;
 
@@ -42,23 +40,21 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
           ]}
         />
 
-        <FormControl fullWidth margin="dense">
-          <InputLabel>Display</InputLabel>
-
-          <Select
-            margin="dense"
-            label="Display"
-            value={display || 'initial'}
-            onChange={handleDisplayDropdownChange}
-            defaultValue={display}
-          >
-            {DISPLAY.map(({ value, label }) => (
-              <MenuItem key={value} value={value} dense>
-                {label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <StyledTextField
+          fullWidth
+          margin="dense"
+          label="Display"
+          value={display || 'initial'}
+          onChange={handleDisplayDropdownChange}
+          defaultValue={display}
+          select
+        >
+          {DISPLAY.map(({ value, label }) => (
+            <MenuItem key={value} value={value} dense>
+              {label}
+            </MenuItem>
+          ))}
+        </StyledTextField>
       </div>
 
       {display === 'flex' && <FlexProperties />}

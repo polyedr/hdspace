@@ -11,27 +11,30 @@ import { selectIsPrototypeMode } from '../../redux/user/selectors';
 import { setRightPanelActiveTab } from '../../redux/project/actions';
 import { RightPanelTab } from '../../types';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   root: {
     width: (props: any) => (props.open ? RIGHT_PANEL_WIDTH : 0),
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
     transition: 'width 0.25s ease',
+    backgroundColor: palette.panel.main,
+    color: palette.common.white,
   },
   tabPanel: {
     flex: 1,
     overflow: 'auto',
   },
-});
+}));
 
-const useTabsStyles = makeStyles({
+const useTabsStyles = makeStyles(({ palette }) => ({
+  root: {},
   indicator: {
-    backgroundColor: '#1cc09f',
+    backgroundColor: palette.secondary.main,
   },
-});
+}));
 
-const useTabStyles = makeStyles({
+const useTabStyles = makeStyles(({ palette }) => ({
   root: {
     minWidth: 72,
     '&:hover': {},
@@ -40,9 +43,9 @@ const useTabStyles = makeStyles({
   },
   selected: {
     borderRadius: '2px 2px 0 0',
-    backgroundColor: '#e7e7e7',
+    backgroundColor: palette.panel.light,
   },
-});
+}));
 
 type TabPanelProps = {
   children?: React.ReactNode;

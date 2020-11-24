@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
 import { useDebouncedCallback } from 'use-debounce';
 import {
   selectActiveElementId,
@@ -9,6 +8,7 @@ import {
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import { ContainerElement, PropertiesChangeProps } from '../../../../../types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
   updateStyles,
@@ -36,7 +36,7 @@ const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
         cssPropertiesNames={['flexGrow']}
       />
 
-      <TextField
+      <StyledTextField
         fullWidth
         label="Flex Grow"
         type="number"

@@ -1,8 +1,5 @@
 import React, { useCallback, memo, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
@@ -18,6 +15,7 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -149,7 +147,7 @@ const SizeBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 
     return (
       <div className={classes.sizeControl}>
-        <TextField
+        <StyledTextField
           className={classes.text}
           label={capitalize(sizeName)}
           type="text"
@@ -163,20 +161,20 @@ const SizeBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="dense"
         />
 
-        <FormControl margin="dense">
-          <Select
-            label="Units"
-            onChange={(event) => handleSelectChange(event, sizeName)}
-            value={Unit[getUnitFromValue(size)]}
-            name={`${sizeName}_unit`}
-          >
-            {Object.keys(Unit).map((unit) => (
-              <MenuItem key={unit} value={unit} dense>
-                {unit}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <StyledTextField
+          margin="dense"
+          label="Units"
+          onChange={(event) => handleSelectChange(event, sizeName)}
+          value={Unit[getUnitFromValue(size)]}
+          name={`${sizeName}_unit`}
+          select
+        >
+          {Object.keys(Unit).map((unit) => (
+            <MenuItem key={unit} value={unit} dense>
+              {unit}
+            </MenuItem>
+          ))}
+        </StyledTextField>
       </div>
     );
   };

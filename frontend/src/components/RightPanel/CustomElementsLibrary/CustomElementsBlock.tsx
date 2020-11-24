@@ -7,14 +7,13 @@ import {
   selectCustomLibraryElements,
 } from '../../../redux/project/selectors';
 import { loadCustomElements } from '../../../redux/project/actions';
-
-import {
-  useStyles as useElementBlockStyles,
-  StyledAccordion,
-  StyledAccordionSummary,
-  StyledAccordionDetails,
-} from '../ElementsTab/ElementsBlock';
+import { useStyles as useElementBlockStyles } from '../ElementsTab/ElementsBlock';
 import ElementButton from '../ElementsTab/ElementButton';
+import {
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+} from '../../styledComponents';
 
 const CustomElementsBlock: React.FC = () => {
   const libraryElements = useSelector(selectCustomLibraryElements);
@@ -27,7 +26,7 @@ const CustomElementsBlock: React.FC = () => {
 
   useEffect(() => {
     dispatch(loadCustomElements(true));
-  }, []);
+  }, [dispatch]);
 
   const elements = useMemo(
     () =>

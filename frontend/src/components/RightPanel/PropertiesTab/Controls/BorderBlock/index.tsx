@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDebouncedCallback } from 'use-debounce';
 import {
@@ -29,6 +26,7 @@ import {
   MAX_BORDER_RADIUS_PERCENT,
   MIN_BORDER_RADIUS,
 } from '../../../../../constants/defaultParams';
+import { StyledTextField } from '../../../../styledComponents';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -129,7 +127,7 @@ const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       />
 
       <div className={classes.wrapper}>
-        <TextField
+        <StyledTextField
           label="Width"
           type="number"
           value={width ? parseFloat(width as string) : ''}
@@ -142,7 +140,7 @@ const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
         />
 
         <div className={classes.control}>
-          <TextField
+          <StyledTextField
             label="Radius"
             type="number"
             value={safeParseFloat(validateBorderRadius(String(radius)))}
@@ -154,19 +152,19 @@ const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             className={classes.text}
           />
 
-          <FormControl margin="dense">
-            <Select
-              onChange={handleChangeBorderRadiusUnits}
-              value={accessBorderRadius(String(borderRadius))}
-            >
-              <MenuItem value="px" dense>
-                px
-              </MenuItem>
-              <MenuItem value="%" dense>
-                percent
-              </MenuItem>
-            </Select>
-          </FormControl>
+          <StyledTextField
+            margin="dense"
+            onChange={handleChangeBorderRadiusUnits}
+            value={accessBorderRadius(String(borderRadius))}
+            select
+          >
+            <MenuItem value="px" dense>
+              px
+            </MenuItem>
+            <MenuItem value="%" dense>
+              percent
+            </MenuItem>
+          </StyledTextField>
         </div>
       </div>
 

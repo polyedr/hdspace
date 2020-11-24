@@ -1,16 +1,18 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { splitWords } from '../../../../utils/stringHelper';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
-} from '../../ElementsTab/ElementsBlock';
-import { splitWords } from '../../../../utils/stringHelper';
+} from '../../../styledComponents';
 
 const useStyles = makeStyles({
   section: {},
-  title: {},
+  title: {
+    textTransform: 'capitalize',
+  },
   content: {
     padding: '0.5em',
     display: 'flex',
