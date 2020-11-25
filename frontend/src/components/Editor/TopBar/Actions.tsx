@@ -5,7 +5,7 @@ import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, lighten } from '@material-ui/core';
 import {
   selectCurrentScreenId,
   selectRedoActions,
@@ -18,13 +18,22 @@ import {
   undoAction,
 } from '../../../redux/project/actions';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   root: {
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
   },
-});
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+    '&.Mui-disabled': {
+      color: '#888',
+    },
+  },
+}));
 
 const Actions: React.FC = () => {
   const classes = useStyles();
@@ -42,7 +51,12 @@ const Actions: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <IconButton onClick={onHistoryBack} disabled={!undoLength} title="Undo">
+      <IconButton
+        onClick={onHistoryBack}
+        disabled={!undoLength}
+        title="Undo"
+        className={classes.iconButton}
+      >
         <UndoIcon />
       </IconButton>
 
@@ -50,6 +64,7 @@ const Actions: React.FC = () => {
         onClick={onHistoryForward}
         disabled={!redoLength}
         title="Redo"
+        className={classes.iconButton}
       >
         <RedoIcon />
       </IconButton>
@@ -58,6 +73,7 @@ const Actions: React.FC = () => {
         onClick={handleSaveScreen}
         title="Save screen"
         disabled={imageLoader}
+        className={classes.iconButton}
       >
         {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
       </IconButton>
