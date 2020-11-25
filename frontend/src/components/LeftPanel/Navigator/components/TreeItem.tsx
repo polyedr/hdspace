@@ -69,7 +69,7 @@ const useStyles = makeStyles(({ palette }) => ({
       width: 0.5,
       height: ({ rulerHeight }: Props) => rulerHeight,
       display: 'block',
-      backgroundColor: '#aaa',
+      backgroundColor: palette.grey.A200,
     },
   },
   isDragging: {
