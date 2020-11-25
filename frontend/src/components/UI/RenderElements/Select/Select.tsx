@@ -1,17 +1,20 @@
 // @ts-nocheck
 
-import React, { ChangeEvent } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import cn from 'classnames';
-import { makeStyles, TextField, MenuItem } from '@material-ui/core';
-import * as R from 'ramda';
+import { TextField } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { SelectRendererProps } from '../types';
 import { selectElementAsTree } from '../../../../redux/project/selectors';
 import { LibraryElement } from '../../../../types';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
+import SelectItem from './SelectItem';
 
-const getTextFieldClassStyles = (style: React.CSSProperties) => ({
+// const styles = require('../styles.scss');
+
+/* const getTextFieldClassStyles = (style: React.CSSProperties) => ({
   '&$focused $input': {
     borderRadius: style.borderRadius,
   },
@@ -114,7 +117,7 @@ const getInputStyles = (
     },
   });
 
-const getMenuItemClasses = (
+ const getMenuItemClasses = (
   entityStyles: React.CSSProperties,
   groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
@@ -137,9 +140,9 @@ const getMenuItemClasses = (
     ownStyles: {
       ...ownStyles,
     },
-  });
+  }); */
 
-const getMenuClassStyles = (style: React.CSSProperties) => ({
+/* const getMenuClassStyles = (style: React.CSSProperties) => ({
   ...style,
   minWidth: style.width,
 });
@@ -198,7 +201,7 @@ const getDivClasses = (
       display: 'inline-block',
       verticalAlign: 'top',
     },
-  });
+  }); 
 
 const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
   const {
@@ -231,7 +234,7 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
     ...ownInlineStyles,
   };
 
-  const menu = useSelector(selectElementAsTree(childrenElements[0]));
+  const menu = useSelector(selectElementById(childrenElements[0]));
 
   const menuItems: LibraryElement<'selectItem'> = menu.children;
   const currentValue = menuItems[0]?.parameters?.value;
@@ -266,10 +269,6 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
   const menuGroupStyles =
     projectClasses?.find((cssClass) => cssClass.className === menuGroupClass)
       ?.rules || {};
-
-  /* const convertedMenuEntityStyles = convertPropCSS(menuEntityStyles);
-  const convertedGroupStyles = convertPropCSS(menuGroupStyles);
-  const menuOwnStyles = convertPropCSS(menu.styles.ownStyles); */
 
   const menuClasses = getMenuStyles(
     menuEntityStyles,
@@ -363,14 +362,14 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
         select
       >
         {menuItems.map((menuItem) => {
-          const {
+          /* const {
             id: itemID,
             parameters: { name, value, showRipple },
             styles: menuItemStyles,
           } = menuItem;
           const [entityClass, groupClass] = menuItemStyles.classNames;
 
-          const menuItemEntityStyles =
+           const menuItemEntityStyles =
             projectClasses?.find(
               (cssClass) => cssClass.className === entityClass,
             )?.rules || {};
@@ -379,7 +378,7 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
               (cssClass) => cssClass.className === groupClass,
             )?.rules || {};
 
-          const menuItemClasses = getMenuItemClasses(
+           const menuItemClasses = getMenuItemClasses(
             menuItemEntityStyles,
             menuItemGroupStyles,
             styles.ownStyles,
@@ -402,6 +401,178 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
           );
         })}
       </TextField>
+    </div>
+  );
+}); */
+
+const useStyles = makeComponentStyles(
+  {
+    root: {
+      height: '100%',
+      '&.hovered $input': {
+        outline: '1px solid #949494',
+      },
+
+      '& fieldset': {
+        border: 0,
+      },
+
+      '&$focused $input': {
+        borderColor: '#1890ff',
+        boxShadow: 'inset 0px 0px 0 1px #1890ff',
+      },
+    },
+    input: {},
+  },
+  [],
+  (style: CSSProperties) => ({
+    '&$focused $input': {
+      borderRadius: style.borderRadius,
+    },
+  }),
+);
+
+const useTextFieldStyles = makeComponentStyles(
+  {
+    root: {
+      height: '100%',
+
+      '& fieldset': {
+        border: 0,
+      },
+
+      '&$focused $input': {
+        borderColor: '#1890ff',
+        boxShadow: 'inset 0px 0px 0 1px #1890ff',
+      },
+    },
+  },
+  [],
+  (style: CSSProperties) => ({
+    borderRadius: style.borderRadius,
+  }),
+);
+
+const useInlineStyles = ({ entityStyles, groupStyles, ownStyles }) => {
+  const processInlineStyles = useCallback((style: CSSProperties) => {
+    const { width, height } = style;
+    return { width, height };
+  }, []);
+
+  return useMemo(
+    () => ({
+      entityStyles: processInlineStyles(entityStyles),
+      groupStyles: processInlineStyles(groupStyles),
+      ownStyles: processInlineStyles(ownStyles),
+    }),
+    [processInlineStyles, entityStyles, groupStyles, ownStyles],
+  );
+};
+
+const useMenuStyles = makeComponentStyles({}, [], (styles: CSSProperties) => ({
+  minWidth: styles.width,
+}));
+
+const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
+  const {
+    id,
+    isDisabled,
+    onElementChange,
+    params,
+    children,
+    className, // -
+    childrenElements,
+    projectClasses,
+  } = props;
+  const { isOpen } = params;
+
+  const handleSelectChange = useCallback(
+    (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
+      onElementChange(id, event.target.value);
+    },
+    [id, onElementChange],
+  );
+
+  const inlineStyles = useInlineStyles(props);
+
+  const classes = useStyles(props);
+  const textFieldClasses = useTextFieldStyles(props);
+
+  const menu = useSelector(selectElementAsTree(childrenElements[0]));
+  const [menuEntityClass, menuGroupClass] = menu.styles.classNames;
+
+  const menuEntityStyles =
+    projectClasses?.find((cssClass) => cssClass.className === menuEntityClass)
+      ?.rules || {};
+  const menuGroupStyles =
+    projectClasses?.find((cssClass) => cssClass.className === menuGroupClass)
+      ?.rules || {};
+
+  const menuClasses = useMenuStyles({
+    entityStles: menuEntityStyles,
+    groupStyles: menuGroupStyles,
+    ownStyles: menu.styles.own,
+  });
+
+  const menuItems: LibraryElement<'selectItem'> = menu.children;
+  const currentValue = menuItems[0]?.parameters?.value;
+
+  const PrototypeMenuProps = {
+    MenuProps: {
+      PaperProps: {
+        className: cn(
+          menuClasses.entityStyles,
+          menuClasses.groupStyles,
+          menuClasses.ownStyles,
+        ),
+      },
+    },
+  };
+
+  const InputProps = {
+    className: cn(
+      isDisabled && classes.disabled,
+      /* inputClasses.root,
+      inputClasses.entityStyles,
+      inputClasses.groupStyles,
+      inputClasses.ownStyles, */
+    ),
+  };
+  return (
+    <div
+      key={id}
+      className={cn(
+        className,
+        classes.root,
+        classes.entityStyles,
+        classes.groupStyles,
+        classes.ownStyles,
+      )}
+    >
+      <TextField
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        style={inlineStyles}
+        variant="outlined"
+        className={cn(
+          textFieldClasses.root,
+          isDisabled ? classes.disabled : '',
+          textFieldClasses.entityStyles,
+          textFieldClasses.groupStyles,
+          textFieldClasses.ownStyles,
+        )}
+        value={currentValue}
+        InputProps={InputProps}
+        SelectProps={!isDisabled ? PrototypeMenuProps : null}
+        onChange={handleSelectChange}
+        select
+      >
+        {menuItems.map((item) => (
+          <SelectItem key={`item-${item.id}`} item={item} />
+        ))}
+      </TextField>
+      {isOpen && children}
     </div>
   );
 });
