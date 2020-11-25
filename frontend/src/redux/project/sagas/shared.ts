@@ -25,7 +25,7 @@ import { selectSavedElementsValues } from '../selectors';
 import { enqueueSnackbar } from '../../notification/actions';
 
 // eslint-disable-next-line consistent-return
-export function* refreshUserTokenPairSaga() {
+export function* refreshTokensSaga() {
   try {
     const { refresh } = yield select(selectTokenPair);
 
@@ -64,13 +64,13 @@ export function* reqWrapper(
         return yield call(reqWrapper, requestAction, props, tries + 1);
       }
 
-      const tokenResult = yield call(refreshUserTokenPairSaga);
+      const tokenResult = yield call(refreshTokensSaga);
 
       if (!tokenResult || tokenResult.msg || tries >= MAX_TOKEN_TRIALS - 1) {
         yield put(logout());
         yield call(openSignScreen, 'signin');
 
-        return null;
+        return { error: 'Logged out' };
       }
 
       yield put(setTokenPair(tokenResult));
@@ -83,7 +83,7 @@ export function* reqWrapper(
       yield put(logout());
       openSignScreen('signin');
 
-      return null;
+      return { error: 'Logged out' };
     }
 
     if (R.path(['response', 'status'], result)) {
@@ -93,7 +93,7 @@ export function* reqWrapper(
     return result;
   } catch (e) {
     yield put(setUserError(e));
-    return null;
+    return { error: e.message };
   }
 }
 
