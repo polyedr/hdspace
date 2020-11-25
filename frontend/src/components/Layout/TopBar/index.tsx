@@ -5,6 +5,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
 import { changePrototypeMode } from '../../../redux/user/actions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import Formats from './Formats';
@@ -20,7 +21,7 @@ import {
   selectShowingBorders,
 } from '../../../redux/project/selectors';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ typography, spacing }) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -30,7 +31,15 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 1em',
   },
   title: {
-    fontSize: theme.typography.fontSize,
+    fontSize: typography.fontSize,
+  },
+  wrapper: {
+    flex: 1,
+    display: 'flex',
+    flexWrap: 'nowrap',
+  },
+  magic: {
+    paddingRight: spacing(1),
   },
 }));
 
@@ -57,7 +66,7 @@ const TopBar: React.FC = () => {
     <div className={classes.root}>
       <Actions />
 
-      <div>
+      <div className={classes.wrapper}>
         <FormControlLabel
           control={
             <Switch checked={isProtoMode} onChange={handleToggleProtoMode} />
@@ -79,9 +88,11 @@ const TopBar: React.FC = () => {
         />
 
         {freeCanvasMode ? (
-          <button type="button" onClick={makeMagic}>
-            magic
-          </button>
+          <div className={classes.magic}>
+            <Button onClick={makeMagic} color="secondary" variant="outlined">
+              Make Magic
+            </Button>
+          </div>
         ) : (
           <FormControlLabel
             control={

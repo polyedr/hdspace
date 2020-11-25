@@ -624,13 +624,17 @@ export function* convertFreeCanvasSaga() {
     const root = document.getElementById('free-canvas-root');
     if (!root) throw new Error('Failed to find the root element');
 
+    const rootId: string = yield select(selectCurrentRootId);
+    yield put(setActiveElement(rootId));
+
     const canvas: HTMLCanvasElement = yield call(html2canvas, root, {
       useCORS: true,
       allowTaint: true,
       logging: true,
+      ignoreElements: (element: Element) =>
+        (element as HTMLElement).dataset.role === 'borders',
     });
 
-    const rootId: string = yield select(selectCurrentRootId);
     const screenId: number = yield select(selectCurrentScreenId);
 
     const rootElement: StateElement = yield select(selectElementById(rootId));
