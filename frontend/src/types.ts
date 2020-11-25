@@ -636,6 +636,7 @@ export type CreatedElement = {
   type: Entity | string;
   name: string;
   custom: boolean;
+  parameters?: any;
 };
 
 export type ItemToCopyInfo = {
