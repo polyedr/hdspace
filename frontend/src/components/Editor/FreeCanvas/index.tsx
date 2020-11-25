@@ -141,6 +141,7 @@ const FreeCanvas = () => {
       onResize={handleResize}
       onResizeStop={handleResizeStop}
       size={rootSize()}
+      id="free-canvas-root"
     >
       {Object.values(directChildren).map((element) => {
         const Renderer = FREE_CANVAS_RENDERERS[element.type];

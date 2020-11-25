@@ -8,6 +8,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { CircularProgress, lighten } from '@material-ui/core';
 import {
   selectCurrentScreenId,
+  selectFreeCanvasMode,
   selectRedoActions,
   selectUndoActions,
   selectUpdateScreenImageLoader,
@@ -40,6 +41,7 @@ const Actions: React.FC = () => {
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
+  const canvasMode = useSelector(selectFreeCanvasMode);
 
   const undoLength = useSelector(selectUndoActions).length;
   const redoLength = useSelector(selectRedoActions).length;
@@ -72,7 +74,7 @@ const Actions: React.FC = () => {
       <IconButton
         onClick={handleSaveScreen}
         title="Save screen"
-        disabled={imageLoader}
+        disabled={imageLoader || canvasMode}
         className={classes.iconButton}
       >
         {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}

@@ -627,6 +627,7 @@ export function* uploadFileSaga({
     const { screenId } = meta;
 
     const formData = new FormData();
+
     formData.append('image', file.file, file.name);
     formData.append('parent_id', parentId);
     formData.append('struct_type', 'container');
@@ -664,7 +665,9 @@ export function* uploadFileSaga({
       if (result) {
         yield put(
           Actions.setUndoActions(
-            Actions.deleteItem(nnContainerWithDefaultParams.id, { screenId }),
+            Actions.deleteElement(nnContainerWithDefaultParams.id, {
+              screenId,
+            }),
           ),
         );
 

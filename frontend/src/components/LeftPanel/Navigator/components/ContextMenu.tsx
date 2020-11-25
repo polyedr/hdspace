@@ -10,7 +10,7 @@ import {
 } from '../../../../redux/project/selectors';
 import {
   copyActiveElement,
-  deleteItem,
+  deleteElement,
   pasteCopiedElement,
 } from '../../../../redux/project/actions';
 import { canElementHaveChildren } from '../../../../utils/AvailableChildrenHelper';
@@ -54,7 +54,7 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
 
   const handleDelete = () => {
     if (!activeElementId) return;
-    dispatch(deleteItem(activeElementId, { screenId: currentScreenId }));
+    dispatch(deleteElement(activeElementId, { screenId: currentScreenId }));
     onClose();
   };
 

@@ -12,7 +12,7 @@ import {
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import {
   addChildToElement,
-  deleteItem,
+  deleteElement,
 } from '../../../../../redux/project/actions';
 import {
   DropdownItemElement,
@@ -60,7 +60,7 @@ function mapState(state: AppReduxState): StateProps {
 
 const mapDispatch = {
   addChildToElement,
-  deleteChildFromElement: deleteItem,
+  deleteChildFromElement: deleteElement,
 };
 
 type Props = StateProps &

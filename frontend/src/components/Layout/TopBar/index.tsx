@@ -5,12 +5,14 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
 import { changePrototypeMode } from '../../../redux/user/actions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import Formats from './Formats';
 import Actions from './Actions';
 import {
   changeFreeCanvasMode,
+  convertFreeCanvas,
   toggleContainersBorders,
 } from '../../../redux/project/actions';
 import {
@@ -19,7 +21,7 @@ import {
   selectShowingBorders,
 } from '../../../redux/project/selectors';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ typography, spacing }) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -29,7 +31,18 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 1em',
   },
   title: {
-    fontSize: theme.typography.fontSize,
+    fontSize: typography.fontSize,
+  },
+  wrapper: {
+    flex: 1,
+    display: 'flex',
+    flexWrap: 'nowrap',
+  },
+  magic: {
+    paddingRight: spacing(1),
+  },
+  magicButton: {
+    height: 40,
   },
 }));
 
@@ -42,6 +55,10 @@ const TopBar: React.FC = () => {
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const showBorders = useSelector(selectShowingBorders);
 
+  const createFlex = () => {
+    dispatch(convertFreeCanvas());
+  };
+
   const handleToggleProtoMode = () =>
     dispatch(changePrototypeMode(!isProtoMode));
 
@@ -52,7 +69,7 @@ const TopBar: React.FC = () => {
     <div className={classes.root}>
       <Actions />
 
-      <div>
+      <div className={classes.wrapper}>
         <FormControlLabel
           control={
             <Switch checked={isProtoMode} onChange={handleToggleProtoMode} />
@@ -73,16 +90,31 @@ const TopBar: React.FC = () => {
           className={classes.switch}
         />
 
-        <FormControlLabel
-          control={
-            <Checkbox
-              name="Show borders"
-              checked={showBorders}
-              onChange={() => dispatch(toggleContainersBorders())}
-            />
-          }
-          label={<Typography className={classes.title}>Show blocks</Typography>}
-        />
+        {freeCanvasMode ? (
+          <div className={classes.magic}>
+            <Button
+              onClick={createFlex}
+              color="secondary"
+              variant="outlined"
+              className={classes.magicButton}
+            >
+              Create Flex
+            </Button>
+          </div>
+        ) : (
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="Show borders"
+                checked={showBorders}
+                onChange={() => dispatch(toggleContainersBorders())}
+              />
+            }
+            label={
+              <Typography className={classes.title}>Show blocks</Typography>
+            }
+          />
+        )}
       </div>
 
       <Formats />
