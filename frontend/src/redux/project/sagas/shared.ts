@@ -70,7 +70,7 @@ export function* reqWrapper(
         yield put(logout());
         yield call(openSignScreen, 'signin');
 
-        return null;
+        return { error: 'Logged out' };
       }
 
       yield put(setTokenPair(tokenResult));
