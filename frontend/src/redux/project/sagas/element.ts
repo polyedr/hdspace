@@ -665,7 +665,9 @@ export function* uploadFileSaga({
       if (result) {
         yield put(
           Actions.setUndoActions(
-            Actions.deleteItem(nnContainerWithDefaultParams.id, { screenId }),
+            Actions.deleteElement(nnContainerWithDefaultParams.id, {
+              screenId,
+            }),
           ),
         );
 

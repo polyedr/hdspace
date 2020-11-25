@@ -34,7 +34,7 @@ import {
   CopyActiveElement,
   CopyElementStyles,
   CreateElements,
-  DeleteItem,
+  DeleteElement,
   DeleteProject,
   DeleteScreen,
   DuplicateScreen,
@@ -509,11 +509,11 @@ export const updateSavedElementValues = (
   payload: { itemID, savedValue },
 });
 
-export const deleteItem = (
+export const deleteElement = (
   id: string,
   meta: ElementHistoryMeta,
-): DeleteItem => ({
-  type: TYPES.DELETE_ITEM,
+): DeleteElement => ({
+  type: TYPES.DELETE_ELEMENT,
   payload: { id },
   meta,
 });

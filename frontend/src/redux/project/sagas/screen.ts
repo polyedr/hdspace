@@ -7,7 +7,9 @@ import * as Actions from '../actions';
 import {
   activateScreen,
   addElements,
+  changeFreeCanvasMode,
   createScreen,
+  deleteElement,
   deleteScreen,
   renameScreen,
   restoreScreen,
@@ -29,6 +31,7 @@ import {
   selectCurrentProject,
   selectCurrentRootId,
   selectCurrentScreenId,
+  selectElementById,
   selectScreenById,
   selectScreenRootElement,
 } from '../selectors';
@@ -630,6 +633,12 @@ export function* convertFreeCanvasSaga() {
     const rootId: string = yield select(selectCurrentRootId);
     const screenId: number = yield select(selectCurrentScreenId);
 
+    const rootElement: StateElement = yield select(selectElementById(rootId));
+
+    yield all(
+      rootElement.children.map((id) => put(deleteElement(id, { screenId }))),
+    );
+
     const blob = yield call(canvasToBlob, canvas);
 
     yield call(
@@ -643,6 +652,7 @@ export function* convertFreeCanvasSaga() {
         },
       ),
     );
+    yield put(changeFreeCanvasMode(false));
   } catch (e) {
     yield put(
       enqueueSnackbar({

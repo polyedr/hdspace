@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { deleteItem } from '../../../../../redux/project/actions';
+import { deleteElement } from '../../../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
 import {
   StyledAccordion,
@@ -66,7 +66,7 @@ const ListItem: React.FC<Props> = ({
   }, 500);
 
   const handleDeleteButtonClick = () => {
-    dispatch(deleteItem(id, { screenId: currentScreenId }));
+    dispatch(deleteElement(id, { screenId: currentScreenId }));
   };
 
   const handleCheckboxChange = (

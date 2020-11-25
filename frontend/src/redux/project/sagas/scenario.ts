@@ -162,7 +162,7 @@ export function* createElements(
         yield put(
           Actions.setUndoActions(
             newElements.map((el: any) =>
-              Actions.deleteItem(el.id, { screenId }),
+              Actions.deleteElement(el.id, { screenId }),
             ),
           ),
         );
@@ -358,7 +358,9 @@ export function* addChildToElementSaga(
   }
 }
 
-export function* softDeleteSaga(action: ReturnType<typeof Actions.deleteItem>) {
+export function* softDeleteSaga(
+  action: ReturnType<typeof Actions.deleteElement>,
+) {
   try {
     const { id } = action.payload;
 
@@ -471,7 +473,7 @@ export function* restoreElementChildrenSaga(
     if (!undo) {
       yield put(
         Actions.setUndoActions(
-          childrenIds.map((id) => Actions.deleteItem(id, { screenId })),
+          childrenIds.map((id) => Actions.deleteElement(id, { screenId })),
         ),
       );
     }
@@ -534,7 +536,9 @@ export function* restoreElementSaga(
 
     if (!undo) {
       yield put(
-        Actions.setUndoActions([Actions.deleteItem(elementId, { screenId })]),
+        Actions.setUndoActions([
+          Actions.deleteElement(elementId, { screenId }),
+        ]),
       );
     }
 

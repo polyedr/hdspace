@@ -473,7 +473,7 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
   yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);
 
-  yield takeEvery(TYPES.DELETE_ITEM, softDeleteSaga);
+  yield takeEvery(TYPES.DELETE_ELEMENT, softDeleteSaga);
   yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementChildrenSaga);
   yield takeEvery(TYPES.RESTORE_ELEMENT, restoreElementSaga);
 

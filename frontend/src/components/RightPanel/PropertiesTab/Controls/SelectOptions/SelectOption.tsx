@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDebouncedCallback } from 'use-debounce';
 import { lighten } from '@material-ui/core';
-import { deleteItem } from '../../../../../redux/project/actions';
+import { deleteElement } from '../../../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
 import {
   StyledAccordion,
@@ -64,7 +64,7 @@ const SelectOption: React.FC<Props> = ({
   }, 500);
 
   const handleDeleteButtonClick = () => {
-    dispatch(deleteItem(id, { screenId: currentScreenId }));
+    dispatch(deleteElement(id, { screenId: currentScreenId }));
   };
 
   return (

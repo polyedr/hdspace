@@ -27,7 +27,7 @@ import {
 } from '../../../redux/project/selectors';
 import {
   copyActiveElement,
-  deleteItem,
+  deleteElement,
   moveElement,
   pasteCopiedElement,
   redoAction,
@@ -159,7 +159,7 @@ const Navigator: React.FC = () => {
       if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
         // Delete or Cmd + Backspace
         const prevItemId = findPrevNodeId(tree, selectedItemId);
-        dispatch(deleteItem(selectedItemId, { screenId: currentScreenId }));
+        dispatch(deleteElement(selectedItemId, { screenId: currentScreenId }));
         focusTreeItem(prevItemId);
       }
 

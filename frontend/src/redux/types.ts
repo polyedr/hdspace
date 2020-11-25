@@ -339,8 +339,8 @@ export type UpdateSavedElementValues = IAction<
   typeof TYPES.UPDATE_SAVED_ELEMENT_VALUES,
   { itemID: string; savedValue: string | boolean }
 >;
-export type DeleteItem = IAction<
-  typeof TYPES.DELETE_ITEM,
+export type DeleteElement = IAction<
+  typeof TYPES.DELETE_ELEMENT,
   { id: string },
   ElementHistoryMeta
 >;
@@ -590,7 +590,7 @@ export type Action =
   | UpdateElementImage
   | UpdateElementParameters
   | CreateElements
-  | DeleteItem
+  | DeleteElement
   | AddChildToElement
   | UploadFile
   | uploadImageForNNSuccess
