@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   selectActiveElementId,
   selectCurrentEditableStyles,
@@ -8,6 +8,7 @@ import {
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import { ContainerElement, PropertiesChangeProps } from '../../../../../types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
   updateStyles,
@@ -19,11 +20,13 @@ const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
   const parentStyles = el?.parentElement && getComputedStyle(el.parentElement);
   const isFlexItem = parentStyles?.display === 'flex';
 
-  const handleTextFieldChange = ({
-    target: { value },
-  }: React.ChangeEvent<HTMLInputElement>) => {
+  const [state, setState] = useState(flexGrow);
+  useEffect(() => {
+    setState(flexGrow);
+  }, [flexGrow]);
+  const debounced = useDebouncedCallback((value) => {
     updateStyles({ flexGrow: Number(value) });
-  };
+  }, 500);
 
   return isFlexItem ? (
     <div>
@@ -33,12 +36,15 @@ const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
         cssPropertiesNames={['flexGrow']}
       />
 
-      <TextField
+      <StyledTextField
         fullWidth
         label="Flex Grow"
         type="number"
-        value={flexGrow}
-        onChange={handleTextFieldChange}
+        value={state}
+        onChange={({ target: { value } }) => {
+          setState(+value);
+          debounced.callback(value);
+        }}
       />
     </div>
   ) : null;

@@ -12,7 +12,7 @@ import { ICONS } from '../../../../domain/libraryElements/libraryElements';
 import { selectElementById } from '../../../../redux/project/selectors';
 import { splitWords } from '../../../../utils/stringHelper';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   iconButton: {
     padding: 0,
     cursor: 'pointer',
@@ -52,11 +52,11 @@ const useStyles = makeStyles({
     },
 
     '&:hover': {
-      backgroundColor: lighten('#2F4050', 0.1),
+      backgroundColor: lighten(palette.panel.main, 0.3),
     },
 
     '&[aria-selected="true"]': {
-      backgroundColor: 'hsl(204, 80%, 50%)',
+      backgroundColor: lighten(palette.panel.main, 0.2),
     },
 
     '&:before': {
@@ -81,7 +81,7 @@ const useStyles = makeStyles({
     fontSize: '1.2em',
     marginRight: '0.3em',
   },
-});
+}));
 
 type ExpandIndicatorProps = {
   hasChildren: boolean;

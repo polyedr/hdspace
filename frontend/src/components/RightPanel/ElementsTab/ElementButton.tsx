@@ -1,4 +1,4 @@
-import React, { useEffect, MutableRefObject } from 'react';
+import React, { useEffect, useRef, MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -14,39 +14,72 @@ import {
 import { ElementType } from '../../../constants/dragAndDrop';
 import { ElementData } from '../../../types';
 
-const useStyles = makeStyles({
+type Props = {
+  elementData: ElementData;
+};
+
+const useButtonStyles = makeStyles(({ palette }) => ({
   root: {
+    color: palette.grey.A100,
     '&:hover': {
-      backgroundColor: '#fff',
+      color: palette.common.white,
+      backgroundColor: palette.panel.dark,
       boxShadow:
         '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
     },
   },
+  text: {
+    padding: '2px 8px',
+  },
   label: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     alignItems: 'center',
     textTransform: 'capitalize',
     fontSize: '0.8em',
     height: '100%',
   },
-});
+}));
 
-type Props = {
-  elementData: ElementData;
-};
+const useStyles = makeStyles((theme) => ({
+  iconSection: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    height: '45%',
+    width: '100%',
+  },
+  nameSection: (props: Props) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    lineHeight: 1.5,
+    width: '100%',
+    height: props.elementData.icon ? '55%' : '100%',
+    textAlign: 'center',
+  }),
+  name: {
+    fontSize: theme.typography.fontSize,
+    fontFamily: theme.typography.fontFamily,
+    lineHeight: 1.2,
+  },
+}));
 
 const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
-  ({ elementData }, outerRef) => {
+  (props: Props, outerRef) => {
+    const { elementData } = props;
     const { id, type, name, icon: ElementIcon, custom } = elementData;
     const dispatch = useDispatch();
     const screenId = useSelector(selectCurrentScreenId);
     const activeElement = useSelector(selectActiveElement);
-    const classes = useStyles();
+    const buttonClasses = useButtonStyles();
+    const classes = useStyles(props);
     const ref = (outerRef === null
       ? React.createRef<HTMLButtonElement>()
       : outerRef) as MutableRefObject<HTMLButtonElement>;
+    const imgRef = useRef<SVGSVGElement | null>(null);
 
     const [, drag, preview] = useDrag({
       item: {
@@ -58,8 +91,10 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     });
 
     useEffect(() => {
-      preview(getEmptyImage(), { captureDraggingState: true });
-    }, [preview]);
+      preview(imgRef.current ? imgRef : getEmptyImage(), {
+        captureDraggingState: true,
+      });
+    }, [preview, imgRef]);
 
     const handleClick = () => {
       dispatch(
@@ -81,7 +116,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     return (
       <Button
         disabled={!isAvailableChild(activeElement, type)}
-        classes={classes}
+        classes={buttonClasses}
         onClick={handleClick}
         ref={
           outerRef instanceof Function
@@ -94,8 +129,12 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
             : ref
         }
       >
-        {ElementIcon && <ElementIcon />}
-        {splitWords(name)}
+        <div className={classes.iconSection}>
+          {ElementIcon && <ElementIcon ref={imgRef} />}
+        </div>
+        <div className={classes.nameSection}>
+          <span className={classes.name}>{splitWords(name)}</span>
+        </div>
       </Button>
     );
   },

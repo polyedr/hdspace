@@ -19,7 +19,7 @@ import FreeCanvas from '../FreeCanvas';
 
 const useStyles = makeStyles({
   workspace: {
-    padding: '1em',
+    padding: '0.5em',
     flex: '1 1',
     flexDirection: 'column',
     overflow: 'auto',

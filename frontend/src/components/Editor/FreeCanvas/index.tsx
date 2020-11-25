@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndResizeCallback } from 'react-rnd';
+import { DropTargetMonitor, useDrop } from 'react-dnd';
 import cn from 'classnames';
 import {
   selectActiveElementId,
@@ -11,10 +12,18 @@ import {
 import {
   setActiveElement,
   updateElementParameters,
+  createElements,
 } from '../../../redux/project/actions';
 import FREE_CANVAS_RENDERERS from './FreeRenderers';
 import { useElementClassNames } from './helpers';
-import { Normalized, StateElement } from '../../../types';
+import {
+  ElementData,
+  Normalized,
+  StateElement,
+  SyntheticElement,
+} from '../../../types';
+
+import { ElementType } from '../../../constants/dragAndDrop';
 
 const FreeCanvas = () => {
   const dispatch = useDispatch();
@@ -65,6 +74,50 @@ const FreeCanvas = () => {
       ),
     );
   };
+
+  const [, drop] = useDrop({
+    accept: [ElementType.CONSTRUCTOR],
+    drop: (
+      dragSource: SyntheticElement<StateElement | ElementData>,
+      monitor: DropTargetMonitor,
+    ) => {
+      const offset = monitor.getClientOffset();
+      if (!ref.current || !ref.current.resizableElement || !offset) {
+        return;
+      }
+      const { resizableElement } = ref.current;
+      const { id, type, name, custom } = dragSource.original as ElementData;
+
+      const rect = (resizableElement.current as HTMLElement).getBoundingClientRect();
+
+      dispatch(
+        createElements(
+          [
+            {
+              id,
+              type,
+              name,
+              custom,
+              parameters: {
+                top: offset.y - rect.y,
+                left: offset.x - rect.x,
+              },
+            },
+          ],
+          { screenId: currentScreenId },
+          root.id,
+        ),
+      );
+    },
+  });
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    const { resizableElement } = ref.current;
+    drop(resizableElement);
+  }, [drop]);
 
   return (
     <Rnd

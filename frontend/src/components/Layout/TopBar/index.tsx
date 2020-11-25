@@ -3,6 +3,8 @@ import Switch from '@material-ui/core/Switch';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
 import { changePrototypeMode } from '../../../redux/user/actions';
 import { selectIsPrototypeMode } from '../../../redux/user/selectors';
 import Formats from './Formats';
@@ -10,14 +12,15 @@ import Actions from './Actions';
 import {
   changeFreeCanvasMode,
   convertFreeCanvas,
+  toggleContainersBorders,
 } from '../../../redux/project/actions';
 import {
   selectCurrentScreenId,
   selectFreeCanvasMode,
+  selectShowingBorders,
 } from '../../../redux/project/selectors';
-import ShowBorders from '../../RightPanel/PropertiesTab/Controls/ShowBorders/ShowBorders';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -26,7 +29,10 @@ const useStyles = makeStyles({
   switch: {
     padding: '0 1em',
   },
-});
+  title: {
+    fontSize: theme.typography.fontSize,
+  },
+}));
 
 const TopBar: React.FC = () => {
   const dispatch = useDispatch();
@@ -35,6 +41,7 @@ const TopBar: React.FC = () => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
+  const showBorders = useSelector(selectShowingBorders);
 
   const makeMagic = async () => {
     dispatch(convertFreeCanvas());
@@ -55,7 +62,7 @@ const TopBar: React.FC = () => {
           control={
             <Switch checked={isProtoMode} onChange={handleToggleProtoMode} />
           }
-          label="Proto Mode"
+          label={<Typography className={classes.title}>Proto Mode</Typography>}
           labelPlacement="end"
           className={classes.switch}
         />
@@ -64,7 +71,9 @@ const TopBar: React.FC = () => {
           control={
             <Switch checked={freeCanvasMode} onChange={handleToggleFreeMode} />
           }
-          label="Free Canvas Mode"
+          label={
+            <Typography className={classes.title}>Free Canvas Mode</Typography>
+          }
           labelPlacement="end"
           className={classes.switch}
         />
@@ -74,7 +83,18 @@ const TopBar: React.FC = () => {
             magic
           </button>
         ) : (
-          <ShowBorders />
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="Show borders"
+                checked={showBorders}
+                onChange={() => dispatch(toggleContainersBorders())}
+              />
+            }
+            label={
+              <Typography className={classes.title}>Show blocks</Typography>
+            }
+          />
         )}
       </div>
 

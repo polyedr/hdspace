@@ -1,0 +1,79 @@
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import { lighten } from '@material-ui/core';
+import {
+  selectActiveElementId,
+  selectActiveItemChildren,
+  selectCurrentScreenId,
+} from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import { addChildToElement } from '../../../../../redux/project/actions';
+import { ListItemElement, PropertiesChangeProps } from '../../../../../types';
+import ListItem from './ListItem';
+
+const useStyles = makeStyles(({ palette }) => ({
+  row: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+  },
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
+}));
+
+const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
+  updateParams,
+}) => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const activeElementId = useSelector(selectActiveElementId);
+  const listItems = useSelector(selectActiveItemChildren('listItem'));
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
+  const handleAddButtonClick = () => {
+    dispatch(
+      addChildToElement(
+        'listItem',
+        activeElementId,
+        {
+          textContent: 'New item',
+          isLink: false,
+          link: '',
+        },
+        { screenId: currentScreenId },
+      ),
+    );
+  };
+
+  return (
+    <div>
+      {listItems.map(({ id, parameters }) => (
+        <ListItem
+          key={id}
+          id={id}
+          parameters={parameters}
+          updateParams={updateParams}
+          isLast={listItems.length <= 1}
+        />
+      ))}
+
+      <div className={classes.row}>
+        <IconButton
+          onClick={handleAddButtonClick}
+          title="Add new item"
+          className={classes.iconButton}
+        >
+          <AddIcon />
+        </IconButton>
+      </div>
+    </div>
+  );
+};
+
+export default withConfigurableProperties(ListItems);

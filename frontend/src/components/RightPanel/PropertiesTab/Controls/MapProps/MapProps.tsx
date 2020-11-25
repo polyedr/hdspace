@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   MAX_LATITUDE,
   MAX_LONGITUDE,
@@ -17,6 +17,7 @@ import withConfigurableProperties from '../../../../../utils/withConfigurablePro
 import { getPermissibleValue } from '../../../../../utils/NumberHelper';
 import { MapElement, PropertiesChangeProps } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const useStyles = makeStyles({
   text: {
@@ -38,6 +39,16 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
   const mapProps = useSelector(
     (state: AppReduxState) => selectActiveElementParams(state).map_props,
   );
+
+  const [state, setState] = useState(mapProps);
+  useEffect(() => {
+    setState(mapProps);
+  }, [mapProps]);
+  const debounced = useDebouncedCallback((value) => {
+    updateParams({
+      map_props: value,
+    });
+  }, 500);
 
   const handleCenterMapCoordsChange = useCallback(
     ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,9 +83,10 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
         center: newCenter,
       };
 
-      updateParams({ map_props: newMapProps });
+      setState(newMapProps);
+      debounced.callback(newMapProps);
     },
-    [mapProps, updateParams],
+    [mapProps, debounced],
   );
 
   const handleMarkerTextChange = useCallback(
@@ -88,9 +100,10 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
         markerText: value,
       };
 
-      updateParams({ map_props: newMapProps });
+      setState(newMapProps);
+      debounced.callback(newMapProps);
     },
-    [mapProps, updateParams],
+    [mapProps, debounced],
   );
 
   const handleMapZoomChange = useCallback(
@@ -100,45 +113,47 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
         zoom: getPermissibleValue(Number(value), MIN_MAP_ZOOM, MAX_MAP_ZOOM),
       };
 
-      updateParams({ map_props: newMapProps });
+      setState(newMapProps);
+      debounced.callback(newMapProps);
     },
-    [mapProps, updateParams],
+    [mapProps, debounced],
   );
 
   return (
     <div>
       <div className={classes.wrapper}>
-        <TextField
+        <StyledTextField
           label="Latitude"
+          name="center_lat"
           type="number"
-          value={mapProps.center.lat}
+          value={state.center.lat}
           onChange={handleCenterMapCoordsChange}
           margin="dense"
           className={classes.text}
         />
 
-        <TextField
+        <StyledTextField
           label="Longitude"
           type="number"
-          value={mapProps.center.lng}
+          value={state.center.lng}
           onChange={handleCenterMapCoordsChange}
           margin="dense"
           className={classes.text}
         />
 
-        <TextField
+        <StyledTextField
           label="Zoom"
           type="number"
-          value={mapProps.zoom}
+          value={state.zoom}
           onChange={handleMapZoomChange}
           margin="dense"
           className={classes.zoom}
         />
       </div>
 
-      <TextField
+      <StyledTextField
         label="Marker Text"
-        value={mapProps.markerText}
+        value={state.markerText}
         onChange={handleMarkerTextChange}
         fullWidth
         margin="dense"

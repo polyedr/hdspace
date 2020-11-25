@@ -140,8 +140,8 @@ export function* createElements(
           ...el,
           parameters: {
             ...el.parameters,
-            left: offset,
-            top: offset,
+            left: el.parameters?.left || offset,
+            top: el.parameters?.top || offset,
           },
         };
 
@@ -282,7 +282,12 @@ export function* createElementsSaga(
         ? convertElementToRequest(
             customLibraryElements.find((element) => element.id === dEl.id),
           )
-        : convertCreatedElementToRequest(dEl.type as Entity, null),
+        : convertCreatedElementToRequest(
+            dEl.type as Entity,
+            null,
+            null,
+            dEl.parameters,
+          ),
     );
 
     yield call(

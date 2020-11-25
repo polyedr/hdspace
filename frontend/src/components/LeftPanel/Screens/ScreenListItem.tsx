@@ -14,10 +14,10 @@ import ScreenLogo from './ScreenLogo';
 import { renameScreen } from '../../../redux/project/actions';
 import { selectCurrentProjectId } from '../../../redux/project/selectors';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette, typography }) => ({
   listItem: {
     '&:hover': {
-      backgroundColor: lighten('#2f4050', 0.2),
+      backgroundColor: lighten(palette.panel.main, 0.3),
     },
     '&, &:hover, &:active, &:link, &:visited, &:focus': {
       color: 'inherit',
@@ -30,18 +30,22 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   active: {
-    backgroundColor: lighten('#2f4050', 0.3),
+    backgroundColor: lighten(palette.panel.main, 0.2),
   },
   screenData: {
     display: 'flex',
     alignItems: 'center',
   },
   icon: {
-    color: '#eee',
+    color: palette.common.white,
     minWidth: 0,
     paddingRight: '.5em',
   },
-});
+  name: {
+    fontFamily: typography.fontFamily,
+    fontSize: typography.fontSize,
+  },
+}));
 
 type Props = {
   screen: Screen;
@@ -94,7 +98,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
                 <ScreenLogo image={image} />
               </ListItemIcon>
 
-              <span>{name}</span>
+              <span className={classes.name}>{name}</span>
             </div>
 
             {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}

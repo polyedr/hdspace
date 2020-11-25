@@ -3,6 +3,7 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSelector } from 'react-redux';
+import { lighten } from '@material-ui/core';
 import ElementsBlock from './ElementsBlock';
 import Section from './Section';
 import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
@@ -12,14 +13,21 @@ import { selectFreeCanvasMode } from '../../../redux/project/selectors';
 
 const sections = ['elements', 'templates', 'library'];
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ typography, palette }) => ({
   root: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
   },
-});
+  title: {
+    fontSize: typography.fontSize,
+    fontFamily: typography.fontFamily,
+  },
+  section: {
+    backgroundColor: palette.panel.light,
+  },
+}));
 
 const useToggleButtonGroupStyles = makeStyles({
   root: {
@@ -31,14 +39,22 @@ const useToggleButtonGroupStyles = makeStyles({
   },
 });
 
-const useToggleButtonStyles = makeStyles({
+const useToggleButtonStyles = makeStyles(({ palette }) => ({
   root: {
     textTransform: 'none',
+    '&.Mui-selected': {
+      backgroundColor: palette.panel.light,
+    },
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.03),
+    },
   },
   disabled: {},
   selected: {},
-  label: {},
-});
+  label: {
+    color: palette.common.white,
+  },
+}));
 
 const ElementsTab = () => {
   const classes = useStyles();
@@ -83,15 +99,15 @@ const ElementsTab = () => {
             size="small"
           >
             <ToggleButton classes={toggleButtonClasses} value="elements">
-              Elements
+              <span className={classes.title}>Elements</span>
             </ToggleButton>
 
             <ToggleButton classes={toggleButtonClasses} value="templates">
-              Templates
+              <span className={classes.title}>Templates</span>
             </ToggleButton>
 
             <ToggleButton classes={toggleButtonClasses} value="library">
-              Library
+              <span className={classes.title}>Library</span>
             </ToggleButton>
           </ToggleButtonGroup>
 
@@ -106,7 +122,11 @@ const ElementsTab = () => {
             ))}
           </Section>
 
-          <Section title="templates" activeSection={section}>
+          <Section
+            title="templates"
+            activeSection={section}
+            className={classes.section}
+          >
             <ElementsBlock elements={templates} />
           </Section>
 

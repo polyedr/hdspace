@@ -24,7 +24,7 @@ const theme = createMuiTheme({
       main: '#247c9c',
       light: lighten('#247c9c', 0.2),
       dark: darken('#247c9c', 0.2),
-      contrastText: '#247c9c',
+      contrastText: '#fff',
     },
     panel: {
       main: '#2f4050',
@@ -42,7 +42,10 @@ const theme = createMuiTheme({
   },
   breakpoints: {},
   shape: {},
-  typography: {},
+  typography: {
+    fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+    fontSize: 14,
+  },
   transitions: {},
 });
 

@@ -19,14 +19,14 @@ import Type from './Controls/Type/Type';
 import Value from './Controls/Value/Value';
 import Name from './Controls/Name/Name';
 import Ripple from './Controls/Ripple/Ripple';
-import SelectOptions from './Controls/SelectOptions/SelectOptions';
+import SelectOptions from './Controls/SelectOptions';
 import SelectValue from './Controls/SelectValue/SelectValue';
 import HeadingType from './Controls/HeadingType/HeadingType';
-import ListItems from './Controls/ListItems/ListItems';
+import ListItems from './Controls/ListItems';
 import Bullets from './Controls/Bullets';
 import Ordered from './Controls/Ordered/Ordered';
 import LabelFor from './Controls/LabelFor/LabelFor';
-import DropdownItems from './Controls/DropdownItems/DropdownItems';
+import DropdownItems from './Controls/DropdownItems';
 import IsOpen from './Controls/IsOpen/IsOpen';
 import VideoSettings from './Controls/VideoSettings/VideoSettings';
 import FlexGrow from './Controls/FlexGrow';
@@ -79,7 +79,6 @@ const useStyles = makeStyles({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: '#fff',
   },
 });
 

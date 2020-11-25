@@ -26,7 +26,7 @@ const useStyles = makeStyles({
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
       '& span': {
-        lineHeight: '13px',
+        lineHeight: 1.2,
       },
     },
   },

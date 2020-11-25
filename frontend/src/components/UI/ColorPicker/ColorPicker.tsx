@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) =>
       cursor: 'pointer',
     },
     transparent: {
-      background: `url(${transparentBg})`,
+      borderRadius: theme.shape.borderRadius,
+      background: `white url(${transparentBg})`,
     },
   }),
 );

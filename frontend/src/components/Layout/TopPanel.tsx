@@ -12,13 +12,13 @@ import Dialog from '../Dialogs/Dialog';
 import { renameProject } from '../../redux/project/actions';
 import TopBar from './TopBar';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
-    backgroundColor: '#fff',
+    backgroundColor: palette.panel.main,
+    color: palette.common.white,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    color: '#000',
   },
   title: {
     padding: '0.5em 1em',
@@ -29,10 +29,16 @@ const useStyles = makeStyles({
     alignItems: 'center',
   },
   editButton: {
+    color: palette.common.white,
     opacity: 0,
     transition: 'opacity 0.1s ease',
   },
-});
+  projectName: {
+    fontSize: '1rem',
+    fontFamily: typography.fontFamily,
+    fontWeight: 'bold',
+  },
+}));
 
 const TopPanel = () => {
   const dispatch = useDispatch();
@@ -55,7 +61,9 @@ const TopPanel = () => {
 
         {projectName && (
           <div className={classes.title}>
-            <Typography variant="h6">{projectName}</Typography>
+            <Typography variant="h6" className={classes.projectName}>
+              {projectName}
+            </Typography>
 
             <IconButton
               onClick={handleEditClick}

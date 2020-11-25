@@ -1,10 +1,9 @@
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { connect, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import TextField from '@material-ui/core/TextField';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { lighten } from '@material-ui/core';
 import {
   selectActiveElementId,
   selectCurrentScreenId,
@@ -20,19 +19,20 @@ import {
   PropertiesChangeProps,
 } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
+import DropdownItem from './DropdownItem';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',
   },
-  wrapper: {
-    flex: 1,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
   },
-});
+}));
 
 type StateProps = {
   dropdownMenuID: string;
@@ -75,15 +75,7 @@ const DropdownItems: React.FC<Props> = ({
   deleteChildFromElement,
 }) => {
   const classes = useStyles();
-
   const currentScreenId = useSelector(selectCurrentScreenId);
-
-  const handleTextFieldChange = (
-    dropdownItemID: string,
-    { target: { value } }: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    updateParams({ textContent: value }, dropdownItemID);
-  };
 
   const handleAddButtonClick = () => {
     addChildToElement(
@@ -96,46 +88,24 @@ const DropdownItems: React.FC<Props> = ({
     );
   };
 
-  const handleDeleteButtonClick = (dropdownItemID: string) => {
-    deleteChildFromElement(dropdownItemID, { screenId: currentScreenId });
-  };
-
   return (
     <div>
       {dropdownItems.map(({ id, parameters: { textContent } }) => (
-        <div key={id} className={classes.wrapper}>
-          <TextField
-            variant="outlined"
-            value={textContent}
-            onChange={(event) =>
-              handleTextFieldChange(
-                id,
-                event as ChangeEvent<HTMLTextAreaElement>,
-              )
-            }
-            label="Item text"
-            margin="dense"
-            fullWidth
-            multiline
-          />
-
-          {dropdownItems.length > 1 && (
-            <IconButton
-              title="Delete item"
-              onClick={() => handleDeleteButtonClick(id)}
-              size="small"
-            >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          )}
-        </div>
+        <DropdownItem
+          id={id}
+          textContent={textContent}
+          key={id}
+          updateParams={updateParams}
+          deleteChildFromElement={deleteChildFromElement}
+          isLast={dropdownItems.length <= 1}
+        />
       ))}
 
       <div className={classes.row}>
         <IconButton
           onClick={handleAddButtonClick}
-          color="primary"
           title="Add new item"
+          className={classes.iconButton}
         >
           <AddIcon />
         </IconButton>

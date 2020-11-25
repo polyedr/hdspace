@@ -1,6 +1,5 @@
 import React from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import TabletMacIcon from '@material-ui/icons/TabletMac';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
@@ -16,12 +15,16 @@ import {
   rotateScreenFormat,
 } from '../../../redux/project/actions';
 import { SCREEN_FORMATS } from '../../../types';
+import { StyledToggleButton } from '../../styledComponents';
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
     alignItems: 'center',
-    width: 180,
+  },
+  rotated: {
+    width: 50,
+    paddingLeft: '0.5em',
   },
 });
 
@@ -41,30 +44,38 @@ const Formats: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <ToggleButtonGroup value={format} onChange={handleFormatChange} exclusive>
-        <ToggleButton value={SCREEN_FORMATS.Desktop} title="Desktop view">
+      <ToggleButtonGroup
+        value={format}
+        onChange={handleFormatChange}
+        exclusive
+        size="small"
+      >
+        <StyledToggleButton value={SCREEN_FORMATS.Desktop} title="Desktop view">
           <DesktopWindowsIcon />
-        </ToggleButton>
+        </StyledToggleButton>
 
-        <ToggleButton value={SCREEN_FORMATS.Tablet} title="Tablet view">
+        <StyledToggleButton value={SCREEN_FORMATS.Tablet} title="Tablet view">
           <TabletMacIcon />
-        </ToggleButton>
+        </StyledToggleButton>
 
-        <ToggleButton value={SCREEN_FORMATS.Mobile} title="Mobile view">
+        <StyledToggleButton value={SCREEN_FORMATS.Mobile} title="Mobile view">
           <PhoneIphoneIcon />
-        </ToggleButton>
+        </StyledToggleButton>
       </ToggleButtonGroup>
 
-      {format !== SCREEN_FORMATS.Desktop && (
-        <ToggleButton
-          selected={rotated}
-          onChange={handleRotatedToggle}
-          value="rotated"
-          title="Rotated view"
-        >
-          <ScreenRotationIcon />
-        </ToggleButton>
-      )}
+      <div className={classes.rotated}>
+        {format !== SCREEN_FORMATS.Desktop && (
+          <StyledToggleButton
+            size="small"
+            selected={rotated}
+            onChange={handleRotatedToggle}
+            value="rotated"
+            title="Rotated view"
+          >
+            <ScreenRotationIcon />
+          </StyledToggleButton>
+        )}
+      </div>
     </div>
   );
 };
