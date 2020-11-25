@@ -1,13 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
 import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
 import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
 import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
@@ -29,6 +24,10 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import {
+  StyledTextField,
+  StyledToggleButton,
+} from '../../../../styledComponents';
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;
@@ -123,24 +122,24 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
       />
 
       <div>
-        <FormControl margin="dense" fullWidth>
-          <InputLabel>Font Family</InputLabel>
-
-          <Select
-            defaultValue={FONTS[0].value}
-            value={fontFamily}
-            onChange={handleFontFamilyChange}
-          >
-            {FONTS.map(({ label, value }) => (
-              <MenuItem value={value} key={value} dense>
-                {label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <StyledTextField
+          fullWidth
+          margin="dense"
+          label="Font Family"
+          defaultValue={FONTS[0].value}
+          value={fontFamily}
+          onChange={handleFontFamilyChange}
+          select
+        >
+          {FONTS.map(({ label, value }) => (
+            <MenuItem value={value} key={value} dense>
+              {label}
+            </MenuItem>
+          ))}
+        </StyledTextField>
 
         <div className={classes.wrapper}>
-          <TextField
+          <StyledTextField
             className={classes.text}
             label="Size"
             margin="dense"
@@ -157,13 +156,13 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
             onChange={handleFormatChange}
             size="small"
           >
-            <ToggleButton value="italic">
+            <StyledToggleButton value="italic">
               <FormatItalicIcon fontSize="small" />
-            </ToggleButton>
+            </StyledToggleButton>
 
-            <ToggleButton value="bold">
+            <StyledToggleButton value="bold">
               <FormatBoldIcon fontSize="small" />
-            </ToggleButton>
+            </StyledToggleButton>
           </ToggleButtonGroup>
 
           <ToggleButtonGroup
@@ -172,17 +171,17 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
             exclusive
             size="small"
           >
-            <ToggleButton value="left">
+            <StyledToggleButton value="left">
               <FormatAlignLeftIcon fontSize="small" />
-            </ToggleButton>
+            </StyledToggleButton>
 
-            <ToggleButton value="center">
+            <StyledToggleButton value="center">
               <FormatAlignCenterIcon fontSize="small" />
-            </ToggleButton>
+            </StyledToggleButton>
 
-            <ToggleButton value="right">
+            <StyledToggleButton value="right">
               <FormatAlignRightIcon fontSize="small" />
-            </ToggleButton>
+            </StyledToggleButton>
           </ToggleButtonGroup>
         </div>
 

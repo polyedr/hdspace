@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import TextField from '@material-ui/core/TextField';
 import { useDebouncedCallback } from 'use-debounce';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
@@ -12,8 +11,9 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '../../../../../types';
+import { StyledTextField } from '../../../../styledComponents';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   marginGrid: {
     display: 'grid',
     gridTemplateAreas: `
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
         '.  pg pg pg . '
         '.  .  mb .  . '  
         `,
-    border: '1px solid grey',
+    border: `1px solid ${palette.grey.A200}`,
     position: 'relative',
   },
   paddingGrid: {
@@ -34,7 +34,7 @@ const useStyles = makeStyles({
       'pl .  pr'
       '.  pb . '
     `,
-    border: '1px solid grey',
+    border: `1px solid ${palette.grey.A200}`,
     position: 'relative',
   },
   capture: {
@@ -43,6 +43,7 @@ const useStyles = makeStyles({
     left: 0,
     fontStyle: 'italic',
     fontSize: '0.8em',
+    color: palette.grey.A200,
   },
   input: {
     '& .MuiInputBase-input': {
@@ -75,7 +76,7 @@ const useStyles = makeStyles({
   paddingLeft: {
     gridArea: 'pl',
   },
-});
+}));
 
 const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   updateStyles,
@@ -168,7 +169,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       <div className={classes.marginGrid}>
         <div className={classes.capture}>Margin</div>
 
-        <TextField
+        <StyledTextField
           title="Margin top"
           name="marginTop"
           type="number"
@@ -179,7 +180,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           onChange={handleChange}
         />
 
-        <TextField
+        <StyledTextField
           title="Margin right"
           name="marginRight"
           type="number"
@@ -190,7 +191,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           onChange={handleChange}
         />
 
-        <TextField
+        <StyledTextField
           title="Margin bottom"
           name="marginBottom"
           type="number"
@@ -201,7 +202,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           onChange={handleChange}
         />
 
-        <TextField
+        <StyledTextField
           title="Margin left"
           name="marginLeft"
           type="number"
@@ -215,7 +216,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
         <div className={classes.paddingGrid}>
           <div className={classes.capture}>Padding</div>
 
-          <TextField
+          <StyledTextField
             title="Padding top"
             name="paddingTop"
             type="number"
@@ -226,7 +227,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             onChange={handleChange}
           />
 
-          <TextField
+          <StyledTextField
             title="Padding right"
             name="paddingRight"
             type="number"
@@ -237,7 +238,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             onChange={handleChange}
           />
 
-          <TextField
+          <StyledTextField
             title="Padding bottom"
             name="paddingBottom"
             type="number"
@@ -248,7 +249,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             onChange={handleChange}
           />
 
-          <TextField
+          <StyledTextField
             title="Padding left"
             name="paddingLeft"
             type="number"

@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDebouncedCallback } from 'use-debounce';
 import {
@@ -18,6 +17,7 @@ import withConfigurableProperties from '../../../../../utils/withConfigurablePro
 import { getPermissibleValue } from '../../../../../utils/NumberHelper';
 import { MapElement, PropertiesChangeProps } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const useStyles = makeStyles({
   text: {
@@ -122,7 +122,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
   return (
     <div>
       <div className={classes.wrapper}>
-        <TextField
+        <StyledTextField
           label="Latitude"
           name="center_lat"
           type="number"
@@ -132,7 +132,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
           className={classes.text}
         />
 
-        <TextField
+        <StyledTextField
           label="Longitude"
           type="number"
           value={state.center.lng}
@@ -141,7 +141,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
           className={classes.text}
         />
 
-        <TextField
+        <StyledTextField
           label="Zoom"
           type="number"
           value={state.zoom}
@@ -151,7 +151,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
         />
       </div>
 
-      <TextField
+      <StyledTextField
         label="Marker Text"
         value={state.markerText}
         onChange={handleMarkerTextChange}

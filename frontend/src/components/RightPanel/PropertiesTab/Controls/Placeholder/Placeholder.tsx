@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { PropertiesChangeProps, TextinputElement } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
   updateParams,
@@ -24,7 +24,7 @@ const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
   }, 500);
 
   return (
-    <TextField
+    <StyledTextField
       value={state}
       onChange={({ target: { value } }) => {
         setState(value);

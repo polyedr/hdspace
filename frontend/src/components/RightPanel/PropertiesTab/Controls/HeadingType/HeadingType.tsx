@@ -1,9 +1,6 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
 import { selectActiveElementParams } from '../../../../../redux/project/selectors';
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
@@ -13,6 +10,7 @@ import {
   HeadingType as HeadingTagType,
 } from '../../../../../types';
 import { AppReduxState } from '../../../../../redux/types';
+import { StyledTextField } from '../../../../styledComponents';
 
 type StateProps = {
   headingType: HeadingTagType;
@@ -33,21 +31,19 @@ const HeadingType: React.FC<Props> = ({ updateParams, updateStyles }) => {
   };
 
   return (
-    <FormControl margin="dense">
-      <InputLabel>Heading Type</InputLabel>
-
-      <Select
-        defaultValue={headingType}
-        value={headingType}
-        onChange={handleDropdownChange}
-      >
-        {HEADING_TYPE.map(({ label, value }) => (
-          <MenuItem value={value} key={value} dense>
-            {label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <StyledTextField
+      margin="dense"
+      label="Heading Type"
+      onChange={handleDropdownChange}
+      value={headingType}
+      select
+    >
+      {HEADING_TYPE.map(({ label, value }) => (
+        <MenuItem value={value} key={value} dense>
+          {label}
+        </MenuItem>
+      ))}
+    </StyledTextField>
   );
 };
 

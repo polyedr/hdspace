@@ -18,10 +18,12 @@ type Props = {
   elementData: ElementData;
 };
 
-const useButtonStyles = makeStyles({
+const useButtonStyles = makeStyles(({ palette }) => ({
   root: {
+    color: palette.grey.A100,
     '&:hover': {
-      backgroundColor: '#fff',
+      color: palette.common.white,
+      backgroundColor: palette.panel.dark,
       boxShadow:
         '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
     },
@@ -32,13 +34,13 @@ const useButtonStyles = makeStyles({
   label: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     textTransform: 'capitalize',
     fontSize: '0.8em',
     height: '100%',
   },
-});
+}));
 
 const useStyles = makeStyles((theme) => ({
   iconSection: {

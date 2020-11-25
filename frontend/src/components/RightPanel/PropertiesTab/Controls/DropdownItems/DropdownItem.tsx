@@ -1,20 +1,27 @@
 import React from 'react';
-import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
+import { lighten } from '@material-ui/core';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
+import { StyledTextField } from '../../../../styledComponents';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-});
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
+}));
 
 type Props = {
   id: string;
@@ -44,7 +51,7 @@ const DropdownItem: React.FC<Props> = ({
 
   return (
     <div className={classes.wrapper}>
-      <TextField
+      <StyledTextField
         variant="outlined"
         defaultValue={textContent}
         onChange={(ev) => debounced.callback(ev.target.value)}
@@ -59,6 +66,7 @@ const DropdownItem: React.FC<Props> = ({
           title="Delete item"
           onClick={() => handleDeleteButtonClick(id)}
           size="small"
+          className={classes.iconButton}
         >
           <DeleteIcon fontSize="small" />
         </IconButton>

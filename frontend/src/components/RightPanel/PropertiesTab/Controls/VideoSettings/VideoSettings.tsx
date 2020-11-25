@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Switch from '@material-ui/core/Switch';
@@ -9,6 +8,7 @@ import { selectActiveElementParamByName } from '../../../../../redux/project/sel
 import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '../../../../../utils/extractVideoLink';
 import { PropertiesChangeProps, VideoElement } from '../../../../../types';
+import { StyledTextField } from '../../../../styledComponents';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -78,7 +78,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
   return (
     <div>
       <div>
-        <TextField
+        <StyledTextField
           variant="outlined"
           value={linkInputValue}
           onChange={handleLinkInputChange}
@@ -115,7 +115,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
           </div>
 
           <div className={classes.wrapper}>
-            <TextField
+            <StyledTextField
               value={start}
               onChange={handleStartInputChange}
               type="number"
@@ -124,7 +124,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
               className={classes.text}
             />
 
-            <TextField
+            <StyledTextField
               value={end}
               type="number"
               onChange={handleEndInputChange}

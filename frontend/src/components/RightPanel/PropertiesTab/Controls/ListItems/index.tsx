@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import { lighten } from '@material-ui/core';
 import {
   selectActiveElementId,
   selectActiveItemChildren,
@@ -13,12 +14,18 @@ import { addChildToElement } from '../../../../../redux/project/actions';
 import { ListItemElement, PropertiesChangeProps } from '../../../../../types';
 import ListItem from './ListItem';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',
   },
-});
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
+}));
 
 const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
   updateParams,
@@ -59,8 +66,8 @@ const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
       <div className={classes.row}>
         <IconButton
           onClick={handleAddButtonClick}
-          color="primary"
           title="Add new item"
+          className={classes.iconButton}
         >
           <AddIcon />
         </IconButton>

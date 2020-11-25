@@ -1,26 +1,42 @@
 import React from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import TextField from '@material-ui/core/TextField';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDebouncedCallback } from 'use-debounce';
+import { lighten } from '@material-ui/core';
 import { deleteItem } from '../../../../../redux/project/actions';
 import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
+import {
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+  StyledTextField,
+} from '../../../../styledComponents';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ spacing, palette }) => ({
+  title: {
+    '& .MuiAccordionSummary-content': {
+      padding: '0.5em 1em',
+    },
+  },
   wrapper: {
     flex: 1,
     display: 'flex',
     justifyContent: 'space-between',
   },
-});
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: spacing(0.5),
+  },
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
+}));
 
 type Props = {
   id: string;
@@ -52,47 +68,46 @@ const SelectOption: React.FC<Props> = ({
   };
 
   return (
-    <Accordion>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <StyledAccordion>
+      <StyledAccordionSummary className={classes.title}>
         <div className={classes.wrapper}>
           {name}
 
-          {isLast && (
+          {!isLast && (
             <IconButton
               title="Delete option"
               onClick={handleDeleteButtonClick}
               size="small"
+              className={classes.iconButton}
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
           )}
         </div>
-      </AccordionSummary>
+      </StyledAccordionSummary>
 
-      <AccordionDetails>
-        <div>
-          <TextField
-            variant="outlined"
-            defaultValue={name}
-            onChange={(ev) => debouncedName.callback(ev.target.value)}
-            label="Name"
-            margin="dense"
-            fullWidth
-            multiline
-          />
+      <StyledAccordionDetails className={classes.details}>
+        <StyledTextField
+          variant="outlined"
+          defaultValue={name}
+          onChange={(ev) => debouncedName.callback(ev.target.value)}
+          label="Name"
+          margin="dense"
+          fullWidth
+          multiline
+        />
 
-          <TextField
-            variant="outlined"
-            onChange={(ev) => debouncedValue.callback(ev.target.value)}
-            defaultValue={value}
-            label="Value"
-            margin="dense"
-            fullWidth
-            multiline
-          />
-        </div>
-      </AccordionDetails>
-    </Accordion>
+        <StyledTextField
+          variant="outlined"
+          onChange={(ev) => debouncedValue.callback(ev.target.value)}
+          defaultValue={value}
+          label="Value"
+          margin="dense"
+          fullWidth
+          multiline
+        />
+      </StyledAccordionDetails>
+    </StyledAccordion>
   );
 };
 

@@ -2,8 +2,8 @@ import React, { memo, useCallback, useState, useEffect } from 'react';
 import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import TextField from '@material-ui/core/TextField';
 import { ColorPicker, normalizeColor, useColor } from '../../../UI/ColorPicker';
+import { StyledTextField } from '../../../styledComponents';
 
 const useStyles = makeStyles({
   root: {
@@ -73,7 +73,7 @@ const ColorSettings: React.FC<Props> = ({
 
   return (
     <div className={classes.root}>
-      <TextField
+      <StyledTextField
         label="Color"
         fullWidth
         value={currentBackgroundColor.value}
