@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
@@ -24,13 +24,11 @@ import {
 } from '../../../types';
 
 import { ElementType } from '../../../constants/dragAndDrop';
-import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
 
 const FreeCanvas = () => {
   const dispatch = useDispatch();
 
   const ref = useRef<Rnd | null>(null);
-  const [hoverDom, setHoverDom] = useState<HTMLElement | null>(null);
 
   const root = useSelector(selectCurrentRoot);
   const directChildren: Normalized<StateElement> = useSelector(
@@ -77,54 +75,8 @@ const FreeCanvas = () => {
     );
   };
 
-  const handleRemoveDropPosition = useCallback(() => {
-    if (!ref.current?.resizableElement || !hoverDom) {
-      return;
-    }
-    const { resizableElement } = ref.current;
-    if (hoverDom) {
-      (resizableElement.current as HTMLElement).removeChild(hoverDom);
-      setHoverDom(null);
-    }
-  }, [hoverDom]);
-
   const [, drop] = useDrop({
     accept: [ElementType.CONSTRUCTOR],
-    hover: (
-      dragSource: SyntheticElement<StateElement | ElementData>,
-      monitor: DropTargetMonitor,
-    ) => {
-      const offset = monitor.getClientOffset();
-      if (!ref.current?.resizableElement || !offset) {
-        return;
-      }
-      const { resizableElement } = ref.current;
-      const { type } = dragSource.original as ElementData;
-
-      const rect = (resizableElement.current as HTMLElement).getBoundingClientRect();
-      if (!hoverDom) {
-        const hoverDomEl = document.createElement('div');
-        hoverDomEl.style.position = 'absolute';
-        hoverDomEl.style.width =
-          LIBRARY_ELEMENTS[type].parameters.width || '150px';
-        hoverDomEl.style.height = '1px';
-        hoverDomEl.style.borderTop = '1px solid #5A899D';
-        hoverDomEl.style.top = `${offset.y - rect.y}px`;
-        hoverDomEl.style.left = `${offset.x - rect.x}px`;
-        hoverDomEl.style.zIndex = '99999999';
-        setHoverDom(hoverDomEl);
-        (resizableElement.current as HTMLElement).appendChild(hoverDomEl);
-      } else {
-        hoverDom.style.top = `${offset.y - rect.y}px`;
-        hoverDom.style.left = `${offset.x - rect.x}px`;
-      }
-    },
-    collect: (monitor: DropTargetMonitor) => {
-      if (!monitor.isOver()) {
-        handleRemoveDropPosition();
-      }
-      return {};
-    },
     drop: (
       dragSource: SyntheticElement<StateElement | ElementData>,
       monitor: DropTargetMonitor,
@@ -137,7 +89,6 @@ const FreeCanvas = () => {
       const { id, type, name, custom } = dragSource.original as ElementData;
 
       const rect = (resizableElement.current as HTMLElement).getBoundingClientRect();
-      handleRemoveDropPosition();
 
       dispatch(
         createElements(
@@ -189,7 +140,6 @@ const FreeCanvas = () => {
       minHeight="100%"
       onResize={handleResize}
       onResizeStop={handleResizeStop}
-      onMouseOut={handleRemoveDropPosition}
       size={rootSize()}
     >
       {Object.values(directChildren).map((element) => {
