@@ -66,10 +66,10 @@ const useStyles = makeStyles(({ palette }) => ({
       top: '100%',
       left: ({ depth, offset }: Props) =>
         `calc(${depth} * ${offset}px + 1em/2 + 1px)`,
-      width: 1,
+      width: 0.5,
       height: ({ rulerHeight }: Props) => rulerHeight,
       display: 'block',
-      backgroundColor: '#fff',
+      backgroundColor: '#aaa',
     },
   },
   isDragging: {

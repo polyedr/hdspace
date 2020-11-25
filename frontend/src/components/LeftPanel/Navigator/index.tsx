@@ -250,7 +250,7 @@ const Navigator: React.FC = () => {
       const getExpandedChildrenHeight = (children: string[]) =>
         children.reduce((acc, curr) => {
           if (!tree.items[curr].isExpanded) {
-            return acc + height;
+            return acc + height - 0.25;
           }
           return (
             acc +
