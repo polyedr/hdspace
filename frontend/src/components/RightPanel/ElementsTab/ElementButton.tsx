@@ -1,4 +1,4 @@
-import React, { useEffect, MutableRefObject } from 'react';
+import React, { useEffect, useRef, MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -41,6 +41,14 @@ const useButtonStyles = makeStyles({
 });
 
 const useStyles = makeStyles((theme) => ({
+  iconSection: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    height: '45%',
+    width: '100%',
+  },
   nameSection: (props: Props) => ({
     display: 'flex',
     justifyContent: 'center',
@@ -69,6 +77,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     const ref = (outerRef === null
       ? React.createRef<HTMLButtonElement>()
       : outerRef) as MutableRefObject<HTMLButtonElement>;
+    const imgRef = useRef<SVGSVGElement | null>(null);
 
     const [, drag, preview] = useDrag({
       item: {
@@ -80,8 +89,10 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     });
 
     useEffect(() => {
-      preview(getEmptyImage(), { captureDraggingState: true });
-    }, [preview]);
+      preview(imgRef.current ? imgRef : getEmptyImage(), {
+        captureDraggingState: true,
+      });
+    }, [preview, imgRef]);
 
     const handleClick = () => {
       dispatch(
@@ -116,7 +127,9 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
             : ref
         }
       >
-        {ElementIcon && <ElementIcon />}
+        <div className={classes.iconSection}>
+          {ElementIcon && <ElementIcon ref={imgRef} />}
+        </div>
         <div className={classes.nameSection}>
           <span className={classes.name}>{splitWords(name)}</span>
         </div>
