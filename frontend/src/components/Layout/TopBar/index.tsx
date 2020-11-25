@@ -52,7 +52,7 @@ const TopBar: React.FC = () => {
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const showBorders = useSelector(selectShowingBorders);
 
-  const makeMagic = async () => {
+  const createFlex = () => {
     dispatch(convertFreeCanvas());
   };
 
@@ -89,8 +89,8 @@ const TopBar: React.FC = () => {
 
         {freeCanvasMode ? (
           <div className={classes.magic}>
-            <Button onClick={makeMagic} color="secondary" variant="outlined">
-              Make Magic
+            <Button onClick={createFlex} color="secondary" variant="outlined">
+              Create Flex
             </Button>
           </div>
         ) : (
