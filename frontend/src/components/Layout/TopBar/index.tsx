@@ -41,6 +41,9 @@ const useStyles = makeStyles(({ typography, spacing }) => ({
   magic: {
     paddingRight: spacing(1),
   },
+  magicButton: {
+    height: 40,
+  },
 }));
 
 const TopBar: React.FC = () => {
@@ -89,7 +92,12 @@ const TopBar: React.FC = () => {
 
         {freeCanvasMode ? (
           <div className={classes.magic}>
-            <Button onClick={createFlex} color="secondary" variant="outlined">
+            <Button
+              onClick={createFlex}
+              color="secondary"
+              variant="outlined"
+              className={classes.magicButton}
+            >
               Create Flex
             </Button>
           </div>
