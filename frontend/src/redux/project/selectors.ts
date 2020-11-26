@@ -80,9 +80,12 @@ export const selectCurrentProjectId = ({ project }: AppReduxState) =>
 export const selectCurrentProject = createSelector(
   selectProjects,
   selectCurrentProjectId,
-  (projects, id) => {
-    return projects[id] || DEFAULT_PROJECT;
-  },
+  (projects, id) => projects[id] || DEFAULT_PROJECT,
+);
+
+export const selectCurrentProjectClasses = createSelector(
+  selectCurrentProject,
+  (currentProject) => currentProject.projectData.classes,
 );
 
 export const selectCurrentRootId = (state: AppReduxState) =>
