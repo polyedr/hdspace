@@ -72,8 +72,17 @@ const useElementProps = (elementId: string): ElementProps | null => {
     const isCheckboxChecked = (itemId: string) =>
       Boolean(savedElements[itemId]?.savedValue);
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement>) =>
-      dispatch(updateSavedElementValues(elementId, event.target.value));
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (!event.nativeEvent || !event.nativeEvent.target) {
+        return;
+      }
+      dispatch(
+        updateSavedElementValues(
+          elementId,
+          (event.nativeEvent.target as HTMLInputElement).value,
+        ),
+      );
+    };
 
     const { id, children } = element;
 
@@ -134,7 +143,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
       case 'select': {
         return {
-          onChange,
+          onElementChange: onChange,
           childrenElements: children,
           params: element.parameters,
           projectClasses,
