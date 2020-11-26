@@ -98,6 +98,13 @@ export const makeColumns = (): ColumnsServerElement => ({
     classNames: ['columns'],
     ownStyles: {
       height: '100px',
+      columnCount: 2,
+      columnWidth: 'auto',
+      columnFill: 'balance',
+      columnGap: 'normal',
+      columnRuleWidth: 'medium',
+      columnRuleStyle: 'none',
+      columnRuleColor: '#000',
     },
   },
   children: [],

@@ -29,6 +29,7 @@ import Undefined from './Undefined/Undefined';
 import { Entity, NNBlockType } from '../../../types';
 import withAction from '../../../utils/withAction';
 import withSmartContainer from './SmartContainer/withSmartContainer';
+import Columns from './Columns';
 
 export const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -37,7 +38,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   pageTemplate: Container,
   emptyPageTemplate: Container,
   grid: Container,
-  columns: Container,
+  columns: Columns,
   button: withAction(Action, 'button'),
   textinput: Input,
   radiobutton: Radiobutton,
