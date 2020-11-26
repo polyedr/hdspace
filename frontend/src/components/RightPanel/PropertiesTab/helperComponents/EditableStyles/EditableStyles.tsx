@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectActiveElement,
   selectEditableStyles,
@@ -8,6 +9,13 @@ import {
 import { setEditableStyles } from '../../../../../redux/project/actions';
 import { AppReduxState } from '../../../../../redux/types';
 import { StyledTextField } from '../../../../styledComponents';
+import { splitWords } from '../../../../../utils/stringHelper';
+
+const useStyles = makeStyles({
+  capitalized: {
+    textTransform: 'capitalize',
+  },
+});
 
 type StateProps = {
   editableStyles: string;
@@ -36,6 +44,8 @@ const EditableStyles: React.FC<Props> = ({
   classNames,
   setEditableStyles,
 }) => {
+  const classes = useStyles();
+
   const handleDropdownChange = (ev) => {
     setEditableStyles(ev.target.value);
   };
@@ -48,10 +58,15 @@ const EditableStyles: React.FC<Props> = ({
       value={editableStyles}
       onChange={handleDropdownChange}
       select
+      className={classes.capitalized}
     >
       {classNames.map((className) => (
-        <MenuItem key={className} value={className}>
-          {className}
+        <MenuItem
+          key={className}
+          value={className}
+          className={classes.capitalized}
+        >
+          {splitWords(className)}
         </MenuItem>
       ))}
     </StyledTextField>
