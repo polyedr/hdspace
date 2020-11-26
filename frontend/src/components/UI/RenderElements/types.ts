@@ -22,6 +22,7 @@ export type SharedRendererProps = {
   className?: string;
   children: React.ReactElement[];
   ref?: React.RefObject<HTMLElement> | null;
+  isBorderVisible?: boolean;
 } & DOMAttributes<HTMLElement>;
 
 export type ContainerRendererProps = SharedRendererProps & {

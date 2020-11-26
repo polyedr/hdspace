@@ -96,7 +96,9 @@ export const makeColumns = (): ColumnsServerElement => ({
   },
   styles: {
     classNames: ['columns'],
-    ownStyles: {},
+    ownStyles: {
+      height: '100px',
+    },
   },
   children: [],
 });
