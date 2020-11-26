@@ -12,10 +12,6 @@ const useStyles = makeComponentStyles({
     '& fieldset': {
       border: 0,
     },
-    /* '&$focused $input': {
-      borderColor: '#1890ff',
-      boxShadow: 'inset 0px 0px 0 1px #1890ff',
-    }, */
   },
 
   input: {
