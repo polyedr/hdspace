@@ -2,7 +2,7 @@
 
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { CSSProperties, Styles } from '@material-ui/core/styles/withStyles';
+import { Styles } from '@material-ui/core/styles/withStyles';
 import * as R from 'ramda';
 import { StyleRendererProps } from './types';
 
@@ -10,14 +10,14 @@ type CSSPropertiesCallback = (
   style: React.CSSProperties,
 ) => React.CSSProperties;
 
-type StylesToAddCallback = (props: StyleRendererProps) => CSSProperties;
+type StylesToAddCallback = (props: StyleRendererProps) => React.CSSProperties;
 
-type StylesToAdd = CSSProperties | StylesToAddCallback;
+type StylesToAdd = React.CSSProperties | StylesToAddCallback;
 
 const getComputedStyle = (
   style: React.CSSProperties = {},
   stylesToOmit: Array<string> = [],
-  stylesToAdd: CSSProperties | CSSPropertiesCallback = {},
+  stylesToAdd: React.CSSProperties | CSSPropertiesCallback = {},
 ) => {
   const omittedStyle = stylesToOmit.length
     ? R.omit(stylesToOmit, style)
@@ -52,7 +52,7 @@ export const getComputedComponentStyles = (
 export const makeComponentStyles = (
   style: Styles<Theme, {}, ClassKey> = {},
   stylesToOmit?: Array<string>,
-  stylesToAdd?: CSSProperties,
+  stylesToAdd?: React.CSSProperties,
 ) =>
   makeStyles((theme) => ({
     entityStyles: (props: StyleRendererProps) =>

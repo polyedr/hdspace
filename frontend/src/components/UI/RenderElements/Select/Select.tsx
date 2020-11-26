@@ -1,76 +1,40 @@
 // @ts-nocheck
 
-import React, { useCallback } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { SelectRendererProps } from '../types';
 import { selectElementAsTree } from '../../../../redux/project/selectors';
 import { LibraryElement } from '../../../../types';
 import { makeComponentStyles } from '../styles';
 
-import SelectItem from './SelectItem';
-
-const useWrapperStyles = makeComponentStyles(
-  {
-    root: {
-      '&.hovered $input': {
-        outline: '1px solid #949494',
-      },
+const useWrapperStyles = makeComponentStyles({
+  root: {
+    '&.hovered $input': {
+      outline: '1px solid #949494',
     },
-    input: {},
   },
-  [],
-  (style: CSSProperties) => ({
-    '&$focused $input': {
-      borderRadius: style.borderRadius,
-    },
-  }),
-);
+});
 
-const useTextFieldStyles = makeComponentStyles(
-  {
-    root: {
-      height: '100%',
+const useTextFieldStyles = makeStyles({
+  root: {
+    height: '100%',
+    border: 0,
+
+    '& fieldset': {
       border: 0,
-
-      '& fieldset': {
-        border: 0,
-      },
-
-      '&$focused $input': {
-        borderColor: '#1890ff',
-        boxShadow: 'inset 0px 0px 0 1px #1890ff',
-      },
     },
   },
-  [
-    'width',
-    'height',
-    'margin',
-    'padding',
-    'marginTop',
-    'marginRight',
-    'marginBottom',
-    'marginLeft',
-    'paddingTop',
-    'paddingRight',
-    'paddingBottom',
-    'paddingLeft',
-  ],
-  (style: CSSProperties) => ({
-    '&$focused $input': {
-      borderRadius: style.borderRadius,
-    },
+});
 
-    input: {},
+const useMenuStyles = makeComponentStyles(
+  {},
+  ['margin', 'padding'],
+  (styles: React.CSSProperties) => ({
+    minWidth: styles.width,
   }),
 );
-
-const useMenuStyles = makeComponentStyles({}, [], (styles: CSSProperties) => ({
-  minWidth: styles.width,
-}));
 
 const useInputStyles = makeComponentStyles(
   {
@@ -78,7 +42,6 @@ const useInputStyles = makeComponentStyles(
       height: '100%',
       boxSizing: 'border-box',
       outlineOffset: '-1px',
-      border: 0,
 
       '&:hover': {
         ...(!isDisabled && { borderColor: 'rgba(0, 0, 0, 0.87)' }),
@@ -88,8 +51,6 @@ const useInputStyles = makeComponentStyles(
   [
     'width',
     'height',
-    'margin',
-    'padding',
     'marginTop',
     'marginRight',
     'marginBottom',
@@ -99,10 +60,22 @@ const useInputStyles = makeComponentStyles(
     'paddingBottom',
     'paddingLeft',
   ],
+  (style: React.CSSProperties) => ({
+    '& .MuiSelect-outlined.MuiSelect-outlined': {
+      paddingTop: style.paddingTop,
+      paddingRight: `calc(${style.paddingRight} + 18px)`,
+      paddingBottom: style.paddingBottom,
+      paddingLeft: style.paddingLeft,
+    },
+
+    '&::placeholder': {
+      color: style.color,
+    },
+  }),
 );
 
 const useDivStyles = makeStyles(() => {
-  const processDivStyles = (styles: CSSProperties) => {
+  const processDivStyles = (styles: React.CSSProperties) => {
     const { marginTop, marginBottom, marginLeft, marginRight } = styles;
     return {
       marginTop,
@@ -134,13 +107,6 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
   } = props;
   const { isOpen } = params;
 
-  const handleSelectChange = useCallback(
-    (event: React.ChangeEvent<{ name?: string | undefined; value: any }>) => {
-      onElementChange(id, event.target.value);
-    },
-    [id, onElementChange],
-  );
-
   const classes = useWrapperStyles(props);
   const divClasses = useDivStyles(props);
   const textFieldClasses = useTextFieldStyles(props);
@@ -162,8 +128,10 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
     ownStyles: menu.styles.own,
   });
 
+  // const menuItemClasses = useMenuItemStyles(props);
+
   const menuItems: LibraryElement<'selectItem'> = menu.children;
-  const currentValue = menuItems[0]?.parameters?.value;
+  const currentValue = params.value || menuItems[0]?.parameters?.value;
 
   const PrototypeMenuProps = {
     MenuProps: {
@@ -186,6 +154,7 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
       inputClasses.ownStyles,
     ),
   };
+
   return (
     <div
       key={id}
@@ -212,18 +181,18 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
         value={currentValue}
         InputProps={InputProps}
         SelectProps={!isDisabled ? PrototypeMenuProps : null}
-        onChange={handleSelectChange}
+        onChange={onElementChange}
         select
       >
-        {menuItems.map((item) =>
-          isDisabled ? (
-            <MenuItem key={item.id} value={item.parameters.value}>
-              {item.parameters.name}
-            </MenuItem>
-          ) : (
-            <SelectItem key={`item-${item.id}`} item={item} />
-          ),
-        )}
+        {menuItems.map((item) => (
+          <MenuItem
+            key={item.id}
+            value={item.parameters.value}
+            className={cn(menuClasses.entityStyles, menuClasses.groupStyles)}
+          >
+            {item.parameters.name}
+          </MenuItem>
+        ))}
       </TextField>
       {isOpen && children}
     </div>
