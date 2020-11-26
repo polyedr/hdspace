@@ -11,11 +11,14 @@ import {
   VideoSettingsType,
 } from '../../../types';
 
-export type SharedRendererProps = {
-  id: string;
+export type StyleRendererProps = {
   entityStyles: React.CSSProperties;
   groupStyles: React.CSSProperties;
   ownStyles: React.CSSProperties;
+};
+
+export type SharedRendererProps = StyleRendererProps & {
+  id: string;
   active: boolean;
   isDisabled: boolean;
   contentEditable: boolean;
