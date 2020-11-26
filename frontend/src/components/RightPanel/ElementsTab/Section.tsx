@@ -1,5 +1,6 @@
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import cn from 'classnames';
 import Scrollbar from '../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -12,12 +13,21 @@ const useStyles = makeStyles({
 type Props = {
   title: string;
   activeSection: string;
+  className?: string;
 };
 
-const Section: React.FC<Props> = ({ activeSection, title, children }) => {
+const Section: React.FC<Props> = ({
+  activeSection,
+  title,
+  children,
+  className,
+}) => {
   const classes = useStyles();
   return (
-    <section hidden={activeSection !== title} className={classes.root}>
+    <section
+      hidden={activeSection !== title}
+      className={cn(classes.root, className)}
+    >
       <Scrollbar
         style={{
           height: '100%',

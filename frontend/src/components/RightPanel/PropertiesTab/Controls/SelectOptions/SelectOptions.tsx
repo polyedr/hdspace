@@ -12,7 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
-import { addChildToElement, deleteItem } from '@Redux/project/actions';
+import { addChildToElement, deleteElement } from '@Redux/project/actions';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
@@ -91,7 +91,7 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
   };
 
   const handleDeleteButtonClick = (selectOptionID: string) => {
-    dispatch(deleteItem(selectOptionID, { screenId: currentScreenId }));
+    dispatch(deleteElement(selectOptionID, { screenId: currentScreenId }));
   };
 
   return (

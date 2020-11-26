@@ -28,10 +28,6 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
 
   const isDropTarget = elementId === dropTargetParams?.id;
 
-  /* const isActive = elementId === activeElementId;
-
-  const isHovered = elementId === hoveredElementId; */
-
   const isActiveBorder = [
     activeElementId,
     hoveredElementId,

@@ -54,6 +54,8 @@ export const DEFAULT_DISPLAY: React.CSSProperties = {
 export const DEFAULT_BORDER: React.CSSProperties = {
   border: '0px solid #323232',
   borderRadius: '0px',
+  borderColor: '#323232',
+  borderWidth: '0px',
 };
 
 export const DEFAULT_BACKGROUND: React.CSSProperties = {

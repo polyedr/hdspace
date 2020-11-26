@@ -1,4 +1,9 @@
 /* eslint-disable no-console */
+
+import { all, call, fork, put, select } from 'redux-saga/effects';
+import * as R from 'ramda';
+import { push } from 'connected-react-router';
+import html2canvas from 'html2canvas';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import { apiCreateElements, apiGetElements } from '@Api/element';
@@ -7,6 +12,7 @@ import { apiUpdateScenarios } from '@Api/scenario';
 import { apiCreateScreen, apiGetScreen, apiUpdateScreen } from '@Api/screen';
 import {
   LibraryElement,
+  NNBlockType,
   Normalized,
   Project,
   Result,
@@ -16,16 +22,13 @@ import {
   StateElement,
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
-import { push } from 'connected-react-router';
-import html2canvas from 'html2canvas';
-import * as R from 'ramda';
-import { all, call, fork, put, select } from 'redux-saga/effects';
-import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import {
   activateScreen,
   addElements,
   createScreen,
+  changeFreeCanvasMode,
+  deleteElement,
   deleteScreen,
   renameScreen,
   restoreScreen,
@@ -38,19 +41,24 @@ import {
   setUpdateImageLoader,
   updateScreen,
   updateScreenImage,
+  uploadFile,
 } from '../actions';
-import { selectCurrentProject } from '../selectors/base';
-import {
-  selectAllElements,
-  selectScreenRootElement,
-} from '../selectors/element';
+import { createScenarios } from './scenario';
+import { reqWrapper } from './shared';
+import { enqueueSnackbar } from '../../notification/actions';
+import { uploadFileSaga } from './element';
 import {
   selectCurrentScreenId,
   selectScreenById,
   selectScreens,
 } from '../selectors/screen';
-import { createScenarios } from './scenario';
-import { reqWrapper } from './shared';
+import {
+  selectAllElements,
+  selectCurrentRootId,
+  selectElementById,
+  selectScreenRootElement,
+} from '../selectors/element';
+import { selectCurrentProject } from '../selectors/base';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -604,6 +612,54 @@ export function* changeScreensOrderSaga(
     yield put(
       enqueueSnackbar({
         message: e.message || 'Failed to reorder screens',
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* convertFreeCanvasSaga() {
+  try {
+    const root = document.getElementById('free-canvas-root');
+    if (!root) throw new Error('Failed to find the root element');
+
+    const rootId: string = yield select(selectCurrentRootId);
+    yield put(setActiveElement(rootId));
+
+    const canvas: HTMLCanvasElement = yield call(html2canvas, root, {
+      useCORS: true,
+      allowTaint: true,
+      logging: true,
+      ignoreElements: (element: Element) =>
+        (element as HTMLElement).dataset.role === 'borders',
+    });
+
+    const screenId: number = yield select(selectCurrentScreenId);
+
+    const rootElement: StateElement = yield select(selectElementById(rootId));
+
+    yield all(
+      rootElement.children.map((id) => put(deleteElement(id, { screenId }))),
+    );
+
+    const blob = yield call(canvasToBlob, canvas);
+
+    yield call(
+      uploadFileSaga,
+      uploadFile(
+        { file: new File([blob], 'test.png'), name: 'test.png' },
+        rootId,
+        NNBlockType.WEBPAGE,
+        {
+          screenId,
+        },
+      ),
+    );
+    yield put(changeFreeCanvasMode(false));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
         options: { variant: 'error' },
       }),
     );

@@ -12,10 +12,6 @@ const useStyles = makeComponentStyles({
     '& fieldset': {
       border: 0,
     },
-    '&$focused $input': {
-      borderColor: '#1890ff',
-      boxShadow: 'inset 0px 0px 0 1px #1890ff',
-    },
   },
 
   input: {
@@ -27,8 +23,8 @@ const useStyles = makeComponentStyles({
 });
 
 const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, currentValue, className } = props;
-  const { type, placeholder } = params;
+  const { id, params, isDisabled, className } = props;
+  const { type, placeholder, textContent } = params;
 
   const styles = useStyles(props);
   const eventHandlers = useEventHandlers(props);
@@ -42,12 +38,12 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
       variant="outlined"
       className={cn(className, isDisabled && styles.disabled, styles.root)}
       type={type}
-      value={currentValue}
+      value={textContent}
       InputProps={{
         readOnly: isDisabled,
         classes: {
           input: cn(
-            // styles.input,
+            styles.input,
             styles.entityStyles,
             styles.groupStyles,
             styles.ownStyles,

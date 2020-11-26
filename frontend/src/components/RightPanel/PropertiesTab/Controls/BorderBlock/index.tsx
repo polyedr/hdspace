@@ -1,10 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useDebouncedCallback } from 'use-debounce';
 import {
   getPermissibleValue,
   safeMatch,
@@ -13,9 +11,8 @@ import {
 } from '@Utils/NumberHelper';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
-
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-
+import { StyledTextField } from '@Components/styledComponents';
 import {
   MAX_BORDER_WIDTH,
   MIN_BORDER_WIDTH,
@@ -79,25 +76,33 @@ const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     }%`;
   }, []);
 
-  const handleBorderWidthChange = ({ target: { value } }) => {
+  const [width, setWidth] = useState(borderWidth);
+  useEffect(() => {
+    setWidth(borderWidth);
+  }, [borderWidth]);
+  const debouncedBorderWidth = useDebouncedCallback((value) => {
     const newWidth = getPermissibleValue(
-      strToNumber(value),
+      strToNumber(value.toString()),
       MIN_BORDER_WIDTH,
       MAX_BORDER_WIDTH,
     );
 
     updateStyles({ borderWidth: `${newWidth}px` });
-  };
+  }, 250);
 
-  const handleBorderRadius = ({ target: { value } }) => {
+  const [radius, setRadius] = useState(borderRadius);
+  useEffect(() => {
+    setRadius(borderRadius);
+  }, [borderRadius]);
+  const debouncedBorderRadius = useDebouncedCallback((value) => {
     updateStyles({
       borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,
     });
-  };
+  }, 250);
 
   const handleChangeBorderRadiusUnits = ({ target: { value } }) => {
     updateStyles({
-      borderRadius: validateBorderRadius(`${borderRadius}${value}`),
+      borderRadius: `${parseInt(borderRadius.toString())}${value}`,
     });
   };
 
@@ -117,38 +122,44 @@ const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       />
 
       <div className={classes.wrapper}>
-        <TextField
+        <StyledTextField
           label="Width"
           type="number"
-          value={borderWidth ? parseFloat(borderWidth as string) : ''}
-          onChange={handleBorderWidthChange}
+          value={width ? parseFloat(width as string) : ''}
+          onChange={({ target: { value } }) => {
+            setWidth(value);
+            debouncedBorderWidth.callback(value);
+          }}
           margin="dense"
           className={classes.text}
         />
 
         <div className={classes.control}>
-          <TextField
+          <StyledTextField
             label="Radius"
             type="number"
-            value={safeParseFloat(validateBorderRadius(String(borderRadius)))}
-            onChange={handleBorderRadius}
+            value={safeParseFloat(validateBorderRadius(String(radius)))}
+            onChange={({ target: { value } }) => {
+              setRadius(value);
+              debouncedBorderRadius.callback(parseInt(value));
+            }}
             margin="dense"
             className={classes.text}
           />
 
-          <FormControl margin="dense">
-            <Select
-              onChange={handleChangeBorderRadiusUnits}
-              value={accessBorderRadius(String(borderRadius))}
-            >
-              <MenuItem value="px" dense>
-                px
-              </MenuItem>
-              <MenuItem value="%" dense>
-                percent
-              </MenuItem>
-            </Select>
-          </FormControl>
+          <StyledTextField
+            margin="dense"
+            onChange={handleChangeBorderRadiusUnits}
+            value={accessBorderRadius(String(borderRadius))}
+            select
+          >
+            <MenuItem value="px" dense>
+              px
+            </MenuItem>
+            <MenuItem value="%" dense>
+              percent
+            </MenuItem>
+          </StyledTextField>
         </div>
       </div>
 

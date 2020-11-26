@@ -20,19 +20,19 @@ import {
 import ScreenListItem from './ScreenListItem';
 import { Scrollbar } from '../../UI';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-} from '../StyledAccordion';
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+} from '../../styledComponents';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ palette, typography }) => ({
   name: {
-    fontSize: theme.typography.fontSize,
+    fontSize: typography.fontSize,
   },
   button: {
-    color: '#eee',
+    color: palette.common.white,
     '&:hover': {
-      backgroundColor: lighten('#2f4050', 0.1),
+      backgroundColor: lighten(palette.panel.main, 0.1),
     },
   },
   list: {
@@ -51,7 +51,7 @@ const Screens = () => {
   const screens = useSelector(selectScreens);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
 
-  const handleAddScreen = (ev) => {
+  const handleCreateScreen = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
     dispatch(createScreen(currentProjectId, 'Screen 1', screens.length));
@@ -66,14 +66,14 @@ const Screens = () => {
   };
 
   return (
-    <Accordion defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <span className={classes.name}>Screens</span>
+    <StyledAccordion defaultExpanded>
+      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <span>Screens</span>
 
         <IconButton
           title="Create Screen"
           size="small"
-          onClick={handleAddScreen}
+          onClick={handleCreateScreen}
           className={classes.button}
           disabled={screenCreateLoader}
         >
@@ -83,12 +83,12 @@ const Screens = () => {
             <CircularProgress size={24} color="secondary" />
           )}
         </IconButton>
-      </AccordionSummary>
+      </StyledAccordionSummary>
 
       <DragDropContext onDragEnd={handleReorder}>
         <Droppable droppableId="droppable">
           {(provided) => (
-            <AccordionDetails>
+            <StyledAccordionDetails>
               <Scrollbar autoHeightMax={200}>
                 <List
                   className={classes.list}
@@ -106,11 +106,11 @@ const Screens = () => {
                   {provided.placeholder}
                 </List>
               </Scrollbar>
-            </AccordionDetails>
+            </StyledAccordionDetails>
           )}
         </Droppable>
       </DragDropContext>
-    </Accordion>
+    </StyledAccordion>
   );
 };
 

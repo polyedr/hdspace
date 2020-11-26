@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   copyActiveElement,
-  deleteItem,
+  deleteElement,
   pasteCopiedElement,
 } from '@Redux/project/actions';
 import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
@@ -54,7 +54,7 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
 
   const handleDelete = () => {
     if (!activeElementId) return;
-    dispatch(deleteItem(activeElementId, { screenId: currentScreenId }));
+    dispatch(deleteElement(activeElementId, { screenId: currentScreenId }));
     onClose();
   };
 

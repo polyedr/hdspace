@@ -1,13 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
 import { setEditableStyles } from '@Redux/project/actions';
 import { AppReduxState } from '@Redux/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { StyledTextField } from '@Components/styledComponents';
+import { splitWords } from '@Utils/stringHelper';
+
+const useStyles = makeStyles({
+  capitalized: {
+    textTransform: 'capitalize',
+  },
+});
 
 type StateProps = {
   editableStyles: string;
@@ -36,25 +42,32 @@ const EditableStyles: React.FC<Props> = ({
   classNames,
   setEditableStyles,
 }) => {
+  const classes = useStyles();
+
   const handleDropdownChange = (ev) => {
     setEditableStyles(ev.target.value);
   };
 
   return (
-    <FormControl fullWidth>
-      <InputLabel>Styles to edit</InputLabel>
-      <Select
-        defaultValue={editableStyles}
-        value={editableStyles}
-        onChange={handleDropdownChange}
-      >
-        {classNames.map((className) => (
-          <MenuItem key={className} value={className}>
-            {className}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <StyledTextField
+      fullWidth
+      label="Styles to edit"
+      defaultValue={editableStyles}
+      value={editableStyles}
+      onChange={handleDropdownChange}
+      select
+      className={classes.capitalized}
+    >
+      {classNames.map((className) => (
+        <MenuItem
+          key={className}
+          value={className}
+          className={classes.capitalized}
+        >
+          {splitWords(className)}
+        </MenuItem>
+      ))}
+    </StyledTextField>
   );
 };
 

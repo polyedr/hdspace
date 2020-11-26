@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useSelector } from 'react-redux';
+import { lighten } from '@material-ui/core';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
@@ -12,7 +13,7 @@ import Section from './Section';
 
 const sections = ['elements', 'templates', 'library'];
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ typography, palette }) => ({
   root: {
     height: '100%',
     display: 'flex',
@@ -20,8 +21,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'stretch',
   },
   title: {
-    fontSize: theme.typography.fontSize,
-    fontFamily: theme.typography.fontFamily,
+    fontSize: typography.fontSize,
+    fontFamily: typography.fontFamily,
+  },
+  section: {
+    backgroundColor: palette.panel.light,
   },
 }));
 
@@ -35,14 +39,22 @@ const useToggleButtonGroupStyles = makeStyles({
   },
 });
 
-const useToggleButtonStyles = makeStyles({
+const useToggleButtonStyles = makeStyles(({ palette }) => ({
   root: {
     textTransform: 'none',
+    '&.Mui-selected': {
+      backgroundColor: palette.panel.light,
+    },
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.03),
+    },
   },
   disabled: {},
   selected: {},
-  label: {},
-});
+  label: {
+    color: palette.common.white,
+  },
+}));
 
 const ElementsTab = () => {
   const classes = useStyles();
@@ -110,7 +122,11 @@ const ElementsTab = () => {
             ))}
           </Section>
 
-          <Section title="templates" activeSection={section}>
+          <Section
+            title="templates"
+            activeSection={section}
+            className={classes.section}
+          >
             <ElementsBlock elements={templates} />
           </Section>
 

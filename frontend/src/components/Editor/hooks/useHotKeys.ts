@@ -7,7 +7,7 @@ import {
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   copyActiveElement,
-  deleteItem,
+  deleteElement,
   pasteCopiedElement,
   redoAction,
   undoAction,
@@ -28,7 +28,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
         !beingEdited &&
         (event.key === 'Delete' || (event.key === 'Backspace' && event.metaKey))
       ) {
-        dispatch(deleteItem(id, { screenId: currentScreenId }));
+        dispatch(deleteElement(id, { screenId: currentScreenId }));
         element?.focus();
       }
     };

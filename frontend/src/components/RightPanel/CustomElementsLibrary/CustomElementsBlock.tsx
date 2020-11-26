@@ -1,22 +1,30 @@
 import React, { useMemo, useEffect, useRef, MutableRefObject } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectCustomLibraryElements,
   selectCustomElementsHasNext,
 } from '@Redux/project/selectors/element';
 import { loadCustomElements } from '@Redux/project/actions';
-
-import {
-  useStyles as useElementBlockStyles,
-  StyledAccordion,
-  StyledAccordionSummary,
-  StyledAccordionDetails,
-} from '../ElementsTab/ElementsBlock';
+import { useStyles as useElementBlockStyles } from '../ElementsTab/ElementsBlock';
 import ElementButton from '../ElementsTab/ElementButton';
+import {
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+} from '../../styledComponents';
+
+const useStyles = makeStyles({
+  title: {
+    '& .MuiAccordionSummary-content': {
+      padding: '0 1em',
+    },
+  },
+});
 
 const CustomElementsBlock: React.FC = () => {
+  const classes = useStyles();
   const libraryElements = useSelector(selectCustomLibraryElements);
   const dispatch = useDispatch();
   const styles = useElementBlockStyles();
@@ -27,7 +35,7 @@ const CustomElementsBlock: React.FC = () => {
 
   useEffect(() => {
     dispatch(loadCustomElements(true));
-  }, []);
+  }, [dispatch]);
 
   const elements = useMemo(
     () =>
@@ -67,7 +75,7 @@ const CustomElementsBlock: React.FC = () => {
 
   return (
     <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <StyledAccordionSummary className={classes.title}>
         Custom UI
       </StyledAccordionSummary>
 

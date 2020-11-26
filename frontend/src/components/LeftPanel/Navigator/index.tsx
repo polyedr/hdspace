@@ -19,7 +19,7 @@ import {
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   copyActiveElement,
-  deleteItem,
+  deleteElement,
   moveElement,
   pasteCopiedElement,
   redoAction,
@@ -39,10 +39,10 @@ import {
 } from './utils';
 import Scrollbar from '../../UI/Scrollbar';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-} from '../StyledAccordion';
+  StyledAccordion,
+  StyledAccordionDetails,
+  StyledAccordionSummary,
+} from '../../styledComponents';
 
 const useStyles = makeStyles({
   tree: {
@@ -160,7 +160,7 @@ const Navigator: React.FC = () => {
       if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
         // Delete or Cmd + Backspace
         const prevItemId = findPrevNodeId(tree, selectedItemId);
-        dispatch(deleteItem(selectedItemId, { screenId: currentScreenId }));
+        dispatch(deleteElement(selectedItemId, { screenId: currentScreenId }));
         focusTreeItem(prevItemId);
       }
 
@@ -251,7 +251,7 @@ const Navigator: React.FC = () => {
       const getExpandedChildrenHeight = (children: string[]) =>
         children.reduce((acc, curr) => {
           if (!tree.items[curr].isExpanded) {
-            return acc + height;
+            return acc + height - 0.25;
           }
           return (
             acc +
@@ -277,12 +277,12 @@ const Navigator: React.FC = () => {
   };
 
   return currentScreenId !== -1 ? (
-    <Accordion defaultExpanded>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <StyledAccordion defaultExpanded>
+      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
         Navigator
-      </AccordionSummary>
+      </StyledAccordionSummary>
 
-      <AccordionDetails>
+      <StyledAccordionDetails>
         <div className={classes.tree} onKeyDown={handleKeyDown}>
           <Scrollbar
             style={{
@@ -304,8 +304,8 @@ const Navigator: React.FC = () => {
             />
           </Scrollbar>
         </div>
-      </AccordionDetails>
-    </Accordion>
+      </StyledAccordionDetails>
+    </StyledAccordion>
   ) : null;
 };
 

@@ -50,9 +50,10 @@ const BorderCrumb: React.FC<Props> = ({ elementId, styles, children }) => {
     <div
       className={classes.crumb}
       style={{
-        top: styles.top,
+        top: elementId === rootID ? styles.top : styles.top + styles.height - 1,
         left: elementId === rootID ? 'auto' : styles.left,
         right: elementId === rootID ? styles.right : 'auto',
+        zIndex: 9999999,
       }}
     >
       <span

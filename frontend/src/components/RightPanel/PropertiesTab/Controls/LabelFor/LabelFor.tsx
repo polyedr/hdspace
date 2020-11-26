@@ -1,12 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { LabelElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveLabelInputs } from '@Redux/project/selectors/element';
+import { StyledTextField } from '@Components/styledComponents';
 
 const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
   updateParams,
@@ -23,21 +21,20 @@ const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
   };
 
   return (
-    <FormControl margin="dense">
-      <InputLabel>Label For</InputLabel>
-
-      <Select
-        defaultValue={labelFor}
-        value={labelFor}
-        onChange={handleDropdownChange}
-      >
-        {options.map(({ value, label }) => (
-          <MenuItem key={value} value={value} dense>
-            {label}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <StyledTextField
+      margin="dense"
+      label="Label For"
+      defaultValue={labelFor}
+      value={labelFor}
+      onChange={handleDropdownChange}
+      select
+    >
+      {options.map(({ value, label }) => (
+        <MenuItem key={value} value={value} dense>
+          {label}
+        </MenuItem>
+      ))}
+    </StyledTextField>
   );
 };
 

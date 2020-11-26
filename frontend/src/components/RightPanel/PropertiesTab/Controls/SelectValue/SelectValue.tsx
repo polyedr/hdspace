@@ -1,8 +1,5 @@
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { FormControl } from '@material-ui/core';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { PropertiesChangeProps, SelectElement, StateElement } from '@Src/types';
@@ -12,6 +9,7 @@ import {
   selectActiveItemChildren,
   selectElementsByIds,
 } from '@Redux/project/selectors/element';
+import { StyledTextField } from '@Components/styledComponents';
 
 const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,
@@ -45,22 +43,21 @@ const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   };
 
   return (
-    <FormControl fullWidth margin="dense">
-      <InputLabel>Default Value</InputLabel>
-
-      <Select
-        label="Default Value"
-        defaultValue={value}
-        value={value}
-        onChange={handleDropdownChange}
-      >
-        {optionsValues.map((option) => (
-          <MenuItem key={option} value={option} dense>
-            {option}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <StyledTextField
+      fullWidth
+      margin="dense"
+      label="Default Value"
+      defaultValue={value}
+      value={value}
+      onChange={handleDropdownChange}
+      select
+    >
+      {optionsValues.map((option) => (
+        <MenuItem key={option} value={option} dense>
+          {option}
+        </MenuItem>
+      ))}
+    </StyledTextField>
   );
 };
 

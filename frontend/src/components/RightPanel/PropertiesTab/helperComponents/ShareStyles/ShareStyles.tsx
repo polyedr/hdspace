@@ -1,6 +1,5 @@
 import React from 'react';
 import { Chip, makeStyles } from '@material-ui/core';
-import DoneIcon from '@material-ui/icons/Done';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { connect, useSelector } from 'react-redux';
 import Button from '@material-ui/core/Button';
@@ -16,7 +15,7 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { AppReduxState } from '@Redux/types';
 import EditableStyles from '../EditableStyles/EditableStyles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ spacing }) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -27,6 +26,9 @@ const useStyles = makeStyles({
     marginBottom: '5px',
     color: '#1cc09f',
     border: '1px solid #1cc09f',
+    '& .MuiChip-label': {
+      textTransform: 'capitalize',
+    },
   },
 
   icon: {
@@ -41,12 +43,17 @@ const useStyles = makeStyles({
     marginRight: '5px',
     marginBottom: '5px',
     backgroundColor: '#1cc09f',
-
     '&:hover, &:focus': {
       backgroundColor: '#18a689',
     },
+    '& .MuiChip-label': {
+      textTransform: 'capitalize',
+    },
   },
-});
+  chipContainer: {
+    padding: spacing(1, 0.5),
+  },
+}));
 
 const mapState = (state: AppReduxState) => {
   const activeElement = selectActiveElement(state);
@@ -128,7 +135,7 @@ const ShareStyles: React.FC<Props> = ({
         Share styles
       </Button>
 
-      <div>
+      <div className={classes.chipContainer}>
         {sharedClasses.length ? (
           sharedClasses.map((sharedClass) => (
             <Chip
@@ -140,8 +147,6 @@ const ShareStyles: React.FC<Props> = ({
               clickable
               color="primary"
               onClick={() => handlePasteButtonClick(sharedClass.className)}
-              onDelete={() => handlePasteButtonClick(sharedClass.className)}
-              deleteIcon={<DoneIcon className={classes.icon} />}
             />
           ))
         ) : (

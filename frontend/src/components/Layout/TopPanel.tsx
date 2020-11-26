@@ -9,16 +9,16 @@ import IconButton from '@material-ui/core/IconButton';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { renameProject } from '@Redux/project/actions';
 import Dialog from '../Dialogs/Dialog';
-import TopBar from '../Editor/TopBar';
+import TopBar from './TopBar';
 import Avatar from './Avatar';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
-    backgroundColor: '#fff',
+    backgroundColor: palette.panel.main,
+    color: palette.common.white,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    color: '#000',
   },
   title: {
     padding: '0.5em 1em',
@@ -29,12 +29,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   editButton: {
+    color: palette.common.white,
     opacity: 0,
     transition: 'opacity 0.1s ease',
   },
   projectName: {
     fontSize: '1rem',
-    fontFamily: theme.typography.fontFamily,
+    fontFamily: typography.fontFamily,
     fontWeight: 'bold',
   },
 }));
