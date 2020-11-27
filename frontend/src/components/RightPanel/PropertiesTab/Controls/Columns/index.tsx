@@ -1,39 +1,31 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import ColumnCount from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnCount';
 import ColumnWidth from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnWidth';
 import ColumnFill from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnFill';
 import ColumnGap from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnGap';
+import ColumnRule from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnRule';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 
-const ColumnsControls: React.FC<PropertiesChangeProps<ColumnsElement>> = () => {
-  const ruleWidth = useSelector(selectCurrentEditableStyles('columnRuleWidth'));
-  const ruleStyle = useSelector(selectCurrentEditableStyles('columnRuleStyle'));
-  const ruleColor = useSelector(selectCurrentEditableStyles('columnRuleColor'));
+const useStyles = makeStyles({
+  columnControls: {
+    padding: '0 2em',
+  },
+});
+
+const ColumnsControls: React.FC = () => {
+  const classes = useStyles();
 
   return (
-    <div>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <ColumnCount />
+    <div className={classes.columnControls}>
+      <ColumnCount />
 
-        <ColumnWidth />
+      <ColumnWidth />
 
-        <ColumnFill />
+      <ColumnFill />
 
-        <ColumnGap />
-      </div>
+      <ColumnGap />
 
-      <div>{ruleWidth}</div>
-      <div>{ruleStyle}</div>
-      <div>{ruleColor}</div>
+      <ColumnRule />
     </div>
   );
 };

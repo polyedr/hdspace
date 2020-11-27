@@ -5,19 +5,9 @@ import { useSelector } from 'react-redux';
 import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDebouncedCallback } from 'use-debounce';
-
-const useStyles = makeStyles({
-  control: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    '& > *:first-child': {
-      width: 110,
-    },
-  },
-});
+import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/Columns/styles';
+import { FormControlLabel } from '@material-ui/core';
 
 enum Units {
   px = 'px',
@@ -42,7 +32,7 @@ const parse = (value: string | number | undefined) => {
 const ColumnGap: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
   updateStyles,
 }) => {
-  const classes = useStyles();
+  const classes = useColumnControlStyles();
   const value = useSelector(selectCurrentEditableStyles('columnGap'));
   const [gap, units] = parse(value);
 
@@ -73,29 +63,35 @@ const ColumnGap: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
   };
 
   return (
-    <div className={classes.control}>
-      <StyledTextField
-        value={gapState}
-        onChange={handleGapChange}
-        label="Column Gap"
-        margin="dense"
-        type="number"
-      />
+    <FormControlLabel
+      classes={{ root: classes.rootLabel, label: classes.label }}
+      label="Column Gap"
+      labelPlacement="start"
+      control={
+        <div className={classes.control}>
+          <StyledTextField
+            value={gapState}
+            onChange={handleGapChange}
+            margin="dense"
+            type="number"
+          />
 
-      <StyledTextField
-        value={units}
-        onChange={handleUnitsChange}
-        label="Units"
-        margin="dense"
-        select
-      >
-        {Object.keys(Units).map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </StyledTextField>
-    </div>
+          <StyledTextField
+            value={units}
+            onChange={handleUnitsChange}
+            label="Units"
+            margin="dense"
+            select
+          >
+            {Object.keys(Units).map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </StyledTextField>
+        </div>
+      }
+    />
   );
 };
 

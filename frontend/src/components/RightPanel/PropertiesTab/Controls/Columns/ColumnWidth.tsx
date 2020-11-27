@@ -6,18 +6,8 @@ import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
-const useStyles = makeStyles({
-  control: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    '& > *:first-child': {
-      width: 110,
-    },
-  },
-});
+import { FormControlLabel } from '@material-ui/core';
+import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/Columns/styles';
 
 enum Units {
   auto = 'auto',
@@ -40,7 +30,7 @@ const parse = (value: string | number | undefined) => {
 const ColumnWidth: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
   updateStyles,
 }) => {
-  const classes = useStyles();
+  const classes = useColumnControlStyles();
   const value = useSelector(selectCurrentEditableStyles('columnWidth'));
 
   const [width, units] = parse(value);
@@ -78,27 +68,33 @@ const ColumnWidth: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
   };
 
   return (
-    <div className={classes.control}>
-      <StyledTextField
-        value={widthState || 0}
-        onChange={handleWidthChange}
-        label="Column Width"
-        margin="dense"
-        type={unitsState === Units.auto ? 'text' : 'number'}
-        disabled={unitsState === Units.auto}
-      />
+    <FormControlLabel
+      classes={{ root: classes.rootLabel, label: classes.label }}
+      label="Column Width"
+      labelPlacement="start"
+      control={
+        <div className={classes.control}>
+          <StyledTextField
+            value={widthState || 0}
+            onChange={handleWidthChange}
+            margin="dense"
+            type={unitsState === Units.auto ? 'text' : 'number'}
+            disabled={unitsState === Units.auto}
+          />
 
-      <StyledTextField
-        value={unitsState}
-        onChange={handleUnitsChange}
-        label="Units"
-        margin="dense"
-        select
-      >
-        <MenuItem value="px">px</MenuItem>
-        <MenuItem value="auto">auto</MenuItem>
-      </StyledTextField>
-    </div>
+          <StyledTextField
+            value={unitsState}
+            onChange={handleUnitsChange}
+            label="Units"
+            margin="dense"
+            select
+          >
+            <MenuItem value="px">px</MenuItem>
+            <MenuItem value="auto">auto</MenuItem>
+          </StyledTextField>
+        </div>
+      }
+    />
   );
 };
 

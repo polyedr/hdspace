@@ -6,18 +6,8 @@ import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-
-const useStyles = makeStyles({
-  control: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    '& > *:first-child': {
-      width: 110,
-    },
-  },
-});
+import { FormControlLabel } from '@material-ui/core';
+import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/Columns/styles';
 
 enum Units {
   auto = 'auto',
@@ -27,7 +17,7 @@ enum Units {
 const ColumnCount: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
   updateStyles,
 }) => {
-  const classes = useStyles();
+  const classes = useColumnControlStyles();
   const count = useSelector(selectCurrentEditableStyles('columnCount'));
 
   const [countState, setCountState] = useState(count);
@@ -66,30 +56,36 @@ const ColumnCount: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
   };
 
   return (
-    <div className={classes.control}>
-      <StyledTextField
-        value={countState || 0}
-        onChange={handleCountChange}
-        label="Column Count"
-        margin="dense"
-        type={units === 'auto' ? 'text' : 'number'}
-        disabled={units === 'auto'}
-      />
+    <FormControlLabel
+      classes={{ root: classes.rootLabel, label: classes.label }}
+      label="Column Count"
+      labelPlacement="start"
+      control={
+        <div className={classes.control}>
+          <StyledTextField
+            value={countState || 0}
+            onChange={handleCountChange}
+            margin="dense"
+            type={units === 'auto' ? 'text' : 'number'}
+            disabled={units === 'auto'}
+          />
 
-      <StyledTextField
-        value={units}
-        onChange={handleCountUnitsChange}
-        label="units"
-        margin="dense"
-        select
-      >
-        {Object.keys(Units).map((unit) => (
-          <MenuItem key={unit} value={unit}>
-            {unit}
-          </MenuItem>
-        ))}
-      </StyledTextField>
-    </div>
+          <StyledTextField
+            value={units}
+            onChange={handleCountUnitsChange}
+            label="units"
+            margin="dense"
+            select
+          >
+            {Object.keys(Units).map((unit) => (
+              <MenuItem key={unit} value={unit}>
+                {unit}
+              </MenuItem>
+            ))}
+          </StyledTextField>
+        </div>
+      }
+    />
   );
 };
 

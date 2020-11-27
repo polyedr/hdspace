@@ -1,0 +1,102 @@
+import React from 'react';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
+import { useSelector } from 'react-redux';
+import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
+import { StyledTextField } from '@Components/styledComponents';
+import MenuItem from '@material-ui/core/MenuItem';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
+import { FormControlLabel } from '@material-ui/core';
+
+const useStyles = makeStyles({
+  wrapper: {
+    margin: '1em 0 0 0',
+    display: 'flex',
+    alignItems: 'flex-start',
+  },
+  menuItem: {
+    textTransform: 'capitalize',
+  },
+});
+
+const ruleStyles = [
+  'none',
+  'hidden',
+  'dotted',
+  'dashed',
+  'solid',
+  'double',
+  'groove',
+  'ridge',
+  'inset',
+  'outset',
+] as const;
+
+const ruleWidths = ['thin', 'medium', 'thick'];
+
+const ColumnRule: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
+  updateStyles,
+  activeItemID,
+}) => {
+  const classes = useStyles();
+
+  const ruleWidth = useSelector(selectCurrentEditableStyles('columnRuleWidth'));
+  const ruleStyle = useSelector(selectCurrentEditableStyles('columnRuleStyle'));
+  const ruleColor = useSelector(selectCurrentEditableStyles('columnRuleColor'));
+
+  return (
+    <FormControlLabel
+      className={classes.wrapper}
+      label="Column Rule"
+      labelPlacement="top"
+      control={
+        <div>
+          <StyledTextField
+            fullWidth
+            label="Rule Style"
+            value={ruleStyle}
+            margin="dense"
+            onChange={({ target: { value } }) =>
+              updateStyles({ columnRuleStyle: value })
+            }
+            select
+          >
+            {ruleStyles.map((style) => (
+              <MenuItem value={style} key={style} className={classes.menuItem}>
+                {style}
+              </MenuItem>
+            ))}
+          </StyledTextField>
+
+          <StyledTextField
+            fullWidth
+            label="Rule Width"
+            value={ruleWidth}
+            margin="dense"
+            onChange={({ target: { value } }) =>
+              updateStyles({ columnRuleWidth: value })
+            }
+            select
+          >
+            {ruleWidths.map((width) => (
+              <MenuItem value={width} key={width} className={classes.menuItem}>
+                {width}
+              </MenuItem>
+            ))}
+          </StyledTextField>
+
+          <ColorSettings
+            currentColor={ruleColor as string}
+            activeItemID={activeItemID}
+            onChange={(color: string) => {
+              updateStyles({ columnRuleColor: color });
+            }}
+          />
+        </div>
+      }
+    />
+  );
+};
+
+export default withConfigurableProperties(ColumnRule);
