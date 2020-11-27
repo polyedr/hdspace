@@ -4,26 +4,25 @@ import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 import cn from 'classnames';
 import {
-  selectActiveElementId,
-  selectCurrentRoot,
-  selectCurrentScreenId,
-  selectDirectRootChildren,
-} from '../../../redux/project/selectors';
-import {
   setActiveElement,
   updateElementParameters,
   createElements,
-} from '../../../redux/project/actions';
-import FREE_CANVAS_RENDERERS from './FreeRenderers';
-import { useElementClassNames } from './helpers';
+} from '@Redux/project/actions';
+import {
+  selectActiveElementId,
+  selectCurrentRoot,
+  selectDirectRootChildren,
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   ElementData,
   Normalized,
   StateElement,
   SyntheticElement,
-} from '../../../types';
-
-import { ElementType } from '../../../constants/dragAndDrop';
+} from '@Src/types';
+import { ElementType } from '@Constants/dragAndDrop';
+import FREE_CANVAS_RENDERERS from './FreeRenderers';
+import { useElementClassNames } from './helpers';
 
 const FreeCanvas = () => {
   const dispatch = useDispatch();

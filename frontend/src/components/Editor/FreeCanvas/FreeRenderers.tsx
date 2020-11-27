@@ -14,23 +14,23 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { getPlayerLink } from '../../../utils/extractVideoLink';
-import { GMap } from '../../UI';
+import { getPlayerLink } from '@Utils/extractVideoLink';
+import IMAGES from '@Constants/images';
+import { setActiveElement } from '@Redux/project/actions';
+import { Entity, Normalized, StateElement } from '@Src/types';
 import {
   selectActiveElementId,
   selectDirectChildren,
   selectElementAsTree,
   selectIncludesActiveElement,
-} from '../../../redux/project/selectors';
+} from '@Redux/project/selectors/element';
+import { GMap } from '../../UI';
 import FreeDraggable from './FreeDraggable';
 import {
   getIframeContainerStyles,
   getWrapperStyles,
   useElementClassNames,
 } from './helpers';
-import IMAGES from '../../../constants/images';
-import { setActiveElement } from '../../../redux/project/actions';
-import { Entity, Normalized, StateElement } from '../../../types';
 
 type Props = {
   element: StateElement;

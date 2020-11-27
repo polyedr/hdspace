@@ -1,16 +1,12 @@
 import React, { useCallback, memo } from 'react';
 import { useSelector } from 'react-redux';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import {
   selectActiveElementId,
   selectCurrentEditableStyles,
-} from '../../../../../redux/project/selectors';
+} from '@Redux/project/selectors/element';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
 
 enum Unit {
   px = 'px',

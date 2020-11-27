@@ -6,9 +6,9 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { darken } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteScreen, duplicateScreen } from '../../../redux/project/actions';
-import { selectScreensLength } from '../../../redux/project/selectors';
-import { Screen } from '../../../types';
+import { deleteScreen, duplicateScreen } from '@Redux/project/actions';
+import { selectScreensLength } from '@Redux/project/selectors/screen';
+import { Screen } from '@Src/types';
 
 const useStyles = makeStyles({
   root: {

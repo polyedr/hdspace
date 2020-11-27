@@ -5,15 +5,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import * as CSS from 'csstype';
-import { useWrapperStyles } from './styles';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
+
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { ALIGN_VALUES, JUSTIFY_VALUES } from './constants';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { useWrapperStyles } from './styles';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   reversed: boolean;

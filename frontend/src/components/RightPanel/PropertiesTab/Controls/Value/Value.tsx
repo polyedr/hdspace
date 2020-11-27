@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { PropertiesChangeProps, SelectElement } from '../../../../../types';
-import { StyledTextField } from '../../../../styledComponents';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { PropertiesChangeProps, SelectElement } from '@Src/types';
+import { StyledTextField } from '@Components/styledComponents';
 
 const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { selectActiveElement } from '../../../../../redux/project/selectors';
-import { updateElement } from '../../../../../redux/project/actions';
-import { StyledTextField } from '../../../../styledComponents';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { updateElement } from '@Redux/project/actions';
+import { StyledTextField } from '@Components/styledComponents';
 
 const RenameElement: React.FC = () => {
   const dispatch = useDispatch();

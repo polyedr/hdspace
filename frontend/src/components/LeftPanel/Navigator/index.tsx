@@ -10,6 +10,24 @@ import AtlasTree, {
 import { useDispatch, useSelector } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+
+import {
+  selectActiveElement,
+  selectElementsForCurrentScreen,
+  selectCurrentRootId,
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import {
+  copyActiveElement,
+  deleteElement,
+  moveElement,
+  pasteCopiedElement,
+  redoAction,
+  setActiveElement,
+  undoAction,
+} from '@Redux/project/actions';
+import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import TreeItem from './components/TreeItem';
 import {
   findPrevNodeId,
@@ -19,29 +37,12 @@ import {
   updateTree,
   convertElements,
 } from './utils';
-import {
-  selectActiveElement,
-  selectCurrentScreenId,
-  selectElementsForCurrentScreen,
-  selectCurrentRootId,
-} from '../../../redux/project/selectors';
-import {
-  copyActiveElement,
-  deleteElement,
-  moveElement,
-  pasteCopiedElement,
-  redoAction,
-  setActiveElement,
-  undoAction,
-} from '../../../redux/project/actions';
 import Scrollbar from '../../UI/Scrollbar';
-import { canElementBeAdded } from '../../../utils/normalizedStateHelpers';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
 } from '../../styledComponents';
-import { enqueueSnackbar } from '../../../redux/notification/actions';
 
 const useStyles = makeStyles({
   tree: {

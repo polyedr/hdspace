@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { BorderStyles, StateElement, StyleProps } from '@Src/types';
 import { BorderPosition } from '../constants';
-import { BorderStyles, StateElement, StyleProps } from '../../../../types';
 
 type Props = {
   element: StateElement;

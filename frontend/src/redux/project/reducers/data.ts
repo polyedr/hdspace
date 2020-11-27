@@ -1,6 +1,4 @@
 import produce, { Draft } from 'immer';
-import { initialData } from '../initial';
-import TYPES from '../../actionTypes';
 import {
   addMapElements,
   arrayToMap,
@@ -10,7 +8,9 @@ import {
   moveMapElement,
   removeMapElement,
   updateMapElement,
-} from '../../../utils/normalizedStateHelpers';
+} from '@Utils/normalizedStateHelpers';
+import { initialData } from '../initial';
+import TYPES from '../../actionTypes';
 import { Project, Screen } from '../../../types';
 import { Action, ProjectDataState } from '../../types';
 

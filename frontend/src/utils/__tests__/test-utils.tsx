@@ -1,13 +1,13 @@
-import { initialUserState } from '../../redux/user/reducer';
+import { initialUserState } from '@Redux/user/reducer';
 import {
   initialCommunication,
   initialControl,
   initialData,
   initialEdit,
   initialUi,
-} from '../../redux/project/initial';
+} from '@Redux/project/initial';
+import { AppReduxState } from '@Redux/types';
 import { Project, StateElement, Screen } from '../../types';
-import { AppReduxState } from '../../redux/types';
 
 export const mockProject: Project = {
   id: 1,

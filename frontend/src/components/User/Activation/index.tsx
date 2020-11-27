@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
-import * as Actions from '../../../redux/user/actions';
+import * as Actions from '@Redux/user/actions';
+import { AppReduxState } from '@Redux/types';
 import LoginForm from '../LoginForm';
 import Spinner from '../../UI/Spinner';
 import { Info } from '../Info';
-import { AppReduxState } from '../../../redux/types';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

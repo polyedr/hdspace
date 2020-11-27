@@ -4,23 +4,27 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import LinkIcon from '@material-ui/icons/Link';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import MenuItem from '@material-ui/core/MenuItem';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { selectActiveElementParams } from '@Redux/project/selectors/element';
+import { selectScreens } from '@Redux/project/selectors/screen';
 import { useDebouncedCallback } from 'use-debounce';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  selectActiveElementParams,
-  selectScreens,
-} from '../../../../../redux/project/selectors';
 import {
   ExternalLink,
   HyperlinkElement,
   InternalLink,
   LinkParams,
   PropertiesChangeProps,
-} from '../../../../../types';
+  Screen,
+} from '@Src/types';
 import {
   StyledTextField,
   StyledToggleButton,
 } from '../../../../styledComponents';
+
+type StateProps = {
+  screens: Screen[];
+  action: LinkParams;
+};
 
 const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
   updateParams,

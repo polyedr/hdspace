@@ -8,11 +8,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { PATH_NAMES } from '../../constants/pathNames';
-import IMAGES from '../../constants/images';
-import { logout } from '../../redux/user/actions';
-import { selectUserData } from '../../redux/user/selectors';
-import { openSignScreen } from '../../redux/history';
+import { PATH_NAMES } from '@Constants/pathNames';
+import IMAGES from '@Constants/images';
+import { logout } from '@Redux/user/actions';
+import { selectUserData } from '@Redux/user/selectors';
+import { openSignScreen } from '@Redux/history';
 
 const useStyles = makeStyles({
   menu: {

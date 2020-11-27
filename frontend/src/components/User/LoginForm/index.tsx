@@ -12,11 +12,11 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import MakeAsyncFunction from 'react-redux-promise-listener';
-import { user } from '../../../constants/pathNames';
-import { sendResetPasswordMail } from '../../../redux/user/actions';
+import { user } from '@Constants/pathNames';
+import { sendResetPasswordMail } from '@Redux/user/actions';
+import { promiseListener } from '@Redux/store';
+import TYPES from '@Redux/actionTypes';
 import Dialog from '../../Dialogs/Dialog';
-import { promiseListener } from '../../../redux/store';
-import TYPES from '../../../redux/actionTypes';
 import SubmitError from '../SubmitError';
 
 const useStyles = makeStyles((theme) =>

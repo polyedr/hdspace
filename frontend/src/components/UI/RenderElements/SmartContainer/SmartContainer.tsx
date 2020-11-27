@@ -9,17 +9,17 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
 import Tooltip from '@material-ui/core/Tooltip';
 import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
+import useUrlImageToFile from '@Utils/useUrlImageToFile';
+import useImageUpload from '@Utils/nn/hooks/useImageUpload';
+import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
+import { NNBlockType, SyntheticGlobalElement } from '@Src/types';
+import { updateElementParameters } from '@Redux/project/actions';
+
+import { selectElementById } from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+
 import { SmartContainerRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import {
-  selectCurrentScreenId,
-  selectElementById,
-} from '../../../../redux/project/selectors';
-import useUrlImageToFile from '../../../../utils/useUrlImageToFile';
-import useImageUpload from '../../../../utils/nn/hooks/useImageUpload';
-import useNNProcessing from '../../../../utils/nn/hooks/useNNProcessing';
-import { NNBlockType, SyntheticGlobalElement } from '../../../../types';
-import { updateElementParameters } from '../../../../redux/project/actions';
 import useEventHandlers from '../useEventHandlers';
 
 const styles = require('../styles.scss');

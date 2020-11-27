@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { selectRightPanelActiveTab } from '@Redux/project/selectors/base';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { setRightPanelActiveTab } from '@Redux/project/actions';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
-import { selectRightPanelActiveTab } from '../../redux/project/selectors';
+
 import { RIGHT_PANEL_WIDTH } from '../../styles/Theme';
-import { selectIsPrototypeMode } from '../../redux/user/selectors';
-import { setRightPanelActiveTab } from '../../redux/project/actions';
 import { RightPanelTab } from '../../types';
 
 const useStyles = makeStyles(({ palette }) => ({

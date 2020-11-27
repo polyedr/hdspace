@@ -1,9 +1,10 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import TYPE from './constants';
-import { selectActiveElementParamByName } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+
 import {
   InputType,
   PropertiesChangeProps,

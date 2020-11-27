@@ -2,20 +2,20 @@ import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import EditorViewport from '../Viewport/Viewport';
-import Scrollbar from '../../UI/Scrollbar';
+import { selectCurrentRootId } from '@Redux/project/selectors/element';
 import {
-  selectCurrentRootId,
-  selectFreeCanvasMode,
   selectScreenFormat,
   selectScreenRotated,
-} from '../../../redux/project/selectors';
+  selectFreeCanvasMode,
+} from '@Redux/project/selectors/base';
+import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
-import useGlobalDropTarget from '../../../utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
-import { selectIsPrototypeMode } from '../../../redux/user/selectors';
+import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
+import useHotKeys from '../hooks/useHotKeys';
 
 const useStyles = makeStyles({
   workspace: {
@@ -24,6 +24,16 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     overflow: 'auto',
     display: 'block',
+  },
+  editorViewport: {
+    position: 'relative',
+    display: 'flex',
+    flexGrow: 1,
+    justifyContent: 'center',
+    backgroundColor: '#cccccc',
+    '&:focus': {
+      outline: 0,
+    },
   },
   wrapper: {
     display: 'flex',
@@ -58,16 +68,19 @@ const Workspace: React.FC = () => {
   const classes = useStyles(rotated);
 
   const ref = useRef<HTMLDivElement | null>(null);
+  const editorRef = useRef<HTMLDivElement | null>(null);
 
   useGlobalDropTarget(
     ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
     ref,
   );
 
+  useHotKeys(editorRef);
+
   return (
     <div className={classes.workspace} ref={ref}>
       <div className={classes.wrapper}>
-        <EditorViewport>
+        <div className={classes.editorViewport} ref={editorRef}>
           <Scrollbar
             className={cn(classes.editor, classes[format])}
             autoHeightMin="100%"
@@ -86,7 +99,7 @@ const Workspace: React.FC = () => {
               </>
             )}
           </Scrollbar>
-        </EditorViewport>
+        </div>
 
         <NNProcessingModal />
       </div>

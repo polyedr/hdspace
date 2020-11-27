@@ -1,15 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
+import { setEditableStyles } from '@Redux/project/actions';
+import { AppReduxState } from '@Redux/types';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { selectEditableStyles } from '@Redux/project/selectors/base';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {
-  selectActiveElement,
-  selectEditableStyles,
-} from '../../../../../redux/project/selectors';
-import { setEditableStyles } from '../../../../../redux/project/actions';
-import { AppReduxState } from '../../../../../redux/types';
-import { StyledTextField } from '../../../../styledComponents';
-import { splitWords } from '../../../../../utils/stringHelper';
+import { StyledTextField } from '@Components/styledComponents';
+import { splitWords } from '@Utils/stringHelper';
 
 const useStyles = makeStyles({
   capitalized: {

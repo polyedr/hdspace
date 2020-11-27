@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { cssCamelize } from '../../utils/CSSConverter';
+import { cssCamelize } from '@Utils/CSSConverter';
 import {
   Entity,
   LibraryElement,

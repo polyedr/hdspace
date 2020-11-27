@@ -1,10 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
-import { selectActiveLabelInputs } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { LabelElement, PropertiesChangeProps } from '../../../../../types';
-import { StyledTextField } from '../../../../styledComponents';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { LabelElement, PropertiesChangeProps } from '@Src/types';
+import { selectActiveLabelInputs } from '@Redux/project/selectors/element';
+import { StyledTextField } from '@Components/styledComponents';
 
 const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
   updateParams,

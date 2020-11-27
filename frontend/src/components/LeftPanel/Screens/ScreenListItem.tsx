@@ -7,12 +7,12 @@ import { lighten } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
+import { renameScreen } from '@Redux/project/actions';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import Dialog from '../../Dialogs/Dialog';
 import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
-import { renameScreen } from '../../../redux/project/actions';
-import { selectCurrentProjectId } from '../../../redux/project/selectors';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   listItem: {

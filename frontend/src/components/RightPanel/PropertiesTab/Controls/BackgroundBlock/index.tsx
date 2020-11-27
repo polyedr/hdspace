@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import {

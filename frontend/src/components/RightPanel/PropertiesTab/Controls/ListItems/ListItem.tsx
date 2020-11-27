@@ -6,14 +6,14 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { deleteElement } from '../../../../../redux/project/actions';
-import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
+import { deleteElement } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
   StyledTextField,
-} from '../../../../styledComponents';
+} from '@Components/styledComponents';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   title: {

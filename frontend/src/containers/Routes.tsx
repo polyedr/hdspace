@@ -1,11 +1,11 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { PATH_NAMES } from '@Constants/pathNames';
 import Signin from '../components/User/Signin';
 import Signup from '../components/User/Signup';
 import Activation from '../components/User/Activation';
 import ResetPassword from '../components/User/ResetPassword/ResetPassword';
-import { PATH_NAMES } from '../constants/pathNames';
 import Projects from '../components/Projects/Projects';
 import Layout from '../components/Layout';
 import Project from './Project';

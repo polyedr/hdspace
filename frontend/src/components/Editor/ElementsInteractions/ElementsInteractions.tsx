@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
-import { selectBorderedElementsRef } from '../../../redux/project/selectors';
+import { selectBorderedElementsRef } from '@Redux/project/selectors/element';
 import InteractionsHandler from './InteractionsHandler';
 
 const useStyles = makeStyles({

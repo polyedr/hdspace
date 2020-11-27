@@ -9,8 +9,8 @@ import { createStyles } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import convertDateToRelative from '../../utils/convertDateToRelative';
-import { deleteProject, renameProject } from '../../redux/project/actions';
+import convertDateToRelative from '@Utils/convertDateToRelative';
+import { deleteProject, renameProject } from '@Redux/project/actions';
 import Dialog from '../Dialogs/Dialog';
 import { Project } from '../../types';
 

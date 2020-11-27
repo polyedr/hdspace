@@ -10,15 +10,20 @@
     "module": "commonjs",
     "target": "es6",
     "jsx": "react",
-    "lib": [ "es2020", "dom", "scripthost"],
+    "lib": ["es2020", "dom", "scripthost"],
     "noImplicitAny": false,
     "experimentalDecorators": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@Components/*": ["src/components/*"],
+      "@Constants/*": ["src/constants/*"],
+      "@Utils/*": ["src/utils/*"],
+      "@Redux/*": ["src/redux/*"],
+      "@Api/*": ["src/api/*"],
+      "@Domain/*": ["src/domain/*"],
+      "@Src/*": ["src/*"]
+    }
   },
-  "include": [
-    //"./src/index.tsx",
-    "src/**/*"
-    // "./src/**/*",
-  ],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "**/__tests__/**"]
 }

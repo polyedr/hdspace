@@ -1,12 +1,12 @@
 // @ts-nocheck
 
 import React from 'react';
-import cn from 'classnames';
-import { makeStyles, MenuItem, TextField } from '@material-ui/core';
 import { useSelector } from 'react-redux';
+import cn from 'classnames';
+import { makeStyles, TextField, MenuItem } from '@material-ui/core';
+import { selectElementAsTree } from '@Redux/project/selectors/element';
+import { LibraryElement } from '@Src/types';
 import { SelectRendererProps } from '../types';
-import { selectElementAsTree } from '../../../../redux/project/selectors';
-import { LibraryElement } from '../../../../types';
 import { makeComponentStyles } from '../styles';
 
 const useWrapperStyles = makeComponentStyles({

@@ -4,11 +4,11 @@ import { useDebouncedCallback } from 'use-debounce';
 import {
   selectActiveElementId,
   selectCurrentEditableStyles,
-} from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+} from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { ContainerElement, PropertiesChangeProps } from '@Src/types';
+import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
-import { ContainerElement, PropertiesChangeProps } from '../../../../../types';
-import { StyledTextField } from '../../../../styledComponents';
 
 const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
   updateStyles,

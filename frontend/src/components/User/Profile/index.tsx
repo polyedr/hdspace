@@ -14,16 +14,16 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Alert from '@material-ui/lab/Alert';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import Button from '../../UI/Button';
-import { selectUserData } from '../../../redux/user/selectors';
-import { changeProfileData, logout } from '../../../redux/user/actions';
-import IMAGES from '../../../constants/images';
-import { ProfileData } from '../../../types';
-import { openSignScreen } from '../../../redux/history';
-import { promiseListener } from '../../../redux/store';
-import TYPES from '../../../redux/actionTypes';
+import { selectUserData } from '@Redux/user/selectors';
+import { changeProfileData, logout } from '@Redux/user/actions';
+import IMAGES from '@Constants/images';
+import { openSignScreen } from '@Redux/history';
+import { promiseListener } from '@Redux/store';
+import TYPES from '@Redux/actionTypes';
+import { ROLES } from '@Constants/defaultParams';
 import SubmitError from '../SubmitError';
-import { ROLES } from '../../../constants/defaultParams';
+import { ProfileData } from '../../../types';
+import Button from '../../UI/Button';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

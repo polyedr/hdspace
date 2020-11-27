@@ -2,16 +2,12 @@ import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import { useDebouncedCallback } from 'use-debounce';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
+import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
-import { StyledTextField } from '../../../../styledComponents';
 
 const useStyles = makeStyles(({ palette }) => ({
   marginGrid: {

@@ -1,16 +1,13 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
-import { DISPLAY } from './constants';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
+
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { DISPLAY } from './constants';
 import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
 import { StyledTextField } from '../../../../styledComponents';
 
