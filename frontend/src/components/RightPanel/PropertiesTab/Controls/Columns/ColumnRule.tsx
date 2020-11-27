@@ -18,6 +18,13 @@ const useStyles = makeStyles({
   menuItem: {
     textTransform: 'capitalize',
   },
+  row: {
+    display: 'flex',
+    '& > *:first-child': {
+      marginRight: '1em',
+    },
+    width: '100%',
+  },
 });
 
 const ruleStyles = [
@@ -46,56 +53,65 @@ const ColumnRule: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
   const ruleColor = useSelector(selectCurrentEditableStyles('columnRuleColor'));
 
   return (
-    <FormControlLabel
-      className={classes.wrapper}
-      label="Column Rule"
-      labelPlacement="top"
-      control={
-        <div>
-          <StyledTextField
-            fullWidth
-            label="Rule Style"
-            value={ruleStyle}
-            margin="dense"
-            onChange={({ target: { value } }) =>
-              updateStyles({ columnRuleStyle: value })
-            }
-            select
-          >
-            {ruleStyles.map((style) => (
-              <MenuItem value={style} key={style} className={classes.menuItem}>
-                {style}
-              </MenuItem>
-            ))}
-          </StyledTextField>
+    <>
+      <FormControlLabel
+        className={classes.wrapper}
+        label="Column Rule"
+        labelPlacement="top"
+        control={
+          <div className={classes.row}>
+            <StyledTextField
+              fullWidth
+              label="Rule Style"
+              value={ruleStyle}
+              margin="dense"
+              onChange={({ target: { value } }) =>
+                updateStyles({ columnRuleStyle: value })
+              }
+              select
+            >
+              {ruleStyles.map((style) => (
+                <MenuItem
+                  value={style}
+                  key={style}
+                  className={classes.menuItem}
+                >
+                  {style}
+                </MenuItem>
+              ))}
+            </StyledTextField>
 
-          <StyledTextField
-            fullWidth
-            label="Rule Width"
-            value={ruleWidth}
-            margin="dense"
-            onChange={({ target: { value } }) =>
-              updateStyles({ columnRuleWidth: value })
-            }
-            select
-          >
-            {ruleWidths.map((width) => (
-              <MenuItem value={width} key={width} className={classes.menuItem}>
-                {width}
-              </MenuItem>
-            ))}
-          </StyledTextField>
-
-          <ColorSettings
-            currentColor={ruleColor as string}
-            activeItemID={activeItemID}
-            onChange={(color: string) => {
-              updateStyles({ columnRuleColor: color });
-            }}
-          />
-        </div>
-      }
-    />
+            <StyledTextField
+              fullWidth
+              label="Rule Width"
+              value={ruleWidth}
+              margin="dense"
+              onChange={({ target: { value } }) =>
+                updateStyles({ columnRuleWidth: value })
+              }
+              select
+            >
+              {ruleWidths.map((width) => (
+                <MenuItem
+                  value={width}
+                  key={width}
+                  className={classes.menuItem}
+                >
+                  {width}
+                </MenuItem>
+              ))}
+            </StyledTextField>
+          </div>
+        }
+      />
+      <ColorSettings
+        currentColor={ruleColor as string}
+        activeItemID={activeItemID}
+        onChange={(color: string) => {
+          updateStyles({ columnRuleColor: color });
+        }}
+      />
+    </>
   );
 };
 
