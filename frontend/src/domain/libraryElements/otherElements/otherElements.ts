@@ -101,7 +101,7 @@ export const makeColumns = (): ColumnsServerElement => ({
       columnCount: 2,
       columnWidth: 'auto',
       columnFill: 'balance',
-      columnGap: 'normal',
+      columnGap: '1em',
       columnRuleWidth: 'medium',
       columnRuleStyle: 'none',
       columnRuleColor: '#000',

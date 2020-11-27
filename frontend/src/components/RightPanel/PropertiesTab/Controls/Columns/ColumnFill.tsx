@@ -26,7 +26,7 @@ const ColumnFill: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
     <StyledTextField
       value={fill}
       onChange={handleFillChange}
-      label="Column Width"
+      label="Column Fill"
       margin="dense"
       fullWidth
       select

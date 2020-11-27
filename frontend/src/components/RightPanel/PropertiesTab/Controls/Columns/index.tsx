@@ -5,9 +5,9 @@ import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import ColumnCount from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnCount';
 import ColumnWidth from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnWidth';
 import ColumnFill from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnFill';
+import ColumnGap from '@Components/RightPanel/PropertiesTab/Controls/Columns/ColumnGap';
 
 const ColumnsControls: React.FC<PropertiesChangeProps<ColumnsElement>> = () => {
-  const gap = useSelector(selectCurrentEditableStyles('columnGap'));
   const ruleWidth = useSelector(selectCurrentEditableStyles('columnRuleWidth'));
   const ruleStyle = useSelector(selectCurrentEditableStyles('columnRuleStyle'));
   const ruleColor = useSelector(selectCurrentEditableStyles('columnRuleColor'));
@@ -25,10 +25,12 @@ const ColumnsControls: React.FC<PropertiesChangeProps<ColumnsElement>> = () => {
         <ColumnCount />
 
         <ColumnWidth />
+
         <ColumnFill />
+
+        <ColumnGap />
       </div>
 
-      <div>{gap}</div>
       <div>{ruleWidth}</div>
       <div>{ruleStyle}</div>
       <div>{ruleColor}</div>
