@@ -96,7 +96,16 @@ export const makeColumns = (): ColumnsServerElement => ({
   },
   styles: {
     classNames: ['columns'],
-    ownStyles: {},
+    ownStyles: {
+      height: '100px',
+      columnCount: 2,
+      columnWidth: 'auto',
+      columnFill: 'balance',
+      columnGap: '1em',
+      columnRuleWidth: 'medium',
+      columnRuleStyle: 'none',
+      columnRuleColor: '#000',
+    },
   },
   children: [],
 });

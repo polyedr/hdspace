@@ -37,6 +37,7 @@ import Scrollbar from '../../UI/Scrollbar';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
 import { Control, Entity, NNBlockType } from '../../../types';
+import ColumnsControls from './Controls/Columns';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {
   display: Display,
@@ -70,6 +71,7 @@ const CONTROLS: Record<Control, React.ComponentType<any>> = {
   videoSettings: VideoSettings,
   flexGrow: FlexGrow,
   backgroundSize: BackgroundSize,
+  columns: ColumnsControls,
 };
 
 const useStyles = makeStyles({

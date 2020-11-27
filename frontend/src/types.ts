@@ -318,6 +318,7 @@ export type ParagraphElement = LibraryElement<
   [],
   ParagraphParameters
 >;
+export type ColumnsElement = LibraryElement<'columns', [], {}, {}>;
 export type OcrtextElement = LibraryElement<'ocrtext', [], OcrtextParameters>;
 export type LabelElement = LibraryElement<'label', [], LabelParameters>;
 export type TextBlockElement = LibraryElement<
@@ -1048,6 +1049,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
+  'columns',
   'display',
   'indents',
   'size',

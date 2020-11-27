@@ -18,7 +18,6 @@ import {
   PropertyName,
 } from '../types';
 
-// potentially pass config with needed styles/params first
 function withConfigurableProperties<
   K extends LibraryElement<Entity>,
   T extends PropertiesChangeProps<K>
@@ -91,7 +90,6 @@ function withConfigurableProperties<
     );
   }
 
-  // potentially need to makeMapState and makeMapDispatch for each WrapperComponent
   return WrapperComponent;
 }
 export default withConfigurableProperties;
