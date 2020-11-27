@@ -2,19 +2,19 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { Form } from 'react-final-form';
-import FormField from '../FormField/FormField';
-import * as Actions from '../../../redux/user/actions';
-import isLatinOrNumbers from '../../../utils/validators/isLatinOrNumbers';
-import { Info } from '../Info';
-import Spinner from '../../UI/Spinner';
+import * as Actions from '@Redux/user/actions';
+import isLatinOrNumbers from '@Utils/validators/isLatinOrNumbers';
 import {
   composeValidators,
   isLongPassword,
   isOnlyNumeric,
   isRequired,
-} from '../../../utils/validators';
+} from '@Utils/validators';
+import { AppReduxState } from '@Redux/types';
+import FormField from '../FormField/FormField';
+import { Info } from '../Info';
+import Spinner from '../../UI/Spinner';
 import Button from '../../UI/Button';
-import { AppReduxState } from '../../../redux/types';
 
 const styles = require('./ResetPassword.scss');
 

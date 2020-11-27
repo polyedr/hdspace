@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
+import { ListElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
-import { ListElement, PropertiesChangeProps } from '../../../../../types';
 
 const useStyles = makeStyles({
   wrapper: {

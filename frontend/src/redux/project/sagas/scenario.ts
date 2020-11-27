@@ -1,68 +1,72 @@
 /* eslint-disable no-console */
-
-import { call, put, select } from 'redux-saga/effects';
 import * as R from 'ramda';
-import {
-  selectCustomLibraryElements,
-  selectActiveElementId,
-  selectAllElements,
-  selectElementAsTree,
-  selectElementById,
-  selectCurrentScreenId,
-  selectElementsForScreen,
-  selectScreenRootElement,
-  selectFreeCanvasMode,
-  selectFreeCanvasOffset,
-} from '../selectors';
-import * as Actions from '../actions';
-import { selectors } from '..';
-import { updateElementParameters } from '../../../utils/ElementsTreeHelper';
+import { call, put, select } from 'redux-saga/effects';
+import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import {
   convertCreatedElementToRequest,
   convertElementToPatchRequest,
   convertElementToRequest,
-} from '../../../api/converters/toRequest';
+} from '@Api/converters/toRequest';
 import {
+  apiChangeRecursiveElement,
   apiCreateElements,
   apiUpdateElement,
-  apiChangeRecursiveElement,
   apiUpdateElements,
-} from '../../../api/element';
+} from '@Api/element';
+import { apiCreateScenarios } from '@Api/scenario';
 import {
   isElementCanBeAdded,
   isElementCanBeRemove,
-} from '../../../utils/AvailableChildrenHelper';
-import { apiCreateScenarios } from '../../../api/scenario';
-import { convertElementFromResponse } from '../../../api/converters/fromResponse';
-import getSavedValue from '../../../utils/getSavedValue';
+} from '@Utils/AvailableChildrenHelper';
+import { updateElementParameters } from '@Utils/ElementsTreeHelper';
+import getSavedValue from '@Utils/getSavedValue';
 import {
   removeMapElement,
   restoreMapElement,
   restoreMapElementChildren,
-} from '../../../utils/normalizedStateHelpers';
+} from '@Utils/normalizedStateHelpers';
+
+import { DEFAULT_INDENTS } from '@Domain/libraryElements/defaultStyles';
 import {
   ElementsToDrop,
   Entity,
-  ScenarioItem,
   LibraryElement,
   LibraryElementUnion,
   Normalized,
+  RecursiveElement,
   Result,
   ReturnPromisedType,
-  StateElement,
-  RecursiveElement,
+  ScenarioItem,
   ServerElement,
-} from '../../../types';
-import { DEFAULT_INDENTS } from '../../../domain/libraryElements/defaultStyles';
-import { reqWrapper } from './shared';
-import { Action, ElementHistoryMeta } from '../../types';
+  StateElement,
+} from '@Src/types';
+import { Action, ElementHistoryMeta } from '@Redux/types';
+import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
+import {
+  selectCurrentScreen,
+  selectCurrentScreenId,
+} from '../selectors/screen';
+import { reqWrapper } from './shared';
+import {
+  selectFreeCanvasMode,
+  selectFreeCanvasOffset,
+} from '../selectors/base';
+import {
+  selectActiveElementId,
+  selectAllElements,
+  selectCustomLibraryElements,
+  selectElementAsTree,
+  selectElementById,
+  selectElementsForScreen,
+  selectScreenRootElement,
+} from '../selectors/element';
 
 // eslint-disable-next-line consistent-return
 export function* createScenarios(scenario?: Partial<ScenarioItem>) {
   try {
-    const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-      selectors.selectCurrentScreen,
+    const currentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
+      selectCurrentScreen,
     );
 
     const containerToCreate: ScenarioItem = {
@@ -273,9 +277,7 @@ export function* createElementsSaga(
       selectElementAsTree(parentId || activeElementId),
     );
 
-    const customLibraryElements = yield select(
-      selectors.selectCustomLibraryElements,
-    );
+    const customLibraryElements = yield select(selectCustomLibraryElements);
 
     const convertedCreatedElements = createdElements.map((dEl) =>
       dEl.custom

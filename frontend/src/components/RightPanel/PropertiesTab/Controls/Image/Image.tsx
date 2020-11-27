@@ -2,10 +2,10 @@ import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { updateElementImage } from '../../../../../redux/project/actions';
-import { ImageElement, PropertiesChangeProps } from '../../../../../types';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { updateElementImage } from '@Redux/project/actions';
+import { ImageElement, PropertiesChangeProps } from '@Src/types';
 
 const useStyles = makeStyles({
   wrapper: {

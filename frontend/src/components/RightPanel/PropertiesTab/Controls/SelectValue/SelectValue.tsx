@@ -1,19 +1,15 @@
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { PropertiesChangeProps, SelectElement, StateElement } from '@Src/types';
+import { AppReduxState } from '@Redux/types';
 import {
-  selectActiveItemChildren,
   selectActiveElementParams,
+  selectActiveItemChildren,
   selectElementsByIds,
-} from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  PropertiesChangeProps,
-  SelectElement,
-  StateElement,
-} from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
-import { StyledTextField } from '../../../../styledComponents';
+} from '@Redux/project/selectors/element';
+import { StyledTextField } from '@Components/styledComponents';
 
 const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,

@@ -5,9 +5,9 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   setActiveElement,
   updateElementParameters,
-} from '../../../redux/project/actions';
-import { selectCurrentScreenId } from '../../../redux/project/selectors';
-import { StateElement } from '../../../types';
+} from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { StateElement } from '@Src/types';
 import Borders from './Borders';
 
 const useStyles = makeStyles({

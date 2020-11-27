@@ -4,9 +4,9 @@ import { Popover, IconButton } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
-import { selectElementById } from '../../../../redux/project/selectors';
-import { SAVEABLE_ELEMENTS } from '../../../../constants/defaultParams';
-import { updateElement } from '../../../../redux/project/actions';
+import { selectElementById } from '@Redux/project/selectors/element';
+import { SAVEABLE_ELEMENTS } from '@Constants/defaultParams';
+import { updateElement } from '@Redux/project/actions';
 
 const styles = require('./SaveElementAction.scss');
 

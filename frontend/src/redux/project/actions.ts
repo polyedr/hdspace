@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropPosition } from '../../constants/dragAndDrop';
+import { DropPosition } from '@Constants/dragAndDrop';
 import TYPES from '../actionTypes';
 import {
   ChildEntity,

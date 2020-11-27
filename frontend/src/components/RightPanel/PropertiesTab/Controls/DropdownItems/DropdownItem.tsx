@@ -1,12 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useSelector } from 'react-redux';
-import { useDebouncedCallback } from 'use-debounce';
 import { lighten } from '@material-ui/core';
-import { selectCurrentScreenId } from '../../../../../redux/project/selectors';
-import { StyledTextField } from '../../../../styledComponents';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { StyledTextField } from '@Components/styledComponents';
 
 const useStyles = makeStyles(({ palette }) => ({
   wrapper: {

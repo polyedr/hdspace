@@ -1,11 +1,19 @@
 /* eslint-disable camelcase, no-console */
 import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
-import * as Actions from '../actions';
+
 import {
   removeProjectStyles,
   updateProjectClasses,
-} from '../../../utils/ProjectClassesHelper';
+} from '@Utils/ProjectClassesHelper';
+import { convertElementToRequest } from '@Api/converters/toRequest';
+import {
+  Entity,
+  ItemToCopyInfo,
+  LibraryElement,
+  Normalized,
+  StateElement,
+} from '@Src/types';
 import {
   addChildToElementSaga,
   createElements,
@@ -40,21 +48,8 @@ import {
   loadCustomElementsSaga,
   setActiveElementSaga,
 } from './element';
-import { convertElementToRequest } from '../../../api/converters/toRequest';
+
 import TYPES from '../../actionTypes';
-import {
-  selectActiveElement,
-  selectActiveElementId,
-  selectAllElements,
-  selectCurrentProject,
-  selectCurrentScreen,
-  selectElementAsTree,
-  selectHistory,
-  selectItemToCopyInfo,
-  selectRedoActions,
-  selectScreenRootElement,
-  selectUndoActions,
-} from '../selectors';
 import {
   activateScreenSaga,
   createScreenSaga,
@@ -65,16 +60,26 @@ import {
   updateScreenImageSaga,
   convertFreeCanvasSaga,
 } from './screen';
-import {
-  Entity,
-  ItemToCopyInfo,
-  LibraryElement,
-  Normalized,
-  StateElement,
-} from '../../../types';
+
 import { projectUpdateHelperSaga } from './shared';
 import { ElementHistoryMeta } from '../../types';
 import { enqueueSnackbar } from '../../notification/actions';
+import * as Actions from '../actions';
+import {
+  selectCurrentProject,
+  selectHistory,
+  selectRedoActions,
+  selectUndoActions,
+} from '../selectors/base';
+import {
+  selectActiveElement,
+  selectActiveElementId,
+  selectAllElements,
+  selectElementAsTree,
+  selectItemToCopyInfo,
+  selectScreenRootElement,
+} from '../selectors/element';
+import { selectCurrentScreen } from '../selectors/screen';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,

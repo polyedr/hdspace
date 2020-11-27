@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import cn from 'classnames';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import cn from 'classnames';
-import { splitWords } from '../../../utils/stringHelper';
-import { updateElementParameters } from '../../../redux/project/actions';
-import { selectCurrentScreenId } from '../../../redux/project/selectors';
-import { StateElement } from '../../../types';
+import { splitWords } from '@Utils/stringHelper';
+import { updateElementParameters } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { StateElement } from '@Src/types';
 
 const useStyles = makeStyles({
   crumb: {

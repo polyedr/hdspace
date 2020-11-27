@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
+import { selectConfirmMessage } from '@Redux/user/selectors';
 import LoginForm from '../LoginForm';
 import { Info } from '../Info';
-import { selectConfirmMessage } from '../../../redux/user/selectors';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

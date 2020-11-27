@@ -13,35 +13,36 @@ import {
   createElements,
   moveElement,
   resetElementEditState,
+  setActiveElement,
   setCurrentDropTargetParams,
   setElementBeingEdited,
   setElementCanBeEdited,
   setHoveredElement,
   updateElementParameters,
-} from '../../../redux/project/actions';
-import useElementProps from '../hooks/useElementProps';
-import { RENDERERS } from '../../UI/RenderElements';
+} from '@Redux/project/actions';
+import { ElementData, StateElement, SyntheticElement } from '@Src/types';
 import {
-  selectCurrentDropTargetParams,
   selectCurrentRootId,
-  selectCurrentScreenId,
   selectElementBeingEdited,
   selectElementByChildId,
   selectElementById,
   selectElementCanBeEdited,
-} from '../../../redux/project/selectors';
-import { DropPosition, ElementType } from '../../../constants/dragAndDrop';
+} from '@Redux/project/selectors/element';
+import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   CONTAINER_GROUPS,
   EDITABLE_COMPONENTS_LIST,
-} from '../../../constants/defaultParams';
+} from '@Constants/defaultParams';
 import {
   getFlexRowDropPosition,
   getBlockDropPosition,
   getDropIndex,
 } from './helper';
 import useElementBorders from './hooks/useElementBorders';
-import { ElementData, StateElement, SyntheticElement } from '../../../types';
+import useElementProps from '../hooks/useElementProps';
+import { RENDERERS } from '../../UI/RenderElements';
 
 type DraggableElementProps = {
   elementId: string;
@@ -257,6 +258,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const clickHandler = useCallback(
     (event: React.SyntheticEvent) => {
       event.stopPropagation();
+      dispatch(setActiveElement(elementId));
       if (
         element &&
         EDITABLE_COMPONENTS_LIST.includes(element.type) &&

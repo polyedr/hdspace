@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  PropertiesChangeProps,
-  RadiobuttonElement,
-} from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
-import { StyledTextField } from '../../../../styledComponents';
+import { selectActiveElementParams } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { AppReduxState } from '@Redux/types';
+import { StyledTextField } from '@Components/styledComponents';
+import { PropertiesChangeProps, RadiobuttonElement } from '@Src/types';
 
 const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   updateParams,

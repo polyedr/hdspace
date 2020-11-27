@@ -1,17 +1,19 @@
 import { createSelector } from 'reselect';
 import {
   DEFAULT_ACTIVE_ELEMENT,
-  DEFAULT_PROJECT,
   DEFAULT_ROOT,
-  DEFAULT_SCREEN,
   LABELED_INPUT_TYPES,
-} from '../../constants/defaultParams';
-import { makeFeatureStateSelector } from '../../shared/redux';
+} from '@Constants/defaultParams';
 import {
   arrayToMap,
   buildElementsTree,
   flattenElements,
-} from '../../utils/normalizedStateHelpers';
+} from '@Utils/normalizedStateHelpers';
+import {
+  selectCurrentProject,
+  selectEditableStyles,
+  selectProjectState,
+} from './base';
 import {
   BorderedElementsRef,
   ChildEntity,
@@ -19,28 +21,14 @@ import {
   LibraryElement,
   PaginatedArray,
   StateElement,
-} from '../../types';
-import { AppReduxState } from '../types';
-
-export const selectProjectState = makeFeatureStateSelector('project');
-
-export const selectProjects = ({ project }: AppReduxState) => {
-  return project.data.projectsData.results;
-};
-
-export const selectProjectsAsArr = createSelector(selectProjects, (projects) =>
-  Object.values(projects),
-);
-
-export const selectProjectsPageSize = ({ project }: AppReduxState) =>
-  project.data.projectsData.pageSize;
-
-export const selectProjectsDataNext = ({ project }: AppReduxState) =>
-  project.data.projectsData.next;
-
-export const selectProjectById = (projectId: number) => ({
-  project,
-}: AppReduxState) => project.data.projectsData.results[projectId];
+} from '../../../types';
+import { AppReduxState } from '../../types';
+import {
+  selectCurrentScreen,
+  selectCurrentScreenId,
+  selectScreenById,
+  selectScreens,
+} from './screen';
 
 export const selectScreenRootElement = (screenId: number) => ({
   project,
@@ -50,43 +38,8 @@ export const selectScreenRootElement = (screenId: number) => ({
   return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
 };
 
-export const selectCurrentScreenId = (state: AppReduxState) =>
-  selectProjectState(state).edit.currentScreenId;
-
-export const selectCurrentScreen = (state: AppReduxState) => {
-  const currentScreenId = selectCurrentScreenId(state);
-  return (
-    selectProjectState(state).data.screens[currentScreenId] || DEFAULT_SCREEN
-  );
-};
-
-export const selectScreens = createSelector(
-  (state: AppReduxState) => state.project.data.screens,
-  (screens) => Object.values(screens).sort((a, b) => a.buoyancy - b.buoyancy),
-);
-
-export const selectScreensLength = (state: AppReduxState) =>
-  selectScreens(state).length;
-
-export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
-  project.data.screens[id];
-
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
-
-export const selectCurrentProjectId = ({ project }: AppReduxState) =>
-  project.edit.currentProjectId;
-
-export const selectCurrentProject = createSelector(
-  selectProjects,
-  selectCurrentProjectId,
-  (projects, id) => projects[id] || DEFAULT_PROJECT,
-);
-
-export const selectCurrentProjectClasses = createSelector(
-  selectCurrentProject,
-  (currentProject) => currentProject.projectData.classes,
-);
 
 export const selectCurrentRootId = (state: AppReduxState) =>
   selectCurrentScreen(state).element || '-1';
@@ -116,14 +69,6 @@ export const selectCurrentRootElement = (state: AppReduxState) => {
   return selectElementAsTree(currentRootId)(state);
 };
 
-export function selectUploadedImageInfo(state: AppReduxState) {
-  return selectProjectState(state).edit.uploadedImageInfo;
-}
-
-export function selectUpdateScreenImageLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.updateImageLoader;
-}
-
 export const selectElementByChildId = (id: string) => (
   state: AppReduxState,
 ) => {
@@ -132,13 +77,6 @@ export const selectElementByChildId = (id: string) => (
     ? selectElementById(element.parent)(state)
     : null;
 };
-
-export function selectProjectCreateLoader(state: AppReduxState) {
-  return selectProjectState(state).communication.projectCreateLoader;
-}
-
-export const selectAreProjectsLoading = ({ project }: AppReduxState) =>
-  project.data.projectsData.loading;
 
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
@@ -172,16 +110,6 @@ export const selectActiveElement = (state: AppReduxState) =>
   state.project.data.elements[selectActiveElementId(state)] ||
   DEFAULT_ACTIVE_ELEMENT;
 
-export function selectEditableStyles(state: AppReduxState) {
-  return selectProjectState(state).ui.editableStyles;
-}
-
-export function selectSharedStyles(state: AppReduxState, elementType: string) {
-  return selectCurrentProject(state).projectData.classes.find(
-    (cssClass) => cssClass.className === elementType,
-  )?.rules;
-}
-
 function makeActiveElementInfoSelector<
   T extends StateElement,
   K extends 'styles' | 'parameters'
@@ -202,6 +130,12 @@ function makeActiveElementInfoSelector<
 export const selectActiveElementStyles = makeActiveElementInfoSelector(
   'styles',
 );
+
+export function selectSharedStyles(state: AppReduxState, elementType: string) {
+  return selectCurrentProject(state).projectData.classes.find(
+    (cssClass) => cssClass.className === elementType,
+  )?.rules;
+}
 
 export const selectCurrentEditableStyles = <
   T extends keyof React.CSSProperties
@@ -245,9 +179,9 @@ export const selectCurrentEditableStyles = <
   );
 };
 
-export function selectShowingBorders(state: AppReduxState) {
-  return selectProjectState(state).ui.showContainersBorders;
-}
+export const selectCustomElementsHasNext = (state: AppReduxState) => {
+  return !!selectProjectState(state).data.customElementsData.next;
+};
 
 export const selectActiveItemChildren = (childType: ChildEntity) => (
   state: AppReduxState,
@@ -266,15 +200,6 @@ export const selectElementParameters = (elementId: string) => ({
   project,
 }: AppReduxState) => project.data.elements[elementId]?.parameters;
 
-export const selectUndoActions = ({ project }: AppReduxState) =>
-  project.control.undoActions;
-
-export const selectRedoActions = ({ project }: AppReduxState) =>
-  project.control.redoActions;
-
-export const selectHistory = ({ project }: AppReduxState) =>
-  project.control.history;
-
 export const selectActiveItemChildrenStyles = makeActiveElementInfoSelector(
   'styles',
 );
@@ -290,18 +215,6 @@ export const selectActiveElementParamByName = (name: string) => (
 
 export function selectItemToCopyInfo(state: AppReduxState) {
   return selectProjectState(state).ui.itemToCopyInfo;
-}
-
-export function selectScreenLoader(state: AppReduxState): boolean {
-  return selectProjectState(state).communication.screenLoader;
-}
-
-export function selectProjectLoader(state: AppReduxState): boolean {
-  return selectProjectState(state).communication.projectLoader;
-}
-
-export function selectAnalyzerLoader(state: AppReduxState): boolean {
-  return selectProjectState(state).communication.analyzerLoader;
 }
 
 export function selectCustomElementsPagination(
@@ -327,6 +240,17 @@ export const selectElementsForScreen = (screenId: number) => (
   state: AppReduxState,
 ) => selectElementsForScreenById(state, screenId);
 
+export const selectBorderedElementsRef = (
+  state: AppReduxState,
+): BorderedElementsRef => {
+  return selectProjectState(state).ui.borderedElementsRef;
+};
+
+export const selectBorderedRef = (id: string) => (state: AppReduxState) => {
+  return selectProjectState(state).ui.borderedElementsRef[id];
+};
+
+// RESELECT selectors
 export const selectElementsForCurrentScreen = createSelector(
   selectAllElements,
   selectCurrentScreenId,
@@ -342,6 +266,14 @@ export const selectElementsForCurrentScreen = createSelector(
   },
 );
 
+export const selectDirectChildren = (id) =>
+  createSelector(selectAllElements, (elements) => {
+    const target = elements[id];
+    if (!target) return {};
+
+    return arrayToMap(target.children.map((childId) => elements[childId]));
+  });
+
 export const selectActiveLabelInputs = (state: AppReduxState) => {
   const activeItemParams = selectActiveElementParams(state);
   const elements = selectElementsForCurrentScreen(state);
@@ -354,59 +286,6 @@ export const selectActiveLabelInputs = (state: AppReduxState) => {
     inputsIDs,
     labelFor: activeItemParams.labelFor,
   };
-};
-
-export const selectDirectRootChildren = createSelector(
-  selectAllElements,
-  selectCurrentRootId,
-  (elements, id) => {
-    const root = elements[id];
-    if (!root) return {};
-    return arrayToMap(root.children.map((childId) => elements[childId]));
-  },
-);
-
-export const selectDirectChildren = (id) =>
-  createSelector(selectAllElements, (elements) => {
-    const target = elements[id];
-    if (!target) return {};
-
-    return arrayToMap(target.children.map((childId) => elements[childId]));
-  });
-
-export const selectBorderedElementsRef = (
-  state: AppReduxState,
-): BorderedElementsRef => {
-  return selectProjectState(state).ui.borderedElementsRef;
-};
-
-export const selectBorderedRef = (id: string) => (state: AppReduxState) => {
-  return selectProjectState(state).ui.borderedElementsRef[id];
-};
-
-export const selectCurrentDropTargetId = (state: AppReduxState) => {
-  const dropTargetParams = selectProjectState(state).ui.currentDropTargetParams;
-  return dropTargetParams ? dropTargetParams.id : null;
-};
-
-export const selectCurrentDropTargetParams = (state: AppReduxState) => {
-  return selectProjectState(state).ui.currentDropTargetParams;
-};
-
-export const selectCustomElementsHasNext = (state: AppReduxState) => {
-  return !!selectProjectState(state).data.customElementsData.next;
-};
-
-export const selectProjectClasses = createSelector(
-  selectProjects,
-  selectCurrentProjectId,
-  (projects, id) => projects[id].projectData.classes,
-);
-
-export const selectElementFileInput = (id: string) => (
-  state: AppReduxState,
-) => {
-  return selectProjectState(state).data.elementInputs[id];
 };
 
 export const selectIncludesActiveElement = (elementId: string) =>
@@ -433,37 +312,12 @@ export const selectCurrentRoot = createSelector(
   (elements, rootId) => elements[rootId] || DEFAULT_ROOT,
 );
 
-export const selectFreeCanvasMode = ({ project }: AppReduxState) =>
-  project.edit.freeCanvas.enabled;
-
-export const selectFreeCanvasOffset = (id: string) => (
-  state: AppReduxState,
-) => {
-  const { elements } = state.project.data;
-  const parent = state.project.edit.freeCanvas.lastElements[id];
-  if (!parent) return 0;
-
-  const needOffset =
-    elements[id].children.includes(
-      parent.elements[parent.elements.length - 1],
-    ) &&
-    elements[parent.elements[parent.elements.length - 1]].parameters.left ===
-      parent.offset &&
-    elements[parent.elements[parent.elements.length - 1]].parameters.top ===
-      parent.offset;
-
-  if (needOffset) return parent.offset + 20;
-  return 0;
-};
-
-export const selectScreenFormat = ({ project }: AppReduxState) =>
-  project.ui.screenFormat.format;
-
-export const selectScreenRotated = ({ project }: AppReduxState) =>
-  project.ui.screenFormat.rotated;
-
-export const selectRightPanelActiveTab = ({ project }: AppReduxState) =>
-  project.ui.rightPanel.activeTab;
-
-export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
-  project.communication.screenCreateLoader;
+export const selectDirectRootChildren = createSelector(
+  selectAllElements,
+  selectCurrentRootId,
+  (elements, id) => {
+    const root = elements[id];
+    if (!root) return {};
+    return arrayToMap(root.children.map((childId) => elements[childId]));
+  },
+);

@@ -2,18 +2,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
 import * as R from 'ramda';
-import SaveElementAction from './Actions/SaveElementAction';
-import Borders from './Borders/Borders';
-import BorderCrumb from './Crumb/BorderCrumb';
 import {
   selectBorderedElementsRef,
-  selectCurrentProject,
   selectCurrentRootId,
   selectElementBeingEdited,
   selectElementById,
-} from '../../../redux/project/selectors';
-import { BorderStyles } from '../../../types';
-import { AppReduxState } from '../../../redux/types';
+} from '@Redux/project/selectors/element';
+import { selectCurrentProject } from '@Redux/project/selectors/base';
+import { BorderStyles } from '@Src/types';
+import { AppReduxState } from '@Redux/types';
+import SaveElementAction from './Actions/SaveElementAction';
+import Borders from './Borders/Borders';
+import BorderCrumb from './Crumb/BorderCrumb';
 
 type Props = {
   elementId: string;

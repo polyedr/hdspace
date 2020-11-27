@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
 import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { FORM_ERROR } from 'final-form';
-import * as Actions from './actions';
 import {
   convertProfileDataFromResponse,
   convertUserDataFromResponse,
-} from '../../api/converters/fromResponse';
+} from '@Api/converters/fromResponse';
 import {
   apiActivateUser,
   apiChangeProfileData,
@@ -16,9 +15,10 @@ import {
   apiRestorePassword,
   registerUser,
   apiGetUser,
-} from '../../api/user';
+} from '@Api/user';
+import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import TYPES from '../actionTypes';
-import { convertUserDataToRequest } from '../../api/converters/toRequest';
+import * as Actions from './actions';
 import { ServerProfileData, ServerUserData, TokenPair } from '../../types';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';

@@ -6,19 +6,13 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { lighten } from '@material-ui/core';
 import {
   selectActiveElementId,
-  selectCurrentScreenId,
   selectElementAsTree,
-} from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  addChildToElement,
-  deleteElement,
-} from '../../../../../redux/project/actions';
-import {
-  DropdownItemElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { addChildToElement, deleteElement } from '@Redux/project/actions';
+import { DropdownItemElement, PropertiesChangeProps } from '@Src/types';
+import { AppReduxState } from '@Redux/types';
 import DropdownItem from './DropdownItem';
 
 const useStyles = makeStyles(({ palette }) => ({

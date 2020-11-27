@@ -4,13 +4,11 @@ import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useHistory } from 'react-router';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectScreenById } from '@Redux/project/selectors/screen';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import { activateScreen } from '../redux/project/actions';
 import RightPanel from '../components/RightPanel';
-import {
-  selectCurrentProjectId,
-  selectScreenById,
-} from '../redux/project/selectors';
 
 const useStyles = makeStyles({
   screen: {

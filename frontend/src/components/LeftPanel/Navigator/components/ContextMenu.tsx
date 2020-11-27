@@ -4,16 +4,16 @@ import Menu, { MenuProps } from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectActiveElement,
-  selectCurrentScreenId,
-  selectItemToCopyInfo,
-} from '../../../../redux/project/selectors';
-import {
   copyActiveElement,
   deleteElement,
   pasteCopiedElement,
-} from '../../../../redux/project/actions';
-import { canElementHaveChildren } from '../../../../utils/AvailableChildrenHelper';
+} from '@Redux/project/actions';
+import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
+import {
+  selectActiveElement,
+  selectItemToCopyInfo,
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import Icon from '../../../UI/Icon';
 
 const StyledMenu = withStyles({

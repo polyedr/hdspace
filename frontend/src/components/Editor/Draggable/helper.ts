@@ -1,6 +1,6 @@
 import { XYCoord } from 'react-dnd';
 
-import { DropPosition } from '../../../constants/dragAndDrop';
+import { DropPosition } from '@Constants/dragAndDrop';
 import { ElementData, StateElement, SyntheticElement } from '../../../types';
 
 export const getBlockDropPosition = (

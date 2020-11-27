@@ -2,18 +2,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import {
-  selectActiveElement,
-  selectElementFileInput,
-} from '../../../../../redux/project/selectors';
-import useImageUpload from '../../../../../utils/nn/hooks/useImageUpload';
-import useNNProcessing from '../../../../../utils/nn/hooks/useNNProcessing';
-import {
-  ImageElement,
-  NNBlockType,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import useImageUpload from '@Utils/nn/hooks/useImageUpload';
+import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
+import { ImageElement, NNBlockType, PropertiesChangeProps } from '@Src/types';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { selectElementFileInput } from '@Redux/project/selectors/base';
 
 type Props = {
   blockType: NNBlockType;

@@ -1,18 +1,14 @@
 /* eslint-disable no-console */
 import { put, call, select } from 'redux-saga/effects';
-import { projectUpdateHelperSaga, reqWrapper } from './shared';
-import * as Actions from '../actions';
-import { selectors } from '..';
-import { createScreenSaga, getScreensSaga } from './screen';
-import { convertCreatedProjectToRequest } from '../../../api/converters/toRequest';
+
+import { convertCreatedProjectToRequest } from '@Api/converters/toRequest';
 import {
   apiCreateProject,
   apiDeleteProject,
   apiGetProjectList,
   apiUpdateProject,
   apiGetProjectWithScreens,
-} from '../../../api/project';
-import { selectProjectsDataNext } from '../selectors';
+} from '@Api/project';
 import {
   PaginatedResponse,
   Project,
@@ -20,6 +16,15 @@ import {
   Result,
 } from '../../../types';
 import { enqueueSnackbar } from '../../notification/actions';
+import { projectUpdateHelperSaga, reqWrapper } from './shared';
+import * as Actions from '../actions';
+import { createScreenSaga, getScreensSaga } from './screen';
+import {
+  selectCurrentProject,
+  selectProjectById,
+  selectProjectsAsArr,
+  selectProjectsDataNext,
+} from '../selectors/base';
 
 export function* getProjectListSaga() {
   try {
@@ -119,7 +124,7 @@ export function* createProjectSaga({
     );
 
     if (result) {
-      const projects: Project[] = yield select(selectors.selectProjectsAsArr);
+      const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, result]));
 
       yield put(Actions.setCurrentProjectId(result.id));
@@ -170,9 +175,7 @@ export function* deleteProjectSaga({
     );
 
     if (result) {
-      const projectList: Project[] = yield select(
-        selectors.selectProjectsAsArr,
-      );
+      const projectList: Project[] = yield select(selectProjectsAsArr);
       const newProjectList: Project[] = projectList.filter(
         (project) => project.id !== id,
       );
@@ -206,9 +209,7 @@ export function* renameProjectSaga({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
   try {
-    const project: Project = yield select(
-      selectors.selectProjectById(projectID),
-    );
+    const project: Project = yield select(selectProjectById(projectID));
 
     const { result, error }: Result<Project> = yield call(
       reqWrapper,
@@ -249,8 +250,8 @@ export function* updateProjectSaga(
       return;
     }
 
-    const currentProject: ReturnType<typeof selectors.selectCurrentProject> = yield select(
-      selectors.selectCurrentProject,
+    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
+      selectCurrentProject,
     );
 
     const success: boolean = yield call(projectUpdateHelperSaga, project);

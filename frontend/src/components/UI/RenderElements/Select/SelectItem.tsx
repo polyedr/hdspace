@@ -4,7 +4,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import MenuItem from '@material-ui/core/MenuItem';
-import { selectCurrentProjectClasses } from '../../../../redux/project/selectors';
+import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { makeComponentStyles } from '../styles';
 
 type Props = {

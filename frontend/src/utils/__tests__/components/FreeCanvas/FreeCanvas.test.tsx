@@ -2,9 +2,9 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
+import TYPES from '@Redux/actionTypes';
 import FreeCanvas from '../../../../components/Editor/FreeCanvas';
 import { mockRootElement, mockState } from '../../test-utils';
-import TYPES from '../../../../redux/actionTypes';
 
 describe('Free Canvas', () => {
   let store;

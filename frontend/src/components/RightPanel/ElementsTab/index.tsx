@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useSelector } from 'react-redux';
 import { lighten } from '@material-ui/core';
+import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
+import { createElementsHierarchy } from '@Utils/elementsHierarchy';
+import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
+import CustomElementsBlock from '../CustomElementsLibrary/CustomElementsBlock';
 import ElementsBlock from './ElementsBlock';
 import Section from './Section';
-import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
-import { createElementsHierarchy } from '../../../utils/elementsHierarchy';
-import CustomElementsBlock from '../CustomElementsLibrary/CustomElementsBlock';
-import { selectFreeCanvasMode } from '../../../redux/project/selectors';
 
 const sections = ['elements', 'templates', 'library'];
 

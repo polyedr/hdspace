@@ -1,28 +1,31 @@
 import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { SharedRendererProps } from '../../UI/RenderElements/types';
-import { findParentByChildID } from '../../../utils/ElementsTreeHelper';
+
+import { findParentByChildID } from '@Utils/ElementsTreeHelper';
+import { updateSavedElementValues } from '@Redux/project/actions';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
+import {
+  ChildrenElements,
+  ElementEntity,
+  ProjectClass,
+  SavedElementsValues,
+} from '@Src/types';
 import {
   selectActiveElement,
-  selectCurrentProject,
   selectCurrentRootElement,
   selectCurrentRootId,
   selectElementBeingEdited,
   selectElementById,
   selectElementCanBeEdited,
   selectSavedElementsValues,
+} from '@Redux/project/selectors/element';
+import {
+  selectCurrentProject,
   selectScreenLoader,
   selectShowingBorders,
-} from '../../../redux/project/selectors';
-import { updateSavedElementValues } from '../../../redux/project/actions';
-import { selectIsPrototypeMode } from '../../../redux/user/selectors';
-import { LIBRARY_ELEMENTS } from '../../../domain/libraryElements/libraryElements';
-import {
-  ChildrenElements,
-  ElementEntity,
-  ProjectClass,
-  SavedElementsValues,
-} from '../../../types';
+} from '@Redux/project/selectors/base';
+import { SharedRendererProps } from '../../UI/RenderElements/types';
 
 const isElementStructType = (type: string): type is ElementEntity => {
   return type in LIBRARY_ELEMENTS;

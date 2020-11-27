@@ -4,15 +4,15 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core';
+import { addChildToElement } from '@Redux/project/actions';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import generateUniqueName from '@Utils/generateUniqueName';
+import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
 import {
   selectActiveItemChildren,
-  selectCurrentScreenId,
   selectElementsByIds,
-} from '../../../../../redux/project/selectors';
-import { addChildToElement } from '../../../../../redux/project/actions';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import generateUniqueName from '../../../../../utils/generateUniqueName';
-import { PropertiesChangeProps, SelectItemElement } from '../../../../../types';
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import SelectOption from './SelectOption';
 
 const useStyles = makeStyles(({ palette }) => ({

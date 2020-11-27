@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -9,25 +10,21 @@ import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import * as CSS from 'csstype';
-import { useDebouncedCallback } from 'use-debounce';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { getPermissibleValue } from '../../../../../utils/NumberHelper';
-import FONTS from '../../../../../constants/fonts';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { getPermissibleValue } from '@Utils/NumberHelper';
+
 import {
   selectActiveElementId,
   selectCurrentEditableStyles,
-} from '../../../../../redux/project/selectors';
-import StylesHeader from '../../helperComponents/StylesHeader';
-import ColorSettings from '../../helperComponents/ColorSettings';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+} from '@Redux/project/selectors/element';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import FONTS from '@Constants/fonts';
 import {
   StyledTextField,
   StyledToggleButton,
-} from '../../../../styledComponents';
+} from '@Components/styledComponents';
+import StylesHeader from '../../helperComponents/StylesHeader';
+import ColorSettings from '../../helperComponents/ColorSettings';
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;

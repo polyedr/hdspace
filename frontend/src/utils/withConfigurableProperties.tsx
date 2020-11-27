@@ -1,10 +1,8 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectActiveElement,
-  selectCurrentScreenId,
-  selectEditableStyles,
-} from '../redux/project/selectors';
+import { selectEditableStyles } from '@Redux/project/selectors/base';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   removeElementStyles,
   removeSharedStyles,

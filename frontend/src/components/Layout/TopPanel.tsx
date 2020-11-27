@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
-import Avatar from './Avatar';
-import { selectCurrentProject } from '../../redux/project/selectors';
+import { selectCurrentProject } from '@Redux/project/selectors/base';
+import { renameProject } from '@Redux/project/actions';
 import Dialog from '../Dialogs/Dialog';
-import { renameProject } from '../../redux/project/actions';
 import TopBar from './TopBar';
+import Avatar from './Avatar';
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {

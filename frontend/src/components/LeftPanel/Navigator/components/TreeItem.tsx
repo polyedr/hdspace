@@ -1,16 +1,16 @@
 import React, { MouseEvent, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { RenderItemParams } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { lighten } from '@material-ui/core';
-import { useSelector } from 'react-redux';
+import { selectElementById } from '@Redux/project/selectors/element';
+import { splitWords } from '@Utils/stringHelper';
+import { ICONS } from '@Domain/libraryElements/libraryElements';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '../utils';
 import ContextMenu from './ContextMenu';
-import { ICONS } from '../../../../domain/libraryElements/libraryElements';
-import { selectElementById } from '../../../../redux/project/selectors';
-import { splitWords } from '../../../../utils/stringHelper';
 
 const useStyles = makeStyles(({ palette }) => ({
   iconButton: {

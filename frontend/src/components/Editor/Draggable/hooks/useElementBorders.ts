@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addBorderedElementRef } from '../../../../redux/project/actions';
+import { addBorderedElementRef } from '@Redux/project/actions';
 import {
   selectActiveElementId,
-  selectShowingBorders,
-  selectCurrentDropTargetParams,
   selectBorderedRef,
   selectCurrentRootId,
   selectElementById,
   selectHoveredElementId,
-} from '../../../../redux/project/selectors';
+} from '@Redux/project/selectors/element';
+import {
+  selectShowingBorders,
+  selectCurrentDropTargetParams,
+} from '@Redux/project/selectors/base';
 
 const useElementBorders = (
   elementId: string,

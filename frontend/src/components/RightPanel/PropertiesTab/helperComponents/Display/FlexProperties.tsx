@@ -5,16 +5,12 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import { FormControlLabel } from '@material-ui/core';
 import HeightIcon from '@material-ui/icons/Height';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '../../../../../types';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
 
+import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import PlaceItemsProperties from './PlaceItemsProperties';
-import { selectCurrentEditableStyles } from '../../../../../redux/project/selectors';
 
 const useStyles = makeStyles({
   arrowRotated: {

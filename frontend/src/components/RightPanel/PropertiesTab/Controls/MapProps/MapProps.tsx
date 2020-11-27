@@ -11,13 +11,13 @@ import {
   MIN_LATITUDE,
   MIN_LONGITUDE,
   MIN_MAP_ZOOM,
-} from '../../../../../constants/defaultParams';
-import { selectActiveElementParams } from '../../../../../redux/project/selectors';
-import withConfigurableProperties from '../../../../../utils/withConfigurableProperties';
-import { getPermissibleValue } from '../../../../../utils/NumberHelper';
-import { MapElement, PropertiesChangeProps } from '../../../../../types';
-import { AppReduxState } from '../../../../../redux/types';
-import { StyledTextField } from '../../../../styledComponents';
+} from '@Constants/defaultParams';
+import { selectActiveElementParams } from '@Redux/project/selectors/element';
+import withConfigurableProperties from '@Utils/withConfigurableProperties';
+import { getPermissibleValue } from '@Utils/NumberHelper';
+import { MapElement, PropertiesChangeProps } from '@Src/types';
+import { AppReduxState } from '@Redux/types';
+import { StyledTextField } from '@Components/styledComponents';
 
 const useStyles = makeStyles({
   text: {

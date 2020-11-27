@@ -1,9 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectElementFileInput,
-  selectElementById,
-} from '../redux/project/selectors';
+import { selectElementFileInput } from '@Redux/project/selectors/base';
+import { selectElementById } from '@Redux/project/selectors/element';
 import { addFileInput } from '../redux/project/actions';
 
 const generateImageName = (url: string, width: number, height: number) => {

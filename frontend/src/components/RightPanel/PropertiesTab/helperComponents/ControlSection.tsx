@@ -1,11 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { splitWords } from '../../../../utils/stringHelper';
+import { splitWords } from '@Utils/stringHelper';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
-} from '../../../styledComponents';
+} from '@Components/styledComponents';
 
 const useStyles = makeStyles({
   section: {},
