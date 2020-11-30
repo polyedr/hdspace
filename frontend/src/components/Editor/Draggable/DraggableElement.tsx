@@ -13,7 +13,6 @@ import {
   createElements,
   moveElement,
   resetElementEditState,
-  setActiveElement,
   setCurrentDropTargetParams,
   setElementBeingEdited,
   setElementCanBeEdited,
@@ -258,7 +257,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const clickHandler = useCallback(
     (event: React.SyntheticEvent) => {
       event.stopPropagation();
-      dispatch(setActiveElement(elementId));
       if (
         element &&
         EDITABLE_COMPONENTS_LIST.includes(element.type) &&
