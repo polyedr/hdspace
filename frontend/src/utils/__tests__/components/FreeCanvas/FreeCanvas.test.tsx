@@ -3,6 +3,8 @@ import configureStore from 'redux-mock-store';
 import { render, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import TYPES from '@Redux/actionTypes';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 import FreeCanvas from '../../../../components/Editor/FreeCanvas';
 import { mockRootElement, mockState } from '../../test-utils';
 
@@ -16,7 +18,9 @@ describe('Free Canvas', () => {
 
     ui = render(
       <Provider store={store}>
-        <FreeCanvas />
+        <DndProvider backend={HTML5Backend}>
+          <FreeCanvas />
+        </DndProvider>
       </Provider>,
     );
   });
@@ -30,7 +34,7 @@ describe('Free Canvas', () => {
     fireEvent.click(root);
 
     const actions = store.getActions();
-    expect(actions[0].type).toBe(TYPES.SET_ACTIVE_ELEMENT_ID);
+    expect(actions[0].type).toBe(TYPES.SET_ACTIVE_ELEMENT_SAGA);
     expect(actions[0].payload).toBe(mockRootElement.id);
   });
 });
