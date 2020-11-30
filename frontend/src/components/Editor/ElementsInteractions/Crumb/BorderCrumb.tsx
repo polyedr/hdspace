@@ -8,6 +8,7 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectShowingBorders } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
+import { createStyles } from '@material-ui/core';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
 type Props = {
@@ -16,24 +17,26 @@ type Props = {
   children?: any;
 };
 
-const useStyles = makeStyles((theme) => ({
-  crumb: {
-    position: 'absolute',
-    padding: '2px 4px',
-    fontSize: '12px',
-    lineHeight: 1,
-    color: theme.palette.common.white,
-    background: '#5A899D',
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    zIndex: 3,
-  },
-  label: {
-    display: 'block',
-    padding: '0 3px',
-  },
-}));
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    crumb: {
+      position: 'absolute',
+      padding: '2px 4px',
+      fontSize: '12px',
+      lineHeight: 1,
+      color: theme.palette.common.white,
+      background: '#5A899D',
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      zIndex: 3,
+    },
+    label: {
+      display: 'block',
+      padding: '0 3px',
+    },
+  }),
+);
 
 const BorderCrumb: React.FC<Props> = ({ elementId, styles, children }) => {
   const classes = useStyles();

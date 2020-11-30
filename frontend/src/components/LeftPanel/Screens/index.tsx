@@ -20,7 +20,6 @@ import {
 } from '@Redux/project/selectors/screen';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Dialog from '@material-ui/core/Dialog';
 import HtmlImportForm from '@Components/HTMLImportForm';
 import ScreenListItem from './ScreenListItem';
 import { Scrollbar } from '../../UI';
@@ -160,9 +159,7 @@ const Screens = () => {
         </DragDropContext>
       </StyledAccordion>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <HtmlImportForm />
-      </Dialog>
+      <HtmlImportForm open={open} onClose={() => setOpen(false)} />
     </>
   );
 };

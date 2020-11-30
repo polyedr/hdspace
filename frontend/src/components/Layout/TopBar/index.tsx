@@ -18,33 +18,36 @@ import {
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { createStyles } from '@material-ui/core';
 import Formats from './Formats';
 import Actions from './Actions';
 
-const useStyles = makeStyles(({ typography, spacing }) => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  switch: {
-    padding: '0 1em',
-  },
-  title: {
-    fontSize: typography.fontSize,
-  },
-  wrapper: {
-    flex: 1,
-    display: 'flex',
-    flexWrap: 'nowrap',
-  },
-  magic: {
-    paddingRight: spacing(1),
-  },
-  magicButton: {
-    height: 40,
-  },
-}));
+const useStyles = makeStyles(({ typography, spacing }) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    switch: {
+      padding: '0 1em',
+    },
+    title: {
+      fontSize: typography.fontSize,
+    },
+    wrapper: {
+      flex: 1,
+      display: 'flex',
+      flexWrap: 'nowrap',
+    },
+    magic: {
+      paddingRight: spacing(1),
+    },
+    magicButton: {
+      height: 40,
+    },
+  }),
+);
 
 const TopBar: React.FC = () => {
   const dispatch = useDispatch();

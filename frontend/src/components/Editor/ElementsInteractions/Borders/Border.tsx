@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { BorderStyles, StateElement, StyleProps } from '@Src/types';
+import { createStyles } from '@material-ui/core';
 import { BorderPosition } from '../constants';
 
 type Props = {
@@ -12,20 +13,22 @@ type Props = {
   onClick?: (event: React.SyntheticEvent<EventTarget>) => void;
 };
 
-const useStyles = makeStyles((theme) => ({
-  border: ({ position, isActive, isDropTarget }: Props) => {
-    const borderPosPrefix =
-      position.charAt(0).toUpperCase() + position.substring(1);
-    return {
-      position: 'absolute',
-      pointerEvents: 'none',
-      [`border${borderPosPrefix}Width`]: '1px',
-      [`border${borderPosPrefix}Style`]: 'solid',
-      [`border${borderPosPrefix}Color`]:
-        isActive || isDropTarget ? '#5A899D' : theme.palette.secondary.main,
-    };
-  },
-}));
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    border: ({ position, isActive, isDropTarget }: Props) => {
+      const borderPosPrefix =
+        position.charAt(0).toUpperCase() + position.substring(1);
+      return {
+        position: 'absolute',
+        pointerEvents: 'none',
+        [`border${borderPosPrefix}Width`]: '1px',
+        [`border${borderPosPrefix}Style`]: 'solid',
+        [`border${borderPosPrefix}Color`]:
+          isActive || isDropTarget ? '#5A899D' : theme.palette.secondary.main,
+      };
+    },
+  }),
+);
 
 const Border: React.FC<Props> = (props) => {
   const { element, position, styles, isActive, onClick } = props;

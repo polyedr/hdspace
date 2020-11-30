@@ -5,7 +5,7 @@ import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { CircularProgress, lighten } from '@material-ui/core';
+import { CircularProgress, createStyles, lighten } from '@material-ui/core';
 import {
   selectFreeCanvasMode,
   selectRedoActions,
@@ -19,22 +19,24 @@ import {
   undoAction,
 } from '@Redux/project/actions';
 
-const useStyles = makeStyles(({ palette }) => ({
-  root: {
-    display: 'flex',
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-  },
-  iconButton: {
-    color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+const useStyles = makeStyles(({ palette }) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      flexWrap: 'nowrap',
+      alignItems: 'center',
     },
-    '&.Mui-disabled': {
-      color: '#888',
+    iconButton: {
+      color: palette.common.white,
+      '&:hover': {
+        backgroundColor: lighten(palette.panel.main, 0.1),
+      },
+      '&.Mui-disabled': {
+        color: '#888',
+      },
     },
-  },
-}));
+  }),
+);
 
 const Actions: React.FC = () => {
   const classes = useStyles();

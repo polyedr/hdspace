@@ -8,37 +8,40 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { renameProject } from '@Redux/project/actions';
+import { createStyles } from '@material-ui/core';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';
 import Avatar from './Avatar';
 
-const useStyles = makeStyles(({ typography, palette }) => ({
-  toolbar: {
-    backgroundColor: palette.panel.main,
-    color: palette.common.white,
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  title: {
-    padding: '0.5em 1em',
-    '&:hover $editButton': {
-      opacity: 1,
+const useStyles = makeStyles(({ typography, palette }) =>
+  createStyles({
+    toolbar: {
+      backgroundColor: palette.panel.main,
+      color: palette.common.white,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     },
-    display: 'flex',
-    alignItems: 'center',
-  },
-  editButton: {
-    color: palette.common.white,
-    opacity: 0,
-    transition: 'opacity 0.1s ease',
-  },
-  projectName: {
-    fontSize: '1rem',
-    fontFamily: typography.fontFamily,
-    fontWeight: 'bold',
-  },
-}));
+    title: {
+      padding: '0.5em 1em',
+      '&:hover $editButton': {
+        opacity: 1,
+      },
+      display: 'flex',
+      alignItems: 'center',
+    },
+    editButton: {
+      color: palette.common.white,
+      opacity: 0,
+      transition: 'opacity 0.1s ease',
+    },
+    projectName: {
+      fontSize: '1rem',
+      fontFamily: typography.fontFamily,
+      fontWeight: 'bold',
+    },
+  }),
+);
 
 const TopPanel = () => {
   const dispatch = useDispatch();
