@@ -33,7 +33,7 @@ describe('Free Draggable', () => {
 
     const actions = store.getActions();
 
-    expect(actions[0].type).toEqual(TYPES.SET_ACTIVE_ELEMENT_ID);
+    expect(actions[0].type).toEqual(TYPES.SET_ACTIVE_ELEMENT_SAGA);
     expect(actions[0].payload).toEqual(mockStateElement.id);
   });
 

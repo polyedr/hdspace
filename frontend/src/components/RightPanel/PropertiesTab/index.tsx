@@ -40,6 +40,7 @@ import Scrollbar from '../../UI/Scrollbar';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
 import { Control, Entity, NNBlockType } from '../../../types';
+import ColumnsControls from './Controls/Columns';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -106,6 +107,18 @@ const CONTROLS: Record<Control, ControlInfo> = {
   videoSettings: { Control: VideoSettings },
   flexGrow: { Control: FlexGrow, styles: ['flexGrow'] },
   backgroundSize: { Control: BackgroundSize, styles: ['backgroundSize'] },
+  columns: {
+    Control: ColumnsControls,
+    styles: [
+      'columnCount',
+      'columnGap',
+      'columnFill',
+      'columnWidth',
+      'columnRuleStyle',
+      'columnRuleWidth',
+      'columnRuleColor',
+    ],
+  },
 };
 
 const useStyles = makeStyles({
@@ -121,6 +134,8 @@ const PropertiesTab: React.FC = () => {
   const activeElement = useSelector(selectActiveElement);
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
   const editableStyles = useSelector(selectCurrentEditableStyles);
+
+  // console.log('EDITABLE STYLES!!!', editableStyles);
 
   const getControlStyles = useCallback(
     (controlName: string) => {

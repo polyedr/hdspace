@@ -132,32 +132,37 @@ export const selectActiveElementStyles = makeActiveElementInfoSelector(
   'styles',
 );
 
-export const selectCurrentEditableStyles = createSelector(
+export const selectCurrentEditableStyles = createSelector<
+  AppReduxState,
+  StateElement,
+  Project,
+  StateElement['styles'],
+  string,
+  React.CSSProperties
+>(
   selectActiveElement,
   selectCurrentProject,
   selectActiveElementStyles,
   selectEditableStyles,
-  (
-    activeElement: StateElement,
-    currentProject: Project,
-    activeElementStyles: StateElement['styles'],
-    editableStyles: string,
-  ) => {
+  (activeElement, currentProject, activeElementStyles, editableStyles) => {
     const { type } = activeElement;
 
     const activeElementClassNames = activeElementStyles.classNames;
 
-    const activeEntityStyles =
-      (type !== 'none' &&
-        currentProject.projectData.classes.find(
-          (cssClass) => cssClass.className === type,
-        )) ||
-      {};
+    let activeEntityStyles = {};
+    if (type !== 'none') {
+      const projectClass = currentProject.projectData.classes.find(
+        (cssClass) => cssClass.className === type,
+      );
+      if (projectClass) {
+        activeEntityStyles = projectClass.rules;
+      }
+    }
 
     const activeSharedStyles =
       currentProject.projectData.classes.find(
         (cssClass) => cssClass.className === activeElementClassNames[1],
-      ) || {};
+      )?.rules || {};
 
     const getActiveItemStyles = (activeStyles: string): React.CSSProperties => {
       if (activeStyles === 'ownStyles' || activeStyles === '') {
@@ -170,6 +175,10 @@ export const selectCurrentEditableStyles = createSelector(
     };
 
     const activeItemStyles = getActiveItemStyles(editableStyles);
+
+    /* console.log('ACTIVE ENTITY STYLES!!', activeEntityStyles);
+    console.log('ACTIVE SHARED STYLES!!', activeSharedStyles);
+    console.log('ACTIVE ITEM STYLES!!', activeItemStyles); */
 
     return {
       ...activeEntityStyles,

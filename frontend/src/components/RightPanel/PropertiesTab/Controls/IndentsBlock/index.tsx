@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
+import { useDebouncedCallback } from 'use-debounce';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { useDebouncedCallback } from 'use-debounce';
 import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
@@ -164,7 +164,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginTop)}
-          value={state.marginTop}
+          value={parseInt(state.marginTop as string)}
           onChange={handleChange}
         />
 
@@ -175,7 +175,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginRight)}
-          value={state.marginRight}
+          value={parseInt(state.marginRight as string)}
           onChange={handleChange}
         />
 
@@ -186,7 +186,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginBottom)}
-          value={state.marginBottom}
+          value={parseInt(state.marginBottom as string)}
           onChange={handleChange}
         />
 
@@ -197,7 +197,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginLeft)}
-          value={state.marginLeft}
+          value={parseInt(state.marginLeft as string)}
           onChange={handleChange}
         />
 
@@ -211,7 +211,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingTop)}
-            value={state.paddingTop}
+            value={parseInt(state.paddingTop as string)}
             onChange={handleChange}
           />
 
@@ -222,7 +222,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingRight)}
-            value={state.paddingRight}
+            value={parseInt(state.paddingRight as string)}
             onChange={handleChange}
           />
 
@@ -233,7 +233,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingBottom)}
-            value={state.paddingBottom}
+            value={parseInt(state.paddingBottom as string)}
             onChange={handleChange}
           />
 
@@ -244,7 +244,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingLeft)}
-            value={state.paddingLeft}
+            value={parseInt(state.paddingLeft as string)}
             onChange={handleChange}
           />
         </div>
