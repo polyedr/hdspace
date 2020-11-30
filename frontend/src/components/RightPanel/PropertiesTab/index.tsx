@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
+import { AVAILABLE_CONTROLS } from '@Domain/core';
+import { Control, Entity, NNBlockType } from '@Src/types';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
-import { AVAILABLE_CONTROLS } from '../../../domain/core';
 import Display from './Controls/Display/Display';
 import IndentsBlock from './Controls/IndentsBlock';
 import SizeBlock from './Controls/SizeBlock/SizeBlock';
@@ -36,7 +37,6 @@ import BackgroundSize from './Controls/BackgroundSize';
 import Scrollbar from '../../UI/Scrollbar';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
-import { Control, Entity, NNBlockType } from '../../../types';
 import ColumnsControls from './Controls/Columns';
 
 const CONTROLS: Record<Control, React.ComponentType<any>> = {

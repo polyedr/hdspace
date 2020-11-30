@@ -1,5 +1,5 @@
 import List from '@material-ui/core/List';
-import React from 'react';
+import React, { useState } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
@@ -9,6 +9,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { createScreen, changeScreensOrder } from '@Redux/project/actions';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
   selectCurrentProjectId,
   selectScreenCreateLoader,
@@ -17,6 +18,10 @@ import {
   selectCurrentScreenId,
   selectScreens,
 } from '@Redux/project/selectors/screen';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Dialog from '@material-ui/core/Dialog';
+import HtmlImportForm from '@Components/HTMLImportForm';
 import ScreenListItem from './ScreenListItem';
 import { Scrollbar } from '../../UI';
 import {
@@ -65,52 +70,100 @@ const Screens = () => {
     dispatch(changeScreensOrder(result));
   };
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const [open, setOpen] = useState<boolean>(false);
+
+  const handleOpenMenu = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    setAnchorEl(ev.currentTarget);
+  };
+
+  const handleCloseMenu = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    setAnchorEl(null);
+  };
+
   return (
-    <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <span>Screens</span>
+    <>
+      <StyledAccordion defaultExpanded>
+        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <span>Screens</span>
 
-        <IconButton
-          title="Create Screen"
-          size="small"
-          onClick={handleCreateScreen}
-          className={classes.button}
-          disabled={screenCreateLoader}
-        >
-          {!screenCreateLoader ? (
-            <AddIcon />
-          ) : (
-            <CircularProgress size={24} color="secondary" />
-          )}
-        </IconButton>
-      </StyledAccordionSummary>
+          <div>
+            <IconButton
+              title="Create Screen"
+              size="small"
+              onClick={handleCreateScreen}
+              className={classes.button}
+              disabled={screenCreateLoader}
+            >
+              {!screenCreateLoader ? (
+                <AddIcon />
+              ) : (
+                <CircularProgress size={24} color="secondary" />
+              )}
+            </IconButton>
 
-      <DragDropContext onDragEnd={handleReorder}>
-        <Droppable droppableId="droppable">
-          {(provided) => (
-            <StyledAccordionDetails>
-              <Scrollbar autoHeightMax={200}>
-                <List
-                  className={classes.list}
-                  innerRef={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  {screens.map((screen, i) => (
-                    <ScreenListItem
-                      key={screen.id}
-                      screen={screen}
-                      index={i}
-                      active={screen.id === currentScreenId}
-                    />
-                  ))}
-                  {provided.placeholder}
-                </List>
-              </Scrollbar>
-            </StyledAccordionDetails>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </StyledAccordion>
+            <IconButton
+              title="more"
+              size="small"
+              className={classes.button}
+              onClick={handleOpenMenu}
+            >
+              <MoreHorizIcon />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem
+                dense
+                onClick={(ev) => {
+                  setOpen(true);
+                  handleCloseMenu(ev);
+                }}
+              >
+                Create screen from external html file
+              </MenuItem>
+            </Menu>
+          </div>
+        </StyledAccordionSummary>
+
+        <DragDropContext onDragEnd={handleReorder}>
+          <Droppable droppableId="droppable">
+            {(provided) => (
+              <StyledAccordionDetails>
+                <Scrollbar autoHeightMax={200}>
+                  <List
+                    className={classes.list}
+                    innerRef={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    {screens.map((screen, i) => (
+                      <ScreenListItem
+                        key={screen.id}
+                        screen={screen}
+                        index={i}
+                        active={screen.id === currentScreenId}
+                      />
+                    ))}
+                    {provided.placeholder}
+                  </List>
+                </Scrollbar>
+              </StyledAccordionDetails>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </StyledAccordion>
+
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <HtmlImportForm />
+      </Dialog>
+    </>
   );
 };
 
