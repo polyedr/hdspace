@@ -1,7 +1,5 @@
 import React, { useCallback, memo, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
-import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
@@ -29,8 +27,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 };
 
 const BackgroundSize: React.FC<Props> = memo(
-  ({ updateStyles, removeStyles, backgroundSize }) => {
-    const activeElementId = useSelector(selectActiveElementId);
+  ({ updateStyles, removeStyles, backgroundSize, activeElementId }) => {
     const [width, height] = useMemo(() => {
       if (!backgroundSize) {
         return [0, 0];

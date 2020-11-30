@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useState, memo } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -13,7 +12,6 @@ import * as CSS from 'csstype';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { getPermissibleValue } from '@Utils/NumberHelper';
 
-import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import FONTS from '@Constants/fonts';
 import {
@@ -49,6 +47,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 const TypographyBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  activeElementId,
   fontFamily,
   fontSize,
   fontWeight,
@@ -57,7 +56,6 @@ const TypographyBlock: React.FC<Props> = ({
   color,
 }) => {
   const classes = useStyles();
-  const activeElementId = useSelector(selectActiveElementId);
 
   const handleColorSettingsChange = useCallback(
     (newColor: string) => {
@@ -189,7 +187,7 @@ const TypographyBlock: React.FC<Props> = ({
         <div>
           <ColorSettings
             currentColor={color || 'transparent'}
-            activeItemID={activeElementId}
+            activeElementId={activeElementId}
             onChange={handleColorSettingsChange}
           />
         </div>
@@ -198,4 +196,4 @@ const TypographyBlock: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(TypographyBlock);
+export default withConfigurableProperties(memo(TypographyBlock));

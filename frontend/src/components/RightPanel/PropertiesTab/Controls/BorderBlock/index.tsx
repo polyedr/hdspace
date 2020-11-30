@@ -49,7 +49,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 };
 
 const BorderBlock: React.FC<Props> = ({
-  activeItemID,
+  activeElementId,
   updateStyles,
   removeStyles,
   borderWidth,
@@ -166,7 +166,7 @@ const BorderBlock: React.FC<Props> = ({
 
       <ColorSettings
         currentColor={borderColor}
-        activeItemID={activeItemID}
+        activeElementId={activeElementId}
         onChange={handleColorSettingsChange}
       />
     </div>

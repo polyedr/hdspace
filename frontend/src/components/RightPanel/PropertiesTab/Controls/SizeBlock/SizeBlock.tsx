@@ -1,12 +1,10 @@
 import React, { useCallback, memo, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
@@ -62,10 +60,10 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 const SizeBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  activeElementId,
   width,
   height,
 }) => {
-  const activeElementId = useSelector(selectActiveElementId);
   const classes = useStyles();
 
   const handleSelectChange = useCallback(

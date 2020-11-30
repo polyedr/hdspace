@@ -132,26 +132,6 @@ export const selectActiveElementStyles = makeActiveElementInfoSelector(
   'styles',
 );
 
-/* export const selectSharedStyles = (state: AppReduxState) => {
-  const activeElement = selectActiveElement(state);
-  let elementType = String(activeElement.type);
-  if (activeElement.type === 'none') {
-    const activeElementClassNames = selectActiveElementStyles(state).classNames;
-    // eslint-disable-next-line prefer-destructuring
-    elementType = activeElementClassNames[1];
-  }
-  return selectCurrentProject(state).projectData.classes.find(
-    (cssClass) => cssClass.className === elementType,
-  )?.rules;
-}; */
-
-/* createSelector(
-  selectActiveElement,
-  selectCurrentProject,
-  selectActiveElementStyles,
-  selectEditableStyles,
-); */
-
 export const selectCurrentEditableStyles = createSelector(
   selectActiveElement,
   selectCurrentProject,

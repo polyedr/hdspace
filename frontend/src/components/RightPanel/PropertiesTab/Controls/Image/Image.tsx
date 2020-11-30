@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 
 type Props = PropertiesChangeProps<ImageElement>;
 
-const Component: React.FC<Props> = ({ activeItemID }) => {
+const Component: React.FC<Props> = ({ activeElementId }) => {
   const classes = useStyles();
 
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -32,11 +32,13 @@ const Component: React.FC<Props> = ({ activeItemID }) => {
         alert('Choose image up to 5Mb!');
       } else {
         dispatch(
-          updateElementImage(activeItemID, file, { screenId: currentScreenId }),
+          updateElementImage(activeElementId, file, {
+            screenId: currentScreenId,
+          }),
         );
       }
     },
-    [dispatch, activeItemID, updateElementImage, currentScreenId],
+    [dispatch, activeElementId, currentScreenId],
   );
 
   return (

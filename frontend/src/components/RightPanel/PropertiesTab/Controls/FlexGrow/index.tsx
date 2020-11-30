@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { selectActiveElementId } from '@Redux/project/selectors/element';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ContainerElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
@@ -9,14 +7,15 @@ import StylesHeader from '../../helperComponents/StylesHeader';
 
 type Props = PropertiesChangeProps<ContainerElement> & {
   flexGrow?: React.CSSProperties['flexGrow'];
+  activeElementId: string;
 };
 
 const FlexGrow: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  activeElementId,
   flexGrow = 0,
 }) => {
-  const activeElementId = useSelector(selectActiveElementId);
   const el = document.getElementById(activeElementId);
   const parentStyles = el?.parentElement && getComputedStyle(el.parentElement);
   const isFlexItem = parentStyles?.display === 'flex';

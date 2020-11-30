@@ -896,7 +896,7 @@ export type SyntheticElement<T> = {
 export type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
-  activeItemID: string;
+  activeElementId: string;
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;

@@ -11,7 +11,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 const BackgroundBlock: React.FC<Props> = ({
   removeStyles,
   updateStyles,
-  activeItemID,
+  activeElementId,
   backgroundColor = 'transparent',
 }) => {
   const handleColorSettingsChange = useCallback(
@@ -31,7 +31,7 @@ const BackgroundBlock: React.FC<Props> = ({
 
       <ColorSettings
         currentColor={backgroundColor || 'transparent'}
-        activeItemID={activeItemID}
+        activeElementId={activeElementId}
         onChange={handleColorSettingsChange}
       />
     </div>
