@@ -20,6 +20,7 @@ import {
   Entity,
   LibraryElement,
   PaginatedArray,
+  Project,
   StateElement,
 } from '../../../types';
 import { AppReduxState } from '../../types';
@@ -131,53 +132,72 @@ export const selectActiveElementStyles = makeActiveElementInfoSelector(
   'styles',
 );
 
-export function selectSharedStyles(state: AppReduxState, elementType: string) {
+/* export const selectSharedStyles = (state: AppReduxState) => {
+  const activeElement = selectActiveElement(state);
+  let elementType = String(activeElement.type);
+  if (activeElement.type === 'none') {
+    const activeElementClassNames = selectActiveElementStyles(state).classNames;
+    // eslint-disable-next-line prefer-destructuring
+    elementType = activeElementClassNames[1];
+  }
   return selectCurrentProject(state).projectData.classes.find(
     (cssClass) => cssClass.className === elementType,
   )?.rules;
-}
+}; */
 
-export const selectCurrentEditableStyles = <
-  T extends keyof React.CSSProperties
->(
-  ruleName: T,
-) => (state: AppReduxState) => {
-  const activeElementType = selectActiveElement(state).type;
+/* createSelector(
+  selectActiveElement,
+  selectCurrentProject,
+  selectActiveElementStyles,
+  selectEditableStyles,
+); */
 
-  const activeElementStyles = selectActiveElementStyles<StateElement>(state)
-    .ownStyles;
+export const selectCurrentEditableStyles = createSelector(
+  selectActiveElement,
+  selectCurrentProject,
+  selectActiveElementStyles,
+  selectEditableStyles,
+  (
+    activeElement: StateElement,
+    currentProject: Project,
+    activeElementStyles: StateElement['styles'],
+    editableStyles: string,
+  ) => {
+    const { type } = activeElement;
 
-  const activeElementClassNames = selectActiveElementStyles(state).classNames;
+    const activeElementClassNames = activeElementStyles.classNames;
 
-  const editableStyles = selectEditableStyles(state);
+    const activeEntityStyles =
+      (type !== 'none' &&
+        currentProject.projectData.classes.find(
+          (cssClass) => cssClass.className === type,
+        )) ||
+      {};
 
-  const activeEntityStyles =
-    (activeElementType !== 'none' &&
-      selectSharedStyles(state, activeElementType)) ||
-    ({} as Required<React.CSSProperties>);
+    const activeSharedStyles =
+      currentProject.projectData.classes.find(
+        (cssClass) => cssClass.className === activeElementClassNames[1],
+      ) || {};
 
-  const activeSharedStyles =
-    selectSharedStyles(state, activeElementClassNames[1]) ||
-    ({} as Required<React.CSSProperties>);
+    const getActiveItemStyles = (activeStyles: string): React.CSSProperties => {
+      if (activeStyles === 'ownStyles' || activeStyles === '') {
+        return activeElementStyles.ownStyles as Required<React.CSSProperties>;
+      }
+      if (activeStyles === type) {
+        return activeEntityStyles;
+      }
+      return activeSharedStyles;
+    };
 
-  const getActiveItemStyles = (activeStyles: string): React.CSSProperties => {
-    if (activeStyles === 'ownStyles' || activeStyles === '') {
-      return activeElementStyles as Required<React.CSSProperties>;
-    }
-    if (activeStyles === activeElementType) {
-      return activeEntityStyles;
-    }
-    return activeSharedStyles;
-  };
+    const activeItemStyles = getActiveItemStyles(editableStyles);
 
-  const activeItemStyles = getActiveItemStyles(editableStyles);
-
-  return (
-    activeItemStyles[ruleName] ||
-    activeSharedStyles[ruleName] ||
-    activeEntityStyles[ruleName]
-  );
-};
+    return {
+      ...activeEntityStyles,
+      ...activeSharedStyles,
+      ...activeItemStyles,
+    };
+  },
+);
 
 export const selectCustomElementsHasNext = (state: AppReduxState) => {
   return !!selectProjectState(state).data.customElementsData.next;

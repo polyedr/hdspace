@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import { FormControlLabel } from '@material-ui/core';
@@ -9,7 +8,6 @@ import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import PlaceItemsProperties from './PlaceItemsProperties';
 
 const useStyles = makeStyles({
@@ -22,13 +20,19 @@ const useStyles = makeStyles({
   },
 });
 
-const FlexProperties: React.FC<PropertiesChangeProps<
-  LibraryElement<Entity>
->> = ({ updateStyles }) => {
+type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+  flexDirection: React.CSSProperties['flexDirection'];
+  justifyContent: React.CSSProperties['justifyContent'];
+  alignItems: React.CSSProperties['alignItems'];
+};
+
+const FlexProperties: React.FC<Props> = ({
+  updateStyles,
+  flexDirection,
+  justifyContent,
+  alignItems,
+}) => {
   const classes = useStyles();
-  const flexDirection = useSelector(
-    selectCurrentEditableStyles('flexDirection'),
-  );
   const handleChangeOrientation = (ev, newOrientation) => {
     if (!newOrientation) return;
     updateStyles({ flexDirection: newOrientation });
@@ -62,6 +66,8 @@ const FlexProperties: React.FC<PropertiesChangeProps<
         reversed={
           !!flexDirection && (flexDirection as string).startsWith('column')
         }
+        justifyContent={justifyContent}
+        alignItems={alignItems}
       />
     </>
   );

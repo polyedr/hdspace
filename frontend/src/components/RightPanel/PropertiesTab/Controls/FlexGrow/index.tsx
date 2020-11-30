@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import {
-  selectActiveElementId,
-  selectCurrentEditableStyles,
-} from '@Redux/project/selectors/element';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ContainerElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
-const FlexGrow: React.FC<PropertiesChangeProps<ContainerElement>> = ({
+type Props = PropertiesChangeProps<ContainerElement> & {
+  flexGrow?: React.CSSProperties['flexGrow'];
+};
+
+const FlexGrow: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  flexGrow = 0,
 }) => {
   const activeElementId = useSelector(selectActiveElementId);
-  const flexGrow = useSelector(selectCurrentEditableStyles('flexGrow'));
   const el = document.getElementById(activeElementId);
   const parentStyles = el?.parentElement && getComputedStyle(el.parentElement);
   const isFlexItem = parentStyles?.display === 'flex';

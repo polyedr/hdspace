@@ -6,10 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import {
-  selectActiveElementId,
-  selectCurrentEditableStyles,
-} from '@Redux/project/selectors/element';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
@@ -57,13 +54,18 @@ const getUnitFromValue = (value: string): UnitName => {
   return Unit.px;
 };
 
-const SizeBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
+type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+  width?: React.CSSProperties['width'];
+  height?: React.CSSProperties['height'];
+};
+
+const SizeBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  width,
+  height,
 }) => {
   const activeElementId = useSelector(selectActiveElementId);
-  const width = useSelector(selectCurrentEditableStyles('width')) || 'auto';
-  const height = useSelector(selectCurrentEditableStyles('height')) || 'auto';
   const classes = useStyles();
 
   const handleSelectChange = useCallback(

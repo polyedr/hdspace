@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -7,21 +6,23 @@ import InputLabel from '@material-ui/core/InputLabel';
 import * as CSS from 'csstype';
 
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { ALIGN_VALUES, JUSTIFY_VALUES } from './constants';
 import { useWrapperStyles } from './styles';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   reversed: boolean;
+  justifyContent?: React.CSSProperties['justifyContent'];
+  alignItems?: React.CSSProperties['alignItems'];
 };
 
-const PlaceItemsProperties: React.FC<Props> = ({ updateStyles, reversed }) => {
+const PlaceItemsProperties: React.FC<Props> = ({
+  updateStyles,
+  reversed,
+  alignItems,
+  justifyContent,
+}) => {
   const classes = useWrapperStyles();
-  const justifyContent = useSelector(
-    selectCurrentEditableStyles('justifyContent'),
-  );
-  const alignItems = useSelector(selectCurrentEditableStyles('alignItems'));
   return (
     <div className={classes.wrapper}>
       <FormControl>

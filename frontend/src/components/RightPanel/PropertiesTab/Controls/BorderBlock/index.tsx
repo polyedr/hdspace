@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDebouncedCallback } from 'use-debounce';
@@ -10,7 +9,6 @@ import {
   strToNumber,
 } from '@Utils/NumberHelper';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import {
@@ -44,18 +42,21 @@ const accessBorderRadius = (border: string) => {
   return matchedValue !== null ? matchedValue[0] : 'px';
 };
 
-const BorderBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
+type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+  borderColor?: React.CSSProperties['borderColor'];
+  borderWidth?: React.CSSProperties['borderWidth'];
+  borderRadius?: React.CSSProperties['borderRadius'];
+};
+
+const BorderBlock: React.FC<Props> = ({
   activeItemID,
   updateStyles,
   removeStyles,
+  borderWidth,
+  borderColor = 'transparent',
+  borderRadius = 'px',
 }) => {
   const classes = useStyles();
-  const borderColor =
-    useSelector(selectCurrentEditableStyles('borderColor')) || 'transparent';
-  const borderWidth = useSelector(selectCurrentEditableStyles('borderWidth'));
-  const borderRadius =
-    useSelector(selectCurrentEditableStyles('borderRadius')) || 'px';
-
   const validateBorderRadius = useCallback((radius: string | null) => {
     if (!radius) {
       return undefined;

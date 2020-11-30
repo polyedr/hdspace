@@ -27,10 +27,16 @@ const editReducer = produce(
       }
 
       case TYPES.SET_CURRENT_PROJECT_ID: {
+        if (draft.currentProjectId === action.payload.projectId) {
+          return draft;
+        }
         return { ...draft, currentProjectId: action.payload.projectId };
       }
 
       case TYPES.SET_CURRENT_SCREEN_ID: {
+        if (draft.currentScreenId === action.payload.screenId) {
+          return draft;
+        }
         return { ...draft, currentScreenId: action.payload.screenId };
       }
 
@@ -39,10 +45,16 @@ const editReducer = produce(
       }
 
       case TYPES.SET_ACTIVE_ELEMENT_ID: {
+        if (draft.activeElementId === action.payload) {
+          return draft;
+        }
         return { ...draft, activeElementId: action.payload };
       }
 
       case TYPES.SET_HOVERED_ELEMENT: {
+        if (draft.hoveredElementId === action.payload) {
+          return draft;
+        }
         return { ...draft, hoveredElementId: action.payload };
       }
 
