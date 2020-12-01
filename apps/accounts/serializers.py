@@ -11,7 +11,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    profile = ProfileSerializer()
+    profile = ProfileSerializer(read_only=True)
 
     # Password validation to be able to authorize
     def create(self, validated_data):
