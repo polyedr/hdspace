@@ -1757,11 +1757,20 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                 node.div.set("style", str_styles)
 
+                # Buoyancy detection start
+                # Vertical
+                if(node.parent.direction == 1):
+                    buoyancy = int(node.y1)
+                # Horizontal
+                if(node.parent.direction == 0):
+                    buoyancy = int(node.x1)
+                # Buoyancy detection end
+
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
                     parent=node.parent.scenarioelement,
                     struct_type="container",
-                    parameters=parameters, styles=styles, buoyancy=0
+                    parameters=parameters, styles=styles, buoyancy=buoyancy
                 )
 
             # Display elements for some fcluster
