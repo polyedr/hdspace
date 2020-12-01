@@ -5,12 +5,14 @@ import {
   cardsSectionStyleControls,
   checkboxStyleControls,
   clockStyleControls,
+  columnsStyleControls,
   containerStyleControls,
   divBlockStyleControls,
   dropdownItemStyleControls,
   dropdownMenuStyleControls,
   dropdownStyleControls,
   featureSectionStyleControls,
+  gridStyleControls,
   headingStyleControls,
   hyperlinkStyleControls,
   imageStyleControls,
@@ -315,6 +317,8 @@ type DropdownMenuControls = typeof dropdownMenuStyleControls[number];
 type DropdownItemControls = typeof dropdownItemStyleControls[number];
 type VideoControls = typeof videoStyleControls[number];
 type UndefinedControls = typeof undefinedControls[number];
+type ColumnsControls = typeof columnsStyleControls[number];
+type GridControls = typeof gridStyleControls[number];
 
 export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
   other?: React.CSSProperties;
@@ -558,6 +562,67 @@ export const defaultUndefinedStyles: {
   },
 };
 
+export const defaultGridStyles: {
+  [K in GridControls]: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+    padding: '3px',
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+    height: '100%',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
+export const defaultColumnStyles: {
+  [K in ColumnsControls]: React.CSSProperties;
+} = {
+  columns: {
+    columnCount: 2,
+    columnWidth: 'auto',
+    columnFill: 'balance',
+    columnGap: '1em',
+    columnRuleWidth: 'medium',
+    columnRuleStyle: 'none',
+    columnRuleColor: '#000',
+  },
+  indents: {
+    ...DEFAULT_INDENTS,
+    padding: '3px',
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+    height: '100px',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
 type ButtonControls = typeof buttonStyleControls[number];
 type TextinputControls = typeof textinputStyleControls[number];
 type TextareaControls = typeof textareaStyleControls[number];
@@ -795,58 +860,6 @@ export const defaultPageTemplateStyles: {
     ...DEFAULT_DISPLAY,
     display: 'flex',
     flexDirection: 'column',
-  },
-  typography: {
-    ...DEFAULT_TYPOGRAPHY,
-  },
-  border: {
-    ...DEFAULT_BORDER,
-  },
-  background: {
-    ...DEFAULT_BACKGROUND,
-  },
-};
-
-export const defaultGridStyles: {
-  [K in pageTemplateControls]: React.CSSProperties;
-} = {
-  indents: {
-    ...DEFAULT_INDENTS,
-    padding: '3px',
-  },
-  size: {
-    ...DEFAULT_SIZE,
-    width: '100%',
-    height: '100%',
-  },
-  display: {
-    ...DEFAULT_DISPLAY,
-  },
-  typography: {
-    ...DEFAULT_TYPOGRAPHY,
-  },
-  border: {
-    ...DEFAULT_BORDER,
-  },
-  background: {
-    ...DEFAULT_BACKGROUND,
-  },
-};
-
-export const defaultColumnStyles: {
-  [K in pageTemplateControls]: React.CSSProperties;
-} = {
-  indents: {
-    ...DEFAULT_INDENTS,
-    padding: '3px',
-  },
-  size: {
-    ...DEFAULT_SIZE,
-    width: '100%',
-    height: '100%',
-  },
-  display: {
-    ...DEFAULT_DISPLAY,
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
