@@ -135,8 +135,6 @@ const PropertiesTab: React.FC = () => {
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
   const editableStyles = useSelector(selectCurrentEditableStyles);
 
-  // console.log('EDITABLE STYLES!!!', editableStyles);
-
   const getControlStyles = useCallback(
     (controlName: string) => {
       const controlInfo = CONTROLS[controlName];

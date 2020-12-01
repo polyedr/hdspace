@@ -176,10 +176,6 @@ export const selectCurrentEditableStyles = createSelector<
 
     const activeItemStyles = getActiveItemStyles(editableStyles);
 
-    /* console.log('ACTIVE ENTITY STYLES!!', activeEntityStyles);
-    console.log('ACTIVE SHARED STYLES!!', activeSharedStyles);
-    console.log('ACTIVE ITEM STYLES!!', activeItemStyles); */
-
     return {
       ...activeEntityStyles,
       ...activeSharedStyles,
