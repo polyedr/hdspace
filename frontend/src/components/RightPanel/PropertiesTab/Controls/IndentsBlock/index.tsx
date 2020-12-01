@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
-import { useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
-import { useDebouncedCallback } from 'use-debounce';
 import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
@@ -74,56 +72,50 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
+type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+  marginTop?: React.CSSProperties['marginTop'];
+  marginBottom?: React.CSSProperties['marginBottom'];
+  marginLeft?: React.CSSProperties['marginLeft'];
+  marginRight?: React.CSSProperties['marginRight'];
+  paddingTop?: React.CSSProperties['paddingTop'];
+  paddingBottom?: React.CSSProperties['paddingBottom'];
+  paddingLeft?: React.CSSProperties['paddingLeft'];
+  paddingRight?: React.CSSProperties['paddingRight'];
+};
+
+const IndentsBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  marginTop,
+  marginBottom,
+  marginLeft,
+  marginRight,
+  paddingTop,
+  paddingBottom,
+  paddingLeft,
+  paddingRight,
 }) => {
   const classes = useStyles();
-  const marginTop = useSelector(
-    selectCurrentEditableStyles('marginTop'),
-  ) as string;
-  const marginBottom = useSelector(
-    selectCurrentEditableStyles('marginBottom'),
-  ) as string;
-  const marginLeft = useSelector(
-    selectCurrentEditableStyles('marginLeft'),
-  ) as string;
-  const marginRight = useSelector(
-    selectCurrentEditableStyles('marginRight'),
-  ) as string;
-  const paddingTop = useSelector(
-    selectCurrentEditableStyles('paddingTop'),
-  ) as string;
-  const paddingBottom = useSelector(
-    selectCurrentEditableStyles('paddingBottom'),
-  ) as string;
-  const paddingLeft = useSelector(
-    selectCurrentEditableStyles('paddingLeft'),
-  ) as string;
-  const paddingRight = useSelector(
-    selectCurrentEditableStyles('paddingRight'),
-  ) as string;
-
   const [state, setState] = useState({
-    marginTop,
-    marginLeft,
-    marginBottom,
-    marginRight,
-    paddingTop,
-    paddingLeft,
-    paddingBottom,
-    paddingRight,
+    marginTop: marginTop || 0,
+    marginLeft: marginLeft || 0,
+    marginBottom: marginBottom || 0,
+    marginRight: marginRight || 0,
+    paddingTop: paddingTop || 0,
+    paddingLeft: paddingLeft || 0,
+    paddingBottom: paddingBottom || 0,
+    paddingRight: paddingRight || 0,
   });
   useEffect(() => {
     setState({
-      marginTop,
-      marginLeft,
-      marginBottom,
-      marginRight,
-      paddingTop,
-      paddingLeft,
-      paddingBottom,
-      paddingRight,
+      marginTop: marginTop || 0,
+      marginLeft: marginLeft || 0,
+      marginBottom: marginBottom || 0,
+      marginRight: marginRight || 0,
+      paddingTop: paddingTop || 0,
+      paddingLeft: paddingLeft || 0,
+      paddingBottom: paddingBottom || 0,
+      paddingRight: paddingRight || 0,
     });
   }, [
     marginTop,
@@ -172,7 +164,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginTop)}
-          value={parseInt(state.marginTop) || 0}
+          value={parseInt(state.marginTop as string)}
           onChange={handleChange}
         />
 
@@ -183,7 +175,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginRight)}
-          value={parseInt(state.marginRight) || 0}
+          value={parseInt(state.marginRight as string)}
           onChange={handleChange}
         />
 
@@ -194,7 +186,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginBottom)}
-          value={parseInt(state.marginBottom) || 0}
+          value={parseInt(state.marginBottom as string)}
           onChange={handleChange}
         />
 
@@ -205,7 +197,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginLeft)}
-          value={parseInt(state.marginLeft) || 0}
+          value={parseInt(state.marginLeft as string)}
           onChange={handleChange}
         />
 
@@ -219,7 +211,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingTop)}
-            value={parseInt(state.paddingTop) || 0}
+            value={parseInt(state.paddingTop as string)}
             onChange={handleChange}
           />
 
@@ -230,7 +222,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingRight)}
-            value={parseInt(state.paddingRight) || 0}
+            value={parseInt(state.paddingRight as string)}
             onChange={handleChange}
           />
 
@@ -241,7 +233,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingBottom)}
-            value={parseInt(state.paddingBottom) || 0}
+            value={parseInt(state.paddingBottom as string)}
             onChange={handleChange}
           />
 
@@ -252,7 +244,7 @@ const IndentsBlock: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingLeft)}
-            value={parseInt(state.paddingLeft) || 0}
+            value={parseInt(state.paddingLeft as string)}
             onChange={handleChange}
           />
         </div>

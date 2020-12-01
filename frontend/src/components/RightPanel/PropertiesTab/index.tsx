@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { selectActiveElement } from '@Redux/project/selectors/element';
+import {
+  selectActiveElement,
+  selectCurrentEditableStyles,
+} from '@Redux/project/selectors/element';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import { Control, Entity, NNBlockType } from '@Src/types';
@@ -39,39 +42,83 @@ import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
 import ColumnsControls from './Controls/Columns';
 
-const CONTROLS: Record<Control, React.ComponentType<any>> = {
-  display: Display,
-  indents: IndentsBlock,
-  size: SizeBlock,
-  typography: TypographyBlock,
-  border: BorderBlock,
-  background: BackgroundBlock,
-  action: ActionBlock,
-  mapProps: MapProps,
-  placeholder: Placeholder,
-  textContent: TextContent,
-  image: Image,
-  smartHeader: withSmartContainer(NNBlockType.HEADER),
-  smartFooter: withSmartContainer(NNBlockType.FOOTER),
-  smartForm: withSmartContainer(NNBlockType.FORM),
-  smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
-  type: Type,
-  value: Value,
-  name: Name,
-  showRipple: Ripple,
-  selectOptions: SelectOptions,
-  selectValue: SelectValue,
-  headingType: HeadingType,
-  listItems: ListItems,
-  bullets: Bullets,
-  isOrdered: Ordered,
-  labelFor: LabelFor,
-  dropdownItems: DropdownItems,
-  isOpen: IsOpen,
-  videoSettings: VideoSettings,
-  flexGrow: FlexGrow,
-  backgroundSize: BackgroundSize,
-  columns: ColumnsControls,
+type ControlInfo = {
+  Control: React.ComponentType<any>;
+  styles?: Array<keyof React.CSSProperties>;
+};
+
+const CONTROLS: Record<Control, ControlInfo> = {
+  display: {
+    Control: Display,
+    styles: ['display', 'justifyContent', 'alignItems'],
+  },
+  indents: {
+    Control: IndentsBlock,
+    styles: [
+      'marginTop',
+      'marginBottom',
+      'marginLeft',
+      'marginRight',
+      'paddingTop',
+      'paddingBottom',
+      'paddingLeft',
+      'paddingRight',
+    ],
+  },
+  size: { Control: SizeBlock, styles: ['width', 'height'] },
+  typography: {
+    Control: TypographyBlock,
+    styles: [
+      'fontFamily',
+      'fontSize',
+      'fontWeight',
+      'fontStyle',
+      'textAlign',
+      'color',
+    ],
+  },
+  border: {
+    Control: BorderBlock,
+    styles: ['borderColor', 'borderWidth', 'borderRadius'],
+  },
+  background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
+  action: { Control: ActionBlock },
+  mapProps: { Control: MapProps },
+  placeholder: { Control: Placeholder },
+  textContent: { Control: TextContent, styles: [] },
+  image: { Control: Image, styles: [] },
+  smartHeader: { Control: withSmartContainer(NNBlockType.HEADER) },
+  smartFooter: { Control: withSmartContainer(NNBlockType.FOOTER) },
+  smartForm: { Control: withSmartContainer(NNBlockType.FORM) },
+  smartWebpage: { Control: withSmartContainer(NNBlockType.WEBPAGE) },
+  type: { Control: Type },
+  value: { Control: Value },
+  name: { Control: Name },
+  showRipple: { Control: Ripple },
+  selectOptions: { Control: SelectOptions },
+  selectValue: { Control: SelectValue },
+  headingType: { Control: HeadingType },
+  listItems: { Control: ListItems },
+  bullets: { Control: Bullets, styles: ['listStyleType'] },
+  isOrdered: { Control: Ordered },
+  labelFor: { Control: LabelFor },
+  dropdownItems: { Control: DropdownItems },
+  isOpen: { Control: IsOpen },
+  videoSettings: { Control: VideoSettings },
+  flexGrow: { Control: FlexGrow, styles: ['flexGrow'] },
+  backgroundSize: { Control: BackgroundSize, styles: ['backgroundSize'] },
+  columns: {
+    Control: ColumnsControls,
+    styles: [
+      'columnCount',
+      'columnGap',
+      'columnFill',
+      'columnWidth',
+      'columnRuleStyle',
+      'columnRuleWidth',
+      'columnRuleColor',
+    ],
+  },
 };
 
 const useStyles = makeStyles({
@@ -86,6 +133,26 @@ const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const activeElement = useSelector(selectActiveElement);
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
+  const editableStyles = useSelector(selectCurrentEditableStyles);
+
+  const getControlStyles = useCallback(
+    (controlName: string) => {
+      const controlInfo = CONTROLS[controlName];
+      if (!controlInfo.styles) {
+        return {};
+      }
+      return controlInfo.styles.reduce((acc, styleName) => {
+        if (!editableStyles[styleName]) {
+          return acc;
+        }
+        return {
+          ...acc,
+          [styleName]: editableStyles[styleName],
+        };
+      }, {});
+    },
+    [editableStyles],
+  );
 
   const { type } = activeElement;
 
@@ -103,11 +170,12 @@ const PropertiesTab: React.FC = () => {
               if (isFreeCanvasMode && controlName === 'size') {
                 return null;
               }
-              const Control = CONTROLS[controlName];
+              const controlInfo = CONTROLS[controlName];
+              const { Control } = controlInfo;
 
               return (
                 <ControlSection key={controlName} title={controlName}>
-                  <Control />
+                  <Control {...getControlStyles(controlName)} />
                 </ControlSection>
               );
             })}

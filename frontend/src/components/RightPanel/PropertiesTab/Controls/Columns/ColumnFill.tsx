@@ -1,8 +1,6 @@
 import React, { ChangeEvent } from 'react';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
-import { useSelector } from 'react-redux';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
 import { FormControlLabel } from '@material-ui/core';
@@ -13,11 +11,12 @@ enum Options {
   auto = 'auto',
 }
 
-const ColumnFill: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
-  updateStyles,
-}) => {
+type Props = PropertiesChangeProps<ColumnsElement> & {
+  fill: React.CSSProperties['columnFill'];
+};
+
+const ColumnFill: React.FC<Props> = ({ updateStyles, fill }) => {
   const classes = useColumnControlStyles();
-  const fill = useSelector(selectCurrentEditableStyles('columnFill'));
 
   const handleFillChange = ({
     target: { value },

@@ -6,7 +6,7 @@ import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { ImageElement, NNBlockType, PropertiesChangeProps } from '@Src/types';
-import { selectActiveElement } from '@Redux/project/selectors/element';
+import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { selectElementFileInput } from '@Redux/project/selectors/base';
 
 type Props = {
@@ -25,16 +25,21 @@ const useStyles = makeStyles({
 });
 
 const SmartContainer: React.FC<PropertiesChangeProps<ImageElement> & Props> = ({
+  activeElementId,
   blockType,
 }) => {
   const classes = useStyles();
-  const element = useSelector(selectActiveElement);
 
-  const handleImageChange = useImageUpload(element.id);
+  const imageURL = useSelector(selectActiveElementParamByName('imageURL'));
+  const handleImageChange = useImageUpload(activeElementId);
 
-  const imageFile = useSelector(selectElementFileInput(element.id));
+  const imageFile = useSelector(selectElementFileInput(activeElementId));
 
-  const handleNNProcessing = useNNProcessing(element.id, blockType, imageFile);
+  const handleNNProcessing = useNNProcessing(
+    activeElementId,
+    blockType,
+    imageFile,
+  );
 
   return (
     <div className={classes.wrapper}>
@@ -44,16 +49,16 @@ const SmartContainer: React.FC<PropertiesChangeProps<ImageElement> & Props> = ({
         accept=".jpg, .jpeg, .png"
         name="upload"
         onChange={handleImageChange}
-        id={`upload-component-wireframe-${element.id}`}
+        id={`upload-component-wireframe-${activeElementId}`}
       />
 
-      <label htmlFor={`upload-component-wireframe-${element.id}`}>
+      <label htmlFor={`upload-component-wireframe-${activeElementId}`}>
         <Button variant="contained" color="primary" component="span">
           Choose image
         </Button>
       </label>
 
-      {element.parameters.imageURL && (
+      {imageURL && (
         <Button
           variant="contained"
           color="primary"

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import LinkIcon from '@material-ui/icons/Link';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
@@ -7,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { selectScreens } from '@Redux/project/selectors/screen';
-import { useDebouncedCallback } from 'use-debounce';
+
 import {
   ExternalLink,
   HyperlinkElement,
@@ -19,7 +20,7 @@ import {
 import {
   StyledTextField,
   StyledToggleButton,
-} from '../../../../styledComponents';
+} from '@Components/styledComponents';
 
 type StateProps = {
   screens: Screen[];

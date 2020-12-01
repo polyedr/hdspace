@@ -1,10 +1,5 @@
-import React, { useCallback, memo } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, memo, useMemo } from 'react';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
-import {
-  selectActiveElementId,
-  selectCurrentEditableStyles,
-} from '@Redux/project/selectors/element';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
@@ -23,150 +18,153 @@ type SelectedUnit = {
 
 type SizeName = keyof SelectedUnit;
 
-const getUnitFromValue = (value: string): UnitName => {
-  const unit = value.replace(/[0-9, \d+.\d+]/g, '');
-
-  if (unit in Unit) {
-    return unit as UnitName;
-  }
-  console.error('Incorrect unit', unit);
-  return Unit.px;
+const getUnitFromValue = (value: string | number): UnitName => {
+  return Unit[value.toString().replace(/[0-9, \d+.\d+]/g, '')] || Unit.px;
 };
 
-const BackgroundSize: React.FC<PropertiesChangeProps<
-  LibraryElement<Entity>
->> = memo(({ updateStyles, removeStyles }) => {
-  const activeElementId = useSelector(selectActiveElementId);
-  const backgroundSize = useSelector(
-    selectCurrentEditableStyles('backgroundSize'),
-  ) as string;
-  const [width, height] = backgroundSize?.split(' ');
+type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+  backgroundSize?: React.CSSProperties['backgroundSize'];
+};
 
-  const handleSelectChange = useCallback(
-    ({ target: { value } }, sizeName: SizeName) => {
-      const el = document.getElementById(activeElementId);
-
-      switch (value as UnitName) {
-        case 'px': {
-          if (el !== null) {
-            const size =
-              sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
-
-            const newBackgroundSize =
-              sizeName === 'width'
-                ? `${size}px ${height}`
-                : `${width} ${size}px`;
-
-            updateStyles({ backgroundSize: newBackgroundSize });
-          }
-          break;
-        }
-
-        case 'auto': {
-          const newBackgroundSize =
-            sizeName === 'width' ? `auto ${height}` : `${width} auto`;
-
-          updateStyles({ backgroundSize: newBackgroundSize });
-          break;
-        }
-
-        case '%':
-          if (el !== null && el.parentElement !== null) {
-            const parentStyles = getComputedStyle(el.parentElement);
-            const parentXPadding = parseFloat(parentStyles.paddingLeft);
-            const parentYPadding = parseFloat(parentStyles.paddingTop);
-
-            const parentSize =
-              sizeName === 'width'
-                ? el.parentElement.clientWidth - parentXPadding * 2
-                : el.parentElement.clientHeight - parentYPadding * 2;
-
-            const size =
-              sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
-            const sizeInPercents = parentSize
-              ? Math.round(Number((size * 10000) / parentSize)) / 100
-              : 0;
-
-            const newBackgroundSize =
-              sizeName === 'width'
-                ? `${sizeInPercents}% ${height}`
-                : `${width} ${sizeInPercents}%`;
-
-            updateStyles({ backgroundSize: newBackgroundSize });
-          }
-          break;
-
-        default:
-          break;
+const BackgroundSize: React.FC<Props> = memo(
+  ({ updateStyles, removeStyles, backgroundSize, activeElementId }) => {
+    const [width, height] = useMemo(() => {
+      if (!backgroundSize) {
+        return [0, 0];
       }
-    },
-    [activeElementId, updateStyles, width, height],
-  );
+      const stringSize = backgroundSize.toString();
+      if (stringSize.indexOf(' ') > 0) {
+        return stringSize.split(' ');
+      }
+      return [backgroundSize, backgroundSize];
+    }, [backgroundSize]);
 
-  const handleInputChange = useCallback(
-    ({ target: { name, value } }) => {
-      const size = name === 'width' ? width : height;
-      const unitValue = Unit[getUnitFromValue(size)];
+    const handleSelectChange = useCallback(
+      ({ target: { value } }, sizeName: SizeName) => {
+        const el = document.getElementById(activeElementId);
 
-      const newSize =
-        unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`;
+        switch (value as UnitName) {
+          case 'px': {
+            if (el !== null) {
+              const size =
+                sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
 
-      const newBackgroundSize =
-        name === 'width' ? `${newSize} ${height}` : `${width} ${newSize}`;
+              const newBackgroundSize =
+                sizeName === 'width'
+                  ? `${size}px ${height}`
+                  : `${width} ${size}px`;
 
-      updateStyles({ backgroundSize: newBackgroundSize });
-    },
-    [updateStyles, width, height],
-  );
+              updateStyles({ backgroundSize: newBackgroundSize });
+            }
+            break;
+          }
 
-  const renderSizeControl = (sizeName: SizeName) => {
-    const size = sizeName === 'width' ? width : height;
-    const parsedSize = Number.isNaN(parseFloat(size))
-      ? ''
-      : String(parseFloat(size));
-    const inputValue = size === 'auto' ? 'auto' : parsedSize;
+          case 'auto': {
+            const newBackgroundSize =
+              sizeName === 'width' ? `auto ${height}` : `${width} auto`;
+
+            updateStyles({ backgroundSize: newBackgroundSize });
+            break;
+          }
+
+          case '%':
+            if (el !== null && el.parentElement !== null) {
+              const parentStyles = getComputedStyle(el.parentElement);
+              const parentXPadding = parseFloat(parentStyles.paddingLeft);
+              const parentYPadding = parseFloat(parentStyles.paddingTop);
+
+              const parentSize =
+                sizeName === 'width'
+                  ? el.parentElement.clientWidth - parentXPadding * 2
+                  : el.parentElement.clientHeight - parentYPadding * 2;
+
+              const size =
+                sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
+              const sizeInPercents = parentSize
+                ? Math.round(Number((size * 10000) / parentSize)) / 100
+                : 0;
+
+              const newBackgroundSize =
+                sizeName === 'width'
+                  ? `${sizeInPercents}% ${height}`
+                  : `${width} ${sizeInPercents}%`;
+
+              updateStyles({ backgroundSize: newBackgroundSize });
+            }
+            break;
+
+          default:
+            break;
+        }
+      },
+      [activeElementId, updateStyles, width, height],
+    );
+
+    const handleInputChange = useCallback(
+      ({ target: { name, value } }) => {
+        const size = name === 'width' ? width : height;
+        const unitValue = Unit[getUnitFromValue(size)];
+
+        const newSize =
+          unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`;
+
+        const newBackgroundSize =
+          name === 'width' ? `${newSize} ${height}` : `${width} ${newSize}`;
+
+        updateStyles({ backgroundSize: newBackgroundSize });
+      },
+      [updateStyles, width, height],
+    );
+
+    const renderSizeControl = (sizeName: SizeName) => {
+      const size = sizeName === 'width' ? width : height;
+      const parsedSize = Number.isNaN(parseFloat(size.toString()))
+        ? ''
+        : String(parseFloat(size.toString()));
+      const inputValue = size === 'auto' ? 'auto' : parsedSize;
+
+      return (
+        <div>
+          <input
+            type="text"
+            name={sizeName}
+            value={inputValue}
+            onChange={handleInputChange}
+            disabled={inputValue === 'auto'}
+          />
+
+          <select
+            className="dropDown"
+            onChange={(event) => handleSelectChange(event, sizeName)}
+            value={Unit[getUnitFromValue(size)]}
+            name={`${sizeName}_unit`}
+          >
+            {Object.keys(Unit).map((key, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <option key={index} value={key}>
+                {Unit[key]}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    };
 
     return (
       <div>
-        <input
-          type="text"
-          name={sizeName}
-          value={inputValue}
-          onChange={handleInputChange}
-          disabled={inputValue === 'auto'}
+        <StylesHeader
+          title="Background Size"
+          onClick={removeStyles}
+          cssPropertiesNames={['backgroundSize']}
         />
 
-        <select
-          className="dropDown"
-          onChange={(event) => handleSelectChange(event, sizeName)}
-          value={Unit[getUnitFromValue(size)]}
-          name={`${sizeName}_unit`}
-        >
-          {Object.keys(Unit).map((key, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <option key={index} value={key}>
-              {Unit[key]}
-            </option>
-          ))}
-        </select>
+        <div>
+          {renderSizeControl('width')}
+          {renderSizeControl('height')}
+        </div>
       </div>
     );
-  };
-
-  return (
-    <div>
-      <StylesHeader
-        title="Background Size"
-        onClick={removeStyles}
-        cssPropertiesNames={['backgroundSize']}
-      />
-
-      <div>
-        {renderSizeControl('width')}
-        {renderSizeControl('height')}
-      </div>
-    </div>
-  );
-});
+  },
+);
 
 export default withConfigurableProperties(BackgroundSize);

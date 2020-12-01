@@ -1,13 +1,11 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+import { FormControlLabel } from '@material-ui/core';
+import MenuItem from '@material-ui/core/MenuItem';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
-import { useSelector } from 'react-redux';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
-import MenuItem from '@material-ui/core/MenuItem';
-import { useDebouncedCallback } from 'use-debounce';
 import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/Columns/styles';
-import { FormControlLabel } from '@material-ui/core';
 
 enum Units {
   px = 'px',
@@ -29,11 +27,12 @@ const parse = (value: string | number | undefined) => {
   return [gap, units];
 };
 
-const ColumnGap: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
-  updateStyles,
-}) => {
+type Props = PropertiesChangeProps<ColumnsElement> & {
+  value: React.CSSProperties['columnGap'];
+};
+
+const ColumnGap: React.FC<Props> = ({ updateStyles, value }) => {
   const classes = useColumnControlStyles();
-  const value = useSelector(selectCurrentEditableStyles('columnGap'));
   const [gap, units] = parse(value);
 
   const [gapState, setGapState] = useState(gap);

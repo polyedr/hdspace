@@ -19,19 +19,19 @@ const useStyles = makeStyles({
 
 type Props = {
   currentColor: string;
-  activeItemID: string;
+  activeElementId: string;
   onChange(color: string): any;
 };
 
 const ColorSettings: React.FC<Props> = ({
   currentColor,
-  activeItemID,
+  activeElementId,
   onChange,
 }) => {
   const classes = useStyles();
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
     currentColor,
-    activeItemID,
+    activeElementId,
   );
   const [currentColorObject, setCurrentColorObject] = useState<ColorResult>(
     toState(currentColor),
@@ -53,7 +53,7 @@ const ColorSettings: React.FC<Props> = ({
         setCurrentBackgroundColor(normalizedColor);
       }
     },
-    [onChange, currentColorObject],
+    [currentColorObject, onChange, setCurrentBackgroundColor],
   );
 
   const handleColorInputBlur = useCallback(
@@ -68,7 +68,7 @@ const ColorSettings: React.FC<Props> = ({
         onChange(normalizedColor.value);
       }
     },
-    [onChange, currentColorObject],
+    [currentColorObject, setCurrentBackgroundColor, onChange],
   );
 
   return (

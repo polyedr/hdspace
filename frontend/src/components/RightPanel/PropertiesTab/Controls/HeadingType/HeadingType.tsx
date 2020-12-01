@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
@@ -47,4 +47,4 @@ const HeadingType: React.FC<Props> = ({ updateParams, updateStyles }) => {
   );
 };
 
-export default withConfigurableProperties(memo(HeadingType));
+export default withConfigurableProperties(HeadingType);
