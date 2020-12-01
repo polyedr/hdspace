@@ -143,7 +143,7 @@ const TypographyBlock: React.FC<Props> = ({
             label="Size"
             margin="dense"
             type="number"
-            value={state || 0}
+            value={state ? parseInt(state.toString()) : 0}
             onChange={(ev) => {
               setState(ev.target.value);
               debounced.callback(ev.target.value);
