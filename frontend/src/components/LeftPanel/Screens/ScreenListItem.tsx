@@ -1,5 +1,5 @@
+import React, { useState, useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import React, { useState } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -63,8 +63,8 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
 
-  const handleMouseEnter = () => setShow(true);
-  const handleMouseLeave = () => setShow(false);
+  const handleMouseLeave = useCallback(() => setShow(false), []);
+  const handleMouseOver = useCallback(() => !show && setShow(true), [show]);
 
   const openEdit = () => setEdit(true);
   const closeEdit = () => setEdit(false);
@@ -89,8 +89,8 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
           <ListItem
             button
             onClick={handleClick}
-            onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onMouseOver={handleMouseOver}
             className={cn(classes.listItem, active && classes.active)}
           >
             <div className={classes.screenData}>
