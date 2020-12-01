@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useEffect, useState, memo } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -13,10 +12,6 @@ import * as CSS from 'csstype';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { getPermissibleValue } from '@Utils/NumberHelper';
 
-import {
-  selectActiveElementId,
-  selectCurrentEditableStyles,
-} from '@Redux/project/selectors/element';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import FONTS from '@Constants/fonts';
 import {
@@ -40,20 +35,27 @@ const useStyles = makeStyles({
   },
 });
 
-const TypographyBlock: React.FC<PropertiesChangeProps<
-  LibraryElement<Entity>
->> = ({ updateStyles, removeStyles }) => {
-  const classes = useStyles();
-  const fontFamily = useSelector(selectCurrentEditableStyles('fontFamily'));
-  const fontStyle = useSelector(selectCurrentEditableStyles('fontStyle'));
-  const fontWeight = useSelector(selectCurrentEditableStyles('fontWeight'));
-  const fontSize =
-    useSelector(selectCurrentEditableStyles('fontSize')) || '14px';
-  const textAlign = useSelector(selectCurrentEditableStyles('textAlign'));
-  const color =
-    useSelector(selectCurrentEditableStyles('color')) || 'transparent';
+type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+  fontFamily?: React.CSSProperties['fontFamily'];
+  fontSize?: React.CSSProperties['fontSize'];
+  fontWeight?: React.CSSProperties['fontWeight'];
+  fontStyle?: React.CSSProperties['fontStyle'];
+  textAlign?: React.CSSProperties['textAlign'];
+  color: React.CSSProperties['color'];
+};
 
-  const activeElementId = useSelector(selectActiveElementId);
+const TypographyBlock: React.FC<Props> = ({
+  updateStyles,
+  removeStyles,
+  activeElementId,
+  fontFamily,
+  fontSize,
+  fontWeight,
+  fontStyle,
+  textAlign,
+  color,
+}) => {
+  const classes = useStyles();
 
   const handleColorSettingsChange = useCallback(
     (newColor: string) => {
@@ -141,7 +143,7 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
             label="Size"
             margin="dense"
             type="number"
-            value={parseInt(state.toString())}
+            value={state ? parseInt(state.toString()) : 0}
             onChange={(ev) => {
               setState(ev.target.value);
               debounced.callback(ev.target.value);
@@ -184,8 +186,8 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
 
         <div>
           <ColorSettings
-            currentColor={color}
-            activeItemID={activeElementId}
+            currentColor={color || 'transparent'}
+            activeElementId={activeElementId}
             onChange={handleColorSettingsChange}
           />
         </div>
@@ -194,4 +196,4 @@ const TypographyBlock: React.FC<PropertiesChangeProps<
   );
 };
 
-export default withConfigurableProperties(TypographyBlock);
+export default withConfigurableProperties(memo(TypographyBlock));

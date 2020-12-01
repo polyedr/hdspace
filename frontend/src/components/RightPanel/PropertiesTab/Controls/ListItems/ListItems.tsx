@@ -16,10 +16,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
 import { ListItemElement, PropertiesChangeProps } from '@Src/types';
-import {
-  selectActiveElementId,
-  selectActiveItemChildren,
-} from '@Redux/project/selectors/element';
+import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 const useStyles = makeStyles({
@@ -44,9 +41,9 @@ type StateProps = {
 
 const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
   updateParams,
+  activeElementId,
 }) => {
   const classes = useStyles();
-  const activeElementId = useSelector(selectActiveElementId);
   const listItems = useSelector(selectActiveItemChildren('listItem'));
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();

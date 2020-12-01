@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
-import { selectActiveElement } from '@Redux/project/selectors/element';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   removeElementStyles,
@@ -27,14 +27,14 @@ function withConfigurableProperties<
   function WrapperComponent({ ...restProps }: any) {
     const dispatch = useDispatch();
     const currentScreenId = useSelector(selectCurrentScreenId);
-    const { id: activeItemID } = useSelector(selectActiveElement);
+    const activeElementId = useSelector(selectActiveElementId);
     const editableStyles = useSelector(selectEditableStyles);
 
     const removeStyles = useCallback(
       (ruleNames: PropertyName[], itemID?: string) => {
         if (editableStyles === 'ownStyles') {
           dispatch(
-            removeElementStyles(itemID || activeItemID, ruleNames, {
+            removeElementStyles(itemID || activeElementId, ruleNames, {
               screenId: currentScreenId,
             }),
           );
@@ -46,14 +46,14 @@ function withConfigurableProperties<
           );
         }
       },
-      [dispatch, editableStyles, activeItemID, currentScreenId],
+      [dispatch, editableStyles, activeElementId, currentScreenId],
     );
 
     const updateStyles = useCallback(
       (styles: React.CSSProperties, itemID?: string) => {
         if (editableStyles === 'ownStyles') {
           dispatch(
-            updateElementStyles(itemID || activeItemID, styles, {
+            updateElementStyles(itemID || activeElementId, styles, {
               screenId: currentScreenId,
             }),
           );
@@ -65,24 +65,24 @@ function withConfigurableProperties<
           );
         }
       },
-      [dispatch, activeItemID, editableStyles, currentScreenId],
+      [dispatch, activeElementId, editableStyles, currentScreenId],
     );
 
     const updateParams = useCallback(
       (params: Params<K>, itemID?: string) => {
         dispatch(
-          updateElementParameters(itemID || activeItemID, params, {
+          updateElementParameters(itemID || activeElementId, params, {
             screenId: currentScreenId,
           }),
         );
       },
-      [dispatch, activeItemID, currentScreenId],
+      [dispatch, activeElementId, currentScreenId],
     );
 
     return (
       <Component
         {...restProps}
-        activeItemID={activeItemID}
+        activeElementId={activeElementId}
         removeStyles={removeStyles}
         updateStyles={updateStyles}
         updateParams={updateParams}

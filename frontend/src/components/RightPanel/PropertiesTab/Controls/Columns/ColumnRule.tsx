@@ -1,8 +1,6 @@
 import React from 'react';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
-import { useSelector } from 'react-redux';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -42,16 +40,20 @@ const ruleStyles = [
 
 const ruleWidths = ['thin', 'medium', 'thick'];
 
-const ColumnRule: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
+type Props = PropertiesChangeProps<ColumnsElement> & {
+  ruleWidth: React.CSSProperties['columnRuleWidth'];
+  ruleStyle: React.CSSProperties['columnRuleStyle'];
+  ruleColor: React.CSSProperties['columnRuleColor'];
+};
+
+const ColumnRule: React.FC<Props> = ({
   updateStyles,
-  activeItemID,
+  activeElementId,
+  ruleWidth,
+  ruleStyle,
+  ruleColor,
 }) => {
   const classes = useStyles();
-
-  const ruleWidth = useSelector(selectCurrentEditableStyles('columnRuleWidth'));
-  const ruleStyle = useSelector(selectCurrentEditableStyles('columnRuleStyle'));
-  const ruleColor = useSelector(selectCurrentEditableStyles('columnRuleColor'));
-
   return (
     <>
       <FormControlLabel
@@ -106,7 +108,7 @@ const ColumnRule: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
       />
       <ColorSettings
         currentColor={ruleColor as string}
-        activeItemID={activeItemID}
+        activeElementId={activeElementId}
         onChange={(color: string) => {
           updateStyles({ columnRuleColor: color });
         }}

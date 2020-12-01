@@ -1,7 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useSelector } from 'react-redux';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
@@ -14,11 +12,12 @@ enum Units {
   units = 'units',
 }
 
-const ColumnCount: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
-  updateStyles,
-}) => {
+type Props = PropertiesChangeProps<ColumnsElement> & {
+  count: React.CSSProperties['columnCount'];
+};
+
+const ColumnCount: React.FC<Props> = ({ updateStyles, count }) => {
   const classes = useColumnControlStyles();
-  const count = useSelector(selectCurrentEditableStyles('columnCount'));
 
   const [countState, setCountState] = useState(count);
   useEffect(() => {

@@ -1,7 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { useSelector } from 'react-redux';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
@@ -27,11 +25,12 @@ const parse = (value: string | number | undefined) => {
   return [width, units];
 };
 
-const ColumnWidth: React.FC<PropertiesChangeProps<ColumnsElement>> = ({
-  updateStyles,
-}) => {
+type Props = PropertiesChangeProps<ColumnsElement> & {
+  value: React.CSSProperties['columnWidth'];
+};
+
+const ColumnWidth: React.FC<Props> = ({ updateStyles, value }) => {
   const classes = useColumnControlStyles();
-  const value = useSelector(selectCurrentEditableStyles('columnWidth'));
 
   const [width, units] = parse(value);
 

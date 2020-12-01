@@ -7,10 +7,7 @@ import { lighten } from '@material-ui/core';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { addChildToElement } from '@Redux/project/actions';
 import { ListItemElement, PropertiesChangeProps } from '@Src/types';
-import {
-  selectActiveElementId,
-  selectActiveItemChildren,
-} from '@Redux/project/selectors/element';
+import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import ListItem from './ListItem';
 
@@ -29,10 +26,10 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
   updateParams,
+  activeElementId,
 }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const activeElementId = useSelector(selectActiveElementId);
   const listItems = useSelector(selectActiveItemChildren('listItem'));
   const currentScreenId = useSelector(selectCurrentScreenId);
 

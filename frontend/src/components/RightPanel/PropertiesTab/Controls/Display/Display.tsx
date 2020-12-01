@@ -1,9 +1,7 @@
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
@@ -11,11 +9,21 @@ import { DISPLAY } from './constants';
 import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
 import { StyledTextField } from '../../../../styledComponents';
 
-type Props = PropertiesChangeProps<LibraryElement<Entity>>;
+type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+  display?: React.CSSProperties['display'];
+  flexDirection: React.CSSProperties['flexDirection'];
+  justifyContent: React.CSSProperties['justifyContent'];
+  alignItems: React.CSSProperties['alignItems'];
+};
 
-const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
-  const display = useSelector(selectCurrentEditableStyles('display'));
-
+const Display: React.FC<Props> = ({
+  updateStyles,
+  removeStyles,
+  display,
+  flexDirection,
+  justifyContent,
+  alignItems,
+}) => {
   const handleDisplayDropdownChange = useCallback(
     (event) => {
       updateStyles({ display: event.target.value });
@@ -54,9 +62,19 @@ const Display: React.FC<Props> = ({ updateStyles, removeStyles }) => {
         </StyledTextField>
       </div>
 
-      {display === 'flex' && <FlexProperties />}
+      {display === 'flex' && (
+        <FlexProperties
+          flexDirection={flexDirection}
+          justifyContent={justifyContent}
+          alignItems={alignItems}
+        />
+      )}
       {!!display && ['grid', 'inline-grid'].includes(display) && (
-        <PlaceItemsProperties reversed={false} />
+        <PlaceItemsProperties
+          reversed={false}
+          justifyContent={justifyContent}
+          alignItems={alignItems}
+        />
       )}
     </>
   );
