@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
+import { importHtml } from '@Redux/project/actions';
 
 const prevent = (ev: React.BaseSyntheticEvent) => {
   ev.stopPropagation();
@@ -66,12 +67,44 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
   const [file, setFile] = useState<File | null>(null);
   const classes = useStyles({ over, file });
 
-  const handleCreate = async () => {
+  const handleCreate = () => {
     if (!file) return;
-    const text = await file.text();
-    console.log(text);
+    dispatch(importHtml(file));
     onClose();
     setFile(null);
+  };
+
+  const handleDrop = (ev) => {
+    prevent(ev);
+    const file = ev.dataTransfer.files[0];
+    if (file.type !== 'text/html') {
+      dispatch(
+        enqueueSnackbar({
+          message: 'Provide an HTML file please!',
+          options: { variant: 'error' },
+        }),
+      );
+    } else {
+      setFile(file);
+    }
+    setOver(false);
+  };
+
+  const handleDragEnter = (ev) => {
+    prevent(ev);
+    setOver(true);
+  };
+
+  const handleDragLeave = (ev) => {
+    prevent(ev);
+    setOver(false);
+  };
+
+  const handleChange = (ev) => {
+    const { files } = ev.target;
+    if (files && files[0]) {
+      setFile(files[0]);
+    }
   };
 
   return (
@@ -80,29 +113,9 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
 
       <DialogContent>
         <form
-          onDrop={async (ev) => {
-            prevent(ev);
-            const file = ev.dataTransfer.files[0];
-            if (file.type !== 'text/html') {
-              dispatch(
-                enqueueSnackbar({
-                  message: 'Provide an HTML file please!',
-                  options: { variant: 'error' },
-                }),
-              );
-              return;
-            }
-            setFile(file);
-            setOver(false);
-          }}
-          onDragEnter={(ev) => {
-            prevent(ev);
-            setOver(true);
-          }}
-          onDragLeave={(ev) => {
-            prevent(ev);
-            setOver(false);
-          }}
+          onDrop={handleDrop}
+          onDragEnter={handleDragEnter}
+          onDragLeave={handleDragLeave}
           className={classes.form}
         >
           <label htmlFor="html-input" className={classes.label}>
@@ -137,12 +150,7 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
               id="html-input"
               accept="text/html"
               type="file"
-              onChange={async (ev) => {
-                const { files } = ev.target;
-                if (files) {
-                  setFile(files[0]);
-                }
-              }}
+              onChange={handleChange}
             />
           </label>
         </form>

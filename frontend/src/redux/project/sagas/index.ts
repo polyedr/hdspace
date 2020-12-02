@@ -59,6 +59,7 @@ import {
   restoreScreenSaga,
   updateScreenImageSaga,
   convertFreeCanvasSaga,
+  importHtmlSaga,
 } from './screen';
 
 import { projectUpdateHelperSaga } from './shared';
@@ -495,4 +496,6 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT_SAGA, setActiveElementSaga);
+
+  yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
 }

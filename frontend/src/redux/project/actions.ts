@@ -809,3 +809,8 @@ export const setScreenCreateLoader = (
 export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
+
+export const importHtml = (file: File) => ({
+  type: TYPES.IMPORT_HTML,
+  payload: file,
+});

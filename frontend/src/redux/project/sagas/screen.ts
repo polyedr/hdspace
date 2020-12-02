@@ -42,6 +42,7 @@ import {
   updateScreen,
   updateScreenImage,
   uploadFile,
+  importHtml,
 } from '../actions';
 import { createScenarios } from './scenario';
 import { reqWrapper } from './shared';
@@ -656,6 +657,32 @@ export function* convertFreeCanvasSaga() {
       ),
     );
     yield put(changeFreeCanvasMode(false));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
+  try {
+    const file = action.payload;
+
+    const { id: projectId, projectscreen } = yield select(selectCurrentProject);
+    yield call(
+      createScreenSaga,
+      createScreen(projectId, 'Screen 1', projectscreen.length),
+    );
+
+    // const rootId = yield select(selectCurrentRootId);
+
+    // const rootElement = document.getElementById('root');
+
+    const text = yield file.text();
+    console.log(text);
   } catch (e) {
     yield put(
       enqueueSnackbar({
