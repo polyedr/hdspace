@@ -22,6 +22,7 @@ import {
   StateElement,
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
+import { getHTMLBodyContent, removeTag } from '@Utils/stringHelper';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -671,18 +672,21 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
   try {
     const file = action.payload;
 
-    const { id: projectId, projectscreen } = yield select(selectCurrentProject);
-    yield call(
-      createScreenSaga,
-      createScreen(projectId, 'Screen 1', projectscreen.length),
+    // const { id: projectId, projectscreen } = yield select(selectCurrentProject);
+
+    const html = yield file.text();
+    const content = removeTag(
+      removeTag(getHTMLBodyContent(html), 'script'),
+      'iframe',
     );
 
-    // const rootId = yield select(selectCurrentRootId);
+    console.log(content);
 
+    // yield call(
+    //   createScreenSaga,
+    //   createScreen(projectId, 'Screen 1', projectscreen.length),
+    // );
     // const rootElement = document.getElementById('root');
-
-    const text = yield file.text();
-    console.log(text);
   } catch (e) {
     yield put(
       enqueueSnackbar({
