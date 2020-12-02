@@ -1,115 +1,75 @@
 // @ts-nocheck
 
-import React from 'react';
+import React, { useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import * as R from 'ramda';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { RadioRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
+const useRadiobuttonStyles = makeStyles({
+  root: {},
+  entityStyles: ({ entityStyles }) => ({
+    color: entityStyles.backgroundColor,
+  }),
+  groupStyles: ({ groupStyles }) => ({
+    color: groupStyles.backgroundColor,
+  }),
+  ownStyles: ({ ownStyles }) => ({
+    color: ownStyles.backgroundColor,
+  }),
+});
 
-const getRadiobuttonClassStyles = (style: React.CSSProperties) => ({
-  color: style.backgroundColor,
-  '&$checked': {
-    color: style.backgroundColor,
+const useIconStyles = makeStyles({
+  entityStyles: ({ entityStyles }) => ({
+    width: entityStyles.width,
+    height: entityStyles.height,
+  }),
+  groupStyles: ({ groupStyles }) => ({
+    width: groupStyles.width,
+    height: groupStyles.height,
+  }),
+  ownStyles: ({ ownStyles }) => ({
+    width: ownStyles.width,
+    height: ownStyles.height,
+  }),
+});
+
+const useDivStyles = makeComponentStyles(
+  {},
+  ['backgroundColor', 'width', 'height'],
+  {
+    display: 'inline-block',
   },
-});
-
-const getRadiobuttonStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    root: {},
-
-    entityStyles: {
-      ...getRadiobuttonClassStyles(entityStyles),
-    },
-
-    groupStyles: {
-      ...getRadiobuttonClassStyles(groupStyles),
-    },
-
-    ownStyles: {
-      ...getRadiobuttonClassStyles(ownStyles),
-    },
-  });
-
-const getIconClassStyles = (style: React.CSSProperties) => ({
-  width: style.width,
-  height: style.height,
-});
-
-const getIconStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    entityStyles: {
-      ...getIconClassStyles(entityStyles),
-    },
-
-    groupStyles: {
-      ...getIconClassStyles(groupStyles),
-    },
-
-    ownStyles: {
-      ...getIconClassStyles(ownStyles),
-    },
-  });
-
-const getDivStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    entityStyles: {
-      ...R.omit(['backgroundColor', 'width', 'height'], entityStyles),
-      display: 'inline-block',
-    },
-
-    groupStyles: {
-      ...R.omit(['backgroundColor', 'width', 'height'], groupStyles),
-      display: 'inline-block',
-    },
-
-    ownStyles: {
-      ...R.omit(['backgroundColor', 'width', 'height'], ownStyles),
-      display: 'inline-block',
-    },
-  });
+);
 
 const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      params,
-      isDisabled,
-      isRadioChecked,
-      className,
-    } = props;
-    const { name, value, showRipple } = params;
+    const { id, params, isDisabled, className } = props;
+    const { showRipple } = params;
 
-    const radiobuttonClasses = getRadiobuttonStyles(
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
-    const iconClasses = getIconStyles(entityStyles, groupStyles, ownStyles)();
-    const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
+    const isProtoMode = useSelector(selectIsPrototypeMode);
+
+    const radiobuttonClasses = useRadiobuttonStyles(props);
+    const iconClasses = useIconStyles(props);
+    const divClasses = useDivStyles(props);
+
+    const [isChecked, setIsChecked] = useState(false);
 
     const eventHandlers = useEventHandlers(props);
 
-    const { onChange, ...divHandlers } = eventHandlers;
+    const handleChange = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (isProtoMode) {
+          setIsChecked(event.target.checked);
+        }
+      },
+      [isProtoMode],
+    );
 
     return (
       <div
@@ -119,12 +79,12 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          isDisabled && styles.disabled,
+          isDisabled && divClasses.disabled,
           divClasses.entityStyles,
           divClasses.groupStyles,
           divClasses.ownStyles,
         )}
-        {...divHandlers}
+        {...eventHandlers}
       >
         <Radio
           checkedIcon={
@@ -152,10 +112,8 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
             radiobuttonClasses.groupStyles,
             radiobuttonClasses.ownStyles,
           )}
-          value={value}
-          name={name}
-          checked={isRadioChecked}
-          onChange={onChange}
+          checked={isProtoMode && isChecked}
+          onChange={handleChange}
           disableRipple={!showRipple}
         />
       </div>

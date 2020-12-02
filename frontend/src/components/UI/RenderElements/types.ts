@@ -130,12 +130,9 @@ export type ActionRendererProps = SharedRendererProps & {
 };
 
 export type CheckboxRendererProps = SharedRendererProps & {
-  currentValue: string;
   params: {
-    name: string;
     showRipple: boolean;
   };
-  isCheckboxChecked: boolean;
 };
 
 export type InputRendererProps = SharedRendererProps & {
@@ -155,12 +152,8 @@ export type TextareaRendererProps = SharedRendererProps & {
 
 export type RadioRendererProps = SharedRendererProps & {
   params: {
-    value: string;
-    name: string;
     showRipple: boolean;
   };
-  currentValue: string;
-  isRadioChecked: boolean;
 };
 
 export type SelectRendererProps = SharedRendererProps & {

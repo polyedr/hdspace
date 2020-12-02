@@ -1,117 +1,53 @@
 // @ts-nocheck
 
-import React from 'react';
+import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import { makeStyles, Checkbox as MaterialCheckbox } from '@material-ui/core';
+import { Checkbox as MaterialCheckbox } from '@material-ui/core';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import * as R from 'ramda';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { CheckboxRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
-
-const getCheckboxClassStyles = (style: React.CSSProperties) => ({
-  color: style.backgroundColor,
-
-  '&$checked': {
-    color: style.backgroundColor,
-  },
-
-  '& $icon': {
-    width: style.width,
-    height: style.height,
-  },
+const useCheckboxStyles = makeStyles({
+  root: {},
+  checked: {},
+  entityStyles: ({ entityStyles }) => ({ color: entityStyles.backgroundColor }),
+  groupStyles: ({ groupStyles }) => ({ color: groupStyles.backgroundColor }),
+  ownStyles: ({ ownStyles }) => ({ color: ownStyles.backgroundColor }),
 });
 
-const getCheckboxStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    root: {},
-
-    entityStyles: {
-      ...getCheckboxClassStyles(entityStyles),
-    },
-
-    groupStyles: {
-      ...getCheckboxClassStyles(groupStyles),
-    },
-
-    ownStyles: {
-      ...getCheckboxClassStyles(ownStyles),
-    },
-
-    icon: {},
-
-    checked: {},
-  });
-
-const getDivStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    entityStyles: {
-      ...entityStyles,
-      display: 'inline-block',
-    },
-
-    groupStyles: {
-      ...groupStyles,
-      display: 'inline-block',
-    },
-
-    ownStyles: {
-      ...ownStyles,
-      display: 'inline-block',
-    },
-  });
+const useDivStyles = makeComponentStyles(
+  {},
+  ['backgroundColor', 'width', 'height'],
+  {
+    display: 'inline-block',
+  },
+);
 
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-      params,
-      isDisabled,
-      currentValue,
-      isCheckboxChecked,
-      className,
-    } = props;
+    const { id, params, isDisabled, className } = props;
     const { name, showRipple } = params;
 
+    const isProtoMode = useSelector(selectIsPrototypeMode);
+
+    const divClasses = useDivStyles(props);
+    const checkboxClasses = useCheckboxStyles(props);
+
     const eventHandlers = useEventHandlers(props);
-
-    const entityDivStyles = R.omit(
-      ['backgroundColor', 'width', 'height'],
-      entityStyles,
+    const [isChecked, setIsChecked] = useState<boolean>(false);
+    const handleChange = useCallback(
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (isProtoMode) {
+          setIsChecked(event.target.checked);
+        }
+      },
+      [isProtoMode],
     );
-    const groupDivStyles = R.omit(
-      ['backgroundColor', 'width', 'height'],
-      groupStyles,
-    );
-    const ownDivStyles = R.omit(
-      ['backgroundColor', 'width', 'height'],
-      ownStyles,
-    );
-
-    const divClasses = getDivStyles(
-      entityDivStyles,
-      groupDivStyles,
-      ownDivStyles,
-    )();
-
-    const checkboxClasses = getCheckboxStyles(
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
 
     return (
       <div
@@ -121,7 +57,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          isDisabled && styles.disabled,
+          isDisabled && divClasses.disabled,
           divClasses.entityStyles,
           divClasses.groupStyles,
           divClasses.ownStyles,
@@ -138,10 +74,10 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
             checkboxClasses.groupStyles,
             checkboxClasses.ownStyles,
           )}
-          value={currentValue}
           name={name}
-          checked={isCheckboxChecked}
+          checked={isProtoMode && isChecked}
           disableRipple={!showRipple}
+          onChange={handleChange}
         />
       </div>
     );
