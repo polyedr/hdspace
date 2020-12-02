@@ -84,7 +84,7 @@ const ElementsTab = () => {
   return (
     <div className={classes.root}>
       {isFreeCanvasMode ? (
-        <Section title="elements" activeSection={section}>
+        <Section title="elements" activeSection="elements">
           {Object.entries(elements).map(([key, value]) => (
             <ElementsBlock key={key} title={key} elements={value} expandable />
           ))}
