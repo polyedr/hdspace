@@ -43,7 +43,7 @@ from apps.utils.fset1 import (
     find_or_create_dir,
     calculateDistance,
     SQUARES_OVERLAP_THRESHOLD_TEXT,
-)
+    change_permissions_recursive)
 
 config_tesseract = "-l eng --oem 1 --psm 3"
 
@@ -1667,10 +1667,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Ternary assembling algorithm run after the clusters end
 
         # Create directtory to save HTML for some image processed
-        CURRENT_DIR = os.getcwd()
+        # CURRENT_DIR = os.getcwd()
         SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
         find_or_create_dir(SAVE_DIR)
 
+        os.chmod(SAVE_DIR, 0o755)
         os.chdir(SAVE_DIR)
 
         root = ET.Element("html", version="5.0")
@@ -1690,7 +1691,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         styles["width"] = str(img_width) + "px"
         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
         outer_div.set("style", str_styles)
-        # print(1277, styles, str_styles)
+        # print(1694, styles, str_styles)
         # Define the export node
         outer_div_node = ScenarioElement.objects.create(
             parent=serializer_node, struct_type="container", parameters=parameters, styles=styles, buoyancy=0
@@ -2046,6 +2047,16 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             struct_type="listItem",
                             parameters=parameters, styles=styles, buoyancy=0
                         )
+
+            # Generating HTML for printing
+            html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
+            # print("html=", html)
+
+            # Print html code
+            with open(fname + ".html", "w") as html_file:
+                print(html, file=html_file)
+
+        serializer_node.parameters["html"] = html
 
         return serializer_node
 
@@ -2893,7 +2904,6 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # Ternary assembling algorithm run after the clusters end
 
             # Create directtory to save HTML for some image processed
-            CURRENT_DIR = os.getcwd()
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
             find_or_create_dir(SAVE_DIR)
 
