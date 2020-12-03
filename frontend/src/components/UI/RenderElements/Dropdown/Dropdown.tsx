@@ -1,182 +1,114 @@
 // @ts-nocheck
 
-import React from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import { makeStyles, Button } from '@material-ui/core';
 import * as R from 'ramda';
 import { DropdownRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
+import { makeComponentStyles } from '../styles';
 
-const styles = require('../styles.scss');
+export const DropdownContext = React.createContext();
 
-const getDropdownClassStyles = (style: React.CSSProperties) => {
-  const dropdownStyles = R.omit(
-    ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-    style,
-  );
-
-  return {
-    ...dropdownStyles,
-    backgroundColor: dropdownStyles.backgroundColor,
-    color: dropdownStyles.color,
-    '&:hover': {
-      backgroundColor: dropdownStyles.backgroundColor,
-      color: dropdownStyles.color,
-    },
-
-    '&:active': {
-      color: dropdownStyles.color,
-    },
-  };
-};
-
-const getDropdownStyles = (
-  isDisabled: boolean,
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    root: {
-      cursor: isDisabled ? 'default' : 'pointer',
-      ...(isDisabled && { transition: 'none' }),
-      '&:hover,&active': {
-        ...(isDisabled && {
-          boxShadow:
-            '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
-        }),
-      },
-    },
-
-    entityStyles: {
-      ...getDropdownClassStyles(entityStyles),
-    },
-
-    groupStyles: {
-      ...getDropdownClassStyles(groupStyles),
-    },
-
-    ownStyles: {
-      ...getDropdownClassStyles(ownStyles),
-    },
+const useDivStyles = makeStyles(() => {
+  const getDivClassStyles = (style: React.CSSProperties) => ({
+    marginTop: style.marginTop,
+    marginRight: style.marginRight,
+    marginBottom: style.marginBottom,
+    marginLeft: style.marginLeft,
+    position: 'relative' as React.CSSProperties['position'],
+    display: 'inline-block',
+    verticalAlign: 'top',
   });
-
-const getDivClassStyles = (style: React.CSSProperties) => ({
-  marginTop: style.marginTop,
-  marginRight: style.marginRight,
-  marginBottom: style.marginBottom,
-  marginLeft: style.marginLeft,
-  position: 'relative' as React.CSSProperties['position'],
-  display: 'inline-block',
-  verticalAlign: 'top',
+  return {
+    entityStyles: ({ entityStyles }) => getDivClassStyles(entityStyles),
+    groupStyles: ({ groupStyles }) => getDivClassStyles(groupStyles),
+    ownStyles: ({ ownStyles }) => getDivClassStyles(ownStyles),
+  };
 });
 
-const getDivStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    entityStyles: {
-      ...getDivClassStyles(entityStyles),
+const useMainStyles = makeComponentStyles({
+  root: ({ isDisabled }) => ({
+    cursor: isDisabled ? 'default' : 'pointer',
+    ...(isDisabled && { transition: 'none' }),
+    '&:hover,&active': {
+      ...(isDisabled && {
+        boxShadow:
+          '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+      }),
     },
+  }),
+});
 
-    groupStyles: {
-      ...getDivClassStyles(groupStyles),
-    },
+const useDropdownStyles = makeStyles(() => {
+  const getDropdownClassStyles = (style: React.CSSProperties) => {
+    const dropdownStyles = R.omit(
+      ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
+      style,
+    );
 
-    ownStyles: {
-      ...getDivClassStyles(ownStyles),
-    },
-  });
+    return {
+      ...dropdownStyles,
+      backgroundColor: dropdownStyles.backgroundColor,
+      color: dropdownStyles.color,
+      '&:hover': {
+        backgroundColor: dropdownStyles.backgroundColor,
+        color: dropdownStyles.color,
+      },
+
+      '&:active': {
+        color: dropdownStyles.color,
+      },
+    };
+  };
+
+  return {
+    entityStyles: ({ entityStyles }) => getDropdownClassStyles(entityStyles),
+    groupStyles: ({ groupStyles }) => getDropdownClassStyles(groupStyles),
+    ownStyles: ({ ownStyles }) => getDropdownClassStyles(ownStyles),
+  };
+});
 
 const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      isDisabled,
-      active,
-      params,
-      children,
-      className,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    } = props;
+    const { id, isDisabled, params, children, className } = props;
     const { textContent, showRipple, isOpen } = params;
 
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const eventHandlers = useEventHandlers(props);
 
-    const handleMenuButtonClick = (
-      event: React.MouseEvent<HTMLButtonElement>,
-    ) => {
-      setAnchorEl(event.currentTarget);
+    const divClasses = useDivStyles(props);
+    const mainClasses = useMainStyles(props);
+    const dropdownClasses = useDropdownStyles(props);
+    const [open, setOpen] = useState<boolean>(false);
+
+    const handleMenuButtonClick = () => {
+      if (!isDisabled) {
+        setOpen(!open);
+      }
     };
 
-    const dropdownClasses = getDropdownStyles(
-      isDisabled,
-      active,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
-    const divClasses = getDivStyles(entityStyles, groupStyles, ownStyles)();
-
-    const [Children] = React.Children.toArray(children);
-
-    return isDisabled ? (
-      <>
-        <div
-          key={id}
-          className={cn(
-            className,
-            divClasses.entityStyles,
-            divClasses.groupStyles,
-            divClasses.ownStyles,
-          )}
-          ref={ref}
-          {...eventHandlers}
-        >
-          <Button
-            id={id}
-            data-ls-id={id}
-            aria-controls="simple-menu"
-            aria-haspopup="true"
-            variant="contained"
-            color="primary"
-            className={cn(
-              dropdownClasses.root,
-              styles.disabled,
-              dropdownClasses.entityStyles,
-              dropdownClasses.groupStyles,
-              dropdownClasses.ownStyles,
-            )}
-            disableRipple
-          >
-            {textContent}
-          </Button>
-          {isOpen && React.cloneElement(Children, { anchorEl, setAnchorEl })}
-        </div>
-      </>
-    ) : (
+    return (
       <div
+        key={id}
         className={cn(
+          ...(isDisabled ? [className] : []),
           divClasses.entityStyles,
           divClasses.groupStyles,
           divClasses.ownStyles,
         )}
+        ref={ref}
+        {...eventHandlers}
       >
         <Button
+          id={id}
+          data-ls-id={id}
           aria-controls="simple-menu"
           aria-haspopup="true"
-          onClick={handleMenuButtonClick}
-          id={id}
-          key={id}
           variant="contained"
           color="primary"
+          onClick={handleMenuButtonClick}
           className={cn(
-            dropdownClasses.root,
+            ...(isDisabled ? [mainClasses.root, mainClasses.disabled] : []),
             dropdownClasses.entityStyles,
             dropdownClasses.groupStyles,
             dropdownClasses.ownStyles,
@@ -185,7 +117,15 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
         >
           {textContent}
         </Button>
-        {React.cloneElement(Children, { anchorEl, setAnchorEl })}
+        <DropdownContext.Provider
+          value={{
+            anchorRef: ref,
+            open: (isDisabled && isOpen) || open,
+            setOpen,
+          }}
+        >
+          {children}
+        </DropdownContext.Provider>
       </div>
     );
   },

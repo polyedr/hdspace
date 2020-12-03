@@ -5,12 +5,7 @@ import { findParentByChildID } from '@Utils/ElementsTreeHelper';
 import { updateSavedElementValues } from '@Redux/project/actions';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
-import {
-  ChildrenElements,
-  ElementEntity,
-  ProjectClass,
-  SavedElementsValues,
-} from '@Src/types';
+import { ChildrenElements, ElementEntity, ProjectClass } from '@Src/types';
 import {
   selectActiveElement,
   selectCurrentRootElement,
@@ -37,8 +32,7 @@ type ElementProps = {
   params?: any;
   onElementChange?: (item, value) => void;
   childrenElements?: ChildrenElements;
-  isRadioChecked?: boolean;
-  isCheckboxChecked?: boolean;
+  isChecked?: boolean;
   projectClasses?: ProjectClass[];
 } & Omit<SharedRendererProps, 'children'>;
 
@@ -63,14 +57,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
     if (!element) {
       return null;
     }
-
-    const isRadioChecked = (
-      value: string,
-      checkedRadio: SavedElementsValues[string],
-    ) => value === checkedRadio?.savedValue;
-
-    const isCheckboxChecked = (itemId: string) =>
-      Boolean(savedElements[itemId]?.savedValue);
 
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       if (!event.nativeEvent || !event.nativeEvent.target) {
@@ -120,27 +106,12 @@ const useElementProps = (elementId: string): ElementProps | null => {
         };
       }
 
-      case 'checkbox': {
-        return {
-          currentValue: savedElements[id]?.savedValue,
-          isCheckboxChecked: isCheckboxChecked(id),
-          onChange,
-          params: element.parameters,
-        };
-      }
-
+      case 'checkbox':
       case 'radiobutton': {
         return {
-          currentValue: savedElements[id]?.savedValue,
-          isRadioChecked: isRadioChecked(
-            element.parameters.value,
-            savedElements[element.parameters.name],
-          ),
-          onChange,
           params: element.parameters,
         };
       }
-
       case 'select': {
         return {
           onElementChange: onChange,
@@ -149,7 +120,12 @@ const useElementProps = (elementId: string): ElementProps | null => {
           projectClasses,
         };
       }
-
+      case 'dropdownMenu': {
+        return {
+          params: element.parameters,
+          parentId: element.parent,
+        };
+      }
       default:
         return {
           params: element.parameters,
@@ -162,9 +138,9 @@ const useElementProps = (elementId: string): ElementProps | null => {
     root,
     rootID,
     showBorders,
-    savedElements,
     dispatch,
     elementId,
+    savedElements,
     projectClasses,
   ]);
 
