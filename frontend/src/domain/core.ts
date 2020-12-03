@@ -284,7 +284,7 @@ export const gridStyleControls = [
   'display',
 ] as const;
 
-export const columnsControls = [
+export const columnsStyleControls = [
   'columns',
   'indents',
   'size',
@@ -367,7 +367,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   pageTemplate: pageTemplateStyleControls,
   emptyPageTemplate: emptyPageTemplateStyleControls,
   grid: gridStyleControls,
-  columns: columnsControls,
+  columns: columnsStyleControls,
   subscribeForm: subscribeFormStyleControls,
   smartHeader: [...smartContainerStyleControls, 'smartHeader'],
   smartFooter: [...smartContainerStyleControls, 'smartFooter'],
