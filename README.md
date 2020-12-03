@@ -17,29 +17,21 @@ After you will install and run the front end part in parallel, you can use this 
 
 What things you need to install the software and how to install them
 
-<i>PostgreSQL</i>
+*PostgreSQL*
 
-<h5><i>Python 3.6 Strict</i></h5>
+#####  *Python 3.6 Strict*
 
 ### Installing
 
-You can create a virtual environment with python 3.6 first then execute
+You can create a virtual environment with python 3.6 first then execute 
 
-***
+> *pip install -r requirement.txt.*
 
-<i>pip install -r requirement.txt. </i>
+in the project root folder to load all dependencies required for this project from the root folder as well as all *.txt* file from the requirements folder. 
 
-***
+Then you can use the **SSH** details provided to retrieve trained model from our server, trained models are located in
 
-in the project root folder to load all dependencies required for this project from the root folder as well as all <i>.txt</i> file from the requirements folder. 
-
-Then you can use the <b>SSH</b> details provided to retrieve trained model from our server, trained models are located in
-
-***
-
-<i>/opt/adeviio/develop/apps/virtualize_simple/mask_rcnn/trained_models</i>
-
-***
+> */opt/adeviio/develop/apps/virtualize_simple/mask_rcnn/trained_models*
 
 Then create the <i>PostgreSQL</i> database by using the database name and database username from <i>.env-template</i>. 
 
@@ -47,17 +39,13 @@ Then create the <i>PostgreSQL</i> database by using the database name and databa
 
 After that, you can run these migrations commands and run the server locally.
 
-***
+> *python manage.py makemigrations*
 
-<i>python manage.py makemigrations</i>
+> *python manage.py migrate*
 
-<i>python manage.py migrate</i>
+> *python manage.py createsuperuser*
 
-<i>python manage.py createsuperuser</i>
-
-<i>python manage.py runserver</i>
-
-***
+> *python manage.py runserver*
 
 You can find the REST API local schema here: http://127.0.0.1:8000/api/v1/schema/
 
