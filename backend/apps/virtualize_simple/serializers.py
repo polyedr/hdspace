@@ -2056,6 +2056,28 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             with open(fname + ".html", "w") as html_file:
                 print(html, file=html_file)
 
+            # Print tree to file
+            with open(VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w") as tree_file:
+                for pre, fill, node in RenderTree(root_block):
+                    treestr = u"%s%s" % (pre, node.name)
+                    print(
+                        treestr.ljust(8),
+                        node.x1,
+                        node.y1,
+                        node.x2,
+                        node.y2,
+                        "direction:",
+                        node.direction,
+                        node.types,
+                        "num_elements:",
+                        len(node.elements),
+                        "num_children:",
+                        len(node.children),
+                        "processing:",
+                        node.processing,
+                        file=tree_file,
+                    )
+
         serializer_node.parameters["html"] = html
 
         return serializer_node
