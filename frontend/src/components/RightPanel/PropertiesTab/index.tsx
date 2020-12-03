@@ -6,6 +6,7 @@ import {
   selectCurrentEditableStyles,
 } from '@Redux/project/selectors/element';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import { Control, Entity, NNBlockType } from '@Src/types';
 import RenameElement from './Controls/RenameElement/RenameElement';
@@ -133,6 +134,7 @@ const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const activeElement = useSelector(selectActiveElement);
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const editableStyles = useSelector(selectCurrentEditableStyles);
 
   const getControlStyles = useCallback(
@@ -164,7 +166,7 @@ const PropertiesTab: React.FC = () => {
           height: '100%',
         }}
       >
-        {type !== 'none' && (
+        {type !== 'none' && !isPrototypeMode && (
           <>
             {AVAILABLE_CONTROLS[type as Entity].map((controlName) => {
               if (isFreeCanvasMode && controlName === 'size') {
