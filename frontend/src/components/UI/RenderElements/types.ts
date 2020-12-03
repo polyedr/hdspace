@@ -110,8 +110,8 @@ export type DropdownRendererProps = SharedRendererProps & {
 
 export type DropdownMenuRendererProps = SharedRendererProps & {
   params: {};
-  anchorEl: HTMLElement | null;
-  setAnchorEl: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
+  parentId?: string;
+  anchorRef: React.RefObject<HTMLButtonElement>;
 };
 
 export type DropdownItemRendererProps = SharedRendererProps & {

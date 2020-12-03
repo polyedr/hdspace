@@ -120,7 +120,12 @@ const useElementProps = (elementId: string): ElementProps | null => {
           projectClasses,
         };
       }
-
+      case 'dropdownMenu': {
+        return {
+          params: element.parameters,
+          parentId: element.parent,
+        };
+      }
       default:
         return {
           params: element.parameters,

@@ -1,13 +1,11 @@
 // @ts-nocheck
 
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import { Checkbox as MaterialCheckbox } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { CheckboxRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
@@ -31,10 +29,7 @@ const useDivStyles = makeComponentStyles(
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, params, isDisabled, className } = props;
-    const { name, showRipple } = params;
-
-    const isProtoMode = useSelector(selectIsPrototypeMode);
-
+    const { name, value, showRipple } = params;
     const divClasses = useDivStyles(props);
     const checkboxClasses = useCheckboxStyles(props);
 
@@ -42,11 +37,11 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
     const [isChecked, setIsChecked] = useState<boolean>(false);
     const handleChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (isProtoMode) {
+        if (!isDisabled) {
           setIsChecked(event.target.checked);
         }
       },
-      [isProtoMode],
+      [isDisabled],
     );
 
     return (
@@ -68,6 +63,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
           checkedIcon={<CheckBoxIcon className={checkboxClasses.icon} />}
           icon={<CheckBoxOutlineBlankIcon className={checkboxClasses.icon} />}
           color="default"
+          value={value}
           className={cn(
             checkboxClasses.root,
             checkboxClasses.entityStyles,
@@ -75,7 +71,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
             checkboxClasses.ownStyles,
           )}
           name={name}
-          checked={isProtoMode && isChecked}
+          checked={!isDisabled && isChecked}
           disableRipple={!showRipple}
           onChange={handleChange}
         />

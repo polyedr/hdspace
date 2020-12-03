@@ -1,12 +1,10 @@
 // @ts-nocheck
 
 import React, { useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import { makeStyles, Radio } from '@material-ui/core';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { RadioRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
@@ -52,8 +50,6 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
     const { id, params, isDisabled, className } = props;
     const { showRipple } = params;
 
-    const isProtoMode = useSelector(selectIsPrototypeMode);
-
     const radiobuttonClasses = useRadiobuttonStyles(props);
     const iconClasses = useIconStyles(props);
     const divClasses = useDivStyles(props);
@@ -64,11 +60,11 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
 
     const handleChange = useCallback(
       (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (isProtoMode) {
+        if (!isDisabled) {
           setIsChecked(event.target.checked);
         }
       },
-      [isProtoMode],
+      [isDisabled],
     );
 
     return (
@@ -112,7 +108,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
             radiobuttonClasses.groupStyles,
             radiobuttonClasses.ownStyles,
           )}
-          checked={isProtoMode && isChecked}
+          checked={!isDisabled && isChecked}
           onChange={handleChange}
           disableRipple={!showRipple}
         />

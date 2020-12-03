@@ -26,36 +26,20 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
     const styles = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
-    return isDisabled ? (
+    return (
       <MenuItem
-        ref={ref}
         id={id}
         data-ls-id={id}
-        key={id}
+        ref={ref}
         className={cn(
           styles.root,
-          className,
-          styles.addedElem,
-          styles.disabled,
+          ...(isDisabled ? [className, styles.addedElem, styles.disabled] : []),
           styles.entityStyles,
           styles.groupStyles,
           styles.ownStyles,
         )}
-        disableRipple
-        {...eventHandlers}
-      >
-        {textContent}
-      </MenuItem>
-    ) : (
-      <MenuItem
-        key={id}
-        className={cn(
-          styles.root,
-          styles.entityStyles,
-          styles.groupStyles,
-          styles.ownStyles,
-        )}
-        disableRipple={!showRipple}
+        disableRipple={isDisabled || !showRipple}
+        {...(isDisabled ? eventHandlers : {})}
       >
         {textContent}
       </MenuItem>
