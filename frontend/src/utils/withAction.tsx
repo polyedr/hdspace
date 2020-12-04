@@ -1,89 +1,78 @@
-import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
+import React, { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { WithActionProps } from '@Src/types';
 import {
   ActionRendererProps,
   SharedRendererProps,
 } from '../components/UI/RenderElements/types';
-import { WithActionProps } from '../types';
 
 type Props = WithActionProps & SharedRendererProps & ActionRendererProps;
 
-function withAction(
-  Component: React.ComponentType<
-    WithActionProps & SharedRendererProps & ActionRendererProps
-  >,
+const withAction = (
+  Component: React.ComponentType<WithActionProps & ActionRendererProps>,
   type: 'link' | 'button',
-  isExportedAction?: boolean,
-) {
+) => {
   const WrapperComponent = React.forwardRef((props: Props, ref) => {
-    const dispatch = useDispatch();
     const {
       params: { action },
       isDisabled,
     } = props;
 
-    const handleInternalLinkClick = useCallback(
+    const currentProjectId = useSelector(selectCurrentProjectId);
+
+    const actionLink = useMemo(() => {
+      switch (action.type) {
+        case 'internal-link':
+          if (action.screenId === 'noScreen') {
+            return '#';
+          }
+          return `/project/${currentProjectId}/${action.screenId}`;
+        case 'external-link':
+        default:
+          return action.url || '';
+      }
+    }, [action.screenId, action.type, action.url, currentProjectId]);
+
+    const handleLinkClick = useCallback(
       (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        if (
-          isDisabled ||
-          (action?.type === 'internal-link' && action.screenID === 'noScreen')
-        ) {
-          event.preventDefault();
-        } else if (!isExportedAction && action?.type === 'internal-link') {
-          dispatch(push(`${action.screenID}`));
+        switch (action.type) {
+          case 'internal-link':
+            if (isDisabled || !action.screenId) {
+              event.preventDefault();
+            }
+            break;
+          case 'external-link':
+          default:
+            if (isDisabled || !action.url) {
+              event.preventDefault();
+            }
         }
       },
-      [isDisabled, action?.type, dispatch],
+      [action.screenId, action.type, action.url, isDisabled],
     );
 
-    const handleExternalLinkClick = useCallback(
-      (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        if (
-          isDisabled ||
-          (action?.type === 'external-link' && action.url === '')
-        ) {
-          event.preventDefault();
-        }
-      },
-      [isDisabled],
-    );
-
-    const isInternalLink = useCallback(() => action?.type === 'internal-link', [
-      action,
-    ]);
-
-    const isButtonElement = useCallback(
-      () =>
-        (!action && type === 'button') ||
-        (action &&
-          type === 'button' &&
-          ((action.type === 'internal-link' &&
-            action.screenID === 'noScreen') ||
-            (action.type === 'external-link' && action.url === ''))),
-      [action, type],
-    );
-
-    return isButtonElement() ? (
+    if (type === 'button') {
+      return (
+        <Component
+          {...props}
+          actionType="button"
+          ref={ref as React.RefObject<HTMLElement>}
+        />
+      );
+    }
+    return (
       <Component
         {...props}
-        actionType="button"
-        ref={ref as React.RefObject<HTMLElement>}
-      />
-    ) : (
-      <Component
-        {...props}
-        actionType={isInternalLink() ? 'internal-link' : 'external-link'}
-        onClick={
-          isInternalLink() ? handleInternalLinkClick : handleExternalLinkClick
-        }
-        actionLink="mock"
+        actionType={action.type}
+        onClick={handleLinkClick}
+        actionLink={actionLink}
         ref={ref as React.RefObject<HTMLElement>}
       />
     );
   });
 
   return WrapperComponent;
-}
+};
 
 export default withAction;

@@ -31,6 +31,7 @@ import { Entity, NNBlockType } from '../../../types';
 import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
 
+// eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
   container: Container,
@@ -72,10 +73,4 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   cardsSection: Container,
   featureSection: Container,
   section: Section,
-};
-
-export const EXPORT_RENDERERS: Record<Entity, React.FunctionComponent<any>> = {
-  ...RENDERERS,
-  button: withAction(Action, 'button', true),
-  hyperlink: withAction(Link, 'link', true),
 };

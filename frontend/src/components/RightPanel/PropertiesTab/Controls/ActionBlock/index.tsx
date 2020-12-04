@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -7,12 +7,13 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import MenuItem from '@material-ui/core/MenuItem';
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
-import { selectScreens } from '@Redux/project/selectors/screen';
+import {
+  selectCurrentScreenId,
+  selectScreens,
+} from '@Redux/project/selectors/screen';
 
 import {
-  ExternalLink,
   HyperlinkElement,
-  InternalLink,
   LinkParams,
   PropertiesChangeProps,
   Screen,
@@ -34,27 +35,8 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
     selectActiveElementParams,
   );
   const screens = useSelector(selectScreens);
-
-  const [linkType, setLinkType] = useState(action?.type);
-
-  const getCurrentUrl = React.useCallback(
-    (currentType: InternalLink['type'] | ExternalLink['type']): string => {
-      return (
-        (action &&
-          currentType === action.type &&
-          (action.type === 'external-link'
-            ? action.url
-            : String(action.screenID))) ||
-        ''
-      );
-    },
-    [action],
-  );
-
-  const [state, setState] = useState(getCurrentUrl('external-link'));
-  useEffect(() => {
-    setState(getCurrentUrl('external-link'));
-  }, [getCurrentUrl]);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const [type, setType] = useState(action?.type);
 
   const debounced = useDebouncedCallback((value) => {
     updateParams({
@@ -65,29 +47,24 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
     });
   }, 500);
 
-  const handleUrlChange = (ev) => {
-    const { value } = ev.target;
-    updateParams({
-      action: {
-        type: 'internal-link',
-        screenID: value === 'noScreen' ? value : +value,
-      },
-    });
-  };
-
-  const handleLinkTypeChange = (
-    ev: React.MouseEvent<HTMLElement>,
-    newLinkType: 'internal-link' | 'external-link',
-  ) => {
-    if (!newLinkType) return;
-    setLinkType(newLinkType);
-  };
+  const handleTypeChange = useCallback(
+    (
+      event: React.MouseEvent<HTMLElement>,
+      newType: 'internal-link' | 'external-link',
+    ) => {
+      if (!newType) {
+        return;
+      }
+      setType(newType);
+    },
+    [],
+  );
 
   return (
     <div>
       <ToggleButtonGroup
-        value={linkType}
-        onChange={handleLinkTypeChange}
+        value={type}
+        onChange={handleTypeChange}
         size="small"
         exclusive
       >
@@ -101,24 +78,33 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
       </ToggleButtonGroup>
 
       <div>
-        {linkType === 'external-link' ? (
+        {type === 'external-link' && (
           <StyledTextField
             fullWidth
             label="URL"
             placeholder="Enter a page URL"
-            value={state}
+            defaultValue={action?.url}
             onChange={({ target: { value } }) => {
-              setState(value);
               debounced.callback(value);
             }}
             margin="dense"
           />
-        ) : (
+        )}
+
+        {type === 'internal-link' && (
           <StyledTextField
             fullWidth
             label="Screen Id"
-            value={getCurrentUrl('internal-link')}
-            onChange={handleUrlChange}
+            value={action.screenId || 'noScreen'}
+            onChange={({ target: { value } }) => {
+              updateParams({
+                action: {
+                  type: 'internal-link',
+                  screenId:
+                    value === 'noScreen' ? value : parseInt(value as string),
+                },
+              });
+            }}
             margin="dense"
             select
           >
@@ -126,11 +112,13 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
               No screen
             </MenuItem>
 
-            {screens.map(({ name, id }) => (
-              <MenuItem key={id} value={id} dense>
-                {name}
-              </MenuItem>
-            ))}
+            {screens
+              .filter((screen) => screen.id !== currentScreenId)
+              .map(({ name, id }) => (
+                <MenuItem key={id} value={id} dense>
+                  {name}
+                </MenuItem>
+              ))}
           </StyledTextField>
         )}
       </div>
