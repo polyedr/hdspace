@@ -6,7 +6,12 @@ import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
-import { apiCreateElements, apiGetElements } from '@Api/element';
+import {
+  apiChangeRecursiveElement,
+  apiCreateElement,
+  apiCreateElements,
+  apiGetElements,
+} from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
 import { apiUpdateScenarios } from '@Api/scenario';
 import { apiCreateScreen, apiGetScreen, apiUpdateScreen } from '@Api/screen';
@@ -23,6 +28,7 @@ import {
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { getHTMLBodyContent, removeTag } from '@Utils/stringHelper';
+import convertHtml from '@Utils/convertHtml';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -676,17 +682,47 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
 
     const html = yield file.text();
     const content = removeTag(
-      removeTag(getHTMLBodyContent(html), 'script'),
-      'iframe',
+      removeTag(removeTag(getHTMLBodyContent(html), 'script'), 'iframe'),
+      'style',
     );
 
-    console.log(content);
+    const container = document.createElement('div');
+    container.innerHTML = content;
 
-    // yield call(
-    //   createScreenSaga,
-    //   createScreen(projectId, 'Screen 1', projectscreen.length),
-    // );
-    // const rootElement = document.getElementById('root');
+    const data = convertHtml(container);
+
+    const { result: element, error }: Result<LibraryElement<any>> = yield call(
+      reqWrapper,
+      apiCreateElement,
+      {
+        data,
+      },
+    );
+    if (element) {
+      const { id: projectId, projectscreen }: Project = yield select(
+        selectCurrentProject,
+      );
+
+      const screen: Screen = yield call(
+        createScreenSaga,
+        createScreen(projectId, 'Screen 1', projectscreen.length),
+      );
+
+      const root: StateElement = yield select(
+        selectElementById(screen.element),
+      );
+
+      yield put(
+        Actions.addStateElements([element], root.id, { screenId: screen.id }),
+      );
+
+      const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
+        data: { children: [element.id] },
+        id: root.id,
+      });
+      if (error) throw new Error(error);
+    }
+    if (error) throw new Error(error);
   } catch (e) {
     yield put(
       enqueueSnackbar({

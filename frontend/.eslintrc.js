@@ -57,6 +57,7 @@ module.exports = {
     'react/no-danger': 'off',
     radix: [2, 'as-needed'], // allow to omit second parameter when possible
     'react/jsx-wrap-multilines': 'off', // to avoid conflicts with prettier
+    'no-bitwise': ['error', { allow: ['~'] }],
     'react/jsx-props-no-spreading': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
     'no-nested-ternary': 'warn',
