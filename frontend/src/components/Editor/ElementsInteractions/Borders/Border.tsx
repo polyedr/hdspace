@@ -35,27 +35,27 @@ const Border: React.FC<Props> = (props) => {
   const borderStyles = useStyles(props);
   const [styleProps, setStyleProps] = useState<StyleProps | null>(null);
   useEffect(() => {
-    const { top, left, right, height } = styles;
+    const { top, left, height, width } = styles;
     let props: StyleProps | null;
     switch (position) {
       case BorderPosition.TOP:
         props = {
           top,
-          right,
           left,
+          width,
         } as StyleProps;
         break;
       case BorderPosition.RIGHT:
         props = {
           top,
-          right,
+          left: left + width,
           height,
         };
         break;
       case BorderPosition.BOTTOM:
         props = {
           top: top + height - 1, // remove bottom border height
-          right,
+          width,
           left,
         } as StyleProps;
         break;

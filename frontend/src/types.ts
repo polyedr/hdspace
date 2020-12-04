@@ -398,13 +398,11 @@ export type ImageParameters = BaseElementParams & {
   imageURL: string;
 };
 
-export type InternalLink = {
-  type: 'internal-link';
-  screenID?: number | 'noScreen';
+export type LinkParams = BaseElementParams & {
+  type: 'internal-link' | 'external-link';
+  url?: string; // for external links
+  screenId?: number | 'noScreen'; // for internal links
 };
-export type ExternalLink = { type: 'external-link'; url?: string };
-
-export type LinkParams = BaseElementParams & (InternalLink | ExternalLink);
 
 export type ButtonParameters = BaseElementParams & {
   textContent: string;
