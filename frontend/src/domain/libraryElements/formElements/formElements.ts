@@ -30,7 +30,7 @@ export const makeButton = ({
     textContent,
     action: {
       type: 'internal-link',
-      screenID: 'noScreen',
+      screenId: 'noScreen',
     },
     showRipple: true,
   },

@@ -21,7 +21,7 @@ export const hyperlink: HyperlinkServerElement = {
     textContent: 'hyperlink',
     action: {
       type: 'internal-link',
-      screenID: 'noScreen',
+      screenId: 'noScreen',
     },
   },
   styles: {
