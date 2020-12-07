@@ -11,7 +11,6 @@ type Props = WithActionProps & SharedRendererProps & ActionRendererProps;
 
 const withAction = (
   Component: React.ComponentType<WithActionProps & ActionRendererProps>,
-  type: 'link' | 'button',
 ) => {
   const WrapperComponent = React.forwardRef((props: Props, ref) => {
     const {
@@ -52,15 +51,6 @@ const withAction = (
       [action.screenId, action.type, action.url, isDisabled],
     );
 
-    if (type === 'button') {
-      return (
-        <Component
-          {...props}
-          actionType="button"
-          ref={ref as React.RefObject<HTMLElement>}
-        />
-      );
-    }
     return (
       <Component
         {...props}
