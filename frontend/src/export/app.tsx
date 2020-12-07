@@ -7,6 +7,7 @@ import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
 import ExportedElement from './components/ExportedElement';
+import { parseHTML } from './utils/parser';
 
 const getHtmlFromTemplate = (body: string) => `
 <!DOCTYPE html>
@@ -37,14 +38,18 @@ const getHtmlFromTemplate = (body: string) => `
 
 const createArchive = (html: string, css: string) => {
   const zip = new JSZip();
-  zip.file('index.html', getHtmlFromTemplate(html));
   const cssFolder = zip.folder('css');
-  cssFolder?.file('style.css', css);
-  zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(content);
-    a.download = 'page.zip';
-    a.click();
+  const assetsFolder = zip.folder('assets');
+
+  parseHTML(html, assetsFolder).then((result: string) => {
+    zip.file('index.html', getHtmlFromTemplate(result));
+    cssFolder?.file('style.css', css);
+    zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(content);
+      a.download = 'page.zip';
+      a.click();
+    });
   });
 };
 
