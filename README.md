@@ -39,8 +39,6 @@ Then create the <i>PostgreSQL</i> database by using the database name and databa
 
 After that, you can run these migrations commands and run the server locally.
 
-> *python manage.py makemigrations*
-
 > *python manage.py migrate*
 
 > *python manage.py createsuperuser*
@@ -51,8 +49,7 @@ You can find the REST API local schema here: http://127.0.0.1:8000/api/v1/schema
 
 ## Deployment
 
-1. Restore PostgreSQL database from dump, https://www.postgresql.org/docs/current/backup-dump.html
-3. Copy project files to the server. Set up the parameters required at the application settings.
+1. Copy project files to the server. Set up the parameters required at the application settings.
 4. Deploy with NGINX and Gunicorn or UWSGI
 5. Check that you have Debug = False at the application settings.
 
@@ -69,6 +66,6 @@ You can find the REST API local schema here: http://127.0.0.1:8000/api/v1/schema
 
 ## Acknowledgements
 
-* Thanks for the Allmax team for the support and discussions and Santiago Rativa, Victor Zamora for the adevi application built
+* Thanks for Santiago Rativa, Victor Zamora for the adevi application built and Peter Yamamoto for user roles development and YuanHong Li for ReadMe Update.
 
  
