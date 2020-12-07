@@ -3,8 +3,8 @@ import React from 'react';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
+import { ActionType, WithActionProps } from '@Src/types';
 import { ActionRendererProps } from '../types';
-import { ActionType, WithActionProps } from '../../../../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 

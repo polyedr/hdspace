@@ -128,8 +128,6 @@ const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
     ownStyles: menu.styles.own,
   });
 
-  // const menuItemClasses = useMenuItemStyles(props);
-
   const menuItems: LibraryElement<'selectItem'> = menu.children;
   const currentValue = params.value || menuItems[0]?.parameters?.value;
 

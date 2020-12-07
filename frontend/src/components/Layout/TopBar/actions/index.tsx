@@ -3,6 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
+import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { CircularProgress, lighten } from '@material-ui/core';
@@ -18,6 +19,7 @@ import {
   updateScreenImage,
   undoAction,
 } from '@Redux/project/actions';
+import exportHTML from '@Src/export/app';
 
 const useStyles = makeStyles(({ palette }) => ({
   root: {
@@ -51,6 +53,10 @@ const Actions: React.FC = () => {
 
   const handleSaveScreen = () => dispatch(updateScreenImage(currentScreenId));
 
+  const handleExportScreen = () => {
+    exportHTML();
+  };
+
   return (
     <div className={classes.root}>
       <IconButton
@@ -78,6 +84,14 @@ const Actions: React.FC = () => {
         className={classes.iconButton}
       >
         {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
+      </IconButton>
+
+      <IconButton
+        onClick={handleExportScreen}
+        title="Export screen"
+        className={classes.iconButton}
+      >
+        <VerticalAlignBottomIcon />
       </IconButton>
     </div>
   );

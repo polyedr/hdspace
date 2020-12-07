@@ -10,12 +10,12 @@ import {
 } from '@Redux/project/selectors/base';
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import DraggableItem from '../Draggable/DraggableElement';
 import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
+import DraggableElement from '../Draggable/DraggableElement';
 
 const useStyles = makeStyles({
   workspace: {
@@ -81,7 +81,7 @@ const Workspace: React.FC = () => {
               <FreeCanvas />
             ) : (
               <>
-                <DraggableItem elementId={rootElementId} />
+                <DraggableElement elementId={rootElementId} />
                 {!isPrototypeMode && <ElementsInteractions />}
               </>
             )}
