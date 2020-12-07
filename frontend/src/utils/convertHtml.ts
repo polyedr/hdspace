@@ -104,11 +104,28 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
 const convertHtml = (element: HTMLElement): ServerElement<any> => {
   const type = tagMap[element.tagName] || 'container';
 
+  const { style } = element; // for inline styles only, to get other styles use window.getComputedStyles(element)
+
+  const res = {} as any;
+  for (let i = 0; i < style.length; i += 1) {
+    const name = style.item(i);
+    res[name] = style[name];
+  }
+
+  const adeviElement = convertCreatedElementToRequest(type, null, type, {
+    textContent: element.textContent,
+    ...(type === 'heading' && { headingType: element.tagName.toLowerCase() }),
+  });
+
   return {
-    ...convertCreatedElementToRequest(type, null, type),
+    ...adeviElement,
     children: [...element.children].map((child) =>
       convertHtml(child as HTMLElement),
     ),
+    styles: {
+      ...adeviElement.styles,
+      ownStyles: res,
+    },
   };
 };
 
