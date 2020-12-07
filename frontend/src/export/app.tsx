@@ -1,11 +1,14 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
+import { ConnectedRouter } from 'connected-react-router';
 import { ServerStyleSheets, ThemeProvider } from '@material-ui/core/styles';
 import JSZip from 'jszip';
 import theme from '@Src/styles/Theme';
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
+import history from '@Redux/history';
 import ExportedElement from './components/ExportedElement';
 import { parseHTML } from './utils/parser';
 
@@ -62,9 +65,13 @@ const exportHTML = () => {
 
   const html = ReactDOMServer.renderToString(
     sheets.collect(
-      <ThemeProvider theme={theme}>
-        <ExportedElement elementId={rootId} state={state} />
-      </ThemeProvider>,
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <ThemeProvider theme={theme}>
+            <ExportedElement elementId={rootId} state={state} />
+          </ThemeProvider>
+        </ConnectedRouter>
+      </Provider>,
     ),
   );
 

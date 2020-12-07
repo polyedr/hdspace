@@ -13,10 +13,14 @@ export const parseHTML = async (html: string, assetsFolder: JSZip | null) => {
       const attr = assetAttributes[j];
       if (element.hasAttribute(attr)) {
         const url = element.getAttribute(attr) as string;
-        if (url.match('^(?:[a-z]+:)?//i')) {
+        if (!url.match('^(?:[a-z]+:)?//i')) {
+          const { location } = document;
+          const domainPath = `${location.protocol}//${location.hostname}${
+            location.port ? `:${location.port}` : ''
+          }`;
           element.setAttribute(
             attr,
-            `${document.location}${element.getAttribute(attr)}`,
+            `${domainPath}${element.getAttribute(attr)}`,
           );
         } else if (attr === 'src') {
           element.setAttribute(attr, `assets${url}`);
