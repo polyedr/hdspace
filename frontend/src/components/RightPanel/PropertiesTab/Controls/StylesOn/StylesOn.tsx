@@ -26,7 +26,9 @@ const StylesOn: React.FC<PropertiesChangeProps<SmartElement<Entity>>> = ({
   return (
     <div className={classes.wrapper}>
       <FormControlLabel
-        control={<Switch checked={stylesOn} onChange={handleSwitchChange} />}
+        control={
+          <Switch checked={stylesOn || false} onClick={handleSwitchChange} />
+        }
         label="Styles On"
       />
     </div>
