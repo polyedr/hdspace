@@ -121,10 +121,21 @@ export type FeatureSectionServerElement = ServerElement<
   ServerElement<Entity>[]
 >;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
-export type SmartHeaderServerElement = ServerElement<'smartHeader'>;
-export type SmartFooterServerElement = ServerElement<'smartFooter'>;
-export type SmartFormServerElement = ServerElement<'smartForm'>;
-export type SmartWebpageServerElement = ServerElement<'smartWebpage'>;
+export type SmartContainerServerElement<T extends Entity> = ServerElement<
+  T,
+  [],
+  SmartElementParameters
+>;
+export type SmartHeaderServerElement = SmartContainerServerElement<
+  'smartHeader'
+>;
+export type SmartFooterServerElement = SmartContainerServerElement<
+  'smartFooter'
+>;
+export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
+export type SmartWebpageServerElement = SmartContainerServerElement<
+  'smartWebpage'
+>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<
   'hyperlink',
@@ -302,7 +313,7 @@ export type SelectElement = LibraryElement<
 export type SmartElement<T extends Entity> = LibraryElement<
   T,
   [],
-  SmartElementParams
+  SmartElementParameters
 >;
 export type SelectMenuElement = LibraryElement<
   'selectMenu',
@@ -453,8 +464,8 @@ export type SelectItemParameters = BaseElementParams & {
   value: string;
 };
 
-export type SmartElementParams = BaseElementParams & {
-  imageURL: string;
+export type SmartElementParameters = BaseElementParams & {
+  imageURL?: string;
   stylesOn: boolean;
 };
 
