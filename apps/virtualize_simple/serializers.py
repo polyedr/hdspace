@@ -1,6 +1,7 @@
 import json
 import os, sys
 import copy
+import shutil
 
 import lorem
 import numpy as np
@@ -158,7 +159,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "screen_data_json",
             "screenscenario",
         )
-        extra_kwargs = {"screenscenario": {"read_only": True},}
+        extra_kwargs = {"screenscenario": {"read_only": True}, }
 
     def create(self, validated_data):
         # Extract an appropriate flag value to recognize block as header, footer, form or layout
@@ -293,6 +294,9 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                 "file_attributes": {},
             }
 
+            # Window name for printing
+            window_name1 = "image_opencv_text"
+
             if region_dataset in {"forms", "headers", "footers"}:
                 # Printing text contours preparations start
                 for text_contour in text_contours:
@@ -324,7 +328,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                     x1, y1, w, h = rect_contour
                     x2 = w + x1
                     y2 = h + y1
-                    #
+
                     # cv2.rectangle(image_opencv_input, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1)
                     # cv2.imshow(window_name1, image_opencv_input)
                     # cv2.waitKey(0)
@@ -633,6 +637,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Read an image with OpenCV start
         image_opencv_input = cv2.imread(imgpath)
         image_original = copy.deepcopy(image_opencv_input)
+        image_maskrcnn_notext = copy.deepcopy(image_opencv_input)
+        image_maskrcnn = copy.deepcopy(image_opencv_input)
+        image_fclusters = copy.deepcopy(image_opencv_input)
+        image_dbclusters = copy.deepcopy(image_opencv_input)
+        image_cclusters = copy.deepcopy(image_opencv_input)
+        image_allclusters = copy.deepcopy(image_opencv_input)
+        image_allcluelems = copy.deepcopy(image_opencv_input)
+        image_via = copy.deepcopy(image_opencv_input)
         # detect height and width of the image
         img_height, img_width, img_channels = image_opencv_input.shape
         # print("width:  ", img_width)
@@ -693,7 +705,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         result = {"text": text_contours, "rect": rect_contours}
         # Detect text contours and rectangles on image end
 
-        window_name1 = "image_opencv_text"
+        window_name1 = "image_opencv"
 
         # Create the opencv recognition end
 
@@ -756,7 +768,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     # Filter out small text contours with height > width
                     if w > h:
                         fdict[fnamesize]["regions"].append(attributes_dict)
-                    # cv2.rectangle(image_opencv_input, (x, y), (x + w, y + h), (255, 0, 0), 1)
+                    cv2.rectangle(image_opencv_input, (x, y), (x + w, y + h), (255, 0, 0), 1)
 
                 # Printing text contours preparations end
 
@@ -765,8 +777,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     x1, y1, w, h = rect_contour
                     x2 = w + x1
                     y2 = h + y1
-                    #
-                    # cv2.rectangle(image_opencv_input, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1)
+
+                    cv2.rectangle(image_opencv_input, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1)
                     # cv2.imshow(window_name1, image_opencv_input)
                     # cv2.waitKey(0)
 
@@ -845,6 +857,16 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                         # print("idx1_select", idx1)
 
                     # cv2.destroyAllWindows()
+
+                    # Create directory to save HTML for some image processed
+                    # CURRENT_DIR = os.getcwd()
+                    SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
+                    find_or_create_dir(SAVE_DIR)
+
+                    os.chmod(SAVE_DIR, 0o755)
+                    os.chdir(SAVE_DIR)
+
+                    cv2.imwrite("opencv_contours_" + fname, image_opencv_input)
 
                     # forms:
                     # write the class value based on class id start
@@ -990,8 +1012,56 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # print(file_dict)
             json.dump(fdict, json_file)
         """
+
+        # Printing the pure Mask R CNN output without text blocks recognized
+        for idx1, (rect1, class_id1) in enumerate(
+                zip(r["rois"], r["class_ids"])
+        ):
+            #  1,2,4,5,7 means elements except the text class and the radiobutton while merging forms
+            if (
+                    (
+                            (region_dataset == "forms")
+                            and (class_id1 in {1, 2, 4, 5, 7})
+                    )
+                    or (
+                    (region_dataset == "footers")
+                    and (class_id1 in {2, 3, 4, 5})
+            )
+                    or (
+                    (region_dataset == "headers")
+                    and (class_id1 in {2, 3, 4, 5, 6, 7, 8})
+            )
+            ):
+                x3 = rect1[1]
+                y3 = rect1[0]
+                x4 = rect1[3]
+                y4 = rect1[2]
+
+                cv2.rectangle(image_maskrcnn_notext, (x3, y3), (x4, y4), (255, 100, 255), 1)
+                # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
+                cv2.putText(image_maskrcnn_notext, str(class_id1), (x3, y4), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (36, 255, 12), 2)
+
+        cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
+
+        # Printing the pure Mask R CNN output with text blocks and radiobuttons recognized
+        for idx1, (rect1, class_id1) in enumerate(
+                zip(r["rois"], r["class_ids"])
+        ):
+            x3 = rect1[1]
+            y3 = rect1[0]
+            x4 = rect1[3]
+            y4 = rect1[2]
+
+            cv2.rectangle(image_maskrcnn, (x3, y3), (x4, y4), (255, 100, 255), 1)
+            # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
+            cv2.putText(image_maskrcnn, str(class_id1), (x3, y4), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                        (36, 255, 12), 2)
+
+        cv2.imwrite("maskrcnn_" + fname, image_maskrcnn)
+
         # fdict obtained
         # file_dict = fdict
+
         # Assembling start
         # for filenamesize in fdict:
         # os.chdir(VIA_ANNOTATION_DIR)
@@ -1000,19 +1070,17 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # detect the size of the whole image
         # fsize = os.path.getsize(fname)
 
-        # Show text contours on image start
-        window_name1 = "image_opencv_text"
-
         for idx, region in enumerate(fdict[fnamesize]["regions"]):
             x1 = int(region["shape_attributes"]["x"])
             y1 = int(region["shape_attributes"]["y"])
             x2 = int(x1 + region["shape_attributes"]["width"])
             y2 = int(y1 + region["shape_attributes"]["height"])
 
-        #     cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
-        # cv2.imshow(window_name1, image_opencv_input)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
+            # Show VIA annotated regions on image
+            cv2.rectangle(image_via, (x1, y1), (x2, y2), (255, 0, 0), 1)
+
+        # Write VIA annotated regions to file
+        cv2.imwrite("via_" + fname, image_via)
 
         # Detect the size of the visible elements region
         # detect the size of the visible elements
@@ -1196,7 +1264,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 cluster.is_elements_only = True
                 for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
                     if recognized_element1["region_attributes"]["HTML element"] in {
-                        "text"
+                        "text", "ocrtext"
                     }:
                         # Check if the elements were not assigned to the clusters before
                         if (
@@ -1275,13 +1343,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                     # Update the clusters list
                                     clusters.append(cluster)
 
-                # cv2.rectangle(
-                #     image_opencv_input,
-                #     (cluster.x1, cluster.y1),
-                #     (cluster.x2, cluster.y2),
-                #     (0, 0, 255),
-                #     1,
-                # )
+                # Display input-based fclusters
+                cv2.rectangle(
+                    image_fclusters,
+                    (cluster.x1, cluster.y1),
+                    (cluster.x2, cluster.y2),
+                    (0, 0, 255),
+                    1,
+                )
                 # cv2.imshow(window_name1, image_opencv_input)
                 # cv2.waitKey(0)
 
@@ -1320,14 +1389,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 width_elem = recognized_element["shape_attributes"]["width"]
                 height_elem = recognized_element["shape_attributes"]["height"]
 
-                # Add the initial element to the cluster
+                # Add the initial element to a cluster
                 cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
                 # Set some flags for this novel cluster
                 cluster.types = "fcluster"
                 cluster.is_elements_only = True
                 for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
                     if recognized_element1["region_attributes"]["HTML element"] in {
-                        "text"
+                        "text", "ocrtext"
                     }:
                         # Check if the elements were not assigned to the clusters before
                         if (
@@ -1403,8 +1472,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                     # Update the clusters list
                                     clusters.append(cluster)
 
-        #
-        #
+                # Display checkbox-based fclusters
+                cv2.rectangle(
+                    image_fclusters,
+                    (cluster.x1, cluster.y1),
+                    (cluster.x2, cluster.y2),
+                    (144, 12, 2),
+                    1,
+                )
+
+        # Printing fclusters to file
+        cv2.imwrite("fclusters_" + fname, image_fclusters)
+
         # Clusters checkboxes with text labels direction end
 
         # Place all the free elements for the 1-element clusters
@@ -1546,6 +1625,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                 dbclusters.append(dbcluster)
 
+                # Display dbclusters
+                cv2.rectangle(
+                    image_dbclusters,
+                    (dbcluster.x1, dbcluster.y1),
+                    (dbcluster.x2, dbcluster.y2),
+                    (164, 24, 4),
+                    1,
+                )
+
+            # Printing dbclusters to file
+            cv2.imwrite("dbclusters_" + fname, image_dbclusters)
+
         try:
             # Replace clusters for dbclusters if possible
             fclusters = copy.copy(clusters)
@@ -1666,13 +1757,108 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Ternary assembling algorithm run after the clusters end
 
-        # Create directtory to save HTML for some image processed
-        # CURRENT_DIR = os.getcwd()
-        SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
-        find_or_create_dir(SAVE_DIR)
+        # Go through all the blocks obtained after the ternary algorithm
+        # Print all the cclusters
+        for pre, fill, node in RenderTree(root_block):
+            if node.types == "ccluster":
+                cv2.rectangle(
+                    image_cclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (20, 50, 107),
+                    1,
+                )
+        # Printing cclusters to file
+        cv2.imwrite("cclusters_" + fname, image_cclusters)
 
-        os.chmod(SAVE_DIR, 0o755)
-        os.chdir(SAVE_DIR)
+        # Go through all the blocks obtained after the ternary algorithm
+        # Print all the clusters
+        for pre, fill, node in RenderTree(root_block):
+            if node.types == "ccluster":
+                cv2.rectangle(
+                    image_allclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (20, 50, 107),
+                    1,
+                )
+
+            if node.types == "dbcluster":
+                cv2.rectangle(
+                    image_allclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (164, 24, 4),
+                    1,
+                )
+
+            if node.types == "fcluster":
+                cv2.rectangle(
+                    image_allclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (0, 0, 255),
+                    1,
+                )
+
+        # Printing all clusters to file
+        cv2.imwrite("allclusters_" + fname, image_allclusters)
+
+        # Go through all the blocks obtained after the ternary algorithm
+        # Print all the clusters with elements
+        for pre, fill, node in RenderTree(root_block):
+            if node.types == "ccluster":
+                cv2.rectangle(
+                    image_allcluelems,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (20, 50, 107),
+                    1,
+                )
+
+            if node.types == "dbcluster":
+                cv2.rectangle(
+                    image_allcluelems,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (164, 24, 4),
+                    1,
+                )
+
+            if node.types == "fcluster":
+                cv2.rectangle(
+                    image_allcluelems,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (0, 0, 255),
+                    1,
+                )
+
+            if node.elements:
+                for elem in node.elements:
+                    # Define the element dimensions start
+                    elem_width = int(elem["shape_attributes"]["width"])
+                    elem_height = int(elem["shape_attributes"]["height"])
+
+                    x1 = int(elem["shape_attributes"]["x"])
+                    y1 = int(elem["shape_attributes"]["y"])
+                    # Define the element dimensions end
+                    cv2.rectangle(image_allcluelems, (x1, y1), (x1 + elem_width, y1 + elem_height), (255, 0, 255), 1)
+
+                    label_element = str(elem["region_attributes"]["HTML element"])
+
+                    # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
+                    cv2.putText(image_allcluelems, label_element, (x1, y1 + elem_height), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                                (36, 255, 12), 2)
+
+        # Printing all clusters with elements to file
+        cv2.imwrite("allclusters_with_elements_" + fname, image_allcluelems)
+
+        # Archive all the files for a zip directory
+        shutil.make_archive(SAVE_DIR, 'zip', SAVE_DIR)
+        zip_archive_name = fname + '.zip'
+
+        # Printing containerization results and all clusters results
 
         root = ET.Element("html", version="5.0")
         # Передайте родительский узел, имя дочернего узла,
@@ -1807,7 +1993,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     styles = {}
                     parameters = {}
-
 
                     if styles_on:
                         # Get the dominant colour for the element start
@@ -2078,7 +2263,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         file=tree_file,
                     )
 
-        serializer_node.parameters["html"] = html
+        # serializer_node.parameters["html"] = html
+        serializer_node.parameters["archive"] = MEDIA_ROOT + zip_archive_name
 
         return serializer_node
 
