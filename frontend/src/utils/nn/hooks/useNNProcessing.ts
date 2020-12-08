@@ -35,9 +35,10 @@ const useNNProcessing = (
       ),
     );
   }, [
-    dispatch,
     file,
+    dispatch,
     element.parameters.imageUrl,
+    element.parameters.stylesOn,
     elementId,
     blockType,
     currentScreenId,
