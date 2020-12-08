@@ -25,6 +25,7 @@ const useNNProcessing = (
           name: file.name,
           file,
           imgPreviewUrl: element.parameters.imageUrl,
+          stylesOn: element.parameters.stylesOn,
         },
         elementId,
         blockType,
@@ -34,9 +35,10 @@ const useNNProcessing = (
       ),
     );
   }, [
-    dispatch,
     file,
+    dispatch,
     element.parameters.imageUrl,
+    element.parameters.stylesOn,
     elementId,
     blockType,
     currentScreenId,
