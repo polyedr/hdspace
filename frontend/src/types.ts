@@ -298,6 +298,12 @@ export type SelectElement = LibraryElement<
   SelectMenuElement[],
   SelectParameters
 >;
+
+export type SmartElement<T extends Entity> = LibraryElement<
+  T,
+  [],
+  SmartElementParams
+>;
 export type SelectMenuElement = LibraryElement<
   'selectMenu',
   SelectItemElement[]
@@ -445,6 +451,11 @@ export type SelectParameters = BaseElementParams & {
 export type SelectItemParameters = BaseElementParams & {
   name: string;
   value: string;
+};
+
+export type SmartElementParams = BaseElementParams & {
+  imageURL: string;
+  stylesOn: boolean;
 };
 
 export type TextareaParameters = BaseElementParams & {
@@ -1044,6 +1055,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'dropdownItems',
   'isOpen',
   'videoSettings',
+  'stylesOn',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

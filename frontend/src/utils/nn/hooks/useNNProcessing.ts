@@ -25,6 +25,7 @@ const useNNProcessing = (
           name: file.name,
           file,
           imgPreviewUrl: element.parameters.imageUrl,
+          stylesOn: element.parameters.stylesOn,
         },
         elementId,
         blockType,

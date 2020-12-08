@@ -40,8 +40,9 @@ import BackgroundSize from './Controls/BackgroundSize';
 import Scrollbar from '../../UI/Scrollbar';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
-import { Control, Entity, NNBlockType } from '../../../types';
 import ColumnsControls from './Controls/Columns';
+import StylesOn from './Controls/StylesOn/StylesOn';
+import { Control, Entity, NNBlockType } from '../../../types';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -92,6 +93,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
   smartFooter: { Control: withSmartContainer(NNBlockType.FOOTER) },
   smartForm: { Control: withSmartContainer(NNBlockType.FORM) },
   smartWebpage: { Control: withSmartContainer(NNBlockType.WEBPAGE) },
+  stylesOn: { Control: StylesOn },
   type: { Control: Type },
   value: { Control: Value },
   name: { Control: Name },

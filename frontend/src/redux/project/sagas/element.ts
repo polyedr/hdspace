@@ -637,6 +637,7 @@ export function* uploadFileSaga({
     formData.append('screen', screenId.toString());
     formData.append('parameters', JSON.stringify({ block_type: blockType }));
     formData.append('styles', '{}');
+    formData.append('styles_on', file.stylesOn);
 
     const {
       result: nnContainer,
