@@ -13,7 +13,7 @@ from anytree import RenderTree, NodeMixin, AnyNode
 from pytesseract import Output
 from rest_framework_recursive.fields import RecursiveField
 
-from project.settings import model_forms, MEDIA_ROOT, model_headers, model_footers
+from project.settings import model_forms, MEDIA_ROOT, model_headers, model_footers, MEDIA_URL
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ProjectScreen
 from sklearn.preprocessing import StandardScaler
@@ -694,6 +694,59 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             if width2 > (font_size_img * 3):
                 text_contours.remove(text_contour)
 
+        # Remove close-by text blocks
+        # text contour
+        # (161, 80, 243, 24)
+        # x, y, width, height
+        # x, y, x1, y1
+        merged_contours = []
+        excluded_contours = set()
+        for idx, text_contour in enumerate(text_contours):
+            x, y, w, h = text_contour
+            for idx1, text_contour1 in enumerate(text_contours):
+                x1, y1, w1, h1 = text_contour1
+                if idx != idx1:
+                    # Intervals should be close to each other not more than for 3px
+                    text_contour_x = x
+                    text_contour_x1 = x + w
+                    text_contour_y = y
+                    text_contour_y1 = y + h
+
+                    text_contour1_x = x1
+                    text_contour1_x1 = x1 + w1
+                    text_contour1_y = y1
+                    text_contour1_y1 = y1 + h1
+
+                    # Borders of the overlapped area
+                    bottom = max(y, y1)
+                    top = min(y + h, y1 + h1)
+
+                    # Length of the overlapped area
+                    vertical_overlap = top - bottom
+
+                    if (vertical_overlap > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * min(h, h1)):
+                        if (text_contour_x1 + 3 > text_contour1_x) and (text_contour_x < text_contour1_x):
+                            # Merge these intervals
+                            tcont_y = min(text_contour_y, text_contour1_y, text_contour_y1, text_contour1_y1)
+                            tcont_y1 = max(text_contour_y, text_contour1_y, text_contour_y1, text_contour1_y1)
+                            tcont_x = min(text_contour_x, text_contour1_x, text_contour_x1, text_contour1_x1)
+                            tcont_x1 = max(text_contour_x, text_contour1_x, text_contour_x1, text_contour1_x1)
+
+                            tcont_width = tcont_x1 - tcont_x
+                            tcont_height = tcont_y1 - tcont_y
+                            tcont = (tcont_x, tcont_y, tcont_width, tcont_height)
+                            # Add new interval to list
+                            merged_contours.append(tcont)
+
+                            # Remove source intervals from list
+                            excluded_contours.add(idx)
+                            excluded_contours.add(idx1)
+
+        # Remove set of indices from list
+        text_contours = [i for j, i in enumerate(text_contours) if j not in excluded_contours]
+        # Add merged contours to list
+        text_contours.extend(merged_contours)
+
         for rect_contour in rect_contours:
             # Remove untypically large rect blocks
             width2 = rect_contour[2]
@@ -745,6 +798,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 "regions": [],
                 "file_attributes": {},
             }
+
+            # Create directory to save HTML for some image processed
+            # CURRENT_DIR = os.getcwd()
+            SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
+            find_or_create_dir(SAVE_DIR)
+
+            os.chmod(SAVE_DIR, 0o755)
+            os.chdir(SAVE_DIR)
 
             if region_dataset in {"forms", "headers", "footers"}:
                 # Printing text contours preparations start
@@ -857,14 +918,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                         # print("idx1_select", idx1)
 
                     # cv2.destroyAllWindows()
-
-                    # Create directory to save HTML for some image processed
-                    # CURRENT_DIR = os.getcwd()
-                    SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
-                    find_or_create_dir(SAVE_DIR)
-
-                    os.chmod(SAVE_DIR, 0o755)
-                    os.chdir(SAVE_DIR)
 
                     cv2.imwrite("opencv_contours_" + fname, image_opencv_input)
 
@@ -2264,7 +2317,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     )
 
         # serializer_node.parameters["html"] = html
-        serializer_node.parameters["archive"] = MEDIA_ROOT + zip_archive_name
+        serializer_node.parameters["archive"] = MEDIA_URL + zip_archive_name
 
         return serializer_node
 
