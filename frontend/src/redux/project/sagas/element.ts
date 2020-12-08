@@ -635,7 +635,13 @@ export function* uploadFileSaga({
     formData.append('func_type', 'container');
     formData.append('name', 'TESTING NEURAL NETWORK');
     formData.append('screen', screenId.toString());
-    formData.append('parameters', JSON.stringify({ block_type: blockType }));
+    formData.append(
+      'parameters',
+      JSON.stringify({
+        block_type: blockType,
+        styles_on: file.stylesOn === true ? '1' : '0',
+      }),
+    );
     formData.append('styles', '{}');
 
     const {

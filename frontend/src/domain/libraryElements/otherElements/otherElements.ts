@@ -154,6 +154,7 @@ export const makeSmartHeader = ({
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
+    stylesOn: true,
   },
   styles: {
     classNames: ['smartHeader'],
@@ -175,6 +176,7 @@ export const makeSmartFooter = ({
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
+    stylesOn: true,
   },
   styles: {
     classNames: ['smartFooter'],
@@ -196,6 +198,7 @@ export const makeSmartForm = ({
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
+    stylesOn: true,
   },
   styles: {
     classNames: ['smartForm'],
@@ -217,6 +220,7 @@ export const makeSmartWebpage = ({
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
+    stylesOn: true,
   },
   styles: {
     classNames: ['smartWebpage'],
