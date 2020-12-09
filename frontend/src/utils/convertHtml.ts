@@ -12,6 +12,7 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
   B: 'textBlock',
   BDO: 'textBlock',
   BLOCKQUOTE: 'paragraph',
+  BODY: 'container',
   BR: null,
   BUTTON: 'button',
   CANVAS: null,
@@ -101,16 +102,26 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
   WBR: null,
 };
 
-const convertHtml = (element: HTMLElement): ServerElement<any> => {
-  const type = tagMap[element.tagName] || 'container';
-
-  const { style } = element; // for inline styles only, to get other styles use window.getComputedStyles(element)
-
+const ejectCSSStyleDeclaration = (style: CSSStyleDeclaration) => {
   const res = {} as any;
   for (let i = 0; i < style.length; i += 1) {
     const name = style.item(i);
     res[name] = style[name];
   }
+  return res;
+};
+
+const convertHtml = (element: HTMLElement): ServerElement<any> | null => {
+  const type = tagMap[element.tagName];
+  if (!type) return null;
+
+  const { style: inlineStyle } = element;
+  const computedStyle = window.getComputedStyle(element);
+
+  const ownStyles = {
+    ...ejectCSSStyleDeclaration(inlineStyle),
+    ...ejectCSSStyleDeclaration(computedStyle),
+  };
 
   const adeviElement = convertCreatedElementToRequest(type, null, type, {
     textContent: element.textContent,
@@ -119,12 +130,12 @@ const convertHtml = (element: HTMLElement): ServerElement<any> => {
 
   return {
     ...adeviElement,
-    children: [...element.children].map((child) =>
-      convertHtml(child as HTMLElement),
-    ),
+    children: [...element.children]
+      .map((child) => convertHtml(child as HTMLElement))
+      .filter((child) => !!child),
     styles: {
       ...adeviElement.styles,
-      ownStyles: res,
+      ownStyles,
     },
   };
 };

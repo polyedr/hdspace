@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 
-import { all, call, fork, put, select } from 'redux-saga/effects';
+import { all, call, fork, put, select, take } from 'redux-saga/effects';
+import { eventChannel } from 'redux-saga';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
@@ -12,6 +13,7 @@ import {
   apiCreateElements,
   apiGetElements,
 } from '@Api/element';
+import DOMPurify from 'dompurify';
 import { apiUpdateProject } from '@Api/project';
 import { apiUpdateScenarios } from '@Api/scenario';
 import { apiCreateScreen, apiGetScreen, apiUpdateScreen } from '@Api/screen';
@@ -27,7 +29,6 @@ import {
   StateElement,
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
-import { getHTMLBodyContent, removeTag } from '@Utils/stringHelper';
 import convertHtml from '@Utils/convertHtml';
 import * as Actions from '../actions';
 import {
@@ -678,24 +679,36 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
   try {
     const file = action.payload;
 
-    // const { id: projectId, projectscreen } = yield select(selectCurrentProject);
-
     const html = yield file.text();
-    const content = removeTag(
-      removeTag(removeTag(getHTMLBodyContent(html), 'script'), 'iframe'),
-      'style',
-    );
+    const clearHTML = DOMPurify.sanitize(html, {
+      ADD_TAGS: ['link'],
+      WHOLE_DOCUMENT: true,
+    });
 
-    const container = document.createElement('div');
-    container.innerHTML = content;
+    const iframe = document.createElement('iframe');
+    iframe.hidden = true;
+    iframe.srcdoc = clearHTML;
 
-    const data = convertHtml(container);
+    const channel = eventChannel((listener) => {
+      const handleLoad = (ev: Event) => {
+        listener(ev);
+      };
+      iframe.addEventListener('load', handleLoad);
+      return () => iframe.removeEventListener('load', handleLoad);
+    });
+
+    document.body.appendChild(iframe);
+    yield take(channel);
+
+    const body = iframe.contentDocument?.body;
+
+    if (!body) throw new Error('Failed processing external HTML');
 
     const { result: element, error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiCreateElement,
       {
-        data,
+        data: convertHtml(body),
       },
     );
     if (element) {

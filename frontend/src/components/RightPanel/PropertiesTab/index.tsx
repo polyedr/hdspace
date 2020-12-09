@@ -43,7 +43,6 @@ import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
 import ColumnsControls from './Controls/Columns';
 import StylesOn from './Controls/StylesOn/StylesOn';
-import { Control, Entity, NNBlockType } from '../../../types';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;

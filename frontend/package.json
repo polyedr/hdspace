@@ -30,6 +30,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.2",
+    "@types/dompurify": "^2.0.4",
     "@types/file-saver": "^2.0.1",
     "@types/google-map-react": "^1.1.8",
     "@types/history": "^4.7.7",
@@ -116,6 +117,7 @@
     "css-shorthand-expanders": "^1.1.0",
     "csstype": "^3.0.4",
     "decamelize": "^4.0.0",
+    "dompurify": "^2.2.3",
     "file-saver": "^2.0.2",
     "final-form": "^4.20.1",
     "google-map-react": "^1.1.7",

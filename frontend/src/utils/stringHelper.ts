@@ -13,5 +13,10 @@ export const getHTMLBodyContent = (htmlString: string) => {
   return match[1];
 };
 
-export const removeTag = (str: string, tag: string) =>
-  str.replace(new RegExp(`<${tag}.*?>[\\s\\S]*?</${tag}>`, 'g'), '');
+export const removeTags = (str: string, tags: string[]) => {
+  let res = str;
+  tags.forEach((tag) => {
+    res = res.replace(new RegExp(`<${tag}.*?>[\\s\\S]*?</${tag}>`, 'g'), '');
+  });
+  return res;
+};
