@@ -1,10 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
 import * as R from 'ramda';
 import {
-  selectBorderedElementsRef,
-  selectCurrentRootId,
   selectElementBeingEdited,
   selectElementById,
 } from '@Redux/project/selectors/element';
@@ -17,14 +15,13 @@ import BorderCrumb from './Crumb/BorderCrumb';
 
 type Props = {
   elementId: string;
+  elementDom: HTMLElement;
+  rootDom: HTMLElement;
 };
 
-const getBorderStyles = (
-  elementDOM: HTMLElement | null,
-  rootRef: React.RefObject<HTMLElement>,
-) => {
-  const rect = elementDOM?.getBoundingClientRect();
-  const rootRect = rootRef?.current?.getBoundingClientRect();
+const getBorderStyles = (elDom: HTMLElement, rootElDom: HTMLElement) => {
+  const rect = elDom?.getBoundingClientRect();
+  const rootRect = rootElDom?.getBoundingClientRect();
 
   return rect && rootRect
     ? ({
@@ -38,11 +35,7 @@ const getBorderStyles = (
     : null;
 };
 
-const InteractionsHandler = ({ elementId }: Props) => {
-  const borderedElementsRefs = useSelector(selectBorderedElementsRef);
-  const rootID = useSelector(selectCurrentRootId);
-  const rootRef = borderedElementsRefs[rootID];
-  const elementRef = borderedElementsRefs[elementId];
+const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
   const element = useSelector(selectElementById(elementId));
   const elementGroupStyles = useSelector((state: AppReduxState) => {
     return selectCurrentProject(state).projectData.classes.find((value) => {
@@ -52,37 +45,34 @@ const InteractionsHandler = ({ elementId }: Props) => {
   const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
 
   const [styles, setStyles] = useState<BorderStyles | null>(
-    getBorderStyles(elementRef.current, rootRef),
+    getBorderStyles(elementDom, rootDom),
   );
+
+  // console.log('STYLES!!', elementId, styles);
 
   const updateBorderStyles = useCallback(
     (entry: HTMLElement) => {
       const updatedBorderStyles = getBorderStyles(
         entry as HTMLElement,
-        rootRef,
+        rootDom,
       );
       if (!R.equals(updatedBorderStyles, styles)) {
         setStyles(updatedBorderStyles);
       }
     },
-    [rootRef, styles],
+    [rootDom, styles],
   );
 
-  useResizeObserver(elementRef, (entry) => {
+  const elRef = useRef(elementDom);
+  useResizeObserver(elRef, (entry) => {
     if (entry) {
       updateBorderStyles(entry.target as HTMLElement);
     }
   });
 
   useEffect(() => {
-    setStyles(getBorderStyles(elementRef.current, rootRef));
-  }, [
-    borderedElementsRefs,
-    elementRef,
-    rootRef,
-    element.styles.ownStyles,
-    elementGroupStyles,
-  ]);
+    setStyles(getBorderStyles(elementDom, rootDom));
+  }, [element.styles.ownStyles, elementDom, elementGroupStyles, rootDom]);
 
   if (!styles) {
     return null;

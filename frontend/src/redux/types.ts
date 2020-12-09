@@ -374,7 +374,7 @@ export type WrapIntoContainer = IAction<
   { id: string },
   ElementHistoryMeta
 >;
-export type SetHoveredElement = IAction<
+export type SetHoveredElementId = IAction<
   typeof TYPES.SET_HOVERED_ELEMENT,
   string | null
 >;
@@ -596,7 +596,7 @@ export type Action =
   | uploadImageForNNSuccess
   | GetScreenNN
   | WrapIntoContainer
-  | SetHoveredElement
+  | SetHoveredElementId
   | ToggleContainersBorders
   | SetElementToCopy
   | SetRightPanelActiveTab

@@ -34,12 +34,12 @@ import {
   CONTAINER_GROUPS,
   EDITABLE_COMPONENTS_LIST,
 } from '@Constants/defaultParams';
+import { DOMHandler } from '../Workspace/DOMHandler';
 import {
   getFlexRowDropPosition,
   getBlockDropPosition,
   getDropIndex,
 } from './helper';
-import useElementBorders from './hooks/useElementBorders';
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
 
@@ -219,15 +219,19 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
-  useElementBorders(elementId, ref);
+  // useElementBorders(elementId, ref);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (!ref.current) {
       return;
     }
     drag(ref);
     drop(ref);
-  }, [ref.current]);
+    addBorderedRef({
+      id: elementId,
+      ref,
+    });
+  }, [ref, elementId]); */
 
   useEffect(() => {
     if (!dropDomStyles && isOverArea) {
@@ -243,12 +247,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, [isOverArea, rootID, dropTargetParams]);
 
-  const handleHoverElement = useCallback(
+  /* const handleHoverElement = useCallback(
     (elId: string | null) => () => {
       dispatch(setHoveredElement(elId));
     },
     [dispatch],
-  );
+  ); */
 
   const runResetEditState = useDebouncedCallback(() => {
     dispatch(setElementCanBeEdited(false));
@@ -325,9 +329,18 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     elementProps && (
       <ElementRenderer
         {...elementProps}
-        ref={ref}
-        onMouseEnter={handleHoverElement(elementId)}
-        onMouseLeave={handleHoverElement(element.parent || null)}
+        ref={(dom: HTMLElement) => {
+          ref.current = dom;
+          drag(ref);
+          drop(ref);
+          DOMHandler.INSTANCE.addElementDom(elementId, dom);
+        }}
+        onMouseEnter={() => {
+          dispatch(setHoveredElement(elementId));
+        }}
+        onMouseLeave={() => {
+          dispatch(setHoveredElement(element.parent || null));
+        }}
         onClick={clickHandler}
         onKeyDown={keyDownHandler}
         onBlur={blurHandler}

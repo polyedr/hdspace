@@ -47,6 +47,7 @@ import {
   uploadFileSaga,
   loadCustomElementsSaga,
   setActiveElementSaga,
+  setHoveredElementSaga,
 } from './element';
 
 import TYPES from '../../actionTypes';
@@ -495,4 +496,5 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT_SAGA, setActiveElementSaga);
+  yield takeLatest(TYPES.SET_HOVERED_ELEMENT_SAGA, setHoveredElementSaga);
 }

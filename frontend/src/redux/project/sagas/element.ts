@@ -777,3 +777,9 @@ export function* setActiveElementSaga(
     );
   }
 }
+
+export function* setHoveredElementSaga(
+  action: ReturnType<typeof Actions.setHoveredElement>,
+) {
+  yield put(Actions.setHoveredElementId(action.payload));
+}
