@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -10,12 +10,14 @@ import {
 } from '@Redux/project/selectors/base';
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import DraggableItem from '../Draggable/DraggableElement';
-import ElementsInteractions from '../ElementsInteractions/ElementsInteractions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import DraggableElement from '../Draggable/DraggableElement';
+import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
+import { DOMHandler } from './DOMHandler';
 
 const useStyles = makeStyles({
   workspace: {
@@ -54,10 +56,14 @@ const Workspace: React.FC = () => {
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const format = useSelector(selectScreenFormat);
   const rotated = useSelector(selectScreenRotated);
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
   const classes = useStyles(rotated);
-
   const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    DOMHandler.INSTANCE.reset();
+  }, [currentScreenId]);
 
   useGlobalDropTarget(
     ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
@@ -81,13 +87,12 @@ const Workspace: React.FC = () => {
               <FreeCanvas />
             ) : (
               <>
-                <DraggableItem elementId={rootElementId} />
+                <DraggableElement elementId={rootElementId} />
                 {!isPrototypeMode && <ElementsInteractions />}
               </>
             )}
           </Scrollbar>
         </EditorViewport>
-
         <NNProcessingModal />
       </div>
     </div>
