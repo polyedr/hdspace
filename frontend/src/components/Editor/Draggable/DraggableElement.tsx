@@ -219,20 +219,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
-  // useElementBorders(elementId, ref);
-
-  /* useEffect(() => {
-    if (!ref.current) {
-      return;
-    }
-    drag(ref);
-    drop(ref);
-    addBorderedRef({
-      id: elementId,
-      ref,
-    });
-  }, [ref, elementId]); */
-
   useEffect(() => {
     if (!dropDomStyles && isOverArea) {
       setDropDomStyles(window.getComputedStyle(ref.current));
@@ -246,13 +232,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       dispatch(setCurrentDropTargetParams(null));
     }
   }, [isOverArea, rootID, dropTargetParams]);
-
-  /* const handleHoverElement = useCallback(
-    (elId: string | null) => () => {
-      dispatch(setHoveredElement(elId));
-    },
-    [dispatch],
-  ); */
 
   const runResetEditState = useDebouncedCallback(() => {
     dispatch(setElementCanBeEdited(false));

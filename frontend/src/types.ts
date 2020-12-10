@@ -634,10 +634,6 @@ export type StateElement = {
   shared?: boolean;
 };
 
-export type BorderedElementsRef = {
-  [id: string]: React.RefObject<HTMLElement>;
-};
-
 export type DropTargetParams = {
   id: string;
   position?: DropPosition;

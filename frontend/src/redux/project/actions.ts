@@ -719,19 +719,6 @@ export const addElements = (
   payload: { elements, parentId },
 });
 
-export const addBorderedElementRef = (
-  id: string,
-  ref: React.RefObject<HTMLElement>,
-) => ({
-  type: TYPES.ADD_BORDERED_ELEMENT_REF,
-  payload: { id, ref },
-});
-
-export const removeBorderedElementRef = (id: string) => ({
-  type: TYPES.REMOVE_BORDERED_ELEMENT_REF,
-  payload: { id },
-});
-
 export const setCurrentDropTargetParams = (
   id: string | null,
   position?: DropPosition,

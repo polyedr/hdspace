@@ -65,9 +65,6 @@ export function* moveElementSaga(
     if (!undo) {
       yield put(
         Actions.setUndoActions([
-          Actions.removeBorderedElementRef(elementId),
-          Actions.removeBorderedElementRef(oldParentId),
-          Actions.removeBorderedElementRef(newParentId),
           Actions.moveElement(
             elementId,
             { oldIndex: newIndex, newIndex: oldIndex },

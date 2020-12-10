@@ -3,7 +3,6 @@ import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
 import { DropPosition } from '@Constants/dragAndDrop';
 import {
-  BorderedElementsRef,
   CreatedElement,
   DropTargetParams,
   Entity,
@@ -46,7 +45,6 @@ export type ProjectUiState = {
   };
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
-  borderedElementsRef: BorderedElementsRef;
   currentDropTargetParams: DropTargetParams | null;
   elementCanBeEdited: boolean;
   elementBeingEdited: boolean;
@@ -427,15 +425,6 @@ export type RedoWrapIntoContainer = IAction<
   { elementId: string; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
-export type AddBorderedElementRef = IAction<
-  typeof TYPES.ADD_BORDERED_ELEMENT_REF,
-  { id: string; ref: React.RefObject<HTMLElement> }
->;
-
-export type RemoveBorderedElementRef = IAction<
-  typeof TYPES.REMOVE_BORDERED_ELEMENT_REF,
-  { id: string }
->;
 export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
 export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
 export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
@@ -645,8 +634,6 @@ export type Action =
   | ChangeScreenFormat
   | RotateScreenFormat
   | SetScreens
-  | AddBorderedElementRef
-  | RemoveBorderedElementRef
   | SetCurrentDropTargetParams
   | UpdateElement
   | UpdateElementsLoading

@@ -38,7 +38,6 @@ export const initialUi: ProjectUiState = {
   elementCanBeEdited: false,
   elementBeingEdited: false,
   currentDropTargetParams: null,
-  borderedElementsRef: {},
   screenFormat: {
     format: SCREEN_FORMATS.Desktop,
     rotated: false,
