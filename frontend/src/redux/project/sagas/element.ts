@@ -65,9 +65,6 @@ export function* moveElementSaga(
     if (!undo) {
       yield put(
         Actions.setUndoActions([
-          Actions.removeBorderedElementRef(elementId),
-          Actions.removeBorderedElementRef(oldParentId),
-          Actions.removeBorderedElementRef(newParentId),
           Actions.moveElement(
             elementId,
             { oldIndex: newIndex, newIndex: oldIndex },
@@ -776,4 +773,10 @@ export function* setActiveElementSaga(
       }),
     );
   }
+}
+
+export function* setHoveredElementSaga(
+  action: ReturnType<typeof Actions.setHoveredElement>,
+) {
+  yield put(Actions.setHoveredElementId(action.payload));
 }

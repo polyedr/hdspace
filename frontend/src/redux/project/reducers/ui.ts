@@ -46,28 +46,6 @@ function uiReducer(
       };
     }
 
-    case TYPES.ADD_BORDERED_ELEMENT_REF: {
-      if (state.borderedElementsRef[action.payload.id] === action.payload.ref) {
-        return state;
-      }
-      return {
-        ...state,
-        borderedElementsRef: {
-          ...state.borderedElementsRef,
-          [action.payload.id]: action.payload.ref,
-        },
-      };
-    }
-
-    case TYPES.REMOVE_BORDERED_ELEMENT_REF: {
-      const newBorderedElementsRef = { ...state.borderedElementsRef };
-      delete newBorderedElementsRef[action.payload.id];
-      return {
-        ...state,
-        borderedElementsRef: newBorderedElementsRef,
-      };
-    }
-
     case TYPES.SET_CURRENT_DROP_TARGET_PARAMS:
       if (
         state.currentDropTargetParams &&
