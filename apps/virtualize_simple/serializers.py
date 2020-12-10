@@ -1907,10 +1907,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Printing all clusters with elements to file
         cv2.imwrite("allclusters_with_elements_" + fname, image_allcluelems)
 
-        # Archive all the files for a zip directory
-        shutil.make_archive(SAVE_DIR, 'zip', SAVE_DIR)
-        zip_archive_name = fname + '.zip'
-
         # Printing containerization results and all clusters results
 
         root = ET.Element("html", version="5.0")
@@ -2207,7 +2203,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     elif elem["region_attributes"]["HTML element"] == "image":
                         styles["max-width"] = "100%"
-                        styles["heigh"] = "auto"
+                        styles["height"] = "auto"
 
                         # Saving an image
                         cv2.imwrite(elem_image_name, elem_image)
@@ -2315,6 +2311,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.processing,
                         file=tree_file,
                     )
+
+        # Archive all the files for a zip directory
+        shutil.make_archive(SAVE_DIR, 'zip', SAVE_DIR)
+        zip_archive_name = fname + '.zip'
 
         # serializer_node.parameters["html"] = html
         serializer_node.parameters["archive"] = MEDIA_URL + zip_archive_name
