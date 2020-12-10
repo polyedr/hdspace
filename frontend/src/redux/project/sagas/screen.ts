@@ -689,8 +689,20 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
       );
     }
 
-    const html = yield htmlFiles[0].text();
-    const clearHTML = DOMPurify.sanitize(html, {
+    const cssFiles = files.filter((file) => file.type === 'text/css');
+    const css = yield cssFiles.reduce(async (acc, curr) => {
+      const text = await curr.text();
+      return (await acc) + text;
+    }, Promise.resolve(''));
+
+    const html: string = yield htmlFiles[0].text();
+    const i = html.indexOf('</body');
+    const htmlWithCss = `${html.slice(
+      0,
+      i,
+    )}\n<style>\n${css}</style>\n${html.slice(i)}`;
+
+    const clearHTML = DOMPurify.sanitize(htmlWithCss, {
       ADD_TAGS: ['link'],
       WHOLE_DOCUMENT: true,
     });

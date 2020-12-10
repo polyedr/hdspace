@@ -128,7 +128,7 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
   const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = ev.target;
     if (files) {
-      setFiles([...files]);
+      setFiles((prevState) => [...prevState, ...files]);
     }
   };
 
