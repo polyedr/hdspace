@@ -14,6 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { importHtml } from '@Redux/project/actions';
+import prettyBytes from 'pretty-bytes';
 
 const prevent = (ev: React.BaseSyntheticEvent) => {
   ev.stopPropagation();
@@ -157,7 +158,7 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
                       </Typography>
 
                       <Typography className={classes.field} variant="caption">
-                        {`${file.size} bytes`}
+                        {`${prettyBytes(file.size)}`}
                       </Typography>
                     </CardContent>
 

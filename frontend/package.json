@@ -128,6 +128,7 @@
     "is-color-stop": "^1.1.0",
     "material-ui-popup-state": "^1.6.1",
     "notistack": "^1.0.1",
+    "pretty-bytes": "^5.4.1",
     "ramda": "^0.26.1",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
