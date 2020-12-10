@@ -48,8 +48,6 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
     getBorderStyles(elementDom, rootDom),
   );
 
-  // console.log('STYLES!!', elementId, styles);
-
   const updateBorderStyles = useCallback(
     (entry: HTMLElement) => {
       const updatedBorderStyles = getBorderStyles(

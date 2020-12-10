@@ -50,16 +50,6 @@ const useStyles = makeStyles({
   },
 });
 
-/* const elementsDomList: BorderedDom = {};
-
-const addElementDom = (id: string, element: HTMLElement) => {
-  if (!elementsDomList[id]) {
-    elementsDomList[id] = element;
-  }
-};
-
-const getElementsDomList = () => elementsDomList; */
-
 const Workspace: React.FC = () => {
   const rootElementId = useSelector(selectCurrentRootId);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
