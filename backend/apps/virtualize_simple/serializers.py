@@ -2,6 +2,7 @@ import json
 import os, sys
 import copy
 import shutil
+from urllib.parse import urlparse
 
 import lorem
 import numpy as np
@@ -1963,7 +1964,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     styles["background"] = "lightblue"
                 else:
                     styles["display"] = "flex"
-                    styles["background"] = "lightblue"
+                    styles["background"] = "lightgreen"
                     # Sometimes node_width and height are 0, should check this.
                     if node_width:
                         styles["width"] = str(node_width) + "px"
@@ -2207,6 +2208,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Saving an image
                         cv2.imwrite(elem_image_name, elem_image)
+                        # Setting path to the image source
+                        elem_image_sourcename = fname + '/' + elem_image_name
+
+                        # Obtaining the absolute path for the parameters directly. Should change this later.
+                        o = urlparse(self.context['request'].build_absolute_uri())
+                        parameters["imageURL"] = 'https://' + o.netloc + MEDIA_URL + elem_image_sourcename
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "img")
@@ -2220,7 +2227,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Create a new Scenario Element for the elements chain
                         node.scenarioelement = ScenarioElement.objects.create(
                             parent=node.parent.scenarioelement,
-                            struct_type="image",
+                            struct_type="image", image=elem_image_sourcename,
                             parameters=parameters, styles=styles, buoyancy=0
                         )
 
