@@ -15,7 +15,6 @@ import {
   selectProjectState,
 } from './base';
 import {
-  BorderedElementsRef,
   ChildEntity,
   Entity,
   LibraryElement,
@@ -244,16 +243,6 @@ export const selectElementsForScreenById = (state, screenId) => {
 export const selectElementsForScreen = (screenId: number) => (
   state: AppReduxState,
 ) => selectElementsForScreenById(state, screenId);
-
-export const selectBorderedElementsRef = (
-  state: AppReduxState,
-): BorderedElementsRef => {
-  return selectProjectState(state).ui.borderedElementsRef;
-};
-
-export const selectBorderedRef = (id: string) => (state: AppReduxState) => {
-  return selectProjectState(state).ui.borderedElementsRef[id];
-};
 
 // RESELECT selectors
 export const selectElementsForCurrentScreen = createSelector(

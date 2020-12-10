@@ -66,7 +66,7 @@ import {
   SetCurrentScreenId,
   SetEditableStyles,
   SetGroupActionsUp,
-  SetHoveredElement,
+  SetHoveredElementId,
   SetElementToCopy,
   SetUpdateImageLoader,
   SetProject,
@@ -592,7 +592,14 @@ export const resetElementEditState = () => ({
   type: TYPES.RESET_ELEMENT_EDIT_STATE,
 });
 
-export const setHoveredElement = (id: string | null): SetHoveredElement => ({
+export const setHoveredElement = (id: string | null) => ({
+  type: TYPES.SET_HOVERED_ELEMENT_SAGA,
+  payload: id,
+});
+
+export const setHoveredElementId = (
+  id: string | null,
+): SetHoveredElementId => ({
   type: TYPES.SET_HOVERED_ELEMENT,
   payload: id,
 });
@@ -710,19 +717,6 @@ export const addElements = (
 ): AddElements => ({
   type: TYPES.ADD_ELEMENTS,
   payload: { elements, parentId },
-});
-
-export const addBorderedElementRef = (
-  id: string,
-  ref: React.RefObject<HTMLElement>,
-) => ({
-  type: TYPES.ADD_BORDERED_ELEMENT_REF,
-  payload: { id, ref },
-});
-
-export const removeBorderedElementRef = (id: string) => ({
-  type: TYPES.REMOVE_BORDERED_ELEMENT_REF,
-  payload: { id },
 });
 
 export const setCurrentDropTargetParams = (

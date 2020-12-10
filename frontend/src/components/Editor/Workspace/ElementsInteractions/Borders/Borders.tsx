@@ -7,10 +7,7 @@ import {
   selectElementById,
   selectHoveredElementId,
 } from '@Redux/project/selectors/element';
-import {
-  selectShowingBorders,
-  selectCurrentDropTargetParams,
-} from '@Redux/project/selectors/base';
+import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
 import { BorderPosition } from '../constants';
 import Border from './Border';
 
@@ -23,7 +20,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
   const element = useSelector(selectElementById(elementId));
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
-  const showBorders = useSelector(selectShowingBorders);
+  // const showBorders = useSelector(selectShowingBorders);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
 
   const isDropTarget = elementId === dropTargetParams?.id;
@@ -33,8 +30,6 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
     hoveredElementId,
     dropTargetParams?.id,
   ].includes(elementId);
-
-  const displayBorders = showBorders || isActiveBorder;
 
   const showBordersPosition = useMemo(() => {
     return {
@@ -69,7 +64,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
     };
   }, [dropTargetParams, isDropTarget]);
 
-  return element && styles && displayBorders ? (
+  return element && styles /* && displayBorders */ ? (
     <>
       {showBordersPosition[BorderPosition.TOP] && (
         <Border

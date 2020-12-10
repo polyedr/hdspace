@@ -65,9 +65,6 @@ export function* moveElementSaga(
     if (!undo) {
       yield put(
         Actions.setUndoActions([
-          Actions.removeBorderedElementRef(elementId),
-          Actions.removeBorderedElementRef(oldParentId),
-          Actions.removeBorderedElementRef(newParentId),
           Actions.moveElement(
             elementId,
             { oldIndex: newIndex, newIndex: oldIndex },
@@ -635,7 +632,13 @@ export function* uploadFileSaga({
     formData.append('func_type', 'container');
     formData.append('name', 'TESTING NEURAL NETWORK');
     formData.append('screen', screenId.toString());
-    formData.append('parameters', JSON.stringify({ block_type: blockType }));
+    formData.append(
+      'parameters',
+      JSON.stringify({
+        block_type: blockType,
+        styles_on: file.stylesOn === true ? '1' : '0',
+      }),
+    );
     formData.append('styles', '{}');
 
     const {
@@ -770,4 +773,10 @@ export function* setActiveElementSaga(
       }),
     );
   }
+}
+
+export function* setHoveredElementSaga(
+  action: ReturnType<typeof Actions.setHoveredElement>,
+) {
+  yield put(Actions.setHoveredElementId(action.payload));
 }

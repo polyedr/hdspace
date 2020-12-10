@@ -437,7 +437,6 @@ export function* softDeleteSaga(
     );
 
     if (result) {
-      yield put(Actions.removeBorderedElementRef(id));
       yield put(Actions.updateElement(id, { shared: false }));
 
       const convertedElements = updatedParent.children.map((child) =>

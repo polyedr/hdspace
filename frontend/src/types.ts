@@ -121,10 +121,21 @@ export type FeatureSectionServerElement = ServerElement<
   ServerElement<Entity>[]
 >;
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
-export type SmartHeaderServerElement = ServerElement<'smartHeader'>;
-export type SmartFooterServerElement = ServerElement<'smartFooter'>;
-export type SmartFormServerElement = ServerElement<'smartForm'>;
-export type SmartWebpageServerElement = ServerElement<'smartWebpage'>;
+export type SmartContainerServerElement<T extends Entity> = ServerElement<
+  T,
+  [],
+  SmartElementParameters
+>;
+export type SmartHeaderServerElement = SmartContainerServerElement<
+  'smartHeader'
+>;
+export type SmartFooterServerElement = SmartContainerServerElement<
+  'smartFooter'
+>;
+export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
+export type SmartWebpageServerElement = SmartContainerServerElement<
+  'smartWebpage'
+>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<
   'hyperlink',
@@ -298,6 +309,12 @@ export type SelectElement = LibraryElement<
   SelectMenuElement[],
   SelectParameters
 >;
+
+export type SmartElement<T extends Entity> = LibraryElement<
+  T,
+  [],
+  SmartElementParameters
+>;
 export type SelectMenuElement = LibraryElement<
   'selectMenu',
   SelectItemElement[]
@@ -445,6 +462,11 @@ export type SelectParameters = BaseElementParams & {
 export type SelectItemParameters = BaseElementParams & {
   name: string;
   value: string;
+};
+
+export type SmartElementParameters = BaseElementParams & {
+  imageURL?: string;
+  stylesOn: boolean;
 };
 
 export type TextareaParameters = BaseElementParams & {
@@ -610,10 +632,6 @@ export type StateElement = {
   };
   parameters: any;
   shared?: boolean;
-};
-
-export type BorderedElementsRef = {
-  [id: string]: React.RefObject<HTMLElement>;
 };
 
 export type DropTargetParams = {
@@ -1044,6 +1062,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'dropdownItems',
   'isOpen',
   'videoSettings',
+  'stylesOn',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
