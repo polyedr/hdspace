@@ -810,7 +810,7 @@ export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
 
-export const importHtml = (file: File) => ({
+export const importHtml = (files: File[]) => ({
   type: TYPES.IMPORT_HTML,
-  payload: file,
+  payload: files,
 });

@@ -20,7 +20,7 @@ const prevent = (ev: React.BaseSyntheticEvent) => {
   ev.preventDefault();
 };
 
-const useStyles = makeStyles(({ palette, shape }) =>
+const useStyles = makeStyles(({ palette, shape, spacing }) =>
   createStyles({
     form: {
       display: 'flex',
@@ -43,6 +43,12 @@ const useStyles = makeStyles(({ palette, shape }) =>
       '&:hover': {
         opacity: 1,
       },
+      padding: spacing(1),
+    },
+    card: {
+      margin: spacing(0, 1),
+      maxWidth: 200,
+      minWidth: 150,
     },
     actions: {
       display: 'flex',
@@ -61,32 +67,51 @@ type Props = {
   onClose: (...args: any) => any;
 };
 
+const allowedMimeTypes = ['text/html', 'text/css'];
+
 const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const [over, setOver] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
-  const classes = useStyles({ over, file });
+  const [files, setFiles] = useState<File[]>([]);
+  const classes = useStyles({ over, file: files });
 
   const handleCreate = () => {
-    if (!file) return;
-    dispatch(importHtml(file));
-    onClose();
-    setFile(null);
-  };
+    const htmlCount = files.reduce((acc, curr) => {
+      if (curr.type === 'text/html') return acc + 1;
+      return acc;
+    }, 0);
 
-  const handleDrop = (ev) => {
-    prevent(ev);
-    const file = ev.dataTransfer.files[0];
-    if (file.type !== 'text/html') {
+    if (htmlCount !== 1) {
       dispatch(
         enqueueSnackbar({
-          message: 'Provide an HTML file please!',
+          message: htmlCount
+            ? 'Only one HTML file allowed'
+            : `At least one HTML file required`,
           options: { variant: 'error' },
         }),
       );
-    } else {
-      setFile(file);
+      return;
     }
+    dispatch(importHtml(files));
+    onClose();
+    setFiles([]);
+  };
+
+  const handleDrop = (ev: React.DragEvent<HTMLFormElement>) => {
+    prevent(ev);
+    const { files } = ev.dataTransfer;
+    [...files].forEach((file) => {
+      if (allowedMimeTypes.includes(file.type)) {
+        setFiles((prevState) => [...prevState, file]);
+      } else {
+        dispatch(
+          enqueueSnackbar({
+            message: `Only ${allowedMimeTypes.join(' and ')} files allowed `,
+            options: { variant: 'error' },
+          }),
+        );
+      }
+    });
     setOver(false);
   };
 
@@ -100,10 +125,10 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
     setOver(false);
   };
 
-  const handleChange = (ev) => {
+  const handleChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = ev.target;
-    if (files && files[0]) {
-      setFile(files[0]);
+    if (files) {
+      setFiles([...files]);
     }
   };
 
@@ -119,38 +144,47 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
           className={classes.form}
         >
           <label htmlFor="html-input" className={classes.label}>
-            {file ? (
-              <Card onClick={prevent}>
-                <CardContent>
-                  <Typography className={classes.field} variant="subtitle1">
-                    {file.name}
-                  </Typography>
-
-                  <Typography className={classes.field} variant="caption">
-                    {`${file.size} bytes`}
-                  </Typography>
-                </CardContent>
-
-                <CardActions className={classes.actions}>
-                  <IconButton
-                    size="small"
-                    onClick={() => setFile(null)}
-                    title="Remove"
+            {files.length
+              ? files.map((file) => (
+                  <Card
+                    onClick={prevent}
+                    className={classes.card}
+                    key={file.name}
                   >
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            ) : (
-              'Click or drop file here to upload'
-            )}
+                    <CardContent>
+                      <Typography className={classes.field} variant="subtitle1">
+                        {file.name}
+                      </Typography>
+
+                      <Typography className={classes.field} variant="caption">
+                        {`${file.size} bytes`}
+                      </Typography>
+                    </CardContent>
+
+                    <CardActions className={classes.actions}>
+                      <IconButton
+                        size="small"
+                        onClick={() =>
+                          setFiles((prevState) =>
+                            prevState.filter((prev) => prev.name !== file.name),
+                          )
+                        }
+                        title="Remove"
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                ))
+              : 'Click or drop file here to upload'}
 
             <input
               hidden
               id="html-input"
-              accept="text/html"
+              accept={allowedMimeTypes.join(',')}
               type="file"
               onChange={handleChange}
+              multiple
             />
           </label>
         </form>
@@ -165,7 +199,7 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
           variant="contained"
           color="secondary"
           onClick={handleCreate}
-          disabled={!file}
+          disabled={!files.length}
         >
           Create
         </Button>

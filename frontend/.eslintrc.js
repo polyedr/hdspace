@@ -69,5 +69,6 @@ module.exports = {
       'error',
       { ignorePropertyModificationsFor: ['draft'] },
     ],
+    'react/jsx-indent': 'off',
   },
 };

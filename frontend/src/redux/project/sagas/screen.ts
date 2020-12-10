@@ -676,16 +676,26 @@ export function* convertFreeCanvasSaga() {
 }
 
 export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
+  let iframe;
   try {
-    const file = action.payload;
+    const files = action.payload;
 
-    const html = yield file.text();
+    const htmlFiles = files.filter((file) => file.type === 'text/html');
+    if (htmlFiles.length !== 1) {
+      throw new Error(
+        htmlFiles.length
+          ? 'Only one HTML file allowed'
+          : 'At least one HTML file required',
+      );
+    }
+
+    const html = yield htmlFiles[0].text();
     const clearHTML = DOMPurify.sanitize(html, {
       ADD_TAGS: ['link'],
       WHOLE_DOCUMENT: true,
     });
 
-    const iframe = document.createElement('iframe');
+    iframe = document.createElement('iframe');
     iframe.hidden = true;
     iframe.srcdoc = clearHTML;
 
@@ -743,5 +753,7 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
         options: { variant: 'error' },
       }),
     );
+  } finally {
+    document.body.removeChild(iframe);
   }
 }
