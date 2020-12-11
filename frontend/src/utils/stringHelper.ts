@@ -7,6 +7,12 @@ export const kebabToCamel = (str: string) =>
     .map((word, i) => (i ? `${word[0].toUpperCase()}${word.slice(1)}` : word))
     .join('');
 
+export const extractStyles = (htmlString: string) => {
+  const match = [...htmlString.matchAll(/<style.*?>([\s\S]*?)<\/style>/g)];
+  const styles = match.reduce((acc, curr) => acc + curr[1], '');
+  return styles;
+};
+
 export const getHTMLBodyContent = (htmlString: string) => {
   const match = htmlString.match(/<body.*?>([\s\S]*)<\/body>/);
   if (!match) throw new Error("Can not find document's body");

@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 
-import { all, call, fork, put, select, take } from 'redux-saga/effects';
-import { eventChannel } from 'redux-saga';
+import { all, call, fork, put, select } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
@@ -30,6 +29,8 @@ import {
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
 import convertHtml from '@Utils/convertHtml';
+import CSSOM from 'cssom';
+import { extractStyles } from '@Utils/stringHelper';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -676,7 +677,6 @@ export function* convertFreeCanvasSaga() {
 }
 
 export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
-  let iframe;
   try {
     const files = action.payload;
 
@@ -688,49 +688,28 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
           : 'At least one HTML file required',
       );
     }
+    const html: string = yield htmlFiles[0].text();
+    const clearHtml = DOMPurify.sanitize(html);
 
     const cssFiles = files.filter((file) => file.type === 'text/css');
-    const css = yield cssFiles.reduce(async (acc, curr) => {
-      const text = await curr.text();
-      return (await acc) + text;
-    }, Promise.resolve(''));
 
-    const html: string = yield htmlFiles[0].text();
-    const i = html.indexOf('</body');
-    const htmlWithCss = `${html.slice(
-      0,
-      i,
-    )}\n<style>\n${css}</style>\n${html.slice(i)}`;
+    const externalStyles: string = yield Promise.all(
+      cssFiles.map((file) => file.text()),
+    ).then((result) => result.reduce((acc, curr) => acc + curr, ''));
+    const htmlStyles = extractStyles(clearHtml);
+    const css = externalStyles + htmlStyles;
 
-    const clearHTML = DOMPurify.sanitize(htmlWithCss, {
-      ADD_TAGS: ['link'],
-      WHOLE_DOCUMENT: true,
-    });
+    const doc = new DOMParser().parseFromString(clearHtml, 'text/html');
 
-    iframe = document.createElement('iframe');
-    iframe.hidden = true;
-    iframe.srcdoc = clearHTML;
-
-    const channel = eventChannel((listener) => {
-      const handleLoad = (ev: Event) => {
-        listener(ev);
-      };
-      iframe.addEventListener('load', handleLoad);
-      return () => iframe.removeEventListener('load', handleLoad);
-    });
-
-    document.body.appendChild(iframe);
-    yield take(channel);
-
-    const body = iframe.contentDocument?.body;
-
-    if (!body) throw new Error('Failed processing external HTML');
+    const { cssRules } = CSSOM.parse(css); // the actual type of cssRules is CSSStyleRule[] while the declared one is CSSOM.CSSRule[]
+    // @ts-ignore
+    const data = convertHtml(doc, cssRules);
 
     const { result: element, error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiCreateElement,
       {
-        data: convertHtml(body),
+        data,
       },
     );
     if (element) {
@@ -765,7 +744,5 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
         options: { variant: 'error' },
       }),
     );
-  } finally {
-    document.body.removeChild(iframe);
   }
 }

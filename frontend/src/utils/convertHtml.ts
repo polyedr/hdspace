@@ -102,25 +102,51 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
   WBR: null,
 };
 
-const ejectCSSStyleDeclaration = (style: CSSStyleDeclaration) => {
+const extractCSSStyleDeclaration = (style: CSSStyleDeclaration) => {
   const res = {} as any;
   for (let i = 0; i < style.length; i += 1) {
-    const name = style.item(i);
+    const name = style[i];
     res[name] = style[name];
   }
   return res;
 };
 
-const convertHtml = (element: HTMLElement): ServerElement<any> | null => {
+const extractStyles = (
+  element: HTMLElement,
+  cssRules: CSSStyleRule[],
+  doc: Document,
+) => {
+  const reducer = (acc: React.CSSProperties, curr: CSSStyleRule) => {
+    try {
+      const collection = [...doc.querySelectorAll(curr.selectorText)];
+      if (collection.includes(element)) {
+        return {
+          ...acc,
+          ...extractCSSStyleDeclaration(curr.style),
+        };
+      }
+      return acc;
+    } catch (e) {
+      return acc;
+    }
+  };
+
+  return cssRules.reduce(reducer, {});
+};
+
+const htmlElementToAdeviElement = (
+  element: HTMLElement,
+  cssRules: CSSStyleRule[],
+  doc: Document,
+): ServerElement<any> | null => {
   const type = tagMap[element.tagName];
   if (!type) return null;
 
   const { style: inlineStyle } = element;
-  const computedStyle = window.getComputedStyle(element);
 
   const ownStyles = {
-    ...ejectCSSStyleDeclaration(inlineStyle),
-    ...ejectCSSStyleDeclaration(computedStyle),
+    ...extractCSSStyleDeclaration(inlineStyle),
+    ...extractStyles(element, cssRules, doc),
   };
 
   const adeviElement = convertCreatedElementToRequest(type, null, type, {
@@ -131,7 +157,9 @@ const convertHtml = (element: HTMLElement): ServerElement<any> | null => {
   return {
     ...adeviElement,
     children: [...element.children]
-      .map((child) => convertHtml(child as HTMLElement))
+      .map((child) =>
+        htmlElementToAdeviElement(child as HTMLElement, cssRules, doc),
+      )
       .filter((child) => !!child),
     styles: {
       ...adeviElement.styles,
@@ -139,5 +167,8 @@ const convertHtml = (element: HTMLElement): ServerElement<any> | null => {
     },
   };
 };
+
+const convertHtml = (doc: Document, cssRules: CSSStyleRule[]) =>
+  htmlElementToAdeviElement(doc.body, cssRules, doc);
 
 export default convertHtml;

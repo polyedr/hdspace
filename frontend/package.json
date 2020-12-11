@@ -30,6 +30,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.2",
+    "@types/cssom": "^0.4.1",
     "@types/dompurify": "^2.0.4",
     "@types/file-saver": "^2.0.1",
     "@types/google-map-react": "^1.1.8",
@@ -115,6 +116,7 @@
     "connected-react-router": "^6.8.0",
     "css-property-parser": "^1.0.6",
     "css-shorthand-expanders": "^1.1.0",
+    "cssom": "^0.4.4",
     "csstype": "^3.0.4",
     "decamelize": "^4.0.0",
     "dompurify": "^2.2.3",
