@@ -9,6 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = ({ MODE }) => {
   const isProduction = MODE === 'production';
@@ -223,6 +224,17 @@ module.exports = ({ MODE }) => {
       }),
       new ForkTsCheckerWebpackPlugin(),
       // new BundleAnalyzerPlugin(),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: 'src/styles/material',
+            to: 'styles/material',
+          },
+        ],
+        options: {
+          concurrency: 5,
+        },
+      }),
     ],
 
     devServer: {

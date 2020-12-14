@@ -10,50 +10,29 @@ import { AppReduxState } from '@Redux/types';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
 import history from '@Redux/history';
 import ExportedElement from './components/ExportedElement';
-import { parseHTML } from './utils/parser';
-
-const getHtmlFromTemplate = (body: string) => `
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
-    />
-    <meta
-      name="google-site-verification"
-      content="m2BjG5J2rJf552uAF0lgzMClJyuz0N-tjQ5kh5yewOo"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <title>Editor</title>
-  </head>
-  <body>
-    ${body}
-  </body>
-</html>
-`;
+import {
+  getHtmlFromTemplate,
+  processCSS,
+  processHTML,
+} from './utils/processor';
 
 const createArchive = (html: string, css: string) => {
   const zip = new JSZip();
   const cssFolder = zip.folder('css');
   const assetsFolder = zip.folder('assets');
 
-  parseHTML(html, assetsFolder).then((result: string) => {
-    zip.file('index.html', getHtmlFromTemplate(result));
-    cssFolder?.file('style.css', css);
-    zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(content);
-      a.download = 'page.zip';
-      a.click();
-    });
-  });
+  Promise.all([processCSS(cssFolder), processHTML(html, assetsFolder)]).then(
+    ([, htmlResponse]) => {
+      zip.file('index.html', getHtmlFromTemplate(htmlResponse));
+      cssFolder?.file('style.css', css);
+      zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(content);
+        a.download = 'page.zip';
+        a.click();
+      });
+    },
+  );
 };
 
 const exportHTML = () => {
