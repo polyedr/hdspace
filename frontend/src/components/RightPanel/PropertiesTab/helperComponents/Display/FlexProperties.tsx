@@ -1,13 +1,11 @@
 import React from 'react';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import ToggleButton from '@material-ui/lab/ToggleButton';
 import { FormControlLabel } from '@material-ui/core';
 import HeightIcon from '@material-ui/icons/Height';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
-
+import { StyledToggleButton } from '@Components/styledComponents';
 import PlaceItemsProperties from './PlaceItemsProperties';
 
 const useStyles = makeStyles({
@@ -51,17 +49,18 @@ const FlexProperties: React.FC<Props> = ({
               onChange={handleChangeOrientation}
               exclusive
             >
-              <ToggleButton value="row">
+              <StyledToggleButton value="row">
                 <HeightIcon className={classes.arrowRotated} />
-              </ToggleButton>
+              </StyledToggleButton>
 
-              <ToggleButton value="column">
+              <StyledToggleButton value="column">
                 <HeightIcon />
-              </ToggleButton>
+              </StyledToggleButton>
             </ToggleButtonGroup>
           }
         />
       </div>
+
       <PlaceItemsProperties
         reversed={
           !!flexDirection && (flexDirection as string).startsWith('column')
