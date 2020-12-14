@@ -1,5 +1,6 @@
 import { Entity, ServerElement } from '@Src/types';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
+import FONTS from '@Constants/fonts';
 
 const tagMap: Record<Element['tagName'], Entity | null> = {
   A: 'hyperlink',
@@ -102,10 +103,27 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
   WBR: null,
 };
 
+const convertFontFamily = (srcFontString: string) => {
+  const families = srcFontString.split(',').map((family) => family.trim());
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const family of families) {
+    if (FONTS.map((fonts) => fonts.label).includes(family)) {
+      return FONTS.find((font) => font.label === family)?.value;
+    }
+  }
+  return FONTS[0].value;
+};
+
 const extractCSSStyleDeclaration = (style: CSSStyleDeclaration) => {
   const res = {} as any;
   for (let i = 0; i < style.length; i += 1) {
     const name = style[i];
+    if (name === 'font-family') {
+      res[name] = convertFontFamily(style[name]);
+      // eslint-disable-next-line no-continue
+      continue;
+    }
     res[name] = style[name];
   }
   return res;
@@ -145,12 +163,12 @@ const htmlElementToAdeviElement = (
   const { style: inlineStyle } = element;
 
   const ownStyles = {
-    ...extractCSSStyleDeclaration(inlineStyle),
     ...extractStyles(element, cssRules, doc),
+    ...extractCSSStyleDeclaration(inlineStyle),
   };
 
   const adeviElement = convertCreatedElementToRequest(type, null, type, {
-    textContent: element.textContent,
+    textContent: element.textContent?.trim(),
     ...(type === 'heading' && { headingType: element.tagName.toLowerCase() }),
   });
 
