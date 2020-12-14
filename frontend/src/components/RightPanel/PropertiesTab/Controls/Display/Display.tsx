@@ -24,7 +24,6 @@ const Display: React.FC<Props> = ({
   justifyContent,
   alignItems,
 }) => {
-  console.log(flexDirection);
   const handleDisplayDropdownChange = useCallback(
     (event) => {
       updateStyles({ display: event.target.value });
