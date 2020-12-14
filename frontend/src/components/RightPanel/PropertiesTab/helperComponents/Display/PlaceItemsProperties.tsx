@@ -1,7 +1,6 @@
 import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import * as CSS from 'csstype';
-
 import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
@@ -23,28 +22,6 @@ const PlaceItemsProperties: React.FC<Props> = ({
   const classes = useWrapperStyles();
   return (
     <div className={classes.wrapper}>
-      {/* <FormControl>
-        <InputLabel>
-          <span>{`${reversed ? 'Y-' : 'X-'}axis`}</span>
-        </InputLabel>
-
-        <Select
-          defaultValue="initial"
-          value={justifyContent}
-          onChange={(ev: React.ChangeEvent<{ value: unknown }>) => {
-            updateStyles({
-              justifyContent: ev.target.value as CSS.Property.JustifyContent,
-            });
-          }}
-        >
-          {JUSTIFY_VALUES.map(({ label, value }) => (
-            <MenuItem key={value} value={value} dense>
-              {label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
-
       <StyledTextField
         label={`${reversed ? 'Y-' : 'X-'}axis`}
         defaultValue="initial"
@@ -80,26 +57,6 @@ const PlaceItemsProperties: React.FC<Props> = ({
           </MenuItem>
         ))}
       </StyledTextField>
-
-      {/* <FormControl>
-        <InputLabel>{`${reversed ? 'X-' : 'Y-'}axis`}</InputLabel>
-
-        <Select
-          defaultValue="initial"
-          value={alignItems}
-          onChange={(ev: React.ChangeEvent<{ value: unknown }>) => {
-            updateStyles({
-              alignItems: ev.target.value as CSS.Property.AlignItems,
-            });
-          }}
-        >
-          {ALIGN_VALUES.map(({ label, value }) => (
-            <MenuItem key={value} value={value} dense>
-              {label}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl> */}
     </div>
   );
 };
