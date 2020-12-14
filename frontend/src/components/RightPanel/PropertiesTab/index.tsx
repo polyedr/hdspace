@@ -52,7 +52,7 @@ type ControlInfo = {
 const CONTROLS: Record<Control, ControlInfo> = {
   display: {
     Control: Display,
-    styles: ['display', 'justifyContent', 'alignItems'],
+    styles: ['display', 'justifyContent', 'alignItems', 'flexDirection'],
   },
   indents: {
     Control: IndentsBlock,
