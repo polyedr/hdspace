@@ -8,7 +8,6 @@ import { MDCRipple } from '@material/ripple';
 import { ActionRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
-import 'mat-ripple';
 
 const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
   'external-link': 'a',

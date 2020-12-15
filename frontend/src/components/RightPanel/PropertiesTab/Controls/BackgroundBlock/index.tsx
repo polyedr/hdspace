@@ -16,7 +16,7 @@ const BackgroundBlock: React.FC<Props> = ({
 }) => {
   const handleColorSettingsChange = useCallback(
     (color: string) => {
-      updateStyles({ backgroundColor: `${color} !important` });
+      updateStyles({ backgroundColor: `${color}` });
     },
     [updateStyles],
   );

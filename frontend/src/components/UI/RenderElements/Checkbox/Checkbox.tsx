@@ -1,30 +1,13 @@
 // @ts-nocheck
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import cn from 'classnames';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import Style from 'style-it';
 import { CheckboxRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
-import { makeComponentStyles } from '../styles';
+import { makeComponentStyles, makeInlineStyles } from '../styles';
 
-import '@material/checkbox/dist/mdc.checkbox.css';
-
-const useCheckboxStyles = makeStyles({
-  root: {},
-  checked: {},
-  entityStyles: ({ entityStyles }) => ({
-    color: entityStyles.backgroundColor,
-    backgroundColor: entityStyles.backgroundColor,
-  }),
-  groupStyles: ({ groupStyles }) => ({
-    color: groupStyles.backgroundColor,
-    backgroundColor: groupStyles.backgroundColor,
-  }),
-  ownStyles: ({ ownStyles }) => ({
-    color: ownStyles.backgroundColor,
-    backgroundColor: ownStyles.backgroundColor,
-  }),
-});
+import '@Src/styles/material/mdc.checkbox.css';
 
 const useDivStyles = makeComponentStyles(
   {},
@@ -34,25 +17,31 @@ const useDivStyles = makeComponentStyles(
   },
 );
 
+const useInlineStyles = makeInlineStyles((styles: React.CSSProperties) => ({
+  color: styles.backgroundColor,
+}));
+
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, isDisabled, className } = props;
-    const { showRipple } = params;
+    const { id, /* params, */ isDisabled, className } = props;
+    // const { showRipple } = params;
     const divClasses = useDivStyles(props);
-    const checkboxClasses = useCheckboxStyles(props);
+    const inlineStyles = useInlineStyles(props);
 
     const eventHandlers = useEventHandlers(props);
     const [isChecked, setIsChecked] = useState<boolean>(false);
-    /* const handleChange = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!isDisabled) {
-          setIsChecked(event.target.checked);
-        }
-      },
-      [isDisabled],
-    ); */
 
-    return (
+    const handleCheckboxChange = useCallback(() => {
+      if (!isDisabled) {
+        setIsChecked(!isChecked);
+      }
+    }, [setIsChecked, isChecked, isDisabled]);
+
+    return Style.it(
+      `#checkbox-${id}:checked ~ #checkbox-${id}-background {
+        border-color: ${inlineStyles.color};
+        background-color: ${inlineStyles.color};
+      }`,
       <div
         ref={ref}
         id={id}
@@ -69,25 +58,23 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
       >
         <div className="mdc-touch-target-wrapper">
           <div className="mdc-checkbox mdc-checkbox--touch">
+            <mat-ripple
+              centered
+              color={`${inlineStyles.backgroundColor || '#ff0000'}33`}
+              style={{
+                borderRadius: '50%',
+              }}
+            />
             <input
               type="checkbox"
-              className={cn(
-                'mdc-checkbox__native-control',
-                checkboxClasses.entityStyles,
-                checkboxClasses.groupStyles,
-                checkboxClasses.ownStyles,
-              )}
-              id="checkbox-1"
-              checked={isChecked}
-              onChange={() => setIsChecked(!isChecked)}
+              id={`checkbox-${id}`}
+              className="mdc-checkbox__native-control"
+              checked={!isDisabled && isChecked}
+              onChange={handleCheckboxChange}
             />
             <div
-              className={cn(
-                'mdc-checkbox__background',
-                checkboxClasses.entityStyles,
-                checkboxClasses.groupStyles,
-                checkboxClasses.ownStyles,
-              )}
+              id={`checkbox-${id}-background`}
+              className="mdc-checkbox__background"
             >
               <svg className="mdc-checkbox__checkmark" viewBox="0 0 24 24">
                 <path
@@ -98,10 +85,9 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
               </svg>
               <div className="mdc-checkbox__mixedmark" />
             </div>
-            {showRipple && <div className="mdc-checkbox__ripple" />}
           </div>
         </div>
-      </div>
+      </div>,
     );
   },
 );

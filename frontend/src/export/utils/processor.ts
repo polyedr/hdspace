@@ -2,7 +2,11 @@ import axios, { AxiosResponse } from 'axios';
 import JSZip from 'jszip';
 
 const assetAttributes = ['src', 'href'];
-const cssResources = ['/styles/material/mdc.checkbox.css'];
+const cssResources = [
+  'mdc.form-field.css',
+  'mdc.checkbox.css',
+  'mdc.radio.css',
+];
 
 // eslint-disable-next-line import/prefer-default-export
 export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
@@ -42,23 +46,23 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
 };
 
 export const processCSS = async (cssFolder: JSZip | null) => {
-  return Promise.all(cssResources.map((resource) => axios.get(resource))).then(
-    (responses: AxiosResponse[]) => {
-      responses.forEach((response: AxiosResponse) => {
-        if (!response.request) {
-          // eslint-disable-next-line no-console
-          console.error('Request is not defined!', response);
-          return;
-        }
-        const { responseURL } = response.request;
+  return Promise.all(
+    cssResources.map((resource) => axios.get(`/styles/material/${resource}`)),
+  ).then((responses: AxiosResponse[]) => {
+    responses.forEach((response: AxiosResponse) => {
+      if (!response.request) {
+        // eslint-disable-next-line no-console
+        console.error('Request is not defined!', response);
+        return;
+      }
+      const { responseURL } = response.request;
 
-        cssFolder?.file(
-          responseURL.substring(responseURL.lastIndexOf('/')),
-          response.data,
-        );
-      });
-    },
-  );
+      cssFolder?.file(
+        responseURL.substring(responseURL.lastIndexOf('/')),
+        response.data,
+      );
+    });
+  });
 };
 
 export const getHtmlFromTemplate = (body: string) => `

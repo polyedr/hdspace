@@ -227,8 +227,19 @@ module.exports = ({ MODE }) => {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: 'src/styles/material',
+            from: 'node_modules/@material/form-field/dist/mdc.form-field.css',
             to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'src/styles/material/mdc.checkbox.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'node_modules/@material/radio/dist/mdc.radio.css',
+            to: 'styles/material',
+            toType: 'dir',
           },
         ],
         options: {
