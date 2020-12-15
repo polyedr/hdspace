@@ -174,10 +174,23 @@ const htmlElementToAdeviElement = (
 
   return {
     ...adeviElement,
-    children: [...element.children]
-      .map((child) =>
-        htmlElementToAdeviElement(child as HTMLElement, cssRules, doc),
-      )
+    children: [...element.childNodes]
+      .map((node) => {
+        if (node.nodeType === 1) {
+          return htmlElementToAdeviElement(node as HTMLElement, cssRules, doc);
+        }
+        if (node.nodeType === 3) {
+          return convertCreatedElementToRequest(
+            'paragraph',
+            null,
+            'paragraph',
+            {
+              textContent: node.textContent,
+            },
+          );
+        }
+        return null;
+      })
       .filter((child) => !!child),
     styles: {
       ...adeviElement.styles,
