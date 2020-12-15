@@ -109,7 +109,28 @@
   border-color: var(--mdc-checkbox-unchecked-color, rgba(0, 0, 0, 0.54));
   background-color: transparent;
 }
-
+.mdc-checkbox
+  .mdc-checkbox__native-control:enabled:checked
+  ~ .mdc-checkbox__background,
+.mdc-checkbox
+  .mdc-checkbox__native-control:enabled:indeterminate
+  ~ .mdc-checkbox__background,
+.mdc-checkbox
+  .mdc-checkbox__native-control[data-indeterminate='true']:enabled
+  ~ .mdc-checkbox__background {
+  border-color: #018786;
+  /* @alternate */
+  border-color: var(
+    --mdc-checkbox-checked-color,
+    var(--mdc-theme-secondary, #018786)
+  );
+  background-color: #018786;
+  /* @alternate */
+  background-color: var(
+    --mdc-checkbox-checked-color,
+    var(--mdc-theme-secondary, #018786)
+  );
+}
 @-webkit-keyframes mdc-checkbox-fade-in-background-8A000000FF01878600000000FF018786 {
   0% {
     border-color: rgba(0, 0, 0, 0.54);
@@ -530,6 +551,7 @@
     border-color: GrayText;
     background-color: transparent;
     /* @alternate */
+    background-color: var(--mdc-checkbox-disabled-color, transparent);
   }
 
   .mdc-checkbox__native-control:disabled

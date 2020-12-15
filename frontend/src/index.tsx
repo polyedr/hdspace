@@ -7,7 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import App from './containers/App';
 import { configureStore } from './redux/store';
 
-require('./styles/index.scss');
+import './styles/index.scss';
 
 if (process.env.NODE_ENV === 'production') {
   disableReactDevTools();

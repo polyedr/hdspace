@@ -122,6 +122,7 @@ export type DropdownItemRendererProps = SharedRendererProps & {
 };
 
 export type ActionRendererProps = SharedRendererProps & {
+  type: string;
   params: {
     action: LinkParams;
     textContent: string;

@@ -7,7 +7,7 @@ import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { ChildrenElements, ElementEntity, ProjectClass } from '@Src/types';
 import {
-  selectActiveElement,
+  selectActiveElementId,
   selectCurrentRootElement,
   selectCurrentRootId,
   selectElementBeingEdited,
@@ -42,7 +42,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
   const rootID = useSelector(selectCurrentRootId);
   const savedElements = useSelector(selectSavedElementsValues);
   const disableInteractions = useSelector(selectIsPrototypeMode);
-  const activeElement = useSelector(selectActiveElement);
+  const activeElementId = useSelector(selectActiveElementId);
   const showBorders = useSelector(selectShowingBorders);
   const screenLoader = useSelector(selectScreenLoader);
   const currentProject = useSelector(selectCurrentProject);
@@ -72,7 +72,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
     const { id, children } = element;
 
-    const getIsActive = !disableInteractions && element.id === activeElement.id;
+    const getIsActive = !disableInteractions && element.id === activeElementId;
 
     const isBorderedElement =
       findParentByChildID(root, id)?.id === rootID || id === rootID;
@@ -126,6 +126,13 @@ const useElementProps = (elementId: string): ElementProps | null => {
           parentId: element.parent,
         };
       }
+      case 'button':
+      case 'hyperlink': {
+        return {
+          type: element.type,
+          params: element.parameters,
+        };
+      }
       default:
         return {
           params: element.parameters,
@@ -134,7 +141,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
   }, [
     element,
     disableInteractions,
-    activeElement.id,
+    activeElementId,
     root,
     rootID,
     showBorders,
@@ -167,7 +174,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
     ownStyles: styles.ownStyles,
     entityStyles,
     groupStyles,
-    active: !disableInteractions && id === activeElement.id,
+    active: !disableInteractions && id === activeElementId,
   };
 
   if (screenLoader || !isElementStructType(type)) {

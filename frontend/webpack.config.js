@@ -75,7 +75,7 @@ module.exports = ({ MODE }) => {
                   plugins: [
                     'postcss-import',
                     'postcss-url',
-                    'postcss-cssnext',
+                    'postcss-preset-env',
                     'postcss-reporter',
                     { 'postcss-browser-reporter': { disabled: isProduction } },
                   ],

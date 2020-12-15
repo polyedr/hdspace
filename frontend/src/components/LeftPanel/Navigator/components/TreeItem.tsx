@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { RenderItemParams } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lighten } from '@material-ui/core';
+import { lighten, Theme } from '@material-ui/core';
 import { selectElementById } from '@Redux/project/selectors/element';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
@@ -12,7 +12,7 @@ import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '../utils';
 import ContextMenu from './ContextMenu';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   iconButton: {
     padding: 0,
     cursor: 'pointer',

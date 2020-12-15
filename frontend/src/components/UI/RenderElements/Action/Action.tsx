@@ -1,21 +1,33 @@
 // @ts-nocheck
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { Link } from 'react-router-dom';
-import Button from '@material-ui/core/Button';
 import { ActionType, WithActionProps } from '@Src/types';
+import { MDCRipple } from '@material/ripple';
+
 import { ActionRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
+import 'mat-ripple';
+
+const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
+  'external-link': 'a',
+  'internal-link': Link,
+  button: 'button',
+};
 
 const useStyles = makeComponentStyles({
-  root: ({ isDisabled, entityStyles, groupStyles, ownStyles }) => {
+  root: ({ isDisabled, entityStyles, groupStyles, ownStyles, type }) => {
     const { color, backgroundColor } = {
       ...entityStyles,
       ...groupStyles,
       ...ownStyles,
     };
     return {
+      color,
+      backgroundColor,
+      textDecoration: type === 'button' ? 'none' : 'underline',
+
       '&:hover, &:active': {
         ...(isDisabled && {
           boxShadow:
@@ -26,34 +38,58 @@ const useStyles = makeComponentStyles({
       },
     };
   },
+  label: {
+    textDecoration: 'none',
+    textTransform: 'uppercase',
+  },
 });
 
-export type ActionRenderer = React.FC<WithActionProps & ActionRendererProps>;
+type Props = WithActionProps &
+  ActionRendererProps & {
+    type: string;
+  };
+
+export type ActionRenderer = React.FC<Props>;
 
 const Action: ActionRenderer = React.forwardRef((props, ref) => {
   const { id, isDisabled, params, actionType, actionLink, className } = props;
   const { showRipple, textContent } = params;
 
+  const [ripple, setRipple] = useState<MDCRipple | null>(null);
+
+  useEffect(() => {
+    if (!ripple) {
+      return;
+    }
+    if (showRipple) {
+      ripple.activate();
+    } else {
+      ripple.deactivate();
+    }
+  }, [ripple, showRipple]);
+
+  const dom = !ref ? null : ref.current;
+
+  useEffect(() => {
+    if (!dom) {
+      return;
+    }
+    setRipple(new MDCRipple(dom));
+  }, [dom]);
+
   const classes = useStyles(props);
 
   const eventHandlers = useEventHandlers(props);
 
-  const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
-    'external-link': 'a',
-    'internal-link': Link,
-    button: 'button',
-  };
-
-  const component = components[actionType];
+  const Component = components[actionType];
 
   return (
-    <Button
+    <Component
       ref={ref}
       id={id}
       data-ls-id={id}
       key={id}
-      variant="contained"
-      color="primary"
+      data-show-ripple={showRipple}
       className={cn(
         className,
         classes.root,
@@ -61,9 +97,8 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
         classes.groupStyles,
         classes.ownStyles,
         isDisabled && classes.disabled,
+        'mdc-button',
       )}
-      disableRipple={isDisabled || !showRipple}
-      component={component}
       {...(actionType === 'external-link' && {
         href: actionLink,
         target: '_blank',
@@ -71,8 +106,9 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
       {...(actionType === 'internal-link' && { to: actionLink })}
       {...eventHandlers}
     >
-      {textContent}
-    </Button>
+      <span className={classes.label}>{textContent}</span>
+      <mat-ripple />
+    </Component>
   );
 });
 
