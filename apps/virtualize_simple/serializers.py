@@ -601,7 +601,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         try:
             if validated_data.get("parameters"):
                 region_dataset = validated_data["parameters"]["block_type"]
-                styles_on = validated_data["parameters"]["styles_on"]
+                styles_on = int(validated_data["parameters"]["styles_on"])
         except Exception:
             pass
         # print(region_dataset)
@@ -1923,8 +1923,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         styles = {}
         parameters = {}
         styles["background-color"] = "rgba(" + bcolour_container_value + ")"
-        styles["height"] = str(img_height) + "px"
-        styles["width"] = str(img_width) + "px"
+        # The magic number 30 to solve presence of wide elements have been measured with px
+        styles["width"] = str(img_width + 30) + "px"
         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
         outer_div.set("style", str_styles)
         # print(1694, styles, str_styles)
@@ -1949,22 +1949,27 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Horizontal
             if node.direction == 1:
                 styles["display"] = "flex"
-                styles["background"] = "aliceblue"
+                if not styles_on:
+                    styles["background"] = "aliceblue"
                 if region_dataset in ["headers", "footers"]:
                     styles["justify-content"] = "space-between"
             # Vertical
             if node.direction == 0:
                 styles["display"] = "block"
-                styles["background"] = "lavenderblush"
+                if not styles_on:
+                    styles["background"] = "lavenderblush"
             if node.direction == 2:
                 if (node.types == "ccluster") or (
                     region_dataset in ["headers", "webpages"]
                 ):
                     styles["display"] = "flex"
-                    styles["background"] = "lightblue"
+                    if not styles_on:
+                        styles["background"] = "lightblue"
+                    styles["margin-bottom"] = "15px"
                 else:
                     styles["display"] = "flex"
-                    styles["background"] = "lightgreen"
+                    if not styles_on:
+                        styles["background"] = "lightgreen"
                     # Sometimes node_width and height are 0, should check this.
                     if node_width:
                         styles["width"] = str(node_width) + "px"
@@ -1989,18 +1994,21 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             else:
                 node.div = ET.SubElement(node.parent.div, "div")
 
-                styles["border"] = "1px solid green"
+                styles["border"] = ""
+
+                if not styles_on:
+                    styles["border"] = "1px solid green"
 
                 str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                 node.div.set("style", str_styles)
 
                 # Buoyancy detection start
-                # Vertical
-                if(node.parent.direction == 1):
-                    buoyancy = int(node.y1)
                 # Horizontal
-                if(node.parent.direction == 0):
+                if(node.parent.direction == 1):
                     buoyancy = int(node.x1)
+                # Vertical
+                if(node.parent.direction == 0):
+                    buoyancy = int(node.y1)
                 # Buoyancy detection end
 
                 # Create a new Scenario Element for the elements chain
@@ -2041,12 +2049,43 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         y1 : y1 + elem_height, x1 : x1 + elem_width
                     ]
                     elem_image_name = uuid.uuid4().hex + fname
-                    # print(x1, y1)
-                    # input()
                     # Cropping to the border box end
+
+                    # Detect the font-size with tesseract for some elements
+                    text_elem_tesseract = ""
+                    if elem["region_attributes"]["HTML element"] in {
+                        "textinput",
+                        "input", "select", "text", "ocrtext", "textarea", "form_heading", "button"
+                    }:
+                        # Detect the font-size with tesseract for some element start
+                        # Convert to the grey colour
+                        elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
+                        result = pytesseract.image_to_boxes(elem_image_gray)
+                        # print(result)
+
+                        lines = result.strip().split('\n')
+                        font_size = []
+
+                        for line in lines:
+                            chars = line.split(' ')
+                            try:
+                                font_size.append(float(chars[4]) - float(chars[2]))
+                            except Exception:
+                                font_size.append(12.0)  # Default font-size value is 12px
+                        font_size_value = int(median(font_size) * 1.7)
+
+                        # Read the string with tesseract
+                        text_elem_tesseract = pytesseract.image_to_string(elem_image_gray, config=config_tesseract)
+                        # if text_elem_tesseract:
+                        #     print("text:", text_elem_tesseract, font_size_value, font_size_img)
+                        # Show tesseract results only when font is larger than 12
+                        if(font_size_value < 12):
+                            text_elem_tesseract = ""
+                        # Detect the font-size with tesseract for some element end
 
                     styles = {}
                     parameters = {}
+                    styles["text-transform"] = "none"
 
                     if styles_on:
                         # Get the dominant colour for the element start
@@ -2070,11 +2109,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     }:
                         styles["width"] = str(node_width) + "px"
                         styles["height"] = str(node_height) + "px"
+                        styles["height"] = ""
                         styles["padding"] = "3px 0"
+                        styles["border-width"] = "1px"
+                        styles["border-color"] = "rgba(244, 244, 244, 1)"
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "input")
                         # displaying various kinds of elements end
+
+                        # Text assignment
+                        if(text_elem_tesseract):
+                            parameters["textContent"] = text_elem_tesseract
 
                         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
@@ -2088,6 +2134,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
+                        styles["width"] = str(min(node_width, node_height)) + "px"
+                        styles["height"] = str(min(node_width, node_height)) + "px"
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "input")
                         # displaying various kinds of elements end
@@ -2129,6 +2177,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         element = ET.SubElement(node.div, "select")
                         # displaying various kinds of elements end
 
+                        # Text assignment
+                        if(text_elem_tesseract):
+                            parameters["textContent"] = text_elem_tesseract
+
                         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
 
@@ -2146,8 +2198,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
 
                         element.text = lorem.get_word(count=2)
-
                         parameters["textContent"] = element.text
+                        # Text assignment
+                        if(text_elem_tesseract):
+                            parameters["textContent"] = text_elem_tesseract
+                            element.text = text_elem_tesseract
 
                         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
@@ -2166,6 +2221,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
 
                         element.set("placeholder", lorem.get_word(count=2))
+                        # Text assignment
+                        if(text_elem_tesseract):
+                            parameters["placeholder"] = text_elem_tesseract
 
                         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
@@ -2184,8 +2242,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
 
                         element.text = lorem.get_word(count=2)
-
                         parameters["textContent"] = element.text
+                        # Text assignment
+                        if(text_elem_tesseract):
+                            parameters["textContent"] = text_elem_tesseract
+                            element.text = text_elem_tesseract
 
                         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
@@ -2250,10 +2311,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "button")
                         # displaying various kinds of elements end
-
                         element.text = lorem.get_word(count=1)
-
                         parameters["textContent"] = element.text
+                        # Text assignment
+                        if(text_elem_tesseract):
+                            parameters["textContent"] = text_elem_tesseract
+                            element.text = text_elem_tesseract
 
                         if styles_on:
                             # Set the background colour for styles
@@ -2291,8 +2354,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
 
                         element.text = lorem.get_word(count=1)
-
                         parameters["textContent"] = element.text
+                        # Text assignment
+                        if(text_elem_tesseract):
+                            parameters["textContent"] = text_elem_tesseract
+                            element.text = text_elem_tesseract
 
                         str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
                         element.set("style", str_styles)
