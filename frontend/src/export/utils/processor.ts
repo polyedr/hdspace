@@ -2,11 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import JSZip from 'jszip';
 
 const assetAttributes = ['src', 'href'];
-const cssResources = [
-  'mdc.form-field.css',
-  'mdc.checkbox.css',
-  'mdc.radio.css',
-];
+const cssResources = ['mdc.checkbox.css', 'mdc.radio.css'];
 
 // eslint-disable-next-line import/prefer-default-export
 export const processHTML = async (html: string, assetsFolder: JSZip | null) => {

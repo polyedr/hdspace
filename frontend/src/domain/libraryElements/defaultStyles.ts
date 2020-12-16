@@ -736,8 +736,6 @@ export const defaultRadiobuttonStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '24px',
-    height: 'auto',
   },
   background: {
     ...DEFAULT_BACKGROUND,

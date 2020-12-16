@@ -10,7 +10,11 @@ import { makeComponentStyles, makeInlineStyles } from '../styles';
 import '@Src/styles/material/mdc.checkbox.css';
 
 const useDivStyles = makeComponentStyles(
-  {},
+  {
+    root: {
+      overflow: 'hidden',
+    },
+  },
   ['backgroundColor', 'width', 'height'],
   {
     display: 'inline-block',
@@ -23,8 +27,8 @@ const useInlineStyles = makeInlineStyles((styles: React.CSSProperties) => ({
 
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, /* params, */ isDisabled, className } = props;
-    // const { showRipple } = params;
+    const { id, name, params, isDisabled, className } = props;
+    const { showRipple } = params;
     const divClasses = useDivStyles(props);
     const inlineStyles = useInlineStyles(props);
 
@@ -49,6 +53,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          divClasses.root,
           isDisabled && divClasses.disabled,
           divClasses.entityStyles,
           divClasses.groupStyles,
@@ -58,16 +63,20 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
       >
         <div className="mdc-touch-target-wrapper">
           <div className="mdc-checkbox mdc-checkbox--touch">
-            <mat-ripple
-              centered
-              color={`${inlineStyles.backgroundColor || '#ff0000'}33`}
-              style={{
-                borderRadius: '50%',
-              }}
-            />
+            {showRipple && (
+              <mat-ripple
+                centered
+                color={`${inlineStyles.color || '#1890ff'}`}
+                style={{
+                  borderRadius: '50%',
+                  opacity: 0.2,
+                }}
+              />
+            )}
             <input
               type="checkbox"
               id={`checkbox-${id}`}
+              name={`${name}-${id}`}
               className="mdc-checkbox__native-control"
               checked={!isDisabled && isChecked}
               onChange={handleCheckboxChange}

@@ -1,73 +1,54 @@
 // @ts-nocheck
 
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
-import { makeStyles, Radio } from '@material-ui/core';
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
+import Style from 'style-it';
+
 import { RadioRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
-import { makeComponentStyles } from '../styles';
+import { makeComponentStyles, makeInlineStyles } from '../styles';
 
-const useRadiobuttonStyles = makeStyles({
-  root: {},
-  entityStyles: ({ entityStyles }) => ({
-    color: entityStyles.backgroundColor,
-  }),
-  groupStyles: ({ groupStyles }) => ({
-    color: groupStyles.backgroundColor,
-  }),
-  ownStyles: ({ ownStyles }) => ({
-    color: ownStyles.backgroundColor,
-  }),
-});
-
-const useIconStyles = makeStyles({
-  entityStyles: ({ entityStyles }) => ({
-    width: entityStyles.width,
-    height: entityStyles.height,
-  }),
-  groupStyles: ({ groupStyles }) => ({
-    width: groupStyles.width,
-    height: groupStyles.height,
-  }),
-  ownStyles: ({ ownStyles }) => ({
-    width: ownStyles.width,
-    height: ownStyles.height,
-  }),
-});
+import '@Src/styles/material/mdc.radio.css';
 
 const useDivStyles = makeComponentStyles(
-  {},
-  ['backgroundColor', 'width', 'height'],
+  {
+    root: {
+      position: 'relative',
+      overflow: 'hidden',
+      '&:before, &:after': {
+        fontSize: 0,
+      },
+    },
+  },
+  ['backgroundColor'],
   {
     display: 'inline-block',
   },
 );
 
+const useInlineStyles = makeInlineStyles((styles: React.CSSProperties) => ({
+  color: styles.backgroundColor,
+}));
+
 const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, isDisabled, className } = props;
+    const { id, name, params, isDisabled, className } = props;
     const { showRipple } = params;
 
-    const radiobuttonClasses = useRadiobuttonStyles(props);
-    const iconClasses = useIconStyles(props);
     const divClasses = useDivStyles(props);
+    const inlineStyles = useInlineStyles(props);
 
     const [isChecked, setIsChecked] = useState(false);
 
     const eventHandlers = useEventHandlers(props);
 
-    const handleChange = useCallback(
-      (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (!isDisabled) {
-          setIsChecked(event.target.checked);
-        }
-      },
-      [isDisabled],
-    );
-
-    return (
+    return Style.it(
+      `#radio-${id}:checked ~ #radio-${id}-background > .mdc-radio__outer-circle {
+        border-color: ${inlineStyles.color};
+      }
+      #radio-${id}:checked ~ #radio-${id}-background > .mdc-radio__inner-circle {
+        border-color: ${inlineStyles.color};
+      }`,
       <div
         ref={ref}
         id={id}
@@ -75,6 +56,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          divClasses.root,
           isDisabled && divClasses.disabled,
           divClasses.entityStyles,
           divClasses.groupStyles,
@@ -82,7 +64,46 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         )}
         {...eventHandlers}
       >
-        <Radio
+        <div className="mdc-touch-target-wrapper">
+          <div className="mdc-radio mdc-radio--touch">
+            {showRipple && (
+              <mat-ripple
+                centered
+                color={`${inlineStyles.color || '#1890ff'}33`}
+                style={{
+                  borderRadius: '50%',
+                }}
+              />
+            )}
+            <input
+              className="mdc-radio__native-control"
+              type="radio"
+              id={`radio-${id}`}
+              name={`${name}-${id}`}
+              checked={!isDisabled && isChecked}
+              onChange={() => {
+                if (!isDisabled && !isChecked) {
+                  setIsChecked(!isChecked);
+                }
+              }}
+            />
+            <div
+              id={`radio-${id}-background`}
+              className="mdc-radio__background"
+            >
+              <div className="mdc-radio__outer-circle" />
+              <div className="mdc-radio__inner-circle" />
+            </div>
+          </div>
+        </div>
+      </div>,
+    );
+  },
+);
+
+export default Radiobutton;
+
+/* <Radio
           checkedIcon={
             <RadioButtonCheckedIcon
               className={cn(
@@ -111,10 +132,4 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
           checked={!isDisabled && isChecked}
           onChange={handleChange}
           disableRipple={!showRipple}
-        />
-      </div>
-    );
-  },
-);
-
-export default Radiobutton;
+        /> */
