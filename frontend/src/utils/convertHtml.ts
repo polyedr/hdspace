@@ -177,6 +177,7 @@ const htmlElementToAdeviElement = (
   const adeviElement = convertCreatedElementToRequest(type, null, type, {
     textContent: element.textContent?.trim(),
     ...(type === 'heading' && { headingType: element.tagName.toLowerCase() }),
+    ...(type === 'image' && { imageURL: element.getAttribute('src') }),
   });
 
   return {

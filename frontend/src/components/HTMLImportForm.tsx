@@ -68,7 +68,7 @@ type Props = {
   onClose: (...args: any) => any;
 };
 
-const allowedMimeTypes = ['text/html', 'text/css'];
+const allowedMimeTypes = ['text/html', 'text/css', 'image/jpeg', 'image/png'];
 
 const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
   const dispatch = useDispatch();

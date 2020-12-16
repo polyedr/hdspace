@@ -31,6 +31,7 @@ import generateUniqueName from '@Utils/generateUniqueName';
 import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
 import { extractStyles } from '@Utils/stringHelper';
+import IMAGES from '@Constants/images';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -52,6 +53,8 @@ import {
   updateScreenImage,
   uploadFile,
   importHtml,
+  updateElementImage,
+  updateElementParameters,
 } from '../actions';
 import { createScenarios } from './scenario';
 import { reqWrapper } from './shared';
@@ -66,6 +69,7 @@ import {
   selectAllElements,
   selectCurrentRootId,
   selectElementById,
+  selectElementsForScreen,
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject } from '../selectors/base';
@@ -728,6 +732,38 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
 
       yield put(
         Actions.addStateElements([element], root.id, { screenId: screen.id }),
+      );
+
+      const elements: StateElement[] = yield select(
+        selectElementsForScreen(screen.id),
+      );
+      const imageElements = Object.values(elements).filter(
+        (element) => element.type === 'image',
+      );
+
+      const imageFiles = files.filter((file) => file.type.includes('image/'));
+
+      yield all(
+        imageElements.map((element) => {
+          const image = imageFiles.find((img) =>
+            element.parameters.imageURL.includes(img.name),
+          );
+          return image
+            ? put(
+                updateElementImage(element.id, image, { screenId: screen.id }),
+              )
+            : put(
+                updateElementParameters(
+                  element.id,
+                  {
+                    imageURL: IMAGES.imageIcon,
+                  },
+                  {
+                    screenId: screen.id,
+                  },
+                ),
+              );
+        }),
       );
 
       const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
