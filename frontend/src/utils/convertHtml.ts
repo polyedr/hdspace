@@ -111,15 +111,14 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
 };
 
 const convertFontFamily = (srcFontString: string) => {
-  const families = srcFontString.split(',').map((family) => family.trim());
+  const families = srcFontString
+    .split(',')
+    .map((family) => family.trim().replace(/["'`]/g, ''));
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const family of families) {
-    if (FONTS.map((fonts) => fonts.label).includes(family)) {
-      return FONTS.find((font) => font.label === family)?.value;
-    }
-  }
-  return FONTS[0].value;
+  const match = families.find((family) =>
+    FONTS.map(({ label }) => label).includes(family),
+  );
+  return FONTS.find(({ label }) => label === match)?.value || FONTS[0].value;
 };
 
 const extractCSSStyleDeclaration = (style: CSSStyleDeclaration) => {
