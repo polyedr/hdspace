@@ -2,7 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectElementFileInput } from '@Redux/project/selectors/base';
 import { selectElementById } from '@Redux/project/selectors/element';
-import { addFileInput } from '../redux/project/actions';
+import { addFileInput } from '@Redux/project/actions';
 
 const generateImageName = (url: string, width: number, height: number) => {
   const sizePart = `${width}x${height}`;
