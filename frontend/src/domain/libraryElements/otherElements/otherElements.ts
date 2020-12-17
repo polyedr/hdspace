@@ -1,6 +1,4 @@
 import IMAGES from '@Constants/images';
-import { makeParagraph } from '../typographyElements/typographyElements';
-import { defaultFreeCanvasParams } from '../../core';
 import {
   ColumnsServerElement,
   ContainerServerElement,
@@ -20,7 +18,9 @@ import {
   SmartWebpageServerElement,
   UndefinedServerElement,
   VideoServerElement,
-} from '../../../types';
+} from '@Src/types';
+import { makeParagraph } from '../typographyElements/typographyElements';
+import { defaultFreeCanvasParams } from '../../core';
 
 export const root: RootServerElement = {
   buoyancy: 0,
