@@ -104,10 +104,11 @@ module.exports = ({ MODE }) => {
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
             },
-            { loader: 'sass-loader' },
+            { loader: 'sass-loader', options: {} },
             {
               loader: 'sass-resources-loader',
               options: {
+                includePaths: ['src', 'node_modules', '.'],
                 resources: [
                   path.resolve(__dirname, 'src', 'styles', 'variables.scss'),
                 ],
@@ -227,23 +228,44 @@ module.exports = ({ MODE }) => {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: 'node_modules/@material/form-field/dist/mdc.form-field.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
             from: 'src/styles/material/mdc.checkbox.css',
             to: 'styles/material',
             toType: 'dir',
           },
           {
-            from: 'node_modules/@material/radio/dist/mdc.radio.css',
+            from: 'src/styles/material/mdc.radio.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'src/styles/material/mdc.select.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'node_modules/@material/form-field/dist/mdc.form-field.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'node_modules/@material/list/dist/mdc.list.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from:
+              'node_modules/@material/menu-surface/dist/mdc.menu-surface.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'node_modules/@material/menu/dist/mdc.menu.css',
             to: 'styles/material',
             toType: 'dir',
           },
         ],
         options: {
-          concurrency: 5,
+          concurrency: 10,
         },
       }),
     ],

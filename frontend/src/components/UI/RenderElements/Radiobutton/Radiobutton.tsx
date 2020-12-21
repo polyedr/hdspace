@@ -102,34 +102,3 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
 );
 
 export default Radiobutton;
-
-/* <Radio
-          checkedIcon={
-            <RadioButtonCheckedIcon
-              className={cn(
-                iconClasses.entityStyles,
-                iconClasses.groupStyles,
-                iconClasses.ownStyles,
-              )}
-            />
-          }
-          icon={
-            <RadioButtonUncheckedIcon
-              className={cn(
-                iconClasses.entityStyles,
-                iconClasses.groupStyles,
-                iconClasses.ownStyles,
-              )}
-            />
-          }
-          color="default"
-          className={cn(
-            radiobuttonClasses.root,
-            radiobuttonClasses.entityStyles,
-            radiobuttonClasses.groupStyles,
-            radiobuttonClasses.ownStyles,
-          )}
-          checked={!isDisabled && isChecked}
-          onChange={handleChange}
-          disableRipple={!showRipple}
-        /> */

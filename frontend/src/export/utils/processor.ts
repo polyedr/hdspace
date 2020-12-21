@@ -2,7 +2,15 @@ import axios, { AxiosResponse } from 'axios';
 import JSZip from 'jszip';
 
 const assetAttributes = ['src', 'href'];
-const cssResources = ['mdc.checkbox.css', 'mdc.radio.css'];
+const cssResources = [
+  'mdc.checkbox.css',
+  'mdc.radio.css',
+  'mdc.form-field.css',
+  'mdc.list.css',
+  'mdc.menu-surface.css',
+  'mdc.menu.css',
+  'mdc.select.css',
+];
 
 // eslint-disable-next-line import/prefer-default-export
 export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
@@ -81,10 +89,23 @@ export const getHtmlFromTemplate = (body: string) => `
     />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.checkbox.css" />
-    <title>Editor</title>
+    <link rel="stylesheet" type="text/css" href="css/mdc.radio.css" />
+    <link rel="stylesheet" type="text/css" href="css/mdc.form-field.css" />
+    <link rel="stylesheet" type="text/css" href="css/mdc.list.css" />
+    <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
+    <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
+    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>    
+    <title>Exported application</title>
   </head>
   <body>
     ${body}
+    <script>
+      console.log('CHECKBOXES!', document.querySelectorAll('.mdc-text-field'));
+      console.log('SELECTS!!', document.querySelectorAll('.mdc-text-field'));
+      mdc.textField.MDCTextField.attachTo(document.querySelectorAll('.mdc-text-field'));
+      mdc.select.MDCSelect.attachTo(document.querySelectorAll('.mdc-select'));
+    </script>
   </body>
 </html>
 `;

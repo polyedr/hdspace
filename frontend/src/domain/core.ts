@@ -347,7 +347,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'selectOptions',
     ...selectStyleControls,
     'isOpen',
-    'showRipple',
+    // 'showRipple',
   ],
   selectMenu: selectMenuStyleControls,
   selectItem: selectItemStyleControls,

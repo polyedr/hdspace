@@ -4,10 +4,8 @@ import {
   HeadingType,
   IMapProps,
   InputType,
-  LibraryElement,
   LinkParams,
   NNBlockType,
-  ProjectClass,
   VideoSettingsType,
 } from '../../../types';
 
@@ -162,8 +160,6 @@ export type SelectRendererProps = SharedRendererProps & {
     isOpen: boolean;
   };
   currentValue: string;
-  childrenElements: LibraryElement<'selectMenu'>[];
-  projectClasses: ProjectClass[];
 };
 
 export type SelectMenuRendererProps = SharedRendererProps;

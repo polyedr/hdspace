@@ -106,3 +106,5 @@ export const EDITABLE_COMPONENTS_LIST = [
   'listItem',
   'label',
 ];
+
+export const NOT_DRAGGABLE_COMPONENTS = ['selectMenu', 'selectItem'];

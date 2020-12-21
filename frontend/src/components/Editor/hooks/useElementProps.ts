@@ -70,7 +70,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
       );
     };
 
-    const { id, children } = element;
+    const { id } = element;
 
     const getIsActive = !disableInteractions && element.id === activeElementId;
 
@@ -112,12 +112,11 @@ const useElementProps = (elementId: string): ElementProps | null => {
           params: element.parameters,
         };
       }
-      case 'select': {
+      case 'select':
+      case 'selectMenu':
+      case 'selectItem': {
         return {
-          onElementChange: onChange,
-          childrenElements: children,
           params: element.parameters,
-          projectClasses,
         };
       }
       case 'dropdownMenu': {
