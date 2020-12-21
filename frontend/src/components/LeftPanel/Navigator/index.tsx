@@ -23,7 +23,7 @@ import {
   moveElement,
   pasteCopiedElement,
   redoAction,
-  setActiveElement,
+  setActiveElementId,
   undoAction,
 } from '@Redux/project/actions';
 import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
@@ -103,7 +103,7 @@ const Navigator: React.FC = () => {
   const select = (itemId) => {
     if (selectedItemId === itemId) return;
 
-    dispatch(setActiveElement(itemId));
+    dispatch(setActiveElementId(itemId));
     setSelectedItem(itemId);
   };
 

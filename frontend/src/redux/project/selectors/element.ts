@@ -106,9 +106,15 @@ export const selectHoveredElementId = ({ project }: AppReduxState) =>
 export const selectAllElements = ({ project }: AppReduxState) =>
   project.data.elements;
 
-export const selectActiveElement = (state: AppReduxState) =>
+export const selectActiveElement = createSelector(
+  selectAllElements,
+  selectActiveElementId,
+  (elements, id) => elements[id] || DEFAULT_ACTIVE_ELEMENT,
+);
+
+/* (state: AppReduxState) =>
   state.project.data.elements[selectActiveElementId(state)] ||
-  DEFAULT_ACTIVE_ELEMENT;
+  DEFAULT_ACTIVE_ELEMENT; */
 
 function makeActiveElementInfoSelector<
   T extends StateElement,
@@ -208,10 +214,10 @@ export const selectActiveItemChildrenStyles = makeActiveElementInfoSelector(
   'styles',
 );
 
-export const selectActiveElementParams = (state: AppReduxState) => {
-  const activeElement = selectActiveElement(state);
-  return activeElement.parameters;
-};
+export const selectActiveElementParams = createSelector(
+  selectActiveElement,
+  (element) => element.parameters,
+);
 
 export const selectActiveElementParamByName = (name: string) => (
   state: AppReduxState,

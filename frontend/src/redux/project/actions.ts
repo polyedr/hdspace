@@ -1,6 +1,5 @@
 import React from 'react';
 import { DropPosition } from '@Constants/dragAndDrop';
-import TYPES from '../actionTypes';
 import {
   ChildEntity,
   ChildrenElements,
@@ -17,10 +16,10 @@ import {
   Screen,
   NNBlockType,
   SCREEN_FORMATS,
-  RightPanelTab,
   PaginatedResponse,
   PropertyName,
-} from '../../types';
+} from '@Src/types';
+import TYPES from '../actionTypes';
 import {
   Action,
   ActivateScreen,
@@ -786,11 +785,6 @@ export const changeScreenFormat = (format: SCREEN_FORMATS) => ({
 export const rotateScreenFormat = (rotated: boolean) => ({
   type: TYPES.ROTATE_SCREEN_FORMAT,
   payload: rotated,
-});
-
-export const setRightPanelActiveTab = (tabIndex: RightPanelTab) => ({
-  type: TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
-  payload: tabIndex,
 });
 
 export const setScreenCreateLoader = (

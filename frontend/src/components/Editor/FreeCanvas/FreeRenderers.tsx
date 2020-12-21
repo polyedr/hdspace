@@ -16,7 +16,7 @@ import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { getPlayerLink } from '@Utils/extractVideoLink';
 import IMAGES from '@Constants/images';
-import { setActiveElement } from '@Redux/project/actions';
+import { setActiveElementId } from '@Redux/project/actions';
 import { Entity, Normalized, StateElement } from '@Src/types';
 import {
   selectActiveElementId,
@@ -295,7 +295,7 @@ const ListItem: React.FC<Props> = ({ isActive, element }) => {
 
   const handleClick = (ev) => {
     ev.stopPropagation();
-    dispatch(setActiveElement(element.id));
+    dispatch(setActiveElementId(element.id));
   };
 
   return (

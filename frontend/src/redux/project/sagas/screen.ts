@@ -42,7 +42,6 @@ import {
   deleteScreen,
   renameScreen,
   restoreScreen,
-  setActiveElement,
   setCurrentScreenId,
   setProject,
   setScreenLoader,
@@ -55,6 +54,7 @@ import {
   importHtml,
   updateElementImage,
   updateElementParameters,
+  setActiveElementId,
 } from '../actions';
 import { createScenarios } from './scenario';
 import { reqWrapper } from './shared';
@@ -82,7 +82,7 @@ export function* activateScreenSaga({
     if (currentScreenId === screenId) return;
 
     yield put(setScreenLoader(true));
-    yield put(setActiveElement('none'));
+    yield put(setActiveElementId('none'));
 
     const screen: Screen = yield select(selectScreenById(screenId));
 
@@ -91,7 +91,7 @@ export function* activateScreenSaga({
     const screenElement = yield select(selectScreenRootElement(screenId));
     if (!screenElement) return;
 
-    yield put(Actions.setActiveElement(screenElement.id));
+    yield put(Actions.setActiveElementId(screenElement.id));
   } catch (e) {
     yield put(
       enqueueSnackbar({
@@ -230,7 +230,7 @@ export function* createScreenSaga({
             }),
           );
 
-          yield put(Actions.setActiveElement(elements[0].id));
+          yield put(Actions.setActiveElementId(elements[0].id));
 
           yield put(push(`/project/${projectID}/${newScreen.id}`));
 
@@ -357,7 +357,7 @@ export function* deleteScreenSaga({
     const currentScreenId = yield select(selectCurrentScreenId);
 
     if (currentScreenId === screenId) {
-      yield put(setActiveElement('none'));
+      yield put(setActiveElementId('none'));
       yield put(setCurrentScreenId(-1));
     }
 
@@ -638,7 +638,7 @@ export function* convertFreeCanvasSaga() {
     if (!root) throw new Error('Failed to find the root element');
 
     const rootId: string = yield select(selectCurrentRootId);
-    yield put(setActiveElement(rootId));
+    yield put(setActiveElementId(rootId));
 
     const canvas: HTMLCanvasElement = yield call(html2canvas, root, {
       useCORS: true,

@@ -133,8 +133,5 @@ export const selectScreenFormat = ({ project }: AppReduxState) =>
 export const selectScreenRotated = ({ project }: AppReduxState) =>
   project.ui.screenFormat.rotated;
 
-export const selectRightPanelActiveTab = ({ project }: AppReduxState) =>
-  project.ui.rightPanel.activeTab;
-
 export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
   project.communication.screenCreateLoader;

@@ -18,7 +18,6 @@ import {
   ParentIds,
   Project,
   PropertyName,
-  RightPanelTab,
   SavedElementsValues,
   Screen,
   SCREEN_FORMATS,
@@ -40,9 +39,6 @@ export type ProjectDataState = {
 export type ProjectUiState = {
   editableStyles: string;
   itemToCopyInfo: ItemToCopyInfo | null;
-  rightPanel: {
-    activeTab: RightPanelTab;
-  };
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   currentDropTargetParams: DropTargetParams | null;
@@ -388,10 +384,6 @@ export type SetElementToCopy = IAction<
   typeof TYPES.SET_ELEMENT_TO_COPY,
   ItemToCopyInfo
 >;
-export type SetRightPanelActiveTab = IAction<
-  typeof TYPES.SET_RIGHT_PANEL_ACTIVE_TAB,
-  RightPanelTab
->;
 export type CopyActiveElement = IPlainAction<typeof TYPES.COPY_ACTIVE_ELEMENT>;
 export type PasteCopiedElement = IPlainAction<
   typeof TYPES.PASTE_COPIED_ELEMENT,
@@ -588,7 +580,6 @@ export type Action =
   | SetHoveredElementId
   | ToggleContainersBorders
   | SetElementToCopy
-  | SetRightPanelActiveTab
   | CopyActiveElement
   | PasteCopiedElement
   | ResetProjectState

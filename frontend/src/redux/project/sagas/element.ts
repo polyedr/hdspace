@@ -8,8 +8,6 @@ import {
   selectElementById,
   selectElementAsTree,
   selectAllElements,
-  selectCurrentRootId,
-  selectActiveElementId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -28,7 +26,6 @@ import {
 import generateUniqueName from '@Utils/generateUniqueName';
 import getSavedValue from '@Utils/getSavedValue';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
-import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
 import {
   Entity,
   LibraryElement,
@@ -37,7 +34,6 @@ import {
   RecursiveElement,
   Result,
   ReturnPromisedType,
-  RightPanelTab,
   ServerElement,
   StateElement,
 } from '@Src/types';
@@ -746,6 +742,7 @@ export function* loadCustomElementsSaga(
   }
 }
 
+/*
 export function* setActiveElementSaga(
   action: ReturnType<typeof Actions.setActiveElement>,
 ) {
@@ -756,13 +753,7 @@ export function* setActiveElementSaga(
     if (prevActiveId === action.payload) {
       return;
     }
-    if (
-      element &&
-      !KEEP_RP_TAB_ELEMENTS.includes(element.type) &&
-      element.id !== rootID
-    ) {
-      yield put(Actions.setRightPanelActiveTab(RightPanelTab.PROPERTIES));
-    }
+
     yield put(Actions.setElementBeingEdited(false));
     yield put(Actions.setActiveElementId(action.payload));
   } catch (e) {
@@ -774,6 +765,7 @@ export function* setActiveElementSaga(
     );
   }
 }
+*/
 
 export function* setHoveredElementSaga(
   action: ReturnType<typeof Actions.setHoveredElement>,

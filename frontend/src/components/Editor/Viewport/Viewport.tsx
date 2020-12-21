@@ -1,20 +1,12 @@
-// @ts-nocheck
-
 import React, { useCallback, useRef } from 'react';
-
 import { useSelector, useDispatch } from 'react-redux';
-
 import makeStyles from '@material-ui/core/styles/makeStyles';
-
 import { createStyles } from '@material-ui/core';
-
-import { setActiveElement } from '@Redux/project/actions';
-
 import {
   selectActiveElementId,
   selectCurrentRootId,
 } from '@Redux/project/selectors/element';
-
+import { setActiveElementId } from '@Redux/project/actions';
 import useHotKeys from '../hooks/useHotKeys';
 
 const useStyles = makeStyles(() =>
@@ -46,7 +38,7 @@ const Viewport: React.FC = ({ children }) => {
 
   const styles = useStyles();
 
-  const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
+  const ref = useRef<HTMLDivElement>(null);
 
   useHotKeys(ref);
 
@@ -63,7 +55,7 @@ const Viewport: React.FC = ({ children }) => {
       if (elementId === activeElementId) return;
 
       if (elementId) {
-        dispatch(setActiveElement(elementId === 'root' ? rootID : elementId));
+        dispatch(setActiveElementId(elementId === 'root' ? rootID : elementId));
       }
     },
 

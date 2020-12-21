@@ -11,6 +11,7 @@ import {
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import NewBorders from '@Components/Editor/Workspace/NewBorders';
 import DraggableElement from '../Draggable/DraggableElement';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
@@ -33,6 +34,7 @@ const useStyles = makeStyles({
     height: '100%',
   },
   editor: {
+    position: 'relative',
     backgroundColor: '#fff',
     border: '1px solid #e7eaec',
     borderTop: 'none',
@@ -89,6 +91,7 @@ const Workspace: React.FC = () => {
               <>
                 <DraggableElement elementId={rootElementId} />
                 {!isPrototypeMode && <ElementsInteractions />}
+                <NewBorders />
               </>
             )}
           </Scrollbar>
