@@ -14,28 +14,32 @@ import {
   getHtmlFromTemplate,
   processCSS,
   processHTML,
+  processJS,
 } from './utils/processor';
 
-const createArchive = (html: string, css: string) => {
+const createArchive = (screenName: string, html: string, css: string) => {
   const zip = new JSZip();
   const cssFolder = zip.folder('css');
+  const jsFolder = zip.folder('js');
   const assetsFolder = zip.folder('assets');
 
-  Promise.all([processCSS(cssFolder), processHTML(html, assetsFolder)]).then(
-    ([, htmlResponse]) => {
-      zip.file('index.html', getHtmlFromTemplate(htmlResponse));
-      cssFolder?.file('style.css', css);
-      zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(content);
-        a.download = 'page.zip';
-        a.click();
-      });
-    },
-  );
+  Promise.all([
+    processCSS(cssFolder),
+    processHTML(html, assetsFolder),
+    processJS(jsFolder),
+  ]).then(([, htmlResponse]) => {
+    zip.file('index.html', getHtmlFromTemplate(screenName, htmlResponse));
+    cssFolder?.file('style.css', css);
+    zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(content);
+      a.download = 'page.zip';
+      a.click();
+    });
+  });
 };
 
-const exportHTML = () => {
+const exportHTML = (screenName: string) => {
   const sheets = new ServerStyleSheets();
 
   const state = store.getState() as AppReduxState;
@@ -54,7 +58,7 @@ const exportHTML = () => {
     ),
   );
 
-  createArchive(html, sheets.toString());
+  createArchive(screenName, html, sheets.toString());
 };
 
 export default exportHTML;

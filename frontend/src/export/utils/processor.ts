@@ -11,6 +11,7 @@ const cssResources = [
   'mdc.menu.css',
   'mdc.select.css',
 ];
+const jsResources = ['app.js'];
 
 // eslint-disable-next-line import/prefer-default-export
 export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
@@ -69,7 +70,25 @@ export const processCSS = async (cssFolder: JSZip | null) => {
   });
 };
 
-export const getHtmlFromTemplate = (body: string) => `
+export const processJS = async (jsFolder: JSZip | null) => {
+  return Promise.all(
+    jsResources.map((resource) => axios.get(`/js/export/${resource}`)),
+  ).then((responses: AxiosResponse[]) => {
+    responses.forEach((response: AxiosResponse) => {
+      if (!response.request) {
+        console.error('Request is not defined!', response);
+        return;
+      }
+      const { responseURL } = response.request;
+      jsFolder?.file(
+        responseURL.substring(responseURL.lastIndexOf('/')),
+        response.data,
+      );
+    });
+  });
+};
+
+export const getHtmlFromTemplate = (screenName: string, body: string) => `
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -94,18 +113,13 @@ export const getHtmlFromTemplate = (body: string) => `
     <link rel="stylesheet" type="text/css" href="css/mdc.list.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
+    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />    
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>    
-    <title>Exported application</title>
+    <title>${screenName}</title>
   </head>
   <body>
     ${body}
-    <script>
-      console.log('CHECKBOXES!', document.querySelectorAll('.mdc-text-field'));
-      console.log('SELECTS!!', document.querySelectorAll('.mdc-text-field'));
-      mdc.textField.MDCTextField.attachTo(document.querySelectorAll('.mdc-text-field'));
-      mdc.select.MDCSelect.attachTo(document.querySelectorAll('.mdc-select'));
-    </script>
+    <script src="js/app.js"></script>
   </body>
 </html>
 `;

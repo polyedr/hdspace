@@ -13,7 +13,7 @@ import {
   selectUndoActions,
   selectUpdateScreenImageLoader,
 } from '@Redux/project/selectors/base';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectCurrentScreen } from '@Redux/project/selectors/screen';
 import {
   redoAction,
   updateScreenImage,
@@ -41,7 +41,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const currentScreenId = useSelector(selectCurrentScreenId);
+  const currentScreen = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
 
@@ -51,10 +51,10 @@ const Actions: React.FC = () => {
 
   const onHistoryForward = () => dispatch(redoAction());
 
-  const handleSaveScreen = () => dispatch(updateScreenImage(currentScreenId));
+  const handleSaveScreen = () => dispatch(updateScreenImage(currentScreen.id));
 
   const handleExportScreen = () => {
-    exportHTML();
+    exportHTML(currentScreen.name);
   };
 
   return (

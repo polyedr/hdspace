@@ -243,6 +243,10 @@ module.exports = ({ MODE }) => {
             toType: 'dir',
           },
           {
+            from: 'src/export/js/app.js',
+            to: 'js/export',
+          },
+          {
             from: 'node_modules/@material/form-field/dist/mdc.form-field.css',
             to: 'styles/material',
             toType: 'dir',
