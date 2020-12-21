@@ -2007,8 +2007,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 if(node.parent.direction == 1):
                     buoyancy = int(node.x1)
                 # Vertical
-                if(node.parent.direction == 0):
+                elif(node.parent.direction == 0):
                     buoyancy = int(node.y1)
+                # Other cases
+                else:
+                    buoyancy = int(node.x1)
                 # Buoyancy detection end
 
                 # Create a new Scenario Element for the elements chain
