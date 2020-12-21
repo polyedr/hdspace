@@ -98,6 +98,7 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
             className={cn(
               'mdc-menu',
               'mdc-menu-surface',
+              'mdc-dropdown-menu',
               classes.menu,
               isDisabled && open ? 'mdc-menu-surface--open' : '',
             )}
