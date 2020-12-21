@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import {
@@ -15,6 +14,9 @@ import { selectActiveElementParamByName } from '@Redux/project/selectors/element
 import { selectElementFileInput } from '@Redux/project/selectors/base';
 
 type Props = {
+  activeElementId: PropertiesChangeProps<
+    SmartElement<Entity>
+  >['activeElementId'];
   blockType: NNBlockType;
 };
 
@@ -29,9 +31,7 @@ const useStyles = makeStyles({
   },
 });
 
-const SmartContainer: React.FC<
-  PropertiesChangeProps<SmartElement<Entity>> & Props
-> = ({ activeElementId, blockType }) => {
+const SmartContainer: React.FC<Props> = ({ activeElementId, blockType }) => {
   const classes = useStyles();
 
   const imageURL = useSelector(selectActiveElementParamByName('imageURL'));
@@ -77,4 +77,4 @@ const SmartContainer: React.FC<
   );
 };
 
-export default withConfigurableProperties(SmartContainer);
+export default SmartContainer;

@@ -1,5 +1,4 @@
 import React, { ChangeEvent } from 'react';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -11,7 +10,8 @@ enum Options {
   auto = 'auto',
 }
 
-type Props = PropertiesChangeProps<ColumnsElement> & {
+type Props = {
+  updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   fill: React.CSSProperties['columnFill'];
 };
 
@@ -48,4 +48,4 @@ const ColumnFill: React.FC<Props> = ({ updateStyles, fill }) => {
   );
 };
 
-export default withConfigurableProperties(ColumnFill);
+export default ColumnFill;

@@ -3,7 +3,6 @@ import { useDebouncedCallback } from 'use-debounce';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
@@ -191,4 +190,4 @@ const SizeBlock: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(memo(SizeBlock));
+export default memo(SizeBlock);

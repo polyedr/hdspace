@@ -1,5 +1,6 @@
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import ColumnCount from './ColumnCount';
 import ColumnWidth from './ColumnWidth';
 import ColumnFill from './ColumnFill';
@@ -22,7 +23,9 @@ type Props = {
   columnRuleWidth?: React.CSSProperties['columnRuleWidth'];
 };
 
-const ColumnsControls: React.FC<Props> = ({
+const ColumnsControls: React.FC<
+  Props & PropertiesChangeProps<LibraryElement<Entity>>
+> = ({
   columnCount,
   columnGap,
   columnFill,
@@ -30,23 +33,27 @@ const ColumnsControls: React.FC<Props> = ({
   columnRuleStyle,
   columnRuleWidth,
   columnRuleColor,
+  updateStyles,
+  activeElementId,
 }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.columnControls}>
-      <ColumnCount count={columnCount} />
+      <ColumnCount count={columnCount} updateStyles={updateStyles} />
 
-      <ColumnWidth value={columnWidth} />
+      <ColumnWidth value={columnWidth} updateStyles={updateStyles} />
 
-      <ColumnFill fill={columnFill} />
+      <ColumnFill fill={columnFill} updateStyles={updateStyles} />
 
-      <ColumnGap value={columnGap} />
+      <ColumnGap value={columnGap} updateStyles={updateStyles} />
 
       <ColumnRule
+        activeElementId={activeElementId}
         ruleWidth={columnRuleWidth}
         ruleStyle={columnRuleStyle}
         ruleColor={columnRuleColor}
+        updateStyles={updateStyles}
       />
     </div>
   );

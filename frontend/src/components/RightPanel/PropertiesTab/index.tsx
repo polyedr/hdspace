@@ -1,14 +1,25 @@
 import React, { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
 } from '@Redux/project/selectors/element';
-import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
+import {
+  selectEditableStyles,
+  selectFreeCanvasMode,
+} from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
-import { Control, Entity, NNBlockType } from '@Src/types';
+import { Control, Entity, NNBlockType, Params, PropertyName } from '@Src/types';
+import {
+  removeElementStyles,
+  removeSharedStyles,
+  updateElementParameters,
+  updateElementStyles,
+  updateSharedStyles,
+} from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Display from './Controls/Display/Display';
@@ -134,31 +145,80 @@ const useStyles = makeStyles({
 
 const PropertiesTab: React.FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const activeElement = useSelector(selectActiveElement);
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
-  const editableStyles = useSelector(selectCurrentEditableStyles);
+  const currentEditableStyles = useSelector(selectCurrentEditableStyles);
+  const editableStyles = useSelector(selectEditableStyles);
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
-  const getControlStyles = useCallback(
-    (controlName: string) => {
-      const controlInfo = CONTROLS[controlName];
-      if (!controlInfo.styles) {
-        return {};
+  const getControlStyles = (controlName: string) => {
+    const controlInfo = CONTROLS[controlName];
+    if (!controlInfo.styles) {
+      return {};
+    }
+    return controlInfo.styles.reduce((acc, styleName) => {
+      if (!currentEditableStyles[styleName]) {
+        return acc;
       }
-      return controlInfo.styles.reduce((acc, styleName) => {
-        if (!editableStyles[styleName]) {
-          return acc;
-        }
-        return {
-          ...acc,
-          [styleName]: editableStyles[styleName],
-        };
-      }, {});
-    },
-    [editableStyles],
-  );
+      return {
+        ...acc,
+        [styleName]: currentEditableStyles[styleName],
+      };
+    }, {});
+  };
 
   const { type } = activeElement;
+
+  const removeStyles = useCallback(
+    (ruleNames: PropertyName[], itemID?: string) => {
+      if (editableStyles === 'ownStyles') {
+        dispatch(
+          removeElementStyles(itemID || activeElement.id, ruleNames, {
+            screenId: currentScreenId,
+          }),
+        );
+      } else {
+        dispatch(
+          removeSharedStyles(editableStyles as Entity, ruleNames, {
+            screenId: currentScreenId,
+          }),
+        );
+      }
+    },
+    [dispatch, editableStyles, activeElement.id, currentScreenId],
+  );
+
+  const updateStyles = useCallback(
+    (styles: React.CSSProperties, itemID?: string) => {
+      if (editableStyles === 'ownStyles') {
+        dispatch(
+          updateElementStyles(itemID || activeElement.id, styles, {
+            screenId: currentScreenId,
+          }),
+        );
+      } else {
+        dispatch(
+          updateSharedStyles(editableStyles as Entity, styles, {
+            screenId: currentScreenId,
+          }),
+        );
+      }
+    },
+    [dispatch, activeElement.id, editableStyles, currentScreenId],
+  );
+
+  const updateParams = useCallback(
+    (params: Params<any>, itemID?: string) => {
+      dispatch(
+        updateElementParameters(itemID || activeElement.id, params, {
+          screenId: currentScreenId,
+        }),
+      );
+    },
+    [dispatch, activeElement.id, currentScreenId],
+  );
 
   return (
     <div className={classes.propertiesTab}>
@@ -179,7 +239,13 @@ const PropertiesTab: React.FC = () => {
 
               return (
                 <ControlSection key={controlName} title={controlName}>
-                  <Control {...getControlStyles(controlName)} />
+                  <Control
+                    {...getControlStyles(controlName)}
+                    activeElementId={activeElement.id}
+                    removeStyles={removeStyles}
+                    updateStyles={updateStyles}
+                    updateParams={updateParams}
+                  />
                 </ControlSection>
               );
             })}

@@ -1,5 +1,4 @@
 import React from 'react';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -40,10 +39,12 @@ const ruleStyles = [
 
 const ruleWidths = ['thin', 'medium', 'thick'];
 
-type Props = PropertiesChangeProps<ColumnsElement> & {
+type Props = {
+  updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   ruleWidth: React.CSSProperties['columnRuleWidth'];
   ruleStyle: React.CSSProperties['columnRuleStyle'];
   ruleColor: React.CSSProperties['columnRuleColor'];
+  activeElementId: PropertiesChangeProps<ColumnsElement>['activeElementId'];
 };
 
 const ColumnRule: React.FC<Props> = ({
@@ -117,4 +118,4 @@ const ColumnRule: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(ColumnRule);
+export default ColumnRule;

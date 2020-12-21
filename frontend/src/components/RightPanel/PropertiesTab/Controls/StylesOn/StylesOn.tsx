@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, PropertiesChangeProps, SmartElement } from '@Src/types';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 
@@ -35,4 +34,4 @@ const StylesOn: React.FC<PropertiesChangeProps<SmartElement<Entity>>> = ({
   );
 };
 
-export default withConfigurableProperties(StylesOn);
+export default StylesOn;

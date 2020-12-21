@@ -13,7 +13,6 @@ import {
   MIN_MAP_ZOOM,
 } from '@Constants/defaultParams';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { getPermissibleValue } from '@Utils/NumberHelper';
 import { MapElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
@@ -162,4 +161,4 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
   );
 };
 
-export default withConfigurableProperties(MapProps);
+export default MapProps;

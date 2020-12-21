@@ -5,7 +5,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Switch from '@material-ui/core/Switch';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { extractPlayerLinkInfo } from '@Utils/extractVideoLink';
 import { PropertiesChangeProps, VideoElement } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
@@ -151,4 +150,4 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
   );
 };
 
-export default withConfigurableProperties(VideoSettings);
+export default VideoSettings;

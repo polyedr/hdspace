@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import TYPE from './constants';
 
 import {
@@ -38,4 +37,4 @@ const Type: React.FC<PropertiesChangeProps<TextinputElement>> = ({
   );
 };
 
-export default withConfigurableProperties(memo(Type));
+export default memo(Type);

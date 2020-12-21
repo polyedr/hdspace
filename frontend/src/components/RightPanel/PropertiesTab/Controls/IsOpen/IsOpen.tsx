@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { DropdownElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
@@ -36,4 +35,4 @@ const IsOpen: React.FC<PropertiesChangeProps<DropdownElement>> = ({
   );
 };
 
-export default withConfigurableProperties(IsOpen);
+export default IsOpen;

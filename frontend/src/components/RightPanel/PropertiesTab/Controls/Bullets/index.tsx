@@ -2,7 +2,6 @@ import React from 'react';
 import { Switch } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ListElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
@@ -51,4 +50,4 @@ const Bullets: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(Bullets);
+export default Bullets;

@@ -9,7 +9,6 @@ import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import * as CSS from 'csstype';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { getPermissibleValue } from '@Utils/NumberHelper';
 
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
@@ -199,4 +198,4 @@ const TypographyBlock: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(memo(TypographyBlock));
+export default memo(TypographyBlock);

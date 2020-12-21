@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { PropertiesChangeProps, RadiobuttonElement } from '@Src/types';
@@ -37,4 +36,4 @@ const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   );
 };
 
-export default withConfigurableProperties(Name);
+export default Name;

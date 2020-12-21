@@ -13,7 +13,6 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
 import { ListItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
@@ -169,4 +168,4 @@ const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
   );
 };
 
-export default withConfigurableProperties(ListItems);
+export default ListItems;

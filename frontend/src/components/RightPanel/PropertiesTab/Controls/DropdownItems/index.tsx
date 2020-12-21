@@ -9,7 +9,6 @@ import {
   selectElementAsTree,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
 import { DropdownItemElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
@@ -108,7 +107,4 @@ const DropdownItems: React.FC<Props> = ({
   );
 };
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(withConfigurableProperties(DropdownItems));
+export default connect(mapState, mapDispatch)(DropdownItems);

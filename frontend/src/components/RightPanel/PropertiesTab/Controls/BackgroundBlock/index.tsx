@@ -1,5 +1,4 @@
 import React, { memo, useCallback } from 'react';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
@@ -38,4 +37,4 @@ const BackgroundBlock: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(memo(BackgroundBlock));
+export default memo(BackgroundBlock);
