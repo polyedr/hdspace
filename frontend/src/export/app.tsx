@@ -42,7 +42,7 @@ const exportHTML = () => {
 
   const rootId = selectCurrentRootId(state);
 
-  const html = ReactDOMServer.renderToString(
+  const html = ReactDOMServer.renderToStaticMarkup(
     sheets.collect(
       <Provider store={store}>
         <ConnectedRouter history={history}>
