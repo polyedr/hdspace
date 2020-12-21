@@ -1,72 +1,29 @@
 // @ts-nocheck
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import cn from 'classnames';
-import { makeStyles, Button } from '@material-ui/core';
-import * as R from 'ramda';
+import { MDCMenu } from '@material/menu';
 import { DropdownRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
-export const DropdownContext = React.createContext();
-
-const useDivStyles = makeStyles(() => {
-  const getDivClassStyles = (style: React.CSSProperties) => ({
-    marginTop: style.marginTop,
-    marginRight: style.marginRight,
-    marginBottom: style.marginBottom,
-    marginLeft: style.marginLeft,
-    position: 'relative' as React.CSSProperties['position'],
+const useStyles = makeComponentStyles({
+  root: {
+    position: 'relative',
     display: 'inline-block',
-    verticalAlign: 'top',
-  });
-  return {
-    entityStyles: ({ entityStyles }) => getDivClassStyles(entityStyles),
-    groupStyles: ({ groupStyles }) => getDivClassStyles(groupStyles),
-    ownStyles: ({ ownStyles }) => getDivClassStyles(ownStyles),
-  };
-});
-
-const useMainStyles = makeComponentStyles({
-  root: ({ isDisabled }) => ({
-    cursor: isDisabled ? 'default' : 'pointer',
-    ...(isDisabled && { transition: 'none' }),
-    '&:hover,&active': {
-      ...(isDisabled && {
-        boxShadow:
-          '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
-      }),
-    },
-  }),
-});
-
-const useDropdownStyles = makeStyles(() => {
-  const getDropdownClassStyles = (style: React.CSSProperties) => {
-    const dropdownStyles = R.omit(
-      ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-      style,
-    );
-
-    return {
-      ...dropdownStyles,
-      backgroundColor: dropdownStyles.backgroundColor,
-      color: dropdownStyles.color,
-      '&:hover': {
-        backgroundColor: dropdownStyles.backgroundColor,
-        color: dropdownStyles.color,
-      },
-
-      '&:active': {
-        color: dropdownStyles.color,
-      },
-    };
-  };
-
-  return {
-    entityStyles: ({ entityStyles }) => getDropdownClassStyles(entityStyles),
-    groupStyles: ({ groupStyles }) => getDropdownClassStyles(groupStyles),
-    ownStyles: ({ ownStyles }) => getDropdownClassStyles(ownStyles),
-  };
+  },
+  labelWrapper: {
+    padding: '6px 17px',
+  },
+  label: {
+    textTransform: 'uppercase',
+    fontWeight: 400,
+    lineHeight: 1.75,
+  },
+  menu: {
+    top: '37px !important',
+    left: '0px !important',
+  },
 });
 
 const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
@@ -74,58 +31,81 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
     const { id, isDisabled, params, children, className } = props;
     const { textContent, showRipple, isOpen } = params;
 
-    const eventHandlers = useEventHandlers(props);
-
-    const divClasses = useDivStyles(props);
-    const mainClasses = useMainStyles(props);
-    const dropdownClasses = useDropdownStyles(props);
+    const classes = useStyles(props);
+    const [mdcMenu, setMdcMenu] = useState<MDCMenu | null>(null);
     const [open, setOpen] = useState<boolean>(false);
+    const menuRef = useRef<HTMLElement | null>(null);
 
-    const handleMenuButtonClick = () => {
-      if (!isDisabled) {
-        setOpen(!open);
+    const handleMenuButtonClick = useCallback(() => {
+      if (!isDisabled && mdcMenu) {
+        mdcMenu.open = !mdcMenu.open;
       }
-    };
+    }, [isDisabled, mdcMenu]);
+
+    useEffect(() => {
+      if (isDisabled) {
+        setOpen(isOpen);
+      }
+    }, [isOpen, isDisabled]);
+
+    useEffect(() => {
+      if (isDisabled && mdcMenu) {
+        mdcMenu.destroy();
+        setMdcMenu(null);
+      }
+      if (!isDisabled && !mdcMenu) {
+        const menu = new MDCMenu(menuRef.current);
+        setMdcMenu(menu);
+      }
+    }, [isDisabled, mdcMenu]);
+
+    const eventHandlers = useEventHandlers(props, {
+      onClick: handleMenuButtonClick,
+    });
 
     return (
       <div
-        key={id}
-        className={cn(
-          ...(isDisabled ? [className] : []),
-          divClasses.entityStyles,
-          divClasses.groupStyles,
-          divClasses.ownStyles,
-        )}
+        id={id}
+        data-ls-id={id}
         ref={ref}
+        className={cn(
+          classes.root,
+          ...(isDisabled ? [className] : []),
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
+        )}
         {...eventHandlers}
       >
-        <Button
-          id={id}
-          data-ls-id={id}
-          aria-controls="simple-menu"
-          aria-haspopup="true"
-          variant="contained"
-          color="primary"
-          onClick={handleMenuButtonClick}
-          className={cn(
-            ...(isDisabled ? [mainClasses.root, mainClasses.disabled] : []),
-            dropdownClasses.entityStyles,
-            dropdownClasses.groupStyles,
-            dropdownClasses.ownStyles,
-          )}
-          disableRipple={!showRipple}
-        >
-          {textContent}
-        </Button>
-        <DropdownContext.Provider
-          value={{
-            anchorRef: ref,
-            open: (isDisabled && isOpen) || open,
-            setOpen,
-          }}
-        >
-          {children}
-        </DropdownContext.Provider>
+        <div className="mdc-menu-surface--anchor">
+          <div className={classes.labelWrapper}>
+            <span className={classes.label}>{textContent}</span>
+          </div>
+          <div
+            ref={(dom: HTMLElement) => {
+              if (!dom) {
+                return;
+              }
+              menuRef.current = dom;
+              if (!isDisabled) {
+                if (!mdcMenu) {
+                  setMdcMenu(new MDCMenu(dom));
+                }
+              } else {
+                setOpen(isOpen);
+              }
+            }}
+            className={cn(
+              'mdc-menu',
+              'mdc-menu-surface',
+              classes.menu,
+              isDisabled && open ? 'mdc-menu-surface--open' : '',
+            )}
+          >
+            {children}
+          </div>
+        </div>
+        {showRipple && <mat-ripple />}
       </div>
     );
   },

@@ -463,7 +463,6 @@ export const defaultDropdownStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '6px 16px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -492,6 +491,7 @@ export const defaultDropdownMenuStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
+    padding: '3px 0',
   },
   size: {
     ...DEFAULT_SIZE,
