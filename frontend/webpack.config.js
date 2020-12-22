@@ -243,16 +243,6 @@ module.exports = ({ MODE }) => {
             toType: 'dir',
           },
           {
-            from: 'src/styles/export/fonts.css',
-            to: 'styles/css/fonts.css',
-            toType: 'file',
-          },
-          {
-            from: 'src/assets/fonts/*',
-            to: 'styles/fonts',
-            toType: 'dir',
-          },
-          {
             from: 'src/export/js/app.js',
             to: 'js/export',
           },

@@ -24,10 +24,10 @@ const createArchive = (screenName: string, html: string, css: string) => {
   const assetsFolder = zip.folder('assets');
 
   Promise.all([
-    processCSS(cssFolder),
     processHTML(html, assetsFolder),
+    processCSS(cssFolder),
     processJS(jsFolder),
-  ]).then(([, htmlResponse]) => {
+  ]).then(([htmlResponse]) => {
     zip.file('index.html', getHtmlFromTemplate(screenName, htmlResponse));
     cssFolder?.file('style.css', css);
     zip.generateAsync({ type: 'blob' }).then((content: Blob) => {

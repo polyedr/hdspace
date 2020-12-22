@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import JSZip from 'jszip';
+import pretty from 'pretty';
 
 const assetAttributes = ['src', 'href'];
 const cssResources = [
@@ -51,9 +52,12 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
 };
 
 export const processCSS = async (cssFolder: JSZip | null) => {
-  return Promise.all(
-    cssResources.map((resource) => axios.get(`/styles/material/${resource}`)),
-  ).then((responses: AxiosResponse[]) => {
+  return Promise.all([
+    ...cssResources.map((resource) =>
+      axios.get(`/styles/material/${resource}`),
+    ),
+    axios.get('/styles/fonts.css'),
+  ]).then((responses: AxiosResponse[]) => {
     responses.forEach((response: AxiosResponse) => {
       if (!response.request) {
         // eslint-disable-next-line no-console
@@ -88,7 +92,8 @@ export const processJS = async (jsFolder: JSZip | null) => {
   });
 };
 
-export const getHtmlFromTemplate = (screenName: string, body: string) => `
+export const getHtmlFromTemplate = (screenName: string, body: string) =>
+  pretty(`
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -114,8 +119,9 @@ export const getHtmlFromTemplate = (screenName: string, body: string) => `
     <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
+    <link rel="stylesheet" type="text/css" href="css/fonts.css" />
     <script src="https://unpkg.com/mat-ripple"></script> 
-    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>    
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <title>${screenName}</title>
   </head>
   <body>
@@ -123,4 +129,4 @@ export const getHtmlFromTemplate = (screenName: string, body: string) => `
     <script src="js/app.js"></script>
   </body>
 </html>
-`;
+`);
