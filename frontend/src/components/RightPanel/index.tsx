@@ -74,9 +74,7 @@ const RightPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState(RightPanelTab.ELEMENTS);
 
   useEffect(() => {
-    if (KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
-      setActiveTab(RightPanelTab.ELEMENTS);
-    } else {
+    if (!KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
       setActiveTab(RightPanelTab.PROPERTIES);
     }
   }, [activeElement.type]);
