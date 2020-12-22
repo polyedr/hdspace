@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign,no-return-assign,no-unused-vars,no-shadow */
-import React, { useEffect, KeyboardEvent, useState } from 'react';
+import React, { useEffect, KeyboardEvent, useState, useCallback } from 'react';
 import AtlasTree, {
   mutateTree,
   TreeSourcePosition,
@@ -71,15 +71,16 @@ const Navigator: React.FC = () => {
   const [tree, setTree] = useState<TreeData>(
     makeTree(convertElements(elements), rootId),
   );
+
   const [selectedItemId, setSelectedItem] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   useEffect(() => {
     const newTree = makeTree(convertElements(elements), rootId);
     setTree(updateTree(tree, newTree));
-  }, [elements, rootId, selectedItemId]);
+  }, [elements, rootId]);
 
-  const expandParents = (itemId) => {
+  const expandParents = useCallback((itemId) => {
     if (itemId === 'root') return;
     // @ts-ignore
     const parentId = tree.items[itemId]?.parent;
@@ -87,12 +88,12 @@ const Navigator: React.FC = () => {
 
     setTree((prevTree) => mutateTree(prevTree, parentId, { isExpanded: true }));
     expandParents(parentId);
-  };
+  }, []);
 
   useEffect(() => {
     setSelectedItem(activeItemId);
     expandParents(activeItemId);
-  }, [activeItemId]);
+  }, [activeItemId, expandParents]);
 
   const expand = (itemId) =>
     setTree((state) => mutateTree(state, itemId, { isExpanded: true }));
