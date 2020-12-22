@@ -67,9 +67,6 @@ const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
       }
     }, [mdcSelect, isDisabled]);
 
-    /* const menu = useSelector(selectElementAsTree(childrenElements[0]));
-    const menuItems: LibraryElement<'selectItem'> = menu.children; */
-
     return (
       <div
         id={id}

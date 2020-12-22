@@ -113,7 +113,8 @@ export const getHtmlFromTemplate = (screenName: string, body: string) => `
     <link rel="stylesheet" type="text/css" href="css/mdc.list.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />    
+    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
+    <script src="https://unpkg.com/mat-ripple"></script> 
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>    
     <title>${screenName}</title>
   </head>

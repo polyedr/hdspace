@@ -9,10 +9,23 @@ import { makeComponentStyles, makeInlineStyles } from '../styles';
 
 import '@Src/styles/material/mdc.checkbox.css';
 
-const useDivStyles = makeComponentStyles(
+const useStyles = makeComponentStyles(
   {
     root: {
       overflow: 'hidden',
+    },
+    isChecked: ({ entityStyles, groupStyles, ownStyles }) => {
+      const colorValue =
+        ownStyles.backgroundColor ||
+        groupStyles.backgroundColor ||
+        entityStyles.backgroundColor;
+      if (!colorValue) {
+        return {};
+      }
+      return {
+        color: colorValue,
+        backgroundColor: colorValue,
+      };
     },
   },
   ['backgroundColor', 'width', 'height'],
@@ -29,11 +42,15 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, name, params, isDisabled, className } = props;
     const { showRipple } = params;
-    const divClasses = useDivStyles(props);
+
     const inlineStyles = useInlineStyles(props);
 
     const eventHandlers = useEventHandlers(props);
     const [isChecked, setIsChecked] = useState<boolean>(false);
+    const classes = useStyles({
+      ...props,
+      isChecked,
+    });
 
     const handleCheckboxChange = useCallback(() => {
       if (!isDisabled) {
@@ -53,11 +70,11 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          divClasses.root,
-          isDisabled && divClasses.disabled,
-          divClasses.entityStyles,
-          divClasses.groupStyles,
-          divClasses.ownStyles,
+          classes.root,
+          isDisabled && classes.disabled,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
         )}
         {...eventHandlers}
       >
@@ -83,7 +100,10 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
             />
             <div
               id={`checkbox-${id}-background`}
-              className="mdc-checkbox__background"
+              className={cn(
+                'mdc-checkbox__background',
+                isChecked && classes.isChecked,
+              )}
             >
               <svg className="mdc-checkbox__checkmark" viewBox="0 0 24 24">
                 <path
