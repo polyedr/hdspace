@@ -104,12 +104,27 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     label_counts = Counter(labels)
 
     # subset out most popular centroid
+    # dominant_colour = clt.cluster_centers_[label_counts.most_common(2)[0][0]]
     dominant_colour = clt.cluster_centers_[label_counts.most_common(1)[0][0]]
 
+    sdlabel = label_counts.most_common(2)[1:]
+    subdominant_colour = clt.cluster_centers_[sdlabel[0][0]]
+
+    # print(dominant_colour)
+    # print(subdominant_colour)
+    # print(label_counts)
+    # print(label_counts.most_common(1))
+    # print(label_counts.most_common(2))
+    # print(list(tuple(label_counts.most_common(2)[1])))
+    # Background colour
     dcolour = list(dominant_colour)
     dcolour.reverse()
 
-    return dcolour
+    # Possible font colour
+    fcolour = list(subdominant_colour)
+    fcolour.reverse()
+
+    return dcolour, fcolour
 
 
 # Clustering for large containers and small clusters
@@ -154,6 +169,7 @@ class ClusterClass(NodeMixin):
 
     def __str__(self):
         return self.name
+
 
 # Merging intervals, for example horizontals for the text blocks
 class Solution:
@@ -512,7 +528,7 @@ def find_or_create_dir(directory, show=False):
 
 def change_permissions_recursive(path, mode):
     for root, dirs, files in os.walk(path, topdown=False):
-        for dir in [os.path.join(root,d) for d in dirs]:
+        for dir in [os.path.join(root, d) for d in dirs]:
             os.chmod(dir, mode)
     for file in [os.path.join(root, f) for f in files]:
             os.chmod(file, mode)
