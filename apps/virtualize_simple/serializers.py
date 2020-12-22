@@ -142,6 +142,89 @@ def unique(list1):
     return unique_list
 
 
+# Writing the element text value based on its id
+def write_elem_value(region_dataset, class_id_recognized):
+    element = "image"
+    # forms:
+    # write the class value based on class id start
+    if region_dataset == "forms":
+        # Input
+        if class_id_recognized == 1:
+            element = "input"
+        # Button
+        if class_id_recognized == 2:
+            element = "button"
+        # Text
+        if class_id_recognized == 3:
+            element = "text"
+        # Select
+        if class_id_recognized == 4:
+            element = "select"
+        # Checkbox
+        if class_id_recognized == 5:
+            element = "checkbox"
+        # Radiobutton
+        if class_id_recognized == 6:
+            element = "radiobutton"
+        # Image
+        if class_id_recognized == 7:
+            element = "image"
+
+    # write the class value based on class id end
+
+    # headers:
+    # write the class value based on class id start
+    if region_dataset == "headers":
+        # Text
+        if class_id_recognized == 1:
+            element = "text"
+        # Image
+        if class_id_recognized == 2:
+            element = "image"
+        # Button
+        if class_id_recognized == 3:
+            element = "button"
+        # Menu
+        if class_id_recognized == 4:
+            element = "menu"
+        # Li
+        if class_id_recognized == 5:
+            element = "li"
+        # Input
+        if class_id_recognized == 6:
+            element = "input"
+        # Select
+        if class_id_recognized == 7:
+            element = "select"
+        # Form
+        if class_id_recognized == 8:
+            element = "form"
+
+    # write the class value based on class id end
+
+    # footers:
+    # write the class value based on class id start
+    if region_dataset == "footers":
+        # Text
+        if class_id_recognized == 1:
+            element = "text"
+        # Image
+        if class_id_recognized == 2:
+            element = "image"
+        # Button
+        if class_id_recognized == 3:
+            element = "button"
+        # Select
+        if class_id_recognized == 4:
+            element = "select"
+        # Input
+        if class_id_recognized == 5:
+            element = "input"
+    # write the class value based on class id end
+
+    return element
+
+
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
 
@@ -224,7 +307,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
         # Get(take the whole image) the dominant colour for the parent container
         bcolour_container_value = "255,255,255,0"
-        domcolour_container = get_dominant_colour(image_opencv_input)
+        domcolour_container = get_dominant_colour(image_opencv_input)[0]
         domcolour_container.append(1)
         bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
 
@@ -606,7 +689,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             pass
         # print(region_dataset)
 
-        fdict = {}  # Output dictionary to write annotation
+        fdict = {}  # Output dictionary to write annotation, maskrcnn-opencv with AND predicate
+        fordict = {}  # Output dictionary to write annotation, maskrcnn-opencv with OR predicate
+        cnndict = {}  # Output dictionary to write annotation, maskrcnn only
 
         # Create the root element mptt start
         # print(validated_data)
@@ -640,6 +725,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         image_original = copy.deepcopy(image_opencv_input)
         image_maskrcnn_notext = copy.deepcopy(image_opencv_input)
         image_maskrcnn = copy.deepcopy(image_opencv_input)
+        image_maskrcnn_or = copy.deepcopy(image_opencv_input)
+        # image_maskrcnn_and = copy.deepcopy(image_opencv_input)
         image_fclusters = copy.deepcopy(image_opencv_input)
         image_dbclusters = copy.deepcopy(image_opencv_input)
         image_cclusters = copy.deepcopy(image_opencv_input)
@@ -670,7 +757,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Get(take the whole image) the dominant colour for the parent container
         bcolour_container_value = "255,255,255,0"
-        domcolour_container = get_dominant_colour(image_opencv_input)
+        domcolour_container = get_dominant_colour(image_opencv_input)[0]
         domcolour_container.append(1)
         bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
 
@@ -800,6 +887,20 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 "file_attributes": {},
             }
 
+            fordict[fnamesize] = {
+                "filename": fname,
+                "size": fsize,
+                "regions": [],
+                "file_attributes": {},
+            }
+
+            cnndict[fnamesize] = {
+                "filename": fname,
+                "size": fsize,
+                "regions": [],
+                "file_attributes": {},
+            }
+
             # Create directory to save HTML for some image processed
             # CURRENT_DIR = os.getcwd()
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
@@ -809,7 +910,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             os.chdir(SAVE_DIR)
 
             if region_dataset in {"forms", "headers", "footers"}:
-                # Printing text contours preparations start
+                # Printing text contours preparations (AND) start
                 for text_contour in text_contours:
                     x, y, w, h = text_contour
                     # location = i.location  # y, x
@@ -832,7 +933,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         fdict[fnamesize]["regions"].append(attributes_dict)
                     cv2.rectangle(image_opencv_input, (x, y), (x + w, y + h), (255, 0, 0), 1)
 
-                # Printing text contours preparations end
+                # Printing text contours preparations (AND) end
 
                 # Printing rect contours with concatenation preparations start
                 for rect_contour in rect_contours:
@@ -1013,6 +1114,161 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     fdict[fnamesize]["regions"].append(attributes_dict)
                 # Printing rect contours with concatenation preparations end
 
+                # Printing text contours preparations (OR) start
+                for text_contour in text_contours:
+                    x, y, w, h = text_contour
+                    # location = i.location  # y, x
+                    # size = i.size  # width, height
+                    element = "ocrtext"
+
+                    # Fill the attributes dictionary
+                    attributes_dict = {
+                        "shape_attributes": {
+                            "name": "rect",
+                            "x": int(x),
+                            "y": int(y),
+                            "width": int(w),
+                            "height": int(h),
+                        },
+                        "region_attributes": {"HTML element": element},
+                    }
+                    # Filter out small text contours with height > width
+                    if w > h:
+                        fordict[fnamesize]["regions"].append(attributes_dict)
+                    cv2.rectangle(image_maskrcnn_or, (x, y), (x + w, y + h), (255, 0, 0), 1)
+                # Printing text contours preparations (OR) end
+
+                # Printing rect contours with OR concatenation preparations start
+                for rect_contour in rect_contours:
+                    x1, y1, w, h = rect_contour
+                    x2 = w + x1
+                    y2 = h + y1
+
+                    cv2.rectangle(image_maskrcnn_or, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1)
+
+                    centers_distance_min = 10000
+
+                    class_id_recognized = 7  # Image
+                    for idx1, (rect1, class_id1) in enumerate(
+                        zip(r["rois"], r["class_ids"])
+                    ):
+                        #  1,2,4,5,7 means elements except the text class and the radiobutton while merging forms
+                        if (
+                            (
+                                (region_dataset == "forms")
+                                and (class_id1 in {1, 2, 4, 5, 7})
+                            )
+                            or (
+                                (region_dataset == "footers")
+                                and (class_id1 in {2, 3, 4, 5})
+                            )
+                            or (
+                                (region_dataset == "headers")
+                                and (class_id1 in {2, 3, 4, 5, 6, 7, 8})
+                            )
+                        ):
+                            x3 = rect1[1]
+                            y3 = rect1[0]
+                            x4 = rect1[3]
+                            y4 = rect1[2]
+
+                            # cv2.rectangle(image_opencv_input, (x3, y3), (x4, y4), (255, 100, 255), 1)
+
+                            # Borders of the rectangles overlapped area
+                            left = max(x1, x3)
+                            bottom = max(y1, y3)
+                            right = min(x2, x4)
+                            top = min(y2, y4)
+                            # Sizes of the rectangles overlapped area
+                            width = right - left
+                            height = top - bottom
+
+                            # The first rectangle square
+                            width1, height1 = x2 - x1, y2 - y1
+
+                            # The second rectangle square
+                            width2, height2 = x4 - x3, y4 - y3
+
+                            # Calculate distance between rect_contour and idx1 with two dimensions
+                            # Find the pair with smallest distance
+                            # Save this pair for further processing
+                            center_x12 = (x1 + x2) / 2
+                            center_y12 = (y1 + y2) / 2
+                            center_x34 = (x3 + x4) / 2
+                            center_y34 = (y3 + y4) / 2
+                            # print(calculateDistance(center_x12, center_y12, center_x34, center_y34))
+                            centers_distance = calculateDistance(
+                                center_x12, center_y12, center_x34, center_y34
+                            )
+
+                            # Check if width, height of the overlapped area less or equal 0
+                            if not (width <= 0 or height <= 0):
+                                # If the square > 0, calculate the squares of the 3 rectangles
+                                square = width * height
+                                square1 = width1 * height1
+                                square2 = width2 * height2
+
+                                if (
+                                    square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                ) or (
+                                    square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                ):
+                                    if centers_distance < centers_distance_min:
+                                        centers_distance_min = centers_distance
+                                        # idx1_selected = idx1
+                                        # Assign the class id value to the rect_contour
+                                        class_id_recognized = class_id1
+                                        # print("idx1_select", idx1)
+
+                    # cv2.destroyAllWindows()
+
+                    cv2.imwrite("opencv_contours_or_" + fname, image_maskrcnn_or)
+
+                    element = write_elem_value(region_dataset, class_id_recognized)
+
+                    # Fill the attributes dictionary
+                    attributes_dict = {
+                        "shape_attributes": {
+                            "name": "rect",
+                            "x": int(x1),
+                            "y": int(y1),
+                            "width": int(w),
+                            "height": int(h),
+                        },
+                        "region_attributes": {"HTML element": element},
+                    }
+                    fordict[fnamesize]["regions"].append(attributes_dict)
+                # Printing rect contours with OR concatenation preparations end
+
+                # Printing contours with mask r cnn only start
+                for idx1, (rect1, class_id1) in enumerate(
+                        zip(r["rois"], r["class_ids"])
+                ):
+                    x3 = rect1[1]
+                    y3 = rect1[0]
+                    x4 = rect1[3]
+                    y4 = rect1[2]
+
+                    # The second rectangle square
+                    width, height = x4 - x3, y4 - y3
+
+                    element = write_elem_value(region_dataset, class_id1)
+
+                    # Fill the attributes dictionary
+                    attributes_dict = {
+                        "shape_attributes": {
+                            "name": "rect",
+                            "x": int(x3),
+                            "y": int(y3),
+                            "width": int(width),
+                            "height": int(height),
+                        },
+                        "region_attributes": {"HTML element": element},
+                    }
+                    cnndict[fnamesize]["regions"].append(attributes_dict)
+
+                # Printing contours with mask r cnn only end
+
             if region_dataset in {"webpages"}:
                 # Print all the contours to the file
                 # Format the file Via-like
@@ -1067,54 +1323,77 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             json.dump(fdict, json_file)
         """
 
-        # Printing the pure Mask R CNN output without text blocks recognized
-        for idx1, (rect1, class_id1) in enumerate(
-                zip(r["rois"], r["class_ids"])
-        ):
-            #  1,2,4,5,7 means elements except the text class and the radiobutton while merging forms
-            if (
-                    (
-                            (region_dataset == "forms")
-                            and (class_id1 in {1, 2, 4, 5, 7})
-                    )
-                    or (
-                    (region_dataset == "footers")
-                    and (class_id1 in {2, 3, 4, 5})
-            )
-                    or (
-                    (region_dataset == "headers")
-                    and (class_id1 in {2, 3, 4, 5, 6, 7, 8})
-            )
+        if region_dataset not in {"webpages"}:
+            # Printing the pure Mask R CNN output without text blocks recognized
+            for idx1, (rect1, class_id1) in enumerate(
+                    zip(r["rois"], r["class_ids"])
+            ):
+                #  1,2,4,5,7 means elements except the text class and the radiobutton while merging forms
+                if (
+                        (
+                                (region_dataset == "forms")
+                                and (class_id1 in {1, 2, 4, 5, 7})
+                        )
+                        or (
+                        (region_dataset == "footers")
+                        and (class_id1 in {2, 3, 4, 5})
+                )
+                        or (
+                        (region_dataset == "headers")
+                        and (class_id1 in {2, 3, 4, 5, 6, 7, 8})
+                )
+                ):
+                    x3 = rect1[1]
+                    y3 = rect1[0]
+                    x4 = rect1[3]
+                    y4 = rect1[2]
+
+                    cv2.rectangle(image_maskrcnn_notext, (x3, y3), (x4, y4), (255, 100, 255), 1)
+                    # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
+                    cv2.putText(image_maskrcnn_notext, str(class_id1), (x3, y4), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (36, 255, 12), 2)
+
+            cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
+
+            # Printing the pure Mask R CNN output with text blocks and radiobuttons recognized
+            for idx1, (rect1, class_id1) in enumerate(
+                    zip(r["rois"], r["class_ids"])
             ):
                 x3 = rect1[1]
                 y3 = rect1[0]
                 x4 = rect1[3]
                 y4 = rect1[2]
 
-                cv2.rectangle(image_maskrcnn_notext, (x3, y3), (x4, y4), (255, 100, 255), 1)
+                # The second rectangle square
+                width, height = x4 - x3, y4 - y3
+
+                # Fill the attributes dictionary
+                attributes_dict = {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": int(x3),
+                        "y": int(y3),
+                        "width": int(width),
+                        "height": int(height),
+                    },
+                    "region_attributes": {"HTML element": element},
+                }
+                cnndict[fnamesize]["regions"].append(attributes_dict)
+
+                cv2.rectangle(image_maskrcnn, (x3, y3), (x4, y4), (255, 100, 255), 1)
                 # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
-                cv2.putText(image_maskrcnn_notext, str(class_id1), (x3, y4), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (36, 255, 12), 2)
+                cv2.putText(image_maskrcnn, str(class_id1), (x3, y4), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                            (36, 255, 12), 2)
 
-        cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
-
-        # Printing the pure Mask R CNN output with text blocks and radiobuttons recognized
-        for idx1, (rect1, class_id1) in enumerate(
-                zip(r["rois"], r["class_ids"])
-        ):
-            x3 = rect1[1]
-            y3 = rect1[0]
-            x4 = rect1[3]
-            y4 = rect1[2]
-
-            cv2.rectangle(image_maskrcnn, (x3, y3), (x4, y4), (255, 100, 255), 1)
-            # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
-            cv2.putText(image_maskrcnn, str(class_id1), (x3, y4), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
-                        (36, 255, 12), 2)
-
-        cv2.imwrite("maskrcnn_" + fname, image_maskrcnn)
+            cv2.imwrite("maskrcnn_" + fname, image_maskrcnn)
 
         # fdict obtained
         # file_dict = fdict
+        # print("fdict: ", fdict)
+        # print("fordict: ", fordict)
+
+        # this asignment used for headers testing purposes
+        # fdict = cnndict
+        # print("fdict: ", fdict)
 
         # Assembling start
         # for filenamesize in fdict:
@@ -2093,10 +2372,17 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     if styles_on:
                         # Get the dominant colour for the element start
                         bcolour_elem_value = "255,255,255,0"
-                        domcolour_elem = get_dominant_colour(elem_image)
+                        domcolour_elem = get_dominant_colour(elem_image)[0]
                         domcolour_elem.append(1)
                         bcolour_elem_value = ",".join(str(int(x)) for x in domcolour_elem)
                         # Get the dominant colour for the element end
+
+                        # Get the font colour for the element start
+                        fcolour_elem_value = "91,91,91,0"
+                        fcolour_elem = get_dominant_colour(elem_image)[1]
+                        fcolour_elem.append(1)
+                        fcolour_elem_value = ",".join(str(int(x)) for x in fcolour_elem)
+                        # Get the font colour for the element end
 
                         # display elem_image start
                         '''
@@ -2196,6 +2482,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         )
 
                     if elem["region_attributes"]["HTML element"] in {"text", "ocrtext"}:
+                        styles["font-color"] = fcolour_elem_value
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "div")
                         # displaying various kinds of elements end
