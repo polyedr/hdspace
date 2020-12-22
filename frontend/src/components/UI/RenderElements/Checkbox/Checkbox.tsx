@@ -6,7 +6,7 @@ import { CheckboxRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles, makeInlineStyles } from '../styles';
 
-import '@Src/styles/material/mdc.checkbox.css';
+import '@Src/styles/export/material/mdc.checkbox.css';
 
 const useStyles = makeComponentStyles(
   {

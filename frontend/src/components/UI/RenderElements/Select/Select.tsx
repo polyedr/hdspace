@@ -3,20 +3,17 @@
 import React, { useEffect, useState } from 'react';
 // import { useSelector } from 'react-redux';
 import cn from 'classnames';
-// import { selectElementAsTree } from '@Redux/project/selectors/element';
-// import { LibraryElement } from '@Src/types';
 import { MDCSelect } from '@material/select';
 
 import '@material/form-field/dist/mdc.form-field.min.css';
 import '@material/list/dist/mdc.list.min.css';
 import '@material/menu-surface/dist/mdc.menu-surface.min.css';
 import '@material/menu/dist/mdc.menu.min.css';
-import '@Src/styles/material/mdc.select.css';
+import '@Src/styles/export/material/mdc.select.css';
 
 import { SelectRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
-// import SelectItem from './SelectItem';
 
 const useStyles = makeComponentStyles((theme) => ({
   root: {

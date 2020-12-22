@@ -7,7 +7,7 @@ import { RadioRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles, makeInlineStyles } from '../styles';
 
-import '@Src/styles/material/mdc.radio.css';
+import '@Src/styles/export/material/mdc.radio.css';
 
 const useDivStyles = makeComponentStyles(
   {
