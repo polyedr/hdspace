@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import cn from 'classnames';
-import Style from 'style-it';
 
 import { RadioRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
@@ -18,6 +17,23 @@ const useDivStyles = makeComponentStyles(
       '&:before, &:after': {
         fontSize: 0,
       },
+    },
+    radio: ({ entityStyles, groupStyles, ownStyles }) => {
+      const borderColor =
+        ownStyles.backgroundColor ||
+        groupStyles.backgroundColor ||
+        entityStyles.backgroundColor;
+      if (!borderColor) {
+        return {};
+      }
+      return {
+        '&:checked ~ .mdc-radio__background > .mdc-radio__outer-circle': {
+          borderColor,
+        },
+        '&:checked ~ .mdc-radio__background > .mdc-radio__inner-circle': {
+          borderColor,
+        },
+      };
     },
   },
   ['backgroundColor'],
@@ -35,20 +51,14 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
     const { id, name, params, isDisabled, className } = props;
     const { showRipple } = params;
 
-    const divClasses = useDivStyles(props);
+    const classes = useDivStyles(props);
     const inlineStyles = useInlineStyles(props);
 
     const [isChecked, setIsChecked] = useState(false);
 
     const eventHandlers = useEventHandlers(props);
 
-    return Style.it(
-      `#radio-${id}:checked ~ #radio-${id}-background > .mdc-radio__outer-circle {
-        border-color: ${inlineStyles.color};
-      }
-      #radio-${id}:checked ~ #radio-${id}-background > .mdc-radio__inner-circle {
-        border-color: ${inlineStyles.color};
-      }`,
+    return (
       <div
         ref={ref}
         id={id}
@@ -56,11 +66,11 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          divClasses.root,
-          isDisabled && divClasses.disabled,
-          divClasses.entityStyles,
-          divClasses.groupStyles,
-          divClasses.ownStyles,
+          classes.root,
+          isDisabled && classes.disabled,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
         )}
         {...eventHandlers}
       >
@@ -76,7 +86,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
               />
             )}
             <input
-              className="mdc-radio__native-control"
+              className={cn('mdc-radio__native-control', classes.radio)}
               type="radio"
               id={`radio-${id}`}
               name={`${name}-${id}`}
@@ -87,16 +97,13 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
                 }
               }}
             />
-            <div
-              id={`radio-${id}-background`}
-              className="mdc-radio__background"
-            >
+            <div className="mdc-radio__background">
               <div className="mdc-radio__outer-circle" />
               <div className="mdc-radio__inner-circle" />
             </div>
           </div>
         </div>
-      </div>,
+      </div>
     );
   },
 );

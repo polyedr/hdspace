@@ -62,20 +62,16 @@ export const apiGetCustomLibraryElements = (
     .catch(handleError);
 };
 
-export const apiAddElement = <
-  T extends Entity,
-  K extends Entity,
-  P extends ServerElement<T>['parameters']
->(
-  props: MyAxiosProps & ServerElement<T, ServerElement<K>[], P>,
-): Promise<LibraryElement<T, LibraryElement<K>[], P>> =>
+export const apiCreateElement = (
+  props: Partial<MyAxiosProps & ServerElement<any>>,
+): Promise<Result<LibraryElement<any>>> =>
   myAxios({
     ...props,
     method: 'POST',
     url: `/projects/scenario-elements/`,
   })
-    .then((result) => convertElementFromResponse(result.data))
-    .catch(onError);
+    .then((result) => ({ result: convertElementFromResponse(result.data) }))
+    .catch(handleError);
 
 export const apiChangeRecursiveElement = (
   props: MyAxiosProps & { id: number },

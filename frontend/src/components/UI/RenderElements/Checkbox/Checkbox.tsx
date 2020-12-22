@@ -2,7 +2,6 @@
 
 import React, { useState, useCallback } from 'react';
 import cn from 'classnames';
-import Style from 'style-it';
 import { CheckboxRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles, makeInlineStyles } from '../styles';
@@ -14,18 +13,20 @@ const useStyles = makeComponentStyles(
     root: {
       overflow: 'hidden',
     },
-    isChecked: ({ entityStyles, groupStyles, ownStyles }) => {
-      const colorValue =
+    checkbox: ({ entityStyles, groupStyles, ownStyles }) => {
+      const color =
         ownStyles.backgroundColor ||
         groupStyles.backgroundColor ||
         entityStyles.backgroundColor;
-      if (!colorValue) {
-        return {};
+      if (color) {
+        return {
+          '&:checked ~ .checkbox-background': {
+            borderColor: color,
+            backgroundColor: color,
+          },
+        };
       }
-      return {
-        color: colorValue,
-        backgroundColor: colorValue,
-      };
+      return {};
     },
   },
   ['backgroundColor', 'width', 'height'],
@@ -40,7 +41,7 @@ const useInlineStyles = makeInlineStyles((styles: React.CSSProperties) => ({
 
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, name, params, isDisabled, className } = props;
+    const { id, params, isDisabled, className } = props;
     const { showRipple } = params;
 
     const inlineStyles = useInlineStyles(props);
@@ -58,11 +59,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
       }
     }, [setIsChecked, isChecked, isDisabled]);
 
-    return Style.it(
-      `#checkbox-${id}:checked ~ #checkbox-${id}-background {
-        border-color: ${inlineStyles.color};
-        background-color: ${inlineStyles.color};
-      }`,
+    return (
       <div
         ref={ref}
         id={id}
@@ -93,8 +90,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
             <input
               type="checkbox"
               id={`checkbox-${id}`}
-              name={`${name}-${id}`}
-              className="mdc-checkbox__native-control"
+              className={cn('mdc-checkbox__native-control', classes.checkbox)}
               checked={!isDisabled && isChecked}
               onChange={handleCheckboxChange}
             />
@@ -102,6 +98,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
               id={`checkbox-${id}-background`}
               className={cn(
                 'mdc-checkbox__background',
+                `checkbox-background`,
                 isChecked && classes.isChecked,
               )}
             >
@@ -116,7 +113,7 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
             </div>
           </div>
         </div>
-      </div>,
+      </div>
     );
   },
 );

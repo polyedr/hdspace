@@ -1,3 +1,4 @@
+import { HEADING_SETTINGS } from '@Components/RightPanel/PropertiesTab/Controls/HeadingType/constants';
 import { defaultFreeCanvasParams } from '../../core';
 import {
   ElementGroup,
@@ -54,7 +55,10 @@ export const makeHeading = ({
   },
   styles: {
     classNames: ['heading'],
-    ownStyles,
+    ownStyles: {
+      fontSize: HEADING_SETTINGS[headingType].fontSize,
+      ...ownStyles,
+    },
   },
   name: 'heading',
   children: [],

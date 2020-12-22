@@ -7,9 +7,10 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { AVAILABLE_CONTROLS } from '@Domain/core';
+import { Control, Entity, NNBlockType } from '@Src/types';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
-import { AVAILABLE_CONTROLS } from '../../../domain/core';
 import Display from './Controls/Display/Display';
 import IndentsBlock from './Controls/IndentsBlock';
 import SizeBlock from './Controls/SizeBlock/SizeBlock';
@@ -42,7 +43,6 @@ import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
 import ColumnsControls from './Controls/Columns';
 import StylesOn from './Controls/StylesOn/StylesOn';
-import { Control, Entity, NNBlockType } from '../../../types';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -52,7 +52,7 @@ type ControlInfo = {
 const CONTROLS: Record<Control, ControlInfo> = {
   display: {
     Control: Display,
-    styles: ['display', 'justifyContent', 'alignItems'],
+    styles: ['display', 'justifyContent', 'alignItems', 'flexDirection'],
   },
   indents: {
     Control: IndentsBlock,

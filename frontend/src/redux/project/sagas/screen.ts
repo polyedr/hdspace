@@ -6,7 +6,13 @@ import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
-import { apiCreateElements, apiGetElements } from '@Api/element';
+import {
+  apiChangeRecursiveElement,
+  apiCreateElement,
+  apiCreateElements,
+  apiGetElements,
+} from '@Api/element';
+import DOMPurify from 'dompurify';
 import { apiUpdateProject } from '@Api/project';
 import { apiUpdateScenarios } from '@Api/scenario';
 import { apiCreateScreen, apiGetScreen, apiUpdateScreen } from '@Api/screen';
@@ -22,6 +28,10 @@ import {
   StateElement,
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
+import convertHtml from '@Utils/convertHtml';
+import CSSOM from 'cssom';
+import { extractStyles } from '@Utils/stringHelper';
+import IMAGES from '@Constants/images';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -42,6 +52,9 @@ import {
   updateScreen,
   updateScreenImage,
   uploadFile,
+  importHtml,
+  updateElementImage,
+  updateElementParameters,
 } from '../actions';
 import { createScenarios } from './scenario';
 import { reqWrapper } from './shared';
@@ -56,6 +69,7 @@ import {
   selectAllElements,
   selectCurrentRootId,
   selectElementById,
+  selectElementsForScreen,
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject } from '../selectors/base';
@@ -165,9 +179,9 @@ export function* createScreenSaga({
           data: [rootScenarioWithRootElement],
         });
 
-        const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-          selectCurrentProject,
-        );
+        const currentProject: ReturnType<
+          typeof selectCurrentProject
+        > = yield select(selectCurrentProject);
 
         const updateProject: Project = R.assoc(
           'projectscreen',
@@ -347,9 +361,9 @@ export function* deleteScreenSaga({
       yield put(setCurrentScreenId(-1));
     }
 
-    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-      selectCurrentProject,
-    );
+    const currentProject: ReturnType<
+      typeof selectCurrentProject
+    > = yield select(selectCurrentProject);
     const screenList = currentProject.projectscreen;
 
     if (screenList.length <= 1) {
@@ -656,6 +670,109 @@ export function* convertFreeCanvasSaga() {
       ),
     );
     yield put(changeFreeCanvasMode(false));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
+  try {
+    const files = action.payload;
+
+    const htmlFiles = files.filter((file) => file.type === 'text/html');
+    if (htmlFiles.length !== 1) {
+      throw new Error(
+        htmlFiles.length
+          ? 'Only one HTML file allowed'
+          : 'At least one HTML file required',
+      );
+    }
+    const html: string = yield htmlFiles[0].text();
+    const clearHtml = DOMPurify.sanitize(html);
+
+    const cssFiles = files.filter((file) => file.type === 'text/css');
+
+    const externalStyles: string = yield Promise.all(
+      cssFiles.map((file) => file.text()),
+    ).then((result) => result.reduce((acc, curr) => acc + curr, ''));
+    const htmlStyles = extractStyles(clearHtml);
+    const css = externalStyles + htmlStyles;
+
+    const doc = new DOMParser().parseFromString(clearHtml, 'text/html');
+
+    const { cssRules } = CSSOM.parse(css); // the actual type of cssRules is CSSStyleRule[] while the declared one is CSSOM.CSSRule[]
+    // @ts-ignore
+    const data = convertHtml(doc, cssRules);
+
+    const { result: element, error }: Result<LibraryElement<any>> = yield call(
+      reqWrapper,
+      apiCreateElement,
+      {
+        data,
+      },
+    );
+    if (element) {
+      const { id: projectId, projectscreen }: Project = yield select(
+        selectCurrentProject,
+      );
+
+      const screen: Screen = yield call(
+        createScreenSaga,
+        createScreen(projectId, 'Screen 1', projectscreen.length),
+      );
+
+      const root: StateElement = yield select(
+        selectElementById(screen.element),
+      );
+
+      yield put(
+        Actions.addStateElements([element], root.id, { screenId: screen.id }),
+      );
+
+      const elements: StateElement[] = yield select(
+        selectElementsForScreen(screen.id),
+      );
+      const imageElements = Object.values(elements).filter(
+        (element) => element.type === 'image',
+      );
+
+      const imageFiles = files.filter((file) => file.type.includes('image/'));
+
+      yield all(
+        imageElements.map((element) => {
+          const image = imageFiles.find((img) =>
+            element.parameters.imageURL.includes(img.name),
+          );
+          return image
+            ? put(
+                updateElementImage(element.id, image, { screenId: screen.id }),
+              )
+            : put(
+                updateElementParameters(
+                  element.id,
+                  {
+                    imageURL: IMAGES.imageIcon,
+                  },
+                  {
+                    screenId: screen.id,
+                  },
+                ),
+              );
+        }),
+      );
+
+      const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
+        data: { children: [element.id] },
+        id: root.id,
+      });
+      if (error) throw new Error(error);
+    }
+    if (error) throw new Error(error);
   } catch (e) {
     yield put(
       enqueueSnackbar({
