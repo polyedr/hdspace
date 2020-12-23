@@ -23,6 +23,7 @@ const createArchive = (screenName: string, html: string, css: string) => {
   const jsFolder = zip.folder('js');
   const assetsFolder = zip.folder('assets');
 
+  // eslint-disable-next-line no-console
   Promise.all([
     processHTML(html, assetsFolder),
     processCSS(cssFolder),

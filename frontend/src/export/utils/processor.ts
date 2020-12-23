@@ -1,6 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import JSZip from 'jszip';
 import pretty from 'pretty';
+// eslint-disable-next-line
+import styles from '!raw-loader!sass-loader!@Src/styles/index.scss';
 
 const assetAttributes = ['src', 'href'];
 const cssResources = [
@@ -72,6 +74,7 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
 };
 
 export const processCSS = async (cssFolder: JSZip | null) => {
+  cssFolder?.file('fonts.css', styles);
   return Promise.all(
     cssResources.map((resource) => axios.get(`/styles/material/${resource}`)),
   )
