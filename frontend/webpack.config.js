@@ -104,7 +104,7 @@ module.exports = ({ MODE }) => {
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
             },
-            { loader: 'sass-loader', options: {} },
+            { loader: 'sass-loader' },
             {
               loader: 'sass-resources-loader',
               options: {

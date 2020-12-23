@@ -7,7 +7,6 @@ import { SharedRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
 type Props = SharedRendererProps & {
-  // item: StateElement;
   id: string;
   name: string;
   value: string;
