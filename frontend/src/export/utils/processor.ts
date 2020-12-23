@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import JSZip from 'jszip';
 import pretty from 'pretty';
 
@@ -24,26 +24,46 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
       const attr = assetAttributes[j];
       if (element.hasAttribute(attr)) {
         const url = element.getAttribute(attr) as string;
-        if (!url.match('^(?:[a-z]+:)?//i')) {
-          const { location } = document;
-          const domainPath = `${location.protocol}//${location.hostname}${
-            location.port ? `:${location.port}` : ''
-          }`;
-          element.setAttribute(
-            attr,
-            `${domainPath}${element.getAttribute(attr)}`,
-          );
-        } else if (attr === 'src') {
-          element.setAttribute(attr, `assets${url}`);
-          // eslint-disable-next-line no-await-in-loop
-          await axios.get(url).then((response) => {
-            if (response.headers['content-type'].indexOf('image') !== -1) {
-              assetsFolder?.file(
-                url.substring(url.lastIndexOf('/')),
-                response.data,
+        switch (element.tagName.toLowerCase()) {
+          case 'a': {
+            if (url.startsWith('/')) {
+              const { location } = document;
+              const domainPath = `${location.protocol}//${location.hostname}${
+                location.port ? `:${location.port}` : ''
+              }`;
+              element.setAttribute(
+                attr,
+                `${domainPath}${element.getAttribute(attr)}`,
               );
             }
-          });
+            break;
+          }
+          case 'img':
+          default: {
+            const assetName = url.substring(url.lastIndexOf('/') + 1);
+            element.setAttribute(attr, `assets/${assetName}`);
+            // eslint-disable-next-line no-await-in-loop
+            await axios
+              .get(url, {
+                responseType: 'blob',
+              })
+              .then((response) => {
+                if (response.headers['content-type'].indexOf('image') !== -1) {
+                  const blob = new Blob([response.data], {
+                    type: response.headers['content-type'],
+                  });
+                  assetsFolder?.file(assetName, blob, {
+                    binary: true,
+                  });
+                }
+              })
+              .catch((error: AxiosError) => {
+                // eslint-disable-next-line no-console
+                console.error(error);
+                return Promise.resolve();
+              });
+            break;
+          }
         }
       }
     }
@@ -54,21 +74,25 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
 export const processCSS = async (cssFolder: JSZip | null) => {
   return Promise.all(
     cssResources.map((resource) => axios.get(`/styles/material/${resource}`)),
-  ).then((responses: AxiosResponse[]) => {
-    responses.forEach((response: AxiosResponse) => {
-      if (!response.request) {
-        // eslint-disable-next-line no-console
-        console.error('Request is not defined!', response);
-        return;
-      }
-      const { responseURL } = response.request;
+  )
+    .then((responses: AxiosResponse[]) => {
+      responses.forEach((response: AxiosResponse) => {
+        if (!response.request) {
+          // eslint-disable-next-line no-console
+          console.error('Request is not defined!', response);
+          return;
+        }
+        const { responseURL } = response.request;
 
-      cssFolder?.file(
-        responseURL.substring(responseURL.lastIndexOf('/')),
-        response.data,
-      );
+        cssFolder?.file(
+          responseURL.substring(responseURL.lastIndexOf('/')),
+          response.data,
+        );
+      });
+    })
+    .catch((error: AxiosError) => {
+      return Promise.reject(error);
     });
-  });
 };
 
 export const processJS = async (jsFolder: JSZip | null) => {
