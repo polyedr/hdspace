@@ -4,15 +4,15 @@ import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { darken } from '@material-ui/core';
+import { darken, Theme } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteScreen, duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<Theme, { show: boolean }>({
   root: {
-    opacity: (show: boolean) => +show,
+    opacity: ({ show }) => +show,
     transition: 'opacity .1s ease-in-out',
   },
   iconButton: {
@@ -42,7 +42,7 @@ const ScreenControls: React.FC<Props> = ({ screen, show, openEdit }) => {
   const isLast = screensNumber === 1;
 
   const dispatch = useDispatch();
-  const classes = useStyles(show);
+  const classes = useStyles({ show });
 
   const handleDelete = (ev) => {
     ev.preventDefault();

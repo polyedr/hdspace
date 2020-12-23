@@ -1,9 +1,10 @@
+/* eslint-disable no-undef */
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SubjectIcon from '@material-ui/icons/Subject';
 import WebIcon from '@material-ui/icons/Web';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles, lighten } from '@material-ui/core';
+import { createStyles, lighten, Theme } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import { changeMinLPanel } from '@Redux/user/actions';
@@ -13,11 +14,11 @@ import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
 import { LEFT_PANEL_WIDTH, LEFT_PANEL_WIDTH_MIN } from '../../styles/Theme';
 
-const useStyles = makeStyles(({ palette }) =>
+const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
   createStyles({
     root: {
       maxHeight: '100%',
-      width: (minimized: boolean) =>
+      width: ({ minimized }) =>
         minimized ? LEFT_PANEL_WIDTH_MIN : LEFT_PANEL_WIDTH,
       backgroundColor: palette.panel.main,
       transition: 'width 0.25s ease',
@@ -45,7 +46,7 @@ const useStyles = makeStyles(({ palette }) =>
         backgroundColor: lighten(palette.panel.main, 0.1),
       },
       '& svg': {
-        transform: (minimized: boolean) => `rotate(${minimized ? 90 : -90}deg)`,
+        transform: ({ minimized }) => `rotate(${minimized ? 90 : -90}deg)`,
         transition: 'transform 0.25s ease',
       },
     },
@@ -56,7 +57,7 @@ const LeftPanel: React.FC = () => {
   const dispatch = useDispatch();
 
   const minimized = useSelector(selectIsLeftPanelMinimized);
-  const classes = useStyles(minimized);
+  const classes = useStyles({ minimized });
 
   const toggleLeftPanel = () => {
     dispatch(changeMinLPanel());

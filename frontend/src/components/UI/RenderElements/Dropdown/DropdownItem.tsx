@@ -2,7 +2,6 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { MenuItem } from '@material-ui/core';
 import { DropdownItemRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
@@ -21,13 +20,13 @@ const useStyles = makeComponentStyles({
 const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, isDisabled, params, className } = props;
-    const { showRipple, textContent } = params;
+    const { textContent } = params;
 
     const styles = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
     return (
-      <MenuItem
+      <li
         id={id}
         data-ls-id={id}
         ref={ref}
@@ -38,11 +37,10 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
           styles.groupStyles,
           styles.ownStyles,
         )}
-        disableRipple={isDisabled || !showRipple}
         {...(isDisabled ? eventHandlers : {})}
       >
         {textContent}
-      </MenuItem>
+      </li>
     );
   },
 );

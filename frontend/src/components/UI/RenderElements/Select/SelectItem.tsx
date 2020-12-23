@@ -1,14 +1,17 @@
 // @ts-nocheck
 
 import React from 'react';
-import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import MenuItem from '@material-ui/core/MenuItem';
-import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { makeComponentStyles } from '../styles';
+import { SharedRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 
-type Props = {
-  item: StateElement;
+type Props = SharedRendererProps & {
+  id: string;
+  name: string;
+  value: string;
+  showRipple: boolean;
+  children: React.Component[];
 };
 
 const useStyles = makeComponentStyles({
@@ -19,42 +22,38 @@ const useStyles = makeComponentStyles({
   },
 });
 
-const SelectItem: React.FC<Props> = ({ item }) => {
+const SelectItem: React.FC<Props> = React.forwardRef((props, ref) => {
   const {
-    parameters: { name, value, showRipple },
-    styles,
-  } = item;
-  const projectClasses = useSelector(selectCurrentProjectClasses);
-  const [entityClass, groupClass] = styles.classNames;
-  const { ownStyles } = styles;
-
-  const entityStyles =
-    projectClasses?.find((cssClass) => cssClass.className === entityClass)
-      ?.rules || {};
-  const groupStyles =
-    projectClasses?.find((cssClass) => cssClass.className === groupClass)
-      ?.rules || {};
-
-  const classes = useStyles({
-    entityStyles,
-    groupStyles,
-    ownStyles,
-  });
+    id,
+    params: { name },
+    isDisabled,
+    className,
+  } = props;
+  const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
   return (
-    <MenuItem
-      value={value}
+    <li
+      id={id}
+      ref={ref}
+      data-ls-id={id}
       className={cn(
+        'mdc-list-item',
+        className,
         classes.root,
+        isDisabled && classes.disabled,
         classes.entityStyles,
         classes.groupStyles,
         classes.ownStyles,
       )}
-      disableRipple={!showRipple}
+      aria-selected="false"
+      data-value="grains"
+      role="option"
+      {...eventHandlers}
     >
-      {name}
-    </MenuItem>
+      <span className="mdc-list-item__text">{name}</span>
+    </li>
   );
-};
+});
 
 export default SelectItem;

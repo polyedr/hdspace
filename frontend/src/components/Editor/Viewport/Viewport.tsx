@@ -59,7 +59,6 @@ const Viewport: React.FC = ({ children }) => {
       if (!target) return;
 
       const elementId = target.dataset.lsId;
-
       if (elementId === activeElementId) return;
 
       if (elementId) {

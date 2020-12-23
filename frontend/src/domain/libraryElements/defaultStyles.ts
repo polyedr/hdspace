@@ -463,7 +463,6 @@ export const defaultDropdownStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '6px 16px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -492,6 +491,7 @@ export const defaultDropdownMenuStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
+    padding: '3px 0',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -719,8 +719,6 @@ export const defaultCheckboxStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '24px',
-    height: 'auto',
   },
   background: {
     ...DEFAULT_BACKGROUND,
@@ -736,8 +734,6 @@ export const defaultRadiobuttonStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '24px',
-    height: 'auto',
   },
   background: {
     ...DEFAULT_BACKGROUND,
@@ -778,18 +774,17 @@ export const defaultSelectStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '18.5px 14px',
   },
   size: {
     ...DEFAULT_SIZE,
+    width: '200px',
+    height: 'auto',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
   },
   border: {
     ...DEFAULT_BORDER,
-    border: '1px solid #d9d9d9',
-    borderRadius: '4px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
@@ -801,6 +796,7 @@ export const defaultSelectMenuStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
+    padding: '5px 0',
   },
   size: {
     ...DEFAULT_SIZE,

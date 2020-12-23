@@ -3,6 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
+import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { CircularProgress, lighten } from '@material-ui/core';
@@ -12,12 +13,13 @@ import {
   selectUndoActions,
   selectUpdateScreenImageLoader,
 } from '@Redux/project/selectors/base';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectCurrentScreen } from '@Redux/project/selectors/screen';
 import {
   redoAction,
   updateScreenImage,
   undoAction,
 } from '@Redux/project/actions';
+import exportHTML from '@Src/export/app';
 
 const useStyles = makeStyles(({ palette }) => ({
   root: {
@@ -39,7 +41,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const currentScreenId = useSelector(selectCurrentScreenId);
+  const currentScreen = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
 
@@ -49,7 +51,11 @@ const Actions: React.FC = () => {
 
   const onHistoryForward = () => dispatch(redoAction());
 
-  const handleSaveScreen = () => dispatch(updateScreenImage(currentScreenId));
+  const handleSaveScreen = () => dispatch(updateScreenImage(currentScreen.id));
+
+  const handleExportScreen = () => {
+    exportHTML(currentScreen.name);
+  };
 
   return (
     <div className={classes.root}>
@@ -78,6 +84,14 @@ const Actions: React.FC = () => {
         className={classes.iconButton}
       >
         {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
+      </IconButton>
+
+      <IconButton
+        onClick={handleExportScreen}
+        title="Export screen"
+        className={classes.iconButton}
+      >
+        <VerticalAlignBottomIcon />
       </IconButton>
     </div>
   );

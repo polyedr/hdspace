@@ -33,6 +33,7 @@ import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   CONTAINER_GROUPS,
   EDITABLE_COMPONENTS_LIST,
+  NOT_DRAGGABLE_COMPONENTS,
 } from '@Constants/defaultParams';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import {
@@ -97,7 +98,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       parent,
       type: ElementType.ELEMENT,
     } as SyntheticElement<StateElement>,
-    canDrag: () => element.id !== rootID,
+    canDrag: () =>
+      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) && elementId !== rootID,
     end: () => {
       dispatch(setCurrentDropTargetParams(null));
     },
@@ -310,9 +312,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         {...elementProps}
         ref={(dom: HTMLElement) => {
           ref.current = dom;
-          drag(ref);
-          drop(ref);
           DOMHandler.INSTANCE.addElementDom(elementId, dom);
+          if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
+            drag(ref);
+            drop(ref);
+          }
         }}
         onMouseEnter={() => {
           dispatch(setHoveredElement(elementId));

@@ -15,10 +15,10 @@ import Label from './Label/Label';
 import Dropdown from './Dropdown/Dropdown';
 import Video from './Video/Video';
 import ListItem from './ListItem/ListItem';
-import SelectMenu from './SelectMenu/SelectMenu';
-import MenuItem from './MenuItem/MenuItem';
-import DropdownMenu from './DropdownMenu/DropdownMenu';
-import DropdownItem from './DropdownItem/DropdownItem';
+import SelectMenu from './Select/SelectMenu';
+// import MenuItem from './MenuItem/MenuItem';
+import DropdownMenu from './Dropdown/DropdownMenu';
+import DropdownItem from './Dropdown/DropdownItem';
 import DivBlockRenderer from './DivBlock/DivBlock';
 import Image from './Image/Image';
 import Map from './Map/Map';
@@ -30,6 +30,7 @@ import Undefined from './Undefined/Undefined';
 import { Entity, NNBlockType } from '../../../types';
 import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
+import SelectItem from './Select/SelectItem';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {
@@ -60,7 +61,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
   select: Select,
   selectMenu: SelectMenu,
-  selectItem: MenuItem,
+  selectItem: SelectItem,
   map: Map,
   calendar: Calendar,
   clock: Clock,

@@ -19,7 +19,7 @@ import {
 } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import Formats from './Formats';
-import Actions from './Actions';
+import Actions from './actions';
 
 const useStyles = makeStyles(({ typography, spacing }) => ({
   root: {
