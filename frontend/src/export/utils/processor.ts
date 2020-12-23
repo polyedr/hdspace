@@ -52,12 +52,9 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
 };
 
 export const processCSS = async (cssFolder: JSZip | null) => {
-  return Promise.all([
-    ...cssResources.map((resource) =>
-      axios.get(`/styles/material/${resource}`),
-    ),
-    axios.get('/styles/fonts.css'),
-  ]).then((responses: AxiosResponse[]) => {
+  return Promise.all(
+    cssResources.map((resource) => axios.get(`/styles/material/${resource}`)),
+  ).then((responses: AxiosResponse[]) => {
     responses.forEach((response: AxiosResponse) => {
       if (!response.request) {
         // eslint-disable-next-line no-console
