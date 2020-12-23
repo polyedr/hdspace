@@ -90,8 +90,8 @@ const Workspace: React.FC = () => {
             ) : (
               <>
                 <DraggableElement elementId={rootElementId} />
-                {!isPrototypeMode && <ElementsInteractions />}
-                <NewBorders />
+                {/* {!isPrototypeMode && <ElementsInteractions />} */}
+                {/* <NewBorders /> */}
               </>
             )}
           </Scrollbar>

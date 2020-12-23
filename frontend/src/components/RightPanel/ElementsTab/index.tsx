@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -147,4 +147,4 @@ const ElementsTab = () => {
   );
 };
 
-export default ElementsTab;
+export default memo(ElementsTab);

@@ -41,8 +41,10 @@ export const selectScreenRootElement = (screenId: number) => ({
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
-export const selectCurrentRootId = (state: AppReduxState) =>
-  selectCurrentScreen(state).element || '-1';
+export const selectCurrentRootId = createSelector(
+  selectCurrentScreen,
+  (screen) => screen.element || '-1',
+);
 
 export const selectElementById = (id: string) => (state: AppReduxState) =>
   selectProjectState(state).data.elements[id];
