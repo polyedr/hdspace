@@ -25,14 +25,6 @@ const SelectMenu: React.FC<Props> = React.forwardRef((props, ref) => {
       aria-label={`menu-${id}-listbox`}
       {...eventHandlers}
     >
-      {/* React.Children.map(children, (item) => {
-        return React.cloneElement(item, {
-          selectEntityStyles,
-          selectGroupStyles,
-          selectOwnStyles,
-          selectId,
-        });
-      }) */}
       {children}
     </ul>
   );
