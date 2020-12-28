@@ -13,10 +13,11 @@ import {
   createElements,
   moveElement,
   resetElementEditState,
+  setActiveElementId,
   setCurrentDropTargetParams,
   setElementBeingEdited,
   setElementCanBeEdited,
-  setHoveredElement,
+  setHoveredElementId,
   updateElementParameters,
 } from '@Redux/project/actions';
 import { ElementData, StateElement, SyntheticElement } from '@Src/types';
@@ -55,6 +56,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   parentDomStyles,
   parentIds = [],
 }) => {
+  const dispatch = useDispatch();
+
   const element = useSelector(selectElementById(elementId));
   const parent = useSelector(selectElementByChildId(elementId));
   const rootID = useSelector(selectCurrentRootId);
@@ -78,8 +81,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   );
 
   const elementProps = useElementProps(elementId);
-
-  const dispatch = useDispatch();
 
   const dropTarget = useMemo(() => {
     if (
@@ -242,6 +243,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const clickHandler = useCallback(
     (event: React.SyntheticEvent) => {
       event.stopPropagation();
+      dispatch(setActiveElementId(element.id));
       if (
         element &&
         EDITABLE_COMPONENTS_LIST.includes(element.type) &&
@@ -319,13 +321,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           }
         }}
         onMouseEnter={() => {
-          dispatch(setHoveredElement(elementId));
+          dispatch(setHoveredElementId(elementId));
         }}
         onMouseLeave={() => {
-          dispatch(setHoveredElement(element.parent || null));
+          dispatch(setHoveredElementId(element.parent || null));
         }}
-        onClick={clickHandler}
         onKeyDown={keyDownHandler}
+        onClick={clickHandler}
         onBlur={blurHandler}
       >
         {element.children.map((childId: string) => (

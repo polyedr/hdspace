@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { updateElementImage } from '@Redux/project/actions';
 import { ImageElement, PropertiesChangeProps } from '@Src/types';
 
@@ -62,4 +61,4 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
   );
 };
 
-export default withConfigurableProperties(Component);
+export default Component;

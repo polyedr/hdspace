@@ -8,8 +8,6 @@ import {
   selectElementById,
   selectElementAsTree,
   selectAllElements,
-  selectCurrentRootId,
-  selectActiveElementId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -28,7 +26,6 @@ import {
 import generateUniqueName from '@Utils/generateUniqueName';
 import getSavedValue from '@Utils/getSavedValue';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
-import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
 import {
   Entity,
   LibraryElement,
@@ -37,7 +34,6 @@ import {
   RecursiveElement,
   Result,
   ReturnPromisedType,
-  RightPanelTab,
   ServerElement,
   StateElement,
 } from '@Src/types';
@@ -281,9 +277,9 @@ export function* copyElementStylesSaga(
       return;
     }
 
-    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-      selectCurrentProject,
-    );
+    const currentProject: ReturnType<
+      typeof selectCurrentProject
+    > = yield select(selectCurrentProject);
 
     const sharedClassNames = currentProject.projectData.classes.map(
       (cssClass) => cssClass.className,
@@ -744,39 +740,4 @@ export function* loadCustomElementsSaga(
       }),
     );
   }
-}
-
-export function* setActiveElementSaga(
-  action: ReturnType<typeof Actions.setActiveElement>,
-) {
-  try {
-    const element = yield select(selectElementById(action.payload));
-    const prevActiveId = yield select(selectActiveElementId);
-    const rootID = yield select(selectCurrentRootId);
-    if (prevActiveId === action.payload) {
-      return;
-    }
-    if (
-      element &&
-      !KEEP_RP_TAB_ELEMENTS.includes(element.type) &&
-      element.id !== rootID
-    ) {
-      yield put(Actions.setRightPanelActiveTab(RightPanelTab.PROPERTIES));
-    }
-    yield put(Actions.setElementBeingEdited(false));
-    yield put(Actions.setActiveElementId(action.payload));
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-}
-
-export function* setHoveredElementSaga(
-  action: ReturnType<typeof Actions.setHoveredElement>,
-) {
-  yield put(Actions.setHoveredElementId(action.payload));
 }

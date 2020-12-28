@@ -5,7 +5,6 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import LinkIcon from '@material-ui/icons/Link';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import MenuItem from '@material-ui/core/MenuItem';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import {
   selectCurrentScreenId,
@@ -126,4 +125,4 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
   );
 };
 
-export default withConfigurableProperties(ActionBlock);
+export default ActionBlock;

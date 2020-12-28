@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -25,7 +24,8 @@ const parse = (value: string | number | undefined) => {
   return [width, units];
 };
 
-type Props = PropertiesChangeProps<ColumnsElement> & {
+type Props = {
+  updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   value: React.CSSProperties['columnWidth'];
 };
 
@@ -97,4 +97,4 @@ const ColumnWidth: React.FC<Props> = ({ updateStyles, value }) => {
   );
 };
 
-export default withConfigurableProperties(ColumnWidth);
+export default ColumnWidth;

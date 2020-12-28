@@ -1,17 +1,16 @@
-import React, { ChangeEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { ChangeEvent, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Theme } from '@material-ui/core';
-import { selectRightPanelActiveTab } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { setRightPanelActiveTab } from '@Redux/project/actions';
+import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
+import { RightPanelTab } from '@Src/types';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
-
-import { RIGHT_PANEL_WIDTH } from '../../styles/Theme';
-import { RightPanelTab } from '../../types';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
@@ -69,15 +68,20 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
 const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const classes = useStyles({ open: !isPrototypeMode });
-
+  const activeElement = useSelector(selectActiveElement);
   const tabClasses = useTabStyles();
   const tabsClasses = useTabsStyles();
-  const dispatch = useDispatch();
 
-  const activeTab = useSelector(selectRightPanelActiveTab);
+  const [activeTab, setActiveTab] = useState(RightPanelTab.ELEMENTS);
+
+  useEffect(() => {
+    if (!KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
+      setActiveTab(RightPanelTab.PROPERTIES);
+    }
+  }, [activeElement.type]);
 
   const handleChange = (ev: ChangeEvent<{}>, tab: number) => {
-    dispatch(setRightPanelActiveTab(tab));
+    setActiveTab(tab);
   };
 
   return (

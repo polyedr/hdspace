@@ -1,7 +1,6 @@
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { PropertiesChangeProps, SelectElement, StateElement } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import {
@@ -61,4 +60,4 @@ const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   );
 };
 
-export default withConfigurableProperties(memo(SelectValue));
+export default memo(SelectValue);

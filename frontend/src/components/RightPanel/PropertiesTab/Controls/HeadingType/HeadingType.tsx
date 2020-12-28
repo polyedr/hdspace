@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import {
   HeadingElement,
   PropertiesChangeProps,
@@ -47,4 +46,4 @@ const HeadingType: React.FC<Props> = ({ updateParams, updateStyles }) => {
   );
 };
 
-export default withConfigurableProperties(HeadingType);
+export default HeadingType;

@@ -1,5 +1,4 @@
 import React, { useCallback, memo, useMemo } from 'react';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
@@ -167,4 +166,4 @@ const BackgroundSize: React.FC<Props> = memo(
   },
 );
 
-export default withConfigurableProperties(BackgroundSize);
+export default BackgroundSize;

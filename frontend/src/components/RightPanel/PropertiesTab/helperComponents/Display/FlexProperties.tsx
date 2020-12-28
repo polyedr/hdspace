@@ -4,7 +4,6 @@ import { FormControlLabel } from '@material-ui/core';
 import HeightIcon from '@material-ui/icons/Height';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { StyledToggleButton } from '@Components/styledComponents';
 import PlaceItemsProperties from './PlaceItemsProperties';
 
@@ -18,7 +17,8 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+type Props = {
+  updateStyles: PropertiesChangeProps<LibraryElement<Entity>>['updateStyles'];
   flexDirection: React.CSSProperties['flexDirection'];
   justifyContent: React.CSSProperties['justifyContent'];
   alignItems: React.CSSProperties['alignItems'];
@@ -67,9 +67,10 @@ const FlexProperties: React.FC<Props> = ({
         }
         justifyContent={justifyContent}
         alignItems={alignItems}
+        updateStyles={updateStyles}
       />
     </>
   );
 };
 
-export default withConfigurableProperties(FlexProperties);
+export default FlexProperties;

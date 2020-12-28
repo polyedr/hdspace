@@ -5,7 +5,6 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core';
 import { addChildToElement } from '@Redux/project/actions';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
 import {
@@ -81,4 +80,4 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
   );
 };
 
-export default withConfigurableProperties(SelectOptions);
+export default SelectOptions;

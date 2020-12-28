@@ -8,7 +8,6 @@ import {
   safeParseFloat,
   strToNumber,
 } from '@Utils/NumberHelper';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import {
@@ -173,4 +172,4 @@ const BorderBlock: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(BorderBlock);
+export default BorderBlock;

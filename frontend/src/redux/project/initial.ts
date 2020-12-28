@@ -1,4 +1,4 @@
-import { RightPanelTab, SCREEN_FORMATS } from '../../types';
+import { SCREEN_FORMATS } from '@Src/types';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -29,9 +29,6 @@ export const initialData: ProjectDataState = {
 
 export const initialUi: ProjectUiState = {
   editableStyles: 'ownStyles',
-  rightPanel: {
-    activeTab: RightPanelTab.ELEMENTS,
-  },
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,

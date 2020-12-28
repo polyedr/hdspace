@@ -2,7 +2,6 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { FormControlLabel } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/Columns/styles';
@@ -27,7 +26,8 @@ const parse = (value: string | number | undefined) => {
   return [gap, units];
 };
 
-type Props = PropertiesChangeProps<ColumnsElement> & {
+type Props = {
+  updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   value: React.CSSProperties['columnGap'];
 };
 
@@ -94,4 +94,4 @@ const ColumnGap: React.FC<Props> = ({ updateStyles, value }) => {
   );
 };
 
-export default withConfigurableProperties(ColumnGap);
+export default ColumnGap;

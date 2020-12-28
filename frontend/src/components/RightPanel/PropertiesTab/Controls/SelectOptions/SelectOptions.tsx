@@ -13,7 +13,6 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
 import {
@@ -171,4 +170,4 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
   );
 };
 
-export default withConfigurableProperties(SelectOptions);
+export default SelectOptions;

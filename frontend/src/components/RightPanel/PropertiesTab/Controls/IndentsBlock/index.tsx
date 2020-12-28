@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { useDebouncedCallback } from 'use-debounce';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
@@ -253,4 +252,4 @@ const IndentsBlock: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(IndentsBlock);
+export default IndentsBlock;

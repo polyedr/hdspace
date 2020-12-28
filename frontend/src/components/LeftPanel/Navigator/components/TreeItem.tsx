@@ -1,18 +1,15 @@
-import React, { MouseEvent, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RenderItemParams } from '@atlaskit/tree';
+import React, { MouseEvent } from 'react';
+import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lighten, Theme } from '@material-ui/core';
-import { selectElementById } from '@Redux/project/selectors/element';
+import { lighten } from '@material-ui/core';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '../utils';
-import ContextMenu from './ContextMenu';
 
-const useStyles = makeStyles<Theme>(({ palette }) => ({
+const useIndicatorStyles = makeStyles({
   iconButton: {
     padding: 0,
     cursor: 'pointer',
@@ -32,12 +29,15 @@ const useStyles = makeStyles<Theme>(({ palette }) => ({
       pointerEvents: 'none',
     },
   },
+});
+
+const useStyles = makeStyles(({ palette }) => ({
   treeItem: {
     width: '100%',
     display: 'flex',
     alignItems: 'center',
     position: 'relative',
-    minHeight: '2em',
+    height: ({ height }: Props) => height,
     padding: '0.25em',
     outline: 'none',
     whiteSpace: 'nowrap',
@@ -96,7 +96,7 @@ const ExpandIndicator: React.FC<ExpandIndicatorProps> = ({
   onExpand,
   onCollapse,
 }) => {
-  const { iconButton } = useStyles();
+  const { iconButton } = useIndicatorStyles();
 
   if (hasChildren) {
     return (
@@ -114,17 +114,13 @@ const ExpandIndicator: React.FC<ExpandIndicatorProps> = ({
 };
 
 type Props = RenderItemParams & {
-  expand: (itemId: string) => void;
   select: (itemId: string) => void;
   deselect: (itemId: string) => void;
-  selectedItemId: string | null;
   offset: number;
   rulerHeight: number;
-};
-
-type State = {
-  mouseX: number | null;
-  mouseY: number | null;
+  height: number;
+  onContextMenu: (ev: MouseEvent<HTMLDivElement>, item: TreeItemType) => void;
+  isActive: boolean;
 };
 
 const TreeItem: React.FC<Props> = (props) => {
@@ -134,20 +130,14 @@ const TreeItem: React.FC<Props> = (props) => {
     onCollapse,
     provided,
     select,
-    selectedItemId,
     snapshot,
+    onContextMenu,
+    isActive,
   } = props;
 
   const classes = useStyles(props);
-  const { type } = useSelector(selectElementById(item.id as string));
-  const ElementIcon = ICONS[type];
+  const ElementIcon = ICONS[item.data.type];
 
-  const initialState = {
-    mouseX: null,
-    mouseY: null,
-  };
-
-  const [state, setState] = useState<State>(initialState);
   const isParent = item.children.length;
 
   const handleDoubleClick = () =>
@@ -159,17 +149,6 @@ const TreeItem: React.FC<Props> = (props) => {
 
   const handleFocus = () => select(item.id as string);
 
-  const handleContextMenu = (ev: MouseEvent<HTMLDivElement>) => {
-    ev.preventDefault();
-
-    setState({
-      mouseX: ev.clientX - 2,
-      mouseY: ev.clientY - 4,
-    });
-  };
-
-  const handleClose = () => setState(initialState);
-
   return (
     <div
       className={cn(
@@ -180,11 +159,11 @@ const TreeItem: React.FC<Props> = (props) => {
       ref={provided.innerRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      onContextMenu={handleContextMenu}
+      onContextMenu={(ev) => onContextMenu(ev, item)}
       onDoubleClick={handleDoubleClick}
       onClick={handleClick}
       onFocus={handleFocus}
-      aria-selected={item.id === selectedItemId}
+      aria-selected={isActive}
       {...(isParent
         ? { role: 'group', 'aria-expanded': item.isExpanded }
         : { role: 'treeitem' })}
@@ -201,16 +180,6 @@ const TreeItem: React.FC<Props> = (props) => {
       {ElementIcon && <ElementIcon className={classes.icon} />}
 
       <span>{splitWords(item.data?.title)}</span>
-
-      <ContextMenu
-        open={state.mouseY !== null}
-        anchorPosition={
-          state.mouseY !== null && state.mouseX !== null
-            ? { top: state.mouseY, left: state.mouseX }
-            : undefined
-        }
-        onClose={handleClose}
-      />
     </div>
   );
 };

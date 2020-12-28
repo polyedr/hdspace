@@ -10,18 +10,18 @@ import {
   flattenElements,
 } from '@Utils/normalizedStateHelpers';
 import {
-  selectCurrentProject,
-  selectEditableStyles,
-  selectProjectState,
-} from './base';
-import {
   ChildEntity,
   Entity,
   LibraryElement,
   PaginatedArray,
   Project,
   StateElement,
-} from '../../../types';
+} from '@Src/types';
+import {
+  selectCurrentProject,
+  selectEditableStyles,
+  selectProjectState,
+} from './base';
 import { AppReduxState } from '../../types';
 import {
   selectCurrentScreen,
@@ -41,8 +41,10 @@ export const selectScreenRootElement = (screenId: number) => ({
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
-export const selectCurrentRootId = (state: AppReduxState) =>
-  selectCurrentScreen(state).element || '-1';
+export const selectCurrentRootId = createSelector(
+  selectCurrentScreen,
+  (screen) => screen.element || '-1',
+);
 
 export const selectElementById = (id: string) => (state: AppReduxState) =>
   selectProjectState(state).data.elements[id];
@@ -81,24 +83,27 @@ export const selectElementByChildId = (id: string) => (
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
-export const selectElementBeingEdited = (elementId: string) => (
-  state: AppReduxState,
-) => {
-  const activeElementId = selectActiveElementId(state);
-  const { elementBeingEdited } = selectProjectState(state).ui;
-  return elementId === activeElementId && elementBeingEdited;
-};
-
 export const selectElementBeingEditedState = ({ project }: AppReduxState) =>
   project.ui.elementBeingEdited;
 
-export const selectElementCanBeEdited = (elementId: string) => (
-  state: AppReduxState,
-) => {
-  const activeElementId = selectActiveElementId(state);
-  const { elementCanBeEdited } = selectProjectState(state).ui;
-  return elementId === activeElementId && elementCanBeEdited;
-};
+export const selectElementCanBeEditedState = ({ project }: AppReduxState) =>
+  project.ui.elementCanBeEdited;
+
+export const selectElementBeingEdited = (elementId: string) =>
+  createSelector(
+    selectActiveElementId,
+    selectElementBeingEditedState,
+    (activeElementId, elementBeingEdited) =>
+      elementId === activeElementId && elementBeingEdited,
+  );
+
+export const selectElementCanBeEdited = (elementId: string) =>
+  createSelector(
+    selectActiveElementId,
+    selectElementCanBeEditedState,
+    (activeElementId, elementCanBeEdited) =>
+      elementId === activeElementId && elementCanBeEdited,
+  );
 
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
@@ -106,9 +111,11 @@ export const selectHoveredElementId = ({ project }: AppReduxState) =>
 export const selectAllElements = ({ project }: AppReduxState) =>
   project.data.elements;
 
-export const selectActiveElement = (state: AppReduxState) =>
-  state.project.data.elements[selectActiveElementId(state)] ||
-  DEFAULT_ACTIVE_ELEMENT;
+export const selectActiveElement = createSelector(
+  selectAllElements,
+  selectActiveElementId,
+  (elements, id) => elements[id] || DEFAULT_ACTIVE_ELEMENT,
+);
 
 function makeActiveElementInfoSelector<
   T extends StateElement,
@@ -208,10 +215,10 @@ export const selectActiveItemChildrenStyles = makeActiveElementInfoSelector(
   'styles',
 );
 
-export const selectActiveElementParams = (state: AppReduxState) => {
-  const activeElement = selectActiveElement(state);
-  return activeElement.parameters;
-};
+export const selectActiveElementParams = createSelector(
+  selectActiveElement,
+  (element) => element.parameters,
+);
 
 export const selectActiveElementParamByName = (name: string) => (
   state: AppReduxState,
@@ -315,3 +322,6 @@ export const selectDirectRootChildren = createSelector(
     return arrayToMap(root.children.map((childId) => elements[childId]));
   },
 );
+
+export const selectIsElementActive = (elementId: string) =>
+  createSelector(selectActiveElementId, (activeId) => activeId === elementId);

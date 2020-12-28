@@ -46,8 +46,6 @@ import {
   updateElementParameters,
   uploadFileSaga,
   loadCustomElementsSaga,
-  setActiveElementSaga,
-  setHoveredElementSaga,
 } from './element';
 
 import TYPES from '../../actionTypes';
@@ -255,7 +253,7 @@ function* duplicateScreenSaga(
     );
     const targetRootID = targetRoot.id;
 
-    yield put(Actions.setActiveElement(targetRootID));
+    yield put(Actions.setActiveElementId(targetRootID));
 
     if (duplicatedItems.length) {
       yield call(duplicateElements, duplicatedItems, targetRoot, {
@@ -496,8 +494,6 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
-  yield takeEvery(TYPES.SET_ACTIVE_ELEMENT_SAGA, setActiveElementSaga);
-  yield takeLatest(TYPES.SET_HOVERED_ELEMENT_SAGA, setHoveredElementSaga);
 
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
 }

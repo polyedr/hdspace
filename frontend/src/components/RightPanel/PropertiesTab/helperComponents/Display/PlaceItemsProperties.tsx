@@ -1,16 +1,16 @@
 import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import * as CSS from 'csstype';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { ALIGN_VALUES, JUSTIFY_VALUES } from './constants';
 import { useWrapperStyles } from './styles';
 
-type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+type Props = {
   reversed: boolean;
   justifyContent?: React.CSSProperties['justifyContent'];
   alignItems?: React.CSSProperties['alignItems'];
+  updateStyles: PropertiesChangeProps<LibraryElement<Entity>>['updateStyles'];
 };
 
 const PlaceItemsProperties: React.FC<Props> = ({
@@ -61,4 +61,4 @@ const PlaceItemsProperties: React.FC<Props> = ({
   );
 };
 
-export default withConfigurableProperties(PlaceItemsProperties);
+export default PlaceItemsProperties;

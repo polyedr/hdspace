@@ -4,9 +4,9 @@ import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 import cn from 'classnames';
 import {
-  setActiveElement,
   updateElementParameters,
   createElements,
+  setActiveElementId,
 } from '@Redux/project/actions';
 import {
   selectActiveElementId,
@@ -132,7 +132,7 @@ const FreeCanvas = () => {
           activeElementId === root.id ? '#5A899D' : 'transparent'
         }`,
       }}
-      onClick={() => dispatch(setActiveElement(root.id))}
+      onClick={() => dispatch(setActiveElementId(root.id))}
       enableResizing={false}
       disableDragging
       minWidth="100%"

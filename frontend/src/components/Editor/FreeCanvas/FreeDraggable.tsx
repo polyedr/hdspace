@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
-  setActiveElement,
+  setActiveElementId,
   updateElementParameters,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -46,7 +46,7 @@ const FreeDraggable: React.FC<Props> = ({
 
   const handleInteractionStart = (ev) => {
     ev.stopPropagation();
-    dispatch(setActiveElement(id));
+    dispatch(setActiveElementId(id));
   };
 
   const handleResizeStop: RndResizeCallback = (

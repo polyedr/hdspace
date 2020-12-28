@@ -1,7 +1,5 @@
 import React, { useCallback } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
-
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
@@ -67,6 +65,7 @@ const Display: React.FC<Props> = ({
           flexDirection={flexDirection}
           justifyContent={justifyContent}
           alignItems={alignItems}
+          updateStyles={updateStyles}
         />
       )}
       {!!display && ['grid', 'inline-grid'].includes(display) && (
@@ -74,10 +73,11 @@ const Display: React.FC<Props> = ({
           reversed={false}
           justifyContent={justifyContent}
           alignItems={alignItems}
+          updateStyles={updateStyles}
         />
       )}
     </>
   );
 };
 
-export default withConfigurableProperties(Display);
+export default Display;

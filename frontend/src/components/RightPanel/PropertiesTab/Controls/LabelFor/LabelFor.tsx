@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { LabelElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveLabelInputs } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
@@ -38,4 +37,4 @@ const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
   );
 };
 
-export default withConfigurableProperties(LabelFor);
+export default LabelFor;

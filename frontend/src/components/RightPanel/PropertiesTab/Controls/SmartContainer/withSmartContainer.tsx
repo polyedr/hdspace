@@ -1,10 +1,21 @@
 import React from 'react';
+import {
+  Entity,
+  NNBlockType,
+  PropertiesChangeProps,
+  SmartElement,
+} from '@Src/types';
 import SmartContainer from './SmartContainer';
-import { NNBlockType } from '../../../../../types';
 
 const withSmartContainer = (blockType: NNBlockType) => {
-  const Container: React.FC = (props) => {
-    return <SmartContainer blockType={blockType} {...props} />;
+  const Container: React.FC<{
+    activeElementId: PropertiesChangeProps<
+      SmartElement<Entity>
+    >['activeElementId'];
+  }> = ({ activeElementId }) => {
+    return (
+      <SmartContainer blockType={blockType} activeElementId={activeElementId} />
+    );
   };
 
   return Container;

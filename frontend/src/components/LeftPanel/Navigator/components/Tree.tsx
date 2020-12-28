@@ -1,0 +1,311 @@
+import React, { KeyboardEvent, useState, MouseEvent, useMemo } from 'react';
+import AtlasTree, {
+  mutateTree,
+  RenderItemParams,
+  TreeData,
+  TreeDestinationPosition,
+  TreeSourcePosition,
+  TreeItem as TreeItemType,
+} from '@atlaskit/tree';
+import TreeItem from '@Components/LeftPanel/Navigator/components/TreeItem';
+import {
+  copyActiveElement,
+  deleteElement,
+  moveElement,
+  pasteCopiedElement,
+  redoAction,
+  setActiveElementId,
+  undoAction,
+} from '@Redux/project/actions';
+import {
+  findNextNodeId,
+  findPrevNodeId,
+  focusTreeItem,
+  getRulerHeight,
+} from '@Components/LeftPanel/Navigator/utils';
+import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { Normalized, StateElement } from '@Src/types';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
+import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
+import Scrollbar from '../../../UI/Scrollbar';
+
+const useStyles = makeStyles({
+  tree: {
+    fontSize: '0.75em',
+    flex: '1',
+    display: 'flex',
+    flexDirection: 'column',
+
+    '& > :first-child': {
+      flex: '1',
+      overflow: 'auto',
+    },
+  },
+});
+
+type Props = {
+  tree: TreeData;
+  setTree: React.Dispatch<React.SetStateAction<TreeData>>;
+  elements: Normalized<StateElement>;
+};
+
+type State = {
+  mouseX: number | null;
+  mouseY: number | null;
+  item: TreeItemType | null;
+};
+
+const OFFSET = 15;
+
+const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const activeElementId = useSelector(selectActiveElementId);
+
+  const initialState: State = {
+    mouseX: null,
+    mouseY: null,
+    item: null,
+  };
+
+  const [state, setState] = useState<State>(initialState);
+  const handleMenuOpen = (
+    ev: MouseEvent<HTMLDivElement>,
+    item: TreeItemType,
+  ) => {
+    ev.preventDefault();
+
+    setState({
+      mouseX: ev.clientX - 2,
+      mouseY: ev.clientY - 4,
+      item,
+    });
+  };
+
+  const handleClose = () => setState(initialState);
+
+  const expandItemParents = (tree: TreeData, id: string) => {
+    // @ts-ignore
+    const parentId = tree.items[id]?.parent;
+    if (!parentId) return tree;
+    const newTree = mutateTree(tree, parentId, { isExpanded: true });
+    return expandItemParents(newTree, parentId);
+  };
+
+  const expandedTree = useMemo(() => expandItemParents(tree, activeElementId), [
+    activeElementId,
+    tree,
+  ]);
+
+  const [selectedItemId, setSelectedItem] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+
+  const expand = (itemId) =>
+    setTree((state) => mutateTree(state, itemId, { isExpanded: true }));
+
+  const collapse = (itemId) =>
+    setTree((state) => mutateTree(state, itemId, { isExpanded: false }));
+
+  const select = (itemId) => {
+    if (selectedItemId === itemId) return;
+
+    dispatch(setActiveElementId(itemId));
+    setSelectedItem(itemId);
+  };
+
+  const deselect = () => {
+    setSelectedItem(null);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (selectedItemId && !isDragging) {
+      if (e.keyCode === 38) {
+        // ArrowUp
+        // TODO: add throttling
+        e.preventDefault();
+        const prevNodeId = findPrevNodeId(tree, selectedItemId);
+        select(prevNodeId);
+        focusTreeItem(prevNodeId);
+      }
+
+      if (e.keyCode === 40) {
+        // ArrowDown
+        // TODO: add throttling
+        e.preventDefault();
+        const nextNodeId = findNextNodeId(tree, selectedItemId);
+        focusTreeItem(nextNodeId);
+      }
+
+      if (e.keyCode === 39) {
+        // ArrowRight
+        expand(selectedItemId);
+        select(selectedItemId);
+      }
+
+      if (e.keyCode === 37) {
+        // ArrowLeft
+        collapse(selectedItemId);
+        select(selectedItemId);
+      }
+
+      if (e.keyCode === 32) {
+        // Space
+        setIsDragging((state) => !state);
+      }
+
+      if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
+        // Ctrl/Cmd + C
+        dispatch(copyActiveElement());
+      }
+
+      if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {
+        // Ctrl/Cmd + V
+        dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+      }
+
+      if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
+        // Delete or Cmd + Backspace
+        const prevItemId = findPrevNodeId(tree, selectedItemId);
+        dispatch(deleteElement(selectedItemId, { screenId: currentScreenId }));
+        focusTreeItem(prevItemId);
+      }
+
+      if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+        // Ctrl/Cmd + Z
+        dispatch(undoAction());
+      }
+
+      if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+        // Ctrl/Cmd + Shift + Z
+        dispatch(redoAction());
+      }
+    }
+  };
+
+  const dragStart = (itemId) => select(itemId);
+
+  const dragEnd = (
+    source: TreeSourcePosition,
+    destination?: TreeDestinationPosition,
+  ) => {
+    if (!destination) {
+      setIsDragging(false);
+      return;
+    }
+
+    const { items } = tree;
+
+    const oldParent = items[source.parentId];
+    const newParent = items[destination.parentId];
+
+    if (destination.index === undefined) {
+      destination.index =
+        newParent.id === oldParent.id
+          ? newParent.children.length - 1
+          : newParent.children.length;
+    }
+
+    const childId = oldParent.children[source.index];
+    const child = items[childId];
+
+    const parentElement = elements[newParent.id];
+
+    if (!parentElement) {
+      console.error(`No element ${newParent.id}`);
+      setIsDragging(false);
+      return;
+    }
+    if (!canElementBeAdded(elements, newParent.id as string, child.data.type)) {
+      dispatch(
+        enqueueSnackbar({
+          message: 'Can not add this element!',
+          options: { variant: 'warning' },
+        }),
+      );
+      setIsDragging(false);
+      return;
+    }
+
+    if (newParent.id === oldParent.id && source.index === destination.index) {
+      setIsDragging(false);
+      return;
+    }
+
+    dispatch(
+      moveElement(
+        childId as string,
+        { newIndex: destination.index as number, oldIndex: source.index },
+        {
+          newParentId: destination.parentId as string,
+          oldParentId: source.parentId as string,
+        },
+        { screenId: currentScreenId },
+      ),
+    );
+    setIsDragging(false);
+    select(
+      newParent.isExpanded ? oldParent.children[source.index] : newParent.id,
+    );
+  };
+
+  const renderItem = (props: RenderItemParams) => {
+    const height = 25;
+
+    return (
+      <TreeItem
+        {...props}
+        select={select}
+        deselect={deselect}
+        offset={OFFSET}
+        rulerHeight={getRulerHeight(props.item, expandedTree, height)}
+        height={height}
+        onContextMenu={handleMenuOpen}
+        isActive={activeElementId === props.item.id}
+      />
+    );
+  };
+
+  return (
+    <div className={classes.tree} onKeyDown={handleKeyDown}>
+      <Scrollbar
+        style={{
+          height: '300px',
+          maxHeight: '300px',
+          minHeight: '300px',
+        }}
+      >
+        <AtlasTree
+          tree={expandedTree}
+          renderItem={renderItem}
+          onExpand={expand}
+          onCollapse={collapse}
+          onDragStart={dragStart}
+          onDragEnd={dragEnd}
+          offsetPerLevel={OFFSET}
+          isDragEnabled
+          isNestingEnabled
+        />
+      </Scrollbar>
+
+      {state.item && (
+        <ContextMenu
+          open={state.mouseY !== null}
+          anchorPosition={
+            state.mouseY !== null && state.mouseX !== null
+              ? { top: state.mouseY, left: state.mouseX }
+              : undefined
+          }
+          onClose={handleClose}
+          item={state.item}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Tree;

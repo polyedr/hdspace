@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import withConfigurableProperties from '@Utils/withConfigurableProperties';
 import { ContainerElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import StylesHeader from '../../helperComponents/StylesHeader';
@@ -50,4 +49,4 @@ const FlexGrow: React.FC<Props> = ({
   ) : null;
 };
 
-export default withConfigurableProperties(FlexGrow);
+export default FlexGrow;
