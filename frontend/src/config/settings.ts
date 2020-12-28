@@ -25,9 +25,10 @@ const settings = {
 
 const { api } = settings[env] || settings.development;
 
-export type MyAxiosProps = { access?: string; contentType?: string } & Partial<
-  AxiosRequestConfig
->;
+export type MyAxiosProps = {
+  access?: string;
+  contentType?: string;
+} & Partial<AxiosRequestConfig>;
 
 export const myAxios = (props: MyAxiosProps) => {
   const authorization = props.access
