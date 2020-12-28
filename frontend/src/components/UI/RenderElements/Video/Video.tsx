@@ -2,7 +2,6 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { VIMEO_HEIGHT_RATIO } from '@Constants/players';
 import IMAGES from '@Constants/images';
 import { getPlayerLink } from '@Utils/extractVideoLink';
 import { VideoRendererProps } from '../types';
@@ -10,13 +9,6 @@ import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles({
-  vimeoPadding: ({ entityStyles, groupStyles, ownStyles }) => {
-    const height =
-      ownStyles.height || groupStyles.height || entityStyles.height;
-    return {
-      paddingTop: height === 'auto' ? `${VIMEO_HEIGHT_RATIO}%` : '0',
-    };
-  },
   iframe: {
     overflow: 'hidden',
     position: 'relative,',
