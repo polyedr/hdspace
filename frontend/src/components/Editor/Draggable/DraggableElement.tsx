@@ -17,6 +17,7 @@ import {
   setCurrentDropTargetParams,
   setElementBeingEdited,
   setElementCanBeEdited,
+  setHoveredElement,
   updateElementParameters,
 } from '@Redux/project/actions';
 import { ElementData, StateElement, SyntheticElement } from '@Src/types';
@@ -235,13 +236,14 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, [isOverArea, rootID, dropTargetParams]);
 
-  /* const runResetEditState = useDebouncedCallback(() => {
+  const runResetEditState = useDebouncedCallback(() => {
     dispatch(setElementCanBeEdited(false));
-  }, 300); */
+  }, 300);
 
-  /* const clickHandler = useCallback(
+  const clickHandler = useCallback(
     (event: React.SyntheticEvent) => {
       event.stopPropagation();
+      dispatch(setActiveElementId(element.id));
       if (
         element &&
         EDITABLE_COMPONENTS_LIST.includes(element.type) &&
@@ -268,9 +270,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       elementCanBeEdited,
       runResetEditState,
     ],
-  ); */
+  );
 
-  /* const blurHandler = useCallback(
+  const blurHandler = useCallback(
     (event: React.FormEvent<HTMLElement>) => {
       if (elementProps?.contentEditable) {
         dispatch(resetElementEditState());
@@ -286,9 +288,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       }
     },
     [dispatch, elementId, elementProps?.contentEditable, screenId],
-  ); */
+  );
 
-  /* const keyDownHandler = useCallback(
+  const keyDownHandler = useCallback(
     (e: React.FormEvent<HTMLElement>) => {
       e.stopPropagation();
       const event = e.nativeEvent as KeyboardEvent;
@@ -298,7 +300,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       }
     },
     [elementBeingEdited],
-  ); */
+  );
 
   if (!element) {
     return null;
@@ -318,22 +320,15 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
             drop(ref);
           }
         }}
-        /* onMouseEnter={() => {
+        onMouseEnter={() => {
           dispatch(setHoveredElement(elementId));
         }}
         onMouseLeave={() => {
           dispatch(setHoveredElement(element.parent || null));
-        }} */
-        // onClick={clickHandler}
-        // onKeyDown={keyDownHandler}
-        /* onBlur={() => {
-          setEdit(false);
-        }} */
-        onClick={(ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          dispatch(setActiveElementId(element.id));
         }}
+        onKeyDown={keyDownHandler}
+        onClick={clickHandler}
+        onBlur={blurHandler}
       >
         {element.children.map((childId: string) => (
           <DraggableElement

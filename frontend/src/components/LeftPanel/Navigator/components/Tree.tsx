@@ -265,6 +265,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         rulerHeight={getRulerHeight(props.item, expandedTree, height)}
         height={height}
         onContextMenu={handleMenuOpen}
+        isActive={activeElementId === props.item.id}
       />
     );
   };

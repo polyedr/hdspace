@@ -1,12 +1,10 @@
 import React, { MouseEvent } from 'react';
-import { useSelector } from 'react-redux';
 import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { lighten } from '@material-ui/core';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
-import { selectIsElementActive } from '@Redux/project/selectors/element';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '../utils';
@@ -122,6 +120,7 @@ type Props = RenderItemParams & {
   rulerHeight: number;
   height: number;
   onContextMenu: (ev: MouseEvent<HTMLDivElement>, item: TreeItemType) => void;
+  isActive: boolean;
 };
 
 const TreeItem: React.FC<Props> = (props) => {
@@ -133,9 +132,8 @@ const TreeItem: React.FC<Props> = (props) => {
     select,
     snapshot,
     onContextMenu,
+    isActive,
   } = props;
-
-  const isActive = useSelector(selectIsElementActive(item.id.toString()));
 
   const classes = useStyles(props);
   const ElementIcon = ICONS[item.data.type];
