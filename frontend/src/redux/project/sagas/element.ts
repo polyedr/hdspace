@@ -277,9 +277,9 @@ export function* copyElementStylesSaga(
       return;
     }
 
-    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-      selectCurrentProject,
-    );
+    const currentProject: ReturnType<
+      typeof selectCurrentProject
+    > = yield select(selectCurrentProject);
 
     const sharedClassNames = currentProject.projectData.classes.map(
       (cssClass) => cssClass.className,
@@ -740,35 +740,4 @@ export function* loadCustomElementsSaga(
       }),
     );
   }
-}
-
-/*
-export function* setActiveElementSaga(
-  action: ReturnType<typeof Actions.setActiveElement>,
-) {
-  try {
-    const element = yield select(selectElementById(action.payload));
-    const prevActiveId = yield select(selectActiveElementId);
-    const rootID = yield select(selectCurrentRootId);
-    if (prevActiveId === action.payload) {
-      return;
-    }
-
-    yield put(Actions.setElementBeingEdited(false));
-    yield put(Actions.setActiveElementId(action.payload));
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-}
-*/
-
-export function* setHoveredElementSaga(
-  action: ReturnType<typeof Actions.setHoveredElement>,
-) {
-  yield put(Actions.setHoveredElementId(action.payload));
 }

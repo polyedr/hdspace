@@ -17,7 +17,7 @@ import {
   setCurrentDropTargetParams,
   setElementBeingEdited,
   setElementCanBeEdited,
-  setHoveredElement,
+  setHoveredElementId,
   updateElementParameters,
 } from '@Redux/project/actions';
 import { ElementData, StateElement, SyntheticElement } from '@Src/types';
@@ -321,10 +321,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           }
         }}
         onMouseEnter={() => {
-          dispatch(setHoveredElement(elementId));
+          dispatch(setHoveredElementId(elementId));
         }}
         onMouseLeave={() => {
-          dispatch(setHoveredElement(element.parent || null));
+          dispatch(setHoveredElementId(element.parent || null));
         }}
         onKeyDown={keyDownHandler}
         onClick={clickHandler}
