@@ -323,3 +323,6 @@ export const selectDirectRootChildren = createSelector(
     return arrayToMap(root.children.map((childId) => elements[childId]));
   },
 );
+
+export const selectIsElementActive = (elementId: string) =>
+  createSelector(selectActiveElementId, (activeId) => activeId === elementId);

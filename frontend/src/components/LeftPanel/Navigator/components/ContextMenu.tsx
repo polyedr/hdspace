@@ -9,11 +9,9 @@ import {
   pasteCopiedElement,
 } from '@Redux/project/actions';
 import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
-import {
-  selectActiveElement,
-  selectItemToCopyInfo,
-} from '@Redux/project/selectors/element';
+import { selectItemToCopyInfo } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { TreeItem } from '@atlaskit/tree';
 import Icon from '../../../UI/Icon';
 
 const StyledMenu = withStyles({
@@ -41,20 +39,27 @@ type Props = {
   open: boolean;
   onClose: () => void;
   anchorPosition: any;
+  item: TreeItem;
 };
 
-const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
+const ContextMenu: React.FC<Props> = ({
+  open,
+  onClose,
+  anchorPosition,
+  item,
+}) => {
   const dispatch = useDispatch();
-  const { type: activeElementType, id: activeElementId } = useSelector(
-    selectActiveElement,
-  );
+  const {
+    data: { type },
+    id,
+  } = item;
   const emptyClipboard = !useSelector(selectItemToCopyInfo);
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const canHaveChildren = canElementHaveChildren(activeElementType);
+  const canHaveChildren = canElementHaveChildren(type);
 
   const handleDelete = () => {
-    if (!activeElementId) return;
-    dispatch(deleteElement(activeElementId, { screenId: currentScreenId }));
+    if (!id) return;
+    dispatch(deleteElement(id.toString(), { screenId: currentScreenId }));
     onClose();
   };
 
@@ -75,7 +80,7 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <MenuItem disabled={activeElementType === 'root'} onClick={handleCopy}>
+      <MenuItem disabled={type === 'root'} onClick={handleCopy}>
         <Icon icon="copy" size={16} color="white" />
         Copy
       </MenuItem>
@@ -88,7 +93,7 @@ const ContextMenu: React.FC<Props> = ({ open, onClose, anchorPosition }) => {
         Paste
       </MenuItem>
 
-      <MenuItem disabled={activeElementType === 'root'} onClick={handleDelete}>
+      <MenuItem disabled={type === 'root'} onClick={handleDelete}>
         <Icon icon="delete" size={16} color="white" />
         Delete
       </MenuItem>

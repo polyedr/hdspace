@@ -1,4 +1,4 @@
-import { mutateTree, TreeData } from '@atlaskit/tree';
+import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 import { Normalized, StateElement, Node } from '../../../types';
 
 export const convertElements = (
@@ -104,4 +104,26 @@ export const findPrevNodeId = (tree, itemId) => {
 
 export const focusTreeItem = (itemId) => {
   (document.querySelector(`#treeitem-${itemId}`) as HTMLElement)?.focus();
+};
+export const getRulerHeight = (
+  item: TreeItem,
+  tree: TreeData,
+  height,
+): number => {
+  const { isExpanded, children } = item;
+  if (!isExpanded) return 0;
+
+  const getExpandedChildrenHeight = (children: string[]) =>
+    children.reduce((acc, curr) => {
+      if (!tree.items[curr].isExpanded) {
+        return acc + height - 0.25;
+      }
+      return (
+        acc +
+        height +
+        getExpandedChildrenHeight(tree.items[curr].children as string[])
+      );
+    }, 0);
+
+  return getExpandedChildrenHeight(children as string[]);
 };
