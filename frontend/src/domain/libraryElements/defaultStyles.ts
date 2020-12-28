@@ -608,7 +608,7 @@ export const defaultColumnStyles: {
   size: {
     ...DEFAULT_SIZE,
     width: '100%',
-    height: '100px',
+    minHeight: '100px',
   },
   display: {
     ...DEFAULT_DISPLAY,

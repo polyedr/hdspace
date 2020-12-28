@@ -118,10 +118,10 @@ const SizeBlock: React.FC<Props> = ({
 
       const newSize = {
         [name]: unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`,
+        ...(name === 'height' && { minHeight: 'auto' }),
       };
 
-      updateStyles(newSize);
-      updateStyles({ flexGrow: 0 });
+      updateStyles({ ...newSize, flexGrow: 0 });
     },
     [updateStyles, width, height],
   );
