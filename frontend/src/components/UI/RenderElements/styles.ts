@@ -74,3 +74,33 @@ export const makeComponentStyles = (
     },
     ...(style instanceof Function ? style(theme) : style),
   }));
+
+export const makeInlineStyles = (
+  callback: (styles: React.CSSProperties) => React.CSSProperties,
+) => {
+  return ({ entityStyles, groupStyles, ownStyles }: StyleRendererProps) => {
+    let componentStyles = {};
+    [entityStyles, groupStyles, ownStyles].forEach(
+      (style: React.CSSProperties) => {
+        const callbackStyles = callback(style);
+        const initializedStyles = Object.keys(callbackStyles).reduce(
+          (acc, key) => {
+            if (!callbackStyles[key]) {
+              return acc;
+            }
+            return {
+              ...acc,
+              [key]: callbackStyles[key],
+            };
+          },
+          {},
+        );
+        componentStyles = {
+          ...componentStyles,
+          ...initializedStyles,
+        };
+      },
+    );
+    return componentStyles;
+  };
+};

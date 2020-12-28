@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { Theme } from '@material-ui/core';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
 import { RightPanelTab } from '@Src/types';
@@ -11,7 +12,7 @@ import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
     width: (props: any) => (props.open ? RIGHT_PANEL_WIDTH : 0),
     display: 'flex',

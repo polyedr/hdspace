@@ -4,9 +4,9 @@ import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { lighten } from '@material-ui/core';
-import { selectIsElementActive } from '@Redux/project/selectors/element';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
+import { selectIsElementActive } from '@Redux/project/selectors/element';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 import { focusTreeItem } from '../utils';
@@ -39,7 +39,6 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     alignItems: 'center',
     position: 'relative',
-    // minHeight: '2em',
     height: ({ height }: Props) => height,
     padding: '0.25em',
     outline: 'none',

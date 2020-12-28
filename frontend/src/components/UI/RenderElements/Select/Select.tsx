@@ -1,202 +1,154 @@
 // @ts-nocheck
 
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+// import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import { makeStyles, TextField, MenuItem } from '@material-ui/core';
-import { selectElementAsTree } from '@Redux/project/selectors/element';
-import { LibraryElement } from '@Src/types';
+import { MDCSelect } from '@material/select';
+
+import '@material/form-field/dist/mdc.form-field.min.css';
+import '@material/list/dist/mdc.list.min.css';
+import '@material/menu-surface/dist/mdc.menu-surface.min.css';
+import '@material/menu/dist/mdc.menu.min.css';
+import '@Src/styles/export/material/mdc.select.css';
+
 import { SelectRendererProps } from '../types';
+import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
-const useWrapperStyles = makeComponentStyles({
+const useStyles = makeComponentStyles((theme) => ({
   root: {
-    '&.hovered $input': {
-      outline: '1px solid #949494',
-    },
+    display: 'inline-block',
+    position: 'relative',
   },
-});
-
-const useTextFieldStyles = makeStyles({
-  root: {
+  select: {
+    width: '100%',
     height: '100%',
-    border: 0,
-
-    '& fieldset': {
-      border: 0,
-    },
   },
-});
-
-const useMenuStyles = makeComponentStyles(
-  {},
-  ['margin', 'padding'],
-  (styles: React.CSSProperties) => ({
-    minWidth: styles.width,
-  }),
-);
-
-const useInputStyles = makeComponentStyles(
-  {
-    root: ({ isDisabled }: SelectRendererProps) => ({
-      height: '100%',
-      boxSizing: 'border-box',
-      outlineOffset: '-1px',
-
-      '&:hover': {
-        ...(!isDisabled && { borderColor: 'rgba(0, 0, 0, 0.87)' }),
-      },
-    }),
+  isOpen: {
+    top: '58px',
   },
-  [
-    'width',
-    'height',
-    'marginTop',
-    'marginRight',
-    'marginBottom',
-    'marginLeft',
-    'paddingTop',
-    'paddingRight',
-    'paddingBottom',
-    'paddingLeft',
-  ],
-  (style: React.CSSProperties) => ({
-    '& .MuiSelect-outlined.MuiSelect-outlined': {
-      paddingTop: style.paddingTop,
-      paddingRight: `calc(${style.paddingRight} + 18px)`,
-      paddingBottom: style.paddingBottom,
-      paddingLeft: style.paddingLeft,
-    },
-
-    '&::placeholder': {
-      color: style.color,
-    },
+  icon: ({ entityStyles, groupStyles, ownStyles }) => ({
+    fill:
+      ownStyles.color ||
+      groupStyles.color ||
+      entityStyles.color ||
+      theme.palette.primary.main,
   }),
-);
+}));
 
-const useDivStyles = makeStyles(() => {
-  const processDivStyles = (styles: React.CSSProperties) => {
-    const { marginTop, marginBottom, marginLeft, marginRight } = styles;
-    return {
-      marginTop,
-      marginBottom,
-      marginLeft,
-      marginRight,
-      position: 'relative',
-      display: 'inline-block',
-      verticalAlign: 'top',
-    };
-  };
-  return {
-    entityStyles: ({ entityStyles }) => processDivStyles(entityStyles),
-    groupStyles: ({ groupStyles }) => processDivStyles(groupStyles),
-    ownStyles: ({ ownStyles }) => processDivStyles(ownStyles),
-  };
-});
+const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
+  (props, ref) => {
+    const { id, name, isDisabled, params, className, children } = props;
+    const { isOpen } = params;
+    const eventHandlers = useEventHandlers(props);
+    const classes = useStyles(props);
 
-const Select: React.FC<SelectRendererProps> = React.forwardRef((props, ref) => {
-  const {
-    id,
-    isDisabled,
-    onElementChange,
-    params,
-    children,
-    className, // -
-    childrenElements,
-    projectClasses,
-  } = props;
-  const { isOpen } = params;
+    const [mdcSelect, setMdcSelect] = useState();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const classes = useWrapperStyles(props);
-  const divClasses = useDivStyles(props);
-  const textFieldClasses = useTextFieldStyles(props);
-  const inputClasses = useInputStyles(props);
+    useEffect(() => {
+      setIsMenuOpen(isOpen);
+    }, [isOpen, setIsMenuOpen]);
 
-  const menu = useSelector(selectElementAsTree(childrenElements[0]));
-  const [menuEntityClass, menuGroupClass] = menu.styles.classNames;
+    useEffect(() => {
+      return () => {
+        if (mdcSelect) {
+          mdcSelect.destroy();
+        }
+      };
+    }, [mdcSelect]);
 
-  const menuEntityStyles =
-    projectClasses?.find((cssClass) => cssClass.className === menuEntityClass)
-      ?.rules || {};
-  const menuGroupStyles =
-    projectClasses?.find((cssClass) => cssClass.className === menuGroupClass)
-      ?.rules || {};
+    useEffect(() => {
+      if (mdcSelect) {
+        mdcSelect.disabled = isDisabled;
+      }
+    }, [mdcSelect, isDisabled]);
 
-  const menuClasses = useMenuStyles({
-    entityStles: menuEntityStyles,
-    groupStyles: menuGroupStyles,
-    ownStyles: menu.styles.own,
-  });
-
-  // const menuItemClasses = useMenuItemStyles(props);
-
-  const menuItems: LibraryElement<'selectItem'> = menu.children;
-  const currentValue = params.value || menuItems[0]?.parameters?.value;
-
-  const PrototypeMenuProps = {
-    MenuProps: {
-      PaperProps: {
-        className: cn(
-          menuClasses.entityStyles,
-          menuClasses.groupStyles,
-          menuClasses.ownStyles,
-        ),
-      },
-    },
-  };
-
-  const InputProps = {
-    className: cn(
-      isDisabled && classes.disabled,
-      inputClasses.root,
-      inputClasses.entityStyles,
-      inputClasses.groupStyles,
-      inputClasses.ownStyles,
-    ),
-  };
-
-  return (
-    <div
-      key={id}
-      ref={ref}
-      className={cn(
-        className,
-        classes.root,
-        divClasses.entityStyles,
-        divClasses.groupStyles,
-        divClasses.ownStyles,
-      )}
-    >
-      <TextField
+    return (
+      <div
         id={id}
         data-ls-id={id}
-        variant="outlined"
+        key={id}
+        ref={ref}
         className={cn(
-          textFieldClasses.root,
-          isDisabled ? classes.disabled : '',
-          textFieldClasses.entityStyles,
-          textFieldClasses.groupStyles,
-          textFieldClasses.ownStyles,
+          className,
+          classes.root,
+          classes.entityStyles,
+          classes.groupStyles,
+          classes.ownStyles,
         )}
-        value={currentValue}
-        InputProps={InputProps}
-        SelectProps={!isDisabled ? PrototypeMenuProps : null}
-        onChange={onElementChange}
-        select
+        {...eventHandlers}
       >
-        {menuItems.map((item) => (
-          <MenuItem
-            key={item.id}
-            value={item.parameters.value}
-            className={cn(menuClasses.entityStyles, menuClasses.groupStyles)}
+        <div
+          ref={(dom: HTMLElement) => {
+            if (dom && !mdcSelect) {
+              setMdcSelect(new MDCSelect(dom));
+              setIsMenuOpen(isOpen); // hook to turn menu back on
+            }
+          }}
+          className={cn(
+            `select-${id}-component`,
+            'mdc-select',
+            'mdc-select--outlined',
+            classes.select,
+          )}
+        >
+          <input type="hidden" name={name} />
+          <div
+            className={cn('mdc-select__anchor', isDisabled && classes.disabled)}
           >
-            {item.parameters.name}
-          </MenuItem>
-        ))}
-      </TextField>
-      {isOpen && children}
-    </div>
-  );
-});
+            <span className="mdc-notched-outline">
+              <span className="mdc-notched-outline__leading" />
+              <span className="mdc-notched-outline__trailing" />
+            </span>
+            <span className="mdc-select__selected-text-container">
+              <span className="mdc-select__selected-text" />
+            </span>
+            <span className="mdc-select__dropdown-icon">
+              <svg
+                className={cn(
+                  classes.icon,
+                  'mdc-select__dropdown-icon-graphic',
+                )}
+                viewBox="7 10 10 5"
+                focusable="false"
+              >
+                <polygon
+                  className="mdc-select__dropdown-icon-inactive"
+                  stroke="none"
+                  fillRule="evenodd"
+                  points="7 10 12 15 17 10"
+                />
+                <polygon
+                  className="mdc-select__dropdown-icon-active"
+                  stroke="none"
+                  fillRule="evenodd"
+                  points="7 15 12 10 17 15"
+                />
+              </svg>
+            </span>
+          </div>
 
-export default Select;
+          <div
+            className={cn(
+              'mdc-select__menu',
+              'mdc-menu mdc-menu-surface',
+              'mdc-menu-surface--fullwidth',
+              ...(isDisabled && isMenuOpen
+                ? [
+                    'mdc-menu-surface--open',
+                    'mdc-menu-surface--is-open-below',
+                    classes.isOpen,
+                  ]
+                : []),
+            )}
+          >
+            {children}
+          </div>
+        </div>
+      </div>
+    );
+  },
+);
+
+export default SelectComponent;

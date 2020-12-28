@@ -58,7 +58,7 @@ const useUrlImageToFile = (
       return;
     }
     imgDom.onload = handleFileInput;
-  }, [dispatch, id, imgDom, url, imageSize]);
+  }, [dispatch, id, imgDom, url, imageSize, handleFileInput]);
 
   useEffect(() => {
     handleFileInput();

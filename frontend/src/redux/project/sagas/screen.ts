@@ -179,9 +179,9 @@ export function* createScreenSaga({
           data: [rootScenarioWithRootElement],
         });
 
-        const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-          selectCurrentProject,
-        );
+        const currentProject: ReturnType<
+          typeof selectCurrentProject
+        > = yield select(selectCurrentProject);
 
         const updateProject: Project = R.assoc(
           'projectscreen',
@@ -361,9 +361,9 @@ export function* deleteScreenSaga({
       yield put(setCurrentScreenId(-1));
     }
 
-    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-      selectCurrentProject,
-    );
+    const currentProject: ReturnType<
+      typeof selectCurrentProject
+    > = yield select(selectCurrentProject);
     const screenList = currentProject.projectscreen;
 
     if (screenList.length <= 1) {

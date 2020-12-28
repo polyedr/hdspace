@@ -9,6 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = ({ MODE }) => {
   const isProduction = MODE === 'production';
@@ -74,7 +75,7 @@ module.exports = ({ MODE }) => {
                   plugins: [
                     'postcss-import',
                     'postcss-url',
-                    'postcss-cssnext',
+                    'postcss-preset-env',
                     'postcss-reporter',
                     { 'postcss-browser-reporter': { disabled: isProduction } },
                   ],
@@ -107,6 +108,7 @@ module.exports = ({ MODE }) => {
             {
               loader: 'sass-resources-loader',
               options: {
+                includePaths: ['src', 'node_modules', '.'],
                 resources: [
                   path.resolve(__dirname, 'src', 'styles', 'variables.scss'),
                 ],
@@ -223,6 +225,53 @@ module.exports = ({ MODE }) => {
       }),
       new ForkTsCheckerWebpackPlugin(),
       // new BundleAnalyzerPlugin(),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: 'src/styles/export/material/mdc.checkbox.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'src/styles/export/material/mdc.radio.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'src/styles/export/material/mdc.select.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'src/export/js/app.js',
+            to: 'js/export',
+          },
+          {
+            from: 'node_modules/@material/form-field/dist/mdc.form-field.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'node_modules/@material/list/dist/mdc.list.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from:
+              'node_modules/@material/menu-surface/dist/mdc.menu-surface.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+          {
+            from: 'node_modules/@material/menu/dist/mdc.menu.css',
+            to: 'styles/material',
+            toType: 'dir',
+          },
+        ],
+        options: {
+          concurrency: 10,
+        },
+      }),
     ],
 
     devServer: {

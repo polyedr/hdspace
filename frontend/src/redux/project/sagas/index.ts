@@ -223,18 +223,18 @@ function* duplicateScreenSaga(
       selectScreenRootElement(screenID),
     );
 
-    const sourceCurrentScreen: ReturnType<typeof selectCurrentScreen> = yield select(
-      selectCurrentScreen,
-    );
+    const sourceCurrentScreen: ReturnType<
+      typeof selectCurrentScreen
+    > = yield select(selectCurrentScreen);
 
     const duplicatedItems = sourceRoot.children.map((child) => ({
       id: child.id,
       screenID: sourceCurrentScreen.id,
     }));
 
-    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-      selectCurrentProject,
-    );
+    const currentProject: ReturnType<
+      typeof selectCurrentProject
+    > = yield select(selectCurrentProject);
     const projectID = currentProject.id;
     const screensNumber = currentProject.projectscreen.length;
 
