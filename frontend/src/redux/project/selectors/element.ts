@@ -10,18 +10,18 @@ import {
   flattenElements,
 } from '@Utils/normalizedStateHelpers';
 import {
-  selectCurrentProject,
-  selectEditableStyles,
-  selectProjectState,
-} from './base';
-import {
   ChildEntity,
   Entity,
   LibraryElement,
   PaginatedArray,
   Project,
   StateElement,
-} from '../../../types';
+} from '@Src/types';
+import {
+  selectCurrentProject,
+  selectEditableStyles,
+  selectProjectState,
+} from './base';
 import { AppReduxState } from '../../types';
 import {
   selectCurrentScreen,
@@ -83,24 +83,27 @@ export const selectElementByChildId = (id: string) => (
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
-export const selectElementBeingEdited = (elementId: string) => (
-  state: AppReduxState,
-) => {
-  const activeElementId = selectActiveElementId(state);
-  const { elementBeingEdited } = selectProjectState(state).ui;
-  return elementId === activeElementId && elementBeingEdited;
-};
-
 export const selectElementBeingEditedState = ({ project }: AppReduxState) =>
   project.ui.elementBeingEdited;
 
-export const selectElementCanBeEdited = (elementId: string) => (
-  state: AppReduxState,
-) => {
-  const activeElementId = selectActiveElementId(state);
-  const { elementCanBeEdited } = selectProjectState(state).ui;
-  return elementId === activeElementId && elementCanBeEdited;
-};
+export const selectElementCanBeEditedState = ({ project }: AppReduxState) =>
+  project.ui.elementCanBeEdited;
+
+export const selectElementBeingEdited = (elementId: string) =>
+  createSelector(
+    selectActiveElementId,
+    selectElementBeingEditedState,
+    (activeElementId, elementBeingEdited) =>
+      elementId === activeElementId && elementBeingEdited,
+  );
+
+export const selectElementCanBeEdited = (elementId: string) =>
+  createSelector(
+    selectActiveElementId,
+    selectElementCanBeEditedState,
+    (activeElementId, elementCanBeEdited) =>
+      elementId === activeElementId && elementCanBeEdited,
+  );
 
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
@@ -113,10 +116,6 @@ export const selectActiveElement = createSelector(
   selectActiveElementId,
   (elements, id) => elements[id] || DEFAULT_ACTIVE_ELEMENT,
 );
-
-/* (state: AppReduxState) =>
-  state.project.data.elements[selectActiveElementId(state)] ||
-  DEFAULT_ACTIVE_ELEMENT; */
 
 function makeActiveElementInfoSelector<
   T extends StateElement,
