@@ -1,8 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import JSZip from 'jszip';
 import pretty from 'pretty';
-// eslint-disable-next-line
-import styles from '!raw-loader!sass-loader!@Src/styles/index.scss';
+import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
 const cssResources = [
@@ -74,7 +73,6 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
 };
 
 export const processCSS = async (cssFolder: JSZip | null) => {
-  cssFolder?.file('fonts.css', styles);
   return Promise.all(
     cssResources.map((resource) => axios.get(`/styles/material/${resource}`)),
   )
@@ -135,6 +133,9 @@ export const getHtmlFromTemplate = (screenName: string, body: string) =>
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
+    ${getFontsLink('Lato', 'Merriweather', 'Monsterrat')}
+    ${getFontsLink('Open Sans', 'Oswald', 'Raleway', 'Ubuntu')}
+    ${getFontsLink('Roboto Mono', 'Roboto Condensed', 'Source Sans Pro')}
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.checkbox.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.radio.css" />
@@ -142,8 +143,7 @@ export const getHtmlFromTemplate = (screenName: string, body: string) =>
     <link rel="stylesheet" type="text/css" href="css/mdc.list.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
-    <link rel="stylesheet" type="text/css" href="css/fonts.css" />
+    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />    
     <script src="https://unpkg.com/mat-ripple"></script> 
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <title>${screenName}</title>

@@ -85,8 +85,11 @@ module.exports = ({ MODE }) => {
           ],
         },
         // static assets
-        /* { test: /\.html$/, use: 'html-loader' }, */
-        { test: /\.(png|svg|jpg|gif)$/, use: 'file-loader' },
+        {
+          test: /\.(png|svg|jpg|gif)$/,
+          exclude: [/assets\/fonts/],
+          use: 'file-loader',
+        },
         {
           test: /\.scss$/,
           use: [
@@ -108,7 +111,7 @@ module.exports = ({ MODE }) => {
             {
               loader: 'sass-resources-loader',
               options: {
-                includePaths: ['src', 'node_modules', '.'],
+                includePaths: ['src', 'node_modules'],
                 resources: [
                   path.resolve(__dirname, 'src', 'styles', 'variables.scss'),
                 ],
@@ -118,12 +121,12 @@ module.exports = ({ MODE }) => {
         },
         {
           test: /\.(eot|ttf|woff|woff2|otf|svg)$/,
-          include: [/fonts/],
+          include: [/assets\/fonts/],
           use: {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'fonts/',
+              outputPath: 'fonts',
             },
           },
         },

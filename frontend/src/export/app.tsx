@@ -13,6 +13,7 @@ import ExportedElement from './components/ExportedElement';
 import {
   getHtmlFromTemplate,
   processCSS,
+  // processFonts,
   processHTML,
   processJS,
 } from './utils/processor';
@@ -22,12 +23,14 @@ const createArchive = (screenName: string, html: string, css: string) => {
   const cssFolder = zip.folder('css');
   const jsFolder = zip.folder('js');
   const assetsFolder = zip.folder('assets');
+  // const fontsFolder = assetsFolder?.folder('fonts');
 
   // eslint-disable-next-line no-console
   Promise.all([
     processHTML(html, assetsFolder),
     processCSS(cssFolder),
     processJS(jsFolder),
+    // rocessFonts(fontsFolder),
   ]).then(([htmlResponse]) => {
     zip.file('index.html', getHtmlFromTemplate(screenName, htmlResponse));
     cssFolder?.file('style.css', css);
