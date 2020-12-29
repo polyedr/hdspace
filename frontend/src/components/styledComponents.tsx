@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import MuiAccordion, { AccordionProps } from '@material-ui/core/Accordion';
 import {
   AccordionDetailsProps,
@@ -165,7 +165,19 @@ export const StyledAccordionDetails: React.FC<AccordionDetailsProps> = ({
 
 export const StyledTextField: React.FC<TextFieldProps> = (props) => {
   const classes = useTextFieldStyles();
-  return <TextField classes={classes} {...props} />;
+  const { select } = props;
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <TextField
+      {...(!select && {
+        inputRef,
+        onFocus: () => inputRef.current?.select(),
+      })}
+      classes={classes}
+      {...props}
+    />
+  );
 };
 
 export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => {
