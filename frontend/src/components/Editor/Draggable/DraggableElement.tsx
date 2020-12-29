@@ -236,6 +236,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, [isOverArea, rootID, dropTargetParams]);
 
+  useEffect(() => {
+    return () => {
+      DOMHandler.INSTANCE.removeElementDom(elementId);
+    };
+  }, []);
+
   const runResetEditState = useDebouncedCallback(() => {
     dispatch(setElementCanBeEdited(false));
   }, 300);

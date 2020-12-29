@@ -1,5 +1,5 @@
 export type ElementsDom = {
-  [id: string]: HTMLElement;
+  [id: string]: HTMLElement | null;
 };
 
 export class DOMHandler {
@@ -13,6 +13,10 @@ export class DOMHandler {
     if (!this._elementsDom[id]) {
       this._elementsDom[id] = element;
     }
+  }
+
+  public removeElementDom(id: string) {
+    this._elementsDom[id] = null;
   }
 
   public getDomById(id: string | null) {
