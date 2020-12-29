@@ -5,14 +5,14 @@ import { WithActionProps } from '@Src/types';
 import {
   ActionRendererProps,
   SharedRendererProps,
-} from '../components/UI/RenderElements/types';
+} from '@Components/UI/RenderElements/types';
 
 type Props = WithActionProps & SharedRendererProps & ActionRendererProps;
 
 const withAction = (
   Component: React.ComponentType<WithActionProps & ActionRendererProps>,
-) => {
-  const WrapperComponent = React.forwardRef((props: Props, ref) => {
+) =>
+  React.forwardRef((props: Props, ref) => {
     const {
       params: { action },
       isDisabled,
@@ -35,6 +35,7 @@ const withAction = (
 
     const handleLinkClick = useCallback(
       (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        if (props.onClick) props.onClick(event);
         switch (action.type) {
           case 'internal-link':
             if (isDisabled || !action.screenId) {
@@ -48,7 +49,7 @@ const withAction = (
             }
         }
       },
-      [action.screenId, action.type, action.url, isDisabled],
+      [action.screenId, action.type, action.url, isDisabled, props.onClick],
     );
 
     return (
@@ -61,8 +62,5 @@ const withAction = (
       />
     );
   });
-
-  return WrapperComponent;
-};
 
 export default withAction;
