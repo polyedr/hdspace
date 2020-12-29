@@ -35,9 +35,9 @@ export type PaginatedArray<T> = PaginatedBase<T> & {
   results: T[];
 };
 
-export type PaginatedData<T extends { id: string | number }> = PaginatedBase<
-  T
-> & {
+export type PaginatedData<
+  T extends { id: string | number }
+> = PaginatedBase<T> & {
   results: Normalized<T>;
 };
 
@@ -126,16 +126,10 @@ export type SmartContainerServerElement<T extends Entity> = ServerElement<
   [],
   SmartElementParameters
 >;
-export type SmartHeaderServerElement = SmartContainerServerElement<
-  'smartHeader'
->;
-export type SmartFooterServerElement = SmartContainerServerElement<
-  'smartFooter'
->;
+export type SmartHeaderServerElement = SmartContainerServerElement<'smartHeader'>;
+export type SmartFooterServerElement = SmartContainerServerElement<'smartFooter'>;
 export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
-export type SmartWebpageServerElement = SmartContainerServerElement<
-  'smartWebpage'
->;
+export type SmartWebpageServerElement = SmartContainerServerElement<'smartWebpage'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type HyperlinkServerElement = ServerElement<
   'hyperlink',
@@ -517,6 +511,7 @@ export type MapProps = BaseElementParams & {
     };
     zoom: number;
     markerText: string;
+    apiKey: string;
   };
 };
 
@@ -528,6 +523,7 @@ export type MapParameters = BaseElementParams & {
     };
     zoom: number;
     markerText: string;
+    apiKey: string;
   };
 };
 
@@ -670,6 +666,7 @@ export interface IMapProps {
   center: ICenterProp;
   zoom: number;
   markerText?: string;
+  apiKey: string;
 }
 
 export type Option = { name: string; value: any };
@@ -927,9 +924,10 @@ export type WithActionProps = {
   onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>): void;
 };
 
-export type MyAxiosProps = { access?: string; contentType?: string } & Partial<
-  AxiosRequestConfig
->;
+export type MyAxiosProps = {
+  access?: string;
+  contentType?: string;
+} & Partial<AxiosRequestConfig>;
 
 export type Node = {
   id: string;

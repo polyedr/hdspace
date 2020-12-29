@@ -1,6 +1,6 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
-import { IMapProps } from '../../../types';
+import { IMapProps } from '@Src/types';
 
 const styles = require('./styles.scss');
 
@@ -18,10 +18,11 @@ const Marker: React.FC<IMarkerProps> = ({ text }) => {
   );
 };
 
-const GMap: React.FC<IMapProps> = ({ center, zoom, markerText }) => (
+const GMap: React.FC<IMapProps> = ({ center, zoom, markerText, apiKey }) => (
   <GoogleMapReact
     center={center}
     zoom={zoom}
+    bootstrapURLKeys={{ key: apiKey }}
     yesIWantToUseGoogleMapApiInternals
   >
     <Marker lat={center?.lat} lng={center?.lng} text={markerText || ''} />

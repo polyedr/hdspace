@@ -33,6 +33,7 @@ const Map: React.FC<MapRendererProps> = React.forwardRef((props, ref) => {
         center={params.map_props.center}
         zoom={params.map_props.zoom}
         markerText={params.map_props.markerText}
+        apiKey={params.map_props.apiKey}
       />
     </div>
   );
