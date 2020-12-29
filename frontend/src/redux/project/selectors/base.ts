@@ -62,6 +62,10 @@ export function selectShowingBorders(state: AppReduxState) {
   return selectProjectState(state).ui.showContainersBorders;
 }
 
+export const selectBordersEnabled = (state: AppReduxState) => {
+  return selectProjectState(state).ui.bordersEnabled;
+};
+
 export const selectUndoActions = ({ project }: AppReduxState) =>
   project.control.undoActions;
 

@@ -39,9 +39,9 @@ export const initialUserState: UserState = {
   confirmMessage: '',
 };
 
-const changeMinLPanel: ActionHandler<ReturnType<
-  typeof Actions.changeMinLPanel
->> = (state) => ({
+const changeMinLPanel: ActionHandler<
+  ReturnType<typeof Actions.changeMinLPanel>
+> = (state) => ({
   ...state,
   isLPanelMinimized: !state.isLPanelMinimized,
 });
@@ -108,10 +108,9 @@ const setConfirmMessage: ActionHandler<typeof Actions.setConfirmMessage> = (
   confirmMessage: payload.confirmMessage,
 });
 
-const setRestorePasswordEmail: ActionHandler<typeof Actions.setRestorePasswordEmail> = (
-  state,
-  { restorePasswordEmail },
-) => ({
+const setRestorePasswordEmail: ActionHandler<
+  typeof Actions.setRestorePasswordEmail
+> = (state, { restorePasswordEmail }) => ({
   ...state,
   restorePasswordEmail,
 });

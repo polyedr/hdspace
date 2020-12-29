@@ -92,6 +92,7 @@ import {
   UploadFile,
   WrapIntoContainer,
   SetScreenCreateLoader,
+  SetBordersEnabled,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -387,6 +388,11 @@ export const updateElement = <T extends Entity>(
 
 export const toggleContainersBorders = (): ToggleContainersBorders => ({
   type: TYPES.TOGGLE_CONTAINERS_BORDERS,
+});
+
+export const setBordersEnabled = (enabled: boolean): SetBordersEnabled => ({
+  type: TYPES.SET_BORDERS_ENABLED,
+  payload: enabled,
 });
 
 export const updateSharedStyles = (
