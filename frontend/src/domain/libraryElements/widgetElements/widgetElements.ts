@@ -22,6 +22,7 @@ export const map: MapServerElement = {
       },
       zoom: 10,
       markerText: 'A',
+      apiKey: '',
     },
   },
   styles: {

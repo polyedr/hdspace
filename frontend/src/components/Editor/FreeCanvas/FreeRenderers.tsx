@@ -141,6 +141,7 @@ const Map: React.FC<Props> = (props) => {
           center={element.parameters.map_props.center}
           zoom={element.parameters.map_props.zoom}
           markerText={element.parameters.map_props.markerText}
+          apiKey={element.parameters.map_props.apiKey}
         />
       </div>
     </FreeDraggable>

@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -17,6 +17,7 @@ import { getPermissibleValue } from '@Utils/NumberHelper';
 import { MapElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
+import { InputAdornment } from '@material-ui/core';
 
 const useStyles = makeStyles({
   text: {
@@ -118,6 +119,18 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
     [mapProps, debounced],
   );
 
+  const handleMapApiKeyChange = useCallback(
+    ({ target: { value } }) => {
+      const newMapProps = {
+        ...mapProps,
+        apiKey: value,
+      };
+      setState(newMapProps);
+      debounced.callback(newMapProps);
+    },
+    [mapProps, debounced],
+  );
+
   return (
     <div>
       <div className={classes.wrapper}>
@@ -154,6 +167,24 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
         label="Marker Text"
         value={state.markerText}
         onChange={handleMarkerTextChange}
+        fullWidth
+        margin="dense"
+      />
+
+      <StyledTextField
+        label="API Key"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment
+              position="start"
+              title="Insert an API key and reload the page"
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </InputAdornment>
+          ),
+        }}
+        value={state.apiKey}
+        onChange={handleMapApiKeyChange}
         fullWidth
         margin="dense"
       />
