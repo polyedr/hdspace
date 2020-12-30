@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -17,6 +17,7 @@ import { getPermissibleValue } from '@Utils/NumberHelper';
 import { MapElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
+import { InputAdornment } from '@material-ui/core';
 
 const useStyles = makeStyles({
   text: {
@@ -172,6 +173,16 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
 
       <StyledTextField
         label="API Key"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment
+              position="start"
+              title="Insert an API key and reload the page"
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </InputAdornment>
+          ),
+        }}
         value={state.apiKey}
         onChange={handleMapApiKeyChange}
         fullWidth
