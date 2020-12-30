@@ -20,7 +20,6 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
   const element = useSelector(selectElementById(elementId));
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
-  // const showBorders = useSelector(selectShowingBorders);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
 
   const isDropTarget = elementId === dropTargetParams?.id;
@@ -64,7 +63,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
     };
   }, [dropTargetParams, isDropTarget]);
 
-  return element && styles /* && displayBorders */ ? (
+  return element && styles ? (
     <>
       {showBordersPosition[BorderPosition.TOP] && (
         <Border
