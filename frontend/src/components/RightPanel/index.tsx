@@ -5,7 +5,10 @@ import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Theme } from '@material-ui/core';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
+import {
+  PANEL_TRANSITION_DURATION,
+  RIGHT_PANEL_WIDTH,
+} from '@Src/styles/Theme';
 import { RightPanelTab } from '@Src/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
@@ -18,7 +21,7 @@ const useStyles = makeStyles<Theme>(({ palette }) => ({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    transition: 'width 0.25s ease',
+    transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
     backgroundColor: palette.panel.main,
     color: palette.common.white,
   },

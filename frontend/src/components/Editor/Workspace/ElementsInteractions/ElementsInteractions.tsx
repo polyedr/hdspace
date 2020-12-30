@@ -6,7 +6,10 @@ import {
   selectCurrentRootId,
   selectHoveredElementId,
 } from '@Redux/project/selectors/element';
-import { selectShowingBorders } from '@Redux/project/selectors/base';
+import {
+  selectBordersEnabled,
+  selectShowingBorders,
+} from '@Redux/project/selectors/base';
 import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
 
@@ -31,6 +34,7 @@ const ElementsInteractions: React.FC = () => {
   const hoveredElementDom = DOMHandler.INSTANCE.getDomById(hoveredElementId);
 
   const showBorders = useSelector(selectShowingBorders);
+  const bordersEnabled = useSelector(selectBordersEnabled);
 
   const idsToExclude = [activeElementId];
   if (!!hoveredElementId && hoveredElementId !== activeElementId) {
@@ -39,7 +43,7 @@ const ElementsInteractions: React.FC = () => {
 
   const classes = useStyles();
 
-  if (!rootDom) {
+  if (!rootDom || !bordersEnabled) {
     return null;
   }
 

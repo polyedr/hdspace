@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
 import SubjectIcon from '@material-ui/icons/Subject';
 import WebIcon from '@material-ui/icons/Web';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -9,10 +10,15 @@ import IconButton from '@material-ui/core/IconButton';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import { changeMinLPanel } from '@Redux/user/actions';
 import { selectIsLeftPanelMinimized } from '@Redux/user/selectors';
+import { setBordersEnabled } from '@Redux/project/actions';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
-import { LEFT_PANEL_WIDTH, LEFT_PANEL_WIDTH_MIN } from '../../styles/Theme';
+import {
+  LEFT_PANEL_WIDTH,
+  LEFT_PANEL_WIDTH_MIN,
+  PANEL_TRANSITION_DURATION,
+} from '../../styles/Theme';
 
 const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
   createStyles({
@@ -21,7 +27,7 @@ const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
       width: ({ minimized }) =>
         minimized ? LEFT_PANEL_WIDTH_MIN : LEFT_PANEL_WIDTH,
       backgroundColor: palette.panel.main,
-      transition: 'width 0.25s ease',
+      transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
     },
     iconContainer: {
       textAlign: 'center',
@@ -59,8 +65,14 @@ const LeftPanel: React.FC = () => {
   const minimized = useSelector(selectIsLeftPanelMinimized);
   const classes = useStyles({ minimized });
 
+  const enableBordersDebounce = useDebouncedCallback(() => {
+    dispatch(setBordersEnabled(true));
+  }, PANEL_TRANSITION_DURATION + 120);
+
   const toggleLeftPanel = () => {
+    dispatch(setBordersEnabled(false));
     dispatch(changeMinLPanel());
+    enableBordersDebounce.callback();
   };
 
   return (

@@ -1,6 +1,7 @@
-import React from 'react';
-import Switch from '@material-ui/core/Switch';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
+import Switch from '@material-ui/core/Switch';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
@@ -11,13 +12,16 @@ import Button from '@material-ui/core/Button';
 import {
   changeFreeCanvasMode,
   convertFreeCanvas,
+  setBordersEnabled,
   toggleContainersBorders,
 } from '@Redux/project/actions';
 import {
+  selectBordersEnabled,
   selectFreeCanvasMode,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
 import Formats from './Formats';
 import Actions from './actions';
 
@@ -54,16 +58,27 @@ const TopBar: React.FC = () => {
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const showBorders = useSelector(selectShowingBorders);
+  const bordersEnabled = useSelector(selectBordersEnabled);
 
   const createFlex = () => {
     dispatch(convertFreeCanvas());
   };
 
-  const handleToggleProtoMode = () =>
-    dispatch(changePrototypeMode(!isProtoMode));
+  const enableBordersDebounce = useDebouncedCallback(() => {
+    dispatch(setBordersEnabled(true));
+  }, PANEL_TRANSITION_DURATION + 120);
 
-  const handleToggleFreeMode = () =>
+  const handleToggleProtoMode = useCallback(() => {
+    dispatch(setBordersEnabled(false));
+    dispatch(changePrototypeMode(!isProtoMode));
+    enableBordersDebounce.callback();
+  }, [dispatch, isProtoMode, enableBordersDebounce]);
+
+  const handleToggleFreeMode = useCallback(() => {
+    dispatch(setBordersEnabled(false));
     dispatch(changeFreeCanvasMode(!freeCanvasMode));
+    enableBordersDebounce.callback();
+  }, [dispatch, freeCanvasMode, enableBordersDebounce]);
 
   return currentScreenId !== -1 ? (
     <div className={classes.root}>
@@ -107,6 +122,7 @@ const TopBar: React.FC = () => {
               <Checkbox
                 name="Show borders"
                 checked={showBorders}
+                disabled={!bordersEnabled && !isProtoMode}
                 onChange={() => dispatch(toggleContainersBorders())}
               />
             }

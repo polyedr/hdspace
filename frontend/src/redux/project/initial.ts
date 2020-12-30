@@ -34,6 +34,7 @@ export const initialUi: ProjectUiState = {
   showContainersBorders: false,
   elementCanBeEdited: false,
   elementBeingEdited: false,
+  bordersEnabled: true,
   currentDropTargetParams: null,
   screenFormat: {
     format: SCREEN_FORMATS.Desktop,

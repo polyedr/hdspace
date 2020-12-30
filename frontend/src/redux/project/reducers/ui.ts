@@ -15,6 +15,10 @@ function uiReducer(
       return { ...state, showContainersBorders: !state.showContainersBorders };
     }
 
+    case TYPES.SET_BORDERS_ENABLED: {
+      return { ...state, bordersEnabled: action.payload };
+    }
+
     case TYPES.SET_ELEMENT_TO_COPY: {
       return { ...state, itemToCopyInfo: action.payload };
     }

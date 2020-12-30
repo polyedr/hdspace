@@ -44,6 +44,7 @@ export type ProjectUiState = {
   currentDropTargetParams: DropTargetParams | null;
   elementCanBeEdited: boolean;
   elementBeingEdited: boolean;
+  bordersEnabled: boolean;
   screenFormat: {
     format: SCREEN_FORMATS;
     rotated: boolean;
@@ -258,6 +259,10 @@ export type UpdateElement = IAction<
 >;
 export type ToggleContainersBorders = IPlainAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS
+>;
+export type SetBordersEnabled = IAction<
+  typeof TYPES.SET_BORDERS_ENABLED,
+  boolean
 >;
 export type CopyElementStyles = IAction<
   typeof TYPES.COPY_ELEMENT_STYLES,
@@ -579,6 +584,7 @@ export type Action =
   | WrapIntoContainer
   | SetHoveredElementId
   | ToggleContainersBorders
+  | SetBordersEnabled
   | SetElementToCopy
   | CopyActiveElement
   | PasteCopiedElement
