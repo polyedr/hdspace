@@ -14,16 +14,20 @@ import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
 
 const useStyles = makeStyles({
-  container: {
+  container: ({ posRight }: Props) => ({
     position: 'absolute',
     top: 0,
     left: 0,
-    right: 0,
+    right: posRight ? -posRight : 0,
     maxHeight: 0,
-  },
+  }),
 });
 
-const ElementsInteractions: React.FC = () => {
+type Props = {
+  posRight: number | null;
+};
+
+const ElementsInteractions: React.FC<Props> = (props) => {
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const rootId = useSelector(selectCurrentRootId);
@@ -41,7 +45,7 @@ const ElementsInteractions: React.FC = () => {
     idsToExclude.push(hoveredElementId);
   }
 
-  const classes = useStyles();
+  const classes = useStyles(props);
 
   if (!rootDom || !bordersEnabled) {
     return null;
