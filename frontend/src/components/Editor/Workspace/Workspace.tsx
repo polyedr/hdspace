@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -31,12 +31,14 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    border: '1px solid #e7eaec',
+    borderTop: 'none',
+    overflow: 'hidden',
   },
   editor: {
     position: 'relative',
     backgroundColor: '#fff',
-    border: '1px solid #e7eaec',
-    borderTop: 'none',
+
     overflow: 'hidden',
   },
   desktop: {
@@ -62,6 +64,8 @@ const Workspace: React.FC = () => {
   const classes = useStyles(rotated);
   const ref = useRef<HTMLDivElement | null>(null);
 
+  const [scrollLeft, setScrollLeft] = useState<number | null>(null);
+
   useEffect(() => {
     DOMHandler.INSTANCE.reset();
   }, [currentScreenId]);
@@ -83,13 +87,18 @@ const Workspace: React.FC = () => {
                 ? `calc(${ref.current.getBoundingClientRect().height}px - 2em)`
                 : '100%'
             }
+            onScroll={({ srcElement }) => {
+              setScrollLeft(srcElement.scrollLeft);
+            }}
           >
             {freeCanvasMode ? (
               <FreeCanvas />
             ) : (
               <>
                 <DraggableElement elementId={rootElementId} />
-                {!isPrototypeMode && <ElementsInteractions />}
+                {!freeCanvasMode && !isPrototypeMode && (
+                  <ElementsInteractions posRight={scrollLeft} />
+                )}
               </>
             )}
           </Scrollbar>

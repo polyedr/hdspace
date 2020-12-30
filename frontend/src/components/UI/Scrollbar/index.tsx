@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { useDebouncedCallback } from 'use-debounce';
 import cn from 'classnames';
 
 const styles = require('./styles.scss');
@@ -16,6 +17,7 @@ interface IScrollbarProps {
   autoHeightMax?: number | string;
   autoHeightMin?: string;
   hideTracksWhenNotNeeded?: boolean;
+  onScroll?: (event: { srcElement: HTMLElement }) => void;
 }
 
 const renderTrack = ({ style, trackStylesBg, scroll, show, ...props }: any) => {
@@ -106,16 +108,25 @@ const Scrollbar: React.FC<IScrollbarProps> = ({
   autoHeightMin,
   autoHeightMax,
   hideTracksWhenNotNeeded = true,
+  onScroll,
 }) => {
   const [show, setShow] = useState(false);
   const [scroll, setScroll] = useState(false);
 
-  const handleScroll = () => {
-    setScroll(true);
-    setTimeout(() => {
-      setScroll(false);
-    }, 500);
-  };
+  const unsetScroll = useDebouncedCallback(() => {
+    setScroll(false);
+  }, 500);
+
+  const handleScroll = useCallback(
+    (event) => {
+      if (onScroll) {
+        onScroll(event);
+      }
+      setScroll(true);
+      unsetScroll.callback();
+    },
+    [onScroll, setScroll],
+  );
 
   return (
     <Scrollbars

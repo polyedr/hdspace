@@ -332,6 +332,7 @@ export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
     minWidth: '100%',
     minHeight: '100%',
     padding: '3px',
+    display: 'inline-block',
   },
 };
 
