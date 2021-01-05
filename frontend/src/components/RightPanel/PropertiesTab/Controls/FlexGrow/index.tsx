@@ -19,7 +19,9 @@ const FlexGrow: React.FC<Props> = ({
   const parentStyles = el?.parentElement && getComputedStyle(el.parentElement);
   const isFlexItem = parentStyles?.display === 'flex';
 
-  const [state, setState] = useState(flexGrow);
+  const [state, setState] = useState<React.CSSProperties['flexGrow']>(
+    flexGrow || 'initial',
+  );
   useEffect(() => {
     setState(flexGrow);
   }, [flexGrow]);

@@ -13,7 +13,7 @@ const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
     (state: AppReduxState) => selectActiveElementParams(state).placeholder,
   );
 
-  const [state, setState] = useState(placeholder);
+  const [state, setState] = useState(placeholder || '');
   useEffect(() => {
     setState(placeholder);
   }, [placeholder]);

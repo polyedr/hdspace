@@ -132,7 +132,7 @@ const SizeBlock: React.FC<Props> = ({
       ? ''
       : String(parseFloat(size));
     const inputValue = size === 'auto' ? 'auto' : parsedSize;
-    const [state, setState] = useState(inputValue);
+    const [state, setState] = useState(inputValue || 0);
     useEffect(() => {
       setState(inputValue);
     }, [inputValue]);

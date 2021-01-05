@@ -76,7 +76,9 @@ const TypographyBlock: React.FC<Props> = ({
     [updateStyles],
   );
 
-  const [state, setState] = useState(fontSize);
+  const [state, setState] = useState<React.CSSProperties['fontSize']>(
+    fontSize || '14px',
+  );
   useEffect(() => {
     setState(fontSize);
   }, [fontSize]);

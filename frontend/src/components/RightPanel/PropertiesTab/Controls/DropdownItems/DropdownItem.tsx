@@ -53,7 +53,7 @@ const DropdownItem: React.FC<Props> = ({
     <div className={classes.wrapper}>
       <StyledTextField
         variant="outlined"
-        defaultValue={textContent}
+        defaultValue={textContent || ''}
         onChange={(ev) => debounced.callback(ev.target.value)}
         label="Item text"
         margin="dense"

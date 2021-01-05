@@ -28,6 +28,7 @@ const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({
     <StyledTextField
       variant="outlined"
       value={state}
+      defaultValue=""
       onChange={handleChange}
       label="Value"
       margin="dense"

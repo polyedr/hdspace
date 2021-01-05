@@ -35,7 +35,9 @@ const ColumnGap: React.FC<Props> = ({ updateStyles, value }) => {
   const classes = useColumnControlStyles();
   const [gap, units] = parse(value);
 
-  const [gapState, setGapState] = useState(gap);
+  const [gapState, setGapState] = useState<React.CSSProperties['columnGap']>(
+    gap || 0,
+  );
   useEffect(() => {
     setGapState(gap);
   }, [gap]);

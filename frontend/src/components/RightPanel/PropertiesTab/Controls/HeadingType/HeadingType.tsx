@@ -34,7 +34,7 @@ const HeadingType: React.FC<Props> = ({ updateParams, updateStyles }) => {
       margin="dense"
       label="Heading Type"
       onChange={handleDropdownChange}
-      value={headingType}
+      value={headingType || 'h3'}
       select
     >
       {HEADING_TYPE.map(({ label, value }) => (

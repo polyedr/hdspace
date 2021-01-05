@@ -30,7 +30,9 @@ const Ordered: React.FC<PropertiesChangeProps<ListElement>> = ({
   return (
     <div className={classes.root}>
       <FormControlLabel
-        control={<Switch checked={isOrdered} onChange={handleSwitchChange} />}
+        control={
+          <Switch checked={isOrdered || false} onChange={handleSwitchChange} />
+        }
         label="Is Ordered"
       />
     </div>

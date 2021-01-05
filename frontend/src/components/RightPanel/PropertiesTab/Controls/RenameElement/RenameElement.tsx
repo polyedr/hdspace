@@ -10,7 +10,7 @@ const RenameElement: React.FC = () => {
 
   const { name, id } = useSelector(selectActiveElement);
 
-  const [state, setState] = useState(name);
+  const [state, setState] = useState(name || '');
   useEffect(() => {
     setState(name);
   }, [name]);

@@ -20,7 +20,7 @@ export const getPermissibleValue = (
 };
 
 export const safeParseFloat = (value: string | undefined) =>
-  value !== undefined ? parseFloat(value) : undefined;
+  value !== undefined ? parseFloat(value) : 0;
 
 export const safeMatch = (value: string | undefined) => {
   if (value === undefined) return null;
