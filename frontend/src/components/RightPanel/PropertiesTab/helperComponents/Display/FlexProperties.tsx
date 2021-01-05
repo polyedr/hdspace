@@ -45,7 +45,8 @@ const FlexProperties: React.FC<Props> = ({
           control={
             <ToggleButtonGroup
               size="small"
-              value={flexDirection || 'initial'}
+              value={flexDirection}
+              defaultValue="initial"
               onChange={handleChangeOrientation}
               exclusive
             >

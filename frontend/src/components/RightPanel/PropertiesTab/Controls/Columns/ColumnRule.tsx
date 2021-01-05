@@ -66,7 +66,7 @@ const ColumnRule: React.FC<Props> = ({
             <StyledTextField
               fullWidth
               label="Rule Style"
-              value={ruleStyle}
+              value={ruleStyle || 'initial'}
               margin="dense"
               onChange={({ target: { value } }) =>
                 updateStyles({ columnRuleStyle: value })
@@ -87,7 +87,7 @@ const ColumnRule: React.FC<Props> = ({
             <StyledTextField
               fullWidth
               label="Rule Width"
-              value={ruleWidth}
+              value={ruleWidth || 0}
               margin="dense"
               onChange={({ target: { value } }) =>
                 updateStyles({ columnRuleWidth: value })
@@ -108,7 +108,7 @@ const ColumnRule: React.FC<Props> = ({
         }
       />
       <ColorSettings
-        currentColor={ruleColor as string}
+        currentColor={(ruleColor as string) || 'transparent'}
         activeElementId={activeElementId}
         onChange={(color: string) => {
           updateStyles({ columnRuleColor: color });

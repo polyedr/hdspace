@@ -116,6 +116,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
           <div className={classes.wrapper}>
             <StyledTextField
               value={start}
+              defaultValue={0}
               onChange={handleStartInputChange}
               type="number"
               label="Start"
@@ -125,6 +126,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
 
             <StyledTextField
               value={end}
+              defaultValue={0}
               type="number"
               onChange={handleEndInputChange}
               label="End"

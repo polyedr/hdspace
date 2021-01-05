@@ -82,7 +82,7 @@ const ColumnWidth: React.FC<Props> = ({ updateStyles, value }) => {
           />
 
           <StyledTextField
-            value={unitsState}
+            value={unitsState || 'px'}
             onChange={handleUnitsChange}
             label="Units"
             margin="dense"

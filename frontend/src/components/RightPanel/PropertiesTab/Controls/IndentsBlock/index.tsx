@@ -163,7 +163,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginTop)}
-          value={parseInt(state.marginTop as string)}
+          value={parseInt(state.marginTop as string) || 0}
           onChange={handleChange}
         />
 
@@ -174,7 +174,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginRight)}
-          value={parseInt(state.marginRight as string)}
+          value={parseInt(state.marginRight as string) || 0}
           onChange={handleChange}
         />
 
@@ -185,7 +185,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginBottom)}
-          value={parseInt(state.marginBottom as string)}
+          value={parseInt(state.marginBottom as string) || 0}
           onChange={handleChange}
         />
 
@@ -196,7 +196,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginLeft)}
-          value={parseInt(state.marginLeft as string)}
+          value={parseInt(state.marginLeft as string) || 0}
           onChange={handleChange}
         />
 
@@ -210,7 +210,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingTop)}
-            value={parseInt(state.paddingTop as string)}
+            value={parseInt(state.paddingTop as string) || 0}
             onChange={handleChange}
           />
 
@@ -221,7 +221,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingRight)}
-            value={parseInt(state.paddingRight as string)}
+            value={parseInt(state.paddingRight as string) || 0}
             onChange={handleChange}
           />
 
@@ -232,7 +232,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingBottom)}
-            value={parseInt(state.paddingBottom as string)}
+            value={parseInt(state.paddingBottom as string) || 0}
             onChange={handleChange}
           />
 
@@ -243,7 +243,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingLeft)}
-            value={parseInt(state.paddingLeft as string)}
+            value={parseInt(state.paddingLeft as string) || 0}
             onChange={handleChange}
           />
         </div>

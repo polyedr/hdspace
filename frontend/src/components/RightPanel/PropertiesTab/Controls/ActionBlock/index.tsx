@@ -15,17 +15,11 @@ import {
   HyperlinkElement,
   LinkParams,
   PropertiesChangeProps,
-  Screen,
 } from '@Src/types';
 import {
   StyledTextField,
   StyledToggleButton,
 } from '@Components/styledComponents';
-
-type StateProps = {
-  screens: Screen[];
-  action: LinkParams;
-};
 
 const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
   updateParams,
@@ -82,7 +76,7 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
             fullWidth
             label="URL"
             placeholder="Enter a page URL"
-            defaultValue={action?.url}
+            defaultValue={action?.url || ''}
             onChange={({ target: { value } }) => {
               debounced.callback(value);
             }}

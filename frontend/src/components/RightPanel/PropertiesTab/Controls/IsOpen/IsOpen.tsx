@@ -28,7 +28,9 @@ const IsOpen: React.FC<PropertiesChangeProps<DropdownElement>> = ({
   return (
     <div className={classes.wrapper}>
       <FormControlLabel
-        control={<Switch checked={isOpen} onChange={handleSwitchChange} />}
+        control={
+          <Switch checked={isOpen || false} onChange={handleSwitchChange} />
+        }
         label="Is Open"
       />
     </div>

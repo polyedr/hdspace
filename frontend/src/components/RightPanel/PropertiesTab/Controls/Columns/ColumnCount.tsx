@@ -4,7 +4,7 @@ import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
 import { FormControlLabel } from '@material-ui/core';
-import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/Columns/styles';
+import { useColumnControlStyles } from './styles';
 
 enum Units {
   auto = 'auto',
@@ -19,7 +19,9 @@ type Props = {
 const ColumnCount: React.FC<Props> = ({ updateStyles, count }) => {
   const classes = useColumnControlStyles();
 
-  const [countState, setCountState] = useState(count);
+  const [countState, setCountState] = useState<
+    React.CSSProperties['columnCount']
+  >(count || 0);
   useEffect(() => {
     setCountState(count);
   }, [count]);

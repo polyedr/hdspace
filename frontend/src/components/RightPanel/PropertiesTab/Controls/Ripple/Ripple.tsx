@@ -30,7 +30,9 @@ const Ripple: React.FC<PropertiesChangeProps<ButtonElement>> = ({
   return (
     <div className={classes.wrapper}>
       <FormControlLabel
-        control={<Switch checked={showRipple} onChange={handleSwitchChange} />}
+        control={
+          <Switch checked={showRipple || false} onChange={handleSwitchChange} />
+        }
         label="Show Ripple"
       />
     </div>

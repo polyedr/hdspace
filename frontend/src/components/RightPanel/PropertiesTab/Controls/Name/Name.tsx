@@ -12,7 +12,7 @@ const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   const name = useSelector(
     (state: AppReduxState) => selectActiveElementParams(state).name,
   );
-  const [state, setState] = useState(name);
+  const [state, setState] = useState(name || '');
   useEffect(() => {
     setState(name);
   }, [name]);
