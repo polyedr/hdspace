@@ -126,8 +126,7 @@ const TypographyBlock: React.FC<Props> = ({
           fullWidth
           margin="dense"
           label="Font Family"
-          defaultValue={FONTS[0].value}
-          value={fontFamily}
+          value={fontFamily || FONTS[0].value}
           onChange={handleFontFamilyChange}
           select
         >

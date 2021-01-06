@@ -23,8 +23,7 @@ const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
     <StyledTextField
       margin="dense"
       label="Label For"
-      defaultValue={labelFor}
-      value={labelFor}
+      value={labelFor || ''}
       onChange={handleDropdownChange}
       select
     >

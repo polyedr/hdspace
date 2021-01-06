@@ -46,7 +46,6 @@ const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
       fullWidth
       margin="dense"
       label="Default Value"
-      defaultValue={value}
       value={value}
       onChange={handleDropdownChange}
       select

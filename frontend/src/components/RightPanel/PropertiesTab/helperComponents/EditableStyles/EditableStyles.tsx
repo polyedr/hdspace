@@ -52,7 +52,6 @@ const EditableStyles: React.FC<Props> = ({
     <StyledTextField
       fullWidth
       label="Styles to edit"
-      defaultValue={editableStyles}
       value={editableStyles}
       onChange={handleDropdownChange}
       select

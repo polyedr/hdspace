@@ -49,7 +49,6 @@ const Display: React.FC<Props> = ({
           label="Display"
           value={display || 'initial'}
           onChange={handleDisplayDropdownChange}
-          defaultValue={display}
           select
         >
           {DISPLAY.map(({ value, label }) => (
