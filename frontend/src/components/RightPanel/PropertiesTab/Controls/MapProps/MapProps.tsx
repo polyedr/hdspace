@@ -183,8 +183,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
             </InputAdornment>
           ),
         }}
-        value={state.apiKey}
-        defaultValue=""
+        value={state.apiKey || ''}
         onChange={handleMapApiKeyChange}
         fullWidth
         margin="dense"

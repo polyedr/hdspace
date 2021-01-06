@@ -23,7 +23,6 @@ const Type: React.FC<PropertiesChangeProps<TextinputElement>> = ({
     <StyledTextField
       margin="dense"
       label="Type"
-      defaultValue={type}
       value={type}
       onChange={handleDropdownChange}
       select

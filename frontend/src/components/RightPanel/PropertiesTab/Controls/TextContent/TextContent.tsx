@@ -26,8 +26,7 @@ const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
 
   return (
     <StyledTextField
-      value={state}
-      defaultValue=""
+      value={state || ''}
       variant="outlined"
       onChange={handleChange}
       label="Text Content"
