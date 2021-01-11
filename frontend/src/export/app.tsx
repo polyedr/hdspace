@@ -7,6 +7,9 @@ import theme from '@Src/styles/Theme';
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
+import { ProjectClass } from '@Src/types';
+import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
+import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 import ExportedElement from './components/ExportedElement';
 import {
   getHtmlFromTemplate,
@@ -15,7 +18,19 @@ import {
   processJS,
 } from './utils/processor';
 
-const createArchive = (screenName: string, html: string, css: string) => {
+const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
+
+type ExportedStyleSheets = {
+  css: string;
+  entityClasses: ProjectClass[];
+  sharedClasses: ProjectClass[];
+};
+
+const createArchive = (
+  screenName: string,
+  html: string,
+  sheets: ExportedStyleSheets,
+) => {
   const zip = new JSZip();
   const cssFolder = zip.folder('css');
   const jsFolder = zip.folder('js');
@@ -24,11 +39,11 @@ const createArchive = (screenName: string, html: string, css: string) => {
   // eslint-disable-next-line no-console
   Promise.all([
     processHTML(html, assetsFolder),
-    processCSS(cssFolder),
+    processCSS(cssFolder, sheets.entityClasses, sheets.sharedClasses),
     processJS(jsFolder),
   ]).then(([htmlResponse]) => {
     zip.file('index.html', getHtmlFromTemplate(screenName, htmlResponse));
-    cssFolder?.file('style.css', css);
+    cssFolder?.file('style.css', sheets.css);
     zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(content);
@@ -45,6 +60,8 @@ const exportHTML = (screenName: string) => {
 
   const rootId = selectCurrentRootId(state);
 
+  const projectClasses = selectCurrentProjectClasses(state);
+
   const html = ReactDOMServer.renderToStaticMarkup(
     sheets.collect(
       <Provider store={store}>
@@ -55,7 +72,15 @@ const exportHTML = (screenName: string) => {
     ),
   );
 
-  createArchive(screenName, html, sheets.toString());
+  createArchive(screenName, html, {
+    css: sheets.toString(),
+    entityClasses: projectClasses.filter((classInstance) =>
+      entityClassNames.includes(classInstance.className),
+    ),
+    sharedClasses: projectClasses.filter(
+      (classInstance) => !entityClassNames.includes(classInstance.className),
+    ),
+  });
 };
 
 export default exportHTML;

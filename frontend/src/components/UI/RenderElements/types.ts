@@ -24,6 +24,8 @@ export type SharedRendererProps = StyleRendererProps & {
   children: React.ReactElement[];
   ref?: React.RefObject<HTMLElement> | null;
   isBorderVisible?: boolean;
+  entityClass: string | null;
+  groupClass: string | null;
 } & DOMAttributes<HTMLElement>;
 
 export type ContainerRendererProps = SharedRendererProps & {

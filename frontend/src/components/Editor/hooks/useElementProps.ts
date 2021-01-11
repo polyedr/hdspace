@@ -20,6 +20,7 @@ import {
   selectScreenLoader,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
+import { toClassName } from '@Utils/stringHelper';
 import { SharedRendererProps } from '../../UI/RenderElements/types';
 
 const isElementStructType = (type: string): type is ElementEntity => {
@@ -147,7 +148,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
     dispatch,
     elementId,
     savedElements,
-    projectClasses,
   ]);
 
   if (!element) {
@@ -164,7 +164,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
   const groupStyles =
     projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
       ?.rules || {};
-
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
@@ -173,6 +172,8 @@ const useElementProps = (elementId: string): ElementProps | null => {
     ownStyles: styles.ownStyles,
     entityStyles,
     groupStyles,
+    entityClass: toClassName(entityClass),
+    groupClass: toClassName(groupClass),
     active: !disableInteractions && id === activeElementId,
   };
 

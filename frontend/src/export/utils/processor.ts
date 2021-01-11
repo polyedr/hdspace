@@ -1,6 +1,10 @@
+import { ProjectClass } from '@Src/types';
+import { toClassName } from '@Utils/stringHelper';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import JSZip from 'jszip';
 import pretty from 'pretty';
+import decamelize from 'decamelize';
+import cssbeautify from 'cssbeautify';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
@@ -14,6 +18,18 @@ const cssResources = [
   'mdc.select.css',
 ];
 const jsResources = ['app.js'];
+
+const cssReducer = (styles: string, classInstance: ProjectClass) => {
+  const styleString = `
+    .${toClassName(classInstance.className)}{${Object.keys(
+    classInstance.rules,
+  ).reduce(
+    (styles, ruleName) =>
+      `${styles}${decamelize(ruleName, '-')}:${classInstance.rules[ruleName]};`,
+    '',
+  )}}`;
+  return `${styles}${styleString}`;
+};
 
 // eslint-disable-next-line import/prefer-default-export
 export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
@@ -72,8 +88,12 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
   return dom.body.innerHTML;
 };
 
-export const processCSS = async (cssFolder: JSZip | null) => {
-  return Promise.all(
+export const processCSS = async (
+  cssFolder: JSZip | null,
+  entityClasses: ProjectClass[],
+  sharedClasses: ProjectClass[],
+) => {
+  const cssResourcesPromise = Promise.all(
     cssResources.map((resource) => axios.get(`/styles/material/${resource}`)),
   )
     .then((responses: AxiosResponse[]) => {
@@ -94,6 +114,28 @@ export const processCSS = async (cssFolder: JSZip | null) => {
     .catch((error: AxiosError) => {
       return Promise.reject(error);
     });
+
+  const entityStylesPromise = new Promise((resolve, reject) => {
+    if (!cssFolder) {
+      reject(new Error('No css folder'));
+    }
+    const entityStyles = entityClasses.reduce(cssReducer, '');
+    resolve(cssFolder?.file('entities.css', cssbeautify(entityStyles)));
+  });
+
+  const sharedStylesPromise = new Promise((resolve, reject) => {
+    if (!cssFolder) {
+      reject(new Error('No css folder'));
+    }
+    const groupStyles = sharedClasses.reduce(cssReducer, '');
+    resolve(cssFolder?.file('shared.css', cssbeautify(groupStyles)));
+  });
+
+  return Promise.all([
+    cssResourcesPromise,
+    entityStylesPromise,
+    sharedStylesPromise,
+  ]);
 };
 
 export const processJS = async (jsFolder: JSZip | null) => {
@@ -136,6 +178,7 @@ export const getHtmlFromTemplate = (screenName: string, body: string) =>
     ${getFontsLink('Lato', 'Merriweather', 'Monsterrat')}
     ${getFontsLink('Open Sans', 'Oswald', 'Raleway', 'Ubuntu')}
     ${getFontsLink('Roboto Mono', 'Roboto Condensed', 'Source Sans Pro')}
+    <link rel="stylesheet" type="text/css" href="css/entities.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.checkbox.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.radio.css" />
@@ -143,7 +186,8 @@ export const getHtmlFromTemplate = (screenName: string, body: string) =>
     <link rel="stylesheet" type="text/css" href="css/mdc.list.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />    
+    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
+    <link rel="stylesheet" type="text/css" href="css/shared.css" />
     <script src="https://unpkg.com/mat-ripple"></script> 
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <title>${screenName}</title>

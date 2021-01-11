@@ -12,3 +12,6 @@ export const extractStyles = (htmlString: string) => {
   const styles = match.reduce((acc, curr) => acc + curr[1], '');
   return styles;
 };
+
+export const toClassName = (str: string): string | null =>
+  !str ? null : str.replaceAll(' ', '_').toLowerCase();

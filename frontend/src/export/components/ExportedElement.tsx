@@ -8,6 +8,7 @@ import {
 import { AppReduxState } from '@Redux/types';
 import { SharedRendererProps } from '@Components/UI/RenderElements/types';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
+import { toClassName } from '@Utils/stringHelper';
 
 type Props = {
   elementId: string;
@@ -84,6 +85,8 @@ const getExportedProps = (elementId, state) => {
     ownStyles: styles.ownStyles,
     entityStyles,
     groupStyles,
+    entityClass,
+    groupClass: toClassName(groupClass),
     contentEditable: false,
     active: false,
   };
