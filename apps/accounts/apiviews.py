@@ -6,7 +6,7 @@ from .models import User, Profile, Team, TeamMember
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .serializers import UserSerializer, ProfileSerializer, TeamMemberSerializer, TeamSerializer
-
+from rest_framework import filters
 
 class UserCursorSetPagination(CursorPagination):
     page_size = 10
@@ -22,6 +22,8 @@ class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = UserCursorSetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username', 'email']
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
