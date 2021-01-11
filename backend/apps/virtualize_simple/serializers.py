@@ -14,7 +14,13 @@ from anytree import RenderTree, NodeMixin, AnyNode
 from pytesseract import Output
 from rest_framework_recursive.fields import RecursiveField
 
-from project.settings import model_forms, MEDIA_ROOT, model_headers, model_footers, MEDIA_URL
+from project.settings import (
+    model_forms,
+    MEDIA_ROOT,
+    model_headers,
+    model_footers,
+    MEDIA_URL,
+)
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ProjectScreen
 from sklearn.preprocessing import StandardScaler
@@ -45,7 +51,8 @@ from apps.utils.fset1 import (
     find_or_create_dir,
     calculateDistance,
     SQUARES_OVERLAP_THRESHOLD_TEXT,
-    change_permissions_recursive)
+    change_permissions_recursive,
+)
 
 config_tesseract = "-l eng --oem 1 --psm 3"
 
@@ -243,7 +250,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "screen_data_json",
             "screenscenario",
         )
-        extra_kwargs = {"screenscenario": {"read_only": True}, }
+        extra_kwargs = {"screenscenario": {"read_only": True}}
 
     def create(self, validated_data):
         # Extract an appropriate flag value to recognize block as header, footer, form or layout
@@ -266,15 +273,11 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
         watch = True
         if validated_data.get("image"):
             image_recognize = validated_data.pop("image")
-            node = ProjectScreen.objects.create(image=image_recognize,
-                **validated_data
-            )
+            node = ProjectScreen.objects.create(image=image_recognize, **validated_data)
             fname = str(image_recognize)
             imgpath = MEDIA_ROOT + "/uploads/" + fname
         else:
-            node = ProjectScreen.objects.create(
-                **validated_data
-            )
+            node = ProjectScreen.objects.create(**validated_data)
         #
         # fname = str(validated_data["image"])
         # imgpath = MEDIA_ROOT + "/uploads/" + fname
@@ -689,8 +692,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             pass
         # print(region_dataset)
 
-        fdict = {}  # Output dictionary to write annotation, maskrcnn-opencv with AND predicate
-        fordict = {}  # Output dictionary to write annotation, maskrcnn-opencv with OR predicate
+        fdict = (
+            {}
+        )  # Output dictionary to write annotation, maskrcnn-opencv with AND predicate
+        fordict = (
+            {}
+        )  # Output dictionary to write annotation, maskrcnn-opencv with OR predicate
         cnndict = {}  # Output dictionary to write annotation, maskrcnn only
 
         # Create the root element mptt start
@@ -812,13 +819,38 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     # Length of the overlapped area
                     vertical_overlap = top - bottom
 
-                    if (vertical_overlap > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * min(h, h1)):
-                        if (text_contour_x1 + 3 > text_contour1_x) and (text_contour_x < text_contour1_x):
+                    if (
+                        vertical_overlap
+                        > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * min(h, h1)
+                    ):
+                        if (text_contour_x1 + 3 > text_contour1_x) and (
+                            text_contour_x < text_contour1_x
+                        ):
                             # Merge these intervals
-                            tcont_y = min(text_contour_y, text_contour1_y, text_contour_y1, text_contour1_y1)
-                            tcont_y1 = max(text_contour_y, text_contour1_y, text_contour_y1, text_contour1_y1)
-                            tcont_x = min(text_contour_x, text_contour1_x, text_contour_x1, text_contour1_x1)
-                            tcont_x1 = max(text_contour_x, text_contour1_x, text_contour_x1, text_contour1_x1)
+                            tcont_y = min(
+                                text_contour_y,
+                                text_contour1_y,
+                                text_contour_y1,
+                                text_contour1_y1,
+                            )
+                            tcont_y1 = max(
+                                text_contour_y,
+                                text_contour1_y,
+                                text_contour_y1,
+                                text_contour1_y1,
+                            )
+                            tcont_x = min(
+                                text_contour_x,
+                                text_contour1_x,
+                                text_contour_x1,
+                                text_contour1_x1,
+                            )
+                            tcont_x1 = max(
+                                text_contour_x,
+                                text_contour1_x,
+                                text_contour_x1,
+                                text_contour1_x1,
+                            )
 
                             tcont_width = tcont_x1 - tcont_x
                             tcont_height = tcont_y1 - tcont_y
@@ -831,7 +863,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             excluded_contours.add(idx1)
 
         # Remove set of indices from list
-        text_contours = [i for j, i in enumerate(text_contours) if j not in excluded_contours]
+        text_contours = [
+            i for j, i in enumerate(text_contours) if j not in excluded_contours
+        ]
         # Add merged contours to list
         text_contours.extend(merged_contours)
 
@@ -931,7 +965,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     # Filter out small text contours with height > width
                     if w > h:
                         fdict[fnamesize]["regions"].append(attributes_dict)
-                    cv2.rectangle(image_opencv_input, (x, y), (x + w, y + h), (255, 0, 0), 1)
+                    cv2.rectangle(
+                        image_opencv_input, (x, y), (x + w, y + h), (255, 0, 0), 1
+                    )
 
                 # Printing text contours preparations (AND) end
 
@@ -941,7 +977,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     x2 = w + x1
                     y2 = h + y1
 
-                    cv2.rectangle(image_opencv_input, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1)
+                    cv2.rectangle(
+                        image_opencv_input, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1
+                    )
                     # cv2.imshow(window_name1, image_opencv_input)
                     # cv2.waitKey(0)
 
@@ -1135,7 +1173,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     # Filter out small text contours with height > width
                     if w > h:
                         fordict[fnamesize]["regions"].append(attributes_dict)
-                    cv2.rectangle(image_maskrcnn_or, (x, y), (x + w, y + h), (255, 0, 0), 1)
+                    cv2.rectangle(
+                        image_maskrcnn_or, (x, y), (x + w, y + h), (255, 0, 0), 1
+                    )
                 # Printing text contours preparations (OR) end
 
                 # Printing rect contours with OR concatenation preparations start
@@ -1144,7 +1184,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     x2 = w + x1
                     y2 = h + y1
 
-                    cv2.rectangle(image_maskrcnn_or, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1)
+                    cv2.rectangle(
+                        image_maskrcnn_or, (x1, y1), (x1 + w, y1 + h), (255, 0, 255), 1
+                    )
 
                     centers_distance_min = 10000
 
@@ -1242,7 +1284,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                 # Printing contours with mask r cnn only start
                 for idx1, (rect1, class_id1) in enumerate(
-                        zip(r["rois"], r["class_ids"])
+                    zip(r["rois"], r["class_ids"])
                 ):
                     x3 = rect1[1]
                     y3 = rect1[0]
@@ -1299,7 +1341,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     x, y, w, h = rect_contour
                     # location = i.location  # y, x
                     # size = i.size  # width, height
-                    element = "image"
+                    element = "div"
 
                     # Fill the attributes dictionary
                     attributes_dict = {
@@ -1325,39 +1367,39 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         if region_dataset not in {"webpages"}:
             # Printing the pure Mask R CNN output without text blocks recognized
-            for idx1, (rect1, class_id1) in enumerate(
-                    zip(r["rois"], r["class_ids"])
-            ):
+            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 #  1,2,4,5,7 means elements except the text class and the radiobutton while merging forms
                 if (
-                        (
-                                (region_dataset == "forms")
-                                and (class_id1 in {1, 2, 4, 5, 7})
-                        )
-                        or (
-                        (region_dataset == "footers")
-                        and (class_id1 in {2, 3, 4, 5})
-                )
-                        or (
+                    ((region_dataset == "forms") and (class_id1 in {1, 2, 4, 5, 7}))
+                    or ((region_dataset == "footers") and (class_id1 in {2, 3, 4, 5}))
+                    or (
                         (region_dataset == "headers")
                         and (class_id1 in {2, 3, 4, 5, 6, 7, 8})
-                )
+                    )
                 ):
                     x3 = rect1[1]
                     y3 = rect1[0]
                     x4 = rect1[3]
                     y4 = rect1[2]
 
-                    cv2.rectangle(image_maskrcnn_notext, (x3, y3), (x4, y4), (255, 100, 255), 1)
+                    cv2.rectangle(
+                        image_maskrcnn_notext, (x3, y3), (x4, y4), (255, 100, 255), 1
+                    )
                     # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
-                    cv2.putText(image_maskrcnn_notext, str(class_id1), (x3, y4), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (36, 255, 12), 2)
+                    cv2.putText(
+                        image_maskrcnn_notext,
+                        str(class_id1),
+                        (x3, y4),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.6,
+                        (36, 255, 12),
+                        2,
+                    )
 
             cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
 
             # Printing the pure Mask R CNN output with text blocks and radiobuttons recognized
-            for idx1, (rect1, class_id1) in enumerate(
-                    zip(r["rois"], r["class_ids"])
-            ):
+            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
                 x3 = rect1[1]
                 y3 = rect1[0]
                 x4 = rect1[3]
@@ -1381,8 +1423,15 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                 cv2.rectangle(image_maskrcnn, (x3, y3), (x4, y4), (255, 100, 255), 1)
                 # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
-                cv2.putText(image_maskrcnn, str(class_id1), (x3, y4), cv2.FONT_HERSHEY_SIMPLEX, 0.6,
-                            (36, 255, 12), 2)
+                cv2.putText(
+                    image_maskrcnn,
+                    str(class_id1),
+                    (x3, y4),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.6,
+                    (36, 255, 12),
+                    2,
+                )
 
             cv2.imwrite("maskrcnn_" + fname, image_maskrcnn)
 
@@ -1470,6 +1519,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # cv2.imshow(window_name1, image_opencv_input)
         # cv2.waitKey(0)
 
+        # This should be replaced to create nested structure. Clusters obtained from text blocks and from rect blocks should save this information
         if region_dataset in {"webpages"}:
             # Calculation of the excluded indices to remove overlapped elements start
             # Second, calculate the non-text blocks overlap
@@ -1478,9 +1528,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             for rect1 in fdict[fnamesize]["regions"]:
                 # for rect2 in fdict[filenamesize]["regions"]:
                 for rect2 in fdict[fnamesize]["regions"]:
-                    is_menu = (rect1["region_attributes"]["HTML element"] == "menu") or (
-                        rect2["region_attributes"]["HTML element"] == "menu"
-                    )
+                    is_menu = (
+                        rect1["region_attributes"]["HTML element"] == "menu"
+                    ) or (rect2["region_attributes"]["HTML element"] == "menu")
                     if (rect1 != rect2) and not is_menu:
                         x1 = rect1["shape_attributes"]["x"]
                         y1 = rect1["shape_attributes"]["y"]
@@ -1549,6 +1599,119 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             ]
             # Calculation of the excluded indices to remove overlapped elements end
 
+        # Create oclusters
+        # Creating a nested structure. Clusters obtained from text blocks and from rect blocks should save this information
+        if region_dataset in {"webpages"}:
+            # Calculation of the excluded indices to remove overlapped elements for a some oclusters level start
+            # Second, calculate the non-text blocks overlap
+            excluded_elements = []
+            # for rect1 in fdict[filenamesize]["regions"]:
+            for rect1 in fdict[fnamesize]["regions"]:
+                # for rect2 in fdict[filenamesize]["regions"]:
+                for rect2 in fdict[fnamesize]["regions"]:
+                    if rect1 != rect2:
+                        x1 = rect1["shape_attributes"]["x"]
+                        y1 = rect1["shape_attributes"]["y"]
+                        x2 = (
+                            rect1["shape_attributes"]["x"]
+                            + rect1["shape_attributes"]["width"]
+                        )
+                        y2 = (
+                            rect1["shape_attributes"]["y"]
+                            + rect1["shape_attributes"]["height"]
+                        )
+                        x3 = rect2["shape_attributes"]["x"]
+                        y3 = rect2["shape_attributes"]["y"]
+                        x4 = (
+                            rect2["shape_attributes"]["x"]
+                            + rect2["shape_attributes"]["width"]
+                        )
+                        y4 = (
+                            rect2["shape_attributes"]["y"]
+                            + rect2["shape_attributes"]["height"]
+                        )
+
+                        # Borders of the rectangles overlapped area
+                        left = max(x1, x3)
+                        bottom = max(y1, y3)
+                        right = min(x2, x4)
+                        top = min(y2, y4)
+                        # Sizes of the rectangles overlapped area
+                        width = right - left
+                        height = top - bottom
+
+                        # The first rectangle square
+                        width1, height1 = x2 - x1, y2 - y1
+
+                        # The second rectangle square
+                        width2, height2 = x4 - x3, y4 - y3
+
+                        # Check if width, height of the overlapped area less or equal 0
+                        if not (width <= 0 or height <= 0):
+                            # If the square > 0, calculate the squares of the 3 rectangles
+                            square = width * height
+                            square1 = width1 * height1
+                            square2 = width2 * height2
+
+                            min_square = min(square1, square2)
+                            min_square_dim = min(height, width)
+
+                            # change two borders for the min_square (rect1) to separate the item
+                            # Should correct this later, to find proper borders
+                            if square > min_square * 0.75:
+                                if square1 < square2:
+                                    x1 = x1 + width
+                                    y1 = y1 + height
+                                else:
+                                    x3 = x3 + width
+                                    y3 = y3 + height
+
+                            # change one border for the min_square to separate the item
+                            # Should correct this later. To do this, find, which borders are under intersection
+                            elif square < min_square * 0.25:
+                                if square1 < square2:
+                                    if height < width:
+                                        x1 = x1 + min_square_dim
+                                    else:
+                                        y1 = y1 + min_square_dim
+                                else:
+                                    if height < width:
+                                        x3 = x3 + min_square_dim
+                                    else:
+                                        y3 = y3 + min_square_dim
+
+                            # Remove overlapped items
+                            elif square * 0.25 < min_square < square * 0.75:
+
+                                if square1 < square2:
+                                    excluded_elements.append(rect1)
+                                else:
+                                    excluded_elements.append(rect2)
+
+                            else:
+                                pass
+
+            # Remove some items using list comprehension
+            fdict[fnamesize]["regions"] = [
+                ele
+                # for ele in fdict[filenamesize]["regions"]
+                for ele in fdict[fnamesize]["regions"]
+                if ele not in excluded_elements
+            ]
+
+            # Create a set of independent oclusters
+            for rect in fdict[fnamesize]["regions"]:
+                x1 = rect["shape_attributes"]["x"]
+                y1 = rect["shape_attributes"]["y"]
+                x2 = rect["shape_attributes"]["x"] + rect["shape_attributes"]["width"]
+                y2 = rect["shape_attributes"]["y"] + rect["shape_attributes"]["height"]
+                ocluster = ClusterClass(x1, y1, x2, y2)
+                # Set some flags for this novel ocluster
+                ocluster.types = "ocluster"
+                # Check a cluster definition
+
+            # Calculation of the excluded indices to remove overlapped elements for a some oclusters level end
+
         # find all the clusters based on cluster-making elements
         # (inputs, selects, buttons, free text blocks, maybe large images)
         # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
@@ -1597,7 +1760,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 cluster.is_elements_only = True
                 for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
                     if recognized_element1["region_attributes"]["HTML element"] in {
-                        "text", "ocrtext"
+                        "text",
+                        "ocrtext",
                     }:
                         # Check if the elements were not assigned to the clusters before
                         if (
@@ -1729,7 +1893,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 cluster.is_elements_only = True
                 for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
                     if recognized_element1["region_attributes"]["HTML element"] in {
-                        "text", "ocrtext"
+                        "text",
+                        "ocrtext",
                     }:
                         # Check if the elements were not assigned to the clusters before
                         if (
@@ -1778,7 +1943,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             ):
                                 # Assign the results to the horizontal group
                                 # Check if the vertical overlap between text label and input is sufficient
-                                if (vertical_overlap > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * height_elem1):
+                                if (
+                                    vertical_overlap
+                                    > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD
+                                    * height_elem1
+                                ):
                                     # Fill the cluster
                                     # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
                                     # max(y2, y21), elements = [recognized_element, recognized_element1])
@@ -2176,13 +2345,26 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     x1 = int(elem["shape_attributes"]["x"])
                     y1 = int(elem["shape_attributes"]["y"])
                     # Define the element dimensions end
-                    cv2.rectangle(image_allcluelems, (x1, y1), (x1 + elem_width, y1 + elem_height), (255, 0, 255), 1)
+                    cv2.rectangle(
+                        image_allcluelems,
+                        (x1, y1),
+                        (x1 + elem_width, y1 + elem_height),
+                        (255, 0, 255),
+                        1,
+                    )
 
                     label_element = str(elem["region_attributes"]["HTML element"])
 
                     # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
-                    cv2.putText(image_allcluelems, label_element, (x1, y1 + elem_height), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                                (36, 255, 12), 2)
+                    cv2.putText(
+                        image_allcluelems,
+                        label_element,
+                        (x1, y1 + elem_height),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5,
+                        (36, 255, 12),
+                        2,
+                    )
 
         # Printing all clusters with elements to file
         cv2.imwrite("allclusters_with_elements_" + fname, image_allcluelems)
@@ -2204,12 +2386,16 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         styles["background-color"] = "rgba(" + bcolour_container_value + ")"
         # The magic number 30 to solve presence of wide elements have been measured with px
         styles["width"] = str(img_width + 30) + "px"
-        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+        str_styles = "; ".join("{}:{}".format(key, val) for key, val in styles.items())
         outer_div.set("style", str_styles)
         # print(1694, styles, str_styles)
         # Define the export node
         outer_div_node = ScenarioElement.objects.create(
-            parent=serializer_node, struct_type="container", parameters=parameters, styles=styles, buoyancy=0
+            parent=serializer_node,
+            struct_type="container",
+            parameters=parameters,
+            styles=styles,
+            buoyancy=0,
         )
 
         for pre, fill, node in RenderTree(root_block):
@@ -2263,12 +2449,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 styles["border"] = "1px solid green"
                 styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
 
-                str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
                 node.div.set("style", str_styles)
 
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
-                    parent=outer_div_node, struct_type="container", parameters=parameters, styles=styles, buoyancy=0
+                    parent=outer_div_node,
+                    struct_type="container",
+                    parameters=parameters,
+                    styles=styles,
+                    buoyancy=0,
                 )
             else:
                 node.div = ET.SubElement(node.parent.div, "div")
@@ -2278,15 +2470,17 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 if not styles_on:
                     styles["border"] = "1px solid green"
 
-                str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
                 node.div.set("style", str_styles)
 
                 # Buoyancy detection start
                 # Horizontal
-                if(node.parent.direction == 1):
+                if node.parent.direction == 1:
                     buoyancy = int(node.x1)
                 # Vertical
-                elif(node.parent.direction == 0):
+                elif node.parent.direction == 0:
                     buoyancy = int(node.y1)
                 # Other cases
                 else:
@@ -2300,9 +2494,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 node.scenarioelement = ScenarioElement.objects.create(
                     parent=node.parent.scenarioelement,
                     struct_type="container",
-                    parameters=parameters, styles=styles, buoyancy=buoyancy
+                    parameters=parameters,
+                    styles=styles,
+                    buoyancy=buoyancy,
                 )
-
 
             # Display elements for some fcluster
             if node.types == "fcluster":
@@ -2337,7 +2532,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     text_elem_tesseract = ""
                     if elem["region_attributes"]["HTML element"] in {
                         "textinput",
-                        "input", "select", "text", "ocrtext", "textarea", "form_heading", "button"
+                        "input",
+                        "select",
+                        "text",
+                        "ocrtext",
+                        "textarea",
+                        "form_heading",
+                        "button",
                     }:
                         # Detect the font-size with tesseract for some element start
                         # Convert to the grey colour
@@ -2345,23 +2546,27 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         result = pytesseract.image_to_boxes(elem_image_gray)
                         # print(result)
 
-                        lines = result.strip().split('\n')
+                        lines = result.strip().split("\n")
                         font_size = []
 
                         for line in lines:
-                            chars = line.split(' ')
+                            chars = line.split(" ")
                             try:
                                 font_size.append(float(chars[4]) - float(chars[2]))
                             except Exception:
-                                font_size.append(12.0)  # Default font-size value is 12px
+                                font_size.append(
+                                    12.0
+                                )  # Default font-size value is 12px
                         font_size_value = int(median(font_size) * 1.7)
 
                         # Read the string with tesseract
-                        text_elem_tesseract = pytesseract.image_to_string(elem_image_gray, config=config_tesseract)
+                        text_elem_tesseract = pytesseract.image_to_string(
+                            elem_image_gray, config=config_tesseract
+                        )
                         # if text_elem_tesseract:
                         #     print("text:", text_elem_tesseract, font_size_value, font_size_img)
                         # Show tesseract results only when font is larger than 12
-                        if(font_size_value < 12):
+                        if font_size_value < 12:
                             text_elem_tesseract = ""
                         # Detect the font-size with tesseract for some element end
 
@@ -2374,7 +2579,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         bcolour_elem_value = "255,255,255,0"
                         domcolour_elem = get_dominant_colour(elem_image)[0]
                         domcolour_elem.append(1)
-                        bcolour_elem_value = ",".join(str(int(x)) for x in domcolour_elem)
+                        bcolour_elem_value = ",".join(
+                            str(int(x)) for x in domcolour_elem
+                        )
                         # Get the dominant colour for the element end
 
                         # Get the font colour for the element start
@@ -2385,11 +2592,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Get the font colour for the element end
 
                         # display elem_image start
-                        '''
+                        """
                         cv2.imshow(window_name2, elem_image)
                         print(bcolour_elem_value)
                         cv2.waitKey(0)
-                        '''
+                        """
                         # display elem_image end
 
                     if elem["region_attributes"]["HTML element"] in {
@@ -2408,10 +2615,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
 
                         # Text assignment
-                        if(text_elem_tesseract):
+                        if text_elem_tesseract:
                             parameters["textContent"] = text_elem_tesseract
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2419,7 +2628,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="textinput",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
@@ -2430,7 +2641,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
                         element.set("type", "checkbox")
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2438,7 +2651,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="checkbox",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"radiobutton"}:
@@ -2447,7 +2662,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
                         element.set("type", "radio")
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2455,7 +2672,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="radiobutton",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "select":
@@ -2467,10 +2686,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # displaying various kinds of elements end
 
                         # Text assignment
-                        if(text_elem_tesseract):
+                        if text_elem_tesseract:
                             parameters["textContent"] = text_elem_tesseract
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2478,7 +2699,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="select",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     if elem["region_attributes"]["HTML element"] in {"text", "ocrtext"}:
@@ -2490,11 +2713,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         element.text = lorem.get_word(count=2)
                         parameters["textContent"] = element.text
                         # Text assignment
-                        if(text_elem_tesseract):
+                        if text_elem_tesseract:
                             parameters["textContent"] = text_elem_tesseract
                             element.text = text_elem_tesseract
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2502,7 +2727,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="ocrtext",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"textarea"}:
@@ -2512,10 +2739,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         element.set("placeholder", lorem.get_word(count=2))
                         # Text assignment
-                        if(text_elem_tesseract):
+                        if text_elem_tesseract:
                             parameters["placeholder"] = text_elem_tesseract
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2523,7 +2752,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="textarea",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"form_heading"}:
@@ -2534,11 +2765,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         element.text = lorem.get_word(count=2)
                         parameters["textContent"] = element.text
                         # Text assignment
-                        if(text_elem_tesseract):
+                        if text_elem_tesseract:
                             parameters["textContent"] = text_elem_tesseract
                             element.text = text_elem_tesseract
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2546,7 +2779,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="heading",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"form"}:
@@ -2554,7 +2789,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         element = ET.SubElement(node.div, "form")
                         # displaying various kinds of elements end
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2562,7 +2799,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="container",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "image":
@@ -2572,11 +2811,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         # Saving an image
                         cv2.imwrite(elem_image_name, elem_image)
                         # Setting path to the image source
-                        elem_image_sourcename = fname + '/' + elem_image_name
+                        elem_image_sourcename = fname + "/" + elem_image_name
 
                         # Obtaining the absolute path for the parameters directly. Should change this later.
-                        o = urlparse(self.context['request'].build_absolute_uri())
-                        parameters["imageURL"] = 'https://' + o.netloc + MEDIA_URL + elem_image_sourcename
+                        o = urlparse(self.context["request"].build_absolute_uri())
+                        parameters["imageURL"] = (
+                            "https://" + o.netloc + MEDIA_URL + elem_image_sourcename
+                        )
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "img")
@@ -2584,15 +2825,20 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         element.set("src", elem_image_name)
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
-                            struct_type="image", image=elem_image_sourcename,
-                            parameters=parameters, styles=styles, buoyancy=0
+                            struct_type="image",
+                            image=elem_image_sourcename,
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] == "button":
@@ -2604,15 +2850,19 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         element.text = lorem.get_word(count=1)
                         parameters["textContent"] = element.text
                         # Text assignment
-                        if(text_elem_tesseract):
+                        if text_elem_tesseract:
                             parameters["textContent"] = text_elem_tesseract
                             element.text = text_elem_tesseract
 
                         if styles_on:
                             # Set the background colour for styles
-                            styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
+                            styles["background-color"] = (
+                                "rgba(" + bcolour_elem_value + ")"
+                            )
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2620,14 +2870,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="button",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"menu"}:
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "ul")
                         # displaying various kinds of elements end
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2635,7 +2889,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="list",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
                     elif elem["region_attributes"]["HTML element"] in {"li"}:
@@ -2646,11 +2902,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         element.text = lorem.get_word(count=1)
                         parameters["textContent"] = element.text
                         # Text assignment
-                        if(text_elem_tesseract):
+                        if text_elem_tesseract:
                             parameters["textContent"] = text_elem_tesseract
                             element.text = text_elem_tesseract
 
-                        str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                        str_styles = "; ".join(
+                            "{}:{}".format(key, val) for key, val in styles.items()
+                        )
                         element.set("style", str_styles)
 
                         # Create a new Scenario Element for the elements chain
@@ -2658,7 +2916,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         node.scenarioelement_inner = ScenarioElement.objects.create(
                             parent=node.scenarioelement,
                             struct_type="listItem",
-                            parameters=parameters, styles=styles, buoyancy=0
+                            parameters=parameters,
+                            styles=styles,
+                            buoyancy=0,
                         )
 
             # Generating HTML for printing
@@ -2670,7 +2930,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 print(html, file=html_file)
 
             # Print tree to file
-            with open(VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w") as tree_file:
+            with open(
+                VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w"
+            ) as tree_file:
                 for pre, fill, node in RenderTree(root_block):
                     treestr = u"%s%s" % (pre, node.name)
                     print(
@@ -2692,13 +2954,15 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     )
 
         # Archive all the files for a zip directory
-        shutil.make_archive(SAVE_DIR, 'zip', SAVE_DIR)
-        zip_archive_name = fname + '.zip'
+        shutil.make_archive(SAVE_DIR, "zip", SAVE_DIR)
+        zip_archive_name = fname + ".zip"
 
         # serializer_node.parameters["html"] = html
         # Obtaining the absolute path for the parameters directly. Should change this later.
-        o = urlparse(self.context['request'].build_absolute_uri())
-        serializer_node.parameters["archive"] = 'https://' + o.netloc + MEDIA_URL +  zip_archive_name
+        o = urlparse(self.context["request"].build_absolute_uri())
+        serializer_node.parameters["archive"] = (
+            "https://" + o.netloc + MEDIA_URL + zip_archive_name
+        )
 
         return serializer_node
 
@@ -2955,9 +3219,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             for rect1 in fdict[fnamesize]["regions"]:
                 # for rect2 in fdict[filenamesize]["regions"]:
                 for rect2 in fdict[fnamesize]["regions"]:
-                    is_menu = (rect1["region_attributes"]["HTML element"] == "menu") or (
-                        rect2["region_attributes"]["HTML element"] == "menu"
-                    )
+                    is_menu = (
+                        rect1["region_attributes"]["HTML element"] == "menu"
+                    ) or (rect2["region_attributes"]["HTML element"] == "menu")
                     if (rect1 != rect2) and not is_menu:
                         x1 = rect1["shape_attributes"]["x"]
                         y1 = rect1["shape_attributes"]["y"]
@@ -3069,11 +3333,15 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     height_elem = recognized_element["shape_attributes"]["height"]
 
                     # Add the initial element to the cluster
-                    cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
+                    cluster = ClusterClass(
+                        x1, y1, x2, y2, elements=[recognized_element]
+                    )
                     # Set some flags for this novel cluster
                     cluster.types = "fcluster"
                     cluster.is_elements_only = True
-                    for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
+                    for idx1, recognized_element1 in enumerate(
+                        fdict[fnamesize]["regions"]
+                    ):
                         if recognized_element1["region_attributes"]["HTML element"] in {
                             "text"
                         }:
@@ -3087,10 +3355,12 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                                 x11 = int(recognized_element1["shape_attributes"]["x"])
                                 y11 = int(recognized_element1["shape_attributes"]["y"])
                                 x21 = int(
-                                    x11 + recognized_element1["shape_attributes"]["width"]
+                                    x11
+                                    + recognized_element1["shape_attributes"]["width"]
                                 )
                                 y21 = int(
-                                    y11 + recognized_element1["shape_attributes"]["height"]
+                                    y11
+                                    + recognized_element1["shape_attributes"]["height"]
                                 )
 
                                 # Second rectangle width
@@ -3200,11 +3470,15 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     height_elem = recognized_element["shape_attributes"]["height"]
 
                     # Add the initial element to the cluster
-                    cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
+                    cluster = ClusterClass(
+                        x1, y1, x2, y2, elements=[recognized_element]
+                    )
                     # Set some flags for this novel cluster
                     cluster.types = "fcluster"
                     cluster.is_elements_only = True
-                    for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
+                    for idx1, recognized_element1 in enumerate(
+                        fdict[fnamesize]["regions"]
+                    ):
                         if recognized_element1["region_attributes"]["HTML element"] in {
                             "text"
                         }:
@@ -3218,10 +3492,12 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                                 x11 = int(recognized_element1["shape_attributes"]["x"])
                                 y11 = int(recognized_element1["shape_attributes"]["y"])
                                 x21 = int(
-                                    x11 + recognized_element1["shape_attributes"]["width"]
+                                    x11
+                                    + recognized_element1["shape_attributes"]["width"]
                                 )
                                 y21 = int(
-                                    y11 + recognized_element1["shape_attributes"]["height"]
+                                    y11
+                                    + recognized_element1["shape_attributes"]["height"]
                                 )
 
                                 # Second rectangle width
@@ -3255,7 +3531,11 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                                 ):
                                     # Assign the results to the horizontal group
                                     # Check if the vertical overlap between text label and input is sufficient
-                                    if (vertical_overlap > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD * height_elem1):
+                                    if (
+                                        vertical_overlap
+                                        > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD
+                                        * height_elem1
+                                    ):
                                         # Fill the cluster
                                         # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
                                         # max(y2, y21), elements = [recognized_element, recognized_element1])
@@ -3300,7 +3580,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                         element_unique = False
                 if element_unique is True:
                     # Add the element to the cluster
-                    cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
+                    cluster = ClusterClass(
+                        x1, y1, x2, y2, elements=[recognized_element]
+                    )
 
                     # Set some flags for this novel cluster
                     cluster.types = "fcluster"
@@ -3526,7 +3808,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 if node != root_block:
                     # print(node.name)
                     # Split each block
-                    blocks_split(node, window_name1, image_opencv_input, overlay, clusters)
+                    blocks_split(
+                        node, window_name1, image_opencv_input, overlay, clusters
+                    )
 
             # Go through all the blocks obtained after the ternary algorithm
             # Correct the direction of the fclusters
@@ -3566,12 +3850,18 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             styles["background-color"] = "rgba(" + bcolour_container_value + ")"
             styles["height"] = str(img_height) + "px"
             styles["width"] = str(img_width) + "px"
-            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+            str_styles = "; ".join(
+                "{}:{}".format(key, val) for key, val in styles.items()
+            )
             outer_div.set("style", str_styles)
             # print(1277, styles, str_styles)
             # Define the export node
             outer_div_node = ScenarioElement.objects.create(
-                parent=serializer_node, struct_type="container", parameters=parameters, styles=styles, buoyancy=0
+                parent=serializer_node,
+                struct_type="container",
+                parameters=parameters,
+                styles=styles,
+                buoyancy=0,
             )
 
             for pre, fill, node in RenderTree(root_block):
@@ -3620,26 +3910,36 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     styles["border"] = "1px solid green"
                     styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
 
-                    str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                    str_styles = "; ".join(
+                        "{}:{}".format(key, val) for key, val in styles.items()
+                    )
                     node.div.set("style", str_styles)
 
                     # Create a new Scenario Element for the elements chain
                     node.scenarioelement_inner = ScenarioElement.objects.create(
-                        parent=outer_div_node, struct_type="container", parameters=parameters, styles=styles, buoyancy=0
+                        parent=outer_div_node,
+                        struct_type="container",
+                        parameters=parameters,
+                        styles=styles,
+                        buoyancy=0,
                     )
                 else:
                     node.div = ET.SubElement(node.parent.div, "div")
 
                     styles["border"] = "1px solid green"
 
-                    str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                    str_styles = "; ".join(
+                        "{}:{}".format(key, val) for key, val in styles.items()
+                    )
                     node.div.set("style", str_styles)
 
                     # Create a new Scenario Element for the elements chain
                     node.scenarioelement_inner = ScenarioElement.objects.create(
                         parent=node.parent.scenarioelement,
                         struct_type="container",
-                        parameters=parameters, styles=styles, buoyancy=0
+                        parameters=parameters,
+                        styles=styles,
+                        buoyancy=0,
                     )
 
                 # Display elements for some fcluster
@@ -3686,14 +3986,18 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                             element = ET.SubElement(node.div, "input")
                             # displaying various kinds of elements end
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="textinput",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
                         elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
@@ -3702,30 +4006,40 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                             # displaying various kinds of elements end
                             element.set("type", "checkbox")
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="checkbox",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
-                        elif elem["region_attributes"]["HTML element"] in {"radiobutton"}:
+                        elif elem["region_attributes"]["HTML element"] in {
+                            "radiobutton"
+                        }:
                             # displaying various kinds of elements start
                             element = ET.SubElement(node.div, "input")
                             # displaying various kinds of elements end
                             element.set("type", "radio")
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="radiobutton",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
                         elif elem["region_attributes"]["HTML element"] == "select":
@@ -3736,17 +4050,24 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                             element = ET.SubElement(node.div, "select")
                             # displaying various kinds of elements end
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="select",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
-                        if elem["region_attributes"]["HTML element"] in {"text", "ocrtext"}:
+                        if elem["region_attributes"]["HTML element"] in {
+                            "text",
+                            "ocrtext",
+                        }:
                             # displaying various kinds of elements start
                             element = ET.SubElement(node.div, "div")
                             # displaying various kinds of elements end
@@ -3755,14 +4076,18 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             parameters["textContent"] = element.text
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="ocrtext",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
                         elif elem["region_attributes"]["HTML element"] in {"textarea"}:
@@ -3772,17 +4097,23 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             element.set("placeholder", lorem.get_word(count=2))
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="textarea",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
-                        elif elem["region_attributes"]["HTML element"] in {"form_heading"}:
+                        elif elem["region_attributes"]["HTML element"] in {
+                            "form_heading"
+                        }:
                             # displaying various kinds of elements start
                             element = ET.SubElement(node.div, "h3")
                             # displaying various kinds of elements end
@@ -3791,14 +4122,18 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             parameters["textContent"] = element.text
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="heading",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
                         elif elem["region_attributes"]["HTML element"] in {"form"}:
@@ -3806,14 +4141,18 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                             element = ET.SubElement(node.div, "form")
                             # displaying various kinds of elements end
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="container",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
                         elif elem["region_attributes"]["HTML element"] == "image":
@@ -3829,14 +4168,18 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             element.set("src", elem_image_name)
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="image",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
                         elif elem["region_attributes"]["HTML element"] == "button":
@@ -3850,28 +4193,36 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             parameters["textContent"] = element.text
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="button",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
                         elif elem["region_attributes"]["HTML element"] in {"menu"}:
                             # displaying various kinds of elements start
                             element = ET.SubElement(node.div, "ul")
                             # displaying various kinds of elements end
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="list",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
                         elif elem["region_attributes"]["HTML element"] in {"li"}:
@@ -3883,14 +4234,18 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             parameters["textContent"] = element.text
 
-                            str_styles = '; '.join('{}:{}'.format(key, val) for key, val in styles.items())
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
                             element.set("style", str_styles)
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
                                 parent=node.parent.scenarioelement,
                                 struct_type="listItem",
-                                parameters=parameters, styles=styles, buoyancy=0
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
                             )
 
         return serializer_node
