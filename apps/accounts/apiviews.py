@@ -1,5 +1,4 @@
 """Views for the accounts api"""
-
 from rest_framework import generics
 from rest_framework.pagination import CursorPagination
 from .models import User, Profile, Team, TeamMember
@@ -7,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .serializers import UserSerializer, ProfileSerializer, TeamMemberSerializer, TeamSerializer
 from rest_framework import filters
+
 
 class UserCursorSetPagination(CursorPagination):
     page_size = 10
@@ -37,7 +37,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ProfileList(generics.ListCreateAPIView):
     """
-    List all profiles, or create a new profile.
+    Show authenticated user profile, or create a new profile.
     """
 
     queryset = Profile.objects.all()
@@ -45,6 +45,9 @@ class ProfileList(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        return Profile.objects.filter(user=self.request.user)
 
 
 class ProfileDetail(generics.RetrieveUpdateDestroyAPIView):
