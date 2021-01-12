@@ -1,11 +1,11 @@
 // @ts-nocheck
-
 import React, { useState } from 'react';
 import cn from 'classnames';
+import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 
 import { RadioRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
-import { makeComponentStyles, makeInlineStyles } from '../styles';
+import { makeComponentStyles } from '../styles';
 
 import '@Src/styles/export/material/mdc.radio.css';
 
@@ -18,14 +18,9 @@ const useDivStyles = makeComponentStyles(
         fontSize: 0,
       },
     },
-    radio: ({ entityStyles, groupStyles, ownStyles }) => {
+    radio: ({ ownStyles }) => {
       const borderColor =
-        ownStyles.backgroundColor ||
-        groupStyles.backgroundColor ||
-        entityStyles.backgroundColor;
-      if (!borderColor) {
-        return {};
-      }
+        ownStyles.backgroundColor || DEFAULT_COMPONENTS_BACKGROUND;
       return {
         '&:checked ~ .mdc-radio__background > .mdc-radio__outer-circle': {
           borderColor,
@@ -42,17 +37,21 @@ const useDivStyles = makeComponentStyles(
   },
 );
 
-const useInlineStyles = makeInlineStyles((styles: React.CSSProperties) => ({
-  color: styles.backgroundColor,
-}));
-
 const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, name, params, isDisabled, className } = props;
+    const {
+      id,
+      name,
+      params,
+      isDisabled,
+      className,
+      entityClass,
+      groupClass,
+      ownStyles,
+    } = props;
     const { showRipple } = params;
 
     const classes = useDivStyles(props);
-    const inlineStyles = useInlineStyles(props);
 
     const [isChecked, setIsChecked] = useState(false);
 
@@ -67,9 +66,9 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         className={cn(
           className,
           classes.root,
+          entityClass,
+          groupClass,
           isDisabled && classes.disabled,
-          classes.entityStyles,
-          classes.groupStyles,
           classes.ownStyles,
         )}
         {...eventHandlers}
@@ -79,7 +78,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
             {showRipple && (
               <mat-ripple
                 centered
-                color={`${inlineStyles.color || '#1890ff'}33`}
+                color={`${ownStyles.color || '#1890ff'}33`}
                 style={{
                   borderRadius: '50%',
                 }}

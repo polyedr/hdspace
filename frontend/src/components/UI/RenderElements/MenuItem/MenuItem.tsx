@@ -15,7 +15,14 @@ const useStyles = makeComponentStyles({
 
 const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, isDisabled, params, className } = props;
+    const {
+      id,
+      isDisabled,
+      params,
+      className,
+      entityClass,
+      groupClass,
+    } = props;
     const { showRipple, name, value } = params;
 
     const classes = useStyles(props);
@@ -30,10 +37,10 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
         className={cn(
           className,
           classes.menuItem,
+          entityClass,
+          groupClass,
           classes.addedElem,
           classes.disabled,
-          classes.entityStyles,
-          classes.groupStyles,
           classes.ownStyles,
         )}
         value={value}
@@ -45,11 +52,7 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
     ) : (
       <MaterialMenuItem
         key={id}
-        className={cn(
-          classes.entityStyles,
-          classes.groupStyles,
-          classes.ownStyles,
-        )}
+        className={cn(entityClass, groupClass, classes.ownStyles)}
         value={value}
         disableRipple={!showRipple}
       >

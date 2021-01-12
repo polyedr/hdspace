@@ -8,7 +8,15 @@ const useStyles = makeComponentStyles();
 
 const Columns = React.forwardRef<HTMLDivElement, SharedRendererProps>(
   (props, ref) => {
-    const { id, isDisabled, children, className, isBorderVisible } = props;
+    const {
+      id,
+      isDisabled,
+      children,
+      className,
+      isBorderVisible,
+      entityClass,
+      groupClass,
+    } = props;
 
     const classes: Record<string, any> = useStyles(props);
     const eventHandlers = useEventHandlers(props);
@@ -22,8 +30,8 @@ const Columns = React.forwardRef<HTMLDivElement, SharedRendererProps>(
         className={cn(
           className,
           classes.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
+          entityClass,
+          groupClass,
           classes.ownStyles,
         )}
         style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}

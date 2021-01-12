@@ -10,8 +10,8 @@ import {
 } from '../../../types';
 
 export type StyleRendererProps = {
-  entityStyles: React.CSSProperties;
-  groupStyles: React.CSSProperties;
+  entityClass: string | null;
+  groupClass: string | null;
   ownStyles: React.CSSProperties;
 };
 

@@ -10,7 +10,15 @@ const useStyles = makeComponentStyles();
 
 const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, isDisabled, children, className, isBorderVisible } = props;
+    const {
+      id,
+      isDisabled,
+      children,
+      className,
+      isBorderVisible,
+      entityClass,
+      groupClass,
+    } = props;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -22,9 +30,9 @@ const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          entityClass,
+          groupClass,
           classes.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
           classes.ownStyles,
         )}
         style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}

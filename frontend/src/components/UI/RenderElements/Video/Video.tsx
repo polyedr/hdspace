@@ -19,7 +19,7 @@ const useStyles = makeComponentStyles({
 });
 
 const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, className } = props;
+  const { id, params, isDisabled, className, entityClass, groupClass } = props;
   const { videoSettings } = params;
 
   const playerLink = getPlayerLink(videoSettings, !isDisabled);
@@ -35,21 +35,16 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
       ref={ref}
       className={cn(
         className,
+        entityClass,
+        groupClass,
         styles.addedElem,
         isDisabled && styles.disabled,
-        styles.entityStyles,
-        styles.groupStyles,
         styles.ownStyles,
       )}
       {...eventHandlers}
     >
       <div
-        className={cn(
-          styles.iframe,
-          styles.entityStyles,
-          styles.groupStyles,
-          styles.ownStyles,
-        )}
+        className={cn(styles.iframe, entityClass, groupClass, styles.ownStyles)}
       >
         {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
         <iframe
@@ -72,10 +67,10 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
       key={id}
       className={cn(
         className,
+        entityClass,
+        groupClass,
         styles.addedElem,
         styles.empty,
-        styles.entityStyles,
-        styles.groupStyles,
         styles.ownStyles,
       )}
     />

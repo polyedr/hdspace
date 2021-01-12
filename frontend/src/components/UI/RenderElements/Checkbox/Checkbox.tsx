@@ -2,9 +2,10 @@
 
 import React, { useState, useCallback } from 'react';
 import cn from 'classnames';
+import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 import { CheckboxRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
-import { makeComponentStyles, makeInlineStyles } from '../styles';
+import { makeComponentStyles } from '../styles';
 
 import '@Src/styles/export/material/mdc.checkbox.css';
 
@@ -13,20 +14,14 @@ const useStyles = makeComponentStyles(
     root: {
       overflow: 'hidden',
     },
-    checkbox: ({ entityStyles, groupStyles, ownStyles }) => {
-      const color =
-        ownStyles.backgroundColor ||
-        groupStyles.backgroundColor ||
-        entityStyles.backgroundColor;
-      if (color) {
-        return {
-          '&:checked ~ .checkbox-background': {
-            borderColor: color,
-            backgroundColor: color,
-          },
-        };
-      }
-      return {};
+    checkbox: ({ ownStyles }) => {
+      const color = ownStyles.backgroundColor || DEFAULT_COMPONENTS_BACKGROUND;
+      return {
+        '&:checked ~ .checkbox-background': {
+          borderColor: color,
+          backgroundColor: color,
+        },
+      };
     },
   },
   ['backgroundColor', 'width', 'height'],
@@ -35,16 +30,18 @@ const useStyles = makeComponentStyles(
   },
 );
 
-const useInlineStyles = makeInlineStyles((styles: React.CSSProperties) => ({
-  color: styles.backgroundColor,
-}));
-
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, isDisabled, className } = props;
+    const {
+      id,
+      params,
+      isDisabled,
+      className,
+      entityClass,
+      groupClass,
+      ownStyles,
+    } = props;
     const { showRipple } = params;
-
-    const inlineStyles = useInlineStyles(props);
 
     const eventHandlers = useEventHandlers(props);
     const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -67,10 +64,10 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          entityClass,
+          groupClass,
           classes.root,
           isDisabled && classes.disabled,
-          classes.entityStyles,
-          classes.groupStyles,
           classes.ownStyles,
         )}
         {...eventHandlers}
@@ -80,7 +77,9 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
             {showRipple && (
               <mat-ripple
                 centered
-                color={`${inlineStyles.color || '#1890ff'}`}
+                color={`${
+                  ownStyles.backgroundColor || DEFAULT_COMPONENTS_BACKGROUND
+                }`}
                 style={{
                   borderRadius: '50%',
                   opacity: 0.2,

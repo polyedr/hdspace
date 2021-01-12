@@ -16,12 +16,8 @@ const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
 };
 
 const useStyles = makeComponentStyles({
-  root: ({ isDisabled, entityStyles, groupStyles, ownStyles, type }) => {
-    const { color, backgroundColor } = {
-      ...entityStyles,
-      ...groupStyles,
-      ...ownStyles,
-    };
+  root: ({ isDisabled, ownStyles, type }) => {
+    const { color, backgroundColor } = ownStyles;
     return {
       color,
       backgroundColor,
@@ -51,7 +47,16 @@ type Props = WithActionProps &
 export type ActionRenderer = React.FC<Props>;
 
 const Action: ActionRenderer = React.forwardRef((props, ref) => {
-  const { id, isDisabled, params, actionType, actionLink, className } = props;
+  const {
+    id,
+    isDisabled,
+    params,
+    actionType,
+    actionLink,
+    className,
+    entityClass,
+    groupClass,
+  } = props;
   const { showRipple, textContent } = params;
 
   const [ripple, setRipple] = useState<MDCRipple | null>(null);
@@ -90,13 +95,13 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
       key={id}
       data-show-ripple={showRipple}
       className={cn(
+        'mdc-button',
         className,
         classes.root,
-        classes.entityStyles,
-        classes.groupStyles,
         classes.ownStyles,
         isDisabled && classes.disabled,
-        'mdc-button',
+        entityClass,
+        groupClass,
       )}
       {...(actionType === 'external-link' && {
         href: actionLink,

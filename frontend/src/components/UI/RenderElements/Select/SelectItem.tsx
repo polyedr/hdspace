@@ -28,6 +28,8 @@ const SelectItem: React.FC<Props> = React.forwardRef((props, ref) => {
     params: { name },
     isDisabled,
     className,
+    entityClass,
+    groupClass,
   } = props;
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
@@ -41,9 +43,9 @@ const SelectItem: React.FC<Props> = React.forwardRef((props, ref) => {
         'mdc-list-item',
         className,
         classes.root,
+        entityClass,
+        groupClass,
         isDisabled && classes.disabled,
-        classes.entityStyles,
-        classes.groupStyles,
         classes.ownStyles,
       )}
       aria-selected="false"

@@ -40,8 +40,6 @@ export const getComputedComponentStyles = (
   stylesToOmit?: Array<string>,
   stylesToAdd?: StylesToAdd,
 ) => ({
-  entityStyles: getComputedStyle(props.entityStyles, stylesToOmit, stylesToAdd),
-  groupStyles: getComputedStyle(props.groupStyles, stylesToOmit, stylesToAdd),
   ownStyles: getComputedStyle(
     props.ownStyles,
     stylesToOmit,
@@ -55,10 +53,6 @@ export const makeComponentStyles = (
   stylesToAdd?: React.CSSProperties,
 ) =>
   makeStyles((theme) => ({
-    entityStyles: (props: StyleRendererProps) =>
-      getComputedStyle(props.entityStyles, stylesToOmit, stylesToAdd),
-    groupStyles: (props: StyleRendererProps) =>
-      getComputedStyle(props.groupStyles, stylesToOmit, stylesToAdd),
     ownStyles: (props: StyleRendererProps) =>
       getComputedStyle(props.ownStyles, stylesToOmit, stylesToAdd),
 
@@ -74,33 +68,3 @@ export const makeComponentStyles = (
     },
     ...(style instanceof Function ? style(theme) : style),
   }));
-
-export const makeInlineStyles = (
-  callback: (styles: React.CSSProperties) => React.CSSProperties,
-) => {
-  return ({ entityStyles, groupStyles, ownStyles }: StyleRendererProps) => {
-    let componentStyles = {};
-    [entityStyles, groupStyles, ownStyles].forEach(
-      (style: React.CSSProperties) => {
-        const callbackStyles = callback(style);
-        const initializedStyles = Object.keys(callbackStyles).reduce(
-          (acc, key) => {
-            if (!callbackStyles[key]) {
-              return acc;
-            }
-            return {
-              ...acc,
-              [key]: callbackStyles[key],
-            };
-          },
-          {},
-        );
-        componentStyles = {
-          ...componentStyles,
-          ...initializedStyles,
-        };
-      },
-    );
-    return componentStyles;
-  };
-};

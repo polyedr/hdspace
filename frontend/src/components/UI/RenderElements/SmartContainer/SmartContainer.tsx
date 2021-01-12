@@ -88,6 +88,8 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
       isBorderVisible,
       blockType,
       children,
+      entityClass,
+      groupClass,
     } = props;
     const element = useSelector(selectElementById(id));
     const currentScreenId = useSelector(selectCurrentScreenId);
@@ -170,9 +172,9 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
         key={id}
         className={cn(
           className,
+          entityClass,
+          groupClass,
           styles.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
           classes.ownStyles,
         )}
         style={{

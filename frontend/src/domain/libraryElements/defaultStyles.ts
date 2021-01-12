@@ -1,3 +1,4 @@
+import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 import { Entity } from '../../types';
 import {
   buttonStyleControls,
@@ -58,6 +59,7 @@ export const DEFAULT_BORDER: React.CSSProperties = {
   borderRadius: '0px',
   borderColor: '#323232',
   borderWidth: '0px',
+  borderStyle: 'solid',
 };
 
 export const DEFAULT_BACKGROUND: React.CSSProperties = {
@@ -663,7 +665,7 @@ export const defaultButtonStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: '#1890ff',
+    backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
   },
 };
 
@@ -724,7 +726,6 @@ export const defaultCheckboxStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: '#1890ff',
   },
 };
 
@@ -739,7 +740,6 @@ export const defaultRadiobuttonStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: '#1890ff',
   },
 };
 

@@ -10,7 +10,7 @@ import useEventHandlers from '../useEventHandlers';
 const useStyles = makeComponentStyles();
 
 const Map: React.FC<MapRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, className } = props;
+  const { id, params, isDisabled, className, entityClass, groupClass } = props;
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
 
@@ -22,9 +22,9 @@ const Map: React.FC<MapRendererProps> = React.forwardRef((props, ref) => {
       key={id}
       className={cn(
         className,
+        entityClass,
+        groupClass,
         isDisabled && classes.disabled,
-        classes.entityStyles,
-        classes.groupStyles,
         classes.ownStyles,
       )}
       {...eventHandlers}

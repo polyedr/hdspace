@@ -16,7 +16,7 @@ const useStyles = makeComponentStyles({
 const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, params, className, contentEditable } = props;
-    const { headingType, textContent } = params;
+    const { headingType, textContent, entityClass, groupClass } = params;
     const HeadingTag = headingType || 'h3';
 
     const styles = useStyles(props);
@@ -32,9 +32,9 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
           className,
           styles.heading,
           styles.addedElem,
-          styles.entityStyles,
-          styles.groupStyles,
           styles.ownStyles,
+          entityClass,
+          groupClass,
         )}
         {...eventHandlers}
         contentEditable={contentEditable}

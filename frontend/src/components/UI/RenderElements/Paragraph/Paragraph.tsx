@@ -23,7 +23,14 @@ const useStyles = makeComponentStyles(
 
 const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, className, contentEditable } = props;
+    const {
+      id,
+      params,
+      className,
+      contentEditable,
+      entityClass,
+      groupClass,
+    } = props;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -36,9 +43,9 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
         className={cn(
           className,
           classes.paragraph,
+          entityClass,
+          groupClass,
           classes.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
           classes.ownStyles,
         )}
         contentEditable={contentEditable}

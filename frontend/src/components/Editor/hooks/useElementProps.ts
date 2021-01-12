@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
 import { findParentByChildID } from '@Utils/ElementsTreeHelper';
 import { updateSavedElementValues } from '@Redux/project/actions';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { ChildrenElements, ElementEntity, ProjectClass } from '@Src/types';
+import { toClassName } from '@Utils/stringHelper';
 import {
   selectActiveElementId,
   selectCurrentRootElement,
@@ -16,7 +16,6 @@ import {
   selectSavedElementsValues,
 } from '@Redux/project/selectors/element';
 import {
-  selectCurrentProject,
   selectScreenLoader,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
@@ -45,11 +44,8 @@ const useElementProps = (elementId: string): ElementProps | null => {
   const activeElementId = useSelector(selectActiveElementId);
   const showBorders = useSelector(selectShowingBorders);
   const screenLoader = useSelector(selectScreenLoader);
-  const currentProject = useSelector(selectCurrentProject);
   const canBeEdited = useSelector(selectElementCanBeEdited(elementId));
   const isBeingEdited = useSelector(selectElementBeingEdited(elementId));
-
-  const projectClasses = currentProject.projectData.classes;
 
   const dispatch = useDispatch();
 
@@ -147,7 +143,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
     dispatch,
     elementId,
     savedElements,
-    projectClasses,
   ]);
 
   if (!element) {
@@ -157,22 +152,14 @@ const useElementProps = (elementId: string): ElementProps | null => {
   const { id, type, styles } = element;
 
   const [entityClass, groupClass] = element.styles.classNames;
-
-  const entityStyles =
-    projectClasses?.find((cssClass: any) => cssClass.className === entityClass)
-      ?.rules || {};
-  const groupStyles =
-    projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
-      ?.rules || {};
-
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
     isDisabled: !disableInteractions,
     contentEditable: canBeEdited || isBeingEdited,
     ownStyles: styles.ownStyles,
-    entityStyles,
-    groupStyles,
+    entityClass: toClassName(entityClass),
+    groupClass: toClassName(groupClass),
     active: !disableInteractions && id === activeElementId,
   };
 
