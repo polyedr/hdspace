@@ -9,7 +9,7 @@ import useEventHandlers from '../useEventHandlers';
 const useStyles = makeComponentStyles();
 
 const Image: React.FC<ImageRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, className } = props;
+  const { id, params, className, entityClass, groupClass } = props;
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
 
@@ -22,9 +22,9 @@ const Image: React.FC<ImageRendererProps> = React.forwardRef((props, ref) => {
       key={id}
       className={cn(
         className,
+        entityClass,
+        groupClass,
         classes.addedElem,
-        classes.entityStyles,
-        classes.groupStyles,
         classes.ownStyles,
       )}
       alt={id}

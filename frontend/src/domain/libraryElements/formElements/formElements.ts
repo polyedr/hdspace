@@ -1,4 +1,5 @@
-import { defaultFreeCanvasParams } from '../../core';
+import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
+import { defaultFreeCanvasParams } from '@Domain/core';
 import {
   ButtonServerElement,
   CheckboxServerElement,
@@ -10,7 +11,7 @@ import {
   SelectServerElement,
   TextareaServerElement,
   TextinputServerElement,
-} from '../../../types';
+} from '@Src/types';
 
 export const makeButton = ({
   buoyancy = 0,
@@ -79,7 +80,9 @@ export const checkbox: CheckboxServerElement = {
   },
   styles: {
     classNames: ['checkbox'],
-    ownStyles: {},
+    ownStyles: {
+      backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
+    },
   },
   name: 'checkbox',
   children: [],
@@ -98,7 +101,9 @@ export const radiobutton: RadiobuttonServerElement = {
   },
   styles: {
     classNames: ['radiobutton'],
-    ownStyles: {},
+    ownStyles: {
+      backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
+    },
   },
   name: 'radiobutton',
   children: [],

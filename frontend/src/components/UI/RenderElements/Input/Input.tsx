@@ -23,7 +23,7 @@ const useStyles = makeComponentStyles({
 });
 
 const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, className } = props;
+  const { id, params, isDisabled, className, entityClass, groupClass } = props;
   const { type, placeholder, textContent } = params;
 
   const styles = useStyles(props);
@@ -42,12 +42,7 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
       InputProps={{
         readOnly: isDisabled,
         classes: {
-          input: cn(
-            styles.input,
-            styles.entityStyles,
-            styles.groupStyles,
-            styles.ownStyles,
-          ),
+          input: cn(styles.input, entityClass, groupClass, styles.ownStyles),
         },
         className: cn(isDisabled && styles.disabled),
       }}

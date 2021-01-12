@@ -14,7 +14,7 @@ const useProjectHeaderStyles = (classes: ProjectClass[]) => {
     if (!classInstance) {
       return '';
     }
-    return `.${toClassName(classInstance.className) as string}{${Object.keys(
+    return `.${toClassName(classInstance.className)}{${Object.keys(
       classInstance.rules,
     ).reduce(
       (styles, ruleName) =>

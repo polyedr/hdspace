@@ -14,7 +14,7 @@ const useStyles = makeComponentStyles({
 });
 
 const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, className, children } = props;
+  const { id, params, className, children, entityClass, groupClass } = props;
   const { isOrdered } = params;
 
   const ListTag = isOrdered ? 'ol' : 'ul';
@@ -31,9 +31,9 @@ const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
       className={cn(
         className,
         classes.list,
+        entityClass,
+        groupClass,
         classes.addedElem,
-        classes.entityStyles,
-        classes.groupStyles,
         classes.ownStyles,
       )}
       {...eventHandlers}

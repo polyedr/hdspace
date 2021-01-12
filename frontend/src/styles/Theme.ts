@@ -16,6 +16,7 @@ export const LEFT_PANEL_WIDTH = 220;
 export const LEFT_PANEL_WIDTH_MIN = 64;
 export const RIGHT_PANEL_WIDTH = 300;
 export const PANEL_TRANSITION_DURATION = 250;
+export const DEFAULT_COMPONENTS_BACKGROUND = '#1890ff';
 
 const theme = createMuiTheme({
   palette: {

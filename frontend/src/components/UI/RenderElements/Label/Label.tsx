@@ -15,7 +15,14 @@ const useStyles = makeComponentStyles({
 });
 
 const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, className, contentEditable } = props;
+  const {
+    id,
+    params,
+    className,
+    contentEditable,
+    entityClass,
+    groupClass,
+  } = props;
   const { labelFor, textContent } = params;
 
   const styles = useStyles(props);
@@ -32,9 +39,9 @@ const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
       className={cn(
         className,
         styles.label,
+        entityClass,
+        groupClass,
         styles.addedElem,
-        styles.entityStyles,
-        styles.groupStyles,
         styles.ownStyles,
       )}
       contentEditable={contentEditable}

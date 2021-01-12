@@ -27,18 +27,23 @@ const useStyles = makeComponentStyles((theme) => ({
   isOpen: {
     top: '58px',
   },
-  icon: ({ entityStyles, groupStyles, ownStyles }) => ({
-    fill:
-      ownStyles.color ||
-      groupStyles.color ||
-      entityStyles.color ||
-      theme.palette.primary.main,
+  icon: ({ ownStyles }) => ({
+    fill: ownStyles.color || theme.palette.primary.main,
   }),
 }));
 
 const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, name, isDisabled, params, className, children } = props;
+    const {
+      id,
+      name,
+      isDisabled,
+      params,
+      className,
+      children,
+      entityClass,
+      groupClass,
+    } = props;
     const { isOpen } = params;
     const eventHandlers = useEventHandlers(props);
     const classes = useStyles(props);
@@ -73,8 +78,8 @@ const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
         className={cn(
           className,
           classes.root,
-          classes.entityStyles,
-          classes.groupStyles,
+          entityClass,
+          groupClass,
           classes.ownStyles,
         )}
         {...eventHandlers}

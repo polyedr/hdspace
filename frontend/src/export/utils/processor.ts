@@ -1,10 +1,10 @@
-import { ProjectClass } from '@Src/types';
-import { toClassName } from '@Utils/stringHelper';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import JSZip from 'jszip';
 import pretty from 'pretty';
 import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
+import { toClassName } from '@Utils/stringHelper';
+import { ProjectClass } from '@Src/types';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];

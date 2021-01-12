@@ -32,14 +32,10 @@ const useItemStyles = makeComponentStyles({
 });
 
 const useEditableItemStyles = makeStyles({
-  entityStyles: ({ entityStyles }) => R.omit(omitEditableStyles, entityStyles),
-  groupStyles: ({ groupStyles }) => R.omit(omitEditableStyles, groupStyles),
   ownStyles: ({ ownStyles }) => R.omit(omitEditableStyles, ownStyles),
 });
 
 const useLinkStyles = makeStyles({
-  entityStyles: ({ entityStyles }) => R.omit(omitLinkStyles, entityStyles),
-  groupStyles: ({ groupStyles }) => R.omit(omitLinkStyles, groupStyles),
   ownStyles: ({ ownStyles }) => R.omit(omitLinkStyles, ownStyles),
   link: {
     width: '100%',

@@ -34,9 +34,6 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
-    // console.log('ENTITY CLASS!!', entityClass);
-    // console.log('GROUP CLASS!!', groupClass);
-
     return (
       <p
         ref={ref}
@@ -44,12 +41,12 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
         data-ls-id={id}
         key={id}
         className={cn(
-          entityClass,
-          classes.ownStyles,
           className,
           classes.paragraph,
-          classes.addedElem,
+          entityClass,
           groupClass,
+          classes.addedElem,
+          classes.ownStyles,
         )}
         contentEditable={contentEditable}
         {...eventHandlers}

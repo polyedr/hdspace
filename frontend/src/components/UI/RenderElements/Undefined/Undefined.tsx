@@ -10,7 +10,7 @@ const useStyles = makeComponentStyles();
 
 const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, className, children } = props;
+    const { id, className, children, entityClass, groupClass } = props;
     const classes = useStyles();
     const eventHandlers = useEventHandlers(props);
 
@@ -21,9 +21,9 @@ const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          entityClass,
+          groupClass,
           classes.addedElem,
-          classes.entityStyles,
-          classes.groupStyles,
           classes.ownStyles,
         )}
         {...eventHandlers}

@@ -1,3 +1,4 @@
+import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 import { Entity } from '../../types';
 import {
   buttonStyleControls,
@@ -664,7 +665,7 @@ export const defaultButtonStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: '#1890ff',
+    backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
   },
 };
 
@@ -725,7 +726,6 @@ export const defaultCheckboxStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: '#1890ff',
   },
 };
 
@@ -740,7 +740,6 @@ export const defaultRadiobuttonStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: '#1890ff',
   },
 };
 

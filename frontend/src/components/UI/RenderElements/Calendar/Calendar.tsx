@@ -11,7 +11,7 @@ const useStyles = makeComponentStyles();
 
 const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, isDisabled, className } = props;
+    const { id, isDisabled, className, entityClass, groupClass } = props;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -23,9 +23,9 @@ const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
+          entityClass,
+          groupClass,
           isDisabled && classes.disabled,
-          classes.entityStyles,
-          classes.groupStyles,
           classes.ownStyles,
         )}
         {...eventHandlers}

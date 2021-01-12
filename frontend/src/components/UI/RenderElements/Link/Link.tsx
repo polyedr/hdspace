@@ -14,7 +14,16 @@ export type LinkRenderer = React.FC<WithActionProps & ActionRendererProps>;
 const useStyles = makeComponentStyles();
 
 const Link: LinkRenderer = React.forwardRef((props, ref) => {
-  const { id, isDisabled, params, actionType, actionLink, className } = props;
+  const {
+    id,
+    isDisabled,
+    params,
+    actionType,
+    actionLink,
+    className,
+    entityClass,
+    groupClass,
+  } = props;
   const { textContent } = params;
 
   const classes = useStyles(props);
@@ -28,9 +37,9 @@ const Link: LinkRenderer = React.forwardRef((props, ref) => {
       key={id}
       className={cn(
         className,
+        entityClass,
+        groupClass,
         isDisabled && classes.disabled,
-        classes.entityStyles,
-        classes.groupStyles,
         classes.ownStyles,
       )}
       underline={isDisabled ? 'none' : 'hover'}

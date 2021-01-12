@@ -70,22 +70,13 @@ const getExportedProps = (elementId, state) => {
 
   const [entityClass, groupClass] = element.styles.classNames;
 
-  const entityStyles =
-    projectClasses?.find((cssClass: any) => cssClass.className === entityClass)
-      ?.rules || {};
-  const groupStyles =
-    projectClasses?.find((cssClass: any) => cssClass.className === groupClass)
-      ?.rules || {};
-
   const additionalProps = getAdditionalProps(element, projectClasses, state);
 
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     id: id === rootID ? 'root' : id,
     isDisabled: false,
     ownStyles: styles.ownStyles,
-    entityStyles,
-    groupStyles,
-    entityClass,
+    entityClass: toClassName(entityClass),
     groupClass: toClassName(groupClass),
     contentEditable: false,
     active: false,

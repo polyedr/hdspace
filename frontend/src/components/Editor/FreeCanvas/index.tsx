@@ -30,13 +30,14 @@ const FreeCanvas = () => {
   const ref = useRef<Rnd | null>(null);
 
   const root = useSelector(selectCurrentRoot);
+  const [entityClass, groupClass] = root.styles.classNames;
   const directChildren: Normalized<StateElement> = useSelector(
     selectDirectRootChildren,
   );
   const activeElementId = useSelector(selectActiveElementId);
   const currentScreenId = useSelector(selectCurrentScreenId);
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(root);
+  const { ownStyles } = useElementClassNames(root);
 
   const rootSize = () =>
     Object.values(directChildren).reduce(
@@ -123,7 +124,7 @@ const FreeCanvas = () => {
       ref={(c) => {
         ref.current = c;
       }}
-      className={cn(entityStyles, groupStyles, ownStyles)}
+      className={cn(entityClass, groupClass, ownStyles)}
       style={{
         position: 'relative',
         userSelect: 'none',

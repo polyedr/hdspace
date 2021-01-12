@@ -10,7 +10,15 @@ const useStyles = makeComponentStyles();
 
 const Container: React.FC<ContainerRendererProps> = React.forwardRef(
   (props, ref: React.RefObject<HTMLElement>) => {
-    const { id, isDisabled, children, className, isBorderVisible } = props;
+    const {
+      id,
+      isDisabled,
+      children,
+      className,
+      isBorderVisible,
+      entityClass,
+      groupClass,
+    } = props;
 
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
@@ -24,9 +32,9 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
           key={id}
           className={cn(
             className,
+            entityClass,
+            groupClass,
             classes.addedElem,
-            classes.entityStyles,
-            classes.groupStyles,
             classes.ownStyles,
           )}
           style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}

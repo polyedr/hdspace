@@ -16,8 +16,6 @@ const getTextFieldClassStyles = (style: React.CSSProperties) => ({
 
 const getTextFieldStyles = (
   isDisabled: boolean,
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
   ownStyles: React.CSSProperties,
 ) =>
   makeStyles({
@@ -29,14 +27,6 @@ const getTextFieldStyles = (
       '&.hovered $input': {
         outline: isDisabled ? '1px solid #949494' : 'none',
       },
-    },
-
-    entityStyles: {
-      ...getTextFieldClassStyles(entityStyles),
-    },
-
-    groupStyles: {
-      ...getTextFieldClassStyles(groupStyles),
     },
 
     ownStyles: {
@@ -69,11 +59,7 @@ const getInputClassStyles = (style: React.CSSProperties) => ({
   },
 });
 
-const getInputStyles = (
-  entityStyles: React.CSSProperties,
-  groupStyles: React.CSSProperties,
-  ownStyles: React.CSSProperties,
-) =>
+const getInputStyles = (ownStyles: React.CSSProperties) =>
   makeStyles({
     root: {
       width: '100%',
@@ -97,14 +83,6 @@ const getInputStyles = (
       },
     },
 
-    entityStyles: {
-      ...getInputClassStyles(entityStyles),
-    },
-
-    groupStyles: {
-      ...getInputClassStyles(groupStyles),
-    },
-
     ownStyles: {
       ...getInputClassStyles(ownStyles),
     },
@@ -120,37 +98,22 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
       isDisabled,
       currentValue,
       className,
-      entityStyles,
-      groupStyles,
       ownStyles,
+      entityClass,
+      groupClass,
     } = props;
     const { placeholder } = params;
 
     const eventHandlers = useEventHandlers(props);
 
-    const textFieldClasses = getTextFieldStyles(
-      isDisabled,
-      entityStyles,
-      groupStyles,
-      ownStyles,
-    )();
-    const inputClasses = getInputStyles(entityStyles, groupStyles, ownStyles)();
+    const textFieldClasses = getTextFieldStyles(isDisabled, ownStyles)();
+    const inputClasses = getInputStyles(ownStyles)();
 
-    const entityInlineStyles = R.pick(
-      ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-      entityStyles,
-    );
-    const groupInlineStyles = R.pick(
-      ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-      groupStyles,
-    );
     const ownInlineStyles = R.pick(
       ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
       ownStyles,
     );
     const inlineStyles = {
-      ...entityInlineStyles,
-      ...groupInlineStyles,
       ...ownInlineStyles,
       transition: 'none',
     };
@@ -160,8 +123,8 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
       className: cn(
         isDisabled && styles.disabled,
         inputClasses.root,
-        inputClasses.entityStyles,
-        inputClasses.groupStyles,
+        entityClass,
+        groupClass,
         inputClasses.ownStyles,
       ),
     };
@@ -180,8 +143,8 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
           className,
           isDisabled && styles.disabled,
           textFieldClasses.root,
-          textFieldClasses.entityStyles,
-          textFieldClasses.groupStyles,
+          entityClass,
+          groupClass,
           textFieldClasses.ownStyles,
         )}
         style={inlineStyles}

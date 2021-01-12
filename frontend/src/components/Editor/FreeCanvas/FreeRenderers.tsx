@@ -39,15 +39,14 @@ type Props = {
 
 const TextElement: React.FC<Props> = (props) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
       <div
-        className={cn(entityStyles, groupStyles, ownStyles)}
+        className={cn(entityClass, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -61,15 +60,14 @@ const TextElement: React.FC<Props> = (props) => {
 
 const Button: React.FC<Props> = (props) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
       <div
-        className={cn(entityStyles, groupStyles, ownStyles)}
+        className={cn(entityClass, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -84,6 +82,7 @@ const Button: React.FC<Props> = (props) => {
 
 const Container: React.FC<Props> = (props) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
 
   const children: Normalized<StateElement> = useSelector(
     selectDirectChildren(element.id),
@@ -93,14 +92,12 @@ const Container: React.FC<Props> = (props) => {
     selectIncludesActiveElement(element.id),
   );
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable includesActiveElement={includesActiveElement} {...props}>
       <div
-        className={cn(entityStyles, groupStyles, ownStyles)}
+        className={cn(entityClass, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -126,15 +123,13 @@ const Container: React.FC<Props> = (props) => {
 
 const Map: React.FC<Props> = (props) => {
   const { element } = props;
-
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const [entityClass, groupClass] = element.styles.classNames;
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
       <div
-        className={cn(entityStyles, groupStyles, ownStyles)}
+        className={cn(entityClass, groupClass, ownStyles)}
         style={{ width: '100%', height: '100%' }}
       >
         <GMap
@@ -150,39 +145,26 @@ const Map: React.FC<Props> = (props) => {
 
 const Video: React.FC<Props> = (props) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
 
   const playerLink = getPlayerLink(element.parameters.videoSettings, false);
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
 
-  const wrapperStyles = getWrapperStyles(
-    entityStyles as CSSProperties,
-    groupStyles as CSSProperties,
-    ownStyles as CSSProperties,
-  )();
+  const wrapperStyles = getWrapperStyles(ownStyles as CSSProperties)();
 
   const iframeContainerStyles = getIframeContainerStyles(
-    entityStyles as CSSProperties,
-    groupStyles as CSSProperties,
     ownStyles as CSSProperties,
   )();
 
   return (
     <FreeDraggable {...props}>
       {playerLink ? (
-        <div
-          className={cn(
-            wrapperStyles.entityStyles,
-            wrapperStyles.groupStyles,
-            wrapperStyles.ownStyles,
-          )}
-        >
+        <div className={cn(entityClass, groupClass, wrapperStyles.ownStyles)}>
           <div
             className={cn(
-              iframeContainerStyles.entityStyles,
-              iframeContainerStyles.groupStyles,
+              entityClass,
+              groupClass,
               iframeContainerStyles.ownStyles,
             )}
           >
@@ -202,11 +184,7 @@ const Video: React.FC<Props> = (props) => {
         </div>
       ) : (
         <div
-          className={cn(
-            wrapperStyles.entityStyles,
-            wrapperStyles.groupStyles,
-            wrapperStyles.ownStyles,
-          )}
+          className={cn(entityClass, groupClass, wrapperStyles.ownStyles)}
           style={{
             width: '100%',
             height: '100%',
@@ -222,10 +200,9 @@ const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
   props,
 ) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
   const classes = makeStyles({
     root: {
       '& input': {
@@ -238,7 +215,7 @@ const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
   const inputProps = {
     readOnly: true,
     classes: {
-      input: cn(entityStyles, groupStyles, ownStyles),
+      input: cn(entityClass, groupClass, ownStyles),
     },
     style: {
       width: '100%',
@@ -266,16 +243,15 @@ const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
 
 const Image: React.FC<Props> = (props) => {
   const { element } = props;
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const [entityClass, groupClass] = element.styles.classNames;
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props} lockAspectRatio>
       <img
         src={element.parameters.imageURL}
         alt={element.id}
-        className={cn(entityStyles, groupStyles, ownStyles)}
+        className={cn(entityClass, groupClass, ownStyles)}
         style={{
           userSelect: 'none',
           width: '100%',
@@ -290,9 +266,9 @@ const Image: React.FC<Props> = (props) => {
 const ListItem: React.FC<Props> = ({ isActive, element }) => {
   const dispatch = useDispatch();
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const [entityClass, groupClass] = element.styles.classNames;
+
+  const { ownStyles } = useElementClassNames(element);
 
   const handleClick = (ev) => {
     ev.stopPropagation();
@@ -302,7 +278,7 @@ const ListItem: React.FC<Props> = ({ isActive, element }) => {
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
-      className={cn(entityStyles, groupStyles, ownStyles)}
+      className={cn(entityClass, groupClass, ownStyles)}
       style={{
         border: `1px solid ${isActive ? '#5A899D' : 'transparent'}`,
       }}
@@ -315,19 +291,18 @@ const ListItem: React.FC<Props> = ({ isActive, element }) => {
 
 const List: React.FC<Props> = (props) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
   const { children } = useSelector(selectElementAsTree(element.id));
   const activeElementId = useSelector(selectActiveElementId);
 
   const ListTag = element.parameters.isOrdered ? 'ol' : 'ul';
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
       <ListTag
-        className={cn(entityStyles, groupStyles, ownStyles)}
+        className={cn(entityClass, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -347,18 +322,17 @@ const List: React.FC<Props> = (props) => {
 
 const Select: React.FC<Props> = (props) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
   const {
     children: [menu],
   } = useSelector(selectElementAsTree(element.id));
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
       <select
-        className={cn(entityStyles, groupStyles, ownStyles)}
+        className={cn(entityClass, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -475,9 +449,8 @@ const Calendar: React.FC<Props> = (props) => {
 
 const Radio: React.FC<Props> = (props) => {
   const { element } = props;
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const [entityClass, groupClass] = element.styles.classNames;
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
@@ -492,7 +465,7 @@ const Radio: React.FC<Props> = (props) => {
       >
         <input
           type="radio"
-          className={cn(entityStyles, groupStyles, ownStyles)}
+          className={cn(entityClass, groupClass, ownStyles)}
         />
       </div>
     </FreeDraggable>
@@ -501,10 +474,9 @@ const Radio: React.FC<Props> = (props) => {
 
 const Checkbox: React.FC<Props> = (props) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
@@ -519,7 +491,7 @@ const Checkbox: React.FC<Props> = (props) => {
       >
         <input
           type="checkbox"
-          className={cn(entityStyles, groupStyles, ownStyles)}
+          className={cn(entityClass, groupClass, ownStyles)}
         />
       </div>
     </FreeDraggable>
@@ -528,14 +500,13 @@ const Checkbox: React.FC<Props> = (props) => {
 
 const Clock: React.FC<Props> = (props) => {
   const { element } = props;
+  const [entityClass, groupClass] = element.styles.classNames;
 
-  const { entityStyles, groupStyles, ownStyles } = useElementClassNames(
-    element,
-  );
+  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
-      <ReactClock className={cn(entityStyles, groupStyles, ownStyles)} />
+      <ReactClock className={cn(entityClass, groupClass, ownStyles)} />
     </FreeDraggable>
   );
 };

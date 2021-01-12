@@ -1,3 +1,5 @@
+import decamelize from 'decamelize';
+
 export const splitWords = (str: string) =>
   str.replace(/([a-z])([A-Z])/g, '$1 $2');
 
@@ -13,5 +15,5 @@ export const extractStyles = (htmlString: string) => {
   return styles;
 };
 
-export const toClassName = (str: string): string | null =>
-  !str ? null : str.replaceAll(' ', '_').toLowerCase();
+export const toClassName = (str: string): string =>
+  !str ? '' : decamelize(str.replaceAll(' ', '-'), '-');

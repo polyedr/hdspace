@@ -19,7 +19,14 @@ const useStyles = makeComponentStyles({
 
 const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, isDisabled, params, className } = props;
+    const {
+      id,
+      isDisabled,
+      params,
+      className,
+      entityClass,
+      groupClass,
+    } = props;
     const { textContent } = params;
 
     const styles = useStyles(props);
@@ -32,9 +39,9 @@ const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
         ref={ref}
         className={cn(
           styles.root,
+          entityClass,
+          groupClass,
           ...(isDisabled ? [className, styles.addedElem, styles.disabled] : []),
-          styles.entityStyles,
-          styles.groupStyles,
           styles.ownStyles,
         )}
         {...(isDisabled ? eventHandlers : {})}
