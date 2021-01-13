@@ -17,7 +17,6 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexGrow: 1,
       justifyContent: 'center',
-      backgroundColor: '#cccccc',
       '&:focus': {
         outline: 0,
       },
