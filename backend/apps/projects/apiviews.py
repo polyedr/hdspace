@@ -7,7 +7,6 @@ from rest_framework.pagination import CursorPagination
 # from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters  # Django-Guardian
 from permissions import CustomObjectPermissions
-from django.shortcuts import get_object_or_404
 
 from .models import (
     Project,
@@ -45,7 +44,7 @@ from .serializers import (
     ScenarioElementMultipleSerializer,
     ScreenScenarioMultipleSerializer,
     ProjectScreenMultipleSerializer,
-    ScenarioElementSerializerRecursive, ProjectWithScreensSerializer)
+    ScenarioElementSerializerRecursive, ProjectWithScreensSerializer, ProjectWithTasksSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -90,6 +89,26 @@ class ProjectWithScreensViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
     serializer_class = ProjectWithScreensSerializer
+    pagination_class = None
+    permission_classes = [CustomObjectPermissions]  # Django-Guardian
+    filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
+    http_method_names = ['get', 'head']
+
+    def get_queryset(self):
+        return self.get_serializer_class().setup_eager_loading(self.queryset)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def filter_queryset(self, queryset):
+        queryset = queryset.filter(user=self.request.user)
+        return queryset
+
+
+class ProjectWithTasksViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = Project.objects.all()
+    serializer_class = ProjectWithTasksSerializer
     pagination_class = None
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
     filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian

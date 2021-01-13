@@ -25,7 +25,7 @@ from .apiviews import (
     ScreenScenarioDestroyCascadeViewSet,
     ScreeScenarioViewSet,
     ScenarioElementViewSet,
-    ProjectViewSet, ScenarioElementRecursiveViewSet, ProjectWithScreensViewSet)
+    ProjectViewSet, ScenarioElementRecursiveViewSet, ProjectWithScreensViewSet, ProjectWithTasksViewSet)
 
 app_name = "projects"
 
@@ -97,6 +97,7 @@ router.register(r"scenario-elements", ScenarioElementViewSet)
 router.register(r"scenario-elements-recursive", ScenarioElementRecursiveViewSet)
 router.register(r"projects", ProjectViewSet)
 router.register(r"screens-for-project", ProjectWithScreensViewSet)
+router.register(r"tasks-for-project", ProjectWithTasksViewSet)
 
 router.register(r"library-elements", ElementViewSet,
                 base_name="api_library_elements")
@@ -138,7 +139,7 @@ api_screen_comment_patterns = [
 urlpatterns = [
     # path("", include(api_project_invitation_patterns)),
     # path("", include(api_screen_event_patterns)),
-    # path("", include(api_project_task_patterns)),
+    path("", include(api_project_task_patterns)),
     path("", include(api_project_screen_patterns)),
     path("", include(api_screen_scenario_patterns)),
     path("", include(api_scenario_element_patterns)),
