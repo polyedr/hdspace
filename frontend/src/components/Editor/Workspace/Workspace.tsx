@@ -11,7 +11,7 @@ import {
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import FrameWrapper from '@Components/Editor/FrameWrapper';
+import { FrameWrapperFC } from '@Components/Editor/FrameWrapper';
 import DraggableElement from '../Draggable/DraggableElement';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
@@ -92,7 +92,7 @@ const Workspace: React.FC = () => {
               setScrollLeft(srcElement.scrollLeft);
             }}
           >
-            <FrameWrapper>
+            <FrameWrapperFC>
               {freeCanvasMode ? (
                 <FreeCanvas />
               ) : (
@@ -103,7 +103,7 @@ const Workspace: React.FC = () => {
                   )}
                 </>
               )}
-            </FrameWrapper>
+            </FrameWrapperFC>
           </Scrollbar>
         </EditorViewport>
         <NNProcessingModal />

@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import { create } from 'jss';
 import {
   withStyles,
   jssPreset,
   StylesProvider,
 } from '@material-ui/core/styles';
-import Frame from 'react-frame-component';
+import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { NoSsr } from '@material-ui/core';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { setEditorDocument } from '@Redux/project/actions';
 
 const styles = () => ({
@@ -15,6 +15,64 @@ const styles = () => ({
     border: 'none',
   },
 });
+
+const CustomHead: FC = () => {
+  return (
+    <>
+      <meta charSet="utf-8" />
+      <title>Previewer</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <base target="_parent" />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+      />
+      <style>
+        {`
+          html, body {
+            padding: 0;
+            margin: 0;
+          }
+          .frame-root, .frame-content {}
+        `}
+      </style>
+    </>
+  );
+};
+
+export const FrameWrapperFC: FC = ({ children, ...props }) => {
+  const dispatch = useDispatch();
+
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      // @ts-ignore
+      dispatch(setEditorDocument(ref.current.node.contentDocument));
+    }
+  });
+
+  return (
+    <Frame
+      ref={ref}
+      {...props}
+      head={<CustomHead />}
+      height="100%"
+      width="100%"
+      frameBorder={0}
+    >
+      <FrameContextConsumer>
+        {({ document }) => {
+          const jss = create({
+            plugins: [...jssPreset().plugins],
+            insertionPoint: document.head,
+          });
+          return <StylesProvider jss={jss}>{children}</StylesProvider>;
+        }}
+      </FrameContextConsumer>
+    </Frame>
+  );
+};
 
 class DemoFrame extends React.Component<
   { theme: any; classes: any; setEditorDocument: any },
