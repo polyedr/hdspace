@@ -25,7 +25,7 @@ const omitLinkStyles = [
   'backgroundColor',
 ];
 
-const useItemStyles = makeComponentStyles({
+const useItemStyles = makeComponentStyles('list-item', {
   listItem: {
     outline: 0,
   },
@@ -75,7 +75,6 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             className={cn(
               className,
               listItemClasses.listItem,
-              listItemClasses.addedElem,
               isDisabled && listItemClasses.disabled,
               listItemWithLinkClasses.entityStyles,
               listItemWithLinkClasses.groupStyles,
@@ -106,7 +105,6 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             className={cn(
               className,
               listItemClasses.listItem,
-              listItemClasses.addedElem,
               isDisabled && listItemClasses.disabled,
               listItemClasses.entityStyles,
               listItemClasses.groupStyles,

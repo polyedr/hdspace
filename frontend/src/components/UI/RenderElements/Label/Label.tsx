@@ -6,7 +6,7 @@ import { LabelRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles({
+const useStyles = makeComponentStyles('label', {
   label: ({ isDisabled }) => ({
     wordBreak: 'break-word',
     cursor: isDisabled ? 'default' : 'pointer',
@@ -15,14 +15,7 @@ const useStyles = makeComponentStyles({
 });
 
 const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
-  const {
-    id,
-    params,
-    className,
-    contentEditable,
-    entityClass,
-    groupClass,
-  } = props;
+  const { id, params, className, contentEditable, groupClass } = props;
   const { labelFor, textContent } = params;
 
   const styles = useStyles(props);
@@ -36,14 +29,7 @@ const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
       data-ls-id={id}
       key={id}
       {...(labelFor !== 'no for attribute' && { htmlFor: labelFor })}
-      className={cn(
-        className,
-        styles.label,
-        entityClass,
-        groupClass,
-        styles.addedElem,
-        styles.ownStyles,
-      )}
+      className={cn(className, styles.label, groupClass, styles.ownStyles)}
       contentEditable={contentEditable}
       dangerouslySetInnerHTML={{ __html: textContent }}
       data-gramm_editor={false}

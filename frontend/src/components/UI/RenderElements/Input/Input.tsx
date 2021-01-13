@@ -7,7 +7,7 @@ import { InputRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles({
+const useStyles = makeComponentStyles('input', {
   root: {
     '& fieldset': {
       border: 0,
@@ -23,7 +23,7 @@ const useStyles = makeComponentStyles({
 });
 
 const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, className, entityClass, groupClass } = props;
+  const { id, params, isDisabled, className, groupClass } = props;
   const { type, placeholder, textContent } = params;
 
   const styles = useStyles(props);
@@ -42,7 +42,7 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
       InputProps={{
         readOnly: isDisabled,
         classes: {
-          input: cn(styles.input, entityClass, groupClass, styles.ownStyles),
+          input: cn(styles.input, groupClass, styles.ownStyles),
         },
         className: cn(isDisabled && styles.disabled),
       }}

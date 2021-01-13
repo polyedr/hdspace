@@ -5,11 +5,11 @@ import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 import { SharedRendererProps } from '../types';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('select-menu');
 
 const SelectMenu: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, children, entityClass, groupClass } = props;
+    const { id, children, className, groupClass } = props;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
     return (
@@ -17,7 +17,7 @@ const SelectMenu: React.FC<SharedRendererProps> = React.forwardRef(
         id={id}
         data-ls-id={id}
         ref={ref}
-        className={cn('mdc-list', entityClass, groupClass, classes.ownStyles)}
+        className={cn('mdc-list', className, groupClass, classes.ownStyles)}
         role="listbox"
         aria-label={`menu-${id}-listbox`}
         {...eventHandlers}

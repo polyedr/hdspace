@@ -39,14 +39,14 @@ type Props = {
 
 const TextElement: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
       <div
-        className={cn(entityClass, groupClass, ownStyles)}
+        className={cn(className, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -60,14 +60,14 @@ const TextElement: React.FC<Props> = (props) => {
 
 const Button: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
       <div
-        className={cn(entityClass, groupClass, ownStyles)}
+        className={cn(className, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -82,7 +82,7 @@ const Button: React.FC<Props> = (props) => {
 
 const Container: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const children: Normalized<StateElement> = useSelector(
     selectDirectChildren(element.id),
@@ -97,7 +97,7 @@ const Container: React.FC<Props> = (props) => {
   return (
     <FreeDraggable includesActiveElement={includesActiveElement} {...props}>
       <div
-        className={cn(entityClass, groupClass, ownStyles)}
+        className={cn(className, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -123,13 +123,13 @@ const Container: React.FC<Props> = (props) => {
 
 const Map: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
   const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
       <div
-        className={cn(entityClass, groupClass, ownStyles)}
+        className={cn(className, groupClass, ownStyles)}
         style={{ width: '100%', height: '100%' }}
       >
         <GMap
@@ -145,7 +145,7 @@ const Map: React.FC<Props> = (props) => {
 
 const Video: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const playerLink = getPlayerLink(element.parameters.videoSettings, false);
 
@@ -160,10 +160,10 @@ const Video: React.FC<Props> = (props) => {
   return (
     <FreeDraggable {...props}>
       {playerLink ? (
-        <div className={cn(entityClass, groupClass, wrapperStyles.ownStyles)}>
+        <div className={cn(className, groupClass, wrapperStyles.ownStyles)}>
           <div
             className={cn(
-              entityClass,
+              className,
               groupClass,
               iframeContainerStyles.ownStyles,
             )}
@@ -184,7 +184,7 @@ const Video: React.FC<Props> = (props) => {
         </div>
       ) : (
         <div
-          className={cn(entityClass, groupClass, wrapperStyles.ownStyles)}
+          className={cn(className, groupClass, wrapperStyles.ownStyles)}
           style={{
             width: '100%',
             height: '100%',
@@ -200,7 +200,7 @@ const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
   props,
 ) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const { ownStyles } = useElementClassNames(element);
   const classes = makeStyles({
@@ -215,7 +215,7 @@ const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
   const inputProps = {
     readOnly: true,
     classes: {
-      input: cn(entityClass, groupClass, ownStyles),
+      input: cn(className, groupClass, ownStyles),
     },
     style: {
       width: '100%',
@@ -243,7 +243,7 @@ const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
 
 const Image: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
   const { ownStyles } = useElementClassNames(element);
 
   return (
@@ -251,7 +251,7 @@ const Image: React.FC<Props> = (props) => {
       <img
         src={element.parameters.imageURL}
         alt={element.id}
-        className={cn(entityClass, groupClass, ownStyles)}
+        className={cn(className, groupClass, ownStyles)}
         style={{
           userSelect: 'none',
           width: '100%',
@@ -266,7 +266,7 @@ const Image: React.FC<Props> = (props) => {
 const ListItem: React.FC<Props> = ({ isActive, element }) => {
   const dispatch = useDispatch();
 
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const { ownStyles } = useElementClassNames(element);
 
@@ -278,7 +278,7 @@ const ListItem: React.FC<Props> = ({ isActive, element }) => {
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
-      className={cn(entityClass, groupClass, ownStyles)}
+      className={cn(className, groupClass, ownStyles)}
       style={{
         border: `1px solid ${isActive ? '#5A899D' : 'transparent'}`,
       }}
@@ -291,7 +291,7 @@ const ListItem: React.FC<Props> = ({ isActive, element }) => {
 
 const List: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
   const { children } = useSelector(selectElementAsTree(element.id));
   const activeElementId = useSelector(selectActiveElementId);
 
@@ -302,7 +302,7 @@ const List: React.FC<Props> = (props) => {
   return (
     <FreeDraggable {...props}>
       <ListTag
-        className={cn(entityClass, groupClass, ownStyles)}
+        className={cn(className, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -322,7 +322,7 @@ const List: React.FC<Props> = (props) => {
 
 const Select: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
   const {
     children: [menu],
   } = useSelector(selectElementAsTree(element.id));
@@ -332,7 +332,7 @@ const Select: React.FC<Props> = (props) => {
   return (
     <FreeDraggable {...props}>
       <select
-        className={cn(entityClass, groupClass, ownStyles)}
+        className={cn(className, groupClass, ownStyles)}
         style={{
           width: '100%',
           height: '100%',
@@ -449,7 +449,7 @@ const Calendar: React.FC<Props> = (props) => {
 
 const Radio: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
   const { ownStyles } = useElementClassNames(element);
 
   return (
@@ -463,10 +463,7 @@ const Radio: React.FC<Props> = (props) => {
           alignItems: 'center',
         }}
       >
-        <input
-          type="radio"
-          className={cn(entityClass, groupClass, ownStyles)}
-        />
+        <input type="radio" className={cn(className, groupClass, ownStyles)} />
       </div>
     </FreeDraggable>
   );
@@ -474,7 +471,7 @@ const Radio: React.FC<Props> = (props) => {
 
 const Checkbox: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const { ownStyles } = useElementClassNames(element);
 
@@ -491,7 +488,7 @@ const Checkbox: React.FC<Props> = (props) => {
       >
         <input
           type="checkbox"
-          className={cn(entityClass, groupClass, ownStyles)}
+          className={cn(className, groupClass, ownStyles)}
         />
       </div>
     </FreeDraggable>
@@ -500,13 +497,13 @@ const Checkbox: React.FC<Props> = (props) => {
 
 const Clock: React.FC<Props> = (props) => {
   const { element } = props;
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
-      <ReactClock className={cn(entityClass, groupClass, ownStyles)} />
+      <ReactClock className={cn(className, groupClass, ownStyles)} />
     </FreeDraggable>
   );
 };

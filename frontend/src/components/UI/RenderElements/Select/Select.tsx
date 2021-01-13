@@ -15,7 +15,7 @@ import { SelectRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles((theme) => ({
+const useStyles = makeComponentStyles('select', (theme) => ({
   root: {
     display: 'inline-block',
     position: 'relative',
@@ -41,7 +41,6 @@ const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
       params,
       className,
       children,
-      entityClass,
       groupClass,
     } = props;
     const { isOpen } = params;
@@ -75,13 +74,7 @@ const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
         data-ls-id={id}
         key={id}
         ref={ref}
-        className={cn(
-          className,
-          classes.root,
-          entityClass,
-          groupClass,
-          classes.ownStyles,
-        )}
+        className={cn(className, classes.root, groupClass, classes.ownStyles)}
         {...eventHandlers}
       >
         <div

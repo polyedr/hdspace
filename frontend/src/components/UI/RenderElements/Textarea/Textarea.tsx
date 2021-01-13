@@ -99,7 +99,6 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
       currentValue,
       className,
       ownStyles,
-      entityClass,
       groupClass,
     } = props;
     const { placeholder } = params;
@@ -123,7 +122,6 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
       className: cn(
         isDisabled && styles.disabled,
         inputClasses.root,
-        entityClass,
         groupClass,
         inputClasses.ownStyles,
       ),
@@ -143,7 +141,6 @@ const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
           className,
           isDisabled && styles.disabled,
           textFieldClasses.root,
-          entityClass,
           groupClass,
           textFieldClasses.ownStyles,
         )}

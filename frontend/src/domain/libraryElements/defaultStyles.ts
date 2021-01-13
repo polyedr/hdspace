@@ -243,6 +243,9 @@ export const defaultParagraphStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  other: {
+    outline: 0,
+  },
 };
 
 export const defaultTextBlockStyles: {
@@ -727,6 +730,9 @@ export const defaultCheckboxStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  other: {
+    display: 'inline-block',
+  },
 };
 
 export const defaultRadiobuttonStyles: {
@@ -740,6 +746,9 @@ export const defaultRadiobuttonStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    display: 'inline-block',
   },
 };
 

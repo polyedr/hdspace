@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 import { ListRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles({
+const useStyles = makeComponentStyles('list', {
   list: ({ params: { isOrdered } }) => ({
     listStylePosition: 'inside',
     ...(isOrdered && { 'list-style-type': 'decimal' }),
@@ -14,7 +14,7 @@ const useStyles = makeComponentStyles({
 });
 
 const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, className, children, entityClass, groupClass } = props;
+  const { id, params, className, children, groupClass } = props;
   const { isOrdered } = params;
 
   const ListTag = isOrdered ? 'ol' : 'ul';
@@ -28,14 +28,7 @@ const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
       id={id}
       data-ls-id={id}
       key={id}
-      className={cn(
-        className,
-        classes.list,
-        entityClass,
-        groupClass,
-        classes.addedElem,
-        classes.ownStyles,
-      )}
+      className={cn(className, classes.list, groupClass, classes.ownStyles)}
       {...eventHandlers}
     >
       {children}

@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 import { DivBlockRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('div');
 
 const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
   (props, ref) => {
@@ -16,7 +16,6 @@ const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
       children,
       className,
       isBorderVisible,
-      entityClass,
       groupClass,
     } = props;
     const classes = useStyles(props);
@@ -28,13 +27,7 @@ const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
         id={id}
         data-ls-id={id}
         key={id}
-        className={cn(
-          className,
-          entityClass,
-          groupClass,
-          classes.addedElem,
-          classes.ownStyles,
-        )}
+        className={cn(className, groupClass, classes.ownStyles)}
         style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
         {...eventHandlers}
       >

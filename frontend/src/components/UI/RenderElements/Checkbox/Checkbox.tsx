@@ -10,6 +10,7 @@ import { makeComponentStyles } from '../styles';
 import '@Src/styles/export/material/mdc.checkbox.css';
 
 const useStyles = makeComponentStyles(
+  'checkbox',
   {
     root: {
       overflow: 'hidden',
@@ -32,15 +33,7 @@ const useStyles = makeComponentStyles(
 
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      params,
-      isDisabled,
-      className,
-      entityClass,
-      groupClass,
-      ownStyles,
-    } = props;
+    const { id, params, isDisabled, className, groupClass, ownStyles } = props;
     const { showRipple } = params;
 
     const eventHandlers = useEventHandlers(props);
@@ -64,11 +57,10 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          entityClass,
-          groupClass,
           classes.root,
           isDisabled && classes.disabled,
           classes.ownStyles,
+          groupClass,
         )}
         {...eventHandlers}
       >

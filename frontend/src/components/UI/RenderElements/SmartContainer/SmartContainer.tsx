@@ -22,14 +22,12 @@ import { SmartContainerRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const styles = require('../styles.scss');
-
 type SizeProps = {
   width: number;
   height: number;
 };
 
-const useStyles = makeComponentStyles({
+const useStyles = makeComponentStyles('smart', {
   innerContentWrapper: {
     position: 'relative',
   },
@@ -88,7 +86,6 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
       isBorderVisible,
       blockType,
       children,
-      entityClass,
       groupClass,
     } = props;
     const element = useSelector(selectElementById(id));
@@ -170,13 +167,7 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
         id={id}
         data-ls-id={id}
         key={id}
-        className={cn(
-          className,
-          entityClass,
-          groupClass,
-          styles.addedElem,
-          classes.ownStyles,
-        )}
+        className={cn(className, groupClass, classes.ownStyles)}
         style={{
           ...(isBorderVisible && isDisabled && { outline: 'none' }),
           position: 'relative',

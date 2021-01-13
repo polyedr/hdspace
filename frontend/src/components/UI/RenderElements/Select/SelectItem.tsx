@@ -14,7 +14,7 @@ type Props = SharedRendererProps & {
   children: React.Component[];
 };
 
-const useStyles = makeComponentStyles({
+const useStyles = makeComponentStyles('select-item', {
   root: {
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.04)',
@@ -28,7 +28,6 @@ const SelectItem: React.FC<Props> = React.forwardRef((props, ref) => {
     params: { name },
     isDisabled,
     className,
-    entityClass,
     groupClass,
   } = props;
   const classes = useStyles(props);
@@ -43,7 +42,6 @@ const SelectItem: React.FC<Props> = React.forwardRef((props, ref) => {
         'mdc-list-item',
         className,
         classes.root,
-        entityClass,
         groupClass,
         isDisabled && classes.disabled,
         classes.ownStyles,
