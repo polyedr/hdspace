@@ -220,7 +220,7 @@ class ProjectMember(TimeStampedModel):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.project.name
+        return self.user.email
 
 
 class ProjectTask(TimeStampedModel):
@@ -233,12 +233,19 @@ class ProjectTask(TimeStampedModel):
     description = models.TextField()
     status = models.CharField(choices=TASK_STATUS, default=TASK_CREATED, max_length=32)
 
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name="projecttask", on_delete=models.CASCADE)
+
+    '''
     creator = models.ForeignKey(
         ProjectMember, related_name="creator", on_delete=models.CASCADE
     )
     owner = models.ForeignKey(
         ProjectMember, related_name="owner", on_delete=models.CASCADE
+    )
+    '''
+    creator = models.ForeignKey(get_user_model(), related_name="creator", on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        get_user_model(), related_name="owner", on_delete=models.CASCADE
     )
     sub_task = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="subtask"
