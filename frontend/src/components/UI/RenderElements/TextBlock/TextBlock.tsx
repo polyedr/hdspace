@@ -7,18 +7,9 @@ import { TextBlockRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles(
-  'text',
-  {
-    textBlock: {
-      outline: 0,
-    },
-  },
-  [],
-  {
-    wordBreak: 'break-word',
-  },
-);
+const useStyles = makeComponentStyles('text', [], {
+  wordBreak: 'break-word',
+});
 
 const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
   (props, ref) => {

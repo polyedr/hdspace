@@ -212,12 +212,17 @@ export const defaultHeadingStyles: {
     ...DEFAULT_TYPOGRAPHY,
     fontSize: '40px',
     lineHeight: '1.1',
+    fontWeight: 400,
   },
   border: {
     ...DEFAULT_BORDER,
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    wordBreak: 'break-word',
+    outline: 0,
   },
 };
 
@@ -245,6 +250,7 @@ export const defaultParagraphStyles: {
   },
   other: {
     outline: 0,
+    wordBreak: 'break-word',
   },
 };
 
@@ -265,6 +271,9 @@ export const defaultTextBlockStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    outline: 0,
   },
 };
 
@@ -309,6 +318,9 @@ export const defaultListItemStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    outline: 0,
   },
 };
 
@@ -488,6 +500,7 @@ export const defaultDropdownStyles: {
     backgroundColor: '#1890ff',
   },
   other: {
+    position: 'relative',
     display: 'inline-block',
   },
 };
@@ -732,6 +745,7 @@ export const defaultCheckboxStyles: {
   },
   other: {
     display: 'inline-block',
+    overflow: 'hidden',
   },
 };
 
@@ -799,6 +813,10 @@ export const defaultSelectStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    display: 'inline-block',
+    position: 'relative',
   },
 };
 

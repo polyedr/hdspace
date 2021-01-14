@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 import { ContainerRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles('container');
+const useStyles = makeComponentStyles('div');
 
 const Container: React.FC<ContainerRendererProps> = React.forwardRef(
   (props, ref: React.RefObject<HTMLElement>) => {

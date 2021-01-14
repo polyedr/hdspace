@@ -1,13 +1,9 @@
-// @ts-nocheck
-
 import React from 'react';
+import { Theme } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Styles } from '@material-ui/core/styles/withStyles';
 import * as R from 'ramda';
-
-type CSSPropertiesCallback = (
-  style: React.CSSProperties,
-) => React.CSSProperties;
+import { SharedRendererProps } from './types';
 
 const getComputedStyle = (
   style: React.CSSProperties = {},
@@ -17,7 +13,7 @@ const getComputedStyle = (
 };
 
 export const getComputedComponentStyles = (
-  props: StyleRendererProps,
+  props: SharedRendererProps,
   stylesToOmit?: Array<string>,
 ) => ({
   ownStyles: getComputedStyle(props.ownStyles, stylesToOmit),
@@ -25,14 +21,13 @@ export const getComputedComponentStyles = (
 
 export const makeComponentStyles = (
   prefix: string,
-  style: Styles<Theme, {}, ClassKey> = {},
+  style: Styles<Theme, {}, string> = {},
   stylesToOmit?: Array<string>,
-  stylesToAdd?: React.CSSProperties,
 ) =>
   makeStyles(
     (theme) => ({
-      ownStyles: (props: StyleRendererProps) =>
-        getComputedStyle(props.ownStyles, stylesToOmit, stylesToAdd),
+      ownStyles: (props: SharedRendererProps) =>
+        getComputedStyle(props.ownStyles, stylesToOmit),
 
       disabled: {
         cursor: 'default',

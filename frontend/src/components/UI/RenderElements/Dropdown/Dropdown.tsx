@@ -8,10 +8,6 @@ import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('dropdown', {
-  root: {
-    position: 'relative',
-    display: 'inline-block',
-  },
   labelWrapper: {
     padding: '6px 17px',
   },
@@ -69,7 +65,6 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
         data-ls-id={id}
         ref={ref}
         className={cn(
-          classes.root,
           className,
           groupClass,
           ...(isDisabled ? [classes.disabled] : []),

@@ -6,18 +6,7 @@ import { makeComponentStyles } from '../styles';
 import { ParagraphRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles(
-  'paragraph',
-  {
-    paragraph: {
-      outline: 0,
-    },
-  },
-  [],
-  {
-    wordBreak: 'break-word',
-  },
-);
+const useStyles = makeComponentStyles('paragraph');
 
 const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
   (props, ref) => {

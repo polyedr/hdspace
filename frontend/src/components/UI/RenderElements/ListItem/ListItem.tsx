@@ -25,11 +25,7 @@ const omitLinkStyles = [
   'backgroundColor',
 ];
 
-const useItemStyles = makeComponentStyles('list-item', {
-  listItem: {
-    outline: 0,
-  },
-});
+const useItemStyles = makeComponentStyles('list-item');
 
 const useEditableItemStyles = makeStyles({
   ownStyles: ({ ownStyles }) => R.omit(omitEditableStyles, ownStyles),
@@ -47,7 +43,14 @@ const useLinkStyles = makeStyles({
 
 const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, isDisabled, className, contentEditable } = props;
+    const {
+      id,
+      params,
+      isDisabled,
+      className,
+      groupClass,
+      contentEditable,
+    } = props;
     const { textContent, isLink, link } = params;
 
     const listItemClasses = useItemStyles(props);
@@ -74,10 +77,8 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             data-ls-id={id}
             className={cn(
               className,
-              listItemClasses.listItem,
               isDisabled && listItemClasses.disabled,
-              listItemWithLinkClasses.entityStyles,
-              listItemWithLinkClasses.groupStyles,
+              groupClass,
               listItemWithLinkClasses.ownStyles,
             )}
             {...eventHandlers}
@@ -85,8 +86,7 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             <a
               className={cn(
                 linkClasses.link,
-                linkClasses.entityStyles,
-                linkClasses.groupStyles,
+                groupClass,
                 linkClasses.ownStyles,
               )}
               aria-label={`Link-${id}`}
@@ -104,10 +104,8 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
             data-ls-id={id}
             className={cn(
               className,
-              listItemClasses.listItem,
               isDisabled && listItemClasses.disabled,
-              listItemClasses.entityStyles,
-              listItemClasses.groupStyles,
+              groupClass,
               listItemClasses.ownStyles,
             )}
             aria-label={`Button-${id}`}

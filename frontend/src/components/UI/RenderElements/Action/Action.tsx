@@ -15,8 +15,8 @@ const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
   button: 'button',
 };
 
-const useStyles = makeComponentStyles('clickable', {
-  root: ({ isDisabled, ownStyles, type }) => {
+const useStyles = makeComponentStyles('click', {
+  component: ({ isDisabled, ownStyles, type }) => {
     const { color, backgroundColor } = ownStyles;
     return {
       color,
@@ -96,7 +96,7 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
       className={cn(
         'mdc-button',
         className,
-        classes.root,
+        classes.component,
         isDisabled && classes.disabled,
         classes.ownStyles,
         groupClass,

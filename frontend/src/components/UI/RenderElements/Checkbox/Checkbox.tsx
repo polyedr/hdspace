@@ -12,9 +12,6 @@ import '@Src/styles/export/material/mdc.checkbox.css';
 const useStyles = makeComponentStyles(
   'checkbox',
   {
-    root: {
-      overflow: 'hidden',
-    },
     checkbox: ({ ownStyles }) => {
       const color = ownStyles.backgroundColor || DEFAULT_COMPONENTS_BACKGROUND;
       return {
@@ -26,9 +23,6 @@ const useStyles = makeComponentStyles(
     },
   },
   ['backgroundColor', 'width', 'height'],
-  {
-    display: 'inline-block',
-  },
 );
 
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
@@ -57,10 +51,9 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          classes.root,
-          isDisabled && classes.disabled,
-          classes.ownStyles,
           groupClass,
+          classes.ownStyles,
+          isDisabled && classes.disabled,
         )}
         {...eventHandlers}
       >
