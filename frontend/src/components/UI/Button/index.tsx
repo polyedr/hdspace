@@ -1,5 +1,5 @@
 import React from 'react';
-import classNames from 'classnames';
+import cn from 'classnames';
 
 const styles = require('./styles.scss');
 
@@ -34,7 +34,7 @@ const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
   ({ children, type, styleType, disabled, onClick, className = '' }, ref) => (
     <button
       type={type !== 'submit' ? 'button' : 'submit'}
-      className={classNames(styles.button, getStyleType(styleType), className)}
+      className={cn(styles.button, getStyleType(styleType), className)}
       disabled={disabled}
       onClick={type !== 'submit' ? onClick : undefined}
       ref={ref}

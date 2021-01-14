@@ -151,14 +151,13 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
   const { id, type, styles } = element;
 
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
-    ...(disableInteractions && { className: '' }),
     id: id === rootID ? 'root' : id,
+    className,
     isDisabled: !disableInteractions,
     contentEditable: canBeEdited || isBeingEdited,
     ownStyles: styles.ownStyles,
-    entityClass: toClassName(entityClass),
     groupClass: toClassName(groupClass),
     active: !disableInteractions && id === activeElementId,
   };

@@ -7,10 +7,10 @@ import GMap from '../../GMap';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('map');
 
 const Map: React.FC<MapRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, className, entityClass, groupClass } = props;
+  const { id, params, isDisabled, className, groupClass } = props;
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
 
@@ -22,7 +22,6 @@ const Map: React.FC<MapRendererProps> = React.forwardRef((props, ref) => {
       key={id}
       className={cn(
         className,
-        entityClass,
         groupClass,
         isDisabled && classes.disabled,
         classes.ownStyles,

@@ -4,7 +4,7 @@ import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 import { SharedRendererProps } from '../types';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('columns');
 
 const Columns = React.forwardRef<HTMLDivElement, SharedRendererProps>(
   (props, ref) => {
@@ -14,7 +14,6 @@ const Columns = React.forwardRef<HTMLDivElement, SharedRendererProps>(
       children,
       className,
       isBorderVisible,
-      entityClass,
       groupClass,
     } = props;
 
@@ -27,13 +26,7 @@ const Columns = React.forwardRef<HTMLDivElement, SharedRendererProps>(
         id={id}
         data-ls-id={id}
         key={id}
-        className={cn(
-          className,
-          classes.addedElem,
-          entityClass,
-          groupClass,
-          classes.ownStyles,
-        )}
+        className={cn(className, groupClass, classes.ownStyles)}
         style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
         {...eventHandlers}
       >

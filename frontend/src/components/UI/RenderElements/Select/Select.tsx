@@ -15,12 +15,8 @@ import { SelectRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles((theme) => ({
-  root: {
-    display: 'inline-block',
-    position: 'relative',
-  },
-  select: {
+const useStyles = makeComponentStyles('select', (theme) => ({
+  component: {
     width: '100%',
     height: '100%',
   },
@@ -41,7 +37,6 @@ const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
       params,
       className,
       children,
-      entityClass,
       groupClass,
     } = props;
     const { isOpen } = params;
@@ -75,13 +70,7 @@ const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
         data-ls-id={id}
         key={id}
         ref={ref}
-        className={cn(
-          className,
-          classes.root,
-          entityClass,
-          groupClass,
-          classes.ownStyles,
-        )}
+        className={cn(className, classes.root, groupClass, classes.ownStyles)}
         {...eventHandlers}
       >
         <div
@@ -95,7 +84,7 @@ const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
             `select-${id}-component`,
             'mdc-select',
             'mdc-select--outlined',
-            classes.select,
+            classes.component,
           )}
         >
           <input type="hidden" name={name} />

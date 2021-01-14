@@ -7,11 +7,11 @@ import { makeComponentStyles } from '../styles';
 import CalendarWidget from '../../Calendar';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('calendar');
 
 const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, isDisabled, className, entityClass, groupClass } = props;
+    const { id, isDisabled, className, groupClass } = props;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -23,7 +23,6 @@ const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
         key={id}
         className={cn(
           className,
-          entityClass,
           groupClass,
           isDisabled && classes.disabled,
           classes.ownStyles,

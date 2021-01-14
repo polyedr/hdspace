@@ -6,17 +6,12 @@ import { HeadingRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles({
-  heading: {
-    wordBreak: 'break-word',
-    outline: 0,
-  },
-});
+const useStyles = makeComponentStyles('heading');
 
 const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
   (props, ref) => {
     const { id, params, className, contentEditable } = props;
-    const { headingType, textContent, entityClass, groupClass } = params;
+    const { headingType, textContent, groupClass } = params;
     const HeadingTag = headingType || 'h3';
 
     const styles = useStyles(props);
@@ -28,14 +23,7 @@ const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
         id={id}
         data-ls-id={id}
         key={id}
-        className={cn(
-          className,
-          styles.heading,
-          styles.addedElem,
-          styles.ownStyles,
-          entityClass,
-          groupClass,
-        )}
+        className={cn(className, styles.ownStyles, groupClass)}
         {...eventHandlers}
         contentEditable={contentEditable}
         dangerouslySetInnerHTML={{ __html: textContent }}
