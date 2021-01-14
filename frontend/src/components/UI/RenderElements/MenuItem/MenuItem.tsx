@@ -7,7 +7,7 @@ import { MenuItemRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles({
+const useStyles = makeComponentStyles('menu-item', {
   menuItem: ({ isDisabled }) => {
     return !isDisabled ? { '&:hover': 'rgba(0, 0, 0, 0.04)' } : {};
   },
@@ -15,14 +15,7 @@ const useStyles = makeComponentStyles({
 
 const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      isDisabled,
-      params,
-      className,
-      entityClass,
-      groupClass,
-    } = props;
+    const { id, isDisabled, params, className, groupClass } = props;
     const { showRipple, name, value } = params;
 
     const classes = useStyles(props);
@@ -37,10 +30,8 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
         className={cn(
           className,
           classes.menuItem,
-          entityClass,
           groupClass,
-          classes.addedElem,
-          classes.disabled,
+          isDisabled && classes.disabled,
           classes.ownStyles,
         )}
         value={value}
@@ -52,7 +43,7 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
     ) : (
       <MaterialMenuItem
         key={id}
-        className={cn(entityClass, groupClass, classes.ownStyles)}
+        className={cn(className, groupClass, classes.ownStyles)}
         value={value}
         disableRipple={!showRipple}
       >

@@ -15,8 +15,8 @@ const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
   button: 'button',
 };
 
-const useStyles = makeComponentStyles({
-  root: ({ isDisabled, ownStyles, type }) => {
+const useStyles = makeComponentStyles('click', {
+  component: ({ isDisabled, ownStyles, type }) => {
     const { color, backgroundColor } = ownStyles;
     return {
       color,
@@ -54,7 +54,6 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
     actionType,
     actionLink,
     className,
-    entityClass,
     groupClass,
   } = props;
   const { showRipple, textContent } = params;
@@ -97,10 +96,9 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
       className={cn(
         'mdc-button',
         className,
-        classes.root,
-        classes.ownStyles,
+        classes.component,
         isDisabled && classes.disabled,
-        entityClass,
+        classes.ownStyles,
         groupClass,
       )}
       {...(actionType === 'external-link' && {

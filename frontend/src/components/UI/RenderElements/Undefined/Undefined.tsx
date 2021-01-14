@@ -6,11 +6,11 @@ import { SharedRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('undef');
 
 const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, className, children, entityClass, groupClass } = props;
+    const { id, className, children, groupClass } = props;
     const classes = useStyles();
     const eventHandlers = useEventHandlers(props);
 
@@ -19,13 +19,7 @@ const Undefined: React.FC<SharedRendererProps> = React.forwardRef(
         ref={ref}
         data-ls-id={id}
         key={id}
-        className={cn(
-          className,
-          entityClass,
-          groupClass,
-          classes.addedElem,
-          classes.ownStyles,
-        )}
+        className={cn(className, groupClass, classes.ownStyles)}
         {...eventHandlers}
       >
         {children}

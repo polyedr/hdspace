@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 import { ContainerRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('div');
 
 const Container: React.FC<ContainerRendererProps> = React.forwardRef(
   (props, ref: React.RefObject<HTMLElement>) => {
@@ -16,7 +16,6 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
       children,
       className,
       isBorderVisible,
-      entityClass,
       groupClass,
     } = props;
 
@@ -30,13 +29,7 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
           id={id}
           data-ls-id={id}
           key={id}
-          className={cn(
-            className,
-            entityClass,
-            groupClass,
-            classes.addedElem,
-            classes.ownStyles,
-          )}
+          className={cn(className, groupClass, classes.ownStyles)}
           style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
           {...eventHandlers}
         >

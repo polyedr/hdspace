@@ -7,23 +7,19 @@ import {
   LinkParams,
   NNBlockType,
   VideoSettingsType,
-} from '../../../types';
+} from '@Src/types';
 
-export type StyleRendererProps = {
-  entityClass: string | null;
-  groupClass: string | null;
-  ownStyles: React.CSSProperties;
-};
-
-export type SharedRendererProps = StyleRendererProps & {
+export type SharedRendererProps = {
   id: string;
   active: boolean;
   isDisabled: boolean;
   contentEditable: boolean;
-  className?: string;
+  className: string;
   children: React.ReactElement[];
   ref?: React.RefObject<HTMLElement> | null;
   isBorderVisible?: boolean;
+  groupClass: string | null;
+  ownStyles: React.CSSProperties;
 } & DOMAttributes<HTMLElement>;
 
 export type ContainerRendererProps = SharedRendererProps & {

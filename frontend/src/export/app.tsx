@@ -1,5 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
 import { ServerStyleSheets, ThemeProvider } from '@material-ui/core/styles';
 import JSZip from 'jszip';
@@ -66,7 +67,9 @@ const exportHTML = (screenName: string) => {
     sheets.collect(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <ExportedElement elementId={rootId} state={state} />
+          <BrowserRouter>
+            <ExportedElement elementId={rootId} state={state} />
+          </BrowserRouter>
         </ThemeProvider>
       </Provider>,
     ),

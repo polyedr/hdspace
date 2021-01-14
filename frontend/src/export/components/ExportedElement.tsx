@@ -68,15 +68,15 @@ const getExportedProps = (elementId, state) => {
   const projectClasses = currentProject.projectData.classes;
   const { id, styles } = element;
 
-  const [entityClass, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames;
 
   const additionalProps = getAdditionalProps(element, projectClasses, state);
 
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     id: id === rootID ? 'root' : id,
+    className,
     isDisabled: false,
     ownStyles: styles.ownStyles,
-    entityClass: toClassName(entityClass),
     groupClass: toClassName(groupClass),
     contentEditable: false,
     active: false,

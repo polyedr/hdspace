@@ -8,7 +8,7 @@ import { VideoRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles({
+const useStyles = makeComponentStyles('video', {
   iframe: {
     overflow: 'hidden',
     position: 'relative,',
@@ -19,7 +19,7 @@ const useStyles = makeComponentStyles({
 });
 
 const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, className, entityClass, groupClass } = props;
+  const { id, params, isDisabled, className, groupClass } = props;
   const { videoSettings } = params;
 
   const playerLink = getPlayerLink(videoSettings, !isDisabled);
@@ -35,16 +35,14 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
       ref={ref}
       className={cn(
         className,
-        entityClass,
         groupClass,
-        styles.addedElem,
         isDisabled && styles.disabled,
         styles.ownStyles,
       )}
       {...eventHandlers}
     >
       <div
-        className={cn(styles.iframe, entityClass, groupClass, styles.ownStyles)}
+        className={cn(styles.iframe, className, groupClass, styles.ownStyles)}
       >
         {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
         <iframe
@@ -65,14 +63,7 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
       id={id}
       data-ls-id={id}
       key={id}
-      className={cn(
-        className,
-        entityClass,
-        groupClass,
-        styles.addedElem,
-        styles.empty,
-        styles.ownStyles,
-      )}
+      className={cn(className, groupClass, styles.empty, styles.ownStyles)}
     />
   );
 });

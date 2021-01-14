@@ -7,28 +7,13 @@ import { TextBlockRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles(
-  {
-    textBlock: {
-      outline: 0,
-    },
-  },
-  [],
-  {
-    wordBreak: 'break-word',
-  },
-);
+const useStyles = makeComponentStyles('text', [], {
+  wordBreak: 'break-word',
+});
 
 const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      params,
-      className,
-      contentEditable,
-      entityClass,
-      groupClass,
-    } = props;
+    const { id, params, className, contentEditable, groupClass } = props;
 
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
@@ -43,9 +28,7 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
         className={cn(
           className,
           classes.textBlock,
-          entityClass,
           groupClass,
-          classes.addedElem,
           classes.ownStyles,
         )}
         {...eventHandlers}

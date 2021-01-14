@@ -30,7 +30,7 @@ const FreeCanvas = () => {
   const ref = useRef<Rnd | null>(null);
 
   const root = useSelector(selectCurrentRoot);
-  const [entityClass, groupClass] = root.styles.classNames;
+  const [className, groupClass] = root.styles.classNames;
   const directChildren: Normalized<StateElement> = useSelector(
     selectDirectRootChildren,
   );
@@ -124,7 +124,7 @@ const FreeCanvas = () => {
       ref={(c) => {
         ref.current = c;
       }}
-      className={cn(entityClass, groupClass, ownStyles)}
+      className={cn(className, groupClass, ownStyles)}
       style={{
         position: 'relative',
         userSelect: 'none',

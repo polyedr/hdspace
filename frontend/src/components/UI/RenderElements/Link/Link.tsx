@@ -11,7 +11,7 @@ import useEventHandlers from '../useEventHandlers';
 
 export type LinkRenderer = React.FC<WithActionProps & ActionRendererProps>;
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('link');
 
 const Link: LinkRenderer = React.forwardRef((props, ref) => {
   const {
@@ -21,7 +21,6 @@ const Link: LinkRenderer = React.forwardRef((props, ref) => {
     actionType,
     actionLink,
     className,
-    entityClass,
     groupClass,
   } = props;
   const { textContent } = params;
@@ -37,7 +36,6 @@ const Link: LinkRenderer = React.forwardRef((props, ref) => {
       key={id}
       className={cn(
         className,
-        entityClass,
         groupClass,
         isDisabled && classes.disabled,
         classes.ownStyles,

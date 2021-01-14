@@ -6,18 +6,11 @@ import { DropdownMenuRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles();
+const useStyles = makeComponentStyles('dropdown-menu');
 
 const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      children,
-      isDisabled,
-      className,
-      entityClass,
-      groupClass,
-    } = props;
+    const { id, children, isDisabled, className, groupClass } = props;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
     const clickHandler = eventHandlers.onClick;
@@ -37,9 +30,8 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
         className={cn(
           'mdc-list',
           className,
-          entityClass,
           groupClass,
-          isDisabled && classes.isDisabled,
+          isDisabled && classes.disabled,
           classes.ownStyles,
         )}
         role="menu"

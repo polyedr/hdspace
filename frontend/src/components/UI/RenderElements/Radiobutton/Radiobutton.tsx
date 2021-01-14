@@ -10,6 +10,7 @@ import { makeComponentStyles } from '../styles';
 import '@Src/styles/export/material/mdc.radio.css';
 
 const useDivStyles = makeComponentStyles(
+  'radiobutton',
   {
     root: {
       position: 'relative',
@@ -45,7 +46,6 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
       params,
       isDisabled,
       className,
-      entityClass,
       groupClass,
       ownStyles,
     } = props;
@@ -66,7 +66,6 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         className={cn(
           className,
           classes.root,
-          entityClass,
           groupClass,
           isDisabled && classes.disabled,
           classes.ownStyles,

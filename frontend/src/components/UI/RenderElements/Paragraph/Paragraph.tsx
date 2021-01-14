@@ -6,31 +6,11 @@ import { makeComponentStyles } from '../styles';
 import { ParagraphRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles(
-  {
-    paragraph: {
-      outline: 0,
-      '&:hover': {
-        cursor: 'initial',
-      },
-    },
-  },
-  [],
-  {
-    wordBreak: 'break-word',
-  },
-);
+const useStyles = makeComponentStyles('paragraph');
 
 const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      params,
-      className,
-      contentEditable,
-      entityClass,
-      groupClass,
-    } = props;
+    const { id, params, className, contentEditable, groupClass } = props;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -40,14 +20,7 @@ const Paragraph: React.FC<ParagraphRendererProps> = React.forwardRef(
         id={id}
         data-ls-id={id}
         key={id}
-        className={cn(
-          className,
-          classes.paragraph,
-          entityClass,
-          groupClass,
-          classes.addedElem,
-          classes.ownStyles,
-        )}
+        className={cn(className, groupClass, classes.ownStyles)}
         contentEditable={contentEditable}
         {...eventHandlers}
         dangerouslySetInnerHTML={{ __html: params.textContent }}
