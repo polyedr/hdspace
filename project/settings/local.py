@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "anymail",
     "schema_graph",
     "guardian",
+    'django_filters',
 ]
 
 EXTERNAL_APPS = ["social_django"]

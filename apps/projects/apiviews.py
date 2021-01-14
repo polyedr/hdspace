@@ -1,4 +1,5 @@
 """Views for the projects api"""
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
@@ -69,7 +70,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
     pagination_class = ProjectCursorSetPagination
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
-    filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
+    filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian and DjangoFilterBackend
+    filterset_fields = ['name', 'user', 'status', 'created', 'updated']
 
     def get_queryset(self):
         # user = self.request.user
@@ -81,6 +83,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def filter_queryset(self, queryset):
+        queryset = super(ProjectViewSet, self).filter_queryset(queryset)
         queryset = queryset.filter(user=self.request.user)
         return queryset
 
