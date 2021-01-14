@@ -405,6 +405,9 @@ class ProjectTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectTask
         fields = ("title", "description", "status", "project", "creator", "owner")
+        extra_kwargs = {
+            "creator": {"read_only": True},
+        }
 
 
 class ProjectWithTasksSerializer(serializers.ModelSerializer):

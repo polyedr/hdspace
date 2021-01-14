@@ -248,6 +248,10 @@ class ProjectTaskList(generics.ListCreateAPIView):
     queryset = ProjectTask.objects.all()
     serializer_class = ProjectTaskSerializer
 
+    # Inject current user at the point of saving the instance
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
 
 class ProjectTaskDetail(generics.RetrieveUpdateDestroyAPIView):
     """
