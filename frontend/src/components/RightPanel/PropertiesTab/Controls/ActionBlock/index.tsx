@@ -20,6 +20,7 @@ import {
   StyledTextField,
   StyledToggleButton,
 } from '@Components/styledComponents';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
   updateParams,
@@ -28,6 +29,7 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
     selectActiveElementParams,
   );
   const screens = useSelector(selectScreens);
+  const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const [type, setType] = useState(action?.type);
 
@@ -93,8 +95,11 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
               updateParams({
                 action: {
                   type: 'internal-link',
-                  screenId:
-                    value === 'noScreen' ? value : parseInt(value as string),
+                  url:
+                    value === 'noScreen'
+                      ? value
+                      : `/project/${currentProjectId}/${currentScreenId}`,
+                  screenId: currentScreenId.toString(),
                 },
               });
             }}

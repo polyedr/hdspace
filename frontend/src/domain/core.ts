@@ -72,11 +72,7 @@ export const buttonStyleControls = [
   'display',
 ] as const;
 
-export const buttonParamsControls = [
-  'textContent',
-  'action',
-  'showRipple',
-] as const;
+export const buttonParamsControls = ['textContent', 'showRipple'] as const;
 
 export const textinputStyleControls = [
   'indents',

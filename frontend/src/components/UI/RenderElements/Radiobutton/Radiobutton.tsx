@@ -77,7 +77,7 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
             {showRipple && (
               <mat-ripple
                 centered
-                color={`${ownStyles.color || '#1890ff'}33`}
+                color={`${ownStyles.color || DEFAULT_COMPONENTS_BACKGROUND}33`}
                 style={{
                   borderRadius: '50%',
                 }}
