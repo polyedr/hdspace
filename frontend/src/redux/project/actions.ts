@@ -805,7 +805,7 @@ export const importHtml = (files: File[]) => ({
   payload: files,
 });
 
-export const setEditorDocument = (doc: any): SetEditorDocument => ({
+export const setEditorDocument = (doc: Document): SetEditorDocument => ({
   type: TYPES.SET_EDITOR_DOCUMENT,
   payload: doc,
 });

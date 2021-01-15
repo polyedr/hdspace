@@ -139,3 +139,6 @@ export const selectScreenRotated = ({ project }: AppReduxState) =>
 
 export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
   project.communication.screenCreateLoader;
+
+export const selectEditorDocument = ({ project }: AppReduxState) =>
+  project.ui.editorDocument;

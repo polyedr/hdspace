@@ -49,7 +49,7 @@ export type ProjectUiState = {
     format: SCREEN_FORMATS;
     rotated: boolean;
   };
-  editorDocument: any;
+  editorDocument: Document | null;
 };
 
 export type ProjectEditState = {
@@ -549,7 +549,10 @@ export type SetScreenCreateLoader = IAction<
   boolean
 >;
 
-export type SetEditorDocument = IAction<typeof TYPES.SET_EDITOR_DOCUMENT, any>;
+export type SetEditorDocument = IAction<
+  typeof TYPES.SET_EDITOR_DOCUMENT,
+  Document
+>;
 
 export type Action =
   | LoadProjects

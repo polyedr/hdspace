@@ -10,18 +10,15 @@ import { useDispatch } from 'react-redux';
 import { setEditorDocument } from '@Redux/project/actions';
 import theme from '@Src/styles/Theme';
 
-const CustomHead: FC = () => (
-  <>
-    <meta charSet="utf-8" />
-    <title>Previewer</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <base target="_parent" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-    />
-    <style>
-      {`
+const CustomHead: FC = () => {
+  return (
+    <>
+      <meta charSet="utf-8" />
+      <title>Previewer</title>
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <base target="_parent" />
+      <style>
+        {`
           body {
             padding: 0;
             margin: 0;
@@ -40,27 +37,36 @@ const CustomHead: FC = () => (
           .removeNativeScrollbars::-webkit-scrollbar {
             display: none;
           }
-          
           .removeNativeScrollbars {
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
           }
         `}
-    </style>
-  </>
-);
+      </style>
+    </>
+  );
+};
 
 export const FrameWrapper: FC<any> = ({ children, ...props }) => {
   const dispatch = useDispatch();
 
-  const ref = useRef(null);
+  const ref = useRef<{ node: HTMLIFrameElement }>(null);
 
   useEffect(() => {
-    if (ref.current) {
-      // @ts-ignore
+    if (ref.current?.node?.contentDocument) {
       dispatch(setEditorDocument(ref.current.node.contentDocument));
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (ref.current?.node.contentDocument?.head) {
+      [...document.head.children].forEach((child) => {
+        ref.current?.node.contentDocument?.head.appendChild(
+          child.cloneNode(true),
+        );
+      });
+    }
+  });
 
   return (
     <Frame

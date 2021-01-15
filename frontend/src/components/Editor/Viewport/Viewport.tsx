@@ -2,9 +2,11 @@ import React, { useRef, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
-import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProjectClasses,
+  selectEditorDocument,
+} from '@Redux/project/selectors/base';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
-import { AppReduxState } from '@Redux/types';
 import useHotKeys from '../hooks/useHotKeys';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
 
@@ -26,9 +28,7 @@ const useStyles = makeStyles(() =>
 
 const Viewport: React.FC = ({ children }) => {
   const projectClasses = useSelector(selectCurrentProjectClasses);
-  const editorDocument = useSelector(
-    (state: AppReduxState) => state.project.ui.editorDocument,
-  );
+  const editorDocument = useSelector(selectEditorDocument);
 
   const sharedClasses = useMemo(() => {
     return projectClasses.filter(

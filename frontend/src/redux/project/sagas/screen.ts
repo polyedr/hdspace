@@ -72,7 +72,7 @@ import {
   selectElementsForScreen,
   selectScreenRootElement,
 } from '../selectors/element';
-import { selectCurrentProject } from '../selectors/base';
+import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -287,8 +287,10 @@ export function* updateScreenImageSaga({
   try {
     yield put(setUpdateImageLoader(true));
 
-    const screenBody = document.getElementById('root');
-    const widgets = Array.from(document.querySelectorAll('iframe'));
+    const editorDocument = yield select(selectEditorDocument);
+
+    const screenBody = editorDocument.getElementById('root');
+    const widgets = Array.from(editorDocument.querySelectorAll('iframe'));
 
     if (screenBody === null) {
       throw new Error('Failed updating screen image');
@@ -634,7 +636,9 @@ export function* changeScreensOrderSaga(
 
 export function* convertFreeCanvasSaga() {
   try {
-    const root = document.getElementById('free-canvas-root');
+    const editorDocument = yield select(selectEditorDocument);
+
+    const root = editorDocument.getElementById('free-canvas-root');
     if (!root) throw new Error('Failed to find the root element');
 
     const rootId: string = yield select(selectCurrentRootId);
