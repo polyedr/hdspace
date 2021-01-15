@@ -1,35 +1,37 @@
 // @ts-nocheck
-
-import React from 'react';
+import React, { MouseEvent } from 'react';
+import { useHistory } from 'react-router';
 import cn from 'classnames';
-import { Link as RouterLink } from 'react-router-dom';
-import { Link as MaterialLink } from '@material-ui/core';
 import { ActionRendererProps } from '../types';
-import { WithActionProps } from '../../../../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-export type LinkRenderer = React.FC<WithActionProps & ActionRendererProps>;
-
 const useStyles = makeComponentStyles('link');
 
-const Link: LinkRenderer = React.forwardRef((props, ref) => {
-  const {
-    id,
-    isDisabled,
-    params,
-    actionType,
-    actionLink,
-    className,
-    groupClass,
-  } = props;
-  const { textContent } = params;
+const Link: React.FC<ActionRendererProps> = React.forwardRef((props, ref) => {
+  const { id, isDisabled, params, className, groupClass } = props;
+  const { textContent, action } = params;
+
+  const history = useHistory();
 
   const classes = useStyles(props);
-  const eventHandlers = useEventHandlers(props);
+  const eventHandlers = useEventHandlers(props, {
+    onClick: (event: MouseEvent) => {
+      if (isDisabled) {
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+      }
+      if (action.type === 'internal-link') {
+        event.stopPropagation();
+        event.preventDefault();
+        history.push(event.nativeEvent.target.href);
+      }
+    },
+  });
 
   return (
-    <MaterialLink
+    <a
       ref={ref}
       id={id}
       data-ls-id={id}
@@ -40,19 +42,12 @@ const Link: LinkRenderer = React.forwardRef((props, ref) => {
         isDisabled && classes.disabled,
         classes.ownStyles,
       )}
-      underline={isDisabled ? 'none' : 'hover'}
-      {...(actionType === 'external-link' && {
-        href: actionLink,
-        target: '_blank',
-      })}
-      {...(actionType === 'internal-link' && {
-        component: RouterLink,
-        to: actionLink,
-      })}
+      href={action.url}
+      target={action.type === 'external-link' ? '_blank' : '_self'}
       {...eventHandlers}
     >
       {textContent}
-    </MaterialLink>
+    </a>
   );
 });
 
