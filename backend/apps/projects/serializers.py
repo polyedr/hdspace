@@ -22,7 +22,7 @@ from .models import (
     ScenarioElement,
     Element,
     Scenario,
-)
+    ElementComment)
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
@@ -455,3 +455,9 @@ class ProjectActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectActivity
         fields = ("type", "created")
+
+
+class ElementCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ElementComment
+        fields = ("text", "element", "user")

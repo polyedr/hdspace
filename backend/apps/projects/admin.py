@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.projects.models import ScreenScenario, ScenarioElement
+from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment
 from .models import *  # noqa
 
 admin.site.register(ScreenEvent)
@@ -16,3 +16,4 @@ admin.site.register(ProjectTask)
 admin.site.register(TaskTime)
 admin.site.register(Comment)
 admin.site.register(ScreenComment)
+admin.site.register(ElementComment)

@@ -544,6 +544,12 @@ class ScenarioElement(MPTTModel, TimeStampedModel):
         level_attr = "mptt_level"
 
 
+class ElementComment(TimeStampedModel):
+    text = models.TextField()
+    element = models.ForeignKey(ScenarioElement, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+
 # Non-model model to expose the scenario library
 class Scenario(object):
     def __init__(self, **kwargs):

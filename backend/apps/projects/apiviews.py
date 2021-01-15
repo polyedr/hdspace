@@ -25,7 +25,7 @@ from .models import (
     ScenarioElement,
     elements,
     scenarios,
-)
+    ElementComment)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -45,7 +45,8 @@ from .serializers import (
     ScenarioElementMultipleSerializer,
     ScreenScenarioMultipleSerializer,
     ProjectScreenMultipleSerializer,
-    ScenarioElementSerializerRecursive, ProjectWithScreensSerializer, ProjectWithTasksSerializer)
+    ScenarioElementSerializerRecursive, ProjectWithScreensSerializer, ProjectWithTasksSerializer,
+    ElementCommentSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -489,3 +490,25 @@ class ScenarioElementRecursiveViewSet(viewsets.ModelViewSet):
     # queryset = ScenarioElement.objects.root_nodes()
     serializer_class = ScenarioElementSerializerRecursive
     http_method_names = ['get', 'patch', 'head']
+
+
+class ElementCommentList(generics.ListCreateAPIView):
+    """
+    List all project tasks, or create a new project task.
+    """
+
+    queryset = ElementComment.objects.all()
+    serializer_class = ElementCommentSerializer
+
+    # Inject current user at the point of saving the instance
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+
+class ElementCommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a project task
+    """
+
+    queryset = ElementComment.objects.all()
+    serializer_class = ElementCommentSerializer
