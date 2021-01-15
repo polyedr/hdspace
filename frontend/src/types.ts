@@ -411,8 +411,8 @@ export type ImageParameters = BaseElementParams & {
 
 export type LinkParams = BaseElementParams & {
   type: 'internal-link' | 'external-link';
-  url?: string; // for external links
-  screenId?: number | 'noScreen'; // for internal links
+  url?: string;
+  screenId?: string;
 };
 
 export type ButtonParameters = BaseElementParams & {

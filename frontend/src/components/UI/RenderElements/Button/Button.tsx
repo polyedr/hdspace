@@ -1,28 +1,19 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
-import { Link } from 'react-router-dom';
-import { ActionType, WithActionProps } from '@Src/types';
+import { WithActionProps } from '@Src/types';
 import { MDCRipple } from '@material/ripple';
 
 import { ActionRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const components: Record<ActionType, 'a' | 'button' | typeof Link> = {
-  'external-link': 'a',
-  'internal-link': Link,
-  button: 'button',
-};
-
-const useStyles = makeComponentStyles('click', {
-  component: ({ isDisabled, ownStyles, type }) => {
+const useStyles = makeComponentStyles('button', {
+  button: ({ isDisabled, ownStyles }) => {
     const { color, backgroundColor } = ownStyles;
     return {
-      color,
-      backgroundColor,
-      textDecoration: type === 'button' ? 'none' : 'underline',
-
+      textTransform: 'uppercase',
+      outline: 0,
       '&:hover, &:active': {
         ...(isDisabled && {
           boxShadow:
@@ -33,10 +24,6 @@ const useStyles = makeComponentStyles('click', {
       },
     };
   },
-  label: {
-    textDecoration: 'none',
-    textTransform: 'uppercase',
-  },
 });
 
 type Props = WithActionProps &
@@ -44,18 +31,8 @@ type Props = WithActionProps &
     type: string;
   };
 
-export type ActionRenderer = React.FC<Props>;
-
-const Action: ActionRenderer = React.forwardRef((props, ref) => {
-  const {
-    id,
-    isDisabled,
-    params,
-    actionType,
-    actionLink,
-    className,
-    groupClass,
-  } = props;
+const Button: React.FC<Props> = React.forwardRef((props, ref) => {
+  const { id, isDisabled, params, className, groupClass } = props;
   const { showRipple, textContent } = params;
 
   const [ripple, setRipple] = useState<MDCRipple | null>(null);
@@ -81,13 +58,11 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
   }, [dom]);
 
   const classes = useStyles(props);
-
   const eventHandlers = useEventHandlers(props);
 
-  const Component = components[actionType];
-
   return (
-    <Component
+    <button
+      type="button"
       ref={ref}
       id={id}
       data-ls-id={id}
@@ -96,22 +71,17 @@ const Action: ActionRenderer = React.forwardRef((props, ref) => {
       className={cn(
         'mdc-button',
         className,
-        classes.component,
+        classes.button,
+        groupClass,
         isDisabled && classes.disabled,
         classes.ownStyles,
-        groupClass,
       )}
-      {...(actionType === 'external-link' && {
-        href: actionLink,
-        target: '_blank',
-      })}
-      {...(actionType === 'internal-link' && { to: actionLink })}
       {...eventHandlers}
     >
-      <span className={classes.label}>{textContent}</span>
+      {textContent}
       <mat-ripple />
-    </Component>
+    </button>
   );
 });
 
-export default Action;
+export default Button;

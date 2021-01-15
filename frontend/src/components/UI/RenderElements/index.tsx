@@ -1,6 +1,5 @@
 import React from 'react';
-import withAction from '@Utils/withAction';
-import Action from './Action/Action';
+import Button from './Button/Button';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
 import Input from './Input/Input';
@@ -41,7 +40,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   emptyPageTemplate: Container,
   grid: Container,
   columns: Columns,
-  button: withAction(Action),
+  button: Button,
   textinput: Input,
   radiobutton: Radiobutton,
   checkbox: Checkbox,
@@ -53,7 +52,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   list: List,
   listItem: ListItem,
   label: Label,
-  hyperlink: withAction(Link),
+  hyperlink: Link,
   image: Image,
   smartHeader: withSmartContainer(NNBlockType.HEADER),
   smartFooter: withSmartContainer(NNBlockType.FOOTER),
