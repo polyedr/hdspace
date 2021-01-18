@@ -697,16 +697,16 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
       );
     }
     const html: string = yield htmlFiles[0].text();
-    const clearHtml = DOMPurify.sanitize(html);
 
     const cssFiles = files.filter((file) => file.type === 'text/css');
 
     const externalStyles: string = yield Promise.all(
       cssFiles.map((file) => file.text()),
     ).then((result) => result.reduce((acc, curr) => acc + curr, ''));
-    const htmlStyles = extractStyles(clearHtml);
+    const htmlStyles = extractStyles(html);
     const css = externalStyles + htmlStyles;
 
+    const clearHtml = DOMPurify.sanitize(html);
     const doc = new DOMParser().parseFromString(clearHtml, 'text/html');
 
     const { cssRules } = CSSOM.parse(css); // the actual type of cssRules is CSSStyleRule[] while the declared one is CSSOM.CSSRule[]
