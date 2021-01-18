@@ -49,6 +49,7 @@ export type ProjectUiState = {
     format: SCREEN_FORMATS;
     rotated: boolean;
   };
+  editorDocument: Document | null;
 };
 
 export type ProjectEditState = {
@@ -548,6 +549,11 @@ export type SetScreenCreateLoader = IAction<
   boolean
 >;
 
+export type SetEditorDocument = IAction<
+  typeof TYPES.SET_EDITOR_DOCUMENT,
+  Document
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -639,7 +645,8 @@ export type Action =
   | RemoveCustomElement
   | AddFileInput
   | RemoveFileInput
-  | SetScreenCreateLoader;
+  | SetScreenCreateLoader
+  | SetEditorDocument;
 
 export type HistoryMeta = {
   undo?: boolean;

@@ -2,8 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useDebouncedCallback } from 'use-debounce';
 import cn from 'classnames';
-
-const styles = require('./styles.scss');
+import './styles.css';
 
 interface IStyle {
   [x: string]: string | number;
@@ -93,7 +92,7 @@ const renderView = ({ style, ...props }: any) => {
   };
   return (
     <div
-      className={cn('box', styles.removeNativeScrollbars)}
+      className={cn('box', 'removeNativeScrollbars')}
       style={{ ...style, ...viewStyle }}
       {...props}
     />

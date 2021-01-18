@@ -2,7 +2,10 @@ import React, { useRef, useMemo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
-import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProjectClasses,
+  selectEditorDocument,
+} from '@Redux/project/selectors/base';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 import useHotKeys from '../hooks/useHotKeys';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
@@ -16,7 +19,6 @@ const useStyles = makeStyles(() =>
       display: 'flex',
       flexGrow: 1,
       justifyContent: 'center',
-      backgroundColor: '#cccccc',
       '&:focus': {
         outline: 0,
       },
@@ -26,6 +28,7 @@ const useStyles = makeStyles(() =>
 
 const Viewport: React.FC = ({ children }) => {
   const projectClasses = useSelector(selectCurrentProjectClasses);
+  const editorDocument = useSelector(selectEditorDocument);
 
   const sharedClasses = useMemo(() => {
     return projectClasses.filter(
@@ -48,14 +51,17 @@ const Viewport: React.FC = ({ children }) => {
   const sharedStylesEl = useProjectHeaderStyles(sharedClasses);
   const entityStylesEl = useProjectHeaderStyles(entityClasses);
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    document.head.prepend(entityStylesEl);
-    document.head.append(sharedStylesEl);
-    return () => {
-      document.head.removeChild(entityStylesEl);
-      document.head.removeChild(sharedStylesEl);
-    };
-  });
+    if (editorDocument) {
+      editorDocument.head.prepend(entityStylesEl);
+      editorDocument.head.append(sharedStylesEl);
+      return () => {
+        editorDocument.head.removeChild(entityStylesEl);
+        editorDocument.head.removeChild(sharedStylesEl);
+      };
+    }
+  }, [editorDocument, entityStylesEl, sharedStylesEl]);
 
   return (
     <div ref={ref} className={styles.editorViewport} tabIndex={-1}>

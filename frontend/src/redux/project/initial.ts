@@ -40,6 +40,7 @@ export const initialUi: ProjectUiState = {
     format: SCREEN_FORMATS.Desktop,
     rotated: false,
   },
+  editorDocument: null,
 };
 
 export const initialEdit: ProjectEditState = {

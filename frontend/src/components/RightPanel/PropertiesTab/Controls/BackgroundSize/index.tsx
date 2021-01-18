@@ -1,5 +1,7 @@
 import React, { useCallback, memo, useMemo } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import { useSelector } from 'react-redux';
+import { selectEditorDocument } from '@Redux/project/selectors/base';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
 enum Unit {
@@ -27,6 +29,8 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 
 const BackgroundSize: React.FC<Props> = memo(
   ({ updateStyles, removeStyles, backgroundSize, activeElementId }) => {
+    const editorDocument = useSelector(selectEditorDocument);
+
     const [width, height] = useMemo(() => {
       if (!backgroundSize) {
         return [0, 0];
@@ -40,63 +44,65 @@ const BackgroundSize: React.FC<Props> = memo(
 
     const handleSelectChange = useCallback(
       ({ target: { value } }, sizeName: SizeName) => {
-        const el = document.getElementById(activeElementId);
+        if (editorDocument) {
+          const el = editorDocument.getElementById(activeElementId);
 
-        switch (value as UnitName) {
-          case 'px': {
-            if (el !== null) {
-              const size =
-                sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
+          switch (value as UnitName) {
+            case 'px': {
+              if (el !== null) {
+                const size =
+                  sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
 
+                const newBackgroundSize =
+                  sizeName === 'width'
+                    ? `${size}px ${height}`
+                    : `${width} ${size}px`;
+
+                updateStyles({ backgroundSize: newBackgroundSize });
+              }
+              break;
+            }
+
+            case 'auto': {
               const newBackgroundSize =
-                sizeName === 'width'
-                  ? `${size}px ${height}`
-                  : `${width} ${size}px`;
+                sizeName === 'width' ? `auto ${height}` : `${width} auto`;
 
               updateStyles({ backgroundSize: newBackgroundSize });
+              break;
             }
-            break;
+
+            case '%':
+              if (el !== null && el.parentElement !== null) {
+                const parentStyles = getComputedStyle(el.parentElement);
+                const parentXPadding = parseFloat(parentStyles.paddingLeft);
+                const parentYPadding = parseFloat(parentStyles.paddingTop);
+
+                const parentSize =
+                  sizeName === 'width'
+                    ? el.parentElement.clientWidth - parentXPadding * 2
+                    : el.parentElement.clientHeight - parentYPadding * 2;
+
+                const size =
+                  sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
+                const sizeInPercents = parentSize
+                  ? Math.round(Number((size * 10000) / parentSize)) / 100
+                  : 0;
+
+                const newBackgroundSize =
+                  sizeName === 'width'
+                    ? `${sizeInPercents}% ${height}`
+                    : `${width} ${sizeInPercents}%`;
+
+                updateStyles({ backgroundSize: newBackgroundSize });
+              }
+              break;
+
+            default:
+              break;
           }
-
-          case 'auto': {
-            const newBackgroundSize =
-              sizeName === 'width' ? `auto ${height}` : `${width} auto`;
-
-            updateStyles({ backgroundSize: newBackgroundSize });
-            break;
-          }
-
-          case '%':
-            if (el !== null && el.parentElement !== null) {
-              const parentStyles = getComputedStyle(el.parentElement);
-              const parentXPadding = parseFloat(parentStyles.paddingLeft);
-              const parentYPadding = parseFloat(parentStyles.paddingTop);
-
-              const parentSize =
-                sizeName === 'width'
-                  ? el.parentElement.clientWidth - parentXPadding * 2
-                  : el.parentElement.clientHeight - parentYPadding * 2;
-
-              const size =
-                sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
-              const sizeInPercents = parentSize
-                ? Math.round(Number((size * 10000) / parentSize)) / 100
-                : 0;
-
-              const newBackgroundSize =
-                sizeName === 'width'
-                  ? `${sizeInPercents}% ${height}`
-                  : `${width} ${sizeInPercents}%`;
-
-              updateStyles({ backgroundSize: newBackgroundSize });
-            }
-            break;
-
-          default:
-            break;
         }
       },
-      [activeElementId, updateStyles, width, height],
+      [activeElementId, updateStyles, width, height, editorDocument],
     );
 
     const handleInputChange = useCallback(

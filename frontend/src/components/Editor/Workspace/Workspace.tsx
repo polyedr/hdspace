@@ -11,6 +11,7 @@ import {
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import DraggableElement from '../Draggable/DraggableElement';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
@@ -35,11 +36,12 @@ const useStyles = makeStyles({
     borderTop: 'none',
     overflow: 'hidden',
   },
-  editor: {
+  frameWrapper: {
+    flexGrow: 1,
     position: 'relative',
-    backgroundColor: '#fff',
-
-    overflow: 'hidden',
+    display: 'flex',
+    justifyContent: 'center',
+    backgroundColor: '#cccccc',
   },
   desktop: {
     flexBasis: '100%',
@@ -78,32 +80,38 @@ const Workspace: React.FC = () => {
   return (
     <div className={classes.workspace} ref={ref}>
       <div className={classes.wrapper}>
-        <EditorViewport>
-          <Scrollbar
-            className={cn(classes.editor, classes[format])}
-            autoHeightMin="100%"
-            autoHeightMax={
-              ref.current
-                ? `calc(${ref.current.getBoundingClientRect().height}px - 2em)`
-                : '100%'
-            }
-            onScroll={({ srcElement }) => {
-              setScrollLeft(srcElement.scrollLeft);
-            }}
-          >
-            {freeCanvasMode ? (
-              <FreeCanvas />
-            ) : (
-              <>
-                <DraggableElement elementId={rootElementId} />
-                {!freeCanvasMode && !isPrototypeMode && (
-                  <ElementsInteractions posRight={scrollLeft} />
+        <div className={classes.frameWrapper}>
+          <FrameWrapper className={cn(classes[format])}>
+            <EditorViewport>
+              <Scrollbar
+                autoHeightMin="100%"
+                autoHeightMax={
+                  ref.current
+                    ? `calc(${
+                        ref.current.getBoundingClientRect().height
+                      }px - 2em)`
+                    : '100%'
+                }
+                onScroll={({ srcElement }) => {
+                  setScrollLeft(srcElement.scrollLeft);
+                }}
+              >
+                {freeCanvasMode ? (
+                  <FreeCanvas />
+                ) : (
+                  <>
+                    <DraggableElement elementId={rootElementId} />
+                    {!freeCanvasMode && !isPrototypeMode && (
+                      <ElementsInteractions posRight={scrollLeft} />
+                    )}
+                  </>
                 )}
-              </>
-            )}
-          </Scrollbar>
-        </EditorViewport>
-        <NNProcessingModal />
+              </Scrollbar>
+            </EditorViewport>
+
+            <NNProcessingModal />
+          </FrameWrapper>
+        </div>
       </div>
     </div>
   );

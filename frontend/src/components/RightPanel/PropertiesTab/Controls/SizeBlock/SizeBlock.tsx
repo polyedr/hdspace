@@ -5,6 +5,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
+import { useSelector } from 'react-redux';
+import { selectEditorDocument } from '@Redux/project/selectors/base';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
 const useStyles = makeStyles({
@@ -65,50 +67,53 @@ const SizeBlock: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
 
+  const editorDocument = useSelector(selectEditorDocument);
   const handleSelectChange = useCallback(
     ({ target: { value } }, sizeName: SizeName) => {
-      const el = document.getElementById(activeElementId);
+      if (editorDocument) {
+        const el = editorDocument.getElementById(activeElementId);
 
-      switch (value as UnitName) {
-        case 'px': {
-          if (el !== null) {
-            const size =
-              sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
-            updateStyles({ [sizeName]: `${size}px` });
+        switch (value as UnitName) {
+          case 'px': {
+            if (el !== null) {
+              const size =
+                sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
+              updateStyles({ [sizeName]: `${size}px` });
+            }
+            break;
           }
-          break;
+
+          case 'auto':
+            updateStyles({ [sizeName]: 'auto' });
+            break;
+
+          case '%':
+            if (el !== null && el.parentElement !== null) {
+              const parentStyles = getComputedStyle(el.parentElement);
+              const parentXPadding = parseFloat(parentStyles.paddingLeft);
+              const parentYPadding = parseFloat(parentStyles.paddingTop);
+
+              const parentSize =
+                sizeName === 'width'
+                  ? el.parentElement.clientWidth - parentXPadding * 2
+                  : el.parentElement.clientHeight - parentYPadding * 2;
+
+              const size =
+                sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
+              const sizeInPercents = parentSize
+                ? Math.round(Number((size * 10000) / parentSize)) / 100
+                : 0;
+
+              updateStyles({ [sizeName]: `${sizeInPercents}%` });
+            }
+            break;
+
+          default:
+            break;
         }
-
-        case 'auto':
-          updateStyles({ [sizeName]: 'auto' });
-          break;
-
-        case '%':
-          if (el !== null && el.parentElement !== null) {
-            const parentStyles = getComputedStyle(el.parentElement);
-            const parentXPadding = parseFloat(parentStyles.paddingLeft);
-            const parentYPadding = parseFloat(parentStyles.paddingTop);
-
-            const parentSize =
-              sizeName === 'width'
-                ? el.parentElement.clientWidth - parentXPadding * 2
-                : el.parentElement.clientHeight - parentYPadding * 2;
-
-            const size =
-              sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
-            const sizeInPercents = parentSize
-              ? Math.round(Number((size * 10000) / parentSize)) / 100
-              : 0;
-
-            updateStyles({ [sizeName]: `${sizeInPercents}%` });
-          }
-          break;
-
-        default:
-          break;
       }
     },
-    [activeElementId, updateStyles, width, height],
+    [activeElementId, updateStyles, width, height, editorDocument],
   );
 
   const handleInputChange = useCallback(

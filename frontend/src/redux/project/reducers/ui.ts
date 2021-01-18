@@ -7,6 +7,13 @@ function uiReducer(
   action: Action,
 ): ProjectUiState {
   switch (action.type) {
+    case TYPES.SET_EDITOR_DOCUMENT: {
+      return {
+        ...state,
+        editorDocument: action.payload,
+      };
+    }
+
     case TYPES.SET_EDITABLE_STYLES: {
       return { ...state, editableStyles: action.payload.className };
     }

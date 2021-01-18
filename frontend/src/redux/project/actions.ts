@@ -93,6 +93,7 @@ import {
   WrapIntoContainer,
   SetScreenCreateLoader,
   SetBordersEnabled,
+  SetEditorDocument,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -802,4 +803,9 @@ export const convertFreeCanvas = () => ({
 export const importHtml = (files: File[]) => ({
   type: TYPES.IMPORT_HTML,
   payload: files,
+});
+
+export const setEditorDocument = (doc: Document): SetEditorDocument => ({
+  type: TYPES.SET_EDITOR_DOCUMENT,
+  payload: doc,
 });
