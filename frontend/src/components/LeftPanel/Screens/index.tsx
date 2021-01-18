@@ -22,7 +22,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import HtmlImportForm from '@Components/HTMLImportForm';
 import ScreenListItem from './ScreenListItem';
-import { Scrollbar } from '../../UI';
+import Scrollbar from '../../UI/Scrollbar';
 import {
   StyledAccordion,
   StyledAccordionDetails,

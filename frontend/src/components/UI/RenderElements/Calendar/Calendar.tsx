@@ -1,38 +1,30 @@
 // @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
-import { SharedRendererProps } from '../types';
+import CalendarWidget from '@Components/UI/Widgets/Calendar';
 import { makeComponentStyles } from '../styles';
-import CalendarWidget from '../../Calendar';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles('calendar');
+const useStyles = makeComponentStyles('clock');
 
-const Calendar: React.FC<SharedRendererProps> = React.forwardRef(
-  (props, ref) => {
-    const { id, isDisabled, className, groupClass } = props;
-    const classes = useStyles(props);
-    const eventHandlers = useEventHandlers(props);
+const Calendar: React.FC = React.forwardRef((props, ref) => {
+  const { id, className, groupClass, ownStyles } = props;
 
-    return (
-      <div
-        ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
-        className={cn(
-          className,
-          groupClass,
-          isDisabled && classes.disabled,
-          classes.ownStyles,
-        )}
-        {...eventHandlers}
-      >
-        <CalendarWidget />
-      </div>
-    );
-  },
-);
+  const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
+
+  return (
+    <div
+      ref={ref}
+      id={id}
+      data-ls-id={id}
+      key={id}
+      className={cn(className, groupClass, classes.ownStyles)}
+      {...eventHandlers}
+    >
+      <CalendarWidget id={id} ownStyles={ownStyles} />
+    </div>
+  );
+});
 
 export default Calendar;
