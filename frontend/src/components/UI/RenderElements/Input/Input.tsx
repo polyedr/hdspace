@@ -8,12 +8,6 @@ import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles('input', {
-  root: {
-    '& fieldset': {
-      border: 0,
-    },
-  },
-
   input: {
     boxSizing: 'border-box',
     '&:hover': {
@@ -26,7 +20,7 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
   const { id, params, isDisabled, className, groupClass } = props;
   const { type, placeholder, textContent } = params;
 
-  const styles = useStyles(props);
+  const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
 
   return (
@@ -36,15 +30,15 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
       data-ls-id={id}
       key={id}
       variant="outlined"
-      className={cn(className, isDisabled && styles.disabled, styles.root)}
+      className={cn(className, isDisabled && classes.disabled)}
       type={type}
       value={textContent}
       InputProps={{
         readOnly: isDisabled,
         classes: {
-          input: cn(styles.input, groupClass, styles.ownStyles),
+          input: cn(classes.input, groupClass, classes.ownStyles),
         },
-        className: cn(isDisabled && styles.disabled),
+        className: cn(isDisabled && classes.disabled),
       }}
       placeholder={placeholder}
       {...eventHandlers}

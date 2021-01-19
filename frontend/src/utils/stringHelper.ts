@@ -6,7 +6,7 @@ export const splitWords = (str: string) =>
 export const kebabToCamel = (str: string) =>
   str
     .split('-')
-    .map((word, i) => (i ? `${word[0].toUpperCase()}${word.slice(1)}` : word))
+    .map((word, i) => (i ? `${word[0]?.toUpperCase()}${word.slice(1)}` : word))
     .join('');
 
 export const extractStyles = (htmlString: string) => {
