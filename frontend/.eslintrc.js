@@ -71,5 +71,6 @@ module.exports = {
       { ignorePropertyModificationsFor: ['draft'] },
     ],
     'react/jsx-indent': 'off',
+    'lines-between-class-members': 'off',
   },
 };

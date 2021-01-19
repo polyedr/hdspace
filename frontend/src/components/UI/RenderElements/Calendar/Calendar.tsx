@@ -8,7 +8,7 @@ import useEventHandlers from '../useEventHandlers';
 const useStyles = makeComponentStyles('clock');
 
 const Calendar: React.FC = React.forwardRef((props, ref) => {
-  const { id, className, groupClass, ownStyles } = props;
+  const { id, className, groupClass, ownStyles, isDisabled } = props;
 
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
@@ -19,10 +19,15 @@ const Calendar: React.FC = React.forwardRef((props, ref) => {
       id={id}
       data-ls-id={id}
       key={id}
-      className={cn(className, groupClass, classes.ownStyles)}
+      className={cn(
+        className,
+        isDisabled && classes.disabled,
+        groupClass,
+        classes.ownStyles,
+      )}
       {...eventHandlers}
     >
-      <CalendarWidget id={id} ownStyles={ownStyles} />
+      <CalendarWidget id={id} ownStyles={ownStyles} disabled={isDisabled} />
     </div>
   );
 });

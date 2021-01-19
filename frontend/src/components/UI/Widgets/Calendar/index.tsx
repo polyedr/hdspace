@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import Calendar from 'color-calendar';
+import { useSelector } from 'react-redux';
+import { selectEditorDocument } from '@Redux/project/selectors/base';
+import Calendar from './colorCalendar';
 
-import 'color-calendar/dist/css/theme-basic.css';
+import './colorCalendar/styles/theme-basic.css';
 
 type Props = {
   id: string;
   ownStyles?: React.CSSProperties;
+  disabled?: boolean;
 };
 
 const CalendarWidget: React.FC<Props> = ({ id, ownStyles }) => {
   const [dom] = useState<HTMLElement | null>(null);
   const [calendar, setCalendar] = useState<Calendar | null>(null);
+  const editorDocument = useSelector(selectEditorDocument);
 
   useEffect(() => {
     if (!calendar) {
@@ -20,10 +24,19 @@ const CalendarWidget: React.FC<Props> = ({ id, ownStyles }) => {
           theme: 'basic',
           calendarSize: 'small',
           fontFamilyHeader: ownStyles?.fontFamily || '"Roboto", sans-serif',
+          document: editorDocument,
         }),
       );
     }
-  }, [dom, calendar, id, setCalendar, ownStyles?.fontFamily, ownStyles]);
+  }, [
+    dom,
+    calendar,
+    id,
+    setCalendar,
+    ownStyles?.fontFamily,
+    ownStyles,
+    editorDocument,
+  ]);
 
   return <div id={`widget-${id}`} />;
 };
