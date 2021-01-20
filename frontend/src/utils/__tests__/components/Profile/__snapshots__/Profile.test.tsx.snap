@@ -1,0 +1,286 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile should render profile page 1`] = `
+<div>
+  <main>
+    <div
+      class="makeStyles-headerContainer-1"
+    >
+      <h4
+        class="MuiTypography-root makeStyles-header-2 MuiTypography-h4"
+      >
+        Profile settings
+      </h4>
+      <button
+        class=""
+        type="button"
+      >
+        <span>
+          Log out
+        </span>
+      </button>
+    </div>
+    <div
+      class="MuiBox-root MuiBox-root-15"
+    >
+      <div
+        class="makeStyles-formsContainer-3"
+      >
+        <div
+          class="makeStyles-textFieldsContainer-4"
+        >
+          <div
+            class="makeStyles-error-14"
+          />
+          <form
+            class="makeStyles-profileForm-5"
+          >
+            <div
+              class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+                data-shrink="true"
+              >
+                First Name
+              </label>
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                  name="first_name"
+                  placeholder="First Name"
+                  type="text"
+                  value="John"
+                />
+                <fieldset
+                  aria-hidden="true"
+                  class="PrivateNotchedOutline-root-16 MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="PrivateNotchedOutline-legendLabelled-18 PrivateNotchedOutline-legendNotched-19"
+                  >
+                    <span>
+                      First Name
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+            </div>
+            <div
+              class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+                data-shrink="true"
+              >
+                Last Name
+              </label>
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                  name="last_name"
+                  placeholder="Last Name"
+                  type="text"
+                  value="Doe"
+                />
+                <fieldset
+                  aria-hidden="true"
+                  class="PrivateNotchedOutline-root-16 MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="PrivateNotchedOutline-legendLabelled-18 PrivateNotchedOutline-legendNotched-19"
+                  >
+                    <span>
+                      Last Name
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+            </div>
+          </form>
+          <div
+            class="makeStyles-error-14"
+          />
+          <form
+            class="makeStyles-profileForm-5"
+          >
+            <div
+              class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
+                data-shrink="false"
+              >
+                Company Name
+              </label>
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                  placeholder="Company Name"
+                  type="text"
+                  value=""
+                />
+                <fieldset
+                  aria-hidden="true"
+                  class="PrivateNotchedOutline-root-16 MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="PrivateNotchedOutline-legendLabelled-18"
+                  >
+                    <span>
+                      Company Name
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+            </div>
+            <div
+              class="MuiFormControl-root MuiFormControl-fullWidth"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined MuiFormLabel-filled"
+                data-shrink="true"
+              >
+                Role
+              </label>
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+              >
+                <div
+                  aria-haspopup="listbox"
+                  aria-labelledby="mui-component-select-role"
+                  class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                  id="mui-component-select-role"
+                  role="button"
+                  tabindex="0"
+                >
+                  STAFF
+                </div>
+                <input
+                  aria-hidden="true"
+                  class="MuiSelect-nativeInput"
+                  name="role"
+                  tabindex="-1"
+                  value="STAFF"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+                <fieldset
+                  aria-hidden="true"
+                  class="PrivateNotchedOutline-root-16 MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="PrivateNotchedOutline-legendLabelled-18 PrivateNotchedOutline-legendNotched-19"
+                  >
+                    <span>
+                      Role
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+              <p
+                class="MuiFormHelperText-root MuiFormHelperText-contained MuiFormHelperText-filled"
+              />
+            </div>
+          </form>
+        </div>
+        <form
+          class="makeStyles-profileImageWrapper-6"
+        >
+          <div
+            class="makeStyles-imageInputLabel-7"
+          >
+            Your photo
+          </div>
+          <img
+            alt="profile"
+            src="test-file-stub"
+          />
+          <div
+            class="makeStyles-profileImageActions-8"
+          >
+            <label
+              class="makeStyles-imageActionButton-9"
+            >
+              Upload
+              <input
+                class="makeStyles-hidden-10"
+                name="avatar"
+                type="file"
+                value=""
+              />
+            </label>
+            <button
+              class="makeStyles-imageActionButton-9"
+              type="button"
+            >
+              Remove
+            </button>
+          </div>
+        </form>
+      </div>
+      <div
+        class="makeStyles-profileCredentials-11"
+      >
+        <div
+          class="makeStyles-subheader-12 makeStyles-strong-13"
+        >
+          Email address
+        </div>
+        <div
+          class="makeStyles-subheader-12"
+        >
+          Your email address is 
+          <span
+            class="makeStyles-strong-13"
+          >
+            test@mail.test
+          </span>
+        </div>
+        <button
+          class=""
+          type="button"
+        >
+          <span>
+            Change
+          </span>
+        </button>
+      </div>
+      <div
+        class="makeStyles-profileCredentials-11"
+      >
+        <div
+          class="makeStyles-subheader-12"
+        >
+          Password
+        </div>
+        <button
+          class=""
+          type="button"
+        >
+          <span>
+            Change
+          </span>
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+`;

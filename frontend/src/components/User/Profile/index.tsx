@@ -180,6 +180,12 @@ const Profile: React.FC = () => {
                             <TextField
                               {...input}
                               onBlur={handleSubmit}
+                              InputLabelProps={{
+                                htmlFor: 'first_name_input',
+                              }}
+                              InputProps={{
+                                id: 'first_name_input',
+                              }}
                               type="text"
                               fullWidth
                               label="First Name"

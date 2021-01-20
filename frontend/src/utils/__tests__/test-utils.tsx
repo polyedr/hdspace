@@ -7,7 +7,7 @@ import {
   initialUi,
 } from '@Redux/project/initial';
 import { AppReduxState } from '@Redux/types';
-import { Project, StateElement, Screen } from '../../types';
+import { Project, StateElement, Screen, UserData } from '../../types';
 
 export const mockProject: Project = {
   id: 1,
@@ -70,6 +70,24 @@ export const mockStateElement: StateElement = {
   shared: false,
 };
 
+export const mockUserData: UserData = {
+  isActive: true,
+  dateJoined: new Date(),
+  email: 'test@mail.test',
+  firstName: 'John',
+  lastName: 'Doe',
+  id: 777,
+  password: 'testpasswordencrypted',
+  username: 'testuser',
+  profile: {
+    role: 'STAFF',
+    hourlyRate: 0,
+    approved: true,
+    avatar: null,
+    id: 888,
+  },
+};
+
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
   project: {
@@ -96,6 +114,10 @@ export const mockInitialState: AppReduxState = {
 
 export const mockState: AppReduxState = {
   ...mockInitialState,
+  user: {
+    ...mockInitialState.user,
+    userData: mockUserData,
+  },
   project: {
     ...mockInitialState.project,
     data: {
