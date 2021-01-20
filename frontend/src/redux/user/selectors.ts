@@ -2,6 +2,9 @@ import { AppReduxState } from '../types';
 
 export const selectUserData = ({ user }: AppReduxState) => user.userData;
 
+export const selectProfileData = ({ user }: AppReduxState) =>
+  user.userData.profile;
+
 export const selectIsLeftPanelMinimized = ({ user }: AppReduxState) =>
   user.isLPanelMinimized;
 

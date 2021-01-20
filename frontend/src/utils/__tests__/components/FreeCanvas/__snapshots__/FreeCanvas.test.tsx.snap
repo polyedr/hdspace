@@ -3,16 +3,16 @@
 exports[`Free Canvas should render a "free canvas" container 1`] = `
 <div>
   <div
-    class="makeStyles-entityStyles-1 makeStyles-groupStyles-2 makeStyles-ownStyles-3 react-draggable"
+    class="root makeStyles-ownStyles-1 react-draggable"
     id="free-canvas-root"
     style="position: relative; user-select: none; display: block; top: 0px; left: 0px; cursor: auto; border: 1px solid transparent; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; min-width: 100%; min-height: 100%; box-sizing: border-box; flex-shrink: 0;"
   >
     <div
-      class="makeStyles-rnd-7 makeStyles-rnd-8 react-draggable"
+      class="makeStyles-rnd-3 makeStyles-rnd-4 react-draggable"
       style="position: absolute; user-select: auto; width: auto; height: auto; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
     >
       <div
-        class="makeStyles-entityStyles-4 makeStyles-groupStyles-5 makeStyles-ownStyles-6"
+        class="paragraph makeStyles-ownStyles-2"
         style="width: 100%; height: 100%;"
       >
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus! Aut illum a minus cumque iste, quibusdam corporis atque odit magnam impedit esse possimus perspiciatis culpa non id tempore fugiat molestiae eos dolorem, labore maiores ratione? Sequi tenetur porro enim reprehenderit amet accusamus eos itaque saepe quidem quod, sit vero ab recusandae vitae, facere nobis cumque minima libero aut quos nihil labore eius. Soluta doloremque mollitia nihil voluptatibus, nostrum commodi eaque similique ipsam ad libero at tenetur.
@@ -22,21 +22,21 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
         hidden=""
       >
         <div
-          class="makeStyles-crumb-9"
+          class="makeStyles-crumb-5"
         >
           <div
-            class="makeStyles-general-10 makeStyles-general-19"
+            class="makeStyles-general-6 makeStyles-general-15"
           >
             <span
-              class="makeStyles-name-11"
+              class="makeStyles-name-7"
             >
               paragraph
             </span>
             <hr
-              class="MuiDivider-root makeStyles-divider-13 MuiDivider-vertical"
+              class="MuiDivider-root makeStyles-divider-9 MuiDivider-vertical"
             />
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-8"
               tabindex="0"
               title="Settings"
               type="button"
@@ -51,8 +51,7 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
                   viewBox="0 0 24 24"
                 >
                   <path
-                    d="M15.95 10.78c.03-.25.05-.51.05-.78s-.02-.53-.06-.78l1.69-1.32c.15-.12.19-.34.1-.51l-1.6-2.77c-.1-.18-.31-.24-.49-.18l-1.99.8c-.42-.32-.86-.58-1.35-.78L12 2.34c-.03-.2-.2-.34-.4-.34H8.4c-.2 0-.36.14-.39.34l-.3 2.12c-.49.2-.94.47-1.35.78l-1.99-.8c-.18-.07-.39 0-.49.18l-1.6 2.77c-.1.18-.06.39.1.51l1.69 1.32c-.04.25-.07.52-.07.78s.02.53.06.78L2.37 12.1c-.15.12-.19.34-.1.51l1.6 2.77c.1.18.31.24.49.18l1.99-.8c.42.32.86.58 1.35.78l.3 2.12c.04.2.2.34.4.34h3.2c.2 0 .37-.14.39-.34l.3-2.12c.49-.2.94-.47 1.35-.78l1.99.8c.18.07.39 0 .49-.18l1.6-2.77c.1-.18.06-.39-.1-.51l-1.67-1.32zM10 13c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3z"
-                    transform="scale(1.2, 1.2)"
+                    d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
                   />
                 </svg>
               </span>
@@ -66,10 +65,10 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
             role="menu"
           >
             <div
-              class="makeStyles-general-10 makeStyles-general-19"
+              class="makeStyles-general-6 makeStyles-general-15"
             >
               <span
-                class="makeStyles-name-11"
+                class="makeStyles-name-7"
               >
                 Z-index:
                 <b>
@@ -77,10 +76,10 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
                 </b>
               </span>
               <hr
-                class="MuiDivider-root makeStyles-divider-13 MuiDivider-vertical"
+                class="MuiDivider-root makeStyles-divider-9 MuiDivider-vertical"
               />
               <button
-                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12"
+                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-8"
                 tabindex="0"
                 title="Move element up"
                 type="button"
@@ -104,7 +103,7 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
                 />
               </button>
               <button
-                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12 Mui-disabled Mui-disabled"
+                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-8 Mui-disabled Mui-disabled"
                 disabled=""
                 tabindex="-1"
                 title="Move element down"
@@ -129,19 +128,19 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-border-14 makeStyles-border-20 makeStyles-topBorder-15"
+          class="makeStyles-border-10 makeStyles-border-16 makeStyles-topBorder-11"
         />
         <div
-          class="makeStyles-border-14 makeStyles-border-20 makeStyles-rightBorder-16"
+          class="makeStyles-border-10 makeStyles-border-16 makeStyles-rightBorder-12"
         />
         <div
-          class="makeStyles-border-14 makeStyles-border-20 makeStyles-bottomBorder-17"
+          class="makeStyles-border-10 makeStyles-border-16 makeStyles-bottomBorder-13"
         />
         <div
-          class="makeStyles-border-14 makeStyles-border-20 makeStyles-leftBorder-18"
+          class="makeStyles-border-10 makeStyles-border-16 makeStyles-leftBorder-14"
         />
       </div>
-      <span>
+      <div>
         <div
           class=""
           style="position: absolute; user-select: none; width: 100%; height: 10px; top: -5px; left: 0px; cursor: row-resize;"
@@ -174,9 +173,9 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
           class=""
           style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
         />
-      </span>
+      </div>
     </div>
-    <span />
+    <div />
   </div>
 </div>
 `;

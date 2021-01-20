@@ -1,13 +1,12 @@
 import { FORM_ERROR } from 'final-form';
-import TYPES from '../actionTypes';
 import {
   TokenPair,
   LoginFormData,
   ProfileData,
-  TotalUserData,
   UserData,
   SignupFormData,
-} from '../../types';
+} from '@Src/types';
+import TYPES from '../actionTypes';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
 
@@ -47,8 +46,13 @@ export const setTokenPair = (tokenPair: TokenPair) => ({
   tokenPair,
 });
 
-export const setUserData = (data: Partial<TotalUserData>) => ({
+export const setUserData = (data: Partial<UserData>) => ({
   type: TYPES.SET_USER_DATA,
+  payload: data,
+});
+
+export const setProfileData = (data: Partial<ProfileData>) => ({
+  type: TYPES.SET_PROFILE_DATA,
   payload: data,
 });
 

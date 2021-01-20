@@ -1,7 +1,7 @@
 import { createReducer, Handlers } from 'reduxsauce';
+import { UnsafeReturnType } from '@Src/types';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
-import { UnsafeReturnType } from '../../types';
 import { UserState } from '../types';
 
 interface ActionHandler<T> {
@@ -16,17 +16,20 @@ export const initialUserState: UserState = {
   },
   userData: {
     isActive: false,
-    hourlyRate: 0,
-    approved: false,
-    avatar: null,
     dateJoined: null,
-    role: '',
     username: '',
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     id: 0,
+    profile: {
+      hourlyRate: 0,
+      approved: false,
+      avatar: null,
+      id: 0,
+      role: '',
+    },
   },
   isLoggedIn: false,
   tokenPair: {
@@ -92,6 +95,20 @@ const setUserData: ActionHandler<typeof Actions.setUserData> = (
   authError: null,
 });
 
+const setProfileData: ActionHandler<typeof Actions.setProfileData> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  userData: {
+    ...state.userData,
+    profile: {
+      ...state.userData.profile,
+      ...payload,
+    },
+  },
+});
+
 const setLoadedToken: ActionHandler<typeof Actions.setLoadedToken> = (
   state,
   { isLoadedToken },
@@ -134,6 +151,7 @@ const handlers: Handlers<UserState> = {
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
   [TYPES.SET_USER_DATA]: setUserData,
+  [TYPES.SET_PROFILE_DATA]: setProfileData,
   [TYPES.SET_LOADED_TOKEN]: setLoadedToken,
   [TYPES.SET_USER_ERROR]: setAuthError,
   [TYPES.SET_RESTORE_PASSWORD_EMAIL]: setRestorePasswordEmail,

@@ -702,6 +702,8 @@ export const defaultTextinputStyles: {
     ...DEFAULT_BORDER,
     border: '1px solid #d9d9d9',
     borderRadius: '4px',
+    borderColor: '#d9d9d9',
+    borderWidth: '1px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
