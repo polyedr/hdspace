@@ -1,5 +1,4 @@
 function Clock(element) {
-  console.log('START CLOCK!!');
   var uniqueClassName;
   for (var i = 0; i < element.classList.length; i++) {
     var className = element.classList.item(i);
@@ -10,7 +9,6 @@ function Clock(element) {
   }
 
   setInterval(function () {
-    console.log('START!!!');
     var date = new Date();
     var hours = date.getHours();
     var minutes = date.getMinutes();
