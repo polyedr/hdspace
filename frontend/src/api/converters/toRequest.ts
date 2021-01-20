@@ -1,8 +1,8 @@
 // import * as R from 'ramda';
 import getDefaultStyles from '@Utils/getDefaultStyles';
 import { cssDecamelize } from '@Utils/CSSConverter';
-import { DEFAULT_ELEMENTS_STYLES } from '../../domain/libraryElements/defaultStyles';
-import { LIBRARY_ELEMENTS } from '../../domain/libraryElements/libraryElements';
+import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
+import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import {
   CreatedServerProject,
   Entity,
@@ -15,7 +15,7 @@ import {
   ServerProject,
   ServerUserData,
   UserData,
-} from '../../types';
+} from '@Src/types';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,
@@ -151,12 +151,14 @@ export const convertUserDataToRequest = ({
   dateJoined,
   isActive,
   lastName,
+  profile,
   ...rest
 }: Partial<UserData>): Partial<ServerUserData> => ({
   first_name: firstName,
   date_joined: dateJoined?.toString(),
   is_active: isActive,
   last_name: lastName,
+  profile: undefined,
   ...rest,
 });
 

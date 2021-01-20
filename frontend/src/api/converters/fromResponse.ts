@@ -16,7 +16,7 @@ import {
   ServerRecursiveElement,
   ServerUserData,
   UserData,
-} from '../../types';
+} from '@Src/types';
 
 export const convertElementFromResponse = <
   T extends Entity,
@@ -115,11 +115,13 @@ export const convertUserDataFromResponse = ({
   last_name,
   date_joined,
   is_active,
+  profile,
   ...rest
 }: ServerUserData): UserData => ({
   firstName: first_name,
   lastName: last_name,
   dateJoined: new Date(date_joined),
   isActive: is_active,
+  profile: convertProfileDataFromResponse(profile),
   ...rest,
 });

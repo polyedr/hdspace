@@ -17,13 +17,13 @@ import {
   apiGetUser,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
+import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
-import { ServerProfileData, ServerUserData, TokenPair } from '../../types';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
 import { loginComplete } from './actions';
-import { selectUserData } from './selectors';
+import { selectProfileData, selectUserData } from './selectors';
 
 // eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
@@ -57,7 +57,7 @@ export function* loginSaga({
     yield put(
       Actions.setUserData({
         ...convertUserDataFromResponse(userData),
-        ...convertProfileDataFromResponse(userData.profile),
+        // ...convertProfileDataFromResponse(userData.profile),
       }),
     );
 
@@ -102,7 +102,7 @@ export function* changeProfileDataSaga({
   payload,
 }: ReturnType<typeof Actions.changeProfileData>) {
   try {
-    const { id } = yield select(selectUserData);
+    const { id } = yield select(selectProfileData);
 
     const newProfileData: ServerProfileData = yield call(
       reqWrapper,
@@ -111,7 +111,7 @@ export function* changeProfileDataSaga({
     );
 
     yield put(
-      Actions.setUserData(convertProfileDataFromResponse(newProfileData)),
+      Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
     );
     yield put(Actions.changeProfileDataComplete());
   } catch (e) {
