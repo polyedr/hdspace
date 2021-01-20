@@ -41,6 +41,7 @@ exports[`Profile should render profile page 1`] = `
               <label
                 class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
                 data-shrink="true"
+                for="first_name_input"
               >
                 First Name
               </label>
@@ -50,6 +51,7 @@ exports[`Profile should render profile page 1`] = `
                 <input
                   aria-invalid="false"
                   class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                  id="first_name_input"
                   name="first_name"
                   placeholder="First Name"
                   type="text"
