@@ -23,8 +23,8 @@ import {
   SCREEN_FORMATS,
   ServerStructType,
   StateElement,
-  TotalUserData,
   UploadedImageInfo,
+  UserData,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -103,7 +103,7 @@ export type UserState = {
   isTokenLoaded: boolean;
   isLoggedIn: boolean;
   error: Error | null;
-  userData: TotalUserData;
+  userData: UserData;
   restorePasswordEmail?: string;
   restoreUserId?: number;
   isLoading: boolean;

@@ -5,7 +5,7 @@ import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import * as CSS from 'csstype';
-import { DropPosition, ElementType } from './constants/dragAndDrop';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 
 export type PropertyName = keyof React.CSSProperties;
 
@@ -822,6 +822,7 @@ export type ServerProfileData = {
   hourly_rate: number;
   approved: boolean;
   role: string;
+  id: number;
 };
 
 export type ServerUserData = {
@@ -841,6 +842,7 @@ export type ProfileData = {
   approved: boolean;
   role: string;
   hourlyRate: number;
+  id: number;
 };
 
 export type UserData = {
@@ -852,6 +854,7 @@ export type UserData = {
   isActive: boolean;
   id: number;
   password: string;
+  profile: ProfileData;
 };
 
 export type TotalUserData = ProfileData & UserData;

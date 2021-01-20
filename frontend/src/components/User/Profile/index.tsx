@@ -14,15 +14,15 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Alert from '@material-ui/lab/Alert';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { selectUserData } from '@Redux/user/selectors';
+import { selectProfileData, selectUserData } from '@Redux/user/selectors';
 import { changeProfileData, logout } from '@Redux/user/actions';
 import IMAGES from '@Constants/images';
 import { openSignScreen } from '@Redux/history';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
 import { ROLES } from '@Constants/defaultParams';
+import { ProfileData } from '@Src/types';
 import SubmitError from '../SubmitError';
-import { ProfileData } from '../../../types';
 import Button from '../../UI/Button';
 
 const useStyles = makeStyles((theme) =>
@@ -107,7 +107,8 @@ const Profile: React.FC = () => {
   const dispatch = useDispatch();
 
   const userData = useSelector(selectUserData);
-  const { firstName, lastName, email, role, avatar } = userData;
+  const { firstName, lastName, email } = userData;
+  const { avatar, role } = useSelector(selectProfileData);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -179,6 +180,12 @@ const Profile: React.FC = () => {
                             <TextField
                               {...input}
                               onBlur={handleSubmit}
+                              InputLabelProps={{
+                                htmlFor: 'first_name_input',
+                              }}
+                              InputProps={{
+                                id: 'first_name_input',
+                              }}
                               type="text"
                               fullWidth
                               label="First Name"

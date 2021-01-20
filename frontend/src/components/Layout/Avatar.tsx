@@ -11,7 +11,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { PATH_NAMES } from '@Constants/pathNames';
 import IMAGES from '@Constants/images';
 import { logout } from '@Redux/user/actions';
-import { selectUserData } from '@Redux/user/selectors';
+import { selectProfileData, selectUserData } from '@Redux/user/selectors';
 import { openSignScreen } from '@Redux/history';
 
 const useStyles = makeStyles({
@@ -34,7 +34,8 @@ const Avatar: React.FC = () => {
   const classes = useStyles();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
-  const { username, avatar } = useSelector(selectUserData);
+  const { username } = useSelector(selectUserData);
+  const { avatar } = useSelector(selectProfileData);
 
   const handleAvatarClick = (ev: React.MouseEvent<HTMLButtonElement>) =>
     setMenuAnchorEl(ev.currentTarget);
