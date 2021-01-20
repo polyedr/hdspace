@@ -39,6 +39,7 @@ const useStyles = makeStyles({
     flex: '1',
     display: 'flex',
     flexDirection: 'column',
+    overflow: 'auto',
 
     '& > :first-child': {
       flex: '1',
@@ -279,17 +280,23 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           minHeight: '300px',
         }}
       >
-        <AtlasTree
-          tree={expandedTree}
-          renderItem={renderItem}
-          onExpand={expand}
-          onCollapse={collapse}
-          onDragStart={dragStart}
-          onDragEnd={dragEnd}
-          offsetPerLevel={OFFSET}
-          isDragEnabled
-          isNestingEnabled
-        />
+        <div
+          style={{
+            width: '500px',
+          }}
+        >
+          <AtlasTree
+            tree={expandedTree}
+            renderItem={renderItem}
+            onExpand={expand}
+            onCollapse={collapse}
+            onDragStart={dragStart}
+            onDragEnd={dragEnd}
+            offsetPerLevel={OFFSET}
+            isDragEnabled
+            isNestingEnabled
+          />
+        </div>
       </Scrollbar>
 
       {state.item && (
