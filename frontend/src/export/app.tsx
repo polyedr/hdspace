@@ -30,8 +30,21 @@ type ExportedStyleSheets = {
 const createArchive = (
   screenName: string,
   html: string,
-  sheets: ExportedStyleSheets,
+  css: string,
+  state: AppReduxState,
 ) => {
+  const projectClasses = selectCurrentProjectClasses(state);
+
+  const entityClasses = projectClasses.filter((classInstance) =>
+    entityClassNames.includes(classInstance.className),
+  );
+  const sharedClasses = projectClasses.filter(
+    (classInstance) => !entityClassNames.includes(classInstance.className),
+  );
+  const { elements } = state.project.data;
+  const mapComponents = Object.keys(elements)
+    .filter((id) => elements[id].type === 'map')
+    .map((id: string) => elements[id]);
   const zip = new JSZip();
   const cssFolder = zip.folder('css');
   const jsFolder = zip.folder('js');
@@ -40,11 +53,14 @@ const createArchive = (
   // eslint-disable-next-line no-console
   Promise.all([
     processHTML(html, assetsFolder),
-    processCSS(cssFolder, sheets.entityClasses, sheets.sharedClasses),
+    processCSS(cssFolder, entityClasses, sharedClasses),
     processJS(jsFolder),
   ]).then(([htmlResponse]) => {
-    zip.file('index.html', getHtmlFromTemplate(screenName, htmlResponse));
-    cssFolder?.file('style.css', sheets.css);
+    zip.file(
+      'index.html',
+      getHtmlFromTemplate(screenName, htmlResponse, mapComponents),
+    );
+    cssFolder?.file('style.css', css);
     zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(content);
@@ -61,8 +77,6 @@ const exportHTML = (screenName: string) => {
 
   const rootId = selectCurrentRootId(state);
 
-  const projectClasses = selectCurrentProjectClasses(state);
-
   const html = ReactDOMServer.renderToStaticMarkup(
     sheets.collect(
       <Provider store={store}>
@@ -75,15 +89,7 @@ const exportHTML = (screenName: string) => {
     ),
   );
 
-  createArchive(screenName, html, {
-    css: sheets.toString(),
-    entityClasses: projectClasses.filter((classInstance) =>
-      entityClassNames.includes(classInstance.className),
-    ),
-    sharedClasses: projectClasses.filter(
-      (classInstance) => !entityClassNames.includes(classInstance.className),
-    ),
-  });
+  createArchive(screenName, html, sheets.toString(), state);
 };
 
 export default exportHTML;

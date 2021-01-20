@@ -246,7 +246,28 @@ module.exports = ({ MODE }) => {
             toType: 'dir',
           },
           {
+            from: 'src/styles/export/clock.css',
+            to: 'styles',
+            toType: 'dir',
+          },
+          {
             from: 'src/export/js/app.js',
+            to: 'js/export',
+          },
+          {
+            from: 'src/export/js/map.js',
+            to: 'js/export',
+          },
+          {
+            from: 'src/export/js/clock-widget.js',
+            to: 'js/export',
+          },
+          {
+            from: 'src/export/js/clock.js',
+            to: 'js/export',
+          },
+          {
+            from: 'src/export/js/calendar.js',
             to: 'js/export',
           },
           {

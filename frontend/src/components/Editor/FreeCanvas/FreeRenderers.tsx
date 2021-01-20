@@ -24,7 +24,7 @@ import {
   selectElementAsTree,
   selectIncludesActiveElement,
 } from '@Redux/project/selectors/element';
-import GMap from '../../UI/GMap';
+import GMap from '../../UI/Widgets/GMap';
 import FreeDraggable from './FreeDraggable';
 import {
   getIframeContainerStyles,
