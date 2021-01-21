@@ -4,11 +4,11 @@ import pretty from 'pretty';
 import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
 import { toClassName } from '@Utils/stringHelper';
-import { ProjectClass } from '@Src/types';
+import { ProjectClass, StateElement } from '@Src/types';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
-const cssResources = [
+const cssMaterialResources = [
   'mdc.checkbox.css',
   'mdc.radio.css',
   'mdc.form-field.css',
@@ -17,7 +17,14 @@ const cssResources = [
   'mdc.menu.css',
   'mdc.select.css',
 ];
-const jsResources = ['app.js'];
+const cssCustomResources = ['clock.css'];
+const jsResources = [
+  'app.js',
+  'map.js',
+  'clock.js',
+  'clock-widget.js',
+  'calendar.js',
+];
 
 const cssReducer = (styles: string, classInstance: ProjectClass) => {
   const styleString = `
@@ -93,9 +100,12 @@ export const processCSS = async (
   entityClasses: ProjectClass[],
   sharedClasses: ProjectClass[],
 ) => {
-  const cssResourcesPromise = Promise.all(
-    cssResources.map((resource) => axios.get(`/styles/material/${resource}`)),
-  )
+  const cssResourcesPromise = Promise.all([
+    ...cssMaterialResources.map((resource) =>
+      axios.get(`/styles/material/${resource}`),
+    ),
+    ...cssCustomResources.map((resource) => axios.get(`/styles/${resource}`)),
+  ])
     .then((responses: AxiosResponse[]) => {
       responses.forEach((response: AxiosResponse) => {
         if (!response.request) {
@@ -156,7 +166,11 @@ export const processJS = async (jsFolder: JSZip | null) => {
   });
 };
 
-export const getHtmlFromTemplate = (screenName: string, body: string) =>
+export const getHtmlFromTemplate = (
+  screenName: string,
+  body: string,
+  mapComponents: StateElement[],
+) =>
   pretty(`
 <!DOCTYPE html>
 <html lang="en">
@@ -187,14 +201,27 @@ export const getHtmlFromTemplate = (screenName: string, body: string) =>
     <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
-    <link rel="stylesheet" type="text/css" href="css/shared.css" />
-    <script src="https://unpkg.com/mat-ripple"></script> 
+    <link rel="stylesheet" type="text/css" href="css/clock.css" />
+    <link rel="stylesheet" type="text/css" href="css/shared.css" />    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/color-calendar/dist/css/theme-basic.css" />    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/color-calendar/dist/bundle.js"></script>
+    <script src="https://unpkg.com/mat-ripple"></script>
+    <script type="text/javascript" src="js/map.js" defer></script>
+    <script type="text/javascript" src="js/clock-widget.js"></script>
+    ${mapComponents.map((component) => {
+      const { apiKey } = component.parameters.map_props;
+      return `<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?callback=__googleMapsCallback${
+        apiKey ? '' : `&API_KEY=${apiKey}`
+      }" defer></script>`;
+    })}
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <title>${screenName}</title>
   </head>
   <body>
     ${body}
     <script src="js/app.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/clock.js"></script>
   </body>
 </html>
 `);

@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactCalendar from 'react-calendar';
-import ReactClock from 'react-clock';
+import CalendarWidget from '@Components/UI/Widgets/Calendar';
+import ClockWidget from '@Components/UI/Widgets/Clock';
 import TextField from '@material-ui/core/TextField';
 import MuiButton from '@material-ui/core/Button';
 import Grow from '@material-ui/core/Grow';
@@ -24,7 +24,7 @@ import {
   selectElementAsTree,
   selectIncludesActiveElement,
 } from '@Redux/project/selectors/element';
-import { GMap } from '../../UI';
+import GMap from '../../UI/Widgets/GMap';
 import FreeDraggable from './FreeDraggable';
 import {
   getIframeContainerStyles,
@@ -440,9 +440,11 @@ const Dropdown: React.FC<Props> = (props) => {
 };
 
 const Calendar: React.FC<Props> = (props) => {
+  const { element } = props;
+  const { ownStyles } = element.styles;
   return (
     <FreeDraggable {...props}>
-      <ReactCalendar />
+      <CalendarWidget id={element.id} ownStyles={ownStyles} />
     </FreeDraggable>
   );
 };
@@ -497,13 +499,10 @@ const Checkbox: React.FC<Props> = (props) => {
 
 const Clock: React.FC<Props> = (props) => {
   const { element } = props;
-  const [className, groupClass] = element.styles.classNames;
-
-  const { ownStyles } = useElementClassNames(element);
 
   return (
     <FreeDraggable {...props}>
-      <ReactClock className={cn(className, groupClass, ownStyles)} />
+      <ClockWidget id={element.id} />
     </FreeDraggable>
   );
 };
