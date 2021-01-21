@@ -32,6 +32,7 @@ export const ENTITIES: {
   emptyPageTemplate: 'emptyPageTemplate',
   grid: 'grid',
   columns: 'columns',
+  column: 'column',
   smartHeader: 'smartHeader',
   smartFooter: 'smartFooter',
   smartForm: 'smartForm',
@@ -290,6 +291,15 @@ export const columnsStyleControls = [
   'display',
 ] as const;
 
+export const columnStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+  'display',
+] as const;
+
 export const subscribeFormStyleControls = [
   'indents',
   'size',
@@ -358,6 +368,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   emptyPageTemplate: emptyPageTemplateStyleControls,
   grid: gridStyleControls,
   columns: columnsStyleControls,
+  column: columnStyleControls,
   subscribeForm: subscribeFormStyleControls,
   smartHeader: [...smartContainerStyleControls, 'stylesOn', 'smartHeader'],
   smartFooter: [...smartContainerStyleControls, 'stylesOn', 'smartFooter'],
@@ -456,6 +467,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   columns: {
+    column: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  column: {
     all: {
       min: 0,
       max: Infinity,

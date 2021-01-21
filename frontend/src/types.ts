@@ -104,9 +104,10 @@ export type PageTemplateServerElement = ServerElement<
   ContainerServerElement[]
 >;
 export type GridServerElement = ServerElement<'grid', ContainerServerElement[]>;
+export type ColumnServerElement = ServerElement<'column', any>;
 export type ColumnsServerElement = ServerElement<
   'columns',
-  ContainerServerElement[]
+  ColumnServerElement[]
 >;
 export type SubscribeFormServerElement = ServerElement<
   'subscribeForm',
@@ -974,6 +975,7 @@ export type ElementsToAdd = {
   emptyPageTemplate: PageTemplateServerElement;
   grid: GridServerElement;
   columns: ColumnsServerElement;
+  column: ColumnServerElement;
   image: ImageServerElement;
   smartHeader: SmartHeaderServerElement;
   smartFooter: SmartFooterServerElement;

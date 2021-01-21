@@ -1,4 +1,5 @@
 import React from 'react';
+import Column from '@Components/UI/RenderElements/Columns/Column';
 import Button from './Button/Button';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
@@ -40,6 +41,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   emptyPageTemplate: Container,
   grid: Container,
   columns: Columns,
+  column: Column,
   button: Button,
   textinput: Input,
   radiobutton: Radiobutton,

@@ -1,5 +1,6 @@
 import IMAGES from '@Constants/images';
 import {
+  ColumnServerElement,
   ColumnsServerElement,
   ContainerServerElement,
   DivBlockServerElement,
@@ -84,6 +85,23 @@ export const makeGrid = (): GridServerElement => ({
   children: [],
 });
 
+export const column: ColumnServerElement = {
+  buoyancy: 0,
+  name: 'column',
+  func_type: 'column',
+  struct_type: 'column' as const,
+  parameters: {
+    ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
+  },
+  styles: {
+    classNames: ['columns'],
+    ownStyles: {},
+  },
+  children: [],
+};
+
 export const makeColumns = (): ColumnsServerElement => ({
   buoyancy: 0,
   name: 'columns',
@@ -98,7 +116,7 @@ export const makeColumns = (): ColumnsServerElement => ({
     classNames: ['columns'],
     ownStyles: {},
   },
-  children: [],
+  children: [column, column],
 });
 
 export const makeDivBlock = (textContent: string): DivBlockServerElement => {

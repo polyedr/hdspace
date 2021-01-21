@@ -7,6 +7,7 @@ import {
   checkboxStyleControls,
   clockStyleControls,
   columnsStyleControls,
+  columnStyleControls,
   containerStyleControls,
   divBlockStyleControls,
   dropdownItemStyleControls,
@@ -335,6 +336,7 @@ type DropdownItemControls = typeof dropdownItemStyleControls[number];
 type VideoControls = typeof videoStyleControls[number];
 type UndefinedControls = typeof undefinedControls[number];
 type ColumnsControls = typeof columnsStyleControls[number];
+type ColumnControls = typeof columnStyleControls[number];
 type GridControls = typeof gridStyleControls[number];
 
 export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
@@ -609,6 +611,30 @@ export const defaultGridStyles: {
 };
 
 export const defaultColumnStyles: {
+  [K in ColumnControls]: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+    padding: '3px',
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
+export const defaultColumnsStyles: {
   [K in ColumnsControls]: React.CSSProperties;
 } = {
   columns: {
@@ -1019,7 +1045,8 @@ export const DEFAULT_ELEMENTS_STYLES: {
   pageTemplate: defaultPageTemplateStyles,
   emptyPageTemplate: defaultEmptyPageTemplateStyles,
   grid: defaultGridStyles,
-  columns: defaultColumnStyles,
+  columns: defaultColumnsStyles,
+  column: defaultColumnStyles,
   button: defaultButtonStyles,
   textinput: defaultTextinputStyles,
   textarea: defaultTextareaStyles,

@@ -40,6 +40,7 @@ import {
   makeContainer,
   makeGrid,
   makeColumns,
+  column,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -80,6 +81,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   emptyPageTemplate: makePageTemplate(true),
   grid: makeGrid(),
   columns: makeColumns(),
+  column,
   subscribeForm,
   image: makeImage(),
   smartHeader: makeSmartHeader({ name: 'Smart Header' }),
