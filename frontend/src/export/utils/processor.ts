@@ -17,7 +17,7 @@ const cssMaterialResources = [
   'mdc.menu.css',
   'mdc.select.css',
 ];
-const cssCustomResources = ['clock.css'];
+const cssCustomResources = ['clock.css', 'ripple.css'];
 const jsResources = [
   'app.js',
   'map.js',
@@ -202,6 +202,7 @@ export const getHtmlFromTemplate = (
     <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
     <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
     <link rel="stylesheet" type="text/css" href="css/clock.css" />
+    <link rel="stylesheet" type="text/css" href="css/ripple.css" />
     <link rel="stylesheet" type="text/css" href="css/shared.css" />    
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/color-calendar/dist/css/theme-basic.css" />    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/color-calendar/dist/bundle.js"></script>

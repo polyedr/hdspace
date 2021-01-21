@@ -291,6 +291,11 @@ module.exports = ({ MODE }) => {
             to: 'styles/material',
             toType: 'dir',
           },
+          {
+            from: 'node_modules/css-ripple-effect/dist/ripple.css',
+            to: 'styles',
+            toType: 'dir',
+          },
         ],
         options: {
           concurrency: 10,

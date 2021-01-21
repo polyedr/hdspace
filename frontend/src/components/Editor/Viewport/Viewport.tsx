@@ -10,6 +10,8 @@ import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 import useHotKeys from '../hooks/useHotKeys';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
 
+import 'css-ripple-effect/dist/ripple.min.css';
+
 const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
 const useStyles = makeStyles(() =>

@@ -1,15 +1,14 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { WithActionProps } from '@Src/types';
-import { MDCRipple } from '@material/ripple';
 
 import { ActionRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles('button', {
-  button: ({ isDisabled, ownStyles }) => {
+  root: ({ isDisabled, ownStyles }) => {
     const { color, backgroundColor } = ownStyles;
     return {
       textTransform: 'uppercase',
@@ -35,52 +34,34 @@ const Button: React.FC<Props> = React.forwardRef((props, ref) => {
   const { id, isDisabled, params, className, groupClass } = props;
   const { showRipple, textContent } = params;
 
-  const [ripple, setRipple] = useState<MDCRipple | null>(null);
-
-  useEffect(() => {
-    if (!ripple) {
-      return;
-    }
-    if (showRipple) {
-      ripple.activate();
-    } else {
-      ripple.deactivate();
-    }
-  }, [ripple, showRipple]);
-
-  const dom = !ref ? null : ref.current;
-
-  useEffect(() => {
-    if (!dom) {
-      return;
-    }
-    setRipple(new MDCRipple(dom));
-  }, [dom]);
-
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
 
   return (
     <button
       type="button"
-      ref={ref}
+      ref={(dom) => {
+        if (typeof ref === 'function') {
+          ref(dom);
+        } else {
+          ref.current = dom;
+        }
+      }}
       id={id}
       data-ls-id={id}
       key={id}
-      data-show-ripple={showRipple}
       className={cn(
         'mdc-button',
+        !isDisabled && showRipple ? 'ripple' : '',
         className,
-        classes.button,
+        classes.root,
         groupClass,
         isDisabled && classes.disabled,
         classes.ownStyles,
       )}
       {...eventHandlers}
-    >
-      {textContent}
-      <mat-ripple />
-    </button>
+      dangerouslySetInnerHTML={{ __html: textContent }}
+    />
   );
 });
 
