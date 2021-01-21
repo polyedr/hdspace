@@ -31,6 +31,9 @@ const useDivStyles = makeComponentStyles(
         },
       };
     },
+    rippleArea: {
+      borderRadius: '50%',
+    },
   },
   ['backgroundColor'],
   {
@@ -40,15 +43,7 @@ const useDivStyles = makeComponentStyles(
 
 const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
   (props, ref) => {
-    const {
-      id,
-      name,
-      params,
-      isDisabled,
-      className,
-      groupClass,
-      ownStyles,
-    } = props;
+    const { id, name, params, isDisabled, className, groupClass } = props;
     const { showRipple } = params;
 
     const classes = useDivStyles(props);
@@ -73,16 +68,15 @@ const Radiobutton: React.FC<RadioRendererProps> = React.forwardRef(
         {...eventHandlers}
       >
         <div className="mdc-touch-target-wrapper">
-          <div className="mdc-radio mdc-radio--touch">
-            {showRipple && (
-              <mat-ripple
-                centered
-                color={`${ownStyles.color || DEFAULT_COMPONENTS_BACKGROUND}33`}
-                style={{
-                  borderRadius: '50%',
-                }}
-              />
+          <div
+            className={cn(
+              'mdc-radio',
+              'mdc-radio--touch',
+              ...(!isDisabled && showRipple
+                ? ['ripple', classes.rippleArea]
+                : []),
             )}
+          >
             <input
               className={cn('mdc-radio__native-control', classes.radio)}
               type="radio"

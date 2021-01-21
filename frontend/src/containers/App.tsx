@@ -5,7 +5,6 @@ import history from '../redux/history';
 import Routes from './Routes';
 import theme from '../styles/Theme';
 import Notifier from '../components/Notifier';
-import 'mat-ripple';
 
 const App: React.FC = () => {
   return (

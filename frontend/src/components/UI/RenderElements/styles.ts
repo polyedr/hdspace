@@ -20,7 +20,7 @@ export const getComputedComponentStyles = (
 });
 
 export const makeComponentStyles = (
-  prefix: string,
+  name: string,
   style: Styles<Theme, {}, string> = {},
   stylesToOmit?: Array<string>,
 ) =>
@@ -38,7 +38,5 @@ export const makeComponentStyles = (
       },
       ...(style instanceof Function ? style(theme) : style),
     }),
-    {
-      classNamePrefix: prefix,
-    },
+    { name },
   );

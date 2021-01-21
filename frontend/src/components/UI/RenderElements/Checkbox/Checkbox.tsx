@@ -12,7 +12,7 @@ import '@Src/styles/export/material/mdc.checkbox.css';
 const useStyles = makeComponentStyles(
   'checkbox',
   {
-    checkbox: ({ ownStyles }) => {
+    root: ({ ownStyles }) => {
       const color = ownStyles.backgroundColor || DEFAULT_COMPONENTS_BACKGROUND;
       return {
         '&:checked ~ .checkbox-background': {
@@ -21,13 +21,16 @@ const useStyles = makeComponentStyles(
         },
       };
     },
+    rippleArea: {
+      borderRadius: '50%',
+    },
   },
   ['backgroundColor', 'width', 'height'],
 );
 
 const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { id, params, isDisabled, className, groupClass, ownStyles } = props;
+    const { id, params, isDisabled, className, groupClass } = props;
     const { showRipple } = params;
 
     const eventHandlers = useEventHandlers(props);
@@ -58,23 +61,19 @@ const Checkbox: React.FC<CheckboxRendererProps> = React.forwardRef(
         {...eventHandlers}
       >
         <div className="mdc-touch-target-wrapper">
-          <div className="mdc-checkbox mdc-checkbox--touch">
-            {showRipple && (
-              <mat-ripple
-                centered
-                color={`${
-                  ownStyles.backgroundColor || DEFAULT_COMPONENTS_BACKGROUND
-                }`}
-                style={{
-                  borderRadius: '50%',
-                  opacity: 0.2,
-                }}
-              />
+          <div
+            className={cn(
+              'mdc-checkbox',
+              'mdc-checkbox--touch',
+              ...(!isDisabled && showRipple
+                ? ['ripple', classes.rippleArea]
+                : []),
             )}
+          >
             <input
               type="checkbox"
               id={`checkbox-${id}`}
-              className={cn('mdc-checkbox__native-control', classes.checkbox)}
+              className={cn('mdc-checkbox__native-control', classes.root)}
               checked={!isDisabled && isChecked}
               onChange={handleCheckboxChange}
             />
