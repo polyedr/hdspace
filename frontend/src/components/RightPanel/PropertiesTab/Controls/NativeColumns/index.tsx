@@ -1,8 +1,6 @@
 import React from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { useSelector } from 'react-redux';
-import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import ColumnCount from './ColumnCount';
 import ColumnWidth from './ColumnWidth';
 import ColumnFill from './ColumnFill';
@@ -40,10 +38,6 @@ const NativeColumnsControls: React.FC<
 }) => {
   const classes = useStyles();
 
-  const columnsCount = useSelector(
-    selectActiveElementParamByName('columnsCount'),
-  );
-
   return (
     <div className={classes.columnControls}>
       <ColumnCount count={columnCount} updateStyles={updateStyles} />
@@ -61,7 +55,6 @@ const NativeColumnsControls: React.FC<
         ruleColor={columnRuleColor}
         updateStyles={updateStyles}
       />
-      {columnsCount}
     </div>
   );
 };

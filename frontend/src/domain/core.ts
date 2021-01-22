@@ -33,7 +33,7 @@ export const ENTITIES: {
   grid: 'grid',
   nativeColumns: 'nativeColumns',
   columns: 'columns',
-  column: 'column',
+  // column: 'column',
   smartHeader: 'smartHeader',
   smartFooter: 'smartFooter',
   smartForm: 'smartForm',
@@ -375,7 +375,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   emptyPageTemplate: emptyPageTemplateStyleControls,
   grid: gridStyleControls,
   nativeColumns: nativeColumnsStyleControls,
-  columns: [/* 'columns' */ ...columnsStyleControls],
+  columns: ['columns', ...columnsStyleControls],
   column: columnStyleControls,
   subscribeForm: subscribeFormStyleControls,
   smartHeader: [...smartContainerStyleControls, 'stylesOn', 'smartHeader'],
@@ -482,7 +482,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   columns: {
     column: {
-      min: 0,
+      min: 2,
       max: Infinity,
     },
   },

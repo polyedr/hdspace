@@ -20,6 +20,7 @@ import {
   updateSharedStyles,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import ColumnsControls from '@Components/RightPanel/PropertiesTab/Controls/ColumnsControls';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Display from './Controls/Display/Display';
@@ -121,6 +122,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
   videoSettings: { Control: VideoSettings },
   flexGrow: { Control: FlexGrow, styles: ['flexGrow'] },
   backgroundSize: { Control: BackgroundSize, styles: ['backgroundSize'] },
+  columns: {
+    Control: ColumnsControls,
+  },
   nativeColumns: {
     Control: NativeColumnsControls,
     styles: [

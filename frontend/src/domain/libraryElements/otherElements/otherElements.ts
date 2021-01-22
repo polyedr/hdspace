@@ -117,7 +117,6 @@ export const makeColumns = (
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
-    columnsCount,
   },
   styles: {
     classNames: ['columns'],

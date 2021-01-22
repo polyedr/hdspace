@@ -466,9 +466,7 @@ export type SmartElementParameters = BaseElementParams & {
   stylesOn: boolean;
 };
 
-export type ColumnsParameters = BaseElementParams & {
-  columnsCount: number;
-};
+export type ColumnsParameters = BaseElementParams;
 
 export type TextareaParameters = BaseElementParams & {
   textContent: string;
@@ -971,6 +969,7 @@ export type ChildrenElements = {
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;
   dropdownItem: DropdownItemServerElement;
+  column: ColumnServerElement;
 };
 
 export type ElementsToAdd = {
@@ -982,7 +981,6 @@ export type ElementsToAdd = {
   grid: GridServerElement;
   nativeColumns: NativeColumnsServerElement;
   columns: ColumnsServerElement;
-  column: ColumnServerElement;
   image: ImageServerElement;
   smartHeader: SmartHeaderServerElement;
   smartFooter: SmartFooterServerElement;
@@ -1051,7 +1049,7 @@ export const enum SCREEN_FORMATS {
 
 export const CONTROLS_AFFECT_ON_PARAMS = [
   'action',
-  // 'columns',
+  'columns',
   'mapProps',
   'placeholder',
   'textContent',
