@@ -1,12 +1,12 @@
 import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
-import { Entity } from '../../types';
+import { Entity } from '@Src/types';
 import {
   buttonStyleControls,
   calendarStyleControls,
   cardsSectionStyleControls,
   checkboxStyleControls,
   clockStyleControls,
-  columnsStyleControls,
+  nativeColumnsStyleControls,
   columnStyleControls,
   containerStyleControls,
   divBlockStyleControls,
@@ -36,7 +36,10 @@ import {
   textinputStyleControls,
   undefinedControls,
   videoStyleControls,
+  columnsStyleControls,
 } from '../core';
+
+const columnsMinHeight = '100px';
 
 export const DEFAULT_SIZE = {
   width: 'auto',
@@ -335,6 +338,7 @@ type DropdownMenuControls = typeof dropdownMenuStyleControls[number];
 type DropdownItemControls = typeof dropdownItemStyleControls[number];
 type VideoControls = typeof videoStyleControls[number];
 type UndefinedControls = typeof undefinedControls[number];
+type NativeColumnsControls = typeof nativeColumnsStyleControls[number];
 type ColumnsControls = typeof columnsStyleControls[number];
 type ColumnControls = typeof columnStyleControls[number];
 type GridControls = typeof gridStyleControls[number];
@@ -617,12 +621,6 @@ export const defaultColumnStyles: {
     ...DEFAULT_INDENTS,
     padding: '3px',
   },
-  size: {
-    ...DEFAULT_SIZE,
-  },
-  display: {
-    ...DEFAULT_DISPLAY,
-  },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
   },
@@ -637,7 +635,28 @@ export const defaultColumnStyles: {
 export const defaultColumnsStyles: {
   [K in ColumnsControls]: React.CSSProperties;
 } = {
-  columns: {
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    minHeight: columnsMinHeight,
+  },
+};
+
+export const defaultNativeColumnsStyles: {
+  [K in NativeColumnsControls]: React.CSSProperties;
+} = {
+  nativeColumns: {
     columnCount: 2,
     columnWidth: 'auto',
     columnFill: 'balance',
@@ -648,12 +667,11 @@ export const defaultColumnsStyles: {
   },
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
     width: '100%',
-    minHeight: '100px',
+    minHeight: columnsMinHeight,
   },
   display: {
     ...DEFAULT_DISPLAY,
@@ -1045,6 +1063,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   pageTemplate: defaultPageTemplateStyles,
   emptyPageTemplate: defaultEmptyPageTemplateStyles,
   grid: defaultGridStyles,
+  nativeColumns: defaultNativeColumnsStyles,
   columns: defaultColumnsStyles,
   column: defaultColumnStyles,
   button: defaultButtonStyles,

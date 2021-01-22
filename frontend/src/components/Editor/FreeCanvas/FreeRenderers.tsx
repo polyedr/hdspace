@@ -517,6 +517,7 @@ const FREE_CANVAS_RENDERERS: Record<Entity | 'none', React.FC<Props> | null> = {
   divBlock: Container,
   section: Container,
   cardsSection: Container,
+  nativeColumns: Container,
   columns: Container,
   column: Container,
   container: Container,

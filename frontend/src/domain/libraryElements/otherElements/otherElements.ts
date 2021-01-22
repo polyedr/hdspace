@@ -96,13 +96,19 @@ export const column: ColumnServerElement = {
     height: '50%',
   },
   styles: {
-    classNames: ['columns'],
-    ownStyles: {},
+    classNames: ['column'],
+    ownStyles: {
+      flexGrow: 1,
+      flexShrink: 1,
+      flexBasis: '50%',
+    },
   },
   children: [],
 };
 
-export const makeColumns = (): ColumnsServerElement => ({
+export const makeColumns = (
+  columnsCount: number = 2,
+): ColumnsServerElement => ({
   buoyancy: 0,
   name: 'columns',
   func_type: 'columns',
@@ -111,13 +117,36 @@ export const makeColumns = (): ColumnsServerElement => ({
     ...defaultFreeCanvasParams,
     width: '50%',
     height: '50%',
+    columnsCount,
   },
   styles: {
     classNames: ['columns'],
+    ownStyles: {
+      display: 'flex',
+      flexFlow: 'row nowrap',
+      justifyContent: 'stretch',
+      alignItems: 'stretch',
+    },
+  },
+  children: new Array(columnsCount).fill(column),
+});
+
+export const nativeColumns = {
+  buoyancy: 0,
+  name: 'nativeColumns',
+  func_type: 'nativeColumns',
+  struct_type: 'nativeColumns' as const,
+  parameters: {
+    ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
+  },
+  styles: {
+    classNames: ['nativeColumns'],
     ownStyles: {},
   },
-  children: [column, column],
-});
+  children: [],
+};
 
 export const makeDivBlock = (textContent: string): DivBlockServerElement => {
   return {

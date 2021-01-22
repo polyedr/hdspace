@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { ICONS } from '../domain/libraryElements/libraryElements';
+import { ICONS } from '@Domain/libraryElements/libraryElements';
 import {
   ElementData,
   ElementEntity,
@@ -25,6 +25,7 @@ export const getRightPanelCategoryTabs = (
   obj: any,
 ) => {
   switch (structType) {
+    case 'nativeColumns':
     case 'columns':
     case 'grid':
     case 'section':

@@ -52,7 +52,7 @@ import BackgroundSize from './Controls/BackgroundSize';
 import Scrollbar from '../../UI/Scrollbar';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
-import ColumnsControls from './Controls/Columns';
+import NativeColumnsControls from './Controls/NativeColumns';
 import StylesOn from './Controls/StylesOn/StylesOn';
 
 type ControlInfo = {
@@ -121,8 +121,8 @@ const CONTROLS: Record<Control, ControlInfo> = {
   videoSettings: { Control: VideoSettings },
   flexGrow: { Control: FlexGrow, styles: ['flexGrow'] },
   backgroundSize: { Control: BackgroundSize, styles: ['backgroundSize'] },
-  columns: {
-    Control: ColumnsControls,
+  nativeColumns: {
+    Control: NativeColumnsControls,
     styles: [
       'columnCount',
       'columnGap',
