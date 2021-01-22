@@ -7,7 +7,10 @@ import {
   selectElementById,
   selectHoveredElementId,
 } from '@Redux/project/selectors/element';
-import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
+import {
+  selectCurrentDropTargetParams,
+  selectIsDropTarget,
+} from '@Redux/project/selectors/base';
 import { BorderPosition } from '../constants';
 import Border from './Border';
 
@@ -21,8 +24,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
-
-  const isDropTarget = elementId === dropTargetParams?.id;
+  const isDropTarget = useSelector(selectIsDropTarget(elementId));
 
   const isActiveBorder = [
     activeElementId,
@@ -34,32 +36,32 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
     return {
       [BorderPosition.TOP]:
         !isDropTarget ||
-        !dropTargetParams ||
-        !dropTargetParams.position ||
-        [DropPosition.INSIDE, DropPosition.ABOVE].includes(
-          dropTargetParams.position,
-        ),
+        (dropTargetParams &&
+          dropTargetParams.position &&
+          [DropPosition.INSIDE, DropPosition.ABOVE].includes(
+            dropTargetParams.position,
+          )),
       [BorderPosition.BOTTOM]:
         !isDropTarget ||
-        !dropTargetParams ||
-        !dropTargetParams.position ||
-        [DropPosition.INSIDE, DropPosition.BELOW].includes(
-          dropTargetParams.position,
-        ),
+        (dropTargetParams &&
+          dropTargetParams.position &&
+          [DropPosition.INSIDE, DropPosition.BELOW].includes(
+            dropTargetParams.position,
+          )),
       [BorderPosition.LEFT]:
         !isDropTarget ||
-        !dropTargetParams ||
-        !dropTargetParams.position ||
-        [DropPosition.INSIDE, DropPosition.BEFORE].includes(
-          dropTargetParams.position,
-        ),
+        (dropTargetParams &&
+          dropTargetParams.position &&
+          [DropPosition.INSIDE, DropPosition.BEFORE].includes(
+            dropTargetParams.position,
+          )),
       [BorderPosition.RIGHT]:
         !isDropTarget ||
-        !dropTargetParams ||
-        !dropTargetParams.position ||
-        [DropPosition.INSIDE, DropPosition.AFTER].includes(
-          dropTargetParams.position,
-        ),
+        (dropTargetParams &&
+          dropTargetParams.position &&
+          [DropPosition.INSIDE, DropPosition.AFTER].includes(
+            dropTargetParams.position,
+          )),
     };
   }, [dropTargetParams, isDropTarget]);
 

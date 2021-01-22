@@ -8,6 +8,7 @@ import {
 } from '@Redux/project/selectors/element';
 import {
   selectBordersEnabled,
+  selectCurrentDropTargetId,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
 import InteractionsHandler from './InteractionsHandler';
@@ -30,12 +31,13 @@ type Props = {
 const ElementsInteractions: React.FC<Props> = (props) => {
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
+  const dropTargetId = useSelector(selectCurrentDropTargetId);
   const rootId = useSelector(selectCurrentRootId);
 
   const rootDom = DOMHandler.INSTANCE.getDomById(rootId);
   const activeElementDom = DOMHandler.INSTANCE.getDomById(activeElementId);
-
   const hoveredElementDom = DOMHandler.INSTANCE.getDomById(hoveredElementId);
+  const dropTargetDom = DOMHandler.INSTANCE.getDomById(dropTargetId);
 
   const showBorders = useSelector(selectShowingBorders);
   const bordersEnabled = useSelector(selectBordersEnabled);
@@ -43,6 +45,12 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   const idsToExclude = [activeElementId];
   if (!!hoveredElementId && hoveredElementId !== activeElementId) {
     idsToExclude.push(hoveredElementId);
+  }
+  if (
+    !!dropTargetId &&
+    ![activeElementId, hoveredElementId].includes(dropTargetId)
+  ) {
+    idsToExclude.push(dropTargetId);
   }
 
   const classes = useStyles(props);
@@ -69,23 +77,38 @@ const ElementsInteractions: React.FC<Props> = (props) => {
           rootDom={rootDom}
         />
       )}
+      {dropTargetDom &&
+        dropTargetId &&
+        ![hoveredElementId, activeElementId].includes(dropTargetId) && (
+          <InteractionsHandler
+            key={`border-handler-${dropTargetId}`}
+            elementId={dropTargetId}
+            elementDom={dropTargetDom}
+            rootDom={rootDom}
+          />
+        )}
       {showBorders &&
-        Object.keys(DOMHandler.INSTANCE.elementsDom)
-          .filter((id) => !idsToExclude.includes(id))
-          .map((id) => {
-            const elDom = DOMHandler.INSTANCE.getDomById(id);
-            if (!elDom) {
-              return null;
-            }
-            return (
-              <InteractionsHandler
-                key={`border-handler-${id}`}
-                elementId={id}
-                elementDom={elDom}
-                rootDom={rootDom}
-              />
-            );
-          })}
+        [
+          ...new Set([
+            ...Object.keys(DOMHandler.INSTANCE.elementsDom),
+            activeElementId,
+            hoveredElementId,
+            dropTargetId,
+          ]),
+        ].map((id) => {
+          const elDom = DOMHandler.INSTANCE.getDomById(id);
+          if (!elDom || !id) {
+            return null;
+          }
+          return (
+            <InteractionsHandler
+              key={`border-handler-${id}`}
+              elementId={id}
+              elementDom={elDom}
+              rootDom={rootDom}
+            />
+          );
+        })}
     </div>
   );
 };
