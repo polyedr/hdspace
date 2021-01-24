@@ -2,6 +2,7 @@ from django.test import TestCase
 from ..models import Profile, User
 from django.contrib.auth.hashers import make_password
 
+
 class UserTest(TestCase):
     """ Test module for User model """
 
@@ -16,8 +17,7 @@ class UserTest(TestCase):
         self.user = User.objects.create(**self.user_attributes)
 
     def check_created(self):
-        self.assertEqual(User.objects.filter(email = "q1210201368@gmail.com").exists(),True)
-
+        self.assertEqual(User.objects.filter(email="q1210201368@gmail.com").exists(), True)
 
     def test_user_username(self):
         user_test = User.objects.get(username="cnmbj8d")
@@ -52,7 +52,6 @@ class UserTest(TestCase):
     def tearDown(self):
         for user in User.objects.all():
             user.delete()
-
 
 
 class ProfileTest(TestCase):
