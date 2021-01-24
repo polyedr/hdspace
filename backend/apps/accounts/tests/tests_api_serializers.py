@@ -4,6 +4,7 @@ from apps.accounts.models import Profile, User
 from apps.accounts.serializers import ProfileSerializer, UserSerializer
 from django.contrib.auth.hashers import make_password
 
+
 class UserAPITest(APITestCase):
     def setUp(self):
         self.user_attributes = {
@@ -28,8 +29,7 @@ class UserAPITest(APITestCase):
         self.serializer = UserSerializer(instance=self.user)
 
     def check_created(self):
-        self.assertEqual(User.objects.filter(email = "q1210201368@gmail.com").exists(),True)
-
+        self.assertEqual(User.objects.filter(email="q1210201368@gmail.com").exists(), True)
 
     def test_contains_expected_fields(self):
         data = self.serializer.data
@@ -68,13 +68,12 @@ class UserAPITest(APITestCase):
 
 class ProfileAPITest(APITestCase):
     def setUp(self):
-
         self.profile_attributes = {
             "approved": True,
             "role": Profile.ROLE_ADMINISTRATOR,
             "hourly_rate": 1,
-            "avatar":"String",
-            "user_id":6
+            "avatar": "String",
+            "user_id": 6
         }
 
         self.serializer_data = {
@@ -118,4 +117,3 @@ class ProfileAPITest(APITestCase):
     def tearDown(self):
         for profile in Profile.objects.all():
             profile.delete()
-
