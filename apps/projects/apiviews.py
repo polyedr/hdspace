@@ -25,7 +25,7 @@ from .models import (
     ScenarioElement,
     elements,
     scenarios,
-    ElementComment)
+    ElementComment, ProjectIllustrationSet)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -46,7 +46,7 @@ from .serializers import (
     ScreenScenarioMultipleSerializer,
     ProjectScreenMultipleSerializer,
     ScenarioElementSerializerRecursive, ProjectWithScreensSerializer, ProjectWithTasksSerializer,
-    ElementCommentSerializer)
+    ElementCommentSerializer, IllustrationSetSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -342,6 +342,24 @@ class TaskTimeDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = TaskTime.objects.all()
     serializer_class = TaskTimeSerializer
+
+
+class ProjectIllustrationSetList(generics.ListCreateAPIView):
+    """
+    List all illustration sets, or create a new illustration set.
+    """
+
+    queryset = ProjectIllustrationSet.objects.all()
+    serializer_class = IllustrationSetSerializer
+
+
+class ProjectIllustrationSetDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete illustration set
+    """
+
+    queryset = ProjectIllustrationSet.objects.all()
+    serializer_class = IllustrationSetSerializer
 
 
 class ScreenCommentList(generics.ListCreateAPIView):
