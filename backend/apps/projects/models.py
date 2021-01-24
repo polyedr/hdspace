@@ -276,6 +276,23 @@ class TaskTime(TimeStampedModel):
         return self.member.user.username
 
 
+# List of illustrations saved
+class ProjectIllustrationSet(TimeStampedModel):
+    name = models.CharField(max_length=255)
+    illustrationList = models.ImageField(
+        upload_to="uploads/", blank=True, null=True, max_length=256
+    )
+
+
+class ProjectImage(TimeStampedModel):
+    image = models.ImageField(
+        upload_to="uploads/", blank=True, null=True, max_length=256
+    )
+    illustration_set = models.ForeignKey(
+        ProjectIllustrationSet, default=None, related_name="images", on_delete=models.PROTECT
+    )
+
+
 class ScreenAssignee(TimeStampedModel):
     screen = models.ForeignKey(ProjectScreen, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)

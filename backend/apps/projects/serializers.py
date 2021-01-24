@@ -22,7 +22,7 @@ from .models import (
     ScenarioElement,
     Element,
     Scenario,
-    ElementComment)
+    ElementComment, ProjectImage, ProjectIllustrationSet)
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
@@ -445,6 +445,27 @@ class TaskTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TaskTime
         fields = ("track_time", "started", "stoped")
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectImage
+        fields = ("id", "image", "created", "modified",)
+
+
+class IllustrationSetSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ProjectIllustrationSet
+        fields = (
+            "id",
+            "name",
+            "illustrationList",
+            "images",
+            "created",
+            "modified",
+        )
 
 
 class ScreenAssigneeSerializer(serializers.ModelSerializer):

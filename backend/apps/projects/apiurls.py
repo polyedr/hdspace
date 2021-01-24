@@ -26,7 +26,7 @@ from .apiviews import (
     ScreeScenarioViewSet,
     ScenarioElementViewSet,
     ProjectViewSet, ScenarioElementRecursiveViewSet, ProjectWithScreensViewSet, ProjectWithTasksViewSet,
-    ElementCommentList, ElementCommentDetail)
+    ElementCommentList, ElementCommentDetail, ProjectIllustrationSetList, ProjectIllustrationSetDetail)
 
 app_name = "projects"
 
@@ -148,11 +148,26 @@ api_screen_comment_patterns = [
     ),
 ]
 
+api_illustration_set_patterns = [
+    path(
+        "illustrations/",
+        ProjectIllustrationSetList.as_view(),
+        name="api_illustration_set_list",
+    ),
+    path(
+        "illustrations/<int:pk>/",
+        ProjectIllustrationSetDetail.as_view(),
+        name="api_illustration_set_list_detail",
+    ),
+]
+
+
 urlpatterns = [
     # path("", include(api_project_invitation_patterns)),
     # path("", include(api_screen_event_patterns)),
     path("", include(api_element_comment_patterns)),
     path("", include(api_project_task_patterns)),
+    path("", include(api_illustration_set_patterns)),
     path("", include(api_project_screen_patterns)),
     path("", include(api_screen_scenario_patterns)),
     path("", include(api_scenario_element_patterns)),
