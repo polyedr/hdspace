@@ -619,7 +619,6 @@ export const defaultColumnStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '3px',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,

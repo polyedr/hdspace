@@ -15,3 +15,6 @@ export const extractStyles = (htmlString: string) => {
 
 export const toClassName = (str: string): string =>
   !str ? '' : str.replaceAll(' ', '-');
+
+export const getUnitFromValue = (value: string) =>
+  value.replace(/[0-9, \d+.\d+]/g, '');
