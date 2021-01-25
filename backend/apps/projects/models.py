@@ -282,6 +282,7 @@ class ProjectIllustrationSet(TimeStampedModel):
     illustrationList = models.ImageField(
         upload_to="uploads/", blank=True, null=True, max_length=256
     )
+    project = models.ForeignKey(Project, related_name="projectillustrationset", on_delete=models.CASCADE)
 
 
 class ProjectImage(TimeStampedModel):

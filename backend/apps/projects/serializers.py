@@ -465,6 +465,7 @@ class IllustrationSetSerializer(serializers.ModelSerializer):
             "images",
             "created",
             "modified",
+            "project",
         )
 
 
