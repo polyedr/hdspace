@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
 
 import { AxiosError } from 'axios';
-import { parseResult } from './project';
 import { myAxios } from '../config/settings';
 import { LoginFormData } from '../types';
+import { parseResult } from './helper';
 
 type SendActivationMailData = {
   username: string;
