@@ -1,14 +1,20 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useContext } from 'react';
 import { create } from 'jss';
 import {
   jssPreset,
   StylesProvider,
   ThemeProvider,
 } from '@material-ui/core/styles';
-import Frame, { FrameContextConsumer } from 'react-frame-component';
+import Frame, {
+  FrameContext,
+  FrameContextConsumer,
+} from 'react-frame-component';
 import { useDispatch } from 'react-redux';
+import { DndContext } from 'react-dnd';
 import { setEditorDocument } from '@Redux/project/actions';
 import theme from '@Src/styles/Theme';
+
+import { WindowProvider } from './FrameContext';
 
 const CustomHead: FC = () => {
   return (
@@ -47,6 +53,17 @@ const CustomHead: FC = () => {
   );
 };
 
+const DndFrame = ({ children }) => {
+  const { dragDropManager } = useContext(DndContext);
+  const { window } = useContext(FrameContext);
+
+  useEffect(() => {
+    (dragDropManager?.getBackend() as any)?.addEventListeners(window);
+  });
+
+  return children;
+};
+
 export const FrameWrapper: FC<any> = ({ children, ...props }) => {
   const dispatch = useDispatch();
 
@@ -79,15 +96,20 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
       scrolling="no"
     >
       <FrameContextConsumer>
-        {({ document }) => {
+        {({ document: frameDocument, window: frameWindow }) => {
           const jss = create({
             plugins: [...jssPreset().plugins],
-            insertionPoint: document.head,
+            insertionPoint: frameDocument.head,
           });
+
           return (
-            <StylesProvider jss={jss}>
-              <ThemeProvider theme={theme}>{children}</ThemeProvider>
-            </StylesProvider>
+            <DndFrame>
+              <WindowProvider value={frameWindow}>
+                <StylesProvider jss={jss}>
+                  <ThemeProvider theme={theme}>{children}</ThemeProvider>
+                </StylesProvider>
+              </WindowProvider>
+            </DndFrame>
           );
         }}
       </FrameContextConsumer>
