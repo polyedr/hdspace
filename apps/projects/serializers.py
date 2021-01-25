@@ -450,7 +450,7 @@ class TaskTimeSerializer(serializers.ModelSerializer):
 class ImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImage
-        fields = ("id", "image", "created", "modified",)
+        fields = ("id", "image", "created", "modified", "illustration_set",)
 
 
 class IllustrationSetSerializer(serializers.ModelSerializer):

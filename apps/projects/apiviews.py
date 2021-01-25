@@ -25,7 +25,7 @@ from .models import (
     ScenarioElement,
     elements,
     scenarios,
-    ElementComment, ProjectIllustrationSet)
+    ElementComment, ProjectIllustrationSet, ProjectImage)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -46,7 +46,7 @@ from .serializers import (
     ScreenScenarioMultipleSerializer,
     ProjectScreenMultipleSerializer,
     ScenarioElementSerializerRecursive, ProjectWithScreensSerializer, ProjectWithTasksSerializer,
-    ElementCommentSerializer, IllustrationSetSerializer)
+    ElementCommentSerializer, IllustrationSetSerializer, ImageSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -360,6 +360,25 @@ class ProjectIllustrationSetDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ProjectIllustrationSet.objects.all()
     serializer_class = IllustrationSetSerializer
+
+
+
+class IllustrationSetImageList(generics.ListCreateAPIView):
+    """
+    List all IllustrationSet images, or create a new IllustrationSet image.
+    """
+
+    queryset = ProjectImage.objects.all()
+    serializer_class = ImageSerializer
+
+
+class IllustrationSetImageDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete IllustrationSet image
+    """
+
+    queryset = ProjectImage.objects.all()
+    serializer_class = ImageSerializer
 
 
 class ScreenCommentList(generics.ListCreateAPIView):
