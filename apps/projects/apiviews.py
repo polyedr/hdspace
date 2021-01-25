@@ -362,7 +362,6 @@ class ProjectIllustrationSetDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = IllustrationSetSerializer
 
 
-
 class IllustrationSetImageList(generics.ListCreateAPIView):
     """
     List all IllustrationSet images, or create a new IllustrationSet image.
@@ -370,6 +369,8 @@ class IllustrationSetImageList(generics.ListCreateAPIView):
 
     queryset = ProjectImage.objects.all()
     serializer_class = ImageSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['illustration_set']
 
 
 class IllustrationSetImageDetail(generics.RetrieveUpdateDestroyAPIView):
