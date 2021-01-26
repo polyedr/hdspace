@@ -271,6 +271,15 @@ export const emptyPageTemplateStyleControls = [
   'background',
 ] as const;
 
+export const gridItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+  'display',
+] as const;
+
 export const gridStyleControls = [
   'indents',
   'size',
@@ -356,6 +365,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   video: [...videoStyleControls, 'videoSettings'],
   pageTemplate: pageTemplateStyleControls,
   emptyPageTemplate: emptyPageTemplateStyleControls,
+  gridItem: gridItemStyleControls,
   grid: gridStyleControls,
   columns: columnsStyleControls,
   subscribeForm: subscribeFormStyleControls,
@@ -450,9 +460,15 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   grid: {
-    all: {
+    gridItem: {
       min: 0,
       max: Infinity,
+    },
+  },
+  gridItem: {
+    all: {
+      min: 4,
+      max: 9,
     },
   },
   columns: {

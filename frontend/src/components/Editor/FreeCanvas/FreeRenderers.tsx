@@ -520,6 +520,7 @@ const FREE_CANVAS_RENDERERS: Record<Entity | 'none', React.FC<Props> | null> = {
   columns: Container,
   container: Container,
   root: Container,
+  gridItem: Container,
   grid: Container,
   undefined: Container,
   smartHeader: Container,

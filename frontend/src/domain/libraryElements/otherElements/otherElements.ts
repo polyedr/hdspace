@@ -67,6 +67,23 @@ export const makeContainer = ({
   children,
 });
 
+export const makeGridItem = () => ({
+  buoyancy: 0,
+  name: 'gridItem',
+  func_type: 'gridItem',
+  struct_type: 'gridItem' as const,
+  parameters: {
+    ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
+  },
+  styles: {
+    classNames: ['gridItem'],
+    ownStyles: {},
+  },
+  children: [],
+});
+
 export const makeGrid = (): GridServerElement => ({
   buoyancy: 0,
   name: 'grid',
@@ -81,7 +98,7 @@ export const makeGrid = (): GridServerElement => ({
     classNames: ['grid'],
     ownStyles: {},
   },
-  children: [],
+  children: [makeGridItem(), makeGridItem(), makeGridItem(), makeGridItem()],
 });
 
 export const makeColumns = (): ColumnsServerElement => ({

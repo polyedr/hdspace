@@ -13,6 +13,7 @@ import {
   dropdownMenuStyleControls,
   dropdownStyleControls,
   featureSectionStyleControls,
+  gridItemStyleControls,
   gridStyleControls,
   headingStyleControls,
   hyperlinkStyleControls,
@@ -335,6 +336,7 @@ type DropdownItemControls = typeof dropdownItemStyleControls[number];
 type VideoControls = typeof videoStyleControls[number];
 type UndefinedControls = typeof undefinedControls[number];
 type ColumnsControls = typeof columnsStyleControls[number];
+type GridItemControls = typeof gridItemStyleControls[number];
 type GridControls = typeof gridStyleControls[number];
 
 export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
@@ -579,6 +581,29 @@ export const defaultUndefinedStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
     backgroundColor: '#fff333',
+  },
+};
+
+export const defaultGridItemStyles: {
+  [K in GridItemControls]: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
   },
 };
 
@@ -1019,6 +1044,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   pageTemplate: defaultPageTemplateStyles,
   emptyPageTemplate: defaultEmptyPageTemplateStyles,
   grid: defaultGridStyles,
+  gridItem: defaultGridItemStyles,
   columns: defaultColumnStyles,
   button: defaultButtonStyles,
   textinput: defaultTextinputStyles,

@@ -103,7 +103,11 @@ export type PageTemplateServerElement = ServerElement<
   'pageTemplate' | 'emptyPageTemplate',
   ContainerServerElement[]
 >;
-export type GridServerElement = ServerElement<'grid', ContainerServerElement[]>;
+export type GridServerElement = ServerElement<'grid', GridItemServerElement[]>;
+export type GridItemServerElement = ServerElement<
+  'gridItem',
+  ServerElement<Entity>[]
+>;
 export type ColumnsServerElement = ServerElement<
   'columns',
   ContainerServerElement[]
@@ -964,6 +968,7 @@ export type ChildrenElements = {
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;
   dropdownItem: DropdownItemServerElement;
+  gridItem: GridItemServerElement;
 };
 
 export type ElementsToAdd = {

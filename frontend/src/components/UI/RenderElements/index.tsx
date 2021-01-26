@@ -1,4 +1,5 @@
 import React from 'react';
+import Grid from '@Components/UI/RenderElements/Grid';
 import Button from './Button/Button';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
@@ -30,6 +31,7 @@ import { Entity, NNBlockType } from '../../../types';
 import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
 import SelectItem from './Select/SelectItem';
+import GridItem from './Grid/GridItem';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {
@@ -38,7 +40,8 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   divBlock: DivBlockRenderer,
   pageTemplate: Container,
   emptyPageTemplate: Container,
-  grid: Container,
+  gridItem: GridItem,
+  grid: Grid,
   columns: Columns,
   button: Button,
   textinput: Input,
