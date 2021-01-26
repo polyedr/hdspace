@@ -96,6 +96,11 @@ export const selectCurrentDropTargetParams = (state: AppReduxState) => {
   return selectProjectState(state).ui.currentDropTargetParams;
 };
 
+export const selectIsDropTarget = (id: string) => (state: AppReduxState) => {
+  const dropTargetId = selectCurrentDropTargetId(state);
+  return id === dropTargetId;
+};
+
 export const selectProjectClasses = createSelector(
   selectProjects,
   selectCurrentProjectId,

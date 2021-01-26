@@ -4,6 +4,7 @@ import React, {
   useRef,
   useEffect,
   useCallback,
+  useContext,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
@@ -44,6 +45,7 @@ import {
 } from './helper';
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
+import { WindowContext } from '../FrameWrapper/FrameContext';
 
 type DraggableElementProps = {
   elementId: string;
@@ -57,6 +59,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   parentIds = [],
 }) => {
   const dispatch = useDispatch();
+  const frameWindow = useContext(WindowContext);
 
   const element = useSelector(selectElementById(elementId));
   const parent = useSelector(selectElementByChildId(elementId));
@@ -103,6 +106,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       !NOT_DRAGGABLE_COMPONENTS.includes(element.type) && elementId !== rootID,
     end: () => {
       dispatch(setCurrentDropTargetParams(null));
+      dispatch(setElementBeingEdited(false));
     },
   });
 
@@ -223,12 +227,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   }, [preview]);
 
   useEffect(() => {
-    if (!dropDomStyles && isOverArea) {
-      setDropDomStyles(window.getComputedStyle(ref.current));
+    if (!dropDomStyles && isOverArea && frameWindow) {
+      setDropDomStyles(frameWindow.getComputedStyle(ref.current));
     } else if (dropDomStyles && !isOverArea) {
       setDropDomStyles(null);
     }
-  }, [isOverArea]);
+  }, [isOverArea, frameWindow]);
 
   useEffect(() => {
     if (!isOverArea && dropTargetParams && elementId === rootID) {
