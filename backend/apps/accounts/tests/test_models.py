@@ -46,7 +46,7 @@ class UserTest(TestCase):
     def test_user_password(self):
         user_test = User.objects.get(username="cnmbj8d")
         # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(True,check_password("Zsedc123", user_test.password))
+        self.assertEqual(True, check_password("Zsedc123", user_test.password))
         # self.assertEqual(profile_test2.online(), False)
 
     def tearDown(self):
