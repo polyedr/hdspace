@@ -273,20 +273,18 @@ export const emptyPageTemplateStyleControls = [
 
 export const gridItemStyleControls = [
   'indents',
-  'size',
   'typography',
   'background',
   'border',
-  'display',
 ] as const;
 
 export const gridStyleControls = [
+  'grid',
   'indents',
   'size',
   'typography',
   'background',
   'border',
-  'display',
 ] as const;
 
 export const columnsStyleControls = [
@@ -461,14 +459,14 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   grid: {
     gridItem: {
-      min: 0,
-      max: Infinity,
+      min: 4,
+      max: 9,
     },
   },
   gridItem: {
     all: {
-      min: 4,
-      max: 9,
+      min: 0,
+      max: Infinity,
     },
   },
   columns: {

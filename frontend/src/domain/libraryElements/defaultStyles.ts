@@ -590,12 +590,6 @@ export const defaultGridItemStyles: {
   indents: {
     ...DEFAULT_INDENTS,
   },
-  size: {
-    ...DEFAULT_SIZE,
-  },
-  display: {
-    ...DEFAULT_DISPLAY,
-  },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
   },
@@ -609,18 +603,13 @@ export const defaultGridItemStyles: {
 
 export const defaultGridStyles: {
   [K in GridControls]: React.CSSProperties;
-} = {
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '100%',
-    height: '100%',
-  },
-  display: {
-    ...DEFAULT_DISPLAY,
+    minHeight: '200px',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -630,6 +619,11 @@ export const defaultGridStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateRows: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(2, 1fr)',
   },
 };
 

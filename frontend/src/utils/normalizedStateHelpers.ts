@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { AVAILABLE_CHILDREN } from '../domain/core';
+import { AVAILABLE_CHILDREN } from '@Domain/core';
 import {
   Entity,
   Indices,

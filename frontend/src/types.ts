@@ -1072,6 +1072,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
+  'grid',
   'columns',
   'display',
   'indents',
