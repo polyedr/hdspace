@@ -90,7 +90,7 @@ class ProfileAPITest(APITestCase):
         data = self.serializer.data
 
         self.assertEqual(
-            set(data.keys()), set(["id","approved", "role", "hourly_rate", "avatar"])
+            set(data.keys()), set(["id", "approved", "role", "hourly_rate", "avatar"])
         )
 
     def test_approved_field_content(self):
