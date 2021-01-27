@@ -8,7 +8,7 @@ class UserPermissionTest(TestCase):
     """ Test if user has permission to a project """
 
     def setUp(self):
-        self.User = User.objects.create(email="yamamoto265@gmail.com")
+        self.User = User.objects.create(email="q1210201368@gmail.com")
         self.project_attributes1 = {
             "user_id": 1,
             "name": "testproject",
@@ -27,10 +27,11 @@ class ProjectTest(TestCase):
     """ Test module for Project model """
 
     def setUp(self):
-        self.project_attributes1 = {"name": "testproject", "status": "pending"}
+        self.User = User.objects.create(email="q1210201368@gmail.com")
+        self.project_attributes1 = {"name": "testproject", "status": Project.STATUS_PENDING,"user":self.User}
         self.project = Project.objects.create(**self.project_attributes1)
 
-        self.project_attributes2 = {"name": "testproject2", "status": "review"}
+        self.project_attributes2 = {"name": "testproject2", "status": Project.STATUS_PAID,"user":self.User}
         self.project = Project.objects.create(**self.project_attributes2)
 
     def test_project_str(self):
