@@ -31,7 +31,9 @@ export const ENTITIES: {
   pageTemplate: 'pageTemplate',
   emptyPageTemplate: 'emptyPageTemplate',
   grid: 'grid',
+  nativeColumns: 'nativeColumns',
   columns: 'columns',
+  // column: 'column',
   smartHeader: 'smartHeader',
   smartFooter: 'smartFooter',
   smartForm: 'smartForm',
@@ -280,14 +282,29 @@ export const gridStyleControls = [
   'display',
 ] as const;
 
-export const columnsStyleControls = [
-  'columns',
+export const nativeColumnsStyleControls = [
+  'nativeColumns',
   'indents',
   'size',
   'typography',
   'background',
   'border',
   'display',
+] as const;
+
+export const columnsStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
+
+export const columnStyleControls = [
+  'indents',
+  'typography',
+  'background',
+  'border',
 ] as const;
 
 export const subscribeFormStyleControls = [
@@ -357,7 +374,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   pageTemplate: pageTemplateStyleControls,
   emptyPageTemplate: emptyPageTemplateStyleControls,
   grid: gridStyleControls,
-  columns: columnsStyleControls,
+  nativeColumns: nativeColumnsStyleControls,
+  columns: ['columns', ...columnsStyleControls],
+  column: columnStyleControls,
   subscribeForm: subscribeFormStyleControls,
   smartHeader: [...smartContainerStyleControls, 'stylesOn', 'smartHeader'],
   smartFooter: [...smartContainerStyleControls, 'stylesOn', 'smartFooter'],
@@ -455,7 +474,19 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
+  nativeColumns: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
   columns: {
+    column: {
+      min: 2,
+      max: Infinity,
+    },
+  },
+  column: {
     all: {
       min: 0,
       max: Infinity,
