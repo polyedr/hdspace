@@ -14,6 +14,7 @@ import {
   dropdownMenuStyleControls,
   dropdownStyleControls,
   featureSectionStyleControls,
+  gridItemStyleControls,
   gridStyleControls,
   headingStyleControls,
   hyperlinkStyleControls,
@@ -341,6 +342,7 @@ type UndefinedControls = typeof undefinedControls[number];
 type NativeColumnsControls = typeof nativeColumnsStyleControls[number];
 type ColumnsControls = typeof columnsStyleControls[number];
 type ColumnControls = typeof columnStyleControls[number];
+type GridItemControls = typeof gridItemStyleControls[number];
 type GridControls = typeof gridStyleControls[number];
 
 export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
@@ -589,20 +591,11 @@ export const defaultUndefinedStyles: {
   },
 };
 
-export const defaultGridStyles: {
-  [K in GridControls]: React.CSSProperties;
+export const defaultGridItemStyles: {
+  [K in GridItemControls]: React.CSSProperties;
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '3px',
-  },
-  size: {
-    ...DEFAULT_SIZE,
-    width: '100%',
-    height: '100%',
-  },
-  display: {
-    ...DEFAULT_DISPLAY,
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -612,6 +605,32 @@ export const defaultGridStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+};
+
+export const defaultGridStyles: {
+  [K in GridControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    minHeight: '200px',
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateRows: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(2, 1fr)',
   },
 };
 
@@ -1074,6 +1093,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   pageTemplate: defaultPageTemplateStyles,
   emptyPageTemplate: defaultEmptyPageTemplateStyles,
   grid: defaultGridStyles,
+  gridItem: defaultGridItemStyles,
   nativeColumns: defaultNativeColumnsStyles,
   columns: defaultColumnsStyles,
   column: defaultColumnStyles,

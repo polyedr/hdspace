@@ -273,13 +273,20 @@ export const emptyPageTemplateStyleControls = [
   'background',
 ] as const;
 
+export const gridItemStyleControls = [
+  'indents',
+  'typography',
+  'background',
+  'border',
+] as const;
+
 export const gridStyleControls = [
+  'grid',
   'indents',
   'size',
   'typography',
   'background',
   'border',
-  'display',
 ] as const;
 
 export const nativeColumnsStyleControls = [
@@ -373,6 +380,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   video: [...videoStyleControls, 'videoSettings'],
   pageTemplate: pageTemplateStyleControls,
   emptyPageTemplate: emptyPageTemplateStyleControls,
+  gridItem: gridItemStyleControls,
   grid: gridStyleControls,
   nativeColumns: nativeColumnsStyleControls,
   columns: ['columns', ...columnsStyleControls],
@@ -469,6 +477,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   grid: {
+    gridItem: {
+      min: 4,
+      max: 9,
+    },
+  },
+  gridItem: {
     all: {
       min: 0,
       max: Infinity,

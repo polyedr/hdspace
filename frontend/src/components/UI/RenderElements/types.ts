@@ -22,6 +22,10 @@ export type SharedRendererProps = {
   ownStyles: React.CSSProperties;
 } & DOMAttributes<HTMLElement>;
 
+export type GridRendererProps = SharedRendererProps;
+
+export type GridItemRendererProps = SharedRendererProps;
+
 export type ContainerRendererProps = SharedRendererProps & {
   isBorderVisible: boolean;
 };

@@ -103,7 +103,11 @@ export type PageTemplateServerElement = ServerElement<
   'pageTemplate' | 'emptyPageTemplate',
   ContainerServerElement[]
 >;
-export type GridServerElement = ServerElement<'grid', ContainerServerElement[]>;
+export type GridServerElement = ServerElement<'grid', GridItemServerElement[]>;
+export type GridItemServerElement = ServerElement<
+  'gridItem',
+  ServerElement<Entity>[]
+>;
 export type ColumnServerElement = ServerElement<'column', any>;
 export type NativeColumnsServerElement = ServerElement<'nativeColumns', any>;
 export type ColumnsServerElement = ServerElement<
@@ -969,6 +973,7 @@ export type ChildrenElements = {
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;
   dropdownItem: DropdownItemServerElement;
+  gridItem: GridItemServerElement;
   column: ColumnServerElement;
 };
 
@@ -1075,6 +1080,8 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
+  'grid',
+  'columns',
   'nativeColumns',
   'display',
   'indents',

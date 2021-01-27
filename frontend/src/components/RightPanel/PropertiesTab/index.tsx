@@ -20,6 +20,7 @@ import {
   updateSharedStyles,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import GridControl from '@Components/RightPanel/PropertiesTab/Controls/GridControl';
 import ColumnsControls from '@Components/RightPanel/PropertiesTab/Controls/ColumnsControls';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
@@ -122,6 +123,10 @@ const CONTROLS: Record<Control, ControlInfo> = {
   videoSettings: { Control: VideoSettings },
   flexGrow: { Control: FlexGrow, styles: ['flexGrow'] },
   backgroundSize: { Control: BackgroundSize, styles: ['backgroundSize'] },
+  grid: {
+    Control: GridControl,
+    styles: ['gridTemplateColumns', 'gridTemplateRows'],
+  },
   columns: {
     Control: ColumnsControls,
   },
