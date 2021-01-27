@@ -97,11 +97,7 @@ export const column: ColumnServerElement = {
   },
   styles: {
     classNames: ['column'],
-    ownStyles: {
-      flexGrow: 1,
-      flexShrink: 1,
-      flexBasis: '50%',
-    },
+    ownStyles: {},
   },
   children: [],
 };
@@ -120,12 +116,7 @@ export const makeColumns = (
   },
   styles: {
     classNames: ['columns'],
-    ownStyles: {
-      display: 'flex',
-      flexFlow: 'row nowrap',
-      justifyContent: 'stretch',
-      alignItems: 'stretch',
-    },
+    ownStyles: {},
   },
   children: new Array(columnsCount).fill(column),
 });

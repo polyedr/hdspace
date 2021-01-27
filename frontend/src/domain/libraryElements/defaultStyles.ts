@@ -616,7 +616,7 @@ export const defaultGridStyles: {
 
 export const defaultColumnStyles: {
   [K in ColumnControls]: React.CSSProperties;
-} = {
+} & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -629,11 +629,16 @@ export const defaultColumnStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  other: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '50%',
+  },
 };
 
 export const defaultColumnsStyles: {
   [K in ColumnsControls]: React.CSSProperties;
-} = {
+} & { other?: React.CSSProperties } = {
   background: {
     ...DEFAULT_BACKGROUND,
   },
@@ -649,6 +654,12 @@ export const defaultColumnsStyles: {
   size: {
     ...DEFAULT_SIZE,
     minHeight: columnsMinHeight,
+  },
+  other: {
+    display: 'flex',
+    flexFlow: 'row nowrap',
+    justifyContent: 'stretch',
+    alignItems: 'stretch',
   },
 };
 
