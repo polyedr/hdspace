@@ -3,6 +3,10 @@ import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectActiveItemChildren } from '@Redux/project/selectors/element';
+import { addChildToElement, deleteElement } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 const useStyles = makeStyles({
   root: {
@@ -19,24 +23,33 @@ type Props = {
 
 const GridControl: FC<
   Props & PropertiesChangeProps<LibraryElement<Entity>>
-> = ({ gridTemplateColumns, updateStyles }) => {
+> = ({ gridTemplateColumns, updateStyles, activeElementId }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const value = gridTemplateColumns?.toString().substring(7, 8) || '2';
+  const children = useSelector(selectActiveItemChildren('gridItem'));
+  const screenId = useSelector(selectCurrentScreenId);
 
   const handleChange = ({
-    target: { value: val },
+    target: { value: newValue },
   }: ChangeEvent<HTMLInputElement>) => {
     updateStyles({
-      gridTemplateRows: `repeat(${val}, 1fr)`,
-      gridTemplateColumns: `repeat(${val}, 1fr)`,
+      gridTemplateRows: `repeat(${newValue}, 1fr)`,
+      gridTemplateColumns: `repeat(${newValue}, 1fr)`,
     });
 
-    if (+val < +value) {
-      console.log('delete items');
+    if (+newValue < +value) {
+      children.slice(4).forEach((item) => {
+        dispatch(deleteElement(item.id, { screenId }));
+      });
     }
-    if (+val > +value) {
-      console.log('create items');
+    if (+newValue > +value) {
+      for (let i = 0; i < 5; i += 1) {
+        dispatch(
+          addChildToElement('gridItem', activeElementId, {}, { screenId }),
+        );
+      }
     }
   };
 
