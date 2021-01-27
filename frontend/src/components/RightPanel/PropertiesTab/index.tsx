@@ -21,6 +21,7 @@ import {
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import GridControl from '@Components/RightPanel/PropertiesTab/Controls/GridControl';
+import ColumnsControls from '@Components/RightPanel/PropertiesTab/Controls/ColumnsControls';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Display from './Controls/Display/Display';
@@ -53,7 +54,7 @@ import BackgroundSize from './Controls/BackgroundSize';
 import Scrollbar from '../../UI/Scrollbar';
 import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
-import ColumnsControls from './Controls/Columns';
+import NativeColumnsControls from './Controls/NativeColumns';
 import StylesOn from './Controls/StylesOn/StylesOn';
 
 type ControlInfo = {
@@ -128,6 +129,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
   },
   columns: {
     Control: ColumnsControls,
+  },
+  nativeColumns: {
+    Control: NativeColumnsControls,
     styles: [
       'columnCount',
       'columnGap',

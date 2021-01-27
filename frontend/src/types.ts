@@ -108,9 +108,12 @@ export type GridItemServerElement = ServerElement<
   'gridItem',
   ServerElement<Entity>[]
 >;
+export type ColumnServerElement = ServerElement<'column', any>;
+export type NativeColumnsServerElement = ServerElement<'nativeColumns', any>;
 export type ColumnsServerElement = ServerElement<
   'columns',
-  ContainerServerElement[]
+  ColumnServerElement[],
+  ColumnsParameters
 >;
 export type SubscribeFormServerElement = ServerElement<
   'subscribeForm',
@@ -466,6 +469,8 @@ export type SmartElementParameters = BaseElementParams & {
   imageURL?: string;
   stylesOn: boolean;
 };
+
+export type ColumnsParameters = BaseElementParams;
 
 export type TextareaParameters = BaseElementParams & {
   textContent: string;
@@ -969,6 +974,7 @@ export type ChildrenElements = {
   dropdownMenu: DropdownMenuServerElement;
   dropdownItem: DropdownItemServerElement;
   gridItem: GridItemServerElement;
+  column: ColumnServerElement;
 };
 
 export type ElementsToAdd = {
@@ -978,6 +984,7 @@ export type ElementsToAdd = {
   pageTemplate: PageTemplateServerElement;
   emptyPageTemplate: PageTemplateServerElement;
   grid: GridServerElement;
+  nativeColumns: NativeColumnsServerElement;
   columns: ColumnsServerElement;
   image: ImageServerElement;
   smartHeader: SmartHeaderServerElement;
@@ -1047,6 +1054,7 @@ export const enum SCREEN_FORMATS {
 
 export const CONTROLS_AFFECT_ON_PARAMS = [
   'action',
+  'columns',
   'mapProps',
   'placeholder',
   'textContent',
@@ -1074,6 +1082,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
 export const CONTROLS_AFFECT_ON_STYLES = [
   'grid',
   'columns',
+  'nativeColumns',
   'display',
   'indents',
   'size',

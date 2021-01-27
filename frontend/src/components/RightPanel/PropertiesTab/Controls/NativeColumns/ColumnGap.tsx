@@ -4,7 +4,7 @@ import { FormControlLabel } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/Columns/styles';
+import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/NativeColumns/styles';
 
 enum Units {
   px = 'px',

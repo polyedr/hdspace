@@ -1,12 +1,13 @@
 import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
-import { Entity } from '../../types';
+import { Entity } from '@Src/types';
 import {
   buttonStyleControls,
   calendarStyleControls,
   cardsSectionStyleControls,
   checkboxStyleControls,
   clockStyleControls,
-  columnsStyleControls,
+  nativeColumnsStyleControls,
+  columnStyleControls,
   containerStyleControls,
   divBlockStyleControls,
   dropdownItemStyleControls,
@@ -36,7 +37,10 @@ import {
   textinputStyleControls,
   undefinedControls,
   videoStyleControls,
+  columnsStyleControls,
 } from '../core';
+
+const columnsMinHeight = '100px';
 
 export const DEFAULT_SIZE = {
   width: 'auto',
@@ -335,7 +339,9 @@ type DropdownMenuControls = typeof dropdownMenuStyleControls[number];
 type DropdownItemControls = typeof dropdownItemStyleControls[number];
 type VideoControls = typeof videoStyleControls[number];
 type UndefinedControls = typeof undefinedControls[number];
+type NativeColumnsControls = typeof nativeColumnsStyleControls[number];
 type ColumnsControls = typeof columnsStyleControls[number];
+type ColumnControls = typeof columnStyleControls[number];
 type GridItemControls = typeof gridItemStyleControls[number];
 type GridControls = typeof gridStyleControls[number];
 
@@ -350,6 +356,7 @@ export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
     ...DEFAULT_SIZE,
     minWidth: '100%',
     minHeight: '100%',
+    height: '1px', // allows children to use height in %
     padding: '3px',
     display: 'inline-block',
   },
@@ -628,9 +635,58 @@ export const defaultGridStyles: {
 };
 
 export const defaultColumnStyles: {
+  [K in ColumnControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '50%',
+  },
+};
+
+export const defaultColumnsStyles: {
   [K in ColumnsControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    minHeight: columnsMinHeight,
+  },
+  other: {
+    display: 'flex',
+    flexFlow: 'row nowrap',
+    justifyContent: 'stretch',
+    alignItems: 'stretch',
+  },
+};
+
+export const defaultNativeColumnsStyles: {
+  [K in NativeColumnsControls]: React.CSSProperties;
 } = {
-  columns: {
+  nativeColumns: {
     columnCount: 2,
     columnWidth: 'auto',
     columnFill: 'balance',
@@ -641,12 +697,11 @@ export const defaultColumnStyles: {
   },
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
     width: '100%',
-    minHeight: '100px',
+    minHeight: columnsMinHeight,
   },
   display: {
     ...DEFAULT_DISPLAY,
@@ -1039,7 +1094,9 @@ export const DEFAULT_ELEMENTS_STYLES: {
   emptyPageTemplate: defaultEmptyPageTemplateStyles,
   grid: defaultGridStyles,
   gridItem: defaultGridItemStyles,
-  columns: defaultColumnStyles,
+  nativeColumns: defaultNativeColumnsStyles,
+  columns: defaultColumnsStyles,
+  column: defaultColumnStyles,
   button: defaultButtonStyles,
   textinput: defaultTextinputStyles,
   textarea: defaultTextareaStyles,
