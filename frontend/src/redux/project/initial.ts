@@ -25,6 +25,14 @@ export const initialData: ProjectDataState = {
     pageSize: 40,
   },
   elementInputs: {},
+  assetLists: {
+    previous: null,
+    next: null,
+    results: [],
+    loading: false,
+    pageSize: 40,
+  },
+  assetResults: {},
 };
 
 export const initialUi: ProjectUiState = {
@@ -61,6 +69,7 @@ export const initialCommunication: ProjectCommunicationState = {
   projectLoader: false,
   projectCreateLoader: false,
   analyzerLoader: false,
+  assetsLoader: false,
 };
 
 export const initialControl: ProjectControlState = {

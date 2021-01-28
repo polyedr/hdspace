@@ -178,6 +178,20 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.SET_ASSET_LISTS: {
+        draft.assetLists = action.payload;
+        break;
+      }
+
+      case TYPES.SET_ASSETS: {
+        const { listId } = action.payload;
+        draft.assetResults = {
+          ...draft.assetResults,
+          [listId]: action.payload.assets,
+        };
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         draft.screens = {};
         draft.elements = {};

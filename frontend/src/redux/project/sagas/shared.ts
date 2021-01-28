@@ -92,6 +92,7 @@ export function* reqWrapper(
 
     return result;
   } catch (e) {
+    console.error(e);
     yield put(setUserError(e));
     return { error: e.message };
   }

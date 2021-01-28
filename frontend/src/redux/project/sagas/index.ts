@@ -80,6 +80,7 @@ import {
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentScreen } from '../selectors/screen';
+import { loadAssetsSaga, loadAssetListsSaga } from './asset';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,
@@ -496,4 +497,6 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
+  yield takeEvery(TYPES.LOAD_ASSET_LISTS, loadAssetListsSaga);
+  yield takeEvery(TYPES.LOAD_ASSETS, loadAssetsSaga);
 }

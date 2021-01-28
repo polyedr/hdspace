@@ -25,6 +25,9 @@ import {
   StateElement,
   UploadedImageInfo,
   UserData,
+  AssetsList,
+  Asset,
+  AssetResults,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -34,6 +37,8 @@ export type ProjectDataState = {
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
   elementInputs: { [id: string]: File };
+  assetLists: PaginatedArray<AssetsList>;
+  assetResults: AssetResults;
 };
 
 export type ProjectUiState = {
@@ -76,6 +81,7 @@ export type ProjectCommunicationState = {
   projectLoader: boolean;
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
+  assetsLoader: boolean;
 };
 
 export type ProjectControlState = {
@@ -186,6 +192,10 @@ export type SetProjectCreateLoader = IAction<
 >;
 export type SetAnalyzerLoader = IAction<
   typeof TYPES.SET_ANALYZER_LOADER,
+  { active: boolean }
+>;
+export type SetAssetsLoader = IAction<
+  typeof TYPES.SET_ASSETS_LOADER,
   { active: boolean }
 >;
 export type DeleteScreen = IAction<
@@ -464,6 +474,19 @@ export type RemoveFileInput = IAction<
   { id: string }
 >;
 
+export type SetAssetLists = IAction<
+  typeof TYPES.SET_ASSET_LISTS,
+  PaginatedArray<AssetsList>
+>;
+
+export type SetAssets = IAction<
+  typeof TYPES.SET_ASSETS,
+  {
+    listId: string;
+    assets: PaginatedArray<Asset>;
+  }
+>;
+
 export type AddStateElements = IAction<
   typeof TYPES.ADD_STATE_ELEMENTS,
   { elements: LibraryElement<any>[]; parentId: string; index?: number },
@@ -570,6 +593,7 @@ export type Action =
   | SetUpdateImageLoader
   | SetProjectCreateLoader
   | SetAnalyzerLoader
+  | SetAssetsLoader
   | DeleteScreen
   | RenameScreen
   | CreateScreen
@@ -646,7 +670,9 @@ export type Action =
   | AddFileInput
   | RemoveFileInput
   | SetScreenCreateLoader
-  | SetEditorDocument;
+  | SetEditorDocument
+  | SetAssetLists
+  | SetAssets;
 
 export type HistoryMeta = {
   undo?: boolean;

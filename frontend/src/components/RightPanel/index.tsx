@@ -14,6 +14,7 @@ import { selectActiveElement } from '@Redux/project/selectors/element';
 import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
+import AssetsSection from './Assets';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles<Theme>(({ palette }) => ({
     transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
     backgroundColor: palette.panel.main,
     color: palette.common.white,
+    overflow: 'hidden',
   },
   tabPanel: {
     flex: 1,
@@ -107,6 +109,7 @@ const RightPanel: React.FC = () => {
       <TabPanel index={RightPanelTab.ELEMENTS} value={activeTab}>
         <ElementsTab />
       </TabPanel>
+      <AssetsSection />
     </div>
   );
 };

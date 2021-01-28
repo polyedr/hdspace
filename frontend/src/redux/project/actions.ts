@@ -18,6 +18,9 @@ import {
   SCREEN_FORMATS,
   PaginatedResponse,
   PropertyName,
+  AssetsList,
+  Asset,
+  PaginatedArray,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -94,6 +97,7 @@ import {
   SetScreenCreateLoader,
   SetBordersEnabled,
   SetEditorDocument,
+  SetAssetsLoader,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -192,6 +196,11 @@ export const setProjectCreateLoader = (
 
 export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   type: TYPES.SET_ANALYZER_LOADER,
+  payload: { active },
+});
+
+export const setAssetsLoader = (active: boolean): SetAssetsLoader => ({
+  type: TYPES.SET_ASSETS_LOADER,
   payload: { active },
 });
 
@@ -808,4 +817,38 @@ export const importHtml = (files: File[]) => ({
 export const setEditorDocument = (doc: Document): SetEditorDocument => ({
   type: TYPES.SET_EDITOR_DOCUMENT,
   payload: doc,
+});
+
+export const loadAssetLists = () => ({
+  type: TYPES.LOAD_ASSET_LISTS,
+});
+
+export const loadAssets = (selectedListId: string | null) => ({
+  type: TYPES.LOAD_ASSETS,
+  payload: {
+    selectedListId,
+  },
+});
+
+export const setAssetLists = (assetLists: PaginatedArray<AssetsList>) => ({
+  type: TYPES.SET_ASSET_LISTS,
+  payload: assetLists,
+});
+
+export const addAssetList = (assetList: AssetsList) => ({
+  type: TYPES.ADD_ASSET_LIST,
+  payload: assetList,
+});
+
+export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
+  type: TYPES.SET_ASSETS,
+  payload: {
+    listId,
+    assets,
+  },
+});
+
+export const ADD_ASSET = (asset: Asset) => ({
+  type: TYPES.ADD_ASSET,
+  payload: asset,
 });

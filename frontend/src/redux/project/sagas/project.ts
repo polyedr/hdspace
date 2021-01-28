@@ -9,6 +9,7 @@ import {
   apiUpdateProject,
   apiGetProjectWithScreens,
 } from '@Api/project';
+import { apiCreateAssetList } from '@Api/assetList';
 import {
   PaginatedResponse,
   Project,
@@ -123,7 +124,12 @@ export function* createProjectSaga({
       },
     );
 
-    if (result) {
+    if (result?.created) {
+      const assetList = yield call(reqWrapper, apiCreateAssetList, {
+        projectId: result.id,
+        name: 'Project assets',
+      });
+      yield put(Actions.addAssetList(assetList));
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, result]));
 
@@ -250,9 +256,9 @@ export function* updateProjectSaga(
       return;
     }
 
-    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-      selectCurrentProject,
-    );
+    const currentProject: ReturnType<
+      typeof selectCurrentProject
+    > = yield select(selectCurrentProject);
 
     const success: boolean = yield call(projectUpdateHelperSaga, project);
 
