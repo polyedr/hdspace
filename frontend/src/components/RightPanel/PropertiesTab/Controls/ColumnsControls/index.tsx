@@ -2,7 +2,7 @@
 import React, { ChangeEvent, FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { addChildToElement, deleteElement } from '@Redux/project/actions';
+import { addChildrenToElement, deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -31,11 +31,16 @@ const ColumnsControls: FC<PropertiesChangeProps<LibraryElement<any>>> = ({
   const debounced = useDebouncedCallback((value) => {
     if (+value === length) return;
     if (+value > length) {
-      for (let i = length; i < +value; i += 1) {
-        dispatch(
-          addChildToElement('column', activeElementId, {}, { screenId }),
-        );
-      }
+      dispatch(
+        addChildrenToElement(
+          new Array(+value - length).fill({
+            childType: 'column',
+            parameters: {},
+          }),
+          activeElementId,
+          { screenId },
+        ),
+      );
     }
     if (+value < length) {
       for (let i = +value; i < length; i += 1) {

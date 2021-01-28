@@ -94,6 +94,7 @@ import {
   SetScreenCreateLoader,
   SetBordersEnabled,
   SetEditorDocument,
+  AddChildrenToElement,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -532,6 +533,19 @@ export const createElements = (
 ): CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
   payload: { createdElements, parentId, index },
+  meta,
+});
+
+export const addChildrenToElement = (
+  children: {
+    childType: ChildEntity;
+    parameters: ChildrenElements[ChildEntity]['parameters'];
+  }[],
+  elementId: string,
+  meta: ElementHistoryMeta,
+): AddChildrenToElement => ({
+  type: TYPES.ADD_CHILDREN_TO_ELEMENT,
+  payload: { children, elementId },
   meta,
 });
 

@@ -310,6 +310,54 @@ export function* createElementsSaga(
   }
 }
 
+export function* addChildrenToElementSaga(
+  action: ReturnType<typeof Actions.addChildrenToElement>,
+) {
+  try {
+    const { children, elementId } = action.payload;
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      return;
+    }
+    const { screenId, undo } = action.meta;
+
+    const convertedCreatedChildren = children.map((child) =>
+      convertElementToRequest(
+        updateElementParameters(
+          '-1',
+          child.parameters,
+          convertElementFromResponse(
+            convertCreatedElementToRequest(child.childType, null),
+          ),
+        ),
+      ),
+    );
+
+    const element: LibraryElement<Entity> = yield select(
+      selectElementAsTree(elementId),
+    );
+
+    yield call(
+      createElements,
+      { elements: convertedCreatedChildren },
+      element,
+      {
+        screenId,
+        undo,
+      },
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
 export function* addChildToElementSaga(
   action: ReturnType<typeof Actions.addChildToElement>,
 ) {
