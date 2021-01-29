@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -31,13 +31,23 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
   const screens = useSelector(selectScreens);
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
+
   const [type, setType] = useState(action?.type);
+  useEffect(() => {
+    setType(action.type);
+  }, [action]);
+
+  const [url, setUrl] = useState(action.url);
+  useEffect(() => {
+    setUrl(action.url);
+  }, [action]);
 
   const debounced = useDebouncedCallback((value) => {
     updateParams({
       action: {
         type: 'external-link',
         url: value,
+        screenId: action.screenId,
       },
     });
   }, 500);
@@ -51,8 +61,15 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
         return;
       }
       setType(newType);
+      updateParams({
+        action: {
+          type: newType,
+          url: action.url,
+          screenId: action.screenId,
+        },
+      });
     },
-    [],
+    [action, updateParams],
   );
 
   return (
@@ -78,8 +95,9 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
             fullWidth
             label="URL"
             placeholder="Enter a page URL"
-            defaultValue={action?.url || ''}
+            value={url || ''}
             onChange={({ target: { value } }) => {
+              setUrl(value);
               debounced.callback(value);
             }}
             margin="dense"
@@ -94,12 +112,9 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
             onChange={({ target: { value } }) => {
               updateParams({
                 action: {
+                  url: action.url,
                   type: 'internal-link',
-                  url:
-                    value === 'noScreen'
-                      ? value
-                      : `/project/${currentProjectId}/${currentScreenId}`,
-                  screenId: currentScreenId.toString(),
+                  screenId: value,
                 },
               });
             }}
@@ -113,7 +128,11 @@ const ActionBlock: React.FC<PropertiesChangeProps<HyperlinkElement>> = ({
             {screens
               .filter((screen) => screen.id !== currentScreenId)
               .map(({ name, id }) => (
-                <MenuItem key={id} value={id} dense>
+                <MenuItem
+                  key={id}
+                  value={`/project/${currentProjectId}/${id}`}
+                  dense
+                >
                   {name}
                 </MenuItem>
               ))}

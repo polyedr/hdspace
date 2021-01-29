@@ -418,13 +418,12 @@ export type ImageParameters = BaseElementParams & {
 
 export type LinkParams = BaseElementParams & {
   type: 'internal-link' | 'external-link';
-  url?: string;
-  screenId?: string;
+  url: string;
+  screenId: string;
 };
 
 export type ButtonParameters = BaseElementParams & {
   textContent: string;
-  action: LinkParams;
   showRipple: boolean;
 };
 

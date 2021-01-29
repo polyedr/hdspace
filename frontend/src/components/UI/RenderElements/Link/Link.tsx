@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router';
 import cn from 'classnames';
 import { ActionRendererProps } from '../types';
@@ -8,47 +7,53 @@ import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles('link');
 
-const Link: React.FC<ActionRendererProps> = React.forwardRef((props, ref) => {
-  const { id, isDisabled, params, className, groupClass } = props;
-  const { textContent, action } = params;
+const Link = React.forwardRef<HTMLAnchorElement, ActionRendererProps>(
+  (props, ref) => {
+    const { id, isDisabled, params, className, groupClass } = props;
+    const { textContent, action } = params;
 
-  const history = useHistory();
+    const history = useHistory();
 
-  const classes = useStyles(props);
-  const eventHandlers = useEventHandlers(props, {
-    onClick: (event: MouseEvent) => {
-      if (isDisabled) {
-        event.stopPropagation();
-        event.preventDefault();
-        return;
-      }
-      if (action.type === 'internal-link') {
-        event.stopPropagation();
-        event.preventDefault();
-        history.push(event.nativeEvent.target.href);
-      }
-    },
-  });
+    const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props, {
+      onClick: (event) => {
+        if (isDisabled) {
+          event.stopPropagation();
+          event.preventDefault();
+          return;
+        }
+        if (
+          action.type === 'internal-link' &&
+          action.screenId &&
+          action.screenId !== 'noScreen'
+        ) {
+          event.stopPropagation();
+          event.preventDefault();
+          history.push(action.screenId);
+        }
+      },
+    });
 
-  return (
-    <a
-      ref={ref}
-      id={id}
-      data-ls-id={id}
-      key={id}
-      className={cn(
-        className,
-        groupClass,
-        isDisabled && classes.disabled,
-        classes.ownStyles,
-      )}
-      href={action.url}
-      target={action.type === 'external-link' ? '_blank' : '_self'}
-      {...eventHandlers}
-    >
-      {textContent}
-    </a>
-  );
-});
+    return (
+      <a
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        key={id}
+        className={cn(
+          className,
+          groupClass,
+          isDisabled && classes.disabled,
+          classes.ownStyles,
+        )}
+        href={action.url}
+        target={action.type === 'external-link' ? '_blank' : '_parent'}
+        {...eventHandlers}
+      >
+        {textContent}
+      </a>
+    );
+  },
+);
 
 export default Link;

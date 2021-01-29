@@ -1,5 +1,4 @@
 import { HEADING_SETTINGS } from '@Components/RightPanel/PropertiesTab/Controls/HeadingType/constants';
-import { defaultFreeCanvasParams } from '../../core';
 import {
   ElementGroup,
   HeadingServerElement,
@@ -10,7 +9,8 @@ import {
   OcrtextServerElement,
   ParagraphServerElement,
   TextBlockServerElement,
-} from '../../../types';
+} from '@Src/types';
+import { defaultFreeCanvasParams } from '../../core';
 
 export const hyperlink: HyperlinkServerElement = {
   buoyancy: 0,
@@ -22,6 +22,7 @@ export const hyperlink: HyperlinkServerElement = {
     textContent: 'hyperlink',
     action: {
       type: 'internal-link',
+      url: '',
       screenId: 'noScreen',
     },
   },
