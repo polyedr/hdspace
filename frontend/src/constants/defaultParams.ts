@@ -81,11 +81,10 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
 export const SAVEABLE_ELEMENTS = ['section'];
 
 export const KEEP_RP_TAB_ELEMENTS = [
+  'root',
   'section',
   'container',
   'divBlock',
-  'grid',
-  'columns',
 ];
 
 export const LABELED_INPUT_TYPES = [
@@ -108,3 +107,5 @@ export const EDITABLE_COMPONENTS_LIST = [
 ];
 
 export const NOT_DRAGGABLE_COMPONENTS = ['selectMenu', 'selectItem'];
+
+export const INTERACTIVE_ELEMENTS = ['hyperlink'];

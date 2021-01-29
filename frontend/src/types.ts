@@ -1040,9 +1040,10 @@ export const enum NNBlockType {
   WEBPAGE = 'webpages',
 }
 
-export const enum RightPanelTab {
-  PROPERTIES = 0,
-  ELEMENTS = 1,
+export enum RPTab {
+  Properties = 'Properties',
+  Elements = 'Elements',
+  Events = 'Events',
 }
 
 export const enum SCREEN_FORMATS {
