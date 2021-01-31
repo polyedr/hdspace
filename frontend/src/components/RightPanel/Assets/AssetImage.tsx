@@ -1,11 +1,20 @@
+import React, { useState } from 'react';
 import { ElementType } from '@Constants/dragAndDrop';
 import { makeStyles } from '@material-ui/core';
 import { Asset } from '@Src/types';
-import React from 'react';
 import { useDrag } from 'react-dnd';
+
+enum FullSizeDirection {
+  VERTICAL,
+  HORIZONTAL,
+}
 
 type Props = {
   asset: Asset;
+};
+
+type StyleProps = {
+  sizeDirection: FullSizeDirection;
 };
 
 const useStyles = makeStyles({
@@ -17,15 +26,20 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  assetImage: {
+  assetImage: ({ sizeDirection }: StyleProps) => ({
     display: 'block',
-    width: '100%',
-    height: 'auto',
-  },
+    width: sizeDirection === FullSizeDirection.HORIZONTAL ? '100%' : 'auto',
+    height: sizeDirection === FullSizeDirection.VERTICAL ? '100%' : 'auto',
+  }),
 });
 
 const AssetImage = ({ asset }: Props) => {
-  const classes = useStyles();
+  const [sizeDirection, setSizeDirection] = useState(
+    FullSizeDirection.HORIZONTAL,
+  );
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+
+  const classes = useStyles({ sizeDirection } as StyleProps);
 
   const [, drag] = useDrag({
     item: {
@@ -50,8 +64,18 @@ const AssetImage = ({ asset }: Props) => {
     >
       <img
         src={asset.image || ''}
-        alt="Missing asset"
+        alt="No asset"
         className={classes.assetImage}
+        style={!imageLoaded ? { display: 'none' } : {}}
+        onLoad={(event: React.SyntheticEvent) => {
+          const imgDom = event.target as HTMLImageElement;
+          setImageLoaded(true);
+          setSizeDirection(
+            imgDom.naturalWidth > imgDom.naturalHeight
+              ? FullSizeDirection.HORIZONTAL
+              : FullSizeDirection.VERTICAL,
+          );
+        }}
       />
     </div>
   );

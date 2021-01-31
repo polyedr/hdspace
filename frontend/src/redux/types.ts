@@ -330,7 +330,16 @@ export type UpdateElementStyles = IAction<
 >;
 export type UpdateElementImage = IAction<
   typeof TYPES.UPDATE_ELEMENT_IMAGE,
-  { itemID: string; image: File },
+  { itemID: string; image: File; assetId?: string | null },
+  ElementHistoryMeta
+>;
+export type UploadElementAsset = IAction<
+  typeof TYPES.UPLOAD_ELEMENT_ASSET,
+  {
+    elementId: string;
+    asset: File;
+    listId: string;
+  },
   ElementHistoryMeta
 >;
 export type UpdateElementParameters = IAction<
@@ -484,6 +493,19 @@ export type SetAssets = IAction<
   {
     listId: string;
     assets: PaginatedArray<Asset>;
+  }
+>;
+
+export type AddAssetList = IAction<
+  typeof TYPES.ADD_ASSET_LIST_REDUX,
+  AssetsList
+>;
+
+export type AddAsset = IAction<
+  typeof TYPES.ADD_ASSET_REDUX,
+  {
+    listId: string;
+    asset: Asset;
   }
 >;
 
@@ -672,7 +694,9 @@ export type Action =
   | SetScreenCreateLoader
   | SetEditorDocument
   | SetAssetLists
-  | SetAssets;
+  | SetAssets
+  | AddAssetList
+  | AddAsset;
 
 export type HistoryMeta = {
   undo?: boolean;

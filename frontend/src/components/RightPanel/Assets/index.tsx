@@ -8,7 +8,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { loadAssetLists, loadAssets } from '@Redux/project/actions';
 import { selectAssetsLoader } from '@Redux/project/selectors/base';
-import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import AssetsGrid from './AssetsGrid';
 import AssetLists from './AssetLists';
 
@@ -57,9 +57,7 @@ const AssetsSection: React.FC = () => {
 
   useEffect(() => {
     dispatch(
-      loadAssets(
-        selectedListId === DEFAULT_ASSETS_LIST_ID ? null : selectedListId,
-      ),
+      loadAssets(selectedListId === ALL_ASSETS_LIST_ID ? null : selectedListId),
     );
   }, [dispatch, selectedListId]);
 

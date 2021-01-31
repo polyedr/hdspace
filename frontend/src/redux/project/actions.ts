@@ -98,6 +98,7 @@ import {
   SetBordersEnabled,
   SetEditorDocument,
   SetAssetsLoader,
+  UploadElementAsset,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -496,6 +497,21 @@ export const updateElementImage = (
   meta,
 });
 
+export const uploadElementAsset = (
+  elementId: string,
+  asset: File,
+  listId: string,
+  meta: ElementHistoryMeta,
+): UploadElementAsset => ({
+  type: TYPES.UPLOAD_ELEMENT_ASSET,
+  payload: {
+    elementId,
+    asset,
+    listId,
+  },
+  meta,
+});
+
 export const updateElementParameters = <
   T extends Entity,
   K extends LibraryElement<T>['parameters']
@@ -835,9 +851,22 @@ export const setAssetLists = (assetLists: PaginatedArray<AssetsList>) => ({
   payload: assetLists,
 });
 
-export const addAssetList = (assetList: AssetsList) => ({
+export const addAssetList = (name: string) => ({
   type: TYPES.ADD_ASSET_LIST,
-  payload: assetList,
+  payload: name,
+});
+
+export const addAssetListToState = (list: AssetsList) => ({
+  type: TYPES.ADD_ASSET_LIST_REDUX,
+  payload: list,
+});
+
+export const uploadAsset = (listId: string, assetFile: any) => ({
+  type: TYPES.UPLOAD_ASSET,
+  payload: {
+    listId,
+    assetFile,
+  },
 });
 
 export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
@@ -848,7 +877,10 @@ export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
   },
 });
 
-export const ADD_ASSET = (asset: Asset) => ({
-  type: TYPES.ADD_ASSET,
-  payload: asset,
+export const addAssetToState = (listId: string, asset: Asset) => ({
+  type: TYPES.ADD_ASSET_REDUX,
+  payload: {
+    listId,
+    asset,
+  },
 });

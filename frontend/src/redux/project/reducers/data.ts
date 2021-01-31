@@ -192,6 +192,28 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.ADD_ASSET_LIST_REDUX: {
+        draft.assetLists = {
+          ...draft.assetLists,
+          results: [action.payload, ...draft.assetLists.results],
+        };
+        break;
+      }
+
+      case TYPES.ADD_ASSET_REDUX: {
+        draft.assetResults = {
+          ...draft.assetResults,
+          [action.payload.listId]: {
+            ...draft.assetResults[action.payload.listId],
+            results: [
+              action.payload.asset,
+              ...draft.assetResults[action.payload.listId].results,
+            ],
+          },
+        };
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         draft.screens = {};
         draft.elements = {};

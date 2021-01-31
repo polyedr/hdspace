@@ -23,17 +23,15 @@ export const apiGetAsset = (props: MyAxiosProps & { imageId: string }) => {
 };
 
 export const apiCreateAsset = (
-  props: MyAxiosProps & { projectId: string; illustrationId: string },
+  props: MyAxiosProps & { assetFormData: FormData },
 ) => {
-  const { projectId, illustrationId, ...axiosProps } = props;
+  const { assetFormData, ...axiosProps } = props;
   return myAxios({
     ...axiosProps,
-    url: `/projects/${projectId}/images/`,
+    url: `/projects/images/`,
     method: 'POST',
-    params: {
-      ...(axiosProps.params || {}),
-      illustration_id: illustrationId,
-    },
+    contentType: 'multipart/form-data',
+    data: assetFormData,
   })
     .then((response: AxiosResponse<ServerAsset>) =>
       convertResponseToAsset(response),

@@ -80,7 +80,13 @@ import {
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentScreen } from '../selectors/screen';
-import { loadAssetsSaga, loadAssetListsSaga } from './asset';
+import {
+  loadAssetsSaga,
+  loadAssetListsSaga,
+  uploadAssetSaga,
+  addNewAssetListSaga,
+  uploadElementAssetSaga,
+} from './asset';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,
@@ -472,6 +478,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.ADD_ELEMENT_CLASSNAME, addElementClassNameSaga);
   yield takeLatest(TYPES.REMOVE_ELEMENT_CLASSNAME, removeElementClassNameSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT_IMAGE, updateElementImageSaga);
+
   yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
@@ -499,4 +506,7 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
   yield takeEvery(TYPES.LOAD_ASSET_LISTS, loadAssetListsSaga);
   yield takeEvery(TYPES.LOAD_ASSETS, loadAssetsSaga);
+  yield takeEvery(TYPES.ADD_ASSET_LIST, addNewAssetListSaga);
+  yield takeEvery(TYPES.UPLOAD_ASSET, uploadAssetSaga);
+  yield takeEvery(TYPES.UPLOAD_ELEMENT_ASSET, uploadElementAssetSaga);
 }
