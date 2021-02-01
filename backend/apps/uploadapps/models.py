@@ -1,0 +1,21 @@
+from django.db import models
+
+
+# Create your models here.
+from apps.accounts.models import User
+
+
+class Fileupload(models.Model):
+    filename = models.FileField(
+        upload_to="uploads/", blank=True, null=True, max_length=256
+    )
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="owned_files",
+    )
+
+    def __str__(self):
+        return self.filename.name
