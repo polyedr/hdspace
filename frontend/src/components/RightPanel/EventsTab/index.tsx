@@ -27,12 +27,22 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     display: 'flex',
     flexDirection: 'column',
   },
+  buttonContainer: {
+    padding: spacing(1, 0),
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  button: {
+    marginLeft: spacing(1),
+  },
 }));
 
 const EventsTab: FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const params: HyperLinkParameters = useSelector(selectActiveElementParams);
+  const { events }: HyperLinkParameters = useSelector(
+    selectActiveElementParams,
+  );
   const activeElement = useSelector(selectActiveElement);
   const screenId = useSelector(selectCurrentScreenId);
 
@@ -45,7 +55,7 @@ const EventsTab: FC = () => {
     setEventType('click');
     setEventData({});
     setEventToEdit('');
-  }, [params]);
+  }, [events]);
 
   const handleSubmit = () => {
     const newEvent: ElementEvent = {
@@ -55,10 +65,10 @@ const EventsTab: FC = () => {
     };
 
     const newEventList = eventToEdit
-      ? params.events.map((event) =>
+      ? events.map((event) =>
           event.id === eventToEdit ? { ...newEvent, id: event.id } : event,
         )
-      : [...params.events, newEvent];
+      : [...events, newEvent];
 
     dispatch(
       updateElementParameters(
@@ -83,26 +93,37 @@ const EventsTab: FC = () => {
     dispatch(
       updateElementParameters(
         activeElement.id,
-        { events: params.events.filter((event) => event.id !== eventId) },
+        { events: events.filter((event) => event.id !== eventId) },
         { screenId },
       ),
     );
+  };
+
+  const handleCancel = () => {
+    setEventType('click');
+    setEventData({});
+    setEventToEdit('');
+    setCreate(false);
   };
 
   return (
     <div className={classes.root}>
       {!create ? (
         <>
-          <div className={classes.eventList}>
-            {params.events?.map((event, i) => (
-              <EventListItem
-                key={i}
-                event={event}
-                onEdit={handleEditListItem}
-                onDelete={handleDeleteListItem}
-              />
-            ))}
-          </div>
+          {events?.length ? (
+            <div className={classes.eventList}>
+              {events?.map((event, i) => (
+                <EventListItem
+                  key={i}
+                  event={event}
+                  onEdit={handleEditListItem}
+                  onDelete={handleDeleteListItem}
+                />
+              ))}
+            </div>
+          ) : (
+            <div>No events yet.</div>
+          )}
 
           <StyledIconButton title="Add event" onClick={() => setCreate(true)}>
             <AddIcon />
@@ -127,12 +148,15 @@ const EventsTab: FC = () => {
             <Click eventData={eventData} setEventData={setEventData} />
           )}
 
-          <div>
-            <Button variant="contained" onClick={() => setCreate(false)}>
-              Cancel
-            </Button>
+          <div className={classes.buttonContainer}>
+            <Button onClick={handleCancel}>Cancel</Button>
 
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              className={classes.button}
+            >
               Save Event
             </Button>
           </div>
