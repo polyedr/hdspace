@@ -3,8 +3,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { selectAllAssetLists } from '@Redux/project/selectors/asset';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import {
+  selectAllAssetLists,
+  selectSelectedAssetListId,
+} from '@Redux/project/selectors/asset';
+import {
+  DEFAULT_ASSETS_LIST_ID,
+  DEFAULT_ASSET_LIST_NAME,
+} from '@Constants/defaultParams';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -27,7 +33,15 @@ const useStyles = makeStyles({
   assetsSelector: {
     width: '100%',
   },
-  imageInputWrapper: {},
+  newAssetListInput: {
+    width: '100%',
+  },
+  imageInput: {
+    display: 'none',
+  },
+  newAssetListCloseBtn: {
+    padding: 0,
+  },
 });
 
 const AssetLists = ({ onListChange }: Props) => {
@@ -36,6 +50,7 @@ const AssetLists = ({ onListChange }: Props) => {
   const [addInProgress, setAddInProgress] = useState<boolean>(false);
   const [newAssetName, setNewAssetName] = useState<string>('');
   const assetLists = useSelector(selectAllAssetLists);
+  const selectedAssetListId = useSelector(selectSelectedAssetListId);
 
   const handleAddList = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -43,6 +58,9 @@ const AssetLists = ({ onListChange }: Props) => {
         dispatch(addAssetList(newAssetName));
         setAddInProgress(false);
         setNewAssetName('');
+      }
+      if (event.key === 'Escape') {
+        (event.target as HTMLInputElement).blur();
       }
     },
     [dispatch, newAssetName],
@@ -52,16 +70,12 @@ const AssetLists = ({ onListChange }: Props) => {
     <div className={classes.root}>
       {addInProgress ? (
         <TextField
-          label="New list name"
-          variant="outlined"
-          ref={(dom: HTMLInputElement) => {
-            if (dom) {
-              dom.focus();
-            }
-          }}
+          className={classes.newAssetListInput}
           onKeyDown={handleAddList}
+          onBlur={() => setAddInProgress(false)}
           value={newAssetName}
           onChange={(event) => setNewAssetName(event.target.value)}
+          focused
           InputProps={{
             endAdornment: (
               <IconButton
@@ -69,6 +83,7 @@ const AssetLists = ({ onListChange }: Props) => {
                 onClick={() => {
                   setAddInProgress(false);
                 }}
+                className={classes.newAssetListCloseBtn}
               >
                 <CloseIcon />
               </IconButton>
@@ -78,13 +93,15 @@ const AssetLists = ({ onListChange }: Props) => {
       ) : (
         <Select
           label="Asset list"
-          defaultValue={ALL_ASSETS_LIST_ID}
+          value={selectedAssetListId || DEFAULT_ASSETS_LIST_ID}
           className={classes.assetsSelector}
           onChange={(event) =>
             onListChange((event.target.value as string) || null)
           }
         >
-          <MenuItem value={ALL_ASSETS_LIST_ID}>All assets</MenuItem>
+          <MenuItem value={DEFAULT_ASSETS_LIST_ID}>
+            {DEFAULT_ASSET_LIST_NAME}
+          </MenuItem>
           {assetLists.map((list) => (
             <MenuItem key={`list-${list.id}`} value={list.id}>
               {list.name}
@@ -93,12 +110,10 @@ const AssetLists = ({ onListChange }: Props) => {
         </Select>
       )}
 
-      <div className={classes.imageInputWrapper}>
+      <div>
         <input
           accept="image/*"
-          style={{
-            display: 'none',
-          }}
+          className={classes.imageInput}
           id="upload-asset"
           type="file"
         />

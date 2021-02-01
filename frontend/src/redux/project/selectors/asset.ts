@@ -1,4 +1,4 @@
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { AppReduxState } from '@Redux/types';
 import { selectProjectState } from './base';
 
@@ -8,11 +8,20 @@ export const selectAllAssetLists = (state: AppReduxState) =>
 export const selectAllAssetListsLoading = (state: AppReduxState) =>
   selectProjectState(state).data.assetLists.loading;
 
-export const selectDisplayAssets = (assetListId: string | null) => (
-  state: AppReduxState,
-) => {
+export const selectSelectedAssetListId = (state: AppReduxState) => {
+  return selectProjectState(state).edit.selectedAssetListId;
+};
+
+export const selectDisplayAssets = (state: AppReduxState) => {
+  const assetListId = selectSelectedAssetListId(state);
   const selectedAssetResults = selectProjectState(state).data.assetResults[
-    assetListId || ALL_ASSETS_LIST_ID
+    assetListId || DEFAULT_ASSETS_LIST_ID
   ];
   return selectedAssetResults?.results || [];
+};
+
+export const selectAssetListById = (listId: string) => (
+  state: AppReduxState,
+) => {
+  return selectProjectState(state).data.assetLists[listId];
 };

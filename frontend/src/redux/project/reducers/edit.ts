@@ -40,6 +40,16 @@ const editReducer = produce(
         return { ...draft, currentScreenId: action.payload.screenId };
       }
 
+      case TYPES.SET_SELECTED_ASSET_LIST_ID: {
+        if (draft.selectedAssetListId === action.payload.assetListId) {
+          return draft;
+        }
+        return {
+          ...draft,
+          selectedAssetListId: action.payload.assetListId,
+        };
+      }
+
       case TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS: {
         return { ...draft, uploadedImageInfo: action.payload };
       }

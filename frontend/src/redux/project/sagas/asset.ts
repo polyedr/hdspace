@@ -2,34 +2,46 @@
 import { call } from 'ramda';
 import { put, select } from 'redux-saga/effects';
 import { apiCreateAsset, apiGetAssets } from '@Api/asset';
-import { apiCreateAssetList, apiGetAssetLists } from '@Api/assetList';
+import {
+  apiCreateAssetList,
+  apiDeleteAssetList,
+  apiGetAssetLists,
+} from '@Api/assetList';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { Asset, AssetsList, PaginatedArray } from '@Src/types';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
 
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
+import {
+  selectAssetListById,
+  selectSelectedAssetListId,
+} from '../selectors/asset';
 
 export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
-  const projectId = yield select(selectCurrentProjectId);
   const { selectedListId } = action.payload;
-  const listId = selectedListId || ALL_ASSETS_LIST_ID;
-  try {
-    const assets: PaginatedArray<Asset> = yield call(reqWrapper, apiGetAssets, {
-      projectId,
-      ...(selectedListId ? { assetListId: selectedListId } : {}),
-    });
-    yield put(Actions.setAssets(listId, assets));
-    yield put(Actions.setAssetsLoader(false));
-  } catch (error) {
-    yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
-    );
+  if (selectedListId !== DEFAULT_ASSETS_LIST_ID) {
+    try {
+      const assets: PaginatedArray<Asset> = yield call(
+        reqWrapper,
+        apiGetAssets,
+        {
+          projectId: action.payload,
+          ...(selectedListId ? { assetListId: selectedListId } : {}),
+        },
+      );
+      yield put(Actions.setAssets(selectedListId, assets));
+      yield put(Actions.setAssetsLoader(false));
+    } catch (error) {
+      yield put(
+        enqueueSnackbar({
+          message: error.message,
+          options: { variant: 'error' },
+        }),
+      );
+    }
   }
 }
 
@@ -45,6 +57,23 @@ export function* loadAssetListsSaga() {
       },
     );
     yield put(Actions.setAssetLists(assetLists));
+    // compute all lists from returned response, should be removed in the future
+    const allImages = assetLists.results.reduce(
+      (acc: Array<Asset>, assetList: AssetsList) => {
+        return [...acc, ...assetList.images];
+      },
+      [],
+    );
+    yield put(
+      Actions.setAssets(DEFAULT_ASSETS_LIST_ID, {
+        next: null,
+        previous: null,
+        pageSize: 0,
+        loading: false,
+        results: allImages,
+      }),
+    );
+    yield put(Actions.setAssetsLoader(false));
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -58,13 +87,54 @@ export function* loadAssetListsSaga() {
 export function* addNewAssetListSaga(
   action: ReturnType<typeof Actions.addAssetList>,
 ) {
+  const { name } = action.payload;
   const projectId = yield select(selectCurrentProjectId);
+  const undo = !!action.meta && action.meta.undo;
   try {
-    const assetList = yield call(reqWrapper, apiCreateAssetList, {
+    const selectedAssetId = yield select(selectSelectedAssetListId);
+    const assetList: AssetsList = yield call(reqWrapper, apiCreateAssetList, {
       projectId,
-      name: action.payload,
+      name,
     });
     yield put(Actions.addAssetListToState(assetList));
+    yield put(Actions.setSelectedAssetListId(assetList.id));
+    if (!undo) {
+      yield put(
+        Actions.setUndoActions([
+          Actions.setSelectedAssetListId(
+            selectedAssetId || DEFAULT_ASSETS_LIST_ID,
+          ),
+          Actions.removeAssetList(assetList.id, action.meta),
+        ]),
+      );
+    }
+  } catch (error) {
+    yield put(
+      enqueueSnackbar({
+        message: error.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* removeAssetListSaga(
+  action: ReturnType<typeof Actions.removeAssetList>,
+) {
+  try {
+    const assetList = yield select(selectAssetListById);
+    const undo = !!action.meta && action.meta.undo;
+    if (!undo) {
+      yield put(
+        Actions.setUndoActions([
+          Actions.addAssetList(assetList.name, action.meta),
+        ]),
+      );
+    }
+    yield call(reqWrapper, apiDeleteAssetList, {
+      id: action.payload,
+    });
+    yield put(Actions.removeAssetListRedux(action.payload));
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -79,15 +149,28 @@ export function* uploadAssetSaga(
   action: ReturnType<typeof Actions.uploadAsset>,
 ) {
   const { listId, assetFile } = action.payload;
+  let assetListId = listId;
+  if (!assetListId) {
+    assetListId = yield select(selectSelectedAssetListId);
+  }
+  if (!assetListId) {
+    yield put(
+      enqueueSnackbar({
+        message: 'List ID is not provided',
+        options: { variant: 'error' },
+      }),
+    );
+    return;
+  }
   const assetFormData = new FormData();
   assetFormData.append('image', assetFile);
   assetFormData.append('name', assetFile.name);
-  assetFormData.append('illustration_set', listId);
+  assetFormData.append('illustration_set', assetListId);
   try {
     const asset = yield call(reqWrapper, apiCreateAsset, {
       assetFormData,
     });
-    yield put(Actions.addAssetToState(listId, asset));
+    yield put(Actions.addAssetToState(assetListId, asset));
   } catch (error) {
     yield put(
       enqueueSnackbar({

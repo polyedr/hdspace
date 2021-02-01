@@ -18,7 +18,7 @@ export const apiGetAssetLists = (
     method: 'GET',
     params: {
       ...(axiosProps.params || {}),
-      projectId,
+      project: projectId,
     },
     url: `/projects/illustrations/`,
   })
@@ -44,6 +44,15 @@ export const apiCreateAssetList = (
       return convertResponseToAssetList(response);
     })
     .catch(handleError);
+};
+
+export const apiDeleteAssetList = (props: MyAxiosProps & { id: string }) => {
+  const { id, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    method: 'DELETE',
+    url: `/projects/illustrations/${id}`,
+  });
 };
 
 export const apiGetAssetList = (

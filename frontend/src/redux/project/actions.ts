@@ -99,6 +99,7 @@ import {
   SetEditorDocument,
   SetAssetsLoader,
   UploadElementAsset,
+  RemoveAssetList,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -835,11 +836,12 @@ export const setEditorDocument = (doc: Document): SetEditorDocument => ({
   payload: doc,
 });
 
-export const loadAssetLists = () => ({
+export const loadAssetLists = (projectId: string) => ({
   type: TYPES.LOAD_ASSET_LISTS,
+  payload: projectId,
 });
 
-export const loadAssets = (selectedListId: string | null) => ({
+export const loadAssets = (selectedListId: string) => ({
   type: TYPES.LOAD_ASSETS,
   payload: {
     selectedListId,
@@ -851,9 +853,24 @@ export const setAssetLists = (assetLists: PaginatedArray<AssetsList>) => ({
   payload: assetLists,
 });
 
-export const addAssetList = (name: string) => ({
+export const addAssetList = (name: string, meta?: HistoryMeta) => ({
   type: TYPES.ADD_ASSET_LIST,
-  payload: name,
+  payload: { name },
+  meta,
+});
+
+export const removeAssetList = (
+  id: string,
+  meta?: HistoryMeta,
+): RemoveAssetList => ({
+  type: TYPES.REMOVE_ASSET_LIST,
+  payload: id,
+  meta,
+});
+
+export const removeAssetListRedux = (id: string) => ({
+  type: TYPES.REMOVE_ASSET_LIST_REDUX,
+  payload: id,
 });
 
 export const addAssetListToState = (list: AssetsList) => ({
@@ -861,12 +878,17 @@ export const addAssetListToState = (list: AssetsList) => ({
   payload: list,
 });
 
-export const uploadAsset = (listId: string, assetFile: any) => ({
+export const uploadAsset = (
+  assetFile: any,
+  listId?: string,
+  meta?: HistoryMeta,
+) => ({
   type: TYPES.UPLOAD_ASSET,
   payload: {
     listId,
     assetFile,
   },
+  meta,
 });
 
 export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
@@ -882,5 +904,12 @@ export const addAssetToState = (listId: string, asset: Asset) => ({
   payload: {
     listId,
     asset,
+  },
+});
+
+export const setSelectedAssetListId = (listId: string) => ({
+  type: TYPES.SET_SELECTED_ASSET_LIST_ID,
+  payload: {
+    assetListId: listId,
   },
 });

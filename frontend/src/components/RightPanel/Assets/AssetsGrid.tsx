@@ -1,5 +1,8 @@
 import React, { useRef, useCallback } from 'react';
-import { selectDisplayAssets } from '@Redux/project/selectors/asset';
+import {
+  selectDisplayAssets,
+  selectSelectedAssetListId,
+} from '@Redux/project/selectors/asset';
 import { useSelector, useDispatch } from 'react-redux';
 import Scrollbar from '@Components/UI/Scrollbar';
 import GridList from '@material-ui/core/GridList';
@@ -8,12 +11,8 @@ import { Button, GridListTile } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { Asset } from '@Src/types';
 import { uploadAsset } from '@Redux/project/actions';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import AssetImage from './AssetImage';
-
-type Props = {
-  selectedAssetListId: string | null;
-};
 
 const useStyles = makeStyles({
   root: {
@@ -25,27 +24,25 @@ const useStyles = makeStyles({
   },
 });
 
-const AssetsGrid = ({ selectedAssetListId }: Props) => {
+const AssetsGrid = () => {
   const classes = useStyles();
   const newAssetRef = useRef<HTMLInputElement | null>(null);
   const dispatch = useDispatch();
-  const assets = useSelector(selectDisplayAssets(selectedAssetListId));
+  const assets = useSelector(selectDisplayAssets);
+  const selectedAssetListId = useSelector(selectSelectedAssetListId);
 
   const handleUploadAsset = useCallback(
     ({ target }) => {
-      if (!selectedAssetListId) {
-        return;
-      }
       const file = target.files[0];
 
       if (file.size > 5242880) {
         // eslint-disable-next-line no-alert
         alert('Choose image up to 5Mb!');
       } else {
-        dispatch(uploadAsset(selectedAssetListId, file));
+        dispatch(uploadAsset(file));
       }
     },
-    [dispatch, selectedAssetListId],
+    [dispatch],
   );
 
   return (
@@ -68,7 +65,7 @@ const AssetsGrid = ({ selectedAssetListId }: Props) => {
         }}
         startIcon={<AddIcon />}
         disabled={
-          !selectedAssetListId || selectedAssetListId === ALL_ASSETS_LIST_ID
+          !selectedAssetListId || selectedAssetListId === DEFAULT_ASSETS_LIST_ID
         }
         onClick={() => {
           if (!newAssetRef.current) {

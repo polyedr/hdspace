@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -7,7 +7,10 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { uploadElementAsset } from '@Redux/project/actions';
 import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { selectAllAssetLists } from '@Redux/project/selectors/asset';
+import {
+  selectAllAssetLists,
+  selectSelectedAssetListId,
+} from '@Redux/project/selectors/asset';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 
 const useStyles = makeStyles({
@@ -36,8 +39,12 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
   const assetLists = useSelector(selectAllAssetLists);
+  const selectedAssetListId = useSelector(selectSelectedAssetListId);
 
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
+  const listRef = useRef(
+    selectedAssetListId || assetLists[assetLists.length - 1].id,
+  );
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
@@ -89,10 +96,13 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
         <div className={classes.assetListsWrapper}>
           <label htmlFor="image-asset-list">Upload image to asset list</label>
           <StyledTextField
+            inputRef={() => {
+              setSelectedAsset(assetLists[0].id);
+            }}
             id="image-asset-list"
             className={classes.assetsSelector}
             select
-            defaultValue={assetLists[0].id}
+            defaultValue={listRef.current}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setSelectedAsset(event.target.value);
             }}

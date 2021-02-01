@@ -56,6 +56,7 @@ export const initialEdit: ProjectEditState = {
   currentScreenId: -1,
   activeElementId: '-1',
   hoveredElementId: '-1',
+  selectedAssetListId: null,
   freeCanvas: {
     enabled: false,
     lastElements: {},

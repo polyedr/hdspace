@@ -62,6 +62,7 @@ export type ProjectEditState = {
   currentScreenId: number;
   activeElementId: string;
   hoveredElementId: string;
+  selectedAssetListId: string | null;
   uploadedImageInfo?: UploadedImageInfo;
   freeCanvas: {
     enabled: boolean;
@@ -250,6 +251,10 @@ export type UpdateScreen = IAction<
 export type SetCurrentScreenId = IAction<
   typeof TYPES.SET_CURRENT_SCREEN_ID,
   { screenId: number }
+>;
+export type SetSelectedAssetListId = IAction<
+  typeof TYPES.SET_SELECTED_ASSET_LIST_ID,
+  { assetListId: string }
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
@@ -496,17 +501,36 @@ export type SetAssets = IAction<
   }
 >;
 
-export type AddAssetList = IAction<
+export type AddAssetListRedux = IAction<
   typeof TYPES.ADD_ASSET_LIST_REDUX,
   AssetsList
 >;
 
-export type AddAsset = IAction<
+export type AddAssetList = IAction<
+  typeof TYPES.ADD_ASSET_LIST,
+  {
+    name: string;
+    meta?: HistoryMeta;
+  }
+>;
+
+export type AddAssetRedux = IAction<
   typeof TYPES.ADD_ASSET_REDUX,
   {
     listId: string;
     asset: Asset;
   }
+>;
+
+export type RemoveAssetListRedux = IAction<
+  typeof TYPES.REMOVE_ASSET_LIST_REDUX,
+  string
+>;
+
+export type RemoveAssetList = IAction<
+  typeof TYPES.REMOVE_ASSET_LIST,
+  string,
+  HistoryMeta
 >;
 
 export type AddStateElements = IAction<
@@ -695,8 +719,12 @@ export type Action =
   | SetEditorDocument
   | SetAssetLists
   | SetAssets
+  | AddAssetListRedux
   | AddAssetList
-  | AddAsset;
+  | AddAssetRedux
+  | RemoveAssetList
+  | RemoveAssetListRedux
+  | SetSelectedAssetListId;
 
 export type HistoryMeta = {
   undo?: boolean;

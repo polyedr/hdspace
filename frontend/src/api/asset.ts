@@ -39,6 +39,15 @@ export const apiCreateAsset = (
     .catch(handleError);
 };
 
+export const apiDeleteAsset = (props: MyAxiosProps & { id: string }) => {
+  const { id, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    url: `/projects/images/${id}`,
+    method: 'DELETE',
+  });
+};
+
 export const apiGetAssets = (
   props: MyAxiosProps & { assetListId?: string },
 ) => {

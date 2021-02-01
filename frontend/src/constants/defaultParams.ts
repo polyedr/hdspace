@@ -109,5 +109,5 @@ export const EDITABLE_COMPONENTS_LIST = [
 
 export const NOT_DRAGGABLE_COMPONENTS = ['selectMenu', 'selectItem'];
 
-export const ALL_ASSETS_LIST_ID = 'all';
-export const DEFAULT_ASSET_LIST_NAME = 'Default list';
+export const DEFAULT_ASSETS_LIST_ID = 'all';
+export const DEFAULT_ASSET_LIST_NAME = 'All assets';

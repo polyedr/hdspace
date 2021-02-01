@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   StyledAccordion,
@@ -6,9 +6,17 @@ import {
 } from '@Components/styledComponents';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { loadAssetLists, loadAssets } from '@Redux/project/actions';
-import { selectAssetsLoader } from '@Redux/project/selectors/base';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import {
+  loadAssetLists,
+  loadAssets,
+  setSelectedAssetListId,
+} from '@Redux/project/actions';
+import {
+  selectAssetsLoader,
+  selectCurrentProjectId,
+} from '@Redux/project/selectors/base';
+import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { selectSelectedAssetListId } from '@Redux/project/selectors/asset';
 import AssetsGrid from './AssetsGrid';
 import AssetLists from './AssetLists';
 
@@ -41,24 +49,23 @@ const useStyles = makeStyles((theme) => ({
 const AssetsSection: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [selectedListId, setSelectedListId] = useState<string | null>(null);
+  const projectId = useSelector(selectCurrentProjectId);
   const loadingAssets = useSelector(selectAssetsLoader);
+  const selectedListId = useSelector(selectSelectedAssetListId);
 
   const handleListChange = useCallback(
     (listId) => {
-      setSelectedListId(listId);
+      dispatch(setSelectedAssetListId(listId));
     },
-    [setSelectedListId],
+    [dispatch],
   );
 
   useEffect(() => {
-    dispatch(loadAssetLists());
-  }, [dispatch]);
+    dispatch(loadAssetLists(String(projectId)));
+  }, [dispatch, projectId]);
 
   useEffect(() => {
-    dispatch(
-      loadAssets(selectedListId === ALL_ASSETS_LIST_ID ? null : selectedListId),
-    );
+    dispatch(loadAssets(selectedListId || DEFAULT_ASSETS_LIST_ID));
   }, [dispatch, selectedListId]);
 
   return (
@@ -67,7 +74,7 @@ const AssetsSection: React.FC = () => {
         <StyledAccordionSummary>Project assets</StyledAccordionSummary>
         <AssetLists onListChange={handleListChange} />
         {!loadingAssets ? (
-          <AssetsGrid selectedAssetListId={selectedListId} />
+          <AssetsGrid />
         ) : (
           <div className={classes.progressWrapper}>
             <CircularProgress />

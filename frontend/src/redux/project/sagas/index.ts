@@ -86,6 +86,7 @@ import {
   uploadAssetSaga,
   addNewAssetListSaga,
   uploadElementAssetSaga,
+  removeAssetListSaga,
 } from './asset';
 
 function* removeSharedStylesSaga(
@@ -509,4 +510,5 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.ADD_ASSET_LIST, addNewAssetListSaga);
   yield takeEvery(TYPES.UPLOAD_ASSET, uploadAssetSaga);
   yield takeEvery(TYPES.UPLOAD_ELEMENT_ASSET, uploadElementAssetSaga);
+  yield takeEvery(TYPES.REMOVE_ASSET_LIST, removeAssetListSaga);
 }
