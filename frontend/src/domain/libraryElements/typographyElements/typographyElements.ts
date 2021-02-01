@@ -25,6 +25,7 @@ export const hyperlink: HyperlinkServerElement = {
       url: '',
       screenId: 'noScreen',
     },
+    events: [],
   },
   styles: {
     classNames: ['hyperlink'],

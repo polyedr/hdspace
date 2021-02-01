@@ -1,0 +1,115 @@
+import React, { FC, MouseEvent, useEffect } from 'react';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import {
+  StyledTextField,
+  StyledToggleButton,
+} from '@Components/styledComponents';
+import LinkIcon from '@material-ui/icons/Link';
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import MenuItem from '@material-ui/core/MenuItem';
+import { LinkType } from '@Src/types';
+import { useSelector } from 'react-redux';
+import {
+  selectCurrentScreenId,
+  selectScreens,
+} from '@Redux/project/selectors/screen';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+
+type Props = {
+  eventData: any;
+  setEventData: React.Dispatch<any>;
+};
+
+const Click: FC<Props> = ({ eventData, setEventData }) => {
+  // const [linkType, setLinkType] = useState<LinkType>('internal');
+  const screens = useSelector(selectScreens);
+  const currentProjectId = useSelector(selectCurrentProjectId);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
+  const { linkType, url, screenId } = eventData;
+
+  useEffect(() => {
+    if (!eventData.linkType) {
+      setEventData((prev) => ({
+        ...prev,
+        linkType: 'internal',
+        screenId: 'noScreen',
+        url: '',
+      }));
+    }
+  }, [eventData, setEventData]);
+
+  const handleLinkTypeChange = (
+    ev: MouseEvent<HTMLElement>,
+    newType: LinkType,
+  ) => {
+    if (!newType) return;
+    // setLinkType(newType);
+    setEventData((prev) => ({ ...prev, linkType: newType }));
+  };
+
+  return (
+    <div>
+      <ToggleButtonGroup
+        value={eventData.linkType || 'internal'}
+        onChange={handleLinkTypeChange}
+        size="small"
+        exclusive
+      >
+        <StyledToggleButton value="internal" title="Internal">
+          <LinkIcon />
+        </StyledToggleButton>
+
+        <StyledToggleButton value="external" title="External">
+          <InsertDriveFileIcon />
+        </StyledToggleButton>
+      </ToggleButtonGroup>
+
+      <div>
+        {linkType === 'external' && (
+          <StyledTextField
+            fullWidth
+            label="URL"
+            placeholder="Enter a page URL"
+            value={url || ''}
+            onChange={({ target: { value } }) => {
+              setEventData((prev) => ({ ...prev, url: value }));
+            }}
+            margin="dense"
+          />
+        )}
+
+        {linkType === 'internal' && (
+          <StyledTextField
+            fullWidth
+            label="Screen Id"
+            value={screenId || 'noScreen'}
+            onChange={({ target: { value } }) => {
+              setEventData((prev) => ({ ...prev, screenId: value }));
+            }}
+            margin="dense"
+            select
+          >
+            <MenuItem value="noScreen" dense>
+              No screen
+            </MenuItem>
+
+            {screens
+              .filter((screen) => screen.id !== currentScreenId)
+              .map(({ name, id }) => (
+                <MenuItem
+                  key={id}
+                  value={`/project/${currentProjectId}/${id}`}
+                  dense
+                >
+                  {name}
+                </MenuItem>
+              ))}
+          </StyledTextField>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Click;

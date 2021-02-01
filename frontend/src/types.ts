@@ -412,9 +412,16 @@ export type LibraryElementUnion =
   | SubscribeFormElement
   | FeatureSectionElement;
 
+export type ElementEvent = {
+  type: string;
+  data: any;
+};
+
 export type ImageParameters = BaseElementParams & {
   imageURL: string;
 };
+
+export type LinkType = 'internal' | 'external';
 
 export type LinkParams = BaseElementParams & {
   type: 'internal-link' | 'external-link';
@@ -430,6 +437,7 @@ export type ButtonParameters = BaseElementParams & {
 export type HyperLinkParameters = BaseElementParams & {
   textContent: string;
   action: LinkParams;
+  events?: ElementEvent[];
 };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
