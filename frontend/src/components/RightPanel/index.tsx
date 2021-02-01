@@ -11,10 +11,7 @@ import {
 } from '@Src/styles/Theme';
 import { RPTab } from '@Src/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
-import {
-  INTERACTIVE_ELEMENTS,
-  KEEP_RP_TAB_ELEMENTS,
-} from '@Constants/defaultParams';
+import { INTERACTIVE_ELEMENTS } from '@Constants/defaultParams';
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
 import PropertiesTab from './PropertiesTab';
@@ -94,6 +91,23 @@ const RightPanel: React.FC = () => {
 
   const [tabs, setTabs] = useState(defaultTabs);
 
+  const [activeTabIndex, setActiveTabIndex] = useState<number>(
+    tabs.indexOf(RPTab.Properties),
+  );
+
+  /* useEffect(() => {
+    const index = tabs.indexOf(RPTab.Elements);
+
+    if (!KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
+      // eslint-disable-next-line no-bitwise
+      setActiveTabIndex(~index ? index : 0);
+    }
+  }, [tabs, activeElement.type]); */
+
+  useEffect(() => {
+    setActiveTabIndex(0);
+  }, [activeElement]);
+
   useEffect(() => {
     let newTabs = defaultTabs;
     if (!isInteractive) {
@@ -105,18 +119,6 @@ const RightPanel: React.FC = () => {
     setTabs(newTabs);
   }, [isInteractive, isFertile]);
 
-  const [activeTabIndex, setActiveTabIndex] = useState<number>(
-    tabs.indexOf(RPTab.Properties),
-  );
-
-  useEffect(() => {
-    const index = tabs.indexOf(RPTab.Elements);
-    if (!KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
-      // eslint-disable-next-line no-bitwise
-      setActiveTabIndex(~index ? index : 0);
-    }
-  }, [tabs, activeElement.type]);
-
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {
     setActiveTabIndex(index);
   };
@@ -124,7 +126,7 @@ const RightPanel: React.FC = () => {
   return (
     <div className={classes.root}>
       <Tabs
-        value={tabs.length - 1 > activeTabIndex ? activeTabIndex : 0}
+        value={activeTabIndex}
         onChange={handleChange}
         classes={tabsClasses}
         variant="fullWidth"
