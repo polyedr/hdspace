@@ -194,14 +194,15 @@ export const selectCustomElementsHasNext = (state: AppReduxState) => {
   return !!selectProjectState(state).data.customElementsData.next;
 };
 
-export const selectActiveItemChildren = (childType: ChildEntity) => (
-  state: AppReduxState,
-) => {
-  const activeElement = selectActiveElement(state);
-  return activeElement.children
-    .map((childId) => selectElementById(childId)(state))
-    .filter((child) => child.type === childType);
-};
+export const selectActiveItemChildren = (childType: ChildEntity) =>
+  createSelector(
+    selectActiveElement,
+    selectAllElements,
+    (activeElement, elements) =>
+      activeElement.children
+        .map((childId) => elements[childId])
+        .filter((child) => child.type === childType),
+  );
 
 export const selectElementStyles = (elementId: string) => ({
   project,

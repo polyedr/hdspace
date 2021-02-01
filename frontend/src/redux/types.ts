@@ -374,6 +374,15 @@ export type CreateElements = IAction<
   ElementHistoryMeta
 >;
 
+export type AddChildrenToElement = IAction<
+  typeof TYPES.ADD_CHILDREN_TO_ELEMENT,
+  {
+    children: { childType: ServerStructType; parameters: {} }[];
+    elementId: string;
+  },
+  ElementHistoryMeta
+>;
+
 export type AddChildToElement = IAction<
   typeof TYPES.ADD_CHILD_TO_ELEMENT,
   {
@@ -654,6 +663,7 @@ export type Action =
   | CreateElements
   | DeleteElement
   | AddChildToElement
+  | AddChildrenToElement
   | UploadFile
   | uploadImageForNNSuccess
   | GetScreenNN

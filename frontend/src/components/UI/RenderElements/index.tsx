@@ -1,4 +1,8 @@
 import React from 'react';
+import Grid from '@Components/UI/RenderElements/Grid';
+import Column from '@Components/UI/RenderElements/Columns/Column';
+import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
+import { Entity, NNBlockType } from '@Src/types';
 import Button from './Button/Button';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
@@ -26,10 +30,10 @@ import Container from './Container/Container';
 import Section from './Section/Section';
 import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
-import { Entity, NNBlockType } from '../../../types';
 import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
 import SelectItem from './Select/SelectItem';
+import GridItem from './Grid/GridItem';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {
@@ -38,8 +42,11 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   divBlock: DivBlockRenderer,
   pageTemplate: Container,
   emptyPageTemplate: Container,
-  grid: Container,
+  nativeColumns: NativeColumns,
+  gridItem: GridItem,
+  grid: Grid,
   columns: Columns,
+  column: Column,
   button: Button,
   textinput: Input,
   radiobutton: Radiobutton,

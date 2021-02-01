@@ -1,5 +1,6 @@
 import IMAGES from '@Constants/images';
 import {
+  ColumnServerElement,
   ColumnsServerElement,
   ContainerServerElement,
   DivBlockServerElement,
@@ -67,6 +68,23 @@ export const makeContainer = ({
   children,
 });
 
+export const makeGridItem = () => ({
+  buoyancy: 0,
+  name: 'gridItem',
+  func_type: 'gridItem',
+  struct_type: 'gridItem' as const,
+  parameters: {
+    ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
+  },
+  styles: {
+    classNames: ['gridItem'],
+    ownStyles: {},
+  },
+  children: [],
+});
+
 export const makeGrid = (): GridServerElement => ({
   buoyancy: 0,
   name: 'grid',
@@ -81,10 +99,29 @@ export const makeGrid = (): GridServerElement => ({
     classNames: ['grid'],
     ownStyles: {},
   },
-  children: [],
+  children: [makeGridItem(), makeGridItem(), makeGridItem(), makeGridItem()],
 });
 
-export const makeColumns = (): ColumnsServerElement => ({
+export const column: ColumnServerElement = {
+  buoyancy: 0,
+  name: 'column',
+  func_type: 'column',
+  struct_type: 'column' as const,
+  parameters: {
+    ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
+  },
+  styles: {
+    classNames: ['column'],
+    ownStyles: {},
+  },
+  children: [],
+};
+
+export const makeColumns = (
+  columnsCount: number = 2,
+): ColumnsServerElement => ({
   buoyancy: 0,
   name: 'columns',
   func_type: 'columns',
@@ -98,8 +135,25 @@ export const makeColumns = (): ColumnsServerElement => ({
     classNames: ['columns'],
     ownStyles: {},
   },
-  children: [],
+  children: new Array(columnsCount).fill(column),
 });
+
+export const nativeColumns = {
+  buoyancy: 0,
+  name: 'nativeColumns',
+  func_type: 'nativeColumns',
+  struct_type: 'nativeColumns' as const,
+  parameters: {
+    ...defaultFreeCanvasParams,
+    width: '50%',
+    height: '50%',
+  },
+  styles: {
+    classNames: ['nativeColumns'],
+    ownStyles: {},
+  },
+  children: [],
+};
 
 export const makeDivBlock = (textContent: string): DivBlockServerElement => {
   return {

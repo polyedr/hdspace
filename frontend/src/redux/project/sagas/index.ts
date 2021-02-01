@@ -15,6 +15,7 @@ import {
   StateElement,
 } from '@Src/types';
 import {
+  addChildrenToElementSaga,
   addChildToElementSaga,
   createElements,
   createElementsSaga,
@@ -485,6 +486,7 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
 
   yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
+  yield takeEvery(TYPES.ADD_CHILDREN_TO_ELEMENT, addChildrenToElementSaga);
   yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);
 
   yield takeEvery(TYPES.DELETE_ELEMENT, softDeleteSaga);
