@@ -351,6 +351,8 @@ class ProjectIllustrationSetList(generics.ListCreateAPIView):
 
     queryset = ProjectIllustrationSet.objects.all()
     serializer_class = IllustrationSetSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['project']
 
 
 class ProjectIllustrationSetDetail(generics.RetrieveUpdateDestroyAPIView):
