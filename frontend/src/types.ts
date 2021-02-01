@@ -415,6 +415,7 @@ export type LibraryElementUnion =
 export type ElementEvent = {
   type: string;
   data: any;
+  id: string;
 };
 
 export type ImageParameters = BaseElementParams & {
@@ -437,7 +438,7 @@ export type ButtonParameters = BaseElementParams & {
 export type HyperLinkParameters = BaseElementParams & {
   textContent: string;
   action: LinkParams;
-  events?: ElementEvent[];
+  events: ElementEvent[];
 };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';

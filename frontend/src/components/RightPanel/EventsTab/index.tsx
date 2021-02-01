@@ -1,10 +1,10 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import {
   StyledIconButton,
   StyledTextField,
 } from '@Components/styledComponents';
-import { HyperLinkParameters } from '@Src/types';
+import { ElementEvent, HyperLinkParameters } from '@Src/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
@@ -16,11 +16,16 @@ import Button from '@material-ui/core/Button';
 import Click from '@Components/RightPanel/EventsTab/Click';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import EventListItem from '@Components/RightPanel/EventsTab/EventListItem';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   root: {
     padding: spacing(2),
     backgroundColor: palette.panel.light,
+  },
+  eventList: {
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
@@ -31,15 +36,30 @@ const EventsTab: FC = () => {
   const activeElement = useSelector(selectActiveElement);
   const screenId = useSelector(selectCurrentScreenId);
 
-  const [edit, setEdit] = useState(false);
+  const [create, setCreate] = useState(false);
   const [eventType, setEventType] = useState('click');
   const [eventData, setEventData] = useState<any>({});
+  const [eventToEdit, setEventToEdit] = useState<string>('');
+
+  useEffect(() => {
+    setEventType('click');
+    setEventData({});
+    setEventToEdit('');
+  }, [params]);
 
   const handleSubmit = () => {
-    const newEvent = { type: eventType, data: eventData };
-    const newEventList = params.events
-      ? [...params.events, newEvent]
-      : [newEvent];
+    const newEvent: ElementEvent = {
+      type: eventType,
+      data: eventData,
+      id: Date.now().toString(),
+    };
+
+    const newEventList = eventToEdit
+      ? params.events.map((event) =>
+          event.id === eventToEdit ? { ...newEvent, id: event.id } : event,
+        )
+      : [...params.events, newEvent];
+
     dispatch(
       updateElementParameters(
         activeElement.id,
@@ -47,17 +67,47 @@ const EventsTab: FC = () => {
         { screenId },
       ),
     );
-    setEdit(false);
+
+    setEventToEdit('');
+    setCreate(false);
+  };
+
+  const handleEditListItem = (event: ElementEvent) => {
+    setEventToEdit(event.id);
+    setEventType(event.type);
+    setEventData(event.data);
+    setCreate(true);
+  };
+
+  const handleDeleteListItem = (eventId: string) => {
+    dispatch(
+      updateElementParameters(
+        activeElement.id,
+        { events: params.events.filter((event) => event.id !== eventId) },
+        { screenId },
+      ),
+    );
   };
 
   return (
     <div className={classes.root}>
-      {params.events?.map((event) => event.type)}
+      {!create ? (
+        <>
+          <div className={classes.eventList}>
+            {params.events?.map((event, i) => (
+              <EventListItem
+                key={i}
+                event={event}
+                onEdit={handleEditListItem}
+                onDelete={handleDeleteListItem}
+              />
+            ))}
+          </div>
 
-      {!edit ? (
-        <StyledIconButton title="Add event" onClick={() => setEdit(true)}>
-          <AddIcon />
-        </StyledIconButton>
+          <StyledIconButton title="Add event" onClick={() => setCreate(true)}>
+            <AddIcon />
+          </StyledIconButton>
+        </>
       ) : (
         <div>
           <StyledTextField
@@ -78,7 +128,7 @@ const EventsTab: FC = () => {
           )}
 
           <div>
-            <Button variant="contained" onClick={() => setEdit(false)}>
+            <Button variant="contained" onClick={() => setCreate(false)}>
               Cancel
             </Button>
 
