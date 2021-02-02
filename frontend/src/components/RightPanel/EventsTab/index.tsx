@@ -4,7 +4,7 @@ import {
   StyledIconButton,
   StyledTextField,
 } from '@Components/styledComponents';
-import { ElementEvent, HyperLinkParameters } from '@Src/types';
+import { ElementEvent, EventType, HyperLinkParameters } from '@Src/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
@@ -47,12 +47,12 @@ const EventsTab: FC = () => {
   const screenId = useSelector(selectCurrentScreenId);
 
   const [create, setCreate] = useState(false);
-  const [eventType, setEventType] = useState('click');
+  const [eventType, setEventType] = useState(EventType.Click);
   const [eventData, setEventData] = useState<any>({});
   const [eventToEdit, setEventToEdit] = useState<string>('');
 
   useEffect(() => {
-    setEventType('click');
+    setEventType(EventType.Click);
     setEventData({});
     setEventToEdit('');
   }, [events]);
@@ -100,7 +100,7 @@ const EventsTab: FC = () => {
   };
 
   const handleCancel = () => {
-    setEventType('click');
+    setEventType(EventType.Click);
     setEventData({});
     setEventToEdit('');
     setCreate(false);
@@ -134,17 +134,21 @@ const EventsTab: FC = () => {
           <StyledTextField
             label="Event Type"
             value={eventType}
-            onChange={(ev) => setEventType(ev.target.value)}
+            onChange={(ev) => setEventType(ev.target.value as EventType)}
             fullWidth
             margin="dense"
             select
           >
-            <MenuItem value="click" dense>
-              Click
-            </MenuItem>
+            {(Object.keys(EventType).map(
+              (k) => EventType[k],
+            ) as EventType[]).map((eventType) => (
+              <MenuItem value={eventType} dense key={eventType}>
+                {eventType}
+              </MenuItem>
+            ))}
           </StyledTextField>
 
-          {eventType === 'click' && (
+          {eventType === EventType.Click && (
             <Click eventData={eventData} setEventData={setEventData} />
           )}
 

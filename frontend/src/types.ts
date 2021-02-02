@@ -412,8 +412,12 @@ export type LibraryElementUnion =
   | SubscribeFormElement
   | FeatureSectionElement;
 
+export enum EventType {
+  Click = 'Click',
+}
+
 export interface ElementEvent {
-  type: string;
+  type: EventType;
   data: any;
   id: string;
 }

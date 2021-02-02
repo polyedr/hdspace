@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router';
 import cn from 'classnames';
 import prevent from '@Utils/preventEvent';
-import { ElementClickEvent } from '@Src/types';
+import { ElementClickEvent, EventType } from '@Src/types';
 import { HyperLinkRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
@@ -17,9 +17,9 @@ const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
 
     const history = useHistory();
 
-    // return first event of type 'click'
+    // return first event of type 'Click'
     const clickEvent: ElementClickEvent | undefined = events.find(
-      (event) => event.type === 'click',
+      (event) => event.type === EventType.Click,
     );
 
     const eventHandlers = useEventHandlers(props, {
