@@ -9,6 +9,7 @@ import {
   removeMapElement,
   updateMapElement,
 } from '@Utils/normalizedStateHelpers';
+import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { initialData } from '../initial';
 import TYPES from '../../actionTypes';
 import { Project, Screen } from '../../../types';
@@ -175,6 +176,59 @@ const dataReducer = produce(
       }
       case TYPES.REMOVE_FILE_INPUT: {
         delete draft.elementInputs[action.payload.id];
+        break;
+      }
+
+      case TYPES.SET_ASSET_LISTS: {
+        draft.assetLists = action.payload;
+        break;
+      }
+
+      case TYPES.SET_ASSETS: {
+        const { listId } = action.payload;
+        draft.assetResults = {
+          ...draft.assetResults,
+          [listId]: action.payload.assets,
+        };
+        break;
+      }
+
+      case TYPES.ADD_ASSET_LIST_REDUX: {
+        draft.assetLists = {
+          ...draft.assetLists,
+          results: [action.payload, ...draft.assetLists.results],
+        };
+        break;
+      }
+
+      case TYPES.ADD_ASSET_REDUX: {
+        draft.assetResults = {
+          ...draft.assetResults,
+          [action.payload.listId]: {
+            ...draft.assetResults[action.payload.listId],
+            results: [
+              action.payload.asset,
+              ...draft.assetResults[action.payload.listId].results,
+            ],
+          },
+        };
+
+        // update all images section, should be removed in the future
+        draft.assetResults[DEFAULT_ASSETS_LIST_ID].results = [
+          action.payload.asset,
+          ...draft.assetResults[DEFAULT_ASSETS_LIST_ID].results,
+        ];
+        break;
+      }
+
+      case TYPES.REMOVE_ASSET_LIST_REDUX: {
+        draft.assetLists.results.splice(
+          draft.assetLists.results.findIndex(
+            (assetList) => assetList.id === action.payload,
+          ),
+          1,
+        );
+        delete draft.assetResults[action.payload];
         break;
       }
 

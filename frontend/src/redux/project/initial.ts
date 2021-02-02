@@ -25,6 +25,14 @@ export const initialData: ProjectDataState = {
     pageSize: 40,
   },
   elementInputs: {},
+  assetLists: {
+    previous: null,
+    next: null,
+    results: [],
+    loading: false,
+    pageSize: 40,
+  },
+  assetResults: {},
 };
 
 export const initialUi: ProjectUiState = {
@@ -48,6 +56,7 @@ export const initialEdit: ProjectEditState = {
   currentScreenId: -1,
   activeElementId: '-1',
   hoveredElementId: '-1',
+  selectedAssetListId: null,
   freeCanvas: {
     enabled: false,
     lastElements: {},
@@ -61,6 +70,7 @@ export const initialCommunication: ProjectCommunicationState = {
   projectLoader: false,
   projectCreateLoader: false,
   analyzerLoader: false,
+  assetsLoader: false,
 };
 
 export const initialControl: ProjectControlState = {

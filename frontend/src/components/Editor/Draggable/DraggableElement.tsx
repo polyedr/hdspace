@@ -153,10 +153,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         );
       } else {
         const elementData = dragSource.original as ElementData;
-        const { id, type, name, custom } = elementData;
+        const { id, type, name, custom, parameters } = elementData;
         dispatch(
           createElements(
-            [{ id, type, name, custom }],
+            [{ id, type, name, custom, parameters }],
             { screenId },
             dropTarget.id,
             index,
