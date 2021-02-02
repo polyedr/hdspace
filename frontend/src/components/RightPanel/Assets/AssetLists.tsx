@@ -80,7 +80,9 @@ const AssetLists = ({ onListChange }: Props) => {
             endAdornment: (
               <IconButton
                 aria-label="Confirm"
+                title="Cancel"
                 onClick={() => {
+                  setNewAssetName('');
                   setAddInProgress(false);
                 }}
                 className={classes.newAssetListCloseBtn}
@@ -110,25 +112,16 @@ const AssetLists = ({ onListChange }: Props) => {
         </Select>
       )}
 
-      <div>
-        <input
-          accept="image/*"
-          className={classes.imageInput}
-          id="upload-asset"
-          type="file"
-        />
-
-        <label htmlFor="upload-asset">
-          <IconButton
-            aria-label="add"
-            onClick={() => {
-              setAddInProgress(true);
-            }}
-          >
-            <AddIcon />
-          </IconButton>
-        </label>
-      </div>
+      <IconButton
+        aria-label="add"
+        title="Upload asset"
+        disabled={addInProgress}
+        onClick={() => {
+          setAddInProgress(true);
+        }}
+      >
+        <AddIcon />
+      </IconButton>
     </div>
   );
 };

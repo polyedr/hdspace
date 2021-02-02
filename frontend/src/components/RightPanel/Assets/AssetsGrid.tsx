@@ -34,6 +34,9 @@ const AssetsGrid = () => {
   const handleUploadAsset = useCallback(
     ({ target }) => {
       const file = target.files[0];
+      if (!file) {
+        return;
+      }
 
       if (file.size > 5242880) {
         // eslint-disable-next-line no-alert

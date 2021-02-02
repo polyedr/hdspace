@@ -8,20 +8,6 @@ import {
 } from './converters/asset/fromResponse';
 import { handleError } from './project';
 
-export const apiGetAsset = (props: MyAxiosProps & { imageId: string }) => {
-  const { imageId, ...axiosProps } = props;
-  return myAxios({
-    ...axiosProps,
-    url: `/projects/images/${imageId}`,
-    method: 'GET',
-    params: {
-      ...(axiosProps.params || {}),
-    },
-  })
-    .then(() => {})
-    .catch(handleError);
-};
-
 export const apiCreateAsset = (
   props: MyAxiosProps & { assetFormData: FormData },
 ) => {

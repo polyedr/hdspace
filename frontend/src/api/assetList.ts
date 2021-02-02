@@ -5,7 +5,6 @@ import {
   convertResponseToPaginatedAssetLists,
   convertResponseToAssetList,
   ServerAssetList,
-  convertFromServerAssetList,
 } from './converters/assetList/fromResponse';
 import { handleError } from './project';
 
@@ -53,17 +52,4 @@ export const apiDeleteAssetList = (props: MyAxiosProps & { id: string }) => {
     method: 'DELETE',
     url: `/projects/illustrations/${id}`,
   });
-};
-
-export const apiGetAssetList = (
-  props: MyAxiosProps & { projectId: string; illustrationId: string },
-) => {
-  const { illustrationId, ...axiosProps } = props;
-  myAxios({
-    ...axiosProps,
-    method: 'GET',
-    url: `/projects/illustrations/${illustrationId}/`,
-  })
-    .then((response) => convertFromServerAssetList(response.data))
-    .catch(handleError);
 };
