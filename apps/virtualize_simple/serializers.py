@@ -2923,7 +2923,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
             # Generating HTML for printing
             html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
-            # print("html=", html)
+            print("html=", html)
 
             # Print html code
             with open(fname + ".html", "w") as html_file:
