@@ -18,6 +18,9 @@ import {
   SCREEN_FORMATS,
   PaginatedResponse,
   PropertyName,
+  AssetsList,
+  Asset,
+  PaginatedArray,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -94,6 +97,9 @@ import {
   SetScreenCreateLoader,
   SetBordersEnabled,
   SetEditorDocument,
+  SetAssetsLoader,
+  UploadElementAsset,
+  RemoveAssetList,
   AddChildrenToElement,
 } from '../types';
 
@@ -193,6 +199,11 @@ export const setProjectCreateLoader = (
 
 export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   type: TYPES.SET_ANALYZER_LOADER,
+  payload: { active },
+});
+
+export const setAssetsLoader = (active: boolean): SetAssetsLoader => ({
+  type: TYPES.SET_ASSETS_LOADER,
   payload: { active },
 });
 
@@ -485,6 +496,21 @@ export const updateElementImage = (
 ): UpdateElementImage => ({
   type: TYPES.UPDATE_ELEMENT_IMAGE,
   payload: { itemID, image },
+  meta,
+});
+
+export const uploadElementAsset = (
+  elementId: string,
+  asset: File,
+  listId: string,
+  meta: ElementHistoryMeta,
+): UploadElementAsset => ({
+  type: TYPES.UPLOAD_ELEMENT_ASSET,
+  payload: {
+    elementId,
+    asset,
+    listId,
+  },
   meta,
 });
 
@@ -822,4 +848,82 @@ export const importHtml = (files: File[]) => ({
 export const setEditorDocument = (doc: Document): SetEditorDocument => ({
   type: TYPES.SET_EDITOR_DOCUMENT,
   payload: doc,
+});
+
+export const loadAssetLists = (projectId: string) => ({
+  type: TYPES.LOAD_ASSET_LISTS,
+  payload: projectId,
+});
+
+export const loadAssets = (selectedListId: string) => ({
+  type: TYPES.LOAD_ASSETS,
+  payload: {
+    selectedListId,
+  },
+});
+
+export const setAssetLists = (assetLists: PaginatedArray<AssetsList>) => ({
+  type: TYPES.SET_ASSET_LISTS,
+  payload: assetLists,
+});
+
+export const addAssetList = (name: string, meta?: HistoryMeta) => ({
+  type: TYPES.ADD_ASSET_LIST,
+  payload: { name },
+  meta,
+});
+
+export const removeAssetList = (
+  id: string,
+  meta?: HistoryMeta,
+): RemoveAssetList => ({
+  type: TYPES.REMOVE_ASSET_LIST,
+  payload: id,
+  meta,
+});
+
+export const removeAssetListRedux = (id: string) => ({
+  type: TYPES.REMOVE_ASSET_LIST_REDUX,
+  payload: id,
+});
+
+export const addAssetListToState = (list: AssetsList) => ({
+  type: TYPES.ADD_ASSET_LIST_REDUX,
+  payload: list,
+});
+
+export const uploadAsset = (
+  assetFile: any,
+  listId?: string,
+  meta?: HistoryMeta,
+) => ({
+  type: TYPES.UPLOAD_ASSET,
+  payload: {
+    listId,
+    assetFile,
+  },
+  meta,
+});
+
+export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
+  type: TYPES.SET_ASSETS,
+  payload: {
+    listId,
+    assets,
+  },
+});
+
+export const addAssetToState = (listId: string, asset: Asset) => ({
+  type: TYPES.ADD_ASSET_REDUX,
+  payload: {
+    listId,
+    asset,
+  },
+});
+
+export const setSelectedAssetListId = (listId: string) => ({
+  type: TYPES.SET_SELECTED_ASSET_LIST_ID,
+  payload: {
+    assetListId: listId,
+  },
 });

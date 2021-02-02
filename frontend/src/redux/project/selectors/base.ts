@@ -147,3 +147,6 @@ export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
 
 export const selectEditorDocument = ({ project }: AppReduxState) =>
   project.ui.editorDocument;
+
+export const selectAssetsLoader = ({ project }: AppReduxState) =>
+  project.communication.assetsLoader;

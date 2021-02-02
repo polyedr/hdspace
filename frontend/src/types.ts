@@ -776,6 +776,7 @@ export type ElementData = {
   icon: OverridableComponent<SvgIconTypeMap> | undefined;
   name: string;
   custom: boolean;
+  parameters?: any;
 };
 
 export type ElementsHierarchy = {
@@ -1032,6 +1033,27 @@ export type GroupElement = {
   label: string;
   custom?: boolean;
   value: { structType: ServerStructType; funcType: ServerStructType };
+};
+
+export type AssetsList = {
+  id: string;
+  name: string;
+  created: Date;
+  modified: Date;
+  projectId: string;
+  images: Asset[];
+};
+
+export type Asset = {
+  id: string;
+  image: string | null;
+  created: Date;
+  modified: Date;
+  listId: string;
+};
+
+export type AssetResults = {
+  [listId: string]: PaginatedArray<Asset>;
 };
 
 export interface ISignUpData {

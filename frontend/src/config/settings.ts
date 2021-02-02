@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import { MyAxiosProps } from '@Src/types';
+import axios from 'axios';
 
 export const env = process.env.NODE_ENV;
 
@@ -24,11 +25,6 @@ const settings = {
 };
 
 const { api } = settings[env] || settings.development;
-
-export type MyAxiosProps = {
-  access?: string;
-  contentType?: string;
-} & Partial<AxiosRequestConfig>;
 
 export const myAxios = (props: MyAxiosProps) => {
   const authorization = props.access
