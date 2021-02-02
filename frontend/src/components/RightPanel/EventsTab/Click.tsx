@@ -7,7 +7,7 @@ import {
 import LinkIcon from '@material-ui/icons/Link';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import MenuItem from '@material-ui/core/MenuItem';
-import { LinkType } from '@Src/types';
+import { ElementClickEvent, LinkType } from '@Src/types';
 import { useSelector } from 'react-redux';
 import {
   selectCurrentScreenId,
@@ -16,12 +16,11 @@ import {
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 type Props = {
-  eventData: any;
+  eventData: ElementClickEvent['data'];
   setEventData: React.Dispatch<any>;
 };
 
 const Click: FC<Props> = ({ eventData, setEventData }) => {
-  // const [linkType, setLinkType] = useState<LinkType>('internal');
   const screens = useSelector(selectScreens);
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);

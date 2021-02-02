@@ -2,9 +2,9 @@
 import React, { DOMAttributes } from 'react';
 import {
   HeadingType,
+  HyperLinkParameters,
   IMapProps,
   InputType,
-  LinkParams,
   NNBlockType,
   VideoSettingsType,
 } from '@Src/types';
@@ -119,13 +119,8 @@ export type DropdownItemRendererProps = SharedRendererProps & {
   };
 };
 
-export type ActionRendererProps = SharedRendererProps & {
-  type: string;
-  params: {
-    action: LinkParams;
-    textContent: string;
-    showRipple: boolean;
-  };
+export type HyperLinkRendererProps = SharedRendererProps & {
+  params: HyperLinkParameters;
 };
 
 export type CheckboxRendererProps = SharedRendererProps & {

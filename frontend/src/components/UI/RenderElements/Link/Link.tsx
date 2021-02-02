@@ -1,40 +1,53 @@
 import React from 'react';
 import { useHistory } from 'react-router';
 import cn from 'classnames';
-import { ActionRendererProps } from '../types';
+import prevent from '@Utils/preventEvent';
+import { ElementClickEvent } from '@Src/types';
+import { HyperLinkRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles('link');
 
-const Link = React.forwardRef<HTMLAnchorElement, ActionRendererProps>(
+const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
   (props, ref) => {
+    const classes = useStyles(props);
     const { id, isDisabled, params, className, groupClass } = props;
-    const { textContent, action } = params;
+    const { textContent, events } = params;
 
     const history = useHistory();
 
-    const classes = useStyles(props);
+    // return first event of type 'click'
+    const clickEvent: ElementClickEvent | undefined = events.find(
+      (event) => event.type === 'click',
+    );
+
     const eventHandlers = useEventHandlers(props, {
       onClick: (event) => {
         if (isDisabled) {
-          event.stopPropagation();
-          event.preventDefault();
+          prevent(event);
           return;
         }
+
+        if (!clickEvent) {
+          prevent(event);
+          return;
+        }
+
         if (
-          action.type === 'internal-link' &&
-          action.screenId &&
-          action.screenId !== 'noScreen'
+          clickEvent.data.linkType === 'internal' &&
+          clickEvent.data.screenId
         ) {
-          event.stopPropagation();
-          event.preventDefault();
-          history.push(action.screenId);
+          prevent(event);
+          if (clickEvent.data.screenId !== 'noScreen') {
+            history.push(clickEvent.data.screenId);
+          }
         }
       },
     });
 
     return (
+      // eslint-disable-next-line jsx-a11y/anchor-is-valid
       <a
         ref={ref}
         id={id}
@@ -46,8 +59,10 @@ const Link = React.forwardRef<HTMLAnchorElement, ActionRendererProps>(
           isDisabled && classes.disabled,
           classes.ownStyles,
         )}
-        href={action.url}
-        target={action.type === 'external-link' ? '_blank' : '_parent'}
+        href={
+          clickEvent?.data.linkType === 'external' ? clickEvent.data.url : ''
+        }
+        target={clickEvent?.data.linkType === 'external' ? '_blank' : '_parent'}
         {...eventHandlers}
       >
         {textContent}

@@ -412,11 +412,19 @@ export type LibraryElementUnion =
   | SubscribeFormElement
   | FeatureSectionElement;
 
-export type ElementEvent = {
+export interface ElementEvent {
   type: string;
   data: any;
   id: string;
-};
+}
+
+export interface ElementClickEvent extends ElementEvent {
+  data: {
+    linkType: LinkType;
+    url: string;
+    screenId: string;
+  };
+}
 
 export type ImageParameters = BaseElementParams & {
   imageURL: string;
