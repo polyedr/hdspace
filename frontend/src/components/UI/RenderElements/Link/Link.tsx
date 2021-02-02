@@ -24,12 +24,7 @@ const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
 
     const eventHandlers = useEventHandlers(props, {
       onClick: (event) => {
-        if (isDisabled) {
-          prevent(event);
-          return;
-        }
-
-        if (!clickEvent) {
+        if (isDisabled || !clickEvent) {
           prevent(event);
           return;
         }
