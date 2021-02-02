@@ -29,10 +29,6 @@ export const makeButton = ({
     ...defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent,
-    action: {
-      type: 'internal-link',
-      screenId: 'noScreen',
-    },
     showRipple: true,
   },
   styles: {

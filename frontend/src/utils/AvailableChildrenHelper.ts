@@ -58,6 +58,13 @@ export const canElementHaveChildren = (
   return !!Object.entries(AVAILABLE_CHILDREN[elementType]).length;
 };
 
+export const canElementHaveAllChildren = (
+  elementType: Entity | 'none',
+): boolean => {
+  if (elementType === 'none') return false;
+  return 'all' in AVAILABLE_CHILDREN[elementType];
+};
+
 export const isAvailableChild = (
   parentElement: StateElement,
   elementType: Entity | 'none',

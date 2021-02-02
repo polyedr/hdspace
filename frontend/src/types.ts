@@ -412,25 +412,44 @@ export type LibraryElementUnion =
   | SubscribeFormElement
   | FeatureSectionElement;
 
+export enum EventType {
+  Click = 'Click',
+}
+
+export interface ElementEvent {
+  type: EventType;
+  data: any;
+  id: string;
+}
+
+export interface ElementClickEvent extends ElementEvent {
+  data: {
+    linkType: LinkType;
+    url: string;
+    screenId: string;
+  };
+}
+
 export type ImageParameters = BaseElementParams & {
   imageURL: string;
 };
 
+export type LinkType = 'internal' | 'external';
+
 export type LinkParams = BaseElementParams & {
   type: 'internal-link' | 'external-link';
-  url?: string;
-  screenId?: string;
+  url: string;
+  screenId: string;
 };
 
 export type ButtonParameters = BaseElementParams & {
   textContent: string;
-  action: LinkParams;
   showRipple: boolean;
 };
 
 export type HyperLinkParameters = BaseElementParams & {
   textContent: string;
-  action: LinkParams;
+  events: ElementEvent[];
 };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
@@ -1063,9 +1082,10 @@ export const enum NNBlockType {
   WEBPAGE = 'webpages',
 }
 
-export const enum RightPanelTab {
-  PROPERTIES = 0,
-  ELEMENTS = 1,
+export enum RPTab {
+  Properties = 'Properties',
+  Elements = 'Elements',
+  Events = 'Events',
 }
 
 export const enum SCREEN_FORMATS {
@@ -1075,7 +1095,6 @@ export const enum SCREEN_FORMATS {
 }
 
 export const CONTROLS_AFFECT_ON_PARAMS = [
-  'action',
   'columns',
   'mapProps',
   'placeholder',

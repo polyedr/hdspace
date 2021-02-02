@@ -15,11 +15,7 @@ import { useDispatch } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { importHtml } from '@Redux/project/actions';
 import prettyBytes from 'pretty-bytes';
-
-const prevent = (ev: React.BaseSyntheticEvent) => {
-  ev.stopPropagation();
-  ev.preventDefault();
-};
+import prevent from '@Utils/preventEvent';
 
 const useStyles = makeStyles(({ palette, shape, spacing }) =>
   createStyles({

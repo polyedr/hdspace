@@ -30,7 +30,6 @@ import SizeBlock from './Controls/SizeBlock/SizeBlock';
 import TypographyBlock from './Controls/TypographyBlock';
 import BorderBlock from './Controls/BorderBlock';
 import BackgroundBlock from './Controls/BackgroundBlock';
-import ActionBlock from './Controls/ActionBlock';
 import MapProps from './Controls/MapProps/MapProps';
 import Placeholder from './Controls/Placeholder/Placeholder';
 import TextContent from './Controls/TextContent/TextContent';
@@ -97,7 +96,6 @@ const CONTROLS: Record<Control, ControlInfo> = {
     styles: ['borderColor', 'borderWidth', 'borderRadius'],
   },
   background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
-  action: { Control: ActionBlock },
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
   textContent: { Control: TextContent, styles: [] },

@@ -3,7 +3,7 @@ import React from 'react';
 import cn from 'classnames';
 import { WithActionProps } from '@Src/types';
 
-import { ActionRendererProps } from '../types';
+import { HyperLinkRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
@@ -26,7 +26,7 @@ const useStyles = makeComponentStyles('button', {
 });
 
 type Props = WithActionProps &
-  ActionRendererProps & {
+  HyperLinkRendererProps & {
     type: string;
   };
 

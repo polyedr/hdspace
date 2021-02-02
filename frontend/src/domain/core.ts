@@ -354,7 +354,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   checkbox: ['value', 'name', ...checkboxStyleControls, 'showRipple'],
   radiobutton: ['value', 'name', ...radiobuttonStyleControls, 'showRipple'],
   label: ['textContent', 'labelFor', ...labelStyleControls],
-  hyperlink: ['textContent', 'action', ...hyperlinkStyleControls],
+  hyperlink: ['textContent', ...hyperlinkStyleControls],
   heading: ['textContent', 'headingType', ...headingStyleControls],
   paragraph: ['textContent', ...paragraphStyleControls],
   ocrtext: ['textContent', ...paragraphStyleControls],
