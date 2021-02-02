@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { ElementEvent } from '@Src/types';
+import { ElementEvent, EventType } from '@Src/types';
 import { StyledIconButton } from '@Components/styledComponents';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import ClickEventTitle from '@Components/RightPanel/EventsTab/ClickEventTitle';
 
 const useStyles = makeStyles(({ spacing, shape }) => ({
   root: {
     padding: spacing(1),
     border: '1px solid rgba(255, 255, 255, 0.1)',
     borderRadius: shape.borderRadius,
-    textTransform: 'capitalize',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -29,7 +29,9 @@ const EventListItem: FC<Props> = ({ event, onEdit, onDelete }) => {
 
   return (
     <div className={classes.root}>
-      <div>{event.type}</div>
+      {event.type === EventType.Click && (
+        <ClickEventTitle eventData={event.data} />
+      )}
 
       <div>
         <StyledIconButton size="small" onClick={() => onEdit(event)}>
