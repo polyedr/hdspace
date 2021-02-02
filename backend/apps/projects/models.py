@@ -290,7 +290,7 @@ class ProjectImage(TimeStampedModel):
         upload_to="uploads/", blank=True, null=True, max_length=256
     )
     illustration_set = models.ForeignKey(
-        ProjectIllustrationSet, default=None, related_name="images", on_delete=models.PROTECT
+        ProjectIllustrationSet, default=None, related_name="images", null=True, blank=True, on_delete=models.CASCADE
     )
 
 
