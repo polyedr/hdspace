@@ -8,8 +8,8 @@ import {
   selectSelectedAssetListId,
 } from '@Redux/project/selectors/asset';
 import {
-  DEFAULT_ASSETS_LIST_ID,
-  DEFAULT_ASSET_LIST_NAME,
+  ALL_ASSET_LIST_NAME,
+  ALL_ASSETS_LIST_ID,
 } from '@Constants/defaultParams';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
@@ -95,15 +95,13 @@ const AssetLists = ({ onListChange }: Props) => {
       ) : (
         <Select
           label="Asset list"
-          value={selectedAssetListId || DEFAULT_ASSETS_LIST_ID}
+          value={selectedAssetListId || ALL_ASSETS_LIST_ID}
           className={classes.assetsSelector}
           onChange={(event) =>
             onListChange((event.target.value as string) || null)
           }
         >
-          <MenuItem value={DEFAULT_ASSETS_LIST_ID}>
-            {DEFAULT_ASSET_LIST_NAME}
-          </MenuItem>
+          <MenuItem value={ALL_ASSETS_LIST_ID}>{ALL_ASSET_LIST_NAME}</MenuItem>
           {assetLists.map((list) => (
             <MenuItem key={`list-${list.id}`} value={list.id}>
               {list.name}

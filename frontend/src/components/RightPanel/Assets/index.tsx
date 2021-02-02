@@ -15,7 +15,7 @@ import {
   selectAssetsLoader,
   selectCurrentProjectId,
 } from '@Redux/project/selectors/base';
-import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { selectSelectedAssetListId } from '@Redux/project/selectors/asset';
 import AssetsGrid from './AssetsGrid';
 import AssetLists from './AssetLists';
@@ -65,7 +65,7 @@ const AssetsSection: React.FC = () => {
   }, [dispatch, projectId]);
 
   useEffect(() => {
-    dispatch(loadAssets(selectedListId || DEFAULT_ASSETS_LIST_ID));
+    dispatch(loadAssets(selectedListId || ALL_ASSETS_LIST_ID));
   }, [dispatch, selectedListId]);
 
   return (
