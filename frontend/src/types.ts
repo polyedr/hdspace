@@ -445,7 +445,6 @@ export type ButtonParameters = BaseElementParams & {
 
 export type HyperLinkParameters = BaseElementParams & {
   textContent: string;
-  action: LinkParams;
   events: ElementEvent[];
 };
 
@@ -1092,7 +1091,6 @@ export const enum SCREEN_FORMATS {
 }
 
 export const CONTROLS_AFFECT_ON_PARAMS = [
-  'action',
   'columns',
   'mapProps',
   'placeholder',

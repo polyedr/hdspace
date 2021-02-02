@@ -20,11 +20,6 @@ export const hyperlink: HyperlinkServerElement = {
     ...defaultFreeCanvasParams,
     group: ElementGroup.OTHER,
     textContent: 'hyperlink',
-    action: {
-      type: 'internal-link',
-      url: '',
-      screenId: 'noScreen',
-    },
     events: [],
   },
   styles: {
