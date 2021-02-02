@@ -86,29 +86,16 @@ const RightPanel: React.FC = () => {
   const tabClasses = useTabStyles();
   const tabsClasses = useTabsStyles();
 
-  const isInteractive = INTERACTIVE_ELEMENTS.includes(activeElement.type);
-  const isFertile = canElementHaveAllChildren(activeElement.type);
-
   const [tabs, setTabs] = useState(defaultTabs);
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(
     tabs.indexOf(RPTab.Properties),
   );
 
-  /* useEffect(() => {
-    const index = tabs.indexOf(RPTab.Elements);
-
-    if (!KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
-      // eslint-disable-next-line no-bitwise
-      setActiveTabIndex(~index ? index : 0);
-    }
-  }, [tabs, activeElement.type]); */
-
   useEffect(() => {
-    setActiveTabIndex(0);
-  }, [activeElement]);
+    const isInteractive = INTERACTIVE_ELEMENTS.includes(activeElement.type);
+    const isFertile = canElementHaveAllChildren(activeElement.type);
 
-  useEffect(() => {
     let newTabs = defaultTabs;
     if (!isInteractive) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
@@ -116,8 +103,11 @@ const RightPanel: React.FC = () => {
     if (!isFertile) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
     }
+    if (activeTabIndex > newTabs.length - 1) {
+      setActiveTabIndex(0);
+    }
     setTabs(newTabs);
-  }, [isInteractive, isFertile]);
+  }, [activeTabIndex, activeElement.type]);
 
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {
     setActiveTabIndex(index);
