@@ -11,7 +11,10 @@ import {
 } from '@Src/styles/Theme';
 import { RPTab } from '@Src/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
-import { INTERACTIVE_ELEMENTS } from '@Constants/defaultParams';
+import {
+  INTERACTIVE_ELEMENTS,
+  KEEP_RP_TAB_ELEMENTS,
+} from '@Constants/defaultParams';
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
 import PropertiesTab from './PropertiesTab';
@@ -105,7 +108,14 @@ const RightPanel: React.FC = () => {
     if (!isFertile) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
     }
-    if (activeTabIndex > newTabs.length - 1) {
+
+    if (KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
+      const index = newTabs.indexOf(RPTab.Elements);
+      // eslint-disable-next-line no-bitwise
+      if (~index) {
+        setActiveTabIndex(index);
+      }
+    } else if (activeTabIndex > newTabs.length - 1) {
       setActiveTabIndex(0);
     }
     setTabs(newTabs);
