@@ -21,6 +21,7 @@ import {
   AssetsList,
   Asset,
   PaginatedArray,
+  ProjectsSearchParameter,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -101,10 +102,23 @@ import {
   UploadElementAsset,
   RemoveAssetList,
   AddChildrenToElement,
+  SearchProjects,
+  SetProjectSearchParameter,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
+});
+
+export const searchProjects = (): SearchProjects => ({
+  type: TYPES.SEARCH_PROJECTS,
+});
+
+export const setProjectsSearchParameter = (
+  parameter: [ProjectsSearchParameter, string],
+): SetProjectSearchParameter => ({
+  type: TYPES.SET_PROJECT_SEARCH_PARAMETER,
+  payload: parameter,
 });
 
 export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({

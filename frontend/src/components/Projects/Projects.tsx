@@ -21,6 +21,7 @@ import {
   selectProjects,
   selectProjectsDataNext,
 } from '@Redux/project/selectors/base';
+import Searchbar from '@Components/Projects/Searchbar';
 import ProjectListItem from './ProjectListItem';
 
 const useStyles = makeStyles((theme) =>
@@ -118,6 +119,8 @@ const Projects: React.FC = () => {
             All projects
           </Typography>
 
+          <Searchbar />
+
           <Button
             variant="contained"
             color="secondary"
@@ -164,6 +167,14 @@ const Projects: React.FC = () => {
                 <TableRow>
                   <TableCell colSpan={5} className={classes.loader}>
                     <CircularProgress color="secondary" />
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {!sortedProjectList.length && !projectListLoader && (
+                <TableRow>
+                  <TableCell colSpan={5} className={classes.loader}>
+                    No projects found :(
                   </TableCell>
                 </TableRow>
               )}

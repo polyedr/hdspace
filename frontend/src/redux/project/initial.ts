@@ -1,4 +1,4 @@
-import { SCREEN_FORMATS } from '@Src/types';
+import { ProjectsSearchParameter, SCREEN_FORMATS } from '@Src/types';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -11,6 +11,7 @@ export const initialData: ProjectDataState = {
   projectsData: {
     next: null,
     previous: null,
+    parameter: [ProjectsSearchParameter.name, ''],
     results: {},
     pageSize: 10,
     loading: false,

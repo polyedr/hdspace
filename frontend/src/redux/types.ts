@@ -28,11 +28,14 @@ import {
   AssetsList,
   Asset,
   AssetResults,
+  ProjectsSearchParameter,
 } from '../types';
 import TYPES from './actionTypes';
 
 export type ProjectDataState = {
-  projectsData: PaginatedData<Project>;
+  projectsData: PaginatedData<Project> & {
+    parameter: [ProjectsSearchParameter, string];
+  };
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
@@ -136,6 +139,11 @@ export type AppReduxState = {
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
+export type SearchProjects = IPlainAction<typeof TYPES.SEARCH_PROJECTS>;
+export type SetProjectSearchParameter = IAction<
+  typeof TYPES.SET_PROJECT_SEARCH_PARAMETER,
+  [ProjectsSearchParameter, string]
+>;
 export type LoadProjectsSuccess = IAction<
   typeof TYPES.SET_PROJECT_LIST,
   { projects: Project[] }
@@ -734,7 +742,9 @@ export type Action =
   | AddAssetRedux
   | RemoveAssetList
   | RemoveAssetListRedux
-  | SetSelectedAssetListId;
+  | SetSelectedAssetListId
+  | SearchProjects
+  | SetProjectSearchParameter;
 
 export type HistoryMeta = {
   undo?: boolean;
