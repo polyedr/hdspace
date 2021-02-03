@@ -186,7 +186,7 @@ export function* createProjectSaga({
         projectId: result.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
-      yield put(Actions.addAssetList(assetList));
+      yield put(Actions.addAssetListToState(assetList));
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, result]));
 
