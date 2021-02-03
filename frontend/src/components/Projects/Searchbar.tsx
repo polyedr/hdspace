@@ -91,6 +91,12 @@ const Searchbar: FC = () => {
             margin="dense"
             className={cn(classes.input, classes.queryInput)}
             placeholder="Search project"
+            InputLabelProps={{
+              htmlFor: 'search_input',
+            }}
+            InputProps={{
+              id: 'search_input',
+            }}
           />
 
           <IconButton type="submit" className={classes.submit} title="Search">
@@ -110,6 +116,12 @@ const Searchbar: FC = () => {
             classes.parameterInput,
             classes.capitalize,
           )}
+          InputLabelProps={{
+            htmlFor: 'parameter_name_input',
+          }}
+          InputProps={{
+            id: 'parameter_name_input',
+          }}
         >
           {params.map((param) => (
             <MenuItem value={param} key={param} className={classes.capitalize}>
