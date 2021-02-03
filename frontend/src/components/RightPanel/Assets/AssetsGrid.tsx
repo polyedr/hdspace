@@ -11,7 +11,7 @@ import { Button, GridListTile } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { Asset } from '@Src/types';
 import { uploadAsset } from '@Redux/project/actions';
-import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import AssetImage from './AssetImage';
 
 const useStyles = makeStyles({
@@ -68,7 +68,7 @@ const AssetsGrid = () => {
         }}
         startIcon={<AddIcon />}
         disabled={
-          !selectedAssetListId || selectedAssetListId === DEFAULT_ASSETS_LIST_ID
+          !selectedAssetListId || selectedAssetListId === ALL_ASSETS_LIST_ID
         }
         onClick={() => {
           if (!newAssetRef.current) {

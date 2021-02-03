@@ -9,7 +9,7 @@ import {
 } from '@Api/assetList';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { Asset, AssetsList, PaginatedArray } from '@Src/types';
-import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
@@ -22,7 +22,7 @@ import {
 
 export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
   const { selectedListId } = action.payload;
-  if (selectedListId !== DEFAULT_ASSETS_LIST_ID) {
+  if (selectedListId !== ALL_ASSETS_LIST_ID) {
     try {
       const assets: PaginatedArray<Asset> = yield call(
         reqWrapper,
@@ -65,7 +65,7 @@ export function* loadAssetListsSaga() {
       [],
     );
     yield put(
-      Actions.setAssets(DEFAULT_ASSETS_LIST_ID, {
+      Actions.setAssets(ALL_ASSETS_LIST_ID, {
         next: null,
         previous: null,
         pageSize: 0,
@@ -101,9 +101,7 @@ export function* addNewAssetListSaga(
     if (!undo) {
       yield put(
         Actions.setUndoActions([
-          Actions.setSelectedAssetListId(
-            selectedAssetId || DEFAULT_ASSETS_LIST_ID,
-          ),
+          Actions.setSelectedAssetListId(selectedAssetId || ALL_ASSETS_LIST_ID),
           Actions.removeAssetList(assetList.id, action.meta),
         ]),
       );

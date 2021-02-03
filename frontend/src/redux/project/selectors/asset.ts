@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { DEFAULT_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { AppReduxState, ProjectState } from '@Redux/types';
 import { selectProjectState } from './base';
 
@@ -18,8 +18,7 @@ export const selectDisplayAssets = createSelector(
   selectProjectState,
   (assetListId: string | null, state: ProjectState) => {
     return (
-      state.data.assetResults[assetListId || DEFAULT_ASSETS_LIST_ID]?.results ||
-      []
+      state.data.assetResults[assetListId || ALL_ASSETS_LIST_ID]?.results || []
     );
   },
 );

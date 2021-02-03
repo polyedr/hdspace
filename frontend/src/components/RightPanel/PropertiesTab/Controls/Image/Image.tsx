@@ -12,6 +12,7 @@ import {
   selectSelectedAssetListId,
 } from '@Redux/project/selectors/asset';
 import { enqueueSnackbar } from '@Redux/notification/actions';
+import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -43,7 +44,9 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
 
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
   const listRef = useRef(
-    selectedAssetListId || assetLists[assetLists.length - 1].id,
+    !selectedAssetListId || selectedAssetListId === ALL_ASSETS_LIST_ID
+      ? assetLists[assetLists.length - 1].id
+      : selectedAssetListId,
   );
 
   const handleChangeFileInput = useCallback(
@@ -97,7 +100,7 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
           <label htmlFor="image-asset-list">Upload image to asset list</label>
           <StyledTextField
             inputRef={() => {
-              setSelectedAsset(assetLists[0].id);
+              // setSelectedAsset(assetLists[0].id);
             }}
             id="image-asset-list"
             className={classes.assetsSelector}
