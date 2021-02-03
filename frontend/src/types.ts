@@ -1138,3 +1138,11 @@ export const CONTROLS_AFFECT_ON_STYLES = [
 export type Control =
   | typeof CONTROLS_AFFECT_ON_PARAMS[number]
   | typeof CONTROLS_AFFECT_ON_STYLES[number];
+
+export enum ProjectsSearchParameter {
+  name = 'name',
+  user = 'user',
+  status = 'status',
+  updated = 'updated',
+  created = 'created',
+}

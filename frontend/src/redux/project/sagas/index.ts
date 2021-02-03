@@ -33,6 +33,7 @@ import {
   getProjectListSaga,
   getProjectSaga,
   renameProjectSaga,
+  searchProjectsSaga,
   updateProjectSaga,
 } from './project';
 import {
@@ -461,6 +462,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
   yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
+  yield takeLatest(TYPES.SEARCH_PROJECTS, searchProjectsSaga);
 
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
   yield takeLatest(TYPES.CREATE_SCREEN, createScreenSaga);

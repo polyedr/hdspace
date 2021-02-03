@@ -14,9 +14,10 @@ import { DEFAULT_ASSET_LIST_NAME } from '@Constants/defaultParams';
 import {
   PaginatedResponse,
   Project,
+  ProjectsSearchParameter,
   ProjectWithScreens,
   Result,
-} from '../../../types';
+} from '@Src/types';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -26,7 +27,55 @@ import {
   selectProjectById,
   selectProjectsAsArr,
   selectProjectsDataNext,
+  selectProjectsSearchParameter,
 } from '../selectors/base';
+
+export function* searchProjectsSaga() {
+  try {
+    yield put(Actions.setProjectListLoader(true));
+    yield put(
+      Actions.setProjectsData({
+        next: null,
+        previous: null,
+        results: [],
+      }),
+    );
+    yield put(Actions.setProjectList([]));
+
+    const [key, value]: [ProjectsSearchParameter, string] = yield select(
+      selectProjectsSearchParameter,
+    );
+
+    const { result, error }: Result<PaginatedResponse<Project>> = yield call(
+      reqWrapper,
+      apiGetProjectList,
+      {
+        params: {
+          [key]: value,
+        },
+      },
+    );
+
+    if (result) {
+      yield put(Actions.setProjectsData(result));
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  } finally {
+    yield put(Actions.setProjectListLoader(false));
+  }
+}
 
 export function* getProjectListSaga() {
   try {
@@ -34,12 +83,19 @@ export function* getProjectListSaga() {
 
     const next: string | null = yield select(selectProjectsDataNext);
 
+    const [key, value]: [ProjectsSearchParameter, string] = yield select(
+      selectProjectsSearchParameter,
+    );
+
     const { result, error }: Result<PaginatedResponse<Project>> = yield call(
       reqWrapper,
       apiGetProjectList,
       {
         params: {
           cursor: next,
+          ...(value && {
+            [key]: value,
+          }),
         },
       },
     );

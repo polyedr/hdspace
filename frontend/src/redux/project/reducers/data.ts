@@ -85,6 +85,11 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.SET_PROJECT_SEARCH_PARAMETER: {
+        draft.projectsData.parameter = action.payload;
+        break;
+      }
+
       case TYPES.SET_PROJECTS_DATA: {
         const { results, next, previous } = action.payload;
         draft.projectsData.results = {

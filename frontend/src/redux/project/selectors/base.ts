@@ -19,6 +19,9 @@ export const selectProjectsPageSize = ({ project }: AppReduxState) =>
 export const selectProjectsDataNext = ({ project }: AppReduxState) =>
   project.data.projectsData.next;
 
+export const selectProjectsSearchParameter = ({ project }: AppReduxState) =>
+  project.data.projectsData.parameter;
+
 export const selectProjectById = (projectId: number) => ({
   project,
 }: AppReduxState) => project.data.projectsData.results[projectId];

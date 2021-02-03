@@ -21,6 +21,7 @@ import {
   selectProjects,
   selectProjectsDataNext,
 } from '@Redux/project/selectors/base';
+import Searchbar from '@Components/Projects/Searchbar';
 import ProjectListItem from './ProjectListItem';
 
 const useStyles = makeStyles((theme) =>
@@ -117,6 +118,8 @@ const Projects: React.FC = () => {
           <Typography variant="h5" className={classes.headerText}>
             All projects
           </Typography>
+
+          <Searchbar />
 
           <Button
             variant="contained"
