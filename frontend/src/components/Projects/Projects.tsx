@@ -170,6 +170,14 @@ const Projects: React.FC = () => {
                   </TableCell>
                 </TableRow>
               )}
+
+              {!sortedProjectList.length && !projectListLoader && (
+                <TableRow>
+                  <TableCell colSpan={5} className={classes.loader}>
+                    No projects found :(
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

@@ -1,7 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, FormEvent } from 'react';
 import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { Field, Form } from 'react-final-form';
 import SearchIcon from '@material-ui/icons/Search';
 import { IconButton } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -14,7 +13,7 @@ import {
 } from '@Redux/project/actions';
 import { selectProjectsSearchParameter } from '@Redux/project/selectors/base';
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles(({ palette, spacing }) => ({
   input: {
     margin: 0,
   },
@@ -39,6 +38,13 @@ const useStyles = makeStyles(({ spacing }) => ({
     top: 2,
     right: 2,
     padding: spacing(1),
+    backgroundColor: palette.secondary.light,
+    '&:hover': {
+      backgroundColor: palette.secondary.dark,
+    },
+    '& svg': {
+      color: 'white',
+    },
   },
   capitalize: {
     textTransform: 'capitalize',
@@ -55,7 +61,8 @@ const Searchbar: FC = () => {
 
   const [key, value] = useSelector(selectProjectsSearchParameter);
 
-  const handleSubmit = () => {
+  const handleSubmit = (ev: FormEvent) => {
+    ev.preventDefault();
     dispatch(searchProjects());
   };
 
@@ -74,67 +81,43 @@ const Searchbar: FC = () => {
 
   return (
     <div>
-      <Form
-        onSubmit={handleSubmit}
-        render={({ handleSubmit }) => (
-          <form onSubmit={handleSubmit} className={classes.form}>
-            <div className={classes.wrapper}>
-              <Field name="query">
-                {({ input }) => (
-                  <TextField
-                    {...input}
-                    value={value}
-                    onChange={handleValueChange}
-                    label="Search project..."
-                    variant="outlined"
-                    margin="dense"
-                    className={cn(classes.input, classes.queryInput)}
-                    placeholder="Search project..."
-                  />
-                )}
-              </Field>
+      <form onSubmit={handleSubmit} className={classes.form}>
+        <div className={classes.wrapper}>
+          <TextField
+            value={value}
+            onChange={handleValueChange}
+            label="Search project"
+            variant="outlined"
+            margin="dense"
+            className={cn(classes.input, classes.queryInput)}
+            placeholder="Search project"
+          />
 
-              <IconButton
-                type="submit"
-                className={classes.submit}
-                title="Search"
-                color="secondary"
-              >
-                <SearchIcon fontSize="small" />
-              </IconButton>
-            </div>
+          <IconButton type="submit" className={classes.submit} title="Search">
+            <SearchIcon fontSize="small" />
+          </IconButton>
+        </div>
 
-            <Field name="parameter">
-              {({ input }) => (
-                <TextField
-                  {...input}
-                  value={key}
-                  onChange={handleKeyChange}
-                  label="Search by"
-                  variant="outlined"
-                  margin="dense"
-                  select
-                  className={cn(
-                    classes.input,
-                    classes.parameterInput,
-                    classes.capitalize,
-                  )}
-                >
-                  {params.map((param) => (
-                    <MenuItem
-                      value={param}
-                      key={param}
-                      className={classes.capitalize}
-                    >
-                      {param}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              )}
-            </Field>
-          </form>
-        )}
-      />
+        <TextField
+          value={key}
+          onChange={handleKeyChange}
+          label="Search by"
+          variant="outlined"
+          margin="dense"
+          select
+          className={cn(
+            classes.input,
+            classes.parameterInput,
+            classes.capitalize,
+          )}
+        >
+          {params.map((param) => (
+            <MenuItem value={param} key={param} className={classes.capitalize}>
+              {param}
+            </MenuItem>
+          ))}
+        </TextField>
+      </form>
     </div>
   );
 };
