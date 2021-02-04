@@ -31,6 +31,7 @@ import { Normalized, StateElement } from '@Src/types';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveElementId } from '@Redux/project/selectors/element';
 import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
+import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -293,7 +294,9 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
             onDragStart={dragStart}
             onDragEnd={dragEnd}
             offsetPerLevel={OFFSET}
-            isDragEnabled
+            isDragEnabled={(item) =>
+              !NOT_DRAGGABLE_COMPONENTS.includes(item.data.type)
+            }
             isNestingEnabled
           />
         </div>
