@@ -106,7 +106,12 @@ export const EDITABLE_COMPONENTS_LIST = [
   'label',
 ];
 
-export const NOT_DRAGGABLE_COMPONENTS = ['selectMenu', 'selectItem'];
+export const NOT_DRAGGABLE_COMPONENTS = [
+  'selectMenu',
+  'selectItem',
+  'column',
+  'gridItem',
+];
 
 export const ALL_ASSETS_LIST_ID = 'all';
 export const ALL_ASSET_LIST_NAME = 'All assets';
