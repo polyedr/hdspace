@@ -15,7 +15,7 @@ import {
   StateElement,
   Screen,
   NNBlockType,
-  SCREEN_FORMATS,
+  Layout,
   PaginatedResponse,
   PropertyName,
   AssetsList,
@@ -833,9 +833,9 @@ export const updateLastElements = (
   },
 });
 
-export const changeScreenFormat = (format: SCREEN_FORMATS) => ({
-  type: TYPES.CHANGE_SCREEN_FORMAT,
-  payload: format,
+export const changeLayout = (layout: Layout) => ({
+  type: TYPES.CHANGE_LAYOUT,
+  payload: layout,
 });
 
 export const rotateScreenFormat = (rotated: boolean) => ({

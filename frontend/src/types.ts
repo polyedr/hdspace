@@ -1088,7 +1088,7 @@ export enum RPTab {
   Events = 'Events',
 }
 
-export const enum SCREEN_FORMATS {
+export const enum Layout {
   Desktop = 'desktop',
   Tablet = 'tablet',
   Mobile = 'mobile',

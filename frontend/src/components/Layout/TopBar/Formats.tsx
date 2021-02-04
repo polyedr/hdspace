@@ -10,8 +10,8 @@ import {
   selectScreenFormat,
   selectScreenRotated,
 } from '@Redux/project/selectors/base';
-import { changeScreenFormat, rotateScreenFormat } from '@Redux/project/actions';
-import { SCREEN_FORMATS } from '@Src/types';
+import { changeLayout, rotateScreenFormat } from '@Redux/project/actions';
+import { Layout } from '@Src/types';
 import { StyledToggleButton } from '../../styledComponents';
 
 const useStyles = makeStyles({
@@ -34,7 +34,7 @@ const Formats: React.FC = () => {
 
   const handleFormatChange = (ev, newFormat) => {
     if (!newFormat) return;
-    dispatch(changeScreenFormat(newFormat));
+    dispatch(changeLayout(newFormat));
   };
 
   const handleRotatedToggle = () => dispatch(rotateScreenFormat(!rotated));
@@ -47,21 +47,21 @@ const Formats: React.FC = () => {
         exclusive
         size="small"
       >
-        <StyledToggleButton value={SCREEN_FORMATS.Desktop} title="Desktop view">
+        <StyledToggleButton value={Layout.Desktop} title="Desktop view">
           <DesktopWindowsIcon />
         </StyledToggleButton>
 
-        <StyledToggleButton value={SCREEN_FORMATS.Tablet} title="Tablet view">
+        <StyledToggleButton value={Layout.Tablet} title="Tablet view">
           <TabletMacIcon />
         </StyledToggleButton>
 
-        <StyledToggleButton value={SCREEN_FORMATS.Mobile} title="Mobile view">
+        <StyledToggleButton value={Layout.Mobile} title="Mobile view">
           <PhoneIphoneIcon />
         </StyledToggleButton>
       </ToggleButtonGroup>
 
       <div className={classes.rotated}>
-        {format !== SCREEN_FORMATS.Desktop && (
+        {format !== Layout.Desktop && (
           <StyledToggleButton
             size="small"
             selected={rotated}

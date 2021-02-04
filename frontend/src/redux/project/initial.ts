@@ -1,4 +1,4 @@
-import { ProjectsSearchParameter, SCREEN_FORMATS } from '@Src/types';
+import { ProjectsSearchParameter, Layout } from '@Src/types';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -45,8 +45,8 @@ export const initialUi: ProjectUiState = {
   elementBeingEdited: false,
   bordersEnabled: true,
   currentDropTargetParams: null,
-  screenFormat: {
-    format: SCREEN_FORMATS.Desktop,
+  layout: {
+    value: Layout.Desktop,
     rotated: false,
   },
   editorDocument: null,
