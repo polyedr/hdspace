@@ -1,4 +1,12 @@
 import {
+  CardsSectionServerElement,
+  ElementGroup,
+  FeatureSectionServerElement,
+  PageTemplateServerElement,
+  SectionServerElement,
+  SubscribeFormServerElement,
+} from '@Src/types';
+import {
   makeContainer,
   makeSmartHeader,
   makeSmartFooter,
@@ -16,14 +24,6 @@ import {
 } from '../formElements/formElements';
 
 import { defaultFreeCanvasParams } from '../../core';
-import {
-  CardsSectionServerElement,
-  ElementGroup,
-  FeatureSectionServerElement,
-  PageTemplateServerElement,
-  SectionServerElement,
-  SubscribeFormServerElement,
-} from '../../../types';
 
 export const makePageTemplate = (
   withoutContainers: boolean = false,
@@ -33,7 +33,7 @@ export const makePageTemplate = (
   struct_type: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   parameters: {
     group: ElementGroup.CONTAINERS,
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['pageTemplate'],
@@ -154,7 +154,7 @@ export const subscribeForm: SubscribeFormServerElement = {
   func_type: 'subscribeForm',
   struct_type: 'subscribeForm',
   parameters: {
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.CONTAINERS,
   },
   styles: {
@@ -246,7 +246,7 @@ export const cardsSection: CardsSectionServerElement = {
   func_type: 'cardsSection',
   struct_type: 'cardsSection',
   parameters: {
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.CONTAINERS,
   },
   styles: {
@@ -405,7 +405,7 @@ export const featureSection: FeatureSectionServerElement = {
   func_type: 'featureSection',
   struct_type: 'featureSection',
   parameters: {
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.CONTAINERS,
   },
   styles: {
@@ -474,7 +474,7 @@ export const section: SectionServerElement = {
   struct_type: 'section',
   parameters: {
     group: ElementGroup.CONTAINERS,
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['section'],

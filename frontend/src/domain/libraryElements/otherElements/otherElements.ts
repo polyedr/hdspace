@@ -9,8 +9,10 @@ import {
   DropdownServerElement,
   ElementGroup,
   Entity,
+  GridItemServerElement,
   GridServerElement,
   ImageServerElement,
+  NativeColumnsServerElement,
   RootServerElement,
   ServerElement,
   SmartFooterServerElement,
@@ -28,8 +30,7 @@ export const root: RootServerElement = {
   func_type: 'root',
   struct_type: 'root',
   parameters: {
-    width: 0,
-    height: 0,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.NONE,
   },
   styles: {
@@ -56,9 +57,11 @@ export const makeContainer = ({
   struct_type: 'container',
   parameters: {
     group: ElementGroup.NONE,
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
   },
   styles: {
     classNames: ['container'],
@@ -68,15 +71,18 @@ export const makeContainer = ({
   children,
 });
 
-export const makeGridItem = () => ({
+export const makeGridItem = (): GridItemServerElement => ({
   buoyancy: 0,
   name: 'gridItem',
   func_type: 'gridItem',
   struct_type: 'gridItem' as const,
   parameters: {
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
+    group: ElementGroup.CONTAINERS,
   },
   styles: {
     classNames: ['gridItem'],
@@ -91,9 +97,12 @@ export const makeGrid = (): GridServerElement => ({
   func_type: 'grid',
   struct_type: 'grid' as const,
   parameters: {
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
+    group: ElementGroup.OTHER,
   },
   styles: {
     classNames: ['grid'],
@@ -108,9 +117,12 @@ export const column: ColumnServerElement = {
   func_type: 'column',
   struct_type: 'column' as const,
   parameters: {
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
+    group: ElementGroup.CONTAINERS,
   },
   styles: {
     classNames: ['column'],
@@ -127,9 +139,12 @@ export const makeColumns = (
   func_type: 'columns',
   struct_type: 'columns' as const,
   parameters: {
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
+    group: ElementGroup.OTHER,
   },
   styles: {
     classNames: ['columns'],
@@ -138,15 +153,18 @@ export const makeColumns = (
   children: new Array(columnsCount).fill(column),
 });
 
-export const nativeColumns = {
+export const nativeColumns: NativeColumnsServerElement = {
   buoyancy: 0,
   name: 'nativeColumns',
   func_type: 'nativeColumns',
   struct_type: 'nativeColumns' as const,
   parameters: {
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
+    group: ElementGroup.CONTAINERS,
   },
   styles: {
     classNames: ['nativeColumns'],
@@ -162,9 +180,11 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => {
     struct_type: 'divBlock',
     parameters: {
       group: ElementGroup.CONTAINERS,
-      ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
+      freeCanvas: {
+        ...defaultFreeCanvasParams,
+        width: '50%',
+        height: '50%',
+      },
     },
     styles: {
       classNames: ['divBlock'],
@@ -186,7 +206,9 @@ export const makeImage = ({
   parameters: {
     group: ElementGroup.IMAGE,
     imageURL: IMAGES.imageIcon,
-    ...defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+    },
   },
   styles: {
     classNames: ['image'],
@@ -205,9 +227,11 @@ export const makeSmartHeader = ({
   struct_type: 'smartHeader',
   parameters: {
     group: ElementGroup.UNDEFINED,
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
     stylesOn: true,
   },
   styles: {
@@ -227,9 +251,11 @@ export const makeSmartFooter = ({
   struct_type: 'smartFooter',
   parameters: {
     group: ElementGroup.UNDEFINED,
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
     stylesOn: true,
   },
   styles: {
@@ -249,9 +275,11 @@ export const makeSmartForm = ({
   struct_type: 'smartForm',
   parameters: {
     group: ElementGroup.UNDEFINED,
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
     stylesOn: true,
   },
   styles: {
@@ -271,9 +299,11 @@ export const makeSmartWebpage = ({
   struct_type: 'smartWebpage',
   parameters: {
     group: ElementGroup.UNDEFINED,
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
     stylesOn: true,
   },
   styles: {
@@ -292,7 +322,8 @@ export const makeDropdownItem = (
   struct_type: 'dropdownItem',
   parameters: {
     textContent,
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
   },
   styles: {
     classNames: ['dropdownItem'],
@@ -307,7 +338,8 @@ export const dropdownMenu: DropdownMenuServerElement = {
   func_type: 'dropdownMenu',
   struct_type: 'dropdownMenu',
   parameters: {
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
   },
   styles: {
     classNames: ['dropdownMenu'],
@@ -331,7 +363,7 @@ export const dropdown: DropdownServerElement = {
     showRipple: true,
     isOpen: false,
     dropdownItems: ['First item', 'Second item', 'Third item'], // TODO research why we need items here
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['dropdown'],
@@ -347,7 +379,7 @@ export const video: VideoServerElement = {
   struct_type: 'video',
   parameters: {
     group: ElementGroup.OTHER,
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
     videoSettings: {
       link: '',
       autoplay: false,
@@ -373,9 +405,11 @@ export const undefined: UndefinedServerElement = {
   struct_type: 'undefined',
   parameters: {
     group: ElementGroup.UNDEFINED,
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
   },
   styles: {
     classNames: ['undefined'],

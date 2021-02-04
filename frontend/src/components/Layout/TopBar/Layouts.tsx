@@ -7,7 +7,7 @@ import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
-  selectScreenFormat,
+  selectLayout,
   selectScreenRotated,
 } from '@Redux/project/selectors/base';
 import { changeLayout, rotateScreenFormat } from '@Redux/project/actions';
@@ -25,11 +25,11 @@ const useStyles = makeStyles({
   },
 });
 
-const Formats: React.FC = () => {
+const Layouts: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
-  const format = useSelector(selectScreenFormat);
+  const layout = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
 
   const handleFormatChange = (ev, newFormat) => {
@@ -42,7 +42,7 @@ const Formats: React.FC = () => {
   return (
     <div className={classes.root}>
       <ToggleButtonGroup
-        value={format}
+        value={layout}
         onChange={handleFormatChange}
         exclusive
         size="small"
@@ -61,7 +61,7 @@ const Formats: React.FC = () => {
       </ToggleButtonGroup>
 
       <div className={classes.rotated}>
-        {format !== Layout.Desktop && (
+        {layout !== Layout.Desktop && (
           <StyledToggleButton
             size="small"
             selected={rotated}
@@ -77,4 +77,4 @@ const Formats: React.FC = () => {
   );
 };
 
-export default Formats;
+export default Layouts;

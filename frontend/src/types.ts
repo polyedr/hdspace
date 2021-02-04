@@ -61,8 +61,9 @@ export type FreeCanvasElementParams = {
   height?: CSS.Property.Height;
 };
 
-export type BaseElementParams = FreeCanvasElementParams & {
-  group?: ElementGroup;
+export type BaseElementParams = {
+  freeCanvas: FreeCanvasElementParams;
+  group: ElementGroup;
 };
 
 export type ServerElement<
@@ -412,6 +413,10 @@ export type LibraryElementUnion =
   | SubscribeFormElement
   | FeatureSectionElement;
 
+type InteractiveElementParams = {
+  events: ElementEvent[];
+};
+
 export enum EventType {
   Click = 'Click',
 }
@@ -430,6 +435,8 @@ export interface ElementClickEvent extends ElementEvent {
   };
 }
 
+// type ElementParameters = Record<Entity, any>;
+
 export type ImageParameters = BaseElementParams & {
   imageURL: string;
 };
@@ -447,10 +454,10 @@ export type ButtonParameters = BaseElementParams & {
   showRipple: boolean;
 };
 
-export type HyperLinkParameters = BaseElementParams & {
-  textContent: string;
-  events: ElementEvent[];
-};
+export type HyperLinkParameters = BaseElementParams &
+  InteractiveElementParams & {
+    textContent: string;
+  };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
 
@@ -555,7 +562,7 @@ export type MapParameters = BaseElementParams & {
   };
 };
 
-export type VideoSettingsType = BaseElementParams & {
+export type VideoSettingsType = {
   link: string;
   autoplay: boolean;
   start: number;
@@ -703,21 +710,6 @@ export type ListItem = {
   textContent: string;
   isLink: boolean;
   link: string;
-};
-
-export type ScenarioLibraryElement = {
-  struct_type: ServerStructType;
-  func_type: ServerStructType;
-  func_type_human?: string;
-  buoyancy: number;
-  parameters: {
-    tags?: string;
-    group: string;
-    placeholder?: string;
-    map_props?: IMapProps;
-  };
-  styles: React.CSSProperties;
-  name: ServerStructType;
 };
 
 export type ServerStructType = Entity;
@@ -886,19 +878,9 @@ export type UserData = {
   profile: ProfileData;
 };
 
-export type TotalUserData = ProfileData & UserData;
-
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R
   : any;
-
-export type FreeElement = {
-  id: string;
-  top: number;
-  left: number;
-  type: 'freeElement';
-  name: string;
-};
 
 export type ReturnPromisedType<T extends (...args: any[]) => any> = T extends (
   ...args: any[]
@@ -1038,14 +1020,6 @@ export type ElementsToAdd = {
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
 
-export type GroupElement = {
-  key: string;
-  name: string;
-  label: string;
-  custom?: boolean;
-  value: { structType: ServerStructType; funcType: ServerStructType };
-};
-
 export type AssetsList = {
   id: string;
   name: string;
@@ -1066,14 +1040,6 @@ export type Asset = {
 export type AssetResults = {
   [listId: string]: PaginatedArray<Asset>;
 };
-
-export interface ISignUpData {
-  username: string;
-  password: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-}
 
 export const enum NNBlockType {
   HEADER = 'headers',

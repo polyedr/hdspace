@@ -144,8 +144,8 @@ export function* createElements(
           ...el,
           parameters: {
             ...el.parameters,
-            left: el.parameters?.left || offset,
-            top: el.parameters?.top || offset,
+            left: el.parameters.freeCanvas.left || offset,
+            top: el.parameters.freeCanvas.top || offset,
           },
         };
 
