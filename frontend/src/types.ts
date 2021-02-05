@@ -436,8 +436,6 @@ export interface ElementClickEvent extends ElementEvent {
   };
 }
 
-// type ElementParameters = Record<Entity, any>;
-
 export type ImageParameters = BaseElementParams & {
   imageURL: string;
 };

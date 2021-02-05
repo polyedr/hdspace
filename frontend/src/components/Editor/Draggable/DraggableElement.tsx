@@ -37,6 +37,7 @@ import {
   EDITABLE_COMPONENTS_LIST,
   NOT_DRAGGABLE_COMPONENTS,
 } from '@Constants/defaultParams';
+import useLayout from '@Components/Editor/hooks/useLayout';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import {
   getFlexRowDropPosition,
@@ -84,6 +85,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   );
 
   const elementProps = useElementProps(elementId);
+  const isDisplayed = useLayout(elementProps?.params?.layouts);
 
   const dropTarget = useMemo(() => {
     if (
@@ -318,39 +320,39 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   const ElementRenderer = RENDERERS[element.type];
 
-  return (
-    elementProps && (
-      <ElementRenderer
-        {...elementProps}
-        ref={(dom: HTMLElement) => {
-          ref.current = dom;
-          DOMHandler.INSTANCE.addElementDom(elementId, dom);
-          if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
-            drag(ref);
-            drop(ref);
-          }
-        }}
-        onMouseEnter={() => {
-          dispatch(setHoveredElementId(elementId));
-        }}
-        onMouseLeave={() => {
-          dispatch(setHoveredElementId(element.parent || null));
-        }}
-        onKeyDown={keyDownHandler}
-        onClick={clickHandler}
-        onBlur={blurHandler}
-      >
-        {element.children.map((childId: string) => (
-          <DraggableElement
-            key={`element-${childId}`}
-            elementId={childId}
-            parentDomStyles={dropDomStyles}
-            parentIds={[...parentIds, elementId]}
-          />
-        ))}
-      </ElementRenderer>
-    )
-  );
+  return isDisplayed
+    ? elementProps && (
+        <ElementRenderer
+          {...elementProps}
+          ref={(dom: HTMLElement) => {
+            ref.current = dom;
+            DOMHandler.INSTANCE.addElementDom(elementId, dom);
+            if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
+              drag(ref);
+              drop(ref);
+            }
+          }}
+          onMouseEnter={() => {
+            dispatch(setHoveredElementId(elementId));
+          }}
+          onMouseLeave={() => {
+            dispatch(setHoveredElementId(element.parent || null));
+          }}
+          onKeyDown={keyDownHandler}
+          onClick={clickHandler}
+          onBlur={blurHandler}
+        >
+          {element.children.map((childId: string) => (
+            <DraggableElement
+              key={`element-${childId}`}
+              elementId={childId}
+              parentDomStyles={dropDomStyles}
+              parentIds={[...parentIds, elementId]}
+            />
+          ))}
+        </ElementRenderer>
+      )
+    : null;
 };
 
 export default DraggableElement;
