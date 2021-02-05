@@ -5,14 +5,9 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core';
 import { addChildToElement } from '@Redux/project/actions';
-import {
-  ElementGroup,
-  ListItemElement,
-  PropertiesChangeProps,
-} from '@Src/types';
+import { ListItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { defaultFreeCanvasParams } from '@Domain/core';
 import ListItem from './ListItem';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -43,8 +38,6 @@ const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
         'listItem',
         activeElementId,
         {
-          freeCanvas: defaultFreeCanvasParams,
-          group: ElementGroup.OTHER,
           textContent: 'New item',
           isLink: false,
           link: '',

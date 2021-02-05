@@ -592,7 +592,7 @@ export const addChildrenToElement = (
 export const addChildToElement = (
   childType: ChildEntity,
   elementID: string,
-  parameters: ChildrenElements[ChildEntity]['parameters'],
+  parameters: Partial<ChildrenElements[ChildEntity]['parameters']>,
   meta: ElementHistoryMeta,
 ): AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,

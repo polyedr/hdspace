@@ -62,6 +62,7 @@ export type FreeCanvasElementParams = {
 };
 
 export type BaseElementParams = {
+  layouts: Layout[];
   freeCanvas: FreeCanvasElementParams;
   group: ElementGroup;
 };

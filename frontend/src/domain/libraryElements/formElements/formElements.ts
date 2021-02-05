@@ -12,6 +12,7 @@ import {
   TextareaServerElement,
   TextinputServerElement,
 } from '@Src/types';
+import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 
 export const makeButton = ({
   buoyancy = 0,
@@ -26,6 +27,7 @@ export const makeButton = ({
   func_type: 'button',
   struct_type: 'button',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent,
@@ -48,6 +50,7 @@ export const makeTextinput = ({
   func_type: 'textinput',
   struct_type: 'textinput',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent: '',
@@ -67,6 +70,7 @@ export const checkbox: CheckboxServerElement = {
   func_type: 'checkbox',
   struct_type: 'checkbox',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: '',
@@ -89,6 +93,7 @@ export const radiobutton: RadiobuttonServerElement = {
   func_type: 'radiobutton',
   struct_type: 'radiobutton',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: '',
@@ -113,6 +118,7 @@ export const makeSelectItem = (
   func_type: 'selectItem',
   struct_type: 'selectItem',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     name,
     value,
@@ -131,6 +137,7 @@ export const selectMenu: SelectMenuServerElement = {
   func_type: 'selectMenu',
   struct_type: 'selectMenu',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.OTHER,
   },
@@ -151,6 +158,7 @@ export const select: SelectServerElement = {
   func_type: 'select',
   struct_type: 'select',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: 'first option',
@@ -181,6 +189,7 @@ export const makeLabel = ({
   func_type: 'label',
   struct_type: 'label',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.TYPOGRAPHY,
     textContent,
@@ -199,6 +208,7 @@ export const textarea: TextareaServerElement = {
   func_type: 'textarea',
   struct_type: 'textarea',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent: '',

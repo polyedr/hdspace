@@ -4,6 +4,7 @@ import {
   ElementGroup,
   MapServerElement,
 } from '@Src/types';
+import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { defaultFreeCanvasParams } from '../../core';
 
 export const map: MapServerElement = {
@@ -11,6 +12,7 @@ export const map: MapServerElement = {
   func_type: 'map',
   struct_type: 'map',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
       width: '50%',
@@ -40,6 +42,7 @@ export const calendar: CalendarServerElement = {
   func_type: 'calendar',
   struct_type: 'calendar',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.WIDGET,
   },
@@ -56,6 +59,7 @@ export const clock: ClockServerElement = {
   func_type: 'clock',
   struct_type: 'clock',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.WIDGET,
   },

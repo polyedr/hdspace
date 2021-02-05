@@ -10,13 +10,8 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
-import {
-  DropdownItemElement,
-  ElementGroup,
-  PropertiesChangeProps,
-} from '@Src/types';
+import { DropdownItemElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
-import { defaultFreeCanvasParams } from '@Domain/core';
 import DropdownItem from './DropdownItem';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -81,8 +76,6 @@ const DropdownItems: React.FC<Props> = ({
       dropdownMenuID,
       {
         textContent: 'New item',
-        freeCanvas: defaultFreeCanvasParams,
-        group: ElementGroup.OTHER,
       },
       { screenId: currentScreenId },
     );

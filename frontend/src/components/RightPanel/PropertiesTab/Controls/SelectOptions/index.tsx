@@ -6,17 +6,12 @@ import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core';
 import { addChildToElement } from '@Redux/project/actions';
 import generateUniqueName from '@Utils/generateUniqueName';
-import {
-  ElementGroup,
-  PropertiesChangeProps,
-  SelectItemElement,
-} from '@Src/types';
+import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
 import {
   selectActiveItemChildren,
   selectElementsByIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { defaultFreeCanvasParams } from '@Domain/core';
 import SelectOption from './SelectOption';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -52,8 +47,6 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
         'selectItem',
         selectMenu.id,
         {
-          freeCanvas: defaultFreeCanvasParams,
-          group: ElementGroup.OTHER,
           name: newOptionName,
           value: newOptionName,
         },

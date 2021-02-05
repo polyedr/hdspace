@@ -4,6 +4,7 @@ import {
   StateElement,
   Screen,
   ElementGroup,
+  Layout,
 } from '../types';
 import getDefaultStyles from '../utils/getDefaultStyles';
 
@@ -118,3 +119,9 @@ export const ALL_ASSET_LIST_NAME = 'All assets';
 export const DEFAULT_ASSET_LIST_NAME = 'Project assets';
 
 export const INTERACTIVE_ELEMENTS = ['hyperlink'];
+
+export const DEFAULT_LAYOUT_LIST = [
+  Layout.Desktop,
+  Layout.Tablet,
+  Layout.Mobile,
+];
