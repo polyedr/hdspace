@@ -1053,13 +1053,14 @@ export enum RPTab {
   Events = 'Events',
 }
 
-export const enum Layout {
+export enum Layout {
   Desktop = 'desktop',
   Tablet = 'tablet',
   Mobile = 'mobile',
 }
 
 export const CONTROLS_AFFECT_ON_PARAMS = [
+  'layouts',
   'columns',
   'mapProps',
   'placeholder',
