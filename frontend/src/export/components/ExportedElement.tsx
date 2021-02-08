@@ -7,15 +7,19 @@ import {
 } from '@Redux/project/selectors/element';
 import { AppReduxState } from '@Redux/types';
 import { SharedRendererProps } from '@Components/UI/RenderElements/types';
-import { selectCurrentProject } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProject,
+  selectLayout,
+} from '@Redux/project/selectors/base';
 import { toClassName } from '@Utils/stringHelper';
+import { Layout, StateElement } from '@Src/types';
 
 type Props = {
   elementId: string;
   state: AppReduxState;
 };
 
-const getAdditionalProps = (element, projectClasses, state) => {
+const getAdditionalProps = (element: StateElement, projectClasses, state) => {
   const savedElements = selectSavedElementsValues(state);
   const { id, type, children } = element;
   switch (type) {
@@ -92,7 +96,12 @@ const ExportedElement: React.FC<Props> = ({ elementId, state }) => {
   const element = selectElementById(elementId)(state);
   const Component = RENDERERS[element.type];
   const exportedProps = getExportedProps(elementId, state);
-  return (
+
+  const { layouts } = exportedProps.params as { layouts: Layout[] };
+  const currentLayout = selectLayout(state);
+  const isDisplayed = layouts.includes(currentLayout);
+
+  return isDisplayed ? (
     <Component {...exportedProps}>
       {element.children.map((childId) => (
         <ExportedElement
@@ -102,7 +111,7 @@ const ExportedElement: React.FC<Props> = ({ elementId, state }) => {
         />
       ))}
     </Component>
-  );
+  ) : null;
 };
 
 export default ExportedElement;
