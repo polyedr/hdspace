@@ -11,7 +11,6 @@ import uuid
 from statistics import median
 
 from anytree import RenderTree, NodeMixin, AnyNode
-from pytesseract import Output
 from rest_framework_recursive.fields import RecursiveField
 
 from project.settings import (
@@ -26,7 +25,6 @@ from apps.projects.models import ScenarioElement, ProjectScreen
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_blobs
 from sklearn import cluster as clustermethod
-from collections import Counter
 import xml.etree.ElementTree as ET
 import cv2
 import pytesseract
@@ -2462,6 +2460,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     styles=styles,
                     buoyancy=0,
                 )
+
             else:
                 node.div = ET.SubElement(node.parent.div, "div")
 
@@ -2513,6 +2512,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 else:
                     array_elements = node.elements
                 for elem in array_elements:
+                    # Prepare an empty list to define scenario element structure for the further chain joining
+                    scenarioelement_inner = {}
                     # Define the element dimensions start
                     elem_width = int(elem["shape_attributes"]["width"])
                     elem_height = int(elem["shape_attributes"]["height"])
@@ -2523,7 +2524,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                     # Cropping to the border box start
                     elem_image = image_original[
-                        y1 : y1 + elem_height, x1 : x1 + elem_width
+                        y1: y1 + elem_height, x1: x1 + elem_width
                     ]
                     elem_image_name = uuid.uuid4().hex + fname
                     # Cropping to the border box end
@@ -2540,6 +2541,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         "form_heading",
                         "button",
                     }:
+                        # Defiine a scenarioelement_inner dictionary
+                        scenarioelement_inner = {}
                         # Detect the font-size with tesseract for some element start
                         # Convert to the grey colour
                         elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
@@ -2625,13 +2628,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="textinput",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "textinput",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
                         styles["width"] = str(min(node_width, node_height)) + "px"
@@ -2648,13 +2650,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="checkbox",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "checkbox",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] in {"radiobutton"}:
                         # displaying various kinds of elements start
@@ -2669,13 +2670,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="radiobutton",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "radiobutton",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] == "select":
                         styles["width"] = str(node_width) + "px"
@@ -2696,13 +2696,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="select",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "select",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     if elem["region_attributes"]["HTML element"] in {"text", "ocrtext"}:
                         styles["font-color"] = fcolour_elem_value
@@ -2724,13 +2723,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="ocrtext",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "ocrtext",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] in {"textarea"}:
                         # displaying various kinds of elements start
@@ -2749,13 +2747,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="textarea",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "textarea",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] in {"form_heading"}:
                         # displaying various kinds of elements start
@@ -2776,13 +2773,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="heading",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "heading",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] in {"form"}:
                         # displaying various kinds of elements start
@@ -2796,13 +2792,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="container",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "container",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] == "image":
                         styles["max-width"] = "100%"
@@ -2832,14 +2827,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="image",
-                            image=elem_image_sourcename,
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "image",
+                            "image": elem_image_sourcename,
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] == "button":
                         styles["height"] = str(node_height) + "px"
@@ -2867,13 +2861,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="button",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "button",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] in {"menu"}:
                         # displaying various kinds of elements start
@@ -2886,13 +2879,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="list",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "list",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
                     elif elem["region_attributes"]["HTML element"] in {"li"}:
                         # displaying various kinds of elements start
@@ -2913,45 +2905,50 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        node.scenarioelement_inner = ScenarioElement.objects.create(
-                            parent=node.scenarioelement,
-                            struct_type="listItem",
-                            parameters=parameters,
-                            styles=styles,
-                            buoyancy=0,
-                        )
+                        scenarioelement_inner = {
+                            "struct_type": "listItem",
+                            "parameters": parameters,
+                            "styles": styles,
+                            "buoyancy": 0,
+                        }
 
-            # Generating HTML for printing
-            html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
-            print("html=", html)
+                # print("scenarioelement_inner", scenarioelement_inner)
 
-            # Print html code
-            with open(fname + ".html", "w") as html_file:
-                print(html, file=html_file)
+                node.scenarioelement_inner = ScenarioElement.objects.create(
+                    parent=node.scenarioelement, **scenarioelement_inner
+                )
 
-            # Print tree to file
-            with open(
-                VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w"
-            ) as tree_file:
-                for pre, fill, node in RenderTree(root_block):
-                    treestr = u"%s%s" % (pre, node.name)
-                    print(
-                        treestr.ljust(8),
-                        node.x1,
-                        node.y1,
-                        node.x2,
-                        node.y2,
-                        "direction:",
-                        node.direction,
-                        node.types,
-                        "num_elements:",
-                        len(node.elements),
-                        "num_children:",
-                        len(node.children),
-                        "processing:",
-                        node.processing,
-                        file=tree_file,
-                    )
+            # print(node, root_block, node.scenarioelement)
+
+        # Generating HTML for printing
+        html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
+        # print("html=", html)
+
+        # Print html code
+        with open(fname + ".html", "w") as html_file:
+            print(html, file=html_file)
+
+        # Print tree to file
+        with open(VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w") as tree_file:
+            for pre, fill, node in RenderTree(root_block):
+                treestr = u"%s%s" % (pre, node.name)
+                print(
+                    treestr.ljust(8),
+                    node.x1,
+                    node.y1,
+                    node.x2,
+                    node.y2,
+                    "direction:",
+                    node.direction,
+                    node.types,
+                    "num_elements:",
+                    len(node.elements),
+                    "num_children:",
+                    len(node.children),
+                    "processing:",
+                    node.processing,
+                    file=tree_file,
+                )
 
         # Archive all the files for a zip directory
         shutil.make_archive(SAVE_DIR, "zip", SAVE_DIR)
@@ -3966,7 +3963,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                         # Cropping to the border box start
                         elem_image = image_original[
-                            y1 : y1 + elem_height, x1 : x1 + elem_width
+                            y1: y1 + elem_height, x1: x1 + elem_width
                         ]
                         elem_image_name = uuid.uuid4().hex + fname
                         # print(x1, y1)
