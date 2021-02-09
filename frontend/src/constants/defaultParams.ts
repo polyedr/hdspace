@@ -137,6 +137,7 @@ export const UNIQUE_CONTROLS = [
   'dropdownItems',
   'videoSettings',
   'stylesOn',
+  'layouts',
 ];
 
 export const ALL_ELEMENTS_INDEX = 'all';
