@@ -8,6 +8,8 @@ import {
   selectElementById,
   selectElementAsTree,
   selectAllElements,
+  selectIsElementSelected,
+  selectElementsByIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -26,6 +28,7 @@ import {
 import generateUniqueName from '@Utils/generateUniqueName';
 import getSavedValue from '@Utils/getSavedValue';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
+import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
 import {
   Entity,
   LibraryElement,
@@ -65,7 +68,7 @@ export function* moveElementSaga(
             elementId,
             { oldIndex: newIndex, newIndex: oldIndex },
             { oldParentId: newParentId, newParentId: oldParentId },
-            { screenId },
+            { screenId, sourceAction: action },
           ),
         ]),
       );
@@ -412,11 +415,174 @@ function* updateOrReplaceElementStyles(
   }
 }
 
-export function* updateElementStyles(
+export function* updateElementStylesSaga(
   action: ReturnType<typeof Actions.updateElementStyles>,
 ) {
   try {
     yield call(updateOrReplaceElementStyles, action, 'update');
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* updateMultipleElementsStylesSaga(
+  action: ReturnType<typeof Actions.updateMultipleElementsStyles>,
+) {
+  try {
+    const { ids, styles } = action.payload;
+
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      return;
+    }
+
+    const { screenId, undo } = action.meta;
+
+    const stateElements = yield select(selectElementsByIds(ids));
+    if (!undo) {
+      const stylesState = stateElements.reduce((acc, element) => {
+        return {
+          ...acc,
+          [element.id]: element.styles.ownStyles,
+        };
+      }, {});
+      yield put(
+        Actions.setUndoActions(
+          Actions.updateMultipleElementsStyles(ids, stylesState, {
+            screenId,
+            sourceAction: action,
+          }),
+        ),
+      );
+    }
+
+    const elementsToUpdate = stateElements.map((element) => {
+      return {
+        ...element,
+        styles: {
+          ...element.styles,
+          ownStyles: {
+            ...element.styles.ownStyles,
+            ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+          },
+        },
+      };
+    });
+
+    const elements = elementsToUpdate.reduce((acc, element) => {
+      return {
+        ...acc,
+        [element.id]: element,
+      };
+    }, {});
+    yield put(Actions.updateMultipleStateElements(elements));
+
+    const data = Object.values(elementsToUpdate).map((el) =>
+      convertElementToPatchRequest(el as LibraryElement<Entity>),
+    );
+
+    const { error }: Result<LibraryElement<any>> = yield call(
+      reqWrapper,
+      apiUpdateElements,
+      { data },
+    );
+
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* removeMultipleElementsStylesSaga(
+  action: ReturnType<typeof Actions.removeMultipleElementsStyles>,
+) {
+  const { ids, cssPropertiesNames } = action.payload;
+
+  if (!ids || !ids.length) {
+    console.error(
+      `You have to provide list of elements' IDs for action ${action.type}`,
+    );
+    return;
+  }
+
+  if (!cssPropertiesNames || !cssPropertiesNames.length) {
+    console.error(
+      `You have to provide list of CSS properties for action ${action.type}`,
+    );
+  }
+
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
+
+  try {
+    const stateElements = yield select(selectElementsByIds(ids));
+    const { screenId, undo } = action.meta;
+
+    if (!undo) {
+      const stylesState = stateElements.reduce((acc, element) => {
+        return {
+          ...acc,
+          [element.id]: element.styles.ownStyles,
+        };
+      }, {});
+      yield put(
+        Actions.setUndoActions(
+          Actions.updateMultipleElementsStyles(ids, stylesState, {
+            screenId,
+            sourceAction: action,
+          }),
+        ),
+      );
+    }
+
+    const elementsToUpdate = stateElements.map((elToUpdate) => {
+      return {
+        ...elToUpdate,
+        styles: {
+          ...elToUpdate.styles,
+          ownStyles: Object.keys(elToUpdate.styles.ownStyles)
+            .filter((ruleName) => !cssPropertiesNames.includes(ruleName))
+            .map((ruleName) => ({
+              [ruleName]: elToUpdate.styles.ownStyles[ruleName],
+            })),
+        },
+      };
+    });
+
+    yield put(
+      Actions.updateMultipleStateElements(
+        elementsToUpdate.reduce((acc, element) => {
+          return { ...acc, [element.id]: element };
+        }, {}),
+      ),
+    );
+
+    const data = elementsToUpdate.map((element: LibraryElement<any>) =>
+      convertElementToPatchRequest(element),
+    );
+
+    const { error }: Result<LibraryElement<any>> = yield call(
+      reqWrapper,
+      apiUpdateElements,
+      { data },
+    );
+    if (error) throw new Error(error);
   } catch (e) {
     yield put(
       enqueueSnackbar({
@@ -739,5 +905,23 @@ export function* loadCustomElementsSaga(
         options: { variant: 'error' },
       }),
     );
+  }
+}
+
+export function* setActiveElementSaga(
+  action: ReturnType<typeof Actions.setActiveElement>,
+) {
+  yield put(Actions.setActiveElementId(action.payload));
+  yield put(Actions.setSelectedElements([action.payload]));
+}
+
+export function* toggleSelectedElementSaga(
+  action: ReturnType<typeof Actions.toggleSelectedElement>,
+) {
+  const isElementSelected = yield select(selectIsElementSelected);
+  if (isElementSelected) {
+    yield put(Actions.addSelectedElement(action.payload.id));
+  } else {
+    yield put(Actions.removeSelectedElement(action.payload.id));
   }
 }

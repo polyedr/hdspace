@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core';
 import {
+  selectSelectedElementsIds,
   selectActiveElementId,
   selectCurrentRootId,
   selectHoveredElementId,
@@ -32,6 +33,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetId = useSelector(selectCurrentDropTargetId);
+  const selectedElements = useSelector(selectSelectedElementsIds);
   const rootId = useSelector(selectCurrentRootId);
 
   const rootDom = DOMHandler.INSTANCE.getDomById(rootId);
@@ -89,12 +91,33 @@ const ElementsInteractions: React.FC<Props> = (props) => {
         )}
       {showBorders &&
         [
-          ...new Set([
-            ...Object.keys(DOMHandler.INSTANCE.elementsDom),
-            activeElementId,
-            hoveredElementId,
-            dropTargetId,
-          ]),
+          ...new Set(
+            [...Object.keys(DOMHandler.INSTANCE.elementsDom)].filter(
+              (elementId) => !idsToExclude.includes(elementId),
+            ),
+          ),
+        ].map((id) => {
+          const elDom = DOMHandler.INSTANCE.getDomById(id);
+          if (!elDom || !id) {
+            return null;
+          }
+          return (
+            <InteractionsHandler
+              key={`border-handler-${id}`}
+              elementId={id}
+              elementDom={elDom}
+              rootDom={rootDom}
+            />
+          );
+        })}
+      {!showBorders &&
+        selectedElements.length &&
+        [
+          ...new Set(
+            selectedElements.filter(
+              (elementId) => !idsToExclude.includes(elementId),
+            ),
+          ),
         ].map((id) => {
           const elDom = DOMHandler.INSTANCE.getDomById(id);
           if (!elDom || !id) {

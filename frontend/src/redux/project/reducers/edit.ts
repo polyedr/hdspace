@@ -84,6 +84,28 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.ADD_SELECTED_ELEMENT: {
+        if (!draft.selectedElementsIds.includes(action.payload.id)) {
+          draft.selectedElementsIds = [
+            ...draft.selectedElementsIds,
+            action.payload.id,
+          ];
+        }
+        break;
+      }
+
+      case TYPES.REMOVE_SELECTED_ELEMENT: {
+        draft.selectedElementsIds = draft.selectedElementsIds.filter(
+          (elementId) => elementId !== action.payload.id,
+        );
+        break;
+      }
+
+      case TYPES.SET_SELECTED_ELEMENTS: {
+        draft.selectedElementsIds = action.payload.ids;
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         return initialEdit;
       }

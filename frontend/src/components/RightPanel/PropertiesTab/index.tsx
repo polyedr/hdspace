@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
+  selectSelectedElements,
+  selectSelectedElementsIds,
 } from '@Redux/project/selectors/element';
 import {
   selectEditableStyles,
@@ -13,12 +15,13 @@ import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import { Control, Entity, NNBlockType, Params, PropertyName } from '@Src/types';
 import {
-  removeElementStyles,
+  removeMultipleElementsStyles,
   removeSharedStyles,
   updateElementParameters,
-  updateElementStyles,
+  updateMultipleElementsStyles,
   updateSharedStyles,
 } from '@Redux/project/actions';
+import { ALL_ELEMENTS_INDEX, UNIQUE_CONTROLS } from '@Constants/defaultParams';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import GridControl from '@Components/RightPanel/PropertiesTab/Controls/GridControl';
 import ColumnsControls from '@Components/RightPanel/PropertiesTab/Controls/ColumnsControls';
@@ -158,11 +161,13 @@ const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const activeElement = useSelector(selectActiveElement);
+  const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const currentEditableStyles = useSelector(selectCurrentEditableStyles);
   const editableStyles = useSelector(selectEditableStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const selectedElements = useSelector(selectSelectedElements);
 
   const getControlStyles = (controlName: string) => {
     const controlInfo = CONTROLS[controlName];
@@ -180,17 +185,35 @@ const PropertiesTab: React.FC = () => {
     }, {});
   };
 
+  const elementsControlsCollection = Object.keys(selectedElements).map(
+    (elementId) => {
+      return AVAILABLE_CONTROLS[selectedElements[elementId].type];
+    },
+  );
+
+  const SELECTION_CONTROLS = useMemo(() => {
+    if (!elementsControlsCollection.length) {
+      return [];
+    }
+    return elementsControlsCollection.reduce((controls, controlsList) => {
+      return controls.filter(
+        (control) =>
+          controlsList.includes(control) && !UNIQUE_CONTROLS.includes(control),
+      );
+    });
+  }, [elementsControlsCollection]);
+
   const { type } = activeElement;
 
   const removeStyles = useCallback(
-    (ruleNames: PropertyName[], itemID?: string) => {
-      if (editableStyles === 'ownStyles') {
+    (ruleNames: PropertyName[]) => {
+      if (editableStyles === 'ownStyles' || selectedElementsIds.length === 1) {
         dispatch(
-          removeElementStyles(itemID || activeElement.id, ruleNames, {
+          removeMultipleElementsStyles(selectedElementsIds, ruleNames, {
             screenId: currentScreenId,
           }),
         );
-      } else {
+      } else if (selectedElementsIds.length > 1) {
         dispatch(
           removeSharedStyles(editableStyles as Entity, ruleNames, {
             screenId: currentScreenId,
@@ -198,18 +221,20 @@ const PropertiesTab: React.FC = () => {
         );
       }
     },
-    [dispatch, editableStyles, activeElement.id, currentScreenId],
+    [editableStyles, selectedElementsIds, dispatch, currentScreenId],
   );
 
   const updateStyles = useCallback(
-    (styles: React.CSSProperties, itemID?: string) => {
-      if (editableStyles === 'ownStyles') {
+    (styles: React.CSSProperties) => {
+      if (editableStyles === 'ownStyles' || selectedElementsIds.length === 1) {
         dispatch(
-          updateElementStyles(itemID || activeElement.id, styles, {
-            screenId: currentScreenId,
-          }),
+          updateMultipleElementsStyles(
+            selectedElementsIds,
+            { [ALL_ELEMENTS_INDEX]: styles },
+            { screenId: currentScreenId },
+          ),
         );
-      } else {
+      } else if (selectedElementsIds.length > 1) {
         dispatch(
           updateSharedStyles(editableStyles as Entity, styles, {
             screenId: currentScreenId,
@@ -217,7 +242,7 @@ const PropertiesTab: React.FC = () => {
         );
       }
     },
-    [dispatch, activeElement.id, editableStyles, currentScreenId],
+    [editableStyles, selectedElementsIds, dispatch, currentScreenId],
   );
 
   const updateParams = useCallback(
@@ -239,9 +264,9 @@ const PropertiesTab: React.FC = () => {
           height: '100%',
         }}
       >
-        {type !== 'none' && !isPrototypeMode && (
+        {!isPrototypeMode && (
           <>
-            {AVAILABLE_CONTROLS[type as Entity].map((controlName) => {
+            {SELECTION_CONTROLS.map((controlName) => {
               if (isFreeCanvasMode && controlName === 'size') {
                 return null;
               }
@@ -261,7 +286,7 @@ const PropertiesTab: React.FC = () => {
               );
             })}
 
-            {type !== 'root' && (
+            {type !== 'root' && elementsControlsCollection.length === 1 && (
               <>
                 <ControlSection title="Share styles">
                   <ShareStyles />

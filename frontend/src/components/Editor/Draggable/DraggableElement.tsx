@@ -14,11 +14,12 @@ import {
   createElements,
   moveElement,
   resetElementEditState,
-  setActiveElementId,
+  setActiveElement,
   setCurrentDropTargetParams,
   setElementBeingEdited,
   setElementCanBeEdited,
   setHoveredElementId,
+  toggleSelectedElement,
   updateElementParameters,
 } from '@Redux/project/actions';
 import { ElementData, StateElement, SyntheticElement } from '@Src/types';
@@ -253,9 +254,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   }, 300);
 
   const clickHandler = useCallback(
-    (event: React.SyntheticEvent) => {
+    (event: React.MouseEvent) => {
       event.stopPropagation();
-      dispatch(setActiveElementId(element.id));
+      if (event.ctrlKey) {
+        dispatch(toggleSelectedElement(element.id));
+        return;
+      }
+      dispatch(setActiveElement(element.id));
       if (
         element &&
         EDITABLE_COMPONENTS_LIST.includes(element.type) &&
