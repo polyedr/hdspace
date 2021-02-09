@@ -125,3 +125,5 @@ export const DEFAULT_LAYOUT_LIST = [
   Layout.Tablet,
   Layout.Mobile,
 ];
+
+export const PROJECT_STATUS_LIST = ['pending', 'paid'];

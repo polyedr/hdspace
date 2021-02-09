@@ -12,6 +12,7 @@ import {
   setProjectsSearchParameter,
 } from '@Redux/project/actions';
 import { selectProjectsSearchParameter } from '@Redux/project/selectors/base';
+import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   input: {
@@ -21,6 +22,9 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     minWidth: 300,
     '& input': {
       paddingRight: spacing(4),
+    },
+    '& .MuiSelect-icon': {
+      marginRight: spacing(4),
     },
   },
   form: {
@@ -51,7 +55,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-const params = Object.keys(ProjectsSearchParameter).map(
+const parameterList = Object.keys(ProjectsSearchParameter).map(
   (k) => ProjectsSearchParameter[k] as ProjectsSearchParameter,
 );
 
@@ -59,33 +63,51 @@ const Searchbar: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const [key, value] = useSelector(selectProjectsSearchParameter);
+  const [parameterName, parameterValue] = useSelector(
+    selectProjectsSearchParameter,
+  );
 
   const handleSubmit = (ev: FormEvent) => {
     ev.preventDefault();
     dispatch(searchProjects());
   };
 
-  const handleValueChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setProjectsSearchParameter([key, ev.target.value]));
+  const handleParameterValueChange = (
+    ev: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    dispatch(setProjectsSearchParameter([parameterName, ev.target.value]));
   };
 
-  const handleKeyChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+  const handleParameterNameChange = ({
+    target: { value: newName },
+  }: React.ChangeEvent<HTMLInputElement>) => {
+    let newValue = parameterValue;
+
+    if (newName === ProjectsSearchParameter.status) {
+      [newValue] = PROJECT_STATUS_LIST;
+    }
+
+    if (parameterName === ProjectsSearchParameter.status) {
+      newValue = '';
+    }
+
     dispatch(
       setProjectsSearchParameter([
-        ev.target.value as ProjectsSearchParameter,
-        value,
+        newName as ProjectsSearchParameter,
+        newValue,
       ]),
     );
   };
+
+  const isStatus = parameterName === ProjectsSearchParameter.status;
 
   return (
     <div>
       <form onSubmit={handleSubmit} className={classes.form}>
         <div className={classes.wrapper}>
           <TextField
-            value={value}
-            onChange={handleValueChange}
+            value={parameterValue}
+            onChange={handleParameterValueChange}
             label="Search project"
             variant="outlined"
             margin="dense"
@@ -97,7 +119,17 @@ const Searchbar: FC = () => {
             InputProps={{
               id: 'search_input',
             }}
-          />
+            {...(isStatus && {
+              select: true,
+            })}
+          >
+            {isStatus &&
+              PROJECT_STATUS_LIST.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status}
+                </MenuItem>
+              ))}
+          </TextField>
 
           <IconButton type="submit" className={classes.submit} title="Search">
             <SearchIcon fontSize="small" />
@@ -105,8 +137,8 @@ const Searchbar: FC = () => {
         </div>
 
         <TextField
-          value={key}
-          onChange={handleKeyChange}
+          value={parameterName}
+          onChange={handleParameterNameChange}
           label="Search by"
           variant="outlined"
           margin="dense"
@@ -123,7 +155,7 @@ const Searchbar: FC = () => {
             id: 'parameter_name_input',
           }}
         >
-          {params.map((param) => (
+          {parameterList.map((param) => (
             <MenuItem value={param} key={param} className={classes.capitalize}>
               {param}
             </MenuItem>
