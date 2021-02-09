@@ -89,7 +89,6 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
           element={element}
           isActive={isActiveBorder}
           styles={styles}
-          isDropTarget={isDropTarget}
         />
       )}
       {showBordersPosition[BorderPosition.RIGHT] && (

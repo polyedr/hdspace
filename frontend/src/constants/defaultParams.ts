@@ -118,3 +118,24 @@ export const ALL_ASSET_LIST_NAME = 'All assets';
 export const DEFAULT_ASSET_LIST_NAME = 'Project assets';
 
 export const INTERACTIVE_ELEMENTS = ['hyperlink'];
+
+export const UNIQUE_CONTROLS = [
+  'textContent',
+  'isChecked',
+  'type',
+  'placeholder',
+  'labelFor',
+  'listItems',
+  'image',
+  'selectValue',
+  'selectOptions',
+  'isOpen',
+  'name',
+  'value',
+  'mapProps',
+  'dropdownItems',
+  'videoSettings',
+  'stylesOn',
+];
+
+export const ALL_ELEMENTS_INDEX = 'all';

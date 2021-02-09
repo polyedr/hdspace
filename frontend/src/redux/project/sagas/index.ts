@@ -39,7 +39,7 @@ import {
 import {
   moveElementSaga,
   removeElementStylesSaga,
-  updateElementStyles,
+  updateElementStylesSaga,
   replaceElementStylesSaga,
   copyElementStylesSaga,
   addElementClassNameSaga,
@@ -48,6 +48,10 @@ import {
   updateElementParameters,
   uploadFileSaga,
   loadCustomElementsSaga,
+  toggleSelectedElementSaga,
+  setActiveElementSaga,
+  removeMultipleElementsStylesSaga,
+  updateMultipleElementsStylesSaga,
 } from './element';
 
 import TYPES from '../../actionTypes';
@@ -263,7 +267,7 @@ function* duplicateScreenSaga(
     );
     const targetRootID = targetRoot.id;
 
-    yield put(Actions.setActiveElementId(targetRootID));
+    yield put(Actions.setActiveElement(targetRootID));
 
     if (duplicatedItems.length) {
       yield call(duplicateElements, duplicatedItems, targetRoot, {
@@ -388,7 +392,6 @@ function* undoSaga() {
 
     yield put(Actions.popUndoAction());
     yield put(Actions.popHistory());
-
     yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
   } catch (e) {
     yield put(
@@ -476,12 +479,21 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);
   yield takeLatest(TYPES.UPDATE_SHARED_STYLES, updateSharedStylesSaga);
   yield takeLatest(TYPES.REMOVE_ELEMENT_STYLES, removeElementStylesSaga);
-  yield takeLatest(TYPES.UPDATE_ELEMENT_STYLES, updateElementStyles);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_STYLES, updateElementStylesSaga);
+  yield takeLatest(
+    TYPES.REMOVE_MULTIPLE_ELEMENTS_STYLES,
+    removeMultipleElementsStylesSaga,
+  );
+  yield takeLatest(
+    TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
+    updateMultipleElementsStylesSaga,
+  );
   yield takeLatest(TYPES.REPLACE_ELEMENT_STYLES, replaceElementStylesSaga);
   yield takeLatest(TYPES.COPY_ELEMENT_STYLES, copyElementStylesSaga);
   yield takeLatest(TYPES.ADD_ELEMENT_CLASSNAME, addElementClassNameSaga);
   yield takeLatest(TYPES.REMOVE_ELEMENT_CLASSNAME, removeElementClassNameSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT_IMAGE, updateElementImageSaga);
+  yield takeEvery(TYPES.SET_ACTIVE_ELEMENT_SAGA, setActiveElementSaga);
 
   yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
 
@@ -515,4 +527,9 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UPLOAD_ASSET, uploadAssetSaga);
   yield takeEvery(TYPES.UPLOAD_ELEMENT_ASSET, uploadElementAssetSaga);
   yield takeEvery(TYPES.REMOVE_ASSET_LIST, removeAssetListSaga);
+
+  yield takeEvery(
+    TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
+    toggleSelectedElementSaga,
+  );
 }
