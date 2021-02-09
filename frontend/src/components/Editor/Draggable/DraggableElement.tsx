@@ -254,9 +254,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   }, 300);
 
   const clickHandler = useCallback(
-    (event: React.SyntheticEvent) => {
+    (event: React.MouseEvent) => {
       event.stopPropagation();
-      if (((event as unknown) as KeyboardEvent).ctrlKey) {
+      if (event.ctrlKey) {
         dispatch(toggleSelectedElement(element.id));
         return;
       }
