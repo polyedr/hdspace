@@ -58,6 +58,7 @@ import withSmartContainer from './Controls/SmartContainer/withSmartContainer';
 import ControlSection from './helperComponents/ControlSection';
 import NativeColumnsControls from './Controls/NativeColumns';
 import StylesOn from './Controls/StylesOn/StylesOn';
+import LayoutsControl from './Controls/LayoutsControl';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -65,6 +66,9 @@ type ControlInfo = {
 };
 
 const CONTROLS: Record<Control, ControlInfo> = {
+  layouts: {
+    Control: LayoutsControl,
+  },
   display: {
     Control: Display,
     styles: ['display', 'justifyContent', 'alignItems', 'flexDirection'],

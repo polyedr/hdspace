@@ -4,6 +4,7 @@ import {
   StateElement,
   Screen,
   ElementGroup,
+  Layout,
 } from '../types';
 import getDefaultStyles from '../utils/getDefaultStyles';
 
@@ -139,3 +140,9 @@ export const UNIQUE_CONTROLS = [
 ];
 
 export const ALL_ELEMENTS_INDEX = 'all';
+
+export const DEFAULT_LAYOUT_LIST = [
+  Layout.Desktop,
+  Layout.Tablet,
+  Layout.Mobile,
+];

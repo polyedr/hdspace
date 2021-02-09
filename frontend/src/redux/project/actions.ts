@@ -15,7 +15,7 @@ import {
   StateElement,
   Screen,
   NNBlockType,
-  SCREEN_FORMATS,
+  Layout,
   PaginatedResponse,
   PropertyName,
   AssetsList,
@@ -627,7 +627,7 @@ export const addChildrenToElement = (
 export const addChildToElement = (
   childType: ChildEntity,
   elementID: string,
-  parameters: ChildrenElements[ChildEntity]['parameters'],
+  parameters: Partial<ChildrenElements[ChildEntity]['parameters']>,
   meta: ElementHistoryMeta,
 ): AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,
@@ -868,9 +868,9 @@ export const updateLastElements = (
   },
 });
 
-export const changeScreenFormat = (format: SCREEN_FORMATS) => ({
-  type: TYPES.CHANGE_SCREEN_FORMAT,
-  payload: format,
+export const changeLayout = (layout: Layout) => ({
+  type: TYPES.CHANGE_LAYOUT,
+  payload: layout,
 });
 
 export const rotateScreenFormat = (rotated: boolean) => ({

@@ -20,7 +20,7 @@ import {
   PropertyName,
   SavedElementsValues,
   Screen,
-  SCREEN_FORMATS,
+  Layout,
   ServerStructType,
   StateElement,
   UploadedImageInfo,
@@ -53,8 +53,8 @@ export type ProjectUiState = {
   elementCanBeEdited: boolean;
   elementBeingEdited: boolean;
   bordersEnabled: boolean;
-  screenFormat: {
-    format: SCREEN_FORMATS;
+  layout: {
+    value: Layout;
     rotated: boolean;
   };
   editorDocument: Document | null;
@@ -572,10 +572,7 @@ export type ChangeFreeCanvasMode = IAction<
   boolean
 >;
 
-export type ChangeScreenFormat = IAction<
-  typeof TYPES.CHANGE_SCREEN_FORMAT,
-  SCREEN_FORMATS
->;
+export type ChangeScreenFormat = IAction<typeof TYPES.CHANGE_LAYOUT, Layout>;
 
 export type ExtractStateElement = IAction<
   typeof TYPES.EXTRACT_STATE_ELEMENT,

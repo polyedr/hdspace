@@ -139,11 +139,11 @@ export const selectFreeCanvasOffset = (id: string) => (
   return 0;
 };
 
-export const selectScreenFormat = ({ project }: AppReduxState) =>
-  project.ui.screenFormat.format;
+export const selectLayout = ({ project }: AppReduxState) =>
+  project.ui.layout.value;
 
 export const selectScreenRotated = ({ project }: AppReduxState) =>
-  project.ui.screenFormat.rotated;
+  project.ui.layout.rotated;
 
 export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
   project.communication.screenCreateLoader;

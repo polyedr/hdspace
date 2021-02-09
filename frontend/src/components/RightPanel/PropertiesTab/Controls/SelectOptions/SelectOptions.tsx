@@ -1,10 +1,10 @@
-import React, { useState, ChangeEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { ChangeEvent, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import * as R from 'ramda';
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -14,12 +14,17 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
 import generateUniqueName from '@Utils/generateUniqueName';
-import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
+import {
+  ElementGroup,
+  PropertiesChangeProps,
+  SelectItemElement,
+} from '@Src/types';
 import {
   selectActiveItemChildren,
   selectElementsByIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { defaultFreeCanvasParams } from '@Domain/core';
 
 const useStyles = makeStyles({
   row: {
@@ -83,6 +88,8 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
         {
           name: newOptionName,
           value: newOptionName,
+          freeCanvas: defaultFreeCanvasParams,
+          group: ElementGroup.OTHER,
         },
         { screenId: currentScreenId },
       ),
