@@ -156,7 +156,12 @@ const Searchbar: FC = () => {
           }}
         >
           {parameterList.map((param) => (
-            <MenuItem value={param} key={param} className={classes.capitalize}>
+            <MenuItem
+              value={param}
+              key={param}
+              className={classes.capitalize}
+              disabled={param === ProjectsSearchParameter.user} // this search parameter is forbidden while projects are initially filtering by user
+            >
               {param}
             </MenuItem>
           ))}
