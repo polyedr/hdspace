@@ -22,7 +22,7 @@ import {
 } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
-import Formats from './Formats';
+import Layouts from './Layouts';
 import Actions from './actions';
 
 const useStyles = makeStyles(({ typography, spacing }) => ({
@@ -133,7 +133,7 @@ const TopBar: React.FC = () => {
         )}
       </div>
 
-      <Formats />
+      <Layouts />
     </div>
   ) : (
     <div />

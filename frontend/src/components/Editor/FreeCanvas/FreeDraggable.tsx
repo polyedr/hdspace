@@ -37,8 +37,11 @@ const FreeDraggable: React.FC<Props> = ({
 
   const {
     id,
-    parameters: { left, top, width, height, zIndex = 0 },
+    parameters: {
+      freeCanvas: { left, top, width, height, zIndex = 0 },
+    },
   } = element;
+
   const classes = useStyles({ isActive, zIndex, includesActiveElement });
   const currentScreenId = useSelector(selectCurrentScreenId);
 
@@ -69,10 +72,13 @@ const FreeDraggable: React.FC<Props> = ({
       updateElementParameters(
         id,
         {
-          width: parseInt(ref.style.width),
-          height: parseInt(ref.style.height),
-          left: position.x,
-          top: position.y,
+          freeCanvas: {
+            zIndex,
+            width: parseInt(ref.style.width),
+            height: parseInt(ref.style.height),
+            left: position.x,
+            top: position.y,
+          },
         },
         { screenId: currentScreenId },
       ),
@@ -87,10 +93,13 @@ const FreeDraggable: React.FC<Props> = ({
       updateElementParameters(
         id,
         {
-          width,
-          height,
-          left: x,
-          top: y,
+          freeCanvas: {
+            zIndex,
+            width,
+            height,
+            left: x,
+            top: y,
+          },
         },
         { screenId: currentScreenId },
       ),

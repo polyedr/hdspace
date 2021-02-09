@@ -1,29 +1,30 @@
 import {
-  makeContainer,
-  makeSmartHeader,
-  makeSmartFooter,
-  makeSmartWebpage,
-  makeImage,
-} from '../otherElements/otherElements';
-import {
-  makeHeading,
-  makeParagraph,
-} from '../typographyElements/typographyElements';
-import {
-  makeLabel,
-  makeTextinput,
-  makeButton,
-} from '../formElements/formElements';
-
-import { defaultFreeCanvasParams } from '../../core';
-import {
   CardsSectionServerElement,
   ElementGroup,
   FeatureSectionServerElement,
   PageTemplateServerElement,
   SectionServerElement,
   SubscribeFormServerElement,
-} from '../../../types';
+} from '@Src/types';
+import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import {
+  makeContainer,
+  makeImage,
+  makeSmartFooter,
+  makeSmartHeader,
+  makeSmartWebpage,
+} from '../otherElements/otherElements';
+import {
+  makeHeading,
+  makeParagraph,
+} from '../typographyElements/typographyElements';
+import {
+  makeButton,
+  makeLabel,
+  makeTextinput,
+} from '../formElements/formElements';
+
+import { defaultFreeCanvasParams } from '../../core';
 
 export const makePageTemplate = (
   withoutContainers: boolean = false,
@@ -32,8 +33,9 @@ export const makePageTemplate = (
   func_type: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   struct_type: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     group: ElementGroup.CONTAINERS,
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['pageTemplate'],
@@ -154,7 +156,8 @@ export const subscribeForm: SubscribeFormServerElement = {
   func_type: 'subscribeForm',
   struct_type: 'subscribeForm',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.CONTAINERS,
   },
   styles: {
@@ -246,7 +249,8 @@ export const cardsSection: CardsSectionServerElement = {
   func_type: 'cardsSection',
   struct_type: 'cardsSection',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.CONTAINERS,
   },
   styles: {
@@ -405,7 +409,8 @@ export const featureSection: FeatureSectionServerElement = {
   func_type: 'featureSection',
   struct_type: 'featureSection',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.CONTAINERS,
   },
   styles: {
@@ -473,8 +478,9 @@ export const section: SectionServerElement = {
   func_type: 'section',
   struct_type: 'section',
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
     group: ElementGroup.CONTAINERS,
-    ...defaultFreeCanvasParams,
+    freeCanvas: defaultFreeCanvasParams,
   },
   styles: {
     classNames: ['section'],

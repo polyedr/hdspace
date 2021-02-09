@@ -84,6 +84,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
       case 'divBlock': {
         return {
           isBorderVisible,
+          params: element.parameters,
         };
       }
       case 'textinput': {
@@ -102,19 +103,6 @@ const useElementProps = (elementId: string): ElementProps | null => {
         };
       }
 
-      case 'checkbox':
-      case 'radiobutton': {
-        return {
-          params: element.parameters,
-        };
-      }
-      case 'select':
-      case 'selectMenu':
-      case 'selectItem': {
-        return {
-          params: element.parameters,
-        };
-      }
       case 'dropdownMenu': {
         return {
           params: element.parameters,
@@ -128,6 +116,11 @@ const useElementProps = (elementId: string): ElementProps | null => {
           params: element.parameters,
         };
       }
+      case 'checkbox':
+      case 'radiobutton':
+      case 'select':
+      case 'selectMenu':
+      case 'selectItem':
       default:
         return {
           params: element.parameters,

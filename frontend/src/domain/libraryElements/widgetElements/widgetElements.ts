@@ -1,19 +1,23 @@
-import { defaultFreeCanvasParams } from '../../core';
 import {
   CalendarServerElement,
   ClockServerElement,
   ElementGroup,
   MapServerElement,
-} from '../../../types';
+} from '@Src/types';
+import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import { defaultFreeCanvasParams } from '../../core';
 
 export const map: MapServerElement = {
   buoyancy: 0,
   func_type: 'map',
   struct_type: 'map',
   parameters: {
-    ...defaultFreeCanvasParams,
-    width: '50%',
-    height: '50%',
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
     group: ElementGroup.WIDGET,
     map_props: {
       center: {
@@ -38,7 +42,8 @@ export const calendar: CalendarServerElement = {
   func_type: 'calendar',
   struct_type: 'calendar',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.WIDGET,
   },
   styles: {
@@ -54,7 +59,8 @@ export const clock: ClockServerElement = {
   func_type: 'clock',
   struct_type: 'clock',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.WIDGET,
   },
   styles: {

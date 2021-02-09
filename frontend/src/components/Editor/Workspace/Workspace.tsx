@@ -4,7 +4,7 @@ import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
 import {
-  selectScreenFormat,
+  selectLayout,
   selectScreenRotated,
   selectFreeCanvasMode,
 } from '@Redux/project/selectors/base';
@@ -59,7 +59,7 @@ const Workspace: React.FC = () => {
   const rootElementId = useSelector(selectCurrentRootId);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
-  const format = useSelector(selectScreenFormat);
+  const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
   const currentScreenId = useSelector(selectCurrentScreenId);
 
