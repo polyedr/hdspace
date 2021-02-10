@@ -1,18 +1,19 @@
 import React, { FC, FormEvent } from 'react';
 import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import SearchIcon from '@material-ui/icons/Search';
-import { IconButton } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { ProjectsSearchParameter } from '@Src/types';
+import { DateRange, ProjectsSearchParameter } from '@Src/types';
 import {
   searchProjects,
   setProjectsSearchParameter,
 } from '@Redux/project/actions';
 import { selectProjectsSearchParameter } from '@Redux/project/selectors/base';
 import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
+import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   input: {
@@ -20,12 +21,12 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
   queryInput: {
     minWidth: 300,
-    '& input': {
-      paddingRight: spacing(4),
-    },
-    '& .MuiSelect-icon': {
-      marginRight: spacing(4),
-    },
+    // '& input': {
+    //   paddingRight: spacing(4),
+    // },
+    // '& .MuiSelect-icon': {
+    //   marginRight: spacing(4),
+    // },
   },
   form: {
     display: 'flex',
@@ -34,13 +35,11 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   parameterInput: {
     minWidth: 150,
   },
-  wrapper: {
-    position: 'relative',
-  },
   submit: {
-    position: 'absolute',
-    top: 2,
-    right: 2,
+    // position: 'absolute',
+    // top: 2,
+    // right: 2,
+    color: 'white',
     padding: spacing(1),
     backgroundColor: palette.secondary.light,
     '&:hover': {
@@ -59,6 +58,11 @@ const parameterList = Object.keys(ProjectsSearchParameter).map(
   (k) => ProjectsSearchParameter[k] as ProjectsSearchParameter,
 );
 
+const initialDateRange = {
+  from: null,
+  to: null,
+};
+
 const Searchbar: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -66,6 +70,12 @@ const Searchbar: FC = () => {
   const [parameterName, parameterValue] = useSelector(
     selectProjectsSearchParameter,
   );
+
+  const isStatus = parameterName === ProjectsSearchParameter.status;
+
+  const isDate =
+    parameterName === ProjectsSearchParameter.created ||
+    parameterName === ProjectsSearchParameter.updated;
 
   const handleSubmit = (ev: FormEvent) => {
     ev.preventDefault();
@@ -83,12 +93,19 @@ const Searchbar: FC = () => {
   }: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = parameterValue;
 
+    if (newName === ProjectsSearchParameter.name) {
+      newValue = '';
+    }
+
     if (newName === ProjectsSearchParameter.status) {
       [newValue] = PROJECT_STATUS_LIST;
     }
 
-    if (parameterName === ProjectsSearchParameter.status) {
-      newValue = '';
+    if (
+      newName === ProjectsSearchParameter.updated ||
+      newName === ProjectsSearchParameter.created
+    ) {
+      newValue = typeof newValue === 'object' ? newValue : initialDateRange;
     }
 
     dispatch(
@@ -99,41 +116,71 @@ const Searchbar: FC = () => {
     );
   };
 
-  const isStatus = parameterName === ProjectsSearchParameter.status;
+  const handleDateChange = (newDate: Date | null, type: keyof DateRange) => {
+    if (typeof parameterValue !== 'object') return;
+
+    dispatch(
+      setProjectsSearchParameter([
+        parameterName,
+        { ...parameterValue, [type]: newDate },
+      ]),
+    );
+  };
 
   return (
     <div>
       <form onSubmit={handleSubmit} className={classes.form}>
-        <div className={classes.wrapper}>
-          <TextField
-            value={parameterValue}
-            onChange={handleParameterValueChange}
-            label="Search project"
-            variant="outlined"
-            margin="dense"
-            className={cn(classes.input, classes.queryInput)}
-            placeholder="Search project"
-            InputLabelProps={{
-              htmlFor: 'search_input',
-            }}
-            InputProps={{
-              id: 'search_input',
-            }}
-            {...(isStatus && {
-              select: true,
-            })}
-          >
-            {isStatus &&
-              PROJECT_STATUS_LIST.map((status) => (
-                <MenuItem key={status} value={status}>
-                  {status}
-                </MenuItem>
-              ))}
-          </TextField>
-
-          <IconButton type="submit" className={classes.submit} title="Search">
-            <SearchIcon fontSize="small" />
-          </IconButton>
+        <div>
+          {isDate && typeof parameterValue === 'object' ? (
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DatePicker
+                label="From Date"
+                value={parameterValue.from}
+                onChange={(newDate) => handleDateChange(newDate, 'from')}
+                inputVariant="outlined"
+                margin="dense"
+                className={classes.input}
+                autoOk
+                clearable
+              />
+              <DatePicker
+                label="To Date"
+                value={parameterValue.to}
+                onChange={(newDate) => handleDateChange(newDate, 'to')}
+                inputVariant="outlined"
+                margin="dense"
+                className={classes.input}
+                autoOk
+                clearable
+              />
+            </MuiPickersUtilsProvider>
+          ) : (
+            <TextField
+              value={parameterValue}
+              onChange={handleParameterValueChange}
+              label="Search project"
+              variant="outlined"
+              margin="dense"
+              className={cn(classes.input, classes.queryInput)}
+              placeholder="Search project"
+              InputLabelProps={{
+                htmlFor: 'search_input',
+              }}
+              InputProps={{
+                id: 'search_input',
+              }}
+              {...(isStatus && {
+                select: true,
+              })}
+            >
+              {isStatus &&
+                PROJECT_STATUS_LIST.map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+            </TextField>
+          )}
         </div>
 
         <TextField
@@ -166,6 +213,11 @@ const Searchbar: FC = () => {
             </MenuItem>
           ))}
         </TextField>
+
+        <Button type="submit" className={classes.submit} title="Search">
+          {/* <SearchIcon fontSize="default" /> */}
+          Go
+        </Button>
       </form>
     </div>
   );
