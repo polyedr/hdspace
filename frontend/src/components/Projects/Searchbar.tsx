@@ -14,6 +14,8 @@ import { selectProjectsSearchParameter } from '@Redux/project/selectors/base';
 import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { endOfDay } from 'date-fns/esm';
+import { startOfDay } from 'date-fns';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   input: {
@@ -110,10 +112,20 @@ const Searchbar: FC = () => {
   const handleDateChange = (newDate: Date | null, type: keyof DateRange) => {
     if (typeof parameterValue !== 'object') return;
 
+    let date = newDate;
+
+    if (type === 'to' && newDate) {
+      date = endOfDay(newDate);
+    }
+
+    if (type === 'from' && newDate) {
+      date = startOfDay(newDate);
+    }
+
     dispatch(
       setProjectsSearchParameter([
         parameterName,
-        { ...parameterValue, [type]: newDate },
+        { ...parameterValue, [type]: date },
       ]),
     );
   };
@@ -128,6 +140,7 @@ const Searchbar: FC = () => {
                 label="From Date"
                 value={parameterValue.from}
                 onChange={(newDate) => handleDateChange(newDate, 'from')}
+                maxDate={parameterValue.to}
                 inputVariant="outlined"
                 margin="dense"
                 className={classes.input}
@@ -138,6 +151,7 @@ const Searchbar: FC = () => {
                 label="To Date"
                 value={parameterValue.to}
                 onChange={(newDate) => handleDateChange(newDate, 'to')}
+                minDate={parameterValue.from}
                 inputVariant="outlined"
                 margin="dense"
                 className={classes.input}
