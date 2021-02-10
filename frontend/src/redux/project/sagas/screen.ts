@@ -91,7 +91,7 @@ export function* activateScreenSaga({
     const screenElement = yield select(selectScreenRootElement(screenId));
     if (!screenElement) return;
 
-    yield put(Actions.setActiveElementId(screenElement.id));
+    yield put(Actions.setActiveElement(screenElement.id));
   } catch (e) {
     yield put(
       enqueueSnackbar({
@@ -230,7 +230,7 @@ export function* createScreenSaga({
             }),
           );
 
-          yield put(Actions.setActiveElementId(elements[0].id));
+          yield put(Actions.setActiveElement(elements[0].id));
 
           yield put(push(`/project/${projectID}/${newScreen.id}`));
 

@@ -22,7 +22,7 @@ import {
   selectEditableStyles,
   selectProjectState,
 } from './base';
-import { AppReduxState } from '../../types';
+import { AppReduxState, ProjectState } from '../../types';
 import {
   selectCurrentScreen,
   selectCurrentScreenId,
@@ -326,3 +326,26 @@ export const selectDirectRootChildren = createSelector(
 
 export const selectIsElementActive = (elementId: string) =>
   createSelector(selectActiveElementId, (activeId) => activeId === elementId);
+
+export const selectSelectedElementsIds = (state: AppReduxState) =>
+  selectProjectState(state).edit.selectedElementsIds;
+
+export const selectSelectedElements = createSelector(
+  selectProjectState,
+  selectSelectedElementsIds,
+  (state: ProjectState, ids: string[]) => {
+    return ids.reduce((acc, id: string) => {
+      return {
+        ...acc,
+        [id]: state.data.elements[id],
+      };
+    }, {});
+  },
+);
+
+export const selectIsElementSelected = (elementId: string) => (
+  state: AppReduxState,
+) => {
+  const selectedElements = selectSelectedElementsIds(state);
+  return selectedElements.includes(elementId);
+};

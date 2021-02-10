@@ -104,6 +104,12 @@ import {
   AddChildrenToElement,
   SearchProjects,
   SetProjectSearchParameter,
+  AddSelectedElement,
+  RemoveSelectedElement,
+  SetSelectedElements,
+  UpdateMultipleElementsStyles,
+  RemoveMultipleElementsStyles,
+  UpdateMultipleStateElements,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -490,6 +496,35 @@ export const updateElementStyles = (
 ): UpdateElementStyles => ({
   type: TYPES.UPDATE_ELEMENT_STYLES,
   payload: { id, styles },
+  meta,
+});
+
+export const updateMultipleStateElements = (
+  elements: Normalized<StateElement>,
+): UpdateMultipleStateElements => ({
+  type: TYPES.UPDATE_MULTIPLE_STATE_ELEMENTS,
+  payload: { elements },
+});
+
+export const updateMultipleElementsStyles = (
+  ids: string[],
+  styles: {
+    [id: string]: React.CSSProperties;
+  },
+  meta: ElementHistoryMeta,
+): UpdateMultipleElementsStyles => ({
+  type: TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
+  payload: { ids, styles },
+  meta,
+});
+
+export const removeMultipleElementsStyles = (
+  ids: string[],
+  cssPropertiesNames: string[],
+  meta: ElementHistoryMeta,
+): RemoveMultipleElementsStyles => ({
+  type: TYPES.REMOVE_MULTIPLE_ELEMENTS_STYLES,
+  payload: { ids, cssPropertiesNames },
   meta,
 });
 
@@ -940,4 +975,24 @@ export const setSelectedAssetListId = (listId: string) => ({
   payload: {
     assetListId: listId,
   },
+});
+
+export const addSelectedElement = (id: string): AddSelectedElement => ({
+  type: TYPES.ADD_SELECTED_ELEMENT,
+  payload: { id },
+});
+
+export const removeSelectedElement = (id: string): RemoveSelectedElement => ({
+  type: TYPES.REMOVE_SELECTED_ELEMENT,
+  payload: { id },
+});
+
+export const setSelectedElements = (ids: string[]): SetSelectedElements => ({
+  type: TYPES.SET_SELECTED_ELEMENTS,
+  payload: { ids },
+});
+
+export const toggleSelectedElement = (id: string) => ({
+  type: TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
+  payload: { id },
 });

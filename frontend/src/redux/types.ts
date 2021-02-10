@@ -67,6 +67,7 @@ export type ProjectEditState = {
   hoveredElementId: string;
   selectedAssetListId: string | null;
   uploadedImageInfo?: UploadedImageInfo;
+  selectedElementsIds: string[];
   freeCanvas: {
     enabled: boolean;
     lastElements: {
@@ -339,6 +340,16 @@ export type ReplaceElementStyles = IAction<
 export type UpdateElementStyles = IAction<
   typeof TYPES.UPDATE_ELEMENT_STYLES,
   { id: string; styles: React.CSSProperties },
+  ElementHistoryMeta
+>;
+export type UpdateMultipleElementsStyles = IAction<
+  typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
+  { ids: string[]; styles: React.CSSProperties },
+  ElementHistoryMeta
+>;
+export type RemoveMultipleElementsStyles = IAction<
+  typeof TYPES.REMOVE_MULTIPLE_ELEMENTS_STYLES,
+  { ids: string[]; cssPropertiesNames: string[] },
   ElementHistoryMeta
 >;
 export type UpdateElementImage = IAction<
@@ -621,9 +632,34 @@ export type UpdateLastElements = IAction<
   { parentId: string; ids: string[]; offset: number }
 >;
 
+export type AddSelectedElement = IAction<
+  typeof TYPES.ADD_SELECTED_ELEMENT,
+  {
+    id: string;
+  }
+>;
+
+export type RemoveSelectedElement = IAction<
+  typeof TYPES.REMOVE_SELECTED_ELEMENT,
+  {
+    id: string;
+  }
+>;
+
+export type SetSelectedElements = IAction<
+  typeof TYPES.SET_SELECTED_ELEMENTS,
+  { ids: string[] }
+>;
+
 export type UpdateStateElement = IAction<
   typeof TYPES.UPDATE_STATE_ELEMENT,
   { elementId: string; data: Partial<StateElement> },
+  ElementHistoryMeta
+>;
+
+export type UpdateMultipleStateElements = IAction<
+  typeof TYPES.UPDATE_MULTIPLE_STATE_ELEMENTS,
+  { elements: Normalized<StateElement> },
   ElementHistoryMeta
 >;
 
@@ -712,6 +748,7 @@ export type Action =
   | ResetElementEditState
   | MoveStateElement
   | UpdateStateElement
+  | UpdateMultipleStateElements
   | AddStateElements
   | InsertStateElement
   | RemoveStateElement
@@ -741,7 +778,12 @@ export type Action =
   | RemoveAssetListRedux
   | SetSelectedAssetListId
   | SearchProjects
-  | SetProjectSearchParameter;
+  | SetProjectSearchParameter
+  | AddSelectedElement
+  | RemoveSelectedElement
+  | SetSelectedElements
+  | UpdateMultipleElementsStyles
+  | RemoveMultipleElementsStyles;
 
 export type HistoryMeta = {
   undo?: boolean;

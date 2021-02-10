@@ -460,7 +460,7 @@ export function* softDeleteSaga(
     );
 
     if (activeElementId === id) {
-      yield put(Actions.setActiveElementId(root.id));
+      yield put(Actions.setActiveElement(root.id));
     }
 
     const state = yield select(selectElementsForScreen(screenId));
@@ -832,7 +832,7 @@ export function* updateElementSaga(
     yield put(Actions.updateSavedElementValues(elementID, savedValue));
 
     if (action.payload.active) {
-      yield put(Actions.setActiveElementId(elementID));
+      yield put(Actions.setActiveElement(elementID));
     }
 
     const customLibraryElements = yield select(selectCustomLibraryElements);
