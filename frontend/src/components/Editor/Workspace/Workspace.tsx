@@ -12,6 +12,7 @@ import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDr
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
+import MasterScreen from '@Components/MasterScreen';
 import DraggableElement from '../Draggable/DraggableElement';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
@@ -100,7 +101,8 @@ const Workspace: React.FC = () => {
                   <FreeCanvas />
                 ) : (
                   <>
-                    <DraggableElement elementId={rootElementId} />
+                    <MasterScreen />
+                    {/* <DraggableElement elementId={rootElementId} /> */}
                     {!freeCanvasMode && !isPrototypeMode && (
                       <ElementsInteractions posRight={scrollLeft} />
                     )}

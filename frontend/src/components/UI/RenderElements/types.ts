@@ -123,6 +123,13 @@ export type HyperLinkRendererProps = SharedRendererProps & {
   params: HyperLinkParameters;
 };
 
+export type ButtonRendererProps = SharedRendererProps & {
+  params: {
+    textContent: string;
+    showRipple: boolean;
+  };
+};
+
 export type CheckboxRendererProps = SharedRendererProps & {
   params: {
     showRipple: boolean;

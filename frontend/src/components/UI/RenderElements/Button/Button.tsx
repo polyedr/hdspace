@@ -1,9 +1,6 @@
-// @ts-nocheck
 import React from 'react';
 import cn from 'classnames';
-import { WithActionProps } from '@Src/types';
-
-import { HyperLinkRendererProps } from '../types';
+import { ButtonRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
@@ -25,12 +22,9 @@ const useStyles = makeComponentStyles('button', {
   },
 });
 
-type Props = WithActionProps &
-  HyperLinkRendererProps & {
-    type: string;
-  };
+type Props = ButtonRendererProps;
 
-const Button: React.FC<Props> = React.forwardRef((props, ref) => {
+const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
   const { id, isDisabled, params, className, groupClass } = props;
   const { showRipple, textContent } = params;
 
@@ -43,7 +37,7 @@ const Button: React.FC<Props> = React.forwardRef((props, ref) => {
       ref={(dom) => {
         if (typeof ref === 'function') {
           ref(dom);
-        } else {
+        } else if (ref) {
           ref.current = dom;
         }
       }}
