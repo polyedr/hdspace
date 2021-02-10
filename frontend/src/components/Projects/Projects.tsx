@@ -27,7 +27,7 @@ import ProjectListItem from './ProjectListItem';
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
-      textAlign: 'center',
+      // textAlign: 'center',
       margin: theme.spacing(2),
       padding: theme.spacing(1),
     },
