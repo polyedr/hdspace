@@ -21,12 +21,6 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
   queryInput: {
     minWidth: 300,
-    // '& input': {
-    //   paddingRight: spacing(4),
-    // },
-    // '& .MuiSelect-icon': {
-    //   marginRight: spacing(4),
-    // },
   },
   form: {
     display: 'flex',
@@ -36,9 +30,6 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     minWidth: 150,
   },
   submit: {
-    // position: 'absolute',
-    // top: 2,
-    // right: 2,
     color: 'white',
     padding: spacing(1),
     backgroundColor: palette.secondary.light,
@@ -207,7 +198,7 @@ const Searchbar: FC = () => {
               value={param}
               key={param}
               className={classes.capitalize}
-              disabled={param === ProjectsSearchParameter.user} // this search parameter is forbidden while projects are initially filtering by user
+              disabled={param === ProjectsSearchParameter.user} // this search parameter is forbidden while projects are initially filtered by user
             >
               {param}
             </MenuItem>
@@ -215,7 +206,6 @@ const Searchbar: FC = () => {
         </TextField>
 
         <Button type="submit" className={classes.submit} title="Search">
-          {/* <SearchIcon fontSize="default" /> */}
           Go
         </Button>
       </form>
