@@ -1,7 +1,11 @@
+import { makeButton } from '@Domain/libraryElements/formElements/formElements';
 import { selectProjectClasses } from '@Redux/project/selectors/base';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import Button from './UI/RenderElements/Button/Button';
+
+const masterButton = makeButton();
+console.log(masterButton);
 
 const MasterScreen: FC = () => {
   const defaultStyles = useSelector(selectProjectClasses);
