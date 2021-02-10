@@ -1112,3 +1112,8 @@ export enum ProjectsSearchParameter {
   updated = 'updated',
   created = 'created',
 }
+
+export type DateRange = {
+  from: Date | null;
+  to: Date | null;
+};
