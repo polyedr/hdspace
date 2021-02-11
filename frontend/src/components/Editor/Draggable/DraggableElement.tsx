@@ -159,10 +159,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         const { id, type, name, custom, parameters } = elementData;
         dispatch(
           createElements(
-            [{ id, type, name, custom, parameters }],
+            {
+              createdElements: [{ id, type, name, custom, parameters }],
+              parentId: dropTarget.id,
+              index,
+            },
             { screenId },
-            dropTarget.id,
-            index,
           ),
         );
       }

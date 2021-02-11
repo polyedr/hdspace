@@ -3,7 +3,7 @@ import { DropPosition } from '@Constants/dragAndDrop';
 import {
   ChildEntity,
   ChildrenElements,
-  CreatedElement,
+  CreateElementsData,
   Entity,
   Indices,
   LibraryElement,
@@ -111,6 +111,7 @@ import {
   UpdateMultipleElementsStyles,
   RemoveMultipleElementsStyles,
   UpdateMultipleStateElements,
+  SagaPromiseLike,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -602,14 +603,14 @@ export const deleteElement = (
 });
 
 export const createElements = (
-  createdElements: CreatedElement[],
+  { createdElements, parentId, index }: CreateElementsData,
   meta: ElementHistoryMeta,
-  parentId: string,
-  index?: number,
+  promiseLike?: SagaPromiseLike<string[]>,
 ): CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
   payload: { createdElements, parentId, index },
   meta,
+  promiseLike,
 });
 
 export const addChildrenToElement = (

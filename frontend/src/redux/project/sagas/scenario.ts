@@ -40,7 +40,7 @@ import {
   ServerElement,
   StateElement,
 } from '@Src/types';
-import { Action, ElementHistoryMeta } from '@Redux/types';
+import { Action, ElementHistoryMeta, SagaPromiseLike } from '@Redux/types';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
@@ -115,8 +115,10 @@ export function* createElements(
   { elements, index }: ElementsToDrop,
   parent: LibraryElement<Entity>,
   { screenId, undo }: ElementHistoryMeta,
+  promiseLike?: SagaPromiseLike<string[]>,
 ) {
   try {
+    console.log('STEP 1');
     const disallowedElements = elements.filter(
       (element) => !isElementCanBeAdded(parent, element.struct_type),
     );
@@ -136,7 +138,7 @@ export function* createElements(
     if (isFreeCanvasMode) {
       offset = yield select(selectFreeCanvasOffset(parent.id));
     }
-
+    console.log('STEP 2');
     // free canvas offset
     const elementsWithOffset = elements.map((el, i) => {
       if (i === 0)
@@ -160,7 +162,7 @@ export function* createElements(
       apiCreateElements,
       { data: elementsWithOffset },
     );
-
+    console.log('STEP 3');
     if (newElements) {
       if (!undo) {
         yield put(
@@ -181,7 +183,7 @@ export function* createElements(
         name: parent.name,
         children: newChildren,
       };
-
+      console.log('STEP 4');
       const { result, error }: Result<RecursiveElement> = yield call(
         reqWrapper,
         apiChangeRecursiveElement,
@@ -208,7 +210,7 @@ export function* createElements(
             index,
           ),
         );
-
+        console.log('STEP 5');
         yield put(
           Actions.updateLastElements(
             parent.id,
@@ -228,6 +230,7 @@ export function* createElements(
           },
         );
 
+        console.log('STEP 6');
         const { result: createdElements, error } = yield call(
           reqWrapper,
           apiUpdateElements,
@@ -235,6 +238,10 @@ export function* createElements(
             data: elementsWithUpdatedBuoyancy,
           },
         );
+        if (promiseLike?.resolve) {
+          const newElementsIds = newElements.map((el) => el.id);
+          yield call(promiseLike.resolve, newElementsIds);
+        }
         if (createdElements) {
           // eslint-disable-next-line consistent-return
           return createdElements.map((el) => el.id);
@@ -244,7 +251,7 @@ export function* createElements(
       }
       if (error) throw new Error(error);
     }
-
+    console.log('STEP 7');
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
@@ -299,6 +306,7 @@ export function* createElementsSaga(
       {
         screenId,
       },
+      action.promiseLike,
     );
   } catch (e) {
     yield put(
@@ -307,6 +315,9 @@ export function* createElementsSaga(
         options: { variant: 'error' },
       }),
     );
+    if (action.promiseLike?.reject) {
+      yield call(action.promiseLike.reject, e);
+    }
   }
 }
 

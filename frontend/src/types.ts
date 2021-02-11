@@ -230,7 +230,11 @@ export type DropdownItemServerElement = ServerElement<
 >;
 export type UndefinedServerElement = ServerElement<'undefined', []>;
 
-export type ElementsGroupServerElement = ServerElement<'group', []>;
+export type ElementsGroupServerElement = ServerElement<
+  'group',
+  [],
+  ElementsGroupParameters
+>;
 
 export type ServerRecursiveElement = {
   id: number;
@@ -588,6 +592,10 @@ export type DropdownItemParameters = BaseElementParams & {
   textContent: string;
 };
 
+export type ElementsGroupParameters = BaseElementParams & {
+  copiedGroups: string[];
+};
+
 export type CreatedServerProject = {
   name: string;
   status: string;
@@ -688,6 +696,12 @@ export type CreatedElement = {
   name: string;
   custom: boolean;
   parameters?: any;
+};
+
+export type CreateElementsData = {
+  createdElements: CreatedElement[];
+  parentId: string;
+  index?: number;
 };
 
 export type ItemToCopyInfo = {

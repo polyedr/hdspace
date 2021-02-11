@@ -392,7 +392,8 @@ export type DeleteElement = IAction<
 export type CreateElements = IAction<
   typeof TYPES.CREATE_ELEMENTS,
   { createdElements: CreatedElement[]; parentId?: string; index?: number },
-  ElementHistoryMeta
+  ElementHistoryMeta,
+  string[]
 >;
 
 export type AddChildrenToElement = IAction<
@@ -798,6 +799,11 @@ export type HistoryMeta = {
   redo?: boolean;
 };
 
+export type SagaPromiseLike<R> = {
+  resolve?: (arg: R) => void;
+  reject?: (e: Error) => void;
+};
+
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
   sourceAction?: Action | null;
@@ -806,7 +812,7 @@ export type ElementHistoryMeta = HistoryMeta & {
 export interface IPlainAction<T, M = HistoryMeta, R = void> {
   type: T;
   meta?: M;
-  promise?: Promise<R>;
+  promiseLike?: SagaPromiseLike<R>;
 }
 
 export interface IAction<T, P, M = HistoryMeta, R = void>
