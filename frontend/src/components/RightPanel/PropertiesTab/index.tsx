@@ -15,12 +15,15 @@ import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import { Control, Entity, NNBlockType, Params, PropertyName } from '@Src/types';
 import {
+  removeElementStyles,
   removeMultipleElementsStyles,
   removeSharedStyles,
   updateElementParameters,
+  updateElementStyles,
   updateMultipleElementsStyles,
   updateSharedStyles,
 } from '@Redux/project/actions';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import { ALL_ELEMENTS_INDEX, UNIQUE_CONTROLS } from '@Constants/defaultParams';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import GridControl from '@Components/RightPanel/PropertiesTab/Controls/GridControl';
@@ -207,13 +210,26 @@ const PropertiesTab: React.FC = () => {
 
   const removeStyles = useCallback(
     (ruleNames: PropertyName[]) => {
-      if (editableStyles === 'ownStyles' || selectedElementsIds.length === 1) {
+      if (!selectedElementsIds.length) {
+        dispatch(
+          enqueueSnackbar({
+            message: 'No elements were selected',
+            options: { variant: 'error' },
+          }),
+        );
+      } else if (selectedElementsIds.length > 1) {
         dispatch(
           removeMultipleElementsStyles(selectedElementsIds, ruleNames, {
             screenId: currentScreenId,
           }),
         );
-      } else if (selectedElementsIds.length > 1) {
+      } else if (editableStyles === 'ownStyles') {
+        dispatch(
+          removeElementStyles(activeElement.id, ruleNames, {
+            screenId: currentScreenId,
+          }),
+        );
+      } else {
         dispatch(
           removeSharedStyles(editableStyles as Entity, ruleNames, {
             screenId: currentScreenId,
@@ -221,12 +237,25 @@ const PropertiesTab: React.FC = () => {
         );
       }
     },
-    [editableStyles, selectedElementsIds, dispatch, currentScreenId],
+    [
+      selectedElementsIds,
+      editableStyles,
+      dispatch,
+      currentScreenId,
+      activeElement.id,
+    ],
   );
 
   const updateStyles = useCallback(
     (styles: React.CSSProperties) => {
-      if (editableStyles === 'ownStyles' || selectedElementsIds.length === 1) {
+      if (!selectedElementsIds.length) {
+        dispatch(
+          enqueueSnackbar({
+            message: 'No elements were selected',
+            options: { variant: 'error' },
+          }),
+        );
+      } else if (selectedElementsIds.length > 1) {
         dispatch(
           updateMultipleElementsStyles(
             selectedElementsIds,
@@ -234,7 +263,13 @@ const PropertiesTab: React.FC = () => {
             { screenId: currentScreenId },
           ),
         );
-      } else if (selectedElementsIds.length > 1) {
+      } else if (editableStyles === 'ownStyles') {
+        dispatch(
+          updateElementStyles(activeElement.id, styles, {
+            screenId: currentScreenId,
+          }),
+        );
+      } else {
         dispatch(
           updateSharedStyles(editableStyles as Entity, styles, {
             screenId: currentScreenId,

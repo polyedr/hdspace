@@ -12,12 +12,14 @@ import {
 import { apiCreateAssetList } from '@Api/assetList';
 import { DEFAULT_ASSET_LIST_NAME } from '@Constants/defaultParams';
 import {
+  DateRange,
   PaginatedResponse,
   Project,
   ProjectsSearchParameter,
   ProjectWithScreens,
   Result,
 } from '@Src/types';
+import getSearchParams from '@Utils/getSearchParams';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -42,17 +44,16 @@ export function* searchProjectsSaga() {
     );
     yield put(Actions.setProjectList([]));
 
-    const [key, value]: [ProjectsSearchParameter, string] = yield select(
-      selectProjectsSearchParameter,
-    );
+    const paramData: [
+      ProjectsSearchParameter,
+      string | DateRange,
+    ] = yield select(selectProjectsSearchParameter);
 
     const { result, error }: Result<PaginatedResponse<Project>> = yield call(
       reqWrapper,
       apiGetProjectList,
       {
-        params: {
-          [key]: value,
-        },
+        params: getSearchParams(paramData),
       },
     );
 
@@ -83,9 +84,10 @@ export function* getProjectListSaga() {
 
     const next: string | null = yield select(selectProjectsDataNext);
 
-    const [key, value]: [ProjectsSearchParameter, string] = yield select(
+    const paramData: [ProjectsSearchParameter, string] = yield select(
       selectProjectsSearchParameter,
     );
+    const searchParams = getSearchParams(paramData);
 
     const { result, error }: Result<PaginatedResponse<Project>> = yield call(
       reqWrapper,
@@ -93,8 +95,8 @@ export function* getProjectListSaga() {
       {
         params: {
           cursor: next,
-          ...(value && {
-            [key]: value,
+          ...(paramData[1] && {
+            ...searchParams,
           }),
         },
       },

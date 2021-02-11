@@ -29,12 +29,13 @@ import {
   Asset,
   AssetResults,
   ProjectsSearchParameter,
+  DateRange,
 } from '../types';
 import TYPES from './actionTypes';
 
 export type ProjectDataState = {
   projectsData: PaginatedData<Project> & {
-    parameter: [ProjectsSearchParameter, string];
+    parameter: [ProjectsSearchParameter, string | DateRange];
   };
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
@@ -144,7 +145,7 @@ export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 export type SearchProjects = IPlainAction<typeof TYPES.SEARCH_PROJECTS>;
 export type SetProjectSearchParameter = IAction<
   typeof TYPES.SET_PROJECT_SEARCH_PARAMETER,
-  [ProjectsSearchParameter, string]
+  [ProjectsSearchParameter, string | DateRange]
 >;
 export type LoadProjectsSuccess = IAction<
   typeof TYPES.SET_PROJECT_LIST,

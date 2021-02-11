@@ -22,6 +22,7 @@ import {
   Asset,
   PaginatedArray,
   ProjectsSearchParameter,
+  DateRange,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -121,7 +122,7 @@ export const searchProjects = (): SearchProjects => ({
 });
 
 export const setProjectsSearchParameter = (
-  parameter: [ProjectsSearchParameter, string],
+  parameter: [ProjectsSearchParameter, string | DateRange],
 ): SetProjectSearchParameter => ({
   type: TYPES.SET_PROJECT_SEARCH_PARAMETER,
   payload: parameter,
