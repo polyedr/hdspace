@@ -996,3 +996,18 @@ export const toggleSelectedElement = (id: string) => ({
   type: TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
   payload: { id },
 });
+
+export const setCanCreateGroup = (canCreateGroup: boolean) => ({
+  type: TYPES.SET_CAN_CREATE_GROUP,
+  payload: canCreateGroup,
+});
+
+export const createElementsGroup = (
+  name: string,
+  ids: string[],
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.CREATE_ELEMENTS_GROUP_SAGA,
+  payload: { name, ids },
+  meta,
+});

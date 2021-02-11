@@ -2,19 +2,31 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Popover, IconButton } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
 import { selectElementById } from '@Redux/project/selectors/element';
 import { SAVEABLE_ELEMENTS } from '@Constants/defaultParams';
 import { updateElement } from '@Redux/project/actions';
-
-const styles = require('./SaveElementAction.scss');
+import { useButtonStyles } from '../hooks/styles';
 
 type Props = {
   elementId: string;
 };
 
+const useStyles = makeStyles({
+  content: {
+    display: 'block',
+    backgroundColor: '#2f4050',
+  },
+  name: {
+    margin: '5px',
+  },
+});
+
 const SaveElementAction: React.FC<Props> = ({ elementId }) => {
+  const classes = useStyles();
+  const buttonClasses = useButtonStyles();
   const element = useSelector(selectElementById(elementId));
   const dispatch = useDispatch();
 
@@ -32,7 +44,7 @@ const SaveElementAction: React.FC<Props> = ({ elementId }) => {
             size="small"
             disableRipple
             edge={false}
-            style={{ margin: 0, padding: 0 }}
+            className={buttonClasses.iconButton}
             {...bindTrigger(popupState)}
           >
             <SaveIcon fontSize="inherit" />
@@ -49,15 +61,14 @@ const SaveElementAction: React.FC<Props> = ({ elementId }) => {
             }}
             onEntered={() => inputRef.current!.focus()}
           >
-            <div className={cn(styles.popoverContent)}>
+            <div className={cn(classes.content)}>
               <input
                 ref={inputRef}
                 type="text"
-                className={styles.componentNameInput}
+                className={classes.name}
                 placeholder="Enter section name"
-                onKeyPress={(event: React.SyntheticEvent) => {
-                  const e: KeyboardEvent = event.nativeEvent as KeyboardEvent;
-                  if (e.code === 'Enter') {
+                onKeyPress={(event: React.KeyboardEvent) => {
+                  if (event.key === 'Enter') {
                     // Enter pressed
                     const name = inputRef.current!.value;
                     inputRef.current!.value = '';

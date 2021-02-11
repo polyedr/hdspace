@@ -53,6 +53,7 @@ export type ProjectUiState = {
   elementCanBeEdited: boolean;
   elementBeingEdited: boolean;
   bordersEnabled: boolean;
+  canCreateGroup: boolean;
   layout: {
     value: Layout;
     rotated: boolean;
@@ -622,6 +623,11 @@ export type ResetElementEditState = IAction<
   unknown
 >;
 
+export type SetCanCreateGroup = IAction<
+  typeof TYPES.SET_CAN_CREATE_GROUP,
+  boolean
+>;
+
 export type SetProjectsData = IAction<
   typeof TYPES.SET_PROJECTS_DATA,
   PaginatedArray<Project>
@@ -783,23 +789,27 @@ export type Action =
   | RemoveSelectedElement
   | SetSelectedElements
   | UpdateMultipleElementsStyles
-  | RemoveMultipleElementsStyles;
+  | RemoveMultipleElementsStyles
+  | SetCanCreateGroup;
 
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
 };
+
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
   sourceAction?: Action | null;
 };
 
-export interface IPlainAction<T, M = HistoryMeta> {
+export interface IPlainAction<T, M = HistoryMeta, R = void> {
   type: T;
   meta?: M;
+  promise?: Promise<R>;
 }
 
-export interface IAction<T, P, M = HistoryMeta> extends IPlainAction<T, M> {
+export interface IAction<T, P, M = HistoryMeta, R = void>
+  extends IPlainAction<T, M, R> {
   payload: P;
 }
 

@@ -68,6 +68,25 @@ export const removeMapElement = (
     }
   });
 
+export const removeMapElements = (
+  state: Normalized<StateElement>,
+  ids: string[],
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
+    ids.forEach((id) => {
+      const target = draft[id];
+      if (target.parent) {
+        const parent = draft[target.parent];
+        parent.children = parent.children.filter(
+          (childId) => !ids.includes(childId),
+        );
+        parent.children.forEach((childId, index) => {
+          draft[childId].buoyancy = index;
+        });
+      }
+    });
+  });
+
 export const addMapElements = (
   state: Normalized<StateElement>,
   elements: LibraryElement<any>[],

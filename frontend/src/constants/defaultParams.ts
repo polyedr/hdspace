@@ -52,6 +52,7 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
     classNames: ['root'],
     ownStyles: {} as Required<React.CSSProperties>,
   },
+  nestingOrder: 1,
 };
 
 export const DEFAULT_SCREEN: Screen = {
@@ -77,6 +78,7 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
     classNames: ['root'],
     ownStyles: {},
   },
+  nestingOrder: 1,
 };
 
 export const SAVEABLE_ELEMENTS = ['section'];

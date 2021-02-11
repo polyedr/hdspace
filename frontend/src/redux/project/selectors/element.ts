@@ -349,3 +349,13 @@ export const selectIsElementSelected = (elementId: string) => (
   const selectedElements = selectSelectedElementsIds(state);
   return selectedElements.includes(elementId);
 };
+
+export const selectCanCreateGroup = (state: AppReduxState) =>
+  selectProjectState(state).ui.canCreateGroup;
+
+export const selectElementGroups = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  return Object.values(elements).filter(
+    (element: StateElement) => element.parameters?.container === true,
+  );
+};

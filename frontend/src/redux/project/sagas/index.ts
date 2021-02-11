@@ -52,6 +52,7 @@ import {
   setActiveElementSaga,
   removeMultipleElementsStylesSaga,
   updateMultipleElementsStylesSaga,
+  createElementsGroupSaga,
 } from './element';
 
 import TYPES from '../../actionTypes';
@@ -532,4 +533,6 @@ export default function* projectSaga() {
     TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
     toggleSelectedElementSaga,
   );
+
+  yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP_SAGA, createElementsGroupSaga);
 }

@@ -10,10 +10,15 @@ import {
   selectAllElements,
   selectIsElementSelected,
   selectElementsByIds,
+  selectSelectedElementsIds,
+  selectActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
-import { convertElementToPatchRequest } from '@Api/converters/toRequest';
+import {
+  convertElementToPatchRequest,
+  convertCreatedElementToRequest,
+} from '@Api/converters/toRequest';
 import {
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
@@ -43,6 +48,7 @@ import {
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
+import { createElements } from './scenario';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -912,6 +918,8 @@ export function* setActiveElementSaga(
   action: ReturnType<typeof Actions.setActiveElement>,
 ) {
   yield put(Actions.setActiveElementId(action.payload));
+  yield put(Actions.setCanCreateGroup(false));
+  yield put(Actions.resetElementEditState());
   yield put(Actions.setSelectedElements([action.payload]));
 }
 
@@ -920,8 +928,181 @@ export function* toggleSelectedElementSaga(
 ) {
   const isElementSelected = yield select(selectIsElementSelected);
   if (isElementSelected) {
+    const element = yield select(selectElementById(action.payload.id));
+    const selectedElementsIds = yield select(selectSelectedElementsIds);
+    const selectedElements = yield select(
+      selectElementsByIds(selectedElementsIds),
+    );
+    const canCreateGroup =
+      !!selectedElements.length &&
+      selectedElements.every((el) => el.parent === element.parent);
+    yield put(Actions.setCanCreateGroup(canCreateGroup));
     yield put(Actions.addSelectedElement(action.payload.id));
   } else {
     yield put(Actions.removeSelectedElement(action.payload.id));
+  }
+}
+
+export function* createElementsGroupSaga(
+  action: ReturnType<typeof Actions.createElementsGroup>,
+) {
+  if (!action.meta) {
+    yield put(
+      enqueueSnackbar({
+        message: `You should provide meta information for action ${action.type}`,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+  const { name, ids } = action.payload;
+
+  try {
+    const activeElement = yield select(selectActiveElement);
+    const parentTree = yield select(selectElementAsTree(activeElement.parent));
+    const selectedElements: StateElement[] = yield select(
+      selectElementsByIds(ids),
+    );
+    const minBuoyancy = Math.min(...selectedElements.map((el) => el.buoyancy));
+
+    yield call(
+      createElements,
+      {
+        elements: [
+          convertCreatedElementToRequest('group', activeElement.parent, name, {
+            container: true,
+          }),
+        ],
+        index: minBuoyancy,
+      },
+      parentTree,
+      action.meta,
+    );
+
+    /* const state = yield select(selectElementsForScreen(screenId));
+    console.log('STATE!!!', state);
+
+    const parentElement = yield select(selectElementById(activeElement.parent));
+    console.log('CHILDREN!!', parentElement.children, minBuoyancy);
+    const groupId = parentElement.children[minBuoyancy];
+    console.log('CONTAINER ID!!', groupId);
+
+    const sortedIds = selectedElements
+      .sort((a, b) => {
+        if (a.buoyancy < b.buoyancy) {
+          return 1;
+        }
+        if (a.buoyancy > b.buoyancy) {
+          return -1;
+        }
+        return 0;
+      })
+      .map((el) => el.id);
+
+    console.log('SORTED IDS!!', sortedIds);
+
+    const { error: groupError } = yield call(
+      reqWrapper,
+      apiChangeRecursiveElement,
+      {
+        id: groupId,
+        data: {
+          children: sortedIds,
+        },
+      },
+    );
+
+    if (groupError) throw groupError;
+    /*  
+    const convertedCreatedGroup = convertCreatedElementToRequest(
+      'group',
+      activeElement.parent,
+      name,
+    );
+
+    const {
+      result: elementsGroup,
+      error,
+    }: Result<LibraryElement<any>> = yield call(reqWrapper, apiCreateElement, {
+      data: convertedCreatedGroup,
+    });
+
+    if (error) throw new Error(error);
+
+    if (!elementsGroup) {
+      console.error('Element is undefined!');
+      return;
+    }
+    yield put(
+      Actions.addStateElements(
+        [elementsGroup],
+        activeElement.parent,
+        {
+          screenId,
+        },
+        minBuoyancy,
+      ),
+    );
+
+    const state = yield select(selectElementsForScreen(screenId));
+    yield put(
+      Actions.updateElementsTree(removeMapElements(state, selectedElements), {
+        ...action.meta,
+      }),
+    );
+
+    yield put(
+      Actions.updateElementsTree(
+        addMapElements(state, selectedElements, elementsGroup.id),
+        action.meta,
+      ),
+    );
+
+    const parentElement = yield select(
+      selectElementByChildId(activeElement.id),
+    );
+
+    const elementsToUpdate: LibraryElement<Entity>[] = [];
+
+    const childElements = yield select(
+      selectElementsByIds(parentElement.children),
+    );
+    parentElement.children = [
+      elementsGroup.id,
+      ...parentElement.children.filter((childId) => !ids.includes(childId)),
+    ];
+
+    elementsToUpdate.push(parentElement);
+    let childBuoyancy = 0;
+    let groupBuoyancy = 0;
+    childElements.forEach((element) => {
+      if (ids.includes(element.id)) {
+        element.buoyancy = groupBuoyancy;
+        groupBuoyancy += 1;
+      } else {
+        element.buoyancy = childBuoyancy;
+        childBuoyancy += 1;
+      }
+      elementsToUpdate.push(element);
+    });
+    elementsGroup.buoyancy = minBuoyancy;
+    elementsGroup.children = ids;
+    elementsToUpdate.push(elementsGroup);
+
+    const convertedElements = elementsToUpdate.map((el) =>
+      convertElementToPatchRequest(el),
+    );
+
+    const { error: updateError } = yield call(reqWrapper, apiUpdateElements, {
+      data: convertedElements,
+    });
+    if (updateError) throw updateError; */
+  } catch (e) {
+    console.error(e);
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
   }
 }

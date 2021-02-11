@@ -230,6 +230,8 @@ export type DropdownItemServerElement = ServerElement<
 >;
 export type UndefinedServerElement = ServerElement<'undefined', []>;
 
+export type ElementsGroupServerElement = ServerElement<'group', []>;
+
 export type ServerRecursiveElement = {
   id: number;
   name: string;
@@ -260,6 +262,7 @@ export type LibraryElement<
   children: Children;
   parameters: { group?: string } & Params;
   shared?: boolean;
+  nestingOrder: number;
 };
 
 export type LibraryElementPatch<Type extends Entity> = {
@@ -662,6 +665,7 @@ export type StateElement = {
   };
   parameters: any;
   shared?: boolean;
+  nestingOrder: number;
 };
 
 export type DropTargetParams = {
@@ -1015,6 +1019,7 @@ export type ElementsToAdd = {
   cardsSection: CardsSectionServerElement;
   featureSection: FeatureSectionServerElement;
   section: SectionServerElement;
+  group: ElementsGroupServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;

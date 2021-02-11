@@ -106,6 +106,10 @@ function uiReducer(
       return { ...state, elementBeingEdited: false, elementCanBeEdited: false };
     }
 
+    case TYPES.SET_CAN_CREATE_GROUP: {
+      return { ...state, canCreateGroup: action.payload };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

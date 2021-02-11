@@ -22,24 +22,23 @@ export const convertElementFromResponse = <
   T extends Entity,
   K extends Entity,
   P extends ServerElement<T>['parameters']
->({
-  id,
-  name,
-  children,
-  struct_type,
-  buoyancy,
-  image,
-  parameters,
-  styles,
-}: ServerElement<T, ServerElement<K>[], P>): LibraryElement<
-  T,
-  LibraryElement<K>[],
-  P
-> => ({
+>(
+  {
+    id,
+    name,
+    children,
+    struct_type,
+    buoyancy,
+    image,
+    parameters,
+    styles,
+  }: ServerElement<T, ServerElement<K>[], P>,
+  nestingOrder = 1,
+): LibraryElement<T, LibraryElement<K>[], P> => ({
   id: String(id),
   name,
   children: children
-    .map((child) => convertElementFromResponse(child))
+    .map((child) => convertElementFromResponse(child, nestingOrder + 1))
     .sort(
       (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy,
     ),
@@ -47,6 +46,7 @@ export const convertElementFromResponse = <
   buoyancy,
   image,
   parameters,
+  nestingOrder,
   styles: {
     ...styles,
     ownStyles: {

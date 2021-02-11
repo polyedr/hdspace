@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     top: elementId === rootID ? styles.top : styles.top + styles.height - 1,
     left: elementId === rootID ? 'auto' : styles.left,
     right: elementId === rootID ? styles.right : 'auto',
-    zIndex: 9999999,
+    zIndex: 20,
     position: 'absolute',
     padding: '2px 4px',
     fontSize: '12px',
