@@ -111,6 +111,7 @@ import {
   UpdateMultipleElementsStyles,
   RemoveMultipleElementsStyles,
   UpdateMultipleStateElements,
+  SetActiveMasterElement,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -996,4 +997,11 @@ export const setSelectedElements = (ids: string[]): SetSelectedElements => ({
 export const toggleSelectedElement = (id: string) => ({
   type: TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
   payload: { id },
+});
+
+export const setActiveMasterElement = (
+  type: Entity,
+): SetActiveMasterElement => ({
+  type: TYPES.SET_ACTIVE_MASTER_ELEMENT,
+  payload: type,
 });

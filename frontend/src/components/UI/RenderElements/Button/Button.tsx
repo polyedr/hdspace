@@ -6,7 +6,7 @@ import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles('button', {
   root: ({ isDisabled, ownStyles }) => {
-    const { color, backgroundColor } = ownStyles;
+    const { color, backgroundColor } = ownStyles || {};
     return {
       textTransform: 'uppercase',
       outline: 0,
@@ -26,7 +26,7 @@ type Props = ButtonRendererProps;
 
 const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
   const { id, isDisabled, params, className, groupClass } = props;
-  const { showRipple, textContent } = params;
+  const { showRipple, textContent } = params || {};
 
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);

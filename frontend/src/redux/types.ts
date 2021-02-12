@@ -43,6 +43,13 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
+  masterScreen: {
+    enabled: boolean;
+    active: Entity;
+    elements: {
+      [k in Entity]?: any;
+    };
+  };
 };
 
 export type ProjectUiState = {
@@ -674,6 +681,11 @@ export type SetEditorDocument = IAction<
   Document
 >;
 
+export type SetActiveMasterElement = IAction<
+  typeof TYPES.SET_ACTIVE_MASTER_ELEMENT,
+  Entity
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -784,6 +796,7 @@ export type Action =
   | RemoveSelectedElement
   | SetSelectedElements
   | UpdateMultipleElementsStyles
+  | SetActiveMasterElement
   | RemoveMultipleElementsStyles;
 
 export type HistoryMeta = {

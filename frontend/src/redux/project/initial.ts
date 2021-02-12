@@ -1,4 +1,6 @@
 import { ProjectsSearchParameter, Layout } from '@Src/types';
+import { makeButton } from '@Domain/libraryElements/formElements/formElements';
+import { root } from '@Domain/libraryElements/otherElements/otherElements';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -18,6 +20,23 @@ export const initialData: ProjectDataState = {
   },
   screens: {},
   elements: {},
+  masterScreen: {
+    enabled: true,
+    active: 'root',
+    elements: {
+      root: {
+        ...root,
+        name: 'Master Root',
+        children: ['button'],
+        id: 'masterRoot',
+      },
+      button: {
+        ...makeButton(),
+        name: 'Master Button',
+        id: 'masterButton',
+      },
+    },
+  },
   customElementsData: {
     previous: null,
     next: null,

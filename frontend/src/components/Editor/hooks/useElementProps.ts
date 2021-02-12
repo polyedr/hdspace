@@ -29,7 +29,6 @@ type ElementProps = {
   currentValue?: any;
   isBorderVisible?: boolean;
   params?: any;
-  onElementChange?: (item, value) => void;
   childrenElements?: ChildrenElements;
   isChecked?: boolean;
   projectClasses?: ProjectClass[];

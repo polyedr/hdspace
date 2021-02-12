@@ -17,6 +17,8 @@ import {
 } from '@Constants/defaultParams';
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/masterScreen';
+import MasterPanel from '@Components/Editor/MasterScreen/MasterPanel';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import AssetsSection from './Assets';
@@ -86,6 +88,7 @@ const tabContent: Record<RPTab, any> = {
 const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const classes = useStyles({ open: !isPrototypeMode });
   const tabClasses = useTabStyles();
@@ -129,25 +132,30 @@ const RightPanel: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <Tabs
-        value={activeTabIndex}
-        onChange={handleChange}
-        classes={tabsClasses}
-        variant="fullWidth"
-      >
-        {tabs.map((tab) => (
-          <Tab key={tab} classes={tabClasses} label={tab} />
-        ))}
-      </Tabs>
+      {masterScreenEnabled ? (
+        <MasterPanel />
+      ) : (
+        <>
+          <Tabs
+            value={activeTabIndex}
+            onChange={handleChange}
+            classes={tabsClasses}
+            variant="fullWidth"
+          >
+            {tabs.map((tab) => (
+              <Tab key={tab} classes={tabClasses} label={tab} />
+            ))}
+          </Tabs>
 
-      {tabs.map((tab, i) => {
-        return (
-          <TabPanel index={i} value={activeTabIndex} key={tab}>
-            {tabContent[tab]}
-          </TabPanel>
-        );
-      })}
-
+          {tabs.map((tab, i) => {
+            return (
+              <TabPanel index={i} value={activeTabIndex} key={tab}>
+                {tabContent[tab]}
+              </TabPanel>
+            );
+          })}
+        </>
+      )}
       <AssetsSection />
     </div>
   );
