@@ -53,22 +53,6 @@ const PropertiesTab: React.FC = () => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
 
-  /* const getControlStyles = (controlName: string) => {
-    const controlInfo = CONTROLS[controlName];
-    if (!controlInfo.styles) {
-      return {};
-    }
-    return controlInfo.styles.reduce((acc, styleName) => {
-      if (!currentEditableStyles[styleName]) {
-        return acc;
-      }
-      return {
-        ...acc,
-        [styleName]: currentEditableStyles[styleName],
-      };
-    }, {});
-  }; */
-
   const elementsControlsCollection = Object.keys(selectedElements).map(
     (elementId) => {
       return AVAILABLE_CONTROLS[selectedElements[elementId].type];

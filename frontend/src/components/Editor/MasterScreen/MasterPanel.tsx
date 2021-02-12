@@ -6,8 +6,12 @@ import { makeStyles } from '@material-ui/core';
 import { selectActiveMasterElement } from '@Redux/project/selectors/masterScreen';
 import getControlStyles from '@Utils/getControlStyles';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
+import { updateSharedStyles } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectEditableStyles } from '@Redux/project/selectors/base';
+import { Entity } from '@Src/types';
 
 const useStyles = makeStyles({
   root: {
@@ -19,8 +23,17 @@ const useStyles = makeStyles({
 
 const MasterPanel = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const activeMasterElement = useSelector(selectActiveMasterElement);
   const currentEditableStyles = useSelector(selectCurrentEditableStyles);
+  const editableStyles = useSelector(selectEditableStyles);
+  const screenId = useSelector(selectCurrentScreenId);
+
+  const updateStyles = (styles: React.CSSProperties) => {
+    dispatch(
+      updateSharedStyles(editableStyles as Entity, styles, { screenId }),
+    );
+  };
 
   return (
     <div className={classes.root}>
@@ -40,7 +53,7 @@ const MasterPanel = () => {
                 {...getControlStyles(controlName, currentEditableStyles)}
                 activeElementId="none"
                 removeStyles={() => console.log('puff')}
-                updateStyles={() => console.log('puff')}
+                updateStyles={updateStyles}
                 updateParams={() => console.log('puff')}
               />
             </ControlSection>
