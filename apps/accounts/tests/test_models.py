@@ -1,4 +1,6 @@
 from django.test import TestCase
+
+from ..tests.accounts_factory import UserFactory, ProfileFactory
 from ..models import Profile, User
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -7,46 +9,36 @@ class UserTest(TestCase):
     """ Test module for User model """
 
     def setUp(self):
-        self.user_attributes = {
-            "username": "cnmbj8d",
-            "first_name": "Nelly",
-            "last_name": "Li",
-            "email": "q1210201368@gmail.com",
-            "password": make_password("Zsedc123"),
-        }
-        self.user = User.objects.create(**self.user_attributes)
+
+        self.user = UserFactory.create()
+        self.user_created = User.objects.get(username=self.user.username)
 
     def check_created(self):
-        self.assertEqual(User.objects.filter(email="q1210201368@gmail.com").exists(), True)
+        self.assertEqual(User.objects.filter(email=self.user.email).exists(), True)
 
     def test_user_username(self):
-        user_test = User.objects.get(username="cnmbj8d")
         # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(user_test.username, "cnmbj8d")
+        self.assertEqual(self.user_created.username, self.user.username)
         # self.assertEqual(profile_test2.online(), False)
 
     def test_user_first_name(self):
-        user_test = User.objects.get(username="cnmbj8d")
         # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(user_test.first_name, "Nelly")
+        self.assertEqual(self.user_created.first_name, self.user.first_name)
         # self.assertEqual(profile_test2.online(), False)
 
     def test_user_last_name(self):
-        user_test = User.objects.get(username="cnmbj8d")
         # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(user_test.last_name, "Li")
+        self.assertEqual(self.user_created.last_name, self.user.last_name)
         # self.assertEqual(profile_test2.online(), False)
 
     def test_user_email(self):
-        user_test = User.objects.get(username="cnmbj8d")
         # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(user_test.email, "q1210201368@gmail.com")
+        self.assertEqual(self.user_created.email,self.user.email)
         # self.assertEqual(profile_test2.online(), False)
 
     def test_user_password(self):
-        user_test = User.objects.get(username="cnmbj8d")
         # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(True, check_password("Zsedc123", user_test.password))
+        self.assertEqual(self.user.email,self.user_created.email)
         # self.assertEqual(profile_test2.online(), False)
 
     def tearDown(self):
@@ -65,22 +57,18 @@ class ProfileTest(TestCase):
             "avatar": "String",
             "user_id": 6
         }
-        self.profile = Profile.objects.create(**self.profile_attributes)
-        #
-        # self.profile_attributes2 = {"role": "Developer", "approved": True}
-        # self.profile = Profile.objects.create(**self.profile_attributes2)
+        self.profile = ProfileFactory.create()
+        self.profile_created = Profile.objects.get(user_id = self.profile.user_id)
+
 
     def test_profile_role(self):
-        profile_test = Profile.objects.get(role="ADMINISTRATOR")
-        # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(profile_test.role, "ADMINISTRATOR")
-        # self.assertEqual(profile_test2.online(), False)
+        self.assertEqual(self.profile_created.role, "ADMINISTRATOR")
 
     def test_profile_approved(self):
-        profile_test = Profile.objects.get(role="ADMINISTRATOR")
-        # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(profile_test.approved, True)
-        # self.assertEqual(profile_test2.online(), False)
+        self.assertEqual(self.profile_created.approved, self.profile.approved)
+
+    def test_profile_hourly_rate(self):
+        self.assertEqual(self.profile_created.hourly_rate, self.profile.hourly_rate)
 
     def tearDown(self):
         for profile in Profile.objects.all():
