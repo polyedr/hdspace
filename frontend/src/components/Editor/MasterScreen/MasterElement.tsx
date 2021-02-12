@@ -6,7 +6,7 @@ import {
 import { selectMasterElement } from '@Redux/project/selectors/masterScreen';
 import { Entity } from '@Src/types';
 import prevent from '@Utils/preventEvent';
-import React, { FC, MouseEvent } from 'react';
+import React, { FC, Fragment, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 type Props = {
@@ -38,8 +38,11 @@ const MasterElement: FC<Props> = ({ type }) => {
 
   return (
     <Renderer {...elementProps} onClick={handleClick}>
-      {element.children.map((child) => (
-        <MasterElement type={child} key={child} />
+      {element.children.map((child, i) => (
+        <Fragment key={child}>
+          {i !== 0 && <hr />}
+          <MasterElement type={child} />
+        </Fragment>
       ))}
     </Renderer>
   );
