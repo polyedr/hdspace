@@ -27,125 +27,124 @@ import {
   makeParagraph,
   textBlock,
 } from '@Domain/libraryElements/typographyElements/typographyElements';
-import { ProjectDataState } from '@Redux/types';
 
-const MASTER_ELEMENTS_LIST: ProjectDataState['masterScreen']['elements'] = {
-  root: {
+const MASTER_ELEMENTS_LIST = {
+  masterRoot: {
     ...root,
     name: 'Master Root',
     children: [
-      'button',
-      'heading',
-      'hyperlink',
-      'paragraph',
-      'textBlock',
-      'list',
-      'textinput',
-      'checkbox',
-      'radiobutton',
-      'label',
-      'textarea',
-      'container',
-      'grid',
-      'columns',
-      'nativeColumns',
-      'image',
-      'video',
-      'undefined',
-      'section',
+      'masterButton',
+      'masterHeading',
+      'masterHyperlink',
+      'masterParagraph',
+      'masterTextBlock',
+      'masterList',
+      'masterTextinput',
+      'masterCheckbox',
+      'masterRadiobutton',
+      'masterLabel',
+      'masterTextarea',
+      'masterContainer',
+      'masterGrid',
+      'masterColumns',
+      'masterNativeColumns',
+      'masterImage',
+      'masterVideo',
+      'masterUndefined',
+      'masterSection',
     ],
     id: 'masterRoot',
   },
-  heading: {
+  masterHeading: {
     ...makeHeading(),
     name: 'Master Heading',
     id: 'masterHeading',
   },
-  hyperlink: {
+  masterHyperlink: {
     ...hyperlink,
     name: 'Master Hyperlink',
     id: 'masterHyperlink',
   },
-  paragraph: {
+  masterParagraph: {
     ...makeParagraph(),
     name: 'Master Paragraph',
     id: 'masterParagraph',
   },
-  textBlock: {
+  masterTextBlock: {
     ...textBlock,
     name: 'Master TextBlock',
     id: 'masterTextBlock',
   },
-  list: {
+  masterList: {
     ...list,
     name: 'Master List',
     id: 'masterList',
-    children: ['listItem'],
+    children: ['masterListItem'],
   },
-  listItem: {
+  masterListItem: {
     ...makeListItem('Master ListItem'),
     name: 'Master ListItem',
     id: 'masterListItem',
   },
-  button: {
+  masterButton: {
     ...makeButton(),
     name: 'Master Button',
     id: 'masterButton',
   },
-  textinput: {
+  masterTextinput: {
     ...makeTextinput(),
     name: 'Master Textinput',
     id: 'masterTextinput',
   },
-  checkbox: {
+  masterCheckbox: {
     ...checkbox,
     name: 'Master checkbox',
     id: 'masterCheckbox',
   },
-  radiobutton: {
+  masterRadiobutton: {
     ...radiobutton,
     name: 'Master Radiobutton',
     id: 'masterRadiobutton',
   },
   // select,
-  label: {
+  masterLabel: {
     ...makeLabel(),
     name: 'Master Label',
     id: 'masterLabel',
   },
-  textarea: {
+  masterTextarea: {
     ...textarea,
     name: 'Master Textarea',
     id: 'masterTextarea',
   },
-  container: {
+  masterContainer: {
     ...makeContainer(),
     name: 'Master Container',
     id: 'masterContainer',
   },
-  grid: {
+  masterGrid: {
     ...makeGrid(),
     name: 'Master Grid',
     id: 'masterGrid',
-    children: ['gridItem'],
+    children: ['masterGridItem'],
   },
-  gridItem: {
+  masterGridItem: {
     ...makeGridItem(),
     name: 'Master GridItem',
     id: 'masterGridItem',
   },
-  columns: {
+  masterColumns: {
     ...makeColumns(),
     name: 'Master Columns',
     id: 'masterColumns',
-    children: ['column'],
+    children: ['masterColumn'],
   },
-  column: {
+  masterColumn: {
     ...column,
     name: 'Master Column',
     id: 'masterColumn',
   },
-  nativeColumns: {
+  masterNativeColumns: {
     ...nativeColumns,
     name: 'Master Native Columns',
     id: 'masterNativeColumns',
@@ -156,23 +155,23 @@ const MASTER_ELEMENTS_LIST: ProjectDataState['masterScreen']['elements'] = {
   //   name: 'Master DivBlock',
   //   id: 'masterDivBlock',
   // }
-  image: {
+  masterImage: {
     ...makeImage(),
     name: 'Master Image',
     id: 'masterImage',
   },
   // dropdown,
-  video: {
+  masterVideo: {
     ...video,
     name: 'Master Video',
     id: 'masterVideo',
   },
-  undefined: {
+  masterUndefined: {
     ...undefinedElement,
     name: 'Master Undefined',
     id: 'masterUndefined',
   },
-  section: {
+  masterSection: {
     ...section,
     name: 'Master Section',
     id: 'masterSection',

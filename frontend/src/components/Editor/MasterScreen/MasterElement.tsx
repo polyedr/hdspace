@@ -1,18 +1,19 @@
 import { RENDERERS } from '@Components/UI/RenderElements';
-import { setActiveMasterElement } from '@Redux/project/actions';
-import { selectMasterElement } from '@Redux/project/selectors/masterScreen';
-import { Entity } from '@Src/types';
+import { setActiveMasterElementId } from '@Redux/project/actions';
+import { selectMasterElementById } from '@Redux/project/selectors/masterScreen';
 import prevent from '@Utils/preventEvent';
 import React, { FC, Fragment, MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 type Props = {
-  type: Entity;
+  id: string;
 };
 
-const MasterElement: FC<Props> = ({ type }) => {
+const MasterElement: FC<Props> = ({ id }) => {
   const dispatch = useDispatch();
-  const element = useSelector(selectMasterElement(type));
+  const element = useSelector(selectMasterElementById(id));
+
+  const { struct_type: type } = element;
 
   const elementProps = {
     id: element.id,
@@ -27,18 +28,18 @@ const MasterElement: FC<Props> = ({ type }) => {
 
   const handleClick = (ev: MouseEvent<HTMLElement>) => {
     prevent(ev);
-    dispatch(setActiveMasterElement(type));
+    dispatch(setActiveMasterElementId(id));
   };
 
   const Renderer = RENDERERS[type];
 
   return (
     <Renderer {...elementProps} onClick={handleClick}>
-      {element.children.map((child, i) => (
-        <Fragment key={child}>
+      {element.children.map((childId, i) => (
+        <Fragment key={childId}>
           {i !== 0 && <hr />}
 
-          <MasterElement type={child} />
+          <MasterElement id={childId} />
         </Fragment>
       ))}
     </Renderer>

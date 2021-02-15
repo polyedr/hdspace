@@ -9,7 +9,8 @@ export const convertElements = (
       key,
       {
         id: value.id,
-        data: { title: value.name, type: value.type },
+        // @ts-ignore
+        data: { title: value.name, type: value.type || value.struct_type },
         children:
           value.type === 'dropdown' || value.type === 'select'
             ? []

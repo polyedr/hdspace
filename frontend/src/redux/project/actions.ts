@@ -999,9 +999,9 @@ export const toggleSelectedElement = (id: string) => ({
   payload: { id },
 });
 
-export const setActiveMasterElement = (
-  type: Entity,
+export const setActiveMasterElementId = (
+  id: string,
 ): SetActiveMasterElement => ({
-  type: TYPES.SET_ACTIVE_MASTER_ELEMENT,
-  payload: type,
+  type: TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
+  payload: id,
 });

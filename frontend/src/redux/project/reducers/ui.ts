@@ -14,7 +14,7 @@ function uiReducer(
       };
     }
 
-    case TYPES.SET_ACTIVE_MASTER_ELEMENT: {
+    case TYPES.SET_ACTIVE_MASTER_ELEMENT_ID: {
       return {
         ...state,
         editableStyles: action.payload,
