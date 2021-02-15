@@ -45,9 +45,9 @@ export type ProjectDataState = {
   assetResults: AssetResults;
   masterScreen: {
     enabled: boolean;
-    active: Entity;
+    activeId: string;
     elements: {
-      [k in Entity]?: any;
+      [k in string]?: any;
     };
   };
 };
@@ -682,8 +682,8 @@ export type SetEditorDocument = IAction<
 >;
 
 export type SetActiveMasterElement = IAction<
-  typeof TYPES.SET_ACTIVE_MASTER_ELEMENT,
-  Entity
+  typeof TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
+  string
 >;
 
 export type Action =

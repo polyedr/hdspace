@@ -21,7 +21,7 @@ export const initialData: ProjectDataState = {
   elements: {},
   masterScreen: {
     enabled: true,
-    active: 'root',
+    activeId: 'masterRoot',
     elements: MASTER_ELEMENTS_LIST,
   },
   customElementsData: {

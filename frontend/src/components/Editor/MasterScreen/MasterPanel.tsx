@@ -3,7 +3,6 @@ import Scrollbar from '@Components/UI/Scrollbar';
 import CONTROLS from '@Constants/controls';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import { makeStyles } from '@material-ui/core';
-import { selectActiveMasterElement } from '@Redux/project/selectors/masterScreen';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectSharedStyles } from '@Redux/project/selectors/element';
@@ -11,6 +10,10 @@ import { updateSharedStyles } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { CONTROLS_AFFECT_ON_PARAMS, Entity } from '@Src/types';
+import {
+  selectActiveMasterElement,
+  selectActiveMasterElementType,
+} from '@Redux/project/selectors/masterScreen';
 
 const useStyles = makeStyles({
   root: {
@@ -23,10 +26,11 @@ const useStyles = makeStyles({
 const MasterPanel = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const activeMasterElement = useSelector(selectActiveMasterElement);
+  const { struct_type: type, id } = useSelector(selectActiveMasterElement);
+  // const activeMasterElementType = useSelector(selectActiveMasterElementType);
   const editableStyles = useSelector(selectEditableStyles);
   const screenId = useSelector(selectCurrentScreenId);
-  const sharedStyles = useSelector(selectSharedStyles(activeMasterElement));
+  const sharedStyles = useSelector(selectSharedStyles(type));
 
   const updateStyles = (styles: React.CSSProperties) => {
     dispatch(
@@ -42,7 +46,7 @@ const MasterPanel = () => {
           height: '100%',
         }}
       >
-        {AVAILABLE_CONTROLS[activeMasterElement].map((controlName) => {
+        {AVAILABLE_CONTROLS[type].map((controlName) => {
           if (
             CONTROLS_AFFECT_ON_PARAMS.includes(
               controlName as typeof CONTROLS_AFFECT_ON_PARAMS[number],
@@ -57,7 +61,7 @@ const MasterPanel = () => {
             <ControlSection key={controlName} title={controlName}>
               <Control
                 {...sharedStyles}
-                activeElementId={activeMasterElement}
+                activeElementId={id}
                 removeStyles={() => console.log('puff')}
                 updateStyles={updateStyles}
                 updateParams={() => console.log('puff')}

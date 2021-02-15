@@ -246,8 +246,8 @@ const dataReducer = produce(
         break;
       }
 
-      case TYPES.SET_ACTIVE_MASTER_ELEMENT: {
-        draft.masterScreen.active = action.payload;
+      case TYPES.SET_ACTIVE_MASTER_ELEMENT_ID: {
+        draft.masterScreen.activeId = action.payload;
         break;
       }
 
