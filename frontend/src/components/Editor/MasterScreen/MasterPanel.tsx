@@ -4,14 +4,13 @@ import CONTROLS from '@Constants/controls';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import { makeStyles } from '@material-ui/core';
 import { selectActiveMasterElement } from '@Redux/project/selectors/masterScreen';
-import getControlStyles from '@Utils/getControlStyles';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentEditableStyles } from '@Redux/project/selectors/element';
+import { selectSharedStyles } from '@Redux/project/selectors/element';
 import { updateSharedStyles } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
-import { Entity } from '@Src/types';
+import { CONTROLS_AFFECT_ON_PARAMS, Entity } from '@Src/types';
 
 const useStyles = makeStyles({
   root: {
@@ -25,9 +24,9 @@ const MasterPanel = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const activeMasterElement = useSelector(selectActiveMasterElement);
-  const currentEditableStyles = useSelector(selectCurrentEditableStyles);
   const editableStyles = useSelector(selectEditableStyles);
   const screenId = useSelector(selectCurrentScreenId);
+  const sharedStyles = useSelector(selectSharedStyles(activeMasterElement));
 
   const updateStyles = (styles: React.CSSProperties) => {
     dispatch(
@@ -44,14 +43,21 @@ const MasterPanel = () => {
         }}
       >
         {AVAILABLE_CONTROLS[activeMasterElement].map((controlName) => {
+          if (
+            CONTROLS_AFFECT_ON_PARAMS.includes(
+              controlName as typeof CONTROLS_AFFECT_ON_PARAMS[number],
+            )
+          ) {
+            return null;
+          }
           const controlInfo = CONTROLS[controlName];
           const { Control } = controlInfo;
 
           return (
             <ControlSection key={controlName} title={controlName}>
               <Control
-                {...getControlStyles(controlName, currentEditableStyles)}
-                activeElementId="none"
+                {...sharedStyles}
+                activeElementId={activeMasterElement}
                 removeStyles={() => console.log('puff')}
                 updateStyles={updateStyles}
                 updateParams={() => console.log('puff')}

@@ -1,8 +1,5 @@
 import { RENDERERS } from '@Components/UI/RenderElements';
-import {
-  setActiveMasterElement,
-  setEditableStyles,
-} from '@Redux/project/actions';
+import { setActiveMasterElement } from '@Redux/project/actions';
 import { selectMasterElement } from '@Redux/project/selectors/masterScreen';
 import { Entity } from '@Src/types';
 import prevent from '@Utils/preventEvent';
@@ -20,7 +17,7 @@ const MasterElement: FC<Props> = ({ type }) => {
   const elementProps = {
     id: element.id,
     className: element.styles.classNames[0],
-    isDisabled: false, // NOTE: figure this out
+    isDisabled: true,
     contentEditable: false,
     ownStyles: {},
     groupClass: '',
@@ -31,7 +28,6 @@ const MasterElement: FC<Props> = ({ type }) => {
   const handleClick = (ev: MouseEvent<HTMLElement>) => {
     prevent(ev);
     dispatch(setActiveMasterElement(type));
-    dispatch(setEditableStyles(type));
   };
 
   const Renderer = RENDERERS[type];
@@ -41,6 +37,7 @@ const MasterElement: FC<Props> = ({ type }) => {
       {element.children.map((child, i) => (
         <Fragment key={child}>
           {i !== 0 && <hr />}
+
           <MasterElement type={child} />
         </Fragment>
       ))}

@@ -15,6 +15,7 @@ import {
   LibraryElement,
   PaginatedArray,
   Project,
+  ProjectClass,
   StateElement,
 } from '@Src/types';
 import {
@@ -349,3 +350,12 @@ export const selectIsElementSelected = (elementId: string) => (
   const selectedElements = selectSelectedElementsIds(state);
   return selectedElements.includes(elementId);
 };
+
+export const selectSharedStyles = (type: Entity) =>
+  createSelector(
+    selectCurrentProject,
+    (project) =>
+      project.projectData.classes.find(
+        (projectClass) => projectClass.className === type,
+      )?.rules,
+  );

@@ -14,6 +14,13 @@ function uiReducer(
       };
     }
 
+    case TYPES.SET_ACTIVE_MASTER_ELEMENT: {
+      return {
+        ...state,
+        editableStyles: action.payload,
+      };
+    }
+
     case TYPES.SET_EDITABLE_STYLES: {
       return { ...state, editableStyles: action.payload.className };
     }
