@@ -112,6 +112,9 @@ import {
   RemoveMultipleElementsStyles,
   UpdateMultipleStateElements,
   SagaPromiseLike,
+  MoveStateElement,
+  MoveStateElementsInside,
+  CreateStateGroup,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -315,11 +318,24 @@ export const moveStateElement = (
   indices: Indices,
   parents: ParentIds,
   meta: ElementHistoryMeta,
-) => ({
+): MoveStateElement => ({
   type: TYPES.MOVE_STATE_ELEMENT,
   payload: {
     elementId,
     indices,
+    parents,
+  },
+  meta,
+});
+
+export const moveStateElementsInside = (
+  ids: string[],
+  parents: ParentIds,
+  meta: ElementHistoryMeta,
+): MoveStateElementsInside => ({
+  type: TYPES.MOVE_STATE_ELEMENTS_INSIDE,
+  payload: {
+    ids,
     parents,
   },
   meta,
@@ -364,6 +380,23 @@ export const insertStateElement = (
     parentId,
     element,
     childId,
+  },
+  meta,
+});
+
+export const createStateGroup = (
+  groupEl: LibraryElement<any>,
+  parentId: string,
+  buoyancy: number,
+  childIds: string[],
+  meta: ElementHistoryMeta,
+): CreateStateGroup => ({
+  type: TYPES.CREATE_STATE_GROUP,
+  payload: {
+    groupEl,
+    parentId,
+    buoyancy,
+    childIds,
   },
   meta,
 });

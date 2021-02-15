@@ -92,7 +92,7 @@ const ElementGroupsBlock: React.FC = () => {
               }
               bindToOriginalGroup(ids, element.id);
             }}
-            parameters={{ containerElement: true }}
+            parameters={{ sourceContainer: element.id }}
           />
         ))}
       </StyledAccordionDetails>

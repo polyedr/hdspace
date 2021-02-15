@@ -8,6 +8,7 @@ import {
   arrayToMap,
   buildElementsTree,
   flattenElements,
+  getAllElementChildrenIds,
 } from '@Utils/normalizedStateHelpers';
 import {
   ChildEntity,
@@ -358,4 +359,16 @@ export const selectElementGroups = (state: AppReduxState) => {
   return Object.values(elements).filter(
     (element: StateElement) => element.parameters?.container === true,
   );
+};
+
+export const selectAllChildElementsIds = (elementId: string) => ({
+  project,
+}: AppReduxState) => {
+  const parent = project.data.elements[elementId];
+  return parent.children.reduce((allChildren: string[], childId) => {
+    return [
+      ...allChildren,
+      ...getAllElementChildrenIds(project.data.elements, childId),
+    ];
+  }, []);
 };

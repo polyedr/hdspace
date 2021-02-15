@@ -686,6 +686,10 @@ export type Indices = {
   oldIndex: number;
 };
 
+export type ElementsIndices = {
+  [id: string]: number;
+};
+
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };

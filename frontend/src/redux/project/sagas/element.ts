@@ -12,6 +12,7 @@ import {
   selectElementsByIds,
   selectSelectedElementsIds,
   selectActiveElement,
+  selectAllChildElementsIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -29,6 +30,7 @@ import {
   apiUpdateElements,
   parseImgUsingNN,
   apiGetCustomLibraryElements,
+  apiCreateElements,
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import getSavedValue from '@Utils/getSavedValue';
@@ -48,7 +50,6 @@ import {
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import { createElements } from './scenario';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -955,6 +956,7 @@ export function* createElementsGroupSaga(
     );
   }
   const { name, ids } = action.payload;
+  const { screenId } = action.meta;
 
   try {
     const activeElement = yield select(selectActiveElement);
@@ -964,138 +966,100 @@ export function* createElementsGroupSaga(
     );
     const minBuoyancy = Math.min(...selectedElements.map((el) => el.buoyancy));
 
-    yield call(
-      createElements,
+    const requestCreateGroup = convertCreatedElementToRequest(
+      'group',
+      activeElement.parent,
+      name,
       {
-        elements: [
-          convertCreatedElementToRequest('group', activeElement.parent, name, {
-            container: true,
-          }),
-        ],
-        index: minBuoyancy,
+        group: true,
+      },
+    );
+
+    console.log('REQUEST CREATE GROUP!!!', requestCreateGroup);
+    const {
+      result: createdGroups,
+    }: ReturnPromisedType<typeof apiCreateElements> = yield call(
+      reqWrapper,
+      apiCreateElements,
+      {
+        data: [requestCreateGroup],
       },
       parentTree,
       action.meta,
     );
 
-    /* const state = yield select(selectElementsForScreen(screenId));
-    console.log('STATE!!!', state);
-
-    const parentElement = yield select(selectElementById(activeElement.parent));
-    console.log('CHILDREN!!', parentElement.children, minBuoyancy);
-    const groupId = parentElement.children[minBuoyancy];
-    console.log('CONTAINER ID!!', groupId);
-
-    const sortedIds = selectedElements
-      .sort((a, b) => {
-        if (a.buoyancy < b.buoyancy) {
-          return 1;
-        }
-        if (a.buoyancy > b.buoyancy) {
-          return -1;
-        }
-        return 0;
-      })
-      .map((el) => el.id);
-
-    console.log('SORTED IDS!!', sortedIds);
-
-    const { error: groupError } = yield call(
-      reqWrapper,
-      apiChangeRecursiveElement,
-      {
-        id: groupId,
-        data: {
-          children: sortedIds,
-        },
-      },
-    );
-
-    if (groupError) throw groupError;
-    /*  
-    const convertedCreatedGroup = convertCreatedElementToRequest(
-      'group',
-      activeElement.parent,
-      name,
-    );
-
-    const {
-      result: elementsGroup,
-      error,
-    }: Result<LibraryElement<any>> = yield call(reqWrapper, apiCreateElement, {
-      data: convertedCreatedGroup,
-    });
-
-    if (error) throw new Error(error);
-
-    if (!elementsGroup) {
-      console.error('Element is undefined!');
-      return;
+    if (!createdGroups || !createdGroups.length) {
+      console.error('Error creating group', createdGroups);
+      throw new Error('Error creating group');
     }
+
     yield put(
-      Actions.addStateElements(
-        [elementsGroup],
+      Actions.createStateGroup(
+        createdGroups[0],
         activeElement.parent,
+        minBuoyancy,
+        ids,
         {
           screenId,
         },
-        minBuoyancy,
       ),
     );
 
-    const state = yield select(selectElementsForScreen(screenId));
-    yield put(
-      Actions.updateElementsTree(removeMapElements(state, selectedElements), {
-        ...action.meta,
-      }),
+    const updatedParent: LibraryElement<any> = yield select(
+      selectElementAsTree(activeElement.parent),
+    );
+    const updatedGroup: LibraryElement<any> = yield select(
+      selectElementAsTree(createdGroups[0].id),
     );
 
-    yield put(
-      Actions.updateElementsTree(
-        addMapElements(state, selectedElements, elementsGroup.id),
-        action.meta,
+    const { error: parentError }: Result<RecursiveElement> = yield call(
+      reqWrapper,
+      apiChangeRecursiveElement,
+      {
+        data: { children: updatedParent.children.map((child) => child.id) },
+        id: updatedParent.id,
+      },
+    );
+    if (parentError) throw parentError;
+
+    const { error: groupError }: Result<RecursiveElement> = yield call(
+      reqWrapper,
+      apiChangeRecursiveElement,
+      {
+        data: { children: updatedGroup.children.map((child) => child.id) },
+        id: updatedGroup.id,
+      },
+    );
+
+    const nestedChildrenIds = yield select(
+      selectAllChildElementsIds(updatedGroup.id),
+    );
+
+    const nestedElements = yield select(selectElementsByIds(nestedChildrenIds));
+
+    if (groupError) throw groupError;
+
+    const convertedElements = [
+      ...updatedParent.children.map((child) =>
+        convertElementToPatchRequest(child),
       ),
-    );
-
-    const parentElement = yield select(
-      selectElementByChildId(activeElement.id),
-    );
-
-    const elementsToUpdate: LibraryElement<Entity>[] = [];
-
-    const childElements = yield select(
-      selectElementsByIds(parentElement.children),
-    );
-    parentElement.children = [
-      elementsGroup.id,
-      ...parentElement.children.filter((childId) => !ids.includes(childId)),
+      ...nestedElements.map((child) =>
+        convertElementToPatchRequest({
+          ...child,
+          parameters: {
+            ...child.parameters,
+            groupElements: [],
+          },
+        }),
+      ),
     ];
 
-    elementsToUpdate.push(parentElement);
-    let childBuoyancy = 0;
-    let groupBuoyancy = 0;
-    childElements.forEach((element) => {
-      if (ids.includes(element.id)) {
-        element.buoyancy = groupBuoyancy;
-        groupBuoyancy += 1;
-      } else {
-        element.buoyancy = childBuoyancy;
-        childBuoyancy += 1;
-      }
-      elementsToUpdate.push(element);
-    });
-    elementsGroup.buoyancy = minBuoyancy;
-    elementsGroup.children = ids;
-    elementsToUpdate.push(elementsGroup);
-
-    const convertedElements = elementsToUpdate.map((el) =>
-      convertElementToPatchRequest(el),
+    const { error }: Result<ServerElement<any>> = yield call(
+      reqWrapper,
+      apiUpdateElements,
+      { data: convertedElements },
     );
-
-    const { error: updateError } = yield call(reqWrapper, apiUpdateElements, {
-      data: convertedElements,
-    });
-    if (updateError) throw updateError; */
+    if (error) throw new Error(error);
   } catch (e) {
     console.error(e);
     yield put(

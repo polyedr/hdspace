@@ -4,6 +4,7 @@ import {
   arrayToMap,
   extractMapElement,
   flattenElements,
+  insertElementsGroup,
   insertMapElement,
   moveMapElement,
   removeMapElement,
@@ -35,6 +36,31 @@ const dataReducer = produce(
           indices,
           parents,
         );
+        break;
+      }
+
+      case TYPES.MOVE_STATE_ELEMENTS_INSIDE: {
+        const { ids, parents } = action.payload;
+        const { oldParentId, newParentId } = parents;
+        console.log(
+          'MOVE STATE ELEMENTS INSIDE!!',
+          action.payload,
+          draft.elements,
+        );
+        draft.elements[oldParentId].children = draft.elements[
+          oldParentId
+        ].children.filter((childId) => !ids.includes(childId));
+        draft.elements[oldParentId].children.forEach((childId, index) => {
+          draft.elements[childId].buoyancy = index;
+        });
+        draft.elements[newParentId].children = [
+          ...draft.elements[newParentId].children,
+          ...ids,
+        ];
+        draft.elements[newParentId].children.forEach((childId, index) => {
+          draft.elements[childId].buoyancy = index;
+        });
+        console.log('TEST!!', draft.elements);
         break;
       }
 
@@ -71,6 +97,18 @@ const dataReducer = produce(
           element,
           parentId,
           childId,
+        );
+        break;
+      }
+
+      case TYPES.CREATE_STATE_GROUP: {
+        const { groupEl, parentId, childIds, buoyancy } = action.payload;
+        draft.elements = insertElementsGroup(
+          draft.elements,
+          groupEl,
+          parentId,
+          buoyancy,
+          childIds,
         );
         break;
       }

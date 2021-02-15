@@ -52,6 +52,18 @@ export const buildElementsTree = (
   };
 };
 
+export const getAllElementChildrenIds = (
+  elements: Normalized<StateElement>,
+  id: string,
+) => {
+  const element = elements[id];
+  const childIds = [id];
+  element.children.forEach((childId) => {
+    childIds.push(...getAllElementChildrenIds(elements, childId));
+  });
+  return childIds;
+};
+
 export const removeMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
@@ -172,6 +184,38 @@ export const insertMapElement = (
   child.parent = el.id;
   child.buoyancy = 0;
 
+  return newState;
+};
+
+export const insertElementsGroup = (
+  state: Normalized<StateElement>,
+  groupEl: LibraryElement<Entity>,
+  parentId: string,
+  buoyancy: number,
+  childIds: string[],
+): Normalized<StateElement> => {
+  const newState = {
+    ...state,
+    ...flattenElements([groupEl], parentId),
+  };
+  const parent = newState[parentId];
+  parent.children.splice(buoyancy, 0, groupEl.id);
+  parent.children = parent.children
+    .sort((firstChildId, secondChildId) =>
+      newState[firstChildId].buoyancy > newState[secondChildId].buoyancy
+        ? 1
+        : -1,
+    )
+    .filter((childId) => !childIds.includes(childId));
+  parent.children.forEach((childId, index) => {
+    newState[childId].parent = groupEl.id;
+    newState[childId].buoyancy = index;
+  });
+  newState[groupEl.id].children = childIds;
+  newState[groupEl.id].parent = parentId;
+  childIds.forEach((childId, index) => {
+    newState[childId].buoyancy = index;
+  });
   return newState;
 };
 

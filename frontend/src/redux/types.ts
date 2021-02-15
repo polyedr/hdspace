@@ -594,6 +594,12 @@ export type MoveStateElement = IAction<
   ElementHistoryMeta
 >;
 
+export type MoveStateElementsInside = IAction<
+  typeof TYPES.MOVE_STATE_ELEMENTS_INSIDE,
+  { ids: string[]; parents: ParentIds },
+  ElementHistoryMeta
+>;
+
 export type RemoveStateElement = IAction<
   typeof TYPES.REMOVE_STATE_ELEMENT,
   { elementId: string },
@@ -679,6 +685,17 @@ export type SetScreenCreateLoader = IAction<
 export type SetEditorDocument = IAction<
   typeof TYPES.SET_EDITOR_DOCUMENT,
   Document
+>;
+
+export type CreateStateGroup = IAction<
+  typeof TYPES.CREATE_STATE_GROUP,
+  {
+    groupEl: LibraryElement<any>;
+    parentId: string;
+    buoyancy: number;
+    childIds: string[];
+  },
+  ElementHistoryMeta
 >;
 
 export type Action =
@@ -792,7 +809,9 @@ export type Action =
   | SetSelectedElements
   | UpdateMultipleElementsStyles
   | RemoveMultipleElementsStyles
-  | SetCanCreateGroup;
+  | SetCanCreateGroup
+  | MoveStateElementsInside
+  | CreateStateGroup;
 
 export type HistoryMeta = {
   undo?: boolean;
