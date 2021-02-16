@@ -47,9 +47,9 @@ const ElementsInteractions: React.FC<Props> = (props) => {
     ? activeMasterElementId
     : activeElementId;
 
-  const trueRootId = masterScreenEnabled ? 'masterRoot' : rootId;
+  const currentRootId = masterScreenEnabled ? 'masterRoot' : rootId;
 
-  const rootDom = DOMHandler.INSTANCE.getDomById(trueRootId);
+  const rootDom = DOMHandler.INSTANCE.getDomById(currentRootId);
   const activeElementDom = DOMHandler.INSTANCE.getDomById(activeId);
   const hoveredElementDom = DOMHandler.INSTANCE.getDomById(hoveredElementId);
   const dropTargetDom = DOMHandler.INSTANCE.getDomById(dropTargetId);

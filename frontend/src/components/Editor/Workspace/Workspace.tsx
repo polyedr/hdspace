@@ -72,8 +72,10 @@ const Workspace: React.FC = () => {
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    DOMHandler.INSTANCE.reset();
-  }, [currentScreenId]);
+    if (!masterScreenEnabled) {
+      DOMHandler.INSTANCE.reset();
+    }
+  }, [currentScreenId, masterScreenEnabled]);
 
   useGlobalDropTarget(
     ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
