@@ -2,13 +2,15 @@ from rest_framework.test import APITestCase
 
 from apps.projects.models import Project
 from apps.projects.serializers import ProjectSerializer
-
+from apps.accounts.models import User, Profile
 
 class ProjectAPITest(APITestCase):
     def setUp(self):
-        self.project_attributes = {"name": "testproject", "status": "pending"}
+        self.User = User.objects.create(email="q1210201368@gmail.com")
 
-        self.serializer_data = {"name": "projecttest", "status": "paid"}
+        self.project_attributes = {"name": "testproject", "status": "pending","user":self.User}
+
+        self.serializer_data = {"name": "projecttest", "status": "paid","user":self.User}
 
         self.project = Project.objects.create(**self.project_attributes)
         self.serializer = ProjectSerializer(instance=self.project)
@@ -37,7 +39,7 @@ class ProjectAPITest(APITestCase):
         )
 
         self.assertFalse(serializer.is_valid())
-        self.assertEqual(set(serializer.errors.keys()), set(["status"]))
+        self.assertEqual(set(serializer.errors.keys()), set(["status","projectscreen"]))
 
     def tearDown(self):
         for project in Project.objects.all():
