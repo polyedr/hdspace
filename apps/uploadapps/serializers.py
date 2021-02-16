@@ -1,9 +1,14 @@
+import os
 import requests
 from urllib.parse import urlparse
 from io import BytesIO
 from django.core.files.uploadedfile import UploadedFile
 from rest_framework import serializers
-from apps.uploadapps.models import Fileupload
+from apps.uploadapps.models import Fileupload, WebpageSaved
+from pywebcopy import save_webpage
+import subprocess
+
+from project.settings import MEDIA_URL, MEDIA_ROOT
 
 
 class FileSerializer(serializers.ModelSerializer):
@@ -31,3 +36,34 @@ class FileSerializer(serializers.ModelSerializer):
         fileupload = Fileupload(id=None, **validated_data)
         fileupload.save()
         return fileupload
+
+
+class WebpageSavedSerializer(serializers.ModelSerializer):
+    wpurl = serializers.URLField()
+
+    class Meta:
+        model = WebpageSaved
+        fields = ("wpname", "owner", "wpurl")
+        extra_kwargs = {"wpurl": {"read_only": True}, "wpname": {"write_only": True}}
+
+    def create(self, validated_data):
+        url = validated_data.pop("wpurl", None)
+        # Remove url from the submitted data
+        # validated_data['fileurl'] = ''
+        # Download data from url (requires `requests` module.  Can also be done with urllib)
+        response = requests.get(url)
+        # Set FileField to binary file
+        wpname = urlparse(url).path.split("/")[-1]
+        if not wpname:
+            wpname = urlparse(url).netloc
+        print("wpname=", wpname)
+        validated_data["wpname"] = UploadedFile(BytesIO(response.content), name=wpname)
+        wpsaved = WebpageSaved(id=None, **validated_data)
+        wpsaved.save()
+
+        wpath = MEDIA_ROOT + "/uploads/"
+
+        os.chdir(wpath)
+        subprocess.run(["wget", "-p", "-k", url])
+
+        return wpsaved
