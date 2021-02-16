@@ -15,9 +15,12 @@ function uiReducer(
     }
 
     case TYPES.SET_ACTIVE_MASTER_ELEMENT_ID: {
+      const id = action.payload;
+      const type = id[6].toLowerCase() + id.slice(7); // TODO: remove this
+
       return {
         ...state,
-        editableStyles: action.payload,
+        editableStyles: type,
       };
     }
 

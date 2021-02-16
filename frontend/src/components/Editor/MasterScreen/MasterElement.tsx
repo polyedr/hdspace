@@ -1,9 +1,13 @@
 import { RENDERERS } from '@Components/UI/RenderElements';
-import { setActiveMasterElementId } from '@Redux/project/actions';
+import {
+  setActiveMasterElementId,
+  setEditableStyles,
+} from '@Redux/project/actions';
 import { selectMasterElementById } from '@Redux/project/selectors/masterScreen';
 import prevent from '@Utils/preventEvent';
-import React, { FC, Fragment, MouseEvent } from 'react';
+import React, { FC, Fragment, MouseEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 
 type Props = {
   id: string;
@@ -12,6 +16,7 @@ type Props = {
 const MasterElement: FC<Props> = ({ id }) => {
   const dispatch = useDispatch();
   const element = useSelector(selectMasterElementById(id));
+  const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
 
   const { struct_type: type } = element;
 
@@ -29,12 +34,21 @@ const MasterElement: FC<Props> = ({ id }) => {
   const handleClick = (ev: MouseEvent<HTMLElement>) => {
     prevent(ev);
     dispatch(setActiveMasterElementId(id));
+    // dispatch(setEditableStyles(type));
   };
 
   const Renderer = RENDERERS[type];
 
   return (
-    <Renderer {...elementProps} onClick={handleClick}>
+    <Renderer
+      {...elementProps}
+      ref={(dom: HTMLElement) => {
+        ref.current = dom;
+        DOMHandler.INSTANCE.addElementDom(element.id, dom);
+        console.log(DOMHandler.INSTANCE.elementsDom);
+      }}
+      onClick={handleClick}
+    >
       {element.children.map((childId, i) => (
         <Fragment key={childId}>
           {i !== 0 && <hr />}

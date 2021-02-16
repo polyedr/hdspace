@@ -12,6 +12,10 @@ import {
   selectCurrentDropTargetId,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
+import {
+  selectActiveMasterElementId,
+  selectMasterScreenEnabled,
+} from '@Redux/project/selectors/masterScreen';
 import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
 
@@ -30,14 +34,23 @@ type Props = {
 };
 
 const ElementsInteractions: React.FC<Props> = (props) => {
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const activeMasterElementId = useSelector(selectActiveMasterElementId);
+
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetId = useSelector(selectCurrentDropTargetId);
   const selectedElements = useSelector(selectSelectedElementsIds);
   const rootId = useSelector(selectCurrentRootId);
 
-  const rootDom = DOMHandler.INSTANCE.getDomById(rootId);
-  const activeElementDom = DOMHandler.INSTANCE.getDomById(activeElementId);
+  const activeId = masterScreenEnabled
+    ? activeMasterElementId
+    : activeElementId;
+
+  const trueRootId = masterScreenEnabled ? 'masterRoot' : rootId;
+
+  const rootDom = DOMHandler.INSTANCE.getDomById(trueRootId);
+  const activeElementDom = DOMHandler.INSTANCE.getDomById(activeId);
   const hoveredElementDom = DOMHandler.INSTANCE.getDomById(hoveredElementId);
   const dropTargetDom = DOMHandler.INSTANCE.getDomById(dropTargetId);
 

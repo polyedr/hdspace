@@ -104,7 +104,10 @@ const Workspace: React.FC = () => {
                 ) : (
                   <>
                     {masterScreenEnabled ? (
-                      <MasterScreen />
+                      <>
+                        <MasterScreen />
+                        <ElementsInteractions posRight={scrollLeft} />
+                      </>
                     ) : (
                       <>
                         <DraggableElement elementId={rootElementId} />
