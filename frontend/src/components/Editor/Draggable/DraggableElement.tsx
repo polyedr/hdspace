@@ -106,7 +106,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       type: ElementType.ELEMENT,
     } as SyntheticElement<StateElement>,
     canDrag: () =>
-      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) && elementId !== rootID,
+      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+      elementId !== rootID &&
+      !element.parameters.sourceElementId,
     end: () => {
       dispatch(setCurrentDropTargetParams(null));
       dispatch(setElementBeingEdited(false));

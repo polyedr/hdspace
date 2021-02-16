@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
@@ -9,6 +9,7 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectShowingBorders } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
+import { setActiveElement } from '@Redux/project/actions';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
 type Props = {
@@ -37,6 +38,16 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     padding: '0 3px',
   },
+  sourceLabel: {
+    padding: '0 3px',
+    cursor: 'pointer',
+    '&:before': {
+      content: '|',
+    },
+  },
+  separator: {
+    margin: '0 3px',
+  },
 }));
 
 const BorderCrumb: React.FC<Props> = (props) => {
@@ -45,6 +56,8 @@ const BorderCrumb: React.FC<Props> = (props) => {
   const rootID = useSelector(selectCurrentRootId);
   const showBorders = useSelector(selectShowingBorders);
   const activeElementId = useSelector(selectActiveElementId);
+
+  const dispatch = useDispatch();
 
   const classes = useStyles({
     ...props,
@@ -55,6 +68,10 @@ const BorderCrumb: React.FC<Props> = (props) => {
     !ELEMENTS_WITHOUT_CRUMB.includes(element.type) &&
     (showBorders || elementId === activeElementId);
 
+  const handleSourceElementClick = useCallback(() => {
+    dispatch(setActiveElement(element.parameters?.sourceElementId));
+  }, [dispatch, element.parameters?.sourceElementId]);
+
   return element && showCrumb ? (
     <div className={cn(classes.crumb)}>
       <span
@@ -64,6 +81,17 @@ const BorderCrumb: React.FC<Props> = (props) => {
       >
         {element.name}
       </span>
+      {element.parameters.sourceElementId && (
+        <>
+          <span className={classes.separator}>|</span>
+          <span
+            className={classes.sourceLabel}
+            onClick={() => handleSourceElementClick()}
+          >
+            source
+          </span>
+        </>
+      )}
       {children}
     </div>
   ) : null;
