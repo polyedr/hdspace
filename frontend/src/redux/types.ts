@@ -686,6 +686,11 @@ export type SetActiveMasterElement = IAction<
   string
 >;
 
+export type SetMasterScreenEnabled = IAction<
+  typeof TYPES.SET_MASTER_SCREEN_ENABLED,
+  boolean
+>;
+
 export type ToggleMasterScreen = IPlainAction<
   typeof TYPES.TOGGLE_MASTER_SCREEN
 >;
@@ -801,6 +806,7 @@ export type Action =
   | SetSelectedElements
   | UpdateMultipleElementsStyles
   | SetActiveMasterElement
+  | SetMasterScreenEnabled
   | ToggleMasterScreen
   | RemoveMultipleElementsStyles;
 

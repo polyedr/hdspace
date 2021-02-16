@@ -66,6 +66,7 @@ import {
   selectScreens,
 } from '../selectors/screen';
 import {
+  selectActiveElement,
   selectAllElements,
   selectCurrentRootId,
   selectElementById,
@@ -73,6 +74,10 @@ import {
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
+import {
+  selectActiveMasterElement,
+  selectMasterScreenEnabled,
+} from '../selectors/masterScreen';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -777,6 +782,31 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
       if (error) throw new Error(error);
     }
     if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* toggleMasterScreenSaga() {
+  try {
+    const enabled: boolean = yield select(selectMasterScreenEnabled);
+    const activeMasterElement = yield select(selectActiveMasterElement);
+    const activeElement: StateElement = yield select(selectActiveElement);
+
+    yield put(
+      Actions.setEditableStyles(
+        enabled
+          ? activeElement.styles.classNames[0]
+          : activeMasterElement.struct_type,
+      ),
+    );
+
+    yield put(Actions.setMasterScreenEnabled(!enabled));
   } catch (e) {
     yield put(
       enqueueSnackbar({

@@ -911,6 +911,7 @@ export function* loadCustomElementsSaga(
 export function* setActiveElementSaga(
   action: ReturnType<typeof Actions.setActiveElement>,
 ) {
+  yield put(Actions.setEditableStyles('ownStyles'));
   yield put(Actions.setActiveElementId(action.payload));
   yield put(Actions.setSelectedElements([action.payload]));
 }

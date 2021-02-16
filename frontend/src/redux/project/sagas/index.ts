@@ -15,6 +15,18 @@ import {
   StateElement,
 } from '@Src/types';
 import {
+  toggleMasterScreenSaga,
+  activateScreenSaga,
+  createScreenSaga,
+  changeScreensOrderSaga,
+  deleteScreenSaga,
+  renameScreenSaga,
+  restoreScreenSaga,
+  updateScreenImageSaga,
+  convertFreeCanvasSaga,
+  importHtmlSaga,
+} from '@Redux/project/sagas/screen';
+import {
   addChildrenToElementSaga,
   addChildToElementSaga,
   createElements,
@@ -55,17 +67,6 @@ import {
 } from './element';
 
 import TYPES from '../../actionTypes';
-import {
-  activateScreenSaga,
-  createScreenSaga,
-  changeScreensOrderSaga,
-  deleteScreenSaga,
-  renameScreenSaga,
-  restoreScreenSaga,
-  updateScreenImageSaga,
-  convertFreeCanvasSaga,
-  importHtmlSaga,
-} from './screen';
 
 import { projectUpdateHelperSaga } from './shared';
 import { ElementHistoryMeta } from '../../types';
@@ -532,4 +533,6 @@ export default function* projectSaga() {
     TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
     toggleSelectedElementSaga,
   );
+
+  yield takeEvery(TYPES.TOGGLE_MASTER_SCREEN, toggleMasterScreenSaga);
 }

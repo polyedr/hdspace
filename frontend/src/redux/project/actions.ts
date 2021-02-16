@@ -112,6 +112,7 @@ import {
   RemoveMultipleElementsStyles,
   UpdateMultipleStateElements,
   SetActiveMasterElement,
+  SetMasterScreenEnabled,
   ToggleMasterScreen,
 } from '../types';
 
@@ -1005,6 +1006,13 @@ export const setActiveMasterElementId = (
 ): SetActiveMasterElement => ({
   type: TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
   payload: id,
+});
+
+export const setMasterScreenEnabled = (
+  enabled: boolean,
+): SetMasterScreenEnabled => ({
+  type: TYPES.SET_MASTER_SCREEN_ENABLED,
+  payload: enabled,
 });
 
 export const toggleMasterScreen = (): ToggleMasterScreen => ({
