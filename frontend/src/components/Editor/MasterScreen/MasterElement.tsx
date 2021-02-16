@@ -1,5 +1,8 @@
 import { RENDERERS } from '@Components/UI/RenderElements';
-import { setActiveMasterElementId } from '@Redux/project/actions';
+import {
+  setActiveMasterElementId,
+  setHoveredElementId,
+} from '@Redux/project/actions';
 import { selectMasterElementById } from '@Redux/project/selectors/masterScreen';
 import prevent from '@Utils/preventEvent';
 import React, { FC, Fragment, MouseEvent, useRef, useEffect } from 'react';
@@ -49,6 +52,12 @@ const MasterElement: FC<Props> = ({ id }) => {
         DOMHandler.INSTANCE.addElementDom(element.id, dom);
       }}
       onClick={handleClick}
+      onMouseEnter={() => {
+        dispatch(setHoveredElementId(element.id));
+      }}
+      onMouseLeave={() => {
+        dispatch(setHoveredElementId(element.parent || null));
+      }}
     >
       {element.children.map((childId, i) => (
         <Fragment key={childId}>

@@ -686,6 +686,10 @@ export type SetActiveMasterElement = IAction<
   string
 >;
 
+export type ToggleMasterScreen = IPlainAction<
+  typeof TYPES.TOGGLE_MASTER_SCREEN
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -797,6 +801,7 @@ export type Action =
   | SetSelectedElements
   | UpdateMultipleElementsStyles
   | SetActiveMasterElement
+  | ToggleMasterScreen
   | RemoveMultipleElementsStyles;
 
 export type HistoryMeta = {

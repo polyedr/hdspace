@@ -112,6 +112,7 @@ import {
   RemoveMultipleElementsStyles,
   UpdateMultipleStateElements,
   SetActiveMasterElement,
+  ToggleMasterScreen,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -1004,4 +1005,8 @@ export const setActiveMasterElementId = (
 ): SetActiveMasterElement => ({
   type: TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
   payload: id,
+});
+
+export const toggleMasterScreen = (): ToggleMasterScreen => ({
+  type: TYPES.TOGGLE_MASTER_SCREEN,
 });

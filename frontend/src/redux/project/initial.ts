@@ -20,7 +20,7 @@ export const initialData: ProjectDataState = {
   screens: {},
   elements: {},
   masterScreen: {
-    enabled: true,
+    enabled: false,
     activeId: 'masterRoot',
     elements: MASTER_ELEMENTS_LIST,
   },

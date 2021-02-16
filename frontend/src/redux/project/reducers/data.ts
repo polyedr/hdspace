@@ -251,6 +251,11 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.TOGGLE_MASTER_SCREEN: {
+        draft.masterScreen.enabled = !draft.masterScreen.enabled;
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         draft.screens = {};
         draft.elements = {};
