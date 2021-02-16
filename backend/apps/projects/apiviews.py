@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.pagination import CursorPagination
 # from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters  # Django-Guardian
@@ -66,7 +66,7 @@ class ScenarioElementCursorSetPagination(CursorPagination):
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     pagination_class = ProjectCursorSetPagination
@@ -91,7 +91,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
 
 class ProjectWithScreensViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Project.objects.all()
     serializer_class = ProjectWithScreensSerializer
     pagination_class = None
