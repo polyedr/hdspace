@@ -1,10 +1,10 @@
 from django.test import TestCase
-from ..models import *
-from ..models import ScreenScenario, Roles, ProjectIllustrationSet, ProjectImage, ScenarioElement, ElementComment
-import uuid
+from ..models import ScreenScenario, Roles, ProjectIllustrationSet, ProjectImage, ScenarioElement, ElementComment, \
+    Project, ProjectScreen, ScreenComment, ScreenEvent, Comment, ProjectMember, ProjectTask, \
+    TaskTime, ProjectActivity, ScreenAssignee
 import datetime
 from guardian.shortcuts import assign_perm
-from apps.accounts.models import Profile, User
+from apps.accounts.models import User
 
 
 class UserPermissionTest(TestCase):
@@ -146,7 +146,8 @@ class CommentTest(TestCase):
 #         self.project_attributes1 = {"name": "testproject", "status": Project.STATUS_PENDING,"user":self.User}
 #         self.project = Project.objects.create(**self.project_attributes1)
 #         self.uuid = uuid.uuid4()
-#         self.project_invitation_attributes = {"invitation_token":self.uuid,"is_active":False,"email":"ylii0204@student.monash.edu","user":self.User,"project":self.project}
+#         self.project_invitation_attributes = {"invitation_token":self.uuid,"is_active":False,"email":"ylii0204@
+#         student.monash.edu","user":self.User,"project":self.project}
 #         self.project_invitation = ProjectInvitation.objects.create(**self.project_invitation_attributes)
 #
 #     def test_project_invitation_token(self):
@@ -243,7 +244,7 @@ class TaskTimeTest(TestCase):
     def test_task_time_track_time(self):
         self.assertEqual(self.task_time.track_time, 0)
 
-    def test_task_time_track_time(self):
+    def test_task_time_started_time(self):
         self.assertEqual(self.task_time.started, self.started_time)
 
     def test_task_time_stopped(self):
