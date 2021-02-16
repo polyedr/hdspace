@@ -266,7 +266,6 @@ export type LibraryElement<
   children: Children;
   parameters: { group?: string } & Params;
   shared?: boolean;
-  nestingOrder: number;
 };
 
 export type LibraryElementPatch<Type extends Entity> = {
@@ -673,7 +672,6 @@ export type StateElement = {
   };
   parameters: any;
   shared?: boolean;
-  nestingOrder: number;
 };
 
 export type DropTargetParams = {
