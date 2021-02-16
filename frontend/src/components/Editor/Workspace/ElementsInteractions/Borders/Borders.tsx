@@ -11,6 +11,11 @@ import {
   selectCurrentDropTargetParams,
   selectIsDropTarget,
 } from '@Redux/project/selectors/base';
+import {
+  selectActiveMasterElementId,
+  selectMasterElementById,
+  selectMasterScreenEnabled,
+} from '@Redux/project/selectors/masterScreen';
 import { BorderPosition } from '../constants';
 import Border from './Border';
 
@@ -20,14 +25,22 @@ type Props = {
 };
 
 const Borders: React.FC<Props> = ({ elementId, styles }) => {
-  const element = useSelector(selectElementById(elementId));
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const masterElement = useSelector(selectMasterElementById(elementId));
+  const stateElement = useSelector(selectElementById(elementId));
   const activeElementId = useSelector(selectActiveElementId);
+  const masterActiveElementId = useSelector(selectActiveMasterElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
   const isDropTarget = useSelector(selectIsDropTarget(elementId));
 
+  const element = masterScreenEnabled ? masterElement : stateElement;
+  const activeId = masterScreenEnabled
+    ? masterActiveElementId
+    : activeElementId;
+
   const isActiveBorder = [
-    activeElementId,
+    activeId,
     hoveredElementId,
     dropTargetParams?.id,
   ].includes(elementId);

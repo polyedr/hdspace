@@ -57,14 +57,11 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   const showBorders = useSelector(selectShowingBorders);
   const bordersEnabled = useSelector(selectBordersEnabled);
 
-  const idsToExclude = [activeElementId];
-  if (!!hoveredElementId && hoveredElementId !== activeElementId) {
+  const idsToExclude = [activeId];
+  if (!!hoveredElementId && hoveredElementId !== activeId) {
     idsToExclude.push(hoveredElementId);
   }
-  if (
-    !!dropTargetId &&
-    ![activeElementId, hoveredElementId].includes(dropTargetId)
-  ) {
+  if (!!dropTargetId && ![activeId, hoveredElementId].includes(dropTargetId)) {
     idsToExclude.push(dropTargetId);
   }
 
@@ -76,15 +73,15 @@ const ElementsInteractions: React.FC<Props> = (props) => {
 
   return (
     <div className={classes.container}>
-      {activeElementId && activeElementDom && (
+      {activeId && activeElementDom && (
         <InteractionsHandler
-          key={`border-handler-${activeElementId}`}
-          elementId={activeElementId}
+          key={`border-handler-${activeId}`}
+          elementId={activeId}
           elementDom={activeElementDom}
           rootDom={rootDom}
         />
       )}
-      {hoveredElementDom && hoveredElementId !== activeElementId && (
+      {hoveredElementDom && hoveredElementId !== activeId && (
         <InteractionsHandler
           key={`border-handler-${hoveredElementId}`}
           elementId={hoveredElementId}
@@ -94,7 +91,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
       )}
       {dropTargetDom &&
         dropTargetId &&
-        ![hoveredElementId, activeElementId].includes(dropTargetId) && (
+        ![hoveredElementId, activeId].includes(dropTargetId) && (
           <InteractionsHandler
             key={`border-handler-${dropTargetId}`}
             elementId={dropTargetId}
