@@ -52,6 +52,36 @@ export const buildElementsTree = (
   };
 };
 
+export const buildGroupElementsTree = (
+  elements: Normalized<StateElement>,
+  rootElementId: string,
+  paramsToOmit: string[] = [],
+): LibraryElement<any> => {
+  const rootElement = elements[rootElementId];
+  const rootElementParams = rootElement
+    ? {
+        ...(rootElement.parameters
+          ? Object.keys(rootElement.parameters)
+              .filter((paramName) => !paramsToOmit.includes(paramName))
+              .reduce((params, paramName) => {
+                return {
+                  ...params,
+                  [paramName]: rootElement.parameters[paramName],
+                };
+              }, {})
+          : {}),
+        sourceElementId: rootElement.id,
+      }
+    : {};
+  return {
+    ...rootElement,
+    parameters: rootElementParams,
+    children: rootElement.children.map((childId) =>
+      buildGroupElementsTree(elements, childId, paramsToOmit),
+    ),
+  };
+};
+
 export const getAllElementChildrenIds = (
   elements: Normalized<StateElement>,
   id: string,

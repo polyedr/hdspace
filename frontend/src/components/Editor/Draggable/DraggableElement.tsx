@@ -321,6 +321,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [elementBeingEdited],
   );
 
+  const mouseEnterHandler = useCallback(() => {
+    dispatch(setHoveredElementId(elementId));
+  }, [dispatch, elementId]);
+  const mouseLeaveHandler = useCallback(() => {
+    dispatch(setHoveredElementId(element.parent || null));
+  }, [dispatch, element.parent]);
+
   if (!element) {
     return null;
   }
@@ -339,12 +346,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
               drop(ref);
             }
           }}
-          onMouseEnter={() => {
-            dispatch(setHoveredElementId(elementId));
-          }}
-          onMouseLeave={() => {
-            dispatch(setHoveredElementId(element.parent || null));
-          }}
+          onMouseEnter={mouseEnterHandler}
+          onMouseLeave={mouseLeaveHandler}
           onKeyDown={keyDownHandler}
           onClick={clickHandler}
           onBlur={blurHandler}

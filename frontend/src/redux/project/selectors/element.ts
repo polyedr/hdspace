@@ -7,6 +7,7 @@ import {
 import {
   arrayToMap,
   buildElementsTree,
+  buildGroupElementsTree,
   flattenElements,
   getAllElementChildrenIds,
 } from '@Utils/normalizedStateHelpers';
@@ -354,14 +355,29 @@ export const selectIsElementSelected = (elementId: string) => (
 export const selectCanCreateGroup = (state: AppReduxState) =>
   selectProjectState(state).ui.canCreateGroup;
 
-export const selectElementGroups = (state: AppReduxState) => {
+export const selectElementGroupIds = (state: AppReduxState) => {
   const { elements } = selectProjectState(state).data;
-  return Object.values(elements).filter(
-    (element: StateElement) => element.parameters?.container === true,
+  return Object.keys(elements).filter(
+    (elementId) => elements[elementId].parameters?.isGroup === true,
   );
 };
 
-export const selectAllChildElementsIds = (elementId: string) => ({
+export const selectElementGroups = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  return Object.values(elements).filter(
+    (element: StateElement) => element.parameters?.isGroup === true,
+  );
+};
+
+export const selectElementTreeGroups = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  const groupIds = selectElementGroupIds(state);
+  return groupIds.map((groupId) =>
+    buildGroupElementsTree(elements, groupId, ['group', 'groupElements']),
+  );
+};
+
+export const selectTreeChildElementsIds = (elementId: string) => ({
   project,
 }: AppReduxState) => {
   const parent = project.data.elements[elementId];
@@ -371,4 +387,19 @@ export const selectAllChildElementsIds = (elementId: string) => ({
       ...getAllElementChildrenIds(project.data.elements, childId),
     ];
   }, []);
+};
+
+export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({
+  project,
+}: AppReduxState) => {
+  const parentElements = ids.map((id: string) => project.data.elements[id]);
+  return parentElements.reduce(
+    (allChildIds: string[], parentElement: StateElement) => {
+      return [
+        ...allChildIds,
+        ...getAllElementChildrenIds(project.data.elements, parentElement.id),
+      ];
+    },
+    [] as string[],
+  );
 };

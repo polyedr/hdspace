@@ -593,7 +593,7 @@ export type DropdownItemParameters = BaseElementParams & {
 };
 
 export type ElementsGroupParameters = BaseElementParams & {
-  copiedGroups: string[];
+  groupElements: string[];
 };
 
 export type CreatedServerProject = {

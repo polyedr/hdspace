@@ -52,7 +52,7 @@ export const elementsGroup: ElementsGroupServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.NONE,
-    copiedGroups: [],
+    groupElements: [],
   },
   styles: {
     classNames: ['group'],

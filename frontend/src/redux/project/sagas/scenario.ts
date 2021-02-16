@@ -40,7 +40,7 @@ import {
   ServerElement,
   StateElement,
 } from '@Src/types';
-import { Action, ElementHistoryMeta, SagaPromiseLike } from '@Redux/types';
+import { Action, ElementHistoryMeta } from '@Redux/types';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
@@ -58,8 +58,11 @@ import {
   selectCustomLibraryElements,
   selectElementAsTree,
   selectElementById,
+  selectElementsByIds,
   selectElementsForScreen,
+  selectElementTreeGroups,
   selectScreenRootElement,
+  selectTreeChildIdsByParentsIds,
 } from '../selectors/element';
 
 // eslint-disable-next-line consistent-return
@@ -115,10 +118,8 @@ export function* createElements(
   { elements, index }: ElementsToDrop,
   parent: LibraryElement<Entity>,
   { screenId, undo }: ElementHistoryMeta,
-  promiseLike?: SagaPromiseLike<string[]>,
 ) {
   try {
-    console.log('STEP 1');
     const disallowedElements = elements.filter(
       (element) => !isElementCanBeAdded(parent, element.struct_type),
     );
@@ -138,7 +139,6 @@ export function* createElements(
     if (isFreeCanvasMode) {
       offset = yield select(selectFreeCanvasOffset(parent.id));
     }
-    console.log('STEP 2');
     // free canvas offset
     const elementsWithOffset = elements.map((el, i) => {
       if (i === 0)
@@ -162,7 +162,6 @@ export function* createElements(
       apiCreateElements,
       { data: elementsWithOffset },
     );
-    console.log('STEP 3');
     if (newElements) {
       if (!undo) {
         yield put(
@@ -183,7 +182,6 @@ export function* createElements(
         name: parent.name,
         children: newChildren,
       };
-      console.log('STEP 4');
       const { result, error }: Result<RecursiveElement> = yield call(
         reqWrapper,
         apiChangeRecursiveElement,
@@ -210,7 +208,6 @@ export function* createElements(
             index,
           ),
         );
-        console.log('STEP 5');
         yield put(
           Actions.updateLastElements(
             parent.id,
@@ -230,7 +227,6 @@ export function* createElements(
           },
         );
 
-        console.log('STEP 6');
         const { result: createdElements, error } = yield call(
           reqWrapper,
           apiUpdateElements,
@@ -238,10 +234,6 @@ export function* createElements(
             data: elementsWithUpdatedBuoyancy,
           },
         );
-        if (promiseLike?.resolve) {
-          const newElementsIds = newElements.map((el) => el.id);
-          yield call(promiseLike.resolve, newElementsIds);
-        }
         if (createdElements) {
           // eslint-disable-next-line consistent-return
           return createdElements.map((el) => el.id);
@@ -251,7 +243,6 @@ export function* createElements(
       }
       if (error) throw new Error(error);
     }
-    console.log('STEP 7');
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
@@ -286,28 +277,89 @@ export function* createElementsSaga(
 
     const customLibraryElements = yield select(selectCustomLibraryElements);
 
-    const convertedCreatedElements = createdElements.map((dEl) =>
-      dEl.custom
-        ? convertElementToRequest(
-            customLibraryElements.find((element) => element.id === dEl.id),
-          )
-        : convertCreatedElementToRequest(
-            dEl.type as Entity,
-            null,
-            null,
-            dEl.parameters,
-          ),
-    );
+    const elementGroups = yield select(selectElementTreeGroups);
 
-    yield call(
+    const createdGroupsIds: string[] = [];
+
+    const convertedCreatedElements = createdElements.map((dEl) => {
+      if (dEl.custom) {
+        return convertElementToRequest(
+          customLibraryElements.find((element) => element.id === dEl.id),
+        );
+      }
+      if (dEl.parameters?.isGroup) {
+        if (dEl.id) {
+          createdGroupsIds.push(dEl.id);
+        }
+        const group = elementGroups.find((group) => group.id === dEl.id);
+        return convertElementToRequest({
+          ...group,
+          parameters: {
+            ...group.parameters,
+            isGroup: false,
+          },
+        });
+      }
+      return convertCreatedElementToRequest(
+        dEl.type as Entity,
+        null,
+        null,
+        dEl.parameters,
+      );
+    });
+
+    const elementsIds = yield call(
       createElements,
       { elements: convertedCreatedElements, index },
       activeElementTree,
       {
         screenId,
       },
-      action.promiseLike,
     );
+
+    if (createdGroupsIds.length) {
+      const updatedElements = yield select(selectElementsByIds(elementsIds));
+      const newGroupElements = updatedElements.filter((el) => {
+        return !!el.parameters.sourceElementId;
+      });
+
+      const allChildIds = yield select(
+        selectTreeChildIdsByParentsIds(
+          newGroupElements.reduce((allChildIds, element) => {
+            return [...allChildIds, ...element.children];
+          }, []),
+        ),
+      );
+
+      const elements = yield select(selectAllElements);
+
+      const paramsToUpdate = allChildIds.reduce((params, childId) => {
+        const newElement = elements[childId];
+        const sourceElement = elements[newElement.parameters?.sourceElementId];
+        if (!sourceElement) {
+          return params;
+        }
+        return {
+          ...params,
+          [sourceElement.id]: {
+            groupElements: [
+              ...(sourceElement.parameters?.groupElements || []),
+              newElement.id,
+            ],
+          },
+        };
+      }, {});
+
+      yield put(
+        Actions.updateMultipleElementsParameters(
+          Object.keys(paramsToUpdate),
+          paramsToUpdate,
+          {
+            screenId,
+          },
+        ),
+      );
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar({
@@ -315,9 +367,6 @@ export function* createElementsSaga(
         options: { variant: 'error' },
       }),
     );
-    if (action.promiseLike?.reject) {
-      yield call(action.promiseLike.reject, e);
-    }
   }
 }
 

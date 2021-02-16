@@ -346,7 +346,7 @@ export type UpdateElementStyles = IAction<
 >;
 export type UpdateMultipleElementsStyles = IAction<
   typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
-  { ids: string[]; styles: React.CSSProperties },
+  { ids: string[]; styles: { [id: string]: React.CSSProperties } },
   ElementHistoryMeta
 >;
 export type RemoveMultipleElementsStyles = IAction<
@@ -373,6 +373,14 @@ export type UpdateElementParameters = IAction<
   {
     elementId: string;
     parameters: LibraryElement<Entity>['parameters'];
+  },
+  ElementHistoryMeta
+>;
+export type UpdateMultipleElementsParameters = IAction<
+  typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+  {
+    ids: string[];
+    parameters: { [id: string]: LibraryElement<Entity>['parameters'] };
   },
   ElementHistoryMeta
 >;
@@ -811,16 +819,12 @@ export type Action =
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup
   | MoveStateElementsInside
-  | CreateStateGroup;
+  | CreateStateGroup
+  | UpdateMultipleElementsParameters;
 
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
-};
-
-export type SagaPromiseLike<R> = {
-  resolve?: (arg: R) => void;
-  reject?: (e: Error) => void;
 };
 
 export type ElementHistoryMeta = HistoryMeta & {
@@ -831,7 +835,6 @@ export type ElementHistoryMeta = HistoryMeta & {
 export interface IPlainAction<T, M = HistoryMeta, R = void> {
   type: T;
   meta?: M;
-  promiseLike?: SagaPromiseLike<R>;
 }
 
 export interface IAction<T, P, M = HistoryMeta, R = void>

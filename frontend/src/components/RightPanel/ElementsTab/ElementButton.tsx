@@ -14,8 +14,6 @@ import { ElementData } from '@Src/types';
 
 type Props = {
   elementData: ElementData;
-  onCreate?: (ids: string[]) => void;
-  parameters?: any;
 };
 
 const useButtonStyles = makeStyles(({ palette }) => ({
@@ -69,8 +67,15 @@ const useStyles = makeStyles((theme) => ({
 
 const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
   (props: Props, outerRef) => {
-    const { elementData, onCreate, parameters = {} } = props;
-    const { id, type, name, icon: ElementIcon, custom } = elementData;
+    const { elementData } = props;
+    const {
+      id,
+      type,
+      name,
+      icon: ElementIcon,
+      custom,
+      parameters,
+    } = elementData;
     const dispatch = useDispatch();
     const screenId = useSelector(selectCurrentScreenId);
     const activeElement = useSelector(selectActiveElement);
@@ -105,9 +110,6 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
           },
           {
             screenId,
-          },
-          {
-            resolve: onCreate,
           },
         ),
       );

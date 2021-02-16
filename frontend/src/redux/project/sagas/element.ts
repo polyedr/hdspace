@@ -12,7 +12,7 @@ import {
   selectElementsByIds,
   selectSelectedElementsIds,
   selectActiveElement,
-  selectAllChildElementsIds,
+  selectTreeChildElementsIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -704,7 +704,7 @@ export function* updateElementImageSaga(
   }
 }
 
-export function* updateElementParameters(
+export function* updateElementParametersSaga(
   action: ReturnType<typeof Actions.updateElementParameters>,
 ) {
   try {
@@ -766,6 +766,57 @@ export function* updateElementParameters(
       {
         data: convertedElement,
         id: elementId,
+      },
+    );
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* updateMultipleElementsParametersSaga(
+  action: ReturnType<typeof Actions.updateMultipleElementsParameters>,
+) {
+  const { ids, parameters } = action.payload;
+
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
+  try {
+    const elements = yield select(selectElementsByIds(ids));
+    const updatedElements = elements.map((elem) => {
+      return {
+        ...elem,
+        parameters: {
+          ...elem.parameters,
+          ...(parameters[elem.id] || parameters[ALL_ELEMENTS_INDEX] || {}),
+        },
+      };
+    });
+    yield put(
+      Actions.updateMultipleStateElements(
+        updatedElements.reduce(
+          (acc, elem) => ({ ...acc, [elem.id]: elem }),
+          {},
+        ),
+      ),
+    );
+    const convertedElements = updatedElements.map((updatedEl) => {
+      return convertElementToPatchRequest(updatedEl);
+    });
+    const { error }: Result<LibraryElement<any>> = yield call(
+      reqWrapper,
+      apiUpdateElements,
+      {
+        data: convertedElements,
       },
     );
     if (error) throw new Error(error);
@@ -934,9 +985,14 @@ export function* toggleSelectedElementSaga(
     const selectedElements = yield select(
       selectElementsByIds(selectedElementsIds),
     );
+
+    const buoyancies = [element, ...selectedElements].map((el) => el.buoyancy);
+    const minBuoyancy = Math.min(...buoyancies);
+    const maxBuoyancy = Math.max(...buoyancies);
     const canCreateGroup =
       !!selectedElements.length &&
-      selectedElements.every((el) => el.parent === element.parent);
+      selectedElements.every((el) => el.parent === element.parent) &&
+      maxBuoyancy - minBuoyancy === selectedElements.length;
     yield put(Actions.setCanCreateGroup(canCreateGroup));
     yield put(Actions.addSelectedElement(action.payload.id));
   } else {
@@ -971,11 +1027,10 @@ export function* createElementsGroupSaga(
       activeElement.parent,
       name,
       {
-        group: true,
+        isGroup: true,
       },
     );
 
-    console.log('REQUEST CREATE GROUP!!!', requestCreateGroup);
     const {
       result: createdGroups,
     }: ReturnPromisedType<typeof apiCreateElements> = yield call(
@@ -1032,7 +1087,7 @@ export function* createElementsGroupSaga(
     );
 
     const nestedChildrenIds = yield select(
-      selectAllChildElementsIds(updatedGroup.id),
+      selectTreeChildElementsIds(updatedGroup.id),
     );
 
     const nestedElements = yield select(selectElementsByIds(nestedChildrenIds));

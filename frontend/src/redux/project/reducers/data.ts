@@ -42,11 +42,6 @@ const dataReducer = produce(
       case TYPES.MOVE_STATE_ELEMENTS_INSIDE: {
         const { ids, parents } = action.payload;
         const { oldParentId, newParentId } = parents;
-        console.log(
-          'MOVE STATE ELEMENTS INSIDE!!',
-          action.payload,
-          draft.elements,
-        );
         draft.elements[oldParentId].children = draft.elements[
           oldParentId
         ].children.filter((childId) => !ids.includes(childId));
@@ -60,7 +55,6 @@ const dataReducer = produce(
         draft.elements[newParentId].children.forEach((childId, index) => {
           draft.elements[childId].buoyancy = index;
         });
-        console.log('TEST!!', draft.elements);
         break;
       }
 

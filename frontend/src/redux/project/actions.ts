@@ -89,6 +89,7 @@ import {
   UpdateElementParameters,
   UpdateElementsTree,
   UpdateElementStyles,
+  UpdateMultipleElementsParameters,
   UpdateProject,
   UpdateSavedElementsValues,
   UpdateSavedElementValues,
@@ -111,7 +112,6 @@ import {
   UpdateMultipleElementsStyles,
   RemoveMultipleElementsStyles,
   UpdateMultipleStateElements,
-  SagaPromiseLike,
   MoveStateElement,
   MoveStateElementsInside,
   CreateStateGroup,
@@ -611,6 +611,24 @@ export const updateElementParameters = <
   meta,
 });
 
+export const updateMultipleElementsParameters = <
+  T extends Entity,
+  K extends LibraryElement<T>['parameters']
+>(
+  ids: string[],
+  parameters: {
+    [id: string]: K;
+  },
+  meta: ElementHistoryMeta,
+): UpdateMultipleElementsParameters => ({
+  type: TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+  payload: {
+    ids,
+    parameters,
+  },
+  meta,
+});
+
 export const updateSavedElementsValues = (
   elementsValues: SavedElementsValues,
 ): UpdateSavedElementsValues => ({
@@ -638,12 +656,10 @@ export const deleteElement = (
 export const createElements = (
   { createdElements, parentId, index }: CreateElementsData,
   meta: ElementHistoryMeta,
-  promiseLike?: SagaPromiseLike<string[]>,
 ): CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
   payload: { createdElements, parentId, index },
   meta,
-  promiseLike,
 });
 
 export const addChildrenToElement = (

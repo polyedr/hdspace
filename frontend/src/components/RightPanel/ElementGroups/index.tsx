@@ -1,12 +1,9 @@
-import React, { useMemo, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectElementGroups } from '@Redux/project/selectors/element';
 import Crop169Icon from '@material-ui/icons/Crop169';
 import { ElementData } from '@Src/types';
-import { updateElementParameters } from '@Redux/project/actions';
-
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   StyledAccordion,
   StyledAccordionDetails,
@@ -34,32 +31,7 @@ const useStyles = makeStyles({
 
 const ElementGroupsBlock: React.FC = () => {
   const groups = useSelector(selectElementGroups);
-  const currentScreenId = useSelector(selectCurrentScreenId);
   const classes = useStyles();
-  const dispatch = useDispatch();
-
-  const bindToOriginalGroup = useCallback(
-    (ids: string[], originalId: string) => {
-      console.log('BIND TO ORIGINAL GROUP!!', ids, originalId, groups);
-      const group = groups.find((gr) => gr.id === originalId);
-      if (!group) {
-        // eslint-disable-next-line no-console
-        console.error(`Can not find group with ID ${originalId}`);
-        return;
-      }
-      console.log('GROUP!!', group);
-      dispatch(
-        updateElementParameters(
-          originalId,
-          {
-            copiedGroups: [...group.parameters.copiedGroups, ...ids],
-          },
-          { screenId: currentScreenId },
-        ),
-      );
-    },
-    [dispatch, groups],
-  );
 
   const elementsData = useMemo(() => {
     return Object.values(groups).map(
@@ -71,6 +43,9 @@ const ElementGroupsBlock: React.FC = () => {
           name: group.name,
           custom: false,
           icon: Crop169Icon,
+          parameters: {
+            isGroup: true,
+          },
         } as ElementData),
     );
   }, [groups]);
@@ -83,17 +58,7 @@ const ElementGroupsBlock: React.FC = () => {
 
       <StyledAccordionDetails className={classes.block}>
         {elementsData.map((element) => (
-          <ElementButton
-            elementData={element}
-            key={`group-${element.id}`}
-            onCreate={(ids: string[]) => {
-              if (!element.id) {
-                return;
-              }
-              bindToOriginalGroup(ids, element.id);
-            }}
-            parameters={{ sourceContainer: element.id }}
-          />
+          <ElementButton elementData={element} key={`group-${element.id}`} />
         ))}
       </StyledAccordionDetails>
     </StyledAccordion>
