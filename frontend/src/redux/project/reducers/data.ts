@@ -246,6 +246,19 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.REMOVE_ASSET_REDUX: {
+        const { id, listId } = action.payload;
+        console.log('REMOVE ASSET!!', id, listId);
+        draft.assetResults[ALL_ASSETS_LIST_ID].results = draft.assetResults[
+          ALL_ASSETS_LIST_ID
+        ].results.filter((asset) => asset.id !== id);
+        draft.assetResults[listId].results = draft.assetResults[
+          listId
+        ].results.filter((asset) => asset.id !== id);
+
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         draft.screens = {};
         draft.elements = {};

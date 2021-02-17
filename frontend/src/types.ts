@@ -1033,7 +1033,7 @@ export type Asset = {
   image: string | null;
   created: Date;
   modified: Date;
-  listId: string;
+  listId: string | null;
 };
 
 export type AssetResults = {

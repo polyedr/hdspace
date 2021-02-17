@@ -93,6 +93,8 @@ import {
   addNewAssetListSaga,
   uploadElementAssetSaga,
   removeAssetListSaga,
+  removeAssetSaga,
+  restoreAssetSaga,
 } from './asset';
 
 function* removeSharedStylesSaga(
@@ -392,6 +394,8 @@ function* undoSaga() {
 
     yield put(Actions.popUndoAction());
     yield put(Actions.popHistory());
+
+    console.log('SET REDO ACTIONS!!', history, redos);
     yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
   } catch (e) {
     yield put(
@@ -403,6 +407,7 @@ function* undoSaga() {
 function* redoSaga() {
   try {
     const redos = yield select(selectRedoActions);
+    console.log('REDO ACTIONS!!', redos);
 
     if (!redos.length) {
       yield put(
@@ -451,6 +456,7 @@ function* redoSaga() {
 
     yield put(Actions.setRedoActions([...redos.slice(1)]));
   } catch (e) {
+    console.error('ERROR!!!', e);
     yield put(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
     );
@@ -527,6 +533,8 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UPLOAD_ASSET, uploadAssetSaga);
   yield takeEvery(TYPES.UPLOAD_ELEMENT_ASSET, uploadElementAssetSaga);
   yield takeEvery(TYPES.REMOVE_ASSET_LIST, removeAssetListSaga);
+  yield takeEvery(TYPES.REMOVE_ASSET, removeAssetSaga);
+  yield takeEvery(TYPES.RESTORE_ASSET, restoreAssetSaga);
 
   yield takeEvery(
     TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,

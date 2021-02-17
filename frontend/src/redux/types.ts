@@ -562,6 +562,24 @@ export type RemoveAssetList = IAction<
   HistoryMeta
 >;
 
+export type RemoveAsset = IAction<
+  typeof TYPES.REMOVE_ASSET,
+  { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type RemoveAssetRedux = IAction<
+  typeof TYPES.REMOVE_ASSET_REDUX,
+  { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type RestoreAsset = IAction<
+  typeof TYPES.RESTORE_ASSET,
+  { asset: Asset; listId: string },
+  HistoryMeta
+>;
+
 export type AddStateElements = IAction<
   typeof TYPES.ADD_STATE_ELEMENTS,
   { elements: LibraryElement<any>[]; parentId: string; index?: number },
@@ -777,6 +795,11 @@ export type Action =
   | AddAssetRedux
   | RemoveAssetList
   | RemoveAssetListRedux
+  | RemoveAssetList
+  | RemoveAssetListRedux
+  | RemoveAsset
+  | RemoveAssetRedux
+  | RestoreAsset
   | SetSelectedAssetListId
   | SearchProjects
   | SetProjectSearchParameter

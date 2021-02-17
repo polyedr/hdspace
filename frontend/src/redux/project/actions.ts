@@ -57,6 +57,8 @@ import {
   RemoveElementClassName,
   RemoveElementStyles,
   RemoveSharedStyles,
+  RemoveAsset,
+  RestoreAsset,
   RenameProject,
   RenameScreen,
   ReplaceElementStyles,
@@ -932,9 +934,33 @@ export const removeAssetList = (
   meta,
 });
 
+export const removeAsset = (
+  id: string,
+  listId: string,
+  meta?: HistoryMeta,
+): RemoveAsset => ({
+  type: TYPES.REMOVE_ASSET,
+  payload: { id, listId },
+  meta,
+});
+
+export const restoreAsset = (
+  asset: Asset,
+  listId: string,
+  meta?: HistoryMeta,
+): RestoreAsset => ({
+  type: TYPES.RESTORE_ASSET,
+  payload: { asset, listId },
+  meta,
+});
+
 export const removeAssetListRedux = (id: string) => ({
   type: TYPES.REMOVE_ASSET_LIST_REDUX,
   payload: id,
+});
+export const removeAssetRedux = (id: string, listId: string) => ({
+  type: TYPES.REMOVE_ASSET_REDUX,
+  payload: { id, listId },
 });
 
 export const addAssetListToState = (list: AssetsList) => ({
