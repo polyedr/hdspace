@@ -9,15 +9,13 @@ export const convertElements = (
       key,
       {
         id: value.id,
-        // @ts-ignore
-        data: { title: value.name, type: value.type || value.struct_type },
+        data: { title: value.name, type: value.type },
         children:
           value.type === 'dropdown' || value.type === 'select'
             ? []
             : value.children,
         hasChildren: !!value.children.length,
-        // @ts-ignore
-        isExpanded: value.type === 'root' || value.struct_type === 'root',
+        isExpanded: value.type === 'root',
         parent: value.type === 'root' ? 'root' : value.parent,
       },
     ]),

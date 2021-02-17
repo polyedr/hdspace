@@ -1,4 +1,3 @@
-import { Entity } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { createSelector } from 'reselect';
 
@@ -19,7 +18,7 @@ export const selectActiveMasterElement = createSelector(
 
 export const selectActiveMasterElementType = createSelector(
   selectActiveMasterElement,
-  (element) => element.struct_type,
+  (element) => element.type,
 );
 
 export const selectMasterScreenEnabled = ({ project }: AppReduxState) =>

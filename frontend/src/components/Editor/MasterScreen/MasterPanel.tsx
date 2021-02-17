@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 const MasterPanel = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { struct_type: type, id } = useSelector(selectActiveMasterElement);
+  const { type, id } = useSelector(selectActiveMasterElement);
   // const activeMasterElementType = useSelector(selectActiveMasterElementType);
   const editableStyles = useSelector(selectEditableStyles);
   const screenId = useSelector(selectCurrentScreenId);

@@ -804,9 +804,7 @@ export function* toggleMasterScreenSaga() {
 
     yield put(
       Actions.setEditableStyles(
-        enabled
-          ? activeElement.styles.classNames[0]
-          : activeMasterElement.struct_type,
+        enabled ? activeElement.styles.classNames[0] : activeMasterElement.type,
       ),
     );
 

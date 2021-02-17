@@ -1,3 +1,4 @@
+import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import { section } from '@Domain/libraryElements/blocksTemplates/blocksTemplates';
 import {
   checkbox,
@@ -30,7 +31,7 @@ import {
 
 const MASTER_ELEMENTS_LIST = {
   masterRoot: {
-    ...root,
+    ...convertElementFromResponse(root),
     name: 'Master Root',
     children: [
       'masterButton',
@@ -56,123 +57,123 @@ const MASTER_ELEMENTS_LIST = {
     id: 'masterRoot',
   },
   masterHeading: {
-    ...makeHeading(),
+    ...convertElementFromResponse(makeHeading()),
     name: 'Master Heading',
     id: 'masterHeading',
   },
   masterHyperlink: {
-    ...hyperlink,
+    ...convertElementFromResponse(hyperlink),
     name: 'Master Hyperlink',
     id: 'masterHyperlink',
   },
   masterParagraph: {
-    ...makeParagraph(),
+    ...convertElementFromResponse(makeParagraph()),
     name: 'Master Paragraph',
     id: 'masterParagraph',
   },
   masterTextBlock: {
-    ...textBlock,
+    ...convertElementFromResponse(textBlock),
     name: 'Master TextBlock',
     id: 'masterTextBlock',
   },
   masterList: {
-    ...list,
+    ...convertElementFromResponse(list),
     name: 'Master List',
     id: 'masterList',
     children: ['masterListItem'],
   },
   masterListItem: {
-    ...makeListItem('Master ListItem'),
+    ...convertElementFromResponse(makeListItem('Master ListItem')),
     name: 'Master ListItem',
     id: 'masterListItem',
   },
   masterButton: {
-    ...makeButton(),
+    ...convertElementFromResponse(makeButton()),
     name: 'Master Button',
     id: 'masterButton',
   },
   masterTextinput: {
-    ...makeTextinput(),
+    ...convertElementFromResponse(makeTextinput()),
     name: 'Master Textinput',
     id: 'masterTextinput',
   },
   masterCheckbox: {
-    ...checkbox,
+    ...convertElementFromResponse(checkbox),
     name: 'Master checkbox',
     id: 'masterCheckbox',
   },
   masterRadiobutton: {
-    ...radiobutton,
+    ...convertElementFromResponse(radiobutton),
     name: 'Master Radiobutton',
     id: 'masterRadiobutton',
   },
   // select,
   masterLabel: {
-    ...makeLabel(),
+    ...convertElementFromResponse(makeLabel()),
     name: 'Master Label',
     id: 'masterLabel',
   },
   masterTextarea: {
-    ...textarea,
+    ...convertElementFromResponse(textarea),
     name: 'Master Textarea',
     id: 'masterTextarea',
   },
   masterContainer: {
-    ...makeContainer(),
+    ...convertElementFromResponse(makeContainer()),
     name: 'Master Container',
     id: 'masterContainer',
   },
   masterGrid: {
-    ...makeGrid(),
+    ...convertElementFromResponse(makeGrid()),
     name: 'Master Grid',
     id: 'masterGrid',
     children: ['masterGridItem'],
   },
   masterGridItem: {
-    ...makeGridItem(),
+    ...convertElementFromResponse(makeGridItem()),
     name: 'Master GridItem',
     id: 'masterGridItem',
   },
   masterColumns: {
-    ...makeColumns(),
+    ...convertElementFromResponse(makeColumns()),
     name: 'Master Columns',
     id: 'masterColumns',
     children: ['masterColumn'],
   },
   masterColumn: {
-    ...column,
+    ...convertElementFromResponse(column),
     name: 'Master Column',
     id: 'masterColumn',
   },
   masterNativeColumns: {
-    ...nativeColumns,
+    ...convertElementFromResponse(nativeColumns),
     name: 'Master Native Columns',
     id: 'masterNativeColumns',
   },
   // divBlock: {
-  //   ...makeDivBlock,
+  //   ...ctonverElementFromResponse(makeDivBlock),
   //   children: [?],
   //   name: 'Master DivBlock',
   //   id: 'masterDivBlock',
   // }
   masterImage: {
-    ...makeImage(),
+    ...convertElementFromResponse(makeImage()),
     name: 'Master Image',
     id: 'masterImage',
   },
   // dropdown,
   masterVideo: {
-    ...video,
+    ...convertElementFromResponse(video),
     name: 'Master Video',
     id: 'masterVideo',
   },
   masterUndefined: {
-    ...undefinedElement,
+    ...convertElementFromResponse(undefinedElement),
     name: 'Master Undefined',
     id: 'masterUndefined',
   },
   masterSection: {
-    ...section,
+    ...convertElementFromResponse(section),
     name: 'Master Section',
     id: 'masterSection',
   },

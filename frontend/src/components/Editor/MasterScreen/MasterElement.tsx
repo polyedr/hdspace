@@ -18,7 +18,7 @@ const MasterElement: FC<Props> = ({ id }) => {
   const element = useSelector(selectMasterElementById(id));
   const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
 
-  const { struct_type: type } = element;
+  const { type } = element;
 
   const elementProps = {
     id: element.id,

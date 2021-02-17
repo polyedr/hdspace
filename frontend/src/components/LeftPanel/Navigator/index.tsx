@@ -39,16 +39,6 @@ const Navigator: React.FC = () => {
     setTree(updateTree(tree, newTree));
   }, [elements, rootId]);
 
-  // const expandParents = useCallback((itemId) => {
-  //   if (itemId === 'root') return;
-  //   // @ts-ignore
-  //   const parentId = tree.items[itemId]?.parent;
-  //   if (!parentId) return;
-
-  //   setTree((prevTree) => mutateTree(prevTree, parentId, { isExpanded: true }));
-  //   expandParents(parentId);
-  // }, []);
-
   return (
     <StyledAccordion defaultExpanded>
       <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
