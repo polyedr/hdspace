@@ -45,13 +45,15 @@ import {
   addElementClassNameSaga,
   removeElementClassNameSaga,
   updateElementImageSaga,
-  updateElementParameters,
+  updateElementParametersSaga,
   uploadFileSaga,
   loadCustomElementsSaga,
   toggleSelectedElementSaga,
   setActiveElementSaga,
   removeMultipleElementsStylesSaga,
   updateMultipleElementsStylesSaga,
+  createElementsGroupSaga,
+  updateMultipleElementsParametersSaga,
 } from './element';
 
 import TYPES from '../../actionTypes';
@@ -495,7 +497,11 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UPDATE_ELEMENT_IMAGE, updateElementImageSaga);
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT_SAGA, setActiveElementSaga);
 
-  yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
+  yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParametersSaga);
+  yield takeEvery(
+    TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+    updateMultipleElementsParametersSaga,
+  );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
 
@@ -532,4 +538,6 @@ export default function* projectSaga() {
     TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
     toggleSelectedElementSaga,
   );
+
+  yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP_SAGA, createElementsGroupSaga);
 }

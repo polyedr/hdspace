@@ -9,6 +9,7 @@ import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
 import CustomElementsBlock from '../CustomElementsLibrary/CustomElementsBlock';
 import ElementsBlock from './ElementsBlock';
+import ElementGroups from '../ElementGroups';
 import Section from './Section';
 
 const sections = ['elements', 'templates', 'library'];
@@ -120,6 +121,7 @@ const ElementsTab = () => {
                 expandable
               />
             ))}
+            <ElementGroups />
           </Section>
 
           <Section

@@ -106,7 +106,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       type: ElementType.ELEMENT,
     } as SyntheticElement<StateElement>,
     canDrag: () =>
-      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) && elementId !== rootID,
+      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+      elementId !== rootID &&
+      !element.parameters.sourceElementId,
     end: () => {
       dispatch(setCurrentDropTargetParams(null));
       dispatch(setElementBeingEdited(false));
@@ -159,10 +161,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         const { id, type, name, custom, parameters } = elementData;
         dispatch(
           createElements(
-            [{ id, type, name, custom, parameters }],
+            {
+              createdElements: [{ id, type, name, custom, parameters }],
+              parentId: dropTarget.id,
+              index,
+            },
             { screenId },
-            dropTarget.id,
-            index,
           ),
         );
       }
@@ -319,6 +323,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [elementBeingEdited],
   );
 
+  const mouseEnterHandler = useCallback(() => {
+    dispatch(setHoveredElementId(elementId));
+  }, [dispatch, elementId]);
+  const mouseLeaveHandler = useCallback(() => {
+    dispatch(setHoveredElementId(element.parent || null));
+  }, [dispatch, element.parent]);
+
   if (!element) {
     return null;
   }
@@ -337,12 +348,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
               drop(ref);
             }
           }}
-          onMouseEnter={() => {
-            dispatch(setHoveredElementId(elementId));
-          }}
-          onMouseLeave={() => {
-            dispatch(setHoveredElementId(element.parent || null));
-          }}
+          onMouseEnter={mouseEnterHandler}
+          onMouseLeave={mouseLeaveHandler}
           onKeyDown={keyDownHandler}
           onClick={clickHandler}
           onBlur={blurHandler}

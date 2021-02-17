@@ -68,7 +68,14 @@ const useStyles = makeStyles((theme) => ({
 const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
   (props: Props, outerRef) => {
     const { elementData } = props;
-    const { id, type, name, icon: ElementIcon, custom } = elementData;
+    const {
+      id,
+      type,
+      name,
+      icon: ElementIcon,
+      custom,
+      parameters,
+    } = elementData;
     const dispatch = useDispatch();
     const screenId = useSelector(selectCurrentScreenId);
     const activeElement = useSelector(selectActiveElement);
@@ -97,9 +104,13 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     const handleClick = () => {
       dispatch(
         createElements(
-          [{ id, type, name, custom }],
-          { screenId },
-          activeElement.id,
+          {
+            createdElements: [{ id, type, name, custom, parameters }],
+            parentId: activeElement.id,
+          },
+          {
+            screenId,
+          },
         ),
       );
     };

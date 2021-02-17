@@ -9,9 +9,10 @@ import {
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
-import SaveElementAction from './Actions/SaveElementAction';
+import SaveElementAction from './Actions/SaveElement/SaveElementAction';
 import Borders from './Borders/Borders';
 import BorderCrumb from './Crumb/BorderCrumb';
+import CreateGroupAction from './Actions/CreateGroup/CreateGroupAction';
 
 type Props = {
   elementId: string;
@@ -82,6 +83,7 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
       {!elementBeingEdited && (
         <BorderCrumb elementId={elementId} styles={styles}>
           <SaveElementAction elementId={elementId} />
+          <CreateGroupAction elementId={elementId} />
         </BorderCrumb>
       )}
     </React.Fragment>

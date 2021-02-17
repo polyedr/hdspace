@@ -44,6 +44,7 @@ import {
   makeGridItem,
   column,
   nativeColumns,
+  elementsGroup,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -119,6 +120,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   cardsSection,
   featureSection,
   section,
+  group: elementsGroup,
 };
 
 export const ICONS: Partial<

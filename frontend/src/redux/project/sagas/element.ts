@@ -10,10 +10,16 @@ import {
   selectAllElements,
   selectIsElementSelected,
   selectElementsByIds,
+  selectSelectedElementsIds,
+  selectActiveElement,
+  selectTreeChildElementsIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
-import { convertElementToPatchRequest } from '@Api/converters/toRequest';
+import {
+  convertElementToPatchRequest,
+  convertCreatedElementToRequest,
+} from '@Api/converters/toRequest';
 import {
   getElementsArray,
   getTreeWithDefaultStylesAndParams,
@@ -24,6 +30,7 @@ import {
   apiUpdateElements,
   parseImgUsingNN,
   apiGetCustomLibraryElements,
+  apiCreateElements,
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import getSavedValue from '@Utils/getSavedValue';
@@ -697,7 +704,7 @@ export function* updateElementImageSaga(
   }
 }
 
-export function* updateElementParameters(
+export function* updateElementParametersSaga(
   action: ReturnType<typeof Actions.updateElementParameters>,
 ) {
   try {
@@ -759,6 +766,57 @@ export function* updateElementParameters(
       {
         data: convertedElement,
         id: elementId,
+      },
+    );
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* updateMultipleElementsParametersSaga(
+  action: ReturnType<typeof Actions.updateMultipleElementsParameters>,
+) {
+  const { ids, parameters } = action.payload;
+
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
+  try {
+    const elements = yield select(selectElementsByIds(ids));
+    const updatedElements = elements.map((elem) => {
+      return {
+        ...elem,
+        parameters: {
+          ...elem.parameters,
+          ...(parameters[elem.id] || parameters[ALL_ELEMENTS_INDEX] || {}),
+        },
+      };
+    });
+    yield put(
+      Actions.updateMultipleStateElements(
+        updatedElements.reduce(
+          (acc, elem) => ({ ...acc, [elem.id]: elem }),
+          {},
+        ),
+      ),
+    );
+    const convertedElements = updatedElements.map((updatedEl) => {
+      return convertElementToPatchRequest(updatedEl);
+    });
+    const { error }: Result<LibraryElement<any>> = yield call(
+      reqWrapper,
+      apiUpdateElements,
+      {
+        data: convertedElements,
       },
     );
     if (error) throw new Error(error);
@@ -912,6 +970,8 @@ export function* setActiveElementSaga(
   action: ReturnType<typeof Actions.setActiveElement>,
 ) {
   yield put(Actions.setActiveElementId(action.payload));
+  yield put(Actions.setCanCreateGroup(false));
+  yield put(Actions.resetElementEditState());
   yield put(Actions.setSelectedElements([action.payload]));
 }
 
@@ -920,8 +980,148 @@ export function* toggleSelectedElementSaga(
 ) {
   const isElementSelected = yield select(selectIsElementSelected);
   if (isElementSelected) {
+    const element = yield select(selectElementById(action.payload.id));
+    const selectedElementsIds = yield select(selectSelectedElementsIds);
+    const selectedElements = yield select(
+      selectElementsByIds(selectedElementsIds),
+    );
+
+    const buoyancies = [element, ...selectedElements].map((el) => el.buoyancy);
+    const minBuoyancy = Math.min(...buoyancies);
+    const maxBuoyancy = Math.max(...buoyancies);
+    const canCreateGroup =
+      !!selectedElements.length &&
+      selectedElements.every((el) => el.parent === element.parent) &&
+      maxBuoyancy - minBuoyancy === selectedElements.length;
+    yield put(Actions.setCanCreateGroup(canCreateGroup));
     yield put(Actions.addSelectedElement(action.payload.id));
   } else {
     yield put(Actions.removeSelectedElement(action.payload.id));
+  }
+}
+
+export function* createElementsGroupSaga(
+  action: ReturnType<typeof Actions.createElementsGroup>,
+) {
+  if (!action.meta) {
+    yield put(
+      enqueueSnackbar({
+        message: `You should provide meta information for action ${action.type}`,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+  const { name, ids } = action.payload;
+  const { screenId } = action.meta;
+
+  try {
+    const activeElement = yield select(selectActiveElement);
+    const parentTree = yield select(selectElementAsTree(activeElement.parent));
+    const selectedElements: StateElement[] = yield select(
+      selectElementsByIds(ids),
+    );
+    const minBuoyancy = Math.min(...selectedElements.map((el) => el.buoyancy));
+
+    const requestCreateGroup = convertCreatedElementToRequest(
+      'group',
+      activeElement.parent,
+      name,
+      {
+        isGroup: true,
+      },
+    );
+
+    const {
+      result: createdGroups,
+    }: ReturnPromisedType<typeof apiCreateElements> = yield call(
+      reqWrapper,
+      apiCreateElements,
+      {
+        data: [requestCreateGroup],
+      },
+      parentTree,
+      action.meta,
+    );
+
+    if (!createdGroups || !createdGroups.length) {
+      console.error('Error creating group', createdGroups);
+      throw new Error('Error creating group');
+    }
+
+    yield put(
+      Actions.createStateGroup(
+        createdGroups[0],
+        activeElement.parent,
+        minBuoyancy,
+        ids,
+        {
+          screenId,
+        },
+      ),
+    );
+
+    const updatedParent: LibraryElement<any> = yield select(
+      selectElementAsTree(activeElement.parent),
+    );
+    const updatedGroup: LibraryElement<any> = yield select(
+      selectElementAsTree(createdGroups[0].id),
+    );
+
+    const { error: parentError }: Result<RecursiveElement> = yield call(
+      reqWrapper,
+      apiChangeRecursiveElement,
+      {
+        data: { children: updatedParent.children.map((child) => child.id) },
+        id: updatedParent.id,
+      },
+    );
+    if (parentError) throw parentError;
+
+    const { error: groupError }: Result<RecursiveElement> = yield call(
+      reqWrapper,
+      apiChangeRecursiveElement,
+      {
+        data: { children: updatedGroup.children.map((child) => child.id) },
+        id: updatedGroup.id,
+      },
+    );
+
+    const nestedChildrenIds = yield select(
+      selectTreeChildElementsIds(updatedGroup.id),
+    );
+
+    const nestedElements = yield select(selectElementsByIds(nestedChildrenIds));
+
+    if (groupError) throw groupError;
+
+    const convertedElements = [
+      ...updatedParent.children.map((child) =>
+        convertElementToPatchRequest(child),
+      ),
+      ...nestedElements.map((child) =>
+        convertElementToPatchRequest({
+          ...child,
+          parameters: {
+            ...child.parameters,
+            groupElements: [],
+          },
+        }),
+      ),
+    ];
+
+    const { error }: Result<ServerElement<any>> = yield call(
+      reqWrapper,
+      apiUpdateElements,
+      { data: convertedElements },
+    );
+    if (error) throw new Error(error);
+  } catch (e) {
+    console.error(e);
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
   }
 }

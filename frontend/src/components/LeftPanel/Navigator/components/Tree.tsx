@@ -14,7 +14,7 @@ import {
   moveElement,
   pasteCopiedElement,
   redoAction,
-  setActiveElementId,
+  setActiveElement,
   undoAction,
 } from '@Redux/project/actions';
 import {
@@ -116,7 +116,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const select = (itemId) => {
     if (selectedItemId === itemId) return;
 
-    dispatch(setActiveElementId(itemId));
+    dispatch(setActiveElement(itemId));
     setSelectedItem(itemId);
   };
 
