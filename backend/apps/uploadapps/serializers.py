@@ -5,7 +5,6 @@ from io import BytesIO
 from django.core.files.uploadedfile import UploadedFile
 from rest_framework import serializers
 from apps.uploadapps.models import Fileupload, WebpageSaved
-from pywebcopy import save_webpage
 import subprocess
 
 from project.settings import MEDIA_URL, MEDIA_ROOT
