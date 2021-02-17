@@ -27,7 +27,6 @@ const MasterPanel = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { type, id } = useSelector(selectActiveMasterElement);
-  // const activeMasterElementType = useSelector(selectActiveMasterElementType);
   const editableStyles = useSelector(selectEditableStyles);
   const screenId = useSelector(selectCurrentScreenId);
   const sharedStyles = useSelector(selectSharedStyles(type));

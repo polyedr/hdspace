@@ -27,6 +27,26 @@ import {
   importHtmlSaga,
 } from '@Redux/project/sagas/screen';
 import {
+  setActiveMasterElementSaga,
+  moveElementSaga,
+  removeElementStylesSaga,
+  updateElementStylesSaga,
+  replaceElementStylesSaga,
+  copyElementStylesSaga,
+  addElementClassNameSaga,
+  removeElementClassNameSaga,
+  updateElementImageSaga,
+  updateElementParametersSaga,
+  uploadFileSaga,
+  loadCustomElementsSaga,
+  toggleSelectedElementSaga,
+  setActiveElementSaga,
+  removeMultipleElementsStylesSaga,
+  updateMultipleElementsStylesSaga,
+  createElementsGroupSaga,
+  updateMultipleElementsParametersSaga,
+} from '@Redux/project/sagas/element';
+import {
   addChildrenToElementSaga,
   addChildToElementSaga,
   createElements,
@@ -48,25 +68,6 @@ import {
   searchProjectsSaga,
   updateProjectSaga,
 } from './project';
-import {
-  moveElementSaga,
-  removeElementStylesSaga,
-  updateElementStylesSaga,
-  replaceElementStylesSaga,
-  copyElementStylesSaga,
-  addElementClassNameSaga,
-  removeElementClassNameSaga,
-  updateElementImageSaga,
-  updateElementParametersSaga,
-  uploadFileSaga,
-  loadCustomElementsSaga,
-  toggleSelectedElementSaga,
-  setActiveElementSaga,
-  removeMultipleElementsStylesSaga,
-  updateMultipleElementsStylesSaga,
-  createElementsGroupSaga,
-  updateMultipleElementsParametersSaga,
-} from './element';
 
 import TYPES from '../../actionTypes';
 
@@ -542,4 +543,8 @@ export default function* projectSaga() {
 
   yield takeEvery(TYPES.TOGGLE_MASTER_SCREEN, toggleMasterScreenSaga);
   yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP_SAGA, createElementsGroupSaga);
+  yield takeEvery(
+    TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
+    setActiveMasterElementSaga,
+  );
 }

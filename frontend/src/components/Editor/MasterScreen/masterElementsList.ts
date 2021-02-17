@@ -150,12 +150,6 @@ const MASTER_ELEMENTS_LIST = {
     name: 'Master Native Columns',
     id: 'masterNativeColumns',
   },
-  // divBlock: {
-  //   ...ctonverElementFromResponse(makeDivBlock),
-  //   children: [?],
-  //   name: 'Master DivBlock',
-  //   id: 'masterDivBlock',
-  // }
   masterImage: {
     ...convertElementFromResponse(makeImage()),
     name: 'Master Image',
