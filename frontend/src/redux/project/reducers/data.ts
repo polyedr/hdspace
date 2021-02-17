@@ -248,7 +248,6 @@ const dataReducer = produce(
 
       case TYPES.REMOVE_ASSET_REDUX: {
         const { id, listId } = action.payload;
-        console.log('REMOVE ASSET!!', id, listId);
         draft.assetResults[ALL_ASSETS_LIST_ID].results = draft.assetResults[
           ALL_ASSETS_LIST_ID
         ].results.filter((asset) => asset.id !== id);

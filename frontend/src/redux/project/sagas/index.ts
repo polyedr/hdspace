@@ -395,7 +395,6 @@ function* undoSaga() {
     yield put(Actions.popUndoAction());
     yield put(Actions.popHistory());
 
-    console.log('SET REDO ACTIONS!!', history, redos);
     yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
   } catch (e) {
     yield put(
@@ -407,7 +406,6 @@ function* undoSaga() {
 function* redoSaga() {
   try {
     const redos = yield select(selectRedoActions);
-    console.log('REDO ACTIONS!!', redos);
 
     if (!redos.length) {
       yield put(
@@ -456,7 +454,6 @@ function* redoSaga() {
 
     yield put(Actions.setRedoActions([...redos.slice(1)]));
   } catch (e) {
-    console.error('ERROR!!!', e);
     yield put(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
     );

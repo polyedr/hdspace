@@ -543,12 +543,22 @@ export type AddAssetList = IAction<
   }
 >;
 
+export type UploadAsset = IAction<
+  typeof TYPES.UPLOAD_ASSET,
+  {
+    assetFile: any;
+    listId?: string;
+  },
+  HistoryMeta
+>;
+
 export type AddAssetRedux = IAction<
   typeof TYPES.ADD_ASSET_REDUX,
   {
     listId: string;
     asset: Asset;
-  }
+  },
+  HistoryMeta
 >;
 
 export type RemoveAssetListRedux = IAction<
@@ -795,8 +805,6 @@ export type Action =
   | AddAssetRedux
   | RemoveAssetList
   | RemoveAssetListRedux
-  | RemoveAssetList
-  | RemoveAssetListRedux
   | RemoveAsset
   | RemoveAssetRedux
   | RestoreAsset
@@ -807,17 +815,19 @@ export type Action =
   | RemoveSelectedElement
   | SetSelectedElements
   | UpdateMultipleElementsStyles
-  | RemoveMultipleElementsStyles;
+  | RemoveMultipleElementsStyles
+  | UploadAsset
+  | UploadElementAsset;
 
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
-};
-export type ElementHistoryMeta = HistoryMeta & {
-  screenId: number;
   sourceAction?: Action | null;
 };
 
+export type ElementHistoryMeta = HistoryMeta & {
+  screenId: number;
+};
 export interface IPlainAction<T, M = HistoryMeta> {
   type: T;
   meta?: M;

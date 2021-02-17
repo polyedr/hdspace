@@ -101,13 +101,13 @@ export function* addNewAssetListSaga(
       projectId,
       name,
     });
-    yield put(Actions.addAssetListToState(assetList));
+    yield put(Actions.addAssetListToState(assetList, { sourceAction: action }));
     yield put(Actions.setSelectedAssetListId(assetList.id));
     if (!undo) {
       yield put(
         Actions.setUndoActions([
           Actions.setSelectedAssetListId(selectedAssetId || ALL_ASSETS_LIST_ID),
-          Actions.removeAssetList(assetList.id, action.meta),
+          Actions.removeAssetList(assetList.id),
         ]),
       );
     }
@@ -151,7 +151,6 @@ export function* removeAssetListSaga(
 export function* restoreAssetSaga(
   action: ReturnType<typeof Actions.restoreAsset>,
 ) {
-  console.log('RESTORE ASSET SAGA!!', action);
   const {
     payload: { asset, listId },
     meta,
@@ -164,13 +163,12 @@ export function* restoreAssetSaga(
         ]),
       );
     }
-    yield put(Actions.addAssetToState(listId, asset));
+    yield put(Actions.addAssetToState(listId, asset, { sourceAction: action }));
     yield call(reqWrapper, apiUpdateAsset, {
       id: asset.id,
       asset: convertToServerAsset(asset),
     });
   } catch (error) {
-    console.error(error);
     yield put(
       enqueueSnackbar({
         message: error.message,
@@ -188,7 +186,6 @@ export function* removeAssetSaga(
     payload: { id, listId },
   } = action;
   try {
-    console.log('CALL REMOVE ASSET SAGA!!');
     const asset = yield select(selectAssetListById);
     if (!meta?.undo) {
       yield put(Actions.setUndoActions([Actions.restoreAsset(asset, listId)]));
@@ -196,7 +193,6 @@ export function* removeAssetSaga(
     yield put(Actions.removeAssetRedux(id, listId));
     yield call(reqWrapper, apiDeleteAsset, { id });
   } catch (error) {
-    console.error(error);
     yield put(
       enqueueSnackbar({
         message: error.message,
@@ -240,7 +236,9 @@ export function* uploadAssetSaga(
         ]),
       );
     }
-    yield put(Actions.addAssetToState(assetListId, asset));
+    yield put(
+      Actions.addAssetToState(assetListId, asset, { sourceAction: action }),
+    );
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -272,7 +270,7 @@ export function* uploadElementAssetSaga(
     const asset: Asset = yield call(reqWrapper, apiCreateAsset, {
       assetFormData,
     });
-    yield put(Actions.addAssetToState(listId, asset));
+    yield put(Actions.addAssetToState(listId, asset, { sourceAction: action }));
 
     yield put(
       Actions.updateElementParameters(
