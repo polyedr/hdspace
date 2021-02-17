@@ -141,15 +141,19 @@ export function* createElements(
     }
     // free canvas offset
     const elementsWithOffset = elements.map((el, i) => {
-      if (i === 0)
+      if (i === 0) {
         return {
           ...el,
           parameters: {
             ...el.parameters,
-            left: el.parameters.freeCanvas.left || offset,
-            top: el.parameters.freeCanvas.top || offset,
+            freeCanvas: {
+              ...el.parameters.freeCanvas,
+              left: el.parameters.freeCanvas.left || offset,
+              top: el.parameters.freeCanvas.top || offset,
+            },
           },
         };
+      }
 
       return el;
     });

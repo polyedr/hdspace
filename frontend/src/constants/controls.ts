@@ -1,0 +1,124 @@
+import BackgroundBlock from '@Components/RightPanel/PropertiesTab/Controls/BackgroundBlock';
+import BackgroundSize from '@Components/RightPanel/PropertiesTab/Controls/BackgroundSize';
+import BorderBlock from '@Components/RightPanel/PropertiesTab/Controls/BorderBlock';
+import Bullets from '@Components/RightPanel/PropertiesTab/Controls/Bullets';
+import ColumnsControls from '@Components/RightPanel/PropertiesTab/Controls/ColumnsControls';
+import Display from '@Components/RightPanel/PropertiesTab/Controls/Display/Display';
+import DropdownItems from '@Components/RightPanel/PropertiesTab/Controls/DropdownItems';
+import FlexGrow from '@Components/RightPanel/PropertiesTab/Controls/FlexGrow';
+import GridControl from '@Components/RightPanel/PropertiesTab/Controls/GridControl';
+import Image from '@Components/RightPanel/PropertiesTab/Controls/Image/Image';
+import HeadingType from '@Components/RightPanel/PropertiesTab/Controls/HeadingType/HeadingType';
+import IndentsBlock from '@Components/RightPanel/PropertiesTab/Controls/IndentsBlock';
+import IsOpen from '@Components/RightPanel/PropertiesTab/Controls/IsOpen/IsOpen';
+import LabelFor from '@Components/RightPanel/PropertiesTab/Controls/LabelFor/LabelFor';
+import LayoutsControl from '@Components/RightPanel/PropertiesTab/Controls/LayoutsControl';
+import ListItems from '@Components/RightPanel/PropertiesTab/Controls/ListItems';
+import MapProps from '@Components/RightPanel/PropertiesTab/Controls/MapProps/MapProps';
+import Name from '@Components/RightPanel/PropertiesTab/Controls/Name/Name';
+import NativeColumnsControls from '@Components/RightPanel/PropertiesTab/Controls/NativeColumns';
+import Ordered from '@Components/RightPanel/PropertiesTab/Controls/Ordered/Ordered';
+import Placeholder from '@Components/RightPanel/PropertiesTab/Controls/Placeholder/Placeholder';
+import Ripple from '@Components/RightPanel/PropertiesTab/Controls/Ripple/Ripple';
+import SelectOptions from '@Components/RightPanel/PropertiesTab/Controls/SelectOptions';
+import SelectValue from '@Components/RightPanel/PropertiesTab/Controls/SelectValue/SelectValue';
+import SizeBlock from '@Components/RightPanel/PropertiesTab/Controls/SizeBlock/SizeBlock';
+import StylesOn from '@Components/RightPanel/PropertiesTab/Controls/StylesOn/StylesOn';
+import TextContent from '@Components/RightPanel/PropertiesTab/Controls/TextContent/TextContent';
+import Type from '@Components/RightPanel/PropertiesTab/Controls/Type/Type';
+import TypographyBlock from '@Components/RightPanel/PropertiesTab/Controls/TypographyBlock';
+import Value from '@Components/RightPanel/PropertiesTab/Controls/Value/Value';
+import VideoSettings from '@Components/RightPanel/PropertiesTab/Controls/VideoSettings/VideoSettings';
+import withSmartContainer from '@Components/UI/RenderElements/SmartContainer/withSmartContainer';
+import { Control, NNBlockType } from '@Src/types';
+
+type ControlInfo = {
+  Control: React.ComponentType<any>;
+  styles?: Array<keyof React.CSSProperties>;
+};
+
+const CONTROLS: Record<Control, ControlInfo> = {
+  layouts: {
+    Control: LayoutsControl,
+  },
+  display: {
+    Control: Display,
+    styles: ['display', 'justifyContent', 'alignItems', 'flexDirection'],
+  },
+  indents: {
+    Control: IndentsBlock,
+    styles: [
+      'marginTop',
+      'marginBottom',
+      'marginLeft',
+      'marginRight',
+      'paddingTop',
+      'paddingBottom',
+      'paddingLeft',
+      'paddingRight',
+    ],
+  },
+  size: { Control: SizeBlock, styles: ['width', 'height'] },
+  typography: {
+    Control: TypographyBlock,
+    styles: [
+      'fontFamily',
+      'fontSize',
+      'fontWeight',
+      'fontStyle',
+      'textAlign',
+      'color',
+    ],
+  },
+  border: {
+    Control: BorderBlock,
+    styles: ['borderColor', 'borderWidth', 'borderRadius'],
+  },
+  background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
+  mapProps: { Control: MapProps },
+  placeholder: { Control: Placeholder },
+  textContent: { Control: TextContent, styles: [] },
+  image: { Control: Image, styles: [] },
+  smartHeader: { Control: withSmartContainer(NNBlockType.HEADER) },
+  smartFooter: { Control: withSmartContainer(NNBlockType.FOOTER) },
+  smartForm: { Control: withSmartContainer(NNBlockType.FORM) },
+  smartWebpage: { Control: withSmartContainer(NNBlockType.WEBPAGE) },
+  stylesOn: { Control: StylesOn },
+  type: { Control: Type },
+  value: { Control: Value },
+  name: { Control: Name },
+  showRipple: { Control: Ripple },
+  selectOptions: { Control: SelectOptions },
+  selectValue: { Control: SelectValue },
+  headingType: { Control: HeadingType },
+  listItems: { Control: ListItems },
+  bullets: { Control: Bullets, styles: ['listStyleType'] },
+  isOrdered: { Control: Ordered },
+  labelFor: { Control: LabelFor },
+  dropdownItems: { Control: DropdownItems },
+  isOpen: { Control: IsOpen },
+  videoSettings: { Control: VideoSettings },
+  flexGrow: { Control: FlexGrow, styles: ['flexGrow'] },
+  backgroundSize: { Control: BackgroundSize, styles: ['backgroundSize'] },
+  grid: {
+    Control: GridControl,
+    styles: ['gridTemplateColumns', 'gridTemplateRows'],
+  },
+  columns: {
+    Control: ColumnsControls,
+  },
+  nativeColumns: {
+    Control: NativeColumnsControls,
+    styles: [
+      'columnCount',
+      'columnGap',
+      'columnFill',
+      'columnWidth',
+      'columnRuleStyle',
+      'columnRuleWidth',
+      'columnRuleColor',
+    ],
+  },
+};
+
+export default CONTROLS;

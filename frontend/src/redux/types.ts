@@ -43,6 +43,13 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
+  masterScreen: {
+    enabled: boolean;
+    activeId: string;
+    elements: {
+      [k in string]?: any;
+    };
+  };
 };
 
 export type ProjectUiState = {
@@ -695,6 +702,20 @@ export type SetEditorDocument = IAction<
   Document
 >;
 
+export type SetActiveMasterElement = IAction<
+  typeof TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
+  string
+>;
+
+export type SetMasterScreenEnabled = IAction<
+  typeof TYPES.SET_MASTER_SCREEN_ENABLED,
+  boolean
+>;
+
+export type ToggleMasterScreen = IPlainAction<
+  typeof TYPES.TOGGLE_MASTER_SCREEN
+>;
+
 export type CreateStateGroup = IAction<
   typeof TYPES.CREATE_STATE_GROUP,
   {
@@ -816,6 +837,10 @@ export type Action =
   | RemoveSelectedElement
   | SetSelectedElements
   | UpdateMultipleElementsStyles
+  | SetActiveMasterElement
+  | SetMasterScreenEnabled
+  | ToggleMasterScreen
+  | RemoveMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup
   | MoveStateElementsInside

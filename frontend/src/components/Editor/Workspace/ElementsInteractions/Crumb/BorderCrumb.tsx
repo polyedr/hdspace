@@ -9,6 +9,11 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectShowingBorders } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
+import {
+  selectActiveMasterElementId,
+  selectMasterElementById,
+  selectMasterScreenEnabled,
+} from '@Redux/project/selectors/masterScreen';
 import { setActiveElement } from '@Redux/project/actions';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
@@ -19,11 +24,11 @@ type Props = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  crumb: ({ styles, elementId, rootID }: Props & { rootID: string }) => ({
-    top: elementId === rootID ? styles.top : styles.top + styles.height - 1,
-    left: elementId === rootID ? 'auto' : styles.left,
-    right: elementId === rootID ? styles.right : 'auto',
-    zIndex: 20,
+  crumb: ({ styles, elementId, rootId }: Props & { rootId: string }) => ({
+    top: elementId === rootId ? styles.top : styles.top + styles.height - 1,
+    left: elementId === rootId ? 'auto' : styles.left,
+    right: elementId === rootId ? styles.right : 'auto',
+    zIndex: 9999999,
     position: 'absolute',
     padding: '2px 4px',
     fontSize: '12px',
@@ -52,21 +57,31 @@ const useStyles = makeStyles((theme) => ({
 
 const BorderCrumb: React.FC<Props> = (props) => {
   const { elementId, children } = props;
-  const element = useSelector(selectElementById(elementId));
-  const rootID = useSelector(selectCurrentRootId);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const masterElement = useSelector(selectMasterElementById(elementId));
+  const stateElement = useSelector(selectElementById(elementId));
+
+  const stateRootId = useSelector(selectCurrentRootId);
   const showBorders = useSelector(selectShowingBorders);
   const activeElementId = useSelector(selectActiveElementId);
+  const activeMasterElementId = useSelector(selectActiveMasterElementId);
+
+  const rootId = masterScreenEnabled ? 'masterRoot' : stateRootId;
+  const element = masterScreenEnabled ? masterElement : stateElement;
+  const activeId = masterScreenEnabled
+    ? activeMasterElementId
+    : activeElementId;
 
   const dispatch = useDispatch();
 
   const classes = useStyles({
     ...props,
-    rootID,
+    rootId,
   });
 
   const showCrumb =
     !ELEMENTS_WITHOUT_CRUMB.includes(element.type) &&
-    (showBorders || elementId === activeElementId);
+    (showBorders || elementId === activeId);
 
   const handleSourceElementClick = useCallback(() => {
     dispatch(setActiveElement(element.parameters?.sourceElementId));

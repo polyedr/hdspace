@@ -50,6 +50,7 @@ import {
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
+import { selectMasterElementById } from '../selectors/masterScreen';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -969,6 +970,7 @@ export function* loadCustomElementsSaga(
 export function* setActiveElementSaga(
   action: ReturnType<typeof Actions.setActiveElement>,
 ) {
+  yield put(Actions.setEditableStyles('ownStyles'));
   yield put(Actions.setActiveElementId(action.payload));
   yield put(Actions.setCanCreateGroup(false));
   yield put(Actions.resetElementEditState());
@@ -1117,6 +1119,25 @@ export function* createElementsGroupSaga(
     if (error) throw new Error(error);
   } catch (e) {
     console.error(e);
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* setActiveMasterElementSaga({
+  payload,
+}: ReturnType<typeof Actions.setActiveMasterElementId>) {
+  try {
+    const { type } = yield select(selectMasterElementById(payload));
+
+    yield put(Actions.setEditableStyles(type));
+
+    console.log(type);
+  } catch (e) {
     yield put(
       enqueueSnackbar({
         message: e.message,

@@ -112,6 +112,9 @@ import {
   UpdateMultipleElementsStyles,
   RemoveMultipleElementsStyles,
   UpdateMultipleStateElements,
+  SetActiveMasterElement,
+  SetMasterScreenEnabled,
+  ToggleMasterScreen,
   MoveStateElement,
   MoveStateElementsInside,
   CreateStateGroup,
@@ -1046,6 +1049,24 @@ export const setSelectedElements = (ids: string[]): SetSelectedElements => ({
 export const toggleSelectedElement = (id: string) => ({
   type: TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
   payload: { id },
+});
+
+export const setActiveMasterElementId = (
+  id: string,
+): SetActiveMasterElement => ({
+  type: TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
+  payload: id,
+});
+
+export const setMasterScreenEnabled = (
+  enabled: boolean,
+): SetMasterScreenEnabled => ({
+  type: TYPES.SET_MASTER_SCREEN_ENABLED,
+  payload: enabled,
+});
+
+export const toggleMasterScreen = (): ToggleMasterScreen => ({
+  type: TYPES.TOGGLE_MASTER_SCREEN,
 });
 
 export const setCanCreateGroup = (canCreateGroup: boolean) => ({

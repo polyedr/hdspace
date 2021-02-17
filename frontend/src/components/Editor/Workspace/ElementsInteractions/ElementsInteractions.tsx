@@ -12,6 +12,10 @@ import {
   selectCurrentDropTargetId,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
+import {
+  selectActiveMasterElementId,
+  selectMasterScreenEnabled,
+} from '@Redux/project/selectors/masterScreen';
 import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
 
@@ -30,28 +34,34 @@ type Props = {
 };
 
 const ElementsInteractions: React.FC<Props> = (props) => {
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const activeMasterElementId = useSelector(selectActiveMasterElementId);
+
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetId = useSelector(selectCurrentDropTargetId);
   const selectedElements = useSelector(selectSelectedElementsIds);
   const rootId = useSelector(selectCurrentRootId);
 
-  const rootDom = DOMHandler.INSTANCE.getDomById(rootId);
-  const activeElementDom = DOMHandler.INSTANCE.getDomById(activeElementId);
+  const activeId = masterScreenEnabled
+    ? activeMasterElementId
+    : activeElementId;
+
+  const currentRootId = masterScreenEnabled ? 'masterRoot' : rootId;
+
+  const rootDom = DOMHandler.INSTANCE.getDomById(currentRootId);
+  const activeElementDom = DOMHandler.INSTANCE.getDomById(activeId);
   const hoveredElementDom = DOMHandler.INSTANCE.getDomById(hoveredElementId);
   const dropTargetDom = DOMHandler.INSTANCE.getDomById(dropTargetId);
 
   const showBorders = useSelector(selectShowingBorders);
   const bordersEnabled = useSelector(selectBordersEnabled);
 
-  const idsToExclude = [activeElementId];
-  if (!!hoveredElementId && hoveredElementId !== activeElementId) {
+  const idsToExclude = [activeId];
+  if (!!hoveredElementId && hoveredElementId !== activeId) {
     idsToExclude.push(hoveredElementId);
   }
-  if (
-    !!dropTargetId &&
-    ![activeElementId, hoveredElementId].includes(dropTargetId)
-  ) {
+  if (!!dropTargetId && ![activeId, hoveredElementId].includes(dropTargetId)) {
     idsToExclude.push(dropTargetId);
   }
 
@@ -63,15 +73,15 @@ const ElementsInteractions: React.FC<Props> = (props) => {
 
   return (
     <div className={classes.container}>
-      {activeElementId && activeElementDom && (
+      {activeId && activeElementDom && (
         <InteractionsHandler
-          key={`border-handler-${activeElementId}`}
-          elementId={activeElementId}
+          key={`border-handler-${activeId}`}
+          elementId={activeId}
           elementDom={activeElementDom}
           rootDom={rootDom}
         />
       )}
-      {hoveredElementDom && hoveredElementId !== activeElementId && (
+      {hoveredElementDom && hoveredElementId !== activeId && (
         <InteractionsHandler
           key={`border-handler-${hoveredElementId}`}
           elementId={hoveredElementId}
@@ -81,7 +91,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
       )}
       {dropTargetDom &&
         dropTargetId &&
-        ![hoveredElementId, activeElementId].includes(dropTargetId) && (
+        ![hoveredElementId, activeId].includes(dropTargetId) && (
           <InteractionsHandler
             key={`border-handler-${dropTargetId}`}
             elementId={dropTargetId}

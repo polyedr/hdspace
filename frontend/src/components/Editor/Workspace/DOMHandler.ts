@@ -10,6 +10,8 @@ export class DOMHandler {
   }
 
   public addElementDom(id: string, element: HTMLElement) {
+    if (!element) return;
+
     if (!this._elementsDom[id]) {
       this._elementsDom[id] = element;
     }

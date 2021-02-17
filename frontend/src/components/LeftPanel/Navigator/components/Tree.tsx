@@ -14,7 +14,8 @@ import {
   moveElement,
   pasteCopiedElement,
   redoAction,
-  setActiveElement,
+  setActiveElementId,
+  setActiveMasterElementId,
   undoAction,
 } from '@Redux/project/actions';
 import {
@@ -32,6 +33,10 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveElementId } from '@Redux/project/selectors/element';
 import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
+import {
+  selectActiveMasterElementId,
+  selectMasterScreenEnabled,
+} from '@Redux/project/selectors/masterScreen';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -67,7 +72,13 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
   const activeElementId = useSelector(selectActiveElementId);
+  const activeMasterElementId = useSelector(selectActiveMasterElementId);
+
+  const activeId = masterScreenEnabled
+    ? activeMasterElementId
+    : activeElementId;
 
   const initialState: State = {
     mouseX: null,
@@ -99,8 +110,8 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     return expandItemParents(newTree, parentId);
   };
 
-  const expandedTree = useMemo(() => expandItemParents(tree, activeElementId), [
-    activeElementId,
+  const expandedTree = useMemo(() => expandItemParents(tree, activeId), [
+    activeId,
     tree,
   ]);
 
@@ -116,7 +127,11 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const select = (itemId) => {
     if (selectedItemId === itemId) return;
 
-    dispatch(setActiveElement(itemId));
+    dispatch(
+      masterScreenEnabled
+        ? setActiveMasterElementId(itemId)
+        : setActiveElementId(itemId),
+    );
     setSelectedItem(itemId);
   };
 
@@ -267,7 +282,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         rulerHeight={getRulerHeight(props.item, expandedTree, height)}
         height={height}
         onContextMenu={handleMenuOpen}
-        isActive={activeElementId === props.item.id}
+        isActive={activeId === props.item.id}
       />
     );
   };

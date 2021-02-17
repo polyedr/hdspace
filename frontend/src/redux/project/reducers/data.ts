@@ -278,6 +278,16 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.SET_ACTIVE_MASTER_ELEMENT_ID: {
+        draft.masterScreen.activeId = action.payload;
+        break;
+      }
+
+      case TYPES.SET_MASTER_SCREEN_ENABLED: {
+        draft.masterScreen.enabled = action.payload;
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         draft.screens = {};
         draft.elements = {};
