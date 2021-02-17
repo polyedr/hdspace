@@ -1,19 +1,25 @@
-// @ts-nocheck
-
 import React from 'react';
-import { SharedRendererProps } from '../types';
+import { ElementsGroupRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 
-const ElementsGroup: React.FC<SharedRendererProps> = React.forwardRef(
-  (props, ref) => {
-    const { id, children } = props;
-    const eventHandlers = useEventHandlers(props);
-    return (
-      <div id={id} data-ls-id={id} key={id} ref={ref} {...eventHandlers}>
-        {children}
-      </div>
-    );
-  },
-);
+const ElementsGroup = React.forwardRef<
+  HTMLDivElement,
+  ElementsGroupRendererProps
+>((props, ref) => {
+  const { id, children } = props;
+  const eventHandlers = useEventHandlers(props);
+
+  return (
+    <div
+      id={id}
+      data-ls-id={id}
+      key={id}
+      ref={ref as React.RefObject<HTMLDivElement>}
+      {...eventHandlers}
+    >
+      {children}
+    </div>
+  );
+});
 
 export default ElementsGroup;
