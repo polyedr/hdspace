@@ -13,9 +13,10 @@ import {
   selectMasterElementById,
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/masterScreen';
-import SaveElementAction from './Actions/SaveElementAction';
+import SaveElementAction from './Actions/SaveElement/SaveElementAction';
 import Borders from './Borders/Borders';
 import BorderCrumb from './Crumb/BorderCrumb';
+import CreateGroupAction from './Actions/CreateGroup/CreateGroupAction';
 
 type Props = {
   elementId: string;
@@ -90,6 +91,7 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
       {!elementBeingEdited && (
         <BorderCrumb elementId={elementId} styles={styles}>
           <SaveElementAction elementId={elementId} />
+          <CreateGroupAction elementId={elementId} />
         </BorderCrumb>
       )}
     </React.Fragment>

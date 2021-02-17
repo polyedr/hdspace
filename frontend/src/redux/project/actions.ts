@@ -3,7 +3,7 @@ import { DropPosition } from '@Constants/dragAndDrop';
 import {
   ChildEntity,
   ChildrenElements,
-  CreatedElement,
+  CreateElementsData,
   Entity,
   Indices,
   LibraryElement,
@@ -89,6 +89,7 @@ import {
   UpdateElementParameters,
   UpdateElementsTree,
   UpdateElementStyles,
+  UpdateMultipleElementsParameters,
   UpdateProject,
   UpdateSavedElementsValues,
   UpdateSavedElementValues,
@@ -114,6 +115,9 @@ import {
   SetActiveMasterElement,
   SetMasterScreenEnabled,
   ToggleMasterScreen,
+  MoveStateElement,
+  MoveStateElementsInside,
+  CreateStateGroup,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -317,11 +321,24 @@ export const moveStateElement = (
   indices: Indices,
   parents: ParentIds,
   meta: ElementHistoryMeta,
-) => ({
+): MoveStateElement => ({
   type: TYPES.MOVE_STATE_ELEMENT,
   payload: {
     elementId,
     indices,
+    parents,
+  },
+  meta,
+});
+
+export const moveStateElementsInside = (
+  ids: string[],
+  parents: ParentIds,
+  meta: ElementHistoryMeta,
+): MoveStateElementsInside => ({
+  type: TYPES.MOVE_STATE_ELEMENTS_INSIDE,
+  payload: {
+    ids,
     parents,
   },
   meta,
@@ -366,6 +383,23 @@ export const insertStateElement = (
     parentId,
     element,
     childId,
+  },
+  meta,
+});
+
+export const createStateGroup = (
+  groupEl: LibraryElement<any>,
+  parentId: string,
+  buoyancy: number,
+  childIds: string[],
+  meta: ElementHistoryMeta,
+): CreateStateGroup => ({
+  type: TYPES.CREATE_STATE_GROUP,
+  payload: {
+    groupEl,
+    parentId,
+    buoyancy,
+    childIds,
   },
   meta,
 });
@@ -580,6 +614,24 @@ export const updateElementParameters = <
   meta,
 });
 
+export const updateMultipleElementsParameters = <
+  T extends Entity,
+  K extends LibraryElement<T>['parameters']
+>(
+  ids: string[],
+  parameters: {
+    [id: string]: K;
+  },
+  meta: ElementHistoryMeta,
+): UpdateMultipleElementsParameters => ({
+  type: TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+  payload: {
+    ids,
+    parameters,
+  },
+  meta,
+});
+
 export const updateSavedElementsValues = (
   elementsValues: SavedElementsValues,
 ): UpdateSavedElementsValues => ({
@@ -605,10 +657,8 @@ export const deleteElement = (
 });
 
 export const createElements = (
-  createdElements: CreatedElement[],
+  { createdElements, parentId, index }: CreateElementsData,
   meta: ElementHistoryMeta,
-  parentId: string,
-  index?: number,
 ): CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
   payload: { createdElements, parentId, index },
@@ -1017,4 +1067,19 @@ export const setMasterScreenEnabled = (
 
 export const toggleMasterScreen = (): ToggleMasterScreen => ({
   type: TYPES.TOGGLE_MASTER_SCREEN,
+});
+
+export const setCanCreateGroup = (canCreateGroup: boolean) => ({
+  type: TYPES.SET_CAN_CREATE_GROUP,
+  payload: canCreateGroup,
+});
+
+export const createElementsGroup = (
+  name: string,
+  ids: string[],
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.CREATE_ELEMENTS_GROUP_SAGA,
+  payload: { name, ids },
+  meta,
 });

@@ -42,6 +42,7 @@ export const ENTITIES: {
   cardsSection: 'cardsSection',
   featureSection: 'featureSection',
   section: 'section',
+  group: 'group',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -343,6 +344,8 @@ export const featureSectionStyleControls = [
   'display',
 ] as const;
 
+export const elementsGroupStyleControls = ['indents', 'background'] as const;
+
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: AvailableControls = {
   root: rootStyleControls,
@@ -439,6 +442,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   cardsSection: [...cardsSectionStyleControls, 'layouts'],
   featureSection: [...featureSectionStyleControls, 'layouts'],
   section: [...containerStyleControls, 'layouts'],
+  group: elementsGroupStyleControls,
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
@@ -471,6 +475,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   paragraph: {},
   ocrtext: {},
   textBlock: {},
+  group: {},
   list: {
     listItem: {
       min: 1,

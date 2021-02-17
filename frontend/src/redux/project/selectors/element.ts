@@ -7,7 +7,9 @@ import {
 import {
   arrayToMap,
   buildElementsTree,
+  buildGroupElementsTree,
   flattenElements,
+  getAllElementChildrenIds,
 } from '@Utils/normalizedStateHelpers';
 import {
   ChildEntity,
@@ -359,3 +361,55 @@ export const selectSharedStyles = (type: Entity) =>
         (projectClass) => projectClass.className === type,
       )?.rules,
   );
+
+export const selectCanCreateGroup = (state: AppReduxState) =>
+  selectProjectState(state).ui.canCreateGroup;
+
+export const selectElementGroupIds = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  return Object.keys(elements).filter(
+    (elementId) => elements[elementId].parameters?.isGroup === true,
+  );
+};
+
+export const selectElementGroups = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  return Object.values(elements).filter(
+    (element: StateElement) => element.parameters?.isGroup === true,
+  );
+};
+
+export const selectElementTreeGroups = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  const groupIds = selectElementGroupIds(state);
+  return groupIds.map((groupId) =>
+    buildGroupElementsTree(elements, groupId, ['group', 'groupElements']),
+  );
+};
+
+export const selectTreeChildElementsIds = (elementId: string) => ({
+  project,
+}: AppReduxState) => {
+  const parent = project.data.elements[elementId];
+  return parent.children.reduce((allChildren: string[], childId) => {
+    return [
+      ...allChildren,
+      ...getAllElementChildrenIds(project.data.elements, childId),
+    ];
+  }, []);
+};
+
+export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({
+  project,
+}: AppReduxState) => {
+  const parentElements = ids.map((id: string) => project.data.elements[id]);
+  return parentElements.reduce(
+    (allChildIds: string[], parentElement: StateElement) => {
+      return [
+        ...allChildIds,
+        ...getAllElementChildrenIds(project.data.elements, parentElement.id),
+      ];
+    },
+    [] as string[],
+  );
+};

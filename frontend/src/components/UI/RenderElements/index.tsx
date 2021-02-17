@@ -34,6 +34,7 @@ import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
 import SelectItem from './Select/SelectItem';
 import GridItem from './Grid/GridItem';
+import ElementsGroup from './ElementsGroup/ElementsGroup';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {
@@ -80,4 +81,5 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   cardsSection: Container,
   featureSection: Container,
   section: Section,
+  group: ElementsGroup,
 };

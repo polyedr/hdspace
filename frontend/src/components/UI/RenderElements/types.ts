@@ -26,6 +26,8 @@ export type GridRendererProps = SharedRendererProps;
 
 export type GridItemRendererProps = SharedRendererProps;
 
+export type ElementsGroupRendererProps = SharedRendererProps;
+
 export type ContainerRendererProps = SharedRendererProps & {
   isBorderVisible: boolean;
 };

@@ -38,6 +38,7 @@ import {
   undefinedControls,
   videoStyleControls,
   columnsStyleControls,
+  elementsGroupStyleControls,
 } from '../core';
 
 const columnsMinHeight = '100px';
@@ -344,6 +345,7 @@ type ColumnsControls = typeof columnsStyleControls[number];
 type ColumnControls = typeof columnStyleControls[number];
 type GridItemControls = typeof gridItemStyleControls[number];
 type GridControls = typeof gridStyleControls[number];
+type ElementsGroupControls = typeof elementsGroupStyleControls[number];
 
 export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
   other?: React.CSSProperties;
@@ -386,6 +388,18 @@ export const defaultContainerStyles: {
   },
   flexGrow: {
     ...DEFAULT_FLEX_GROW,
+  },
+};
+
+export const defaultElementsGroupStyles: {
+  [K in ElementsGroupControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  indents: {
+    ...DEFAULT_INDENTS,
+    padding: '3px',
   },
 };
 
@@ -1130,4 +1144,5 @@ export const DEFAULT_ELEMENTS_STYLES: {
   cardsSection: defaultCardsSectionStyles,
   featureSection: defaultFeatureSectionStyles,
   section: defaultSectionStyles,
+  group: defaultElementsGroupStyles,
 };

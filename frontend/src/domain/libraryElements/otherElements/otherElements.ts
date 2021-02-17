@@ -8,6 +8,7 @@ import {
   DropdownMenuServerElement,
   DropdownServerElement,
   ElementGroup,
+  ElementsGroupServerElement,
   Entity,
   GridItemServerElement,
   GridServerElement,
@@ -40,6 +41,24 @@ export const root: RootServerElement = {
     ownStyles: {},
   },
   name: 'root',
+  children: [],
+};
+
+export const elementsGroup: ElementsGroupServerElement = {
+  buoyancy: 0,
+  func_type: 'group',
+  struct_type: 'group',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.NONE,
+    groupElements: [],
+  },
+  styles: {
+    classNames: ['group'],
+    ownStyles: {},
+  },
+  name: 'Group',
   children: [],
 };
 

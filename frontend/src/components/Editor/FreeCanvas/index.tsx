@@ -92,20 +92,22 @@ const FreeCanvas = () => {
 
       dispatch(
         createElements(
-          [
-            {
-              id,
-              type,
-              name,
-              custom,
-              parameters: {
-                top: offset.y - rect.y,
-                left: offset.x - rect.x,
+          {
+            createdElements: [
+              {
+                id,
+                type,
+                name,
+                custom,
+                parameters: {
+                  top: offset.y - rect.y,
+                  left: offset.x - rect.x,
+                },
               },
-            },
-          ],
+            ],
+            parentId: root.id,
+          },
           { screenId: currentScreenId },
-          root.id,
         ),
       );
     },

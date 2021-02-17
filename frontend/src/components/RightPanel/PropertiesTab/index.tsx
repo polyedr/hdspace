@@ -53,6 +53,9 @@ const PropertiesTab: React.FC = () => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
 
+  const isGroupElement = !!activeElement.parameters.sourceElementId;
+  const isGroupSource = !!activeElement.parameters.groupElements;
+
   const elementsControlsCollection = Object.keys(selectedElements).map(
     (elementId) => {
       return AVAILABLE_CONTROLS[selectedElements[elementId].type];
@@ -63,13 +66,22 @@ const PropertiesTab: React.FC = () => {
     if (!elementsControlsCollection.length) {
       return [];
     }
-    return elementsControlsCollection.reduce((controls, controlsList) => {
-      return controls.filter(
-        (control) =>
-          controlsList.includes(control) && !UNIQUE_CONTROLS.includes(control),
+    const elementsControls = elementsControlsCollection.reduce(
+      (controls, controlsList) => {
+        return controls.filter((control) => {
+          return (
+            controlsList.includes(control) && !UNIQUE_CONTROLS.includes(control)
+          );
+        });
+      },
+    );
+    if (isGroupElement && selectedElementsIds.length === 1) {
+      return elementsControls.filter((control) =>
+        UNIQUE_CONTROLS.includes(control),
       );
-    });
-  }, [elementsControlsCollection]);
+    }
+    return elementsControls;
+  }, [elementsControlsCollection, isGroupElement, selectedElementsIds.length]);
 
   const { type } = activeElement;
 
@@ -89,11 +101,24 @@ const PropertiesTab: React.FC = () => {
           }),
         );
       } else if (editableStyles === 'ownStyles') {
-        dispatch(
-          removeElementStyles(activeElement.id, ruleNames, {
-            screenId: currentScreenId,
-          }),
-        );
+        if (isGroupSource) {
+          const groupElementsIds = activeElement.parameters.groupElements;
+          dispatch(
+            removeMultipleElementsStyles(
+              [activeElement.id, ...groupElementsIds],
+              ruleNames,
+              {
+                screenId: currentScreenId,
+              },
+            ),
+          );
+        } else {
+          dispatch(
+            removeElementStyles(activeElement.id, ruleNames, {
+              screenId: currentScreenId,
+            }),
+          );
+        }
       } else {
         dispatch(
           removeSharedStyles(editableStyles as Entity, ruleNames, {
@@ -107,6 +132,8 @@ const PropertiesTab: React.FC = () => {
       editableStyles,
       dispatch,
       currentScreenId,
+      isGroupSource,
+      activeElement.parameters.groupElements,
       activeElement.id,
     ],
   );
@@ -129,6 +156,18 @@ const PropertiesTab: React.FC = () => {
           ),
         );
       } else if (editableStyles === 'ownStyles') {
+        if (isGroupSource) {
+          const groupElementsIds = activeElement.parameters.groupElements;
+          dispatch(
+            updateMultipleElementsStyles(
+              [activeElement.id, ...groupElementsIds],
+              {
+                [ALL_ELEMENTS_INDEX]: styles,
+              },
+              { screenId: currentScreenId },
+            ),
+          );
+        }
         dispatch(
           updateElementStyles(activeElement.id, styles, {
             screenId: currentScreenId,
@@ -142,7 +181,15 @@ const PropertiesTab: React.FC = () => {
         );
       }
     },
-    [editableStyles, selectedElementsIds, dispatch, currentScreenId],
+    [
+      selectedElementsIds,
+      editableStyles,
+      dispatch,
+      currentScreenId,
+      isGroupSource,
+      activeElement.id,
+      activeElement.parameters,
+    ],
   );
 
   const updateParams = useCallback(
@@ -188,9 +235,11 @@ const PropertiesTab: React.FC = () => {
 
             {type !== 'root' && elementsControlsCollection.length === 1 && (
               <>
-                <ControlSection title="Share styles">
-                  <ShareStyles />
-                </ControlSection>
+                {!isGroupElement && (
+                  <ControlSection title="Share styles">
+                    <ShareStyles />
+                  </ControlSection>
+                )}
 
                 <ControlSection title="Element name">
                   <RenameElement />

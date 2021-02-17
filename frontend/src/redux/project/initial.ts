@@ -51,6 +51,7 @@ export const initialUi: ProjectUiState = {
   elementBeingEdited: false,
   bordersEnabled: true,
   currentDropTargetParams: null,
+  canCreateGroup: false,
   layout: {
     value: Layout.Desktop,
     rotated: false,
