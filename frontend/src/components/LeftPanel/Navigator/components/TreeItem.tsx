@@ -103,14 +103,6 @@ const ExpandIndicator: React.FC<ExpandIndicatorProps> = ({
       <button
         tabIndex={-1}
         onClick={isExpanded ? onCollapse : onExpand}
-        // onClick={(ev) => {
-        //   prevent(ev);
-        //   if (isExpanded) {
-        //     onCollapse();
-        //   } else {
-        //     onExpand();
-        //   }
-        // }}
         className={iconButton}
         type="button"
       >
