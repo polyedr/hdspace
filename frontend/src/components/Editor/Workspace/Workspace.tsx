@@ -108,7 +108,9 @@ const Workspace: React.FC = () => {
                     {masterScreenEnabled ? (
                       <>
                         <MasterScreen />
-                        <ElementsInteractions posRight={scrollLeft} />
+                        {!freeCanvasMode && !isPrototypeMode && (
+                          <ElementsInteractions posRight={scrollLeft} />
+                        )}
                       </>
                     ) : (
                       <>

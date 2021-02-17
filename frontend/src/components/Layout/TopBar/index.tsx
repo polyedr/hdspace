@@ -22,6 +22,7 @@ import {
 } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/masterScreen';
 import Layouts from './Layouts';
 import Actions from './actions';
 
@@ -59,6 +60,7 @@ const TopBar: React.FC = () => {
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const showBorders = useSelector(selectShowingBorders);
   const bordersEnabled = useSelector(selectBordersEnabled);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const createFlex = () => {
     dispatch(convertFreeCanvas());
@@ -92,6 +94,7 @@ const TopBar: React.FC = () => {
           label={<Typography className={classes.title}>Proto Mode</Typography>}
           labelPlacement="end"
           className={classes.switch}
+          disabled={masterScreenEnabled}
         />
 
         <FormControlLabel
@@ -103,6 +106,7 @@ const TopBar: React.FC = () => {
           }
           labelPlacement="end"
           className={classes.switch}
+          disabled={masterScreenEnabled}
         />
 
         {freeCanvasMode ? (

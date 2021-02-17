@@ -32,6 +32,7 @@ import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
 import { extractStyles } from '@Utils/stringHelper';
 import IMAGES from '@Constants/images';
+import { changePrototypeMode } from '@Redux/user/actions';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -797,6 +798,9 @@ export function* toggleMasterScreenSaga() {
     const enabled: boolean = yield select(selectMasterScreenEnabled);
     const activeMasterElement = yield select(selectActiveMasterElement);
     const activeElement: StateElement = yield select(selectActiveElement);
+
+    yield put(Actions.changeFreeCanvasMode(false));
+    yield put(changePrototypeMode(false));
 
     yield put(
       Actions.setEditableStyles(
