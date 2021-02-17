@@ -1,4 +1,5 @@
 import { ProjectsSearchParameter, Layout } from '@Src/types';
+import MASTER_ELEMENTS_LIST from '@Components/Editor/MasterScreen/masterElementsList';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -18,6 +19,11 @@ export const initialData: ProjectDataState = {
   },
   screens: {},
   elements: {},
+  masterScreen: {
+    enabled: false,
+    activeId: 'masterRoot',
+    elements: MASTER_ELEMENTS_LIST,
+  },
   customElementsData: {
     previous: null,
     next: null,
@@ -45,6 +51,7 @@ export const initialUi: ProjectUiState = {
   elementBeingEdited: false,
   bordersEnabled: true,
   currentDropTargetParams: null,
+  canCreateGroup: false,
   layout: {
     value: Layout.Desktop,
     rotated: false,

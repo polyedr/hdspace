@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
@@ -9,6 +9,12 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectShowingBorders } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
+import {
+  selectActiveMasterElementId,
+  selectMasterElementById,
+  selectMasterScreenEnabled,
+} from '@Redux/project/selectors/masterScreen';
+import { setActiveElement } from '@Redux/project/actions';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
 type Props = {
@@ -18,10 +24,10 @@ type Props = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  crumb: ({ styles, elementId, rootID }: Props & { rootID: string }) => ({
-    top: elementId === rootID ? styles.top : styles.top + styles.height - 1,
-    left: elementId === rootID ? 'auto' : styles.left,
-    right: elementId === rootID ? styles.right : 'auto',
+  crumb: ({ styles, elementId, rootId }: Props & { rootId: string }) => ({
+    top: elementId === rootId ? styles.top : styles.top + styles.height - 1,
+    left: elementId === rootId ? 'auto' : styles.left,
+    right: elementId === rootId ? styles.right : 'auto',
     zIndex: 9999999,
     position: 'absolute',
     padding: '2px 4px',
@@ -37,23 +43,49 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     padding: '0 3px',
   },
+  sourceLabel: {
+    padding: '0 3px',
+    cursor: 'pointer',
+    '&:before': {
+      content: '|',
+    },
+  },
+  separator: {
+    margin: '0 3px',
+  },
 }));
 
 const BorderCrumb: React.FC<Props> = (props) => {
   const { elementId, children } = props;
-  const element = useSelector(selectElementById(elementId));
-  const rootID = useSelector(selectCurrentRootId);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const masterElement = useSelector(selectMasterElementById(elementId));
+  const stateElement = useSelector(selectElementById(elementId));
+
+  const stateRootId = useSelector(selectCurrentRootId);
   const showBorders = useSelector(selectShowingBorders);
   const activeElementId = useSelector(selectActiveElementId);
+  const activeMasterElementId = useSelector(selectActiveMasterElementId);
+
+  const rootId = masterScreenEnabled ? 'masterRoot' : stateRootId;
+  const element = masterScreenEnabled ? masterElement : stateElement;
+  const activeId = masterScreenEnabled
+    ? activeMasterElementId
+    : activeElementId;
+
+  const dispatch = useDispatch();
 
   const classes = useStyles({
     ...props,
-    rootID,
+    rootId,
   });
 
   const showCrumb =
     !ELEMENTS_WITHOUT_CRUMB.includes(element.type) &&
-    (showBorders || elementId === activeElementId);
+    (showBorders || elementId === activeId);
+
+  const handleSourceElementClick = useCallback(() => {
+    dispatch(setActiveElement(element.parameters?.sourceElementId));
+  }, [dispatch, element.parameters?.sourceElementId]);
 
   return element && showCrumb ? (
     <div className={cn(classes.crumb)}>
@@ -64,6 +96,17 @@ const BorderCrumb: React.FC<Props> = (props) => {
       >
         {element.name}
       </span>
+      {element.parameters.sourceElementId && (
+        <>
+          <span className={classes.separator}>|</span>
+          <span
+            className={classes.sourceLabel}
+            onClick={() => handleSourceElementClick()}
+          >
+            source
+          </span>
+        </>
+      )}
       {children}
     </div>
   ) : null;

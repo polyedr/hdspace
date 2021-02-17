@@ -4,6 +4,7 @@ import {
   arrayToMap,
   extractMapElement,
   flattenElements,
+  insertElementsGroup,
   insertMapElement,
   moveMapElement,
   removeMapElement,
@@ -35,6 +36,25 @@ const dataReducer = produce(
           indices,
           parents,
         );
+        break;
+      }
+
+      case TYPES.MOVE_STATE_ELEMENTS_INSIDE: {
+        const { ids, parents } = action.payload;
+        const { oldParentId, newParentId } = parents;
+        draft.elements[oldParentId].children = draft.elements[
+          oldParentId
+        ].children.filter((childId) => !ids.includes(childId));
+        draft.elements[oldParentId].children.forEach((childId, index) => {
+          draft.elements[childId].buoyancy = index;
+        });
+        draft.elements[newParentId].children = [
+          ...draft.elements[newParentId].children,
+          ...ids,
+        ];
+        draft.elements[newParentId].children.forEach((childId, index) => {
+          draft.elements[childId].buoyancy = index;
+        });
         break;
       }
 
@@ -71,6 +91,18 @@ const dataReducer = produce(
           element,
           parentId,
           childId,
+        );
+        break;
+      }
+
+      case TYPES.CREATE_STATE_GROUP: {
+        const { groupEl, parentId, childIds, buoyancy } = action.payload;
+        draft.elements = insertElementsGroup(
+          draft.elements,
+          groupEl,
+          parentId,
+          buoyancy,
+          childIds,
         );
         break;
       }
@@ -254,7 +286,16 @@ const dataReducer = produce(
         draft.assetResults[listId].results = draft.assetResults[
           listId
         ].results.filter((asset) => asset.id !== id);
+        break;
+      }
 
+      case TYPES.SET_ACTIVE_MASTER_ELEMENT_ID: {
+        draft.masterScreen.activeId = action.payload;
+        break;
+      }
+
+      case TYPES.SET_MASTER_SCREEN_ENABLED: {
+        draft.masterScreen.enabled = action.payload;
         break;
       }
 

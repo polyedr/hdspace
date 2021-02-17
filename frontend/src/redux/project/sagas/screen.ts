@@ -32,6 +32,7 @@ import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
 import { extractStyles } from '@Utils/stringHelper';
 import IMAGES from '@Constants/images';
+import { changePrototypeMode } from '@Redux/user/actions';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -66,6 +67,7 @@ import {
   selectScreens,
 } from '../selectors/screen';
 import {
+  selectActiveElement,
   selectAllElements,
   selectCurrentRootId,
   selectElementById,
@@ -73,6 +75,10 @@ import {
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
+import {
+  selectActiveMasterElement,
+  selectMasterScreenEnabled,
+} from '../selectors/masterScreen';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -777,6 +783,32 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
       if (error) throw new Error(error);
     }
     if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* toggleMasterScreenSaga() {
+  try {
+    const enabled: boolean = yield select(selectMasterScreenEnabled);
+    const activeMasterElement = yield select(selectActiveMasterElement);
+    const activeElement: StateElement = yield select(selectActiveElement);
+
+    yield put(Actions.changeFreeCanvasMode(false));
+    yield put(changePrototypeMode(false));
+
+    yield put(
+      Actions.setEditableStyles(
+        enabled ? activeElement.styles.classNames[0] : activeMasterElement.type,
+      ),
+    );
+
+    yield put(Actions.setMasterScreenEnabled(!enabled));
   } catch (e) {
     yield put(
       enqueueSnackbar({

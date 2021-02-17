@@ -52,6 +52,48 @@ export const buildElementsTree = (
   };
 };
 
+export const buildGroupElementsTree = (
+  elements: Normalized<StateElement>,
+  rootElementId: string,
+  paramsToOmit: string[] = [],
+): LibraryElement<any> => {
+  const rootElement = elements[rootElementId];
+  const rootElementParams = rootElement
+    ? {
+        ...(rootElement.parameters
+          ? Object.keys(rootElement.parameters)
+              .filter((paramName) => !paramsToOmit.includes(paramName))
+              .reduce((params, paramName) => {
+                return {
+                  ...params,
+                  [paramName]: rootElement.parameters[paramName],
+                };
+              }, {})
+          : {}),
+        sourceElementId: rootElement.id,
+      }
+    : {};
+  return {
+    ...rootElement,
+    parameters: rootElementParams,
+    children: rootElement.children.map((childId) =>
+      buildGroupElementsTree(elements, childId, paramsToOmit),
+    ),
+  };
+};
+
+export const getAllElementChildrenIds = (
+  elements: Normalized<StateElement>,
+  id: string,
+) => {
+  const element = elements[id];
+  const childIds = [id];
+  element.children.forEach((childId) => {
+    childIds.push(...getAllElementChildrenIds(elements, childId));
+  });
+  return childIds;
+};
+
 export const removeMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
@@ -66,6 +108,25 @@ export const removeMapElement = (
         draft[id].buoyancy = i;
       });
     }
+  });
+
+export const removeMapElements = (
+  state: Normalized<StateElement>,
+  ids: string[],
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
+    ids.forEach((id) => {
+      const target = draft[id];
+      if (target.parent) {
+        const parent = draft[target.parent];
+        parent.children = parent.children.filter(
+          (childId) => !ids.includes(childId),
+        );
+        parent.children.forEach((childId, index) => {
+          draft[childId].buoyancy = index;
+        });
+      }
+    });
   });
 
 export const addMapElements = (
@@ -153,6 +214,38 @@ export const insertMapElement = (
   child.parent = el.id;
   child.buoyancy = 0;
 
+  return newState;
+};
+
+export const insertElementsGroup = (
+  state: Normalized<StateElement>,
+  groupEl: LibraryElement<Entity>,
+  parentId: string,
+  buoyancy: number,
+  childIds: string[],
+): Normalized<StateElement> => {
+  const newState = {
+    ...state,
+    ...flattenElements([groupEl], parentId),
+  };
+  const parent = newState[parentId];
+  parent.children.splice(buoyancy, 0, groupEl.id);
+  parent.children = parent.children
+    .sort((firstChildId, secondChildId) =>
+      newState[firstChildId].buoyancy > newState[secondChildId].buoyancy
+        ? 1
+        : -1,
+    )
+    .filter((childId) => !childIds.includes(childId));
+  parent.children.forEach((childId, index) => {
+    newState[childId].parent = groupEl.id;
+    newState[childId].buoyancy = index;
+  });
+  newState[groupEl.id].children = childIds;
+  newState[groupEl.id].parent = parentId;
+  childIds.forEach((childId, index) => {
+    newState[childId].buoyancy = index;
+  });
   return newState;
 };
 

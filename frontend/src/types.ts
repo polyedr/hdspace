@@ -230,6 +230,12 @@ export type DropdownItemServerElement = ServerElement<
 >;
 export type UndefinedServerElement = ServerElement<'undefined', []>;
 
+export type ElementsGroupServerElement = ServerElement<
+  'group',
+  [],
+  ElementsGroupParameters
+>;
+
 export type ServerRecursiveElement = {
   id: number;
   name: string;
@@ -585,6 +591,10 @@ export type DropdownItemParameters = BaseElementParams & {
   textContent: string;
 };
 
+export type ElementsGroupParameters = BaseElementParams & {
+  groupElements: string[];
+};
+
 export type CreatedServerProject = {
   name: string;
   status: string;
@@ -674,6 +684,10 @@ export type Indices = {
   oldIndex: number;
 };
 
+export type ElementsIndices = {
+  [id: string]: number;
+};
+
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };
@@ -684,6 +698,12 @@ export type CreatedElement = {
   name: string;
   custom: boolean;
   parameters?: any;
+};
+
+export type CreateElementsData = {
+  createdElements: CreatedElement[];
+  parentId: string;
+  index?: number;
 };
 
 export type ItemToCopyInfo = {
@@ -1015,6 +1035,7 @@ export type ElementsToAdd = {
   cardsSection: CardsSectionServerElement;
   featureSection: FeatureSectionServerElement;
   section: SectionServerElement;
+  group: ElementsGroupServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;

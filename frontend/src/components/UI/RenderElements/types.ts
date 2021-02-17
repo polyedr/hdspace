@@ -26,6 +26,8 @@ export type GridRendererProps = SharedRendererProps;
 
 export type GridItemRendererProps = SharedRendererProps;
 
+export type ElementsGroupRendererProps = SharedRendererProps;
+
 export type ContainerRendererProps = SharedRendererProps & {
   isBorderVisible: boolean;
 };
@@ -121,6 +123,13 @@ export type DropdownItemRendererProps = SharedRendererProps & {
 
 export type HyperLinkRendererProps = SharedRendererProps & {
   params: HyperLinkParameters;
+};
+
+export type ButtonRendererProps = SharedRendererProps & {
+  params: {
+    textContent: string;
+    showRipple: boolean;
+  };
 };
 
 export type CheckboxRendererProps = SharedRendererProps & {

@@ -130,10 +130,10 @@ export const selectFreeCanvasOffset = (id: string) => (
     elements[id].children.includes(
       parent.elements[parent.elements.length - 1],
     ) &&
-    elements[parent.elements[parent.elements.length - 1]].parameters.left ===
-      parent.offset &&
-    elements[parent.elements[parent.elements.length - 1]].parameters.top ===
-      parent.offset;
+    elements[parent.elements[parent.elements.length - 1]].parameters.freeCanvas
+      .left === parent.offset &&
+    elements[parent.elements[parent.elements.length - 1]].parameters.freeCanvas
+      .top === parent.offset;
 
   if (needOffset) return parent.offset + 20;
   return 0;

@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     return {
       position: 'absolute',
       pointerEvents: 'none',
-      zIndex: 9999999,
+      zIndex: 10,
       [`border${borderPosPrefix}Width`]: '1px',
       [`border${borderPosPrefix}Style`]: 'solid',
       [`border${borderPosPrefix}Color`]: isActive
