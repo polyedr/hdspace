@@ -1135,8 +1135,6 @@ export function* setActiveMasterElementSaga({
     const { type } = yield select(selectMasterElementById(payload));
 
     yield put(Actions.setEditableStyles(type));
-
-    console.log(type);
   } catch (e) {
     yield put(
       enqueueSnackbar({

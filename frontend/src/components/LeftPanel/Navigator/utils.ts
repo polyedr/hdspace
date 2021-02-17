@@ -105,6 +105,7 @@ export const findPrevNodeId = (tree, itemId) => {
 export const focusTreeItem = (itemId) => {
   (document.querySelector(`#treeitem-${itemId}`) as HTMLElement)?.focus();
 };
+
 export const getRulerHeight = (
   item: TreeItem,
   tree: TreeData,

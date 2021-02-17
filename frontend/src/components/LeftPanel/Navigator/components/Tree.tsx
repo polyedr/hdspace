@@ -1,4 +1,4 @@
-import React, { KeyboardEvent, useState, MouseEvent, useMemo } from 'react';
+import React, { KeyboardEvent, useState, MouseEvent, useEffect } from 'react';
 import AtlasTree, {
   mutateTree,
   RenderItemParams,
@@ -14,7 +14,7 @@ import {
   moveElement,
   pasteCopiedElement,
   redoAction,
-  setActiveElementId,
+  setActiveElement,
   setActiveMasterElementId,
   undoAction,
 } from '@Redux/project/actions';
@@ -110,10 +110,9 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     return expandItemParents(newTree, parentId);
   };
 
-  const expandedTree = useMemo(() => expandItemParents(tree, activeId), [
-    activeId,
-    tree,
-  ]);
+  useEffect(() => {
+    setTree(expandItemParents(tree, activeId));
+  }, [activeId]);
 
   const [selectedItemId, setSelectedItem] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -130,9 +129,8 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     dispatch(
       masterScreenEnabled
         ? setActiveMasterElementId(itemId)
-        : setActiveElementId(itemId),
+        : setActiveElement(itemId),
     );
-    setSelectedItem(itemId);
   };
 
   const deselect = () => {
@@ -279,7 +277,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         select={select}
         deselect={deselect}
         offset={OFFSET}
-        rulerHeight={getRulerHeight(props.item, expandedTree, height)}
+        rulerHeight={getRulerHeight(props.item, tree, height)}
         height={height}
         onContextMenu={handleMenuOpen}
         isActive={activeId === props.item.id}
@@ -302,7 +300,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           }}
         >
           <AtlasTree
-            tree={expandedTree}
+            tree={tree}
             renderItem={renderItem}
             onExpand={expand}
             onCollapse={collapse}
