@@ -260,7 +260,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const clickHandler = useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation();
-      if (event.ctrlKey) {
+      if (event.ctrlKey || event.metaKey) {
         dispatch(toggleSelectedElement(element.id));
         return;
       }
