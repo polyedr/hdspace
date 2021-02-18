@@ -560,12 +560,22 @@ export type AddAssetList = IAction<
   }
 >;
 
+export type UploadAsset = IAction<
+  typeof TYPES.UPLOAD_ASSET,
+  {
+    assetFile: any;
+    listId?: string;
+  },
+  HistoryMeta
+>;
+
 export type AddAssetRedux = IAction<
   typeof TYPES.ADD_ASSET_REDUX,
   {
     listId: string;
     asset: Asset;
-  }
+  },
+  HistoryMeta
 >;
 
 export type RemoveAssetListRedux = IAction<
@@ -576,6 +586,24 @@ export type RemoveAssetListRedux = IAction<
 export type RemoveAssetList = IAction<
   typeof TYPES.REMOVE_ASSET_LIST,
   string,
+  HistoryMeta
+>;
+
+export type RemoveAsset = IAction<
+  typeof TYPES.REMOVE_ASSET,
+  { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type RemoveAssetRedux = IAction<
+  typeof TYPES.REMOVE_ASSET_REDUX,
+  { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type RestoreAsset = IAction<
+  typeof TYPES.RESTORE_ASSET,
+  { asset: Asset; listId: string },
   HistoryMeta
 >;
 
@@ -830,6 +858,9 @@ export type Action =
   | AddAssetRedux
   | RemoveAssetList
   | RemoveAssetListRedux
+  | RemoveAsset
+  | RemoveAssetRedux
+  | RestoreAsset
   | SetSelectedAssetListId
   | SearchProjects
   | SetProjectSearchParameter
@@ -837,6 +868,9 @@ export type Action =
   | RemoveSelectedElement
   | SetSelectedElements
   | UpdateMultipleElementsStyles
+  | RemoveMultipleElementsStyles
+  | UploadAsset
+  | UploadElementAsset
   | SetActiveMasterElement
   | SetMasterScreenEnabled
   | ToggleMasterScreen
@@ -850,13 +884,12 @@ export type Action =
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
+  sourceAction?: Action | null;
 };
 
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
-  sourceAction?: Action | null;
 };
-
 export interface IPlainAction<T, M = HistoryMeta, R = void> {
   type: T;
   meta?: M;

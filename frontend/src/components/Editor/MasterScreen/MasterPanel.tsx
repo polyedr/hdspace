@@ -10,10 +10,7 @@ import { updateSharedStyles } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { CONTROLS_AFFECT_ON_PARAMS, Entity } from '@Src/types';
-import {
-  selectActiveMasterElement,
-  selectActiveMasterElementType,
-} from '@Redux/project/selectors/masterScreen';
+import { selectActiveMasterElement } from '@Redux/project/selectors/masterScreen';
 
 const useStyles = makeStyles({
   root: {

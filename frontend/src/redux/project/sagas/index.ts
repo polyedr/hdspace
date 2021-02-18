@@ -97,6 +97,8 @@ import {
   addNewAssetListSaga,
   uploadElementAssetSaga,
   removeAssetListSaga,
+  removeAssetSaga,
+  restoreAssetSaga,
 } from './asset';
 
 function* removeSharedStylesSaga(
@@ -396,6 +398,7 @@ function* undoSaga() {
 
     yield put(Actions.popUndoAction());
     yield put(Actions.popHistory());
+
     yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
   } catch (e) {
     yield put(
@@ -535,6 +538,8 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.UPLOAD_ASSET, uploadAssetSaga);
   yield takeEvery(TYPES.UPLOAD_ELEMENT_ASSET, uploadElementAssetSaga);
   yield takeEvery(TYPES.REMOVE_ASSET_LIST, removeAssetListSaga);
+  yield takeEvery(TYPES.REMOVE_ASSET, removeAssetSaga);
+  yield takeEvery(TYPES.RESTORE_ASSET, restoreAssetSaga);
 
   yield takeEvery(
     TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,

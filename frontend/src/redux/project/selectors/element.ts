@@ -17,7 +17,6 @@ import {
   LibraryElement,
   PaginatedArray,
   Project,
-  ProjectClass,
   StateElement,
 } from '@Src/types';
 import {

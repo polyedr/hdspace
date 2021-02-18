@@ -38,3 +38,16 @@ export const convertResponseToPaginatedAssets = (
     loading: false,
   };
 };
+
+export const convertToServerAsset = (
+  asset: Partial<Asset>,
+): Partial<ServerAsset> => {
+  return Object.keys(asset).reduce((serverAsset, assetField) => {
+    const serverAssetField =
+      assetField === 'listId' ? 'illustration_set' : assetField;
+    return {
+      ...serverAsset,
+      [serverAssetField]: asset[assetField],
+    };
+  }, {});
+};

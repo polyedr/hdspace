@@ -169,9 +169,12 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   }
 }
 
-export function* createProjectSaga({
-  payload: { name },
-}: ReturnType<typeof Actions.createProject>) {
+export function* createProjectSaga(
+  action: ReturnType<typeof Actions.createProject>,
+) {
+  const {
+    payload: { name },
+  } = action;
   try {
     yield put(Actions.setProjectCreateLoader(true));
 
@@ -188,7 +191,9 @@ export function* createProjectSaga({
         projectId: result.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
-      yield put(Actions.addAssetListToState(assetList));
+      yield put(
+        Actions.addAssetListToState(assetList, { sourceAction: action }),
+      );
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, result]));
 

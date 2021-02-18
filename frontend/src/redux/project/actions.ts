@@ -57,6 +57,8 @@ import {
   RemoveElementClassName,
   RemoveElementStyles,
   RemoveSharedStyles,
+  RemoveAsset,
+  RestoreAsset,
   RenameProject,
   RenameScreen,
   ReplaceElementStyles,
@@ -112,6 +114,9 @@ import {
   UpdateMultipleElementsStyles,
   RemoveMultipleElementsStyles,
   UpdateMultipleStateElements,
+  AddAssetList,
+  UploadAsset,
+  AddAssetRedux,
   SetActiveMasterElement,
   SetMasterScreenEnabled,
   ToggleMasterScreen,
@@ -970,7 +975,10 @@ export const setAssetLists = (assetLists: PaginatedArray<AssetsList>) => ({
   payload: assetLists,
 });
 
-export const addAssetList = (name: string, meta?: HistoryMeta) => ({
+export const addAssetList = (
+  name: string,
+  meta?: HistoryMeta,
+): AddAssetList => ({
   type: TYPES.ADD_ASSET_LIST,
   payload: { name },
   meta,
@@ -985,21 +993,46 @@ export const removeAssetList = (
   meta,
 });
 
+export const removeAsset = (
+  id: string,
+  listId: string,
+  meta?: HistoryMeta,
+): RemoveAsset => ({
+  type: TYPES.REMOVE_ASSET,
+  payload: { id, listId },
+  meta,
+});
+
+export const restoreAsset = (
+  asset: Asset,
+  listId: string,
+  meta?: HistoryMeta,
+): RestoreAsset => ({
+  type: TYPES.RESTORE_ASSET,
+  payload: { asset, listId },
+  meta,
+});
+
 export const removeAssetListRedux = (id: string) => ({
   type: TYPES.REMOVE_ASSET_LIST_REDUX,
   payload: id,
 });
+export const removeAssetRedux = (id: string, listId: string) => ({
+  type: TYPES.REMOVE_ASSET_REDUX,
+  payload: { id, listId },
+});
 
-export const addAssetListToState = (list: AssetsList) => ({
+export const addAssetListToState = (list: AssetsList, meta: HistoryMeta) => ({
   type: TYPES.ADD_ASSET_LIST_REDUX,
   payload: list,
+  meta,
 });
 
 export const uploadAsset = (
   assetFile: any,
   listId?: string,
   meta?: HistoryMeta,
-) => ({
+): UploadAsset => ({
   type: TYPES.UPLOAD_ASSET,
   payload: {
     listId,
@@ -1016,12 +1049,17 @@ export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
   },
 });
 
-export const addAssetToState = (listId: string, asset: Asset) => ({
+export const addAssetToState = (
+  listId: string,
+  asset: Asset,
+  meta: HistoryMeta,
+): AddAssetRedux => ({
   type: TYPES.ADD_ASSET_REDUX,
   payload: {
     listId,
     asset,
   },
+  meta,
 });
 
 export const setSelectedAssetListId = (listId: string) => ({

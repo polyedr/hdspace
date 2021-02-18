@@ -28,3 +28,11 @@ export const selectAssetListById = (listId: string) => (
 ) => {
   return selectProjectState(state).data.assetLists[listId];
 };
+
+export const selectAssetByListAndId = (id: string, listId: string) => (
+  state: AppReduxState,
+) => {
+  return selectProjectState(state).data.assetLists[listId].results.find(
+    (asset) => asset.id === id,
+  );
+};

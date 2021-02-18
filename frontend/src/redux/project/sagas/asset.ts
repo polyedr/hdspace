@@ -1,7 +1,12 @@
 /* eslint-disable no-console */
 import { call } from 'ramda';
 import { put, select } from 'redux-saga/effects';
-import { apiCreateAsset, apiGetAssets } from '@Api/asset';
+import {
+  apiCreateAsset,
+  apiDeleteAsset,
+  apiGetAssets,
+  apiUpdateAsset,
+} from '@Api/asset';
 import {
   apiCreateAssetList,
   apiDeleteAssetList,
@@ -10,7 +15,7 @@ import {
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { Asset, AssetsList, PaginatedArray } from '@Src/types';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
-
+import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -96,13 +101,13 @@ export function* addNewAssetListSaga(
       projectId,
       name,
     });
-    yield put(Actions.addAssetListToState(assetList));
+    yield put(Actions.addAssetListToState(assetList, { sourceAction: action }));
     yield put(Actions.setSelectedAssetListId(assetList.id));
     if (!undo) {
       yield put(
         Actions.setUndoActions([
           Actions.setSelectedAssetListId(selectedAssetId || ALL_ASSETS_LIST_ID),
-          Actions.removeAssetList(assetList.id, action.meta),
+          Actions.removeAssetList(assetList.id),
         ]),
       );
     }
@@ -129,10 +134,64 @@ export function* removeAssetListSaga(
         ]),
       );
     }
+    yield put(Actions.removeAssetListRedux(action.payload));
     yield call(reqWrapper, apiDeleteAssetList, {
       id: action.payload,
     });
-    yield put(Actions.removeAssetListRedux(action.payload));
+  } catch (error) {
+    yield put(
+      enqueueSnackbar({
+        message: error.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* restoreAssetSaga(
+  action: ReturnType<typeof Actions.restoreAsset>,
+) {
+  const {
+    payload: { asset, listId },
+    meta,
+  } = action;
+  try {
+    if (!meta?.undo) {
+      yield put(
+        Actions.setUndoActions([
+          Actions.removeAsset(asset.id, listId, action.meta),
+        ]),
+      );
+    }
+    yield put(Actions.addAssetToState(listId, asset, { sourceAction: action }));
+    yield call(reqWrapper, apiUpdateAsset, {
+      id: asset.id,
+      asset: convertToServerAsset(asset),
+    });
+  } catch (error) {
+    yield put(
+      enqueueSnackbar({
+        message: error.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* removeAssetSaga(
+  action: ReturnType<typeof Actions.removeAsset>,
+) {
+  const {
+    meta,
+    payload: { id, listId },
+  } = action;
+  try {
+    const asset = yield select(selectAssetListById);
+    if (!meta?.undo) {
+      yield put(Actions.setUndoActions([Actions.restoreAsset(asset, listId)]));
+    }
+    yield put(Actions.removeAssetRedux(id, listId));
+    yield call(reqWrapper, apiDeleteAsset, { id });
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -147,6 +206,7 @@ export function* uploadAssetSaga(
   action: ReturnType<typeof Actions.uploadAsset>,
 ) {
   const { listId, assetFile } = action.payload;
+
   let assetListId = listId;
   if (!assetListId) {
     assetListId = yield select(selectSelectedAssetListId);
@@ -168,7 +228,17 @@ export function* uploadAssetSaga(
     const asset = yield call(reqWrapper, apiCreateAsset, {
       assetFormData,
     });
-    yield put(Actions.addAssetToState(assetListId, asset));
+    const undo = !!action.meta && action.meta.undo;
+    if (!undo) {
+      yield put(
+        Actions.setUndoActions([
+          Actions.removeAsset(asset.id, asset.listId, action.meta),
+        ]),
+      );
+    }
+    yield put(
+      Actions.addAssetToState(assetListId, asset, { sourceAction: action }),
+    );
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -200,7 +270,7 @@ export function* uploadElementAssetSaga(
     const asset: Asset = yield call(reqWrapper, apiCreateAsset, {
       assetFormData,
     });
-    yield put(Actions.addAssetToState(listId, asset));
+    yield put(Actions.addAssetToState(listId, asset, { sourceAction: action }));
 
     yield put(
       Actions.updateElementParameters(

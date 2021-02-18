@@ -278,6 +278,17 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.REMOVE_ASSET_REDUX: {
+        const { id, listId } = action.payload;
+        draft.assetResults[ALL_ASSETS_LIST_ID].results = draft.assetResults[
+          ALL_ASSETS_LIST_ID
+        ].results.filter((asset) => asset.id !== id);
+        draft.assetResults[listId].results = draft.assetResults[
+          listId
+        ].results.filter((asset) => asset.id !== id);
+        break;
+      }
+
       case TYPES.SET_ACTIVE_MASTER_ELEMENT_ID: {
         draft.masterScreen.activeId = action.payload;
         break;
