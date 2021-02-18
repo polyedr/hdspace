@@ -403,7 +403,7 @@ class ProjectMemberSerializer(serializers.ModelSerializer):
 class ColumnTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTask
-        fields = ("title", "description", "status", "column", "creator", "owner")
+        fields = ("id", "title", "description", "status", "column", "creator", "owner")
         extra_kwargs = {
             "creator": {"read_only": True},
         }
@@ -425,7 +425,7 @@ class ColumnWithTasksSerializer(serializers.ModelSerializer):
 class ProjectColumnSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectColumn
-        fields = ("title", "description")
+        fields = ("id", "title", "description")
 
 
 class ProjectWithColumnsSerializer(serializers.ModelSerializer):
