@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment, ProjectIllustrationSet, ProjectImage
+from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment, ProjectIllustrationSet, ProjectImage, \
+    ProjectColumn
 from .models import *  # noqa
 
 admin.site.register(ScreenEvent)
@@ -12,7 +13,8 @@ admin.site.register(ProjectMember)
 admin.site.register(ScreenAssignee)
 admin.site.register(ProjectInvitation)
 admin.site.register(ProjectActivity)
-admin.site.register(ProjectTask)
+admin.site.register(ProjectColumn)
+admin.site.register(ColumnTask)
 admin.site.register(ProjectIllustrationSet)
 admin.site.register(ProjectImage)
 admin.site.register(TaskTime)

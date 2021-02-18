@@ -12,7 +12,6 @@ from .models import (
     ProjectMember,
     ProjectScreen,
     ScreenEvent,
-    ProjectTask,
     ProjectActivity,
     ProjectInvitation,
     TaskTime,
@@ -22,7 +21,7 @@ from .models import (
     ScenarioElement,
     Element,
     Scenario,
-    ElementComment, ProjectImage, ProjectIllustrationSet)
+    ElementComment, ProjectImage, ProjectIllustrationSet, ProjectColumn, ColumnTask)
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
@@ -401,18 +400,37 @@ class ProjectMemberSerializer(serializers.ModelSerializer):
         fields = ("role", "status")
 
 
-class ProjectTaskSerializer(serializers.ModelSerializer):
+class ColumnTaskSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProjectTask
-        fields = ("title", "description", "status", "project", "creator", "owner")
+        model = ColumnTask
+        fields = ("title", "description", "status", "column", "creator", "owner")
         extra_kwargs = {
             "creator": {"read_only": True},
         }
 
 
-class ProjectWithTasksSerializer(serializers.ModelSerializer):
+class ColumnWithTasksSerializer(serializers.ModelSerializer):
+    columntask = ColumnTaskSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ColumnTask
+        fields = (
+            "id",
+            "title",
+            "description",
+            "columntask",
+        )
+
+
+class ProjectColumnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectColumn
+        fields = ("title", "description")
+
+
+class ProjectWithColumnsSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    projecttask = ProjectTaskSerializer(many=True, read_only=True)
+    projectcolumn = ProjectColumnSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
@@ -421,7 +439,7 @@ class ProjectWithTasksSerializer(serializers.ModelSerializer):
             "name",
             "favicon",
             "status",
-            "projecttask",
+            "projectcolumn",
             "user",
             "id",
             "created",
@@ -437,7 +455,7 @@ class ProjectWithTasksSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def setup_eager_loading(qs):
-        queryset = qs.select_related("user").prefetch_related("projecttask")
+        queryset = qs.select_related("user").prefetch_related("projectcolumn")
         return queryset
 
 

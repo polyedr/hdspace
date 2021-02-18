@@ -7,12 +7,17 @@ from rest_framework_bulk.routes import BulkRouter
 from .apiviews import (
     ProjectScreenList,
     ScreenEventList,
-    ProjectTaskList,
+    ProjectColumnList,
+    ProjectColumnDetail,
+    ProjectWithColumnsViewSet,
+    ColumnTaskList,
+    ColumnTaskDetail,
+    ColumnWithTasksViewSet,
+
     ProjectInvitationList,
     ScreenCommentList,
     ProjectScreenDetail,
     ScreenEventDetail,
-    ProjectTaskDetail,
     ProjectInvitationDetail,
     ScreenCommentDetail,
     # ElementList,
@@ -25,7 +30,7 @@ from .apiviews import (
     ScreenScenarioDestroyCascadeViewSet,
     ScreeScenarioViewSet,
     ScenarioElementViewSet,
-    ProjectViewSet, ScenarioElementRecursiveViewSet, ProjectWithScreensViewSet, ProjectWithTasksViewSet,
+    ProjectViewSet, ScenarioElementRecursiveViewSet, ProjectWithScreensViewSet,
     ElementCommentList, ElementCommentDetail, ProjectIllustrationSetList, ProjectIllustrationSetDetail,
     IllustrationSetImageList, IllustrationSetImageDetail)
 
@@ -53,12 +58,21 @@ api_screen_event_patterns = [
     ),
 ]
 
-api_project_task_patterns = [
-    path("project-tasks/", ProjectTaskList.as_view(),
-         name="api_project_tasks"),
+api_project_column_patterns = [
+    path("project-columns/", ProjectColumnList.as_view(),
+         name="api_project_columns"),
     path(
-        "project-tasks/<int:pk>/", ProjectTaskDetail.as_view(),
-        name="api_project_task"
+        "project-columns/<int:pk>/", ProjectColumnDetail.as_view(),
+        name="api_project_column"
+    ),
+]
+
+api_column_task_patterns = [
+    path("column-tasks/", ColumnTaskList.as_view(),
+         name="api_column_tasks"),
+    path(
+        "column-tasks/<int:pk>/", ColumnTaskDetail.as_view(),
+        name="api_column_task"
     ),
 ]
 
@@ -110,7 +124,8 @@ router.register(r"scenario-elements", ScenarioElementViewSet)
 router.register(r"scenario-elements-recursive", ScenarioElementRecursiveViewSet)
 router.register(r"projects", ProjectViewSet)
 router.register(r"screens-for-project", ProjectWithScreensViewSet)
-router.register(r"tasks-for-project", ProjectWithTasksViewSet)
+router.register(r"columns-for-project", ProjectWithColumnsViewSet)
+router.register(r"tasks-for-column", ColumnWithTasksViewSet)
 
 router.register(r"library-elements", ElementViewSet,
                 base_name="api_library_elements")
@@ -179,7 +194,8 @@ urlpatterns = [
     # path("", include(api_project_invitation_patterns)),
     # path("", include(api_screen_event_patterns)),
     path("", include(api_element_comment_patterns)),
-    path("", include(api_project_task_patterns)),
+    path("", include(api_project_column_patterns)),
+    path("", include(api_column_task_patterns)),
     path("", include(api_illustration_set_patterns)),
     path("", include(api_illustration_set_image_patterns)),
     path("", include(api_project_screen_patterns)),
