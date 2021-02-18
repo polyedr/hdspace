@@ -14,7 +14,6 @@ from .models import (
     ProjectMember,
     ProjectScreen,
     ScreenEvent,
-    ProjectTask,
     ProjectActivity,
     ProjectInvitation,
     ScreenAssignee,
@@ -25,7 +24,7 @@ from .models import (
     ScenarioElement,
     elements,
     scenarios,
-    ElementComment, ProjectIllustrationSet, ProjectImage)
+    ElementComment, ProjectIllustrationSet, ProjectImage, ProjectColumn, ColumnTask)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -33,7 +32,8 @@ from .serializers import (
     ScreenEventSerializer,
     ProjectInvitationSerializer,
     ProjectActivitySerializer,
-    ProjectTaskSerializer,
+    ProjectColumnSerializer,
+    ColumnTaskSerializer,
     CommentSerializer,
     ScreenCommentSerializer,
     TaskTimeSerializer,
@@ -45,8 +45,14 @@ from .serializers import (
     ScenarioElementMultipleSerializer,
     ScreenScenarioMultipleSerializer,
     ProjectScreenMultipleSerializer,
-    ScenarioElementSerializerRecursive, ProjectWithScreensSerializer, ProjectWithTasksSerializer,
-    ElementCommentSerializer, IllustrationSetSerializer, ImageSerializer)
+    ScenarioElementSerializerRecursive,
+    ProjectWithScreensSerializer,
+    ProjectWithColumnsSerializer,
+    ColumnWithTasksSerializer,
+    ElementCommentSerializer,
+    IllustrationSetSerializer,
+    ImageSerializer
+)
 
 
 class IsOwner(permissions.BasePermission):
@@ -110,13 +116,31 @@ class ProjectWithScreensViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class ProjectWithTasksViewSet(viewsets.ModelViewSet):
+class ProjectWithColumnsViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
-    serializer_class = ProjectWithTasksSerializer
+    serializer_class = ProjectWithColumnsSerializer
     pagination_class = None
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
     filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
+    http_method_names = ['get', 'head']
+
+    def get_queryset(self):
+        return self.get_serializer_class().setup_eager_loading(self.queryset)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def filter_queryset(self, queryset):
+        queryset = queryset.filter(user=self.request.user)
+        return queryset
+
+
+class ColumnWithTasksViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = ProjectColumn.objects.all()
+    serializer_class = ColumnWithTasksSerializer
+    pagination_class = None
     http_method_names = ['get', 'head']
 
     def get_queryset(self):
@@ -245,26 +269,52 @@ class ScreenEventDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ScreenEventSerializer
 
 
-class ProjectTaskList(generics.ListCreateAPIView):
+class ProjectColumnList(generics.ListCreateAPIView):
     """
-    List all project tasks, or create a new project task.
+    List all project columns, or create a new project column.
     """
 
-    queryset = ProjectTask.objects.all()
-    serializer_class = ProjectTaskSerializer
+    queryset = ProjectColumn.objects.all()
+    serializer_class = ProjectColumnSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'project']
 
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
 
 
-class ProjectTaskDetail(generics.RetrieveUpdateDestroyAPIView):
+class ProjectColumnDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update or delete a project task
+    Retrieve, update or delete a project column
     """
 
-    queryset = ProjectTask.objects.all()
-    serializer_class = ProjectTaskSerializer
+    queryset = ProjectColumn.objects.all()
+    serializer_class = ProjectColumnSerializer
+
+
+class ColumnTaskList(generics.ListCreateAPIView):
+    """
+    List all column tasks, or create a new column task.
+    """
+
+    queryset = ColumnTask.objects.all()
+    serializer_class = ColumnTaskSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'status', 'column']
+
+    # Inject current user at the point of saving the instance
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+
+class ColumnTaskDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a column task
+    """
+
+    queryset = ColumnTask.objects.all()
+    serializer_class = ColumnTaskSerializer
 
 
 class ProjectActivityList(generics.ListCreateAPIView):
@@ -535,7 +585,7 @@ class ScenarioElementRecursiveViewSet(viewsets.ModelViewSet):
 
 class ElementCommentList(generics.ListCreateAPIView):
     """
-    List all project tasks, or create a new project task.
+    List all column tasks, or create a new column task.
     """
 
     queryset = ElementComment.objects.all()
@@ -548,7 +598,7 @@ class ElementCommentList(generics.ListCreateAPIView):
 
 class ElementCommentDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update or delete a project task
+    Retrieve, update or delete a column task
     """
 
     queryset = ElementComment.objects.all()

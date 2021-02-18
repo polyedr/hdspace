@@ -15,7 +15,7 @@ __all__ = (
     "ProjectMember",
     "ProjectScreen",
     "ScreenEvent",
-    "ProjectTask",
+    "ColumnTask",
     "ProjectActivity",
     "ProjectInvitation",
     "ScreenAssignee",
@@ -223,26 +223,28 @@ class ProjectMember(TimeStampedModel):
         return self.user.email
 
 
-class ProjectTask(TimeStampedModel):
+class ProjectColumn(TimeStampedModel):
+
+    title = models.CharField(max_length=250)
+    description = models.TextField(null=True, blank=True)
+    project = models.ForeignKey(Project, related_name="projectcolumn", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
+
+
+class ColumnTask(TimeStampedModel):
 
     TASK_CREATED = "created"
     TASK_COMPLETED = "completed"
     TASK_STATUS = ((TASK_CREATED, "CREATED"), (TASK_COMPLETED, "COMPLETED"))
 
     title = models.CharField(max_length=250)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     status = models.CharField(choices=TASK_STATUS, default=TASK_CREATED, max_length=32)
 
-    project = models.ForeignKey(Project, related_name="projecttask", on_delete=models.CASCADE)
+    column = models.ForeignKey(ProjectColumn, related_name="columntask", on_delete=models.CASCADE)
 
-    '''
-    creator = models.ForeignKey(
-        ProjectMember, related_name="creator", on_delete=models.CASCADE
-    )
-    owner = models.ForeignKey(
-        ProjectMember, related_name="owner", on_delete=models.CASCADE
-    )
-    '''
     creator = models.ForeignKey(get_user_model(), related_name="creator", on_delete=models.CASCADE)
     owner = models.ForeignKey(
         get_user_model(), related_name="owner", on_delete=models.CASCADE
@@ -269,7 +271,7 @@ class TaskTime(TimeStampedModel):
     track_time = models.IntegerField(default=0)
     started = models.DateTimeField(blank=True)
     stoped = models.BooleanField(default=True)
-    task = models.ForeignKey(ProjectTask, on_delete=models.CASCADE)
+    task = models.ForeignKey(ColumnTask, on_delete=models.CASCADE)
     member = models.ForeignKey(ProjectMember, on_delete=models.CASCADE)
 
     def __str__(self):
