@@ -132,7 +132,7 @@ export const ICONS: Partial<
   columns: ViewColumnIcon,
   button: SlideshowIcon,
   list: ListIcon,
-  divBlock: Crop169Icon,
+  container: Crop169Icon,
   paragraph: NotesIcon,
   heading: LineWeightIcon,
   hyperlink: LinkIcon,

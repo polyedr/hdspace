@@ -484,9 +484,7 @@ export const section: SectionServerElement = {
   },
   styles: {
     classNames: ['section'],
-    ownStyles: {
-      minHeight: '50px',
-    },
+    ownStyles: {},
   },
   name: 'section',
   children: [],
