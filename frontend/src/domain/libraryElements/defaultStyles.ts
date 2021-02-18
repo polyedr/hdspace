@@ -373,6 +373,7 @@ export const defaultContainerStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
+    minHeight: '50px',
   },
   display: {
     ...DEFAULT_DISPLAY,
@@ -412,6 +413,7 @@ export const defaultSectionStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
+    minHeight: '50px',
   },
   display: {
     ...DEFAULT_DISPLAY,
