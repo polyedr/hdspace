@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { createStyles, Dialog } from '@material-ui/core';
+import React, { useState, ChangeEvent } from 'react';
+import { createStyles, Dialog, TextField } from '@material-ui/core';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { importHtml } from '@Redux/project/actions';
+import { importHtml, uploadImportUrl } from '@Redux/project/actions';
 import prettyBytes from 'pretty-bytes';
 import prevent from '@Utils/preventEvent';
 
@@ -78,7 +78,20 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
   const [files, setFiles] = useState<File[]>([]);
   const classes = useStyles({ over, file: files });
 
-  const handleCreate = () => {
+  const [url, setUrl] = useState('');
+
+  const handleUrlChange = ({
+    target: { value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    setUrl(value);
+  };
+
+  const handleUrlSubmit = () => {
+    dispatch(uploadImportUrl(url));
+    setUrl('');
+  };
+
+  const handleFormSubmit = () => {
     const htmlCount = files.reduce((acc, curr) => {
       if (curr.type === 'text/html') return acc + 1;
       return acc;
@@ -96,8 +109,16 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
       return;
     }
     dispatch(importHtml(files));
-    onClose();
     setFiles([]);
+  };
+
+  const handleConfirm = () => {
+    if (url) {
+      handleUrlSubmit();
+    } else {
+      handleFormSubmit();
+    }
+    onClose();
   };
 
   const handleDrop = (ev: React.DragEvent<HTMLFormElement>) => {
@@ -137,8 +158,19 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Upload your HTML file</DialogTitle>
+      <DialogTitle>Provide a URL</DialogTitle>
+      <DialogContent>
+        <TextField
+          type="text"
+          value={url}
+          onChange={handleUrlChange}
+          variant="outlined"
+          fullWidth
+          margin="dense"
+        />
+      </DialogContent>
 
+      <DialogTitle>Or upload an HTML and CSS files</DialogTitle>
       <DialogContent>
         <form
           onDrop={handleDrop}
@@ -201,8 +233,8 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={handleCreate}
-          disabled={!files.length}
+          onClick={handleConfirm}
+          disabled={!files.length && !url}
         >
           Create
         </Button>

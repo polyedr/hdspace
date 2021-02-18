@@ -953,6 +953,11 @@ export const importHtml = (files: File[]) => ({
   payload: files,
 });
 
+export const uploadImportUrl = (url) => ({
+  type: TYPES.UPLOAD_IMPORT_URL,
+  payload: url,
+});
+
 export const setEditorDocument = (doc: Document): SetEditorDocument => ({
   type: TYPES.SET_EDITOR_DOCUMENT,
   payload: doc,

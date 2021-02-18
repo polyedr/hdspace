@@ -25,6 +25,7 @@ import {
   updateScreenImageSaga,
   convertFreeCanvasSaga,
   importHtmlSaga,
+  uploadImportUrlSaga,
 } from '@Redux/project/sagas/screen';
 import {
   setActiveMasterElementSaga,
@@ -532,6 +533,8 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
+  yield takeEvery(TYPES.UPLOAD_IMPORT_URL, uploadImportUrlSaga);
+
   yield takeEvery(TYPES.LOAD_ASSET_LISTS, loadAssetListsSaga);
   yield takeEvery(TYPES.LOAD_ASSETS, loadAssetsSaga);
   yield takeEvery(TYPES.ADD_ASSET_LIST, addNewAssetListSaga);

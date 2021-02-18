@@ -33,6 +33,7 @@ import CSSOM from 'cssom';
 import { extractStyles } from '@Utils/stringHelper';
 import IMAGES from '@Constants/images';
 import { changePrototypeMode } from '@Redux/user/actions';
+import { apiPostURL } from '@Api/import';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -783,6 +784,22 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
       if (error) throw new Error(error);
     }
     if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* uploadImportUrlSaga({
+  payload,
+}: ReturnType<typeof Actions.uploadImportUrl>) {
+  try {
+    const res = yield call(reqWrapper, apiPostURL, { wpurl: payload });
+    console.log(res);
   } catch (e) {
     yield put(
       enqueueSnackbar({
