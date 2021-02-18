@@ -327,8 +327,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     dispatch(setHoveredElementId(elementId));
   }, [dispatch, elementId]);
   const mouseLeaveHandler = useCallback(() => {
-    dispatch(setHoveredElementId(element.parent || null));
-  }, [dispatch, element.parent]);
+    dispatch(setHoveredElementId(element?.parent || null));
+  }, [dispatch, element?.parent]);
 
   if (!element) {
     return null;
