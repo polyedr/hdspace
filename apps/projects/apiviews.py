@@ -279,10 +279,6 @@ class ProjectColumnList(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'project']
 
-    # Inject current user at the point of saving the instance
-    def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
-
 
 class ProjectColumnDetail(generics.RetrieveUpdateDestroyAPIView):
     """
