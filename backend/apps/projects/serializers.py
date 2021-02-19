@@ -418,6 +418,7 @@ class ColumnWithTasksSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "description",
+            "project",
             "columntask",
         )
 
@@ -425,7 +426,7 @@ class ColumnWithTasksSerializer(serializers.ModelSerializer):
 class ProjectColumnSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectColumn
-        fields = ("id", "title", "description")
+        fields = ("id", "title", "description", "project")
 
 
 class ProjectWithColumnsSerializer(serializers.ModelSerializer):
