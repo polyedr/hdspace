@@ -72,7 +72,7 @@ export type ServerElement<
   Children = any[],
   Params = BaseElementParams
 > = {
-  id?: number;
+  id: number | string;
   name: string;
   scenario?: number;
   struct_type: Type;
@@ -1060,6 +1060,15 @@ export type Asset = {
 export type AssetResults = {
   [listId: string]: PaginatedArray<Asset>;
 };
+
+/* export type MasterElements = {
+  [name: string]: LibraryElement<any>;
+};
+
+export type MasterScreenParameters = {
+  enabled: boolean;
+  coreElements: MasterElements;
+}; */
 
 export const enum NNBlockType {
   HEADER = 'headers',

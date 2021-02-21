@@ -24,10 +24,12 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
     const element = ref.current;
 
     const listener = (event: KeyboardEvent) => {
+      // console.log('TEST LISTENER!!!', event.key);
       if (
         !beingEdited &&
         (event.key === 'Delete' || (event.key === 'Backspace' && event.metaKey))
       ) {
+        // console.log('DISPATCH!!', id);
         dispatch(deleteElement(id, { screenId: currentScreenId }));
         element?.focus();
       }

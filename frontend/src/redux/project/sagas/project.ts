@@ -18,8 +18,14 @@ import {
   ProjectsSearchParameter,
   ProjectWithScreens,
   Result,
+  Screen,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
+import {
+  CORE_ROOT_CONTAINER,
+  CORE_GROUPS_CONTAINER,
+  CORE_MASTER_ELEMENTS,
+} from '@Components/Editor/MasterScreen/coreElements';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -31,6 +37,26 @@ import {
   selectProjectsDataNext,
   selectProjectsSearchParameter,
 } from '../selectors/base';
+import { selectScreenById } from '../selectors/screen';
+
+function* createMasterScreenElements(screen: Screen) {
+  console.log('STEP 1', screen);
+  // const masterScreenRoot = yield select(selectMaster)
+  yield put(
+    Actions.addStateElements(
+      [CORE_ROOT_CONTAINER, CORE_GROUPS_CONTAINER],
+      screen.element,
+      { screenId: screen.id },
+    ),
+  );
+  console.log('STEP 2');
+  yield put(
+    Actions.addStateElements(CORE_MASTER_ELEMENTS, CORE_ROOT_CONTAINER.id, {
+      screenId: screen.id,
+    }),
+  );
+  console.log('STEP 3');
+}
 
 export function* searchProjectsSaga() {
   try {
@@ -144,18 +170,27 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
           projectscreen: result.projectscreen.map((screen) => screen.id),
         }),
       );
-
       if (result.projectscreen.length) {
         yield call(getScreensSaga, result.projectscreen);
       }
 
       yield put(Actions.setCurrentProjectId(result.id));
+      const masterScreenId: number =
+        result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
+        -1;
+      yield put(Actions.setMasterScreenId(masterScreenId));
+      const masterScreen = yield select(selectScreenById(masterScreenId));
+      if (masterScreen) {
+        console.log('MASTER SCREEN!!', masterScreen);
+        yield call(createMasterScreenElements, masterScreen);
+      }
     }
 
     if (error) {
       throw new Error(error);
     }
   } catch (e) {
+    console.log('ERROR 1', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -199,11 +234,28 @@ export function* createProjectSaga(
 
       yield put(Actions.setCurrentProjectId(result.id));
 
-      const res = yield call(
+      const masterScreen: Screen = yield call(
         createScreenSaga,
-        Actions.createScreen(result.id, 'Screen 1', 0, true),
+        Actions.createScreen(
+          result.id,
+          'Master Screen',
+          0,
+          true,
+          'Master Screen',
+        ),
       );
-      if (res) {
+
+      if (masterScreen) {
+        yield call(createMasterScreenElements, masterScreen);
+      }
+
+      const initialScreen: Screen = yield call(
+        createScreenSaga,
+        Actions.createScreen(result.id, 'Screen 1', 1, true),
+      );
+
+      if (initialScreen && masterScreen) {
+        yield put(Actions.setMasterScreenId(masterScreen.id));
         yield put(
           enqueueSnackbar({
             message: `Project ${result.name} created`,
@@ -213,7 +265,7 @@ export function* createProjectSaga(
           }),
         );
       } else {
-        throw new Error('Failed to create screen');
+        throw new Error('Failed to create screens');
       }
     }
 
@@ -221,6 +273,7 @@ export function* createProjectSaga(
       throw new Error(error);
     }
   } catch (e) {
+    console.error('ERROR 2', e);
     yield put(
       enqueueSnackbar({
         message: e.message,

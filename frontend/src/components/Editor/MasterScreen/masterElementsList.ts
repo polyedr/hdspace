@@ -13,7 +13,7 @@ import {
   makeColumns,
   makeContainer,
   makeGrid,
-  makeGridItem,
+  // makeGridItem,
   makeImage,
   nativeColumns,
   root,
@@ -24,10 +24,11 @@ import {
   hyperlink,
   list,
   makeHeading,
-  makeListItem,
+  // makeListItem,
   makeParagraph,
   textBlock,
 } from '@Domain/libraryElements/typographyElements/typographyElements';
+// import { MasterElements } from '@Src/types';
 
 const MASTER_ELEMENTS_LIST = {
   masterRoot: {
@@ -82,11 +83,11 @@ const MASTER_ELEMENTS_LIST = {
     id: 'masterList',
     children: ['masterListItem'],
   },
-  masterListItem: {
+  /* masterListItem: {
     ...convertElementFromResponse(makeListItem('Master ListItem')),
     name: 'Master ListItem',
     id: 'masterListItem',
-  },
+  }, */
   masterButton: {
     ...convertElementFromResponse(makeButton()),
     name: 'Master Button',
@@ -129,11 +130,11 @@ const MASTER_ELEMENTS_LIST = {
     id: 'masterGrid',
     children: ['masterGridItem'],
   },
-  masterGridItem: {
+  /* masterGridItem: {
     ...convertElementFromResponse(makeGridItem()),
     name: 'Master GridItem',
     id: 'masterGridItem',
-  },
+  }, */
   masterColumns: {
     ...convertElementFromResponse(makeColumns()),
     name: 'Master Columns',

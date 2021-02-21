@@ -17,8 +17,7 @@ import {
 } from '@Constants/defaultParams';
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/masterScreen';
-import MasterPanel from '@Components/Editor/MasterScreen/MasterPanel';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import AssetsSection from './Assets';
@@ -133,7 +132,9 @@ const RightPanel: React.FC = () => {
   return (
     <div className={classes.root}>
       {masterScreenEnabled ? (
-        <MasterPanel />
+        <>
+          <div>123</div>
+        </>
       ) : (
         <>
           <Tabs

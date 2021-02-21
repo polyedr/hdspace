@@ -1,5 +1,4 @@
 import { ProjectsSearchParameter, Layout } from '@Src/types';
-import MASTER_ELEMENTS_LIST from '@Components/Editor/MasterScreen/masterElementsList';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -19,11 +18,6 @@ export const initialData: ProjectDataState = {
   },
   screens: {},
   elements: {},
-  masterScreen: {
-    enabled: false,
-    activeId: 'masterRoot',
-    elements: MASTER_ELEMENTS_LIST,
-  },
   customElementsData: {
     previous: null,
     next: null,
@@ -64,6 +58,7 @@ export const initialEdit: ProjectEditState = {
   currentScreenId: -1,
   activeElementId: '-1',
   hoveredElementId: '-1',
+  masterScreenId: null,
   selectedAssetListId: null,
   selectedElementsIds: [],
   freeCanvas: {
@@ -76,6 +71,7 @@ export const initialCommunication: ProjectCommunicationState = {
   screenCreateLoader: false,
   updateImageLoader: false,
   screenLoader: false,
+  masterScreenLoader: false,
   projectLoader: false,
   projectCreateLoader: false,
   analyzerLoader: false,

@@ -9,10 +9,7 @@ import {
   selectCurrentRootId,
 } from '@Redux/project/selectors/element';
 import Tree from '@Components/LeftPanel/Navigator/components/Tree';
-import {
-  selectMasterElements,
-  selectMasterScreenEnabled,
-} from '@Redux/project/selectors/masterScreen';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import { makeTree, updateTree, convertElements } from './utils';
 import {
   StyledAccordion,
@@ -22,13 +19,10 @@ import {
 
 const Navigator: React.FC = () => {
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
-  const masterElements = useSelector(selectMasterElements);
-  const screenElements = useSelector(selectElementsForCurrentScreen);
+  const elements = useSelector(selectElementsForCurrentScreen);
   const screenRootId = useSelector(selectCurrentRootId);
 
   const rootId = masterScreenEnabled ? 'masterRoot' : screenRootId;
-
-  const elements = masterScreenEnabled ? masterElements : screenElements;
 
   const [tree, setTree] = useState<TreeData>(
     makeTree(convertElements(elements), rootId),

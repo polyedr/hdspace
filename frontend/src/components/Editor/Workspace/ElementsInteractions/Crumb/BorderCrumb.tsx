@@ -9,11 +9,6 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectShowingBorders } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
-import {
-  selectActiveMasterElementId,
-  selectMasterElementById,
-  selectMasterScreenEnabled,
-} from '@Redux/project/selectors/masterScreen';
 import { setActiveElement } from '@Redux/project/actions';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
@@ -57,20 +52,11 @@ const useStyles = makeStyles((theme) => ({
 
 const BorderCrumb: React.FC<Props> = (props) => {
   const { elementId, children } = props;
-  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
-  const masterElement = useSelector(selectMasterElementById(elementId));
-  const stateElement = useSelector(selectElementById(elementId));
+  const element = useSelector(selectElementById(elementId));
 
-  const stateRootId = useSelector(selectCurrentRootId);
+  const rootId = useSelector(selectCurrentRootId);
   const showBorders = useSelector(selectShowingBorders);
   const activeElementId = useSelector(selectActiveElementId);
-  const activeMasterElementId = useSelector(selectActiveMasterElementId);
-
-  const rootId = masterScreenEnabled ? 'masterRoot' : stateRootId;
-  const element = masterScreenEnabled ? masterElement : stateElement;
-  const activeId = masterScreenEnabled
-    ? activeMasterElementId
-    : activeElementId;
 
   const dispatch = useDispatch();
 
@@ -81,7 +67,7 @@ const BorderCrumb: React.FC<Props> = (props) => {
 
   const showCrumb =
     !ELEMENTS_WITHOUT_CRUMB.includes(element.type) &&
-    (showBorders || elementId === activeId);
+    (showBorders || elementId === activeElementId);
 
   const handleSourceElementClick = useCallback(() => {
     dispatch(setActiveElement(element.parameters?.sourceElementId));

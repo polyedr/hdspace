@@ -30,6 +30,7 @@ import {
   AssetResults,
   ProjectsSearchParameter,
   DateRange,
+  // MasterScreenParameters,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -43,13 +44,7 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
-  masterScreen: {
-    enabled: boolean;
-    activeId: string;
-    elements: {
-      [k in string]?: any;
-    };
-  };
+  // masterScreenParameters: MasterScreenParameters;
 };
 
 export type ProjectUiState = {
@@ -77,6 +72,7 @@ export type ProjectEditState = {
   selectedAssetListId: string | null;
   uploadedImageInfo?: UploadedImageInfo;
   selectedElementsIds: string[];
+  masterScreenId: number | null;
   freeCanvas: {
     enabled: boolean;
     lastElements: {
@@ -92,6 +88,7 @@ export type ProjectCommunicationState = {
   screenCreateLoader: boolean;
   updateImageLoader: boolean;
   screenLoader: boolean; // TODO: make sure this loader is useless
+  masterScreenLoader: boolean;
   projectLoader: boolean;
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
@@ -201,6 +198,10 @@ export type SetScreenLoader = IAction<
   typeof TYPES.SET_SCREEN_LOADER,
   { active: boolean }
 >;
+export type SetMasterScreenLoader = IAction<
+  typeof TYPES.SET_MASTER_SCREEN_LOADER,
+  { active: boolean }
+>;
 export type SetUpdateImageLoader = IAction<
   typeof TYPES.SET_UPDATE_IMAGE_LOADER,
   { active: boolean }
@@ -231,7 +232,13 @@ export type RenameScreen = IAction<
 >;
 export type CreateScreen = IAction<
   typeof TYPES.CREATE_SCREEN,
-  { projectID: number; name: string; buoyancy: number; skip: boolean }
+  {
+    projectID: number;
+    name: string;
+    buoyancy: number;
+    skip: boolean;
+    rootName?: string;
+  }
 >;
 export type DuplicateScreen = IAction<
   typeof TYPES.DUPLICATE_SCREEN,
@@ -730,14 +737,14 @@ export type SetEditorDocument = IAction<
   Document
 >;
 
-export type SetActiveMasterElement = IAction<
-  typeof TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
-  string
->;
-
-export type SetMasterScreenEnabled = IAction<
+/* export type SetMasterScreenEnabled = IAction<
   typeof TYPES.SET_MASTER_SCREEN_ENABLED,
   boolean
+>; */
+
+export type SetMasterScreenId = IAction<
+  typeof TYPES.SET_MASTER_SCREEN_ID,
+  number | null
 >;
 
 export type ToggleMasterScreen = IPlainAction<
@@ -768,6 +775,7 @@ export type Action =
   | SetProjectListLoader
   | SetProjectLoader
   | SetScreenLoader
+  | SetMasterScreenLoader
   | SetUpdateImageLoader
   | SetProjectCreateLoader
   | SetAnalyzerLoader
@@ -871,15 +879,14 @@ export type Action =
   | RemoveMultipleElementsStyles
   | UploadAsset
   | UploadElementAsset
-  | SetActiveMasterElement
-  | SetMasterScreenEnabled
   | ToggleMasterScreen
   | RemoveMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup
   | MoveStateElementsInside
   | CreateStateGroup
-  | UpdateMultipleElementsParameters;
+  | UpdateMultipleElementsParameters
+  | SetMasterScreenId;
 
 export type HistoryMeta = {
   undo?: boolean;

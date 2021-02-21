@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
-import MasterElement from './MasterElement';
 
 const MasterScreen: FC = () => {
-  return <MasterElement id="masterRoot" />;
+  return <span>12345</span>;
 };
 
 export default MasterScreen;

@@ -32,7 +32,7 @@ import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
 import { extractStyles } from '@Utils/stringHelper';
 import IMAGES from '@Constants/images';
-import { changePrototypeMode } from '@Redux/user/actions';
+// import { changePrototypeMode } from '@Redux/user/actions';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -67,7 +67,6 @@ import {
   selectScreens,
 } from '../selectors/screen';
 import {
-  selectActiveElement,
   selectAllElements,
   selectCurrentRootId,
   selectElementById,
@@ -75,10 +74,6 @@ import {
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
-import {
-  selectActiveMasterElement,
-  selectMasterScreenEnabled,
-} from '../selectors/masterScreen';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -161,7 +156,7 @@ export function* createScreenSaga({
       const rootElement = convertCreatedElementToRequest(
         'root',
         String(rootScenario.id),
-        'Root',
+        payload.rootName || 'Root',
       );
 
       const {
@@ -567,7 +562,7 @@ export function* getScreensSaga(screens: Screen[]) {
         scenariosIDs: [screens.map((screen) => screen.screenscenario)],
       },
     );
-
+    console.log('GET ELEMENTS!!');
     if (elements) {
       yield put(
         setScreens(
@@ -585,12 +580,14 @@ export function* getScreensSaga(screens: Screen[]) {
         ),
       );
 
+      console.log('ADD STATE ELEMENTS!!', elements);
       yield put(
         addElements(elements.map((el) => convertElementFromResponse(el))),
       );
     }
     if (error) throw new Error(error);
   } catch (e) {
+    console.error('ERROR!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -793,20 +790,21 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
   }
 }
 
-export function* toggleMasterScreenSaga() {
+/* export function* toggleMasterScreenSaga() {
   try {
+    console.log('TOGGLE MASTER SCREEN SAGA!!');
     const enabled: boolean = yield select(selectMasterScreenEnabled);
-    const activeMasterElement = yield select(selectActiveMasterElement);
-    const activeElement: StateElement = yield select(selectActiveElement);
+    // const activeMasterElement = yield select(selectActiveMasterElement);
+    // const activeElement: StateElement = yield select(selectActiveElement);
 
     yield put(Actions.changeFreeCanvasMode(false));
     yield put(changePrototypeMode(false));
 
-    yield put(
+    /* yield put(
       Actions.setEditableStyles(
         enabled ? activeElement.styles.classNames[0] : activeMasterElement.type,
       ),
-    );
+    ); 
 
     yield put(Actions.setMasterScreenEnabled(!enabled));
   } catch (e) {
@@ -817,4 +815,4 @@ export function* toggleMasterScreenSaga() {
       }),
     );
   }
-}
+} */

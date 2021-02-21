@@ -117,12 +117,12 @@ import {
   AddAssetList,
   UploadAsset,
   AddAssetRedux,
-  SetActiveMasterElement,
-  SetMasterScreenEnabled,
   ToggleMasterScreen,
   MoveStateElement,
   MoveStateElementsInside,
   CreateStateGroup,
+  SetMasterScreenId,
+  SetMasterScreenLoader,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -216,6 +216,13 @@ export const setScreenLoader = (active: boolean): SetScreenLoader => ({
   payload: { active },
 });
 
+export const setMasterScreenLoader = (
+  active: boolean,
+): SetMasterScreenLoader => ({
+  type: TYPES.SET_MASTER_SCREEN_LOADER,
+  payload: { active },
+});
+
 export const setUpdateImageLoader = (
   active: boolean,
 ): SetUpdateImageLoader => ({
@@ -275,9 +282,10 @@ export const createScreen = (
   name: string,
   buoyancy: number,
   skip: boolean = false,
+  rootName?: string,
 ): CreateScreen => ({
   type: TYPES.CREATE_SCREEN,
-  payload: { projectID, name, buoyancy, skip },
+  payload: { projectID, name, buoyancy, skip, rootName },
 });
 
 export const duplicateScreen = (
@@ -1089,18 +1097,11 @@ export const toggleSelectedElement = (id: string) => ({
   payload: { id },
 });
 
-export const setActiveMasterElementId = (
-  id: string,
-): SetActiveMasterElement => ({
-  type: TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
-  payload: id,
-});
-
-export const setMasterScreenEnabled = (
-  enabled: boolean,
-): SetMasterScreenEnabled => ({
-  type: TYPES.SET_MASTER_SCREEN_ENABLED,
-  payload: enabled,
+export const setMasterScreenId = (
+  screenId: number | null,
+): SetMasterScreenId => ({
+  type: TYPES.SET_MASTER_SCREEN_ID,
+  payload: screenId,
 });
 
 export const toggleMasterScreen = (): ToggleMasterScreen => ({

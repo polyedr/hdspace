@@ -23,6 +23,7 @@ export const makeButton = ({
   textContent?: string;
   ownStyles?: React.CSSProperties;
 } = {}): ButtonServerElement => ({
+  id: 'button',
   buoyancy,
   func_type: 'button',
   struct_type: 'button',
@@ -46,6 +47,7 @@ export const makeTextinput = ({
 }: {
   ownStyles?: React.CSSProperties;
 } = {}): TextinputServerElement => ({
+  id: 'textinput',
   buoyancy: 0,
   func_type: 'textinput',
   struct_type: 'textinput',
@@ -66,6 +68,7 @@ export const makeTextinput = ({
 });
 
 export const checkbox: CheckboxServerElement = {
+  id: 'checkbox',
   buoyancy: 0,
   func_type: 'checkbox',
   struct_type: 'checkbox',
@@ -89,6 +92,7 @@ export const checkbox: CheckboxServerElement = {
 };
 
 export const radiobutton: RadiobuttonServerElement = {
+  id: 'radiobutton',
   buoyancy: 0,
   func_type: 'radiobutton',
   struct_type: 'radiobutton',
@@ -114,6 +118,7 @@ export const makeSelectItem = (
   name: string,
   value: string,
 ): SelectItemServerElement => ({
+  id: 'selectItem',
   buoyancy: 0,
   func_type: 'selectItem',
   struct_type: 'selectItem',
@@ -133,6 +138,7 @@ export const makeSelectItem = (
 });
 
 export const selectMenu: SelectMenuServerElement = {
+  id: 'selectMenu',
   buoyancy: 0,
   func_type: 'selectMenu',
   struct_type: 'selectMenu',
@@ -154,6 +160,7 @@ export const selectMenu: SelectMenuServerElement = {
 };
 
 export const select: SelectServerElement = {
+  id: 'select',
   buoyancy: 0,
   func_type: 'select',
   struct_type: 'select',
@@ -181,10 +188,9 @@ export const select: SelectServerElement = {
 export const makeLabel = ({
   textContent = 'This is label',
   ownStyles = {},
-}: {
-  textContent?: string;
-  ownStyles?: React.CSSProperties;
+  UID = 'master',
 } = {}): LabelServerElement => ({
+  id: `label-${UID}`,
   buoyancy: 0,
   func_type: 'label',
   struct_type: 'label',
@@ -204,6 +210,7 @@ export const makeLabel = ({
 });
 
 export const textarea: TextareaServerElement = {
+  id: 'textarea',
   buoyancy: 0,
   func_type: 'textarea',
   struct_type: 'textarea',

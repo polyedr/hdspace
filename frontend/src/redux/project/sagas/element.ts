@@ -50,7 +50,6 @@ import {
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import { selectMasterElementById } from '../selectors/masterScreen';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -1128,7 +1127,7 @@ export function* createElementsGroupSaga(
   }
 }
 
-export function* setActiveMasterElementSaga({
+/* export function* setActiveMasterElementSaga({
   payload,
 }: ReturnType<typeof Actions.setActiveMasterElementId>) {
   try {
@@ -1143,4 +1142,4 @@ export function* setActiveMasterElementSaga({
       }),
     );
   }
-}
+} */

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import {
-  DEFAULT_ACTIVE_ELEMENT,
+  // DEFAULT_ACTIVE_ELEMENT,
   DEFAULT_ROOT,
   LABELED_INPUT_TYPES,
 } from '@Constants/defaultParams';
@@ -116,7 +116,7 @@ export const selectAllElements = ({ project }: AppReduxState) =>
 export const selectActiveElement = createSelector(
   selectAllElements,
   selectActiveElementId,
-  (elements, id) => elements[id] || DEFAULT_ACTIVE_ELEMENT,
+  (elements, id) => elements[id] || DEFAULT_ROOT,
 );
 
 function makeActiveElementInfoSelector<

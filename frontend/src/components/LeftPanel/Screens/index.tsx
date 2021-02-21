@@ -1,5 +1,6 @@
+import React, { useState, useCallback } from 'react';
+import { useHistory } from 'react-router';
 import List from '@material-ui/core/List';
-import React, { useState } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
@@ -11,7 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {
   createScreen,
   changeScreensOrder,
-  toggleMasterScreen,
+  // toggleMasterScreen,
 } from '@Redux/project/actions';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
@@ -20,12 +21,12 @@ import {
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
+  selectMasterScreenId,
   selectScreens,
 } from '@Redux/project/selectors/screen';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import HtmlImportForm from '@Components/HTMLImportForm';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/masterScreen';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
 import {
@@ -58,12 +59,19 @@ const useStyles = makeStyles(({ palette, typography }) => ({
 const Screens = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const history = useHistory();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const screens = useSelector(selectScreens);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
-  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const masterScreenId = useSelector(selectMasterScreenId);
+  /* const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const masterScreenLoader = useSelector(selectMasterScreenLoader); */
+
+  const [lastSelectedScreen, setLastSelectedScreen] = useState<number>(
+    currentScreenId,
+  );
 
   const handleCreateScreen = (ev) => {
     ev.preventDefault();
@@ -95,9 +103,18 @@ const Screens = () => {
     setAnchorEl(null);
   };
 
-  const handleToggleMasterScreen = () => {
+  /* const handleToggleMasterScreen = () => {
     dispatch(toggleMasterScreen());
-  };
+  }; */
+
+  const handleClick = useCallback(() => {
+    if (currentScreenId !== masterScreenId) {
+      setLastSelectedScreen(currentScreenId);
+      history.push(`/project/${currentProjectId}/${masterScreenId}`);
+    } else {
+      history.push(`/project/${currentProjectId}/${lastSelectedScreen}`);
+    }
+  }, [currentProjectId, history, masterScreenId]);
 
   return (
     <>
@@ -149,8 +166,10 @@ const Screens = () => {
         <StyledAccordionDetails className={classes.details}>
           <Button
             color="secondary"
-            variant={masterScreenEnabled ? 'contained' : 'outlined'}
-            onClick={handleToggleMasterScreen}
+            variant={
+              currentScreenId === masterScreenId ? 'contained' : 'outlined'
+            }
+            onClick={handleClick}
           >
             Master Screen
           </Button>

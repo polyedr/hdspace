@@ -1,7 +1,6 @@
 import {
   LibraryElement,
   Project,
-  StateElement,
   Screen,
   ElementGroup,
   Layout,
@@ -65,9 +64,9 @@ export const DEFAULT_SCREEN: Screen = {
   element: '-1',
 };
 
-export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
-  id: 'none',
-  type: 'none',
+/* export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
+  id: 'root',
+  type: 'root',
   name: 'Not selected',
   children: [],
   buoyancy: 0,
@@ -77,7 +76,7 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
     classNames: ['root'],
     ownStyles: {},
   },
-};
+}; */
 
 export const SAVEABLE_ELEMENTS = ['section'];
 
