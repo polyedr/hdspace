@@ -413,7 +413,7 @@ class ColumnWithTasksSerializer(serializers.ModelSerializer):
     columntask = ColumnTaskSerializer(many=True, read_only=True)
 
     class Meta:
-        model = ColumnTask
+        model = ProjectColumn
         fields = (
             "id",
             "title",
