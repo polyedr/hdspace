@@ -24,8 +24,6 @@ import {
   restoreScreenSaga,
   updateScreenImageSaga,
   convertFreeCanvasSaga,
-  importHtmlSaga,
-  uploadImportUrlSaga,
 } from '@Redux/project/sagas/screen';
 import {
   setActiveMasterElementSaga,
@@ -101,6 +99,7 @@ import {
   removeAssetSaga,
   restoreAssetSaga,
 } from './asset';
+import { importHtmlSaga, uploadImportUrlSaga } from './import';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,

@@ -153,7 +153,7 @@
     "invariant": "^2.2.4",
     "is-color-stop": "^1.1.0",
     "jss": "^10.5.0",
-    "jszip": "^3.5.0",
+    "jszip": "^3.6.0",
     "mat-ripple": "^1.0.3",
     "material-ui-popup-state": "^1.6.1",
     "notistack": "^1.0.1",
