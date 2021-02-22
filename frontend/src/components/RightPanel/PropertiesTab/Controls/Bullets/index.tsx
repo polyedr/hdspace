@@ -20,6 +20,7 @@ const Bullets: React.FC<Props> = ({
   updateStyles,
   removeStyles,
   listStyleType = 'disc',
+  masterScreenEnabled,
 }) => {
   const classes = useStyles();
 
@@ -29,11 +30,13 @@ const Bullets: React.FC<Props> = ({
 
   return (
     <div>
-      <StylesHeader
-        title="Bullets"
-        onClick={removeStyles}
-        cssPropertiesNames={['listStyleType']}
-      />
+      {!masterScreenEnabled && (
+        <StylesHeader
+          title="Bullets"
+          onClick={removeStyles}
+          cssPropertiesNames={['listStyleType']}
+        />
+      )}
 
       <div className={classes.wrapper}>
         <FormControlLabel

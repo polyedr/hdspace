@@ -12,6 +12,7 @@ const BackgroundBlock: React.FC<Props> = ({
   updateStyles,
   activeElementId,
   backgroundColor = 'transparent',
+  masterScreenEnabled,
 }) => {
   const handleColorSettingsChange = useCallback(
     (color: string) => {
@@ -22,11 +23,13 @@ const BackgroundBlock: React.FC<Props> = ({
 
   return (
     <div>
-      <StylesHeader
-        title="Background"
-        onClick={removeStyles}
-        cssPropertiesNames={['backgroundColor']}
-      />
+      {!masterScreenEnabled && (
+        <StylesHeader
+          title="Background"
+          onClick={removeStyles}
+          cssPropertiesNames={['backgroundColor']}
+        />
+      )}
 
       <ColorSettings
         currentColor={backgroundColor || 'transparent'}

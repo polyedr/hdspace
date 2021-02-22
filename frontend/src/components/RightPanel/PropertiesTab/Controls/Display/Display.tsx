@@ -21,6 +21,7 @@ const Display: React.FC<Props> = ({
   flexDirection,
   justifyContent,
   alignItems,
+  masterScreenEnabled,
 }) => {
   const handleDisplayDropdownChange = useCallback(
     (event) => {
@@ -32,16 +33,18 @@ const Display: React.FC<Props> = ({
   return (
     <>
       <div>
-        <StylesHeader
-          title="Display"
-          onClick={removeStyles}
-          cssPropertiesNames={[
-            'display',
-            'justifyContent',
-            'alignItems',
-            'flexDirection',
-          ]}
-        />
+        {!masterScreenEnabled && (
+          <StylesHeader
+            title="Display"
+            onClick={removeStyles}
+            cssPropertiesNames={[
+              'display',
+              'justifyContent',
+              'alignItems',
+              'flexDirection',
+            ]}
+          />
+        )}
 
         <StyledTextField
           fullWidth

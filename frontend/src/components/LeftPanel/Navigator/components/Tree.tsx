@@ -98,7 +98,6 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const handleClose = () => setState(initialState);
 
   const expandItemParents = useCallback((tree: TreeData, id: string) => {
-    console.log('TEST DATA!!', tree);
     // @ts-ignore
     const parentId = tree.items[id]?.parent;
     if (!parentId) return tree;

@@ -11,7 +11,7 @@ export const selectCurrentScreen = createSelector(
   (screens, id) => screens[id] || DEFAULT_SCREEN,
 );
 
-export const selectScreens = createSelector(
+export const selectScreensWithoutMaster = createSelector(
   (state: AppReduxState) => state.project.data.screens,
   (state: AppReduxState) => state.project.edit.masterScreenId,
   (screens, masterScreenId) => {
@@ -20,6 +20,11 @@ export const selectScreens = createSelector(
       .sort((a, b) => a.buoyancy - b.buoyancy);
   },
 );
+
+export const selectScreens = (state: AppReduxState) =>
+  Object.values(state.project.data.screens).sort(
+    (a, b) => a.buoyancy - b.buoyancy,
+  );
 
 export const selectScreensLength = (state: AppReduxState) =>
   selectScreens(state).length;

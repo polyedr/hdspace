@@ -5,6 +5,7 @@ import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Theme } from '@material-ui/core';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
@@ -86,6 +87,7 @@ const tabContent: Record<RPTab, any> = {
 const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const classes = useStyles({ open: !isPrototypeMode });
   const tabClasses = useTabStyles();
@@ -99,6 +101,10 @@ const RightPanel: React.FC = () => {
 
   useEffect(() => {
     setActiveTabIndex(0);
+    if (masterScreenEnabled) {
+      setTabs([RPTab.Properties]);
+      return;
+    }
     const isInteractive = INTERACTIVE_ELEMENTS.includes(activeElement.type);
     const isFertile = canElementHaveAllChildren(activeElement.type);
 
@@ -111,7 +117,7 @@ const RightPanel: React.FC = () => {
     }
 
     setTabs(newTabs);
-  }, [activeElement.type]);
+  }, [activeElement.type, masterScreenEnabled]);
 
   useEffect(() => {
     if (KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {

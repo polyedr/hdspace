@@ -28,7 +28,13 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 };
 
 const BackgroundSize: React.FC<Props> = memo(
-  ({ updateStyles, removeStyles, backgroundSize, activeElementId }) => {
+  ({
+    updateStyles,
+    removeStyles,
+    backgroundSize,
+    activeElementId,
+    masterScreenEnabled,
+  }) => {
     const editorDocument = useSelector(selectEditorDocument);
 
     const [width, height] = useMemo(() => {
@@ -157,11 +163,13 @@ const BackgroundSize: React.FC<Props> = memo(
 
     return (
       <div>
-        <StylesHeader
-          title="Background Size"
-          onClick={removeStyles}
-          cssPropertiesNames={['backgroundSize']}
-        />
+        {!masterScreenEnabled && (
+          <StylesHeader
+            title="Background Size"
+            onClick={removeStyles}
+            cssPropertiesNames={['backgroundSize']}
+          />
+        )}
 
         <div>
           {renderSizeControl('width')}

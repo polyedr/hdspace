@@ -947,6 +947,7 @@ export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
+  masterScreenEnabled?: boolean;
 };
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';

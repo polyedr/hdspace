@@ -110,7 +110,7 @@ const PropertiesTab: React.FC = () => {
             screenId: currentScreenId,
           }),
         );
-      } else if (editableStyles === 'ownStyles') {
+      } else if (editableStyles === 'ownStyles' && !masterScreenEnabled) {
         if (isGroupSource) {
           const groupElementsIds = activeElement.parameters.groupElements;
           dispatch(
@@ -140,6 +140,7 @@ const PropertiesTab: React.FC = () => {
     [
       selectedElementsIds,
       editableStyles,
+      masterScreenEnabled,
       dispatch,
       currentScreenId,
       isGroupSource,
@@ -185,9 +186,15 @@ const PropertiesTab: React.FC = () => {
         );
       } else {
         dispatch(
-          updateSharedStyles(editableStyles as Entity, styles, {
-            screenId: currentScreenId,
-          }),
+          updateSharedStyles(
+            (masterScreenEnabled
+              ? activeElement.type
+              : editableStyles) as Entity,
+            styles,
+            {
+              screenId: currentScreenId,
+            },
+          ),
         );
       }
     },
@@ -200,6 +207,7 @@ const PropertiesTab: React.FC = () => {
       isGroupSource,
       activeElement.id,
       activeElement.parameters.groupElements,
+      activeElement.type,
     ],
   );
 
@@ -245,24 +253,27 @@ const PropertiesTab: React.FC = () => {
                     removeStyles={!masterScreenEnabled && removeStyles}
                     updateStyles={updateStyles}
                     updateParams={!masterScreenEnabled && updateParams}
+                    masterScreenEnabled={masterScreenEnabled}
                   />
                 </ControlSection>
               );
             })}
 
-            {type !== 'root' && elementsControlsCollection.length === 1 && (
-              <>
-                {!isGroupElement && (
-                  <ControlSection title="Share styles">
-                    <ShareStyles />
-                  </ControlSection>
-                )}
+            {type !== 'root' &&
+              elementsControlsCollection.length === 1 &&
+              !masterScreenEnabled && (
+                <>
+                  {!isGroupElement && (
+                    <ControlSection title="Share styles">
+                      <ShareStyles />
+                    </ControlSection>
+                  )}
 
-                <ControlSection title="Element name">
-                  <RenameElement />
-                </ControlSection>
-              </>
-            )}
+                  <ControlSection title="Element name">
+                    <RenameElement />
+                  </ControlSection>
+                </>
+              )}
           </>
         )}
       </Scrollbar>

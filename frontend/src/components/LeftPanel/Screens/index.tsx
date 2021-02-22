@@ -19,7 +19,7 @@ import {
   selectCurrentScreenId,
   selectMasterScreenEnabled,
   selectMasterScreenId,
-  selectScreens,
+  selectScreensWithoutMaster,
 } from '@Redux/project/selectors/screen';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -60,7 +60,7 @@ const Screens = () => {
 
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const screens = useSelector(selectScreens);
+  const screens = useSelector(selectScreensWithoutMaster);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
   const masterScreenId = useSelector(selectMasterScreenId);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
