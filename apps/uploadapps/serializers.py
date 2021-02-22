@@ -77,7 +77,8 @@ class WpgSavedSerializer(serializers.ModelSerializer):
         # extra_kwargs = {"wpurl": {"read_only": True}, "wpname": {"write_only": True}}
 
     def create(self, validated_data):
-        url = validated_data.pop("wpname", None)
+        # url = validated_data.pop("wpname", None)
+        url = validated_data["wpname"]
         # Remove url from the submitted data
         # validated_data['fileurl'] = ''
         # Download data from url (requires `requests` module.  Can also be done with urllib)
@@ -96,6 +97,6 @@ class WpgSavedSerializer(serializers.ModelSerializer):
         wpath = MEDIA_ROOT + "/uploads/"
 
         os.chdir(wpath)
-        subprocess.run(["wget", "-p", "-k", validated_data["wpname"]])
+        subprocess.run(["wget", "-p", "-k", url])
 
         return wpsaved
