@@ -6,8 +6,9 @@ from django.core.files.uploadedfile import UploadedFile
 from rest_framework import serializers
 from apps.uploadapps.models import Fileupload, WebpageSaved, WpgSaved
 import subprocess
+import shutil
 
-from project.settings import MEDIA_URL, MEDIA_ROOT
+from project.settings import MEDIA_ROOT, MEDIA_URL
 
 
 class FileSerializer(serializers.ModelSerializer):
@@ -91,12 +92,26 @@ class WpgSavedSerializer(serializers.ModelSerializer):
         '''
         # print("wpname=", wpname)
         # validated_data["wpname"] = UploadedFile(BytesIO(response.content), name=wpname)
-        wpsaved = WebpageSaved(id=None, **validated_data)
-        wpsaved.save()
+        wpsaved = WpgSaved(id=None, **validated_data)
 
         wpath = MEDIA_ROOT + "/uploads/"
 
         os.chdir(wpath)
         subprocess.run(["wget", "-p", "-k", url])
+
+        fname = urlparse(url).netloc
+        SAVE_DIR = os.path.join(wpath, fname)
+        # Archive all the files for a zip directory
+        shutil.make_archive(SAVE_DIR, "zip", SAVE_DIR)
+        zip_archive_name = fname + ".zip"
+
+        # Obtaining the absolute path for the parameters directly. Should change this later.
+        o = urlparse(self.context["request"].build_absolute_uri())
+        t = (
+            "https://" + o.netloc + MEDIA_URL + "uploads/" + zip_archive_name
+        )
+
+        wpsaved.wpname = t
+        wpsaved.save()
 
         return wpsaved
