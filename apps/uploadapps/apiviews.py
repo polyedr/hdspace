@@ -5,10 +5,11 @@ from django.core.files.base import File, ContentFile
 from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import status, permissions
+from rest_framework import status, permissions, generics
 
-from apps.uploadapps.serializers import FileSerializer, WebpageSavedSerializer
+from apps.uploadapps.serializers import FileSerializer, WebpageSavedSerializer, WpgSavedSerializer
 from project.settings import MEDIA_URL, MEDIA_ROOT
+from apps.uploadapps.models import WpgSaved
 
 
 class FileUploadView(APIView):
@@ -48,3 +49,9 @@ class WebpageSavedView(APIView):
             # return Response({"wpname": wp_name}, status=status.HTTP_201_CREATED)
             return Response({"wpname": name}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WpgSavedView(generics.ListCreateAPIView):
+    queryset = WpgSaved.objects.all()
+    serializer_class = WpgSavedSerializer
+    # permission_classes = (permissions.IsAuthenticated,)

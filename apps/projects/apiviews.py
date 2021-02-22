@@ -143,6 +143,7 @@ class ColumnWithTasksViewSet(viewsets.ModelViewSet):
     pagination_class = None
     http_method_names = ['get', 'head']
 
+    '''
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
 
@@ -152,6 +153,7 @@ class ColumnWithTasksViewSet(viewsets.ModelViewSet):
     def filter_queryset(self, queryset):
         queryset = queryset.filter(user=self.request.user)
         return queryset
+    '''
 
 
 class ElementViewSet(viewsets.ViewSet):
