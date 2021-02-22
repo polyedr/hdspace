@@ -39,7 +39,7 @@ export const getRightPanelCategoryTabs = (
         },
       };
     case 'list':
-    case 'divBlock':
+    case 'container':
     case 'paragraph':
     case 'heading':
     case 'hyperlink':
@@ -119,7 +119,7 @@ export const getRightPanelCategoryTabs = (
           [structType]: convertElementToData(libraryElements[structType]),
         },
       };
-    case 'container':
+    case 'divBlock':
     case 'ocrtext':
     case 'root':
     default:
