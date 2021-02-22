@@ -47,10 +47,6 @@ export const selectMasterScreenEnabled = createSelector(
   selectCurrentScreenId,
   selectMasterScreenId,
   (currentScreenId: number | null, masterScreenId: number | null) => {
-    return (
-      currentScreenId !== null &&
-      masterScreenId !== null &&
-      currentScreenId === masterScreenId
-    );
+    return currentScreenId === masterScreenId;
   },
 );

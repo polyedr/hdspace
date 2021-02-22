@@ -23,16 +23,14 @@ const Navigator: React.FC = () => {
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const [tree, setTree] = useState<TreeData>(
-    makeTree(convertElements({ ...elements }, masterScreenEnabled), rootId),
+    makeTree(convertElements(elements, masterScreenEnabled), rootId),
   );
 
   useEffect(() => {
-    if (masterScreenEnabled) {
-      return;
-    }
     const newTree = makeTree(convertElements(elements), rootId);
-    setTree(updateTree(tree, newTree));
-  }, [elements, masterScreenEnabled, rootId, tree]);
+    const updatedTree = updateTree(tree, newTree);
+    setTree(updatedTree);
+  }, [rootId, elements]);
 
   const expandParents = useCallback(
     (itemId) => {
@@ -40,11 +38,10 @@ const Navigator: React.FC = () => {
       // @ts-ignore
       const parentId = tree.items[itemId]?.parent;
       if (!parentId) return;
-      if (!tree.items[parentId].isExpanded) {
-        setTree((prevTree) => {
-          return mutateTree(prevTree, parentId, { isExpanded: true });
-        });
-      }
+      setTree((prevTree) => {
+        return mutateTree(prevTree, parentId, { isExpanded: true });
+      });
+
       expandParents(parentId);
     },
     [tree],

@@ -255,6 +255,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       setIsDragging(false);
       return;
     }
+
     if (!canElementBeAdded(elements, newParent.id as string, child.data.type)) {
       dispatch(
         enqueueSnackbar({

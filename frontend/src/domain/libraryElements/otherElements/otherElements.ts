@@ -122,7 +122,18 @@ export const makeGridItem = ({
   children: [],
 });
 
-export const makeGrid = ({ UID = 'master' } = {}): GridServerElement => ({
+export const makeGrid = ({
+  items = [
+    makeGridItem({ UID: '1' }),
+    makeGridItem({ UID: '2' }),
+    makeGridItem({ UID: '3' }),
+    makeGridItem({ UID: '4' }),
+  ],
+  UID = 'master',
+}: {
+  items?: GridItemServerElement[];
+  UID?: string;
+} = {}): GridServerElement => ({
   id: `grid-${UID}`,
   buoyancy: 0,
   name: 'grid',
@@ -141,12 +152,7 @@ export const makeGrid = ({ UID = 'master' } = {}): GridServerElement => ({
     classNames: ['grid'],
     ownStyles: {},
   },
-  children: [
-    makeGridItem({ UID: '1' }),
-    makeGridItem({ UID: '2' }),
-    makeGridItem({ UID: '3' }),
-    makeGridItem({ UID: '4' }),
-  ],
+  children: items,
 });
 
 export const column: ColumnServerElement = {

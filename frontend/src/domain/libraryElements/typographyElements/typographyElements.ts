@@ -124,6 +124,40 @@ export const textBlock: TextBlockServerElement = {
   children: [],
 };
 
+export const makeList = ({
+  items = [],
+  UID = 'master',
+}: {
+  items?: ListItemServerElement[];
+  UID?: string;
+}): ListServerElement => ({
+  id: `list-${UID}`,
+  buoyancy: 0,
+  func_type: 'list',
+  struct_type: 'list',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    listItems: items.map((item) => {
+      const { textContent, isLink, link } = item.parameters;
+      return {
+        textContent,
+        isLink: isLink || false,
+        link: link || '',
+      };
+    }),
+
+    isOrdered: false,
+  },
+  styles: {
+    classNames: ['list'],
+    ownStyles: {},
+  },
+  name: 'list',
+  children: items,
+});
+
 export const makeListItem = ({
   textContent = '',
   UID = 'master',
