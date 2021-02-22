@@ -214,9 +214,9 @@ export const makeColumns = (
     classNames: ['columns'],
     ownStyles: {},
   },
-  children: Array.from(Array(columnsCount)).map((index) =>
-    makeColumn({ UID: `master-column-${index}` }),
-  ),
+  children: Array.from(Array(columnsCount)).map((_undefined, index) => {
+    return makeColumn({ UID: `${index}` });
+  }),
 });
 
 export const nativeColumns: NativeColumnsServerElement = {

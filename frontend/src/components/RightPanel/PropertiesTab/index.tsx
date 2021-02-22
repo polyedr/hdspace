@@ -13,7 +13,12 @@ import {
 } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
-import { Entity, Params, PropertyName } from '@Src/types';
+import {
+  CONTROLS_AFFECT_ON_PARAMS,
+  Entity,
+  Params,
+  PropertyName,
+} from '@Src/types';
 import {
   removeElementStyles,
   removeMultipleElementsStyles,
@@ -25,7 +30,10 @@ import {
 } from '@Redux/project/actions';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { ALL_ELEMENTS_INDEX, UNIQUE_CONTROLS } from '@Constants/defaultParams';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import {
+  selectCurrentScreenId,
+  selectMasterScreenEnabled,
+} from '@Redux/project/selectors/screen';
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import RenameElement from './Controls/RenameElement/RenameElement';
@@ -52,6 +60,8 @@ const PropertiesTab: React.FC = () => {
   const editableStyles = useSelector(selectEditableStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
+
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const isGroupElement = !!activeElement.parameters.sourceElementId;
   const isGroupSource = !!activeElement.parameters.groupElements;
@@ -155,7 +165,7 @@ const PropertiesTab: React.FC = () => {
             { screenId: currentScreenId },
           ),
         );
-      } else if (editableStyles === 'ownStyles') {
+      } else if (editableStyles === 'ownStyles' && !masterScreenEnabled) {
         if (isGroupSource) {
           const groupElementsIds = activeElement.parameters.groupElements;
           dispatch(
@@ -184,11 +194,12 @@ const PropertiesTab: React.FC = () => {
     [
       selectedElementsIds,
       editableStyles,
+      masterScreenEnabled,
       dispatch,
       currentScreenId,
       isGroupSource,
       activeElement.id,
-      activeElement.parameters,
+      activeElement.parameters.groupElements,
     ],
   );
 
@@ -214,7 +225,13 @@ const PropertiesTab: React.FC = () => {
         {!isPrototypeMode && (
           <>
             {SELECTION_CONTROLS.map((controlName) => {
-              if (isFreeCanvasMode && controlName === 'size') {
+              if (
+                (isFreeCanvasMode && controlName === 'size') ||
+                (masterScreenEnabled &&
+                  CONTROLS_AFFECT_ON_PARAMS.includes(
+                    controlName as typeof CONTROLS_AFFECT_ON_PARAMS[number],
+                  ))
+              ) {
                 return null;
               }
               const controlInfo = CONTROLS[controlName];
@@ -225,9 +242,9 @@ const PropertiesTab: React.FC = () => {
                   <Control
                     {...getControlStyles(controlName, currentEditableStyles)}
                     activeElementId={activeElement.id}
-                    removeStyles={removeStyles}
+                    removeStyles={!masterScreenEnabled && removeStyles}
                     updateStyles={updateStyles}
-                    updateParams={updateParams}
+                    updateParams={!masterScreenEnabled && updateParams}
                   />
                 </ControlSection>
               );

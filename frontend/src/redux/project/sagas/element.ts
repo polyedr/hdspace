@@ -1126,20 +1126,3 @@ export function* createElementsGroupSaga(
     );
   }
 }
-
-/* export function* setActiveMasterElementSaga({
-  payload,
-}: ReturnType<typeof Actions.setActiveMasterElementId>) {
-  try {
-    const { type } = yield select(selectMasterElementById(payload));
-
-    yield put(Actions.setEditableStyles(type));
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-} */

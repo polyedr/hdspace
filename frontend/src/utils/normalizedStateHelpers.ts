@@ -136,7 +136,6 @@ export const addMapElements = (
   insertIndex?: number,
 ): Normalized<StateElement> => {
   const updatedChildren: Array<string> = [];
-  console.log('ADD MAP ELEMENTS!!', elements, state, parentId);
   if (insertIndex === undefined) {
     updatedChildren.push(...state[parentId].children);
     updatedChildren.push(...elements.map((el) => el.id));

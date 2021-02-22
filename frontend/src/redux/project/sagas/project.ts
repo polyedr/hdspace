@@ -40,8 +40,6 @@ import {
 import { selectScreenById } from '../selectors/screen';
 
 function* createMasterScreenElements(screen: Screen) {
-  console.log('STEP 1', screen);
-  // const masterScreenRoot = yield select(selectMaster)
   yield put(
     Actions.addStateElements(
       [CORE_ROOT_CONTAINER, CORE_GROUPS_CONTAINER],
@@ -49,13 +47,11 @@ function* createMasterScreenElements(screen: Screen) {
       { screenId: screen.id },
     ),
   );
-  console.log('STEP 2');
   yield put(
     Actions.addStateElements(CORE_MASTER_ELEMENTS, CORE_ROOT_CONTAINER.id, {
       screenId: screen.id,
     }),
   );
-  console.log('STEP 3');
 }
 
 export function* searchProjectsSaga() {
@@ -181,7 +177,6 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       yield put(Actions.setMasterScreenId(masterScreenId));
       const masterScreen = yield select(selectScreenById(masterScreenId));
       if (masterScreen) {
-        console.log('MASTER SCREEN!!', masterScreen);
         yield call(createMasterScreenElements, masterScreen);
       }
     }
@@ -273,7 +268,6 @@ export function* createProjectSaga(
       throw new Error(error);
     }
   } catch (e) {
-    console.error('ERROR 2', e);
     yield put(
       enqueueSnackbar({
         message: e.message,

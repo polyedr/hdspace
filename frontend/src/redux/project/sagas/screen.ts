@@ -562,7 +562,6 @@ export function* getScreensSaga(screens: Screen[]) {
         scenariosIDs: [screens.map((screen) => screen.screenscenario)],
       },
     );
-    console.log('GET ELEMENTS!!');
     if (elements) {
       yield put(
         setScreens(
@@ -580,14 +579,12 @@ export function* getScreensSaga(screens: Screen[]) {
         ),
       );
 
-      console.log('ADD STATE ELEMENTS!!', elements);
       yield put(
         addElements(elements.map((el) => convertElementFromResponse(el))),
       );
     }
     if (error) throw new Error(error);
   } catch (e) {
-    console.error('ERROR!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -789,30 +786,3 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
     );
   }
 }
-
-/* export function* toggleMasterScreenSaga() {
-  try {
-    console.log('TOGGLE MASTER SCREEN SAGA!!');
-    const enabled: boolean = yield select(selectMasterScreenEnabled);
-    // const activeMasterElement = yield select(selectActiveMasterElement);
-    // const activeElement: StateElement = yield select(selectActiveElement);
-
-    yield put(Actions.changeFreeCanvasMode(false));
-    yield put(changePrototypeMode(false));
-
-    /* yield put(
-      Actions.setEditableStyles(
-        enabled ? activeElement.styles.classNames[0] : activeMasterElement.type,
-      ),
-    ); 
-
-    yield put(Actions.setMasterScreenEnabled(!enabled));
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-} */

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign,no-return-assign,no-unused-vars,no-shadow */
-import React, { useEffect, useState } from 'react';
-import { TreeData } from '@atlaskit/tree';
+import React, { useEffect, useState, useCallback } from 'react';
+import { mutateTree, TreeData } from '@atlaskit/tree';
 import { useSelector } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -18,20 +18,37 @@ import {
 } from '../../styledComponents';
 
 const Navigator: React.FC = () => {
-  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
   const elements = useSelector(selectElementsForCurrentScreen);
-  const screenRootId = useSelector(selectCurrentRootId);
-
-  const rootId = masterScreenEnabled ? 'masterRoot' : screenRootId;
+  const rootId = useSelector(selectCurrentRootId);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const [tree, setTree] = useState<TreeData>(
-    makeTree(convertElements(elements), rootId),
+    makeTree(convertElements({ ...elements }, masterScreenEnabled), rootId),
   );
 
   useEffect(() => {
+    if (masterScreenEnabled) {
+      return;
+    }
     const newTree = makeTree(convertElements(elements), rootId);
     setTree(updateTree(tree, newTree));
-  }, [elements, rootId]);
+  }, [elements, masterScreenEnabled, rootId, tree]);
+
+  const expandParents = useCallback(
+    (itemId) => {
+      if (itemId === 'root') return;
+      // @ts-ignore
+      const parentId = tree.items[itemId]?.parent;
+      if (!parentId) return;
+      if (!tree.items[parentId].isExpanded) {
+        setTree((prevTree) => {
+          return mutateTree(prevTree, parentId, { isExpanded: true });
+        });
+      }
+      expandParents(parentId);
+    },
+    [tree],
+  );
 
   return (
     <StyledAccordion defaultExpanded>

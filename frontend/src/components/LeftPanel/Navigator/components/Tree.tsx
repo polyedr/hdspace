@@ -1,4 +1,10 @@
-import React, { KeyboardEvent, useState, MouseEvent, useEffect } from 'react';
+import React, {
+  KeyboardEvent,
+  useState,
+  MouseEvent,
+  useMemo,
+  useCallback,
+} from 'react';
 import AtlasTree, {
   mutateTree,
   RenderItemParams,
@@ -91,101 +97,131 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
 
   const handleClose = () => setState(initialState);
 
-  const expandItemParents = (tree: TreeData, id: string) => {
+  const expandItemParents = useCallback((tree: TreeData, id: string) => {
+    console.log('TEST DATA!!', tree);
     // @ts-ignore
     const parentId = tree.items[id]?.parent;
     if (!parentId) return tree;
-    const newTree = mutateTree(tree, parentId, { isExpanded: true });
-    return expandItemParents(newTree, parentId);
-  };
+    if (tree.items[parentId] && !tree.items[parentId].isExpanded) {
+      const newTree = mutateTree(tree, parentId, { isExpanded: true });
+      return expandItemParents(newTree, parentId);
+    }
+    return tree;
+  }, []);
 
-  useEffect(() => {
-    setTree(expandItemParents(tree, activeElementId));
-  }, [activeElementId]);
+  const expandedTree = useMemo(() => expandItemParents(tree, activeElementId), [
+    activeElementId,
+    expandItemParents,
+    tree,
+  ]);
 
   const [selectedItemId, setSelectedItem] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const expand = (itemId) =>
-    setTree((state) => mutateTree(state, itemId, { isExpanded: true }));
+  const expand = useCallback(
+    (itemId) =>
+      setTree((state) => mutateTree(state, itemId, { isExpanded: true })),
+    [setTree],
+  );
 
-  const collapse = (itemId) =>
-    setTree((state) => mutateTree(state, itemId, { isExpanded: false }));
+  const collapse = useCallback(
+    (itemId) =>
+      setTree((state) => mutateTree(state, itemId, { isExpanded: false })),
+    [setTree],
+  );
 
-  const select = (itemId) => {
-    if (selectedItemId === itemId) return;
+  const select = useCallback(
+    (itemId) => {
+      if (selectedItemId === itemId) return;
 
-    dispatch(setActiveElement(itemId));
-  };
+      dispatch(setActiveElement(itemId));
+      setSelectedItem(itemId);
+    },
+    [dispatch, selectedItemId],
+  );
 
   const deselect = () => {
     setSelectedItem(null);
   };
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (selectedItemId && !isDragging) {
-      if (e.keyCode === 38) {
-        // ArrowUp
-        // TODO: add throttling
-        e.preventDefault();
-        const prevNodeId = findPrevNodeId(tree, selectedItemId);
-        select(prevNodeId);
-        focusTreeItem(prevNodeId);
-      }
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (selectedItemId && !isDragging) {
+        if (e.keyCode === 38) {
+          // ArrowUp
+          // TODO: add throttling
+          e.preventDefault();
+          const prevNodeId = findPrevNodeId(tree, selectedItemId);
+          select(prevNodeId);
+          focusTreeItem(prevNodeId);
+        }
 
-      if (e.keyCode === 40) {
-        // ArrowDown
-        // TODO: add throttling
-        e.preventDefault();
-        const nextNodeId = findNextNodeId(tree, selectedItemId);
-        focusTreeItem(nextNodeId);
-      }
+        if (e.keyCode === 40) {
+          // ArrowDown
+          // TODO: add throttling
+          e.preventDefault();
+          const nextNodeId = findNextNodeId(tree, selectedItemId);
+          focusTreeItem(nextNodeId);
+        }
 
-      if (e.keyCode === 39) {
-        // ArrowRight
-        expand(selectedItemId);
-        select(selectedItemId);
-      }
+        if (e.keyCode === 39) {
+          // ArrowRight
+          expand(selectedItemId);
+          select(selectedItemId);
+        }
 
-      if (e.keyCode === 37) {
-        // ArrowLeft
-        collapse(selectedItemId);
-        select(selectedItemId);
-      }
+        if (e.keyCode === 37) {
+          // ArrowLeft
+          collapse(selectedItemId);
+          select(selectedItemId);
+        }
 
-      if (e.keyCode === 32) {
-        // Space
-        setIsDragging((state) => !state);
-      }
+        if (e.keyCode === 32) {
+          // Space
+          setIsDragging((state) => !state);
+        }
 
-      if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
-        // Ctrl/Cmd + C
-        dispatch(copyActiveElement());
-      }
+        if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
+          // Ctrl/Cmd + C
+          dispatch(copyActiveElement());
+        }
 
-      if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {
-        // Ctrl/Cmd + V
-        dispatch(pasteCopiedElement({ screenId: currentScreenId }));
-      }
+        if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {
+          // Ctrl/Cmd + V
+          dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+        }
 
-      if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
-        // Delete or Cmd + Backspace
-        const prevItemId = findPrevNodeId(tree, selectedItemId);
-        dispatch(deleteElement(selectedItemId, { screenId: currentScreenId }));
-        focusTreeItem(prevItemId);
-      }
+        if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
+          // Delete or Cmd + Backspace
+          const prevItemId = findPrevNodeId(tree, selectedItemId);
+          dispatch(
+            deleteElement(selectedItemId, { screenId: currentScreenId }),
+          );
+          focusTreeItem(prevItemId);
+        }
 
-      if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
-        // Ctrl/Cmd + Z
-        dispatch(undoAction());
-      }
+        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+          // Ctrl/Cmd + Z
+          dispatch(undoAction());
+        }
 
-      if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
-        // Ctrl/Cmd + Shift + Z
-        dispatch(redoAction());
+        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+          // Ctrl/Cmd + Shift + Z
+          dispatch(redoAction());
+        }
       }
-    }
-  };
+    },
+    [
+      collapse,
+      currentScreenId,
+      dispatch,
+      expand,
+      isDragging,
+      select,
+      selectedItemId,
+      tree,
+    ],
+  );
 
   const dragStart = (itemId) => select(itemId);
 
@@ -262,7 +298,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         select={select}
         deselect={deselect}
         offset={OFFSET}
-        rulerHeight={getRulerHeight(props.item, tree, height)}
+        rulerHeight={getRulerHeight(props.item, expandedTree, height)}
         height={height}
         onContextMenu={handleMenuOpen}
         isActive={activeElementId === props.item.id}
@@ -285,7 +321,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           }}
         >
           <AtlasTree
-            tree={tree}
+            tree={expandedTree}
             renderItem={renderItem}
             onExpand={expand}
             onCollapse={collapse}

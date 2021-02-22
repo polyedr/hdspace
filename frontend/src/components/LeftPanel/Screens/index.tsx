@@ -9,11 +9,7 @@ import { Button, lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {
-  createScreen,
-  changeScreensOrder,
-  // toggleMasterScreen,
-} from '@Redux/project/actions';
+import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
   selectCurrentProjectId,
@@ -21,6 +17,7 @@ import {
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
+  selectMasterScreenEnabled,
   selectMasterScreenId,
   selectScreens,
 } from '@Redux/project/selectors/screen';
@@ -66,8 +63,7 @@ const Screens = () => {
   const screens = useSelector(selectScreens);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
   const masterScreenId = useSelector(selectMasterScreenId);
-  /* const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
-  const masterScreenLoader = useSelector(selectMasterScreenLoader); */
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const [lastSelectedScreen, setLastSelectedScreen] = useState<number>(
     currentScreenId,
@@ -103,18 +99,21 @@ const Screens = () => {
     setAnchorEl(null);
   };
 
-  /* const handleToggleMasterScreen = () => {
-    dispatch(toggleMasterScreen());
-  }; */
-
   const handleClick = useCallback(() => {
-    if (currentScreenId !== masterScreenId) {
+    if (!masterScreenEnabled) {
       setLastSelectedScreen(currentScreenId);
       history.push(`/project/${currentProjectId}/${masterScreenId}`);
     } else {
       history.push(`/project/${currentProjectId}/${lastSelectedScreen}`);
     }
-  }, [currentProjectId, history, masterScreenId]);
+  }, [
+    currentProjectId,
+    currentScreenId,
+    history,
+    lastSelectedScreen,
+    masterScreenId,
+    masterScreenEnabled,
+  ]);
 
   return (
     <>
@@ -166,9 +165,7 @@ const Screens = () => {
         <StyledAccordionDetails className={classes.details}>
           <Button
             color="secondary"
-            variant={
-              currentScreenId === masterScreenId ? 'contained' : 'outlined'
-            }
+            variant={masterScreenEnabled ? 'contained' : 'outlined'}
             onClick={handleClick}
           >
             Master Screen
