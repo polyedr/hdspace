@@ -421,3 +421,9 @@ export const selectMasterScreenRoot = (state: AppReduxState) => {
   }
   return selectElementById(masterScreen.element)(state);
 };
+
+export const selectMasterCoreElementId = ({ project }: AppReduxState) =>
+  project.edit.masterCoreElementId;
+
+export const selectMasterGroupsElementId = ({ project }: AppReduxState) =>
+  project.edit.masterGroupsElementId;

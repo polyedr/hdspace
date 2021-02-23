@@ -4,6 +4,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
+  selectMasterCoreElementId,
+  selectMasterGroupsElementId,
   selectSelectedElements,
   selectSelectedElementsIds,
 } from '@Redux/project/selectors/element';
@@ -53,6 +55,8 @@ const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const activeElement = useSelector(selectActiveElement);
+  const masterCoreElementId = useSelector(selectMasterCoreElementId);
+  const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
   const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
@@ -221,6 +225,10 @@ const PropertiesTab: React.FC = () => {
     },
     [dispatch, activeElement.id, currentScreenId],
   );
+
+  if ([masterCoreElementId, masterGroupsElementId].includes(activeElement.id)) {
+    return null;
+  }
 
   return (
     <div className={classes.propertiesTab}>
