@@ -123,6 +123,9 @@ import {
   CreateStateGroup,
   SetMasterScreenId,
   SetMasterScreenLoader,
+  SetMasterCoreElementId,
+  SetMasterGroupsElementId,
+  SetMasterElementsIds,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -759,6 +762,29 @@ export const setHoveredElementId = (
 ): SetHoveredElementId => ({
   type: TYPES.SET_HOVERED_ELEMENT,
   payload: id,
+});
+
+export const setMasterCoreElementId = (id = '-1'): SetMasterCoreElementId => ({
+  type: TYPES.SET_MASTER_CORE_ELEMENT_ID,
+  payload: { id },
+});
+
+export const setMasterGroupsElementId = (
+  id = '-1',
+): SetMasterGroupsElementId => ({
+  type: TYPES.SET_MASTER_GROUPS_ELEMENT_ID,
+  payload: { id },
+});
+
+export const setMasterElementsIds = (
+  masterCoreId = '-1',
+  masterGroupsId = '-1',
+): SetMasterElementsIds => ({
+  type: TYPES.SET_MASTER_ELEMENTS_IDS,
+  payload: {
+    masterCoreId,
+    masterGroupsId,
+  },
 });
 
 export const setEditableStyles = (className: string): SetEditableStyles => ({

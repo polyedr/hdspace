@@ -592,7 +592,9 @@ export type DropdownItemParameters = BaseElementParams & {
 };
 
 export type ElementsGroupParameters = BaseElementParams & {
-  groupElements: string[];
+  isGroup?: boolean;
+  groupElements?: string[];
+  sourceElementId?: string | null;
 };
 
 export type CreatedServerProject = {

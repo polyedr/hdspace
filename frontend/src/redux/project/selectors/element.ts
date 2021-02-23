@@ -28,6 +28,7 @@ import { AppReduxState, ProjectState } from '../../types';
 import {
   selectCurrentScreen,
   selectCurrentScreenId,
+  selectMasterScreen,
   selectScreenById,
   selectScreens,
 } from './screen';
@@ -411,4 +412,12 @@ export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({
     },
     [] as string[],
   );
+};
+
+export const selectMasterScreenRoot = (state: AppReduxState) => {
+  const masterScreen = selectMasterScreen(state);
+  if (!masterScreen) {
+    return null;
+  }
+  return selectElementById(masterScreen.element)(state);
 };

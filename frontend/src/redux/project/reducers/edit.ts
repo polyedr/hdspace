@@ -101,6 +101,21 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.SET_MASTER_CORE_ELEMENT_ID: {
+        draft.masterCoreElementId = action.payload.id;
+        break;
+      }
+
+      case TYPES.SET_MASTER_GROUPS_ELEMENT_ID: {
+        draft.masterGroupsElementId = action.payload.id;
+        break;
+      }
+      case TYPES.SET_MASTER_ELEMENTS_IDS: {
+        draft.masterGroupsElementId = action.payload.masterGroupsId;
+        draft.masterCoreElementId = action.payload.masterCoreId;
+        break;
+      }
+
       case TYPES.REMOVE_SELECTED_ELEMENT: {
         draft.selectedElementsIds = draft.selectedElementsIds.filter(
           (elementId) => elementId !== action.payload.id,

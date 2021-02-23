@@ -306,7 +306,7 @@ export function* createElementsSaga(
       }
       return convertCreatedElementToRequest(
         dEl.type as Entity,
-        null,
+        dEl.name || null,
         null,
         dEl.parameters,
       );

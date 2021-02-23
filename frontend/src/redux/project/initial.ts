@@ -59,6 +59,8 @@ export const initialEdit: ProjectEditState = {
   activeElementId: '-1',
   hoveredElementId: '-1',
   masterScreenId: null,
+  masterCoreElementId: '-1',
+  masterGroupsElementId: '-1',
   selectedAssetListId: null,
   selectedElementsIds: [],
   freeCanvas: {

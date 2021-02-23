@@ -101,19 +101,19 @@ const RightPanel: React.FC = () => {
 
   useEffect(() => {
     setActiveTabIndex(0);
-    if (masterScreenEnabled) {
-      setTabs([RPTab.Properties]);
-      return;
-    }
     const isInteractive = INTERACTIVE_ELEMENTS.includes(activeElement.type);
     const isFertile = canElementHaveAllChildren(activeElement.type);
 
     let newTabs = defaultTabs;
-    if (!isInteractive) {
-      newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
-    }
-    if (!isFertile) {
-      newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
+    if (masterScreenEnabled) {
+      newTabs = [RPTab.Properties];
+    } else {
+      if (!isInteractive) {
+        newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
+      }
+      if (!isFertile) {
+        newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
+      }
     }
 
     setTabs(newTabs);

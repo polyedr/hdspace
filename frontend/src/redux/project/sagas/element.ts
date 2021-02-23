@@ -13,6 +13,8 @@ import {
   selectSelectedElementsIds,
   selectActiveElement,
   selectTreeChildElementsIds,
+  selectElementGroupIds,
+  // selectTreeChildIdsByParentsIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -50,6 +52,7 @@ import {
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
+import { selectMasterScreen } from '../selectors/screen';
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -1016,22 +1019,30 @@ export function* createElementsGroupSaga(
   const { screenId } = action.meta;
 
   try {
+    console.log('STEP 1');
     const activeElement = yield select(selectActiveElement);
     const parentTree = yield select(selectElementAsTree(activeElement.parent));
     const selectedElements: StateElement[] = yield select(
       selectElementsByIds(ids),
     );
+    // const allChildIds = yield select(selectTreeChildIdsByParentsIds(ids));
+    const masterScreen = yield select(selectMasterScreen);
     const minBuoyancy = Math.min(...selectedElements.map((el) => el.buoyancy));
+
+    // const elements = yield select(selectAllElements);
+    // const allChildElements = allChildIds.map((childId) => elements[childId]);
 
     const requestCreateGroup = convertCreatedElementToRequest(
       'group',
-      activeElement.parent,
+      masterScreen.element,
       name,
       {
         isGroup: true,
+        groupElements: [],
       },
     );
 
+    // Create group element
     const {
       result: createdGroups,
     }: ReturnPromisedType<typeof apiCreateElements> = yield call(
@@ -1043,12 +1054,15 @@ export function* createElementsGroupSaga(
       parentTree,
       action.meta,
     );
+    console.log('STEP 2');
 
+    // Create element instance
     if (!createdGroups || !createdGroups.length) {
       console.error('Error creating group', createdGroups);
       throw new Error('Error creating group');
     }
 
+    // Add group element to state
     yield put(
       Actions.createStateGroup(
         createdGroups[0],
@@ -1060,7 +1074,7 @@ export function* createElementsGroupSaga(
         },
       ),
     );
-
+    console.log('STEP 3');
     const updatedParent: LibraryElement<any> = yield select(
       selectElementAsTree(activeElement.parent),
     );
@@ -1068,16 +1082,20 @@ export function* createElementsGroupSaga(
       selectElementAsTree(createdGroups[0].id),
     );
 
+    const groupIds = yield select(selectElementGroupIds);
+    console.log('STEP 4');
+    // Update selected elements' parent structure - change children ids
     const { error: parentError }: Result<RecursiveElement> = yield call(
       reqWrapper,
       apiChangeRecursiveElement,
       {
-        data: { children: updatedParent.children.map((child) => child.id) },
+        data: { children: [...groupIds, updatedGroup.id] },
         id: updatedParent.id,
       },
     );
     if (parentError) throw parentError;
-
+    console.log('STEP 5');
+    // Update group element - set its children to selected elements
     const { error: groupError }: Result<RecursiveElement> = yield call(
       reqWrapper,
       apiChangeRecursiveElement,
@@ -1086,7 +1104,7 @@ export function* createElementsGroupSaga(
         id: updatedGroup.id,
       },
     );
-
+    console.log('STEP 6');
     const nestedChildrenIds = yield select(
       selectTreeChildElementsIds(updatedGroup.id),
     );
@@ -1094,7 +1112,7 @@ export function* createElementsGroupSaga(
     const nestedElements = yield select(selectElementsByIds(nestedChildrenIds));
 
     if (groupError) throw groupError;
-
+    console.log('STEP 7');
     const convertedElements = [
       ...updatedParent.children.map((child) =>
         convertElementToPatchRequest(child),
@@ -1109,7 +1127,8 @@ export function* createElementsGroupSaga(
         }),
       ),
     ];
-
+    console.log('STEP 8');
+    // Update all group children - init groupElements parameter
     const { error }: Result<ServerElement<any>> = yield call(
       reqWrapper,
       apiUpdateElements,

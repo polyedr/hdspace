@@ -69,6 +69,8 @@ export type ProjectEditState = {
   currentScreenId: number;
   activeElementId: string;
   hoveredElementId: string;
+  masterCoreElementId: string;
+  masterGroupsElementId: string;
   selectedAssetListId: string | null;
   uploadedImageInfo?: UploadedImageInfo;
   selectedElementsIds: string[];
@@ -455,6 +457,18 @@ export type SetHoveredElementId = IAction<
   typeof TYPES.SET_HOVERED_ELEMENT,
   string | null
 >;
+export type SetMasterCoreElementId = IAction<
+  typeof TYPES.SET_MASTER_CORE_ELEMENT_ID,
+  { id: string }
+>;
+export type SetMasterGroupsElementId = IAction<
+  typeof TYPES.SET_MASTER_GROUPS_ELEMENT_ID,
+  { id: string }
+>;
+export type SetMasterElementsIds = IAction<
+  typeof TYPES.SET_MASTER_ELEMENTS_IDS,
+  { masterGroupsId: string; masterCoreId: string }
+>;
 export type SetCurrentDropTargetParams = IAction<
   typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
   { id: string; position: DropPosition }
@@ -800,6 +814,9 @@ export type Action =
   | GetScreenNN
   | WrapIntoContainer
   | SetHoveredElementId
+  | SetMasterCoreElementId
+  | SetMasterGroupsElementId
+  | SetMasterElementsIds
   | ToggleContainersBorders
   | SetBordersEnabled
   | SetElementToCopy

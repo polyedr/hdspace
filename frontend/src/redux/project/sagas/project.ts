@@ -1,7 +1,10 @@
 /* eslint-disable no-console */
 import { put, call, select } from 'redux-saga/effects';
 
-import { convertCreatedProjectToRequest } from '@Api/converters/toRequest';
+import {
+  convertCreatedElementToRequest,
+  convertCreatedProjectToRequest,
+} from '@Api/converters/toRequest';
 import {
   apiCreateProject,
   apiDeleteProject,
@@ -13,6 +16,8 @@ import { apiCreateAssetList } from '@Api/assetList';
 import { DEFAULT_ASSET_LIST_NAME } from '@Constants/defaultParams';
 import {
   DateRange,
+  Entity,
+  LibraryElement,
   PaginatedResponse,
   Project,
   ProjectsSearchParameter,
@@ -21,11 +26,12 @@ import {
   Screen,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
-import {
+/* import {
   CORE_ROOT_CONTAINER,
   CORE_GROUPS_CONTAINER,
   CORE_MASTER_ELEMENTS,
-} from '@Components/Editor/MasterScreen/coreElements';
+} from '@Components/Editor/MasterScreen/coreElements'; */
+import CORE_MASTER_ELEMENTS from '@Components/Editor/MasterScreen/coreElements';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -38,20 +44,40 @@ import {
   selectProjectsSearchParameter,
 } from '../selectors/base';
 import { selectScreenById } from '../selectors/screen';
+import { selectElementAsTree, selectElementById } from '../selectors/element';
+import { createElements } from './scenario';
 
-function* createMasterScreenElements(screen: Screen) {
+function* setMasterScreenCoreElements(screen: Screen) {
+  const rootElement = yield select(selectElementById(screen.element));
+  yield put(Actions.setMasterElementsIds(...rootElement.children));
+  const masterCoreId = rootElement.children[0];
   yield put(
-    Actions.addStateElements(
-      [CORE_ROOT_CONTAINER, CORE_GROUPS_CONTAINER],
-      screen.element,
-      { screenId: screen.id },
-    ),
-  );
-  yield put(
-    Actions.addStateElements(CORE_MASTER_ELEMENTS, CORE_ROOT_CONTAINER.id, {
+    Actions.addStateElements(CORE_MASTER_ELEMENTS, masterCoreId, {
       screenId: screen.id,
     }),
   );
+}
+
+function* createMasterScreenElements(screen: Screen) {
+  const elements = [
+    convertCreatedElementToRequest(
+      'container',
+      screen.element,
+      'Master Core Elements',
+    ),
+    convertCreatedElementToRequest(
+      'container',
+      screen.element,
+      'Master Group Elements',
+    ),
+  ];
+  const masterRoot: LibraryElement<Entity> = yield select(
+    selectElementAsTree(screen.element),
+  );
+
+  yield call(createElements, { elements }, masterRoot, { screenId: screen.id });
+  console.log('CREATE ELEMENTS!!');
+  yield call(setMasterScreenCoreElements, screen);
 }
 
 export function* searchProjectsSaga() {
@@ -177,7 +203,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       yield put(Actions.setMasterScreenId(masterScreenId));
       const masterScreen = yield select(selectScreenById(masterScreenId));
       if (masterScreen) {
-        yield call(createMasterScreenElements, masterScreen);
+        yield call(setMasterScreenCoreElements, masterScreen);
       }
     }
 
@@ -185,6 +211,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       throw new Error(error);
     }
   } catch (e) {
+    console.error('ERROR 2', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -267,6 +294,7 @@ export function* createProjectSaga(
       throw new Error(error);
     }
   } catch (e) {
+    console.error('ERROR 1', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
