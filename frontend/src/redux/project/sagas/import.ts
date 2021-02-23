@@ -36,16 +36,13 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
     const files = action.payload;
 
     const htmlFiles = files.filter((file) => file.type === 'text/html');
-    /* if (htmlFiles.length !== 1) {
-      throw new Error(
-        htmlFiles.length
-          ? 'Only one HTML file allowed'
-          : 'At least one HTML file required',
-      );
-    } */
     const html: string = yield htmlFiles
-      .find((file) => file.name === 'index.html')
-      ?.text();
+      .find((file) => file.name.includes('index.html'))
+      ?.text() || htmlFiles.find((file) => !file.name.includes('.'))?.text(); // in case of html file comes with no extension
+
+    if (!html) {
+      throw new Error('At least one HTML file required');
+    }
 
     const cssFiles = files.filter((file) => file.type === 'text/css');
 
@@ -56,7 +53,6 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
     const css = externalStyles + htmlStyles;
 
     const clearHtml = DOMPurify.sanitize(html);
-    console.log(clearHtml);
 
     const doc = new DOMParser().parseFromString(clearHtml, 'text/html');
 
@@ -139,8 +135,8 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
 }
 
 const getTypeFromName = (name: string) => {
+  if (!name.includes('.')) return 'text/html'; // in case of html file comes with no extension
   const ext = name.split('.').reverse()[0];
-  console.log(ext);
 
   switch (ext) {
     case 'html':
@@ -150,8 +146,27 @@ const getTypeFromName = (name: string) => {
     case 'css':
       return 'text/css';
 
-    default:
+    case 'txt':
+      return 'text/plain';
+
+    case 'jpeg':
+    case 'jpg':
+      return 'image/jpeg';
+
+    case 'ico':
+      return 'image/vnd.microsoft.icon';
+
+    case 'png':
       return 'image/png';
+
+    case 'svg':
+      return 'image/svg+xml';
+
+    case 'webp':
+      return 'image/webp';
+
+    default:
+      return 'applicatin/octet-stream'; // unknown mime-type
   }
 };
 
@@ -170,8 +185,6 @@ export function* uploadImportUrlSaga({
     const unzipped = yield zip.loadAsync(archive); // unzip received file
     const zipObjects: JSZip.JSZipObject[] = Object.values(unzipped.files);
 
-    console.log(unzipped.files);
-
     const files = yield Promise.all(
       zipObjects
         .filter((zipObj) => !zipObj.dir) // filter out directories
@@ -184,9 +197,7 @@ export function* uploadImportUrlSaga({
           return file;
         }),
     );
-    console.log(files);
 
-    // const file = new File([test], 'index.html', { type: 'text/html' });
     yield put(importHtml(Object.values(files)));
   } catch (e) {
     yield put(
