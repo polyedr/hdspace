@@ -81,7 +81,7 @@ const Screens = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const [open, setOpen] = useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(false);
 
   const handleOpenMenu = (ev) => {
     ev.preventDefault();
