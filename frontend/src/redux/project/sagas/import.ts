@@ -33,12 +33,23 @@ import JSZip from 'jszip';
 
 export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
   try {
-    const files = action.payload;
+    const { files, url } = action.payload;
+
+    let indexPathname: string;
+
+    if (url) {
+      const { pathname } = new URL(url);
+      indexPathname = pathname;
+    }
 
     const htmlFiles = files.filter((file) => file.type === 'text/html');
-    const html: string = yield htmlFiles
-      .find((file) => file.name.includes('index.html'))
-      ?.text() || htmlFiles.find((file) => !file.name.includes('.'))?.text(); // in case of html file comes with no extension
+
+    const html: string = yield url
+      ? htmlFiles
+          .find((file) => file.name.includes(indexPathname.slice(1))) // remove slash at the beginning
+          ?.text()
+      : htmlFiles.find((file) => file.name.includes('index.html'))?.text() ||
+        htmlFiles.find((file) => !file.name.includes('.'))?.text(); // in case of html file comes with no extension
 
     if (!html) {
       throw new Error('At least one HTML file required');
@@ -171,11 +182,11 @@ const getTypeFromName = (name: string) => {
 };
 
 export function* uploadImportUrlSaga({
-  payload,
+  payload: url,
 }: ReturnType<typeof Actions.uploadImportUrl>) {
   try {
     const res: PostUrlResponse = yield call(reqWrapper, apiPostURL, {
-      wpname: payload,
+      wpname: url,
     });
 
     const archive = yield call(reqWrapper, apiGetWebPage, {
@@ -198,7 +209,7 @@ export function* uploadImportUrlSaga({
         }),
     );
 
-    yield put(importHtml(Object.values(files)));
+    yield put(importHtml(Object.values(files), url));
   } catch (e) {
     yield put(
       enqueueSnackbar({

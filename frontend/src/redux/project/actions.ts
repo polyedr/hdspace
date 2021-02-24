@@ -948,9 +948,12 @@ export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
 
-export const importHtml = (files: File[]) => ({
+export const importHtml = (files: File[], url?: string) => ({
   type: TYPES.IMPORT_HTML,
-  payload: files,
+  payload: {
+    files,
+    url,
+  },
 });
 
 export const uploadImportUrl = (url) => ({

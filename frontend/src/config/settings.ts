@@ -32,6 +32,7 @@ export const myAxios = (props: MyAxiosProps) => {
     : {};
 
   return axios({
+    ...props,
     method: props.method,
     baseURL: `${api.host}/api/v${api.version}`,
     url: props.url,
@@ -40,6 +41,7 @@ export const myAxios = (props: MyAxiosProps) => {
         ? props.contentType
         : 'application/json',
       ...authorization,
+      ...props.headers,
     },
     data: props.data || {},
     params: props.params,

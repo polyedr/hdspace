@@ -24,20 +24,12 @@ export const apiGetWebPage = ({
   wpname,
   ...props
 }: MyAxiosProps & { wpname: string }) =>
-  fetch(wpname).then((res) => res.blob());
-/* myAxios({
+  myAxios({
     ...props,
     url: wpname,
     method: 'GET',
     responseType: 'blob',
-    headers: {
-      'Content-Type': 'application/zip; application/octet-stream',
-      Accept: 'application/zip; application/octet-stream',
-    },
     contentType: 'application/zip; application/octet-stream',
   }).then((res) => {
-    // const test = new Blob([res.data], { type: 'octet/stream' });
-    const blob = new Blob([res.data], { type: 'octet/stream' });
-    return blob;
-    // return res.data;
-  }); */
+    return res.data;
+  });
