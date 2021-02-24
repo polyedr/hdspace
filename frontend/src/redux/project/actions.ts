@@ -126,6 +126,8 @@ import {
   SetMasterCoreElementId,
   SetMasterGroupsElementId,
   SetMasterElementsIds,
+  WrapStateElements,
+  InsertStateElement,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -393,7 +395,7 @@ export const insertStateElement = (
   parentId: string,
   childId: string,
   meta: ElementHistoryMeta,
-) => ({
+): InsertStateElement => ({
   type: TYPES.INSERT_STATE_ELEMENT,
   payload: {
     parentId,
@@ -403,10 +405,24 @@ export const insertStateElement = (
   meta,
 });
 
+export const wrapStateElements = (
+  element: LibraryElement<any>,
+  parentId: string,
+  childIds: string[],
+  meta: ElementHistoryMeta,
+): WrapStateElements => ({
+  type: TYPES.WRAP_STATE_ELEMENTS,
+  payload: {
+    parentId,
+    element,
+    childIds,
+  },
+  meta,
+});
+
 export const createStateGroup = (
   groupEl: LibraryElement<any>,
   parentId: string,
-  buoyancy: number,
   childIds: string[],
   meta: ElementHistoryMeta,
 ): CreateStateGroup => ({
@@ -414,7 +430,6 @@ export const createStateGroup = (
   payload: {
     groupEl,
     parentId,
-    buoyancy,
     childIds,
   },
   meta,

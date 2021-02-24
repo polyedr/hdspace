@@ -17,6 +17,7 @@ import { apiCreateScenarios } from '@Api/scenario';
 import {
   isElementCanBeAdded,
   isElementCanBeRemove,
+  canElementHaveAllChildren,
 } from '@Utils/AvailableChildrenHelper';
 import { updateElementParameters } from '@Utils/ElementsTreeHelper';
 import getSavedValue from '@Utils/getSavedValue';
@@ -53,6 +54,7 @@ import {
   selectFreeCanvasOffset,
 } from '../selectors/base';
 import {
+  selectActiveElement,
   selectActiveElementId,
   selectAllElements,
   selectCustomLibraryElements,
@@ -249,6 +251,7 @@ export function* createElements(
     }
     if (error) throw new Error(error);
   } catch (e) {
+    console.error('Create elements error!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -713,23 +716,40 @@ export function* addElementToElement(elementId: string, parentId: string) {
   }
 }
 
-export function* wrapIntoContainerSaga(
-  action: ReturnType<typeof Actions.wrapIntoContainer>,
+// eslint-disable-next-line consistent-return
+export function* wrapIntoContainer(
+  containerType: Entity,
+  name: string | null = null,
+  ids: string[],
+  meta: ElementHistoryMeta,
 ) {
   try {
-    const { id } = action.payload;
-    if (!action.meta) {
-      console.error(
-        `You have to provide metainformation for action ${action.type}`,
+    const elements = yield select(selectElementsByIds(ids));
+    const activeElement = yield select(selectActiveElement);
+    if (elements.find((el) => el.parent !== activeElement.parent)) {
+      console.error('Can wrap only elements with same parent');
+      yield put(
+        enqueueSnackbar({
+          message: 'Can not add this element!',
+          options: { variant: 'error' },
+        }),
       );
-      return;
     }
-    const { screenId } = action.meta;
-
-    const element = yield select(selectElementById(id));
-    const parent = yield select(selectElementById(element.parent));
-
-    const serverContainer = convertCreatedElementToRequest('container', null);
+    const canWrap =
+      canElementHaveAllChildren(containerType) || containerType === 'group';
+    if (!canWrap) {
+      yield put(
+        enqueueSnackbar({
+          message: 'Can not add this element!',
+          options: { variant: 'warning' },
+        }),
+      );
+    }
+    const serverContainer = convertCreatedElementToRequest(
+      containerType,
+      null,
+      name,
+    );
 
     const {
       result: createdContainers,
@@ -739,34 +759,28 @@ export function* wrapIntoContainerSaga(
       { data: [serverContainer] },
     );
 
+    console.log('CREATED CONTAINERS!!', createdContainers);
+
     if (createdContainers) {
       yield put(
-        Actions.setUndoActions(
-          Actions.unwrapFromContainer(id, createdContainers[0].id, parent.id, {
-            screenId,
-          }),
-        ),
-      );
-
-      yield put(
-        Actions.insertStateElement(
+        Actions.wrapStateElements(
           createdContainers[0],
-          parent.id,
-          element.id,
+          activeElement.parent,
+          ids,
           {
-            ...action.meta,
-            sourceAction: Actions.redoWrapIntoContainer(
+            ...meta,
+            /* sourceAction: Actions.redoWrapIntoContainer(
               id,
               createdContainers[0].id,
               parent.id,
               action.meta,
-            ),
+            ), */
           },
         ),
       );
 
       const updatedParent: LibraryElement<any> = yield select(
-        selectElementAsTree(parent.id),
+        selectElementAsTree(activeElement.parent),
       );
       const updatedWrapper: LibraryElement<any> = yield select(
         selectElementAsTree(createdContainers[0].id),
@@ -808,6 +822,46 @@ export function* wrapIntoContainerSaga(
         { data: convertedElements },
       );
       if (error) throw new Error(error);
+    }
+    if (createdContainers) {
+      return createdContainers.map(({ id }) => id);
+    }
+  } catch (e) {
+    console.error('DAMN ERROR!!', e);
+    yield put(
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+    );
+  }
+}
+
+export function* wrapIntoContainerSaga(
+  action: ReturnType<typeof Actions.wrapIntoContainer>,
+) {
+  try {
+    const { id } = action.payload;
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      return;
+    }
+    const { screenId } = action.meta;
+
+    const element = yield select(selectElementById(id));
+    const parent = yield select(selectElementById(element.parent));
+
+    const ids = yield call(wrapIntoContainer, 'container', null, [id], {
+      screenId,
+    });
+
+    if (ids) {
+      yield put(
+        Actions.setUndoActions(
+          Actions.unwrapFromContainer(id, ids[0], parent.id, {
+            screenId,
+          }),
+        ),
+      );
     }
   } catch (e) {
     yield put(

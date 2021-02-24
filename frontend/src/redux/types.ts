@@ -652,6 +652,16 @@ export type InsertStateElement = IAction<
   ElementHistoryMeta
 >;
 
+export type WrapStateElements = IAction<
+  typeof TYPES.WRAP_STATE_ELEMENTS,
+  {
+    parentId: string;
+    childIds: string[];
+    element: LibraryElement<Entity>;
+  },
+  ElementHistoryMeta
+>;
+
 export type MoveStateElement = IAction<
   typeof TYPES.MOVE_STATE_ELEMENT,
   { elementId: string; indices: Indices; parents: ParentIds },
@@ -770,7 +780,6 @@ export type CreateStateGroup = IAction<
   {
     groupEl: LibraryElement<any>;
     parentId: string;
-    buoyancy: number;
     childIds: string[];
   },
   ElementHistoryMeta
@@ -859,6 +868,7 @@ export type Action =
   | AddStateElements
   | InsertStateElement
   | RemoveStateElement
+  | WrapStateElements
   | SetProjectsData
   | ExtractStateElement
   | ChangeFreeCanvasMode

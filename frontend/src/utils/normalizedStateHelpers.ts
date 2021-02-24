@@ -217,27 +217,89 @@ export const insertMapElement = (
   return newState;
 };
 
-export const insertElementsGroup = (
+export const insertMapElementWrapper = (
+  state: Normalized<StateElement>,
+  element: LibraryElement<any>,
+  parentId: string,
+  childIds: string[],
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
+    const childElements = childIds.map((id) => draft[id]);
+    const parent = draft[parentId];
+    console.log('STEP 1');
+
+    const minBuoyancy = Math.min(...childElements.map((elem) => elem.buoyancy));
+
+    parent.children.splice(minBuoyancy, 0, element.id);
+    parent.children = parent.children
+      .filter((childId) => !childIds.includes(childId))
+      .sort((a, b) => (draft[a].buoyancy < draft[b].buoyancy ? 1 : -1));
+    console.log('STEP 2');
+    element.children = childIds;
+    element.buoyancy = minBuoyancy;
+    console.log('STEP 3');
+    [...childIds]
+      .sort((a, b) => {
+        console.log('SORT!!', a, b);
+        console.log('TEST!!', draft[a].buoyancy, draft[b].buoyancy);
+        return draft[a].buoyancy < draft[b].buoyancy ? 1 : -1;
+      })
+      .forEach((childId, index) => {
+        console.log('ENTER FOREACH CYCLE', childId, draft[childId]);
+        draft[childId].parent = element.id;
+        draft[childId].buoyancy = index;
+      });
+    console.log('STEP 4');
+    draft[element.id] = element;
+    return draft;
+  });
+
+/* export const addElementsGroup = (
   state: Normalized<StateElement>,
   groupEl: LibraryElement<Entity>,
   parentId: string,
-  buoyancy: number,
   childIds: string[],
 ): Normalized<StateElement> => {
   const newState = {
     ...state,
     ...flattenElements([groupEl], parentId),
   };
-  const parent = newState[parentId];
-  parent.children.splice(buoyancy, 0, groupEl.id);
-  parent.children = parent.children
+  const newParent = newState[parentId];
+  const oldParentsRels = childIds.reduce((parentsRels, childId) => {
+    const childEl = newState[childId];
+    if (!childEl.parent) {
+      return parentsRels;
+    }
+    return {
+      ...parentsRels,
+      [childEl.parent]: [...(parentsRels[childEl.parent] || []), childEl.id],
+    };
+  }, {});
+  Object.keys(oldParentsRels).forEach((oldParentId) => {
+    const childIdsToRemove = oldParentsRels[oldParentId];
+    newState[parentId].children = newState[parentId].children
+      .filter((childId) => !childIdsToRemove.includes(childId))
+      .sort((firstChildId, secondChildId) =>
+        newState[firstChildId].buoyancy < newState[secondChildId].buoyancy
+          ? 1
+          : -1,
+      );
+    console.log(
+      'TEST PARENT ADD GROUP!!',
+      oldParentId,
+      newState[parentId].children,
+      childIdsToRemove,
+    );
+  });
+  newParent.children = newParent.children
+    .filter((childId) => !childIds.includes(childId))
     .sort((firstChildId, secondChildId) =>
-      newState[firstChildId].buoyancy > newState[secondChildId].buoyancy
+      newState[firstChildId].buoyancy < newState[secondChildId].buoyancy
         ? 1
         : -1,
-    )
-    .filter((childId) => !childIds.includes(childId));
-  parent.children.forEach((childId, index) => {
+    );
+  newParent.children.push(groupEl.id);
+  newParent.children.forEach((childId, index) => {
     newState[childId].parent = groupEl.id;
     newState[childId].buoyancy = index;
   });
@@ -246,8 +308,11 @@ export const insertElementsGroup = (
   childIds.forEach((childId, index) => {
     newState[childId].buoyancy = index;
   });
+
+  console.log('NEW STATE!!!', newState);
+
   return newState;
-};
+}; */
 
 export const extractMapElement = (
   state: Normalized<StateElement>,

@@ -6,9 +6,7 @@ import {
   removeProjectStyles,
   updateProjectClasses,
 } from '@Utils/ProjectClassesHelper';
-import { convertElementToRequest } from '@Api/converters/toRequest';
 import {
-  Entity,
   ItemToCopyInfo,
   LibraryElement,
   Normalized,
@@ -44,11 +42,11 @@ import {
   updateMultipleElementsStylesSaga,
   createElementsGroupSaga,
   updateMultipleElementsParametersSaga,
+  duplicateElements,
 } from '@Redux/project/sagas/element';
 import {
   addChildrenToElementSaga,
   addChildToElementSaga,
-  createElements,
   createElementsSaga,
   redoWrapIntoContainerSaga,
   restoreElementChildrenSaga,
@@ -71,7 +69,6 @@ import {
 import TYPES from '../../actionTypes';
 
 import { projectUpdateHelperSaga } from './shared';
-import { ElementHistoryMeta } from '../../types';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import {
@@ -188,45 +185,6 @@ function* copyActiveElementSaga() {
   } catch (e) {
     yield put(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
-    );
-  }
-}
-
-// eslint-disable-next-line consistent-return
-function* duplicateElements(
-  itemsToCopyInfo: ItemToCopyInfo[],
-  targetParent: LibraryElement<Entity>,
-  { screenId, undo }: ElementHistoryMeta,
-) {
-  try {
-    const elements: LibraryElement<any>[] = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const el of itemsToCopyInfo) {
-      const element = yield select(selectElementAsTree(el.id));
-      elements.push(element);
-    }
-
-    const convertedItemsToDuplicate = elements.map((item) =>
-      convertElementToRequest(item!),
-    );
-
-    return yield call(
-      createElements,
-      { elements: convertedItemsToDuplicate },
-      targetParent,
-      {
-        screenId,
-        undo,
-      },
-    );
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
-        },
-      }),
     );
   }
 }

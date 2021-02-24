@@ -372,11 +372,21 @@ export const selectElementGroupIds = (state: AppReduxState) => {
   );
 };
 
+export const selectMasterCoreElementId = (state: AppReduxState) =>
+  state.project.edit.masterCoreElementId;
+
+export const selectMasterGroupsElementId = (state: AppReduxState) =>
+  state.project.edit.masterGroupsElementId;
+
+export const selectMasterGroupsElement = (state: AppReduxState) => {
+  const masterGroupsElId = selectMasterGroupsElementId(state);
+  return selectElementById(masterGroupsElId)(state);
+};
+
 export const selectElementGroups = (state: AppReduxState) => {
   const { elements } = selectProjectState(state).data;
-  return Object.values(elements).filter(
-    (element: StateElement) => element.parameters?.isGroup === true,
-  );
+  const masterGroupsEl = selectMasterGroupsElement(state);
+  return masterGroupsEl?.children.map((childId) => elements[childId]) || [];
 };
 
 export const selectElementTreeGroups = (state: AppReduxState) => {
@@ -421,9 +431,3 @@ export const selectMasterScreenRoot = (state: AppReduxState) => {
   }
   return selectElementById(masterScreen.element)(state);
 };
-
-export const selectMasterCoreElementId = ({ project }: AppReduxState) =>
-  project.edit.masterCoreElementId;
-
-export const selectMasterGroupsElementId = ({ project }: AppReduxState) =>
-  project.edit.masterGroupsElementId;

@@ -4,11 +4,12 @@ import {
   arrayToMap,
   extractMapElement,
   flattenElements,
-  insertElementsGroup,
+  // addElementsGroup,
   insertMapElement,
   moveMapElement,
   removeMapElement,
   updateMapElement,
+  insertMapElementWrapper,
 } from '@Utils/normalizedStateHelpers';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { initialData } from '../initial';
@@ -95,15 +96,25 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.WRAP_STATE_ELEMENTS: {
+        const { parentId, childIds, element } = action.payload;
+        draft.elements = insertMapElementWrapper(
+          draft.elements,
+          element,
+          parentId,
+          childIds,
+        );
+        break;
+      }
+
       case TYPES.CREATE_STATE_GROUP: {
-        const { groupEl, parentId, childIds, buoyancy } = action.payload;
-        draft.elements = insertElementsGroup(
+        /* const { groupEl, parentId, childIds } = action.payload;
+        draft.elements = addElementsGroup(
           draft.elements,
           groupEl,
           parentId,
-          buoyancy,
           childIds,
-        );
+        ); */
         break;
       }
 

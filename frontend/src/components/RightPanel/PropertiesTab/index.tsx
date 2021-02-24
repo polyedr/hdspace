@@ -114,7 +114,7 @@ const PropertiesTab: React.FC = () => {
             screenId: currentScreenId,
           }),
         );
-      } else if (editableStyles === 'ownStyles' && !masterScreenEnabled) {
+      } else if (masterScreenEnabled) {
         if (isGroupSource) {
           const groupElementsIds = activeElement.parameters.groupElements;
           dispatch(
@@ -128,11 +128,17 @@ const PropertiesTab: React.FC = () => {
           );
         } else {
           dispatch(
-            removeElementStyles(activeElement.id, ruleNames, {
+            removeSharedStyles(editableStyles as Entity, ruleNames, {
               screenId: currentScreenId,
             }),
           );
         }
+      } else if (editableStyles === 'ownStyles') {
+        dispatch(
+          removeElementStyles(activeElement.id, ruleNames, {
+            screenId: currentScreenId,
+          }),
+        );
       } else {
         dispatch(
           removeSharedStyles(editableStyles as Entity, ruleNames, {
@@ -170,9 +176,11 @@ const PropertiesTab: React.FC = () => {
             { screenId: currentScreenId },
           ),
         );
-      } else if (editableStyles === 'ownStyles' && !masterScreenEnabled) {
+      } else if (masterScreenEnabled) {
+        console.log('IS GROUP SOURCE!!', isGroupSource);
         if (isGroupSource) {
           const groupElementsIds = activeElement.parameters.groupElements;
+          console.log('GROUP ELEMENTS IDS!!', groupElementsIds);
           dispatch(
             updateMultipleElementsStyles(
               [activeElement.id, ...groupElementsIds],
@@ -182,7 +190,20 @@ const PropertiesTab: React.FC = () => {
               { screenId: currentScreenId },
             ),
           );
+        } else {
+          dispatch(
+            updateSharedStyles(
+              (masterScreenEnabled
+                ? activeElement.type
+                : editableStyles) as Entity,
+              styles,
+              {
+                screenId: currentScreenId,
+              },
+            ),
+          );
         }
+      } else if (editableStyles === 'ownStyles') {
         dispatch(
           updateElementStyles(activeElement.id, styles, {
             screenId: currentScreenId,
