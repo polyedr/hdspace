@@ -85,7 +85,9 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
   const {
     id,
     name,
-    parameters: { zIndex },
+    parameters: {
+      freeCanvas: { zIndex },
+    },
   } = element;
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -96,7 +98,12 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
     dispatch(
       updateElementParameters(
         id,
-        { zIndex: zIndex + 1 },
+        {
+          freeCanvas: {
+            ...element.parameters.freeCanvas,
+            zIndex: (zIndex || 0) + 1,
+          },
+        },
         { screenId: currentScreenId },
       ),
     );
@@ -151,7 +158,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
               onClick={moveDown}
               className={classes.iconButton}
               title="Move element down"
-              disabled={zIndex <= 0}
+              disabled={(zIndex || 0) <= 0}
             >
               <KeyboardArrowDownIcon fontSize="inherit" />
             </IconButton>
