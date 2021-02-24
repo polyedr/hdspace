@@ -1138,3 +1138,5 @@ export type DateRange = {
   from: Date | null;
   to: Date | null;
 };
+
+export type PostUrlResponse = { wpname: string; owner: any };

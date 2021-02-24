@@ -52,7 +52,7 @@ export function* reqWrapper(
 
     if (
       R.path(['response', 'data', 'code'], result) === 'token_not_valid' ||
-      result.error === 'Given token not valid for any token type'
+      result?.error === 'Given token not valid for any token type'
     ) {
       const isTokenLoaded: boolean = yield select(selectIsTokenLoaded);
 
