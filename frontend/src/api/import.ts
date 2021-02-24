@@ -2,7 +2,7 @@
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps, PostUrlResponse } from '@Src/types';
 import { AxiosResponse } from 'axios';
-import { onError } from './project';
+import { handleError } from './project';
 
 export const apiPostURL = ({
   wpname,
@@ -18,7 +18,7 @@ export const apiPostURL = ({
     },
   })
     .then((res: AxiosResponse<PostUrlResponse>) => res.data)
-    .catch(onError);
+    .catch(handleError);
 
 export const apiGetWebPage = ({
   wpname,
@@ -30,6 +30,6 @@ export const apiGetWebPage = ({
     method: 'GET',
     responseType: 'blob',
     contentType: 'application/zip; application/octet-stream',
-  }).then((res) => {
-    return res.data;
-  });
+  })
+    .then((res) => res.data)
+    .catch(handleError);
