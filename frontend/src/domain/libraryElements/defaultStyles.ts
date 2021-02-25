@@ -358,7 +358,6 @@ export const defaultRootStyles: { [K in RootControls]: React.CSSProperties } & {
     ...DEFAULT_SIZE,
     minWidth: '100%',
     minHeight: '100%',
-    height: '1px', // allows children to use height in %
     padding: '3px',
     display: 'inline-block',
   },
