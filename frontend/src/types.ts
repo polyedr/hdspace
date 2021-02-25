@@ -1070,15 +1070,6 @@ export type AssetResults = {
   [listId: string]: PaginatedArray<Asset>;
 };
 
-/* export type MasterElements = {
-  [name: string]: LibraryElement<any>;
-};
-
-export type MasterScreenParameters = {
-  enabled: boolean;
-  coreElements: MasterElements;
-}; */
-
 export const enum NNBlockType {
   HEADER = 'headers',
   FOOTER = 'footers',

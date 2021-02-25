@@ -44,7 +44,6 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
-  // masterScreenParameters: MasterScreenParameters;
 };
 
 export type ProjectUiState = {
@@ -766,16 +765,6 @@ export type SetMasterScreenId = IAction<
   number | null
 >;
 
-export type CreateStateGroup = IAction<
-  typeof TYPES.CREATE_STATE_GROUP,
-  {
-    groupEl: LibraryElement<any>;
-    parentId: string;
-    childIds: string[];
-  },
-  ElementHistoryMeta
->;
-
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -901,7 +890,6 @@ export type Action =
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup
   | MoveStateElementsInside
-  | CreateStateGroup
   | UpdateMultipleElementsParameters
   | SetMasterScreenId;
 

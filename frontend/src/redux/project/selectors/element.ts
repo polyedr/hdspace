@@ -1,9 +1,5 @@
 import { createSelector } from 'reselect';
-import {
-  // DEFAULT_ACTIVE_ELEMENT,
-  DEFAULT_ROOT,
-  LABELED_INPUT_TYPES,
-} from '@Constants/defaultParams';
+import { DEFAULT_ROOT, LABELED_INPUT_TYPES } from '@Constants/defaultParams';
 import {
   arrayToMap,
   buildElementsTree,

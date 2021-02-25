@@ -4,7 +4,6 @@ import {
   arrayToMap,
   extractMapElement,
   flattenElements,
-  // addElementsGroup,
   insertMapElement,
   moveMapElement,
   removeMapElement,
@@ -104,17 +103,6 @@ const dataReducer = produce(
           parentId,
           childIds,
         );
-        break;
-      }
-
-      case TYPES.CREATE_STATE_GROUP: {
-        /* const { groupEl, parentId, childIds } = action.payload;
-        draft.elements = addElementsGroup(
-          draft.elements,
-          groupEl,
-          parentId,
-          childIds,
-        ); */
         break;
       }
 
@@ -300,12 +288,6 @@ const dataReducer = produce(
         ].results.filter((asset) => asset.id !== id);
         break;
       }
-
-      /* case TYPES.SET_MASTER_SCREEN_ENABLED: {
-        draft.masterScreenParameters.enabled = !draft.masterScreenParameters
-          .enabled;
-        break;
-      } */
 
       case TYPES.RESET_SCREEN_STATE: {
         draft.screens = {};

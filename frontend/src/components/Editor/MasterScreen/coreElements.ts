@@ -18,7 +18,6 @@ import {
   nativeColumns,
   video,
   undefined as undefinedElement,
-  // root,
 } from '@Domain/libraryElements/otherElements/otherElements';
 import {
   hyperlink,
@@ -62,11 +61,3 @@ const CORE_MASTER_ELEMENTS = CORE_MASTER_RESPONSE_ELEMENTS.map(
 );
 
 export default CORE_MASTER_ELEMENTS;
-
-/* export const CORE_ROOT_CONTAINER = convertElementFromResponse(
-  makeContainer({ name: 'Master Core Elements', UID: 'master-core-elements' }),
-);
-
-export const CORE_GROUPS_CONTAINER = convertElementFromResponse(
-  makeContainer({ name: 'Master Groups', UID: 'master-groups' }),
-); */

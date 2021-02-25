@@ -13,7 +13,6 @@ import {
   StateElement,
 } from '@Src/types';
 import {
-  // toggleMasterScreenSaga,
   activateScreenSaga,
   createScreenSaga,
   changeScreensOrderSaga,

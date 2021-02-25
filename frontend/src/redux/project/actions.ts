@@ -119,7 +119,6 @@ import {
   AddAssetRedux,
   MoveStateElement,
   MoveStateElementsInside,
-  CreateStateGroup,
   SetMasterScreenId,
   SetMasterScreenLoader,
   SetMasterCoreElementId,
@@ -414,21 +413,6 @@ export const wrapStateElements = (
   payload: {
     parentId,
     element,
-    childIds,
-  },
-  meta,
-});
-
-export const createStateGroup = (
-  groupEl: LibraryElement<any>,
-  parentId: string,
-  childIds: string[],
-  meta: ElementHistoryMeta,
-): CreateStateGroup => ({
-  type: TYPES.CREATE_STATE_GROUP,
-  payload: {
-    groupEl,
-    parentId,
     childIds,
   },
   meta,
