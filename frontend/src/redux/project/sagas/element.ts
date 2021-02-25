@@ -1113,6 +1113,8 @@ export function* createElementsGroupSaga(
       {},
     );
 
+    console.log('ALL UPDATED ELEMENTS!!', allUpdatedElements);
+
     yield put(Actions.updateElementsTree(allUpdatedElements, action.meta));
 
     const convertedElements = Object.values(

@@ -222,91 +222,41 @@ export const insertMapElementWrapper = (
   element: LibraryElement<any>,
   parentId: string,
   childIds: string[],
-): Normalized<StateElement> =>
-  produce(state, (draft) => {
-    const childElements = childIds.map((id) => draft[id]);
-    const parent = draft[parentId];
-
-    const minBuoyancy = Math.min(...childElements.map((elem) => elem.buoyancy));
-
-    parent.children.splice(minBuoyancy, 0, element.id);
-    parent.children = parent.children
-      .filter((childId) => !childIds.includes(childId))
-      .sort((a, b) => (draft[a].buoyancy < draft[b].buoyancy ? -1 : 1));
-    element.children = childIds;
-    element.buoyancy = minBuoyancy;
-    [...childIds]
-      .sort((a, b) => {
-        return draft[a].buoyancy < draft[b].buoyancy ? -1 : 1;
-      })
-      .forEach((childId, index) => {
-        draft[childId].parent = element.id;
-        draft[childId].buoyancy = index;
-      });
-    console.log('STEP 4');
-    draft[element.id] = element;
-    return draft;
-  });
-
-/* export const addElementsGroup = (
-  state: Normalized<StateElement>,
-  groupEl: LibraryElement<Entity>,
-  parentId: string,
-  childIds: string[],
 ): Normalized<StateElement> => {
-  const newState = {
-    ...state,
-    ...flattenElements([groupEl], parentId),
-  };
-  const newParent = newState[parentId];
-  const oldParentsRels = childIds.reduce((parentsRels, childId) => {
-    const childEl = newState[childId];
-    if (!childEl.parent) {
-      return parentsRels;
-    }
-    return {
-      ...parentsRels,
-      [childEl.parent]: [...(parentsRels[childEl.parent] || []), childEl.id],
-    };
-  }, {});
-  Object.keys(oldParentsRels).forEach((oldParentId) => {
-    const childIdsToRemove = oldParentsRels[oldParentId];
-    newState[parentId].children = newState[parentId].children
-      .filter((childId) => !childIdsToRemove.includes(childId))
-      .sort((firstChildId, secondChildId) =>
-        newState[firstChildId].buoyancy < newState[secondChildId].buoyancy
-          ? 1
-          : -1,
-      );
-    console.log(
-      'TEST PARENT ADD GROUP!!',
-      oldParentId,
-      newState[parentId].children,
-      childIdsToRemove,
-    );
-  });
-  newParent.children = newParent.children
-    .filter((childId) => !childIds.includes(childId))
-    .sort((firstChildId, secondChildId) =>
-      newState[firstChildId].buoyancy < newState[secondChildId].buoyancy
-        ? 1
-        : -1,
-    );
-  newParent.children.push(groupEl.id);
-  newParent.children.forEach((childId, index) => {
-    newState[childId].parent = groupEl.id;
+  const newState = { ...state, ...flattenElements([element], parentId) };
+  const childElements = childIds.map((id) => newState[id]);
+  const parent = newState[parentId];
+
+  const minBuoyancy = Math.min(...childElements.map((elem) => elem.buoyancy));
+
+  parent.children.splice(minBuoyancy, childIds.length, element.id);
+  console.log('CHILD IDS!!', parent.children.join(','), childIds);
+  /* parent.children = parent.children
+    .sort((a, b) => {
+      console.log('FIRST CHILD!!', a, newState[a]);
+      console.log('SECOND CHILD!!', b, newState[b]);
+      return newState[a] &&
+        newState[b] &&
+        newState[a].buoyancy < newState[b].buoyancy
+        ? -1
+        : 1;
+    }); */
+  parent.children.forEach((childId, index) => {
     newState[childId].buoyancy = index;
   });
-  newState[groupEl.id].children = childIds;
-  newState[groupEl.id].parent = parentId;
-  childIds.forEach((childId, index) => {
-    newState[childId].buoyancy = index;
-  });
-
-  console.log('NEW STATE!!!', newState);
-
+  element.children = childIds;
+  element.buoyancy = minBuoyancy;
+  [...childIds]
+    .sort((a, b) => {
+      return newState[a].buoyancy < newState[b].buoyancy ? -1 : 1;
+    })
+    .forEach((childId, index) => {
+      newState[childId].parent = element.id;
+      newState[childId].buoyancy = index;
+    });
+  newState[element.id] = element;
   return newState;
-}; */
+};
 
 export const extractMapElement = (
   state: Normalized<StateElement>,

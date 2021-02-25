@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { RENDERERS } from '@Components/UI/RenderElements';
-import { selectElementById } from '@Redux/project/selectors/element';
+import {
+  selectElementById,
+  selectMasterCoreElementId,
+  selectMasterGroupsElementId,
+  selectMasterScreenRoot,
+} from '@Redux/project/selectors/element';
 import prevent from '@Utils/preventEvent';
 import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
 import { DOMHandler } from '../Workspace/DOMHandler';
@@ -34,6 +39,9 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const element = useSelector(selectElementById(elementId));
+  const masterCoreElId = useSelector(selectMasterCoreElementId);
+  const masterGroupsElId = useSelector(selectMasterGroupsElementId);
+  const rootElement = useSelector(selectMasterScreenRoot);
 
   const { type } = element;
 
@@ -76,15 +84,16 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId }) => {
       {element.children.map((childId, index) => (
         <Fragment key={`master-${childId}`}>
           {!!index &&
-            (!element.parameters.groupElements ||
-              element.parameters.isGroup) && (
+            [masterCoreElId, masterGroupsElId, rootElement?.id].includes(
+              elementId,
+            ) && (
               <Divider
                 orientation="horizontal"
                 variant="middle"
                 className={classes.divider}
               />
             )}
-          <MasterElement elementId={childId} />
+          <MasterElement elementId={childId} parentId={element.id} />
         </Fragment>
       ))}
     </Renderer>
