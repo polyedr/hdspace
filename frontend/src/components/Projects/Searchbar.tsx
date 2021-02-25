@@ -14,8 +14,7 @@ import { selectProjectsSearchParameter } from '@Redux/project/selectors/base';
 import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import { endOfDay } from 'date-fns/esm';
-import { startOfDay } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   input: {
