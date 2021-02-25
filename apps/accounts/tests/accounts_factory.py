@@ -2,7 +2,8 @@ from django.contrib.auth.hashers import make_password
 from factory.django import DjangoModelFactory
 import factory
 
-from apps.accounts.models import *
+from accounts.models import User, Profile
+
 
 class UserFactory(DjangoModelFactory):
     class Meta:
@@ -13,6 +14,7 @@ class UserFactory(DjangoModelFactory):
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     password = make_password(factory.Faker("password"))
+
 
 class ProfileFactory(DjangoModelFactory):
     class Meta:
