@@ -1,3 +1,4 @@
+import { defaultFreeCanvasParams } from '@Domain/core';
 import {
   LibraryElement,
   Project,
@@ -65,6 +66,12 @@ export const DEFAULT_SCREEN: Screen = {
   element: '-1',
 };
 
+export const DEFAULT_LAYOUT_LIST = [
+  Layout.Desktop,
+  Layout.Tablet,
+  Layout.Mobile,
+];
+
 export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
   id: 'none',
   type: 'none',
@@ -72,7 +79,11 @@ export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
   children: [],
   buoyancy: 0,
   image: null,
-  parameters: {},
+  parameters: {
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.NONE,
+    layouts: DEFAULT_LAYOUT_LIST,
+  },
   styles: {
     classNames: ['root'],
     ownStyles: {},
@@ -141,11 +152,5 @@ export const UNIQUE_CONTROLS = [
 ];
 
 export const ALL_ELEMENTS_INDEX = 'all';
-
-export const DEFAULT_LAYOUT_LIST = [
-  Layout.Desktop,
-  Layout.Tablet,
-  Layout.Mobile,
-];
 
 export const PROJECT_STATUS_LIST = ['pending', 'paid'];

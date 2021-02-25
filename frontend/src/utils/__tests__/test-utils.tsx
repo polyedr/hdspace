@@ -7,7 +7,15 @@ import {
   initialUi,
 } from '@Redux/project/initial';
 import { AppReduxState } from '@Redux/types';
-import { Project, StateElement, Screen, UserData } from '../../types';
+import { defaultFreeCanvasParams } from '@Domain/core';
+import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import {
+  Project,
+  StateElement,
+  Screen,
+  UserData,
+  ElementGroup,
+} from '../../types';
 
 export const mockProject: Project = {
   id: 1,
@@ -40,7 +48,15 @@ export const mockRootElement: StateElement = {
     classNames: ['root'],
     ownStyles: {},
   },
-  parameters: {},
+  parameters: {
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: '50%',
+      height: '50%',
+    },
+    group: ElementGroup.NONE,
+    layouts: DEFAULT_LAYOUT_LIST,
+  },
   children: ['2'],
   buoyancy: 0,
   image: null,
@@ -56,11 +72,11 @@ export const mockStateElement: StateElement = {
     ownStyles: {},
   },
   parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
     textContent:
       'Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus! Aut illum a minus cumque iste, quibusdam corporis atque odit magnam impedit esse possimus perspiciatis culpa non id tempore fugiat molestiae eos dolorem, labore maiores ratione? Sequi tenetur porro enim reprehenderit amet accusamus eos itaque saepe quidem quod, sit vero ab recusandae vitae, facere nobis cumque minima libero aut quos nihil labore eius. Soluta doloremque mollitia nihil voluptatibus, nostrum commodi eaque similique ipsam ad libero at tenetur.',
-    zIndex: 0,
-    left: 0,
-    top: 0,
   },
   children: [],
   buoyancy: 0,

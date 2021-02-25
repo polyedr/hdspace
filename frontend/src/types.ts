@@ -56,7 +56,7 @@ export enum ElementGroup {
 export type FreeCanvasElementParams = {
   left?: CSS.Property.Left;
   top?: CSS.Property.Top;
-  zIndex?: CSS.Property.ZIndex;
+  zIndex?: number;
   width?: CSS.Property.Width;
   height?: CSS.Property.Height;
 };
@@ -670,7 +670,13 @@ export type StateElement = {
     classNames: string[];
     ownStyles: React.CSSProperties;
   };
-  parameters: any;
+  parameters: {
+    freeCanvas: FreeCanvasElementParams;
+    group: ElementGroup;
+    layouts: Layout[];
+    events?: ElementEvent[];
+    [k: string]: any;
+  };
   shared?: boolean;
 };
 
