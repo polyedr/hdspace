@@ -2,14 +2,12 @@ from django.test import TestCase
 
 from ..tests.accounts_factory import UserFactory, ProfileFactory
 from ..models import Profile, User
-from django.contrib.auth.hashers import make_password, check_password
 
 
 class UserTest(TestCase):
     """ Test module for User model """
 
     def setUp(self):
-
         self.user = UserFactory.create()
         self.user_created = User.objects.get(username=self.user.username)
 
@@ -33,12 +31,12 @@ class UserTest(TestCase):
 
     def test_user_email(self):
         # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(self.user_created.email,self.user.email)
+        self.assertEqual(self.user_created.email, self.user.email)
         # self.assertEqual(profile_test2.online(), False)
 
     def test_user_password(self):
         # profile_test2 = Profile.objects.get(role="Developer")
-        self.assertEqual(self.user.email,self.user_created.email)
+        self.assertEqual(self.user.email, self.user_created.email)
         # self.assertEqual(profile_test2.online(), False)
 
     def tearDown(self):
@@ -58,8 +56,7 @@ class ProfileTest(TestCase):
             "user_id": 6
         }
         self.profile = ProfileFactory.create()
-        self.profile_created = Profile.objects.get(user_id = self.profile.user_id)
-
+        self.profile_created = Profile.objects.get(user_id=self.profile.user_id)
 
     def test_profile_role(self):
         self.assertEqual(self.profile_created.role, "ADMINISTRATOR")
