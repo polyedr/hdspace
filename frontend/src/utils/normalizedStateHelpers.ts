@@ -230,17 +230,6 @@ export const insertMapElementWrapper = (
   const minBuoyancy = Math.min(...childElements.map((elem) => elem.buoyancy));
 
   parent.children.splice(minBuoyancy, childIds.length, element.id);
-  console.log('CHILD IDS!!', parent.children.join(','), childIds);
-  /* parent.children = parent.children
-    .sort((a, b) => {
-      console.log('FIRST CHILD!!', a, newState[a]);
-      console.log('SECOND CHILD!!', b, newState[b]);
-      return newState[a] &&
-        newState[b] &&
-        newState[a].buoyancy < newState[b].buoyancy
-        ? -1
-        : 1;
-    }); */
   parent.children.forEach((childId, index) => {
     newState[childId].buoyancy = index;
   });

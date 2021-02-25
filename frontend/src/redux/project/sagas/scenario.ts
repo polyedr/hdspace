@@ -178,7 +178,6 @@ export function* createElements(
           ),
         );
       }
-
       const newChildren = [
         ...parent.children.map((child) => child.id),
         ...newElements.map((element) => element.id),
@@ -196,7 +195,6 @@ export function* createElements(
           id: parent.id,
         },
       );
-
       if (result) {
         yield put(
           Actions.addStateElements(
@@ -232,7 +230,6 @@ export function* createElements(
             return createdElement;
           },
         );
-
         const { result: createdElements, error } = yield call(
           reqWrapper,
           apiUpdateElements,
@@ -242,9 +239,8 @@ export function* createElements(
         );
         if (createdElements) {
           // eslint-disable-next-line consistent-return
-          return createdElements.map((el) => el.id);
+          return createdElements.map((el) => String(el.id));
         }
-
         if (error) throw new Error(error);
       }
       if (error) throw new Error(error);
@@ -759,8 +755,6 @@ export function* wrapIntoContainer(
       { data: [serverContainer] },
     );
 
-    console.log('CREATED CONTAINERS!!', createdContainers);
-
     if (createdContainers) {
       yield put(
         Actions.wrapStateElements(
@@ -827,7 +821,6 @@ export function* wrapIntoContainer(
       return createdContainers.map(({ id }) => id);
     }
   } catch (e) {
-    console.error('DAMN ERROR!!', e);
     yield put(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
     );

@@ -210,7 +210,6 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       throw new Error(error);
     }
   } catch (e) {
-    console.error('ERROR 2', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -293,7 +292,6 @@ export function* createProjectSaga(
       throw new Error(error);
     }
   } catch (e) {
-    console.error('ERROR 1', e);
     yield put(
       enqueueSnackbar({
         message: e.message,

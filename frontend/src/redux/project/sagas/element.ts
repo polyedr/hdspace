@@ -11,8 +11,8 @@ import {
   selectIsElementSelected,
   selectElementsByIds,
   selectSelectedElementsIds,
-  selectMasterGroupsElement,
   selectTreeChildElementsIds,
+  selectMasterGroupsElementId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -89,7 +89,6 @@ export function* duplicateElements(
       },
     );
   } catch (e) {
-    console.error('GOT DUPLICATION ERROR!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -1070,8 +1069,10 @@ export function* createElementsGroupSaga(
     const wrappers = yield call(wrapIntoContainer, 'group', name, ids, {
       ...action.meta,
     });
+
     const wrapperGroupId = wrappers[0];
-    const masterGroupsEl = yield select(selectMasterGroupsElement);
+    const masterGroupsElId = yield select(selectMasterGroupsElementId);
+    const masterGroupsEl = yield select(selectElementAsTree(masterGroupsElId));
     const copiedGroupResult = yield call(
       duplicateElements,
       [{ id: wrapperGroupId, screenID: screenId }],
@@ -1079,13 +1080,15 @@ export function* createElementsGroupSaga(
       { screenId },
     );
 
-    const groupId = `${copiedGroupResult[0]}`;
+    const existingGroupsIds = masterGroupsEl.children.map(({ id }) => id);
+    const groupId = `${copiedGroupResult.find(
+      (id) => !existingGroupsIds.includes(id),
+    )}`;
 
     const childIds = yield select(selectTreeChildElementsIds(groupId));
-
     const allGroupIds = [groupId, ...childIds];
-
     const state = yield select(selectAllElements);
+
     const allUpdatedElements: Normalized<StateElement> = allGroupIds.reduce(
       (acc, id) => {
         const groupElement = state[id];
@@ -1112,8 +1115,6 @@ export function* createElementsGroupSaga(
       },
       {},
     );
-
-    console.log('ALL UPDATED ELEMENTS!!', allUpdatedElements);
 
     yield put(Actions.updateElementsTree(allUpdatedElements, action.meta));
 
