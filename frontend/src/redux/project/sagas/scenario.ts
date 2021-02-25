@@ -763,6 +763,7 @@ export function* wrapIntoContainer(
           ids,
           {
             ...meta,
+            // TODO: implement redoWrapIntoContainer for element groups creation
             /* sourceAction: Actions.redoWrapIntoContainer(
               id,
               createdContainers[0].id,
