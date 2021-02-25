@@ -226,26 +226,20 @@ export const insertMapElementWrapper = (
   produce(state, (draft) => {
     const childElements = childIds.map((id) => draft[id]);
     const parent = draft[parentId];
-    console.log('STEP 1');
 
     const minBuoyancy = Math.min(...childElements.map((elem) => elem.buoyancy));
 
     parent.children.splice(minBuoyancy, 0, element.id);
     parent.children = parent.children
       .filter((childId) => !childIds.includes(childId))
-      .sort((a, b) => (draft[a].buoyancy < draft[b].buoyancy ? 1 : -1));
-    console.log('STEP 2');
+      .sort((a, b) => (draft[a].buoyancy < draft[b].buoyancy ? -1 : 1));
     element.children = childIds;
     element.buoyancy = minBuoyancy;
-    console.log('STEP 3');
     [...childIds]
       .sort((a, b) => {
-        console.log('SORT!!', a, b);
-        console.log('TEST!!', draft[a].buoyancy, draft[b].buoyancy);
-        return draft[a].buoyancy < draft[b].buoyancy ? 1 : -1;
+        return draft[a].buoyancy < draft[b].buoyancy ? -1 : 1;
       })
       .forEach((childId, index) => {
-        console.log('ENTER FOREACH CYCLE', childId, draft[childId]);
         draft[childId].parent = element.id;
         draft[childId].buoyancy = index;
       });

@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -7,8 +8,12 @@ import {
   selectCurrentRootId,
   selectElementById,
 } from '@Redux/project/selectors/element';
-import { selectShowingBorders } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProjectId,
+  selectShowingBorders,
+} from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
+import { selectMasterScreenId } from '@Redux/project/selectors/screen';
 import { setActiveElement } from '@Redux/project/actions';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
@@ -57,6 +62,10 @@ const BorderCrumb: React.FC<Props> = (props) => {
   const rootId = useSelector(selectCurrentRootId);
   const showBorders = useSelector(selectShowingBorders);
   const activeElementId = useSelector(selectActiveElementId);
+  const currentProjectId = useSelector(selectCurrentProjectId);
+  const masterScreenId = useSelector(selectMasterScreenId);
+
+  const history = useHistory();
 
   const dispatch = useDispatch();
 
@@ -70,8 +79,15 @@ const BorderCrumb: React.FC<Props> = (props) => {
     (showBorders || elementId === activeElementId);
 
   const handleSourceElementClick = useCallback(() => {
-    dispatch(setActiveElement(element.parameters?.sourceElementId));
-  }, [dispatch, element.parameters?.sourceElementId]);
+    history.push(`/project/${currentProjectId}/${masterScreenId}`);
+    dispatch(setActiveElement(element.parameters.sourceElementId));
+  }, [
+    currentProjectId,
+    dispatch,
+    element.parameters.sourceElementId,
+    history,
+    masterScreenId,
+  ]);
 
   return element && showCrumb ? (
     <div className={cn(classes.crumb)}>

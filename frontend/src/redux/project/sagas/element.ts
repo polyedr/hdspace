@@ -67,20 +67,18 @@ export function* duplicateElements(
       elements.push(element);
     }
 
-    console.log('PREPARE TO CREATE REQUEST TO DUPLICATE');
     const convertedItemsToDuplicate = elements.map((item) =>
-      convertElementToRequest(item!, (convertedEl) => {
+      convertElementToRequest(item!, (originalEl, convertedEl) => {
         return {
           ...convertedEl,
           parameters: {
             ...convertedEl.parameters,
-            originalElementId: item.id,
+            originalElementId: originalEl.id,
           },
         };
       }),
     );
 
-    console.log('CONVERTED ITEMS TO DUPLICATE!!', convertedItemsToDuplicate);
     return yield call(
       createElements,
       { elements: convertedItemsToDuplicate },
@@ -1081,17 +1079,13 @@ export function* createElementsGroupSaga(
       { screenId },
     );
 
-    console.log('COPIED GROUP RESULT!!', copiedGroupResult);
     const groupId = `${copiedGroupResult[0]}`;
 
     const childIds = yield select(selectTreeChildElementsIds(groupId));
 
     const allGroupIds = [groupId, ...childIds];
 
-    console.log('ALL GROUP IDS!!', allGroupIds);
-
     const state = yield select(selectAllElements);
-    console.log('STATE!!!', state);
     const allUpdatedElements: Normalized<StateElement> = allGroupIds.reduce(
       (acc, id) => {
         const groupElement = state[id];
@@ -1103,6 +1097,7 @@ export function* createElementsGroupSaga(
             ...groupElement,
             parameters: {
               ...groupElement.parameters,
+              ...(groupElement.id === groupId ? { isGroup: true } : {}),
               groupElements: [instanceElement.id],
             },
           } as StateElement,
@@ -1118,22 +1113,19 @@ export function* createElementsGroupSaga(
       {},
     );
 
-    console.log('ALL UPDATED ELEMENTS!!', allUpdatedElements);
-
     yield put(Actions.updateElementsTree(allUpdatedElements, action.meta));
 
     const convertedElements = Object.values(
       allUpdatedElements,
     ).map((el: LibraryElement<any>) => convertElementToPatchRequest(el));
 
-    console.log('CONVERTED ELEMENTS!!!', convertedElements);
-    const {
-      result,
-      error: updateError,
-    }: Result<ServerElement<any>> = yield call(reqWrapper, apiUpdateElements, {
-      data: convertedElements,
-    });
-    console.log('RESULT!!', result);
+    const { error: updateError }: Result<ServerElement<any>> = yield call(
+      reqWrapper,
+      apiUpdateElements,
+      {
+        data: convertedElements,
+      },
+    );
     if (updateError) throw updateError;
   } catch (e) {
     console.error(e);

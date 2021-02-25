@@ -50,7 +50,8 @@ export const convertElementToRequest = <
 >(
   element: LibraryElement<T, LibraryElement<K>[], P>,
   convertFn?: (
-    el: ServerElement<T, ServerElement<K>[], P>,
+    originalEl: LibraryElement<T, LibraryElement<K>[], P>,
+    convertedEl: ServerElement<T, ServerElement<K>[], P>,
   ) => ServerElement<T, ServerElement<K>[], P>,
 ): ServerElement<T, ServerElement<K>[], P> => {
   const {
@@ -83,7 +84,7 @@ export const convertElementToRequest = <
       ownStyles: cssDecamelize(styles.ownStyles),
     },
   };
-  return convertFn ? convertFn(serverEl) : serverEl;
+  return convertFn ? convertFn(element, serverEl) : serverEl;
 };
 
 export const convertElementToPatchRequest = <

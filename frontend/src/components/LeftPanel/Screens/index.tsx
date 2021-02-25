@@ -65,10 +65,6 @@ const Screens = () => {
   const masterScreenId = useSelector(selectMasterScreenId);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
-  const [lastSelectedScreen, setLastSelectedScreen] = useState<number>(
-    currentScreenId,
-  );
-
   const handleCreateScreen = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
@@ -101,19 +97,11 @@ const Screens = () => {
 
   const handleClick = useCallback(() => {
     if (!masterScreenEnabled) {
-      setLastSelectedScreen(currentScreenId);
       history.push(`/project/${currentProjectId}/${masterScreenId}`);
     } else {
-      history.push(`/project/${currentProjectId}/${lastSelectedScreen}`);
+      history.goBack();
     }
-  }, [
-    currentProjectId,
-    currentScreenId,
-    history,
-    lastSelectedScreen,
-    masterScreenId,
-    masterScreenEnabled,
-  ]);
+  }, [currentProjectId, history, masterScreenId, masterScreenEnabled]);
 
   return (
     <>

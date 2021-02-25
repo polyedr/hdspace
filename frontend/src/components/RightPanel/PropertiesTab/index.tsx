@@ -177,10 +177,8 @@ const PropertiesTab: React.FC = () => {
           ),
         );
       } else if (masterScreenEnabled) {
-        console.log('IS GROUP SOURCE!!', isGroupSource);
         if (isGroupSource) {
           const groupElementsIds = activeElement.parameters.groupElements;
-          console.log('GROUP ELEMENTS IDS!!', groupElementsIds);
           dispatch(
             updateMultipleElementsStyles(
               [activeElement.id, ...groupElementsIds],

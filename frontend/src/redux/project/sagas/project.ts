@@ -76,7 +76,6 @@ function* createMasterScreenElements(screen: Screen) {
   );
 
   yield call(createElements, { elements }, masterRoot, { screenId: screen.id });
-  console.log('CREATE ELEMENTS!!');
   yield call(setMasterScreenCoreElements, screen);
 }
 

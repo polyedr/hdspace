@@ -18,7 +18,7 @@ const getElementProps = (element) => ({
   className: element.styles.classNames[0],
   isDisabled: true,
   contentEditable: false,
-  ownStyles: {},
+  ownStyles: element.parameters.groupElements ? element.styles.ownStyles : {},
   groupClass: '',
   active: false,
   params: element.parameters,
@@ -75,13 +75,15 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId }) => {
     >
       {element.children.map((childId, index) => (
         <Fragment key={`master-${childId}`}>
-          {!!index && (
-            <Divider
-              orientation="horizontal"
-              variant="middle"
-              className={classes.divider}
-            />
-          )}
+          {!!index &&
+            (!element.parameters.groupElements ||
+              element.parameters.isGroup) && (
+              <Divider
+                orientation="horizontal"
+                variant="middle"
+                className={classes.divider}
+              />
+            )}
           <MasterElement elementId={childId} />
         </Fragment>
       ))}
