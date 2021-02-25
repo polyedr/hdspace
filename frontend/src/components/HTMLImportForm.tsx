@@ -167,6 +167,7 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
           variant="outlined"
           fullWidth
           margin="dense"
+          placeholder="URL"
         />
       </DialogContent>
 
