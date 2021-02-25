@@ -12,6 +12,7 @@ import {
   TextareaServerElement,
   TextinputServerElement,
 } from '@Src/types';
+import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 
 export const makeButton = ({
   buoyancy = 0,
@@ -26,13 +27,10 @@ export const makeButton = ({
   func_type: 'button',
   struct_type: 'button',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent,
-    action: {
-      type: 'internal-link',
-      screenId: 'noScreen',
-    },
     showRipple: true,
   },
   styles: {
@@ -52,7 +50,8 @@ export const makeTextinput = ({
   func_type: 'textinput',
   struct_type: 'textinput',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent: '',
     type: 'text',
@@ -71,7 +70,8 @@ export const checkbox: CheckboxServerElement = {
   func_type: 'checkbox',
   struct_type: 'checkbox',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: '',
     defaultChecked: true,
@@ -93,7 +93,8 @@ export const radiobutton: RadiobuttonServerElement = {
   func_type: 'radiobutton',
   struct_type: 'radiobutton',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: '',
     name: '',
@@ -117,9 +118,11 @@ export const makeSelectItem = (
   func_type: 'selectItem',
   struct_type: 'selectItem',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     name,
     value,
+    group: ElementGroup.OTHER,
   },
   styles: {
     classNames: ['selectItem'],
@@ -134,7 +137,9 @@ export const selectMenu: SelectMenuServerElement = {
   func_type: 'selectMenu',
   struct_type: 'selectMenu',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
   },
   styles: {
     classNames: ['selectMenu'],
@@ -153,7 +158,8 @@ export const select: SelectServerElement = {
   func_type: 'select',
   struct_type: 'select',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: 'first option',
     options: [
@@ -183,7 +189,8 @@ export const makeLabel = ({
   func_type: 'label',
   struct_type: 'label',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.TYPOGRAPHY,
     textContent,
     labelFor: 'no for attribute',
@@ -201,7 +208,8 @@ export const textarea: TextareaServerElement = {
   func_type: 'textarea',
   struct_type: 'textarea',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent: '',
     placeholder: 'Enter a label for the field',

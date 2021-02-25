@@ -6,13 +6,7 @@ import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
-import {
-  apiChangeRecursiveElement,
-  apiCreateElement,
-  apiCreateElements,
-  apiGetElements,
-} from '@Api/element';
-import DOMPurify from 'dompurify';
+import { apiCreateElements, apiGetElements } from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
 import { apiUpdateScenarios } from '@Api/scenario';
 import { apiCreateScreen, apiGetScreen, apiUpdateScreen } from '@Api/screen';
@@ -28,10 +22,7 @@ import {
   StateElement,
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
-import convertHtml from '@Utils/convertHtml';
-import CSSOM from 'cssom';
-import { extractStyles } from '@Utils/stringHelper';
-import IMAGES from '@Constants/images';
+import { changePrototypeMode } from '@Redux/user/actions';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -51,9 +42,6 @@ import {
   updateScreen,
   updateScreenImage,
   uploadFile,
-  importHtml,
-  updateElementImage,
-  updateElementParameters,
   setActiveElementId,
 } from '../actions';
 import { createScenarios } from './scenario';
@@ -66,13 +54,17 @@ import {
   selectScreens,
 } from '../selectors/screen';
 import {
+  selectActiveElement,
   selectAllElements,
   selectCurrentRootId,
   selectElementById,
-  selectElementsForScreen,
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
+import {
+  selectActiveMasterElement,
+  selectMasterScreenEnabled,
+} from '../selectors/masterScreen';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -91,7 +83,7 @@ export function* activateScreenSaga({
     const screenElement = yield select(selectScreenRootElement(screenId));
     if (!screenElement) return;
 
-    yield put(Actions.setActiveElementId(screenElement.id));
+    yield put(Actions.setActiveElement(screenElement.id));
   } catch (e) {
     yield put(
       enqueueSnackbar({
@@ -230,7 +222,7 @@ export function* createScreenSaga({
             }),
           );
 
-          yield put(Actions.setActiveElementId(elements[0].id));
+          yield put(Actions.setActiveElement(elements[0].id));
 
           yield put(push(`/project/${projectID}/${newScreen.id}`));
 
@@ -684,99 +676,22 @@ export function* convertFreeCanvasSaga() {
   }
 }
 
-export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
+export function* toggleMasterScreenSaga() {
   try {
-    const files = action.payload;
+    const enabled: boolean = yield select(selectMasterScreenEnabled);
+    const activeMasterElement = yield select(selectActiveMasterElement);
+    const activeElement: StateElement = yield select(selectActiveElement);
 
-    const htmlFiles = files.filter((file) => file.type === 'text/html');
-    if (htmlFiles.length !== 1) {
-      throw new Error(
-        htmlFiles.length
-          ? 'Only one HTML file allowed'
-          : 'At least one HTML file required',
-      );
-    }
-    const html: string = yield htmlFiles[0].text();
+    yield put(Actions.changeFreeCanvasMode(false));
+    yield put(changePrototypeMode(false));
 
-    const cssFiles = files.filter((file) => file.type === 'text/css');
-
-    const externalStyles: string = yield Promise.all(
-      cssFiles.map((file) => file.text()),
-    ).then((result) => result.reduce((acc, curr) => acc + curr, ''));
-    const htmlStyles = extractStyles(html);
-    const css = externalStyles + htmlStyles;
-
-    const clearHtml = DOMPurify.sanitize(html);
-    const doc = new DOMParser().parseFromString(clearHtml, 'text/html');
-
-    const { cssRules } = CSSOM.parse(css); // the actual type of cssRules is CSSStyleRule[] while the declared one is CSSOM.CSSRule[]
-    // @ts-ignore
-    const data = convertHtml(doc, cssRules);
-
-    const { result: element, error }: Result<LibraryElement<any>> = yield call(
-      reqWrapper,
-      apiCreateElement,
-      {
-        data,
-      },
+    yield put(
+      Actions.setEditableStyles(
+        enabled ? activeElement.styles.classNames[0] : activeMasterElement.type,
+      ),
     );
-    if (element) {
-      const { id: projectId, projectscreen }: Project = yield select(
-        selectCurrentProject,
-      );
 
-      const screen: Screen = yield call(
-        createScreenSaga,
-        createScreen(projectId, 'Screen 1', projectscreen.length),
-      );
-
-      const root: StateElement = yield select(
-        selectElementById(screen.element),
-      );
-
-      yield put(
-        Actions.addStateElements([element], root.id, { screenId: screen.id }),
-      );
-
-      const elements: StateElement[] = yield select(
-        selectElementsForScreen(screen.id),
-      );
-      const imageElements = Object.values(elements).filter(
-        (element) => element.type === 'image',
-      );
-
-      const imageFiles = files.filter((file) => file.type.includes('image/'));
-
-      yield all(
-        imageElements.map((element) => {
-          const image = imageFiles.find((img) =>
-            element.parameters.imageURL.includes(img.name),
-          );
-          return image
-            ? put(
-                updateElementImage(element.id, image, { screenId: screen.id }),
-              )
-            : put(
-                updateElementParameters(
-                  element.id,
-                  {
-                    imageURL: IMAGES.imageIcon,
-                  },
-                  {
-                    screenId: screen.id,
-                  },
-                ),
-              );
-        }),
-      );
-
-      const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
-        data: { children: [element.id] },
-        id: root.id,
-      });
-      if (error) throw new Error(error);
-    }
-    if (error) throw new Error(error);
+    yield put(Actions.setMasterScreenEnabled(!enabled));
   } catch (e) {
     yield put(
       enqueueSnackbar({

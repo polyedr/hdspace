@@ -7,7 +7,6 @@ import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
-import { focusTreeItem } from '../utils';
 
 const useIndicatorStyles = makeStyles({
   iconButton: {
@@ -144,7 +143,7 @@ const TreeItem: React.FC<Props> = (props) => {
     item.isExpanded ? onCollapse(item.id) : onExpand(item.id);
 
   const handleClick = () => {
-    focusTreeItem(item.id);
+    select(item.id as string);
   };
 
   const handleFocus = () => select(item.id as string);

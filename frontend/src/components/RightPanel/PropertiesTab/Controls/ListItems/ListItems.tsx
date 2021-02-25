@@ -1,9 +1,9 @@
 import React, { ChangeEvent } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Accordion,
-  AccordionSummary,
   AccordionDetails,
+  AccordionSummary,
   Checkbox,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -14,9 +14,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
-import { ListItemElement, PropertiesChangeProps } from '@Src/types';
+import {
+  ElementGroup,
+  ListItemElement,
+  PropertiesChangeProps,
+} from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { defaultFreeCanvasParams } from '@Domain/core';
 
 const useStyles = makeStyles({
   details: {
@@ -67,6 +72,8 @@ const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
         'listItem',
         activeElementId,
         {
+          freeCanvas: defaultFreeCanvasParams,
+          group: ElementGroup.OTHER,
           textContent: 'New item',
           isLink: false,
           link: '',

@@ -9,11 +9,19 @@ import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
 } from '@Src/styles/Theme';
-import { RightPanelTab } from '@Src/types';
+import { RPTab } from '@Src/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
-import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
+import {
+  INTERACTIVE_ELEMENTS,
+  KEEP_RP_TAB_ELEMENTS,
+} from '@Constants/defaultParams';
+import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
+import EventsTab from '@Components/RightPanel/EventsTab';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/masterScreen';
+import MasterPanel from '@Components/Editor/MasterScreen/MasterPanel';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
+import AssetsSection from './Assets';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
@@ -24,6 +32,7 @@ const useStyles = makeStyles<Theme>(({ palette }) => ({
     transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
     backgroundColor: palette.panel.main,
     color: palette.common.white,
+    overflow: 'hidden',
   },
   tabPanel: {
     flex: 1,
@@ -68,45 +77,86 @@ const TabPanel: React.FC<TabPanelProps> = ({ value, index, children }) => {
   );
 };
 
+const defaultTabs: RPTab[] = Object.keys(RPTab).map((k) => RPTab[k]);
+
+const tabContent: Record<RPTab, any> = {
+  Elements: <ElementsTab />,
+  Properties: <PropertiesTab />,
+  Events: <EventsTab />,
+};
+
 const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
-  const classes = useStyles({ open: !isPrototypeMode });
   const activeElement = useSelector(selectActiveElement);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+
+  const classes = useStyles({ open: !isPrototypeMode });
   const tabClasses = useTabStyles();
   const tabsClasses = useTabsStyles();
 
-  const [activeTab, setActiveTab] = useState(RightPanelTab.ELEMENTS);
+  const [tabs, setTabs] = useState(defaultTabs);
+
+  const [activeTabIndex, setActiveTabIndex] = useState<number>(
+    tabs.indexOf(RPTab.Properties),
+  );
 
   useEffect(() => {
-    if (!KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
-      setActiveTab(RightPanelTab.PROPERTIES);
+    setActiveTabIndex(0);
+    const isInteractive = INTERACTIVE_ELEMENTS.includes(activeElement.type);
+    const isFertile = canElementHaveAllChildren(activeElement.type);
+
+    let newTabs = defaultTabs;
+    if (!isInteractive) {
+      newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
     }
+    if (!isFertile) {
+      newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
+    }
+
+    setTabs(newTabs);
   }, [activeElement.type]);
 
-  const handleChange = (ev: ChangeEvent<{}>, tab: number) => {
-    setActiveTab(tab);
+  useEffect(() => {
+    if (KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
+      const index = tabs.indexOf(RPTab.Elements);
+      // eslint-disable-next-line no-bitwise
+      if (~index) {
+        setActiveTabIndex(index);
+      }
+    }
+  }, [tabs, activeElement.type]);
+
+  const handleChange = (ev: ChangeEvent<{}>, index: number) => {
+    setActiveTabIndex(index);
   };
 
   return (
     <div className={classes.root}>
-      <Tabs
-        value={activeTab}
-        onChange={handleChange}
-        classes={tabsClasses}
-        variant="fullWidth"
-      >
-        <Tab classes={tabClasses} label="Properties" />
+      {masterScreenEnabled ? (
+        <MasterPanel />
+      ) : (
+        <>
+          <Tabs
+            value={activeTabIndex}
+            onChange={handleChange}
+            classes={tabsClasses}
+            variant="fullWidth"
+          >
+            {tabs.map((tab) => (
+              <Tab key={tab} classes={tabClasses} label={tab} />
+            ))}
+          </Tabs>
 
-        <Tab classes={tabClasses} label="Elements" />
-      </Tabs>
-
-      <TabPanel index={RightPanelTab.PROPERTIES} value={activeTab}>
-        <PropertiesTab />
-      </TabPanel>
-
-      <TabPanel index={RightPanelTab.ELEMENTS} value={activeTab}>
-        <ElementsTab />
-      </TabPanel>
+          {tabs.map((tab, i) => {
+            return (
+              <TabPanel index={i} value={activeTabIndex} key={tab}>
+                {tabContent[tab]}
+              </TabPanel>
+            );
+          })}
+        </>
+      )}
+      <AssetsSection />
     </div>
   );
 };

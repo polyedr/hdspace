@@ -7,7 +7,9 @@ import {
 import {
   arrayToMap,
   buildElementsTree,
+  buildGroupElementsTree,
   flattenElements,
+  getAllElementChildrenIds,
 } from '@Utils/normalizedStateHelpers';
 import {
   ChildEntity,
@@ -22,7 +24,7 @@ import {
   selectEditableStyles,
   selectProjectState,
 } from './base';
-import { AppReduxState } from '../../types';
+import { AppReduxState, ProjectState } from '../../types';
 import {
   selectCurrentScreen,
   selectCurrentScreenId,
@@ -194,14 +196,15 @@ export const selectCustomElementsHasNext = (state: AppReduxState) => {
   return !!selectProjectState(state).data.customElementsData.next;
 };
 
-export const selectActiveItemChildren = (childType: ChildEntity) => (
-  state: AppReduxState,
-) => {
-  const activeElement = selectActiveElement(state);
-  return activeElement.children
-    .map((childId) => selectElementById(childId)(state))
-    .filter((child) => child.type === childType);
-};
+export const selectActiveItemChildren = (childType: ChildEntity) =>
+  createSelector(
+    selectActiveElement,
+    selectAllElements,
+    (activeElement, elements) =>
+      activeElement.children
+        .map((childId) => elements[childId])
+        .filter((child) => child.type === childType),
+  );
 
 export const selectElementStyles = (elementId: string) => ({
   project,
@@ -325,3 +328,87 @@ export const selectDirectRootChildren = createSelector(
 
 export const selectIsElementActive = (elementId: string) =>
   createSelector(selectActiveElementId, (activeId) => activeId === elementId);
+
+export const selectSelectedElementsIds = (state: AppReduxState) =>
+  selectProjectState(state).edit.selectedElementsIds;
+
+export const selectSelectedElements = createSelector(
+  selectProjectState,
+  selectSelectedElementsIds,
+  (state: ProjectState, ids: string[]) => {
+    return ids.reduce((acc, id: string) => {
+      return {
+        ...acc,
+        [id]: state.data.elements[id],
+      };
+    }, {});
+  },
+);
+
+export const selectIsElementSelected = (elementId: string) => (
+  state: AppReduxState,
+) => {
+  const selectedElements = selectSelectedElementsIds(state);
+  return selectedElements.includes(elementId);
+};
+
+export const selectSharedStyles = (type: Entity) =>
+  createSelector(
+    selectCurrentProject,
+    (project) =>
+      project.projectData.classes.find(
+        (projectClass) => projectClass.className === type,
+      )?.rules,
+  );
+
+export const selectCanCreateGroup = (state: AppReduxState) =>
+  selectProjectState(state).ui.canCreateGroup;
+
+export const selectElementGroupIds = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  return Object.keys(elements).filter(
+    (elementId) => elements[elementId].parameters?.isGroup === true,
+  );
+};
+
+export const selectElementGroups = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  return Object.values(elements).filter(
+    (element: StateElement) => element.parameters?.isGroup === true,
+  );
+};
+
+export const selectElementTreeGroups = (state: AppReduxState) => {
+  const { elements } = selectProjectState(state).data;
+  const groupIds = selectElementGroupIds(state);
+  return groupIds.map((groupId) =>
+    buildGroupElementsTree(elements, groupId, ['group', 'groupElements']),
+  );
+};
+
+export const selectTreeChildElementsIds = (elementId: string) => ({
+  project,
+}: AppReduxState) => {
+  const parent = project.data.elements[elementId];
+  return parent.children.reduce((allChildren: string[], childId) => {
+    return [
+      ...allChildren,
+      ...getAllElementChildrenIds(project.data.elements, childId),
+    ];
+  }, []);
+};
+
+export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({
+  project,
+}: AppReduxState) => {
+  const parentElements = ids.map((id: string) => project.data.elements[id]);
+  return parentElements.reduce(
+    (allChildIds: string[], parentElement: StateElement) => {
+      return [
+        ...allChildIds,
+        ...getAllElementChildrenIds(project.data.elements, parentElement.id),
+      ];
+    },
+    [] as string[],
+  );
+};

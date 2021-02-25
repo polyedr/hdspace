@@ -3,7 +3,7 @@ import { DropPosition } from '@Constants/dragAndDrop';
 import {
   ChildEntity,
   ChildrenElements,
-  CreatedElement,
+  CreateElementsData,
   Entity,
   Indices,
   LibraryElement,
@@ -15,9 +15,14 @@ import {
   StateElement,
   Screen,
   NNBlockType,
-  SCREEN_FORMATS,
+  Layout,
   PaginatedResponse,
   PropertyName,
+  AssetsList,
+  Asset,
+  PaginatedArray,
+  ProjectsSearchParameter,
+  DateRange,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -52,6 +57,8 @@ import {
   RemoveElementClassName,
   RemoveElementStyles,
   RemoveSharedStyles,
+  RemoveAsset,
+  RestoreAsset,
   RenameProject,
   RenameScreen,
   ReplaceElementStyles,
@@ -84,6 +91,7 @@ import {
   UpdateElementParameters,
   UpdateElementsTree,
   UpdateElementStyles,
+  UpdateMultipleElementsParameters,
   UpdateProject,
   UpdateSavedElementsValues,
   UpdateSavedElementValues,
@@ -94,10 +102,42 @@ import {
   SetScreenCreateLoader,
   SetBordersEnabled,
   SetEditorDocument,
+  SetAssetsLoader,
+  UploadElementAsset,
+  RemoveAssetList,
+  AddChildrenToElement,
+  SearchProjects,
+  SetProjectSearchParameter,
+  AddSelectedElement,
+  RemoveSelectedElement,
+  SetSelectedElements,
+  UpdateMultipleElementsStyles,
+  RemoveMultipleElementsStyles,
+  UpdateMultipleStateElements,
+  AddAssetList,
+  UploadAsset,
+  AddAssetRedux,
+  SetActiveMasterElement,
+  SetMasterScreenEnabled,
+  ToggleMasterScreen,
+  MoveStateElement,
+  MoveStateElementsInside,
+  CreateStateGroup,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
+});
+
+export const searchProjects = (): SearchProjects => ({
+  type: TYPES.SEARCH_PROJECTS,
+});
+
+export const setProjectsSearchParameter = (
+  parameter: [ProjectsSearchParameter, string | DateRange],
+): SetProjectSearchParameter => ({
+  type: TYPES.SET_PROJECT_SEARCH_PARAMETER,
+  payload: parameter,
 });
 
 export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
@@ -195,6 +235,11 @@ export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   payload: { active },
 });
 
+export const setAssetsLoader = (active: boolean): SetAssetsLoader => ({
+  type: TYPES.SET_ASSETS_LOADER,
+  payload: { active },
+});
+
 export const deleteScreen = (
   projectId: number,
   screenId: number,
@@ -281,11 +326,24 @@ export const moveStateElement = (
   indices: Indices,
   parents: ParentIds,
   meta: ElementHistoryMeta,
-) => ({
+): MoveStateElement => ({
   type: TYPES.MOVE_STATE_ELEMENT,
   payload: {
     elementId,
     indices,
+    parents,
+  },
+  meta,
+});
+
+export const moveStateElementsInside = (
+  ids: string[],
+  parents: ParentIds,
+  meta: ElementHistoryMeta,
+): MoveStateElementsInside => ({
+  type: TYPES.MOVE_STATE_ELEMENTS_INSIDE,
+  payload: {
+    ids,
     parents,
   },
   meta,
@@ -330,6 +388,23 @@ export const insertStateElement = (
     parentId,
     element,
     childId,
+  },
+  meta,
+});
+
+export const createStateGroup = (
+  groupEl: LibraryElement<any>,
+  parentId: string,
+  buoyancy: number,
+  childIds: string[],
+  meta: ElementHistoryMeta,
+): CreateStateGroup => ({
+  type: TYPES.CREATE_STATE_GROUP,
+  payload: {
+    groupEl,
+    parentId,
+    buoyancy,
+    childIds,
   },
   meta,
 });
@@ -467,6 +542,35 @@ export const updateElementStyles = (
   meta,
 });
 
+export const updateMultipleStateElements = (
+  elements: Normalized<StateElement>,
+): UpdateMultipleStateElements => ({
+  type: TYPES.UPDATE_MULTIPLE_STATE_ELEMENTS,
+  payload: { elements },
+});
+
+export const updateMultipleElementsStyles = (
+  ids: string[],
+  styles: {
+    [id: string]: React.CSSProperties;
+  },
+  meta: ElementHistoryMeta,
+): UpdateMultipleElementsStyles => ({
+  type: TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
+  payload: { ids, styles },
+  meta,
+});
+
+export const removeMultipleElementsStyles = (
+  ids: string[],
+  cssPropertiesNames: string[],
+  meta: ElementHistoryMeta,
+): RemoveMultipleElementsStyles => ({
+  type: TYPES.REMOVE_MULTIPLE_ELEMENTS_STYLES,
+  payload: { ids, cssPropertiesNames },
+  meta,
+});
+
 export const removeElementStyles = (
   id: string,
   cssPropertiesNames: PropertyName[],
@@ -487,6 +591,21 @@ export const updateElementImage = (
   meta,
 });
 
+export const uploadElementAsset = (
+  elementId: string,
+  asset: File,
+  listId: string,
+  meta: ElementHistoryMeta,
+): UploadElementAsset => ({
+  type: TYPES.UPLOAD_ELEMENT_ASSET,
+  payload: {
+    elementId,
+    asset,
+    listId,
+  },
+  meta,
+});
+
 export const updateElementParameters = <
   T extends Entity,
   K extends LibraryElement<T>['parameters']
@@ -497,6 +616,24 @@ export const updateElementParameters = <
 ): UpdateElementParameters => ({
   type: TYPES.UPDATE_ELEMENT_PARAMETERS,
   payload: { elementId, parameters },
+  meta,
+});
+
+export const updateMultipleElementsParameters = <
+  T extends Entity,
+  K extends LibraryElement<T>['parameters']
+>(
+  ids: string[],
+  parameters: {
+    [id: string]: K;
+  },
+  meta: ElementHistoryMeta,
+): UpdateMultipleElementsParameters => ({
+  type: TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+  payload: {
+    ids,
+    parameters,
+  },
   meta,
 });
 
@@ -525,20 +662,31 @@ export const deleteElement = (
 });
 
 export const createElements = (
-  createdElements: CreatedElement[],
+  { createdElements, parentId, index }: CreateElementsData,
   meta: ElementHistoryMeta,
-  parentId: string,
-  index?: number,
 ): CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
   payload: { createdElements, parentId, index },
   meta,
 });
 
+export const addChildrenToElement = (
+  children: {
+    childType: ChildEntity;
+    parameters: ChildrenElements[ChildEntity]['parameters'];
+  }[],
+  elementId: string,
+  meta: ElementHistoryMeta,
+): AddChildrenToElement => ({
+  type: TYPES.ADD_CHILDREN_TO_ELEMENT,
+  payload: { children, elementId },
+  meta,
+});
+
 export const addChildToElement = (
   childType: ChildEntity,
   elementID: string,
-  parameters: ChildrenElements[ChildEntity]['parameters'],
+  parameters: Partial<ChildrenElements[ChildEntity]['parameters']>,
   meta: ElementHistoryMeta,
 ): AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,
@@ -779,9 +927,9 @@ export const updateLastElements = (
   },
 });
 
-export const changeScreenFormat = (format: SCREEN_FORMATS) => ({
-  type: TYPES.CHANGE_SCREEN_FORMAT,
-  payload: format,
+export const changeLayout = (layout: Layout) => ({
+  type: TYPES.CHANGE_LAYOUT,
+  payload: layout,
 });
 
 export const rotateScreenFormat = (rotated: boolean) => ({
@@ -800,12 +948,184 @@ export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
 
-export const importHtml = (files: File[]) => ({
+export const importHtml = (files: File[], url?: string) => ({
   type: TYPES.IMPORT_HTML,
-  payload: files,
+  payload: {
+    files,
+    url,
+  },
+});
+
+export const uploadImportUrl = (url) => ({
+  type: TYPES.UPLOAD_IMPORT_URL,
+  payload: url,
 });
 
 export const setEditorDocument = (doc: Document): SetEditorDocument => ({
   type: TYPES.SET_EDITOR_DOCUMENT,
   payload: doc,
+});
+
+export const loadAssetLists = (projectId: string) => ({
+  type: TYPES.LOAD_ASSET_LISTS,
+  payload: projectId,
+});
+
+export const loadAssets = (selectedListId: string) => ({
+  type: TYPES.LOAD_ASSETS,
+  payload: {
+    selectedListId,
+  },
+});
+
+export const setAssetLists = (assetLists: PaginatedArray<AssetsList>) => ({
+  type: TYPES.SET_ASSET_LISTS,
+  payload: assetLists,
+});
+
+export const addAssetList = (
+  name: string,
+  meta?: HistoryMeta,
+): AddAssetList => ({
+  type: TYPES.ADD_ASSET_LIST,
+  payload: { name },
+  meta,
+});
+
+export const removeAssetList = (
+  id: string,
+  meta?: HistoryMeta,
+): RemoveAssetList => ({
+  type: TYPES.REMOVE_ASSET_LIST,
+  payload: id,
+  meta,
+});
+
+export const removeAsset = (
+  id: string,
+  listId: string,
+  meta?: HistoryMeta,
+): RemoveAsset => ({
+  type: TYPES.REMOVE_ASSET,
+  payload: { id, listId },
+  meta,
+});
+
+export const restoreAsset = (
+  asset: Asset,
+  listId: string,
+  meta?: HistoryMeta,
+): RestoreAsset => ({
+  type: TYPES.RESTORE_ASSET,
+  payload: { asset, listId },
+  meta,
+});
+
+export const removeAssetListRedux = (id: string) => ({
+  type: TYPES.REMOVE_ASSET_LIST_REDUX,
+  payload: id,
+});
+export const removeAssetRedux = (id: string, listId: string) => ({
+  type: TYPES.REMOVE_ASSET_REDUX,
+  payload: { id, listId },
+});
+
+export const addAssetListToState = (list: AssetsList, meta: HistoryMeta) => ({
+  type: TYPES.ADD_ASSET_LIST_REDUX,
+  payload: list,
+  meta,
+});
+
+export const uploadAsset = (
+  assetFile: any,
+  listId?: string,
+  meta?: HistoryMeta,
+): UploadAsset => ({
+  type: TYPES.UPLOAD_ASSET,
+  payload: {
+    listId,
+    assetFile,
+  },
+  meta,
+});
+
+export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
+  type: TYPES.SET_ASSETS,
+  payload: {
+    listId,
+    assets,
+  },
+});
+
+export const addAssetToState = (
+  listId: string,
+  asset: Asset,
+  meta: HistoryMeta,
+): AddAssetRedux => ({
+  type: TYPES.ADD_ASSET_REDUX,
+  payload: {
+    listId,
+    asset,
+  },
+  meta,
+});
+
+export const setSelectedAssetListId = (listId: string) => ({
+  type: TYPES.SET_SELECTED_ASSET_LIST_ID,
+  payload: {
+    assetListId: listId,
+  },
+});
+
+export const addSelectedElement = (id: string): AddSelectedElement => ({
+  type: TYPES.ADD_SELECTED_ELEMENT,
+  payload: { id },
+});
+
+export const removeSelectedElement = (id: string): RemoveSelectedElement => ({
+  type: TYPES.REMOVE_SELECTED_ELEMENT,
+  payload: { id },
+});
+
+export const setSelectedElements = (ids: string[]): SetSelectedElements => ({
+  type: TYPES.SET_SELECTED_ELEMENTS,
+  payload: { ids },
+});
+
+export const toggleSelectedElement = (id: string) => ({
+  type: TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
+  payload: { id },
+});
+
+export const setActiveMasterElementId = (
+  id: string,
+): SetActiveMasterElement => ({
+  type: TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
+  payload: id,
+});
+
+export const setMasterScreenEnabled = (
+  enabled: boolean,
+): SetMasterScreenEnabled => ({
+  type: TYPES.SET_MASTER_SCREEN_ENABLED,
+  payload: enabled,
+});
+
+export const toggleMasterScreen = (): ToggleMasterScreen => ({
+  type: TYPES.TOGGLE_MASTER_SCREEN,
+});
+
+export const setCanCreateGroup = (canCreateGroup: boolean) => ({
+  type: TYPES.SET_CAN_CREATE_GROUP,
+  payload: canCreateGroup,
+});
+
+export const createElementsGroup = (
+  name: string,
+  ids: string[],
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.CREATE_ELEMENTS_GROUP_SAGA,
+  payload: { name, ids },
+  meta,
 });

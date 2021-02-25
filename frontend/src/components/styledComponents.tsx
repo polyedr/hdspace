@@ -5,6 +5,7 @@ import {
   AccordionSummaryProps,
   createStyles,
   darken,
+  IconButtonProps,
   lighten,
   TextFieldProps,
 } from '@material-ui/core';
@@ -14,6 +15,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import TextField from '@material-ui/core/TextField';
 import { ToggleButtonProps } from '@material-ui/lab';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import IconButton from '@material-ui/core/IconButton';
 
 const useAccordionStyles = makeStyles(({ palette }) => ({
   root: {
@@ -127,6 +129,15 @@ const useToggleButtonStyles = makeStyles(({ palette }) =>
   }),
 );
 
+const useIconButtonClasses = makeStyles(({ palette }) => ({
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
+}));
+
 export const StyledAccordion: React.FC<AccordionProps> = ({
   children,
   ...props
@@ -183,4 +194,16 @@ export const StyledTextField: React.FC<TextFieldProps> = (props) => {
 export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => {
   const classes = useToggleButtonStyles();
   return <ToggleButton classes={classes} {...props} />;
+};
+
+export const StyledIconButton: React.FC<IconButtonProps> = ({
+  children,
+  ...props
+}) => {
+  const classes = useIconButtonClasses();
+  return (
+    <IconButton className={classes.iconButton} {...props}>
+      {children}
+    </IconButton>
+  );
 };

@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HTMLImportForm in the closed state should render properly 1`] = `<div />`;
+
+exports[`HTMLImportForm in the open state should render properly 1`] = `
+<div
+  aria-hidden="true"
+/>
+`;

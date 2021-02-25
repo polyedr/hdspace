@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndResizeCallback } from 'react-rnd';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
@@ -39,18 +39,33 @@ const FreeCanvas = () => {
 
   const { ownStyles } = useElementClassNames(root);
 
-  const rootSize = () =>
-    Object.values(directChildren).reduce(
+  const rootSize = useMemo(() => {
+    const {
+      width: rootWidh = 0,
+      height: rootHeight = 0,
+    } = root.parameters.freeCanvas;
+
+    return Object.values(directChildren).reduce(
       (acc, curr) => {
-        const width = curr.parameters.left + curr.parameters.width || 0;
-        const height = curr.parameters.top + curr.parameters.height || 0;
+        const {
+          left = 0,
+          top = 0,
+          width = 0,
+          height = 0,
+        } = curr.parameters.freeCanvas;
+        const newWidth = left + parseInt(width.toString());
+        const newHeight = top + parseInt(height.toString());
         return {
-          width: Math.max(width, acc.width, root.parameters.width),
-          height: Math.max(height, acc.height, root.parameters.height),
+          width: Math.max(newWidth, +acc.width, +rootWidh),
+          height: Math.max(newHeight, +acc.height, +rootHeight),
         };
       },
-      { width: root.parameters.width, height: root.parameters.height },
+      {
+        width: +rootWidh,
+        height: +rootHeight,
+      },
     );
+  }, [directChildren, root.parameters.freeCanvas]);
 
   const handleResize: RndResizeCallback = (e, dir, rnd, delta) => {
     if (dir !== 'bottom') return;
@@ -92,20 +107,22 @@ const FreeCanvas = () => {
 
       dispatch(
         createElements(
-          [
-            {
-              id,
-              type,
-              name,
-              custom,
-              parameters: {
-                top: offset.y - rect.y,
-                left: offset.x - rect.x,
+          {
+            createdElements: [
+              {
+                id,
+                type,
+                name,
+                custom,
+                parameters: {
+                  top: offset.y - rect.y,
+                  left: offset.x - rect.x,
+                },
               },
-            },
-          ],
+            ],
+            parentId: root.id,
+          },
           { screenId: currentScreenId },
-          root.id,
         ),
       );
     },
@@ -140,7 +157,7 @@ const FreeCanvas = () => {
       minHeight="100%"
       onResize={handleResize}
       onResizeStop={handleResizeStop}
-      size={rootSize()}
+      size={rootSize}
       id="free-canvas-root"
     >
       {Object.values(directChildren).map((element) => {

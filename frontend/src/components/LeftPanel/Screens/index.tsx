@@ -4,11 +4,15 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { lighten } from '@material-ui/core';
+import { Button, lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { createScreen, changeScreensOrder } from '@Redux/project/actions';
+import {
+  createScreen,
+  changeScreensOrder,
+  toggleMasterScreen,
+} from '@Redux/project/actions';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
   selectCurrentProjectId,
@@ -21,6 +25,7 @@ import {
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import HtmlImportForm from '@Components/HTMLImportForm';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/masterScreen';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
 import {
@@ -44,6 +49,10 @@ const useStyles = makeStyles(({ palette, typography }) => ({
     padding: 0,
     overflowX: 'hidden',
   },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
 }));
 
 const Screens = () => {
@@ -54,6 +63,7 @@ const Screens = () => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const screens = useSelector(selectScreens);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const handleCreateScreen = (ev) => {
     ev.preventDefault();
@@ -83,6 +93,10 @@ const Screens = () => {
     ev.preventDefault();
     ev.stopPropagation();
     setAnchorEl(null);
+  };
+
+  const handleToggleMasterScreen = () => {
+    dispatch(toggleMasterScreen());
   };
 
   return (
@@ -132,10 +146,18 @@ const Screens = () => {
           </div>
         </StyledAccordionSummary>
 
-        <DragDropContext onDragEnd={handleReorder}>
-          <Droppable droppableId="droppable">
-            {(provided) => (
-              <StyledAccordionDetails>
+        <StyledAccordionDetails className={classes.details}>
+          <Button
+            color="secondary"
+            variant={masterScreenEnabled ? 'contained' : 'outlined'}
+            onClick={handleToggleMasterScreen}
+          >
+            Master Screen
+          </Button>
+
+          <DragDropContext onDragEnd={handleReorder}>
+            <Droppable droppableId="droppable">
+              {(provided) => (
                 <Scrollbar autoHeightMax={200}>
                   <List
                     className={classes.list}
@@ -153,10 +175,10 @@ const Screens = () => {
                     {provided.placeholder}
                   </List>
                 </Scrollbar>
-              </StyledAccordionDetails>
-            )}
-          </Droppable>
-        </DragDropContext>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </StyledAccordionDetails>
       </StyledAccordion>
 
       <HtmlImportForm open={open} onClose={() => setOpen(false)} />

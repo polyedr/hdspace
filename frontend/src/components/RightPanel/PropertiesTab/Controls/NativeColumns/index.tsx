@@ -23,7 +23,7 @@ type Props = {
   columnRuleWidth?: React.CSSProperties['columnRuleWidth'];
 };
 
-const ColumnsControls: React.FC<
+const NativeColumnsControls: React.FC<
   Props & PropertiesChangeProps<LibraryElement<Entity>>
 > = ({
   columnCount,
@@ -59,4 +59,4 @@ const ColumnsControls: React.FC<
   );
 };
 
-export default ColumnsControls;
+export default NativeColumnsControls;

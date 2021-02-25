@@ -54,15 +54,17 @@ export enum ElementGroup {
 }
 
 export type FreeCanvasElementParams = {
-  left?: CSS.Property.Left;
-  top?: CSS.Property.Top;
-  zIndex?: CSS.Property.ZIndex;
+  left?: number;
+  top?: number;
+  zIndex?: number;
   width?: CSS.Property.Width;
   height?: CSS.Property.Height;
 };
 
-export type BaseElementParams = FreeCanvasElementParams & {
-  group?: ElementGroup;
+export type BaseElementParams = {
+  layouts: Layout[];
+  freeCanvas: FreeCanvasElementParams;
+  group: ElementGroup;
 };
 
 export type ServerElement<
@@ -103,10 +105,17 @@ export type PageTemplateServerElement = ServerElement<
   'pageTemplate' | 'emptyPageTemplate',
   ContainerServerElement[]
 >;
-export type GridServerElement = ServerElement<'grid', ContainerServerElement[]>;
+export type GridServerElement = ServerElement<'grid', GridItemServerElement[]>;
+export type GridItemServerElement = ServerElement<
+  'gridItem',
+  ServerElement<Entity>[]
+>;
+export type ColumnServerElement = ServerElement<'column', any>;
+export type NativeColumnsServerElement = ServerElement<'nativeColumns', any>;
 export type ColumnsServerElement = ServerElement<
   'columns',
-  ContainerServerElement[]
+  ColumnServerElement[],
+  ColumnsParameters
 >;
 export type SubscribeFormServerElement = ServerElement<
   'subscribeForm',
@@ -220,6 +229,12 @@ export type DropdownItemServerElement = ServerElement<
   DropdownItemParameters
 >;
 export type UndefinedServerElement = ServerElement<'undefined', []>;
+
+export type ElementsGroupServerElement = ServerElement<
+  'group',
+  [],
+  ElementsGroupParameters
+>;
 
 export type ServerRecursiveElement = {
   id: number;
@@ -405,26 +420,49 @@ export type LibraryElementUnion =
   | SubscribeFormElement
   | FeatureSectionElement;
 
+type InteractiveElementParams = {
+  events: ElementEvent[];
+};
+
+export enum EventType {
+  Click = 'Click',
+}
+
+export interface ElementEvent {
+  type: EventType;
+  data: any;
+  id: string;
+}
+
+export interface ElementClickEvent extends ElementEvent {
+  data: {
+    linkType: LinkType;
+    url: string;
+    screenId: string;
+  };
+}
+
 export type ImageParameters = BaseElementParams & {
   imageURL: string;
 };
 
+export type LinkType = 'internal' | 'external';
+
 export type LinkParams = BaseElementParams & {
   type: 'internal-link' | 'external-link';
-  url?: string;
-  screenId?: string;
+  url: string;
+  screenId: string;
 };
 
 export type ButtonParameters = BaseElementParams & {
   textContent: string;
-  action: LinkParams;
   showRipple: boolean;
 };
 
-export type HyperLinkParameters = BaseElementParams & {
-  textContent: string;
-  action: LinkParams;
-};
+export type HyperLinkParameters = BaseElementParams &
+  InteractiveElementParams & {
+    textContent: string;
+  };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
 
@@ -462,6 +500,8 @@ export type SmartElementParameters = BaseElementParams & {
   imageURL?: string;
   stylesOn: boolean;
 };
+
+export type ColumnsParameters = BaseElementParams;
 
 export type TextareaParameters = BaseElementParams & {
   textContent: string;
@@ -527,7 +567,7 @@ export type MapParameters = BaseElementParams & {
   };
 };
 
-export type VideoSettingsType = BaseElementParams & {
+export type VideoSettingsType = {
   link: string;
   autoplay: boolean;
   start: number;
@@ -549,6 +589,10 @@ export type DropdownParameters = BaseElementParams & {
 
 export type DropdownItemParameters = BaseElementParams & {
   textContent: string;
+};
+
+export type ElementsGroupParameters = BaseElementParams & {
+  groupElements: string[];
 };
 
 export type CreatedServerProject = {
@@ -626,7 +670,13 @@ export type StateElement = {
     classNames: string[];
     ownStyles: React.CSSProperties;
   };
-  parameters: any;
+  parameters: {
+    freeCanvas: FreeCanvasElementParams;
+    group: ElementGroup;
+    layouts: Layout[];
+    events?: ElementEvent[];
+    [k: string]: any;
+  };
   shared?: boolean;
 };
 
@@ -640,6 +690,10 @@ export type Indices = {
   oldIndex: number;
 };
 
+export type ElementsIndices = {
+  [id: string]: number;
+};
+
 export type SavedElementsValues = {
   [elementID: string]: { id: number; savedValue: string | boolean };
 };
@@ -650,6 +704,12 @@ export type CreatedElement = {
   name: string;
   custom: boolean;
   parameters?: any;
+};
+
+export type CreateElementsData = {
+  createdElements: CreatedElement[];
+  parentId: string;
+  index?: number;
 };
 
 export type ItemToCopyInfo = {
@@ -675,21 +735,6 @@ export type ListItem = {
   textContent: string;
   isLink: boolean;
   link: string;
-};
-
-export type ScenarioLibraryElement = {
-  struct_type: ServerStructType;
-  func_type: ServerStructType;
-  func_type_human?: string;
-  buoyancy: number;
-  parameters: {
-    tags?: string;
-    group: string;
-    placeholder?: string;
-    map_props?: IMapProps;
-  };
-  styles: React.CSSProperties;
-  name: ServerStructType;
 };
 
 export type ServerStructType = Entity;
@@ -759,6 +804,7 @@ export type ElementData = {
   icon: OverridableComponent<SvgIconTypeMap> | undefined;
   name: string;
   custom: boolean;
+  parameters?: any;
 };
 
 export type ElementsHierarchy = {
@@ -857,19 +903,9 @@ export type UserData = {
   profile: ProfileData;
 };
 
-export type TotalUserData = ProfileData & UserData;
-
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R
   : any;
-
-export type FreeElement = {
-  id: string;
-  top: number;
-  left: number;
-  type: 'freeElement';
-  name: string;
-};
 
 export type ReturnPromisedType<T extends (...args: any[]) => any> = T extends (
   ...args: any[]
@@ -964,6 +1000,8 @@ export type ChildrenElements = {
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;
   dropdownItem: DropdownItemServerElement;
+  gridItem: GridItemServerElement;
+  column: ColumnServerElement;
 };
 
 export type ElementsToAdd = {
@@ -973,6 +1011,7 @@ export type ElementsToAdd = {
   pageTemplate: PageTemplateServerElement;
   emptyPageTemplate: PageTemplateServerElement;
   grid: GridServerElement;
+  nativeColumns: NativeColumnsServerElement;
   columns: ColumnsServerElement;
   image: ImageServerElement;
   smartHeader: SmartHeaderServerElement;
@@ -1002,25 +1041,31 @@ export type ElementsToAdd = {
   cardsSection: CardsSectionServerElement;
   featureSection: FeatureSectionServerElement;
   section: SectionServerElement;
+  group: ElementsGroupServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
 
-export type GroupElement = {
-  key: string;
+export type AssetsList = {
+  id: string;
   name: string;
-  label: string;
-  custom?: boolean;
-  value: { structType: ServerStructType; funcType: ServerStructType };
+  created: Date;
+  modified: Date;
+  projectId: string;
+  images: Asset[];
 };
 
-export interface ISignUpData {
-  username: string;
-  password: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-}
+export type Asset = {
+  id: string;
+  image: string | null;
+  created: Date;
+  modified: Date;
+  listId: string | null;
+};
+
+export type AssetResults = {
+  [listId: string]: PaginatedArray<Asset>;
+};
 
 export const enum NNBlockType {
   HEADER = 'headers',
@@ -1029,19 +1074,21 @@ export const enum NNBlockType {
   WEBPAGE = 'webpages',
 }
 
-export const enum RightPanelTab {
-  PROPERTIES = 0,
-  ELEMENTS = 1,
+export enum RPTab {
+  Properties = 'Properties',
+  Elements = 'Elements',
+  Events = 'Events',
 }
 
-export const enum SCREEN_FORMATS {
+export enum Layout {
   Desktop = 'desktop',
   Tablet = 'tablet',
   Mobile = 'mobile',
 }
 
 export const CONTROLS_AFFECT_ON_PARAMS = [
-  'action',
+  'layouts',
+  'columns',
   'mapProps',
   'placeholder',
   'textContent',
@@ -1067,7 +1114,9 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
+  'grid',
   'columns',
+  'nativeColumns',
   'display',
   'indents',
   'size',
@@ -1082,3 +1131,18 @@ export const CONTROLS_AFFECT_ON_STYLES = [
 export type Control =
   | typeof CONTROLS_AFFECT_ON_PARAMS[number]
   | typeof CONTROLS_AFFECT_ON_STYLES[number];
+
+export enum ProjectsSearchParameter {
+  name = 'name',
+  user = 'user',
+  status = 'status',
+  updated = 'updated',
+  created = 'created',
+}
+
+export type DateRange = {
+  from: Date | null;
+  to: Date | null;
+};
+
+export type PostUrlResponse = { wpname: string; owner: any };

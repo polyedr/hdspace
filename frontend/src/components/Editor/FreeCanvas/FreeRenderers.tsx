@@ -517,9 +517,12 @@ const FREE_CANVAS_RENDERERS: Record<Entity | 'none', React.FC<Props> | null> = {
   divBlock: Container,
   section: Container,
   cardsSection: Container,
+  nativeColumns: Container,
   columns: Container,
+  column: Container,
   container: Container,
   root: Container,
+  gridItem: Container,
   grid: Container,
   undefined: Container,
   smartHeader: Container,
@@ -549,6 +552,7 @@ const FREE_CANVAS_RENDERERS: Record<Entity | 'none', React.FC<Props> | null> = {
   selectMenu: null,
   subscribeForm: null,
   none: null,
+  group: Container,
 };
 
 export default FREE_CANVAS_RENDERERS;

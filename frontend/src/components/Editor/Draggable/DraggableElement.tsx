@@ -4,6 +4,7 @@ import React, {
   useRef,
   useEffect,
   useCallback,
+  useContext,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
@@ -13,11 +14,12 @@ import {
   createElements,
   moveElement,
   resetElementEditState,
-  setActiveElementId,
+  setActiveElement,
   setCurrentDropTargetParams,
   setElementBeingEdited,
   setElementCanBeEdited,
   setHoveredElementId,
+  toggleSelectedElement,
   updateElementParameters,
 } from '@Redux/project/actions';
 import { ElementData, StateElement, SyntheticElement } from '@Src/types';
@@ -36,6 +38,7 @@ import {
   EDITABLE_COMPONENTS_LIST,
   NOT_DRAGGABLE_COMPONENTS,
 } from '@Constants/defaultParams';
+import useLayout from '@Components/Editor/hooks/useLayout';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import {
   getFlexRowDropPosition,
@@ -44,6 +47,7 @@ import {
 } from './helper';
 import useElementProps from '../hooks/useElementProps';
 import { RENDERERS } from '../../UI/RenderElements';
+import { WindowContext } from '../FrameWrapper/FrameContext';
 
 type DraggableElementProps = {
   elementId: string;
@@ -57,6 +61,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   parentIds = [],
 }) => {
   const dispatch = useDispatch();
+  const frameWindow = useContext(WindowContext);
 
   const element = useSelector(selectElementById(elementId));
   const parent = useSelector(selectElementByChildId(elementId));
@@ -81,6 +86,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   );
 
   const elementProps = useElementProps(elementId);
+  const isDisplayed = useLayout(elementProps?.params?.layouts);
 
   const dropTarget = useMemo(() => {
     if (
@@ -100,9 +106,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       type: ElementType.ELEMENT,
     } as SyntheticElement<StateElement>,
     canDrag: () =>
-      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) && elementId !== rootID,
+      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+      elementId !== rootID &&
+      !element.parameters.sourceElementId,
     end: () => {
       dispatch(setCurrentDropTargetParams(null));
+      dispatch(setElementBeingEdited(false));
     },
   });
 
@@ -149,13 +158,15 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         );
       } else {
         const elementData = dragSource.original as ElementData;
-        const { id, type, name, custom } = elementData;
+        const { id, type, name, custom, parameters } = elementData;
         dispatch(
           createElements(
-            [{ id, type, name, custom }],
+            {
+              createdElements: [{ id, type, name, custom, parameters }],
+              parentId: dropTarget.id,
+              index,
+            },
             { screenId },
-            dropTarget.id,
-            index,
           ),
         );
       }
@@ -223,12 +234,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   }, [preview]);
 
   useEffect(() => {
-    if (!dropDomStyles && isOverArea) {
-      setDropDomStyles(window.getComputedStyle(ref.current));
+    if (!dropDomStyles && isOverArea && frameWindow) {
+      setDropDomStyles(frameWindow.getComputedStyle(ref.current));
     } else if (dropDomStyles && !isOverArea) {
       setDropDomStyles(null);
     }
-  }, [isOverArea]);
+  }, [isOverArea, frameWindow]);
 
   useEffect(() => {
     if (!isOverArea && dropTargetParams && elementId === rootID) {
@@ -247,9 +258,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   }, 300);
 
   const clickHandler = useCallback(
-    (event: React.SyntheticEvent) => {
+    (event: React.MouseEvent) => {
       event.stopPropagation();
-      dispatch(setActiveElementId(element.id));
+      if (event.ctrlKey || event.metaKey) {
+        dispatch(toggleSelectedElement(element.id));
+        return;
+      }
+      dispatch(setActiveElement(element.id));
       if (
         element &&
         EDITABLE_COMPONENTS_LIST.includes(element.type) &&
@@ -308,45 +323,48 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [elementBeingEdited],
   );
 
+  const mouseEnterHandler = useCallback(() => {
+    dispatch(setHoveredElementId(elementId));
+  }, [dispatch, elementId]);
+  const mouseLeaveHandler = useCallback(() => {
+    dispatch(setHoveredElementId(element?.parent || null));
+  }, [dispatch, element?.parent]);
+
   if (!element) {
     return null;
   }
 
   const ElementRenderer = RENDERERS[element.type];
 
-  return (
-    elementProps && (
-      <ElementRenderer
-        {...elementProps}
-        ref={(dom: HTMLElement) => {
-          ref.current = dom;
-          DOMHandler.INSTANCE.addElementDom(elementId, dom);
-          if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
-            drag(ref);
-            drop(ref);
-          }
-        }}
-        onMouseEnter={() => {
-          dispatch(setHoveredElementId(elementId));
-        }}
-        onMouseLeave={() => {
-          dispatch(setHoveredElementId(element.parent || null));
-        }}
-        onKeyDown={keyDownHandler}
-        onClick={clickHandler}
-        onBlur={blurHandler}
-      >
-        {element.children.map((childId: string) => (
-          <DraggableElement
-            key={`element-${childId}`}
-            elementId={childId}
-            parentDomStyles={dropDomStyles}
-            parentIds={[...parentIds, elementId]}
-          />
-        ))}
-      </ElementRenderer>
-    )
-  );
+  return isDisplayed
+    ? elementProps && (
+        <ElementRenderer
+          {...elementProps}
+          ref={(dom: HTMLElement) => {
+            ref.current = dom;
+            DOMHandler.INSTANCE.addElementDom(elementId, dom);
+            if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
+              drag(ref);
+              drop(ref);
+            }
+          }}
+          onMouseEnter={mouseEnterHandler}
+          onMouseLeave={mouseLeaveHandler}
+          onKeyDown={keyDownHandler}
+          onClick={clickHandler}
+          onBlur={blurHandler}
+        >
+          {element.children.map((childId: string) => (
+            <DraggableElement
+              key={`element-${childId}`}
+              elementId={childId}
+              parentDomStyles={dropDomStyles}
+              parentIds={[...parentIds, elementId]}
+            />
+          ))}
+        </ElementRenderer>
+      )
+    : null;
 };
 
 export default DraggableElement;

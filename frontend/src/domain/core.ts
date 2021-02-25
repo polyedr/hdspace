@@ -31,7 +31,9 @@ export const ENTITIES: {
   pageTemplate: 'pageTemplate',
   emptyPageTemplate: 'emptyPageTemplate',
   grid: 'grid',
+  nativeColumns: 'nativeColumns',
   columns: 'columns',
+  // column: 'column',
   smartHeader: 'smartHeader',
   smartFooter: 'smartFooter',
   smartForm: 'smartForm',
@@ -40,6 +42,7 @@ export const ENTITIES: {
   cardsSection: 'cardsSection',
   featureSection: 'featureSection',
   section: 'section',
+  group: 'group',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -271,7 +274,24 @@ export const emptyPageTemplateStyleControls = [
   'background',
 ] as const;
 
+export const gridItemStyleControls = [
+  'indents',
+  'typography',
+  'background',
+  'border',
+] as const;
+
 export const gridStyleControls = [
+  'grid',
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
+
+export const nativeColumnsStyleControls = [
+  'nativeColumns',
   'indents',
   'size',
   'typography',
@@ -281,13 +301,18 @@ export const gridStyleControls = [
 ] as const;
 
 export const columnsStyleControls = [
-  'columns',
   'indents',
   'size',
   'typography',
   'background',
   'border',
-  'display',
+] as const;
+
+export const columnStyleControls = [
+  'indents',
+  'typography',
+  'background',
+  'border',
 ] as const;
 
 export const subscribeFormStyleControls = [
@@ -319,54 +344,105 @@ export const featureSectionStyleControls = [
   'display',
 ] as const;
 
+export const elementsGroupStyleControls = ['indents', 'background'] as const;
+
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: AvailableControls = {
   root: rootStyleControls,
-  container: containerStyleControls,
-  divBlock: divBlockStyleControls,
-  button: [...buttonStyleControls, ...buttonParamsControls],
-  textinput: ['textContent', 'type', 'placeholder', ...textinputStyleControls],
-  textarea: ['textContent', 'placeholder', ...textareaStyleControls],
-  checkbox: ['value', 'name', ...checkboxStyleControls, 'showRipple'],
-  radiobutton: ['value', 'name', ...radiobuttonStyleControls, 'showRipple'],
-  label: ['textContent', 'labelFor', ...labelStyleControls],
-  hyperlink: ['textContent', 'action', ...hyperlinkStyleControls],
-  heading: ['textContent', 'headingType', ...headingStyleControls],
-  paragraph: ['textContent', ...paragraphStyleControls],
-  ocrtext: ['textContent', ...paragraphStyleControls],
-  textBlock: ['textContent', ...textBlockStyleControls],
-  list: ['listItems', 'isOrdered', ...listStyleControls],
-  listItem: listItemStyleControls,
-  image: ['image', ...imageStyleControls],
-  select: ['selectValue', 'selectOptions', ...selectStyleControls, 'isOpen'],
-  selectMenu: selectMenuStyleControls,
-  selectItem: selectItemStyleControls,
-  map: ['mapProps', ...mapStyleControls],
-  calendar: calendarStyleControls,
-  clock: clockStyleControls,
+  container: [...containerStyleControls, 'layouts'],
+  divBlock: [...divBlockStyleControls, 'layouts'],
+  button: [...buttonStyleControls, ...buttonParamsControls, 'layouts'],
+  textinput: [
+    'textContent',
+    'type',
+    'placeholder',
+    ...textinputStyleControls,
+    'layouts',
+  ],
+  textarea: ['textContent', 'placeholder', ...textareaStyleControls, 'layouts'],
+  checkbox: [
+    'value',
+    'name',
+    ...checkboxStyleControls,
+    'showRipple',
+    'layouts',
+  ],
+  radiobutton: [
+    'value',
+    'name',
+    ...radiobuttonStyleControls,
+    'showRipple',
+    'layouts',
+  ],
+  label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
+  hyperlink: ['textContent', ...hyperlinkStyleControls, 'layouts'],
+  heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
+  paragraph: ['textContent', ...paragraphStyleControls, 'layouts'],
+  ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
+  textBlock: ['textContent', ...textBlockStyleControls, 'layouts'],
+  list: ['listItems', 'isOrdered', ...listStyleControls, 'layouts'],
+  listItem: [...listItemStyleControls, 'layouts'],
+  image: ['image', ...imageStyleControls, 'layouts'],
+  select: [
+    'selectValue',
+    'selectOptions',
+    ...selectStyleControls,
+    'isOpen',
+    'layouts',
+  ],
+  selectMenu: [...selectMenuStyleControls, 'layouts'],
+  selectItem: [...selectItemStyleControls, 'layouts'],
+  map: ['mapProps', ...mapStyleControls, 'layouts'],
+  calendar: [...calendarStyleControls, 'layouts'],
+  clock: [...clockStyleControls, 'layouts'],
   dropdown: [
     'textContent',
     'dropdownItems',
     ...dropdownStyleControls,
     'isOpen',
     'showRipple',
+    'layouts',
   ],
-  dropdownMenu: dropdownMenuStyleControls,
-  dropdownItem: dropdownItemStyleControls,
-  video: [...videoStyleControls, 'videoSettings'],
-  pageTemplate: pageTemplateStyleControls,
-  emptyPageTemplate: emptyPageTemplateStyleControls,
-  grid: gridStyleControls,
-  columns: columnsStyleControls,
-  subscribeForm: subscribeFormStyleControls,
-  smartHeader: [...smartContainerStyleControls, 'stylesOn', 'smartHeader'],
-  smartFooter: [...smartContainerStyleControls, 'stylesOn', 'smartFooter'],
-  smartForm: [...smartContainerStyleControls, 'stylesOn', 'smartForm'],
-  smartWebpage: [...smartContainerStyleControls, 'stylesOn', 'smartWebpage'],
-  undefined: undefinedControls,
-  cardsSection: cardsSectionStyleControls,
-  featureSection: featureSectionStyleControls,
-  section: containerStyleControls,
+  dropdownMenu: [...dropdownMenuStyleControls, 'layouts'],
+  dropdownItem: [...dropdownItemStyleControls, 'layouts'],
+  video: [...videoStyleControls, 'videoSettings', 'layouts'],
+  pageTemplate: [...pageTemplateStyleControls, 'layouts'],
+  emptyPageTemplate: [...emptyPageTemplateStyleControls, 'layouts'],
+  gridItem: [...gridItemStyleControls, 'layouts'],
+  grid: [...gridStyleControls, 'layouts'],
+  nativeColumns: [...nativeColumnsStyleControls, 'layouts'],
+  columns: ['columns', ...columnsStyleControls, 'layouts'],
+  column: [...columnStyleControls, 'layouts'],
+  subscribeForm: [...subscribeFormStyleControls, 'layouts'],
+  smartHeader: [
+    ...smartContainerStyleControls,
+    'stylesOn',
+    'smartHeader',
+    'layouts',
+  ],
+  smartFooter: [
+    ...smartContainerStyleControls,
+    'stylesOn',
+    'smartFooter',
+    'layouts',
+  ],
+  smartForm: [
+    ...smartContainerStyleControls,
+    'stylesOn',
+    'smartForm',
+    'layouts',
+  ],
+  smartWebpage: [
+    ...smartContainerStyleControls,
+    'stylesOn',
+    'smartWebpage',
+    'layouts',
+  ],
+  undefined: [...undefinedControls, 'layouts'],
+  cardsSection: [...cardsSectionStyleControls, 'layouts'],
+  featureSection: [...featureSectionStyleControls, 'layouts'],
+  section: [...containerStyleControls, 'layouts'],
+  group: elementsGroupStyleControls,
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
@@ -399,6 +475,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   paragraph: {},
   ocrtext: {},
   textBlock: {},
+  group: {},
   list: {
     listItem: {
       min: 1,
@@ -450,12 +527,30 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   grid: {
+    gridItem: {
+      min: 4,
+      max: 9,
+    },
+  },
+  gridItem: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  nativeColumns: {
     all: {
       min: 0,
       max: Infinity,
     },
   },
   columns: {
+    column: {
+      min: 2,
+      max: Infinity,
+    },
+  },
+  column: {
     all: {
       min: 0,
       max: Infinity,

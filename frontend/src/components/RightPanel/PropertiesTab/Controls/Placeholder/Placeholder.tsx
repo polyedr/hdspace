@@ -3,15 +3,12 @@ import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { PropertiesChangeProps, TextinputElement } from '@Src/types';
-import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
 
 const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
   updateParams,
 }) => {
-  const placeholder = useSelector(
-    (state: AppReduxState) => selectActiveElementParams(state).placeholder,
-  );
+  const { placeholder } = useSelector(selectActiveElementParams);
 
   const [state, setState] = useState(placeholder || '');
   useEffect(() => {

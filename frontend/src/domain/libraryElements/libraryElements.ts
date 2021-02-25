@@ -24,6 +24,7 @@ import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import Crop75Icon from '@material-ui/icons/Crop75';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
+import { Entity, LibraryElements } from '@Src/types';
 import {
   root,
   makeImage,
@@ -40,6 +41,10 @@ import {
   makeContainer,
   makeGrid,
   makeColumns,
+  makeGridItem,
+  column,
+  nativeColumns,
+  elementsGroup,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -69,7 +74,6 @@ import {
   makePageTemplate,
   section,
 } from './blocksTemplates/blocksTemplates';
-import { Entity, LibraryElements } from '../../types';
 
 // WARN: every time you add or remove some LibraryElements in prod, you must write migration in db
 export const LIBRARY_ELEMENTS: LibraryElements = {
@@ -78,8 +82,11 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   divBlock: makeDivBlock('This is divBlock'),
   pageTemplate: makePageTemplate(),
   emptyPageTemplate: makePageTemplate(true),
+  gridItem: makeGridItem(),
   grid: makeGrid(),
+  nativeColumns,
   columns: makeColumns(),
+  column,
   subscribeForm,
   image: makeImage(),
   smartHeader: makeSmartHeader({ name: 'Smart Header' }),
@@ -113,6 +120,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   cardsSection,
   featureSection,
   section,
+  group: elementsGroup,
 };
 
 export const ICONS: Partial<
@@ -124,7 +132,7 @@ export const ICONS: Partial<
   columns: ViewColumnIcon,
   button: SlideshowIcon,
   list: ListIcon,
-  divBlock: Crop169Icon,
+  container: Crop169Icon,
   paragraph: NotesIcon,
   heading: LineWeightIcon,
   hyperlink: LinkIcon,

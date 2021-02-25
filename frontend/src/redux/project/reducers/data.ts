@@ -4,11 +4,13 @@ import {
   arrayToMap,
   extractMapElement,
   flattenElements,
+  insertElementsGroup,
   insertMapElement,
   moveMapElement,
   removeMapElement,
   updateMapElement,
 } from '@Utils/normalizedStateHelpers';
+import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { initialData } from '../initial';
 import TYPES from '../../actionTypes';
 import { Project, Screen } from '../../../types';
@@ -37,9 +39,37 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.MOVE_STATE_ELEMENTS_INSIDE: {
+        const { ids, parents } = action.payload;
+        const { oldParentId, newParentId } = parents;
+        draft.elements[oldParentId].children = draft.elements[
+          oldParentId
+        ].children.filter((childId) => !ids.includes(childId));
+        draft.elements[oldParentId].children.forEach((childId, index) => {
+          draft.elements[childId].buoyancy = index;
+        });
+        draft.elements[newParentId].children = [
+          ...draft.elements[newParentId].children,
+          ...ids,
+        ];
+        draft.elements[newParentId].children.forEach((childId, index) => {
+          draft.elements[childId].buoyancy = index;
+        });
+        break;
+      }
+
       case TYPES.UPDATE_STATE_ELEMENT: {
         const { elementId, data } = action.payload;
         draft.elements = updateMapElement(draft.elements, elementId, data);
+        break;
+      }
+
+      case TYPES.UPDATE_MULTIPLE_STATE_ELEMENTS: {
+        const { elements } = action.payload;
+        draft.elements = {
+          ...draft.elements,
+          ...elements,
+        };
         break;
       }
 
@@ -65,6 +95,18 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.CREATE_STATE_GROUP: {
+        const { groupEl, parentId, childIds, buoyancy } = action.payload;
+        draft.elements = insertElementsGroup(
+          draft.elements,
+          groupEl,
+          parentId,
+          buoyancy,
+          childIds,
+        );
+        break;
+      }
+
       case TYPES.REMOVE_STATE_ELEMENT: {
         const { elementId } = action.payload;
         draft.elements = removeMapElement(draft.elements, elementId);
@@ -81,6 +123,11 @@ const dataReducer = produce(
         draft.projectsData.results = arrayToMap<Project>(
           action.payload.projects,
         );
+        break;
+      }
+
+      case TYPES.SET_PROJECT_SEARCH_PARAMETER: {
+        draft.projectsData.parameter = action.payload;
         break;
       }
 
@@ -175,6 +222,80 @@ const dataReducer = produce(
       }
       case TYPES.REMOVE_FILE_INPUT: {
         delete draft.elementInputs[action.payload.id];
+        break;
+      }
+
+      case TYPES.SET_ASSET_LISTS: {
+        draft.assetLists = action.payload;
+        break;
+      }
+
+      case TYPES.SET_ASSETS: {
+        const { listId } = action.payload;
+        draft.assetResults = {
+          ...draft.assetResults,
+          [listId]: action.payload.assets,
+        };
+        break;
+      }
+
+      case TYPES.ADD_ASSET_LIST_REDUX: {
+        draft.assetLists = {
+          ...draft.assetLists,
+          results: [action.payload, ...draft.assetLists.results],
+        };
+        break;
+      }
+
+      case TYPES.ADD_ASSET_REDUX: {
+        draft.assetResults = {
+          ...draft.assetResults,
+          [action.payload.listId]: {
+            ...draft.assetResults[action.payload.listId],
+            results: [
+              action.payload.asset,
+              ...draft.assetResults[action.payload.listId].results,
+            ],
+          },
+        };
+
+        // update all images section, should be removed in the future
+        draft.assetResults[ALL_ASSETS_LIST_ID].results = [
+          action.payload.asset,
+          ...draft.assetResults[ALL_ASSETS_LIST_ID].results,
+        ];
+        break;
+      }
+
+      case TYPES.REMOVE_ASSET_LIST_REDUX: {
+        draft.assetLists.results.splice(
+          draft.assetLists.results.findIndex(
+            (assetList) => assetList.id === action.payload,
+          ),
+          1,
+        );
+        delete draft.assetResults[action.payload];
+        break;
+      }
+
+      case TYPES.REMOVE_ASSET_REDUX: {
+        const { id, listId } = action.payload;
+        draft.assetResults[ALL_ASSETS_LIST_ID].results = draft.assetResults[
+          ALL_ASSETS_LIST_ID
+        ].results.filter((asset) => asset.id !== id);
+        draft.assetResults[listId].results = draft.assetResults[
+          listId
+        ].results.filter((asset) => asset.id !== id);
+        break;
+      }
+
+      case TYPES.SET_ACTIVE_MASTER_ELEMENT_ID: {
+        draft.masterScreen.activeId = action.payload;
+        break;
+      }
+
+      case TYPES.SET_MASTER_SCREEN_ENABLED: {
+        draft.masterScreen.enabled = action.payload;
         break;
       }
 

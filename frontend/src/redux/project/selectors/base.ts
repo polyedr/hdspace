@@ -19,6 +19,9 @@ export const selectProjectsPageSize = ({ project }: AppReduxState) =>
 export const selectProjectsDataNext = ({ project }: AppReduxState) =>
   project.data.projectsData.next;
 
+export const selectProjectsSearchParameter = ({ project }: AppReduxState) =>
+  project.data.projectsData.parameter;
+
 export const selectProjectById = (projectId: number) => ({
   project,
 }: AppReduxState) => project.data.projectsData.results[projectId];
@@ -96,6 +99,11 @@ export const selectCurrentDropTargetParams = (state: AppReduxState) => {
   return selectProjectState(state).ui.currentDropTargetParams;
 };
 
+export const selectIsDropTarget = (id: string) => (state: AppReduxState) => {
+  const dropTargetId = selectCurrentDropTargetId(state);
+  return id === dropTargetId;
+};
+
 export const selectProjectClasses = createSelector(
   selectProjects,
   selectCurrentProjectId,
@@ -122,23 +130,26 @@ export const selectFreeCanvasOffset = (id: string) => (
     elements[id].children.includes(
       parent.elements[parent.elements.length - 1],
     ) &&
-    elements[parent.elements[parent.elements.length - 1]].parameters.left ===
-      parent.offset &&
-    elements[parent.elements[parent.elements.length - 1]].parameters.top ===
-      parent.offset;
+    elements[parent.elements[parent.elements.length - 1]].parameters.freeCanvas
+      .left === parent.offset &&
+    elements[parent.elements[parent.elements.length - 1]].parameters.freeCanvas
+      .top === parent.offset;
 
   if (needOffset) return parent.offset + 20;
   return 0;
 };
 
-export const selectScreenFormat = ({ project }: AppReduxState) =>
-  project.ui.screenFormat.format;
+export const selectLayout = ({ project }: AppReduxState) =>
+  project.ui.layout.value;
 
 export const selectScreenRotated = ({ project }: AppReduxState) =>
-  project.ui.screenFormat.rotated;
+  project.ui.layout.rotated;
 
 export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
   project.communication.screenCreateLoader;
 
 export const selectEditorDocument = ({ project }: AppReduxState) =>
   project.ui.editorDocument;
+
+export const selectAssetsLoader = ({ project }: AppReduxState) =>
+  project.communication.assetsLoader;

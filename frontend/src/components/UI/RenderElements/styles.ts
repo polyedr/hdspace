@@ -19,9 +19,9 @@ export const getComputedComponentStyles = (
   ownStyles: getComputedStyle(props.ownStyles, stylesToOmit),
 });
 
-export const makeComponentStyles = (
+export const makeComponentStyles: any = (
   name: string,
-  style: Styles<Theme, {}, string> = {},
+  style: Styles<Theme, any, string> = {},
   stylesToOmit?: Array<string>,
 ) =>
   makeStyles(

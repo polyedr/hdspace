@@ -40,6 +40,16 @@ const editReducer = produce(
         return { ...draft, currentScreenId: action.payload.screenId };
       }
 
+      case TYPES.SET_SELECTED_ASSET_LIST_ID: {
+        if (draft.selectedAssetListId === action.payload.assetListId) {
+          return draft;
+        }
+        return {
+          ...draft,
+          selectedAssetListId: action.payload.assetListId,
+        };
+      }
+
       case TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS: {
         return { ...draft, uploadedImageInfo: action.payload };
       }
@@ -71,6 +81,28 @@ const editReducer = produce(
       case TYPES.UPDATE_LAST_ELEMENTS: {
         const { parentId, ids, offset } = action.payload;
         draft.freeCanvas.lastElements[parentId] = { elements: ids, offset };
+        break;
+      }
+
+      case TYPES.ADD_SELECTED_ELEMENT: {
+        if (!draft.selectedElementsIds.includes(action.payload.id)) {
+          draft.selectedElementsIds = [
+            ...draft.selectedElementsIds,
+            action.payload.id,
+          ];
+        }
+        break;
+      }
+
+      case TYPES.REMOVE_SELECTED_ELEMENT: {
+        draft.selectedElementsIds = draft.selectedElementsIds.filter(
+          (elementId) => elementId !== action.payload.id,
+        );
+        break;
+      }
+
+      case TYPES.SET_SELECTED_ELEMENTS: {
+        draft.selectedElementsIds = action.payload.ids;
         break;
       }
 

@@ -8,22 +8,22 @@ type Props = {
   position: BorderPosition;
   styles: BorderStyles;
   isActive: boolean;
-  isDropTarget?: boolean;
   onClick?: (event: React.SyntheticEvent<EventTarget>) => void;
 };
 
 const useStyles = makeStyles((theme) => ({
-  border: ({ position, isActive, isDropTarget }: Props) => {
+  border: ({ position, isActive }: Props) => {
     const borderPosPrefix =
       position.charAt(0).toUpperCase() + position.substring(1);
     return {
       position: 'absolute',
       pointerEvents: 'none',
-      zIndex: 9999999,
+      zIndex: 10,
       [`border${borderPosPrefix}Width`]: '1px',
       [`border${borderPosPrefix}Style`]: 'solid',
-      [`border${borderPosPrefix}Color`]:
-        isActive || isDropTarget ? '#5A899D' : theme.palette.secondary.main,
+      [`border${borderPosPrefix}Color`]: isActive
+        ? '#5A899D'
+        : theme.palette.secondary.main,
     };
   },
 }));

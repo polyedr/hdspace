@@ -1,5 +1,4 @@
 import { HEADING_SETTINGS } from '@Components/RightPanel/PropertiesTab/Controls/HeadingType/constants';
-import { defaultFreeCanvasParams } from '../../core';
 import {
   ElementGroup,
   HeadingServerElement,
@@ -10,20 +9,20 @@ import {
   OcrtextServerElement,
   ParagraphServerElement,
   TextBlockServerElement,
-} from '../../../types';
+} from '@Src/types';
+import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import { defaultFreeCanvasParams } from '../../core';
 
 export const hyperlink: HyperlinkServerElement = {
   buoyancy: 0,
   func_type: 'hyperlink',
   struct_type: 'hyperlink',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.OTHER,
     textContent: 'hyperlink',
-    action: {
-      type: 'internal-link',
-      screenId: 'noScreen',
-    },
+    events: [],
   },
   styles: {
     classNames: ['hyperlink'],
@@ -48,7 +47,8 @@ export const makeHeading = ({
   func_type: 'heading',
   struct_type: 'heading',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.TYPOGRAPHY,
     textContent,
     headingType,
@@ -77,7 +77,8 @@ export const makeParagraph = ({
   func_type: 'paragraph',
   struct_type: 'paragraph',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.TYPOGRAPHY,
     textContent,
   },
@@ -94,7 +95,8 @@ export const ocrtext: OcrtextServerElement = {
   func_type: 'ocrtext',
   struct_type: 'ocrtext',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.TYPOGRAPHY,
     textContent: 'This is paragraph',
   },
@@ -111,7 +113,8 @@ export const textBlock: TextBlockServerElement = {
   func_type: 'textBlock',
   struct_type: 'textBlock',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.TYPOGRAPHY,
     textContent: 'This is text block',
   },
@@ -128,7 +131,9 @@ export const makeListItem = (textContent: string): ListItemServerElement => ({
   func_type: 'listItem',
   struct_type: 'listItem',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
     textContent,
     isLink: false,
     link: '',
@@ -146,7 +151,8 @@ export const list: ListServerElement = {
   func_type: 'list',
   struct_type: 'list',
   parameters: {
-    ...defaultFreeCanvasParams,
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.TYPOGRAPHY,
     listItems: [
       // TODO research why we need items here

@@ -2,9 +2,9 @@
 import React, { DOMAttributes } from 'react';
 import {
   HeadingType,
+  HyperLinkParameters,
   IMapProps,
   InputType,
-  LinkParams,
   NNBlockType,
   VideoSettingsType,
 } from '@Src/types';
@@ -21,6 +21,12 @@ export type SharedRendererProps = {
   groupClass: string | null;
   ownStyles: React.CSSProperties;
 } & DOMAttributes<HTMLElement>;
+
+export type GridRendererProps = SharedRendererProps;
+
+export type GridItemRendererProps = SharedRendererProps;
+
+export type ElementsGroupRendererProps = SharedRendererProps;
 
 export type ContainerRendererProps = SharedRendererProps & {
   isBorderVisible: boolean;
@@ -115,10 +121,12 @@ export type DropdownItemRendererProps = SharedRendererProps & {
   };
 };
 
-export type ActionRendererProps = SharedRendererProps & {
-  type: string;
+export type HyperLinkRendererProps = SharedRendererProps & {
+  params: HyperLinkParameters;
+};
+
+export type ButtonRendererProps = SharedRendererProps & {
   params: {
-    action: LinkParams;
     textContent: string;
     showRipple: boolean;
   };

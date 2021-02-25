@@ -70,12 +70,12 @@ function uiReducer(
           action.payload.id === null ? null : action.payload,
       };
 
-    case TYPES.CHANGE_SCREEN_FORMAT: {
+    case TYPES.CHANGE_LAYOUT: {
       return {
         ...state,
-        screenFormat: {
-          ...state.screenFormat,
-          format: action.payload,
+        layout: {
+          ...state.layout,
+          value: action.payload,
         },
       };
     }
@@ -83,8 +83,8 @@ function uiReducer(
     case TYPES.ROTATE_SCREEN_FORMAT: {
       return {
         ...state,
-        screenFormat: {
-          ...state.screenFormat,
+        layout: {
+          ...state.layout,
           rotated: action.payload,
         },
       };
@@ -104,6 +104,10 @@ function uiReducer(
 
     case TYPES.RESET_ELEMENT_EDIT_STATE: {
       return { ...state, elementBeingEdited: false, elementCanBeEdited: false };
+    }
+
+    case TYPES.SET_CAN_CREATE_GROUP: {
+      return { ...state, canCreateGroup: action.payload };
     }
 
     case TYPES.LOGOUT: {

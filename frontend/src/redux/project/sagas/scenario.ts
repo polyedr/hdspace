@@ -58,8 +58,11 @@ import {
   selectCustomLibraryElements,
   selectElementAsTree,
   selectElementById,
+  selectElementsByIds,
   selectElementsForScreen,
+  selectElementTreeGroups,
   selectScreenRootElement,
+  selectTreeChildIdsByParentsIds,
 } from '../selectors/element';
 
 // eslint-disable-next-line consistent-return
@@ -136,18 +139,21 @@ export function* createElements(
     if (isFreeCanvasMode) {
       offset = yield select(selectFreeCanvasOffset(parent.id));
     }
-
     // free canvas offset
     const elementsWithOffset = elements.map((el, i) => {
-      if (i === 0)
+      if (i === 0) {
         return {
           ...el,
           parameters: {
             ...el.parameters,
-            left: el.parameters?.left || offset,
-            top: el.parameters?.top || offset,
+            freeCanvas: {
+              ...el.parameters.freeCanvas,
+              left: el.parameters.freeCanvas.left || offset,
+              top: el.parameters.freeCanvas.top || offset,
+            },
           },
         };
+      }
 
       return el;
     });
@@ -160,7 +166,6 @@ export function* createElements(
       apiCreateElements,
       { data: elementsWithOffset },
     );
-
     if (newElements) {
       if (!undo) {
         yield put(
@@ -181,7 +186,6 @@ export function* createElements(
         name: parent.name,
         children: newChildren,
       };
-
       const { result, error }: Result<RecursiveElement> = yield call(
         reqWrapper,
         apiChangeRecursiveElement,
@@ -208,7 +212,6 @@ export function* createElements(
             index,
           ),
         );
-
         yield put(
           Actions.updateLastElements(
             parent.id,
@@ -244,7 +247,6 @@ export function* createElements(
       }
       if (error) throw new Error(error);
     }
-
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
@@ -279,25 +281,135 @@ export function* createElementsSaga(
 
     const customLibraryElements = yield select(selectCustomLibraryElements);
 
-    const convertedCreatedElements = createdElements.map((dEl) =>
-      dEl.custom
-        ? convertElementToRequest(
-            customLibraryElements.find((element) => element.id === dEl.id),
-          )
-        : convertCreatedElementToRequest(
-            dEl.type as Entity,
-            null,
-            null,
-            dEl.parameters,
-          ),
-    );
+    const elementGroups = yield select(selectElementTreeGroups);
 
-    yield call(
+    const createdGroupsIds: string[] = [];
+
+    const convertedCreatedElements = createdElements.map((dEl) => {
+      if (dEl.custom) {
+        return convertElementToRequest(
+          customLibraryElements.find((element) => element.id === dEl.id),
+        );
+      }
+      if (dEl.parameters?.isGroup) {
+        if (dEl.id) {
+          createdGroupsIds.push(dEl.id);
+        }
+        const group = elementGroups.find((group) => group.id === dEl.id);
+        return convertElementToRequest({
+          ...group,
+          parameters: {
+            ...group.parameters,
+            isGroup: false,
+          },
+        });
+      }
+      return convertCreatedElementToRequest(
+        dEl.type as Entity,
+        null,
+        null,
+        dEl.parameters,
+      );
+    });
+
+    const elementsIds = yield call(
       createElements,
       { elements: convertedCreatedElements, index },
       activeElementTree,
       {
         screenId,
+      },
+    );
+
+    if (createdGroupsIds.length) {
+      const updatedElements = yield select(selectElementsByIds(elementsIds));
+      const newGroupElements = updatedElements.filter((el) => {
+        return !!el.parameters.sourceElementId;
+      });
+
+      const allChildIds = yield select(
+        selectTreeChildIdsByParentsIds(
+          newGroupElements.reduce((allChildIds, element) => {
+            return [...allChildIds, ...element.children];
+          }, []),
+        ),
+      );
+
+      const elements = yield select(selectAllElements);
+
+      const paramsToUpdate = allChildIds.reduce((params, childId) => {
+        const newElement = elements[childId];
+        const sourceElement = elements[newElement.parameters?.sourceElementId];
+        if (!sourceElement) {
+          return params;
+        }
+        return {
+          ...params,
+          [sourceElement.id]: {
+            groupElements: [
+              ...(sourceElement.parameters?.groupElements || []),
+              newElement.id,
+            ],
+          },
+        };
+      }, {});
+
+      yield put(
+        Actions.updateMultipleElementsParameters(
+          Object.keys(paramsToUpdate),
+          paramsToUpdate,
+          {
+            screenId,
+          },
+        ),
+      );
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* addChildrenToElementSaga(
+  action: ReturnType<typeof Actions.addChildrenToElement>,
+) {
+  try {
+    const { children, elementId } = action.payload;
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      return;
+    }
+    const { screenId, undo } = action.meta;
+
+    const convertedCreatedChildren = children.map((child) =>
+      convertElementToRequest(
+        updateElementParameters(
+          '-1',
+          child.parameters,
+          convertElementFromResponse(
+            convertCreatedElementToRequest(child.childType, null),
+          ),
+        ),
+      ),
+    );
+
+    const element: LibraryElement<Entity> = yield select(
+      selectElementAsTree(elementId),
+    );
+
+    yield call(
+      createElements,
+      { elements: convertedCreatedChildren },
+      element,
+      {
+        screenId,
+        undo,
       },
     );
   } catch (e) {
@@ -412,7 +524,7 @@ export function* softDeleteSaga(
     );
 
     if (activeElementId === id) {
-      yield put(Actions.setActiveElementId(root.id));
+      yield put(Actions.setActiveElement(root.id));
     }
 
     const state = yield select(selectElementsForScreen(screenId));
@@ -784,7 +896,7 @@ export function* updateElementSaga(
     yield put(Actions.updateSavedElementValues(elementID, savedValue));
 
     if (action.payload.active) {
-      yield put(Actions.setActiveElementId(elementID));
+      yield put(Actions.setActiveElement(elementID));
     }
 
     const customLibraryElements = yield select(selectCustomLibraryElements);

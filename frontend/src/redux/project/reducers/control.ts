@@ -21,6 +21,8 @@ const controlReducer = (
     case TYPES.ADD_STATE_ELEMENTS:
     case TYPES.UPDATE_STATE_ELEMENT:
     case TYPES.MOVE_STATE_ELEMENT:
+    case TYPES.ADD_ASSET_LIST_REDUX:
+    case TYPES.ADD_ASSET_REDUX:
     case TYPES.UPDATE_ELEMENTS_TREE: {
       if (!action.meta) return state;
 
@@ -62,6 +64,7 @@ const controlReducer = (
       return newState;
     }
 
+    case TYPES.RESTORE_ASSET:
     case TYPES.RESTORE_SCREEN: {
       const newState = { ...state };
 

@@ -15,6 +15,38 @@ import {
   StateElement,
 } from '@Src/types';
 import {
+  toggleMasterScreenSaga,
+  activateScreenSaga,
+  createScreenSaga,
+  changeScreensOrderSaga,
+  deleteScreenSaga,
+  renameScreenSaga,
+  restoreScreenSaga,
+  updateScreenImageSaga,
+  convertFreeCanvasSaga,
+} from '@Redux/project/sagas/screen';
+import {
+  setActiveMasterElementSaga,
+  moveElementSaga,
+  removeElementStylesSaga,
+  updateElementStylesSaga,
+  replaceElementStylesSaga,
+  copyElementStylesSaga,
+  addElementClassNameSaga,
+  removeElementClassNameSaga,
+  updateElementImageSaga,
+  updateElementParametersSaga,
+  uploadFileSaga,
+  loadCustomElementsSaga,
+  toggleSelectedElementSaga,
+  setActiveElementSaga,
+  removeMultipleElementsStylesSaga,
+  updateMultipleElementsStylesSaga,
+  createElementsGroupSaga,
+  updateMultipleElementsParametersSaga,
+} from '@Redux/project/sagas/element';
+import {
+  addChildrenToElementSaga,
   addChildToElementSaga,
   createElements,
   createElementsSaga,
@@ -32,34 +64,11 @@ import {
   getProjectListSaga,
   getProjectSaga,
   renameProjectSaga,
+  searchProjectsSaga,
   updateProjectSaga,
 } from './project';
-import {
-  moveElementSaga,
-  removeElementStylesSaga,
-  updateElementStyles,
-  replaceElementStylesSaga,
-  copyElementStylesSaga,
-  addElementClassNameSaga,
-  removeElementClassNameSaga,
-  updateElementImageSaga,
-  updateElementParameters,
-  uploadFileSaga,
-  loadCustomElementsSaga,
-} from './element';
 
 import TYPES from '../../actionTypes';
-import {
-  activateScreenSaga,
-  createScreenSaga,
-  changeScreensOrderSaga,
-  deleteScreenSaga,
-  renameScreenSaga,
-  restoreScreenSaga,
-  updateScreenImageSaga,
-  convertFreeCanvasSaga,
-  importHtmlSaga,
-} from './screen';
 
 import { projectUpdateHelperSaga } from './shared';
 import { ElementHistoryMeta } from '../../types';
@@ -80,6 +89,17 @@ import {
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentScreen } from '../selectors/screen';
+import {
+  loadAssetsSaga,
+  loadAssetListsSaga,
+  uploadAssetSaga,
+  addNewAssetListSaga,
+  uploadElementAssetSaga,
+  removeAssetListSaga,
+  removeAssetSaga,
+  restoreAssetSaga,
+} from './asset';
+import { importHtmlSaga, uploadImportUrlSaga } from './import';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,
@@ -253,7 +273,7 @@ function* duplicateScreenSaga(
     );
     const targetRootID = targetRoot.id;
 
-    yield put(Actions.setActiveElementId(targetRootID));
+    yield put(Actions.setActiveElement(targetRootID));
 
     if (duplicatedItems.length) {
       yield call(duplicateElements, duplicatedItems, targetRoot, {
@@ -452,6 +472,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
   yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
+  yield takeLatest(TYPES.SEARCH_PROJECTS, searchProjectsSaga);
 
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
   yield takeLatest(TYPES.CREATE_SCREEN, createScreenSaga);
@@ -465,17 +486,32 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);
   yield takeLatest(TYPES.UPDATE_SHARED_STYLES, updateSharedStylesSaga);
   yield takeLatest(TYPES.REMOVE_ELEMENT_STYLES, removeElementStylesSaga);
-  yield takeLatest(TYPES.UPDATE_ELEMENT_STYLES, updateElementStyles);
+  yield takeLatest(TYPES.UPDATE_ELEMENT_STYLES, updateElementStylesSaga);
+  yield takeLatest(
+    TYPES.REMOVE_MULTIPLE_ELEMENTS_STYLES,
+    removeMultipleElementsStylesSaga,
+  );
+  yield takeLatest(
+    TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
+    updateMultipleElementsStylesSaga,
+  );
   yield takeLatest(TYPES.REPLACE_ELEMENT_STYLES, replaceElementStylesSaga);
   yield takeLatest(TYPES.COPY_ELEMENT_STYLES, copyElementStylesSaga);
   yield takeLatest(TYPES.ADD_ELEMENT_CLASSNAME, addElementClassNameSaga);
   yield takeLatest(TYPES.REMOVE_ELEMENT_CLASSNAME, removeElementClassNameSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT_IMAGE, updateElementImageSaga);
-  yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParameters);
+  yield takeEvery(TYPES.SET_ACTIVE_ELEMENT_SAGA, setActiveElementSaga);
+
+  yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParametersSaga);
+  yield takeEvery(
+    TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+    updateMultipleElementsParametersSaga,
+  );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
 
   yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
+  yield takeEvery(TYPES.ADD_CHILDREN_TO_ELEMENT, addChildrenToElementSaga);
   yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);
 
   yield takeEvery(TYPES.DELETE_ELEMENT, softDeleteSaga);
@@ -496,4 +532,26 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
+  yield takeEvery(TYPES.UPLOAD_IMPORT_URL, uploadImportUrlSaga);
+
+  yield takeEvery(TYPES.LOAD_ASSET_LISTS, loadAssetListsSaga);
+  yield takeEvery(TYPES.LOAD_ASSETS, loadAssetsSaga);
+  yield takeEvery(TYPES.ADD_ASSET_LIST, addNewAssetListSaga);
+  yield takeEvery(TYPES.UPLOAD_ASSET, uploadAssetSaga);
+  yield takeEvery(TYPES.UPLOAD_ELEMENT_ASSET, uploadElementAssetSaga);
+  yield takeEvery(TYPES.REMOVE_ASSET_LIST, removeAssetListSaga);
+  yield takeEvery(TYPES.REMOVE_ASSET, removeAssetSaga);
+  yield takeEvery(TYPES.RESTORE_ASSET, restoreAssetSaga);
+
+  yield takeEvery(
+    TYPES.TOGGLE_SELECTED_ELEMENT_SAGA,
+    toggleSelectedElementSaga,
+  );
+
+  yield takeEvery(TYPES.TOGGLE_MASTER_SCREEN, toggleMasterScreenSaga);
+  yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP_SAGA, createElementsGroupSaga);
+  yield takeEvery(
+    TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
+    setActiveMasterElementSaga,
+  );
 }

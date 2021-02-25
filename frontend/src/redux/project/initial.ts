@@ -1,4 +1,5 @@
-import { SCREEN_FORMATS } from '@Src/types';
+import { ProjectsSearchParameter, Layout } from '@Src/types';
+import MASTER_ELEMENTS_LIST from '@Components/Editor/MasterScreen/masterElementsList';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -11,12 +12,18 @@ export const initialData: ProjectDataState = {
   projectsData: {
     next: null,
     previous: null,
+    parameter: [ProjectsSearchParameter.name, ''],
     results: {},
     pageSize: 10,
     loading: false,
   },
   screens: {},
   elements: {},
+  masterScreen: {
+    enabled: false,
+    activeId: 'masterRoot',
+    elements: MASTER_ELEMENTS_LIST,
+  },
   customElementsData: {
     previous: null,
     next: null,
@@ -25,6 +32,14 @@ export const initialData: ProjectDataState = {
     pageSize: 40,
   },
   elementInputs: {},
+  assetLists: {
+    previous: null,
+    next: null,
+    results: [],
+    loading: false,
+    pageSize: 40,
+  },
+  assetResults: {},
 };
 
 export const initialUi: ProjectUiState = {
@@ -36,8 +51,9 @@ export const initialUi: ProjectUiState = {
   elementBeingEdited: false,
   bordersEnabled: true,
   currentDropTargetParams: null,
-  screenFormat: {
-    format: SCREEN_FORMATS.Desktop,
+  canCreateGroup: false,
+  layout: {
+    value: Layout.Desktop,
     rotated: false,
   },
   editorDocument: null,
@@ -48,6 +64,8 @@ export const initialEdit: ProjectEditState = {
   currentScreenId: -1,
   activeElementId: '-1',
   hoveredElementId: '-1',
+  selectedAssetListId: null,
+  selectedElementsIds: [],
   freeCanvas: {
     enabled: false,
     lastElements: {},
@@ -61,6 +79,7 @@ export const initialCommunication: ProjectCommunicationState = {
   projectLoader: false,
   projectCreateLoader: false,
   analyzerLoader: false,
+  assetsLoader: false,
 };
 
 export const initialControl: ProjectControlState = {

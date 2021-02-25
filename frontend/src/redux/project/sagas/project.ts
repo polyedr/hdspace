@@ -9,12 +9,17 @@ import {
   apiUpdateProject,
   apiGetProjectWithScreens,
 } from '@Api/project';
+import { apiCreateAssetList } from '@Api/assetList';
+import { DEFAULT_ASSET_LIST_NAME } from '@Constants/defaultParams';
 import {
+  DateRange,
   PaginatedResponse,
   Project,
+  ProjectsSearchParameter,
   ProjectWithScreens,
   Result,
-} from '../../../types';
+} from '@Src/types';
+import getSearchParams from '@Utils/getSearchParams';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -24,7 +29,54 @@ import {
   selectProjectById,
   selectProjectsAsArr,
   selectProjectsDataNext,
+  selectProjectsSearchParameter,
 } from '../selectors/base';
+
+export function* searchProjectsSaga() {
+  try {
+    yield put(Actions.setProjectListLoader(true));
+    yield put(
+      Actions.setProjectsData({
+        next: null,
+        previous: null,
+        results: [],
+      }),
+    );
+    yield put(Actions.setProjectList([]));
+
+    const paramData: [
+      ProjectsSearchParameter,
+      string | DateRange,
+    ] = yield select(selectProjectsSearchParameter);
+
+    const { result, error }: Result<PaginatedResponse<Project>> = yield call(
+      reqWrapper,
+      apiGetProjectList,
+      {
+        params: getSearchParams(paramData),
+      },
+    );
+
+    if (result) {
+      yield put(Actions.setProjectsData(result));
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  } finally {
+    yield put(Actions.setProjectListLoader(false));
+  }
+}
 
 export function* getProjectListSaga() {
   try {
@@ -32,12 +84,20 @@ export function* getProjectListSaga() {
 
     const next: string | null = yield select(selectProjectsDataNext);
 
+    const paramData: [ProjectsSearchParameter, string] = yield select(
+      selectProjectsSearchParameter,
+    );
+    const searchParams = getSearchParams(paramData);
+
     const { result, error }: Result<PaginatedResponse<Project>> = yield call(
       reqWrapper,
       apiGetProjectList,
       {
         params: {
           cursor: next,
+          ...(paramData[1] && {
+            ...searchParams,
+          }),
         },
       },
     );
@@ -109,9 +169,12 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   }
 }
 
-export function* createProjectSaga({
-  payload: { name },
-}: ReturnType<typeof Actions.createProject>) {
+export function* createProjectSaga(
+  action: ReturnType<typeof Actions.createProject>,
+) {
+  const {
+    payload: { name },
+  } = action;
   try {
     yield put(Actions.setProjectCreateLoader(true));
 
@@ -123,7 +186,14 @@ export function* createProjectSaga({
       },
     );
 
-    if (result) {
+    if (result?.created) {
+      const assetList = yield call(reqWrapper, apiCreateAssetList, {
+        projectId: result.id,
+        name: DEFAULT_ASSET_LIST_NAME,
+      });
+      yield put(
+        Actions.addAssetListToState(assetList, { sourceAction: action }),
+      );
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, result]));
 
@@ -250,9 +320,9 @@ export function* updateProjectSaga(
       return;
     }
 
-    const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
-      selectCurrentProject,
-    );
+    const currentProject: ReturnType<
+      typeof selectCurrentProject
+    > = yield select(selectCurrentProject);
 
     const success: boolean = yield call(projectUpdateHelperSaga, project);
 

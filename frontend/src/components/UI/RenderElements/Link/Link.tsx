@@ -1,54 +1,69 @@
-// @ts-nocheck
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router';
 import cn from 'classnames';
-import { ActionRendererProps } from '../types';
+import prevent from '@Utils/preventEvent';
+import { ElementClickEvent, EventType } from '@Src/types';
+import { HyperLinkRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles('link');
 
-const Link: React.FC<ActionRendererProps> = React.forwardRef((props, ref) => {
-  const { id, isDisabled, params, className, groupClass } = props;
-  const { textContent, action } = params;
+const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
+  (props, ref) => {
+    const classes = useStyles(props);
+    const { id, isDisabled, params, className, groupClass } = props;
+    const { textContent, events } = params;
 
-  const history = useHistory();
+    const history = useHistory();
 
-  const classes = useStyles(props);
-  const eventHandlers = useEventHandlers(props, {
-    onClick: (event: MouseEvent) => {
-      if (isDisabled) {
-        event.stopPropagation();
-        event.preventDefault();
-        return;
-      }
-      if (action.type === 'internal-link') {
-        event.stopPropagation();
-        event.preventDefault();
-        history.push(event.nativeEvent.target.href);
-      }
-    },
-  });
+    // return first event of type 'Click'
+    const clickEvent: ElementClickEvent | undefined = events.find(
+      (event) => event.type === EventType.Click,
+    );
 
-  return (
-    <a
-      ref={ref}
-      id={id}
-      data-ls-id={id}
-      key={id}
-      className={cn(
-        className,
-        groupClass,
-        isDisabled && classes.disabled,
-        classes.ownStyles,
-      )}
-      href={action.url}
-      target={action.type === 'external-link' ? '_blank' : '_self'}
-      {...eventHandlers}
-    >
-      {textContent}
-    </a>
-  );
-});
+    const eventHandlers = useEventHandlers(props, {
+      onClick: (event) => {
+        if (isDisabled || !clickEvent) {
+          prevent(event);
+          return;
+        }
+
+        if (
+          clickEvent.data.linkType === 'internal' &&
+          clickEvent.data.screenId
+        ) {
+          prevent(event);
+          if (clickEvent.data.screenId !== 'noScreen') {
+            history.push(clickEvent.data.screenId);
+          }
+        }
+      },
+    });
+
+    return (
+      // eslint-disable-next-line jsx-a11y/anchor-is-valid
+      <a
+        ref={ref}
+        id={id}
+        data-ls-id={id}
+        key={id}
+        className={cn(
+          className,
+          groupClass,
+          isDisabled && classes.disabled,
+          classes.ownStyles,
+        )}
+        href={
+          clickEvent?.data.linkType === 'external' ? clickEvent.data.url : ''
+        }
+        target={clickEvent?.data.linkType === 'external' ? '_blank' : '_parent'}
+        {...eventHandlers}
+      >
+        {textContent}
+      </a>
+    );
+  },
+);
 
 export default Link;

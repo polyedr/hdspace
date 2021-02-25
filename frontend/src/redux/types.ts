@@ -20,20 +20,36 @@ import {
   PropertyName,
   SavedElementsValues,
   Screen,
-  SCREEN_FORMATS,
+  Layout,
   ServerStructType,
   StateElement,
   UploadedImageInfo,
   UserData,
+  AssetsList,
+  Asset,
+  AssetResults,
+  ProjectsSearchParameter,
+  DateRange,
 } from '../types';
 import TYPES from './actionTypes';
 
 export type ProjectDataState = {
-  projectsData: PaginatedData<Project>;
+  projectsData: PaginatedData<Project> & {
+    parameter: [ProjectsSearchParameter, string | DateRange];
+  };
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
   elementInputs: { [id: string]: File };
+  assetLists: PaginatedArray<AssetsList>;
+  assetResults: AssetResults;
+  masterScreen: {
+    enabled: boolean;
+    activeId: string;
+    elements: {
+      [k in string]?: any;
+    };
+  };
 };
 
 export type ProjectUiState = {
@@ -45,8 +61,9 @@ export type ProjectUiState = {
   elementCanBeEdited: boolean;
   elementBeingEdited: boolean;
   bordersEnabled: boolean;
-  screenFormat: {
-    format: SCREEN_FORMATS;
+  canCreateGroup: boolean;
+  layout: {
+    value: Layout;
     rotated: boolean;
   };
   editorDocument: Document | null;
@@ -57,7 +74,9 @@ export type ProjectEditState = {
   currentScreenId: number;
   activeElementId: string;
   hoveredElementId: string;
+  selectedAssetListId: string | null;
   uploadedImageInfo?: UploadedImageInfo;
+  selectedElementsIds: string[];
   freeCanvas: {
     enabled: boolean;
     lastElements: {
@@ -76,6 +95,7 @@ export type ProjectCommunicationState = {
   projectLoader: boolean;
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
+  assetsLoader: boolean;
 };
 
 export type ProjectControlState = {
@@ -129,6 +149,11 @@ export type AppReduxState = {
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
+export type SearchProjects = IPlainAction<typeof TYPES.SEARCH_PROJECTS>;
+export type SetProjectSearchParameter = IAction<
+  typeof TYPES.SET_PROJECT_SEARCH_PARAMETER,
+  [ProjectsSearchParameter, string | DateRange]
+>;
 export type LoadProjectsSuccess = IAction<
   typeof TYPES.SET_PROJECT_LIST,
   { projects: Project[] }
@@ -188,6 +213,10 @@ export type SetAnalyzerLoader = IAction<
   typeof TYPES.SET_ANALYZER_LOADER,
   { active: boolean }
 >;
+export type SetAssetsLoader = IAction<
+  typeof TYPES.SET_ASSETS_LOADER,
+  { active: boolean }
+>;
 export type DeleteScreen = IAction<
   typeof TYPES.DELETE_SCREEN,
   { projectId: number; screenId: number }
@@ -240,6 +269,10 @@ export type UpdateScreen = IAction<
 export type SetCurrentScreenId = IAction<
   typeof TYPES.SET_CURRENT_SCREEN_ID,
   { screenId: number }
+>;
+export type SetSelectedAssetListId = IAction<
+  typeof TYPES.SET_SELECTED_ASSET_LIST_ID,
+  { assetListId: string }
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
@@ -318,9 +351,28 @@ export type UpdateElementStyles = IAction<
   { id: string; styles: React.CSSProperties },
   ElementHistoryMeta
 >;
+export type UpdateMultipleElementsStyles = IAction<
+  typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
+  { ids: string[]; styles: { [id: string]: React.CSSProperties } },
+  ElementHistoryMeta
+>;
+export type RemoveMultipleElementsStyles = IAction<
+  typeof TYPES.REMOVE_MULTIPLE_ELEMENTS_STYLES,
+  { ids: string[]; cssPropertiesNames: string[] },
+  ElementHistoryMeta
+>;
 export type UpdateElementImage = IAction<
   typeof TYPES.UPDATE_ELEMENT_IMAGE,
-  { itemID: string; image: File },
+  { itemID: string; image: File; assetId?: string | null },
+  ElementHistoryMeta
+>;
+export type UploadElementAsset = IAction<
+  typeof TYPES.UPLOAD_ELEMENT_ASSET,
+  {
+    elementId: string;
+    asset: File;
+    listId: string;
+  },
   ElementHistoryMeta
 >;
 export type UpdateElementParameters = IAction<
@@ -328,6 +380,14 @@ export type UpdateElementParameters = IAction<
   {
     elementId: string;
     parameters: LibraryElement<Entity>['parameters'];
+  },
+  ElementHistoryMeta
+>;
+export type UpdateMultipleElementsParameters = IAction<
+  typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+  {
+    ids: string[];
+    parameters: { [id: string]: LibraryElement<Entity>['parameters'] };
   },
   ElementHistoryMeta
 >;
@@ -347,6 +407,16 @@ export type DeleteElement = IAction<
 export type CreateElements = IAction<
   typeof TYPES.CREATE_ELEMENTS,
   { createdElements: CreatedElement[]; parentId?: string; index?: number },
+  ElementHistoryMeta,
+  string[]
+>;
+
+export type AddChildrenToElement = IAction<
+  typeof TYPES.ADD_CHILDREN_TO_ELEMENT,
+  {
+    children: { childType: ServerStructType; parameters: {} }[];
+    elementId: string;
+  },
   ElementHistoryMeta
 >;
 
@@ -464,6 +534,79 @@ export type RemoveFileInput = IAction<
   { id: string }
 >;
 
+export type SetAssetLists = IAction<
+  typeof TYPES.SET_ASSET_LISTS,
+  PaginatedArray<AssetsList>
+>;
+
+export type SetAssets = IAction<
+  typeof TYPES.SET_ASSETS,
+  {
+    listId: string;
+    assets: PaginatedArray<Asset>;
+  }
+>;
+
+export type AddAssetListRedux = IAction<
+  typeof TYPES.ADD_ASSET_LIST_REDUX,
+  AssetsList
+>;
+
+export type AddAssetList = IAction<
+  typeof TYPES.ADD_ASSET_LIST,
+  {
+    name: string;
+    meta?: HistoryMeta;
+  }
+>;
+
+export type UploadAsset = IAction<
+  typeof TYPES.UPLOAD_ASSET,
+  {
+    assetFile: any;
+    listId?: string;
+  },
+  HistoryMeta
+>;
+
+export type AddAssetRedux = IAction<
+  typeof TYPES.ADD_ASSET_REDUX,
+  {
+    listId: string;
+    asset: Asset;
+  },
+  HistoryMeta
+>;
+
+export type RemoveAssetListRedux = IAction<
+  typeof TYPES.REMOVE_ASSET_LIST_REDUX,
+  string
+>;
+
+export type RemoveAssetList = IAction<
+  typeof TYPES.REMOVE_ASSET_LIST,
+  string,
+  HistoryMeta
+>;
+
+export type RemoveAsset = IAction<
+  typeof TYPES.REMOVE_ASSET,
+  { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type RemoveAssetRedux = IAction<
+  typeof TYPES.REMOVE_ASSET_REDUX,
+  { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type RestoreAsset = IAction<
+  typeof TYPES.RESTORE_ASSET,
+  { asset: Asset; listId: string },
+  HistoryMeta
+>;
+
 export type AddStateElements = IAction<
   typeof TYPES.ADD_STATE_ELEMENTS,
   { elements: LibraryElement<any>[]; parentId: string; index?: number },
@@ -475,10 +618,7 @@ export type ChangeFreeCanvasMode = IAction<
   boolean
 >;
 
-export type ChangeScreenFormat = IAction<
-  typeof TYPES.CHANGE_SCREEN_FORMAT,
-  SCREEN_FORMATS
->;
+export type ChangeScreenFormat = IAction<typeof TYPES.CHANGE_LAYOUT, Layout>;
 
 export type ExtractStateElement = IAction<
   typeof TYPES.EXTRACT_STATE_ELEMENT,
@@ -494,6 +634,12 @@ export type InsertStateElement = IAction<
 export type MoveStateElement = IAction<
   typeof TYPES.MOVE_STATE_ELEMENT,
   { elementId: string; indices: Indices; parents: ParentIds },
+  ElementHistoryMeta
+>;
+
+export type MoveStateElementsInside = IAction<
+  typeof TYPES.MOVE_STATE_ELEMENTS_INSIDE,
+  { ids: string[]; parents: ParentIds },
   ElementHistoryMeta
 >;
 
@@ -528,6 +674,11 @@ export type ResetElementEditState = IAction<
   unknown
 >;
 
+export type SetCanCreateGroup = IAction<
+  typeof TYPES.SET_CAN_CREATE_GROUP,
+  boolean
+>;
+
 export type SetProjectsData = IAction<
   typeof TYPES.SET_PROJECTS_DATA,
   PaginatedArray<Project>
@@ -538,9 +689,34 @@ export type UpdateLastElements = IAction<
   { parentId: string; ids: string[]; offset: number }
 >;
 
+export type AddSelectedElement = IAction<
+  typeof TYPES.ADD_SELECTED_ELEMENT,
+  {
+    id: string;
+  }
+>;
+
+export type RemoveSelectedElement = IAction<
+  typeof TYPES.REMOVE_SELECTED_ELEMENT,
+  {
+    id: string;
+  }
+>;
+
+export type SetSelectedElements = IAction<
+  typeof TYPES.SET_SELECTED_ELEMENTS,
+  { ids: string[] }
+>;
+
 export type UpdateStateElement = IAction<
   typeof TYPES.UPDATE_STATE_ELEMENT,
   { elementId: string; data: Partial<StateElement> },
+  ElementHistoryMeta
+>;
+
+export type UpdateMultipleStateElements = IAction<
+  typeof TYPES.UPDATE_MULTIPLE_STATE_ELEMENTS,
+  { elements: Normalized<StateElement> },
   ElementHistoryMeta
 >;
 
@@ -552,6 +728,31 @@ export type SetScreenCreateLoader = IAction<
 export type SetEditorDocument = IAction<
   typeof TYPES.SET_EDITOR_DOCUMENT,
   Document
+>;
+
+export type SetActiveMasterElement = IAction<
+  typeof TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
+  string
+>;
+
+export type SetMasterScreenEnabled = IAction<
+  typeof TYPES.SET_MASTER_SCREEN_ENABLED,
+  boolean
+>;
+
+export type ToggleMasterScreen = IPlainAction<
+  typeof TYPES.TOGGLE_MASTER_SCREEN
+>;
+
+export type CreateStateGroup = IAction<
+  typeof TYPES.CREATE_STATE_GROUP,
+  {
+    groupEl: LibraryElement<any>;
+    parentId: string;
+    buoyancy: number;
+    childIds: string[];
+  },
+  ElementHistoryMeta
 >;
 
 export type Action =
@@ -570,6 +771,7 @@ export type Action =
   | SetUpdateImageLoader
   | SetProjectCreateLoader
   | SetAnalyzerLoader
+  | SetAssetsLoader
   | DeleteScreen
   | RenameScreen
   | CreateScreen
@@ -584,6 +786,7 @@ export type Action =
   | CreateElements
   | DeleteElement
   | AddChildToElement
+  | AddChildrenToElement
   | UploadFile
   | uploadImageForNNSuccess
   | GetScreenNN
@@ -627,6 +830,7 @@ export type Action =
   | ResetElementEditState
   | MoveStateElement
   | UpdateStateElement
+  | UpdateMultipleStateElements
   | AddStateElements
   | InsertStateElement
   | RemoveStateElement
@@ -646,23 +850,53 @@ export type Action =
   | AddFileInput
   | RemoveFileInput
   | SetScreenCreateLoader
-  | SetEditorDocument;
+  | SetEditorDocument
+  | SetAssetLists
+  | SetAssets
+  | AddAssetListRedux
+  | AddAssetList
+  | AddAssetRedux
+  | RemoveAssetList
+  | RemoveAssetListRedux
+  | RemoveAsset
+  | RemoveAssetRedux
+  | RestoreAsset
+  | SetSelectedAssetListId
+  | SearchProjects
+  | SetProjectSearchParameter
+  | AddSelectedElement
+  | RemoveSelectedElement
+  | SetSelectedElements
+  | UpdateMultipleElementsStyles
+  | RemoveMultipleElementsStyles
+  | UploadAsset
+  | UploadElementAsset
+  | SetActiveMasterElement
+  | SetMasterScreenEnabled
+  | ToggleMasterScreen
+  | RemoveMultipleElementsStyles
+  | RemoveMultipleElementsStyles
+  | SetCanCreateGroup
+  | MoveStateElementsInside
+  | CreateStateGroup
+  | UpdateMultipleElementsParameters;
 
 export type HistoryMeta = {
   undo?: boolean;
   redo?: boolean;
-};
-export type ElementHistoryMeta = HistoryMeta & {
-  screenId: number;
   sourceAction?: Action | null;
 };
 
-export interface IPlainAction<T, M = HistoryMeta> {
+export type ElementHistoryMeta = HistoryMeta & {
+  screenId: number;
+};
+export interface IPlainAction<T, M = HistoryMeta, R = void> {
   type: T;
   meta?: M;
 }
 
-export interface IAction<T, P, M = HistoryMeta> extends IPlainAction<T, M> {
+export interface IAction<T, P, M = HistoryMeta, R = void>
+  extends IPlainAction<T, M, R> {
   payload: P;
 }
 
