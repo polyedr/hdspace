@@ -2,7 +2,7 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { render, fireEvent } from '@testing-library/react';
-import TYPES from '@Redux/actionTypes';
+import TYPES from '../../../../redux/actionTypes';
 import { mockStateElement, mockState } from '../../test-utils';
 import FreeDraggable from '../../../../components/Editor/FreeCanvas/FreeDraggable';
 import { splitWords } from '../../../stringHelper';
@@ -61,7 +61,7 @@ describe('Free Draggable', () => {
     const actions = store.getActions();
 
     expect(actions[0].type).toBe(TYPES.UPDATE_ELEMENT_PARAMETERS);
-    expect(actions[0].payload.parameters.zIndex).toBeTruthy();
+    expect(actions[0].payload.parameters.freeCanvas.zIndex).toBeTruthy();
   });
 
   it('downButton should be disabled if z-index is 0', () => {

@@ -64,19 +64,11 @@ export const DEFAULT_SCREEN: Screen = {
   element: '-1',
 };
 
-/* export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
-  id: 'root',
-  type: 'root',
-  name: 'Not selected',
-  children: [],
-  buoyancy: 0,
-  image: null,
-  parameters: {},
-  styles: {
-    classNames: ['root'],
-    ownStyles: {},
-  },
-}; */
+export const DEFAULT_LAYOUT_LIST = [
+  Layout.Desktop,
+  Layout.Tablet,
+  Layout.Mobile,
+];
 
 export const SAVEABLE_ELEMENTS = ['section'];
 
@@ -140,11 +132,5 @@ export const UNIQUE_CONTROLS = [
 ];
 
 export const ALL_ELEMENTS_INDEX = 'all';
-
-export const DEFAULT_LAYOUT_LIST = [
-  Layout.Desktop,
-  Layout.Tablet,
-  Layout.Mobile,
-];
 
 export const PROJECT_STATUS_LIST = ['pending', 'paid'];

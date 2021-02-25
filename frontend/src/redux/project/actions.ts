@@ -117,7 +117,6 @@ import {
   AddAssetList,
   UploadAsset,
   AddAssetRedux,
-  ToggleMasterScreen,
   MoveStateElement,
   MoveStateElementsInside,
   CreateStateGroup,
@@ -997,9 +996,17 @@ export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
 
-export const importHtml = (files: File[]) => ({
+export const importHtml = (files: File[], url?: string) => ({
   type: TYPES.IMPORT_HTML,
-  payload: files,
+  payload: {
+    files,
+    url,
+  },
+});
+
+export const uploadImportUrl = (url) => ({
+  type: TYPES.UPLOAD_IMPORT_URL,
+  payload: url,
 });
 
 export const setEditorDocument = (doc: Document): SetEditorDocument => ({
@@ -1143,10 +1150,6 @@ export const setMasterScreenId = (
 ): SetMasterScreenId => ({
   type: TYPES.SET_MASTER_SCREEN_ID,
   payload: screenId,
-});
-
-export const toggleMasterScreen = (): ToggleMasterScreen => ({
-  type: TYPES.TOGGLE_MASTER_SCREEN,
 });
 
 export const setCanCreateGroup = (canCreateGroup: boolean) => ({

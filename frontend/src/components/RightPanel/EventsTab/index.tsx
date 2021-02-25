@@ -4,7 +4,7 @@ import {
   StyledIconButton,
   StyledTextField,
 } from '@Components/styledComponents';
-import { ElementEvent, EventType, HyperLinkParameters } from '@Src/types';
+import { ElementEvent, EventType, StateElement } from '@Src/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
@@ -40,7 +40,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 const EventsTab: FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { events }: HyperLinkParameters = useSelector(
+  const { events }: StateElement['parameters'] = useSelector(
     selectActiveElementParams,
   );
   const activeElement = useSelector(selectActiveElement);
@@ -56,6 +56,8 @@ const EventsTab: FC = () => {
     setEventData({});
     setEventToEdit('');
   }, [events]);
+
+  if (!events) return null;
 
   const handleSubmit = () => {
     const newEvent: ElementEvent = {
@@ -93,7 +95,7 @@ const EventsTab: FC = () => {
     dispatch(
       updateElementParameters(
         activeElement.id,
-        { events: events.filter((event) => event.id !== eventId) },
+        { events: events?.filter((event) => event.id !== eventId) },
         { screenId },
       ),
     );

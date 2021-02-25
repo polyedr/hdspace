@@ -113,16 +113,16 @@ const FreeDraggable: React.FC<Props> = ({
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}
       position={{
-        x: left,
-        y: top,
+        x: left as number,
+        y: top as number,
       }}
-      size={
-        width &&
+      {...(width &&
         height && {
-          width,
-          height,
-        }
-      }
+          size: {
+            width,
+            height,
+          },
+        })}
       onResizeStart={handleInteractionStart}
       onDragStart={handleInteractionStart}
       lockAspectRatio={lockAspectRatio}

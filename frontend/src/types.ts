@@ -54,9 +54,9 @@ export enum ElementGroup {
 }
 
 export type FreeCanvasElementParams = {
-  left?: CSS.Property.Left;
-  top?: CSS.Property.Top;
-  zIndex?: CSS.Property.ZIndex;
+  left?: number;
+  top?: number;
+  zIndex?: number;
   width?: CSS.Property.Width;
   height?: CSS.Property.Height;
 };
@@ -672,7 +672,13 @@ export type StateElement = {
     classNames: string[];
     ownStyles: React.CSSProperties;
   };
-  parameters: any;
+  parameters: {
+    freeCanvas: FreeCanvasElementParams;
+    group: ElementGroup;
+    layouts: Layout[];
+    events?: ElementEvent[];
+    [k: string]: any;
+  };
   shared?: boolean;
 };
 
@@ -1150,3 +1156,5 @@ export type DateRange = {
   from: Date | null;
   to: Date | null;
 };
+
+export type PostUrlResponse = { wpname: string; owner: any };

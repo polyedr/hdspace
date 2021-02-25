@@ -761,18 +761,9 @@ export type SetEditorDocument = IAction<
   Document
 >;
 
-/* export type SetMasterScreenEnabled = IAction<
-  typeof TYPES.SET_MASTER_SCREEN_ENABLED,
-  boolean
->; */
-
 export type SetMasterScreenId = IAction<
   typeof TYPES.SET_MASTER_SCREEN_ID,
   number | null
->;
-
-export type ToggleMasterScreen = IPlainAction<
-  typeof TYPES.TOGGLE_MASTER_SCREEN
 >;
 
 export type CreateStateGroup = IAction<
@@ -906,7 +897,6 @@ export type Action =
   | RemoveMultipleElementsStyles
   | UploadAsset
   | UploadElementAsset
-  | ToggleMasterScreen
   | RemoveMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup

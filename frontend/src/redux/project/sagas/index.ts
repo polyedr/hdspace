@@ -22,7 +22,6 @@ import {
   restoreScreenSaga,
   updateScreenImageSaga,
   convertFreeCanvasSaga,
-  importHtmlSaga,
 } from '@Redux/project/sagas/screen';
 import {
   moveElementSaga,
@@ -96,6 +95,7 @@ import {
   removeAssetSaga,
   restoreAssetSaga,
 } from './asset';
+import { importHtmlSaga, uploadImportUrlSaga } from './import';
 
 function* removeSharedStylesSaga(
   action: ReturnType<typeof Actions.removeSharedStyles>,
@@ -489,6 +489,8 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
+  yield takeEvery(TYPES.UPLOAD_IMPORT_URL, uploadImportUrlSaga);
+
   yield takeEvery(TYPES.LOAD_ASSET_LISTS, loadAssetListsSaga);
   yield takeEvery(TYPES.LOAD_ASSETS, loadAssetsSaga);
   yield takeEvery(TYPES.ADD_ASSET_LIST, addNewAssetListSaga);
@@ -503,6 +505,5 @@ export default function* projectSaga() {
     toggleSelectedElementSaga,
   );
 
-  // yield takeEvery(TYPES.TOGGLE_MASTER_SCREEN, toggleMasterScreenSaga);
   yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP_SAGA, createElementsGroupSaga);
 }

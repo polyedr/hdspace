@@ -2,7 +2,7 @@ import React, { memo, useRef, useMemo } from 'react';
 import cn from 'classnames';
 import useInterval from '@use-it/interval';
 
-import '@Src/styles/export/clock.css';
+import '../../../../styles/export/clock.css';
 
 type Props = {
   id: string;
