@@ -54,8 +54,8 @@ export enum ElementGroup {
 }
 
 export type FreeCanvasElementParams = {
-  left?: CSS.Property.Left;
-  top?: CSS.Property.Top;
+  left?: number;
+  top?: number;
   zIndex?: number;
   width?: CSS.Property.Width;
   height?: CSS.Property.Height;
