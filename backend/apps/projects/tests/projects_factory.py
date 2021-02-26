@@ -1,8 +1,10 @@
 from factory.django import DjangoModelFactory
 import factory
+from factory.fuzzy import FuzzyText
+
 from apps.projects.models import Roles, ProjectIllustrationSet, ProjectImage, ScreenScenario, ScenarioElement, \
     ElementComment, Project, ProjectScreen, ScreenEvent, ScreenComment, Comment, ProjectInvitation, ProjectMember, \
-    TaskTime, ProjectTask, ScreenAssignee, ProjectActivity
+    TaskTime, ScreenAssignee, ProjectActivity, ProjectColumn, ColumnTask
 
 
 class ProjectFactory(DjangoModelFactory):
@@ -63,15 +65,6 @@ class ProjectMemberFactory(DjangoModelFactory):
 
     role = Roles.EXTERNAL_ROLE_PROJECT_OWNER
     status = ProjectMember.STATUS_CREATOR
-
-
-class ProjectTaskFactory(DjangoModelFactory):
-    class Meta:
-        model = ProjectTask
-
-    title = factory.sequence(lambda n: "test task {}".format(n))
-    description = "Test Task"
-    status = ProjectTask.TASK_CREATED
 
 
 class TaskTimeFactory(DjangoModelFactory):
@@ -137,3 +130,20 @@ class ElementCommentFactory(DjangoModelFactory):
         model = ElementComment
 
     text = factory.sequence(lambda n: "test element comment {}".format(n))
+
+
+class ProjectColumnFactory(DjangoModelFactory):
+    class Meta:
+        model = ProjectColumn
+
+    title = factory.sequence(lambda n: "test project column {}".format(n))
+    description = FuzzyText(length=30)
+
+
+class ColumnTaskFactory(DjangoModelFactory):
+    class Meta:
+        model = ColumnTask
+
+    title = factory.sequence(lambda n: "test column task {}".format(n))
+    description = FuzzyText(length=30)
+    status = ColumnTask.TASK_CREATED
