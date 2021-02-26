@@ -68,6 +68,7 @@ PROJECT_APPS = [
     "apps.accounts",
     "apps.projects",
     "apps.uploadapps",
+    "apps.phrases",
 ]
 
 INSTALLED_APPS.extend(EXTERNAL_APPS + PROJECT_APPS)

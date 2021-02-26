@@ -45,6 +45,7 @@ urlpatterns = [
     path("api/v1/accounts/", include("apps.accounts.apiurls", namespace="apiaccounts")),
     path("api/v1/projects/", include("apps.projects.apiurls", namespace="apiprojects")),
     path("api/v1/uploadapps/", include("apps.uploadapps.apiurls", namespace="apiuploadapps")),
+    path("api/v1/phrases/", include("apps.phrases.apiurls", namespace="apiphrases")),
     path(
         "api/v1/virtualize_simple/",
         include("apps.virtualize_simple.apiurls", namespace="apivirtualize_simple"),
