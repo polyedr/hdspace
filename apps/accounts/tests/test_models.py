@@ -48,13 +48,7 @@ class ProfileTest(TestCase):
     """ Test module for Profile model """
 
     def setUp(self):
-        self.profile_attributes = {
-            "approved": True,
-            "role": Profile.ROLE_ADMINISTRATOR,
-            "hourly_rate": 1,
-            "avatar": "String",
-            "user_id": 6
-        }
+
         self.profile = ProfileFactory.create()
         self.profile_created = Profile.objects.get(user_id=self.profile.user_id)
 
@@ -71,3 +65,4 @@ class ProfileTest(TestCase):
         for profile in Profile.objects.all():
             profile.delete()
 #
+

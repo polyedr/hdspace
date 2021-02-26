@@ -1,10 +1,10 @@
 from django.test import TestCase
 from apps.accounts.tests.accounts_factory import UserFactory
-from projects.tests.projects_factory import ProjectFactory, ProjectScreenFactory, ScreenEventFactory, \
-    ScreenCommentFactory, CommentFactory, ProjectMemberFactory, ProjectTaskFactory, TaskTimeFactory, \
+from apps.projects.tests.projects_factory import ProjectFactory, ProjectScreenFactory, ScreenEventFactory, \
+    ScreenCommentFactory, CommentFactory, ProjectMemberFactory, TaskTimeFactory, \
     ProjectIllustrationSetFactory, ProjectImageFactory, ScreenAssigneeFactory, ProjectActivityFactory, \
-    ScreenScenarioFactory, ScenarioElementFactory, ElementCommentFactory
-from ..models import ScreenScenario, ScenarioElement, Project, ProjectScreen, ScreenEvent, ProjectMember, ProjectTask,\
+    ScreenScenarioFactory, ScenarioElementFactory, ElementCommentFactory, ProjectColumnFactory, ColumnTaskFactory
+from ..models import ScreenScenario, ScenarioElement, Project, ProjectScreen, ScreenEvent, ProjectMember, \
     ProjectActivity
 import datetime
 from guardian.shortcuts import assign_perm
@@ -146,35 +146,46 @@ class ProjectMemberTest(TestCase):
         self.assertEqual(self.project_member.status, ProjectMember.STATUS_CREATOR)
 
 
-class ProjectTaskTest(TestCase):
-
+class ProjectColumnTest(TestCase):
     def setUp(self):
         self.User = UserFactory.create()
         self.project = ProjectFactory.create(user=self.User)
-        self.project_task = ProjectTaskFactory.create(title="Test Task 1", creator=self.User, owner=self.User,
-                                                      project=self.project)
 
-    def test_projecttask_created(self):
-        self.assertTrue(ProjectTask.objects.filter(title="Test Task 1").exists())
+        self.project_column = ProjectColumnFactory.create(project=self.project)
 
-    def test_projecttask_str(self):
-        self.assertEqual(self.project_task.__str__(), self.project_task.title)
+    def test_project_column_user(self):
+        self.assertEqual(self.project_column.project.user, self.User)
 
-    def test_projecttask_creator_owner(self):
-        self.assertEqual(self.project_task.owner, self.User)
-        self.assertEqual(self.project_task.creator, self.User)
+    def test_project_column_project(self):
+        self.assertEqual(self.project_column.project, self.project)
+
+
+class ColumnTaskTest(TestCase):
+    def setUp(self):
+        self.User = UserFactory.create()
+        self.project = ProjectFactory.create(user=self.User)
+        self.project_column = ProjectColumnFactory.create(project=self.project)
+        self.column_task = ColumnTaskFactory.create(column=self.project_column, creator=self.User, owner=self.User)
+
+    def test_column_task_str(self):
+        self.assertEqual(self.column_task.__str__(), self.column_task.title)
+
+    def test_column_task_creator(self):
+        self.assertEqual(self.column_task.creator, self.User)
+
+    def test_column_task_owner(self):
+        self.assertEqual(self.column_task.owner, self.User)
 
 
 class TaskTimeTest(TestCase):
     def setUp(self):
         self.User = UserFactory.create()
         self.project = ProjectFactory.create(user=self.User)
-        self.project_task = ProjectTaskFactory.create(title="Test Task 1", creator=self.User, owner=self.User,
-                                                      project=self.project)
+        self.project_column = ProjectColumnFactory.create(project=self.project)
+        self.column_task = ColumnTaskFactory.create(column=self.project_column, creator=self.User, owner=self.User)
         self.project_member = ProjectMemberFactory(user=self.User, project=self.project)
         self.started = datetime.datetime.now().isoformat()
-
-        self.task_time = TaskTimeFactory.create(started=self.started, task=self.project_task,
+        self.task_time = TaskTimeFactory.create(started=self.started, task=self.column_task,
                                                 member=self.project_member)
 
     def test_task_time_str(self):
@@ -187,7 +198,7 @@ class TaskTimeTest(TestCase):
         self.assertEqual(self.task_time.stoped, True)
 
     def test_task_time_time(self):
-        self.assertEqual(self.task_time.task, self.project_task)
+        self.assertEqual(self.task_time.task, self.column_task)
 
 
 class ProjectIllustrationSetTest(TestCase):
