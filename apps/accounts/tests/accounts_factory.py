@@ -2,7 +2,7 @@ from django.contrib.auth.hashers import make_password
 from factory.django import DjangoModelFactory
 import factory
 
-from accounts.models import User, Profile
+from apps.accounts.models import User, Profile
 
 
 class UserFactory(DjangoModelFactory):
