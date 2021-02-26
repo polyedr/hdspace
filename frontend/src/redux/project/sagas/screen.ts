@@ -22,7 +22,6 @@ import {
   StateElement,
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
-import { changePrototypeMode } from '@Redux/user/actions';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -54,17 +53,12 @@ import {
   selectScreens,
 } from '../selectors/screen';
 import {
-  selectActiveElement,
   selectAllElements,
   selectCurrentRootId,
   selectElementById,
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
-import {
-  selectActiveMasterElement,
-  selectMasterScreenEnabled,
-} from '../selectors/masterScreen';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -147,7 +141,7 @@ export function* createScreenSaga({
       const rootElement = convertCreatedElementToRequest(
         'root',
         String(rootScenario.id),
-        'Root',
+        payload.rootName || 'Root',
       );
 
       const {
@@ -553,7 +547,6 @@ export function* getScreensSaga(screens: Screen[]) {
         scenariosIDs: [screens.map((screen) => screen.screenscenario)],
       },
     );
-
     if (elements) {
       yield put(
         setScreens(
@@ -666,32 +659,6 @@ export function* convertFreeCanvasSaga() {
       ),
     );
     yield put(changeFreeCanvasMode(false));
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-}
-
-export function* toggleMasterScreenSaga() {
-  try {
-    const enabled: boolean = yield select(selectMasterScreenEnabled);
-    const activeMasterElement = yield select(selectActiveMasterElement);
-    const activeElement: StateElement = yield select(selectActiveElement);
-
-    yield put(Actions.changeFreeCanvasMode(false));
-    yield put(changePrototypeMode(false));
-
-    yield put(
-      Actions.setEditableStyles(
-        enabled ? activeElement.styles.classNames[0] : activeMasterElement.type,
-      ),
-    );
-
-    yield put(Actions.setMasterScreenEnabled(!enabled));
   } catch (e) {
     yield put(
       enqueueSnackbar({

@@ -117,12 +117,15 @@ import {
   AddAssetList,
   UploadAsset,
   AddAssetRedux,
-  SetActiveMasterElement,
-  SetMasterScreenEnabled,
-  ToggleMasterScreen,
   MoveStateElement,
   MoveStateElementsInside,
-  CreateStateGroup,
+  SetMasterScreenId,
+  SetMasterScreenLoader,
+  SetMasterCoreElementId,
+  SetMasterGroupsElementId,
+  SetMasterElementsIds,
+  WrapStateElements,
+  InsertStateElement,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -216,6 +219,13 @@ export const setScreenLoader = (active: boolean): SetScreenLoader => ({
   payload: { active },
 });
 
+export const setMasterScreenLoader = (
+  active: boolean,
+): SetMasterScreenLoader => ({
+  type: TYPES.SET_MASTER_SCREEN_LOADER,
+  payload: { active },
+});
+
 export const setUpdateImageLoader = (
   active: boolean,
 ): SetUpdateImageLoader => ({
@@ -275,9 +285,10 @@ export const createScreen = (
   name: string,
   buoyancy: number,
   skip: boolean = false,
+  rootName?: string,
 ): CreateScreen => ({
   type: TYPES.CREATE_SCREEN,
-  payload: { projectID, name, buoyancy, skip },
+  payload: { projectID, name, buoyancy, skip, rootName },
 });
 
 export const duplicateScreen = (
@@ -382,7 +393,7 @@ export const insertStateElement = (
   parentId: string,
   childId: string,
   meta: ElementHistoryMeta,
-) => ({
+): InsertStateElement => ({
   type: TYPES.INSERT_STATE_ELEMENT,
   payload: {
     parentId,
@@ -392,18 +403,16 @@ export const insertStateElement = (
   meta,
 });
 
-export const createStateGroup = (
-  groupEl: LibraryElement<any>,
+export const wrapStateElements = (
+  element: LibraryElement<any>,
   parentId: string,
-  buoyancy: number,
   childIds: string[],
   meta: ElementHistoryMeta,
-): CreateStateGroup => ({
-  type: TYPES.CREATE_STATE_GROUP,
+): WrapStateElements => ({
+  type: TYPES.WRAP_STATE_ELEMENTS,
   payload: {
-    groupEl,
     parentId,
-    buoyancy,
+    element,
     childIds,
   },
   meta,
@@ -753,6 +762,29 @@ export const setHoveredElementId = (
   payload: id,
 });
 
+export const setMasterCoreElementId = (id = '-1'): SetMasterCoreElementId => ({
+  type: TYPES.SET_MASTER_CORE_ELEMENT_ID,
+  payload: { id },
+});
+
+export const setMasterGroupsElementId = (
+  id = '-1',
+): SetMasterGroupsElementId => ({
+  type: TYPES.SET_MASTER_GROUPS_ELEMENT_ID,
+  payload: { id },
+});
+
+export const setMasterElementsIds = (
+  masterCoreId = '-1',
+  masterGroupsId = '-1',
+): SetMasterElementsIds => ({
+  type: TYPES.SET_MASTER_ELEMENTS_IDS,
+  payload: {
+    masterCoreId,
+    masterGroupsId,
+  },
+});
+
 export const setEditableStyles = (className: string): SetEditableStyles => ({
   type: TYPES.SET_EDITABLE_STYLES,
   payload: { className },
@@ -1097,22 +1129,11 @@ export const toggleSelectedElement = (id: string) => ({
   payload: { id },
 });
 
-export const setActiveMasterElementId = (
-  id: string,
-): SetActiveMasterElement => ({
-  type: TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
-  payload: id,
-});
-
-export const setMasterScreenEnabled = (
-  enabled: boolean,
-): SetMasterScreenEnabled => ({
-  type: TYPES.SET_MASTER_SCREEN_ENABLED,
-  payload: enabled,
-});
-
-export const toggleMasterScreen = (): ToggleMasterScreen => ({
-  type: TYPES.TOGGLE_MASTER_SCREEN,
+export const setMasterScreenId = (
+  screenId: number | null,
+): SetMasterScreenId => ({
+  type: TYPES.SET_MASTER_SCREEN_ID,
+  payload: screenId,
 });
 
 export const setCanCreateGroup = (canCreateGroup: boolean) => ({

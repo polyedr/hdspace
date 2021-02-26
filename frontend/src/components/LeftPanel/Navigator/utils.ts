@@ -3,6 +3,7 @@ import { Normalized, StateElement, Node } from '../../../types';
 
 export const convertElements = (
   elements: Normalized<StateElement>,
+  isExpanded: boolean = false,
 ): Normalized<Node> =>
   Object.fromEntries(
     Object.entries(elements).map(([key, value]) => [
@@ -15,7 +16,7 @@ export const convertElements = (
             ? []
             : value.children,
         hasChildren: !!value.children.length,
-        isExpanded: value.type === 'root',
+        isExpanded: isExpanded || value.type === 'root',
         parent: value.type === 'root' ? 'root' : value.parent,
       },
     ]),

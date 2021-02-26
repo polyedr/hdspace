@@ -72,7 +72,7 @@ export type ServerElement<
   Children = any[],
   Params = BaseElementParams
 > = {
-  id?: number;
+  id: number | string;
   name: string;
   scenario?: number;
   struct_type: Type;
@@ -592,7 +592,9 @@ export type DropdownItemParameters = BaseElementParams & {
 };
 
 export type ElementsGroupParameters = BaseElementParams & {
-  groupElements: string[];
+  isGroup?: boolean;
+  groupElements?: string[];
+  sourceElementId?: string | null;
 };
 
 export type CreatedServerProject = {
@@ -953,6 +955,7 @@ export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
+  masterScreenEnabled?: boolean;
 };
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';

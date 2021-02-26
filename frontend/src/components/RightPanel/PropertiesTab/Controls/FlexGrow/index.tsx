@@ -16,6 +16,7 @@ const FlexGrow: React.FC<Props> = ({
   removeStyles,
   activeElementId,
   flexGrow = 0,
+  masterScreenEnabled,
 }) => {
   const editorDocument = useSelector(selectEditorDocument);
 
@@ -35,11 +36,13 @@ const FlexGrow: React.FC<Props> = ({
 
   return isFlexItem ? (
     <div>
-      <StylesHeader
-        title="Flex Grow"
-        onClick={removeStyles}
-        cssPropertiesNames={['flexGrow']}
-      />
+      {!masterScreenEnabled && (
+        <StylesHeader
+          title="Flex Grow"
+          onClick={removeStyles}
+          cssPropertiesNames={['flexGrow']}
+        />
+      )}
 
       <StyledTextField
         fullWidth

@@ -1,8 +1,6 @@
-import { defaultFreeCanvasParams } from '@Domain/core';
 import {
   LibraryElement,
   Project,
-  StateElement,
   Screen,
   ElementGroup,
   Layout,
@@ -71,24 +69,6 @@ export const DEFAULT_LAYOUT_LIST = [
   Layout.Tablet,
   Layout.Mobile,
 ];
-
-export const DEFAULT_ACTIVE_ELEMENT: StateElement = {
-  id: 'none',
-  type: 'none',
-  name: 'Not selected',
-  children: [],
-  buoyancy: 0,
-  image: null,
-  parameters: {
-    freeCanvas: defaultFreeCanvasParams,
-    group: ElementGroup.NONE,
-    layouts: DEFAULT_LAYOUT_LIST,
-  },
-  styles: {
-    classNames: ['root'],
-    ownStyles: {},
-  },
-};
 
 export const SAVEABLE_ELEMENTS = ['section'];
 

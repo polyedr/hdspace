@@ -4,6 +4,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
+  selectMasterCoreElementId,
+  selectMasterGroupsElementId,
   selectSelectedElements,
   selectSelectedElementsIds,
 } from '@Redux/project/selectors/element';
@@ -13,7 +15,12 @@ import {
 } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
-import { Entity, Params, PropertyName } from '@Src/types';
+import {
+  CONTROLS_AFFECT_ON_PARAMS,
+  Entity,
+  Params,
+  PropertyName,
+} from '@Src/types';
 import {
   removeElementStyles,
   removeMultipleElementsStyles,
@@ -25,7 +32,10 @@ import {
 } from '@Redux/project/actions';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { ALL_ELEMENTS_INDEX, UNIQUE_CONTROLS } from '@Constants/defaultParams';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import {
+  selectCurrentScreenId,
+  selectMasterScreenEnabled,
+} from '@Redux/project/selectors/screen';
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import RenameElement from './Controls/RenameElement/RenameElement';
@@ -45,6 +55,8 @@ const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const activeElement = useSelector(selectActiveElement);
+  const masterCoreElementId = useSelector(selectMasterCoreElementId);
+  const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
   const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
@@ -52,6 +64,8 @@ const PropertiesTab: React.FC = () => {
   const editableStyles = useSelector(selectEditableStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
+
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const isGroupElement = !!activeElement.parameters.sourceElementId;
   const isGroupSource = !!activeElement.parameters.groupElements;
@@ -100,7 +114,7 @@ const PropertiesTab: React.FC = () => {
             screenId: currentScreenId,
           }),
         );
-      } else if (editableStyles === 'ownStyles') {
+      } else if (masterScreenEnabled) {
         if (isGroupSource) {
           const groupElementsIds = activeElement.parameters.groupElements;
           dispatch(
@@ -114,11 +128,17 @@ const PropertiesTab: React.FC = () => {
           );
         } else {
           dispatch(
-            removeElementStyles(activeElement.id, ruleNames, {
+            removeSharedStyles(editableStyles as Entity, ruleNames, {
               screenId: currentScreenId,
             }),
           );
         }
+      } else if (editableStyles === 'ownStyles') {
+        dispatch(
+          removeElementStyles(activeElement.id, ruleNames, {
+            screenId: currentScreenId,
+          }),
+        );
       } else {
         dispatch(
           removeSharedStyles(editableStyles as Entity, ruleNames, {
@@ -130,6 +150,7 @@ const PropertiesTab: React.FC = () => {
     [
       selectedElementsIds,
       editableStyles,
+      masterScreenEnabled,
       dispatch,
       currentScreenId,
       isGroupSource,
@@ -155,7 +176,7 @@ const PropertiesTab: React.FC = () => {
             { screenId: currentScreenId },
           ),
         );
-      } else if (editableStyles === 'ownStyles') {
+      } else if (masterScreenEnabled) {
         if (isGroupSource) {
           const groupElementsIds = activeElement.parameters.groupElements;
           dispatch(
@@ -167,7 +188,20 @@ const PropertiesTab: React.FC = () => {
               { screenId: currentScreenId },
             ),
           );
+        } else {
+          dispatch(
+            updateSharedStyles(
+              (masterScreenEnabled
+                ? activeElement.type
+                : editableStyles) as Entity,
+              styles,
+              {
+                screenId: currentScreenId,
+              },
+            ),
+          );
         }
+      } else if (editableStyles === 'ownStyles') {
         dispatch(
           updateElementStyles(activeElement.id, styles, {
             screenId: currentScreenId,
@@ -175,20 +209,28 @@ const PropertiesTab: React.FC = () => {
         );
       } else {
         dispatch(
-          updateSharedStyles(editableStyles as Entity, styles, {
-            screenId: currentScreenId,
-          }),
+          updateSharedStyles(
+            (masterScreenEnabled
+              ? activeElement.type
+              : editableStyles) as Entity,
+            styles,
+            {
+              screenId: currentScreenId,
+            },
+          ),
         );
       }
     },
     [
       selectedElementsIds,
       editableStyles,
+      masterScreenEnabled,
       dispatch,
       currentScreenId,
       isGroupSource,
       activeElement.id,
-      activeElement.parameters,
+      activeElement.parameters.groupElements,
+      activeElement.type,
     ],
   );
 
@@ -203,6 +245,10 @@ const PropertiesTab: React.FC = () => {
     [dispatch, activeElement.id, currentScreenId],
   );
 
+  if ([masterCoreElementId, masterGroupsElementId].includes(activeElement.id)) {
+    return null;
+  }
+
   return (
     <div className={classes.propertiesTab}>
       <Scrollbar
@@ -214,7 +260,13 @@ const PropertiesTab: React.FC = () => {
         {!isPrototypeMode && (
           <>
             {SELECTION_CONTROLS.map((controlName) => {
-              if (isFreeCanvasMode && controlName === 'size') {
+              if (
+                (isFreeCanvasMode && controlName === 'size') ||
+                (masterScreenEnabled &&
+                  CONTROLS_AFFECT_ON_PARAMS.includes(
+                    controlName as typeof CONTROLS_AFFECT_ON_PARAMS[number],
+                  ))
+              ) {
                 return null;
               }
               const controlInfo = CONTROLS[controlName];
@@ -225,27 +277,30 @@ const PropertiesTab: React.FC = () => {
                   <Control
                     {...getControlStyles(controlName, currentEditableStyles)}
                     activeElementId={activeElement.id}
-                    removeStyles={removeStyles}
+                    removeStyles={!masterScreenEnabled && removeStyles}
                     updateStyles={updateStyles}
-                    updateParams={updateParams}
+                    updateParams={!masterScreenEnabled && updateParams}
+                    masterScreenEnabled={masterScreenEnabled}
                   />
                 </ControlSection>
               );
             })}
 
-            {type !== 'root' && elementsControlsCollection.length === 1 && (
-              <>
-                {!isGroupElement && (
-                  <ControlSection title="Share styles">
-                    <ShareStyles />
-                  </ControlSection>
-                )}
+            {type !== 'root' &&
+              elementsControlsCollection.length === 1 &&
+              !masterScreenEnabled && (
+                <>
+                  {!isGroupElement && (
+                    <ControlSection title="Share styles">
+                      <ShareStyles />
+                    </ControlSection>
+                  )}
 
-                <ControlSection title="Element name">
-                  <RenameElement />
-                </ControlSection>
-              </>
-            )}
+                  <ControlSection title="Element name">
+                    <RenameElement />
+                  </ControlSection>
+                </>
+              )}
           </>
         )}
       </Scrollbar>

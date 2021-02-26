@@ -18,3 +18,6 @@ export const toClassName = (str: string): string =>
 
 export const getUnitFromValue = (value: string) =>
   value.replace(/[0-9, \d+.\d+]/g, '');
+
+export const capitalize = (str: string): string =>
+  `${str.charAt(0).toUpperCase()}${str.slice(1)}`;

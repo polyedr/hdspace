@@ -11,14 +11,14 @@ import {
   selectIsElementSelected,
   selectElementsByIds,
   selectSelectedElementsIds,
-  selectActiveElement,
   selectTreeChildElementsIds,
+  selectMasterGroupsElementId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
 import {
   convertElementToPatchRequest,
-  convertCreatedElementToRequest,
+  convertElementToRequest,
 } from '@Api/converters/toRequest';
 import {
   getElementsArray,
@@ -30,7 +30,6 @@ import {
   apiUpdateElements,
   parseImgUsingNN,
   apiGetCustomLibraryElements,
-  apiCreateElements,
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import getSavedValue from '@Utils/getSavedValue';
@@ -38,6 +37,7 @@ import { addProjectStyles } from '@Utils/ProjectClassesHelper';
 import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
 import {
   Entity,
+  ItemToCopyInfo,
   LibraryElement,
   Normalized,
   PaginatedResponse,
@@ -47,10 +47,58 @@ import {
   ServerElement,
   StateElement,
 } from '@Src/types';
+import { ElementHistoryMeta } from '@Redux/types';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import { selectMasterElementById } from '../selectors/masterScreen';
+import { createElements, wrapIntoContainer } from './scenario';
+
+// eslint-disable-next-line consistent-return
+export function* duplicateElements(
+  itemsToCopyInfo: ItemToCopyInfo[],
+  targetParent: LibraryElement<Entity>,
+  { screenId, undo }: ElementHistoryMeta,
+) {
+  try {
+    const elements: LibraryElement<any>[] = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const el of itemsToCopyInfo) {
+      const element = yield select(selectElementAsTree(el.id));
+      elements.push(element);
+    }
+
+    const convertedItemsToDuplicate = elements.map((item) =>
+      convertElementToRequest(item!, (originalEl, convertedEl) => {
+        return {
+          ...convertedEl,
+          parameters: {
+            ...convertedEl.parameters,
+            originalElementId: originalEl.id,
+          },
+        };
+      }),
+    );
+
+    return yield call(
+      createElements,
+      { elements: convertedItemsToDuplicate },
+      targetParent,
+      {
+        screenId,
+        undo,
+      },
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: {
+          variant: 'error',
+        },
+      }),
+    );
+  }
+}
 
 export function* moveElementSaga(
   action: ReturnType<typeof Actions.moveElement>,
@@ -1017,125 +1065,73 @@ export function* createElementsGroupSaga(
   const { screenId } = action.meta;
 
   try {
-    const activeElement = yield select(selectActiveElement);
-    const parentTree = yield select(selectElementAsTree(activeElement.parent));
-    const selectedElements: StateElement[] = yield select(
-      selectElementsByIds(ids),
-    );
-    const minBuoyancy = Math.min(...selectedElements.map((el) => el.buoyancy));
+    // create group container
+    const wrappers = yield call(wrapIntoContainer, 'group', name, ids, {
+      ...action.meta,
+    });
 
-    const requestCreateGroup = convertCreatedElementToRequest(
-      'group',
-      activeElement.parent,
-      name,
-      {
-        isGroup: true,
+    const wrapperGroupId = wrappers[0];
+    const masterGroupsElId = yield select(selectMasterGroupsElementId);
+    const masterGroupsEl = yield select(selectElementAsTree(masterGroupsElId));
+    const copiedGroupResult = yield call(
+      duplicateElements,
+      [{ id: wrapperGroupId, screenID: screenId }],
+      masterGroupsEl,
+      { screenId },
+    );
+
+    const existingGroupsIds = masterGroupsEl.children.map(({ id }) => id);
+    const groupId = `${copiedGroupResult.find(
+      (id) => !existingGroupsIds.includes(id),
+    )}`;
+
+    const childIds = yield select(selectTreeChildElementsIds(groupId));
+    const allGroupIds = [groupId, ...childIds];
+    const state = yield select(selectAllElements);
+
+    const allUpdatedElements: Normalized<StateElement> = allGroupIds.reduce(
+      (acc, id) => {
+        const groupElement = state[id];
+        const instanceElement =
+          state[groupElement.parameters.originalElementId];
+        return {
+          ...acc,
+          [groupElement.id]: {
+            ...groupElement,
+            parameters: {
+              ...groupElement.parameters,
+              ...(groupElement.id === groupId ? { isGroup: true } : {}),
+              groupElements: [instanceElement.id],
+            },
+          } as StateElement,
+          [instanceElement.id]: {
+            ...instanceElement,
+            parameters: {
+              ...instanceElement.parameters,
+              sourceElementId: groupElement.id,
+            },
+          } as StateElement,
+        };
       },
+      {},
     );
 
-    const {
-      result: createdGroups,
-    }: ReturnPromisedType<typeof apiCreateElements> = yield call(
-      reqWrapper,
-      apiCreateElements,
-      {
-        data: [requestCreateGroup],
-      },
-      parentTree,
-      action.meta,
-    );
+    yield put(Actions.updateElementsTree(allUpdatedElements, action.meta));
 
-    if (!createdGroups || !createdGroups.length) {
-      console.error('Error creating group', createdGroups);
-      throw new Error('Error creating group');
-    }
+    const convertedElements = Object.values(
+      allUpdatedElements,
+    ).map((el: LibraryElement<any>) => convertElementToPatchRequest(el));
 
-    yield put(
-      Actions.createStateGroup(
-        createdGroups[0],
-        activeElement.parent,
-        minBuoyancy,
-        ids,
-        {
-          screenId,
-        },
-      ),
-    );
-
-    const updatedParent: LibraryElement<any> = yield select(
-      selectElementAsTree(activeElement.parent),
-    );
-    const updatedGroup: LibraryElement<any> = yield select(
-      selectElementAsTree(createdGroups[0].id),
-    );
-
-    const { error: parentError }: Result<RecursiveElement> = yield call(
-      reqWrapper,
-      apiChangeRecursiveElement,
-      {
-        data: { children: updatedParent.children.map((child) => child.id) },
-        id: updatedParent.id,
-      },
-    );
-    if (parentError) throw parentError;
-
-    const { error: groupError }: Result<RecursiveElement> = yield call(
-      reqWrapper,
-      apiChangeRecursiveElement,
-      {
-        data: { children: updatedGroup.children.map((child) => child.id) },
-        id: updatedGroup.id,
-      },
-    );
-
-    const nestedChildrenIds = yield select(
-      selectTreeChildElementsIds(updatedGroup.id),
-    );
-
-    const nestedElements = yield select(selectElementsByIds(nestedChildrenIds));
-
-    if (groupError) throw groupError;
-
-    const convertedElements = [
-      ...updatedParent.children.map((child) =>
-        convertElementToPatchRequest(child),
-      ),
-      ...nestedElements.map((child) =>
-        convertElementToPatchRequest({
-          ...child,
-          parameters: {
-            ...child.parameters,
-            groupElements: [],
-          },
-        }),
-      ),
-    ];
-
-    const { error }: Result<ServerElement<any>> = yield call(
+    const { error: updateError }: Result<ServerElement<any>> = yield call(
       reqWrapper,
       apiUpdateElements,
-      { data: convertedElements },
+      {
+        data: convertedElements,
+      },
     );
-    if (error) throw new Error(error);
+    if (updateError) throw updateError;
   } catch (e) {
     console.error(e);
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-}
-
-export function* setActiveMasterElementSaga({
-  payload,
-}: ReturnType<typeof Actions.setActiveMasterElementId>) {
-  try {
-    const { type } = yield select(selectMasterElementById(payload));
-
-    yield put(Actions.setEditableStyles(type));
-  } catch (e) {
     yield put(
       enqueueSnackbar({
         message: e.message,

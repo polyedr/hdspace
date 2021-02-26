@@ -61,6 +61,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 const SizeBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  masterScreenEnabled,
   activeElementId,
   width,
   height,
@@ -181,11 +182,13 @@ const SizeBlock: React.FC<Props> = ({
 
   return (
     <section>
-      <StylesHeader
-        title="Width & Height"
-        onClick={removeStyles}
-        cssPropertiesNames={['width', 'height']}
-      />
+      {!masterScreenEnabled && (
+        <StylesHeader
+          title="Width & Height"
+          onClick={removeStyles}
+          cssPropertiesNames={['width', 'height']}
+        />
+      )}
 
       <div className={classes.wrapper}>
         <SizeControl sizeName="height" />
