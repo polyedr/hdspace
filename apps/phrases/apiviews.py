@@ -4,7 +4,6 @@ from apps.phrases.serializers import DescribedHTMLSerializer
 from apps.phrases.models import DescribedHTML
 
 
-# Create your views here.
 class DescribedHTMLView(generics.ListCreateAPIView):
     """
     List all the HTML components described, or create a new HTML description.
