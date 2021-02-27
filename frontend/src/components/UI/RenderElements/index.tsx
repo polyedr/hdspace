@@ -3,10 +3,10 @@ import Grid from '@Components/UI/RenderElements/Grid';
 import Column from '@Components/UI/RenderElements/Columns/Column';
 import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
 import { Entity, NNBlockType } from '@Src/types';
-// import Button from './MUIButton/MUIButton';
+// import MUIButton from './MUIButton/MUIButton';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
-import Input from './Input/Input';
+// import MUIInput from './MUIInput/MUIInput';
 import Select from './Select/Select';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
@@ -36,6 +36,7 @@ import SelectItem from './Select/SelectItem';
 import GridItem from './Grid/GridItem';
 import ElementsGroup from './ElementsGroup/ElementsGroup';
 import Button from './Button/Button';
+import Input from './Input/Input';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {

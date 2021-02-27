@@ -782,7 +782,7 @@ export const defaultTextinputStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '18.5px 14px',
+    padding: '2px 6px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -792,9 +792,9 @@ export const defaultTextinputStyles: {
   },
   border: {
     ...DEFAULT_BORDER,
-    border: '1px solid #d9d9d9',
-    borderRadius: '4px',
-    borderColor: '#d9d9d9',
+    border: '1px solid #aaa',
+    borderRadius: '1px',
+    borderColor: '#aaa',
     borderWidth: '1px',
   },
   background: {

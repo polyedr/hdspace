@@ -57,7 +57,7 @@ export const makeTextinput = ({
     group: ElementGroup.FORM,
     textContent: '',
     type: 'text',
-    placeholder: 'Enter a label for the field',
+    placeholder: 'Placeholder',
   },
   styles: {
     classNames: ['textinput'],
@@ -219,7 +219,7 @@ export const textarea: TextareaServerElement = {
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent: '',
-    placeholder: 'Enter a label for the field',
+    placeholder: 'Placeholder',
   },
   styles: {
     classNames: ['textarea'],

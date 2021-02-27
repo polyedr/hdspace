@@ -142,6 +142,7 @@ export type InputRendererProps = SharedRendererProps & {
   params: {
     type: InputType;
     placeholder: string;
+    textContent: string;
   };
   currentValue: string;
 };

@@ -24,7 +24,7 @@ const useStyles = makeComponentStyles('button', {
 
 type Props = ButtonRendererProps;
 
-const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
+const MUIButton = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
   const { id, isDisabled, params, className, groupClass } = props;
   const { /* showRipple, */ textContent } = params || {};
 
@@ -59,4 +59,4 @@ const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
   );
 });
 
-export default Button;
+export default MUIButton;

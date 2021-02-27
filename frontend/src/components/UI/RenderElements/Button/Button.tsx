@@ -8,7 +8,7 @@ const useStyles = makeComponentStyles('button', {});
 
 type Props = ButtonRendererProps;
 
-const Button1 = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
+const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
   const { id, /* isDisabled, */ params, className, groupClass } = props;
   const { textContent } = params || {};
 
@@ -35,4 +35,4 @@ const Button1 = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
   );
 });
 
-export default Button1;
+export default Button;
