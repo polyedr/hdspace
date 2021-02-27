@@ -1,4 +1,3 @@
-import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 import { Entity } from '@Src/types';
 import {
   buttonStyleControls,
@@ -749,28 +748,32 @@ export const defaultButtonStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '6px 17px',
+    padding: '2px 6px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   display: {
-    ...DEFAULT_DISPLAY,
+    // ...DEFAULT_DISPLAY,
     display: 'inline-block',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    color: '#ffffff',
-    lineHeight: '1.75',
+    textAlign: 'center',
+    // color: '#ffffff',
+    // lineHeight: '1.75',
   },
   border: {
-    ...DEFAULT_BORDER,
-    borderColor: '#1890ff',
-    borderRadius: '4px',
+    // ...DEFAULT_BORDER,
+    border: '1px solid #aaa',
+    borderWidth: 1,
+    borderColor: '#aaa',
+    borderRadius: '1px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
+    backgroundColor: '#efefef',
+    // backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
   },
 };
 

@@ -128,7 +128,7 @@ export type HyperLinkRendererProps = SharedRendererProps & {
 export type ButtonRendererProps = SharedRendererProps & {
   params: {
     textContent: string;
-    showRipple: boolean;
+    // showRipple: boolean;
   };
 };
 
