@@ -162,18 +162,14 @@ export type RadiobuttonServerElement = ServerElement<
 >;
 export type SelectServerElement = ServerElement<
   'select',
-  SelectMenuServerElement[],
+  OptionServerElement[],
   SelectParameters
 >;
 export type SelectMenuServerElement = ServerElement<
   'selectMenu',
-  SelectItemServerElement[]
+  OptionServerElement[]
 >;
-export type SelectItemServerElement = ServerElement<
-  'selectItem',
-  [],
-  SelectItemParameters
->;
+export type OptionServerElement = ServerElement<'option', [], OptionParameters>;
 export type TextareaServerElement = ServerElement<
   'textarea',
   [],
@@ -324,15 +320,8 @@ export type SmartElement<T extends Entity> = LibraryElement<
   [],
   SmartElementParameters
 >;
-export type SelectMenuElement = LibraryElement<
-  'selectMenu',
-  SelectItemElement[]
->;
-export type SelectItemElement = LibraryElement<
-  'selectItem',
-  [],
-  SelectItemParameters
->;
+export type SelectMenuElement = LibraryElement<'selectMenu', OptionElement[]>;
+export type OptionElement = LibraryElement<'option', [], OptionParameters>;
 export type TextareaElement = LibraryElement<
   'textarea',
   [],
@@ -399,7 +388,7 @@ export type LibraryElementUnion =
   | RadiobuttonElement
   | SelectElement
   | SelectMenuElement
-  | SelectItemElement
+  | OptionElement
   | TextareaElement
   | HeadingElement
   | ParagraphElement
@@ -487,11 +476,10 @@ export type RadiobuttonParameters = BaseElementParams & {
 
 export type SelectParameters = BaseElementParams & {
   value: string;
-  options: Option[];
   isOpen: boolean;
 };
 
-export type SelectItemParameters = BaseElementParams & {
+export type OptionParameters = BaseElementParams & {
   name: string;
   value: string;
 };
@@ -999,7 +987,7 @@ export type StyleProps = {
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement;
-  selectItem: SelectItemServerElement;
+  option: OptionServerElement;
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;
   dropdownItem: DropdownItemServerElement;

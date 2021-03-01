@@ -6,10 +6,10 @@ import AddIcon from '@material-ui/icons/Add';
 import { lighten } from '@material-ui/core';
 import { addChildToElement } from '@Redux/project/actions';
 import generateUniqueName from '@Utils/generateUniqueName';
-import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
+import { PropertiesChangeProps, OptionElement } from '@Src/types';
 import {
   selectActiveItemChildren,
-  selectElementsByIds,
+  // selectElementsByIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import SelectOption from './SelectOption';
@@ -27,11 +27,11 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
+const SelectOptions: React.FC<PropertiesChangeProps<OptionElement>> = ({
   updateParams,
+  activeElementId,
 }) => {
-  const [selectMenu] = useSelector(selectActiveItemChildren('selectMenu'));
-  const selectOptions = useSelector(selectElementsByIds(selectMenu.children));
+  const options = useSelector(selectActiveItemChildren('option'));
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -40,12 +40,12 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
   const handleAddButtonClick = () => {
     const newOptionName = generateUniqueName(
       'New option',
-      selectOptions.map((option) => option.parameters.name || '') || [],
+      options.map((option) => option.parameters.name || '') || [],
     );
     dispatch(
       addChildToElement(
-        'selectItem',
-        selectMenu.id,
+        'option',
+        activeElementId,
         {
           name: newOptionName,
           value: newOptionName,
@@ -57,13 +57,13 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
 
   return (
     <div>
-      {selectOptions.map(({ id, parameters }) => (
+      {options.map(({ id, parameters }) => (
         <SelectOption
           key={id}
           parameters={parameters}
           updateParams={updateParams}
           id={id}
-          isLast={selectOptions.length <= 1}
+          isLast={options.length <= 1}
         />
       ))}
 

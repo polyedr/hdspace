@@ -1,4 +1,3 @@
-import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 import { Entity } from '@Src/types';
 import {
   buttonStyleControls,
@@ -27,7 +26,7 @@ import {
   paragraphStyleControls,
   radiobuttonStyleControls,
   rootStyleControls,
-  selectItemStyleControls,
+  optionStyleControls,
   selectMenuStyleControls,
   selectStyleControls,
   smartContainerStyleControls,
@@ -740,7 +739,7 @@ type RadiobuttonControls = typeof radiobuttonStyleControls[number];
 type LabelControls = typeof labelStyleControls[number];
 type SelectControls = typeof selectStyleControls[number];
 type SelectMenuControls = typeof selectMenuStyleControls[number];
-type SelectItemControls = typeof selectItemStyleControls[number];
+type OptionControls = typeof optionStyleControls[number];
 
 export const defaultButtonStyles: {
   [K in ButtonControls]: React.CSSProperties;
@@ -749,28 +748,27 @@ export const defaultButtonStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '6px 17px',
+    padding: '2px 6px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   display: {
-    ...DEFAULT_DISPLAY,
     display: 'inline-block',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    color: '#ffffff',
-    lineHeight: '1.75',
+    textAlign: 'center',
   },
   border: {
-    ...DEFAULT_BORDER,
-    borderColor: '#1890ff',
-    borderRadius: '4px',
+    border: '1px solid #aaa',
+    borderWidth: 1,
+    borderColor: '#aaa',
+    borderRadius: '1px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
+    backgroundColor: '#efefef',
   },
 };
 
@@ -779,7 +777,7 @@ export const defaultTextinputStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '18.5px 14px',
+    padding: '2px 6px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -789,9 +787,9 @@ export const defaultTextinputStyles: {
   },
   border: {
     ...DEFAULT_BORDER,
-    border: '1px solid #d9d9d9',
-    borderRadius: '4px',
-    borderColor: '#d9d9d9',
+    border: '1px solid #aaa',
+    borderRadius: '1px',
+    borderColor: '#aaa',
     borderWidth: '1px',
   },
   background: {
@@ -804,7 +802,7 @@ export const defaultTextareaStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '18.5px 14px',
+    padding: '2px 6px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -814,8 +812,10 @@ export const defaultTextareaStyles: {
   },
   border: {
     ...DEFAULT_BORDER,
-    border: '1px solid #d9d9d9',
-    borderRadius: '4px',
+    border: '1px solid #aaa',
+    borderRadius: '1px',
+    borderColor: '#aaa',
+    borderWidth: '1px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
@@ -834,10 +834,6 @@ export const defaultCheckboxStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  other: {
-    display: 'inline-block',
-    overflow: 'hidden',
-  },
 };
 
 export const defaultRadiobuttonStyles: {
@@ -851,9 +847,6 @@ export const defaultRadiobuttonStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-  },
-  other: {
-    display: 'inline-block',
   },
 };
 
@@ -894,20 +887,19 @@ export const defaultSelectStyles: {
   size: {
     ...DEFAULT_SIZE,
     width: '200px',
-    height: 'auto',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
   },
   border: {
     ...DEFAULT_BORDER,
+    border: '1px solid #aaa',
+    borderRadius: '1px',
+    borderColor: '#aaa',
+    borderWidth: '1px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-  },
-  other: {
-    display: 'inline-block',
-    position: 'relative',
   },
 };
 
@@ -932,27 +924,23 @@ export const defaultSelectMenuStyles: {
   },
 };
 
-export const defaultSelectItemStyles: {
-  [K in SelectItemControls]: React.CSSProperties;
+export const defaultOptionStyles: {
+  [K in OptionControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '6px 16px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    lineHeight: '1.5',
   },
   border: {
     ...DEFAULT_BORDER,
-    borderWidth: '0px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: '#ffffff',
   },
 };
 
@@ -1132,7 +1120,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   smartWebpage: defaultSmartContainerStyles,
   select: defaultSelectStyles,
   selectMenu: defaultSelectMenuStyles,
-  selectItem: defaultSelectItemStyles,
+  option: defaultOptionStyles,
   map: defaultMapStyles,
   calendar: defaultCalendarStyles,
   clock: defaultClockStyles,
