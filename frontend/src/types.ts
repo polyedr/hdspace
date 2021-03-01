@@ -476,7 +476,6 @@ export type RadiobuttonParameters = BaseElementParams & {
 
 export type SelectParameters = BaseElementParams & {
   value: string;
-  // options: Option[];
   isOpen: boolean;
 };
 

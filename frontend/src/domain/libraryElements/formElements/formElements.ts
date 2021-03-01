@@ -169,12 +169,6 @@ export const select: SelectServerElement = {
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: 'first option',
-    // options: [
-    //   // TODO research why we need options here
-    //   { name: 'First option', value: 'first option' },
-    //   { name: 'Second option', value: 'second option' },
-    //   { name: 'Third option', value: 'third option' },
-    // ],
     isOpen: false,
   },
   styles: {

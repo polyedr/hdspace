@@ -9,7 +9,7 @@ const useStyles = makeComponentStyles('button', {});
 type Props = ButtonRendererProps;
 
 const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
-  const { id, /* isDisabled, */ params, className, groupClass } = props;
+  const { id, params, className, groupClass, isDisabled } = props;
   const { textContent } = params || {};
 
   const classes = useStyles(props);
@@ -27,7 +27,12 @@ const Button = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
       type="button"
       id={id}
       data-ls-id={id}
-      className={cn(className, groupClass, classes.ownStyles)}
+      className={cn(
+        className,
+        groupClass,
+        classes.ownStyles,
+        isDisabled && classes.disabled,
+      )}
       {...eventHandlers}
     >
       {textContent}

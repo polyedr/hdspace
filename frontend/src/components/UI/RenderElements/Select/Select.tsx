@@ -9,14 +9,7 @@ type Props = SelectRendererProps;
 const useStyles = makeComponentStyles('select', {});
 
 const Select = React.forwardRef<HTMLSelectElement, Props>((props, ref) => {
-  const {
-    id,
-    isDisabled,
-    /* params */
-    className,
-    children,
-    groupClass,
-  } = props;
+  const { id, isDisabled, className, children, groupClass } = props;
 
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);

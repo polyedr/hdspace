@@ -9,7 +9,7 @@ type Props = RadioRendererProps;
 const useStyles = makeComponentStyles('radiobutton', {});
 
 const Radiobutton = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
-  const { id, /* name, params, */ isDisabled, className, groupClass } = props;
+  const { id, isDisabled, className, groupClass } = props;
 
   const classes = useStyles(props);
   const [isChecked, setIsChecked] = useState<boolean>(false);

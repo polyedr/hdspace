@@ -754,17 +754,13 @@ export const defaultButtonStyles: {
     ...DEFAULT_SIZE,
   },
   display: {
-    // ...DEFAULT_DISPLAY,
     display: 'inline-block',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
     textAlign: 'center',
-    // color: '#ffffff',
-    // lineHeight: '1.75',
   },
   border: {
-    // ...DEFAULT_BORDER,
     border: '1px solid #aaa',
     borderWidth: 1,
     borderColor: '#aaa',
@@ -773,7 +769,6 @@ export const defaultButtonStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
     backgroundColor: '#efefef',
-    // backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
   },
 };
 
@@ -839,10 +834,6 @@ export const defaultCheckboxStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  // other: {
-  //   display: 'inline-block',
-  //   overflow: 'hidden',
-  // },
 };
 
 export const defaultRadiobuttonStyles: {
@@ -857,9 +848,6 @@ export const defaultRadiobuttonStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  // other: {
-  //   display: 'inline-block',
-  // },
 };
 
 export const defaultLabelStyles: {
@@ -899,7 +887,6 @@ export const defaultSelectStyles: {
   size: {
     ...DEFAULT_SIZE,
     width: '200px',
-    // height: 'auto',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -914,10 +901,6 @@ export const defaultSelectStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  // other: {
-  //   display: 'inline-block',
-  //   position: 'relative',
-  // },
 };
 
 export const defaultSelectMenuStyles: {
@@ -946,22 +929,18 @@ export const defaultOptionStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    // padding: '6px 16px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    // lineHeight: '1.5',
   },
   border: {
     ...DEFAULT_BORDER,
-    // borderWidth: '0px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    // backgroundColor: '#ffffff',
   },
 };
 

@@ -31,8 +31,6 @@ const SelectOptions: React.FC<PropertiesChangeProps<OptionElement>> = ({
   updateParams,
   activeElementId,
 }) => {
-  // const [selectMenu] = useSelector(selectActiveItemChildren('selectMenu'));
-  // const selectOptions = useSelector(selectElementsByIds(selectMenu.children));
   const options = useSelector(selectActiveItemChildren('option'));
   const dispatch = useDispatch();
   const classes = useStyles();

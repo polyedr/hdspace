@@ -15,7 +15,6 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, Props>((props, ref) => {
     isDisabled,
     currentValue,
     className,
-    // ownStyles,
     groupClass,
   } = props;
 

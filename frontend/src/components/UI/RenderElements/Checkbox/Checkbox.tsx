@@ -9,7 +9,7 @@ const useStyles = makeComponentStyles('checkbox', {});
 type Props = CheckboxRendererProps;
 
 const Checkbox = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
-  const { id, /* params, */ isDisabled, className, groupClass } = props;
+  const { id, isDisabled, className, groupClass } = props;
   const eventHandlers = useEventHandlers(props);
 
   const [isChecked, setIsChecked] = useState<boolean>(false);
