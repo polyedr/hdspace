@@ -7,7 +7,7 @@ import { Entity, NNBlockType } from '@Src/types';
 // import MUICheckbox from './MUICheckbox/MUICheckbox';
 // import MUIRadiobutton from './MUIRadiobutton/MUIRadiobutton';
 // import MUIInput from './MUIInput/MUIInput';
-import Select from './Select/Select';
+// import MUISelect from './MUISelect/MUISelect';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
 import Link from './Link/Link';
@@ -18,7 +18,7 @@ import Label from './Label/Label';
 import Dropdown from './Dropdown/Dropdown';
 import Video from './Video/Video';
 import ListItem from './ListItem/ListItem';
-import SelectMenu from './Select/SelectMenu';
+import MUISelectMenu from './MUISelect/MUISelectMenu';
 // import MenuItem from './MenuItem/MenuItem';
 import DropdownMenu from './Dropdown/DropdownMenu';
 import DropdownItem from './Dropdown/DropdownItem';
@@ -32,7 +32,7 @@ import Clock from './Clock/Clock';
 import Undefined from './Undefined/Undefined';
 import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
-import SelectItem from './Select/SelectItem';
+// import MUISelectItem from './MUISelect/MUISelectItem';
 import GridItem from './Grid/GridItem';
 import ElementsGroup from './ElementsGroup/ElementsGroup';
 import Button from './Button/Button';
@@ -40,6 +40,8 @@ import Input from './Input/Input';
 import Textarea from './Textarea/Textarea';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
+import Select from './Select/Select';
+import SelectItem from './SelectItem/SelectItem';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {
@@ -72,7 +74,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   smartForm: withSmartContainer(NNBlockType.FORM),
   smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
   select: Select,
-  selectMenu: SelectMenu,
+  selectMenu: MUISelectMenu,
   selectItem: SelectItem,
   map: Map,
   calendar: Calendar,

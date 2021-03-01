@@ -162,9 +162,15 @@ export type RadioRendererProps = SharedRendererProps & {
 
 export type SelectRendererProps = SharedRendererProps & {
   params: {
-    isOpen: boolean;
+    // isOpen: boolean;
   };
   currentValue: string;
+};
+
+export type SelectItemRendererProps = SharedRendererProps & {
+  params: {
+    name: string;
+  };
 };
 
 export type SelectMenuRendererProps = SharedRendererProps;

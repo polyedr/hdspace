@@ -169,12 +169,12 @@ export const select: SelectServerElement = {
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: 'first option',
-    options: [
-      // TODO research why we need options here
-      { name: 'First option', value: 'first option' },
-      { name: 'Second option', value: 'second option' },
-      { name: 'Third option', value: 'third option' },
-    ],
+    // options: [
+    //   // TODO research why we need options here
+    //   { name: 'First option', value: 'first option' },
+    //   { name: 'Second option', value: 'second option' },
+    //   { name: 'Third option', value: 'third option' },
+    // ],
     isOpen: false,
   },
   styles: {
@@ -182,7 +182,11 @@ export const select: SelectServerElement = {
     ownStyles: {},
   },
   name: 'select',
-  children: [selectMenu],
+  children: [
+    makeSelectItem('First option', 'first option'),
+    makeSelectItem('Second option', 'second option'),
+    makeSelectItem('Third option', 'third option'),
+  ],
 };
 
 export const makeLabel = ({

@@ -162,7 +162,7 @@ export type RadiobuttonServerElement = ServerElement<
 >;
 export type SelectServerElement = ServerElement<
   'select',
-  SelectMenuServerElement[],
+  SelectItemServerElement[],
   SelectParameters
 >;
 export type SelectMenuServerElement = ServerElement<
@@ -487,7 +487,7 @@ export type RadiobuttonParameters = BaseElementParams & {
 
 export type SelectParameters = BaseElementParams & {
   value: string;
-  options: Option[];
+  // options: Option[];
   isOpen: boolean;
 };
 

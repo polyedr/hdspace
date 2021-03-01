@@ -899,21 +899,25 @@ export const defaultSelectStyles: {
   size: {
     ...DEFAULT_SIZE,
     width: '200px',
-    height: 'auto',
+    // height: 'auto',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
   },
   border: {
     ...DEFAULT_BORDER,
+    border: '1px solid #aaa',
+    borderRadius: '1px',
+    borderColor: '#aaa',
+    borderWidth: '1px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  other: {
-    display: 'inline-block',
-    position: 'relative',
-  },
+  // other: {
+  //   display: 'inline-block',
+  //   position: 'relative',
+  // },
 };
 
 export const defaultSelectMenuStyles: {
@@ -942,22 +946,22 @@ export const defaultSelectItemStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '6px 16px',
+    // padding: '6px 16px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
-    lineHeight: '1.5',
+    // lineHeight: '1.5',
   },
   border: {
     ...DEFAULT_BORDER,
-    borderWidth: '0px',
+    // borderWidth: '0px',
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: '#ffffff',
+    // backgroundColor: '#ffffff',
   },
 };
 
