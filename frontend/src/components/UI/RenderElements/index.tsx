@@ -41,7 +41,7 @@ import Textarea from './Textarea/Textarea';
 import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
 import Select from './Select/Select';
-import SelectItem from './SelectItem/SelectItem';
+import Option from './Option/Option';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {
@@ -75,7 +75,7 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
   select: Select,
   selectMenu: MUISelectMenu,
-  selectItem: SelectItem,
+  option: Option,
   map: Map,
   calendar: Calendar,
   clock: Clock,

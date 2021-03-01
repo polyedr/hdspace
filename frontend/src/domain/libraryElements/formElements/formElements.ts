@@ -6,7 +6,7 @@ import {
   ElementGroup,
   LabelServerElement,
   RadiobuttonServerElement,
-  SelectItemServerElement,
+  OptionServerElement,
   SelectMenuServerElement,
   SelectServerElement,
   TextareaServerElement,
@@ -114,14 +114,14 @@ export const radiobutton: RadiobuttonServerElement = {
   children: [],
 };
 
-export const makeSelectItem = (
+export const makeOption = (
   name: string,
   value: string,
-): SelectItemServerElement => ({
-  id: 'selectItem',
+): OptionServerElement => ({
+  id: 'option',
   buoyancy: 0,
-  func_type: 'selectItem',
-  struct_type: 'selectItem',
+  func_type: 'option',
+  struct_type: 'option',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
@@ -130,10 +130,10 @@ export const makeSelectItem = (
     group: ElementGroup.OTHER,
   },
   styles: {
-    classNames: ['selectItem'],
+    classNames: ['option'],
     ownStyles: {},
   },
-  name: 'selectItem',
+  name: 'option',
   children: [],
 });
 
@@ -153,9 +153,9 @@ export const selectMenu: SelectMenuServerElement = {
   },
   name: 'selectMenu',
   children: [
-    makeSelectItem('First option', 'first option'),
-    makeSelectItem('Second option', 'second option'),
-    makeSelectItem('Third option', 'third option'),
+    makeOption('First option', 'first option'),
+    makeOption('Second option', 'second option'),
+    makeOption('Third option', 'third option'),
   ],
 };
 
@@ -183,9 +183,9 @@ export const select: SelectServerElement = {
   },
   name: 'select',
   children: [
-    makeSelectItem('First option', 'first option'),
-    makeSelectItem('Second option', 'second option'),
-    makeSelectItem('Third option', 'third option'),
+    makeOption('First option', 'first option'),
+    makeOption('Second option', 'second option'),
+    makeOption('Third option', 'third option'),
   ],
 };
 

@@ -100,7 +100,7 @@ export const EDITABLE_COMPONENTS_LIST = [
 
 export const NOT_DRAGGABLE_COMPONENTS = [
   'selectMenu',
-  'selectItem',
+  'option',
   'column',
   'gridItem',
 ];

@@ -26,7 +26,7 @@ import {
   paragraphStyleControls,
   radiobuttonStyleControls,
   rootStyleControls,
-  selectItemStyleControls,
+  optionStyleControls,
   selectMenuStyleControls,
   selectStyleControls,
   smartContainerStyleControls,
@@ -739,7 +739,7 @@ type RadiobuttonControls = typeof radiobuttonStyleControls[number];
 type LabelControls = typeof labelStyleControls[number];
 type SelectControls = typeof selectStyleControls[number];
 type SelectMenuControls = typeof selectMenuStyleControls[number];
-type SelectItemControls = typeof selectItemStyleControls[number];
+type OptionControls = typeof optionStyleControls[number];
 
 export const defaultButtonStyles: {
   [K in ButtonControls]: React.CSSProperties;
@@ -941,8 +941,8 @@ export const defaultSelectMenuStyles: {
   },
 };
 
-export const defaultSelectItemStyles: {
-  [K in SelectItemControls]: React.CSSProperties;
+export const defaultOptionStyles: {
+  [K in OptionControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
@@ -1141,7 +1141,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   smartWebpage: defaultSmartContainerStyles,
   select: defaultSelectStyles,
   selectMenu: defaultSelectMenuStyles,
-  selectItem: defaultSelectItemStyles,
+  option: defaultOptionStyles,
   map: defaultMapStyles,
   calendar: defaultCalendarStyles,
   clock: defaultClockStyles,

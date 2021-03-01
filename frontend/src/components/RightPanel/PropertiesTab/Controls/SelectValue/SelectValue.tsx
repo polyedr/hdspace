@@ -20,8 +20,8 @@ const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
     (state: AppReduxState) => selectActiveElementParams(state).value,
   );
 
-  const selectItems = useSelector(selectActiveItemChildren('selectItem'));
-  const optionsValues = selectItems.map((item) => item.parameters.value);
+  const options = useSelector(selectActiveItemChildren('option'));
+  const optionsValues = options.map((item) => item.parameters.value);
 
   // const optionsValues = useSelector((state: AppReduxState) => {
   //   const [selectMenu] = selectActiveItemChildren('selectMenu')(state);

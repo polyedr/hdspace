@@ -199,7 +199,7 @@ export const selectMenuStyleControls = [
   'background',
 ] as const;
 
-export const selectItemStyleControls = [
+export const optionStyleControls = [
   'indents',
   'size',
   'typography',
@@ -391,7 +391,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   selectMenu: [...selectMenuStyleControls, 'layouts'],
-  selectItem: [...selectItemStyleControls, 'layouts'],
+  option: [...optionStyleControls, 'layouts'],
   map: ['mapProps', ...mapStyleControls, 'layouts'],
   calendar: [...calendarStyleControls, 'layouts'],
   clock: [...clockStyleControls, 'layouts'],
@@ -485,7 +485,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   listItem: {},
   image: {},
   select: {
-    selectItem: {
+    option: {
       min: 1,
       max: Infinity,
     },
@@ -496,7 +496,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
-  selectItem: {},
+  option: {},
   map: {},
   calendar: {},
   clock: {},

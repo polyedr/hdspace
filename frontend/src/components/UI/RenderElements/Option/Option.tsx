@@ -1,14 +1,14 @@
 import React from 'react';
-import { SelectItemRendererProps } from '@Components/UI/RenderElements/types';
+import { OptionRendererProps } from '@Components/UI/RenderElements/types';
 import useEventHandlers from '@Components/UI/RenderElements/useEventHandlers';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles('select-item', {});
+const useStyles = makeComponentStyles('option', {});
 
-type Props = SelectItemRendererProps;
+type Props = OptionRendererProps;
 
-const SelectItem = React.forwardRef<HTMLOptionElement, Props>((props, ref) => {
+const Option = React.forwardRef<HTMLOptionElement, Props>((props, ref) => {
   const {
     id,
     params: { name, value },
@@ -39,4 +39,4 @@ const SelectItem = React.forwardRef<HTMLOptionElement, Props>((props, ref) => {
   );
 });
 
-export default SelectItem;
+export default Option;

@@ -119,7 +119,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
       case 'radiobutton':
       case 'select':
       case 'selectMenu':
-      case 'selectItem':
+      case 'option':
       default:
         return {
           params: element.parameters,

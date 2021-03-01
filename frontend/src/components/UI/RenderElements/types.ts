@@ -6,7 +6,7 @@ import {
   IMapProps,
   InputType,
   NNBlockType,
-  SelectItemParameters,
+  OptionParameters,
   VideoSettingsType,
 } from '@Src/types';
 
@@ -168,8 +168,8 @@ export type SelectRendererProps = SharedRendererProps & {
   currentValue: string;
 };
 
-export type SelectItemRendererProps = SharedRendererProps & {
-  params: SelectItemParameters;
+export type OptionRendererProps = SharedRendererProps & {
+  params: OptionParameters;
 };
 
 export type SelectMenuRendererProps = SharedRendererProps;
