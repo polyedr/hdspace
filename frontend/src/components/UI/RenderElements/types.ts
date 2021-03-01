@@ -156,7 +156,7 @@ export type TextareaRendererProps = SharedRendererProps & {
 
 export type RadioRendererProps = SharedRendererProps & {
   params: {
-    showRipple: boolean;
+    // showRipple: boolean;
   };
 };
 

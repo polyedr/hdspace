@@ -857,9 +857,9 @@ export const defaultRadiobuttonStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  other: {
-    display: 'inline-block',
-  },
+  // other: {
+  //   display: 'inline-block',
+  // },
 };
 
 export const defaultLabelStyles: {
