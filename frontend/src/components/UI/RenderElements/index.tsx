@@ -4,7 +4,7 @@ import Column from '@Components/UI/RenderElements/Columns/Column';
 import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
 import { Entity, NNBlockType } from '@Src/types';
 // import MUIButton from './MUIButton/MUIButton';
-import Checkbox from './Checkbox/Checkbox';
+// import MUICheckbox from './MUICheckbox/MUICheckbox';
 import Radiobutton from './Radiobutton/Radiobutton';
 // import MUIInput from './MUIInput/MUIInput';
 import Select from './Select/Select';
@@ -38,6 +38,7 @@ import ElementsGroup from './ElementsGroup/ElementsGroup';
 import Button from './Button/Button';
 import Input from './Input/Input';
 import Textarea from './Textarea/Textarea';
+import Checkbox from './Checkbox/Checkbox';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {

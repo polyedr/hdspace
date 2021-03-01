@@ -134,7 +134,7 @@ export type ButtonRendererProps = SharedRendererProps & {
 
 export type CheckboxRendererProps = SharedRendererProps & {
   params: {
-    showRipple: boolean;
+    // showRipple: boolean;
   };
 };
 

@@ -839,10 +839,10 @@ export const defaultCheckboxStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  other: {
-    display: 'inline-block',
-    overflow: 'hidden',
-  },
+  // other: {
+  //   display: 'inline-block',
+  //   overflow: 'hidden',
+  // },
 };
 
 export const defaultRadiobuttonStyles: {
