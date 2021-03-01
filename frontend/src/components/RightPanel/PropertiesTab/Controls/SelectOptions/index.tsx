@@ -9,7 +9,7 @@ import generateUniqueName from '@Utils/generateUniqueName';
 import { PropertiesChangeProps, SelectItemElement } from '@Src/types';
 import {
   selectActiveItemChildren,
-  selectElementsByIds,
+  // selectElementsByIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import SelectOption from './SelectOption';
@@ -29,9 +29,11 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
   updateParams,
+  activeElementId,
 }) => {
-  const [selectMenu] = useSelector(selectActiveItemChildren('selectMenu'));
-  const selectOptions = useSelector(selectElementsByIds(selectMenu.children));
+  // const [selectMenu] = useSelector(selectActiveItemChildren('selectMenu'));
+  // const selectOptions = useSelector(selectElementsByIds(selectMenu.children));
+  const selectItems = useSelector(selectActiveItemChildren('selectItem'));
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -40,12 +42,12 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
   const handleAddButtonClick = () => {
     const newOptionName = generateUniqueName(
       'New option',
-      selectOptions.map((option) => option.parameters.name || '') || [],
+      selectItems.map((option) => option.parameters.name || '') || [],
     );
     dispatch(
       addChildToElement(
         'selectItem',
-        selectMenu.id,
+        activeElementId,
         {
           name: newOptionName,
           value: newOptionName,
@@ -57,13 +59,13 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
 
   return (
     <div>
-      {selectOptions.map(({ id, parameters }) => (
+      {selectItems.map(({ id, parameters }) => (
         <SelectOption
           key={id}
           parameters={parameters}
           updateParams={updateParams}
           id={id}
-          isLast={selectOptions.length <= 1}
+          isLast={selectItems.length <= 1}
         />
       ))}
 

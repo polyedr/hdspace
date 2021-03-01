@@ -485,9 +485,9 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   listItem: {},
   image: {},
   select: {
-    selectMenu: {
+    selectItem: {
       min: 1,
-      max: 1,
+      max: Infinity,
     },
   },
   selectMenu: {

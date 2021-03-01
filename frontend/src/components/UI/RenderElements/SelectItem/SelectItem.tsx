@@ -11,7 +11,7 @@ type Props = SelectItemRendererProps;
 const SelectItem = React.forwardRef<HTMLOptionElement, Props>((props, ref) => {
   const {
     id,
-    params: { name },
+    params: { name, value },
     isDisabled,
     className,
     groupClass,
@@ -22,7 +22,7 @@ const SelectItem = React.forwardRef<HTMLOptionElement, Props>((props, ref) => {
 
   return (
     <option
-      value={name}
+      value={value}
       id={id}
       ref={ref}
       data-ls-id={id}
