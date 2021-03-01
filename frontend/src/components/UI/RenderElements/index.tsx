@@ -13,7 +13,7 @@ import Paragraph from './Paragraph/Paragraph';
 import Link from './Link/Link';
 import TextBlock from './TextBlock/TextBlock';
 import List from './List/List';
-import Textarea from './Textarea/Textarea';
+// import MUITextarea from './Textarea/Textarea';
 import Label from './Label/Label';
 import Dropdown from './Dropdown/Dropdown';
 import Video from './Video/Video';
@@ -37,6 +37,7 @@ import GridItem from './Grid/GridItem';
 import ElementsGroup from './ElementsGroup/ElementsGroup';
 import Button from './Button/Button';
 import Input from './Input/Input';
+import Textarea from './Textarea/Textarea';
 
 // eslint-disable-next-line import/prefer-default-export
 export const RENDERERS: Record<Entity, React.FC<any>> = {

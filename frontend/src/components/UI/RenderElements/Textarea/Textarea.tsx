@@ -1,156 +1,46 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, TextField } from '@material-ui/core';
-import * as R from 'ramda';
+import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
+import useEventHandlers from '@Components/UI/RenderElements/useEventHandlers';
 import { TextareaRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
 
-const styles = require('../styles.scss');
+type Props = TextareaRendererProps;
 
-const getTextFieldClassStyles = (style: React.CSSProperties) => ({
-  width: style.width,
-  height: style.height,
-});
+const useStyles = makeComponentStyles('textarea', {});
 
-const getTextFieldStyles = (
-  isDisabled: boolean,
-  ownStyles: React.CSSProperties,
-) =>
-  makeStyles({
-    root: {
-      '& fieldset': {
-        border: 0,
-      },
+const Textarea = React.forwardRef<HTMLTextAreaElement, Props>((props, ref) => {
+  const {
+    id,
+    params: { placeholder },
+    isDisabled,
+    currentValue,
+    className,
+    // ownStyles,
+    groupClass,
+  } = props;
 
-      '&.hovered $input': {
-        outline: isDisabled ? '1px solid #949494' : 'none',
-      },
-    },
+  const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
-    ownStyles: {
-      ...getTextFieldClassStyles(ownStyles),
-    },
-
-    input: {},
-  });
-
-const getInputClassStyles = (style: React.CSSProperties) => ({
-  ...R.omit(
-    [
-      'width',
-      'height',
-      'marginTop',
-      'marginRight',
-      'marginBottom',
-      'marginLeft',
-      'textAlign',
-    ],
-    style,
-  ),
-
-  '& textarea': {
-    textAlign: style.textAlign,
-  },
-
-  '&::placeholder': {
-    color: style.color,
-  },
-});
-
-const getInputStyles = (ownStyles: React.CSSProperties) =>
-  makeStyles({
-    root: {
-      width: '100%',
-      height: '100%',
-
-      outlineOffset: '-1px',
-      alignItems: 'flex-start',
-
-      '&:hover': {
-        borderColor: 'rgba(0, 0, 0, 0.87)',
-      },
-
-      '&.Mui-focused, &.Mui-focused:hover': {
-        borderColor: '#1890ff',
-        boxShadow: 'inset 0px 0px 0 1px #1890ff',
-      },
-
-      '& textarea': {
-        width: '100%',
-        height: '100%',
-      },
-    },
-
-    ownStyles: {
-      ...getInputClassStyles(ownStyles),
-    },
-
-    input: {},
-  });
-
-const Textarea: React.FC<TextareaRendererProps> = React.forwardRef(
-  (props, ref) => {
-    const {
-      id,
-      params,
-      isDisabled,
-      currentValue,
-      className,
-      ownStyles,
-      groupClass,
-    } = props;
-    const { placeholder } = params;
-
-    const eventHandlers = useEventHandlers(props);
-
-    const textFieldClasses = getTextFieldStyles(isDisabled, ownStyles)();
-    const inputClasses = getInputStyles(ownStyles)();
-
-    const ownInlineStyles = R.pick(
-      ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-      ownStyles,
-    );
-    const inlineStyles = {
-      ...ownInlineStyles,
-      transition: 'none',
-    };
-
-    const InputProps = {
-      readOnly: isDisabled,
-      className: cn(
-        isDisabled && styles.disabled,
-        inputClasses.root,
+  return (
+    <textarea
+      ref={ref}
+      id={id}
+      data-ls-id={id}
+      rows={4}
+      readOnly={isDisabled}
+      placeholder={placeholder}
+      className={cn(
+        className,
         groupClass,
-        inputClasses.ownStyles,
-      ),
-    };
-
-    return (
-      <TextField
-        ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
-        multiline
-        rows={4}
-        placeholder={placeholder}
-        variant="outlined"
-        className={cn(
-          className,
-          isDisabled && styles.disabled,
-          textFieldClasses.root,
-          groupClass,
-          textFieldClasses.ownStyles,
-        )}
-        style={inlineStyles}
-        InputProps={InputProps}
-        value={currentValue}
-        {...eventHandlers}
-      />
-    );
-  },
-);
+        classes.ownStyles,
+        isDisabled && classes.disabled,
+      )}
+      value={currentValue}
+      {...eventHandlers}
+      style={{ resize: 'none' }}
+    />
+  );
+});
 
 export default Textarea;
