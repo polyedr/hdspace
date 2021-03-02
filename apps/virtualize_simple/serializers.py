@@ -4246,3 +4246,1326 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                             )
 
         return serializer_node
+
+
+class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+    children = RecursiveField(required=False, allow_null=True, many=True)
+    container = serializers.PrimaryKeyRelatedField(source="node.id", read_only=True)
+    parent_id = serializers.IntegerField()
+
+    class Meta:
+        model = ScenarioElement
+        fields = (
+            "id",
+            "container",
+            "name",
+            "children",
+            "parent_id",
+            "struct_type",
+            "func_type",
+            "direction",
+            "buoyancy",
+            "image",
+            "parameters",
+            "styles",
+        )
+
+        extra_kwargs = {
+            "struct_type": {"read_only": True},
+            "func_type": {"read_only": True},
+        }
+
+    def create(self, validated_data):
+        root_element_data = {
+            "struct_type": "container",
+            "func_type": "undefined",
+            "parameters": {},
+            "styles": {},
+        }
+
+        # Pre-Root element assignment
+        element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
+
+        # Extract an appropriate flag value to recognize block as header, footer, form or layout
+        # Region dataset has some starting value
+        region_dataset = "footers"
+
+        # Create the root element mptt for the containers generated start
+        # print(validated_data)
+        # input()
+        # print(root_element_data)
+        fname = ""
+        imgpath = ""
+        if validated_data.get("image"):
+            serializer_node = ScenarioElement.objects.create(
+                parent=element_root_pre,
+                image=validated_data["image"],
+                **root_element_data
+            )
+            fname = str(validated_data["image"])
+            imgpath = MEDIA_ROOT + "/uploads/" + fname
+        else:
+            serializer_node = ScenarioElement.objects.create(
+                parent=element_root_pre, **root_element_data
+            )
+        # Create the root element mptt end
+        '''
+        # Create the opencv recognition start
+        image_dict = {}
+        result_regions = {}
+
+        text = False
+        watch = True
+
+
+        # Read an image with OpenCV start
+        image_opencv_input = cv2.imread(imgpath)
+        image_original = copy.deepcopy(image_opencv_input)
+        # detect height and width of the image
+        img_height, img_width, img_channels = image_opencv_input.shape
+        # print("width:  ", img_width)
+        # print("height: ", img_height)
+        # print("channel:", img_channels)
+        # Read an image with OpenCV end
+
+        # Detect the font-size with tesseract for the whole image start
+        whole_img = cv2.cvtColor(image_opencv_input, cv2.COLOR_BGR2GRAY)
+        result = pytesseract.image_to_boxes(whole_img)
+        lines = result.strip().split("\n")
+        font_size = []
+
+        for line in lines:
+            chars = line.split(" ")
+            try:
+                font_size.append(float(chars[4]) - float(chars[2]))
+            except Exception:
+                font_size.append(12.0)  # Default font-size value is 12px
+        font_size_img = int(median(font_size) * 1.7)  # Font-size value of the image
+        # Detect the font-size with tesseract for the whole image end
+
+        # Get(take the whole image) the dominant colour for the parent container
+        bcolour_container_value = "255,255,255,0"
+        domcolour_container = get_dominant_colour(image_opencv_input)
+        domcolour_container.append(1)
+        bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
+
+        # Detect text contours and rectangles on image start
+        text_contours = []
+        rect_contours = []
+        # Detect text regions
+        text_contours = run_text_detection(image_opencv_input, text=False)
+
+        # text_contours1 = run_text_detection(image_opencv_input, text=True)
+        #
+        # print(text_contours1)
+        # print("length", len(text_contours), len(text_contours1))
+        #
+        # input()
+        # Detect rect regions
+        rect_contours = get_rect_contours(image_opencv_input)
+
+        for text_contour in text_contours:
+            # Remove untypically wide text blocks
+            width2 = text_contour[3]
+            if width2 > (font_size_img * 3):
+                text_contours.remove(text_contour)
+
+        for rect_contour in rect_contours:
+            # Remove untypically large rect blocks
+            width2 = rect_contour[2]
+            height2 = rect_contour[3]
+            if (width2 * height2) > (img_height * img_width) * 0.75:
+                rect_contours.remove(rect_contour)
+
+        # Save all detected regions into dictionary
+        result = {"text": text_contours, "rect": rect_contours}
+        # Detect text contours and rectangles on image end
+
+        window_name1 = "image_opencv_text"
+
+        # Create the opencv recognition end
+        '''
+
+        #
+        #
+        # Here is the divergency point between images and footers
+
+        # Read the region annotation from parameters
+        fdict = {}
+
+        fname = element_root_pre.name
+        fsize = '0'
+        fnamesize = fname + fsize
+
+        fdict[fnamesize] = {
+            "filename": fname,
+            "size": fsize,
+            "regions": [],
+            "file_attributes": {},
+        }
+
+        # Define root canvas width and height, based on layout parameter
+        # Mobile devices
+        if element_root_pre.parameters["layouts"] == "mobile":
+            img_height, img_width= 736, 320
+
+        # Tablet devices
+        elif element_root_pre.parameters["layouts"] == "tablet":
+            img_height, img_width= 1024, 768
+
+        # Desktop devices
+        elif element_root_pre.parameters["layouts"] == "desktop":
+            img_height, img_width= 1280, 800
+
+        # Other devices
+        else:
+            img_height, img_width= 1280, 800
+
+        # This initialises an RGB-image that is just black (with two instances)
+        image_opencv_input = np.zeros((img_height, img_width, 3), np.uint8)
+        image_original = np.zeros((img_height, img_width, 3), np.uint8)
+
+        # Go through all the input elements
+        # Construct fdict.
+        # Top level children should be extracted first. Later this should be improved to process nested components.
+        print(element_root_pre)
+        print(element_root_pre.name)
+        children = element_root_pre.get_children()
+        for child in children:
+            if (child.parameters):
+                print(child, child.parameters)
+                print(child, child.parameters["layouts"], child.parameters["freeCanvas"])
+                # Fill the attributes dictionary
+                attributes_dict = {
+                    "shape_attributes": {
+                        "name": "rect",
+                        "x": child.parameters["freeCanvas"]["left"],
+                        "y": child.parameters["freeCanvas"]["top"],
+                        "width": child.parameters["freeCanvas"]["width"],
+                        "height": child.parameters["freeCanvas"]["height"],
+                    },
+                    "region_attributes": {"HTML element": child.struct_type},
+                }
+
+                fdict[fnamesize]["regions"].append(attributes_dict)
+
+        if fdict:
+            # Assembling start
+            # for filenamesize in fdict:
+            # os.chdir(VIA_ANNOTATION_DIR)
+            # print("Current Working Directory ", os.getcwd())
+
+            # detect the size of the whole image
+            # fsize = os.path.getsize(fname)
+
+            # Show text contours on image start
+            window_name1 = "image_opencv_text"
+
+            for idx, region in enumerate(fdict[fnamesize]["regions"]):
+                x1 = int(region["shape_attributes"]["x"])
+                y1 = int(region["shape_attributes"]["y"])
+                x2 = int(x1 + region["shape_attributes"]["width"])
+                y2 = int(y1 + region["shape_attributes"]["height"])
+
+            #     cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
+            # cv2.imshow(window_name1, image_opencv_input)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+
+            # Detect the size of the visible elements region
+            # detect the size of the visible elements
+            # first do this based on annotated regions
+            # go through all the regions
+            # find xmin, xmax, ymin, ymax
+            # compare this rectangle of visible elements with whole image
+            # crop if the distance is more than 20px
+            # extend borders if the distance is less than 20px
+            min_x1 = img_width
+            min_y1 = img_height
+            max_x2 = 0
+            max_y2 = 0
+            # for idx, region in enumerate(fdict[filenamesize]["regions"]):
+            for idx, region in enumerate(fdict[fnamesize]["regions"]):
+                x1 = int(region["shape_attributes"]["x"])
+                y1 = int(region["shape_attributes"]["y"])
+                x2 = int(x1 + region["shape_attributes"]["width"])
+                y2 = int(y1 + region["shape_attributes"]["height"])
+
+                if min_x1 > x1:
+                    min_x1 = x1
+
+                if min_y1 > y1:
+                    min_y1 = y1
+
+                if max_x2 < x2:
+                    max_x2 = x2
+
+                if max_y2 < y2:
+                    max_y2 = y2
+
+            # cv2.rectangle(
+            #     image_opencv_input, (min_x1, min_y1), (max_x2, max_y2), (255, 255, 0), 1
+            # )
+            # cv2.imshow(window_name1, image_opencv_input)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
+
+            # Find the centers of the elements
+            # for idx, region in enumerate(fdict[filenamesize]["regions"]):
+            for idx, region in enumerate(fdict[fnamesize]["regions"]):
+                x1 = int(region["shape_attributes"]["x"])
+                y1 = int(region["shape_attributes"]["y"])
+                x2 = int(x1 + region["shape_attributes"]["width"])
+                y2 = int(y1 + region["shape_attributes"]["height"])
+
+                # Extend shape_attributes with average values for centers
+                x_average = int((x1 + x2) / 2)
+                y_average = int((y1 + y2) / 2)
+                region["shape_attributes"]["x_average"] = x_average
+                region["shape_attributes"]["y_average"] = y_average
+
+            # cv2.imshow(window_name1, image_opencv_input)
+            # cv2.waitKey(0)
+
+            # Calculation of the excluded indices to remove overlapped elements start
+            # Second, calculate the non-text blocks overlap
+            excluded_elements = []
+            # for rect1 in fdict[filenamesize]["regions"]:
+            for rect1 in fdict[fnamesize]["regions"]:
+                # for rect2 in fdict[filenamesize]["regions"]:
+                for rect2 in fdict[fnamesize]["regions"]:
+                    is_menu = (
+                        rect1["region_attributes"]["HTML element"] == "menu"
+                    ) or (rect2["region_attributes"]["HTML element"] == "menu")
+                    if (rect1 != rect2) and not is_menu:
+                        x1 = rect1["shape_attributes"]["x"]
+                        y1 = rect1["shape_attributes"]["y"]
+                        x2 = (
+                            rect1["shape_attributes"]["x"]
+                            + rect1["shape_attributes"]["width"]
+                        )
+                        y2 = (
+                            rect1["shape_attributes"]["y"]
+                            + rect1["shape_attributes"]["height"]
+                        )
+                        x3 = rect2["shape_attributes"]["x"]
+                        y3 = rect2["shape_attributes"]["y"]
+                        x4 = (
+                            rect2["shape_attributes"]["x"]
+                            + rect2["shape_attributes"]["width"]
+                        )
+                        y4 = (
+                            rect2["shape_attributes"]["y"]
+                            + rect2["shape_attributes"]["height"]
+                        )
+
+                        # Borders of the rectangles overlapped area
+                        left = max(x1, x3)
+                        bottom = max(y1, y3)
+                        right = min(x2, x4)
+                        top = min(y2, y4)
+                        # Sizes of the rectangles overlapped area
+                        width = right - left
+                        height = top - bottom
+
+                        # The first rectangle square
+                        width1, height1 = x2 - x1, y2 - y1
+
+                        # The second rectangle square
+                        width2, height2 = x4 - x3, y4 - y3
+
+                        # Check if width, height of the overlapped area less or equal 0
+                        if not (width <= 0 or height <= 0):
+                            # If the square > 0, calculate the squares of the 3 rectangles
+                            square = width * height
+                            square1 = width1 * height1
+                            square2 = width2 * height2
+                            #
+                            # print(square, square1, square2)
+                            # input()
+
+                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
+                                square > square2 * SQUARES_OVERLAP_THRESHOLD
+                            ):
+                                if square1 < square2:
+                                    excluded_elements.append(rect1)
+                                else:
+                                    excluded_elements.append(rect2)
+                            elif square > square1 * SQUARES_OVERLAP_THRESHOLD:
+                                excluded_elements.append(rect2)
+                            elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
+                                excluded_elements.append(rect1)
+
+            # Remove some items using list comprehension
+            # fdict[filenamesize]["regions"] = [
+            fdict[fnamesize]["regions"] = [
+                ele
+                # for ele in fdict[filenamesize]["regions"]
+                for ele in fdict[fnamesize]["regions"]
+                if ele not in excluded_elements
+            ]
+            # Calculation of the excluded indices to remove overlapped elements end
+
+            # find all the clusters based on cluster-making elements
+            # (inputs, selects, buttons, free text blocks, maybe large images)
+            # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
+            clusters = []
+            # Run the ternary assembling algorithm
+            # print(min_x1, min_y1, max_x2, max_y2)
+
+            # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction start
+            #
+            #
+            # Vertical clusters input-like with text labels detection
+            # The first position is input or select, and the second position is text
+            # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
+            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
+                if recognized_element["region_attributes"]["HTML element"] in {
+                    "input",
+                    "select",
+                    "button",
+                }:
+                    # Assign the textContent values after grouping with text
+                    # Vertical group when input or select element has another text element
+                    # at the distance 0.5 from its width
+                    # Horizontal group when input or select or text are placed horizontally
+
+                    # Loop through all the elements recognized
+                    # Find all the close-by elements if one of them input (1) or select (4),
+                    # and second one is the text (3)
+                    # Horizontal overlap 75% of the element with minimal width
+                    # Vertical max +- 50% for input/select width,
+                    # middle of the text element should be within this interval
+
+                    # First rectangle coordinates
+                    x1 = int(recognized_element["shape_attributes"]["x"])
+                    y1 = int(recognized_element["shape_attributes"]["y"])
+                    x2 = int(x1 + recognized_element["shape_attributes"]["width"])
+                    y2 = int(y1 + recognized_element["shape_attributes"]["height"])
+
+                    # First rectangle width
+                    width_elem = recognized_element["shape_attributes"]["width"]
+                    height_elem = recognized_element["shape_attributes"]["height"]
+
+                    # Add the initial element to the cluster
+                    cluster = ClusterClass(
+                        x1, y1, x2, y2, elements=[recognized_element]
+                    )
+                    # Set some flags for this novel cluster
+                    cluster.types = "fcluster"
+                    cluster.is_elements_only = True
+                    for idx1, recognized_element1 in enumerate(
+                        fdict[fnamesize]["regions"]
+                    ):
+                        if recognized_element1["region_attributes"]["HTML element"] in {
+                            "text"
+                        }:
+                            # Check if the elements were not assigned to the clusters before
+                            if (
+                                (recognized_element1 not in clr.elements)
+                                for clr in clusters
+                            ):
+
+                                # Second rectangle coordinates
+                                x11 = int(recognized_element1["shape_attributes"]["x"])
+                                y11 = int(recognized_element1["shape_attributes"]["y"])
+                                x21 = int(
+                                    x11
+                                    + recognized_element1["shape_attributes"]["width"]
+                                )
+                                y21 = int(
+                                    y11
+                                    + recognized_element1["shape_attributes"]["height"]
+                                )
+
+                                # Second rectangle width
+                                width_elem1 = x21 - x11
+                                height_elem1 = y21 - y11
+
+                                # Borders of the overlapped area
+                                left = max(x1, x11)
+                                bottom = max(y1, y11)
+                                right = min(x2, x21)
+                                top = min(y2, y21)
+
+                                # Size of the overlapped area
+                                horizontal_overlap = right - left
+                                vertical_overlap = top - bottom
+
+                                # Check if the vertical distance between roi and roi1 is sufficient
+                                # Middle of the input or select element
+                                mid_input = (y1 + y2) / 2
+
+                                # Middle of the text element
+                                mid_text = (y11 + y21) / 2
+
+                                border_bottom = y1 - (0.6 * height_elem)
+                                border_top = y2 + (0.4 * height_elem)
+
+                                # Check if the text and input elements are close to each other by vertical direction
+                                if (border_bottom < mid_text < mid_input) or (
+                                    mid_input < mid_text < border_top
+                                ):
+                                    # Assign the results to the vertical_group
+                                    # Check if the horizontal overlap between text label and input is sufficient
+                                    if (
+                                        horizontal_overlap
+                                        > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD
+                                        * width_elem1
+                                    ):
+                                        # Fill the cluster
+                                        # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
+                                        # max(y2, y21), elements = [recognized_element, recognized_element1])
+                                        # Update the cluster with new text element
+                                        cluster.elements.append(recognized_element1)
+
+                                        # Set some flags for this vertical fcluster
+                                        # The cluster contains more than one element
+                                        cluster.is_solid = False
+                                        # The cluster direction is vertical
+                                        cluster.direction = 0
+                                        cluster.origin_direction = 0
+
+                                        cluster.x1 = min(cluster.x1, x11)
+                                        cluster.y1 = min(cluster.y1, y11)
+                                        cluster.x2 = max(cluster.x2, x21)
+                                        cluster.y2 = max(cluster.y2, y21)
+
+                                        # Find the center of cluster
+                                        center_x = (cluster.x1 + cluster.x2) / 2
+                                        center_y = (cluster.y1 + cluster.y2) / 2
+                                        cluster.center = center_x, center_y
+
+                                        # Update the clusters list
+                                        clusters.append(cluster)
+
+                    # cv2.rectangle(
+                    #     image_opencv_input,
+                    #     (cluster.x1, cluster.y1),
+                    #     (cluster.x2, cluster.y2),
+                    #     (0, 0, 255),
+                    #     1,
+                    # )
+                    # cv2.imshow(window_name1, image_opencv_input)
+                    # cv2.waitKey(0)
+
+            # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction end
+
+            # Clusters checkboxes with text labels direction start
+            #
+            #
+            # Horizontal clusters checkbox-like with text labels detection
+            # The first position is a checkbox or radiobutton or even the small image,
+            # and the second position is text
+            # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
+            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
+                if recognized_element["region_attributes"]["HTML element"] in {
+                    "checkbox",
+                    "radiobutton",
+                    "image",
+                }:
+                    # Horizontal group when checkbox or radiobutton element has another text element
+                    # at the distance 0.8 from its width
+
+                    # Loop through all the elements recognized
+                    # Find all the close-by elements if one of them is a checkbox or radiobutton,
+                    # and second one is the text (3)
+                    # Vertical overlap 75% of the element with minimal width
+                    # Horizontal min/max +- 80% for checkbox/radiobutton width,
+                    # start/end of the text element should be within this interval
+
+                    # First rectangle coordinates
+                    x1 = int(recognized_element["shape_attributes"]["x"])
+                    y1 = int(recognized_element["shape_attributes"]["y"])
+                    x2 = int(x1 + recognized_element["shape_attributes"]["width"])
+                    y2 = int(y1 + recognized_element["shape_attributes"]["height"])
+
+                    # First rectangle width
+                    width_elem = recognized_element["shape_attributes"]["width"]
+                    height_elem = recognized_element["shape_attributes"]["height"]
+
+                    # Add the initial element to the cluster
+                    cluster = ClusterClass(
+                        x1, y1, x2, y2, elements=[recognized_element]
+                    )
+                    # Set some flags for this novel cluster
+                    cluster.types = "fcluster"
+                    cluster.is_elements_only = True
+                    for idx1, recognized_element1 in enumerate(
+                        fdict[fnamesize]["regions"]
+                    ):
+                        if recognized_element1["region_attributes"]["HTML element"] in {
+                            "text"
+                        }:
+                            # Check if the elements were not assigned to the clusters before
+                            if (
+                                (recognized_element1 not in clr.elements)
+                                for clr in clusters
+                            ):
+
+                                # Second rectangle coordinates
+                                x11 = int(recognized_element1["shape_attributes"]["x"])
+                                y11 = int(recognized_element1["shape_attributes"]["y"])
+                                x21 = int(
+                                    x11
+                                    + recognized_element1["shape_attributes"]["width"]
+                                )
+                                y21 = int(
+                                    y11
+                                    + recognized_element1["shape_attributes"]["height"]
+                                )
+
+                                # Second rectangle width
+                                width_elem1 = x21 - x11
+                                height_elem1 = y21 - y11
+
+                                # Borders of the overlapped area
+                                left = max(x1, x11)
+                                bottom = max(y1, y11)
+                                right = min(x2, x21)
+                                top = min(y2, y21)
+
+                                # Size of the overlapped area
+                                horizontal_overlap = right - left
+                                vertical_overlap = top - bottom
+
+                                # Middle of the checkbox or radiobutton element
+                                mid_checkbox = (x1 + x2) / 2
+
+                                # Borders of the text element
+                                left_text = x11
+                                right_text = x21
+
+                                border_left = x1 - (0.6 * height_elem)
+                                border_right = x2 + (0.8 * height_elem)
+
+                                # Check if the text and checkbox elements are close to each other
+                                # by horizontal direction
+                                if (border_left < right_text < mid_checkbox) or (
+                                    mid_checkbox < left_text < border_right
+                                ):
+                                    # Assign the results to the horizontal group
+                                    # Check if the vertical overlap between text label and input is sufficient
+                                    if (
+                                        vertical_overlap
+                                        > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD
+                                        * height_elem1
+                                    ):
+                                        # Fill the cluster
+                                        # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
+                                        # max(y2, y21), elements = [recognized_element, recognized_element1])
+                                        # Update the cluster with new text element
+                                        cluster.elements.append(recognized_element1)
+
+                                        # Set some flags for this horizontal fcluster
+                                        # The cluster contains more than one element
+                                        cluster.is_solid = False
+                                        # The cluster direction is horizontal
+                                        cluster.direction = 1
+                                        cluster.origin_direction = 1
+
+                                        cluster.x1 = min(cluster.x1, x11)
+                                        cluster.y1 = min(cluster.y1, y11)
+                                        cluster.x2 = max(cluster.x2, x21)
+                                        cluster.y2 = max(cluster.y2, y21)
+
+                                        # Find the center of cluster
+                                        center_x = (cluster.x1 + cluster.x2) / 2
+                                        center_y = (cluster.y1 + cluster.y2) / 2
+                                        cluster.center = center_x, center_y
+
+                                        # Update the clusters list
+                                        clusters.append(cluster)
+
+            #
+            #
+            # Clusters checkboxes with text labels direction end
+
+            # Place all the free elements for the 1-element clusters
+            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
+                # First rectangle coordinates
+                x1 = int(recognized_element["shape_attributes"]["x"])
+                y1 = int(recognized_element["shape_attributes"]["y"])
+                x2 = int(x1 + recognized_element["shape_attributes"]["width"])
+                y2 = int(y1 + recognized_element["shape_attributes"]["height"])
+
+                element_unique = True
+                for cluster in clusters:
+                    if recognized_element in cluster.elements:
+                        element_unique = False
+                if element_unique is True:
+                    # Add the element to the cluster
+                    cluster = ClusterClass(
+                        x1, y1, x2, y2, elements=[recognized_element]
+                    )
+
+                    # Set some flags for this novel cluster
+                    cluster.types = "fcluster"
+                    cluster.is_elements_only = True
+                    # The cluster contains only one element
+                    cluster.is_solid = True
+                    # The cluster direction is unseparable
+                    cluster.direction = 2
+                    cluster.origin_direction = 2
+
+                    # Find the center of cluster
+                    center_x = (cluster.x1 + cluster.x2) / 2
+                    center_y = (cluster.y1 + cluster.y2) / 2
+                    cluster.center = center_x, center_y
+
+                    # Update the clusters list
+                    clusters.append(cluster)
+
+            if region_dataset in ["headers", "footers", "webpages"]:
+                # Clear the array of dbclusters
+                dbclusters = []
+                # DBSCAN clustering start
+                # #############################################################################
+                # Create numpy centers array clusters-based start
+                centers_array = []
+                for cluster in clusters:
+                    centers_array.append(cluster.center)
+
+                centers = np.array(centers_array)
+                # print("centers=", centers)
+                # Create numpy centers array clusters-based end
+
+                # Compute DBSCAN for the artificial dataset with 750 samples with data centers
+                X, labels_true = make_blobs(
+                    n_samples=750, centers=centers, cluster_std=0.4, random_state=0
+                )
+
+                # Concatenate centers and X next after the make_blobs function
+                centers_closest_nodes = []
+                for center in centers:
+                    # Find the closest element from X
+                    # Map the array of centers with array X
+                    centers_closest_nodes.append(closest_node(center, X))
+
+                # Fit transform X
+                X = StandardScaler().fit_transform(X)
+
+                if region_dataset in ["footers", "webpages"]:
+                    db = clustermethod.DBSCAN(eps=0.4).fit(X)
+                    # print("db=", db, X, db.labels_, len(X), len(db.labels_))
+                    # input()
+
+                if region_dataset == "headers":
+                    db = clustermethod.DBSCAN(eps=0.55).fit(X)
+
+                core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+                core_samples_mask[db.core_sample_indices_] = True
+                labels = db.labels_
+
+                # Number of dbclusters in labels, ignoring noise if present.
+                n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+                # DBSCAN.labels are included to fclusters start
+                for cluster in clusters:
+                    center = cluster.center
+                    # DB clusters
+                    # cv2.rectangle(
+                    #     image_opencv_input,
+                    #     (int(center[0]), int(center[1])),
+                    #     (int(center[0]) + 10, int(center[1]) + 10),
+                    #     (0, 0, 255),
+                    #     1,
+                    # )
+
+                    for center_closest_node in centers_closest_nodes:
+                        # Closest node comparison
+                        if (center[0] == center_closest_node[1][0]) and (
+                            center[1] == center_closest_node[1][1]
+                        ):
+                            cluster.X = center_closest_node[2]
+                            idx = cluster.idx = center_closest_node[0]
+                            cluster.label = labels[idx]
+                #
+                # cv2.imshow(window_name1, image_opencv_input)
+                # cv2.waitKey(0)
+                # DBSCAN.labels are included to fclusters end
+
+                # Create dbcluster as a class object
+                # Assign elements to dbclusters based on centers information
+                for n_cluster in range(n_clusters_):
+                    # Collect all the elements related to some dbcluster to this array
+                    cluster_sources = []
+                    dbcluster = ClusterClass(x1=9999, y1=9999, x2=0, y2=0, elements=[])
+                    # Set some flags to the dbcluster
+                    dbcluster.types = "dbcluster"
+                    dbcluster.is_elements_only = False
+                    dbcluster.processing = (
+                        "unsplitted"  # check if the ternary algorithm was applied
+                    )
+                    # Check the directiom with some function
+                    # dbcluster.direction = ?
+                    # Check is_solid parameter later
+                    # is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
+                    # clusters-based solution start
+                    for cluster in clusters:
+                        # Cluster number label
+                        label = cluster.label
+                        if label == n_cluster:
+                            cluster_sources.append(cluster)
+                            # Add flusters to dbclusters
+                            cluster.parent = dbcluster
+
+                    for cluster_source in cluster_sources:
+                        # Construct the dbcluster object
+                        # Find min max x1 y1 x2 y2
+                        # dbcluster.elements.append(cluster_source)
+                        dbcluster.x1 = min(dbcluster.x1, cluster_source.x1)
+                        dbcluster.y1 = min(dbcluster.y1, cluster_source.y1)
+                        dbcluster.x2 = max(dbcluster.x2, cluster_source.x2)
+                        dbcluster.y2 = max(dbcluster.y2, cluster_source.y2)
+                    # clusters-based solution end
+
+                    dbclusters.append(dbcluster)
+
+            try:
+                # Replace clusters for dbclusters if possible
+                fclusters = copy.copy(clusters)
+                clusters = dbclusters
+            except Exception:
+                pass
+            finally:
+                pass
+
+            # Ternary assembling algorithm run after the clusters start
+            # Define the root block
+            root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
+            root_block.types = "ccluster"
+
+            x_layout_intervals = []
+            y_layout_intervals = []
+            for cluster in clusters:
+                x_average = int((cluster.x1 + cluster.x2) / 2)
+                y_average = int((cluster.y1 + cluster.y2) / 2)
+                x_layout_intervals.append([cluster.x1, cluster.x2])
+                y_layout_intervals.append([cluster.y1, cluster.y2])
+
+            # print(x_layout_intervals)
+            ob1_x = Partition()
+            ob1_x_merged = ob1_x.merge(x_layout_intervals)
+            # print("ob1_x_merged", ob1_x_merged, type(ob1_x_merged), len(ob1_x_merged))
+            #
+            # print(y_layout_intervals)
+            ob1_y = Partition()
+            ob1_y_merged = ob1_y.merge(y_layout_intervals)
+            # print("ob1_y_merged", ob1_y_merged, type(ob1_y_merged), len(ob1_y_merged))
+
+            # Choose if the block horizontal vertical or final
+            # horizontal
+            if len(ob1_x_merged) >= len(ob1_y_merged):
+                root_block.direction = 0
+
+            # vertiical
+            if len(ob1_x_merged) < len(ob1_y_merged):
+                root_block.direction = 1
+
+            # horizontal y length 1 case
+            if len(ob1_x_merged) >= len(ob1_y_merged) and (len(ob1_y_merged) == 1):
+                root_block.direction = 1
+
+            # vertiical x length 1 case
+            if len(ob1_x_merged) < len(ob1_y_merged) and (len(ob1_x_merged) == 1):
+                root_block.direction = 0
+
+            # final
+            if (len(ob1_x_merged) == 1) and (len(ob1_y_merged) == 1):
+                root_block.direction = 2
+
+            # Prepare the copy of image as overlay before rectangles calculations
+            overlay = image_opencv_input.copy()
+            # Assign the children based on direction
+            if root_block.direction == 0:
+                for interval in ob1_y_merged:
+                    ccluster = ClusterClass(
+                        min_x1, interval[0], max_x2, interval[1], parent=root_block
+                    )
+                    ccluster.types = "ccluster"
+                    # cv2.rectangle(
+                    #     image_opencv_input,
+                    #     (min_x1, interval[0]),
+                    #     (max_x2, interval[1]),
+                    #     (70, 50, 135),
+                    #     -1,
+                    # )
+
+            if root_block.direction == 1:
+                for interval in ob1_x_merged:
+                    ccluster = ClusterClass(
+                        interval[0], min_y1, interval[1], max_y2, parent=root_block
+                    )
+                    ccluster.types = "ccluster"
+                    # cv2.rectangle(
+                    #     image_opencv_input,
+                    #     (interval[0], min_y1),
+                    #     (interval[1], max_y2),
+                    #     (20, 50, 107),
+                    #     -1,
+                    # )
+
+            if root_block.direction == 2:
+                for interval_x in ob1_x_merged:
+                    for interval_y in ob1_y_merged:
+                        ccluster = ClusterClass(
+                            interval_x[0],
+                            interval_y[0],
+                            interval_x[1],
+                            interval_y[1],
+                            parent=root_block,
+                        )
+                        ccluster.types = "ccluster"
+
+            # Go through all the blocks obtained
+            for pre, fill, node in RenderTree(root_block):
+                if node != root_block:
+                    # print(node.name)
+                    # Split each block
+                    blocks_split(
+                        node, window_name1, image_opencv_input, overlay, clusters
+                    )
+
+            # Go through all the blocks obtained after the ternary algorithm
+            # Correct the direction of the fclusters
+            for pre, fill, node in RenderTree(root_block):
+                if node.types == "fcluster":
+                    if len(node.elements) > 1:
+                        node.direction = node.origin_direction
+
+            # Go through all the blocks obtained after the ternary algorithm
+            # Correct the dbclusters splitting
+            # This part of code should split complex dbclusters and re-arrange their child nodes to descendants
+            for pre, fill, node in RenderTree(root_block):
+                if node.types == "dbcluster":
+                    if len(node.children) > 1:
+                        dbcluster_split(node, fclusters)
+
+            # Ternary assembling algorithm run after the clusters end
+
+            # Create directtory to save HTML for some image processed
+            SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
+            find_or_create_dir(SAVE_DIR)
+
+            os.chdir(SAVE_DIR)
+
+            root = ET.Element("html", version="5.0")
+            # Передайте родительский узел, имя дочернего узла,
+            # и любое количество дополнительных атрибутов
+            html_head = ET.SubElement(root, "head")
+            html_title = ET.SubElement(root, "title")
+            html_title.text = "Title, " + fname
+            html_body = ET.SubElement(root, "body")
+
+            # Define the outer container parameters
+            outer_div = ET.SubElement(html_body, "div")
+            styles = {}
+            parameters = {}
+            styles["background-color"] = "white"
+            styles["height"] = str(img_height) + "px"
+            styles["width"] = str(img_width) + "px"
+            str_styles = "; ".join(
+                "{}:{}".format(key, val) for key, val in styles.items()
+            )
+            outer_div.set("style", str_styles)
+            # print(1277, styles, str_styles)
+            # Define the export node
+            outer_div_node = ScenarioElement.objects.create(
+                parent=serializer_node,
+                struct_type="container",
+                parameters=parameters,
+                styles=styles,
+                buoyancy=0,
+            )
+
+            for pre, fill, node in RenderTree(root_block):
+                # if(node.elements):
+                #     print("elements: ", len(node.elements))
+                #     input()
+                styles = {}
+                parameters = {}
+
+                # Define the node dimensions start
+                node_width = int(node.x2 - node.x1)
+                node_height = int(node.y2 - node.y1)
+                # Define the node dimensions end
+
+                # Define the direction of the container start
+                # Horizontal
+                if node.direction == 1:
+                    styles["display"] = "flex"
+                    styles["background"] = "aliceblue"
+                    if region_dataset in ["headers", "footers"]:
+                        styles["justify-content"] = "space-between"
+                # Vertical
+                if node.direction == 0:
+                    styles["display"] = "block"
+                    styles["background"] = "lavenderblush"
+                if node.direction == 2:
+                    if (node.types == "ccluster") or (
+                        region_dataset in ["headers", "webpages"]
+                    ):
+                        styles["display"] = "flex"
+                        styles["background"] = "lightblue"
+                    else:
+                        styles["display"] = "flex"
+                        styles["background"] = "lightblue"
+                        # Sometimes node_width and height are 0, should check this.
+                        if node_width:
+                            styles["width"] = str(node_width) + "px"
+                        if node_height:
+                            styles["height"] = str(node_height) + "px"
+                # Define the direction of the container end
+
+                if node == root_block:
+                    # print(node)
+                    margin_lr = int((img_width - node_width) / 2)
+                    margin_tp = int((img_height - node_height) / 2)
+                    node.div = ET.SubElement(outer_div, "div")
+                    styles["border"] = "1px solid green"
+                    styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
+
+                    str_styles = "; ".join(
+                        "{}:{}".format(key, val) for key, val in styles.items()
+                    )
+                    node.div.set("style", str_styles)
+
+                    # Create a new Scenario Element for the elements chain
+                    node.scenarioelement_inner = ScenarioElement.objects.create(
+                        parent=outer_div_node,
+                        struct_type="container",
+                        parameters=parameters,
+                        styles=styles,
+                        buoyancy=0,
+                    )
+                else:
+                    # print(node, dir(node.parent))
+                    node.div = ET.SubElement(node.parent.div, "div")
+
+                    styles["border"] = "1px solid green"
+
+                    str_styles = "; ".join(
+                        "{}:{}".format(key, val) for key, val in styles.items()
+                    )
+                    node.div.set("style", str_styles)
+
+                    # Create a new Scenario Element for the elements chain
+                    node.scenarioelement_inner = ScenarioElement.objects.create(
+                        parent=node.parent.scenarioelement_inner,
+                        struct_type="container",
+                        parameters=parameters,
+                        styles=styles,
+                        buoyancy=0,
+                    )
+
+                '''
+                # Display elements for some fcluster
+                if node.types == "fcluster":
+                    # Arrange the fcluster children based on their coordinates
+                    if node.direction == 0:
+                        array_elements = sorted(
+                            node.elements, key=lambda i: i["shape_attributes"]["y"]
+                        )
+                    elif node.direction == 1:
+                        array_elements = sorted(
+                            node.elements, key=lambda i: i["shape_attributes"]["x"]
+                        )
+                    else:
+                        array_elements = node.elements
+                    for elem in array_elements:
+                        # Define the element dimensions start
+                        elem_width = int(elem["shape_attributes"]["width"])
+                        elem_height = int(elem["shape_attributes"]["height"])
+
+                        x1 = int(elem["shape_attributes"]["x"])
+                        y1 = int(elem["shape_attributes"]["y"])
+                        # Define the element dimensions end
+
+                        # Cropping to the border box start
+                        elem_image = image_original[
+                            y1: y1 + elem_height, x1: x1 + elem_width
+                        ]
+                        elem_image_name = uuid.uuid4().hex + fname
+                        # print(x1, y1)
+                        # input()
+                        # Cropping to the border box end
+
+                        styles = {}
+                        parameters = {}
+                        if elem["region_attributes"]["HTML element"] in {
+                            "textinput",
+                            "input",
+                        }:
+                            styles["width"] = str(node_width) + "px"
+                            styles["height"] = str(node_height) + "px"
+
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "input")
+                            # displaying various kinds of elements end
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="textinput",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "input")
+                            # displaying various kinds of elements end
+                            element.set("type", "checkbox")
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="checkbox",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] in {
+                            "radiobutton"
+                        }:
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "input")
+                            # displaying various kinds of elements end
+                            element.set("type", "radio")
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="radiobutton",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] == "select":
+                            styles["width"] = str(node_width) + "px"
+                            styles["height"] = str(node_height) + "px"
+
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "select")
+                            # displaying various kinds of elements end
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="select",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        if elem["region_attributes"]["HTML element"] in {
+                            "text",
+                            "ocrtext",
+                        }:
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "div")
+                            # displaying various kinds of elements end
+
+                            element.text = lorem.get_word(count=2)
+
+                            parameters["textContent"] = element.text
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="ocrtext",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] in {"textarea"}:
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "textarea")
+                            # displaying various kinds of elements end
+
+                            element.set("placeholder", lorem.get_word(count=2))
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="textarea",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] in {
+                            "form_heading"
+                        }:
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "h3")
+                            # displaying various kinds of elements end
+
+                            element.text = lorem.get_word(count=2)
+
+                            parameters["textContent"] = element.text
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="heading",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] in {"form"}:
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "form")
+                            # displaying various kinds of elements end
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="container",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] == "image":
+                            styles["max-width"] = "100%"
+                            styles["heigh"] = "auto"
+
+                            # Saving an image
+                            cv2.imwrite(elem_image_name, elem_image)
+
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "img")
+                            # displaying various kinds of elements end
+
+                            element.set("src", elem_image_name)
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="image",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] == "button":
+                            styles["height"] = str(node_height) + "px"
+
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "button")
+                            # displaying various kinds of elements end
+
+                            element.text = lorem.get_word(count=1)
+
+                            parameters["textContent"] = element.text
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="button",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] in {"menu"}:
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "ul")
+                            # displaying various kinds of elements end
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="list",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+
+                        elif elem["region_attributes"]["HTML element"] in {"li"}:
+                            # displaying various kinds of elements start
+                            element = ET.SubElement(node.div, "li")
+                            # displaying various kinds of elements end
+
+                            element.text = lorem.get_word(count=1)
+
+                            parameters["textContent"] = element.text
+
+                            str_styles = "; ".join(
+                                "{}:{}".format(key, val) for key, val in styles.items()
+                            )
+                            element.set("style", str_styles)
+
+                            # Create a new Scenario Element for the elements chain
+                            node.scenarioelement_inner = ScenarioElement.objects.create(
+                                parent=node.parent.scenarioelement,
+                                struct_type="listItem",
+                                parameters=parameters,
+                                styles=styles,
+                                buoyancy=0,
+                            )
+                '''
+        return serializer_node
