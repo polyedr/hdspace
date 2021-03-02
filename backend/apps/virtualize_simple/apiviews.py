@@ -1,5 +1,5 @@
 from apps.virtualize_simple.serializers import ProjectScreenSerializer, ScenarioElementSerializer, \
-    ScenarioElementAssemblingSerializer
+    ScenarioElementAssemblingSerializer, ScenarioElementFreecanvasSerializer
 from apps.projects.models import ScenarioElement, ProjectScreen
 from rest_framework import generics
 
@@ -23,6 +23,19 @@ class ScenarioElementAssemblingList(generics.CreateAPIView):
 
     queryset = ScenarioElement.objects.all()
     serializer_class = ScenarioElementAssemblingSerializer
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+
+
+class ScenarioElementFreecanvasList(generics.CreateAPIView):
+    """
+    Create a new DOM of the neural network based on free canvas
+    """
+
+    queryset = ScenarioElement.objects.all()
+    serializer_class = ScenarioElementFreecanvasSerializer
 
     def perform_create(self, serializer):
         serializer.save()
