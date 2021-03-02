@@ -185,31 +185,44 @@ export function* uploadImportUrlSaga({
   payload: url,
 }: ReturnType<typeof Actions.uploadImportUrl>) {
   try {
-    const res: PostUrlResponse = yield call(reqWrapper, apiPostURL, {
-      wpname: url,
-    });
-
-    const archive = yield call(reqWrapper, apiGetWebPage, {
-      wpname: res.wpname,
-    });
-    const zip = new JSZip();
-    const unzipped = yield zip.loadAsync(archive); // unzip received file
-    const zipObjects: JSZip.JSZipObject[] = Object.values(unzipped.files);
-
-    const files = yield Promise.all(
-      zipObjects
-        .filter((zipObj) => !zipObj.dir) // filter out directories
-        .map(async (zipObj) => {
-          const blob = await zipObj.async('blob'); // convert zipObject to blob
-          const file = new File([blob], zipObj.name, {
-            lastModified: zipObj.date.getTime(),
-            type: getTypeFromName(zipObj.name),
-          }); // create File from blob
-          return file;
-        }),
+    const { result, error }: Result<PostUrlResponse> = yield call(
+      reqWrapper,
+      apiPostURL,
+      {
+        wpname: url,
+      },
     );
 
-    yield put(importHtml(Object.values(files), url));
+    if (result) {
+      const archive = yield call(reqWrapper, apiGetWebPage, {
+        wpname: result.wpname,
+      });
+      const zip = new JSZip();
+      const unzipped = yield zip.loadAsync(archive); // unzip received file
+      const zipObjects: JSZip.JSZipObject[] = Object.values(unzipped.files);
+
+      const files = yield Promise.all(
+        zipObjects
+          .filter((zipObj) => !zipObj.dir) // filter out directories
+          .map(async (zipObj) => {
+            const blob = await zipObj.async('blob'); // convert zipObject to blob
+            const file = new File([blob], zipObj.name, {
+              lastModified: zipObj.date.getTime(),
+              type: getTypeFromName(zipObj.name),
+            }); // create File from blob
+            return file;
+          }),
+      );
+
+      yield put(importHtml(Object.values(files), url));
+    }
+    if (error) {
+      throw new Error(
+        error === 'Request failed with status code 400'
+          ? 'Enter a valid URL'
+          : error,
+      );
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar({
