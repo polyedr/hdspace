@@ -883,6 +883,7 @@ export const defaultSelectStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
+    padding: '2px 6px',
   },
   size: {
     ...DEFAULT_SIZE,

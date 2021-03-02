@@ -11,9 +11,8 @@ const useStyles = makeComponentStyles('textarea', {});
 const Textarea = React.forwardRef<HTMLTextAreaElement, Props>((props, ref) => {
   const {
     id,
-    params: { placeholder },
+    params: { placeholder, textContent },
     isDisabled,
-    currentValue,
     className,
     groupClass,
   } = props;
@@ -35,7 +34,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, Props>((props, ref) => {
         classes.ownStyles,
         isDisabled && classes.disabled,
       )}
-      value={currentValue}
+      value={textContent}
       {...eventHandlers}
       style={{ resize: 'none' }}
     />

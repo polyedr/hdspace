@@ -148,6 +148,7 @@ export type InputRendererProps = SharedRendererProps & {
 export type TextareaRendererProps = SharedRendererProps & {
   params: {
     placeholder: string;
+    textContent: string;
   };
   currentValue: string;
 };
