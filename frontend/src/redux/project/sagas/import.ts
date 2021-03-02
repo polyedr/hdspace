@@ -193,29 +193,6 @@ export function* uploadImportUrlSaga({
       },
     );
 
-    if (result) {
-      const archive = yield call(reqWrapper, apiGetWebPage, {
-        wpname: result.wpname,
-      });
-      const zip = new JSZip();
-      const unzipped = yield zip.loadAsync(archive); // unzip received file
-      const zipObjects: JSZip.JSZipObject[] = Object.values(unzipped.files);
-
-      const files = yield Promise.all(
-        zipObjects
-          .filter((zipObj) => !zipObj.dir) // filter out directories
-          .map(async (zipObj) => {
-            const blob = await zipObj.async('blob'); // convert zipObject to blob
-            const file = new File([blob], zipObj.name, {
-              lastModified: zipObj.date.getTime(),
-              type: getTypeFromName(zipObj.name),
-            }); // create File from blob
-            return file;
-          }),
-      );
-
-      yield put(importHtml(Object.values(files), url));
-    }
     if (error) {
       throw new Error(
         error === 'Request failed with status code 400'
@@ -223,6 +200,31 @@ export function* uploadImportUrlSaga({
           : error,
       );
     }
+    if (!result) {
+      throw new Error('Something went wrong');
+    }
+
+    const archive = yield call(reqWrapper, apiGetWebPage, {
+      wpname: result.wpname,
+    });
+    const zip = new JSZip();
+    const unzipped = yield zip.loadAsync(archive); // unzip received file
+    const zipObjects: JSZip.JSZipObject[] = Object.values(unzipped.files);
+
+    const files = yield Promise.all(
+      zipObjects
+        .filter((zipObj) => !zipObj.dir) // filter out directories
+        .map(async (zipObj) => {
+          const blob = await zipObj.async('blob'); // convert zipObject to blob
+          const file = new File([blob], zipObj.name, {
+            lastModified: zipObj.date.getTime(),
+            type: getTypeFromName(zipObj.name),
+          }); // create File from blob
+          return file;
+        }),
+    );
+
+    yield put(importHtml(Object.values(files), url));
   } catch (e) {
     yield put(
       enqueueSnackbar({
