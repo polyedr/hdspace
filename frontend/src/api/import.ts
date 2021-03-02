@@ -1,13 +1,13 @@
 /* eslint-disable import/prefer-default-export */
 import { myAxios } from '@Src/config/settings';
-import { MyAxiosProps, PostUrlResponse } from '@Src/types';
+import { MyAxiosProps, PostUrlResponse, Result } from '@Src/types';
 import { AxiosResponse } from 'axios';
 import { handleError } from './project';
 
 export const apiPostURL = ({
   wpname,
   ...props
-}: MyAxiosProps & { wpname: string }) =>
+}: MyAxiosProps & { wpname: string }): Promise<Result<PostUrlResponse>> =>
   myAxios({
     ...props,
     url: '/uploadapps/wpg/',
@@ -17,7 +17,7 @@ export const apiPostURL = ({
       wpname,
     },
   })
-    .then((res: AxiosResponse<PostUrlResponse>) => res.data)
+    .then((res: AxiosResponse<PostUrlResponse>) => ({ result: res.data }))
     .catch(handleError);
 
 export const apiGetWebPage = ({

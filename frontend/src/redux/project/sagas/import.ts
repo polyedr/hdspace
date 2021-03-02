@@ -185,12 +185,27 @@ export function* uploadImportUrlSaga({
   payload: url,
 }: ReturnType<typeof Actions.uploadImportUrl>) {
   try {
-    const res: PostUrlResponse = yield call(reqWrapper, apiPostURL, {
-      wpname: url,
-    });
+    const { result, error }: Result<PostUrlResponse> = yield call(
+      reqWrapper,
+      apiPostURL,
+      {
+        wpname: url,
+      },
+    );
+
+    if (error) {
+      throw new Error(
+        error === 'Request failed with status code 400'
+          ? 'Enter a valid URL'
+          : error,
+      );
+    }
+    if (!result) {
+      throw new Error('Something went wrong');
+    }
 
     const archive = yield call(reqWrapper, apiGetWebPage, {
-      wpname: res.wpname,
+      wpname: result.wpname,
     });
     const zip = new JSZip();
     const unzipped = yield zip.loadAsync(archive); // unzip received file
