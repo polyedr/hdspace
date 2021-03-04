@@ -4431,8 +4431,8 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
         # Go through all the input elements
         # Construct fdict.
         # Top level children should be extracted first. Later this should be improved to process nested components.
-        print(element_root_pre)
-        print(element_root_pre.name)
+        # print(element_root_pre)
+        # print(element_root_pre.name)
         children = element_root_pre.get_children()
         for child in children:
             if (child.parameters):
@@ -4470,7 +4470,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 x2 = int(x1 + region["shape_attributes"]["width"])
                 y2 = int(y1 + region["shape_attributes"]["height"])
 
-                cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
+                # cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
             # Display raw regions input before clustering
             # cv2.imshow(window_name1, image_opencv_input)
             # cv2.waitKey(0)
@@ -4969,13 +4969,13 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 for cluster in clusters:
                     center = cluster.center
                     # Displaying centers. DB clusters
-                    cv2.rectangle(
-                        image_opencv_input,
-                        (int(center[0]), int(center[1])),
-                        (int(center[0]) + 10, int(center[1]) + 10),
-                        (0, 0, 255),
-                        1,
-                    )
+                    # cv2.rectangle(
+                    #     image_opencv_input,
+                    #     (int(center[0]), int(center[1])),
+                    #     (int(center[0]) + 10, int(center[1]) + 10),
+                    #     (0, 0, 255),
+                    #     1,
+                    # )
 
                     for center_closest_node in centers_closest_nodes:
                         # Closest node comparison
@@ -4986,8 +4986,8 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                             idx = cluster.idx = center_closest_node[0]
                             cluster.label = labels[idx]
 
-                cv2.imshow(window_name1, image_opencv_input)
-                cv2.waitKey(0)
+                # cv2.imshow(window_name1, image_opencv_input)
+                # cv2.waitKey(0)
                 # DBSCAN.labels are included to fclusters end
 
                 # Create dbcluster as a class object
@@ -5190,11 +5190,19 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 #     input()
                 styles = {}
                 parameters = {}
+                parameters["freeCanvas"] = {}
 
                 # Define the node dimensions start
                 node_width = int(node.x2 - node.x1)
                 node_height = int(node.y2 - node.y1)
                 # Define the node dimensions end
+
+                # Define freeCanvas sub-parameter
+                parameters["freeCanvas"]["zIndex"] = 0
+                parameters["freeCanvas"]["width"] = node_width
+                parameters["freeCanvas"]["height"] = node_height
+                parameters["freeCanvas"]["left"] = int(node.x1)
+                parameters["freeCanvas"]["top"] = int(node.y1)
 
                 # Define the direction of the container start
                 # Horizontal
@@ -5264,6 +5272,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                         buoyancy=0,
                     )
 
+                '''
                 # Go through all the blocks obtained after the ternary algorithm
                 # Print all the clusters
                 for pre, fill, node in RenderTree(root_block):
@@ -5298,9 +5307,9 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 # cv2.imwrite("allclusters_", image_allclusters)
                 cv2.imshow(window_name1, image_allclusters)
                 cv2.waitKey(0)
-
                 '''
-                # Display elements for some fcluster
+
+                # Attach elements for some fcluster
                 if node.types == "fcluster":
                     # Arrange the fcluster children based on their coordinates
                     if node.direction == 0:
@@ -5322,288 +5331,15 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                         y1 = int(elem["shape_attributes"]["y"])
                         # Define the element dimensions end
 
-                        # Cropping to the border box start
-                        elem_image = image_original[
-                            y1: y1 + elem_height, x1: x1 + elem_width
-                        ]
-                        elem_image_name = uuid.uuid4().hex + fname
-                        # print(x1, y1)
-                        # input()
-                        # Cropping to the border box end
+                        # Attach element to cluster
+                        for child in children:
+                            if (child.parameters):
+                                if int(child.parameters["freeCanvas"]["width"]) == elem_width:
+                                    if int(child.parameters["freeCanvas"]["height"]) == elem_height:
+                                        if int(child.parameters["freeCanvas"]["left"]) == x1:
+                                            if int(child.parameters["freeCanvas"]["top"]) == y1:
+                                                # print(child, child.struct_type, child.parent, child.parent_id)
+                                                # input()
+                                                child.move_to(node.scenarioelement_inner)
 
-                        styles = {}
-                        parameters = {}
-                        if elem["region_attributes"]["HTML element"] in {
-                            "textinput",
-                            "input",
-                        }:
-                            styles["width"] = str(node_width) + "px"
-                            styles["height"] = str(node_height) + "px"
-
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "input")
-                            # displaying various kinds of elements end
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="textinput",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "input")
-                            # displaying various kinds of elements end
-                            element.set("type", "checkbox")
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="checkbox",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] in {
-                            "radiobutton"
-                        }:
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "input")
-                            # displaying various kinds of elements end
-                            element.set("type", "radio")
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="radiobutton",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] == "select":
-                            styles["width"] = str(node_width) + "px"
-                            styles["height"] = str(node_height) + "px"
-
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "select")
-                            # displaying various kinds of elements end
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="select",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        if elem["region_attributes"]["HTML element"] in {
-                            "text",
-                            "ocrtext",
-                        }:
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "div")
-                            # displaying various kinds of elements end
-
-                            element.text = lorem.get_word(count=2)
-
-                            parameters["textContent"] = element.text
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="ocrtext",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] in {"textarea"}:
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "textarea")
-                            # displaying various kinds of elements end
-
-                            element.set("placeholder", lorem.get_word(count=2))
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="textarea",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] in {
-                            "form_heading"
-                        }:
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "h3")
-                            # displaying various kinds of elements end
-
-                            element.text = lorem.get_word(count=2)
-
-                            parameters["textContent"] = element.text
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="heading",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] in {"form"}:
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "form")
-                            # displaying various kinds of elements end
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="container",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] == "image":
-                            styles["max-width"] = "100%"
-                            styles["heigh"] = "auto"
-
-                            # Saving an image
-                            cv2.imwrite(elem_image_name, elem_image)
-
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "img")
-                            # displaying various kinds of elements end
-
-                            element.set("src", elem_image_name)
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="image",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] == "button":
-                            styles["height"] = str(node_height) + "px"
-
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "button")
-                            # displaying various kinds of elements end
-
-                            element.text = lorem.get_word(count=1)
-
-                            parameters["textContent"] = element.text
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="button",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] in {"menu"}:
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "ul")
-                            # displaying various kinds of elements end
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="list",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-
-                        elif elem["region_attributes"]["HTML element"] in {"li"}:
-                            # displaying various kinds of elements start
-                            element = ET.SubElement(node.div, "li")
-                            # displaying various kinds of elements end
-
-                            element.text = lorem.get_word(count=1)
-
-                            parameters["textContent"] = element.text
-
-                            str_styles = "; ".join(
-                                "{}:{}".format(key, val) for key, val in styles.items()
-                            )
-                            element.set("style", str_styles)
-
-                            # Create a new Scenario Element for the elements chain
-                            node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
-                                struct_type="listItem",
-                                parameters=parameters,
-                                styles=styles,
-                                buoyancy=0,
-                            )
-                '''
         return serializer_node
