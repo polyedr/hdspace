@@ -213,6 +213,7 @@ export function* createElements(
           ),
         );
         if (!useHistory) {
+          console.log('ADD REDO ACTIONS!!');
           yield put(
             Actions.addRedoActions(
               Actions.restoreElementChildren(
@@ -258,7 +259,6 @@ export function* createElements(
     }
     if (error) throw new Error(error);
   } catch (e) {
-    console.error('CREATE ELEMENTS ERROR!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -568,7 +568,6 @@ export const softDeleteSaga = withActionsHistory(function* (
     }
     if (error) throw new Error(error);
   } catch (e) {
-    console.error('SOFT DELETE ELEMENT!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -775,6 +774,7 @@ export function* wrapIntoContainer(
         ),
       );
       if (!meta?.useHistory) {
+        console.log('ADD UNDO WRAP INTO CONTAINER!!!');
         yield put(
           Actions.addUndoActions(
             Actions.unwrapFromContainer(
@@ -837,7 +837,6 @@ export function* wrapIntoContainer(
       return createdContainers.map(({ id }) => id);
     }
   } catch (e) {
-    console.error('WRAP INTO CONTAINER ERROR!!', e);
     yield put(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
     );
@@ -890,6 +889,10 @@ export const wrapIntoContainerSaga = withActionsHistory(function* (
   }
 });
 
+/* export const wrapMultipleElementsIntoContainerSaga = withActionsHistory(function* (action: ReturnType<typeof Actions.wrapIntoContainer>)) {
+
+} */
+
 export const unwrapFromContainerSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.unwrapFromContainer>,
 ) {
@@ -932,7 +935,6 @@ export const unwrapFromContainerSaga = withActionsHistory(function* (
     );
     if (elementsError) throw new Error(elementsError);
   } catch (e) {
-    console.error('UNWRAP FROM CONTAINER DATA!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,

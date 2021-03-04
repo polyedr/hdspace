@@ -20,7 +20,7 @@ export function* executeUndoActionsSaga() {
       selectCurrentHistoryRecord,
     );
     // eslint-disable-next-line no-restricted-syntax
-    for (const undoAction of currentHistoryRecord.undo) {
+    for (const undoAction of currentHistoryRecord.undo.reverse()) {
       yield put({
         ...undoAction,
         meta: {
@@ -48,7 +48,7 @@ export function* executeRedoActionsSaga() {
     );
     if (currentHistoryRecord.redo.length) {
       // eslint-disable-next-line no-restricted-syntax
-      for (const redoAction of currentHistoryRecord.redo) {
+      for (const redoAction of currentHistoryRecord.redo.reverse()) {
         yield put({
           ...redoAction,
           meta: {
@@ -84,14 +84,12 @@ export function* addUndoActionsSaga(
   try {
     const historyInProgress = yield select(selectHistoryInProgress);
     if (!historyInProgress) {
-      console.log('TEST!!', actions);
       throw new Error('No action is being executed');
     }
     yield put(
       Actions.addStateUndoActions(Array.isArray(actions) ? actions : [actions]),
     );
   } catch (e) {
-    console.error(e);
     yield put(
       enqueueSnackbar({
         message: e.message,

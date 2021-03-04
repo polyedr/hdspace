@@ -13,6 +13,7 @@ import {
   selectSelectedElementsIds,
   selectTreeChildElementsIds,
   selectMasterGroupsElementId,
+  selectElementByChildId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -58,7 +59,7 @@ import withActionsHistory from '../wrappers/withActionsHistory';
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(
   { itemsToCopyInfo, targetParent }: DuplicateElementsData,
-  { screenId, useHistory }: ElementHistoryMeta,
+  meta: ElementHistoryMeta,
 ) {
   try {
     const elements: LibraryElement<any>[] = [];
@@ -85,8 +86,7 @@ export function* duplicateElements(
       { elements: convertedItemsToDuplicate },
       targetParent,
       {
-        screenId,
-        useHistory,
+        ...meta,
       },
     );
   } catch (e) {
@@ -546,7 +546,6 @@ function* updateOrReplaceElementParameters(
     );
     if (error) throw new Error(error);
   } catch (e) {
-    console.error('UPDATE ELEMENT PARAMETERS!!!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -580,7 +579,7 @@ function* updateOrReplaceMultipleElementsParameters(
 
     const updatedElements = elements.map((elem) => {
       const inputParameters =
-        type === UpdateDataActionType.UPDATE ? elem.parameters : {};
+        type === UpdateDataActionType.UPDATE ? { ...elem.parameters } : {};
       const parametersToUpdate =
         parameters[elem.id] || parameters[ALL_ELEMENTS_INDEX] || {};
       return {
@@ -1148,10 +1147,11 @@ export const createElementsGroupSaga = withActionsHistory(function* (
     );
   }
   const { name, ids } = action.payload;
-  const { screenId } = action.meta;
+  const { screenId, useHistory } = action.meta;
 
   try {
     // create group container
+    console.log('WRAP INTO CONTAINER!!');
     const wrappers = yield call(
       wrapIntoContainer,
       {
@@ -1167,6 +1167,8 @@ export const createElementsGroupSaga = withActionsHistory(function* (
     const wrapperGroupId = wrappers[0];
     const masterGroupsElId = yield select(selectMasterGroupsElementId);
     const masterGroupsEl = yield select(selectElementAsTree(masterGroupsElId));
+
+    console.log('DUPLICATE ELEMENTS');
     const copiedGroupResult = yield call(
       duplicateElements,
       {
@@ -1201,6 +1203,7 @@ export const createElementsGroupSaga = withActionsHistory(function* (
       };
     });
 
+    console.log('UPDATE ELEMENTS PARAMETERS!!!');
     yield call(
       updateOrReplaceMultipleElementsParameters,
       Actions.updateMultipleElementsParameters(allGroupIds, paramsToUpdate, {
@@ -1208,6 +1211,25 @@ export const createElementsGroupSaga = withActionsHistory(function* (
       }),
       UpdateDataActionType.UPDATE,
     );
+
+    if (!useHistory) {
+      console.log('TEST!!!', groupId, wrapperGroupId);
+      const groupElParent = yield select(selectElementByChildId(groupId));
+      const wrapperGroupParent = yield select(
+        selectElementByChildId(wrapperGroupId),
+      );
+      console.log('GROUP EL!!', groupElParent);
+      console.log('GROUP EL WRAPPER!!', wrapperGroupParent);
+      yield put(
+        Actions.addRedoActions([
+          Actions.updateMultipleElementsParameters(
+            allGroupIds,
+            paramsToUpdate,
+            { ...action.meta },
+          ),
+        ]),
+      );
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar({

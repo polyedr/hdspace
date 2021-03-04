@@ -134,6 +134,7 @@ import {
   CreateScreenData,
   ReplaceElementParameters,
   ReplaceMultipleElementsParameters,
+  WrapMultipleElementsIntoContainer,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -788,6 +789,15 @@ export const wrapIntoContainer = (
 ): WrapIntoContainer => ({
   type: TYPES.WRAP_INTO_CONTAINER,
   payload: { id },
+  meta,
+});
+
+export const wrapMultipleElementsIntoContainer = (
+  ids: string[],
+  meta: ElementHistoryMeta,
+): WrapMultipleElementsIntoContainer => ({
+  type: TYPES.WRAP_MULTIPLE_ELEMENTS_INTO_CONTAINER,
+  payload: { ids },
   meta,
 });
 

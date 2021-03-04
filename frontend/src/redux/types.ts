@@ -487,6 +487,11 @@ export type WrapIntoContainer = IAction<
   { id: string },
   ElementHistoryMeta
 >;
+export type WrapMultipleElementsIntoContainer = IAction<
+  typeof TYPES.WRAP_MULTIPLE_ELEMENTS_INTO_CONTAINER,
+  { ids: string[] },
+  ElementHistoryMeta
+>;
 export type SetHoveredElementId = IAction<
   typeof TYPES.SET_HOVERED_ELEMENT,
   string | null
@@ -541,6 +546,10 @@ export type AddUndoActions = IAction<
 >;
 export type AddRedoActions = IAction<
   typeof TYPES.ADD_REDO_ACTIONS,
+  { actions: Action | Action[] }
+>;
+export type SetRedoActions = IAction<
+  typeof TYPES.SET_REDO_ACTIONS,
   { actions: Action | Action[] }
 >;
 export type AddHistoryActions = IAction<
