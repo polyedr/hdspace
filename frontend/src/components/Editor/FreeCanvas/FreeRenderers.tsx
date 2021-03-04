@@ -548,7 +548,7 @@ const FREE_CANVAS_RENDERERS: Record<Entity | 'none', React.FC<Props> | null> = {
   featureSection: null,
   listItem: null,
   pageTemplate: null,
-  selectItem: null,
+  option: null,
   selectMenu: null,
   subscribeForm: null,
   none: null,

@@ -98,7 +98,7 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
   MARK: 'textBlock',
   MENU: 'list',
   OL: 'list',
-  OPTION: 'selectItem',
+  OPTION: 'option',
   OUTPUT: 'textBlock',
   P: 'paragraph',
   PRE: 'paragraph',

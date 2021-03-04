@@ -54,7 +54,7 @@ import {
   radiobutton,
   select,
   selectMenu,
-  makeSelectItem,
+  makeOption,
   makeLabel,
 } from './formElements/formElements';
 import {
@@ -100,7 +100,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   radiobutton,
   select,
   selectMenu,
-  selectItem: makeSelectItem('', ''),
+  option: makeOption('', ''),
   label: makeLabel(),
   textarea,
   heading: makeHeading(),

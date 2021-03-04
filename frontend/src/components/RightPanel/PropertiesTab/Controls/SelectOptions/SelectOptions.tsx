@@ -14,11 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
 import generateUniqueName from '@Utils/generateUniqueName';
-import {
-  ElementGroup,
-  PropertiesChangeProps,
-  SelectItemElement,
-} from '@Src/types';
+import { ElementGroup, PropertiesChangeProps, OptionElement } from '@Src/types';
 import {
   selectActiveItemChildren,
   selectElementsByIds,
@@ -38,7 +34,7 @@ const useStyles = makeStyles({
   },
 });
 
-const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
+const SelectOptions: React.FC<PropertiesChangeProps<OptionElement>> = ({
   updateParams,
 }) => {
   const [selectMenu] = useSelector(selectActiveItemChildren('selectMenu'));
@@ -83,7 +79,7 @@ const SelectOptions: React.FC<PropertiesChangeProps<SelectItemElement>> = ({
     );
     dispatch(
       addChildToElement(
-        'selectItem',
+        'option',
         selectMenu.id,
         {
           name: newOptionName,
