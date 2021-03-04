@@ -13,7 +13,7 @@ import {
   selectSelectedElementsIds,
   selectTreeChildElementsIds,
   selectMasterGroupsElementId,
-  selectElementByChildId,
+  selectActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 
@@ -1151,7 +1151,7 @@ export const createElementsGroupSaga = withActionsHistory(function* (
 
   try {
     // create group container
-    console.log('WRAP INTO CONTAINER!!');
+    const activeElement = yield select(selectActiveElement);
     const wrappers = yield call(
       wrapIntoContainer,
       {
@@ -1161,6 +1161,7 @@ export const createElementsGroupSaga = withActionsHistory(function* (
       },
       {
         ...action.meta,
+        useHistory: true, // prevent setting inner redo actions
       },
     );
 
@@ -1168,7 +1169,6 @@ export const createElementsGroupSaga = withActionsHistory(function* (
     const masterGroupsElId = yield select(selectMasterGroupsElementId);
     const masterGroupsEl = yield select(selectElementAsTree(masterGroupsElId));
 
-    console.log('DUPLICATE ELEMENTS');
     const copiedGroupResult = yield call(
       duplicateElements,
       {
@@ -1177,6 +1177,7 @@ export const createElementsGroupSaga = withActionsHistory(function* (
       },
       {
         ...action.meta,
+        useHistory: true, // prevent setting inner redo actions
       },
     );
 
@@ -1203,29 +1204,67 @@ export const createElementsGroupSaga = withActionsHistory(function* (
       };
     });
 
-    console.log('UPDATE ELEMENTS PARAMETERS!!!');
     yield call(
       updateOrReplaceMultipleElementsParameters,
       Actions.updateMultipleElementsParameters(allGroupIds, paramsToUpdate, {
         ...action.meta,
+        useHistory: true, // prevent setting inner redo actions
       }),
       UpdateDataActionType.UPDATE,
     );
 
     if (!useHistory) {
-      console.log('TEST!!!', groupId, wrapperGroupId);
-      const groupElParent = yield select(selectElementByChildId(groupId));
-      const wrapperGroupParent = yield select(
-        selectElementByChildId(wrapperGroupId),
+      const masterGroupChildrenIds = masterGroupsEl.children.map(
+        (child) => child.id,
       );
-      console.log('GROUP EL!!', groupElParent);
-      console.log('GROUP EL WRAPPER!!', wrapperGroupParent);
+      const oldElementsParams = allGroupIds.reduce((allParams, id) => {
+        return {
+          ...allParams,
+          [id]: state[id].parameters,
+        };
+      }, {});
+      yield put(
+        Actions.addUndoActions([
+          Actions.unwrapFromContainer(
+            ids,
+            wrapperGroupId,
+            activeElement.parent,
+            {
+              ...action.meta,
+              useHistory: true,
+            },
+          ),
+          Actions.deleteElement(groupId, { ...action.meta, useHistory: true }),
+          Actions.replaceMultipleElementsParameters(
+            allGroupIds,
+            oldElementsParams,
+            { ...action.meta, useHistory: true },
+          ),
+        ]),
+      );
       yield put(
         Actions.addRedoActions([
+          Actions.redoWrapIntoContainer(
+            ids,
+            wrapperGroupId,
+            activeElement.parent,
+            {
+              ...action.meta,
+              useHistory: true,
+            },
+          ),
+          Actions.restoreElementChildren(
+            masterGroupsEl.id,
+            [...masterGroupChildrenIds, groupId],
+            { ...action.meta, useHistory: true },
+          ),
           Actions.updateMultipleElementsParameters(
             allGroupIds,
             paramsToUpdate,
-            { ...action.meta },
+            {
+              ...action.meta,
+              useHistory: true,
+            },
           ),
         ]),
       );

@@ -213,7 +213,6 @@ export function* createElements(
           ),
         );
         if (!useHistory) {
-          console.log('ADD REDO ACTIONS!!');
           yield put(
             Actions.addRedoActions(
               Actions.restoreElementChildren(
@@ -601,6 +600,7 @@ export const restoreElementChildrenSaga = withActionsHistory(function* (
     }
 
     const state: Normalized<StateElement> = yield select(selectAllElements);
+
     yield put(
       Actions.updateElementsTree(
         restoreMapElementChildren(state, elementId, childrenIds),
@@ -774,7 +774,6 @@ export function* wrapIntoContainer(
         ),
       );
       if (!meta?.useHistory) {
-        console.log('ADD UNDO WRAP INTO CONTAINER!!!');
         yield put(
           Actions.addUndoActions(
             Actions.unwrapFromContainer(
@@ -1075,14 +1074,6 @@ export const redoWrapIntoContainerSaga = withActionsHistory(function* (
     );
 
     if (error) throw new Error(error);
-
-    yield put(
-      Actions.addUndoActions(
-        Actions.unwrapFromContainer(ids, wrapperId, parentId, {
-          screenId,
-        }),
-      ),
-    );
   } catch (e) {
     yield put(
       enqueueSnackbar({
