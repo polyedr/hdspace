@@ -1,5 +1,5 @@
 export const splitWords = (str: string) =>
-  str.replace(/([a-z])([A-Z])/g, '$1 $2');
+  str?.replace(/([a-z])([A-Z])/g, '$1 $2');
 
 export const kebabToCamel = (str: string) =>
   str

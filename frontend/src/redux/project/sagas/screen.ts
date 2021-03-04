@@ -9,7 +9,12 @@ import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import { apiCreateElements, apiGetElements } from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
 import { apiUpdateScenarios } from '@Api/scenario';
-import { apiCreateScreen, apiGetScreen, apiUpdateScreen } from '@Api/screen';
+import {
+  apiCreateScreen,
+  apiGetScreen,
+  apiPostFreeCanvas,
+  apiUpdateScreen,
+} from '@Api/screen';
 import {
   LibraryElement,
   NNBlockType,
@@ -54,6 +59,7 @@ import {
 } from '../selectors/screen';
 import {
   selectAllElements,
+  selectCurrentRootElement,
   selectCurrentRootId,
   selectElementById,
   selectScreenRootElement,
@@ -621,7 +627,29 @@ export function* changeScreensOrderSaga(
 
 export function* convertFreeCanvasSaga() {
   try {
-    const editorDocument = yield select(selectEditorDocument);
+    const rootElement = yield select(selectCurrentRootElement);
+
+    const convert = (elem: LibraryElement<any>) => ({
+      ...elem,
+      id: undefined,
+      parent_id: parseInt(elem.id),
+      children: elem.children.map((child) => convert(child)),
+    });
+
+    const convertedTree = convert(rootElement);
+
+    const { result, error } = yield call(reqWrapper, apiPostFreeCanvas, {
+      tree: convertedTree,
+    });
+
+    if (error) {
+      throw new Error(error);
+    }
+    if (!result) {
+      throw new Error('Something went wrong');
+    }
+
+    /* const editorDocument = yield select(selectEditorDocument);
 
     const root = editorDocument.getElementById('free-canvas-root');
     if (!root) throw new Error('Failed to find the root element');
@@ -658,7 +686,7 @@ export function* convertFreeCanvasSaga() {
         },
       ),
     );
-    yield put(changeFreeCanvasMode(false));
+    yield put(changeFreeCanvasMode(false)); */
   } catch (e) {
     yield put(
       enqueueSnackbar({

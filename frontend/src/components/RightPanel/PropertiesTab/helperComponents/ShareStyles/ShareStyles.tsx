@@ -62,7 +62,7 @@ const mapState = (state: AppReduxState) => {
   const sharedClasses = project.projectData.classes.filter(
     (cssClass) =>
       cssClass.supportedElement === activeElement?.type &&
-      !activeElement.styles.classNames.includes(cssClass.className),
+      !activeElement.styles.classNames?.includes(cssClass.className),
   );
 
   const elementClassNames = activeElement?.styles.classNames || [];
@@ -118,7 +118,7 @@ const ShareStyles: React.FC<Props> = ({
 
   const isElementHasOwnStyles =
     activeElement && Object.keys(activeElement.styles.ownStyles).length;
-  const isElementHasSharedClassName = activeElement?.styles.classNames[1];
+  const isElementHasSharedClassName = activeElement?.styles.classNames?.[1];
   const disableShareButton =
     !isElementHasOwnStyles || isElementHasSharedClassName;
 

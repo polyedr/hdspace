@@ -55,7 +55,7 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
             control={
               <Checkbox
                 name={layout}
-                checked={layouts.includes(layout)}
+                checked={layouts?.includes(layout)}
                 onChange={(ev) => handleChange(ev, layout)}
               />
             }
