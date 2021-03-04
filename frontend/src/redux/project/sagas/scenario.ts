@@ -888,10 +888,6 @@ export const wrapIntoContainerSaga = withActionsHistory(function* (
   }
 });
 
-/* export const wrapMultipleElementsIntoContainerSaga = withActionsHistory(function* (action: ReturnType<typeof Actions.wrapIntoContainer>)) {
-
-} */
-
 export const unwrapFromContainerSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.unwrapFromContainer>,
 ) {

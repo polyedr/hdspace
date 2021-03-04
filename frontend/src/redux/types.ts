@@ -548,10 +548,6 @@ export type AddRedoActions = IAction<
   typeof TYPES.ADD_REDO_ACTIONS,
   { actions: Action | Action[] }
 >;
-export type SetRedoActions = IAction<
-  typeof TYPES.SET_REDO_ACTIONS,
-  { actions: Action | Action[] }
->;
 export type AddHistoryActions = IAction<
   typeof TYPES.ADD_HISTORY_ACTIONS,
   { undo: Action[]; redo?: Action[] }
