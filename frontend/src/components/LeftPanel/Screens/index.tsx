@@ -68,7 +68,13 @@ const Screens = () => {
   const handleCreateScreen = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    dispatch(createScreen(currentProjectId, 'Screen 1', screens.length));
+    dispatch(
+      createScreen({
+        projectID: currentProjectId,
+        name: 'Screen 1',
+        buoyancy: screens.length,
+      }),
+    );
   };
 
   const handleReorder = ({ destination, source }) => {

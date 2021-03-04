@@ -41,7 +41,11 @@ import {
   ServerElement,
   StateElement,
 } from '@Src/types';
-import { Action, ElementHistoryMeta } from '@Redux/types';
+import {
+  Action,
+  ElementHistoryMeta,
+  WrapIntoContainerData,
+} from '@Redux/types';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
@@ -61,11 +65,12 @@ import {
   selectElementAsTree,
   selectElementById,
   selectElementsByIds,
-  selectElementsForScreen,
+  // selectElementsForScreen,
   selectElementTreeGroups,
   selectScreenRootElement,
   selectTreeChildIdsByParentsIds,
 } from '../selectors/element';
+import withActionsHistory from '../wrappers/withActionsHistory';
 
 // eslint-disable-next-line consistent-return
 export function* createScenarios(scenario?: Partial<ScenarioItem>) {
@@ -119,7 +124,7 @@ export function* createScenarios(scenario?: Partial<ScenarioItem>) {
 export function* createElements(
   { elements, index }: ElementsToDrop,
   parent: LibraryElement<Entity>,
-  { screenId, undo }: ElementHistoryMeta,
+  { screenId, useHistory }: ElementHistoryMeta,
 ) {
   try {
     const disallowedElements = elements.filter(
@@ -150,8 +155,8 @@ export function* createElements(
             ...el.parameters,
             freeCanvas: {
               ...el.parameters.freeCanvas,
-              left: el.parameters.freeCanvas.left || offset,
-              top: el.parameters.freeCanvas.top || offset,
+              left: el.parameters.freeCanvas?.left || offset,
+              top: el.parameters.freeCanvas?.top || offset,
             },
           },
         };
@@ -169,9 +174,9 @@ export function* createElements(
       { data: elementsWithOffset },
     );
     if (newElements) {
-      if (!undo) {
+      if (!useHistory) {
         yield put(
-          Actions.setUndoActions(
+          Actions.addUndoActions(
             newElements.map((el: any) =>
               Actions.deleteElement(el.id, { screenId }),
             ),
@@ -202,16 +207,22 @@ export function* createElements(
             parent.id,
             {
               screenId,
-              undo,
-              sourceAction: Actions.restoreElementChildren(
-                parent.id,
-                newElements.map((element) => element.id),
-                { screenId },
-              ),
+              useHistory,
             },
             index,
           ),
         );
+        if (!useHistory) {
+          yield put(
+            Actions.addRedoActions(
+              Actions.restoreElementChildren(
+                parent.id,
+                newElements.map((element) => element.id),
+                { screenId },
+              ),
+            ),
+          );
+        }
         yield put(
           Actions.updateLastElements(
             parent.id,
@@ -247,7 +258,7 @@ export function* createElements(
     }
     if (error) throw new Error(error);
   } catch (e) {
-    console.error('Create elements error!!', e);
+    console.error('CREATE ELEMENTS ERROR!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -259,7 +270,7 @@ export function* createElements(
   }
 }
 
-export function* createElementsSaga(
+export const createElementsSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.createElements>,
 ) {
   try {
@@ -371,9 +382,9 @@ export function* createElementsSaga(
       }),
     );
   }
-}
+});
 
-export function* addChildrenToElementSaga(
+export const addChildrenToElementSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.addChildrenToElement>,
 ) {
   try {
@@ -384,7 +395,7 @@ export function* addChildrenToElementSaga(
       );
       return;
     }
-    const { screenId, undo } = action.meta;
+    const { screenId, useHistory } = action.meta;
 
     const convertedCreatedChildren = children.map((child) =>
       convertElementToRequest(
@@ -408,7 +419,7 @@ export function* addChildrenToElementSaga(
       element,
       {
         screenId,
-        undo,
+        useHistory,
       },
     );
   } catch (e) {
@@ -419,9 +430,9 @@ export function* addChildrenToElementSaga(
       }),
     );
   }
-}
+});
 
-export function* addChildToElementSaga(
+export const addChildToElementSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.addChildToElement>,
 ) {
   try {
@@ -432,7 +443,7 @@ export function* addChildToElementSaga(
       );
       return;
     }
-    const { screenId, undo } = action.meta;
+    const { screenId, useHistory } = action.meta;
 
     const convertedCreatedChild = convertCreatedElementToRequest(
       childType,
@@ -458,7 +469,7 @@ export function* addChildToElementSaga(
       element,
       {
         screenId,
-        undo,
+        useHistory,
       },
     );
   } catch (e) {
@@ -469,9 +480,9 @@ export function* addChildToElementSaga(
       }),
     );
   }
-}
+});
 
-export function* softDeleteSaga(
+export const softDeleteSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.deleteElement>,
 ) {
   try {
@@ -483,7 +494,7 @@ export function* softDeleteSaga(
       );
       return;
     }
-    const { screenId, undo } = action.meta;
+    const { screenId, useHistory } = action.meta;
 
     const element: StateElement = yield select(selectElementById(id));
 
@@ -503,7 +514,7 @@ export function* softDeleteSaga(
       return;
     }
 
-    if (!undo) {
+    if (!useHistory) {
       const undoActions: Action[] = [
         Actions.restoreElementChildren(
           parent.id,
@@ -514,7 +525,7 @@ export function* softDeleteSaga(
       if (element.shared === true) {
         undoActions.push(Actions.updateElement(id, { shared: true }));
       }
-      yield put(Actions.setUndoActions(undoActions));
+      yield put(Actions.addUndoActions(undoActions));
     }
 
     const activeElementId = yield select(selectActiveElementId);
@@ -526,11 +537,10 @@ export function* softDeleteSaga(
       yield put(Actions.setActiveElement(root.id));
     }
 
-    const state = yield select(selectElementsForScreen(screenId));
+    const state = yield select(selectAllElements);
     yield put(
       Actions.updateElementsTree(removeMapElement(state, id), {
         ...action.meta,
-        sourceAction: action,
       }),
     );
 
@@ -558,6 +568,7 @@ export function* softDeleteSaga(
     }
     if (error) throw new Error(error);
   } catch (e) {
+    console.error('SOFT DELETE ELEMENT!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -565,9 +576,9 @@ export function* softDeleteSaga(
       }),
     );
   }
-}
+});
 
-export function* restoreElementChildrenSaga(
+export const restoreElementChildrenSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.restoreElementChildren>,
 ) {
   try {
@@ -578,13 +589,13 @@ export function* restoreElementChildrenSaga(
       );
       return;
     }
-    const { screenId, undo } = action.meta;
+    const { screenId, useHistory } = action.meta;
 
     const element: StateElement = yield select(selectElementById(elementId));
 
-    if (!undo) {
+    if (!useHistory) {
       yield put(
-        Actions.setUndoActions(
+        Actions.addUndoActions(
           childrenIds.map((id) => Actions.deleteElement(id, { screenId })),
         ),
       );
@@ -594,7 +605,7 @@ export function* restoreElementChildrenSaga(
     yield put(
       Actions.updateElementsTree(
         restoreMapElementChildren(state, elementId, childrenIds),
-        { ...action.meta, sourceAction: action },
+        { ...action.meta },
       ),
     );
 
@@ -630,7 +641,7 @@ export function* restoreElementChildrenSaga(
       }),
     );
   }
-}
+});
 
 export function* restoreElementSaga(
   action: ReturnType<typeof Actions.restoreElement>,
@@ -643,12 +654,12 @@ export function* restoreElementSaga(
       );
       return;
     }
-    const { screenId, undo } = action.meta;
+    const { screenId, useHistory } = action.meta;
     const element: StateElement = yield select(selectElementById(elementId));
 
-    if (!undo) {
+    if (!useHistory) {
       yield put(
-        Actions.setUndoActions([
+        Actions.addUndoActions([
           Actions.deleteElement(elementId, { screenId }),
         ]),
       );
@@ -659,7 +670,6 @@ export function* restoreElementSaga(
     yield put(
       Actions.updateElementsTree(restoreMapElement(state, elementId), {
         ...action.meta,
-        sourceAction: action,
       }),
     );
 
@@ -714,9 +724,7 @@ export function* addElementToElement(elementId: string, parentId: string) {
 
 // eslint-disable-next-line consistent-return
 export function* wrapIntoContainer(
-  containerType: Entity,
-  name: string | null = null,
-  ids: string[],
+  { containerType, name, ids }: WrapIntoContainerData,
   meta: ElementHistoryMeta,
 ) {
   try {
@@ -763,16 +771,23 @@ export function* wrapIntoContainer(
           ids,
           {
             ...meta,
-            // TODO: implement redoWrapIntoContainer for element groups creation
-            /* sourceAction: Actions.redoWrapIntoContainer(
-              id,
-              createdContainers[0].id,
-              parent.id,
-              action.meta,
-            ), */
           },
         ),
       );
+      if (!meta?.useHistory) {
+        yield put(
+          Actions.addUndoActions(
+            Actions.unwrapFromContainer(
+              ids,
+              createdContainers[0].id,
+              activeElement.parent,
+              {
+                ...meta,
+              },
+            ),
+          ),
+        );
+      }
 
       const updatedParent: LibraryElement<any> = yield select(
         selectElementAsTree(activeElement.parent),
@@ -822,13 +837,14 @@ export function* wrapIntoContainer(
       return createdContainers.map(({ id }) => id);
     }
   } catch (e) {
+    console.error('WRAP INTO CONTAINER ERROR!!', e);
     yield put(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
     );
   }
 }
 
-export function* wrapIntoContainerSaga(
+export const wrapIntoContainerSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.wrapIntoContainer>,
 ) {
   try {
@@ -839,20 +855,27 @@ export function* wrapIntoContainerSaga(
       );
       return;
     }
-    const { screenId } = action.meta;
 
     const element = yield select(selectElementById(id));
     const parent = yield select(selectElementById(element.parent));
 
-    const ids = yield call(wrapIntoContainer, 'container', null, [id], {
-      screenId,
-    });
+    const ids = yield call(
+      wrapIntoContainer,
+      {
+        containerType: 'container',
+        name: null,
+        ids: [id],
+      },
+      {
+        ...action.meta,
+      },
+    );
 
-    if (ids) {
+    if (ids && !action.meta.useHistory) {
       yield put(
-        Actions.setUndoActions(
-          Actions.unwrapFromContainer(id, ids[0], parent.id, {
-            screenId,
+        Actions.addUndoActions(
+          Actions.unwrapFromContainer([id], ids[0], parent.id, {
+            ...action.meta,
           }),
         ),
       );
@@ -865,25 +888,25 @@ export function* wrapIntoContainerSaga(
       }),
     );
   }
-}
+});
 
-export function* unwrapFromContainerSaga(
+export const unwrapFromContainerSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.unwrapFromContainer>,
 ) {
   try {
-    if (!action.meta) {
+    const { meta } = action;
+    if (!meta) {
       console.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
     }
-
-    const { wrapperId, parentId } = action.payload;
-
-    yield put(Actions.extractStateElement(wrapperId));
-    const parent: LibraryElement<any> = yield select(
-      selectElementAsTree(parentId),
+    const { wrapperId, parentId, ids } = action.payload;
+    yield put(
+      Actions.unwrapStateElements(ids, parentId, wrapperId, { ...meta }),
     );
+
+    const parent = yield select(selectElementAsTree(parentId));
 
     const { error: parentError }: Result<RecursiveElement> = yield call(
       reqWrapper,
@@ -909,6 +932,7 @@ export function* unwrapFromContainerSaga(
     );
     if (elementsError) throw new Error(elementsError);
   } catch (e) {
+    console.error('UNWRAP FROM CONTAINER DATA!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
@@ -916,7 +940,7 @@ export function* unwrapFromContainerSaga(
       }),
     );
   }
-}
+});
 
 export function* updateElementSaga(
   action: ReturnType<typeof Actions.updateElement>,
@@ -931,7 +955,6 @@ export function* updateElementSaga(
         { ...data },
         {
           screenId,
-          sourceAction: null,
         },
       ),
     );
@@ -981,7 +1004,7 @@ export function* updateElementSaga(
   }
 }
 
-export function* redoWrapIntoContainerSaga(
+export const redoWrapIntoContainerSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.redoWrapIntoContainer>,
 ) {
   try {
@@ -991,7 +1014,7 @@ export function* redoWrapIntoContainerSaga(
       );
       return;
     }
-    const { parentId, wrapperId, elementId } = action.payload;
+    const { parentId, wrapperId, ids } = action.payload;
     const { screenId } = action.meta;
 
     const wrapper: LibraryElement<any> = yield select(
@@ -999,10 +1022,9 @@ export function* redoWrapIntoContainerSaga(
     );
 
     yield put(
-      Actions.insertStateElement(wrapper, parentId, elementId, {
+      Actions.wrapStateElements(wrapper, parentId, ids, {
         screenId,
-        redo: true,
-        sourceAction: action,
+        useHistory: true,
       }),
     );
 
@@ -1017,7 +1039,7 @@ export function* redoWrapIntoContainerSaga(
       reqWrapper,
       apiChangeRecursiveElement,
       {
-        data: { children: [elementId] },
+        data: { children: ids },
         id: wrapperId,
       },
     );
@@ -1053,8 +1075,8 @@ export function* redoWrapIntoContainerSaga(
     if (error) throw new Error(error);
 
     yield put(
-      Actions.setUndoActions(
-        Actions.unwrapFromContainer(elementId, wrapperId, parentId, {
+      Actions.addUndoActions(
+        Actions.unwrapFromContainer(ids, wrapperId, parentId, {
           screenId,
         }),
       ),
@@ -1067,4 +1089,4 @@ export function* redoWrapIntoContainerSaga(
       }),
     );
   }
-}
+});

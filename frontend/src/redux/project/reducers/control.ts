@@ -1,6 +1,6 @@
 import TYPES from '../../actionTypes';
 import { initialControl } from '../initial';
-import { Action, ProjectControlState } from '../../types';
+import { Action, HistoryRecord, ProjectControlState } from '../../types';
 
 // To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
 // that will call correspondent saga, which should:
@@ -14,110 +14,80 @@ import { Action, ProjectControlState } from '../../types';
 const controlReducer = (
   state: ProjectControlState = initialControl,
   action: Action,
-): ProjectControlState => {
+) => {
   switch (action.type) {
-    case TYPES.REMOVE_STATE_ELEMENT:
-    case TYPES.INSERT_STATE_ELEMENT:
-    case TYPES.ADD_STATE_ELEMENTS:
-    case TYPES.UPDATE_STATE_ELEMENT:
-    case TYPES.MOVE_STATE_ELEMENT:
-    case TYPES.ADD_ASSET_LIST_REDUX:
-    case TYPES.ADD_ASSET_REDUX:
-    case TYPES.UPDATE_ELEMENTS_TREE: {
-      if (!action.meta) return state;
-
-      const {
-        meta: { undo, redo, sourceAction },
-      } = action;
-
-      const { groupActionsUp, history } = state;
-
-      const newState = { ...state };
-
-      if (sourceAction && !redo && !undo) {
-        newState.redoActions = [];
+    case TYPES.START_HISTORY_RECORD: {
+      const newHistoryRecord: HistoryRecord = {
+        action: action.payload.source,
+        undo: [],
+        redo: [],
+      };
+      const recordNumber = ++state.currentHistoryRecord;
+      return {
+        ...state,
+        historyInProgress: true,
+        currentHistoryRecord: recordNumber,
+        history: [...state.history.slice(0, recordNumber), newHistoryRecord],
+      };
+    }
+    case TYPES.CLOSE_HISTORY_RECORD: {
+      if (!state.historyInProgress) {
+        return state;
       }
-
-      if (sourceAction && !undo) {
-        // @ts-ignore
-        newState.history = groupActionsUp
-          ? [
-              ...history.slice(0, -1),
-              [history[history.length - 1], sourceAction],
-            ]
-          : [...history, sourceAction];
-      }
-
-      return newState;
+      return { ...state, historyInProgress: false };
+    }
+    case TYPES.ADD_STATE_UNDO_ACTIONS: {
+      const currentRecord = state.history[state.currentHistoryRecord];
+      const updatedRecord: HistoryRecord = {
+        ...currentRecord,
+        undo: [...currentRecord.undo, ...action.payload.actions],
+      };
+      const updatedHistoryRecords = [...state.history];
+      updatedHistoryRecords.splice(
+        state.currentHistoryRecord,
+        1,
+        updatedRecord,
+      );
+      return { ...state, history: updatedHistoryRecords };
     }
 
-    case TYPES.DELETE_SCREEN: {
-      const newState = { ...state };
-
-      if (!action.meta?.undo) {
-        newState.history = [...state.history, action];
-      }
-      if (!action.meta?.undo && !action.meta?.redo) {
-        newState.redoActions = [];
-      }
-
-      return newState;
-    }
-
-    case TYPES.RESTORE_ASSET:
-    case TYPES.RESTORE_SCREEN: {
-      const newState = { ...state };
-
-      if (!action.meta?.undo) {
-        newState.history = [...state.history, action];
-      }
-
-      return newState;
+    case TYPES.ADD_STATE_REDO_ACTIONS: {
+      const currentRecord = state.history[state.currentHistoryRecord];
+      const updatedRecord: HistoryRecord = {
+        ...currentRecord,
+        redo: [...currentRecord.redo, ...action.payload.actions],
+      };
+      const updatedHistoryRecords = [...state.history];
+      updatedHistoryRecords.splice(
+        state.currentHistoryRecord,
+        1,
+        updatedRecord,
+      );
+      return { ...state, history: updatedHistoryRecords };
     }
 
     case TYPES.RESET_SCREEN_STATE: {
       return {
         ...state,
-        undoActions: [],
-        redoActions: [],
         history: [],
+        currentHistoryRecord: -1,
+        historyInProgress: false,
       };
     }
 
-    case TYPES.SET_UNDO_ACTIONS: {
-      return {
-        ...state,
-        // @ts-ignore
-        undoActions: [...state.undoActions, action.payload],
-      };
+    case TYPES.MOVE_HISTORY_FORWARD: {
+      const nextHistoryRecord = ++state.currentHistoryRecord;
+      if (nextHistoryRecord === state.history.length) {
+        return state;
+      }
+      return { ...state, currentHistoryRecord: nextHistoryRecord };
     }
 
-    case TYPES.POP_UNDO_ACTION: {
-      return {
-        ...state,
-        undoActions: state.undoActions.slice(0, -1),
-      };
-    }
-
-    case TYPES.SET_REDO_ACTIONS: {
-      return {
-        ...state,
-        redoActions: action.payload,
-      };
-    }
-
-    case TYPES.POP_HISTORY: {
-      return {
-        ...state,
-        history: state.history.slice(0, -1),
-      };
-    }
-
-    case TYPES.SET_GROUP_UP: {
-      return {
-        ...state,
-        groupActionsUp: action.payload,
-      };
+    case TYPES.MOVE_HISTORY_BACKWARD: {
+      if (state.currentHistoryRecord < 0) {
+        return state;
+      }
+      return { ...state, currentHistoryRecord: --state.currentHistoryRecord };
     }
 
     case TYPES.LOGOUT: {

@@ -9,8 +9,8 @@ import {
   copyActiveElement,
   deleteElement,
   pasteCopiedElement,
-  redoAction,
-  undoAction,
+  executeUndoActions,
+  executeRedoActions,
   wrapIntoContainer,
 } from '@Redux/project/actions';
 
@@ -95,7 +95,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     const listener = (ev: KeyboardEvent) => {
       if (!beingEdited && ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey)) {
-        dispatch(ev.shiftKey ? redoAction() : undoAction());
+        dispatch(ev.shiftKey ? executeRedoActions() : executeUndoActions());
         element?.focus();
       }
     };
