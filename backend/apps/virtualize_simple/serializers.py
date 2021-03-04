@@ -4409,23 +4409,24 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
         # Define root canvas width and height, based on layout parameter
         # Mobile devices
         if element_root_pre.parameters["layouts"] == "mobile":
-            img_height, img_width= 736, 320
+            img_height, img_width = 320, 736
 
         # Tablet devices
         elif element_root_pre.parameters["layouts"] == "tablet":
-            img_height, img_width= 1024, 768
+            img_height, img_width = 768, 1024
 
         # Desktop devices
         elif element_root_pre.parameters["layouts"] == "desktop":
-            img_height, img_width= 1280, 800
+            img_height, img_width = 800, 1280
 
         # Other devices
         else:
-            img_height, img_width= 1280, 800
+            img_height, img_width = 800, 1280
 
         # This initialises an RGB-image that is just black (with two instances)
         image_opencv_input = np.zeros((img_height, img_width, 3), np.uint8)
         image_original = np.zeros((img_height, img_width, 3), np.uint8)
+        image_allclusters = np.zeros((img_height, img_width, 3), np.uint8)
 
         # Go through all the input elements
         # Construct fdict.
@@ -4469,7 +4470,8 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 x2 = int(x1 + region["shape_attributes"]["width"])
                 y2 = int(y1 + region["shape_attributes"]["height"])
 
-            #     cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
+                cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
+            # Display raw regions input before clustering
             # cv2.imshow(window_name1, image_opencv_input)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
@@ -4508,6 +4510,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             # cv2.rectangle(
             #     image_opencv_input, (min_x1, min_y1), (max_x2, max_y2), (255, 255, 0), 1
             # )
+            # # Displaying an outer border
             # cv2.imshow(window_name1, image_opencv_input)
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
@@ -4965,14 +4968,14 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 # DBSCAN.labels are included to fclusters start
                 for cluster in clusters:
                     center = cluster.center
-                    # DB clusters
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (int(center[0]), int(center[1])),
-                    #     (int(center[0]) + 10, int(center[1]) + 10),
-                    #     (0, 0, 255),
-                    #     1,
-                    # )
+                    # Displaying centers. DB clusters
+                    cv2.rectangle(
+                        image_opencv_input,
+                        (int(center[0]), int(center[1])),
+                        (int(center[0]) + 10, int(center[1]) + 10),
+                        (0, 0, 255),
+                        1,
+                    )
 
                     for center_closest_node in centers_closest_nodes:
                         # Closest node comparison
@@ -4982,9 +4985,9 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                             cluster.X = center_closest_node[2]
                             idx = cluster.idx = center_closest_node[0]
                             cluster.label = labels[idx]
-                #
-                # cv2.imshow(window_name1, image_opencv_input)
-                # cv2.waitKey(0)
+
+                cv2.imshow(window_name1, image_opencv_input)
+                cv2.waitKey(0)
                 # DBSCAN.labels are included to fclusters end
 
                 # Create dbcluster as a class object
@@ -5260,6 +5263,41 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                         styles=styles,
                         buoyancy=0,
                     )
+
+                # Go through all the blocks obtained after the ternary algorithm
+                # Print all the clusters
+                for pre, fill, node in RenderTree(root_block):
+                    if node.types == "ccluster":
+                        cv2.rectangle(
+                            image_allclusters,
+                            (node.x1, node.y1),
+                            (node.x2, node.y2),
+                            (20, 50, 107),
+                            1,
+                        )
+
+                    if node.types == "dbcluster":
+                        cv2.rectangle(
+                            image_allclusters,
+                            (node.x1, node.y1),
+                            (node.x2, node.y2),
+                            (164, 24, 4),
+                            1,
+                        )
+
+                    if node.types == "fcluster":
+                        cv2.rectangle(
+                            image_allclusters,
+                            (node.x1, node.y1),
+                            (node.x2, node.y2),
+                            (0, 0, 255),
+                            1,
+                        )
+
+                # Printing all clusters to file
+                # cv2.imwrite("allclusters_", image_allclusters)
+                cv2.imshow(window_name1, image_allclusters)
+                cv2.waitKey(0)
 
                 '''
                 # Display elements for some fcluster
