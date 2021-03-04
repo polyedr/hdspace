@@ -17,7 +17,6 @@ import {
 } from '@Api/screen';
 import {
   LibraryElement,
-  NNBlockType,
   Normalized,
   Project,
   Result,
@@ -32,8 +31,6 @@ import {
   activateScreen,
   addElements,
   createScreen,
-  changeFreeCanvasMode,
-  deleteElement,
   deleteScreen,
   renameScreen,
   restoreScreen,
@@ -45,13 +42,11 @@ import {
   setUpdateImageLoader,
   updateScreen,
   updateScreenImage,
-  uploadFile,
   setActiveElementId,
 } from '../actions';
 import { createScenarios } from './scenario';
 import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
-import { uploadFileSaga } from './element';
 import {
   selectCurrentScreenId,
   selectScreenById,
@@ -60,8 +55,6 @@ import {
 import {
   selectAllElements,
   selectCurrentRootElement,
-  selectCurrentRootId,
-  selectElementById,
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
@@ -648,6 +641,8 @@ export function* convertFreeCanvasSaga() {
     if (!result) {
       throw new Error('Something went wrong');
     }
+
+    console.log(result);
 
     /* const editorDocument = yield select(selectEditorDocument);
 

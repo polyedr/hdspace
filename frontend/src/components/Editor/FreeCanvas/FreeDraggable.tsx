@@ -7,7 +7,13 @@ import {
   updateElementParameters,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { StateElement } from '@Src/types';
+import { Entity, StateElement } from '@Src/types';
+import RENDERERS from '@Components/UI/RenderElements';
+import {
+  selectElementById,
+  selectIncludesActiveElement,
+} from '@Redux/project/selectors/element';
+import useElementProps from '@Components/Editor/hooks/useElementProps';
 import Borders from './Borders';
 
 const useStyles = makeStyles({
@@ -20,27 +26,31 @@ const useStyles = makeStyles({
 });
 
 type Props = {
-  element: StateElement;
+  elementId: StateElement['id'];
   isActive: boolean;
   includesActiveElement?: boolean;
   lockAspectRatio?: boolean;
 };
 
 const FreeDraggable: React.FC<Props> = ({
-  element,
+  elementId,
   isActive,
-  includesActiveElement,
-  lockAspectRatio,
-  children,
+  // includesActiveElement,
+  // lockAspectRatio,
 }) => {
   const dispatch = useDispatch();
+
+  const element = useSelector(selectElementById(elementId));
 
   const {
     id,
     parameters: {
-      freeCanvas: { left, top, width, height, zIndex = 0 },
+      freeCanvas: { left = 0, top = 0, width = 0, height = 0, zIndex = 0 } = {},
     },
+    type,
   } = element;
+
+  const includesActiveElement = useSelector(selectIncludesActiveElement(id));
 
   const classes = useStyles({ isActive, zIndex, includesActiveElement });
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -60,8 +70,8 @@ const FreeDraggable: React.FC<Props> = ({
     position,
   ) => {
     if (
-      width === ref.style.width &&
-      height === ref.style.height &&
+      width === parseInt(ref.style.width) &&
+      height === parseInt(ref.style.height) &&
       left === position.x &&
       top === position.y
     ) {
@@ -106,6 +116,10 @@ const FreeDraggable: React.FC<Props> = ({
     );
   };
 
+  const elementProps = useElementProps(elementId);
+
+  const Renderer = RENDERERS[type as Entity];
+
   return (
     <Rnd
       onClick={handleInteractionStart}
@@ -125,11 +139,12 @@ const FreeDraggable: React.FC<Props> = ({
         })}
       onResizeStart={handleInteractionStart}
       onDragStart={handleInteractionStart}
-      lockAspectRatio={lockAspectRatio}
+      // lockAspectRatio={lockAspectRatio}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      {children}
+      {/* {children} */}
+      <Renderer {...elementProps}>test</Renderer>
 
       <Borders element={element} hover={hover} isActive={isActive} />
     </Rnd>

@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { render, fireEvent } from '@testing-library/react';
@@ -69,3 +69,4 @@ describe('Free Draggable', () => {
     expect(downButton).toBeDisabled();
   });
 });
+ */

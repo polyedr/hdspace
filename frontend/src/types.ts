@@ -4,7 +4,6 @@ import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
-import * as CSS from 'csstype';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 
 export type PropertyName = keyof React.CSSProperties;
@@ -57,8 +56,8 @@ export type FreeCanvasElementParams = {
   left?: number;
   top?: number;
   zIndex?: number;
-  width?: CSS.Property.Width;
-  height?: CSS.Property.Height;
+  width?: number;
+  height?: number;
 };
 
 export type BaseElementParams = {

@@ -16,8 +16,8 @@ export const map: MapServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
+      // width: '50%',
+      // height: '50%',
     },
     group: ElementGroup.WIDGET,
     map_props: {

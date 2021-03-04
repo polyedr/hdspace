@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { RENDERERS } from '@Components/UI/RenderElements';
+import RENDERERS from '@Components/UI/RenderElements';
 import {
   selectElementById,
   selectMasterCoreElementId,

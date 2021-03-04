@@ -29,7 +29,11 @@ export const makeButton = ({
   struct_type: 'button',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 87,
+      height: 28,
+    },
     group: ElementGroup.FORM,
     textContent,
     showRipple: true,

@@ -85,9 +85,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
   const {
     id,
     name,
-    parameters: {
-      freeCanvas: { zIndex },
-    },
+    parameters: { freeCanvas: { zIndex = 0 } = {} },
   } = element;
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
