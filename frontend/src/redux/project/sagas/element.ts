@@ -1278,3 +1278,7 @@ export const createElementsGroupSaga = withActionsHistory(function* (
     );
   }
 });
+
+/* export function* uploadElementImageByUrlSaga(
+  action: ReturnType<typeof Actions.uploadImageByUrl>,
+) {} */

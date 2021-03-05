@@ -1,4 +1,4 @@
-const getImageFromUrl = (imageUrl: string): Promise<File> => {
+/* const getImageFromUrl = (imageUrl: string): Promise<File> => {
   if (!imageUrl) {
     return Promise.reject(new Error('Image URL is not specified'));
   }
@@ -38,3 +38,4 @@ const getImageFromUrl = (imageUrl: string): Promise<File> => {
 };
 
 export default getImageFromUrl;
+*/

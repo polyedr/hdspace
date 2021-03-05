@@ -1253,3 +1253,8 @@ export const moveHistoryForward = (): MoveHistoryForward => ({
 export const moveHistoryBackward = (): MoveHistoryBackward => ({
   type: TYPES.MOVE_HISTORY_BACKWARD,
 });
+
+export const uploadImageByUrl = (url: string, listId: string) => ({
+  type: TYPES.UPLOAD_IMAGE_BY_URL,
+  payload: { url, listId },
+});

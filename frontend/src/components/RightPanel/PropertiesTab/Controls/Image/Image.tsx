@@ -5,7 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { StyledTextField } from '@Components/styledComponents';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { updateElementImage, uploadElementAsset } from '@Redux/project/actions';
+import { uploadElementAsset, uploadImageByUrl } from '@Redux/project/actions';
 import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
@@ -13,7 +13,7 @@ import {
   selectSelectedAssetListId,
 } from '@Redux/project/selectors/asset';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
-import getImageFromUrl from './getImageFromUrl';
+// import getImageFromUrl from './getImageFromUrl';
 
 const urlPattern = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
 
@@ -88,9 +88,9 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
       );
       return;
     }
-    const blobFilePromise = getImageFromUrl(imageUrl);
+    dispatch(uploadImageByUrl(imageUrl, assetLists[0].id));
+    /* const blobFilePromise = getImageFromUrl(imageUrl);
     blobFilePromise.then((file: File) => {
-      console.log('RESOLVE FILE!!');
       if (file.size > 5242880) {
         // eslint-disable-next-line no-alert
         dispatch(
@@ -114,8 +114,8 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
           options: { variant: 'error' },
         }),
       );
-    });
-  }, [dispatch, activeElementId, currentScreenId]);
+    }); */
+  }, [dispatch, assetLists]);
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
