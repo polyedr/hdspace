@@ -22,6 +22,7 @@ import Borders from './Borders';
 const lockedAspectRatioElements: Entity[] = ['image'];
 const notDraggableElements: Entity[] = [
   'option',
+  'selectMenu',
   'listItem',
   'dropdownItem',
   'dropdownMenu',
@@ -30,7 +31,6 @@ const notDraggableElements: Entity[] = [
 const useStyles = makeStyles({
   rnd: {
     position: 'absolute',
-    // overflow: 'hidden',
     zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
       isActive || includesActiveElement ? 1000 : zIndex,
   },
@@ -47,20 +47,17 @@ const useStyles = makeStyles({
 
 type Props = {
   elementId: StateElement['id'];
-  // isActive: boolean;
   includesActiveElement?: boolean;
   lockAspectRatio?: boolean;
 };
 
-const FreeDraggable: React.FC<Props> = ({
-  elementId,
-  // isActive,
-  // includesActiveElement,
-  // lockAspectRatio,
-}) => {
+const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const dispatch = useDispatch();
 
   const element = useSelector(selectElementById(elementId));
+  const includesActiveElement = useSelector(
+    selectIncludesActiveElement(elementId),
+  );
   const isActive = useSelector(selectIsElementActive(elementId));
 
   const {
@@ -70,8 +67,6 @@ const FreeDraggable: React.FC<Props> = ({
     },
     type,
   } = element;
-
-  const includesActiveElement = useSelector(selectIncludesActiveElement(id));
 
   const [resizeDir, setResizeDir] = useState<any>(false);
   const classes = useStyles({

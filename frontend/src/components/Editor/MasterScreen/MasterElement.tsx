@@ -20,7 +20,7 @@ type Props = {
 
 const getElementProps = (element) => ({
   id: element.id,
-  className: element.styles.classNames[0],
+  className: element.styles.classNames?.[0] || '',
   isDisabled: true,
   contentEditable: false,
   ownStyles: element.parameters.groupElements ? element.styles.ownStyles : {},
