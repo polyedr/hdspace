@@ -1,4 +1,4 @@
-/* import React from 'react';
+import React from 'react';
 import configureStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { render, fireEvent } from '@testing-library/react';
@@ -7,7 +7,7 @@ import { mockStateElement, mockState } from '../../test-utils';
 import FreeDraggable from '../../../../components/Editor/FreeCanvas/FreeDraggable';
 import { splitWords } from '../../../stringHelper';
 
-describe('Free Draggable', () => {
+describe.skip('Free Draggable', () => {
   let store;
   let ui;
 
@@ -17,7 +17,7 @@ describe('Free Draggable', () => {
 
     ui = render(
       <Provider store={store}>
-        <FreeDraggable element={mockStateElement} isActive={false}>
+        <FreeDraggable elementId={mockStateElement.id}>
           {mockStateElement.parameters.textContent}
         </FreeDraggable>
       </Provider>,
@@ -69,4 +69,3 @@ describe('Free Draggable', () => {
     expect(downButton).toBeDisabled();
   });
 });
- */
