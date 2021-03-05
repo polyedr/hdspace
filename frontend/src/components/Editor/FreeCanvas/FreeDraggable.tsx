@@ -101,6 +101,7 @@ const FreeDraggable: React.FC<Props> = ({
       updateElementParameters(
         id,
         {
+          ...element.parameters,
           freeCanvas: {
             zIndex,
             width: parseInt(ref.style.width),
@@ -133,6 +134,7 @@ const FreeDraggable: React.FC<Props> = ({
       updateElementParameters(
         id,
         {
+          ...element.parameters,
           freeCanvas: {
             zIndex,
             width,

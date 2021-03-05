@@ -19,6 +19,7 @@ const useStyles = makeStyles({
     position: 'absolute',
     top: 0,
     left: 0,
+    zIndex: 999,
     color: 'white',
     fontSize: '.8em',
     textTransform: 'capitalize',
@@ -47,7 +48,7 @@ const useStyles = makeStyles({
   border: {
     position: 'absolute',
     backgroundColor: (props: any) => (props.isActive ? '#5A899D' : '#7a7a7a'),
-    zIndex: 999,
+    zIndex: 998,
   },
   topBorder: {
     top: 0,

@@ -31,8 +31,8 @@ export const makeButton = ({
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 87,
-      height: 28,
+      width: 54,
+      height: 27,
     },
     group: ElementGroup.FORM,
     textContent,
