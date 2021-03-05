@@ -8,6 +8,7 @@ import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { defaultFreeCanvasParams } from '../../core';
 
 export const map: MapServerElement = {
+  id: 'map',
   buoyancy: 0,
   func_type: 'map',
   struct_type: 'map',
@@ -38,6 +39,7 @@ export const map: MapServerElement = {
 };
 
 export const calendar: CalendarServerElement = {
+  id: 'calendar',
   buoyancy: 0,
   func_type: 'calendar',
   struct_type: 'calendar',
@@ -55,6 +57,7 @@ export const calendar: CalendarServerElement = {
 };
 
 export const clock: ClockServerElement = {
+  id: 'clock',
   buoyancy: 0,
   func_type: 'clock',
   struct_type: 'clock',

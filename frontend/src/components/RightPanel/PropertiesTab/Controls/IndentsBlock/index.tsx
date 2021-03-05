@@ -85,6 +85,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 const IndentsBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  masterScreenEnabled,
   marginTop,
   marginBottom,
   marginLeft,
@@ -138,20 +139,22 @@ const IndentsBlock: React.FC<Props> = ({
 
   return (
     <div>
-      <StylesHeader
-        title="Margins & Paddings"
-        onClick={removeStyles}
-        cssPropertiesNames={[
-          'marginTop',
-          'marginRight',
-          'marginBottom',
-          'marginLeft',
-          'paddingTop',
-          'paddingRight',
-          'paddingBottom',
-          'paddingLeft',
-        ]}
-      />
+      {!masterScreenEnabled && (
+        <StylesHeader
+          title="Margins & Paddings"
+          onClick={removeStyles}
+          cssPropertiesNames={[
+            'marginTop',
+            'marginRight',
+            'marginBottom',
+            'marginLeft',
+            'paddingTop',
+            'paddingRight',
+            'paddingBottom',
+            'paddingLeft',
+          ]}
+        />
+      )}
 
       <div className={classes.marginGrid}>
         <div className={classes.capture}>Margin</div>

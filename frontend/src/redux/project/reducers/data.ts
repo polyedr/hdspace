@@ -4,11 +4,11 @@ import {
   arrayToMap,
   extractMapElement,
   flattenElements,
-  insertElementsGroup,
   insertMapElement,
   moveMapElement,
   removeMapElement,
   updateMapElement,
+  insertMapElementWrapper,
 } from '@Utils/normalizedStateHelpers';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { initialData } from '../initial';
@@ -95,13 +95,12 @@ const dataReducer = produce(
         break;
       }
 
-      case TYPES.CREATE_STATE_GROUP: {
-        const { groupEl, parentId, childIds, buoyancy } = action.payload;
-        draft.elements = insertElementsGroup(
+      case TYPES.WRAP_STATE_ELEMENTS: {
+        const { parentId, childIds, element } = action.payload;
+        draft.elements = insertMapElementWrapper(
           draft.elements,
-          groupEl,
+          element,
           parentId,
-          buoyancy,
           childIds,
         );
         break;
@@ -156,7 +155,8 @@ const dataReducer = produce(
       }
 
       case TYPES.SET_SCREENS: {
-        draft.screens = arrayToMap<Screen>(action.payload.screens);
+        const data = arrayToMap<Screen>(action.payload.screens);
+        draft.screens = data;
         break;
       }
 
@@ -286,16 +286,6 @@ const dataReducer = produce(
         draft.assetResults[listId].results = draft.assetResults[
           listId
         ].results.filter((asset) => asset.id !== id);
-        break;
-      }
-
-      case TYPES.SET_ACTIVE_MASTER_ELEMENT_ID: {
-        draft.masterScreen.activeId = action.payload;
-        break;
-      }
-
-      case TYPES.SET_MASTER_SCREEN_ENABLED: {
-        draft.masterScreen.enabled = action.payload;
         break;
       }
 

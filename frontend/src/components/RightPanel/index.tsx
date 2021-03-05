@@ -5,6 +5,7 @@ import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Theme } from '@material-ui/core';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
@@ -17,8 +18,6 @@ import {
 } from '@Constants/defaultParams';
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/masterScreen';
-import MasterPanel from '@Components/Editor/MasterScreen/MasterPanel';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import AssetsSection from './Assets';
@@ -106,15 +105,19 @@ const RightPanel: React.FC = () => {
     const isFertile = canElementHaveAllChildren(activeElement.type);
 
     let newTabs = defaultTabs;
-    if (!isInteractive) {
-      newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
-    }
-    if (!isFertile) {
-      newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
+    if (masterScreenEnabled) {
+      newTabs = [RPTab.Properties];
+    } else {
+      if (!isInteractive) {
+        newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
+      }
+      if (!isFertile) {
+        newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
+      }
     }
 
     setTabs(newTabs);
-  }, [activeElement.type]);
+  }, [activeElement.type, masterScreenEnabled]);
 
   useEffect(() => {
     if (KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
@@ -132,30 +135,26 @@ const RightPanel: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      {masterScreenEnabled ? (
-        <MasterPanel />
-      ) : (
-        <>
-          <Tabs
-            value={activeTabIndex}
-            onChange={handleChange}
-            classes={tabsClasses}
-            variant="fullWidth"
-          >
-            {tabs.map((tab) => (
-              <Tab key={tab} classes={tabClasses} label={tab} />
-            ))}
-          </Tabs>
+      <>
+        <Tabs
+          value={activeTabIndex}
+          onChange={handleChange}
+          classes={tabsClasses}
+          variant="fullWidth"
+        >
+          {tabs.map((tab) => (
+            <Tab key={tab} classes={tabClasses} label={tab} />
+          ))}
+        </Tabs>
 
-          {tabs.map((tab, i) => {
-            return (
-              <TabPanel index={i} value={activeTabIndex} key={tab}>
-                {tabContent[tab]}
-              </TabPanel>
-            );
-          })}
-        </>
-      )}
+        {tabs.map((tab, i) => {
+          return (
+            <TabPanel index={i} value={activeTabIndex} key={tab}>
+              {tabContent[tab]}
+            </TabPanel>
+          );
+        })}
+      </>
       <AssetsSection />
     </div>
   );

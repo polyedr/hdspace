@@ -46,6 +46,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 const TypographyBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  masterScreenEnabled,
   activeElementId,
   fontFamily,
   fontSize,
@@ -108,18 +109,20 @@ const TypographyBlock: React.FC<Props> = ({
 
   return (
     <div>
-      <StylesHeader
-        title="Font"
-        onClick={removeStyles}
-        cssPropertiesNames={[
-          'fontFamily',
-          'fontStyle',
-          'fontWeight',
-          'fontSize',
-          'textAlign',
-          'color',
-        ]}
-      />
+      {!masterScreenEnabled && (
+        <StylesHeader
+          title="Font"
+          onClick={removeStyles}
+          cssPropertiesNames={[
+            'fontFamily',
+            'fontStyle',
+            'fontWeight',
+            'fontSize',
+            'textAlign',
+            'color',
+          ]}
+        />
+      )}
 
       <div>
         <StyledTextField

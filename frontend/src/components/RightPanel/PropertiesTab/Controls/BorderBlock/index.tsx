@@ -54,6 +54,7 @@ const BorderBlock: React.FC<Props> = ({
   borderWidth,
   borderColor = 'transparent',
   borderRadius = 'px',
+  masterScreenEnabled,
 }) => {
   const classes = useStyles();
   const validateBorderRadius = useCallback((radius: string | null) => {
@@ -115,11 +116,13 @@ const BorderBlock: React.FC<Props> = ({
 
   return (
     <div>
-      <StylesHeader
-        title="Border"
-        onClick={removeStyles}
-        cssPropertiesNames={['borderColor', 'borderWidth', 'borderRadius']}
-      />
+      {!masterScreenEnabled && (
+        <StylesHeader
+          title="Border"
+          onClick={removeStyles}
+          cssPropertiesNames={['borderColor', 'borderWidth', 'borderRadius']}
+        />
+      )}
 
       <div className={classes.wrapper}>
         <StyledTextField

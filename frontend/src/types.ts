@@ -72,7 +72,7 @@ export type ServerElement<
   Children = any[],
   Params = BaseElementParams
 > = {
-  id?: number;
+  id: number | string;
   name: string;
   scenario?: number;
   struct_type: Type;
@@ -162,18 +162,14 @@ export type RadiobuttonServerElement = ServerElement<
 >;
 export type SelectServerElement = ServerElement<
   'select',
-  SelectMenuServerElement[],
+  OptionServerElement[],
   SelectParameters
 >;
 export type SelectMenuServerElement = ServerElement<
   'selectMenu',
-  SelectItemServerElement[]
+  OptionServerElement[]
 >;
-export type SelectItemServerElement = ServerElement<
-  'selectItem',
-  [],
-  SelectItemParameters
->;
+export type OptionServerElement = ServerElement<'option', [], OptionParameters>;
 export type TextareaServerElement = ServerElement<
   'textarea',
   [],
@@ -324,15 +320,8 @@ export type SmartElement<T extends Entity> = LibraryElement<
   [],
   SmartElementParameters
 >;
-export type SelectMenuElement = LibraryElement<
-  'selectMenu',
-  SelectItemElement[]
->;
-export type SelectItemElement = LibraryElement<
-  'selectItem',
-  [],
-  SelectItemParameters
->;
+export type SelectMenuElement = LibraryElement<'selectMenu', OptionElement[]>;
+export type OptionElement = LibraryElement<'option', [], OptionParameters>;
 export type TextareaElement = LibraryElement<
   'textarea',
   [],
@@ -399,7 +388,7 @@ export type LibraryElementUnion =
   | RadiobuttonElement
   | SelectElement
   | SelectMenuElement
-  | SelectItemElement
+  | OptionElement
   | TextareaElement
   | HeadingElement
   | ParagraphElement
@@ -487,11 +476,10 @@ export type RadiobuttonParameters = BaseElementParams & {
 
 export type SelectParameters = BaseElementParams & {
   value: string;
-  options: Option[];
   isOpen: boolean;
 };
 
-export type SelectItemParameters = BaseElementParams & {
+export type OptionParameters = BaseElementParams & {
   name: string;
   value: string;
 };
@@ -592,7 +580,9 @@ export type DropdownItemParameters = BaseElementParams & {
 };
 
 export type ElementsGroupParameters = BaseElementParams & {
-  groupElements: string[];
+  isGroup?: boolean;
+  groupElements?: string[];
+  sourceElementId?: string | null;
 };
 
 export type CreatedServerProject = {
@@ -953,6 +943,7 @@ export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
+  masterScreenEnabled?: boolean;
 };
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';
@@ -996,7 +987,7 @@ export type StyleProps = {
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement;
-  selectItem: SelectItemServerElement;
+  option: OptionServerElement;
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;
   dropdownItem: DropdownItemServerElement;

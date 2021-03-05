@@ -6,7 +6,7 @@ import {
   ElementGroup,
   LabelServerElement,
   RadiobuttonServerElement,
-  SelectItemServerElement,
+  OptionServerElement,
   SelectMenuServerElement,
   SelectServerElement,
   TextareaServerElement,
@@ -23,6 +23,7 @@ export const makeButton = ({
   textContent?: string;
   ownStyles?: React.CSSProperties;
 } = {}): ButtonServerElement => ({
+  id: 'button',
   buoyancy,
   func_type: 'button',
   struct_type: 'button',
@@ -46,6 +47,7 @@ export const makeTextinput = ({
 }: {
   ownStyles?: React.CSSProperties;
 } = {}): TextinputServerElement => ({
+  id: 'textinput',
   buoyancy: 0,
   func_type: 'textinput',
   struct_type: 'textinput',
@@ -55,7 +57,7 @@ export const makeTextinput = ({
     group: ElementGroup.FORM,
     textContent: '',
     type: 'text',
-    placeholder: 'Enter a label for the field',
+    placeholder: 'Placeholder',
   },
   styles: {
     classNames: ['textinput'],
@@ -66,6 +68,7 @@ export const makeTextinput = ({
 });
 
 export const checkbox: CheckboxServerElement = {
+  id: 'checkbox',
   buoyancy: 0,
   func_type: 'checkbox',
   struct_type: 'checkbox',
@@ -89,6 +92,7 @@ export const checkbox: CheckboxServerElement = {
 };
 
 export const radiobutton: RadiobuttonServerElement = {
+  id: 'radiobutton',
   buoyancy: 0,
   func_type: 'radiobutton',
   struct_type: 'radiobutton',
@@ -110,13 +114,14 @@ export const radiobutton: RadiobuttonServerElement = {
   children: [],
 };
 
-export const makeSelectItem = (
+export const makeOption = (
   name: string,
   value: string,
-): SelectItemServerElement => ({
+): OptionServerElement => ({
+  id: 'option',
   buoyancy: 0,
-  func_type: 'selectItem',
-  struct_type: 'selectItem',
+  func_type: 'option',
+  struct_type: 'option',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
@@ -125,14 +130,15 @@ export const makeSelectItem = (
     group: ElementGroup.OTHER,
   },
   styles: {
-    classNames: ['selectItem'],
+    classNames: ['option'],
     ownStyles: {},
   },
-  name: 'selectItem',
+  name: 'option',
   children: [],
 });
 
 export const selectMenu: SelectMenuServerElement = {
+  id: 'selectMenu',
   buoyancy: 0,
   func_type: 'selectMenu',
   struct_type: 'selectMenu',
@@ -147,13 +153,14 @@ export const selectMenu: SelectMenuServerElement = {
   },
   name: 'selectMenu',
   children: [
-    makeSelectItem('First option', 'first option'),
-    makeSelectItem('Second option', 'second option'),
-    makeSelectItem('Third option', 'third option'),
+    makeOption('First option', 'first option'),
+    makeOption('Second option', 'second option'),
+    makeOption('Third option', 'third option'),
   ],
 };
 
 export const select: SelectServerElement = {
+  id: 'select',
   buoyancy: 0,
   func_type: 'select',
   struct_type: 'select',
@@ -162,12 +169,6 @@ export const select: SelectServerElement = {
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     value: 'first option',
-    options: [
-      // TODO research why we need options here
-      { name: 'First option', value: 'first option' },
-      { name: 'Second option', value: 'second option' },
-      { name: 'Third option', value: 'third option' },
-    ],
     isOpen: false,
   },
   styles: {
@@ -175,16 +176,19 @@ export const select: SelectServerElement = {
     ownStyles: {},
   },
   name: 'select',
-  children: [selectMenu],
+  children: [
+    makeOption('First option', 'first option'),
+    makeOption('Second option', 'second option'),
+    makeOption('Third option', 'third option'),
+  ],
 };
 
 export const makeLabel = ({
   textContent = 'This is label',
   ownStyles = {},
-}: {
-  textContent?: string;
-  ownStyles?: React.CSSProperties;
+  UID = 'master',
 } = {}): LabelServerElement => ({
+  id: `label-${UID}`,
   buoyancy: 0,
   func_type: 'label',
   struct_type: 'label',
@@ -204,6 +208,7 @@ export const makeLabel = ({
 });
 
 export const textarea: TextareaServerElement = {
+  id: 'textarea',
   buoyancy: 0,
   func_type: 'textarea',
   struct_type: 'textarea',
@@ -212,7 +217,7 @@ export const textarea: TextareaServerElement = {
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
     textContent: '',
-    placeholder: 'Enter a label for the field',
+    placeholder: 'Placeholder',
   },
   styles: {
     classNames: ['textarea'],

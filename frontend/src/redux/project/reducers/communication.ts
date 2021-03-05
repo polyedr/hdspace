@@ -21,6 +21,13 @@ const communicationReducer = (
       };
     }
 
+    case TYPES.SET_MASTER_SCREEN_LOADER: {
+      return {
+        ...state,
+        masterScreenLoader: action.payload.active,
+      };
+    }
+
     case TYPES.SET_PROJECT_LOADER: {
       return {
         ...state,

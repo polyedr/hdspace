@@ -57,7 +57,6 @@ export const getRightPanelCategoryTabs = (
         },
       };
     case 'button':
-    case 'dropdown':
     case 'textinput':
     case 'textarea':
     case 'checkbox':
@@ -121,6 +120,7 @@ export const getRightPanelCategoryTabs = (
       };
     case 'divBlock':
     case 'ocrtext':
+    case 'dropdown':
     case 'root':
     default:
       return null;

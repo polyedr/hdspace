@@ -1,9 +1,5 @@
 import { createSelector } from 'reselect';
-import {
-  DEFAULT_ACTIVE_ELEMENT,
-  DEFAULT_ROOT,
-  LABELED_INPUT_TYPES,
-} from '@Constants/defaultParams';
+import { DEFAULT_ROOT, LABELED_INPUT_TYPES } from '@Constants/defaultParams';
 import {
   arrayToMap,
   buildElementsTree,
@@ -28,6 +24,7 @@ import { AppReduxState, ProjectState } from '../../types';
 import {
   selectCurrentScreen,
   selectCurrentScreenId,
+  selectMasterScreen,
   selectScreenById,
   selectScreens,
 } from './screen';
@@ -116,7 +113,7 @@ export const selectAllElements = ({ project }: AppReduxState) =>
 export const selectActiveElement = createSelector(
   selectAllElements,
   selectActiveElementId,
-  (elements, id) => elements[id] || DEFAULT_ACTIVE_ELEMENT,
+  (elements, id) => elements[id] || DEFAULT_ROOT,
 );
 
 function makeActiveElementInfoSelector<
@@ -371,11 +368,21 @@ export const selectElementGroupIds = (state: AppReduxState) => {
   );
 };
 
+export const selectMasterCoreElementId = (state: AppReduxState) =>
+  state.project.edit.masterCoreElementId;
+
+export const selectMasterGroupsElementId = (state: AppReduxState) =>
+  state.project.edit.masterGroupsElementId;
+
+export const selectMasterGroupsElement = (state: AppReduxState) => {
+  const masterGroupsElId = selectMasterGroupsElementId(state);
+  return selectElementById(masterGroupsElId)(state);
+};
+
 export const selectElementGroups = (state: AppReduxState) => {
   const { elements } = selectProjectState(state).data;
-  return Object.values(elements).filter(
-    (element: StateElement) => element.parameters?.isGroup === true,
-  );
+  const masterGroupsEl = selectMasterGroupsElement(state);
+  return masterGroupsEl?.children.map((childId) => elements[childId]) || [];
 };
 
 export const selectElementTreeGroups = (state: AppReduxState) => {
@@ -411,4 +418,12 @@ export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({
     },
     [] as string[],
   );
+};
+
+export const selectMasterScreenRoot = (state: AppReduxState) => {
+  const masterScreen = selectMasterScreen(state);
+  if (!masterScreen) {
+    return null;
+  }
+  return selectElementById(masterScreen.element)(state);
 };

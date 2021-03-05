@@ -1,0 +1,63 @@
+import { convertElementFromResponse } from '@Api/converters/fromResponse';
+import { section } from '@Domain/libraryElements/blocksTemplates/blocksTemplates';
+import {
+  checkbox,
+  makeButton,
+  makeLabel,
+  makeTextinput,
+  radiobutton,
+  textarea,
+} from '@Domain/libraryElements/formElements/formElements';
+import {
+  column,
+  makeColumns,
+  makeContainer,
+  makeGrid,
+  makeGridItem,
+  makeImage,
+  nativeColumns,
+  video,
+  undefined as undefinedElement,
+} from '@Domain/libraryElements/otherElements/otherElements';
+import {
+  hyperlink,
+  makeHeading,
+  makeList,
+  makeListItem,
+  makeParagraph,
+  textBlock,
+} from '@Domain/libraryElements/typographyElements/typographyElements';
+import { capitalize } from '@material-ui/core';
+import { Entity, ServerElement } from '@Src/types';
+
+const CORE_MASTER_RESPONSE_ELEMENTS = [
+  makeHeading(),
+  hyperlink,
+  makeParagraph(),
+  textBlock,
+  makeList({ items: [makeListItem()] }),
+  makeButton(),
+  makeTextinput(),
+  checkbox,
+  radiobutton,
+  makeLabel(),
+  textarea,
+  makeContainer(),
+  makeGrid({ items: [makeGridItem()] }),
+  makeColumns(),
+  column,
+  nativeColumns,
+  makeImage(),
+  video,
+  undefinedElement,
+  section,
+];
+
+const CORE_MASTER_ELEMENTS = CORE_MASTER_RESPONSE_ELEMENTS.map(
+  (el: ServerElement<Entity>) => ({
+    ...convertElementFromResponse(el),
+    name: `Master ${capitalize(el.name)}`,
+  }),
+);
+
+export default CORE_MASTER_ELEMENTS;
