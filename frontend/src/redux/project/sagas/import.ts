@@ -85,7 +85,14 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
 
       const screen: Screen = yield call(
         createScreenSaga,
-        createScreen(projectId, 'Screen 1', projectscreen.length),
+        createScreen(
+          {
+            projectID: projectId,
+            name: 'Screen 1',
+            buoyancy: projectscreen.length,
+          },
+          { useHistory: true },
+        ),
       );
 
       const root: StateElement = yield select(

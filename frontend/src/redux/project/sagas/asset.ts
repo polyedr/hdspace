@@ -24,6 +24,7 @@ import {
   selectAssetListById,
   selectSelectedAssetListId,
 } from '../selectors/asset';
+import withActionsHistory from '../wrappers/withActionsHistory';
 
 export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
   const { selectedListId } = action.payload;
@@ -89,28 +90,29 @@ export function* loadAssetListsSaga() {
   }
 }
 
-export function* addNewAssetListSaga(
+export const addNewAssetListSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.addAssetList>,
 ) {
   const { name } = action.payload;
   const projectId = yield select(selectCurrentProjectId);
-  const undo = !!action.meta && action.meta.undo;
+  const useHistory = !!action.meta && action.meta.useHistory;
   try {
     const selectedAssetId = yield select(selectSelectedAssetListId);
+
     const assetList: AssetsList = yield call(reqWrapper, apiCreateAssetList, {
       projectId,
       name,
     });
-    yield put(Actions.addAssetListToState(assetList, { sourceAction: action }));
-    yield put(Actions.setSelectedAssetListId(assetList.id));
-    if (!undo) {
+    if (!useHistory) {
       yield put(
-        Actions.setUndoActions([
+        Actions.addUndoActions([
           Actions.setSelectedAssetListId(selectedAssetId || ALL_ASSETS_LIST_ID),
-          Actions.removeAssetList(assetList.id),
+          Actions.removeAssetList(assetList.id, { ...action.meta }),
         ]),
       );
     }
+    yield put(Actions.addAssetListToState(assetList));
+    yield put(Actions.setSelectedAssetListId(assetList.id));
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -119,17 +121,17 @@ export function* addNewAssetListSaga(
       }),
     );
   }
-}
+});
 
-export function* removeAssetListSaga(
+export const removeAssetListSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.removeAssetList>,
 ) {
   try {
     const assetList = yield select(selectAssetListById);
-    const undo = !!action.meta && action.meta.undo;
-    if (!undo) {
+    const useHistory = !!action.meta && action.meta.useHistory;
+    if (!useHistory) {
       yield put(
-        Actions.setUndoActions([
+        Actions.addUndoActions([
           Actions.addAssetList(assetList.name, action.meta),
         ]),
       );
@@ -146,9 +148,9 @@ export function* removeAssetListSaga(
       }),
     );
   }
-}
+});
 
-export function* restoreAssetSaga(
+export const restoreAssetSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.restoreAsset>,
 ) {
   const {
@@ -156,14 +158,14 @@ export function* restoreAssetSaga(
     meta,
   } = action;
   try {
-    if (!meta?.undo) {
+    if (!meta?.useHistory) {
       yield put(
-        Actions.setUndoActions([
+        Actions.addUndoActions([
           Actions.removeAsset(asset.id, listId, action.meta),
         ]),
       );
     }
-    yield put(Actions.addAssetToState(listId, asset, { sourceAction: action }));
+    yield put(Actions.addAssetToState(listId, asset));
     yield call(reqWrapper, apiUpdateAsset, {
       id: asset.id,
       asset: convertToServerAsset(asset),
@@ -176,9 +178,9 @@ export function* restoreAssetSaga(
       }),
     );
   }
-}
+});
 
-export function* removeAssetSaga(
+export const removeAssetSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.removeAsset>,
 ) {
   const {
@@ -187,8 +189,8 @@ export function* removeAssetSaga(
   } = action;
   try {
     const asset = yield select(selectAssetListById);
-    if (!meta?.undo) {
-      yield put(Actions.setUndoActions([Actions.restoreAsset(asset, listId)]));
+    if (!meta?.useHistory) {
+      yield put(Actions.addUndoActions([Actions.restoreAsset(asset, listId)]));
     }
     yield put(Actions.removeAssetRedux(id, listId));
     yield call(reqWrapper, apiDeleteAsset, { id });
@@ -200,9 +202,9 @@ export function* removeAssetSaga(
       }),
     );
   }
-}
+});
 
-export function* uploadAssetSaga(
+export const uploadAssetSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.uploadAsset>,
 ) {
   const { listId, assetFile } = action.payload;
@@ -228,17 +230,15 @@ export function* uploadAssetSaga(
     const asset = yield call(reqWrapper, apiCreateAsset, {
       assetFormData,
     });
-    const undo = !!action.meta && action.meta.undo;
-    if (!undo) {
+    const useHistory = !!action.meta && action.meta.useHistory;
+    if (!useHistory) {
       yield put(
-        Actions.setUndoActions([
+        Actions.addUndoActions([
           Actions.removeAsset(asset.id, asset.listId, action.meta),
         ]),
       );
     }
-    yield put(
-      Actions.addAssetToState(assetListId, asset, { sourceAction: action }),
-    );
+    yield put(Actions.addAssetToState(assetListId, asset));
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -247,7 +247,7 @@ export function* uploadAssetSaga(
       }),
     );
   }
-}
+});
 
 export function* uploadElementAssetSaga(
   action: ReturnType<typeof Actions.uploadElementAsset>,
@@ -270,7 +270,7 @@ export function* uploadElementAssetSaga(
     const asset: Asset = yield call(reqWrapper, apiCreateAsset, {
       assetFormData,
     });
-    yield put(Actions.addAssetToState(listId, asset, { sourceAction: action }));
+    yield put(Actions.addAssetToState(listId, asset));
 
     yield put(
       Actions.updateElementParameters(

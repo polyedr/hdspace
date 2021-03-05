@@ -70,7 +70,10 @@ function* createMasterScreenElements(screen: Screen) {
     selectElementAsTree(screen.element),
   );
 
-  yield call(createElements, { elements }, masterRoot, { screenId: screen.id });
+  yield call(createElements, { elements }, masterRoot, {
+    screenId: screen.id,
+    useHistory: true,
+  });
   yield call(setMasterScreenCoreElements, screen);
 }
 
@@ -240,9 +243,7 @@ export function* createProjectSaga(
         projectId: result.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
-      yield put(
-        Actions.addAssetListToState(assetList, { sourceAction: action }),
-      );
+      yield put(Actions.addAssetListToState(assetList, { useHistory: true }));
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, result]));
 
@@ -251,11 +252,15 @@ export function* createProjectSaga(
       const masterScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
-          result.id,
-          'Master Screen',
-          0,
-          true,
-          'Master Screen',
+          {
+            projectID: result.id,
+            name: 'Master Screen',
+            buoyancy: 0,
+            rootName: 'Master Screen',
+          },
+          {
+            useHistory: true,
+          },
         ),
       );
 
@@ -265,7 +270,12 @@ export function* createProjectSaga(
 
       const initialScreen: Screen = yield call(
         createScreenSaga,
-        Actions.createScreen(result.id, 'Screen 1', 1, true),
+        Actions.createScreen(
+          { projectID: result.id, name: 'Screen 1', buoyancy: 1 },
+          {
+            useHistory: true,
+          },
+        ),
       );
 
       if (initialScreen && masterScreen) {
@@ -393,11 +403,11 @@ export function* updateProjectSaga(
     const success: boolean = yield call(projectUpdateHelperSaga, project);
 
     if (success) {
-      const { undo } = action.meta;
+      const { useHistory } = action.meta;
 
-      if (!undo) {
+      if (!useHistory) {
         yield put(
-          Actions.setUndoActions(Actions.updateProject(currentProject)),
+          Actions.addUndoActions(Actions.updateProject(currentProject)),
         );
       }
     } else {

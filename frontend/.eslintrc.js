@@ -72,5 +72,6 @@ module.exports = {
     ],
     'react/jsx-indent': 'off',
     'lines-between-class-members': 'off',
+    'func-names': ['error', 'as-needed', { generators: 'never' }],
   },
 };

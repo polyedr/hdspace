@@ -81,8 +81,7 @@ export const initialCommunication: ProjectCommunicationState = {
 };
 
 export const initialControl: ProjectControlState = {
-  undoActions: [],
-  redoActions: [],
   history: [],
-  groupActionsUp: false,
+  currentHistoryRecord: -1,
+  historyInProgress: false,
 };

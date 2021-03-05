@@ -1,0 +1,132 @@
+import { put, select } from 'redux-saga/effects';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import { HistoryRecord } from '@Redux/types';
+import * as Actions from '../actions';
+import {
+  selectCanUndo,
+  selectCurrentHistoryRecord,
+  selectHistoryInProgress,
+} from '../selectors/control';
+
+// export function* startHistoryRecordSaga() {}
+
+export function* executeUndoActionsSaga() {
+  try {
+    const canUndo = yield select(selectCanUndo);
+    if (!canUndo) {
+      throw new Error('Can not undo');
+    }
+    const currentHistoryRecord: HistoryRecord = yield select(
+      selectCurrentHistoryRecord,
+    );
+    // eslint-disable-next-line no-restricted-syntax
+    for (const undoAction of currentHistoryRecord.undo.reverse()) {
+      yield put({
+        ...undoAction,
+        meta: {
+          ...(undoAction.meta || {}),
+          useHistory: true,
+        },
+      });
+    }
+    yield put(Actions.moveHistoryBackward());
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* executeRedoActionsSaga() {
+  try {
+    yield put(Actions.moveHistoryForward());
+    const currentHistoryRecord: HistoryRecord = yield select(
+      selectCurrentHistoryRecord,
+    );
+    if (currentHistoryRecord.redo.length) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const redoAction of currentHistoryRecord.redo.reverse()) {
+        yield put({
+          ...redoAction,
+          meta: {
+            ...(redoAction.meta || {}),
+            useHistory: true,
+          },
+        });
+      }
+    } else {
+      const { action: redoAction } = currentHistoryRecord;
+      yield put({
+        ...redoAction,
+        meta: {
+          ...(redoAction.meta || {}),
+          useHistory: true,
+        },
+      });
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* addUndoActionsSaga(
+  action: ReturnType<typeof Actions.addUndoActions>,
+) {
+  const { actions } = action.payload;
+  try {
+    const historyInProgress = yield select(selectHistoryInProgress);
+    if (!historyInProgress) {
+      throw new Error('No action is being executed');
+    }
+    yield put(
+      Actions.addStateUndoActions(Array.isArray(actions) ? actions : [actions]),
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* addRedoActionsSaga(
+  action: ReturnType<typeof Actions.addRedoActions>,
+) {
+  const { actions } = action.payload;
+  try {
+    const historyInProgress = yield select(selectHistoryInProgress);
+    if (!historyInProgress) {
+      throw new Error('No action is being executed');
+    }
+    yield put(
+      Actions.addStateRedoActions(Array.isArray(actions) ? actions : [actions]),
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export function* addHistoryActionsSaga(
+  action: ReturnType<typeof Actions.addHistoryActions>,
+) {
+  const { undo, redo } = action.payload;
+  yield put(Actions.addUndoActions(undo));
+  if (redo?.length) {
+    yield put(Actions.addRedoActions(redo));
+  }
+}
