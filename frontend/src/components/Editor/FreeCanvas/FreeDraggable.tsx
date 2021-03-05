@@ -19,6 +19,8 @@ import useElementProps from '@Components/Editor/hooks/useElementProps';
 import cn from 'classnames';
 import Borders from './Borders';
 
+const lockedAspectRatioElements: Entity[] = ['image'];
+
 const useStyles = makeStyles({
   rnd: {
     position: 'absolute',
@@ -152,7 +154,7 @@ const FreeDraggable: React.FC<Props> = ({
 
   const Renderer = RENDERERS[type as Entity];
 
-  const isActiveHandle = (dir: string) =>
+  const activeHandle = (dir: string) =>
     resizeDir === dir && classes.activeResizeHandle;
 
   return (
@@ -177,18 +179,18 @@ const FreeDraggable: React.FC<Props> = ({
         setResizeDir(dir);
       }}
       onDragStart={handleInteractionStart}
-      // lockAspectRatio={lockAspectRatio}
+      lockAspectRatio={lockedAspectRatioElements.includes(type as Entity)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       resizeHandleClasses={{
-        bottom: cn(classes.resizeHande, isActiveHandle('bottom')),
-        bottomLeft: cn(classes.resizeHande, isActiveHandle('bottomLeft')),
-        bottomRight: cn(classes.resizeHande, isActiveHandle('bottomRight')),
-        left: cn(classes.resizeHande, isActiveHandle('left')),
-        top: cn(classes.resizeHande, isActiveHandle('top')),
-        right: cn(classes.resizeHande, isActiveHandle('right')),
-        topLeft: cn(classes.resizeHande, isActiveHandle('topLeft')),
-        topRight: cn(classes.resizeHande, isActiveHandle('topRight')),
+        bottom: cn(classes.resizeHande, activeHandle('bottom')),
+        bottomLeft: cn(classes.resizeHande, activeHandle('bottomLeft')),
+        bottomRight: cn(classes.resizeHande, activeHandle('bottomRight')),
+        left: cn(classes.resizeHande, activeHandle('left')),
+        top: cn(classes.resizeHande, activeHandle('top')),
+        right: cn(classes.resizeHande, activeHandle('right')),
+        topLeft: cn(classes.resizeHande, activeHandle('topLeft')),
+        topRight: cn(classes.resizeHande, activeHandle('topRight')),
       }}
     >
       <Renderer {...elementProps}>

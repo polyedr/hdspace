@@ -288,6 +288,8 @@ export const makeImage = ({
     imageURL: IMAGES.imageIcon,
     freeCanvas: {
       ...defaultFreeCanvasParams,
+      width: 300,
+      height: 300,
     },
   },
   styles: {
@@ -480,7 +482,11 @@ export const video: VideoServerElement = {
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
     group: ElementGroup.OTHER,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 640,
+      height: 480,
+    },
     videoSettings: {
       link: '',
       autoplay: false,
@@ -498,8 +504,7 @@ export const video: VideoServerElement = {
   children: [],
 };
 
-// eslint-disable-next-line no-shadow-restricted-names
-export const undefined: UndefinedServerElement = {
+export const undefinedElement: UndefinedServerElement = {
   // TODO: RENAME THIS CONST
   id: 'undefined',
   buoyancy: 0,
@@ -510,8 +515,8 @@ export const undefined: UndefinedServerElement = {
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      // width: '50%',
-      // height: '50%',
+      width: 100,
+      height: 100,
     },
   },
   styles: {

@@ -57,7 +57,11 @@ export const makeTextinput = ({
   struct_type: 'textinput',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      height: 27,
+      width: 160,
+    },
     group: ElementGroup.FORM,
     textContent: '',
     type: 'text',
@@ -78,7 +82,11 @@ export const checkbox: CheckboxServerElement = {
   struct_type: 'checkbox',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 13,
+      height: 13,
+    },
     group: ElementGroup.FORM,
     value: '',
     defaultChecked: true,
@@ -102,7 +110,11 @@ export const radiobutton: RadiobuttonServerElement = {
   struct_type: 'radiobutton',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 13,
+      height: 13,
+    },
     group: ElementGroup.FORM,
     value: '',
     name: '',
@@ -170,7 +182,11 @@ export const select: SelectServerElement = {
   struct_type: 'select',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 24,
+      height: 200,
+    },
     group: ElementGroup.FORM,
     value: 'first option',
     isOpen: false,
@@ -198,7 +214,11 @@ export const makeLabel = ({
   struct_type: 'label',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 74,
+      height: 21,
+    },
     group: ElementGroup.TYPOGRAPHY,
     textContent,
     labelFor: 'no for attribute',
@@ -218,7 +238,11 @@ export const textarea: TextareaServerElement = {
   struct_type: 'textarea',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 170,
+      height: 90,
+    },
     group: ElementGroup.FORM,
     textContent: '',
     placeholder: 'Placeholder',
