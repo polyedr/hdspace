@@ -50,11 +50,13 @@ import {
   UpdateDataActionType,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
+import { apiGetFile } from '@Api/import';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { createElements, wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { updateAssetImage, uploadAsset } from './asset';
 
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(
@@ -1279,6 +1281,39 @@ export const createElementsGroupSaga = withActionsHistory(function* (
   }
 });
 
-/* export function* uploadElementImageByUrlSaga(
+export const uploadElementImageByUrlSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.uploadImageByUrl>,
-) {} */
+) {
+  if (!action.meta) {
+    yield put(
+      enqueueSnackbar({
+        message: 'No meta information is provided',
+        options: { variant: 'error' },
+      }),
+    );
+    return;
+  }
+  const { /* elementId, */ url, listId } = action.payload;
+
+  try {
+    const assetName = url.slice(url.lastIndexOf('/'));
+    const asset = yield call(uploadAsset, null, assetName, listId, action.meta);
+    const backendImageUrl = yield call(reqWrapper, apiGetFile, {
+      fileUrl: url,
+    });
+    yield call(
+      updateAssetImage,
+      asset.id,
+      listId,
+      backendImageUrl,
+      action.meta,
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+});

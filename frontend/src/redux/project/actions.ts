@@ -135,6 +135,9 @@ import {
   ReplaceElementParameters,
   ReplaceMultipleElementsParameters,
   WrapMultipleElementsIntoContainer,
+  UploadImageByUrl,
+  UpdateStateAssetImage,
+  UpdateAssetImage,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -1102,7 +1105,7 @@ export const removeAssetRedux = (id: string, listId: string) => ({
 });
 
 export const addAssetListToState = (list: AssetsList, meta?: HistoryMeta) => ({
-  type: TYPES.ADD_ASSET_LIST_REDUX,
+  type: TYPES.ADD_STATE_ASSET_LIST,
   payload: list,
   meta,
 });
@@ -1254,7 +1257,39 @@ export const moveHistoryBackward = (): MoveHistoryBackward => ({
   type: TYPES.MOVE_HISTORY_BACKWARD,
 });
 
-export const uploadImageByUrl = (url: string, listId: string) => ({
+export const uploadImageByUrl = (
+  elementId: string,
+  url: string,
+  listId: string,
+  meta: ElementHistoryMeta,
+): UploadImageByUrl => ({
   type: TYPES.UPLOAD_IMAGE_BY_URL,
-  payload: { url, listId },
+  payload: { elementId, url, listId },
+  meta,
+});
+
+export const updateStateAssetImage = (
+  assetId: string,
+  listId: string,
+  imageUrl: string,
+  meta: HistoryMeta,
+): UpdateStateAssetImage => ({
+  type: TYPES.UPDATE_STATE_ASSET_IMAGE,
+  payload: { assetId, listId, imageUrl },
+  meta,
+});
+
+export const updateAssetImage = (
+  assetId: string,
+  listId: string,
+  imageUrl: string,
+  meta: HistoryMeta,
+): UpdateAssetImage => ({
+  type: TYPES.UPDATE_ASSET_IMAGE,
+  payload: {
+    assetId,
+    listId,
+    imageUrl,
+  },
+  meta,
 });

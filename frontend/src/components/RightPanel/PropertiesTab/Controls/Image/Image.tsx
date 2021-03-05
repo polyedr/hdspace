@@ -88,34 +88,13 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
       );
       return;
     }
-    dispatch(uploadImageByUrl(imageUrl, assetLists[0].id));
-    /* const blobFilePromise = getImageFromUrl(imageUrl);
-    blobFilePromise.then((file: File) => {
-      if (file.size > 5242880) {
-        // eslint-disable-next-line no-alert
-        dispatch(
-          enqueueSnackbar({
-            message: 'Please choose image up to 5Mb!',
-            options: { variant: 'error' },
-          }),
-        );
-        return;
-      }
-      dispatch(
-        updateElementImage(activeElementId, file, {
-          screenId: currentScreenId,
-        }),
-      );
-    });
-    blobFilePromise.catch((error: Error) => {
-      dispatch(
-        enqueueSnackbar({
-          message: error.message,
-          options: { variant: 'error' },
-        }),
-      );
-    }); */
-  }, [dispatch, assetLists]);
+    dispatch(
+      uploadImageByUrl(activeElementId, imageUrl, assetLists[0].id, {
+        screenId: currentScreenId,
+      }),
+    );
+    inputUrlRef.current.value = '';
+  }, [dispatch, activeElementId, assetLists, currentScreenId]);
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
@@ -186,9 +165,6 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
         <div className={classes.assetListsWrapper}>
           <label htmlFor="image-asset-list">Upload image to asset list</label>
           <StyledTextField
-            inputRef={() => {
-              // setSelectedAsset(assetLists[0].id);
-            }}
             id="image-asset-list"
             className={classes.assetsSelector}
             select

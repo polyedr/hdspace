@@ -638,8 +638,8 @@ export type SetAssets = IAction<
   }
 >;
 
-export type AddAssetListRedux = IAction<
-  typeof TYPES.ADD_ASSET_LIST_REDUX,
+export type AddStateAssetList = IAction<
+  typeof TYPES.ADD_STATE_ASSET_LIST,
   AssetsList
 >;
 
@@ -658,6 +658,16 @@ export type UploadAsset = IAction<
     listId?: string;
   },
   HistoryMeta
+>;
+
+export type UploadImageByUrl = IAction<
+  typeof TYPES.UPLOAD_IMAGE_BY_URL,
+  {
+    elementId: string;
+    url: string;
+    listId: string;
+  },
+  ElementHistoryMeta
 >;
 
 export type AddAssetRedux = IAction<
@@ -689,6 +699,18 @@ export type RemoveAsset = IAction<
 export type RemoveAssetRedux = IAction<
   typeof TYPES.REMOVE_ASSET_REDUX,
   { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type UpdateAssetImage = IAction<
+  typeof TYPES.UPDATE_ASSET_IMAGE,
+  { assetId: string; listId: string; imageUrl: string },
+  HistoryMeta
+>;
+
+export type UpdateStateAssetImage = IAction<
+  typeof TYPES.UPDATE_STATE_ASSET_IMAGE,
+  { assetId: string; listId: string; imageUrl: string },
   HistoryMeta
 >;
 
@@ -953,13 +975,15 @@ export type Action =
   | SetEditorDocument
   | SetAssetLists
   | SetAssets
-  | AddAssetListRedux
+  | AddStateAssetList
   | AddAssetList
   | AddAssetRedux
   | RemoveAssetList
   | RemoveAssetListRedux
   | RemoveAsset
   | RemoveAssetRedux
+  | UpdateStateAssetImage
+  | UpdateAssetImage
   | RestoreAsset
   | SetSelectedAssetListId
   | SearchProjects
@@ -971,6 +995,7 @@ export type Action =
   | RemoveMultipleElementsStyles
   | UploadAsset
   | UploadElementAsset
+  | UploadImageByUrl
   | RemoveMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup

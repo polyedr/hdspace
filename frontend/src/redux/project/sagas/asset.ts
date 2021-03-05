@@ -23,6 +23,7 @@ import { selectElementById } from '../selectors/element';
 import {
   selectAssetListById,
   selectSelectedAssetListId,
+  selectAssetByListAndId,
 } from '../selectors/asset';
 import withActionsHistory from '../wrappers/withActionsHistory';
 
@@ -34,7 +35,9 @@ export function* uploadAsset(
   meta?: HistoryMeta,
 ) {
   const assetFormData = new FormData();
-  assetFormData.append('image', assetFile);
+  if (assetFile) {
+    assetFormData.append('image', assetFile);
+  }
   assetFormData.append('name', fileName);
   assetFormData.append('illustration_set', listId);
   try {
@@ -208,6 +211,84 @@ export const restoreAssetSaga = withActionsHistory(function* (
     yield put(
       enqueueSnackbar({
         message: error.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+});
+
+export const updateAssetImage = function* (
+  assetId: string,
+  listId: string,
+  imageUrl: string,
+  meta: HistoryMeta,
+) {
+  if (!meta) {
+    yield put(
+      enqueueSnackbar({
+        message: 'Meta information is not provided',
+        options: { variant: 'error' },
+      }),
+    );
+    return;
+  }
+
+  try {
+    const asset = yield select(selectAssetByListAndId(listId, assetId));
+    if (!asset) {
+      yield put(
+        enqueueSnackbar({
+          message: 'Asset not found',
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    const updatedAsset = yield call(reqWrapper, apiUpdateAsset, {
+      id: assetId,
+      imageUrl,
+    });
+    yield put(
+      Actions.updateStateAssetImage(
+        updatedAsset.id,
+        listId,
+        updatedAsset.imageUrl,
+        { ...meta },
+      ),
+    );
+    if (!meta.useHistory) {
+      yield put(
+        Actions.addUndoActions(
+          Actions.updateAssetImage(assetId, listId, asset.imageUrl, meta),
+        ),
+      );
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+    );
+  }
+};
+
+export const updateAssetImageSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.updateAssetImage>,
+) {
+  if (!action.meta) {
+    yield put(
+      enqueueSnackbar({
+        message: 'Meta information is not provided',
+        options: { variant: 'error' },
+      }),
+    );
+    return;
+  }
+  const { assetId, listId, imageUrl } = action.payload;
+  try {
+    yield call(updateAssetImage, assetId, listId, imageUrl, { ...action.meta });
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
         options: { variant: 'error' },
       }),
     );

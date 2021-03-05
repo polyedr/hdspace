@@ -40,6 +40,7 @@ import {
   createElementsGroupSaga,
   updateMultipleElementsParametersSaga,
   duplicateElements,
+  uploadElementImageByUrlSaga,
 } from '@Redux/project/sagas/element';
 import {
   addChildrenToElementSaga,
@@ -400,5 +401,5 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP, createElementsGroupSaga);
-  // yield takeEvery(TYPES.UPLOAD_IMAGE_BY_URL, uploadElementImageByUrlSaga);
+  yield takeEvery(TYPES.UPLOAD_IMAGE_BY_URL, uploadElementImageByUrlSaga);
 }
