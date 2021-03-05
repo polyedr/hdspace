@@ -161,11 +161,7 @@ const FreeCanvas = () => {
         // if (!Renderer) return null;
 
         return (
-          <FreeDraggable
-            key={element.id}
-            elementId={element.id}
-            isActive={element.id === activeElementId}
-          />
+          <FreeDraggable key={element.id} elementId={element.id} />
           // <Renderer
           //   key={element.id}
           //   element={element}
