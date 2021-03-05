@@ -636,7 +636,9 @@ export function* changeScreensOrderSaga(
 
 export function* convertFreeCanvasSaga() {
   try {
-    const rootElement = yield select(selectCurrentRootElement);
+    const rootElement: LibraryElement<'root'> = yield select(
+      selectCurrentRootElement,
+    );
 
     const convert = (elem: LibraryElement<any>) => ({
       ...elem,
@@ -647,9 +649,13 @@ export function* convertFreeCanvasSaga() {
 
     const convertedTree = convert(rootElement);
 
-    const { result, error } = yield call(reqWrapper, apiPostFreeCanvas, {
-      tree: convertedTree,
-    });
+    const { result, error }: Result<ServerElement<any>> = yield call(
+      reqWrapper,
+      apiPostFreeCanvas,
+      {
+        tree: convertedTree,
+      },
+    );
 
     if (error) {
       throw new Error(error);
@@ -658,46 +664,23 @@ export function* convertFreeCanvasSaga() {
       throw new Error('Something went wrong');
     }
 
-    console.log(result);
-
-    /* const editorDocument = yield select(selectEditorDocument);
-
-    const root = editorDocument.getElementById('free-canvas-root');
-    if (!root) throw new Error('Failed to find the root element');
-
-    const rootId: string = yield select(selectCurrentRootId);
-    yield put(setActiveElementId(rootId));
-
-    const canvas: HTMLCanvasElement = yield call(html2canvas, root, {
-      useCORS: true,
-      allowTaint: true,
-      logging: true,
-      ignoreElements: (element: Element) =>
-        (element as HTMLElement).dataset.role === 'borders',
-    });
-
-    const screenId: number = yield select(selectCurrentScreenId);
-
-    const rootElement: StateElement = yield select(selectElementById(rootId));
+    const screenId: Screen['id'] = yield select(selectCurrentScreenId);
 
     yield all(
-      rootElement.children.map((id) => put(deleteElement(id, { screenId }))),
-    );
-
-    const blob = yield call(canvasToBlob, canvas);
-
-    yield call(
-      uploadFileSaga,
-      uploadFile(
-        { file: new File([blob], 'test.png'), name: 'test.png' },
-        rootId,
-        NNBlockType.WEBPAGE,
-        {
-          screenId,
-        },
+      rootElement.children.map((child) =>
+        put(Actions.removeStateElement(child.id, { screenId })),
       ),
     );
-    yield put(changeFreeCanvasMode(false)); */
+
+    yield put(
+      Actions.addStateElements(
+        [convertElementFromResponse(result)],
+        rootElement.id,
+        { screenId },
+      ),
+    );
+
+    yield put(Actions.changeFreeCanvasMode(false));
   } catch (e) {
     yield put(
       enqueueSnackbar({

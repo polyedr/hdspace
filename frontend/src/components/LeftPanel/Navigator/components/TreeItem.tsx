@@ -183,7 +183,8 @@ const TreeItem: React.FC<Props> = (props) => {
 
       {ElementIcon && <ElementIcon className={classes.icon} />}
 
-      <span>{splitWords(item.data?.title)}</span>
+      {/* <span>{splitWords(item.data?.title)}</span> */}
+      <span>{splitWords(item.id as string)}</span>
     </div>
   );
 };

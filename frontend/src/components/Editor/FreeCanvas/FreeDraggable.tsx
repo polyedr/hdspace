@@ -35,6 +35,7 @@ const useStyles = makeStyles({
       isActive || includesActiveElement ? 1000 : zIndex,
   },
   resizeHande: {
+    borderRadius: '4px',
     zIndex: 1000,
     '&:hover': {
       backgroundColor: 'rgba(136, 136, 136, 0.5)',

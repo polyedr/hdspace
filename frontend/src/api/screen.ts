@@ -1,6 +1,12 @@
 import { AxiosResponse } from 'axios';
 import { myAxios } from '../config/settings';
-import { LibraryElement, MyAxiosProps, Result, Screen } from '../types';
+import {
+  LibraryElement,
+  MyAxiosProps,
+  Result,
+  Screen,
+  ServerElement,
+} from '../types';
 import { handleError, onError, parseResult } from './project';
 
 export const apiGetScreen = (
@@ -36,13 +42,13 @@ export const apiUpdateScreen = (
 
 export const apiPostFreeCanvas = (
   props: MyAxiosProps & { tree: LibraryElement<'root'> },
-): Promise<Result<any>> => {
+): Promise<Result<ServerElement<any>>> => {
   return myAxios({
     ...props,
     method: 'POST',
     url: '/virtualize_simple/freecanvas/',
     data: props.tree,
   })
-    .then((res) => ({ result: res }))
+    .then((res) => ({ result: res.data }))
     .catch(handleError);
 };
