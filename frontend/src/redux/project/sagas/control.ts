@@ -126,7 +126,7 @@ export function* addHistoryActionsSaga(
 ) {
   const { undo, redo } = action.payload;
   yield put(Actions.addUndoActions(undo));
-  if (redo && redo.length) {
+  if (redo?.length) {
     yield put(Actions.addRedoActions(redo));
   }
 }

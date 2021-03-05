@@ -2,15 +2,6 @@ import TYPES from '../../actionTypes';
 import { initialControl } from '../initial';
 import { Action, HistoryRecord, ProjectControlState } from '../../types';
 
-// To create undoable feature for the editor you have to implement action with "meta" field extends type HistoryMeta,
-// that will call correspondent saga, which should:
-// 1. accept that action
-// 2. put "updateElementsTree" action or call "updateElementsTree" function with the "sourceAction" as a second argument.
-// It will be used to redo undid changes. Often this source action is the same as initial action of this saga. But in
-// case of creating elements it is not.
-// 3. put "setUndoActions" action, with an array of actions that will lead to previous state as an argument,
-// so you will be able to undo your changes.
-
 const controlReducer = (
   state: ProjectControlState = initialControl,
   action: Action,
@@ -22,7 +13,7 @@ const controlReducer = (
         undo: [],
         redo: [],
       };
-      const recordNumber = ++state.currentHistoryRecord;
+      const recordNumber = state.currentHistoryRecord + 1;
       return {
         ...state,
         historyInProgress: true,
@@ -76,7 +67,7 @@ const controlReducer = (
     }
 
     case TYPES.MOVE_HISTORY_FORWARD: {
-      const nextHistoryRecord = ++state.currentHistoryRecord;
+      const nextHistoryRecord = state.currentHistoryRecord + 1;
       if (nextHistoryRecord === state.history.length) {
         return state;
       }
@@ -87,7 +78,7 @@ const controlReducer = (
       if (state.currentHistoryRecord < 0) {
         return state;
       }
-      return { ...state, currentHistoryRecord: --state.currentHistoryRecord };
+      return { ...state, currentHistoryRecord: state.currentHistoryRecord - 1 };
     }
 
     case TYPES.LOGOUT: {
