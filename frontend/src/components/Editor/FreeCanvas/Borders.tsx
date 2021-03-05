@@ -17,7 +17,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     alignItems: 'flex-start',
     position: 'absolute',
-    top: 0,
+    top: '100%',
     left: 0,
     zIndex: 999,
     color: 'white',

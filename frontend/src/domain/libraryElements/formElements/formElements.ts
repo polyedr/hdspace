@@ -184,8 +184,8 @@ export const select: SelectServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 24,
-      height: 200,
+      width: 200,
+      height: 24,
     },
     group: ElementGroup.FORM,
     value: 'first option',

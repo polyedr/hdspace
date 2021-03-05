@@ -20,6 +20,12 @@ import cn from 'classnames';
 import Borders from './Borders';
 
 const lockedAspectRatioElements: Entity[] = ['image'];
+const notDraggableElements: Entity[] = [
+  'option',
+  'listItem',
+  'dropdownItem',
+  'dropdownMenu',
+];
 
 const useStyles = makeStyles({
   rnd: {
@@ -157,7 +163,17 @@ const FreeDraggable: React.FC<Props> = ({
   const activeHandle = (dir: string) =>
     resizeDir === dir && classes.activeResizeHandle;
 
-  return (
+  const renderElement = () => (
+    <Renderer {...elementProps}>
+      {element.children.map((childId) => (
+        <FreeDraggable key={childId} elementId={childId} />
+      ))}
+    </Renderer>
+  );
+
+  return notDraggableElements.includes(type as Entity) ? (
+    renderElement()
+  ) : (
     <Rnd
       onClick={handleInteractionStart}
       className={classes.rnd}
@@ -193,11 +209,7 @@ const FreeDraggable: React.FC<Props> = ({
         topRight: cn(classes.resizeHande, activeHandle('topRight')),
       }}
     >
-      <Renderer {...elementProps}>
-        {element.children.map((childId) => (
-          <FreeDraggable key={childId} elementId={childId} />
-        ))}
-      </Renderer>
+      {renderElement()}
 
       <Borders element={element} hover={hover} isActive={isActive} />
     </Rnd>
