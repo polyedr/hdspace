@@ -2,13 +2,15 @@ import { SnackbarKey } from 'notistack';
 import TYPES from '../actionTypes';
 import { Notification } from '../types';
 
-export const enqueueSnackbar = (notification: Omit<Notification, 'key'>) => ({
-  type: TYPES.ENQUEUE_SNACKBAR,
-  notification: {
-    ...notification,
-    key: new Date().getTime() + Math.random(),
-  },
-});
+export const enqueueSnackbar = (notification: Omit<Notification, 'key'>) => {
+  return {
+    type: TYPES.ENQUEUE_SNACKBAR,
+    notification: {
+      ...notification,
+      key: new Date().getTime() + Math.random(),
+    },
+  };
+};
 
 export const closeSnackbarAction = (key: SnackbarKey) => ({
   type: TYPES.CLOSE_SNACKBAR,

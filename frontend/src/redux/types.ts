@@ -30,7 +30,6 @@ import {
   AssetResults,
   ProjectsSearchParameter,
   DateRange,
-  // MasterScreenParameters,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -97,10 +96,9 @@ export type ProjectCommunicationState = {
 };
 
 export type ProjectControlState = {
-  undoActions: Action[] | Action[][];
-  redoActions: Action[];
-  history: Action[];
-  groupActionsUp: boolean;
+  history: Array<HistoryRecord>;
+  currentHistoryRecord: number;
+  historyInProgress: boolean;
 };
 
 export type ProjectState = {
@@ -135,6 +133,12 @@ export type Notification = {
   options?: OptionsObject;
 };
 
+export type HistoryRecord = {
+  action: Action;
+  undo: Action[];
+  redo: Action[];
+};
+
 export type NotificationState = {
   notifications: Notification[];
 };
@@ -144,6 +148,19 @@ export type AppReduxState = {
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;
+};
+
+export type WrapIntoContainerData = {
+  containerType: Entity;
+  name: string | null;
+  ids: string[];
+};
+
+export type CreateScreenData = {
+  projectID: number;
+  name: string;
+  buoyancy: number;
+  rootName?: string;
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
@@ -225,7 +242,8 @@ export type DeleteScreen = IAction<
 >;
 export type RestoreScreen = IAction<
   typeof TYPES.RESTORE_SCREEN,
-  { projectId: number; screenId: number }
+  { projectId: number; screenId: number },
+  HistoryMeta
 >;
 export type RenameScreen = IAction<
   typeof TYPES.RENAME_SCREEN,
@@ -233,13 +251,8 @@ export type RenameScreen = IAction<
 >;
 export type CreateScreen = IAction<
   typeof TYPES.CREATE_SCREEN,
-  {
-    projectID: number;
-    name: string;
-    buoyancy: number;
-    skip: boolean;
-    rootName?: string;
-  }
+  CreateScreenData,
+  HistoryMeta
 >;
 export type DuplicateScreen = IAction<
   typeof TYPES.DUPLICATE_SCREEN,
@@ -391,8 +404,24 @@ export type UpdateElementParameters = IAction<
   },
   ElementHistoryMeta
 >;
+export type ReplaceElementParameters = IAction<
+  typeof TYPES.REPLACE_ELEMENT_PARAMETERS,
+  {
+    elementId: string;
+    parameters: LibraryElement<Entity>['parameters'];
+  },
+  ElementHistoryMeta
+>;
 export type UpdateMultipleElementsParameters = IAction<
   typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+  {
+    ids: string[];
+    parameters: { [id: string]: LibraryElement<Entity>['parameters'] };
+  },
+  ElementHistoryMeta
+>;
+export type ReplaceMultipleElementsParameters = IAction<
+  typeof TYPES.REPLACE_MULTIPLE_ELEMENTS_PARAMETERS,
   {
     ids: string[];
     parameters: { [id: string]: LibraryElement<Entity>['parameters'] };
@@ -417,6 +446,12 @@ export type CreateElements = IAction<
   { createdElements: CreatedElement[]; parentId?: string; index?: number },
   ElementHistoryMeta,
   string[]
+>;
+
+export type CreateElementsGroup = IAction<
+  typeof TYPES.CREATE_ELEMENTS_GROUP,
+  { name: string; ids: string[] },
+  ElementHistoryMeta
 >;
 
 export type AddChildrenToElement = IAction<
@@ -450,6 +485,11 @@ export type GetScreenNN = IPlainAction<typeof TYPES.GET_SCREEN_NN>;
 export type WrapIntoContainer = IAction<
   typeof TYPES.WRAP_INTO_CONTAINER,
   { id: string },
+  ElementHistoryMeta
+>;
+export type WrapMultipleElementsIntoContainer = IAction<
+  typeof TYPES.WRAP_MULTIPLE_ELEMENTS_INTO_CONTAINER,
+  { ids: string[] },
   ElementHistoryMeta
 >;
 export type SetHoveredElementId = IAction<
@@ -486,16 +526,50 @@ export type PasteCopiedElement = IPlainAction<
   ElementHistoryMeta
 >;
 export type ResetProjectState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
-export type UndoAction = IPlainAction<typeof TYPES.UNDO_ACTION>;
-export type RedoAction = IPlainAction<typeof TYPES.REDO_ACTION>;
-export type SetUndoActions = IAction<
-  typeof TYPES.SET_UNDO_ACTIONS,
-  Action | Action[]
+// history actions
+export type StartHistoryRecord = IAction<
+  typeof TYPES.START_HISTORY_RECORD,
+  { source: Action }
 >;
-export type SetRedoActions = IAction<typeof TYPES.SET_REDO_ACTIONS, Action[]>;
+export type CloseHistoryRecord = IPlainAction<
+  typeof TYPES.CLOSE_HISTORY_RECORD
+>;
+export type ExecuteUndoActions = IPlainAction<
+  typeof TYPES.EXECUTE_UNDO_ACTIONS
+>;
+export type ExecuteRedoActions = IPlainAction<
+  typeof TYPES.EXECUTE_REDO_ACTIONS
+>;
+export type AddUndoActions = IAction<
+  typeof TYPES.ADD_UNDO_ACTIONS,
+  { actions: Action | Action[] }
+>;
+export type AddRedoActions = IAction<
+  typeof TYPES.ADD_REDO_ACTIONS,
+  { actions: Action | Action[] }
+>;
+export type AddHistoryActions = IAction<
+  typeof TYPES.ADD_HISTORY_ACTIONS,
+  { undo: Action[]; redo?: Action[] }
+>;
+export type AddStateUndoActions = IAction<
+  typeof TYPES.ADD_STATE_UNDO_ACTIONS,
+  { actions: Action[] }
+>;
+export type AddStateRedoActions = IAction<
+  typeof TYPES.ADD_STATE_REDO_ACTIONS,
+  { actions: Action[] }
+>;
+export type MoveHistoryForward = IPlainAction<
+  typeof TYPES.MOVE_HISTORY_FORWARD
+>;
+export type MoveHistoryBackward = IPlainAction<
+  typeof TYPES.MOVE_HISTORY_BACKWARD
+>;
+// /historyActions
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
-  { elementId: string; wrapperId: string; parentId: string },
+  { ids: string[]; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
 export type RestoreElementChildren = IAction<
@@ -510,12 +584,9 @@ export type RestoreElement = IAction<
 >;
 export type RedoWrapIntoContainer = IAction<
   typeof TYPES.REDO_WRAP_INTO_CONTAINER,
-  { elementId: string; wrapperId: string; parentId: string },
+  { ids: string[]; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
-export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
-export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
-export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
 export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
 export type AddElements = IAction<
   typeof TYPES.ADD_ELEMENTS,
@@ -661,6 +732,16 @@ export type WrapStateElements = IAction<
   ElementHistoryMeta
 >;
 
+export type UnwrapStateElements = IAction<
+  typeof TYPES.UNWRAP_STATE_ELEMENTS,
+  {
+    wrapperId: string;
+    parentId: string;
+    childIds: string[];
+  },
+  ElementHistoryMeta
+>;
+
 export type MoveStateElement = IAction<
   typeof TYPES.MOVE_STATE_ELEMENT,
   { elementId: string; indices: Indices; parents: ParentIds },
@@ -794,7 +875,9 @@ export type Action =
   | UpdateElementStyles
   | UpdateElementImage
   | UpdateElementParameters
+  | ReplaceElementParameters
   | CreateElements
+  | CreateElementsGroup
   | DeleteElement
   | AddChildToElement
   | AddChildrenToElement
@@ -816,14 +899,15 @@ export type Action =
   | UpdateSavedElementValues
   | UpdateElementsTree
   | SetEditableStyles
-  | SetUndoActions
-  | SetRedoActions
+  | AddUndoActions
+  | AddRedoActions
+  | AddStateUndoActions
+  | AddStateRedoActions
+  | MoveHistoryForward
+  | MoveHistoryBackward
   | UnwrapFromContainer
   | RestoreElementChildren
   | RedoWrapIntoContainer
-  | PopUndoAction
-  | PopHistory
-  | SetGroupActionsUp
   | MoveElement
   | RemoveElementStyles
   | ReplaceElementStyles
@@ -849,6 +933,7 @@ export type Action =
   | InsertStateElement
   | RemoveStateElement
   | WrapStateElements
+  | UnwrapStateElements
   | SetProjectsData
   | ExtractStateElement
   | ChangeFreeCanvasMode
@@ -891,12 +976,17 @@ export type Action =
   | SetCanCreateGroup
   | MoveStateElementsInside
   | UpdateMultipleElementsParameters
-  | SetMasterScreenId;
+  | ReplaceMultipleElementsParameters
+  | SetMasterScreenId
+  | StartHistoryRecord
+  | CloseHistoryRecord
+  | ExecuteUndoActions
+  | ExecuteRedoActions
+  | AddUndoActions
+  | AddRedoActions;
 
 export type HistoryMeta = {
-  undo?: boolean;
-  redo?: boolean;
-  sourceAction?: Action | null;
+  useHistory?: boolean;
 };
 
 export type ElementHistoryMeta = HistoryMeta & {

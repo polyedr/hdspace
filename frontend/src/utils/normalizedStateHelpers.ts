@@ -247,6 +247,28 @@ export const insertMapElementWrapper = (
   return newState;
 };
 
+export const removeMapElementWrapper = (
+  state: Normalized<StateElement>,
+  wrapperId: string,
+  parentId: string,
+  childIds: string[],
+) => {
+  const newState = { ...state };
+  const parent = newState[parentId];
+  const wrapper = newState[wrapperId];
+
+  parent.children.splice(wrapper.buoyancy, 1, ...childIds);
+  parent.children.forEach((childId, index) => {
+    newState[childId].buoyancy = index;
+    newState[childId].parent = parent.id;
+  });
+  childIds.forEach((id) => {
+    newState[id].parent = parentId;
+  });
+
+  return newState;
+};
+
 export const extractMapElement = (
   state: Normalized<StateElement>,
   elementId: string,

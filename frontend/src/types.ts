@@ -66,6 +66,12 @@ export type BaseElementParams = {
   group: ElementGroup;
 };
 
+export enum UpdateDataActionType {
+  REPLACE = 'replace',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
 export type ServerElement<
   Type extends Entity,
   Children = any[],
@@ -704,6 +710,11 @@ export type CreateElementsData = {
 export type ItemToCopyInfo = {
   id: string;
   screenID: number;
+};
+
+export type DuplicateElementsData = {
+  itemsToCopyInfo: ItemToCopyInfo[];
+  targetParent: LibraryElement<Entity>;
 };
 
 export interface ICenterProp {

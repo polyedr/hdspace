@@ -19,9 +19,9 @@ import {
   deleteElement,
   moveElement,
   pasteCopiedElement,
-  redoAction,
+  executeUndoActions,
   setActiveElement,
-  undoAction,
+  executeRedoActions,
 } from '@Redux/project/actions';
 import {
   findNextNodeId,
@@ -201,12 +201,12 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
 
         if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
           // Ctrl/Cmd + Z
-          dispatch(undoAction());
+          dispatch(executeUndoActions());
         }
 
         if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
           // Ctrl/Cmd + Shift + Z
-          dispatch(redoAction());
+          dispatch(executeRedoActions());
         }
       }
     },

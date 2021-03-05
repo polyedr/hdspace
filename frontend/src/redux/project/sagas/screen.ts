@@ -38,7 +38,6 @@ import {
   setProject,
   setScreenLoader,
   setScreens,
-  setUndoActions,
   setUpdateImageLoader,
   updateScreen,
   updateScreenImage,
@@ -58,6 +57,7 @@ import {
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
+import withActionsHistory from '../wrappers/withActionsHistory';
 
 export function* activateScreenSaga({
   payload: { screenId },
@@ -92,14 +92,16 @@ export function* activateScreenSaga({
 }
 
 // eslint-disable-next-line consistent-return
-export function* createScreenSaga({
-  payload,
-}: ReturnType<typeof createScreen>) {
+export const createScreenSaga = withActionsHistory(function* (
+  action: ReturnType<typeof createScreen>,
+) {
+  const { payload } = action;
+  const useHistory = action.meta?.useHistory;
   try {
     yield put(Actions.setScreenCreateLoader(true));
 
     yield put(Actions.clearAfterPrevScreen());
-    const { projectID, name, buoyancy, skip } = payload;
+    const { projectID, name, buoyancy } = payload;
 
     const screens: Screen[] = yield select(selectScreens);
     const numberedName = generateUniqueName(
@@ -123,8 +125,12 @@ export function* createScreenSaga({
     });
 
     if (createdScreen) {
-      if (!skip) {
-        yield put(setUndoActions(deleteScreen(projectID, createdScreen.id)));
+      if (!useHistory) {
+        yield put(
+          Actions.addUndoActions(
+            deleteScreen(projectID, createdScreen.id, { useHistory }),
+          ),
+        );
       }
 
       const rootScenario: ScenarioItem = yield call(createScenarios, {
@@ -210,16 +216,22 @@ export function* createScreenSaga({
           yield put(
             Actions.updateElementsTree(state, {
               screenId: newScreen.id,
-              undo: skip,
-              sourceAction: restoreScreen(newScreen.id, projectID),
+              useHistory,
             }),
           );
+          if (!useHistory) {
+            yield put(
+              Actions.addRedoActions([
+                restoreScreen(newScreen.id, projectID, { useHistory: true }),
+              ]),
+            );
+          }
 
           yield put(Actions.setActiveElement(elements[0].id));
 
           yield put(push(`/project/${projectID}/${newScreen.id}`));
 
-          if (!skip) {
+          if (!useHistory) {
             yield put(
               enqueueSnackbar({
                 message: `Screen ${updatedScreen.name} created`,
@@ -253,7 +265,7 @@ export function* createScreenSaga({
   } finally {
     yield put(Actions.setScreenCreateLoader(false));
   }
-}
+});
 
 async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   const dataBlob = await new Promise<Blob>((resolve) =>
@@ -329,7 +341,7 @@ export function* updateScreenImageSaga({
   }
 }
 
-export function* deleteScreenSaga({
+export const deleteScreenSaga = withActionsHistory(function* ({
   payload: { projectId, screenId },
   meta,
   type,
@@ -339,7 +351,7 @@ export function* deleteScreenSaga({
       console.error(`You have to provide metainformation for action ${type}`);
       return;
     }
-    const { undo } = meta;
+    const { useHistory } = meta;
 
     const currentScreenId = yield select(selectCurrentScreenId);
 
@@ -372,8 +384,12 @@ export function* deleteScreenSaga({
       },
     );
     if (result) {
-      if (!undo) {
-        yield put(setUndoActions(restoreScreen(screenId, projectId)));
+      if (!useHistory) {
+        yield put(
+          Actions.addUndoActions(
+            restoreScreen(screenId, projectId, { useHistory: true }),
+          ),
+        );
       }
 
       yield put(setProject(result));
@@ -415,9 +431,9 @@ export function* deleteScreenSaga({
       }),
     );
   }
-}
+});
 
-export function* restoreScreenSaga({
+export const restoreScreenSaga = withActionsHistory(function* ({
   type,
   payload: { projectId, screenId },
   meta,
@@ -441,8 +457,8 @@ export function* restoreScreenSaga({
     });
 
     if (result) {
-      if (!meta.undo) {
-        yield put(setUndoActions(deleteScreen(projectId, screenId)));
+      if (!meta.useHistory) {
+        yield put(Actions.addUndoActions(deleteScreen(projectId, screenId)));
       }
 
       const screens = yield select(selectScreens);
@@ -484,7 +500,7 @@ export function* restoreScreenSaga({
   } finally {
     yield put(Actions.setScreenCreateLoader(false));
   }
-}
+});
 
 export function* renameScreenSaga({
   payload,

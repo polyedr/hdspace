@@ -9,6 +9,7 @@ import {
   removeMapElement,
   updateMapElement,
   insertMapElementWrapper,
+  removeMapElementWrapper,
 } from '@Utils/normalizedStateHelpers';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { initialData } from '../initial';
@@ -100,6 +101,17 @@ const dataReducer = produce(
         draft.elements = insertMapElementWrapper(
           draft.elements,
           element,
+          parentId,
+          childIds,
+        );
+        break;
+      }
+
+      case TYPES.UNWRAP_STATE_ELEMENTS: {
+        const { parentId, childIds, wrapperId } = action.payload;
+        draft.elements = removeMapElementWrapper(
+          draft.elements,
+          wrapperId,
           parentId,
           childIds,
         );
