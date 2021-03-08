@@ -46,4 +46,3 @@ class WpgSaved(models.Model):
         null=True,
         related_name="owned_wpgs",
     )
-
