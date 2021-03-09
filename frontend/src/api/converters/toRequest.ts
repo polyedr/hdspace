@@ -49,6 +49,10 @@ export const convertElementToRequest = <
   P extends ServerElement<T>['parameters']
 >(
   element: LibraryElement<T, LibraryElement<K>[], P>,
+  convertFn?: (
+    originalEl: LibraryElement<T, LibraryElement<K>[], P>,
+    convertedEl: ServerElement<T, ServerElement<K>[], P>,
+  ) => ServerElement<T, ServerElement<K>[], P>,
 ): ServerElement<T, ServerElement<K>[], P> => {
   const {
     id,
@@ -61,10 +65,15 @@ export const convertElementToRequest = <
     styles,
   } = element;
 
-  return {
+  const serverEl: ServerElement<T, ServerElement<K>[], P> = {
     id: Number(id),
     name,
-    children: children.map((child) => convertElementToRequest(child)),
+    children: children.map((child) =>
+      convertElementToRequest(
+        (child as any) as LibraryElement<T, LibraryElement<K>[], P>,
+        convertFn,
+      ),
+    ) as any[],
     struct_type: type,
     func_type: type,
     buoyancy,
@@ -75,6 +84,7 @@ export const convertElementToRequest = <
       ownStyles: cssDecamelize(styles.ownStyles),
     },
   };
+  return convertFn ? convertFn(element, serverEl) : serverEl;
 };
 
 export const convertElementToPatchRequest = <

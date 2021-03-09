@@ -119,7 +119,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
       case 'radiobutton':
       case 'select':
       case 'selectMenu':
-      case 'selectItem':
+      case 'option':
       default:
         return {
           params: element.parameters,
@@ -143,7 +143,7 @@ const useElementProps = (elementId: string): ElementProps | null => {
 
   const { id, type, styles } = element;
 
-  const [className, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames || [];
   const commonRendererProps: Omit<SharedRendererProps, 'children'> = {
     id: id === rootID ? 'root' : id,
     className,

@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+/* import React, { CSSProperties } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CalendarWidget from '@Components/UI/Widgets/Calendar';
 import ClockWidget from '@Components/UI/Widgets/Clock';
@@ -12,8 +12,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Popper from '@material-ui/core/Popper';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import cn from 'classnames';
 import { getPlayerLink } from '@Utils/extractVideoLink';
 import IMAGES from '@Constants/images';
 import { setActiveElementId } from '@Redux/project/actions';
@@ -24,6 +24,8 @@ import {
   selectElementAsTree,
   selectIncludesActiveElement,
 } from '@Redux/project/selectors/element';
+import Input from '@Components/UI/RenderElements/Input/Input';
+import useElementProps from '@Components/Editor/hooks/useElementProps';
 import GMap from '../../UI/Widgets/GMap';
 import FreeDraggable from './FreeDraggable';
 import {
@@ -82,7 +84,7 @@ const Button: React.FC<Props> = (props) => {
 
 const Container: React.FC<Props> = (props) => {
   const { element } = props;
-  const [className, groupClass] = element.styles.classNames;
+  const [className, groupClass] = element.styles.classNames || [];
 
   const children: Normalized<StateElement> = useSelector(
     selectDirectChildren(element.id),
@@ -223,6 +225,8 @@ const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
     },
   };
 
+  const elementProps = useElementProps(element.id);
+
   return (
     <FreeDraggable {...props}>
       <TextField
@@ -237,6 +241,7 @@ const getTextInput: (multi?: boolean) => React.FC<Props> = (multi = false) => (
           height: '100%',
         }}
       />
+      <Input {...elementProps} />
     </FreeDraggable>
   );
 };
@@ -548,7 +553,7 @@ const FREE_CANVAS_RENDERERS: Record<Entity | 'none', React.FC<Props> | null> = {
   featureSection: null,
   listItem: null,
   pageTemplate: null,
-  selectItem: null,
+  option: null,
   selectMenu: null,
   subscribeForm: null,
   none: null,
@@ -556,3 +561,4 @@ const FREE_CANVAS_RENDERERS: Record<Entity | 'none', React.FC<Props> | null> = {
 };
 
 export default FREE_CANVAS_RENDERERS;
+ */

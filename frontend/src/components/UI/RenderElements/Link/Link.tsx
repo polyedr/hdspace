@@ -7,7 +7,12 @@ import { HyperLinkRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
 
-const useStyles = makeComponentStyles('link');
+const useStyles = makeComponentStyles('link', {
+  disabledLink: {
+    cursor: 'default',
+    transition: 'none',
+  },
+});
 
 const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
   (props, ref) => {
@@ -51,13 +56,14 @@ const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
         className={cn(
           className,
           groupClass,
-          isDisabled && classes.disabled,
           classes.ownStyles,
+          isDisabled && classes.disabledLink,
         )}
         href={
           clickEvent?.data.linkType === 'external' ? clickEvent.data.url : ''
         }
         target={clickEvent?.data.linkType === 'external' ? '_blank' : '_parent'}
+        draggable={false}
         {...eventHandlers}
       >
         {textContent}

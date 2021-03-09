@@ -6,6 +6,7 @@ import {
   IMapProps,
   InputType,
   NNBlockType,
+  OptionParameters,
   VideoSettingsType,
 } from '@Src/types';
 
@@ -128,20 +129,18 @@ export type HyperLinkRendererProps = SharedRendererProps & {
 export type ButtonRendererProps = SharedRendererProps & {
   params: {
     textContent: string;
-    showRipple: boolean;
   };
 };
 
 export type CheckboxRendererProps = SharedRendererProps & {
-  params: {
-    showRipple: boolean;
-  };
+  params: {};
 };
 
 export type InputRendererProps = SharedRendererProps & {
   params: {
     type: InputType;
     placeholder: string;
+    textContent: string;
   };
   currentValue: string;
 };
@@ -149,21 +148,22 @@ export type InputRendererProps = SharedRendererProps & {
 export type TextareaRendererProps = SharedRendererProps & {
   params: {
     placeholder: string;
+    textContent: string;
   };
   currentValue: string;
 };
 
 export type RadioRendererProps = SharedRendererProps & {
-  params: {
-    showRipple: boolean;
-  };
+  params: {};
 };
 
 export type SelectRendererProps = SharedRendererProps & {
-  params: {
-    isOpen: boolean;
-  };
+  params: {};
   currentValue: string;
+};
+
+export type OptionRendererProps = SharedRendererProps & {
+  params: OptionParameters;
 };
 
 export type SelectMenuRendererProps = SharedRendererProps;

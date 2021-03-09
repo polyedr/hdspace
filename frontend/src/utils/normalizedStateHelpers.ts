@@ -217,35 +217,55 @@ export const insertMapElement = (
   return newState;
 };
 
-export const insertElementsGroup = (
+export const insertMapElementWrapper = (
   state: Normalized<StateElement>,
-  groupEl: LibraryElement<Entity>,
+  element: LibraryElement<any>,
   parentId: string,
-  buoyancy: number,
   childIds: string[],
 ): Normalized<StateElement> => {
-  const newState = {
-    ...state,
-    ...flattenElements([groupEl], parentId),
-  };
+  const newState = { ...state, ...flattenElements([element], parentId) };
+  const childElements = childIds.map((id) => newState[id]);
   const parent = newState[parentId];
-  parent.children.splice(buoyancy, 0, groupEl.id);
-  parent.children = parent.children
-    .sort((firstChildId, secondChildId) =>
-      newState[firstChildId].buoyancy > newState[secondChildId].buoyancy
-        ? 1
-        : -1,
-    )
-    .filter((childId) => !childIds.includes(childId));
+
+  const minBuoyancy = Math.min(...childElements.map((elem) => elem.buoyancy));
+
+  parent.children.splice(minBuoyancy, childIds.length, element.id);
   parent.children.forEach((childId, index) => {
-    newState[childId].parent = groupEl.id;
     newState[childId].buoyancy = index;
   });
-  newState[groupEl.id].children = childIds;
-  newState[groupEl.id].parent = parentId;
-  childIds.forEach((childId, index) => {
+  element.children = childIds;
+  element.buoyancy = minBuoyancy;
+  [...childIds]
+    .sort((a, b) => {
+      return newState[a].buoyancy < newState[b].buoyancy ? -1 : 1;
+    })
+    .forEach((childId, index) => {
+      newState[childId].parent = element.id;
+      newState[childId].buoyancy = index;
+    });
+  newState[element.id] = element;
+  return newState;
+};
+
+export const removeMapElementWrapper = (
+  state: Normalized<StateElement>,
+  wrapperId: string,
+  parentId: string,
+  childIds: string[],
+) => {
+  const newState = { ...state };
+  const parent = newState[parentId];
+  const wrapper = newState[wrapperId];
+
+  parent.children.splice(wrapper.buoyancy, 1, ...childIds);
+  parent.children.forEach((childId, index) => {
     newState[childId].buoyancy = index;
+    newState[childId].parent = parent.id;
   });
+  childIds.forEach((id) => {
+    newState[id].parent = parentId;
+  });
+
   return newState;
 };
 

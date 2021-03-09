@@ -69,15 +69,6 @@ export const selectBordersEnabled = (state: AppReduxState) => {
   return selectProjectState(state).ui.bordersEnabled;
 };
 
-export const selectUndoActions = ({ project }: AppReduxState) =>
-  project.control.undoActions;
-
-export const selectRedoActions = ({ project }: AppReduxState) =>
-  project.control.redoActions;
-
-export const selectHistory = ({ project }: AppReduxState) =>
-  project.control.history;
-
 export function selectScreenLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.screenLoader;
 }

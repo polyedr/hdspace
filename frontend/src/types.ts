@@ -4,7 +4,6 @@ import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
-import * as CSS from 'csstype';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 
 export type PropertyName = keyof React.CSSProperties;
@@ -54,11 +53,11 @@ export enum ElementGroup {
 }
 
 export type FreeCanvasElementParams = {
-  left?: CSS.Property.Left;
-  top?: CSS.Property.Top;
-  zIndex?: CSS.Property.ZIndex;
-  width?: CSS.Property.Width;
-  height?: CSS.Property.Height;
+  left?: number;
+  top?: number;
+  zIndex?: number;
+  width?: number;
+  height?: number;
 };
 
 export type BaseElementParams = {
@@ -67,12 +66,18 @@ export type BaseElementParams = {
   group: ElementGroup;
 };
 
+export enum UpdateDataActionType {
+  REPLACE = 'replace',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
 export type ServerElement<
   Type extends Entity,
   Children = any[],
   Params = BaseElementParams
 > = {
-  id?: number;
+  id: number | string;
   name: string;
   scenario?: number;
   struct_type: Type;
@@ -162,18 +167,14 @@ export type RadiobuttonServerElement = ServerElement<
 >;
 export type SelectServerElement = ServerElement<
   'select',
-  SelectMenuServerElement[],
+  OptionServerElement[],
   SelectParameters
 >;
 export type SelectMenuServerElement = ServerElement<
   'selectMenu',
-  SelectItemServerElement[]
+  OptionServerElement[]
 >;
-export type SelectItemServerElement = ServerElement<
-  'selectItem',
-  [],
-  SelectItemParameters
->;
+export type OptionServerElement = ServerElement<'option', [], OptionParameters>;
 export type TextareaServerElement = ServerElement<
   'textarea',
   [],
@@ -324,15 +325,8 @@ export type SmartElement<T extends Entity> = LibraryElement<
   [],
   SmartElementParameters
 >;
-export type SelectMenuElement = LibraryElement<
-  'selectMenu',
-  SelectItemElement[]
->;
-export type SelectItemElement = LibraryElement<
-  'selectItem',
-  [],
-  SelectItemParameters
->;
+export type SelectMenuElement = LibraryElement<'selectMenu', OptionElement[]>;
+export type OptionElement = LibraryElement<'option', [], OptionParameters>;
 export type TextareaElement = LibraryElement<
   'textarea',
   [],
@@ -399,7 +393,7 @@ export type LibraryElementUnion =
   | RadiobuttonElement
   | SelectElement
   | SelectMenuElement
-  | SelectItemElement
+  | OptionElement
   | TextareaElement
   | HeadingElement
   | ParagraphElement
@@ -487,11 +481,10 @@ export type RadiobuttonParameters = BaseElementParams & {
 
 export type SelectParameters = BaseElementParams & {
   value: string;
-  options: Option[];
   isOpen: boolean;
 };
 
-export type SelectItemParameters = BaseElementParams & {
+export type OptionParameters = BaseElementParams & {
   name: string;
   value: string;
 };
@@ -592,7 +585,9 @@ export type DropdownItemParameters = BaseElementParams & {
 };
 
 export type ElementsGroupParameters = BaseElementParams & {
-  groupElements: string[];
+  isGroup?: boolean;
+  groupElements?: string[];
+  sourceElementId?: string | null;
 };
 
 export type CreatedServerProject = {
@@ -670,7 +665,13 @@ export type StateElement = {
     classNames: string[];
     ownStyles: React.CSSProperties;
   };
-  parameters: any;
+  parameters: {
+    freeCanvas: FreeCanvasElementParams;
+    group: ElementGroup;
+    layouts: Layout[];
+    events?: ElementEvent[];
+    [k: string]: any;
+  };
   shared?: boolean;
 };
 
@@ -709,6 +710,11 @@ export type CreateElementsData = {
 export type ItemToCopyInfo = {
   id: string;
   screenID: number;
+};
+
+export type DuplicateElementsData = {
+  itemsToCopyInfo: ItemToCopyInfo[];
+  targetParent: LibraryElement<Entity>;
 };
 
 export interface ICenterProp {
@@ -947,6 +953,7 @@ export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
+  masterScreenEnabled?: boolean;
 };
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';
@@ -990,7 +997,7 @@ export type StyleProps = {
 
 export type ChildrenElements = {
   selectMenu: SelectMenuServerElement;
-  selectItem: SelectItemServerElement;
+  option: OptionServerElement;
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;
   dropdownItem: DropdownItemServerElement;

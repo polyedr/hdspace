@@ -6,13 +6,10 @@ import {
   selectElementBeingEdited,
   selectElementById,
 } from '@Redux/project/selectors/element';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
-import {
-  selectMasterElementById,
-  selectMasterScreenEnabled,
-} from '@Redux/project/selectors/masterScreen';
 import SaveElementAction from './Actions/SaveElement/SaveElementAction';
 import Borders from './Borders/Borders';
 import BorderCrumb from './Crumb/BorderCrumb';
@@ -41,14 +38,12 @@ const getBorderStyles = (elDom: HTMLElement, rootElDom: HTMLElement) => {
 };
 
 const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
+  const element = useSelector(selectElementById(elementId));
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
-  const stateElement = useSelector(selectElementById(elementId));
-  const masterElement = useSelector(selectMasterElementById(elementId));
-  const element = masterScreenEnabled ? masterElement : stateElement;
 
   const elementGroupStyles = useSelector((state: AppReduxState) => {
     return selectCurrentProject(state).projectData.classes.find((value) => {
-      return value.className === element.styles.classNames[1];
+      return value.className === element.styles.classNames?.[1];
     })?.rules;
   });
   const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
@@ -90,8 +85,12 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
       <Borders elementId={elementId} styles={styles} />
       {!elementBeingEdited && (
         <BorderCrumb elementId={elementId} styles={styles}>
-          <SaveElementAction elementId={elementId} />
-          <CreateGroupAction elementId={elementId} />
+          {!masterScreenEnabled && (
+            <>
+              <SaveElementAction elementId={elementId} />
+              <CreateGroupAction elementId={elementId} />
+            </>
+          )}
         </BorderCrumb>
       )}
     </React.Fragment>

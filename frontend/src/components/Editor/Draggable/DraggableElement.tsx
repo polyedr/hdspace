@@ -46,7 +46,7 @@ import {
   getDropIndex,
 } from './helper';
 import useElementProps from '../hooks/useElementProps';
-import { RENDERERS } from '../../UI/RenderElements';
+import RENDERERS from '../../UI/RenderElements';
 import { WindowContext } from '../FrameWrapper/FrameContext';
 
 type DraggableElementProps = {

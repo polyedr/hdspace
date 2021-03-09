@@ -50,9 +50,6 @@ import {
   LoadProjectsSuccess,
   MoveElement,
   PasteCopiedElement,
-  PopHistory,
-  PopUndoAction,
-  RedoAction,
   RedoWrapIntoContainer,
   RemoveElementClassName,
   RemoveElementStyles,
@@ -71,20 +68,16 @@ import {
   SetCurrentProjectId,
   SetCurrentScreenId,
   SetEditableStyles,
-  SetGroupActionsUp,
   SetHoveredElementId,
   SetElementToCopy,
   SetUpdateImageLoader,
   SetProject,
   SetProjectListLoader,
   SetProjectLoader,
-  SetRedoActions,
   SetProjectCreateLoader,
   SetScreenLoader,
   SetScreens,
-  SetUndoActions,
   ToggleContainersBorders,
-  UndoAction,
   UnwrapFromContainer,
   UpdateElement,
   UpdateElementImage,
@@ -117,12 +110,31 @@ import {
   AddAssetList,
   UploadAsset,
   AddAssetRedux,
-  SetActiveMasterElement,
-  SetMasterScreenEnabled,
-  ToggleMasterScreen,
   MoveStateElement,
   MoveStateElementsInside,
-  CreateStateGroup,
+  SetMasterScreenId,
+  SetMasterScreenLoader,
+  SetMasterCoreElementId,
+  SetMasterGroupsElementId,
+  SetMasterElementsIds,
+  WrapStateElements,
+  InsertStateElement,
+  UnwrapStateElements,
+  StartHistoryRecord,
+  CloseHistoryRecord,
+  ExecuteUndoActions,
+  ExecuteRedoActions,
+  AddUndoActions,
+  AddRedoActions,
+  AddStateRedoActions,
+  AddStateUndoActions,
+  MoveHistoryForward,
+  MoveHistoryBackward,
+  AddHistoryActions,
+  CreateScreenData,
+  ReplaceElementParameters,
+  ReplaceMultipleElementsParameters,
+  WrapMultipleElementsIntoContainer,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -216,6 +228,13 @@ export const setScreenLoader = (active: boolean): SetScreenLoader => ({
   payload: { active },
 });
 
+export const setMasterScreenLoader = (
+  active: boolean,
+): SetMasterScreenLoader => ({
+  type: TYPES.SET_MASTER_SCREEN_LOADER,
+  payload: { active },
+});
+
 export const setUpdateImageLoader = (
   active: boolean,
 ): SetUpdateImageLoader => ({
@@ -253,12 +272,14 @@ export const deleteScreen = (
 export const restoreScreen = (
   screenId: number,
   projectId: number,
+  meta: HistoryMeta,
 ): RestoreScreen => ({
   type: TYPES.RESTORE_SCREEN,
   payload: {
     screenId,
     projectId,
   },
+  meta,
 });
 
 export const renameScreen = (
@@ -271,13 +292,12 @@ export const renameScreen = (
 });
 
 export const createScreen = (
-  projectID: number,
-  name: string,
-  buoyancy: number,
-  skip: boolean = false,
+  { projectID, name, buoyancy, rootName }: CreateScreenData,
+  meta?: HistoryMeta,
 ): CreateScreen => ({
   type: TYPES.CREATE_SCREEN,
-  payload: { projectID, name, buoyancy, skip },
+  payload: { projectID, name, buoyancy, rootName },
+  meta,
 });
 
 export const duplicateScreen = (
@@ -382,7 +402,7 @@ export const insertStateElement = (
   parentId: string,
   childId: string,
   meta: ElementHistoryMeta,
-) => ({
+): InsertStateElement => ({
   type: TYPES.INSERT_STATE_ELEMENT,
   payload: {
     parentId,
@@ -392,19 +412,32 @@ export const insertStateElement = (
   meta,
 });
 
-export const createStateGroup = (
-  groupEl: LibraryElement<any>,
+export const wrapStateElements = (
+  element: LibraryElement<any>,
   parentId: string,
-  buoyancy: number,
   childIds: string[],
   meta: ElementHistoryMeta,
-): CreateStateGroup => ({
-  type: TYPES.CREATE_STATE_GROUP,
+): WrapStateElements => ({
+  type: TYPES.WRAP_STATE_ELEMENTS,
   payload: {
-    groupEl,
     parentId,
-    buoyancy,
+    element,
     childIds,
+  },
+  meta,
+});
+
+export const unwrapStateElements = (
+  ids: string[],
+  parentId: string,
+  wrapperId: string,
+  meta: ElementHistoryMeta,
+): UnwrapStateElements => ({
+  type: TYPES.UNWRAP_STATE_ELEMENTS,
+  payload: {
+    childIds: ids,
+    parentId,
+    wrapperId,
   },
   meta,
 });
@@ -615,7 +648,26 @@ export const updateElementParameters = <
   meta: ElementHistoryMeta,
 ): UpdateElementParameters => ({
   type: TYPES.UPDATE_ELEMENT_PARAMETERS,
-  payload: { elementId, parameters },
+  payload: {
+    elementId,
+    parameters,
+  },
+  meta,
+});
+
+export const replaceElementParameters = <
+  T extends Entity,
+  K extends LibraryElement<T>['parameters']
+>(
+  elementId: string,
+  parameters: K,
+  meta: ElementHistoryMeta,
+): ReplaceElementParameters => ({
+  type: TYPES.REPLACE_ELEMENT_PARAMETERS,
+  payload: {
+    elementId,
+    parameters,
+  },
   meta,
 });
 
@@ -630,6 +682,24 @@ export const updateMultipleElementsParameters = <
   meta: ElementHistoryMeta,
 ): UpdateMultipleElementsParameters => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+  payload: {
+    ids,
+    parameters,
+  },
+  meta,
+});
+
+export const replaceMultipleElementsParameters = <
+  T extends Entity,
+  K extends LibraryElement<T>['parameters']
+>(
+  ids: string[],
+  parameters: {
+    [id: string]: K;
+  },
+  meta: ElementHistoryMeta,
+): ReplaceMultipleElementsParameters => ({
+  type: TYPES.REPLACE_MULTIPLE_ELEMENTS_PARAMETERS,
   payload: {
     ids,
     parameters,
@@ -722,6 +792,15 @@ export const wrapIntoContainer = (
   meta,
 });
 
+export const wrapMultipleElementsIntoContainer = (
+  ids: string[],
+  meta: ElementHistoryMeta,
+): WrapMultipleElementsIntoContainer => ({
+  type: TYPES.WRAP_MULTIPLE_ELEMENTS_INTO_CONTAINER,
+  payload: { ids },
+  meta,
+});
+
 export const setActiveElement = (id: string) => ({
   type: TYPES.SET_ACTIVE_ELEMENT_SAGA,
   payload: id,
@@ -753,6 +832,29 @@ export const setHoveredElementId = (
   payload: id,
 });
 
+export const setMasterCoreElementId = (id = '-1'): SetMasterCoreElementId => ({
+  type: TYPES.SET_MASTER_CORE_ELEMENT_ID,
+  payload: { id },
+});
+
+export const setMasterGroupsElementId = (
+  id = '-1',
+): SetMasterGroupsElementId => ({
+  type: TYPES.SET_MASTER_GROUPS_ELEMENT_ID,
+  payload: { id },
+});
+
+export const setMasterElementsIds = (
+  masterCoreId = '-1',
+  masterGroupsId = '-1',
+): SetMasterElementsIds => ({
+  type: TYPES.SET_MASTER_ELEMENTS_IDS,
+  payload: {
+    masterCoreId,
+    masterGroupsId,
+  },
+});
+
 export const setEditableStyles = (className: string): SetEditableStyles => ({
   type: TYPES.SET_EDITABLE_STYLES,
   payload: { className },
@@ -777,37 +879,15 @@ export const setElementToCopy = (
   payload: { id, screenID },
 });
 
-export const undoAction = (): UndoAction => ({
-  type: TYPES.UNDO_ACTION,
-});
-
-export const redoAction = (): RedoAction => ({
-  type: TYPES.REDO_ACTION,
-});
-
-export const setUndoActions = (action: Action | Action[]): SetUndoActions => ({
-  type: TYPES.SET_UNDO_ACTIONS,
-  payload: action,
-});
-
-export const setRedoActions = (actions: Action[]): SetRedoActions => ({
-  type: TYPES.SET_REDO_ACTIONS,
-  payload: actions,
-});
-
-export const popUndoAction = (): PopUndoAction => ({
-  type: TYPES.POP_UNDO_ACTION,
-});
-
 export const unwrapFromContainer = (
-  elementID: string,
+  ids: string[],
   wrapperID: string,
   parentID: string,
   meta: ElementHistoryMeta,
 ): UnwrapFromContainer => ({
   type: TYPES.UNWRAP_FROM_CONTAINER,
   payload: {
-    elementId: elementID,
+    ids,
     wrapperId: wrapperID,
     parentId: parentID,
   },
@@ -837,27 +917,18 @@ export const restoreElement = (
 });
 
 export const redoWrapIntoContainer = (
-  elementId: string,
+  ids: string[],
   wrapperId: string,
   parentId: string,
   meta: ElementHistoryMeta,
 ): RedoWrapIntoContainer => ({
   type: TYPES.REDO_WRAP_INTO_CONTAINER,
   payload: {
-    elementId,
+    ids,
     wrapperId,
     parentId,
   },
   meta,
-});
-
-export const popHistory = (): PopHistory => ({
-  type: TYPES.POP_HISTORY,
-});
-
-export const setGroupActionsUp = (groupUp: boolean): SetGroupActionsUp => ({
-  type: TYPES.SET_GROUP_UP,
-  payload: groupUp,
 });
 
 export const addElements = (
@@ -1030,7 +1101,7 @@ export const removeAssetRedux = (id: string, listId: string) => ({
   payload: { id, listId },
 });
 
-export const addAssetListToState = (list: AssetsList, meta: HistoryMeta) => ({
+export const addAssetListToState = (list: AssetsList, meta?: HistoryMeta) => ({
   type: TYPES.ADD_ASSET_LIST_REDUX,
   payload: list,
   meta,
@@ -1060,7 +1131,7 @@ export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
 export const addAssetToState = (
   listId: string,
   asset: Asset,
-  meta: HistoryMeta,
+  meta?: HistoryMeta,
 ): AddAssetRedux => ({
   type: TYPES.ADD_ASSET_REDUX,
   payload: {
@@ -1097,22 +1168,11 @@ export const toggleSelectedElement = (id: string) => ({
   payload: { id },
 });
 
-export const setActiveMasterElementId = (
-  id: string,
-): SetActiveMasterElement => ({
-  type: TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
-  payload: id,
-});
-
-export const setMasterScreenEnabled = (
-  enabled: boolean,
-): SetMasterScreenEnabled => ({
-  type: TYPES.SET_MASTER_SCREEN_ENABLED,
-  payload: enabled,
-});
-
-export const toggleMasterScreen = (): ToggleMasterScreen => ({
-  type: TYPES.TOGGLE_MASTER_SCREEN,
+export const setMasterScreenId = (
+  screenId: number | null,
+): SetMasterScreenId => ({
+  type: TYPES.SET_MASTER_SCREEN_ID,
+  payload: screenId,
 });
 
 export const setCanCreateGroup = (canCreateGroup: boolean) => ({
@@ -1125,7 +1185,71 @@ export const createElementsGroup = (
   ids: string[],
   meta: ElementHistoryMeta,
 ) => ({
-  type: TYPES.CREATE_ELEMENTS_GROUP_SAGA,
+  type: TYPES.CREATE_ELEMENTS_GROUP,
   payload: { name, ids },
   meta,
+});
+
+export const removeGroupBindings = (
+  ids: string[],
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.REMOVE_GROUP_BINDING,
+  payload: { ids },
+  meta,
+});
+
+// history actions
+export const startHistoryRecord = (source: Action): StartHistoryRecord => ({
+  type: TYPES.START_HISTORY_RECORD,
+  payload: { source },
+});
+
+export const closeHistoryRecord = (): CloseHistoryRecord => ({
+  type: TYPES.CLOSE_HISTORY_RECORD,
+});
+
+export const addUndoActions = (actions: Action | Action[]): AddUndoActions => ({
+  type: TYPES.ADD_UNDO_ACTIONS,
+  payload: { actions },
+});
+
+export const addRedoActions = (actions: Action | Action[]): AddRedoActions => ({
+  type: TYPES.ADD_REDO_ACTIONS,
+  payload: { actions },
+});
+
+export const addHistoryActions = ({ undo, redo }): AddHistoryActions => ({
+  type: TYPES.ADD_HISTORY_ACTIONS,
+  payload: { undo, redo },
+});
+
+export const addStateUndoActions = (
+  actions: Action[],
+): AddStateUndoActions => ({
+  type: TYPES.ADD_STATE_UNDO_ACTIONS,
+  payload: { actions },
+});
+
+export const addStateRedoActions = (
+  actions: Action[],
+): AddStateRedoActions => ({
+  type: TYPES.ADD_STATE_REDO_ACTIONS,
+  payload: { actions },
+});
+
+export const executeUndoActions = (): ExecuteUndoActions => ({
+  type: TYPES.EXECUTE_UNDO_ACTIONS,
+});
+
+export const executeRedoActions = (): ExecuteRedoActions => ({
+  type: TYPES.EXECUTE_REDO_ACTIONS,
+});
+
+export const moveHistoryForward = (): MoveHistoryForward => ({
+  type: TYPES.MOVE_HISTORY_FORWARD,
+});
+
+export const moveHistoryBackward = (): MoveHistoryBackward => ({
+  type: TYPES.MOVE_HISTORY_BACKWARD,
 });

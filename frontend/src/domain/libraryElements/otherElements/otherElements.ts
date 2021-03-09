@@ -28,6 +28,7 @@ import { makeParagraph } from '../typographyElements/typographyElements';
 import { defaultFreeCanvasParams } from '../../core';
 
 export const root: RootServerElement = {
+  id: 'root',
   buoyancy: 0,
   func_type: 'root',
   struct_type: 'root',
@@ -45,6 +46,7 @@ export const root: RootServerElement = {
 };
 
 export const elementsGroup: ElementsGroupServerElement = {
+  id: 'elementsGroup',
   buoyancy: 0,
   func_type: 'group',
   struct_type: 'group',
@@ -67,12 +69,15 @@ export const makeContainer = ({
   ownStyles = {},
   name = 'container',
   buoyancy = 0,
+  UID = 'master',
 }: {
   children?: ServerElement<Entity>[];
   ownStyles?: React.CSSProperties;
   name?: string;
   buoyancy?: number;
+  UID?: string;
 } = {}): ContainerServerElement => ({
+  id: `container-${UID}`,
   buoyancy,
   func_type: 'container',
   struct_type: 'container',
@@ -81,8 +86,6 @@ export const makeContainer = ({
     group: ElementGroup.NONE,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
   },
   styles: {
@@ -93,7 +96,10 @@ export const makeContainer = ({
   children,
 });
 
-export const makeGridItem = (): GridItemServerElement => ({
+export const makeGridItem = ({
+  UID = 'master',
+} = {}): GridItemServerElement => ({
+  id: `gridItem-${UID}`,
   buoyancy: 0,
   name: 'gridItem',
   func_type: 'gridItem',
@@ -102,8 +108,6 @@ export const makeGridItem = (): GridItemServerElement => ({
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.CONTAINERS,
   },
@@ -114,7 +118,19 @@ export const makeGridItem = (): GridItemServerElement => ({
   children: [],
 });
 
-export const makeGrid = (): GridServerElement => ({
+export const makeGrid = ({
+  items = [
+    makeGridItem({ UID: '1' }),
+    makeGridItem({ UID: '2' }),
+    makeGridItem({ UID: '3' }),
+    makeGridItem({ UID: '4' }),
+  ],
+  UID = 'master',
+}: {
+  items?: GridItemServerElement[];
+  UID?: string;
+} = {}): GridServerElement => ({
+  id: `grid-${UID}`,
   buoyancy: 0,
   name: 'grid',
   func_type: 'grid',
@@ -123,8 +139,6 @@ export const makeGrid = (): GridServerElement => ({
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.OTHER,
   },
@@ -132,10 +146,11 @@ export const makeGrid = (): GridServerElement => ({
     classNames: ['grid'],
     ownStyles: {},
   },
-  children: [makeGridItem(), makeGridItem(), makeGridItem(), makeGridItem()],
+  children: items,
 });
 
 export const column: ColumnServerElement = {
+  id: 'column',
   buoyancy: 0,
   name: 'column',
   func_type: 'column',
@@ -144,8 +159,6 @@ export const column: ColumnServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.CONTAINERS,
   },
@@ -156,9 +169,30 @@ export const column: ColumnServerElement = {
   children: [],
 };
 
+export const makeColumn = ({ UID = 'master' }): ColumnServerElement => ({
+  id: `column-${UID}`,
+  buoyancy: 0,
+  name: 'column',
+  func_type: 'column',
+  struct_type: 'column' as const,
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+    },
+    group: ElementGroup.CONTAINERS,
+  },
+  styles: {
+    classNames: ['column'],
+    ownStyles: {},
+  },
+  children: [],
+});
+
 export const makeColumns = (
   columnsCount: number = 2,
 ): ColumnsServerElement => ({
+  id: 'columns',
   buoyancy: 0,
   name: 'columns',
   func_type: 'columns',
@@ -167,8 +201,6 @@ export const makeColumns = (
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.OTHER,
   },
@@ -176,10 +208,13 @@ export const makeColumns = (
     classNames: ['columns'],
     ownStyles: {},
   },
-  children: new Array(columnsCount).fill(column),
+  children: Array.from(Array(columnsCount)).map((_undefined, index) => {
+    return makeColumn({ UID: `${index}` });
+  }),
 });
 
 export const nativeColumns: NativeColumnsServerElement = {
+  id: 'nativeColumns',
   buoyancy: 0,
   name: 'nativeColumns',
   func_type: 'nativeColumns',
@@ -188,8 +223,6 @@ export const nativeColumns: NativeColumnsServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.CONTAINERS,
   },
@@ -200,8 +233,12 @@ export const nativeColumns: NativeColumnsServerElement = {
   children: [],
 };
 
-export const makeDivBlock = (textContent: string): DivBlockServerElement => {
+export const makeDivBlock = ({
+  textContent,
+  UID = 'master',
+}): DivBlockServerElement => {
   return {
+    id: `divBlock-${UID}`,
     buoyancy: 0,
     func_type: 'divBlock',
     struct_type: 'divBlock',
@@ -210,8 +247,6 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => {
       group: ElementGroup.CONTAINERS,
       freeCanvas: {
         ...defaultFreeCanvasParams,
-        width: '50%',
-        height: '50%',
       },
     },
     styles: {
@@ -219,15 +254,15 @@ export const makeDivBlock = (textContent: string): DivBlockServerElement => {
       ownStyles: {},
     },
     name: 'divBlock',
-    children: [makeParagraph({ textContent })],
+    children: [makeParagraph({ textContent, UID: 'divBlock-0' })],
   };
 };
 
 export const makeImage = ({
   ownStyles = {},
-}: {
-  ownStyles?: React.CSSProperties;
+  UID = 'master',
 } = {}): ImageServerElement => ({
+  id: `image-${UID}`,
   buoyancy: 0,
   func_type: 'image',
   struct_type: 'image',
@@ -237,6 +272,8 @@ export const makeImage = ({
     imageURL: IMAGES.imageIcon,
     freeCanvas: {
       ...defaultFreeCanvasParams,
+      width: 300,
+      height: 300,
     },
   },
   styles: {
@@ -250,7 +287,9 @@ export const makeImage = ({
 export const makeSmartHeader = ({
   name = 'smartHeader',
   ownStyles = {},
+  UID = 'master',
 }): SmartHeaderServerElement => ({
+  id: `smart-header-${UID}`,
   buoyancy: 0,
   func_type: 'smartHeader',
   struct_type: 'smartHeader',
@@ -259,8 +298,6 @@ export const makeSmartHeader = ({
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     stylesOn: true,
   },
@@ -275,7 +312,9 @@ export const makeSmartHeader = ({
 export const makeSmartFooter = ({
   name = 'smartFooter',
   ownStyles = {},
+  UID = 'master',
 }): SmartFooterServerElement => ({
+  id: `smart-footer-${UID}`,
   buoyancy: 0,
   func_type: 'smartFooter',
   struct_type: 'smartFooter',
@@ -284,8 +323,6 @@ export const makeSmartFooter = ({
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     stylesOn: true,
   },
@@ -300,7 +337,9 @@ export const makeSmartFooter = ({
 export const makeSmartForm = ({
   name = 'smartForm',
   ownStyles = {},
+  UID = 'master',
 }): SmartFormServerElement => ({
+  id: `smart-form-${UID}`,
   buoyancy: 0,
   func_type: 'smartForm',
   struct_type: 'smartForm',
@@ -309,8 +348,6 @@ export const makeSmartForm = ({
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     stylesOn: true,
   },
@@ -325,7 +362,9 @@ export const makeSmartForm = ({
 export const makeSmartWebpage = ({
   name = 'smartWebpage',
   ownStyles = {},
+  UID = 'master',
 }): SmartWebpageServerElement => ({
+  id: `smart-webpage-${UID}`,
   buoyancy: 0,
   func_type: 'smartWebpage',
   struct_type: 'smartWebpage',
@@ -334,8 +373,6 @@ export const makeSmartWebpage = ({
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     stylesOn: true,
   },
@@ -349,7 +386,9 @@ export const makeSmartWebpage = ({
 
 export const makeDropdownItem = (
   textContent: string,
+  UID = 'master',
 ): DropdownItemServerElement => ({
+  id: `dropdown-item-${UID}`,
   buoyancy: 0,
   func_type: 'dropdownItem',
   struct_type: 'dropdownItem',
@@ -368,6 +407,7 @@ export const makeDropdownItem = (
 });
 
 export const dropdownMenu: DropdownMenuServerElement = {
+  id: 'dropdown-menu',
   buoyancy: 0,
   func_type: 'dropdownMenu',
   struct_type: 'dropdownMenu',
@@ -389,6 +429,7 @@ export const dropdownMenu: DropdownMenuServerElement = {
 };
 
 export const dropdown: DropdownServerElement = {
+  id: 'dropdown',
   buoyancy: 0,
   func_type: 'dropdown',
   struct_type: 'dropdown',
@@ -410,13 +451,18 @@ export const dropdown: DropdownServerElement = {
 };
 
 export const video: VideoServerElement = {
+  id: 'video',
   buoyancy: 0,
   func_type: 'video',
   struct_type: 'video',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
     group: ElementGroup.OTHER,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 640,
+      height: 480,
+    },
     videoSettings: {
       link: '',
       autoplay: false,
@@ -434,9 +480,8 @@ export const video: VideoServerElement = {
   children: [],
 };
 
-// eslint-disable-next-line no-shadow-restricted-names
-export const undefined: UndefinedServerElement = {
-  // TODO: RENAME THIS CONST
+export const undefinedElement: UndefinedServerElement = {
+  id: 'undefined',
   buoyancy: 0,
   func_type: 'undefined',
   struct_type: 'undefined',
@@ -445,8 +490,8 @@ export const undefined: UndefinedServerElement = {
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
+      width: 100,
+      height: 100,
     },
   },
   styles: {

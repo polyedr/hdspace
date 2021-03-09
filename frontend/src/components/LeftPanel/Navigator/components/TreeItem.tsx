@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React, { MouseEvent, useCallback } from 'react';
 import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -139,14 +139,19 @@ const TreeItem: React.FC<Props> = (props) => {
 
   const isParent = item.children.length;
 
-  const handleDoubleClick = () =>
-    item.isExpanded ? onCollapse(item.id) : onExpand(item.id);
+  const handleDoubleClick = useCallback(
+    () => (item.isExpanded ? onCollapse(item.id) : onExpand(item.id)),
+    [item.id, item.isExpanded, onCollapse, onExpand],
+  );
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     select(item.id as string);
-  };
+  }, [item.id, select]);
 
-  const handleFocus = () => select(item.id as string);
+  const handleFocus = useCallback(() => select(item.id as string), [
+    item.id,
+    select,
+  ]);
 
   return (
     <div

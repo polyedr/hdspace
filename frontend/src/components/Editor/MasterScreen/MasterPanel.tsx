@@ -5,12 +5,14 @@ import { AVAILABLE_CONTROLS } from '@Domain/core';
 import { makeStyles } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectSharedStyles } from '@Redux/project/selectors/element';
+import {
+  selectActiveElement,
+  selectSharedStyles,
+} from '@Redux/project/selectors/element';
 import { updateSharedStyles } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { CONTROLS_AFFECT_ON_PARAMS, Entity } from '@Src/types';
-import { selectActiveMasterElement } from '@Redux/project/selectors/masterScreen';
 
 const useStyles = makeStyles({
   root: {
@@ -23,10 +25,16 @@ const useStyles = makeStyles({
 const MasterPanel = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { type, id } = useSelector(selectActiveMasterElement);
+  const activeElement = useSelector(selectActiveElement);
   const editableStyles = useSelector(selectEditableStyles);
   const screenId = useSelector(selectCurrentScreenId);
-  const sharedStyles = useSelector(selectSharedStyles(type));
+
+  const { id, type } = activeElement;
+  const sharedStyles = useSelector(
+    selectSharedStyles(
+      activeElement.type === 'none' ? 'root' : activeElement.type,
+    ),
+  );
 
   const updateStyles = (styles: React.CSSProperties) => {
     dispatch(

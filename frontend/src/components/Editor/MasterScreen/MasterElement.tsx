@@ -1,54 +1,75 @@
-import { RENDERERS } from '@Components/UI/RenderElements';
-import {
-  setActiveMasterElementId,
-  setHoveredElementId,
-} from '@Redux/project/actions';
-import { selectMasterElementById } from '@Redux/project/selectors/masterScreen';
-import prevent from '@Utils/preventEvent';
-import React, { FC, Fragment, MouseEvent, useRef, useEffect } from 'react';
+import React, { useMemo, useCallback, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
+import Divider from '@material-ui/core/Divider';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import RENDERERS from '@Components/UI/RenderElements';
+import {
+  selectElementById,
+  selectMasterCoreElementId,
+  selectMasterGroupsElementId,
+  selectMasterScreenRoot,
+} from '@Redux/project/selectors/element';
+import prevent from '@Utils/preventEvent';
+import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
+import { DOMHandler } from '../Workspace/DOMHandler';
 
 type Props = {
-  id: string;
+  elementId: string;
+  parentId?: string;
 };
 
-const MasterElement: FC<Props> = ({ id }) => {
+const getElementProps = (element) => ({
+  id: element.id,
+  className: element.styles.classNames?.[0] || '',
+  isDisabled: true,
+  contentEditable: false,
+  ownStyles: element.parameters.groupElements ? element.styles.ownStyles : {},
+  groupClass: '',
+  active: false,
+  params: element.parameters,
+});
+
+const useStyles = makeStyles({
+  divider: {
+    margin: '10px 0',
+  },
+});
+
+const MasterElement: React.FC<Props> = ({ elementId, parentId }) => {
   const dispatch = useDispatch();
-  const element = useSelector(selectMasterElementById(id));
-  const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
+  const classes = useStyles();
+  const element = useSelector(selectElementById(elementId));
+  const masterCoreElId = useSelector(selectMasterCoreElementId);
+  const masterGroupsElId = useSelector(selectMasterGroupsElementId);
+  const rootElement = useSelector(selectMasterScreenRoot);
 
   const { type } = element;
 
-  const elementProps = {
-    id: element.id,
-    className: element.styles.classNames[0],
-    isDisabled: true,
-    contentEditable: false,
-    ownStyles: {},
-    groupClass: '',
-    active: false,
-    params: element.parameters,
-  };
+  const Renderer = RENDERERS[type];
 
-  const handleClick = (ev: MouseEvent<HTMLElement>) => {
-    prevent(ev);
-    dispatch(setActiveMasterElementId(id));
-  };
+  const elementProps = useMemo(() => getElementProps(element), [element]);
+
+  const handleClick = useCallback(
+    (ev: React.MouseEvent<HTMLElement>) => {
+      prevent(ev);
+      dispatch(setActiveElement(elementId));
+    },
+    [dispatch, elementId],
+  );
 
   useEffect(() => {
     return () => {
       DOMHandler.INSTANCE.removeElementDom(element.id);
     };
-  }, []);
+  }, [element.id]);
 
-  const Renderer = RENDERERS[type];
+  if (!element) {
+    return null;
+  }
 
   return (
     <Renderer
-      {...elementProps}
       ref={(dom: HTMLElement) => {
-        ref.current = dom;
         DOMHandler.INSTANCE.addElementDom(element.id, dom);
       }}
       onClick={handleClick}
@@ -56,14 +77,23 @@ const MasterElement: FC<Props> = ({ id }) => {
         dispatch(setHoveredElementId(element.id));
       }}
       onMouseLeave={() => {
-        dispatch(setHoveredElementId(element.parent || null));
+        dispatch(setHoveredElementId(parentId || null));
       }}
+      {...elementProps}
     >
-      {element.children.map((childId, i) => (
-        <Fragment key={childId}>
-          {i !== 0 && <hr />}
-
-          <MasterElement id={childId} />
+      {element.children.map((childId, index) => (
+        <Fragment key={`master-${childId}`}>
+          {!!index &&
+            [masterCoreElId, masterGroupsElId, rootElement?.id].includes(
+              elementId,
+            ) && (
+              <Divider
+                orientation="horizontal"
+                variant="middle"
+                className={classes.divider}
+              />
+            )}
+          <MasterElement elementId={childId} parentId={element.id} />
         </Fragment>
       ))}
     </Renderer>

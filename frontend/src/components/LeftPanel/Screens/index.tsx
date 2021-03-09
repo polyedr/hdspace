@@ -1,5 +1,6 @@
+import React, { useState, useCallback } from 'react';
+import { useHistory } from 'react-router';
 import List from '@material-ui/core/List';
-import React, { useState } from 'react';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
@@ -8,11 +9,7 @@ import { Button, lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {
-  createScreen,
-  changeScreensOrder,
-  toggleMasterScreen,
-} from '@Redux/project/actions';
+import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
   selectCurrentProjectId,
@@ -20,12 +17,13 @@ import {
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
-  selectScreens,
+  selectMasterScreenEnabled,
+  selectMasterScreenId,
+  selectScreensWithoutMaster,
 } from '@Redux/project/selectors/screen';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import HtmlImportForm from '@Components/HTMLImportForm';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/masterScreen';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
 import {
@@ -58,17 +56,25 @@ const useStyles = makeStyles(({ palette, typography }) => ({
 const Screens = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const history = useHistory();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const screens = useSelector(selectScreens);
+  const screens = useSelector(selectScreensWithoutMaster);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
+  const masterScreenId = useSelector(selectMasterScreenId);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const handleCreateScreen = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    dispatch(createScreen(currentProjectId, 'Screen 1', screens.length));
+    dispatch(
+      createScreen({
+        projectID: currentProjectId,
+        name: 'Screen 1',
+        buoyancy: screens.length,
+      }),
+    );
   };
 
   const handleReorder = ({ destination, source }) => {
@@ -95,9 +101,13 @@ const Screens = () => {
     setAnchorEl(null);
   };
 
-  const handleToggleMasterScreen = () => {
-    dispatch(toggleMasterScreen());
-  };
+  const handleClick = useCallback(() => {
+    if (!masterScreenEnabled) {
+      history.push(`/project/${currentProjectId}/${masterScreenId}`);
+    } else {
+      history.goBack();
+    }
+  }, [currentProjectId, history, masterScreenId, masterScreenEnabled]);
 
   return (
     <>
@@ -150,7 +160,7 @@ const Screens = () => {
           <Button
             color="secondary"
             variant={masterScreenEnabled ? 'contained' : 'outlined'}
-            onClick={handleToggleMasterScreen}
+            onClick={handleClick}
           >
             Master Screen
           </Button>

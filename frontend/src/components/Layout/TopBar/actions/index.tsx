@@ -9,16 +9,16 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { CircularProgress, lighten } from '@material-ui/core';
 import {
   selectFreeCanvasMode,
-  selectRedoActions,
-  selectUndoActions,
   selectUpdateScreenImageLoader,
 } from '@Redux/project/selectors/base';
+import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { selectCurrentScreen } from '@Redux/project/selectors/screen';
 import {
-  redoAction,
+  executeUndoActions,
   updateScreenImage,
-  undoAction,
+  executeRedoActions,
 } from '@Redux/project/actions';
+
 import exportHTML from '@Src/export/app';
 import Share from './Share';
 
@@ -46,11 +46,11 @@ const Actions: React.FC = () => {
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
 
-  const undoLength = useSelector(selectUndoActions).length;
-  const redoLength = useSelector(selectRedoActions).length;
-  const onHistoryBack = () => dispatch(undoAction());
+  const canUndo = useSelector(selectCanUndo);
+  const canRedo = useSelector(selectCanRedo);
+  const onHistoryBack = () => dispatch(executeUndoActions());
 
-  const onHistoryForward = () => dispatch(redoAction());
+  const onHistoryForward = () => dispatch(executeRedoActions());
 
   const handleSaveScreen = () => dispatch(updateScreenImage(currentScreen.id));
 
@@ -62,7 +62,7 @@ const Actions: React.FC = () => {
     <div className={classes.root}>
       <IconButton
         onClick={onHistoryBack}
-        disabled={!undoLength}
+        disabled={!canUndo}
         title="Undo"
         className={classes.iconButton}
       >
@@ -71,7 +71,7 @@ const Actions: React.FC = () => {
 
       <IconButton
         onClick={onHistoryForward}
-        disabled={!redoLength}
+        disabled={!canRedo}
         title="Redo"
         className={classes.iconButton}
       >

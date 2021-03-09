@@ -1,0 +1,127 @@
+import React from 'react';
+import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
+import { fireEvent, render, RenderResult } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { mockState } from '@Utils/__tests__/test-utils';
+import { AppReduxState } from '@Redux/types';
+
+import HtmlImportForm from '@Components/HTMLImportForm';
+import TYPES from '@Redux/actionTypes';
+
+describe('HTMLImportForm', () => {
+  let store: MockStoreEnhanced<AppReduxState>;
+  let ui: RenderResult;
+  let open: boolean;
+  const closeCallback = jest.fn();
+  describe('in the closed state', () => {
+    beforeEach(() => {
+      open = false;
+      const mockStore = configureStore<AppReduxState>([]);
+      store = mockStore(mockState);
+
+      ui = render(
+        <Provider store={store}>
+          <HtmlImportForm open={open} onClose={closeCallback} />
+        </Provider>,
+      );
+    });
+
+    it('should render properly', () => {
+      expect(ui.container).toMatchSnapshot();
+    });
+
+    it('should not be displayed', () => {
+      const formTitle = ui.queryByText('Provide a URL');
+      expect(formTitle).not.toBeInTheDocument();
+    });
+  });
+
+  describe('in the open state', () => {
+    beforeEach(() => {
+      open = true;
+      const mockStore = configureStore<AppReduxState>([]);
+      store = mockStore(mockState);
+
+      ui = render(
+        <Provider store={store}>
+          <HtmlImportForm open={open} onClose={closeCallback} />
+        </Provider>,
+      );
+    });
+
+    it('should render properly', () => {
+      expect(ui.container).toMatchSnapshot();
+    });
+
+    it('should be displayed', () => {
+      const formTitle = ui.getByText('Provide a URL');
+      expect(formTitle).toBeInTheDocument();
+    });
+
+    it('should have a text input', () => {
+      const input = ui.getByPlaceholderText('URL');
+      expect(input).toBeInTheDocument();
+    });
+
+    it('should have a hidden file input', () => {
+      const input = ui.getByLabelText('Click or drop file here to upload');
+      expect(input).toBeInTheDocument();
+    });
+
+    it('submit button should be disabled if inputs are empty', () => {
+      const textInput = ui.getByPlaceholderText('URL') as HTMLInputElement;
+      const fileInput = ui.getByLabelText(
+        'Click or drop file here to upload',
+      ) as HTMLInputElement;
+
+      expect(textInput.value).toBeFalsy();
+      expect(fileInput.value).toBeFalsy();
+
+      const submitButton = ui.getByText('Create').parentElement;
+      expect(submitButton).toBeDisabled();
+
+      fireEvent.change(textInput, { target: { value: '123' } });
+      expect(submitButton).not.toBeDisabled();
+    });
+
+    it('should trigger onClose callback when "Cancel" button is clicked', () => {
+      expect(closeCallback).toHaveBeenCalledTimes(0);
+      const closeButton = ui.getByText('Cancel');
+      fireEvent.click(closeButton);
+      expect(closeCallback).toHaveBeenCalledTimes(1);
+    });
+
+    it('should dispatch an action on submit', () => {
+      const testValue = 'https://example.org';
+
+      const textInput = ui.getByPlaceholderText('URL');
+      const submitButton = ui.getByText('Create');
+      fireEvent.change(textInput, { target: { value: testValue } });
+
+      fireEvent.click(submitButton);
+      const actions = store.getActions();
+      expect(actions[0].type).toBe(TYPES.UPLOAD_IMPORT_URL);
+      expect(actions[0].payload).toBe(testValue);
+    });
+
+    it('should start process a url in case of both inputs are filled', () => {
+      const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+        type: 'image/png',
+      });
+      const string = '42';
+      const textInput = ui.getByPlaceholderText('URL');
+      const fileInput = ui.getByLabelText('Click or drop file here to upload');
+      const submitButton = ui.getByText('Create');
+
+      fireEvent.change(textInput, { target: { value: string } });
+      fireEvent.change(fileInput, {
+        target: { files: [file] },
+      });
+
+      fireEvent.click(submitButton);
+      const actions = store.getActions();
+      expect(actions[0].type).toBe(TYPES.UPLOAD_IMPORT_URL);
+      expect(actions[0].payload).toBe(string);
+    });
+  });
+});

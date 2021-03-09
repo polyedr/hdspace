@@ -46,7 +46,7 @@ const Border: React.FC<Props> = (props) => {
       case BorderPosition.RIGHT:
         props = {
           top,
-          left: left + width,
+          left: left + width - 1, // remove right border width
           height,
         };
         break;

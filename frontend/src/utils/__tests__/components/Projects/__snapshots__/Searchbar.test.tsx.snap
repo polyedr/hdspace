@@ -6,15 +6,14 @@ exports[`Searchbar should render a searchbar 1`] = `
     <form
       class="makeStyles-form-3"
     >
-      <div
-        class="makeStyles-wrapper-5"
-      >
+      <div>
         <div
           class="MuiFormControl-root MuiTextField-root makeStyles-input-1 makeStyles-queryInput-2 MuiFormControl-marginDense"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
             data-shrink="false"
+            for="search_input"
           >
             Search project
           </label>
@@ -24,16 +23,17 @@ exports[`Searchbar should render a searchbar 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+              id="search_input"
               placeholder="Search project"
               type="text"
               value=""
             />
             <fieldset
               aria-hidden="true"
-              class="PrivateNotchedOutline-root-8 MuiOutlinedInput-notchedOutline"
+              class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
             >
               <legend
-                class="PrivateNotchedOutline-legendLabelled-10"
+                class="PrivateNotchedOutline-legendLabelled-9"
               >
                 <span>
                   Search project
@@ -42,37 +42,14 @@ exports[`Searchbar should render a searchbar 1`] = `
             </fieldset>
           </div>
         </div>
-        <button
-          class="MuiButtonBase-root MuiIconButton-root makeStyles-submit-6"
-          tabindex="0"
-          title="Search"
-          type="submit"
-        >
-          <span
-            class="MuiIconButton-label"
-          >
-            <svg
-              aria-hidden="true"
-              class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall"
-              focusable="false"
-              viewBox="0 0 24 24"
-            >
-              <path
-                d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-              />
-            </svg>
-          </span>
-          <span
-            class="MuiTouchRipple-root"
-          />
-        </button>
       </div>
       <div
-        class="MuiFormControl-root MuiTextField-root makeStyles-input-1 makeStyles-parameterInput-4 makeStyles-capitalize-7 MuiFormControl-marginDense"
+        class="MuiFormControl-root MuiTextField-root makeStyles-input-1 makeStyles-parameterInput-4 makeStyles-capitalize-6 MuiFormControl-marginDense"
       >
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
           data-shrink="true"
+          for="parameter_name_input"
         >
           Search by
         </label>
@@ -90,6 +67,7 @@ exports[`Searchbar should render a searchbar 1`] = `
           <input
             aria-hidden="true"
             class="MuiSelect-nativeInput"
+            id="parameter_name_input"
             tabindex="-1"
             value="name"
           />
@@ -105,10 +83,10 @@ exports[`Searchbar should render a searchbar 1`] = `
           </svg>
           <fieldset
             aria-hidden="true"
-            class="PrivateNotchedOutline-root-8 MuiOutlinedInput-notchedOutline"
+            class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
           >
             <legend
-              class="PrivateNotchedOutline-legendLabelled-10 PrivateNotchedOutline-legendNotched-11"
+              class="PrivateNotchedOutline-legendLabelled-9 PrivateNotchedOutline-legendNotched-10"
             >
               <span>
                 Search by
@@ -117,6 +95,21 @@ exports[`Searchbar should render a searchbar 1`] = `
           </fieldset>
         </div>
       </div>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-submit-5"
+        tabindex="0"
+        title="Search"
+        type="submit"
+      >
+        <span
+          class="MuiButton-label"
+        >
+          Go
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </button>
     </form>
   </div>
 </div>

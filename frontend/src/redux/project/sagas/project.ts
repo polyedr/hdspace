@@ -1,7 +1,10 @@
 /* eslint-disable no-console */
 import { put, call, select } from 'redux-saga/effects';
 
-import { convertCreatedProjectToRequest } from '@Api/converters/toRequest';
+import {
+  convertCreatedElementToRequest,
+  convertCreatedProjectToRequest,
+} from '@Api/converters/toRequest';
 import {
   apiCreateProject,
   apiDeleteProject,
@@ -13,13 +16,17 @@ import { apiCreateAssetList } from '@Api/assetList';
 import { DEFAULT_ASSET_LIST_NAME } from '@Constants/defaultParams';
 import {
   DateRange,
+  Entity,
+  LibraryElement,
   PaginatedResponse,
   Project,
   ProjectsSearchParameter,
   ProjectWithScreens,
   Result,
+  Screen,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
+import CORE_MASTER_ELEMENTS from '@Components/Editor/MasterScreen/coreElements';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -31,6 +38,44 @@ import {
   selectProjectsDataNext,
   selectProjectsSearchParameter,
 } from '../selectors/base';
+import { selectScreenById } from '../selectors/screen';
+import { selectElementAsTree, selectElementById } from '../selectors/element';
+import { createElements } from './scenario';
+
+function* setMasterScreenCoreElements(screen: Screen) {
+  const rootElement = yield select(selectElementById(screen.element));
+  yield put(Actions.setMasterElementsIds(...rootElement.children));
+  const masterCoreId = rootElement.children[0];
+  yield put(
+    Actions.addStateElements(CORE_MASTER_ELEMENTS, masterCoreId, {
+      screenId: screen.id,
+    }),
+  );
+}
+
+function* createMasterScreenElements(screen: Screen) {
+  const elements = [
+    convertCreatedElementToRequest(
+      'container',
+      screen.element,
+      'Master Core Elements',
+    ),
+    convertCreatedElementToRequest(
+      'container',
+      screen.element,
+      'Master Group Elements',
+    ),
+  ];
+  const masterRoot: LibraryElement<Entity> = yield select(
+    selectElementAsTree(screen.element),
+  );
+
+  yield call(createElements, { elements }, masterRoot, {
+    screenId: screen.id,
+    useHistory: true,
+  });
+  yield call(setMasterScreenCoreElements, screen);
+}
 
 export function* searchProjectsSaga() {
   try {
@@ -144,12 +189,19 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
           projectscreen: result.projectscreen.map((screen) => screen.id),
         }),
       );
-
       if (result.projectscreen.length) {
         yield call(getScreensSaga, result.projectscreen);
       }
 
       yield put(Actions.setCurrentProjectId(result.id));
+      const masterScreenId: number =
+        result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
+        -1;
+      yield put(Actions.setMasterScreenId(masterScreenId));
+      const masterScreen = yield select(selectScreenById(masterScreenId));
+      if (masterScreen) {
+        yield call(setMasterScreenCoreElements, masterScreen);
+      }
     }
 
     if (error) {
@@ -191,19 +243,43 @@ export function* createProjectSaga(
         projectId: result.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
-      yield put(
-        Actions.addAssetListToState(assetList, { sourceAction: action }),
-      );
+      yield put(Actions.addAssetListToState(assetList, { useHistory: true }));
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, result]));
 
       yield put(Actions.setCurrentProjectId(result.id));
 
-      const res = yield call(
+      const masterScreen: Screen = yield call(
         createScreenSaga,
-        Actions.createScreen(result.id, 'Screen 1', 0, true),
+        Actions.createScreen(
+          {
+            projectID: result.id,
+            name: 'Master Screen',
+            buoyancy: 0,
+            rootName: 'Master Screen',
+          },
+          {
+            useHistory: true,
+          },
+        ),
       );
-      if (res) {
+
+      if (masterScreen) {
+        yield call(createMasterScreenElements, masterScreen);
+      }
+
+      const initialScreen: Screen = yield call(
+        createScreenSaga,
+        Actions.createScreen(
+          { projectID: result.id, name: 'Screen 1', buoyancy: 1 },
+          {
+            useHistory: true,
+          },
+        ),
+      );
+
+      if (initialScreen && masterScreen) {
+        yield put(Actions.setMasterScreenId(masterScreen.id));
         yield put(
           enqueueSnackbar({
             message: `Project ${result.name} created`,
@@ -213,7 +289,7 @@ export function* createProjectSaga(
           }),
         );
       } else {
-        throw new Error('Failed to create screen');
+        throw new Error('Failed to create screens');
       }
     }
 
@@ -327,11 +403,11 @@ export function* updateProjectSaga(
     const success: boolean = yield call(projectUpdateHelperSaga, project);
 
     if (success) {
-      const { undo } = action.meta;
+      const { useHistory } = action.meta;
 
-      if (!undo) {
+      if (!useHistory) {
         yield put(
-          Actions.setUndoActions(Actions.updateProject(currentProject)),
+          Actions.addUndoActions(Actions.updateProject(currentProject)),
         );
       }
     } else {

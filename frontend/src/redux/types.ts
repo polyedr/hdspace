@@ -43,13 +43,6 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
-  masterScreen: {
-    enabled: boolean;
-    activeId: string;
-    elements: {
-      [k in string]?: any;
-    };
-  };
 };
 
 export type ProjectUiState = {
@@ -74,9 +67,12 @@ export type ProjectEditState = {
   currentScreenId: number;
   activeElementId: string;
   hoveredElementId: string;
+  masterCoreElementId: string;
+  masterGroupsElementId: string;
   selectedAssetListId: string | null;
   uploadedImageInfo?: UploadedImageInfo;
   selectedElementsIds: string[];
+  masterScreenId: number | null;
   freeCanvas: {
     enabled: boolean;
     lastElements: {
@@ -92,6 +88,7 @@ export type ProjectCommunicationState = {
   screenCreateLoader: boolean;
   updateImageLoader: boolean;
   screenLoader: boolean; // TODO: make sure this loader is useless
+  masterScreenLoader: boolean;
   projectLoader: boolean;
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
@@ -99,10 +96,9 @@ export type ProjectCommunicationState = {
 };
 
 export type ProjectControlState = {
-  undoActions: Action[] | Action[][];
-  redoActions: Action[];
-  history: Action[];
-  groupActionsUp: boolean;
+  history: Array<HistoryRecord>;
+  currentHistoryRecord: number;
+  historyInProgress: boolean;
 };
 
 export type ProjectState = {
@@ -137,6 +133,12 @@ export type Notification = {
   options?: OptionsObject;
 };
 
+export type HistoryRecord = {
+  action: Action;
+  undo: Action[];
+  redo: Action[];
+};
+
 export type NotificationState = {
   notifications: Notification[];
 };
@@ -146,6 +148,19 @@ export type AppReduxState = {
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;
+};
+
+export type WrapIntoContainerData = {
+  containerType: Entity;
+  name: string | null;
+  ids: string[];
+};
+
+export type CreateScreenData = {
+  projectID: number;
+  name: string;
+  buoyancy: number;
+  rootName?: string;
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
@@ -201,6 +216,10 @@ export type SetScreenLoader = IAction<
   typeof TYPES.SET_SCREEN_LOADER,
   { active: boolean }
 >;
+export type SetMasterScreenLoader = IAction<
+  typeof TYPES.SET_MASTER_SCREEN_LOADER,
+  { active: boolean }
+>;
 export type SetUpdateImageLoader = IAction<
   typeof TYPES.SET_UPDATE_IMAGE_LOADER,
   { active: boolean }
@@ -223,7 +242,8 @@ export type DeleteScreen = IAction<
 >;
 export type RestoreScreen = IAction<
   typeof TYPES.RESTORE_SCREEN,
-  { projectId: number; screenId: number }
+  { projectId: number; screenId: number },
+  HistoryMeta
 >;
 export type RenameScreen = IAction<
   typeof TYPES.RENAME_SCREEN,
@@ -231,7 +251,8 @@ export type RenameScreen = IAction<
 >;
 export type CreateScreen = IAction<
   typeof TYPES.CREATE_SCREEN,
-  { projectID: number; name: string; buoyancy: number; skip: boolean }
+  CreateScreenData,
+  HistoryMeta
 >;
 export type DuplicateScreen = IAction<
   typeof TYPES.DUPLICATE_SCREEN,
@@ -383,8 +404,24 @@ export type UpdateElementParameters = IAction<
   },
   ElementHistoryMeta
 >;
+export type ReplaceElementParameters = IAction<
+  typeof TYPES.REPLACE_ELEMENT_PARAMETERS,
+  {
+    elementId: string;
+    parameters: LibraryElement<Entity>['parameters'];
+  },
+  ElementHistoryMeta
+>;
 export type UpdateMultipleElementsParameters = IAction<
   typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
+  {
+    ids: string[];
+    parameters: { [id: string]: LibraryElement<Entity>['parameters'] };
+  },
+  ElementHistoryMeta
+>;
+export type ReplaceMultipleElementsParameters = IAction<
+  typeof TYPES.REPLACE_MULTIPLE_ELEMENTS_PARAMETERS,
   {
     ids: string[];
     parameters: { [id: string]: LibraryElement<Entity>['parameters'] };
@@ -409,6 +446,12 @@ export type CreateElements = IAction<
   { createdElements: CreatedElement[]; parentId?: string; index?: number },
   ElementHistoryMeta,
   string[]
+>;
+
+export type CreateElementsGroup = IAction<
+  typeof TYPES.CREATE_ELEMENTS_GROUP,
+  { name: string; ids: string[] },
+  ElementHistoryMeta
 >;
 
 export type AddChildrenToElement = IAction<
@@ -444,9 +487,26 @@ export type WrapIntoContainer = IAction<
   { id: string },
   ElementHistoryMeta
 >;
+export type WrapMultipleElementsIntoContainer = IAction<
+  typeof TYPES.WRAP_MULTIPLE_ELEMENTS_INTO_CONTAINER,
+  { ids: string[] },
+  ElementHistoryMeta
+>;
 export type SetHoveredElementId = IAction<
   typeof TYPES.SET_HOVERED_ELEMENT,
   string | null
+>;
+export type SetMasterCoreElementId = IAction<
+  typeof TYPES.SET_MASTER_CORE_ELEMENT_ID,
+  { id: string }
+>;
+export type SetMasterGroupsElementId = IAction<
+  typeof TYPES.SET_MASTER_GROUPS_ELEMENT_ID,
+  { id: string }
+>;
+export type SetMasterElementsIds = IAction<
+  typeof TYPES.SET_MASTER_ELEMENTS_IDS,
+  { masterGroupsId: string; masterCoreId: string }
 >;
 export type SetCurrentDropTargetParams = IAction<
   typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
@@ -466,16 +526,50 @@ export type PasteCopiedElement = IPlainAction<
   ElementHistoryMeta
 >;
 export type ResetProjectState = IPlainAction<typeof TYPES.RESET_SCREEN_STATE>;
-export type UndoAction = IPlainAction<typeof TYPES.UNDO_ACTION>;
-export type RedoAction = IPlainAction<typeof TYPES.REDO_ACTION>;
-export type SetUndoActions = IAction<
-  typeof TYPES.SET_UNDO_ACTIONS,
-  Action | Action[]
+// history actions
+export type StartHistoryRecord = IAction<
+  typeof TYPES.START_HISTORY_RECORD,
+  { source: Action }
 >;
-export type SetRedoActions = IAction<typeof TYPES.SET_REDO_ACTIONS, Action[]>;
+export type CloseHistoryRecord = IPlainAction<
+  typeof TYPES.CLOSE_HISTORY_RECORD
+>;
+export type ExecuteUndoActions = IPlainAction<
+  typeof TYPES.EXECUTE_UNDO_ACTIONS
+>;
+export type ExecuteRedoActions = IPlainAction<
+  typeof TYPES.EXECUTE_REDO_ACTIONS
+>;
+export type AddUndoActions = IAction<
+  typeof TYPES.ADD_UNDO_ACTIONS,
+  { actions: Action | Action[] }
+>;
+export type AddRedoActions = IAction<
+  typeof TYPES.ADD_REDO_ACTIONS,
+  { actions: Action | Action[] }
+>;
+export type AddHistoryActions = IAction<
+  typeof TYPES.ADD_HISTORY_ACTIONS,
+  { undo: Action[]; redo?: Action[] }
+>;
+export type AddStateUndoActions = IAction<
+  typeof TYPES.ADD_STATE_UNDO_ACTIONS,
+  { actions: Action[] }
+>;
+export type AddStateRedoActions = IAction<
+  typeof TYPES.ADD_STATE_REDO_ACTIONS,
+  { actions: Action[] }
+>;
+export type MoveHistoryForward = IPlainAction<
+  typeof TYPES.MOVE_HISTORY_FORWARD
+>;
+export type MoveHistoryBackward = IPlainAction<
+  typeof TYPES.MOVE_HISTORY_BACKWARD
+>;
+// /historyActions
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
-  { elementId: string; wrapperId: string; parentId: string },
+  { ids: string[]; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
 export type RestoreElementChildren = IAction<
@@ -490,12 +584,9 @@ export type RestoreElement = IAction<
 >;
 export type RedoWrapIntoContainer = IAction<
   typeof TYPES.REDO_WRAP_INTO_CONTAINER,
-  { elementId: string; wrapperId: string; parentId: string },
+  { ids: string[]; wrapperId: string; parentId: string },
   ElementHistoryMeta
 >;
-export type PopUndoAction = IPlainAction<typeof TYPES.POP_UNDO_ACTION>;
-export type PopHistory = IPlainAction<typeof TYPES.POP_HISTORY>;
-export type SetGroupActionsUp = IAction<typeof TYPES.SET_GROUP_UP, boolean>;
 export type Logout = IPlainAction<typeof TYPES.LOGOUT>;
 export type AddElements = IAction<
   typeof TYPES.ADD_ELEMENTS,
@@ -631,6 +722,26 @@ export type InsertStateElement = IAction<
   ElementHistoryMeta
 >;
 
+export type WrapStateElements = IAction<
+  typeof TYPES.WRAP_STATE_ELEMENTS,
+  {
+    parentId: string;
+    childIds: string[];
+    element: LibraryElement<Entity>;
+  },
+  ElementHistoryMeta
+>;
+
+export type UnwrapStateElements = IAction<
+  typeof TYPES.UNWRAP_STATE_ELEMENTS,
+  {
+    wrapperId: string;
+    parentId: string;
+    childIds: string[];
+  },
+  ElementHistoryMeta
+>;
+
 export type MoveStateElement = IAction<
   typeof TYPES.MOVE_STATE_ELEMENT,
   { elementId: string; indices: Indices; parents: ParentIds },
@@ -730,29 +841,9 @@ export type SetEditorDocument = IAction<
   Document
 >;
 
-export type SetActiveMasterElement = IAction<
-  typeof TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
-  string
->;
-
-export type SetMasterScreenEnabled = IAction<
-  typeof TYPES.SET_MASTER_SCREEN_ENABLED,
-  boolean
->;
-
-export type ToggleMasterScreen = IPlainAction<
-  typeof TYPES.TOGGLE_MASTER_SCREEN
->;
-
-export type CreateStateGroup = IAction<
-  typeof TYPES.CREATE_STATE_GROUP,
-  {
-    groupEl: LibraryElement<any>;
-    parentId: string;
-    buoyancy: number;
-    childIds: string[];
-  },
-  ElementHistoryMeta
+export type SetMasterScreenId = IAction<
+  typeof TYPES.SET_MASTER_SCREEN_ID,
+  number | null
 >;
 
 export type Action =
@@ -768,6 +859,7 @@ export type Action =
   | SetProjectListLoader
   | SetProjectLoader
   | SetScreenLoader
+  | SetMasterScreenLoader
   | SetUpdateImageLoader
   | SetProjectCreateLoader
   | SetAnalyzerLoader
@@ -783,7 +875,9 @@ export type Action =
   | UpdateElementStyles
   | UpdateElementImage
   | UpdateElementParameters
+  | ReplaceElementParameters
   | CreateElements
+  | CreateElementsGroup
   | DeleteElement
   | AddChildToElement
   | AddChildrenToElement
@@ -792,6 +886,9 @@ export type Action =
   | GetScreenNN
   | WrapIntoContainer
   | SetHoveredElementId
+  | SetMasterCoreElementId
+  | SetMasterGroupsElementId
+  | SetMasterElementsIds
   | ToggleContainersBorders
   | SetBordersEnabled
   | SetElementToCopy
@@ -802,14 +899,15 @@ export type Action =
   | UpdateSavedElementValues
   | UpdateElementsTree
   | SetEditableStyles
-  | SetUndoActions
-  | SetRedoActions
+  | AddUndoActions
+  | AddRedoActions
+  | AddStateUndoActions
+  | AddStateRedoActions
+  | MoveHistoryForward
+  | MoveHistoryBackward
   | UnwrapFromContainer
   | RestoreElementChildren
   | RedoWrapIntoContainer
-  | PopUndoAction
-  | PopHistory
-  | SetGroupActionsUp
   | MoveElement
   | RemoveElementStyles
   | ReplaceElementStyles
@@ -834,6 +932,8 @@ export type Action =
   | AddStateElements
   | InsertStateElement
   | RemoveStateElement
+  | WrapStateElements
+  | UnwrapStateElements
   | SetProjectsData
   | ExtractStateElement
   | ChangeFreeCanvasMode
@@ -871,20 +971,22 @@ export type Action =
   | RemoveMultipleElementsStyles
   | UploadAsset
   | UploadElementAsset
-  | SetActiveMasterElement
-  | SetMasterScreenEnabled
-  | ToggleMasterScreen
   | RemoveMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup
   | MoveStateElementsInside
-  | CreateStateGroup
-  | UpdateMultipleElementsParameters;
+  | UpdateMultipleElementsParameters
+  | ReplaceMultipleElementsParameters
+  | SetMasterScreenId
+  | StartHistoryRecord
+  | CloseHistoryRecord
+  | ExecuteUndoActions
+  | ExecuteRedoActions
+  | AddUndoActions
+  | AddRedoActions;
 
 export type HistoryMeta = {
-  undo?: boolean;
-  redo?: boolean;
-  sourceAction?: Action | null;
+  useHistory?: boolean;
 };
 
 export type ElementHistoryMeta = HistoryMeta & {

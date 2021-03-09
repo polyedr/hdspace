@@ -1,22 +1,14 @@
-// @ts-nocheck
-
 import React from 'react';
+import useEventHandlers from '@Components/UI/RenderElements/useEventHandlers';
 import cn from 'classnames';
-import TextField from '@material-ui/core/TextField';
-import { InputRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import { InputRendererProps } from '../types';
 
-const useStyles = makeComponentStyles('input', {
-  input: {
-    boxSizing: 'border-box',
-    '&:hover': {
-      borderColor: 'rgba(0, 0, 0, 0.87)',
-    },
-  },
-});
+const useStyles = makeComponentStyles('input', {});
 
-const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
+type Props = InputRendererProps;
+
+const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   const { id, params, isDisabled, className, groupClass } = props;
   const { type, placeholder, textContent } = params;
 
@@ -24,22 +16,19 @@ const Input: React.FC<InputRendererProps> = React.forwardRef((props, ref) => {
   const eventHandlers = useEventHandlers(props);
 
   return (
-    <TextField
+    <input
       ref={ref}
       id={id}
       data-ls-id={id}
-      key={id}
-      variant="outlined"
-      className={cn(className, isDisabled && classes.disabled)}
+      className={cn(
+        className,
+        groupClass,
+        classes.ownStyles,
+        isDisabled && classes.disabled,
+      )}
       type={type}
+      readOnly={isDisabled}
       value={textContent}
-      InputProps={{
-        readOnly: isDisabled,
-        classes: {
-          input: cn(classes.input, groupClass, classes.ownStyles),
-        },
-        className: cn(isDisabled && classes.disabled),
-      }}
       placeholder={placeholder}
       {...eventHandlers}
     />

@@ -7,6 +7,7 @@ import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
+import { selectActiveElement } from '@Redux/project/selectors/element';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
 const useStyles = makeStyles({
@@ -23,6 +24,8 @@ const useStyles = makeStyles({
     width: 50,
   },
 });
+
+const sameSizeElements: (Entity | 'none')[] = ['checkbox', 'radiobutton'];
 
 enum Unit {
   px = 'px',
@@ -61,6 +64,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 const SizeBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
+  masterScreenEnabled,
   activeElementId,
   width,
   height,
@@ -68,8 +72,21 @@ const SizeBlock: React.FC<Props> = ({
   const classes = useStyles();
 
   const editorDocument = useSelector(selectEditorDocument);
+  const { type } = useSelector(selectActiveElement);
+
   const handleSelectChange = useCallback(
     ({ target: { value } }, sizeName: SizeName) => {
+      const handleUpdateStyles = (key: SizeName, value: string) => {
+        if (sameSizeElements.includes(type)) {
+          updateStyles({
+            width: value,
+            height: value,
+          });
+          return;
+        }
+        updateStyles({ [key]: value });
+      };
+
       if (editorDocument) {
         const el = editorDocument.getElementById(activeElementId);
 
@@ -78,13 +95,13 @@ const SizeBlock: React.FC<Props> = ({
             if (el !== null) {
               const size =
                 sizeName === 'width' ? el.offsetWidth : el.offsetHeight;
-              updateStyles({ [sizeName]: `${size}px` });
+              handleUpdateStyles(sizeName, `${size}px`);
             }
             break;
           }
 
           case 'auto':
-            updateStyles({ [sizeName]: 'auto' });
+            handleUpdateStyles(sizeName, 'auto');
             break;
 
           case '%':
@@ -104,7 +121,7 @@ const SizeBlock: React.FC<Props> = ({
                 ? Math.round(Number((size * 10000) / parentSize)) / 100
                 : 0;
 
-              updateStyles({ [sizeName]: `${sizeInPercents}%` });
+              handleUpdateStyles(sizeName, `${sizeInPercents}%`);
             }
             break;
 
@@ -113,7 +130,7 @@ const SizeBlock: React.FC<Props> = ({
         }
       }
     },
-    [activeElementId, updateStyles, width, height, editorDocument],
+    [activeElementId, updateStyles, editorDocument, type],
   );
 
   const handleInputChange = useCallback(
@@ -121,14 +138,25 @@ const SizeBlock: React.FC<Props> = ({
       const size = String(name === 'width' ? width : height) || 'auto';
       const unitValue = Unit[getUnitFromValue(size?.toString() || Unit.px)];
 
-      const newSize = {
-        [name]: unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`,
-        ...(name === 'height' && { minHeight: 'auto' }),
-      };
+      const finalValue =
+        unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`;
 
-      updateStyles({ ...newSize, flexGrow: 0 });
+      const newSize = sameSizeElements.includes(type)
+        ? {
+            width: finalValue,
+            height: finalValue,
+          }
+        : {
+            [name]: finalValue,
+          };
+
+      updateStyles({
+        ...newSize,
+        ...(name === 'height' && { minHeight: 'auto' }),
+        flexGrow: 0,
+      });
     },
-    [updateStyles, width, height],
+    [updateStyles, width, height, type],
   );
 
   const SizeControl: React.FC<ControlProps> = ({ sizeName }) => {
@@ -181,11 +209,13 @@ const SizeBlock: React.FC<Props> = ({
 
   return (
     <section>
-      <StylesHeader
-        title="Width & Height"
-        onClick={removeStyles}
-        cssPropertiesNames={['width', 'height']}
-      />
+      {!masterScreenEnabled && (
+        <StylesHeader
+          title="Width & Height"
+          onClick={removeStyles}
+          cssPropertiesNames={['width', 'height']}
+        />
+      )}
 
       <div className={classes.wrapper}>
         <SizeControl sizeName="height" />

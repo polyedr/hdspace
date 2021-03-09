@@ -1,21 +1,17 @@
 /* eslint-disable camelcase, no-console */
 import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
-import { push } from 'connected-react-router';
 
 import {
   removeProjectStyles,
   updateProjectClasses,
 } from '@Utils/ProjectClassesHelper';
-import { convertElementToRequest } from '@Api/converters/toRequest';
 import {
-  Entity,
   ItemToCopyInfo,
   LibraryElement,
   Normalized,
   StateElement,
 } from '@Src/types';
 import {
-  toggleMasterScreenSaga,
   activateScreenSaga,
   createScreenSaga,
   changeScreensOrderSaga,
@@ -26,7 +22,6 @@ import {
   convertFreeCanvasSaga,
 } from '@Redux/project/sagas/screen';
 import {
-  setActiveMasterElementSaga,
   moveElementSaga,
   removeElementStylesSaga,
   updateElementStylesSaga,
@@ -44,11 +39,11 @@ import {
   updateMultipleElementsStylesSaga,
   createElementsGroupSaga,
   updateMultipleElementsParametersSaga,
+  duplicateElements,
 } from '@Redux/project/sagas/element';
 import {
   addChildrenToElementSaga,
   addChildToElementSaga,
-  createElements,
   createElementsSaga,
   redoWrapIntoContainerSaga,
   restoreElementChildrenSaga,
@@ -71,15 +66,9 @@ import {
 import TYPES from '../../actionTypes';
 
 import { projectUpdateHelperSaga } from './shared';
-import { ElementHistoryMeta } from '../../types';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import {
-  selectCurrentProject,
-  selectHistory,
-  selectRedoActions,
-  selectUndoActions,
-} from '../selectors/base';
+import { selectCurrentProject } from '../selectors/base';
 import {
   selectActiveElement,
   selectActiveElementId,
@@ -100,8 +89,16 @@ import {
   restoreAssetSaga,
 } from './asset';
 import { importHtmlSaga, uploadImportUrlSaga } from './import';
+import {
+  executeRedoActionsSaga,
+  executeUndoActionsSaga,
+  addUndoActionsSaga,
+  addRedoActionsSaga,
+  addHistoryActionsSaga,
+} from './control';
+import withActionsHistory from '../wrappers/withActionsHistory';
 
-function* removeSharedStylesSaga(
+const removeSharedStylesSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.removeSharedStyles>,
 ) {
   const { className, cssPropertiesNames } = action.payload;
@@ -124,20 +121,18 @@ function* removeSharedStylesSaga(
 
   yield call(projectUpdateHelperSaga, newProject);
 
-  const { undo } = action.meta;
+  const { useHistory } = action.meta;
 
-  if (!undo) {
-    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+  if (!useHistory) {
+    yield put(Actions.addUndoActions(Actions.updateProject(currentProject)));
   }
 
   const state: Normalized<StateElement> = yield select(selectAllElements);
 
-  yield put(
-    Actions.updateElementsTree(state, { ...action.meta, sourceAction: action }),
-  );
-}
+  yield put(Actions.updateElementsTree(state, { ...action.meta }));
+});
 
-function* updateSharedStylesSaga(
+const updateSharedStylesSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.updateSharedStyles>,
 ) {
   const { className, styles } = action.payload;
@@ -156,18 +151,16 @@ function* updateSharedStylesSaga(
 
   yield call(projectUpdateHelperSaga, newProject);
 
-  const { undo } = action.meta;
+  const { useHistory } = action.meta;
 
-  if (!undo) {
-    yield put(Actions.setUndoActions(Actions.updateProject(currentProject)));
+  if (!useHistory) {
+    yield put(Actions.addUndoActions(Actions.updateProject(currentProject)));
   }
 
   const state: Normalized<StateElement> = yield select(selectAllElements);
 
-  yield put(
-    Actions.updateElementsTree(state, { ...action.meta, sourceAction: action }),
-  );
-}
+  yield put(Actions.updateElementsTree(state, { ...action.meta }));
+});
 
 function* copyActiveElementSaga() {
   try {
@@ -189,45 +182,6 @@ function* copyActiveElementSaga() {
   } catch (e) {
     yield put(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
-    );
-  }
-}
-
-// eslint-disable-next-line consistent-return
-function* duplicateElements(
-  itemsToCopyInfo: ItemToCopyInfo[],
-  targetParent: LibraryElement<Entity>,
-  { screenId, undo }: ElementHistoryMeta,
-) {
-  try {
-    const elements: LibraryElement<any>[] = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const el of itemsToCopyInfo) {
-      const element = yield select(selectElementAsTree(el.id));
-      elements.push(element);
-    }
-
-    const convertedItemsToDuplicate = elements.map((item) =>
-      convertElementToRequest(item!),
-    );
-
-    return yield call(
-      createElements,
-      { elements: convertedItemsToDuplicate },
-      targetParent,
-      {
-        screenId,
-        undo,
-      },
-    );
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
-        },
-      }),
     );
   }
 }
@@ -259,7 +213,11 @@ function* duplicateScreenSaga(
 
     const screen = yield call(
       createScreenSaga,
-      Actions.createScreen(projectID, name, screensNumber),
+      Actions.createScreen({
+        projectID,
+        name,
+        buoyancy: screensNumber,
+      }),
     );
 
     if (!screen) {
@@ -276,10 +234,14 @@ function* duplicateScreenSaga(
     yield put(Actions.setActiveElement(targetRootID));
 
     if (duplicatedItems.length) {
-      yield call(duplicateElements, duplicatedItems, targetRoot, {
-        screenId: screen.id,
-        undo: true,
-      });
+      yield call(
+        duplicateElements,
+        { itemsToCopyInfo: duplicatedItems, targetParent: targetRoot },
+        {
+          screenId: screen.id,
+          useHistory: true,
+        },
+      );
     }
 
     yield put(Actions.setScreenLoader(false));
@@ -290,7 +252,7 @@ function* duplicateScreenSaga(
   }
 }
 
-function* pasteCopiedElementSaga({
+const pasteCopiedElementSaga = withActionsHistory(function* ({
   type,
   meta,
 }: ReturnType<typeof Actions.pasteCopiedElement>) {
@@ -299,7 +261,7 @@ function* pasteCopiedElementSaga({
       console.error(`You have to provide metainformation for action ${type}`);
       return;
     }
-    const { screenId } = meta;
+    const { screenId, useHistory } = meta;
 
     const activeElementId: string = yield select(selectActiveElementId);
 
@@ -324,10 +286,10 @@ function* pasteCopiedElementSaga({
     if (activeElement.type !== 'none') {
       const result = yield call(
         duplicateElements,
-        [itemToCopyInfo],
-        activeElement,
+        { itemsToCopyInfo: [itemToCopyInfo], targetParent: activeElement },
         {
           screenId,
+          useHistory,
         },
       );
       if (result) {
@@ -344,125 +306,7 @@ function* pasteCopiedElementSaga({
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
     );
   }
-}
-
-function* undoSaga() {
-  try {
-    const history = yield select(selectHistory);
-    const redos = yield select(selectRedoActions);
-    const undos = yield select(selectUndoActions);
-
-    if (!undos.length) {
-      yield put(
-        enqueueSnackbar({
-          message: 'Nothing to undo.',
-          options: { variant: 'info' },
-        }),
-      );
-      return;
-    }
-
-    const last = undos[undos.length - 1];
-
-    if (Array.isArray(last)) {
-      if (last[0].meta?.screenId) {
-        yield put(push(`${last[0].meta.screenId}`));
-      }
-      yield put(Actions.setGroupActionsUp(true));
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const undo of last.reverse()) {
-        yield put({
-          ...undo,
-          meta: {
-            ...undo.meta,
-            undo: true,
-          },
-        });
-      }
-
-      yield put(Actions.setGroupActionsUp(false));
-    } else {
-      if (last.meta?.screenId) {
-        yield put(push(`${last.meta.screenId}`));
-      }
-
-      yield put({
-        ...last,
-        meta: {
-          ...last.meta,
-          undo: true,
-        },
-      });
-    }
-
-    yield put(Actions.popUndoAction());
-    yield put(Actions.popHistory());
-
-    yield put(Actions.setRedoActions([history[history.length - 1], ...redos]));
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
-    );
-  }
-}
-
-function* redoSaga() {
-  try {
-    const redos = yield select(selectRedoActions);
-
-    if (!redos.length) {
-      yield put(
-        enqueueSnackbar({
-          message: 'Nothing to redo.',
-          options: { variant: 'info' },
-        }),
-      );
-      return;
-    }
-
-    const first = redos[0];
-
-    if (Array.isArray(first)) {
-      if (first[0].meta?.screenId) {
-        yield put(push(`${first[0].meta.screenId}`));
-      }
-
-      yield put(Actions.setGroupActionsUp(true));
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const redo of first) {
-        yield put({
-          ...redo,
-          meta: {
-            ...redo.meta,
-            redo: true,
-          },
-        });
-      }
-
-      yield put(Actions.setGroupActionsUp(false));
-    } else {
-      if (first.meta?.screenId) {
-        yield put(push(`${first.meta.screenId}`));
-      }
-
-      yield put({
-        ...first,
-        meta: {
-          ...first.meta,
-          redo: true,
-        },
-      });
-    }
-
-    yield put(Actions.setRedoActions([...redos.slice(1)]));
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
-    );
-  }
-}
+});
 
 export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
@@ -524,8 +368,15 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 
-  yield takeEvery(TYPES.UNDO_ACTION, undoSaga);
-  yield takeEvery(TYPES.REDO_ACTION, redoSaga);
+  // history actions
+  // yield takeEvery(TYPES.START_HISTORY_RECORD, startHistoryRecordSaga); // a reducer action
+  yield takeEvery(TYPES.ADD_UNDO_ACTIONS, addUndoActionsSaga);
+  yield takeEvery(TYPES.ADD_REDO_ACTIONS, addRedoActionsSaga);
+  yield takeEvery(TYPES.ADD_HISTORY_ACTIONS, addHistoryActionsSaga);
+  yield takeEvery(TYPES.EXECUTE_UNDO_ACTIONS, executeUndoActionsSaga);
+  yield takeEvery(TYPES.EXECUTE_REDO_ACTIONS, executeRedoActionsSaga);
+
+  // /history actions
   yield takeEvery(TYPES.UNWRAP_FROM_CONTAINER, unwrapFromContainerSaga);
   yield takeEvery(TYPES.REDO_WRAP_INTO_CONTAINER, redoWrapIntoContainerSaga);
   yield takeEvery(TYPES.UPDATE_ELEMENT, updateElementSaga);
@@ -548,10 +399,5 @@ export default function* projectSaga() {
     toggleSelectedElementSaga,
   );
 
-  yield takeEvery(TYPES.TOGGLE_MASTER_SCREEN, toggleMasterScreenSaga);
-  yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP_SAGA, createElementsGroupSaga);
-  yield takeEvery(
-    TYPES.SET_ACTIVE_MASTER_ELEMENT_ID,
-    setActiveMasterElementSaga,
-  );
+  yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP, createElementsGroupSaga);
 }

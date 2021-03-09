@@ -61,6 +61,13 @@ const editReducer = produce(
         return { ...draft, activeElementId: action.payload };
       }
 
+      case TYPES.SET_MASTER_SCREEN_ID: {
+        if (draft.masterScreenId === action.payload) {
+          return draft;
+        }
+        return { ...draft, masterScreenId: action.payload };
+      }
+
       case TYPES.SET_HOVERED_ELEMENT: {
         if (draft.hoveredElementId === action.payload) {
           return draft;
@@ -91,6 +98,21 @@ const editReducer = produce(
             action.payload.id,
           ];
         }
+        break;
+      }
+
+      case TYPES.SET_MASTER_CORE_ELEMENT_ID: {
+        draft.masterCoreElementId = action.payload.id;
+        break;
+      }
+
+      case TYPES.SET_MASTER_GROUPS_ELEMENT_ID: {
+        draft.masterGroupsElementId = action.payload.id;
+        break;
+      }
+      case TYPES.SET_MASTER_ELEMENTS_IDS: {
+        draft.masterGroupsElementId = action.payload.masterGroupsId;
+        draft.masterCoreElementId = action.payload.masterCoreId;
         break;
       }
 

@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { cssCamelize } from '@Utils/CSSConverter';
 import {
+  ElementGroup,
   Entity,
   LibraryElement,
   ProfileData,
@@ -17,6 +18,19 @@ import {
   ServerUserData,
   UserData,
 } from '@Src/types';
+import { capitalize } from '@Utils/stringHelper';
+import { defaultFreeCanvasParams } from '@Domain/core';
+import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+
+const defaultParameters = {
+  freeCanvas: defaultFreeCanvasParams,
+  group: ElementGroup.UNDEFINED,
+  layouts: DEFAULT_LAYOUT_LIST,
+};
+const getDefaultStyles = (struct_type: Entity) => ({
+  classNames: [struct_type],
+  ownStyles: {},
+});
 
 export const convertElementFromResponse = <
   T extends Entity,
@@ -37,7 +51,7 @@ export const convertElementFromResponse = <
   P
 > => ({
   id: String(id),
-  name,
+  name: name || capitalize(struct_type),
   children: children
     .map((child) => convertElementFromResponse(child))
     .sort(
@@ -46,12 +60,14 @@ export const convertElementFromResponse = <
   type: struct_type,
   buoyancy,
   image,
-  parameters,
+  parameters: {
+    ...defaultParameters,
+    ...parameters,
+  },
   styles: {
+    ...getDefaultStyles(struct_type),
     ...styles,
-    ownStyles: {
-      ...(styles.ownStyles ? cssCamelize(styles.ownStyles) : {}),
-    },
+    ...(styles.ownStyles ? cssCamelize(styles.ownStyles) : {}),
   },
 });
 
