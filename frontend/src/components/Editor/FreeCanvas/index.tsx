@@ -156,19 +156,9 @@ const FreeCanvas = () => {
       size={rootSize}
       id="free-canvas-root"
     >
-      {Object.values(directChildren).map((element) => {
-        // const Renderer = FREE_CANVAS_RENDERERS[element.type];
-        // if (!Renderer) return null;
-
-        return (
-          <FreeDraggable key={element.id} elementId={element.id} />
-          // <Renderer
-          //   key={element.id}
-          //   element={element}
-          //   isActive={element.id === activeElementId}
-          // />
-        );
-      })}
+      {Object.values(directChildren).map((element) => (
+        <FreeDraggable key={element.id} elementId={element.id} />
+      ))}
     </Rnd>
   );
 };
