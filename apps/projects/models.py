@@ -7,6 +7,7 @@ from django.urls import reverse
 from jsonfield import JSONField
 from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
+
 # from rest_framework import permissions  # Django-Gardian testing Custom Permission
 
 
@@ -141,7 +142,6 @@ class ProjectScreen(TimeStampedModel):
 
 
 class ScreenEvent(TimeStampedModel):
-
     EVENT_CLICK = "click"
     EVENT_HOVER = "hover"
     EVENT_CHOICES = ((EVENT_CLICK, "CLICK"), (EVENT_HOVER, "HOVER"))
@@ -224,7 +224,6 @@ class ProjectMember(TimeStampedModel):
 
 
 class ProjectColumn(TimeStampedModel):
-
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
     project = models.ForeignKey(Project, related_name="projectcolumn", on_delete=models.CASCADE)
@@ -234,7 +233,6 @@ class ProjectColumn(TimeStampedModel):
 
 
 class ColumnTask(TimeStampedModel):
-
     TASK_CREATED = "created"
     TASK_COMPLETED = "completed"
     TASK_STATUS = ((TASK_CREATED, "CREATED"), (TASK_COMPLETED, "COMPLETED"))
@@ -267,7 +265,6 @@ class ColumnTask(TimeStampedModel):
 
 
 class TaskTime(TimeStampedModel):
-
     track_time = models.IntegerField(default=0)
     started = models.DateTimeField(blank=True)
     stoped = models.BooleanField(default=True)
@@ -589,13 +586,13 @@ scenarios = {
 class Element(object):
     def __init__(self, **kwargs):
         for field in (
-            "id",
-            "struct_type",
-            "func_type",
-            "buoyancy",
-            "image",
-            "parameters",
-            "styles",
+                "id",
+                "struct_type",
+                "func_type",
+                "buoyancy",
+                "image",
+                "parameters",
+                "styles",
         ):
             setattr(self, field, kwargs.get(field, None))
 
