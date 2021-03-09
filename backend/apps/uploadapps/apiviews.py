@@ -13,7 +13,7 @@ from apps.uploadapps.models import WpgSaved
 
 
 class FileUploadView(APIView):
-    parser_classes = (MultiPartParser,)
+    # parser_classes = (MultiPartParser,)
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
@@ -28,8 +28,7 @@ class FileUploadView(APIView):
             # print("serializer.fileurl", serializer.fileurl)
             # print("serializer.data", serializer.data)
             return Response({"filename": file_name}, status=status.HTTP_201_CREATED,
-                            headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"},
-                            content_type="multipart/form-data")
+                            headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
