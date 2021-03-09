@@ -63,6 +63,7 @@ const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
           clickEvent?.data.linkType === 'external' ? clickEvent.data.url : ''
         }
         target={clickEvent?.data.linkType === 'external' ? '_blank' : '_parent'}
+        draggable={false}
         {...eventHandlers}
       >
         {textContent}

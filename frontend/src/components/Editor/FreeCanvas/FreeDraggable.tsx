@@ -19,7 +19,11 @@ import useElementProps from '@Components/Editor/hooks/useElementProps';
 import cn from 'classnames';
 import Borders from './Borders';
 
-const lockedAspectRatioElements: Entity[] = ['image'];
+const lockedAspectRatioElements: Entity[] = [
+  'image',
+  'checkbox',
+  'radiobutton',
+];
 const notDraggableElements: Entity[] = [
   'option',
   'selectMenu',

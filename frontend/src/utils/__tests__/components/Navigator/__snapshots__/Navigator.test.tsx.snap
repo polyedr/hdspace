@@ -109,7 +109,7 @@ exports[`Navigator should render a Navigator component 1`] = `
                             </button>
                           </span>
                           <span>
-                            1
+                            Root
                           </span>
                         </div>
                         <div
@@ -140,7 +140,7 @@ exports[`Navigator should render a Navigator component 1`] = `
                             />
                           </svg>
                           <span>
-                            2
+                            paragraph
                           </span>
                         </div>
                       </div>

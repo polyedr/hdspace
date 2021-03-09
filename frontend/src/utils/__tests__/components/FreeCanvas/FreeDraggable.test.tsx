@@ -7,7 +7,7 @@ import { mockStateElement, mockState } from '../../test-utils';
 import FreeDraggable from '../../../../components/Editor/FreeCanvas/FreeDraggable';
 import { splitWords } from '../../../stringHelper';
 
-describe.skip('Free Draggable', () => {
+describe('Free Draggable', () => {
   let store;
   let ui;
 
