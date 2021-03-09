@@ -55,6 +55,7 @@ import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { createElements, wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { replaceElementParameters } from '../actions';
 
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(
@@ -1269,6 +1270,66 @@ export const createElementsGroupSaga = withActionsHistory(function* (
         ]),
       );
     }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+});
+
+export const unbindGroupElementStylesSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.unbindGroupElementStyles>,
+) {
+  const { id, styles } = action.payload;
+  if (!action.meta) {
+    yield put(
+      enqueueSnackbar({
+        message: 'Action meta was not provided',
+        options: { variant: 'error' },
+      }),
+    );
+    return;
+  }
+  try {
+    const element = yield select(selectElementById(id));
+    const sourceElement = yield select(
+      selectElementById(element.parameters.sourceElementId),
+    );
+    const { sourceElementsIds } = sourceElement.parameters;
+    const paramsToUpdate = {
+      [sourceElement.id]: {
+        ...sourceElement.parameters,
+        groupElements: sourceElementsIds.filter((elId) => elId !== id),
+      },
+      [element.id]: {
+        ...Object.keys(element.parameters)
+          .filter((paramName) => paramName !== 'sourceElementId')
+          .reduce(
+            (allParams, paramName) => ({
+              ...allParams,
+              [paramName]: element.parameters[paramName],
+            }),
+            {},
+          ),
+      },
+    };
+    yield call(
+      updateOrReplaceMultipleElementsParameters,
+      Actions.replaceMultipleElementsParameters(
+        [id, sourceElement.id],
+        paramsToUpdate,
+        action.meta,
+      ),
+      UpdateDataActionType.REPLACE,
+    );
+    yield call(
+      updateOrReplaceElementStyles,
+      Actions.updateElementStyles(id, styles, action.meta),
+      UpdateDataActionType.UPDATE,
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar({

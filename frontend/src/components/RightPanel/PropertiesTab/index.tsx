@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import RemoveGroupBindingForm from '@Components/Forms/RemoveGroupBindingForm';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
@@ -25,6 +26,7 @@ import {
   removeElementStyles,
   removeMultipleElementsStyles,
   removeSharedStyles,
+  //   unbindGroupElementStyles,
   updateElementParameters,
   updateElementStyles,
   updateMultipleElementsStyles,
@@ -64,6 +66,23 @@ const PropertiesTab: React.FC = () => {
   const editableStyles = useSelector(selectEditableStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
+  const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(true);
+  /* const [editedStyles, setEditedStyles] = useState<React.CSSProperties | null>(
+    null,
+  );
+
+  const handleOpenRemovalConfirmModal = useCallback(
+    (styles: React.CSSProperties) => {
+      setEditedStyles(styles);
+      setShowRemoveGroupDialog(true);
+    },
+    [],
+  );
+
+  const handleCloseRemoveConfirmModal = useCallback(() => {
+    setShowRemoveGroupDialog(false);
+    setEditedStyles(null);
+  }, []); */
 
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
@@ -201,6 +220,8 @@ const PropertiesTab: React.FC = () => {
             ),
           );
         }
+      } else if (isGroupElement) {
+        setShowRemoveGroupDialog(true);
       } else if (editableStyles === 'ownStyles') {
         dispatch(
           updateElementStyles(activeElement.id, styles, {
@@ -223,13 +244,14 @@ const PropertiesTab: React.FC = () => {
     },
     [
       selectedElementsIds,
-      editableStyles,
       masterScreenEnabled,
+      editableStyles,
       dispatch,
       currentScreenId,
       isGroupSource,
-      activeElement.id,
+      isGroupElement,
       activeElement.parameters.groupElements,
+      activeElement.id,
       activeElement.type,
     ],
   );
@@ -304,6 +326,16 @@ const PropertiesTab: React.FC = () => {
           </>
         )}
       </Scrollbar>
+      <RemoveGroupBindingForm
+        open={showRemoveGroupDialog}
+        onClose={() => {
+          setShowRemoveGroupDialog(false);
+        }}
+        onConfirm={() => {
+          // dispatch(unbindGroupElementStyles(activeElementId, ));
+        }}
+      />
+      ]
     </div>
   );
 };
