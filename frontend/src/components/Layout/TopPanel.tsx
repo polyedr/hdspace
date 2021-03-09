@@ -69,6 +69,7 @@ const TopPanel = () => {
               onClick={handleEditClick}
               className={classes.editButton}
               size="small"
+              title="Rename project"
             >
               <EditIcon fontSize="small" />
             </IconButton>
