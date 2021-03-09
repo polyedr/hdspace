@@ -23,7 +23,7 @@ const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
     const history = useHistory();
 
     // return first event of type 'Click'
-    const clickEvent: ElementClickEvent | undefined = events.find(
+    const clickEvent: ElementClickEvent | undefined = events?.find(
       (event) => event.type === EventType.Click,
     );
 
