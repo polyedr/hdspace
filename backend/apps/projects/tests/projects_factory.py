@@ -2,6 +2,7 @@ from factory.django import DjangoModelFactory
 import factory
 from factory.fuzzy import FuzzyText
 
+from apps.accounts.tests.accounts_factory import UserFactory
 from apps.projects.models import Roles, ProjectIllustrationSet, ProjectImage, ScreenScenario, ScenarioElement, \
     ElementComment, Project, ProjectScreen, ScreenEvent, ScreenComment, Comment, ProjectInvitation, ProjectMember, \
     TaskTime, ScreenAssignee, ProjectActivity, ProjectColumn, ColumnTask
