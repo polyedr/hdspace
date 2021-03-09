@@ -6,7 +6,7 @@ import cn from 'classnames';
 import {
   updateElementParameters,
   createElements,
-  setActiveElementId,
+  setActiveElement,
 } from '@Redux/project/actions';
 import {
   selectActiveElementId,
@@ -146,7 +146,7 @@ const FreeCanvas = () => {
           activeElementId === root.id ? '#5A899D' : 'transparent'
         }`,
       }}
-      onClick={() => dispatch(setActiveElementId(root.id))}
+      onClick={() => dispatch(setActiveElement(root.id))}
       enableResizing={false}
       disableDragging
       minWidth="100%"
