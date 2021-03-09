@@ -12,7 +12,7 @@ const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
 
   const [state, setState] = useState(placeholder || '');
   useEffect(() => {
-    setState(placeholder);
+    setState(placeholder || '');
   }, [placeholder]);
 
   const debounced = useDebouncedCallback((value) => {

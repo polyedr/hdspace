@@ -1,5 +1,5 @@
 import React from 'react';
-import { RENDERERS } from '@Components/UI/RenderElements';
+import RENDERERS from '@Components/UI/RenderElements';
 import {
   selectCurrentRootId,
   selectElementById,

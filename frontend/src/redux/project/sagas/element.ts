@@ -505,7 +505,7 @@ function* updateOrReplaceElementParameters(
     );
 
     const parametersToUpdate =
-      type === UpdateDataActionType.UPDATE
+      type === UpdateDataActionType.REPLACE
         ? { ...parameters }
         : { ...state[elementId].parameters, ...parameters };
 

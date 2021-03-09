@@ -3,53 +3,90 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
-  setActiveElementId,
+  setActiveElement,
   updateElementParameters,
+  updateElementStyles,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { StateElement } from '@Src/types';
+import { Entity, StateElement } from '@Src/types';
+import RENDERERS from '@Components/UI/RenderElements';
+import {
+  selectElementById,
+  selectIncludesActiveElement,
+  selectIsElementActive,
+} from '@Redux/project/selectors/element';
+import useElementProps from '@Components/Editor/hooks/useElementProps';
+import cn from 'classnames';
 import Borders from './Borders';
+
+const lockedAspectRatioElements: Entity[] = [
+  'image',
+  'checkbox',
+  'radiobutton',
+];
+const notDraggableElements: Entity[] = [
+  'option',
+  'selectMenu',
+  'listItem',
+  'dropdownItem',
+  'dropdownMenu',
+];
 
 const useStyles = makeStyles({
   rnd: {
     position: 'absolute',
-    overflow: 'hidden',
     zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
       isActive || includesActiveElement ? 1000 : zIndex,
+  },
+  resizeHande: {
+    borderRadius: '4px',
+    zIndex: 1000,
+    '&:hover': {
+      backgroundColor: 'rgba(136, 136, 136, 0.5)',
+    },
+  },
+  activeResizeHandle: {
+    backgroundColor: 'rgba(136, 136, 136, 0.5)',
   },
 });
 
 type Props = {
-  element: StateElement;
-  isActive: boolean;
+  elementId: StateElement['id'];
   includesActiveElement?: boolean;
   lockAspectRatio?: boolean;
 };
 
-const FreeDraggable: React.FC<Props> = ({
-  element,
-  isActive,
-  includesActiveElement,
-  lockAspectRatio,
-  children,
-}) => {
+const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const dispatch = useDispatch();
+
+  const element = useSelector(selectElementById(elementId));
+  const includesActiveElement = useSelector(
+    selectIncludesActiveElement(elementId),
+  );
+  const isActive = useSelector(selectIsElementActive(elementId));
 
   const {
     id,
     parameters: {
-      freeCanvas: { left, top, width, height, zIndex = 0 },
+      freeCanvas: { left = 0, top = 0, width = 0, height = 0, zIndex = 0 } = {},
     },
+    type,
   } = element;
 
-  const classes = useStyles({ isActive, zIndex, includesActiveElement });
+  const [resizeDir, setResizeDir] = useState<any>(false);
+  const classes = useStyles({
+    isActive,
+    zIndex,
+    includesActiveElement,
+  });
+
   const currentScreenId = useSelector(selectCurrentScreenId);
 
   const [hover, setHover] = useState(false);
 
   const handleInteractionStart = (ev) => {
     ev.stopPropagation();
-    dispatch(setActiveElementId(id));
+    dispatch(setActiveElement(id));
   };
 
   const handleResizeStop: RndResizeCallback = (
@@ -60,8 +97,8 @@ const FreeDraggable: React.FC<Props> = ({
     position,
   ) => {
     if (
-      width === ref.style.width &&
-      height === ref.style.height &&
+      width === parseInt(ref.style.width) &&
+      height === parseInt(ref.style.height) &&
       left === position.x &&
       top === position.y
     ) {
@@ -72,6 +109,7 @@ const FreeDraggable: React.FC<Props> = ({
       updateElementParameters(
         id,
         {
+          ...element.parameters,
           freeCanvas: {
             zIndex,
             width: parseInt(ref.style.width),
@@ -83,6 +121,17 @@ const FreeDraggable: React.FC<Props> = ({
         { screenId: currentScreenId },
       ),
     );
+    dispatch(
+      updateElementStyles(
+        id,
+        {
+          width: ref.style.width,
+          height: ref.style.height,
+        },
+        { screenId: currentScreenId },
+      ),
+    );
+    setResizeDir(false);
   };
 
   const handleDragStop: RndDragCallback = (e, { x, y, node }) => {
@@ -93,6 +142,7 @@ const FreeDraggable: React.FC<Props> = ({
       updateElementParameters(
         id,
         {
+          ...element.parameters,
           freeCanvas: {
             zIndex,
             width,
@@ -106,7 +156,24 @@ const FreeDraggable: React.FC<Props> = ({
     );
   };
 
-  return (
+  const elementProps = useElementProps(elementId);
+
+  const Renderer = RENDERERS[type as Entity];
+
+  const activeHandle = (dir: string) =>
+    resizeDir === dir && classes.activeResizeHandle;
+
+  const renderElement = () => (
+    <Renderer {...elementProps}>
+      {element.children.map((childId) => (
+        <FreeDraggable key={childId} elementId={childId} />
+      ))}
+    </Renderer>
+  );
+
+  return notDraggableElements.includes(type as Entity) ? (
+    renderElement()
+  ) : (
     <Rnd
       onClick={handleInteractionStart}
       className={classes.rnd}
@@ -123,13 +190,26 @@ const FreeDraggable: React.FC<Props> = ({
             height,
           },
         })}
-      onResizeStart={handleInteractionStart}
+      onResizeStart={(ev, dir) => {
+        handleInteractionStart(ev);
+        setResizeDir(dir);
+      }}
       onDragStart={handleInteractionStart}
-      lockAspectRatio={lockAspectRatio}
+      lockAspectRatio={lockedAspectRatioElements.includes(type as Entity)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      resizeHandleClasses={{
+        bottom: cn(classes.resizeHande, activeHandle('bottom')),
+        bottomLeft: cn(classes.resizeHande, activeHandle('bottomLeft')),
+        bottomRight: cn(classes.resizeHande, activeHandle('bottomRight')),
+        left: cn(classes.resizeHande, activeHandle('left')),
+        top: cn(classes.resizeHande, activeHandle('top')),
+        right: cn(classes.resizeHande, activeHandle('right')),
+        topLeft: cn(classes.resizeHande, activeHandle('topLeft')),
+        topRight: cn(classes.resizeHande, activeHandle('topRight')),
+      }}
     >
-      {children}
+      {renderElement()}
 
       <Borders element={element} hover={hover} isActive={isActive} />
     </Rnd>

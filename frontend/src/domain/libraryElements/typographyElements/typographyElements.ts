@@ -20,7 +20,11 @@ export const hyperlink: HyperlinkServerElement = {
   struct_type: 'hyperlink',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      height: 16,
+      width: 56,
+    },
     group: ElementGroup.OTHER,
     textContent: 'hyperlink',
     events: [],
@@ -46,7 +50,10 @@ export const makeHeading = ({
   struct_type: 'heading',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      height: 74,
+    },
     group: ElementGroup.TYPOGRAPHY,
     textContent,
     headingType,
@@ -74,7 +81,10 @@ export const makeParagraph = ({
   struct_type: 'paragraph',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      height: 300,
+    },
     group: ElementGroup.TYPOGRAPHY,
     textContent,
   },
@@ -93,7 +103,10 @@ export const ocrtext: OcrtextServerElement = {
   struct_type: 'ocrtext',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      height: 300,
+    },
     group: ElementGroup.TYPOGRAPHY,
     textContent: 'This is paragraph',
   },
@@ -112,7 +125,10 @@ export const textBlock: TextBlockServerElement = {
   struct_type: 'textBlock',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      height: 27,
+    },
     group: ElementGroup.TYPOGRAPHY,
     textContent: 'This is text block',
   },
@@ -137,7 +153,10 @@ export const makeList = ({
   struct_type: 'list',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      height: 63,
+    },
     group: ElementGroup.TYPOGRAPHY,
     listItems: items.map((item) => {
       const { textContent, isLink, link } = item.parameters;

@@ -105,7 +105,15 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
       dispatch(
         createElements(
           {
-            createdElements: [{ id, type, name, custom, parameters }],
+            createdElements: [
+              {
+                id,
+                type,
+                name,
+                custom,
+                parameters,
+              },
+            ],
             parentId: activeElement.id,
           },
           {

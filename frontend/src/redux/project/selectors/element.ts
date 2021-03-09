@@ -152,7 +152,7 @@ export const selectCurrentEditableStyles = createSelector<
   (activeElement, currentProject, activeElementStyles, editableStyles) => {
     const { type } = activeElement;
 
-    const activeElementClassNames = activeElementStyles.classNames;
+    const activeElementClassNames = activeElementStyles.classNames || '';
 
     let activeEntityStyles = {};
     if (type !== 'none') {
