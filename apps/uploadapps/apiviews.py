@@ -27,7 +27,9 @@ class FileUploadView(APIView):
             serializer.save(owner=self.request.user)
             # print("serializer.fileurl", serializer.fileurl)
             # print("serializer.data", serializer.data)
-            return Response({"filename": file_name}, status=status.HTTP_201_CREATED)
+            return Response({"filename": file_name}, status=status.HTTP_201_CREATED,
+                            headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"},
+                            content_type="multipart/form-data")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
