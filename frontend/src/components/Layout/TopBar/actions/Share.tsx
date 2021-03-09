@@ -4,8 +4,11 @@ import IconButton from '@material-ui/core/IconButton';
 import Popover from '@material-ui/core/Popover';
 import Container from '@material-ui/core/Container';
 import { Button, makeStyles } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
+import { selectTokenPair } from '@Redux/user/selectors';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 const useStyles = makeStyles({
   popup: {
@@ -14,12 +17,16 @@ const useStyles = makeStyles({
 });
 
 type Props = {
-  className: string;
+  className?: string;
 };
 
-const Share: FC<Props> = ({ className }) => {
+const Share: FC<Props> = ({ className = '' }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const { access } = useSelector(selectTokenPair);
+  const projectId = useSelector(selectCurrentProjectId);
+  const screenId = useSelector(selectCurrentScreenId);
+
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
 
   const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
@@ -31,7 +38,6 @@ const Share: FC<Props> = ({ className }) => {
   };
 
   const open = Boolean(anchor);
-  const id = open ? 'simple-popover' : undefined;
 
   return (
     <div>
@@ -40,7 +46,6 @@ const Share: FC<Props> = ({ className }) => {
       </IconButton>
 
       <Popover
-        id={id}
         open={open}
         anchorEl={anchor}
         onClose={handleClose}
@@ -58,7 +63,11 @@ const Share: FC<Props> = ({ className }) => {
             variant="contained"
             color="primary"
             onClick={() => {
-              navigator.clipboard.writeText('project link');
+              const { origin } = window.location;
+
+              navigator.clipboard.writeText(
+                `${origin}/share?project=${projectId}&screen=${screenId}&token=${access}`,
+              );
 
               handleClose();
               dispatch(
