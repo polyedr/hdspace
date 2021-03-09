@@ -17,8 +17,9 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     alignItems: 'flex-start',
     position: 'absolute',
-    top: 0,
+    top: '100%',
     left: 0,
+    zIndex: 999,
     color: 'white',
     fontSize: '.8em',
     textTransform: 'capitalize',
@@ -47,7 +48,7 @@ const useStyles = makeStyles({
   border: {
     position: 'absolute',
     backgroundColor: (props: any) => (props.isActive ? '#5A899D' : '#7a7a7a'),
-    zIndex: 999,
+    zIndex: 998,
   },
   topBorder: {
     top: 0,
@@ -85,9 +86,7 @@ const Borders: React.FC<Props> = ({ element, isActive, hover }) => {
   const {
     id,
     name,
-    parameters: {
-      freeCanvas: { zIndex },
-    },
+    parameters: { freeCanvas: { zIndex = 0 } = {} },
   } = element;
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);

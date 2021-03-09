@@ -22,6 +22,7 @@ const Image: React.FC<ImageRendererProps> = React.forwardRef((props, ref) => {
       key={id}
       className={cn(className, groupClass, classes.ownStyles)}
       alt={id}
+      draggable={false}
       {...eventHandlers}
     />
   );

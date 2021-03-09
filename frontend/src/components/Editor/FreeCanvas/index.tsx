@@ -21,8 +21,8 @@ import {
   SyntheticElement,
 } from '@Src/types';
 import { ElementType } from '@Constants/dragAndDrop';
-import FREE_CANVAS_RENDERERS from './FreeRenderers';
 import { useElementClassNames } from './helpers';
+import FreeDraggable from './FreeDraggable';
 
 const FreeCanvas = () => {
   const dispatch = useDispatch();
@@ -47,12 +47,8 @@ const FreeCanvas = () => {
 
     return Object.values(directChildren).reduce(
       (acc, curr) => {
-        const {
-          left = 0,
-          top = 0,
-          width = 0,
-          height = 0,
-        } = curr.parameters.freeCanvas;
+        const { left = 0, top = 0, width = 0, height = 0 } =
+          curr.parameters.freeCanvas || {};
         const newWidth = left + parseInt(width.toString());
         const newHeight = top + parseInt(height.toString());
         return {
@@ -160,18 +156,9 @@ const FreeCanvas = () => {
       size={rootSize}
       id="free-canvas-root"
     >
-      {Object.values(directChildren).map((element) => {
-        const Renderer = FREE_CANVAS_RENDERERS[element.type];
-        if (!Renderer) return null;
-
-        return (
-          <Renderer
-            key={element.id}
-            element={element}
-            isActive={element.id === activeElementId}
-          />
-        );
-      })}
+      {Object.values(directChildren).map((element) => (
+        <FreeDraggable key={element.id} elementId={element.id} />
+      ))}
     </Rnd>
   );
 };

@@ -86,8 +86,6 @@ export const makeContainer = ({
     group: ElementGroup.NONE,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
   },
   styles: {
@@ -110,8 +108,6 @@ export const makeGridItem = ({
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.CONTAINERS,
   },
@@ -143,8 +139,6 @@ export const makeGrid = ({
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.OTHER,
   },
@@ -165,8 +159,6 @@ export const column: ColumnServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.CONTAINERS,
   },
@@ -187,8 +179,6 @@ export const makeColumn = ({ UID = 'master' }): ColumnServerElement => ({
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.CONTAINERS,
   },
@@ -211,8 +201,6 @@ export const makeColumns = (
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.OTHER,
   },
@@ -235,8 +223,6 @@ export const nativeColumns: NativeColumnsServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     group: ElementGroup.CONTAINERS,
   },
@@ -261,8 +247,6 @@ export const makeDivBlock = ({
       group: ElementGroup.CONTAINERS,
       freeCanvas: {
         ...defaultFreeCanvasParams,
-        width: '50%',
-        height: '50%',
       },
     },
     styles: {
@@ -288,6 +272,8 @@ export const makeImage = ({
     imageURL: IMAGES.imageIcon,
     freeCanvas: {
       ...defaultFreeCanvasParams,
+      width: 300,
+      height: 300,
     },
   },
   styles: {
@@ -312,8 +298,6 @@ export const makeSmartHeader = ({
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     stylesOn: true,
   },
@@ -339,8 +323,6 @@ export const makeSmartFooter = ({
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     stylesOn: true,
   },
@@ -366,8 +348,6 @@ export const makeSmartForm = ({
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     stylesOn: true,
   },
@@ -393,8 +373,6 @@ export const makeSmartWebpage = ({
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
     },
     stylesOn: true,
   },
@@ -480,7 +458,11 @@ export const video: VideoServerElement = {
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
     group: ElementGroup.OTHER,
-    freeCanvas: defaultFreeCanvasParams,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 640,
+      height: 480,
+    },
     videoSettings: {
       link: '',
       autoplay: false,
@@ -498,9 +480,7 @@ export const video: VideoServerElement = {
   children: [],
 };
 
-// eslint-disable-next-line no-shadow-restricted-names
-export const undefined: UndefinedServerElement = {
-  // TODO: RENAME THIS CONST
+export const undefinedElement: UndefinedServerElement = {
   id: 'undefined',
   buoyancy: 0,
   func_type: 'undefined',
@@ -510,8 +490,8 @@ export const undefined: UndefinedServerElement = {
     group: ElementGroup.UNDEFINED,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
+      width: 100,
+      height: 100,
     },
   },
   styles: {

@@ -35,8 +35,7 @@ import Radiobutton from './Radiobutton/Radiobutton';
 import Select from './Select/Select';
 import Option from './Option/Option';
 
-// eslint-disable-next-line import/prefer-default-export
-export const RENDERERS: Record<Entity, React.FC<any>> = {
+const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
   container: Container,
   divBlock: DivBlockRenderer,
@@ -82,3 +81,5 @@ export const RENDERERS: Record<Entity, React.FC<any>> = {
   section: Section,
   group: ElementsGroup,
 };
+
+export default RENDERERS;

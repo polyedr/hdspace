@@ -617,4 +617,6 @@ export const defaultFreeCanvasParams: Partial<FreeCanvasElementParams> = {
   left: 0,
   top: 0,
   zIndex: 0,
+  width: 300,
+  height: 100,
 };

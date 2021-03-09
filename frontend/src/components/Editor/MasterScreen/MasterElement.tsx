@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { RENDERERS } from '@Components/UI/RenderElements';
+import RENDERERS from '@Components/UI/RenderElements';
 import {
   selectElementById,
   selectMasterCoreElementId,
@@ -20,7 +20,7 @@ type Props = {
 
 const getElementProps = (element) => ({
   id: element.id,
-  className: element.styles.classNames[0],
+  className: element.styles.classNames?.[0] || '',
   isDisabled: true,
   contentEditable: false,
   ownStyles: element.parameters.groupElements ? element.styles.ownStyles : {},

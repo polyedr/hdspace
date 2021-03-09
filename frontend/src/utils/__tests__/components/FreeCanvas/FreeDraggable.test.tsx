@@ -17,7 +17,7 @@ describe('Free Draggable', () => {
 
     ui = render(
       <Provider store={store}>
-        <FreeDraggable element={mockStateElement} isActive={false}>
+        <FreeDraggable elementId={mockStateElement.id}>
           {mockStateElement.parameters.textContent}
         </FreeDraggable>
       </Provider>,

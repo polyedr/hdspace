@@ -9,10 +9,14 @@ import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import { apiCreateElements, apiGetElements } from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
 import { apiUpdateScenarios } from '@Api/scenario';
-import { apiCreateScreen, apiGetScreen, apiUpdateScreen } from '@Api/screen';
+import {
+  apiCreateScreen,
+  apiGetScreen,
+  apiPostFreeCanvas,
+  apiUpdateScreen,
+} from '@Api/screen';
 import {
   LibraryElement,
-  NNBlockType,
   Normalized,
   Project,
   Result,
@@ -27,8 +31,6 @@ import {
   activateScreen,
   addElements,
   createScreen,
-  changeFreeCanvasMode,
-  deleteElement,
   deleteScreen,
   renameScreen,
   restoreScreen,
@@ -39,13 +41,11 @@ import {
   setUpdateImageLoader,
   updateScreen,
   updateScreenImage,
-  uploadFile,
   setActiveElementId,
 } from '../actions';
 import { createScenarios } from './scenario';
 import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
-import { uploadFileSaga } from './element';
 import {
   selectCurrentScreenId,
   selectScreenById,
@@ -53,8 +53,7 @@ import {
 } from '../selectors/screen';
 import {
   selectAllElements,
-  selectCurrentRootId,
-  selectElementById,
+  selectCurrentRootElement,
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
@@ -637,44 +636,51 @@ export function* changeScreensOrderSaga(
 
 export function* convertFreeCanvasSaga() {
   try {
-    const editorDocument = yield select(selectEditorDocument);
+    const rootElement: LibraryElement<'root'> = yield select(
+      selectCurrentRootElement,
+    );
 
-    const root = editorDocument.getElementById('free-canvas-root');
-    if (!root) throw new Error('Failed to find the root element');
-
-    const rootId: string = yield select(selectCurrentRootId);
-    yield put(setActiveElementId(rootId));
-
-    const canvas: HTMLCanvasElement = yield call(html2canvas, root, {
-      useCORS: true,
-      allowTaint: true,
-      logging: true,
-      ignoreElements: (element: Element) =>
-        (element as HTMLElement).dataset.role === 'borders',
+    const convert = (elem: LibraryElement<any>) => ({
+      ...elem,
+      id: undefined,
+      parent_id: parseInt(elem.id),
+      children: elem.children.map((child) => convert(child)),
     });
 
-    const screenId: number = yield select(selectCurrentScreenId);
+    const convertedTree = convert(rootElement);
 
-    const rootElement: StateElement = yield select(selectElementById(rootId));
+    const { result, error }: Result<ServerElement<any>> = yield call(
+      reqWrapper,
+      apiPostFreeCanvas,
+      {
+        tree: convertedTree,
+      },
+    );
+
+    if (error) {
+      throw new Error(error);
+    }
+    if (!result) {
+      throw new Error('Something went wrong');
+    }
+
+    const screenId: Screen['id'] = yield select(selectCurrentScreenId);
 
     yield all(
-      rootElement.children.map((id) => put(deleteElement(id, { screenId }))),
-    );
-
-    const blob = yield call(canvasToBlob, canvas);
-
-    yield call(
-      uploadFileSaga,
-      uploadFile(
-        { file: new File([blob], 'test.png'), name: 'test.png' },
-        rootId,
-        NNBlockType.WEBPAGE,
-        {
-          screenId,
-        },
+      rootElement.children.map((child) =>
+        put(Actions.removeStateElement(child.id, { screenId })),
       ),
     );
-    yield put(changeFreeCanvasMode(false));
+
+    yield put(
+      Actions.addStateElements(
+        [convertElementFromResponse(result)],
+        rootElement.id,
+        { screenId },
+      ),
+    );
+
+    yield put(Actions.changeFreeCanvasMode(false));
   } catch (e) {
     yield put(
       enqueueSnackbar({
