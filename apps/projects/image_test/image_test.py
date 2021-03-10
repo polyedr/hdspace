@@ -1,18 +1,27 @@
 import os
-# your imports, e.g. Django models
+import glob
 from apps.accounts.tests.accounts_factory import UserFactory
 from apps.projects.tests.projects_factory import ProjectFactory, ProjectIllustrationSetFactory, ProjectImageFactory
 from apps.projects.models import Project, ProjectIllustrationSet, ProjectImage
+from django.core.files.base import ContentFile
+from io import BytesIO
+from PIL import Image
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
-
-
 user = UserFactory.create()
 project = ProjectFactory.create(user=user)
 project_illutration_set = ProjectIllustrationSetFactory.create(project=project)
-desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-file_path = desktop + "\image\AxOPDhGenf0.jpg"
-project_image = ProjectImageFactory.create(illustration_set=project_illutration_set, image=file_path)
+path = "C:/Users/Nelly li/Desktop/image/*"
+all_image = glob.glob(path)
+for i in range(len(all_image)):
+    image = Image.open(all_image[i])
+    buf = BytesIO()
+    image.save(buf, 'jpeg')
+    buf.seek(0)
+    image = buf.read()
+    buf.close()
+    project_image = ProjectImageFactory.create(illustration_set=project_illutration_set,
+                                               image=ContentFile(image, "example.jpg"))
 
 # delete individual instances
 # user.delete()
@@ -23,5 +32,4 @@ project_image = ProjectImageFactory.create(illustration_set=project_illutration_
 # delete all instances within model
 # Project.objects.all().delete()
 # ProjectIllustrationSet.objects.all().delete()
-ProjectImage.objects.all().delete()
-# project_image = ProjectImageFactory.create(project_illutration_set = project_illutration_set, image = )
+# ProjectImage.objects.all().delete()

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment, ProjectIllustrationSet, ProjectImage, \
-    ProjectColumn
+from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment, ProjectIllustrationSet, \
+    ProjectImage, ProjectColumn
 from .models import *  # noqa
 
 # admin.site.register(ScreenEvent)
