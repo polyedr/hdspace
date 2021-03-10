@@ -40,6 +40,7 @@ import {
   ScenarioItem,
   ServerElement,
   StateElement,
+  UpdateDataActionType,
 } from '@Src/types';
 import {
   Action,
@@ -71,6 +72,7 @@ import {
   selectTreeChildIdsByParentsIds,
 } from '../selectors/element';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { updateOrReplaceMultipleElementsParameters } from './common';
 
 // eslint-disable-next-line consistent-return
 export function* createScenarios(scenario?: Partial<ScenarioItem>) {
@@ -373,7 +375,8 @@ export const createElementsSaga = withActionsHistory(function* (
         };
       }, {});
 
-      yield put(
+      yield call(
+        updateOrReplaceMultipleElementsParameters,
         Actions.updateMultipleElementsParameters(
           Object.keys(paramsToUpdate),
           paramsToUpdate,
@@ -381,6 +384,7 @@ export const createElementsSaga = withActionsHistory(function* (
             screenId,
           },
         ),
+        UpdateDataActionType.UPDATE,
       );
     }
   } catch (e) {

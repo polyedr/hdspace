@@ -363,6 +363,7 @@ export const selectCanCreateGroup = (state: AppReduxState) =>
 
 export const selectElementGroupIds = (state: AppReduxState) => {
   const { elements } = selectProjectState(state).data;
+
   return Object.keys(elements).filter(
     (elementId) => elements[elementId].parameters?.isGroup === true,
   );
@@ -389,7 +390,7 @@ export const selectElementTreeGroups = (state: AppReduxState) => {
   const { elements } = selectProjectState(state).data;
   const groupIds = selectElementGroupIds(state);
   return groupIds.map((groupId) =>
-    buildGroupElementsTree(elements, groupId, ['group', 'groupElements']),
+    buildGroupElementsTree(elements, groupId, ['isGroup', 'groupElements']),
   );
 };
 

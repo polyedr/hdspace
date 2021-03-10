@@ -32,9 +32,10 @@ const useStyles = makeStyles({
 type Props = {
   projectId: number;
   screenId?: number;
+  elementId?: string;
 };
 
-const Project: React.FC<Props> = ({ projectId, screenId }) => {
+const Project: React.FC<Props> = ({ projectId, screenId, elementId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
@@ -76,7 +77,7 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
       ) : (
         <>
           {currentProjectId !== -1 && !!screenId && (
-            <Screen screenId={screenId} />
+            <Screen screenId={screenId} elementId={elementId} />
           )}
           <NNProcessingModal />
         </>
