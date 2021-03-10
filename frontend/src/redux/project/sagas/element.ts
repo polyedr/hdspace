@@ -21,10 +21,7 @@ import {
   convertElementToPatchRequest,
   convertElementToRequest,
 } from '@Api/converters/toRequest';
-import {
-  getElementsArray,
-  getTreeWithDefaultStylesAndParams,
-} from '@Utils/ElementsTreeHelper';
+import { getElementsArray } from '@Utils/ElementsTreeHelper';
 import {
   apiUpdateElement,
   apiChangeRecursiveElement,
@@ -1000,13 +997,9 @@ export const uploadFileSaga = withActionsHistory(function* ({
       contentType: 'multipart/form-data',
     });
     if (nnContainer) {
-      const nnContainerWithDefaultParams = getTreeWithDefaultStylesAndParams(
-        nnContainer,
+      const convertedElements = getElementsArray(nnContainer).map((element) =>
+        convertElementToPatchRequest(element),
       );
-
-      const convertedElements = getElementsArray(
-        nnContainerWithDefaultParams,
-      ).map((element) => convertElementToPatchRequest(element));
 
       const {
         result,
@@ -1019,7 +1012,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
 
       if (result) {
         yield put(
-          Actions.addStateElements([nnContainerWithDefaultParams], parentId, {
+          Actions.addStateElements([nnContainer], parentId, {
             ...meta,
           }),
         );
@@ -1028,12 +1021,12 @@ export const uploadFileSaga = withActionsHistory(function* ({
           yield put(
             Actions.addHistoryActions({
               undo: [
-                Actions.deleteElement(nnContainerWithDefaultParams.id, {
+                Actions.deleteElement(nnContainer.id, {
                   screenId,
                 }),
               ],
               redo: [
-                Actions.restoreElement(nnContainerWithDefaultParams.id, {
+                Actions.restoreElement(nnContainer.id, {
                   screenId,
                 }),
               ],
