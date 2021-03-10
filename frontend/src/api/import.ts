@@ -33,21 +33,3 @@ export const apiGetWebPage = ({
   })
     .then((res) => res.data)
     .catch(handleError);
-
-export const apiGetFile = (props: MyAxiosProps & { fileUrl: string }) => {
-  const { fileUrl, ...axiosProps } = props;
-  return myAxios({
-    ...axiosProps,
-    url: '/uploadapps/',
-    method: 'POST',
-    // contentType: 'multipart/form-data',
-    data: {
-      ...axiosProps.data,
-      fileurl: fileUrl,
-    },
-  })
-    .then((res) => {
-      return res.data.filename;
-    })
-    .catch(handleError);
-};
