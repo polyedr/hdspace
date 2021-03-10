@@ -51,8 +51,8 @@ export const mockRootElement: StateElement = {
   parameters: {
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: '50%',
-      height: '50%',
+      width: 50,
+      height: 50,
     },
     group: ElementGroup.NONE,
     layouts: DEFAULT_LAYOUT_LIST,

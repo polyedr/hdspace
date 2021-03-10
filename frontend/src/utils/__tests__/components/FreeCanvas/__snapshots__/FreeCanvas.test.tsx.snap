@@ -5,38 +5,41 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
   <div
     class="root makeStyles-ownStyles-1 react-draggable"
     id="free-canvas-root"
-    style="position: relative; user-select: none; display: block; top: 0px; left: 0px; cursor: auto; border: 1px solid transparent; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; min-width: 100%; min-height: 100%; box-sizing: border-box; flex-shrink: 0;"
+    style="position: relative; user-select: none; width: 300px; height: 100px; display: block; top: 0px; left: 0px; cursor: auto; border: 1px solid transparent; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; min-width: 100%; min-height: 100%; box-sizing: border-box; flex-shrink: 0;"
   >
     <div
-      class="makeStyles-rnd-3 makeStyles-rnd-4 react-draggable"
-      style="position: absolute; user-select: auto; width: auto; height: auto; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
+      class="makeStyles-rnd-2 makeStyles-rnd-5 react-draggable"
+      style="position: absolute; user-select: auto; width: 300px; height: 100px; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
     >
-      <div
-        class="paragraph makeStyles-ownStyles-2"
-        style="width: 100%; height: 100%;"
+      <p
+        class="paragraph paragraph-ownStyles-6 paragraph-ownStyles-8"
+        contenteditable="false"
+        data-gramm_editor="false"
+        data-ls-id="2"
+        id="2"
       >
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus! Aut illum a minus cumque iste, quibusdam corporis atque odit magnam impedit esse possimus perspiciatis culpa non id tempore fugiat molestiae eos dolorem, labore maiores ratione? Sequi tenetur porro enim reprehenderit amet accusamus eos itaque saepe quidem quod, sit vero ab recusandae vitae, facere nobis cumque minima libero aut quos nihil labore eius. Soluta doloremque mollitia nihil voluptatibus, nostrum commodi eaque similique ipsam ad libero at tenetur.
-      </div>
+      </p>
       <div
         data-role="borders"
         hidden=""
       >
         <div
-          class="makeStyles-crumb-5"
+          class="makeStyles-crumb-9"
         >
           <div
-            class="makeStyles-general-6 makeStyles-general-15"
+            class="makeStyles-general-10 makeStyles-general-19"
           >
             <span
-              class="makeStyles-name-7"
+              class="makeStyles-name-11"
             >
               paragraph
             </span>
             <hr
-              class="MuiDivider-root makeStyles-divider-9 MuiDivider-vertical"
+              class="MuiDivider-root makeStyles-divider-13 MuiDivider-vertical"
             />
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-8"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12"
               tabindex="0"
               title="Settings"
               type="button"
@@ -65,10 +68,10 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
             role="menu"
           >
             <div
-              class="makeStyles-general-6 makeStyles-general-15"
+              class="makeStyles-general-10 makeStyles-general-19"
             >
               <span
-                class="makeStyles-name-7"
+                class="makeStyles-name-11"
               >
                 Z-index:
                 <b>
@@ -76,10 +79,10 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
                 </b>
               </span>
               <hr
-                class="MuiDivider-root makeStyles-divider-9 MuiDivider-vertical"
+                class="MuiDivider-root makeStyles-divider-13 MuiDivider-vertical"
               />
               <button
-                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-8"
+                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12"
                 tabindex="0"
                 title="Move element up"
                 type="button"
@@ -103,7 +106,7 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
                 />
               </button>
               <button
-                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-8 Mui-disabled Mui-disabled"
+                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12 Mui-disabled Mui-disabled"
                 disabled=""
                 tabindex="-1"
                 title="Move element down"
@@ -128,49 +131,49 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-border-10 makeStyles-border-16 makeStyles-topBorder-11"
+          class="makeStyles-border-14 makeStyles-border-20 makeStyles-topBorder-15"
         />
         <div
-          class="makeStyles-border-10 makeStyles-border-16 makeStyles-rightBorder-12"
+          class="makeStyles-border-14 makeStyles-border-20 makeStyles-rightBorder-16"
         />
         <div
-          class="makeStyles-border-10 makeStyles-border-16 makeStyles-bottomBorder-13"
+          class="makeStyles-border-14 makeStyles-border-20 makeStyles-bottomBorder-17"
         />
         <div
-          class="makeStyles-border-10 makeStyles-border-16 makeStyles-leftBorder-14"
+          class="makeStyles-border-14 makeStyles-border-20 makeStyles-leftBorder-18"
         />
       </div>
       <div>
         <div
-          class=""
+          class="makeStyles-resizeHande-3"
           style="position: absolute; user-select: none; width: 100%; height: 10px; top: -5px; left: 0px; cursor: row-resize;"
         />
         <div
-          class=""
+          class="makeStyles-resizeHande-3"
           style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; right: -5px; cursor: col-resize;"
         />
         <div
-          class=""
+          class="makeStyles-resizeHande-3"
           style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
         />
         <div
-          class=""
+          class="makeStyles-resizeHande-3"
           style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; left: -5px; cursor: col-resize;"
         />
         <div
-          class=""
+          class="makeStyles-resizeHande-3"
           style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; top: -10px; cursor: ne-resize;"
         />
         <div
-          class=""
+          class="makeStyles-resizeHande-3"
           style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; bottom: -10px; cursor: se-resize;"
         />
         <div
-          class=""
+          class="makeStyles-resizeHande-3"
           style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; bottom: -10px; cursor: sw-resize;"
         />
         <div
-          class=""
+          class="makeStyles-resizeHande-3"
           style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
         />
       </div>

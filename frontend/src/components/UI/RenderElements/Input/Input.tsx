@@ -8,7 +8,7 @@ const useStyles = makeComponentStyles('input', {});
 
 type Props = InputRendererProps;
 
-const Input1 = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
+const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   const { id, params, isDisabled, className, groupClass } = props;
   const { type, placeholder, textContent } = params;
 
@@ -35,4 +35,4 @@ const Input1 = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   );
 });
 
-export default Input1;
+export default Input;

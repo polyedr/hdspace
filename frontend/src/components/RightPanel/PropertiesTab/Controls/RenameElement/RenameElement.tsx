@@ -11,8 +11,9 @@ const RenameElement: React.FC = () => {
   const { name, id } = useSelector(selectActiveElement);
 
   const [state, setState] = useState(name || '');
+
   useEffect(() => {
-    setState(name);
+    setState(name || '');
   }, [name]);
 
   const debounced = useDebouncedCallback((value) => {

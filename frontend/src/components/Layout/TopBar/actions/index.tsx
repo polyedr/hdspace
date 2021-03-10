@@ -20,6 +20,7 @@ import {
 } from '@Redux/project/actions';
 
 import exportHTML from '@Src/export/app';
+import Share from './Share';
 
 const useStyles = makeStyles(({ palette }) => ({
   root: {
@@ -93,6 +94,8 @@ const Actions: React.FC = () => {
       >
         <VerticalAlignBottomIcon />
       </IconButton>
+
+      <Share className={classes.iconButton} />
     </div>
   );
 };

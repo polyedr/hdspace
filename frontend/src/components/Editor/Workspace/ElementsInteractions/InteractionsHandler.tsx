@@ -43,7 +43,7 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
 
   const elementGroupStyles = useSelector((state: AppReduxState) => {
     return selectCurrentProject(state).projectData.classes.find((value) => {
-      return value.className === element.styles.classNames[1];
+      return value.className === element.styles.classNames?.[1];
     })?.rules;
   });
   const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));

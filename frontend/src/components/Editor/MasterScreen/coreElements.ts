@@ -17,7 +17,7 @@ import {
   makeImage,
   nativeColumns,
   video,
-  undefined as undefinedElement,
+  undefinedElement,
 } from '@Domain/libraryElements/otherElements/otherElements';
 import {
   hyperlink,

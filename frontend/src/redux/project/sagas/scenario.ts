@@ -159,6 +159,16 @@ export function* createElements(
               top: el.parameters.freeCanvas?.top || offset,
             },
           },
+          styles: isFreeCanvasMode
+            ? {
+                ...el.styles,
+                ownStyles: {
+                  ...el.styles.ownStyles,
+                  width: `${el.parameters.freeCanvas.width}px`,
+                  height: `${el.parameters.freeCanvas.height}px`,
+                },
+              }
+            : el.styles,
         };
       }
 
