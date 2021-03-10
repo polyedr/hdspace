@@ -27,7 +27,6 @@ import {
   removeMultipleElementsStyles,
   removeSharedStyles,
   unbindGroupElementStyles,
-  //   unbindGroupElementStyles,
   updateElementParameters,
   updateElementStyles,
   updateMultipleElementsStyles,
@@ -95,7 +94,14 @@ const PropertiesTab: React.FC = () => {
         screenId: currentScreenId,
       }),
     );
-  }, [activeElement.id, currentScreenId, dispatch, editedStyles]);
+    handleCloseRemoveConfirmModal();
+  }, [
+    activeElement.id,
+    currentScreenId,
+    dispatch,
+    editedStyles,
+    handleCloseRemoveConfirmModal,
+  ]);
 
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
@@ -121,11 +127,6 @@ const PropertiesTab: React.FC = () => {
         });
       },
     );
-    if (isGroupElement && selectedElementsIds.length === 1) {
-      return elementsControls.filter((control) =>
-        UNIQUE_CONTROLS.includes(control),
-      );
-    }
     return elementsControls;
   }, [elementsControlsCollection, isGroupElement, selectedElementsIds.length]);
 
@@ -193,7 +194,7 @@ const PropertiesTab: React.FC = () => {
 
   const updateStyles = useCallback(
     (styles: React.CSSProperties) => {
-      console.log('UPDATE STYLES!!!', activeElement);
+      // console.log('UPDATE STYLES!!!', activeElement);
       if (!selectedElementsIds.length) {
         dispatch(
           enqueueSnackbar({

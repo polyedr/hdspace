@@ -99,16 +99,17 @@ const renderView = ({ style, ...props }: any) => {
   );
 };
 
-const Scrollbar: React.FC<IScrollbarProps> = ({
-  children,
-  style,
-  className,
-  trackStylesBg,
-  autoHeightMin,
-  autoHeightMax,
-  hideTracksWhenNotNeeded = true,
-  onScroll,
-}) => {
+const Scrollbar = React.forwardRef<any, IScrollbarProps>((props, ref) => {
+  const {
+    children,
+    style,
+    className,
+    trackStylesBg,
+    autoHeightMin,
+    autoHeightMax,
+    hideTracksWhenNotNeeded = true,
+    onScroll,
+  } = props;
   const [show, setShow] = useState(false);
   const [scroll, setScroll] = useState(false);
 
@@ -129,6 +130,7 @@ const Scrollbar: React.FC<IScrollbarProps> = ({
 
   return (
     <Scrollbars
+      ref={ref || null}
       style={style}
       className={className}
       autoHeight
@@ -151,6 +153,6 @@ const Scrollbar: React.FC<IScrollbarProps> = ({
       {children}
     </Scrollbars>
   );
-};
+});
 
 export default Scrollbar;

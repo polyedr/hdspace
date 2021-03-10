@@ -40,6 +40,7 @@ import {
   ScenarioItem,
   ServerElement,
   StateElement,
+  UpdateDataActionType,
 } from '@Src/types';
 import {
   Action,
@@ -71,6 +72,7 @@ import {
   selectTreeChildIdsByParentsIds,
 } from '../selectors/element';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { updateOrReplaceMultipleElementsParameters } from './common';
 
 // eslint-disable-next-line consistent-return
 export function* createScenarios(scenario?: Partial<ScenarioItem>) {
@@ -282,6 +284,7 @@ export function* createElements(
 export const createElementsSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.createElements>,
 ) {
+  console.log('TEST!!');
   try {
     if (!action.meta) {
       console.error(
@@ -302,6 +305,8 @@ export const createElementsSaga = withActionsHistory(function* (
 
     const elementGroups = yield select(selectElementTreeGroups);
 
+    console.log('ELEMENT GROUPS!!', elementGroups);
+
     const createdGroupsIds: string[] = [];
 
     const convertedCreatedElements = createdElements.map((dEl) => {
@@ -311,6 +316,7 @@ export const createElementsSaga = withActionsHistory(function* (
         );
       }
       if (dEl.parameters?.isGroup) {
+        console.log('TEST!!', dEl.id);
         if (dEl.id) {
           createdGroupsIds.push(dEl.id);
         }
@@ -373,7 +379,8 @@ export const createElementsSaga = withActionsHistory(function* (
         };
       }, {});
 
-      yield put(
+      yield call(
+        updateOrReplaceMultipleElementsParameters,
         Actions.updateMultipleElementsParameters(
           Object.keys(paramsToUpdate),
           paramsToUpdate,
@@ -381,9 +388,11 @@ export const createElementsSaga = withActionsHistory(function* (
             screenId,
           },
         ),
+        UpdateDataActionType.UPDATE,
       );
     }
   } catch (e) {
+    console.error('ERROR!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,

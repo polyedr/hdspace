@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
@@ -13,6 +13,7 @@ import {
   selectCurrentScreenId,
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
+import { setActiveElement } from '@Redux/project/actions';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import Screen from '@Components/Editor/Screen';
@@ -58,7 +59,12 @@ const useStyles = makeStyles({
   },
 });
 
-const Workspace: React.FC = () => {
+type Props = {
+  elementId?: string;
+};
+
+const Workspace: React.FC<Props> = ({ elementId }) => {
+  const dispatch = useDispatch();
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const format = useSelector(selectLayout);
@@ -89,6 +95,11 @@ const Workspace: React.FC = () => {
           <FrameWrapper className={cn(classes[format])}>
             <EditorViewport>
               <Scrollbar
+                ref={() => {
+                  if (elementId) {
+                    dispatch(setActiveElement(elementId));
+                  }
+                }}
                 autoHeightMin="100%"
                 autoHeightMax={
                   ref.current
