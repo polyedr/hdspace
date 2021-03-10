@@ -1101,7 +1101,6 @@ export const unbindGroupElementStylesSaga = withActionsHistory(function* (
       UpdateDataActionType.UPDATE,
     );
   } catch (e) {
-    console.error('ERROR!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,

@@ -194,7 +194,6 @@ const PropertiesTab: React.FC = () => {
 
   const updateStyles = useCallback(
     (styles: React.CSSProperties) => {
-      // console.log('UPDATE STYLES!!!', activeElement);
       if (!selectedElementsIds.length) {
         dispatch(
           enqueueSnackbar({

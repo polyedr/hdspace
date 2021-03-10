@@ -284,7 +284,6 @@ export function* createElements(
 export const createElementsSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.createElements>,
 ) {
-  console.log('TEST!!');
   try {
     if (!action.meta) {
       console.error(
@@ -392,7 +391,6 @@ export const createElementsSaga = withActionsHistory(function* (
       );
     }
   } catch (e) {
-    console.error('ERROR!!', e);
     yield put(
       enqueueSnackbar({
         message: e.message,
