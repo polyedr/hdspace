@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
@@ -25,6 +26,7 @@ import {
   removeElementStyles,
   removeMultipleElementsStyles,
   removeSharedStyles,
+  unbindGroupElementStyles,
   updateElementParameters,
   updateElementStyles,
   updateMultipleElementsStyles,
@@ -64,6 +66,36 @@ const PropertiesTab: React.FC = () => {
   const editableStyles = useSelector(selectEditableStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
+  const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
+  const [editedStyles, setEditedStyles] = useState<React.CSSProperties | null>(
+    null,
+  );
+
+  const handleOpenRemovalConfirmModal = useCallback(
+    (styles: React.CSSProperties) => {
+      setEditedStyles(styles);
+      setShowRemoveGroupDialog(true);
+    },
+    [],
+  );
+
+  const handleCloseRemoveConfirmModal = useCallback(() => {
+    setShowRemoveGroupDialog(false);
+    setEditedStyles(null);
+  }, []);
+
+  const handleConfirmSourceUnbinding = () => {
+    if (!editedStyles) {
+      console.error('Edited styles is null!');
+      return;
+    }
+    dispatch(
+      unbindGroupElementStyles(activeElement.id, editedStyles, {
+        screenId: currentScreenId,
+      }),
+    );
+    handleCloseRemoveConfirmModal();
+  };
 
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
@@ -89,13 +121,8 @@ const PropertiesTab: React.FC = () => {
         });
       },
     );
-    if (isGroupElement && selectedElementsIds.length === 1) {
-      return elementsControls.filter((control) =>
-        UNIQUE_CONTROLS.includes(control),
-      );
-    }
     return elementsControls;
-  }, [elementsControlsCollection, isGroupElement, selectedElementsIds.length]);
+  }, [elementsControlsCollection]);
 
   const { type } = activeElement;
 
@@ -201,6 +228,8 @@ const PropertiesTab: React.FC = () => {
             ),
           );
         }
+      } else if (isGroupElement) {
+        handleOpenRemovalConfirmModal(styles);
       } else if (editableStyles === 'ownStyles') {
         dispatch(
           updateElementStyles(activeElement.id, styles, {
@@ -223,14 +252,16 @@ const PropertiesTab: React.FC = () => {
     },
     [
       selectedElementsIds,
-      editableStyles,
       masterScreenEnabled,
+      isGroupElement,
+      editableStyles,
       dispatch,
       currentScreenId,
       isGroupSource,
-      activeElement.id,
       activeElement.parameters.groupElements,
+      activeElement.id,
       activeElement.type,
+      handleOpenRemovalConfirmModal,
     ],
   );
 
@@ -304,6 +335,15 @@ const PropertiesTab: React.FC = () => {
           </>
         )}
       </Scrollbar>
+      <BasicConfirmForm
+        open={showRemoveGroupDialog}
+        title="Change styles of a group element"
+        onConfirm={handleConfirmSourceUnbinding}
+        onClose={handleCloseRemoveConfirmModal}
+      >
+        By changing styles of a current element, you will not be able to change
+        it again from the Master Screen. Do you want to proceed?
+      </BasicConfirmForm>
     </div>
   );
 };

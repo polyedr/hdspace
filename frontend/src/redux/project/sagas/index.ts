@@ -40,6 +40,7 @@ import {
   createElementsGroupSaga,
   updateMultipleElementsParametersSaga,
   duplicateElements,
+  unbindGroupElementStylesSaga,
 } from '@Redux/project/sagas/element';
 import {
   addChildrenToElementSaga,
@@ -400,4 +401,8 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP, createElementsGroupSaga);
+  yield takeEvery(
+    TYPES.UNBIND_GROUP_ELEMENT_STYLES,
+    unbindGroupElementStylesSaga,
+  );
 }
