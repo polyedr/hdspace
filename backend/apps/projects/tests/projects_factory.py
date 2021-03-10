@@ -1,8 +1,8 @@
+from django.core.files.base import ContentFile
 from factory.django import DjangoModelFactory
 import factory
 from factory.fuzzy import FuzzyText
 
-from apps.accounts.tests.accounts_factory import UserFactory
 from apps.projects.models import Roles, ProjectIllustrationSet, ProjectImage, ScreenScenario, ScenarioElement, \
     ElementComment, Project, ProjectScreen, ScreenEvent, ScreenComment, Comment, ProjectInvitation, ProjectMember, \
     TaskTime, ScreenAssignee, ProjectActivity, ProjectColumn, ColumnTask
@@ -88,7 +88,13 @@ class ProjectImageFactory(DjangoModelFactory):
     class Meta:
         model = ProjectImage
 
-    image = "8.jpg"
+    image = factory.LazyAttribute(
+        lambda _: ContentFile(
+            factory.django.ImageField()._make_data(
+                {'width': 1024, 'height': 768}
+            ), 'example.jpg'
+        )
+    )
 
 
 class ScreenAssigneeFactory(DjangoModelFactory):
