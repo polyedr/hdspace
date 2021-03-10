@@ -389,7 +389,6 @@ export const selectElementGroups = (state: AppReduxState) => {
 export const selectElementTreeGroups = (state: AppReduxState) => {
   const { elements } = selectProjectState(state).data;
   const groupIds = selectElementGroupIds(state);
-  console.log('GROUP IDS!!', groupIds);
   return groupIds.map((groupId) =>
     buildGroupElementsTree(elements, groupId, ['isGroup', 'groupElements']),
   );
