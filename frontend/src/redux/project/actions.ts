@@ -1293,3 +1293,16 @@ export const updateAssetImage = (
   },
   meta,
 });
+
+export const unbindGroupElementStyles = (
+  id: string,
+  styles: React.CSSProperties,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.UNBIND_GROUP_ELEMENT_STYLES,
+  payload: {
+    id,
+    styles,
+  },
+  meta,
+});

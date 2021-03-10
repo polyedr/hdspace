@@ -567,6 +567,11 @@ export type MoveHistoryBackward = IPlainAction<
   typeof TYPES.MOVE_HISTORY_BACKWARD
 >;
 // /historyActions
+export type UnbindGroupElementStyles = IAction<
+  typeof TYPES.UNBIND_GROUP_ELEMENT_STYLES,
+  { id: string; styles: React.CSSProperties },
+  ElementHistoryMeta
+>;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
   { ids: string[]; wrapperId: string; parentId: string },
@@ -927,6 +932,7 @@ export type Action =
   | AddStateRedoActions
   | MoveHistoryForward
   | MoveHistoryBackward
+  | UnbindGroupElementStyles
   | UnwrapFromContainer
   | RestoreElementChildren
   | RedoWrapIntoContainer

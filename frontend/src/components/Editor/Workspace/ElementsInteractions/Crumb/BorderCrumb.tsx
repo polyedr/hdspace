@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useHistory } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
@@ -14,7 +14,6 @@ import {
 } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
 import { selectMasterScreenId } from '@Redux/project/selectors/screen';
-import { setActiveElement } from '@Redux/project/actions';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
 type Props = {
@@ -67,8 +66,6 @@ const BorderCrumb: React.FC<Props> = (props) => {
 
   const history = useHistory();
 
-  const dispatch = useDispatch();
-
   const classes = useStyles({
     ...props,
     rootId,
@@ -79,11 +76,11 @@ const BorderCrumb: React.FC<Props> = (props) => {
     (showBorders || elementId === activeElementId);
 
   const handleSourceElementClick = useCallback(() => {
-    history.push(`/project/${currentProjectId}/${masterScreenId}`);
-    dispatch(setActiveElement(element.parameters.sourceElementId));
+    history.push(
+      `/project/${currentProjectId}/${masterScreenId}/${element.parameters.sourceElementId}`,
+    );
   }, [
     currentProjectId,
-    dispatch,
     element.parameters.sourceElementId,
     history,
     masterScreenId,
