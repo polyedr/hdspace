@@ -304,8 +304,6 @@ export const createElementsSaga = withActionsHistory(function* (
 
     const elementGroups = yield select(selectElementTreeGroups);
 
-    console.log('ELEMENT GROUPS!!', elementGroups);
-
     const createdGroupsIds: string[] = [];
 
     const convertedCreatedElements = createdElements.map((dEl) => {
@@ -315,7 +313,6 @@ export const createElementsSaga = withActionsHistory(function* (
         );
       }
       if (dEl.parameters?.isGroup) {
-        console.log('TEST!!', dEl.id);
         if (dEl.id) {
           createdGroupsIds.push(dEl.id);
         }
