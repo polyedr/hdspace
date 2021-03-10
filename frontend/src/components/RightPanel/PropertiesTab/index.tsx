@@ -84,7 +84,7 @@ const PropertiesTab: React.FC = () => {
     setEditedStyles(null);
   }, []);
 
-  const handleConfirmSourceUnbinding = useCallback(() => {
+  const handleConfirmSourceUnbinding = () => {
     if (!editedStyles) {
       console.error('Edited styles is null!');
       return;
@@ -95,13 +95,7 @@ const PropertiesTab: React.FC = () => {
       }),
     );
     handleCloseRemoveConfirmModal();
-  }, [
-    activeElement.id,
-    currentScreenId,
-    dispatch,
-    editedStyles,
-    handleCloseRemoveConfirmModal,
-  ]);
+  };
 
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
@@ -128,7 +122,7 @@ const PropertiesTab: React.FC = () => {
       },
     );
     return elementsControls;
-  }, [elementsControlsCollection, isGroupElement, selectedElementsIds.length]);
+  }, [elementsControlsCollection]);
 
   const { type } = activeElement;
 
