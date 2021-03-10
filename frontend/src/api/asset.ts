@@ -9,6 +9,15 @@ import {
 } from './converters/asset/fromResponse';
 import { handleError } from './helper';
 
+export const apiGetAsset = (props: MyAxiosProps & { id: string }) => {
+  const { id, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    method: 'GET',
+    url: `/projects/images/${id}`,
+  }).then((res) => convertResponseToAsset(res));
+};
+
 export const apiCreateAsset = (
   props: MyAxiosProps & { assetFormData: FormData },
 ) => {
@@ -60,15 +69,6 @@ export const apiUpdateAsset = (
     data: convertToServerAsset(asset),
   });
 };
-
-/* export const apiDeleteAsset = (props: MyAxiosProps & { id: string }) => {
-  const { id, ...axiosProps } = props;
-  return myAxios({
-    ...axiosProps,
-    url: `/projects/images/${id}`,
-    method: 'DELETE',
-  });
-}; */
 
 export const apiGetAssets = (
   props: MyAxiosProps & { assetListId?: string },

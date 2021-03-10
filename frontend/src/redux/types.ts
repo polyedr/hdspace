@@ -675,8 +675,8 @@ export type UploadImageByUrl = IAction<
   ElementHistoryMeta
 >;
 
-export type AddAssetRedux = IAction<
-  typeof TYPES.ADD_ASSET_REDUX,
+export type AddStateAsset = IAction<
+  typeof TYPES.ADD_STATE_ASSET,
   {
     listId: string;
     asset: Asset;
@@ -983,7 +983,7 @@ export type Action =
   | SetAssets
   | AddStateAssetList
   | AddAssetList
-  | AddAssetRedux
+  | AddStateAsset
   | RemoveAssetList
   | RemoveAssetListRedux
   | RemoveAsset

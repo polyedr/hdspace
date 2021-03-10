@@ -3,6 +3,7 @@ import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
   apiDeleteAsset,
+  apiGetAsset,
   apiGetAssets,
   apiUpdateAsset,
 } from '@Api/asset';
@@ -21,9 +22,9 @@ import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
 import {
-  selectAssetListById,
   selectSelectedAssetListId,
   selectAssetByListAndId,
+  selectAssetListById,
 } from '../selectors/asset';
 import withActionsHistory from '../wrappers/withActionsHistory';
 
@@ -44,6 +45,7 @@ export function* uploadAsset(
     const asset = yield call(reqWrapper, apiCreateAsset, {
       assetFormData,
     });
+    console.log('CREATED ASSET!!', asset);
     if (!meta?.useHistory) {
       yield put(
         Actions.addUndoActions([
@@ -51,9 +53,13 @@ export function* uploadAsset(
         ]),
       );
     }
-    yield put(Actions.addAssetToState(listId, asset, meta));
+    const list = yield select(selectAssetListById(listId));
+    if (list) {
+      yield put(Actions.addAssetToState(list.id, asset, meta));
+    }
     return asset;
   } catch (error) {
+    console.error('CREATE ASSET ERROR!!', error);
     yield put(
       enqueueSnackbar({
         message: error.message,
@@ -234,8 +240,13 @@ export const updateAssetImage = function* (
   }
 
   try {
-    const asset = yield select(selectAssetByListAndId(listId, assetId));
-    if (!asset) {
+    console.log('UPDATE ASSET IMAGE!!!!', listId, assetId);
+    const localAsset = yield select(selectAssetByListAndId(listId, assetId));
+    let serverAsset;
+    if (!localAsset) {
+      serverAsset = yield call(reqWrapper, apiGetAsset, { id: assetId });
+    }
+    if (!localAsset && !serverAsset) {
       yield put(
         enqueueSnackbar({
           message: 'Asset not found',
@@ -246,24 +257,32 @@ export const updateAssetImage = function* (
     }
     const updatedAsset = yield call(reqWrapper, apiUpdateAsset, {
       id: assetId,
-      imageUrl,
+      asset: { image: imageUrl },
     });
-    yield put(
-      Actions.updateStateAssetImage(
-        updatedAsset.id,
-        listId,
-        updatedAsset.imageUrl,
-        { ...meta },
-      ),
-    );
+    if (localAsset) {
+      yield put(
+        Actions.updateStateAssetImage(
+          localAsset.id,
+          listId,
+          updatedAsset.imageUrl,
+          { ...meta },
+        ),
+      );
+    }
     if (!meta.useHistory) {
       yield put(
         Actions.addUndoActions(
-          Actions.updateAssetImage(assetId, listId, asset.imageUrl, meta),
+          Actions.updateAssetImage(
+            assetId,
+            listId,
+            (serverAsset || localAsset).imageUrl,
+            meta,
+          ),
         ),
       );
     }
   } catch (e) {
+    console.log('UPDATE ASSET IMAGE ERROR!!', e);
     yield put(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
     );

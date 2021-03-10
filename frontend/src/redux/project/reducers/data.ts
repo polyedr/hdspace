@@ -259,15 +259,19 @@ const dataReducer = produce(
         break;
       }
 
-      case TYPES.ADD_ASSET_REDUX: {
+      case TYPES.ADD_STATE_ASSET: {
+        console.log(
+          'TEST!!!',
+          draft.assetResults,
+          action.payload.listId,
+          draft.assetResults[action.payload.listId],
+        );
+        const { listId, asset } = action.payload;
         draft.assetResults = {
           ...draft.assetResults,
-          [action.payload.listId]: {
-            ...draft.assetResults[action.payload.listId],
-            results: [
-              action.payload.asset,
-              ...draft.assetResults[action.payload.listId].results,
-            ],
+          [listId]: {
+            ...draft.assetResults[listId],
+            results: [asset, ...draft.assetResults[listId].results],
           },
         };
 

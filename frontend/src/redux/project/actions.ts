@@ -109,7 +109,7 @@ import {
   UpdateMultipleStateElements,
   AddAssetList,
   UploadAsset,
-  AddAssetRedux,
+  AddStateAsset,
   MoveStateElement,
   MoveStateElementsInside,
   SetMasterScreenId,
@@ -1135,8 +1135,8 @@ export const addAssetToState = (
   listId: string,
   asset: Asset,
   meta?: HistoryMeta,
-): AddAssetRedux => ({
-  type: TYPES.ADD_ASSET_REDUX,
+): AddStateAsset => ({
+  type: TYPES.ADD_STATE_ASSET,
   payload: {
     listId,
     asset,

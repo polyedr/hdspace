@@ -1068,11 +1068,14 @@ export const uploadElementImageByUrlSaga = withActionsHistory(function* (
   const { /* elementId, */ url, listId } = action.payload;
 
   try {
-    const assetName = url.slice(url.lastIndexOf('/'));
+    const assetName = url.slice(url.lastIndexOf('/') + 1);
     const asset = yield call(uploadAsset, null, assetName, listId, action.meta);
+    console.log('ASSET!!', asset);
     const backendImageUrl = yield call(reqWrapper, apiGetFile, {
       fileUrl: url,
     });
+
+    console.log('BACKEND IMAGE URL!!', backendImageUrl);
     yield call(
       updateAssetImage,
       asset.id,

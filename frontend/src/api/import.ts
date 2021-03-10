@@ -40,14 +40,12 @@ export const apiGetFile = (props: MyAxiosProps & { fileUrl: string }) => {
     ...axiosProps,
     url: '/uploadapps/',
     method: 'POST',
-    contentType: 'multipart/form-data',
     data: {
       ...axiosProps.data,
       fileurl: fileUrl,
     },
   })
     .then((res) => {
-      console.log('TEST RESPONSE!!', res);
       return res.data.filename;
     })
     .catch(handleError);

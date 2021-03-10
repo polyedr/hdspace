@@ -32,7 +32,9 @@ export const selectAssetListById = (listId: string) => (
 export const selectAssetByListAndId = (id: string, listId: string) => (
   state: AppReduxState,
 ) => {
-  return selectProjectState(state).data.assetLists[listId].results.find(
-    (asset) => asset.id === id,
-  );
+  const assetList = selectProjectState(state).data.assetLists[listId];
+  if (!assetList) {
+    return null;
+  }
+  return assetList.results.find((asset) => asset.id === id);
 };
