@@ -198,7 +198,7 @@ export function* updateOrReplaceElementParameters(
       yield put(
         Actions.addUndoActions(
           Actions.replaceElementParameters(elementId, oldParameters, {
-            screenId,
+            ...action.meta,
           }),
         ),
       );

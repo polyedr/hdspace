@@ -642,7 +642,6 @@ export const updateElementImageSaga = withActionsHistory(function* (
       return;
     }
     const { itemID, image } = action.payload;
-    const { screenId } = action.meta;
 
     const parsedID = parseInt(itemID);
     const formData = new FormData();
@@ -657,7 +656,8 @@ export const updateElementImageSaga = withActionsHistory(function* (
       { data: formData, id: parsedID },
     );
     if (changedElement) {
-      yield put(
+      yield call(
+        updateOrReplaceElementParameters,
         Actions.updateElementParameters(
           itemID,
           {
@@ -670,8 +670,9 @@ export const updateElementImageSaga = withActionsHistory(function* (
             width: 'auto',
             height: 'auto',
           },
-          { screenId },
+          { ...action.meta },
         ),
+        UpdateDataActionType.UPDATE,
       );
     }
     if (error) throw new Error(error);
