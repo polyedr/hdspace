@@ -1,3 +1,4 @@
+from django.core.files.base import ContentFile
 from factory.django import DjangoModelFactory
 import factory
 from factory.fuzzy import FuzzyText
@@ -87,7 +88,13 @@ class ProjectImageFactory(DjangoModelFactory):
     class Meta:
         model = ProjectImage
 
-    image = "8.jpg"
+    image = factory.LazyAttribute(
+        lambda _: ContentFile(
+            factory.django.ImageField()._make_data(
+                {'width': 1024, 'height': 768}
+            ), 'example.jpg'
+        )
+    )
 
 
 class ScreenAssigneeFactory(DjangoModelFactory):
