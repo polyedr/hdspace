@@ -94,6 +94,7 @@ export type ServerElement<
   };
   children: Children;
   shared?: boolean;
+  // screen_data_json?: any;
 };
 
 export type RootServerElement = ServerElement<'root', []>;
@@ -789,6 +790,7 @@ export interface Screen {
   screenscenario: number[];
   buoyancy: number;
   element: string;
+  screen_data_json: any;
   // removed screen_data_json, ask if it will be needed on backend
 }
 
@@ -1147,3 +1149,23 @@ export type DateRange = {
 };
 
 export type PostUrlResponse = { wpname: string; owner: any };
+
+export type VIARegion = {
+  shape_attributes: {
+    name: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  region_attributes: {
+    HTMLElement: Entity;
+  };
+};
+
+export type VIAFile = {
+  filename: string;
+  size: number | string;
+  regions: VIARegion[];
+  file_attributes: { [key: string]: any };
+};

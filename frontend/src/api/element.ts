@@ -1,6 +1,5 @@
 import { AxiosResponse } from 'axios';
 /* eslint-disable camelcase */
-
 import {
   convertElementFromResponse,
   convertRecursiveElementFromResponse,
@@ -193,4 +192,13 @@ export const parseImgUsingNN = ({
     url: `/virtualize_simple/virtualize-simple/`,
   })
     .then((res) => ({ result: convertElementFromResponse(res.data) }))
+    .catch(handleError);
+
+export const recognizeImgUsingNN = (props: MyAxiosProps) =>
+  myAxios({
+    ...props,
+    method: 'POST',
+    url: '/virtualize_simple/recognize/',
+  })
+    .then((res) => ({ result: res.data }))
     .catch(handleError);

@@ -14,7 +14,7 @@ const generateImageName = (url: string, width: number, height: number) => {
   }
   return (
     originalName.substring(0, lastDotIndex) +
-    sizePart +
+    // sizePart +
     originalName.substring(lastDotIndex)
   );
 };

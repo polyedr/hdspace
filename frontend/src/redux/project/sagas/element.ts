@@ -14,7 +14,6 @@ import {
   selectActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
-
 import {
   convertElementToPatchRequest,
   convertElementToRequest,
@@ -26,6 +25,7 @@ import {
   apiUpdateElements,
   parseImgUsingNN,
   apiGetCustomLibraryElements,
+  recognizeImgUsingNN,
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
@@ -42,6 +42,7 @@ import {
   ServerElement,
   StateElement,
   UpdateDataActionType,
+  Screen,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
@@ -746,8 +747,12 @@ export const uploadFileSaga = withActionsHistory(function* ({
     formData.append('parent_id', parentId);
     formData.append('struct_type', 'container');
     formData.append('func_type', 'container');
-    formData.append('name', 'TESTING NEURAL NETWORK');
+    formData.append('name', 'image');
     formData.append('screen', screenId.toString());
+    formData.append(
+      'screen_data_json',
+      JSON.stringify({ block_type: blockType }),
+    );
     formData.append(
       'parameters',
       JSON.stringify({
@@ -758,14 +763,20 @@ export const uploadFileSaga = withActionsHistory(function* ({
     formData.append('styles', '{}');
 
     const {
-      result: nnContainer,
-      error: nnError,
-    }: Result<LibraryElement<any>> = yield call(reqWrapper, parseImgUsingNN, {
+      result: recognizeResult,
+      error: recognizeError,
+    }: Result<Screen> = yield call(reqWrapper, recognizeImgUsingNN, {
       data: formData,
       contentType: 'multipart/form-data',
     });
-    if (nnContainer) {
-      const convertedElements = getElementsArray(nnContainer).map((element) =>
+
+    if (recognizeResult) {
+      if (!recognizeResult.screen_data_json) {
+        throw new Error('No VIA data has been received');
+      }
+
+      console.log(JSON.parse(recognizeResult.screen_data_json));
+      /*  const convertedElements = getElementsArray(recognizeResult).map((element) =>
         convertElementToPatchRequest(element),
       );
 
@@ -780,7 +791,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
 
       if (result) {
         yield put(
-          Actions.addStateElements([nnContainer], parentId, {
+          Actions.addStateElements([recognizeResult], parentId, {
             ...meta,
           }),
         );
@@ -789,12 +800,12 @@ export const uploadFileSaga = withActionsHistory(function* ({
           yield put(
             Actions.addHistoryActions({
               undo: [
-                Actions.deleteElement(nnContainer.id, {
+                Actions.deleteElement(recognizeResult.id, {
                   screenId,
                 }),
               ],
               redo: [
-                Actions.restoreElement(nnContainer.id, {
+                Actions.restoreElement(recognizeResult.id, {
                   screenId,
                 }),
               ],
@@ -809,9 +820,9 @@ export const uploadFileSaga = withActionsHistory(function* ({
           }),
         );
       }
-      if (error) throw new Error(error);
+      if (error) throw new Error(error); */
     }
-    if (nnError) throw new Error(nnError);
+    if (recognizeError) throw new Error(recognizeError);
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
     if (process.env.NODE_ENV === 'development') {
