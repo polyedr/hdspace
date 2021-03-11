@@ -895,7 +895,12 @@ export function* toggleSelectedElementSaga(
     const canCreateGroup =
       !!selectedElements.length &&
       selectedElements.every((el) => el.parent === element.parent) &&
-      maxBuoyancy - minBuoyancy === selectedElements.length;
+      maxBuoyancy - minBuoyancy === selectedElements.length &&
+      !selectedElements.filter(
+        (groupEl) =>
+          !!groupEl.parameters.groupElements ||
+          !!groupEl.parameters.sourceElementId,
+      ).length;
     yield put(Actions.setCanCreateGroup(canCreateGroup));
     yield put(Actions.addSelectedElement(action.payload.id));
   } else {
