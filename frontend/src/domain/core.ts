@@ -475,7 +475,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   paragraph: {},
   ocrtext: {},
   textBlock: {},
-  group: {},
+  group: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
   list: {
     listItem: {
       min: 1,

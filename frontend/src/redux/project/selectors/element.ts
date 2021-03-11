@@ -398,12 +398,14 @@ export const selectTreeChildElementsIds = (elementId: string) => ({
   project,
 }: AppReduxState) => {
   const parent = project.data.elements[elementId];
-  return parent.children.reduce((allChildren: string[], childId) => {
-    return [
-      ...allChildren,
-      ...getAllElementChildrenIds(project.data.elements, childId),
-    ];
-  }, []);
+  return !parent
+    ? []
+    : parent.children.reduce((allChildren: string[], childId) => {
+        return [
+          ...allChildren,
+          ...getAllElementChildrenIds(project.data.elements, childId),
+        ];
+      }, []);
 };
 
 export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({

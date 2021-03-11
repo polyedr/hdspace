@@ -105,15 +105,11 @@ const RightPanel: React.FC = () => {
     const isFertile = canElementHaveAllChildren(activeElement.type);
 
     let newTabs = defaultTabs;
-    if (masterScreenEnabled) {
-      newTabs = [RPTab.Properties];
-    } else {
-      if (!isInteractive) {
-        newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
-      }
-      if (!isFertile) {
-        newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
-      }
+    if (!isInteractive) {
+      newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
+    }
+    if (!isFertile) {
+      newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
     }
 
     setTabs(newTabs);

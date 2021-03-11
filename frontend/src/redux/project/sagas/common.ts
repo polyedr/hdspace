@@ -23,7 +23,8 @@ import {
 import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import { replaceElementParameters } from '../actions';
+// import { replaceElementParameters } from '../actions';
+// import { isElementCanBeAdded } from '@Utils/AvailableChildrenHelper';
 
 export function* updateOrReplaceMultipleElementsParameters(
   action: ReturnType<
@@ -259,3 +260,32 @@ export function* updateOrReplaceElementParameters(
     );
   }
 }
+
+/// / some temp code here
+/* export type NewElement = {
+  element: StateElement;
+  parentId: string;
+};
+export function* createElements(
+  newElements: NewElement[],
+  meta: ElementHistoryMeta,
+) {
+  try {
+    const state = yield select(selectAllElements);
+    const disallowedElements = [];
+    for (const newElement of newElements) {
+
+    }
+    newElements.filter((el) => {
+      const elParent = yield select(selectElementById(el.id));
+      return isElementCanBeAdded(elParent, el.type);
+    });
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+} */
