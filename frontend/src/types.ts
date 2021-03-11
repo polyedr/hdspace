@@ -934,7 +934,7 @@ export type AvailableControls = {
 };
 
 export type AvailableChildren = {
-  [P in Entity | string]: {
+  [P in Entity | 'custom']: {
     [key: string]: {
       min: number;
       max: number;
@@ -1023,6 +1023,7 @@ export type ElementsToAdd = {
   smartWebpage: SmartWebpageServerElement;
   button: ButtonServerElement;
   hyperlink: HyperlinkServerElement;
+  input: TextinputServerElement;
   textinput: TextinputServerElement;
   checkbox: CheckboxServerElement;
   radiobutton: RadiobuttonServerElement;
@@ -1159,7 +1160,7 @@ export type VIARegion = {
     height: number;
   };
   region_attributes: {
-    HTMLElement: Entity;
+    'HTML element': Entity;
   };
 };
 

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { put, call, select } from 'redux-saga/effects';
+import { put, call, select, all } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -12,6 +12,7 @@ import {
   selectTreeChildElementsIds,
   selectMasterGroupsElementId,
   selectActiveElement,
+  selectCurrentRoot,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import {
@@ -43,8 +44,10 @@ import {
   StateElement,
   UpdateDataActionType,
   Screen,
+  VIAFile,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
+import { convertVIARegionToLibraryElement } from '@Api/converters/fromResponse';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -744,23 +747,23 @@ export const uploadFileSaga = withActionsHistory(function* ({
     const formData = new FormData();
 
     formData.append('image', file.file, file.name);
-    formData.append('parent_id', parentId);
-    formData.append('struct_type', 'container');
-    formData.append('func_type', 'container');
+    // formData.append('parent_id', parentId);
+    // formData.append('struct_type', 'container');
+    // formData.append('func_type', 'container');
     formData.append('name', 'image');
-    formData.append('screen', screenId.toString());
+    // formData.append('screen', screenId.toString());
     formData.append(
       'screen_data_json',
       JSON.stringify({ block_type: blockType }),
     );
-    formData.append(
-      'parameters',
-      JSON.stringify({
-        block_type: blockType,
-        styles_on: file.stylesOn === true ? '1' : '0',
-      }),
-    );
-    formData.append('styles', '{}');
+    // formData.append(
+    //   'parameters',
+    //   JSON.stringify({
+    //     block_type: blockType,
+    //     styles_on: file.stylesOn === true ? '1' : '0',
+    //   }),
+    // );
+    // formData.append('styles', '{}');
 
     const {
       result: recognizeResult,
@@ -775,7 +778,31 @@ export const uploadFileSaga = withActionsHistory(function* ({
         throw new Error('No VIA data has been received');
       }
 
-      console.log(JSON.parse(recognizeResult.screen_data_json));
+      const root: StateElement = yield select(selectCurrentRoot);
+
+      yield all(
+        root.children.map((childId) =>
+          // put(Actions.deleteElement(childId, { screenId })),
+          put(Actions.removeStateElement(childId, { screenId })),
+        ),
+      );
+
+      yield put(Actions.changeFreeCanvasMode(true));
+      yield put(Actions.setActiveElement(root.id));
+
+      const viaFile = Object.values(
+        JSON.parse(recognizeResult.screen_data_json) as {
+          [key: string]: VIAFile;
+        },
+      )[0];
+
+      const regions = viaFile.regions.map((region) =>
+        convertVIARegionToLibraryElement(region),
+      );
+
+      yield put(Actions.addStateElements(regions, root.id, { screenId }));
+
+      // console.log(viaFile);
       /*  const convertedElements = getElementsArray(recognizeResult).map((element) =>
         convertElementToPatchRequest(element),
       );

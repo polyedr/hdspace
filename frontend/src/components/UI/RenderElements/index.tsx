@@ -47,6 +47,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   columns: Columns,
   column: Column,
   button: Button,
+  input: Input,
   textinput: Input,
   radiobutton: Radiobutton,
   checkbox: Checkbox,

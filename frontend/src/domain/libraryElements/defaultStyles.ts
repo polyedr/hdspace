@@ -1103,6 +1103,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   column: defaultColumnStyles,
   button: defaultButtonStyles,
   textinput: defaultTextinputStyles,
+  input: defaultTextinputStyles,
   textarea: defaultTextareaStyles,
   checkbox: defaultCheckboxStyles,
   radiobutton: defaultRadiobuttonStyles,

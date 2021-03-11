@@ -96,6 +96,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   button: makeButton(),
   hyperlink,
   textinput: makeTextinput(),
+  input: makeTextinput(),
   checkbox,
   radiobutton,
   select,
