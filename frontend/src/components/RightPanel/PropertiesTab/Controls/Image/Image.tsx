@@ -39,7 +39,7 @@ const useStyles = makeStyles({
   assetListsWrapper: {
     display: 'flex',
     flexDirection: 'column',
-    margin: '10px 0',
+    margin: '15px 10px',
     width: '100%',
   },
   assetsSelector: {

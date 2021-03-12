@@ -53,7 +53,7 @@ import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { createElements, wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
-import { updateAssetImage, uploadAsset } from './asset';
+import { uploadAsset } from './asset';
 import {
   updateOrReplaceElementParameters,
   updateOrReplaceElementStyles,
@@ -1065,23 +1065,47 @@ export const uploadElementImageByUrlSaga = withActionsHistory(function* (
     return;
   }
 
-  const { /* elementId, */ url, listId } = action.payload;
+  const { elementId, url, listId } = action.payload;
 
   try {
     const assetName = url.slice(url.lastIndexOf('/') + 1);
-    const asset = yield call(uploadAsset, null, assetName, listId, action.meta);
-    console.log('ASSET!!', asset);
-    const backendImageUrl = yield call(reqWrapper, apiGetFile, {
-      fileUrl: url,
-    });
+    const { error: uploadError, filename: backendImageURL } = yield call(
+      reqWrapper,
+      apiGetFile,
+      {
+        fileUrl: url,
+      },
+    );
 
-    console.log('BACKEND IMAGE URL!!', backendImageUrl);
+    if (uploadError) {
+      yield put(
+        enqueueSnackbar({
+          message: uploadError.message,
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+
     yield call(
-      updateAssetImage,
-      asset.id,
-      listId,
-      backendImageUrl,
-      action.meta,
+      uploadAsset,
+      {
+        assetFile: null,
+        listId,
+        fileName: assetName,
+        imageURL: backendImageURL,
+      },
+      { ...action.meta },
+    );
+
+    yield call(
+      updateOrReplaceElementParameters,
+      Actions.updateElementParameters(
+        elementId,
+        { imageURL: backendImageURL },
+        { ...action.meta },
+      ),
+      UpdateDataActionType.UPDATE,
     );
   } catch (e) {
     yield put(

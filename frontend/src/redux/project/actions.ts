@@ -137,7 +137,6 @@ import {
   WrapMultipleElementsIntoContainer,
   UploadImageByUrl,
   UpdateStateAssetImage,
-  UpdateAssetImage,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -1276,21 +1275,6 @@ export const updateStateAssetImage = (
 ): UpdateStateAssetImage => ({
   type: TYPES.UPDATE_STATE_ASSET_IMAGE,
   payload: { assetId, listId, imageUrl },
-  meta,
-});
-
-export const updateAssetImage = (
-  assetId: string,
-  listId: string,
-  imageUrl: string,
-  meta: HistoryMeta,
-): UpdateAssetImage => ({
-  type: TYPES.UPDATE_ASSET_IMAGE,
-  payload: {
-    assetId,
-    listId,
-    imageUrl,
-  },
   meta,
 });
 

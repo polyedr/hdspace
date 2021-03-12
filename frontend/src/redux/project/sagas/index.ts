@@ -42,6 +42,7 @@ import {
   duplicateElements,
   uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
+  replaceElementParametersSaga,
 } from '@Redux/project/sagas/element';
 import {
   addChildrenToElementSaga,
@@ -352,6 +353,10 @@ export default function* projectSaga() {
   yield takeEvery(
     TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
     updateMultipleElementsParametersSaga,
+  );
+  yield takeEvery(
+    TYPES.REPLACE_ELEMENT_PARAMETERS,
+    replaceElementParametersSaga,
   );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);

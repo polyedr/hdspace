@@ -163,6 +163,13 @@ export type CreateScreenData = {
   rootName?: string;
 };
 
+export type UploadAssetData = {
+  assetFile: any | null;
+  fileName: string;
+  listId: string;
+  imageURL?: string;
+};
+
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 export type SearchProjects = IPlainAction<typeof TYPES.SEARCH_PROJECTS>;
 export type SetProjectSearchParameter = IAction<
@@ -707,12 +714,6 @@ export type RemoveAssetRedux = IAction<
   HistoryMeta
 >;
 
-export type UpdateAssetImage = IAction<
-  typeof TYPES.UPDATE_ASSET_IMAGE,
-  { assetId: string; listId: string; imageUrl: string },
-  HistoryMeta
->;
-
 export type UpdateStateAssetImage = IAction<
   typeof TYPES.UPDATE_STATE_ASSET_IMAGE,
   { assetId: string; listId: string; imageUrl: string },
@@ -989,7 +990,6 @@ export type Action =
   | RemoveAsset
   | RemoveAssetRedux
   | UpdateStateAssetImage
-  | UpdateAssetImage
   | RestoreAsset
   | SetSelectedAssetListId
   | SearchProjects

@@ -45,8 +45,6 @@ export const apiGetFile = (props: MyAxiosProps & { fileUrl: string }) => {
       fileurl: fileUrl,
     },
   })
-    .then((res) => {
-      return res.data.filename;
-    })
+    .then((res) => res.data)
     .catch(handleError);
 };

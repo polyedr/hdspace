@@ -3,7 +3,6 @@ import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
   apiDeleteAsset,
-  apiGetAsset,
   apiGetAssets,
   apiUpdateAsset,
 } from '@Api/asset';
@@ -16,36 +15,35 @@ import { enqueueSnackbar } from '@Redux/notification/actions';
 import { Asset, AssetsList, PaginatedArray } from '@Src/types';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
-import { HistoryMeta } from '@Redux/types';
+import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
 import {
   selectSelectedAssetListId,
-  selectAssetByListAndId,
   selectAssetListById,
 } from '../selectors/asset';
 import withActionsHistory from '../wrappers/withActionsHistory';
 
 // eslint-disable-next-line consistent-return
 export function* uploadAsset(
-  assetFile: any | null,
-  fileName: string,
-  listId: string,
+  { assetFile, fileName, listId, imageURL }: UploadAssetData,
   meta?: HistoryMeta,
 ) {
   const assetFormData = new FormData();
-  if (assetFile) {
+  if (imageURL) {
+    assetFormData.append('fileurl', imageURL);
+  } else if (assetFile) {
     assetFormData.append('image', assetFile);
   }
+
   assetFormData.append('name', fileName);
   assetFormData.append('illustration_set', listId);
   try {
     const asset = yield call(reqWrapper, apiCreateAsset, {
       assetFormData,
     });
-    console.log('CREATED ASSET!!', asset);
     if (!meta?.useHistory) {
       yield put(
         Actions.addUndoActions([
@@ -53,13 +51,9 @@ export function* uploadAsset(
         ]),
       );
     }
-    const list = yield select(selectAssetListById(listId));
-    if (list) {
-      yield put(Actions.addAssetToState(list.id, asset, meta));
-    }
+    yield put(Actions.addAssetToState(listId, asset, meta));
     return asset;
   } catch (error) {
-    console.error('CREATE ASSET ERROR!!', error);
     yield put(
       enqueueSnackbar({
         message: error.message,
@@ -223,97 +217,6 @@ export const restoreAssetSaga = withActionsHistory(function* (
   }
 });
 
-export const updateAssetImage = function* (
-  assetId: string,
-  listId: string,
-  imageUrl: string,
-  meta: HistoryMeta,
-) {
-  if (!meta) {
-    yield put(
-      enqueueSnackbar({
-        message: 'Meta information is not provided',
-        options: { variant: 'error' },
-      }),
-    );
-    return;
-  }
-
-  try {
-    console.log('UPDATE ASSET IMAGE!!!!', listId, assetId);
-    const localAsset = yield select(selectAssetByListAndId(listId, assetId));
-    let serverAsset;
-    if (!localAsset) {
-      serverAsset = yield call(reqWrapper, apiGetAsset, { id: assetId });
-    }
-    if (!localAsset && !serverAsset) {
-      yield put(
-        enqueueSnackbar({
-          message: 'Asset not found',
-          options: { variant: 'error' },
-        }),
-      );
-      return;
-    }
-    const updatedAsset = yield call(reqWrapper, apiUpdateAsset, {
-      id: assetId,
-      asset: { image: imageUrl },
-    });
-    if (localAsset) {
-      yield put(
-        Actions.updateStateAssetImage(
-          localAsset.id,
-          listId,
-          updatedAsset.imageUrl,
-          { ...meta },
-        ),
-      );
-    }
-    if (!meta.useHistory) {
-      yield put(
-        Actions.addUndoActions(
-          Actions.updateAssetImage(
-            assetId,
-            listId,
-            (serverAsset || localAsset).imageUrl,
-            meta,
-          ),
-        ),
-      );
-    }
-  } catch (e) {
-    console.log('UPDATE ASSET IMAGE ERROR!!', e);
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
-    );
-  }
-};
-
-export const updateAssetImageSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.updateAssetImage>,
-) {
-  if (!action.meta) {
-    yield put(
-      enqueueSnackbar({
-        message: 'Meta information is not provided',
-        options: { variant: 'error' },
-      }),
-    );
-    return;
-  }
-  const { assetId, listId, imageUrl } = action.payload;
-  try {
-    yield call(updateAssetImage, assetId, listId, imageUrl, { ...action.meta });
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-});
-
 export const removeAssetSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.removeAsset>,
 ) {
@@ -358,7 +261,11 @@ export const uploadAssetSaga = withActionsHistory(function* (
   }
   const fileName: string = assetFile.name;
   try {
-    yield call(uploadAsset, assetFile, fileName, assetListId, action.meta);
+    yield call(
+      uploadAsset,
+      { assetFile, fileName, listId: assetListId },
+      action.meta,
+    );
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -385,9 +292,7 @@ export function* uploadElementAssetSaga(
   try {
     const assetInstance = yield call(
       uploadAsset,
-      asset,
-      asset.name,
-      listId,
+      { assetFile: asset, fileName: asset.name, listId },
       action.meta,
     );
 

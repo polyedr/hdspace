@@ -260,20 +260,16 @@ const dataReducer = produce(
       }
 
       case TYPES.ADD_STATE_ASSET: {
-        console.log(
-          'TEST!!!',
-          draft.assetResults,
-          action.payload.listId,
-          draft.assetResults[action.payload.listId],
-        );
         const { listId, asset } = action.payload;
-        draft.assetResults = {
-          ...draft.assetResults,
-          [listId]: {
-            ...draft.assetResults[listId],
-            results: [asset, ...draft.assetResults[listId].results],
-          },
-        };
+        if (draft.assetResults[listId]) {
+          draft.assetResults = {
+            ...draft.assetResults,
+            [listId]: {
+              ...draft.assetResults[listId],
+              results: [asset, ...draft.assetResults[listId].results],
+            },
+          };
+        }
 
         // update all images section, should be removed in the future
         draft.assetResults[ALL_ASSETS_LIST_ID].results = [
@@ -299,9 +295,11 @@ const dataReducer = produce(
         draft.assetResults[ALL_ASSETS_LIST_ID].results = draft.assetResults[
           ALL_ASSETS_LIST_ID
         ].results.filter((asset) => asset.id !== id);
-        draft.assetResults[listId].results = draft.assetResults[
-          listId
-        ].results.filter((asset) => asset.id !== id);
+        if (draft.assetResults[listId]) {
+          draft.assetResults[listId].results = draft.assetResults[
+            listId
+          ].results.filter((asset) => asset.id !== id);
+        }
         break;
       }
 
