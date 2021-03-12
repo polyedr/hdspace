@@ -126,9 +126,10 @@ export function* createScenarios(scenario?: Partial<ScenarioItem>) {
 export function* createElements(
   { elements, index }: ElementsToDrop,
   parent: LibraryElement<Entity>,
-  { screenId, useHistory }: ElementHistoryMeta,
+  meta: ElementHistoryMeta,
 ) {
   try {
+    const { useHistory, screenId } = meta;
     const disallowedElements = elements.filter(
       (element) => !isElementCanBeAdded(parent, element.struct_type),
     );
@@ -190,7 +191,7 @@ export function* createElements(
         yield put(
           Actions.addUndoActions(
             newElements.map((el: any) =>
-              Actions.deleteElement(el.id, { screenId }),
+              Actions.deleteElement(el.id, { ...meta }),
             ),
           ),
         );
@@ -230,7 +231,7 @@ export function* createElements(
               Actions.restoreElementChildren(
                 parent.id,
                 newElements.map((element) => element.id),
-                { screenId },
+                { ...meta, useHistory: true },
               ),
             ),
           );
@@ -293,7 +294,6 @@ export const createElementsSaga = withActionsHistory(function* (
     }
 
     const { createdElements, parentId, index } = action.payload;
-    const { screenId } = action.meta;
 
     const activeElementId: string = yield select(selectActiveElementId);
     const activeElementTree: LibraryElement<Entity> = yield select(
@@ -338,7 +338,7 @@ export const createElementsSaga = withActionsHistory(function* (
       { elements: convertedCreatedElements, index },
       activeElementTree,
       {
-        screenId,
+        ...action.meta,
       },
     );
 
@@ -381,7 +381,7 @@ export const createElementsSaga = withActionsHistory(function* (
           Object.keys(paramsToUpdate),
           paramsToUpdate,
           {
-            screenId,
+            ...action.meta,
           },
         ),
         UpdateDataActionType.UPDATE,
@@ -408,7 +408,6 @@ export const addChildrenToElementSaga = withActionsHistory(function* (
       );
       return;
     }
-    const { screenId, useHistory } = action.meta;
 
     const convertedCreatedChildren = children.map((child) =>
       convertElementToRequest(
@@ -431,8 +430,7 @@ export const addChildrenToElementSaga = withActionsHistory(function* (
       { elements: convertedCreatedChildren },
       element,
       {
-        screenId,
-        useHistory,
+        ...action.meta,
       },
     );
   } catch (e) {
@@ -456,7 +454,6 @@ export const addChildToElementSaga = withActionsHistory(function* (
       );
       return;
     }
-    const { screenId, useHistory } = action.meta;
 
     const convertedCreatedChild = convertCreatedElementToRequest(
       childType,
@@ -481,8 +478,7 @@ export const addChildToElementSaga = withActionsHistory(function* (
       { elements: [convertedChildWithUpdatedParameters] },
       element,
       {
-        screenId,
-        useHistory,
+        ...action.meta,
       },
     );
   } catch (e) {
@@ -532,11 +528,19 @@ export const softDeleteSaga = withActionsHistory(function* (
         Actions.restoreElementChildren(
           parent.id,
           parent.children.map((child) => child.id),
-          { screenId },
+          { ...action.meta },
         ),
       ];
       if (element.shared === true) {
-        undoActions.push(Actions.updateElement(id, { shared: true }));
+        undoActions.push(
+          Actions.updateElement(
+            {
+              elementID: id,
+              data: { shared: true },
+            },
+            { ...action.meta },
+          ),
+        );
       }
       yield put(Actions.addUndoActions(undoActions));
     }
@@ -571,7 +575,12 @@ export const softDeleteSaga = withActionsHistory(function* (
     );
 
     if (result) {
-      yield put(Actions.updateElement(id, { shared: false }));
+      yield put(
+        Actions.updateElement(
+          { elementID: id, data: { shared: false } },
+          { ...action.meta },
+        ),
+      );
 
       const convertedElements = updatedParent.children.map((child) =>
         convertElementToPatchRequest(child),
@@ -608,7 +617,9 @@ export const restoreElementChildrenSaga = withActionsHistory(function* (
     if (!useHistory) {
       yield put(
         Actions.addUndoActions(
-          childrenIds.map((id) => Actions.deleteElement(id, { screenId })),
+          childrenIds.map((id) =>
+            Actions.deleteElement(id, { ...action.meta, screenId }),
+          ),
         ),
       );
     }
@@ -667,13 +678,13 @@ export function* restoreElementSaga(
       );
       return;
     }
-    const { screenId, useHistory } = action.meta;
+    const { useHistory } = action.meta;
     const element: StateElement = yield select(selectElementById(elementId));
 
     if (!useHistory) {
       yield put(
         Actions.addUndoActions([
-          Actions.deleteElement(elementId, { screenId }),
+          Actions.deleteElement(elementId, { ...action.meta }),
         ]),
       );
     }
@@ -965,6 +976,7 @@ export function* updateElementSaga(
         elementID,
         { ...data },
         {
+          ...action.meta,
           screenId,
         },
       ),
@@ -1034,6 +1046,7 @@ export const redoWrapIntoContainerSaga = withActionsHistory(function* (
 
     yield put(
       Actions.wrapStateElements(wrapper, parentId, ids, {
+        ...action.meta,
         screenId,
         useHistory: true,
       }),

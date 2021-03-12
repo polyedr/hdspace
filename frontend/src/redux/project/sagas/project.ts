@@ -403,11 +403,11 @@ export function* updateProjectSaga(
     const success: boolean = yield call(projectUpdateHelperSaga, project);
 
     if (success) {
-      const { useHistory } = action.meta;
-
-      if (!useHistory) {
+      if (!action.meta.useHistory) {
         yield put(
-          Actions.addUndoActions(Actions.updateProject(currentProject)),
+          Actions.addUndoActions(
+            Actions.updateProject(currentProject, { ...action.meta }),
+          ),
         );
       }
     } else {

@@ -5,10 +5,7 @@ import * as Actions from '../actions';
 import {
   selectCanUndo,
   selectCurrentHistoryRecord,
-  selectHistoryInProgress,
 } from '../selectors/control';
-
-// export function* startHistoryRecordSaga() {}
 
 export function* executeUndoActionsSaga() {
   try {
@@ -67,50 +64,6 @@ export function* executeRedoActionsSaga() {
         },
       });
     }
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-}
-
-export function* addUndoActionsSaga(
-  action: ReturnType<typeof Actions.addUndoActions>,
-) {
-  const { actions } = action.payload;
-  try {
-    const historyInProgress = yield select(selectHistoryInProgress);
-    if (!historyInProgress) {
-      throw new Error('No action is being executed');
-    }
-    yield put(
-      Actions.addStateUndoActions(Array.isArray(actions) ? actions : [actions]),
-    );
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  }
-}
-
-export function* addRedoActionsSaga(
-  action: ReturnType<typeof Actions.addRedoActions>,
-) {
-  const { actions } = action.payload;
-  try {
-    const historyInProgress = yield select(selectHistoryInProgress);
-    if (!historyInProgress) {
-      throw new Error('No action is being executed');
-    }
-    yield put(
-      Actions.addStateRedoActions(Array.isArray(actions) ? actions : [actions]),
-    );
   } catch (e) {
     yield put(
       enqueueSnackbar({

@@ -124,13 +124,11 @@ export function* updateOrReplaceElementStyles(
       return;
     }
 
-    const { screenId, useHistory } = action.meta;
-
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       const oldStyles = yield select(selectElementStyles(id));
       yield put(
         Actions.addUndoActions(
-          Actions.replaceElementStyles(id, oldStyles, { screenId, useHistory }),
+          Actions.replaceElementStyles(id, oldStyles, { ...action.meta }),
         ),
       );
     }
@@ -198,7 +196,7 @@ export function* updateOrReplaceElementParameters(
       yield put(
         Actions.addUndoActions(
           Actions.replaceElementParameters(elementId, oldParameters, {
-            screenId,
+            ...action.meta,
           }),
         ),
       );
