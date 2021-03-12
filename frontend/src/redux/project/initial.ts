@@ -63,6 +63,10 @@ export const initialEdit: ProjectEditState = {
   masterGroupsElementId: '-1',
   selectedAssetListId: null,
   selectedElementsIds: [],
+  VIAMode: {
+    enabled: false,
+    regions: [],
+  },
   freeCanvas: {
     enabled: false,
     lastElements: {},

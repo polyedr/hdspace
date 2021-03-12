@@ -23,6 +23,7 @@ import {
   ProjectsSearchParameter,
   DateRange,
   UpdateElementData,
+  VIARegion,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -136,6 +137,8 @@ import {
   UploadImageByUrl,
   UpdateStateAssetImage,
   SetSelectedAssetListId,
+  SetVIAMode,
+  SetViaRegions,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -1274,4 +1277,14 @@ export const unbindGroupElementStyles = (
     styles,
   },
   meta,
+});
+
+export const setVIAMode = (active: boolean): SetVIAMode => ({
+  type: TYPES.SET_VIA_MODE,
+  payload: active,
+});
+
+export const setViaRegions = (regions: VIARegion[]): SetViaRegions => ({
+  type: TYPES.SET_REGIONS,
+  payload: regions,
 });

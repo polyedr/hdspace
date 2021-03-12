@@ -128,6 +128,16 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.SET_VIA_MODE: {
+        draft.VIAMode.enabled = action.payload;
+        break;
+      }
+
+      case TYPES.SET_REGIONS: {
+        draft.VIAMode.regions = action.payload;
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         return initialEdit;
       }

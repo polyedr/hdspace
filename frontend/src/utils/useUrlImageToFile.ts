@@ -12,8 +12,11 @@ const generateImageName = (url: string, width: number, height: number) => {
   if (lastDotIndex < 0) {
     return originalName + sizePart;
   }
+
+  // return originalName.split('_').slice(0, -1).join('');
+
   return (
-    originalName.substring(0, lastDotIndex) +
+    originalName.substring(0, lastDotIndex).split('_').slice(0, -1).join('') +
     // sizePart +
     originalName.substring(lastDotIndex)
   );

@@ -47,7 +47,6 @@ import {
   VIAFile,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
-import { convertVIARegionToLibraryElement } from '@Api/converters/fromResponse';
 import { apiGetFile } from '@Api/import';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -776,17 +775,17 @@ export const uploadFileSaga = withActionsHistory(function* ({
         throw new Error('No VIA data has been received');
       }
 
-      const root: StateElement = yield select(selectCurrentRoot);
+      // const root: StateElement = yield select(selectCurrentRoot);
 
-      yield all(
-        root.children.map((childId) =>
-          // put(Actions.deleteElement(childId, { screenId })),
-          put(Actions.removeStateElement(childId, { screenId })),
-        ),
-      );
+      // yield all(
+      //   root.children.map((childId) =>
+      //     // put(Actions.deleteElement(childId, { screenId })),
+      //     put(Actions.removeStateElement(childId, { screenId })),
+      //   ),
+      // );
 
-      yield put(Actions.changeFreeCanvasMode(true));
-      yield put(Actions.setActiveElement(root.id));
+      // yield put(Actions.changeFreeCanvasMode(true));
+      // yield put(Actions.setActiveElement(root.id));
 
       const viaFile = Object.values(
         JSON.parse(recognizeResult.screen_data_json) as {
@@ -794,11 +793,14 @@ export const uploadFileSaga = withActionsHistory(function* ({
         },
       )[0];
 
-      const regions = viaFile.regions.map((region) =>
-        convertVIARegionToLibraryElement(region),
-      );
+      // const regions = viaFile.regions.map((region) =>
+      //   convertVIARegionToLibraryElement(region),
+      // );
 
-      yield put(Actions.addStateElements(regions, root.id, { screenId }));
+      yield put(Actions.setViaRegions(viaFile.regions));
+      yield put(Actions.setVIAMode(true));
+
+      // yield put(Actions.addStateElements(regions, root.id, { screenId }));
 
       // console.log(viaFile);
       /*  const convertedElements = getElementsArray(recognizeResult).map((element) =>

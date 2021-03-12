@@ -30,6 +30,7 @@ import {
   AssetResults,
   ProjectsSearchParameter,
   DateRange,
+  VIARegion,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -73,6 +74,10 @@ export type ProjectEditState = {
   uploadedImageInfo?: UploadedImageInfo;
   selectedElementsIds: string[];
   masterScreenId: number | null;
+  VIAMode: {
+    enabled: boolean;
+    regions: VIARegion[];
+  };
   freeCanvas: {
     enabled: boolean;
     lastElements: {
@@ -864,6 +869,10 @@ export type SetMasterScreenId = IAction<
   number | null
 >;
 
+export type SetVIAMode = IAction<typeof TYPES.SET_VIA_MODE, boolean>;
+
+export type SetViaRegions = IAction<typeof TYPES.SET_REGIONS, VIARegion[]>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -1001,7 +1010,9 @@ export type Action =
   | ExecuteUndoActions
   | ExecuteRedoActions
   | AddUndoActions
-  | AddRedoActions;
+  | AddRedoActions
+  | SetVIAMode
+  | SetViaRegions;
 
 export type HistoryMeta = {
   useHistory?: boolean;

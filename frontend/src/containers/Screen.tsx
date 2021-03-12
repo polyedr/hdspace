@@ -4,8 +4,12 @@ import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useHistory } from 'react-router';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProjectId,
+  selectVIAModeEnabled,
+} from '@Redux/project/selectors/base';
 import { selectScreenById } from '@Redux/project/selectors/screen';
+import VIA from '@Components/Editor/VIA';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import { activateScreen } from '../redux/project/actions';
 import RightPanel from '../components/RightPanel';
@@ -32,6 +36,7 @@ const Screen: React.FC<Props> = ({ screenId, elementId }) => {
 
   const screen = useSelector(selectScreenById(screenId));
   const currentProjectId = useSelector(selectCurrentProjectId);
+  const viaModeEnabled = useSelector(selectVIAModeEnabled);
 
   useEffect(() => {
     if (screen) {
@@ -44,7 +49,7 @@ const Screen: React.FC<Props> = ({ screenId, elementId }) => {
   return (
     <div className={classes.screen}>
       <DndProvider backend={HTML5Backend}>
-        <Workspace elementId={elementId} />
+        {viaModeEnabled ? <VIA /> : <Workspace elementId={elementId} />}
 
         <RightPanel />
       </DndProvider>

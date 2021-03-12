@@ -144,3 +144,9 @@ export const selectEditorDocument = ({ project }: AppReduxState) =>
 
 export const selectAssetsLoader = ({ project }: AppReduxState) =>
   project.communication.assetsLoader;
+
+export const selectVIAModeEnabled = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.enabled;
+
+export const selectVIARegions = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.regions;
