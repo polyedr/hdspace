@@ -1,18 +1,24 @@
 from django.core.files.base import ContentFile
 from factory.django import DjangoModelFactory
 import factory
+from faker import Faker
 from factory.fuzzy import FuzzyText
 
 from apps.projects.models import Roles, ProjectIllustrationSet, ProjectImage, ScreenScenario, ScenarioElement, \
     ElementComment, Project, ProjectScreen, ScreenEvent, ScreenComment, Comment, ProjectInvitation, ProjectMember, \
     TaskTime, ScreenAssignee, ProjectActivity, ProjectColumn, ColumnTask
 
+fake = Faker()
+
+
+#
 
 class ProjectFactory(DjangoModelFactory):
     class Meta:
         model = Project
 
     name = factory.sequence(lambda n: "test project {}".format(n))
+    preview = factory.sequence(lambda n: "test project preview for project {}".format(n))
     status = Project.STATUS_PENDING
 
 
@@ -80,8 +86,14 @@ class ProjectIllustrationSetFactory(DjangoModelFactory):
     class Meta:
         model = ProjectIllustrationSet
 
-    name = "test illustration set"
-    illustrationList = "8.jpg"
+    name = factory.sequence(lambda n: "test illustration set {}".format(n))
+    illustrationList = factory.LazyAttribute(
+        lambda _: ContentFile(
+            factory.django.ImageField()._make_data(
+                {'width': 1024, 'height': 768}
+            ), fake.city() + ".jpg"
+        )
+    )
 
 
 class ProjectImageFactory(DjangoModelFactory):
@@ -92,7 +104,7 @@ class ProjectImageFactory(DjangoModelFactory):
         lambda _: ContentFile(
             factory.django.ImageField()._make_data(
                 {'width': 1024, 'height': 768}
-            ), 'example.jpg'
+            ), fake.street_name() + ".jpg"
         )
     )
 
