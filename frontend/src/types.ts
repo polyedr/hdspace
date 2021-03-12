@@ -1068,7 +1068,6 @@ export type Asset = {
   created: Date;
   modified: Date;
   listId: string | null;
-  fileurl?: string;
 };
 
 export type AssetResults = {
