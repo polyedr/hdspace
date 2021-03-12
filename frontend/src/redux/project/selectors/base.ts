@@ -149,4 +149,4 @@ export const selectVIAModeEnabled = ({ project }: AppReduxState) =>
   project.edit.VIAMode.enabled;
 
 export const selectVIARegions = ({ project }: AppReduxState) =>
-  project.edit.VIAMode.regions;
+  Object.values(project.edit.VIAMode.regions);

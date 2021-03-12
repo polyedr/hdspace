@@ -25,7 +25,6 @@ import {
   UpdateElementData,
   VIARegion,
 } from '@Src/types';
-import TYPES from '../actionTypes';
 import {
   Action,
   ActivateScreen,
@@ -141,6 +140,7 @@ import {
   SetViaRegions,
   UpdateVIARegion,
 } from '../types';
+import TYPES from '../actionTypes';
 
 export const getProjectList = (): LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
@@ -1285,7 +1285,9 @@ export const setVIAMode = (active: boolean): SetVIAMode => ({
   payload: active,
 });
 
-export const setViaRegions = (regions: VIARegion[]): SetViaRegions => ({
+export const setViaRegions = (
+  regions: Normalized<VIARegion>,
+): SetViaRegions => ({
   type: TYPES.SET_VIA_REGIONS,
   payload: regions,
 });

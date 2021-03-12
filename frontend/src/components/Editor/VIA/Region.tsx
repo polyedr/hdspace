@@ -1,8 +1,8 @@
 import { makeStyles } from '@material-ui/core';
 import { updateViaRegion } from '@Redux/project/actions';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
-import { Rnd, RndDragCallback } from 'react-rnd';
+import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import { VIARegion } from '../../../types';
 
 const useStyles = makeStyles({
@@ -33,28 +33,40 @@ const Region: FC<Props> = ({ region }) => {
     );
   };
 
-  const [size, setSize] = useState<any>({ width, height });
-  const [position, setPosition] = useState({ x, y });
+  const onResizeStop: RndResizeCallback = (
+    e,
+    direction,
+    ref,
+    delta,
+    position,
+  ) => {
+    dispatch(
+      updateViaRegion(region.id, {
+        ...region,
+        shape_attributes: {
+          ...region.shape_attributes,
+          width: +ref.style.width,
+          height: +ref.style.height,
+          ...position,
+        },
+      }),
+    );
+  };
 
   return (
     <Rnd
       className={classes.region}
       bounds="parent"
-      size={size}
+      size={{
+        width,
+        height,
+      }}
       position={{
         x,
         y,
       }}
       onDragStop={onDragStop}
-      onResizeStop={(e, direction, ref, delta, position) => {
-        setSize({
-          width: ref.style.width,
-          height: ref.style.height,
-        });
-        setPosition({
-          ...position,
-        });
-      }}
+      onResizeStop={onResizeStop}
     >
       {region.region_attributes['HTML element']}
     </Rnd>

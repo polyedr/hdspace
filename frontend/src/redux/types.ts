@@ -76,7 +76,7 @@ export type ProjectEditState = {
   masterScreenId: number | null;
   VIAMode: {
     enabled: boolean;
-    regions: VIARegion[];
+    regions: Normalized<VIARegion>;
   };
   freeCanvas: {
     enabled: boolean;
@@ -871,7 +871,10 @@ export type SetMasterScreenId = IAction<
 
 export type SetVIAMode = IAction<typeof TYPES.SET_VIA_MODE, boolean>;
 
-export type SetViaRegions = IAction<typeof TYPES.SET_VIA_REGIONS, VIARegion[]>;
+export type SetViaRegions = IAction<
+  typeof TYPES.SET_VIA_REGIONS,
+  Normalized<VIARegion>
+>;
 
 export type UpdateVIARegion = IAction<
   typeof TYPES.UPDATE_VIA_REGION,
