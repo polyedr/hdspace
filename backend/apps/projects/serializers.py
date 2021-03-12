@@ -1,5 +1,9 @@
 """Serializers for the projects"""
 
+from io import BytesIO
+from django.core.files.uploadedfile import UploadedFile
+import requests
+from urllib.parse import urlparse
 from rest_framework import serializers
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 from rest_framework_recursive.fields import RecursiveField
@@ -467,9 +471,27 @@ class TaskTimeSerializer(serializers.ModelSerializer):
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    fileurl = serializers.URLField(allow_blank=True, allow_null=True, required=False)
+
     class Meta:
         model = ProjectImage
-        fields = ("id", "image", "created", "modified", "illustration_set",)
+        fields = ("id", "image", "created", "modified", "illustration_set", "fileurl",)
+        extra_kwargs = {
+            "fileurl": {"write_only": True},
+        }
+
+    def create(self, validated_data):
+        url = validated_data.pop("fileurl", None)
+        if url:
+            response = requests.get(url)
+            # Set FileField to binary file
+            filename = urlparse(url).path.split("/")[-1]
+            validated_data["image"] = UploadedFile(
+                BytesIO(response.content), name=filename
+            )
+        fileupload = ProjectImage(id=None, **validated_data)
+        fileupload.save()
+        return fileupload
 
 
 class IllustrationSetSerializer(serializers.ModelSerializer):
