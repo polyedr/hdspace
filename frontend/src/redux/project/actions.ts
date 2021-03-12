@@ -139,6 +139,7 @@ import {
   SetSelectedAssetListId,
   SetVIAMode,
   SetViaRegions,
+  UpdateVIARegion,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -1285,6 +1286,17 @@ export const setVIAMode = (active: boolean): SetVIAMode => ({
 });
 
 export const setViaRegions = (regions: VIARegion[]): SetViaRegions => ({
-  type: TYPES.SET_REGIONS,
+  type: TYPES.SET_VIA_REGIONS,
   payload: regions,
+});
+
+export const updateViaRegion = (
+  regionId: string,
+  data: Partial<VIARegion>,
+): UpdateVIARegion => ({
+  type: TYPES.UPDATE_VIA_REGION,
+  payload: {
+    id: regionId,
+    data,
+  },
 });

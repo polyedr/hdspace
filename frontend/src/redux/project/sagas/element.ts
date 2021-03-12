@@ -45,9 +45,11 @@ import {
   UpdateDataActionType,
   Screen,
   VIAFile,
+  VIARegion,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
+import addId from '@Utils/addId';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -797,7 +799,11 @@ export const uploadFileSaga = withActionsHistory(function* ({
       //   convertVIARegionToLibraryElement(region),
       // );
 
-      yield put(Actions.setViaRegions(viaFile.regions));
+      yield put(
+        Actions.setViaRegions(
+          viaFile.regions.map((region) => addId(region) as VIARegion),
+        ),
+      );
       yield put(Actions.setVIAMode(true));
 
       // yield put(Actions.addStateElements(regions, root.id, { screenId }));

@@ -51,7 +51,8 @@ const TYPES = {
 
   // VIA Actions
   SET_VIA_MODE: 'via/SET_VIA_MODE',
-  SET_REGIONS: 'via/SET_REGIONS',
+  SET_VIA_REGIONS: 'via/SET_VIA_REGIONS',
+  UPDATE_VIA_REGION: 'via/UPDATE_VIA_REGION',
 
   // Free canvas Actions
   CHANGE_FREE_CANVAS_MODE: 'freeCanvas/CHANGE_FREE_CANVAS_MODE',

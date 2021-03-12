@@ -871,7 +871,12 @@ export type SetMasterScreenId = IAction<
 
 export type SetVIAMode = IAction<typeof TYPES.SET_VIA_MODE, boolean>;
 
-export type SetViaRegions = IAction<typeof TYPES.SET_REGIONS, VIARegion[]>;
+export type SetViaRegions = IAction<typeof TYPES.SET_VIA_REGIONS, VIARegion[]>;
+
+export type UpdateVIARegion = IAction<
+  typeof TYPES.UPDATE_VIA_REGION,
+  { id: VIARegion['id']; data: Partial<VIARegion> }
+>;
 
 export type Action =
   | LoadProjects
@@ -1012,7 +1017,8 @@ export type Action =
   | AddUndoActions
   | AddRedoActions
   | SetVIAMode
-  | SetViaRegions;
+  | SetViaRegions
+  | UpdateVIARegion;
 
 export type HistoryMeta = {
   useHistory?: boolean;

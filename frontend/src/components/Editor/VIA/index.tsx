@@ -17,9 +17,8 @@ const VIA: FC = () => {
   const regions = useSelector(selectVIARegions);
   return (
     <div className={classes.root}>
-      {regions.map((region, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <Region key={i} region={region} />
+      {regions.map((region) => (
+        <Region key={region.id} region={region} />
       ))}
     </div>
   );

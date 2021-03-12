@@ -133,8 +133,21 @@ const editReducer = produce(
         break;
       }
 
-      case TYPES.SET_REGIONS: {
+      case TYPES.SET_VIA_REGIONS: {
         draft.VIAMode.regions = action.payload;
+        break;
+      }
+
+      case TYPES.UPDATE_VIA_REGION: {
+        let target = draft.VIAMode.regions.find(
+          (region) => region.id === action.payload.id,
+        );
+        if (!target) return draft;
+
+        target = {
+          ...target,
+          ...action.payload.data,
+        };
         break;
       }
 

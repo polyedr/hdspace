@@ -1157,7 +1157,7 @@ export type DateRange = {
 
 export type PostUrlResponse = { wpname: string; owner: any };
 
-export type VIARegion = {
+export type VIARegionWithoutId = {
   shape_attributes: {
     name: string;
     x: number;
@@ -1170,9 +1170,13 @@ export type VIARegion = {
   };
 };
 
+export type VIARegion = VIARegionWithoutId & {
+  id: string;
+};
+
 export type VIAFile = {
   filename: string;
   size: number | string;
-  regions: VIARegion[];
+  regions: VIARegionWithoutId[];
   file_attributes: { [key: string]: any };
 };
