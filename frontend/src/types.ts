@@ -277,6 +277,12 @@ export type LibraryElementPatch<Type extends Entity> = {
   shared?: boolean;
 };
 
+export type UpdateElementData<T extends Entity> = {
+  elementID: string;
+  data: LibraryElementPatch<T>;
+  active?: boolean;
+};
+
 export type RootElement = LibraryElement<'root', []>;
 export type ContainerElement = LibraryElement<'container', []>;
 export type DivBlockElement = LibraryElement<'divBlock'>;
