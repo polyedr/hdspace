@@ -193,7 +193,6 @@ export function* updateOrReplaceElementParameters(
 
     if (!useHistory) {
       const oldParameters = yield select(selectElementParameters(elementId));
-      console.log('OLD PARAMETERS!!', oldParameters);
       yield put(
         Actions.addUndoActions(
           Actions.replaceElementParameters(elementId, oldParameters, {

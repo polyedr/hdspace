@@ -41,6 +41,7 @@ import {
   updateMultipleElementsParametersSaga,
   duplicateElements,
   unbindGroupElementStylesSaga,
+  replaceElementParametersSaga,
 } from '@Redux/project/sagas/element';
 import {
   addChildrenToElementSaga,
@@ -352,6 +353,10 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.SET_ACTIVE_ELEMENT_SAGA, setActiveElementSaga);
 
   yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParametersSaga);
+  yield takeEvery(
+    TYPES.REPLACE_ELEMENT_PARAMETERS,
+    replaceElementParametersSaga,
+  );
   yield takeEvery(
     TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
     updateMultipleElementsParametersSaga,
