@@ -21,40 +21,44 @@ const controlReducer = (
         history: [...state.history.slice(0, recordNumber), newHistoryRecord],
       };
     }
-    case TYPES.CLOSE_HISTORY_RECORD: {
+    /* case TYPES.CLOSE_HISTORY_RECORD: {
       if (!state.historyInProgress) {
         return state;
       }
       return { ...state, historyInProgress: false };
-    }
-    case TYPES.ADD_STATE_UNDO_ACTIONS: {
-      const currentRecord = state.history[state.currentHistoryRecord];
-      const updatedRecord: HistoryRecord = {
-        ...currentRecord,
-        undo: [...currentRecord.undo, ...action.payload.actions],
-      };
-      const updatedHistoryRecords = [...state.history];
-      updatedHistoryRecords.splice(
-        state.currentHistoryRecord,
-        1,
-        updatedRecord,
-      );
-      return { ...state, history: updatedHistoryRecords };
+    } */
+    case TYPES.ADD_UNDO_ACTIONS: {
+      const { actions } = action.payload;
+      const newStateHistory = state.history.map((historyRecord, index) => {
+        const recordActions = actions.filter(
+          (action) => action.meta?.historyRecordIndex === index,
+        );
+        if (!recordActions.length) {
+          return historyRecord;
+        }
+        return {
+          ...historyRecord,
+          undo: [...historyRecord.undo, ...recordActions],
+        };
+      });
+      return { ...state, history: newStateHistory };
     }
 
-    case TYPES.ADD_STATE_REDO_ACTIONS: {
-      const currentRecord = state.history[state.currentHistoryRecord];
-      const updatedRecord: HistoryRecord = {
-        ...currentRecord,
-        redo: [...currentRecord.redo, ...action.payload.actions],
-      };
-      const updatedHistoryRecords = [...state.history];
-      updatedHistoryRecords.splice(
-        state.currentHistoryRecord,
-        1,
-        updatedRecord,
-      );
-      return { ...state, history: updatedHistoryRecords };
+    case TYPES.ADD_REDO_ACTIONS: {
+      const { actions } = action.payload;
+      const newStateHistory = state.history.map((historyRecord, index) => {
+        const recordActions = actions.filter(
+          (action) => action.meta?.historyRecordIndex === index,
+        );
+        if (!recordActions.length) {
+          return historyRecord;
+        }
+        return {
+          ...historyRecord,
+          redo: [...historyRecord.redo, ...recordActions],
+        };
+      });
+      return { ...state, history: newStateHistory };
     }
 
     case TYPES.RESET_SCREEN_STATE: {
@@ -62,7 +66,6 @@ const controlReducer = (
         ...state,
         history: [],
         currentHistoryRecord: -1,
-        historyInProgress: false,
       };
     }
 

@@ -17,7 +17,9 @@ const RenameElement: React.FC = () => {
   }, [name]);
 
   const debounced = useDebouncedCallback((value) => {
-    dispatch(updateElement(id, { name: value }, true));
+    dispatch(
+      updateElement({ elementID: id, data: { name: value }, active: true }),
+    );
   }, 500);
 
   return (

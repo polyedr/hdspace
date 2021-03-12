@@ -106,13 +106,16 @@ export const addNewAssetListSaga = withActionsHistory(function* (
     if (!useHistory) {
       yield put(
         Actions.addUndoActions([
-          Actions.setSelectedAssetListId(selectedAssetId || ALL_ASSETS_LIST_ID),
+          Actions.setSelectedAssetListId(
+            selectedAssetId || ALL_ASSETS_LIST_ID,
+            { ...action.meta },
+          ),
           Actions.removeAssetList(assetList.id, { ...action.meta }),
         ]),
       );
     }
     yield put(Actions.addAssetListToState(assetList));
-    yield put(Actions.setSelectedAssetListId(assetList.id));
+    yield put(Actions.setSelectedAssetListId(assetList.id, { ...action.meta }));
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -190,7 +193,11 @@ export const removeAssetSaga = withActionsHistory(function* (
   try {
     const asset = yield select(selectAssetListById);
     if (!meta?.useHistory) {
-      yield put(Actions.addUndoActions([Actions.restoreAsset(asset, listId)]));
+      yield put(
+        Actions.addUndoActions([
+          Actions.restoreAsset(asset, listId, action.meta),
+        ]),
+      );
     }
     yield put(Actions.removeAssetRedux(id, listId));
     yield call(reqWrapper, apiDeleteAsset, { id });

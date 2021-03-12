@@ -7,7 +7,6 @@ import {
   Entity,
   Indices,
   LibraryElement,
-  LibraryElementPatch,
   Normalized,
   ParentIds,
   Project,
@@ -23,6 +22,7 @@ import {
   PaginatedArray,
   ProjectsSearchParameter,
   DateRange,
+  UpdateElementData,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -121,13 +121,11 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
-  CloseHistoryRecord,
+  //  CloseHistoryRecord,
   ExecuteUndoActions,
   ExecuteRedoActions,
   AddUndoActions,
   AddRedoActions,
-  AddStateRedoActions,
-  AddStateUndoActions,
   MoveHistoryForward,
   MoveHistoryBackward,
   AddHistoryActions,
@@ -135,6 +133,7 @@ import {
   ReplaceElementParameters,
   ReplaceMultipleElementsParameters,
   WrapMultipleElementsIntoContainer,
+  SetSelectedAssetListId,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -487,12 +486,12 @@ export const setScreens = (screens: Screen[]): SetScreens => ({
 });
 
 export const updateElement = <T extends Entity>(
-  elementID: string,
-  data: LibraryElementPatch<T>,
-  active?: boolean,
+  { elementID, data, active }: UpdateElementData<T>,
+  meta?: HistoryMeta,
 ): UpdateElement => ({
   type: TYPES.UPDATE_ELEMENT,
   payload: { elementID, data, active },
+  meta: meta || {},
 });
 
 export const toggleContainersBorders = (): ToggleContainersBorders => ({
@@ -1141,11 +1140,15 @@ export const addAssetToState = (
   meta,
 });
 
-export const setSelectedAssetListId = (listId: string) => ({
+export const setSelectedAssetListId = (
+  listId: string,
+  meta?: HistoryMeta,
+): SetSelectedAssetListId => ({
   type: TYPES.SET_SELECTED_ASSET_LIST_ID,
   payload: {
     assetListId: listId,
   },
+  meta: meta || {},
 });
 
 export const addSelectedElement = (id: string): AddSelectedElement => ({
@@ -1205,18 +1208,21 @@ export const startHistoryRecord = (source: Action): StartHistoryRecord => ({
   payload: { source },
 });
 
-export const closeHistoryRecord = (): CloseHistoryRecord => ({
+/* export const closeHistoryRecord = (
+  recordIndex: number,
+): CloseHistoryRecord => ({
   type: TYPES.CLOSE_HISTORY_RECORD,
-});
+  payload: { recordIndex },
+}); */
 
 export const addUndoActions = (actions: Action | Action[]): AddUndoActions => ({
   type: TYPES.ADD_UNDO_ACTIONS,
-  payload: { actions },
+  payload: { actions: Array.isArray(actions) ? actions : [actions] },
 });
 
 export const addRedoActions = (actions: Action | Action[]): AddRedoActions => ({
   type: TYPES.ADD_REDO_ACTIONS,
-  payload: { actions },
+  payload: { actions: Array.isArray(actions) ? actions : [actions] },
 });
 
 export const addHistoryActions = ({ undo, redo }): AddHistoryActions => ({
@@ -1224,7 +1230,7 @@ export const addHistoryActions = ({ undo, redo }): AddHistoryActions => ({
   payload: { undo, redo },
 });
 
-export const addStateUndoActions = (
+/* export const addStateUndoActions = (
   actions: Action[],
 ): AddStateUndoActions => ({
   type: TYPES.ADD_STATE_UNDO_ACTIONS,
@@ -1236,7 +1242,7 @@ export const addStateRedoActions = (
 ): AddStateRedoActions => ({
   type: TYPES.ADD_STATE_REDO_ACTIONS,
   payload: { actions },
-});
+}); */
 
 export const executeUndoActions = (): ExecuteUndoActions => ({
   type: TYPES.EXECUTE_UNDO_ACTIONS,

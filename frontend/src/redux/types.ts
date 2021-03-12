@@ -98,7 +98,7 @@ export type ProjectCommunicationState = {
 export type ProjectControlState = {
   history: Array<HistoryRecord>;
   currentHistoryRecord: number;
-  historyInProgress: boolean;
+  // historyInProgress: boolean;
 };
 
 export type ProjectState = {
@@ -293,7 +293,8 @@ export type SetCurrentScreenId = IAction<
 >;
 export type SetSelectedAssetListId = IAction<
   typeof TYPES.SET_SELECTED_ASSET_LIST_ID,
-  { assetListId: string }
+  { assetListId: string },
+  HistoryMeta
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
@@ -310,7 +311,8 @@ export type UpdateElement = IAction<
     elementID: string;
     data: LibraryElementPatch<Entity>;
     active?: boolean;
-  }
+  },
+  HistoryMeta
 >;
 export type ToggleContainersBorders = IPlainAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS
@@ -531,9 +533,10 @@ export type StartHistoryRecord = IAction<
   typeof TYPES.START_HISTORY_RECORD,
   { source: Action }
 >;
-export type CloseHistoryRecord = IPlainAction<
-  typeof TYPES.CLOSE_HISTORY_RECORD
->;
+/* export type CloseHistoryRecord = IAction<
+  typeof TYPES.CLOSE_HISTORY_RECORD,
+  { recordIndex: number }
+>; */
 export type ExecuteUndoActions = IPlainAction<
   typeof TYPES.EXECUTE_UNDO_ACTIONS
 >;
@@ -542,24 +545,24 @@ export type ExecuteRedoActions = IPlainAction<
 >;
 export type AddUndoActions = IAction<
   typeof TYPES.ADD_UNDO_ACTIONS,
-  { actions: Action | Action[] }
+  { actions: Action[] }
 >;
 export type AddRedoActions = IAction<
   typeof TYPES.ADD_REDO_ACTIONS,
-  { actions: Action | Action[] }
+  { actions: Action[] }
 >;
 export type AddHistoryActions = IAction<
   typeof TYPES.ADD_HISTORY_ACTIONS,
   { undo: Action[]; redo?: Action[] }
 >;
-export type AddStateUndoActions = IAction<
+/* export type AddStateUndoActions = IAction<
   typeof TYPES.ADD_STATE_UNDO_ACTIONS,
   { actions: Action[] }
 >;
 export type AddStateRedoActions = IAction<
   typeof TYPES.ADD_STATE_REDO_ACTIONS,
   { actions: Action[] }
->;
+>; */
 export type MoveHistoryForward = IPlainAction<
   typeof TYPES.MOVE_HISTORY_FORWARD
 >;
@@ -906,8 +909,6 @@ export type Action =
   | SetEditableStyles
   | AddUndoActions
   | AddRedoActions
-  | AddStateUndoActions
-  | AddStateRedoActions
   | MoveHistoryForward
   | MoveHistoryBackward
   | UnbindGroupElementStyles
@@ -985,7 +986,6 @@ export type Action =
   | ReplaceMultipleElementsParameters
   | SetMasterScreenId
   | StartHistoryRecord
-  | CloseHistoryRecord
   | ExecuteUndoActions
   | ExecuteRedoActions
   | AddUndoActions
@@ -993,6 +993,7 @@ export type Action =
 
 export type HistoryMeta = {
   useHistory?: boolean;
+  historyRecordIndex?: number;
 };
 
 export type ElementHistoryMeta = HistoryMeta & {

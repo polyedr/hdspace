@@ -83,5 +83,5 @@ export const initialCommunication: ProjectCommunicationState = {
 export const initialControl: ProjectControlState = {
   history: [],
   currentHistoryRecord: -1,
-  historyInProgress: false,
+  // historyInProgress: false,
 };

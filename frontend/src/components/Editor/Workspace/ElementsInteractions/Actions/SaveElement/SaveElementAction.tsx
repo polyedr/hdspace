@@ -74,14 +74,14 @@ const SaveElementAction: React.FC<Props> = ({ elementId }) => {
                     inputRef.current!.value = '';
                     popupState.close();
                     dispatch(
-                      updateElement<'section'>(
-                        elementId,
-                        {
+                      updateElement<'section'>({
+                        elementID: elementId,
+                        data: {
                           name,
                           shared: true,
                         },
-                        true,
-                      ),
+                        active: true,
+                      }),
                     );
                   }
                 }}
