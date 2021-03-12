@@ -98,7 +98,6 @@ export type ProjectCommunicationState = {
 export type ProjectControlState = {
   history: Array<HistoryRecord>;
   currentHistoryRecord: number;
-  // historyInProgress: boolean;
 };
 
 export type ProjectState = {
@@ -533,10 +532,6 @@ export type StartHistoryRecord = IAction<
   typeof TYPES.START_HISTORY_RECORD,
   { source: Action }
 >;
-/* export type CloseHistoryRecord = IAction<
-  typeof TYPES.CLOSE_HISTORY_RECORD,
-  { recordIndex: number }
->; */
 export type ExecuteUndoActions = IPlainAction<
   typeof TYPES.EXECUTE_UNDO_ACTIONS
 >;
@@ -555,14 +550,6 @@ export type AddHistoryActions = IAction<
   typeof TYPES.ADD_HISTORY_ACTIONS,
   { undo: Action[]; redo?: Action[] }
 >;
-/* export type AddStateUndoActions = IAction<
-  typeof TYPES.ADD_STATE_UNDO_ACTIONS,
-  { actions: Action[] }
->;
-export type AddStateRedoActions = IAction<
-  typeof TYPES.ADD_STATE_REDO_ACTIONS,
-  { actions: Action[] }
->; */
 export type MoveHistoryForward = IPlainAction<
   typeof TYPES.MOVE_HISTORY_FORWARD
 >;

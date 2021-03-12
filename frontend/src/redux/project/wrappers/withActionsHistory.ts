@@ -1,10 +1,7 @@
 import { call, put, select } from 'redux-saga/effects';
 import { Action } from '@Redux/types';
 import * as Actions from '@Redux/project/actions';
-import {
-  selectCurrentHistoryRecordIndex,
-  // selectHistoryInProgress,
-} from '../selectors/control';
+import { selectCurrentHistoryRecordIndex } from '../selectors/control';
 
 export default function withActionsHistory(fn: any) {
   return function* (action: Action) {

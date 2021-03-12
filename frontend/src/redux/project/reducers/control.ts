@@ -21,12 +21,6 @@ const controlReducer = (
         history: [...state.history.slice(0, recordNumber), newHistoryRecord],
       };
     }
-    /* case TYPES.CLOSE_HISTORY_RECORD: {
-      if (!state.historyInProgress) {
-        return state;
-      }
-      return { ...state, historyInProgress: false };
-    } */
     case TYPES.ADD_UNDO_ACTIONS: {
       const { actions } = action.payload;
       const newStateHistory = state.history.map((historyRecord, index) => {

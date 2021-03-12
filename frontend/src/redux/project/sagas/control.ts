@@ -5,10 +5,7 @@ import * as Actions from '../actions';
 import {
   selectCanUndo,
   selectCurrentHistoryRecord,
-  //  selectHistoryInProgress,
 } from '../selectors/control';
-
-// export function* startHistoryRecordSaga() {}
 
 export function* executeUndoActionsSaga() {
   try {

@@ -1208,13 +1208,6 @@ export const startHistoryRecord = (source: Action): StartHistoryRecord => ({
   payload: { source },
 });
 
-/* export const closeHistoryRecord = (
-  recordIndex: number,
-): CloseHistoryRecord => ({
-  type: TYPES.CLOSE_HISTORY_RECORD,
-  payload: { recordIndex },
-}); */
-
 export const addUndoActions = (actions: Action | Action[]): AddUndoActions => ({
   type: TYPES.ADD_UNDO_ACTIONS,
   payload: { actions: Array.isArray(actions) ? actions : [actions] },
@@ -1229,20 +1222,6 @@ export const addHistoryActions = ({ undo, redo }): AddHistoryActions => ({
   type: TYPES.ADD_HISTORY_ACTIONS,
   payload: { undo, redo },
 });
-
-/* export const addStateUndoActions = (
-  actions: Action[],
-): AddStateUndoActions => ({
-  type: TYPES.ADD_STATE_UNDO_ACTIONS,
-  payload: { actions },
-});
-
-export const addStateRedoActions = (
-  actions: Action[],
-): AddStateRedoActions => ({
-  type: TYPES.ADD_STATE_REDO_ACTIONS,
-  payload: { actions },
-}); */
 
 export const executeUndoActions = (): ExecuteUndoActions => ({
   type: TYPES.EXECUTE_UNDO_ACTIONS,
