@@ -162,6 +162,13 @@ export type CreateScreenData = {
   rootName?: string;
 };
 
+export type UploadAssetData = {
+  assetFile: any | null;
+  fileName: string;
+  listId: string;
+  imageURL?: string;
+};
+
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 export type SearchProjects = IPlainAction<typeof TYPES.SEARCH_PROJECTS>;
 export type SetProjectSearchParameter = IAction<
@@ -633,8 +640,8 @@ export type SetAssets = IAction<
   }
 >;
 
-export type AddAssetListRedux = IAction<
-  typeof TYPES.ADD_ASSET_LIST_REDUX,
+export type AddStateAssetList = IAction<
+  typeof TYPES.ADD_STATE_ASSET_LIST,
   AssetsList
 >;
 
@@ -655,8 +662,18 @@ export type UploadAsset = IAction<
   HistoryMeta
 >;
 
-export type AddAssetRedux = IAction<
-  typeof TYPES.ADD_ASSET_REDUX,
+export type UploadImageByUrl = IAction<
+  typeof TYPES.UPLOAD_IMAGE_BY_URL,
+  {
+    elementId: string;
+    url: string;
+    listId: string;
+  },
+  ElementHistoryMeta
+>;
+
+export type AddStateAsset = IAction<
+  typeof TYPES.ADD_STATE_ASSET,
   {
     listId: string;
     asset: Asset;
@@ -684,6 +701,12 @@ export type RemoveAsset = IAction<
 export type RemoveAssetRedux = IAction<
   typeof TYPES.REMOVE_ASSET_REDUX,
   { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type UpdateStateAssetImage = IAction<
+  typeof TYPES.UPDATE_STATE_ASSET_IMAGE,
+  { assetId: string; listId: string; imageUrl: string },
   HistoryMeta
 >;
 
@@ -947,13 +970,14 @@ export type Action =
   | SetEditorDocument
   | SetAssetLists
   | SetAssets
-  | AddAssetListRedux
+  | AddStateAssetList
   | AddAssetList
-  | AddAssetRedux
+  | AddStateAsset
   | RemoveAssetList
   | RemoveAssetListRedux
   | RemoveAsset
   | RemoveAssetRedux
+  | UpdateStateAssetImage
   | RestoreAsset
   | SetSelectedAssetListId
   | SearchProjects
@@ -965,6 +989,7 @@ export type Action =
   | RemoveMultipleElementsStyles
   | UploadAsset
   | UploadElementAsset
+  | UploadImageByUrl
   | RemoveMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup

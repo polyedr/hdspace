@@ -47,11 +47,13 @@ import {
   UpdateDataActionType,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
+import { apiGetFile } from '@Api/import';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { createElements, wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { uploadAsset } from './asset';
 import {
   updateOrReplaceElementParameters,
   updateOrReplaceElementStyles,
@@ -1036,6 +1038,71 @@ export const createElementsGroupSaga = withActionsHistory(function* (
         ]),
       );
     }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+});
+
+export const uploadElementImageByUrlSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.uploadImageByUrl>,
+) {
+  if (!action.meta) {
+    yield put(
+      enqueueSnackbar({
+        message: 'No meta information is provided',
+        options: { variant: 'error' },
+      }),
+    );
+    return;
+  }
+
+  const { elementId, url, listId } = action.payload;
+
+  try {
+    const assetName = url.slice(url.lastIndexOf('/') + 1);
+    const { error: uploadError, filename: backendImageURL } = yield call(
+      reqWrapper,
+      apiGetFile,
+      {
+        fileUrl: url,
+      },
+    );
+
+    if (uploadError) {
+      yield put(
+        enqueueSnackbar({
+          message: uploadError.message,
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+
+    yield call(
+      uploadAsset,
+      {
+        assetFile: null,
+        listId,
+        fileName: assetName,
+        imageURL: backendImageURL,
+      },
+      { ...action.meta },
+    );
+
+    yield call(
+      updateOrReplaceElementParameters,
+      Actions.updateElementParameters(
+        elementId,
+        { imageURL: backendImageURL },
+        { ...action.meta },
+      ),
+      UpdateDataActionType.UPDATE,
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar({

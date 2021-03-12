@@ -251,7 +251,7 @@ const dataReducer = produce(
         break;
       }
 
-      case TYPES.ADD_ASSET_LIST_REDUX: {
+      case TYPES.ADD_STATE_ASSET_LIST: {
         draft.assetLists = {
           ...draft.assetLists,
           results: [action.payload, ...draft.assetLists.results],
@@ -259,17 +259,17 @@ const dataReducer = produce(
         break;
       }
 
-      case TYPES.ADD_ASSET_REDUX: {
-        draft.assetResults = {
-          ...draft.assetResults,
-          [action.payload.listId]: {
-            ...draft.assetResults[action.payload.listId],
-            results: [
-              action.payload.asset,
-              ...draft.assetResults[action.payload.listId].results,
-            ],
-          },
-        };
+      case TYPES.ADD_STATE_ASSET: {
+        const { listId, asset } = action.payload;
+        if (draft.assetResults[listId]) {
+          draft.assetResults = {
+            ...draft.assetResults,
+            [listId]: {
+              ...draft.assetResults[listId],
+              results: [asset, ...draft.assetResults[listId].results],
+            },
+          };
+        }
 
         // update all images section, should be removed in the future
         draft.assetResults[ALL_ASSETS_LIST_ID].results = [
@@ -295,9 +295,41 @@ const dataReducer = produce(
         draft.assetResults[ALL_ASSETS_LIST_ID].results = draft.assetResults[
           ALL_ASSETS_LIST_ID
         ].results.filter((asset) => asset.id !== id);
-        draft.assetResults[listId].results = draft.assetResults[
-          listId
-        ].results.filter((asset) => asset.id !== id);
+        if (draft.assetResults[listId]) {
+          draft.assetResults[listId].results = draft.assetResults[
+            listId
+          ].results.filter((asset) => asset.id !== id);
+        }
+        break;
+      }
+
+      case TYPES.UPDATE_STATE_ASSET_IMAGE: {
+        const { assetId, listId, imageUrl } = action.payload;
+        const asset = draft.assetResults[listId].results.find(
+          (asset) => asset.id === assetId,
+        );
+        if (!asset) {
+          return draft;
+        }
+        const listAssetIndex = draft.assetResults[listId].results.findIndex(
+          (res) => res.id === asset.id,
+        );
+        const allListAssetIndex = draft.assetResults[
+          ALL_ASSETS_LIST_ID
+        ].results.findIndex((res) => res.id === asset.id);
+        const listResults = draft.assetResults[listId].results;
+        const allListResults = draft.assetResults[ALL_ASSETS_LIST_ID].results;
+        asset.image = imageUrl;
+        draft.assetResults[listId].results = [
+          ...listResults.slice(0, listAssetIndex - 1),
+          asset,
+          ...listResults.slice(listAssetIndex + 1),
+        ];
+        draft.assetResults[ALL_ASSETS_LIST_ID].results = [
+          ...allListResults.slice(0, allListAssetIndex - 1),
+          asset,
+          ...allListResults.slice(allListAssetIndex + 1),
+        ];
         break;
       }
 

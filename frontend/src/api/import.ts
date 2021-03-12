@@ -2,7 +2,7 @@
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps, PostUrlResponse, Result } from '@Src/types';
 import { AxiosResponse } from 'axios';
-import { handleError } from './project';
+import { handleError } from './helper';
 
 export const apiPostURL = ({
   wpname,
@@ -33,3 +33,18 @@ export const apiGetWebPage = ({
   })
     .then((res) => res.data)
     .catch(handleError);
+
+export const apiGetFile = (props: MyAxiosProps & { fileUrl: string }) => {
+  const { fileUrl, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    url: '/uploadapps/',
+    method: 'POST',
+    data: {
+      ...axiosProps.data,
+      fileurl: fileUrl,
+    },
+  })
+    .then((res) => res.data)
+    .catch(handleError);
+};

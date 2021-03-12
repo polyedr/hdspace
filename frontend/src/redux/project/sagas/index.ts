@@ -40,6 +40,7 @@ import {
   createElementsGroupSaga,
   updateMultipleElementsParametersSaga,
   duplicateElements,
+  uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
   replaceElementParametersSaga,
 } from '@Redux/project/sagas/element';
@@ -352,12 +353,12 @@ export default function* projectSaga() {
 
   yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParametersSaga);
   yield takeEvery(
-    TYPES.REPLACE_ELEMENT_PARAMETERS,
-    replaceElementParametersSaga,
-  );
-  yield takeEvery(
     TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
     updateMultipleElementsParametersSaga,
+  );
+  yield takeEvery(
+    TYPES.REPLACE_ELEMENT_PARAMETERS,
+    replaceElementParametersSaga,
   );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
@@ -405,6 +406,7 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP, createElementsGroupSaga);
+  yield takeEvery(TYPES.UPLOAD_IMAGE_BY_URL, uploadElementImageByUrlSaga);
   yield takeEvery(
     TYPES.UNBIND_GROUP_ELEMENT_STYLES,
     unbindGroupElementStylesSaga,
