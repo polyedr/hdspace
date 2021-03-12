@@ -41,6 +41,7 @@ import {
   updateMultipleElementsParametersSaga,
   duplicateElements,
   unbindGroupElementStylesSaga,
+  replaceElementParametersSaga,
 } from '@Redux/project/sagas/element';
 import {
   addChildrenToElementSaga,
@@ -93,8 +94,6 @@ import { importHtmlSaga, uploadImportUrlSaga } from './import';
 import {
   executeRedoActionsSaga,
   executeUndoActionsSaga,
-  addUndoActionsSaga,
-  addRedoActionsSaga,
   addHistoryActionsSaga,
 } from './control';
 import withActionsHistory from '../wrappers/withActionsHistory';
@@ -122,10 +121,12 @@ const removeSharedStylesSaga = withActionsHistory(function* (
 
   yield call(projectUpdateHelperSaga, newProject);
 
-  const { useHistory } = action.meta;
-
-  if (!useHistory) {
-    yield put(Actions.addUndoActions(Actions.updateProject(currentProject)));
+  if (!action.meta.useHistory) {
+    yield put(
+      Actions.addUndoActions(
+        Actions.updateProject(currentProject, { ...action.meta }),
+      ),
+    );
   }
 
   const state: Normalized<StateElement> = yield select(selectAllElements);
@@ -152,10 +153,12 @@ const updateSharedStylesSaga = withActionsHistory(function* (
 
   yield call(projectUpdateHelperSaga, newProject);
 
-  const { useHistory } = action.meta;
-
-  if (!useHistory) {
-    yield put(Actions.addUndoActions(Actions.updateProject(currentProject)));
+  if (!action.meta.useHistory) {
+    yield put(
+      Actions.addUndoActions(
+        Actions.updateProject(currentProject, { ...action.meta }),
+      ),
+    );
   }
 
   const state: Normalized<StateElement> = yield select(selectAllElements);
@@ -349,6 +352,10 @@ export default function* projectSaga() {
 
   yield takeEvery(TYPES.UPDATE_ELEMENT_PARAMETERS, updateElementParametersSaga);
   yield takeEvery(
+    TYPES.REPLACE_ELEMENT_PARAMETERS,
+    replaceElementParametersSaga,
+  );
+  yield takeEvery(
     TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
     updateMultipleElementsParametersSaga,
   );
@@ -370,9 +377,6 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 
   // history actions
-  // yield takeEvery(TYPES.START_HISTORY_RECORD, startHistoryRecordSaga); // a reducer action
-  yield takeEvery(TYPES.ADD_UNDO_ACTIONS, addUndoActionsSaga);
-  yield takeEvery(TYPES.ADD_REDO_ACTIONS, addRedoActionsSaga);
   yield takeEvery(TYPES.ADD_HISTORY_ACTIONS, addHistoryActionsSaga);
   yield takeEvery(TYPES.EXECUTE_UNDO_ACTIONS, executeUndoActionsSaga);
   yield takeEvery(TYPES.EXECUTE_REDO_ACTIONS, executeRedoActionsSaga);

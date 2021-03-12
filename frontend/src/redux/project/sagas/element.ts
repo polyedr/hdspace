@@ -119,7 +119,7 @@ export const moveElementSaga = withActionsHistory(function* (
       );
       return;
     }
-    const { screenId, useHistory } = action.meta;
+    const { useHistory } = action.meta;
 
     if (!useHistory) {
       yield put(
@@ -128,7 +128,7 @@ export const moveElementSaga = withActionsHistory(function* (
             elementId,
             { oldIndex: newIndex, newIndex: oldIndex },
             { oldParentId: newParentId, newParentId: oldParentId },
-            { screenId, useHistory },
+            { ...action.meta },
           ),
         ]),
       );
@@ -207,21 +207,23 @@ function* updateElementClassNames(
       );
       return;
     }
-    const { screenId, useHistory } = action.meta;
+    const { useHistory } = action.meta;
 
     if (!useHistory) {
       if (type === 'add') {
         yield put(
           Actions.addUndoActions(
             Actions.removeElementClassName(elementId, newClassName, {
-              screenId,
+              ...action.meta,
             }),
           ),
         );
       } else {
         yield put(
           Actions.addUndoActions(
-            Actions.addElementClassName(elementId, newClassName, { screenId }),
+            Actions.addElementClassName(elementId, newClassName, {
+              ...action.meta,
+            }),
           ),
         );
       }
@@ -369,16 +371,14 @@ export const copyElementStylesSaga = withActionsHistory(function* (
 
     yield call(removeElementStyles, elementID, Object.keys(styles), action);
 
-    const { screenId, useHistory } = action.meta;
-
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       yield put(
         Actions.addUndoActions([
           Actions.removeElementClassName(elementID, uniqueClassName, {
-            screenId,
+            ...action.meta,
           }),
-          Actions.updateProject(currentProject),
-          Actions.updateElementStyles(elementID, styles, { screenId }),
+          Actions.updateProject(currentProject, { ...action.meta }),
+          Actions.updateElementStyles(elementID, styles, { ...action.meta }),
         ]),
       );
     }
@@ -434,10 +434,8 @@ export const updateMultipleElementsStylesSaga = withActionsHistory(function* (
       return;
     }
 
-    const { screenId, useHistory } = action.meta;
-
     const stateElements = yield select(selectElementsByIds(ids));
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       const stylesState = stateElements.reduce((acc, element) => {
         return {
           ...acc,
@@ -447,7 +445,7 @@ export const updateMultipleElementsStylesSaga = withActionsHistory(function* (
       yield put(
         Actions.addUndoActions(
           Actions.updateMultipleElementsStyles(ids, stylesState, {
-            screenId,
+            ...action.meta,
           }),
         ),
       );
@@ -522,9 +520,8 @@ export const removeMultipleElementsStylesSaga = withActionsHistory(function* (
 
   try {
     const stateElements = yield select(selectElementsByIds(ids));
-    const { screenId, useHistory } = action.meta;
 
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       const stylesState = stateElements.reduce((acc, element) => {
         return {
           ...acc,
@@ -534,7 +531,7 @@ export const removeMultipleElementsStylesSaga = withActionsHistory(function* (
       yield put(
         Actions.addUndoActions(
           Actions.updateMultipleElementsStyles(ids, stylesState, {
-            screenId,
+            ...action.meta,
           }),
         ),
       );
@@ -610,13 +607,11 @@ export const removeElementStylesSaga = withActionsHistory(function* (
       return;
     }
 
-    const { screenId, useHistory } = action.meta;
-
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       const oldStyles = yield select(selectElementStyles(id));
       yield put(
         Actions.addUndoActions(
-          Actions.updateElementStyles(id, oldStyles, { screenId }),
+          Actions.updateElementStyles(id, oldStyles, { ...action.meta }),
         ),
       );
     }
@@ -643,7 +638,6 @@ export const updateElementImageSaga = withActionsHistory(function* (
       return;
     }
     const { itemID, image } = action.payload;
-    const { screenId } = action.meta;
 
     const parsedID = parseInt(itemID);
     const formData = new FormData();
@@ -658,7 +652,8 @@ export const updateElementImageSaga = withActionsHistory(function* (
       { data: formData, id: parsedID },
     );
     if (changedElement) {
-      yield put(
+      yield call(
+        updateOrReplaceElementParameters,
         Actions.updateElementParameters(
           itemID,
           {
@@ -671,8 +666,9 @@ export const updateElementImageSaga = withActionsHistory(function* (
             width: 'auto',
             height: 'auto',
           },
-          { screenId },
+          { ...action.meta },
         ),
+        UpdateDataActionType.UPDATE,
       );
     }
     if (error) throw new Error(error);

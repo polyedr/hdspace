@@ -128,7 +128,7 @@ export const createScreenSaga = withActionsHistory(function* (
       if (!useHistory) {
         yield put(
           Actions.addUndoActions(
-            deleteScreen(projectID, createdScreen.id, { useHistory }),
+            deleteScreen(projectID, createdScreen.id, { ...action.meta }),
           ),
         );
       }
@@ -222,7 +222,10 @@ export const createScreenSaga = withActionsHistory(function* (
           if (!useHistory) {
             yield put(
               Actions.addRedoActions([
-                restoreScreen(newScreen.id, projectID, { useHistory: true }),
+                restoreScreen(newScreen.id, projectID, {
+                  ...action.meta,
+                  useHistory: true,
+                }),
               ]),
             );
           }
@@ -387,7 +390,10 @@ export const deleteScreenSaga = withActionsHistory(function* ({
       if (!useHistory) {
         yield put(
           Actions.addUndoActions(
-            restoreScreen(screenId, projectId, { useHistory: true }),
+            restoreScreen(screenId, projectId, {
+              ...meta,
+              useHistory: true,
+            }),
           ),
         );
       }
@@ -458,7 +464,11 @@ export const restoreScreenSaga = withActionsHistory(function* ({
 
     if (result) {
       if (!meta.useHistory) {
-        yield put(Actions.addUndoActions(deleteScreen(projectId, screenId)));
+        yield put(
+          Actions.addUndoActions(
+            deleteScreen(projectId, screenId, { ...meta }),
+          ),
+        );
       }
 
       const screens = yield select(selectScreens);
