@@ -22,9 +22,15 @@ class Command(BaseCommand):
         # python manage.py test_image_upload clear_database
         elif options["clear_database"]:
             clear_database()
+        # If looking for generating fixed number of illustration set and images, type the following
+        # python manage.py test_image_upload --illustration_set_number # --image_number #
+
         elif options["illustration_set_number"] and options["image_number"]:
             test_image_with_paramatter(illustartion_set_number=options["illustration_set_number"][0],
                                        image_number=options["image_number"][0])
+        # If looking for generating fixed number of illustration set but random number of images, type the following
+        # python manage.py test_image_upload --illustration_set_number # --image_number_range (lower_number,higher_number)
+
         elif options["illustration_set_number"] and options["image_number_range"]:
             range = options["image_number_range"][0][1:-1]
             range = range.split(",")
