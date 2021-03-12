@@ -4,7 +4,6 @@ import {
   convertElementFromResponse,
   convertRecursiveElementFromResponse,
 } from './converters/fromResponse';
-import { handleError, onError, parseResult } from './project';
 import { myAxios } from '../config/settings';
 import {
   Entity,
@@ -15,6 +14,7 @@ import {
   Result,
   ServerElement,
 } from '../types';
+import { handleError, onError, parseResult } from './helper';
 
 export const apiGetElements = ({
   scenariosIDs,

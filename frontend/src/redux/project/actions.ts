@@ -109,7 +109,7 @@ import {
   UpdateMultipleStateElements,
   AddAssetList,
   UploadAsset,
-  AddAssetRedux,
+  AddStateAsset,
   MoveStateElement,
   MoveStateElementsInside,
   SetMasterScreenId,
@@ -133,6 +133,8 @@ import {
   ReplaceElementParameters,
   ReplaceMultipleElementsParameters,
   WrapMultipleElementsIntoContainer,
+  UploadImageByUrl,
+  UpdateStateAssetImage,
   SetSelectedAssetListId,
 } from '../types';
 
@@ -1101,7 +1103,7 @@ export const removeAssetRedux = (id: string, listId: string) => ({
 });
 
 export const addAssetListToState = (list: AssetsList, meta?: HistoryMeta) => ({
-  type: TYPES.ADD_ASSET_LIST_REDUX,
+  type: TYPES.ADD_STATE_ASSET_LIST,
   payload: list,
   meta,
 });
@@ -1131,8 +1133,8 @@ export const addAssetToState = (
   listId: string,
   asset: Asset,
   meta?: HistoryMeta,
-): AddAssetRedux => ({
-  type: TYPES.ADD_ASSET_REDUX,
+): AddStateAsset => ({
+  type: TYPES.ADD_STATE_ASSET,
   payload: {
     listId,
     asset,
@@ -1237,6 +1239,28 @@ export const moveHistoryForward = (): MoveHistoryForward => ({
 
 export const moveHistoryBackward = (): MoveHistoryBackward => ({
   type: TYPES.MOVE_HISTORY_BACKWARD,
+});
+
+export const uploadImageByUrl = (
+  elementId: string,
+  url: string,
+  listId: string,
+  meta: ElementHistoryMeta,
+): UploadImageByUrl => ({
+  type: TYPES.UPLOAD_IMAGE_BY_URL,
+  payload: { elementId, url, listId },
+  meta,
+});
+
+export const updateStateAssetImage = (
+  assetId: string,
+  listId: string,
+  imageUrl: string,
+  meta: HistoryMeta,
+): UpdateStateAssetImage => ({
+  type: TYPES.UPDATE_STATE_ASSET_IMAGE,
+  payload: { assetId, listId, imageUrl },
+  meta,
 });
 
 export const unbindGroupElementStyles = (

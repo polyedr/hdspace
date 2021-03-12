@@ -1,6 +1,6 @@
-import { handleError, onError, parseResult } from './project';
 import { myAxios } from '../config/settings';
 import { ScenarioItem, MyAxiosProps, Result } from '../types';
+import { handleError, onError, parseResult } from './helper';
 
 export const apiGetScenarios = ({
   screenID,
