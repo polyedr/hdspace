@@ -32,7 +32,7 @@ from .apiviews import (
     ScenarioElementViewSet,
     ProjectViewSet, ScenarioElementRecursiveViewSet, ProjectWithScreensViewSet,
     ElementCommentList, ElementCommentDetail, ProjectIllustrationSetList, ProjectIllustrationSetDetail,
-    IllustrationSetImageList, IllustrationSetImageDetail)
+    IllustrationSetImageList, IllustrationSetImageDetail, ScenarioElementMultipleRecursiveViewSet)
 
 app_name = "projects"
 
@@ -142,6 +142,8 @@ router.register(
     ScenarioElementMultipleViewSet,
     base_name="api_scenario_element_multi",
 )
+router.register(r"scenario-elements-multiple-recursive",
+                ScenarioElementMultipleRecursiveViewSet, basename="MultipleRecursive")
 
 api_scenario_element_multi_patterns = router.urls
 

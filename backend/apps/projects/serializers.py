@@ -183,6 +183,34 @@ class ScenarioElementMultipleSerializer(
         return node
 
 
+class ScenarioElementMultipleRecursiveSerializer(
+    BulkSerializerMixin, serializers.ModelSerializer
+):
+    children = serializers.PrimaryKeyRelatedField(
+        queryset=ScenarioElement.objects.all(), many=True, required=False
+    )
+
+    class Meta:
+        model = ScenarioElement
+        fields = ("id", "name", "children")
+        list_serializer_class = BulkListSerializer
+
+    def create(self, validated_data):
+        # Remove nested objects to handle separately
+        children = validated_data.pop("children", [])
+        node = ScenarioElement.objects.create(
+            # parent is null only on the root node
+            parent=self.context.get("parent"),
+            **validated_data
+        )
+        for child_data in children:
+            # child_data['scenario'] = child_data['scenario'].pk
+            s = ScenarioElementSerializerRecursive(data=child_data, context={"parent": node})
+            s.is_valid(raise_exception=True)
+            s.save()
+        return node
+
+
 class ScreenScenarioSerializer(serializers.ModelSerializer):
     # elements = ScenarioElementSerializer(many=True, read_only=True)
     parameters = serializers.JSONField()
