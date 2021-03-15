@@ -3064,7 +3064,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
         # Get(take the whole image) the dominant colour for the parent container
         bcolour_container_value = "255,255,255,0"
-        domcolour_container = get_dominant_colour(image_opencv_input)
+        domcolour_container = get_dominant_colour(image_opencv_input)[0]
         domcolour_container.append(1)
         bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
 
