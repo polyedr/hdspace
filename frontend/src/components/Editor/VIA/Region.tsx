@@ -93,7 +93,7 @@ const Region: FC<Props> = ({ region }) => {
       onResizeStart={selectRegion}
       onClick={selectRegion}
     >
-      {region.region_attributes['HTML element']}
+      {region_attributes['HTML element']}
     </Rnd>
   );
 };

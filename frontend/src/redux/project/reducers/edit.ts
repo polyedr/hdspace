@@ -168,6 +168,7 @@ const editReducer = produce(
           },
         };
         draft.VIAMode.regions[newRegion.id] = newRegion;
+        draft.VIAMode.activeRegionId = newRegion.id;
         break;
       }
 

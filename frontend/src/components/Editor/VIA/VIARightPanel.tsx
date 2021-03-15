@@ -8,7 +8,7 @@ import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import VIADescription from './VIADescription';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, spacing }) => ({
   root: {
     width: RIGHT_PANEL_WIDTH,
     display: 'flex',
@@ -17,6 +17,12 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.panel.main,
     color: palette.common.white,
     overflow: 'hidden',
+    padding: spacing(2),
+  },
+  buttonContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 }));
 
@@ -33,7 +39,7 @@ const VIARightPanel: FC = () => {
 
   return (
     <div className={classes.root}>
-      {region ? <VIADescription region={region} /> : <div>Select a region</div>}
+      {region && <VIADescription region={region} />}
 
       <div>
         <StyledIconButton title="Create a region" onClick={handleCreateRegion}>
@@ -41,8 +47,10 @@ const VIARightPanel: FC = () => {
         </StyledIconButton>
       </div>
 
-      <div>
-        <Button onClick={handleAssemble}>Assemble</Button>
+      <div className={classes.buttonContainer}>
+        <Button variant="contained" color="secondary" onClick={handleAssemble}>
+          Assemble
+        </Button>
       </div>
     </div>
   );

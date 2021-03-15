@@ -799,6 +799,8 @@ export const uploadFileSaga = withActionsHistory(function* ({
       yield put(Actions.setVIAMode(true));
 
       yield put(Actions.setAnalyzerLoader(false));
+      const state = yield select((state) => state.project.edit.VIAMode);
+      console.log(state);
 
       yield take(TYPES.ASSEMBLE_VIA_REGIONS);
       console.log('assemble');
