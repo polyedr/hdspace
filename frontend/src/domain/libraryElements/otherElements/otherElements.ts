@@ -53,7 +53,7 @@ export const elementsGroup: ElementsGroupServerElement = {
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
-    group: ElementGroup.NONE,
+    group: ElementGroup.CONTAINERS,
     groupElements: [],
   },
   styles: {
@@ -83,7 +83,7 @@ export const makeContainer = ({
   struct_type: 'container',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
-    group: ElementGroup.NONE,
+    group: ElementGroup.CONTAINERS,
     freeCanvas: {
       ...defaultFreeCanvasParams,
     },
