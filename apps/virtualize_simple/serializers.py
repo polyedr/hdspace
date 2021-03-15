@@ -3132,6 +3132,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 pass
 
         if fdict:
+            fdict = json.loads(fdict)
+            # print(type(fdict), fdict)
             # Assembling start
             # for filenamesize in fdict:
             # os.chdir(VIA_ANNOTATION_DIR)
@@ -3913,7 +3915,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     node.div.set("style", str_styles)
 
                     # Create a new Scenario Element for the elements chain
-                    node.scenarioelement_inner = ScenarioElement.objects.create(
+                    node.scenarioelement = ScenarioElement.objects.create(
                         parent=outer_div_node,
                         struct_type="container",
                         parameters=parameters,
@@ -3931,7 +3933,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     node.div.set("style", str_styles)
 
                     # Create a new Scenario Element for the elements chain
-                    node.scenarioelement_inner = ScenarioElement.objects.create(
+                    node.scenarioelement = ScenarioElement.objects.create(
                         parent=node.parent.scenarioelement,
                         struct_type="container",
                         parameters=parameters,
@@ -3990,7 +3992,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="textinput",
                                 parameters=parameters,
                                 styles=styles,
@@ -4010,7 +4012,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="checkbox",
                                 parameters=parameters,
                                 styles=styles,
@@ -4032,7 +4034,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="radiobutton",
                                 parameters=parameters,
                                 styles=styles,
@@ -4054,7 +4056,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="select",
                                 parameters=parameters,
                                 styles=styles,
@@ -4080,7 +4082,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="ocrtext",
                                 parameters=parameters,
                                 styles=styles,
@@ -4101,7 +4103,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="textarea",
                                 parameters=parameters,
                                 styles=styles,
@@ -4126,7 +4128,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="heading",
                                 parameters=parameters,
                                 styles=styles,
@@ -4145,7 +4147,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="container",
                                 parameters=parameters,
                                 styles=styles,
@@ -4172,7 +4174,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="image",
                                 parameters=parameters,
                                 styles=styles,
@@ -4197,7 +4199,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="button",
                                 parameters=parameters,
                                 styles=styles,
@@ -4215,7 +4217,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="list",
                                 parameters=parameters,
                                 styles=styles,
@@ -4238,7 +4240,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                             # Create a new Scenario Element for the elements chain
                             node.scenarioelement_inner = ScenarioElement.objects.create(
-                                parent=node.parent.scenarioelement,
+                                parent=node.scenarioelement,
                                 struct_type="listItem",
                                 parameters=parameters,
                                 styles=styles,
