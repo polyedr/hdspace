@@ -60,7 +60,8 @@ function uiReducer(
     case TYPES.SET_CURRENT_DROP_TARGET_PARAMS:
       if (
         state.currentDropTargetParams &&
-        state.currentDropTargetParams.id === action.payload.id
+        state.currentDropTargetParams.id === action.payload.id &&
+        state.currentDropTargetParams.position === action.payload.position
       ) {
         return state;
       }
