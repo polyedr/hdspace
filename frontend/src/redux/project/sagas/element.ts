@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { put, call, select, all, take } from 'redux-saga/effects';
+import { put, call, select, take } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -12,9 +12,11 @@ import {
   selectTreeChildElementsIds,
   selectMasterGroupsElementId,
   selectActiveElement,
-  selectCurrentRoot,
 } from '@Redux/project/selectors/element';
-import { selectCurrentProject } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProject,
+  selectVIARegionsAsArray,
+} from '@Redux/project/selectors/base';
 import {
   convertElementToPatchRequest,
   convertElementToRequest,
@@ -24,9 +26,9 @@ import {
   apiUpdateElement,
   apiChangeRecursiveElement,
   apiUpdateElements,
-  parseImgUsingNN,
   apiGetCustomLibraryElements,
   recognizeImgUsingNN,
+  assembleImgUsingNN,
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
@@ -745,11 +747,11 @@ export const uploadFileSaga = withActionsHistory(function* ({
 
     const { screenId, useHistory } = meta;
 
-    const formData = new FormData();
+    const recognizeFormData = new FormData();
 
-    formData.append('image', file.file, file.name);
-    formData.append('name', 'image');
-    formData.append(
+    recognizeFormData.append('image', file.file, file.name);
+    recognizeFormData.append('name', 'image');
+    recognizeFormData.append(
       'screen_data_json',
       JSON.stringify({ block_type: blockType }),
     );
@@ -758,7 +760,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
       result: recognizeResult,
       error: recognizeError,
     }: Result<Screen> = yield call(reqWrapper, recognizeImgUsingNN, {
-      data: formData,
+      data: recognizeFormData,
       contentType: 'multipart/form-data',
     });
 
@@ -767,27 +769,11 @@ export const uploadFileSaga = withActionsHistory(function* ({
         throw new Error('No VIA data has been received');
       }
 
-      // const root: StateElement = yield select(selectCurrentRoot);
-
-      // yield all(
-      //   root.children.map((childId) =>
-      //     // put(Actions.deleteElement(childId, { screenId })),
-      //     put(Actions.removeStateElement(childId, { screenId })),
-      //   ),
-      // );
-
-      // yield put(Actions.changeFreeCanvasMode(true));
-      // yield put(Actions.setActiveElement(root.id));
-
-      const viaFile = Object.values(
+      const [viaKey, viaFile] = Object.entries(
         JSON.parse(recognizeResult.screen_data_json) as {
           [key: string]: VIAFile;
         },
       )[0];
-
-      // const regions = viaFile.regions.map((region) =>
-      //   convertVIARegionToLibraryElement(region),
-      // );
 
       yield put(
         Actions.setVIARegions(
@@ -799,59 +785,92 @@ export const uploadFileSaga = withActionsHistory(function* ({
       yield put(Actions.setVIAMode(true));
 
       yield put(Actions.setAnalyzerLoader(false));
-      const state = yield select((state) => state.project.edit.VIAMode);
-      console.log(state);
 
       yield take(TYPES.ASSEMBLE_VIA_REGIONS);
-      console.log('assemble');
+      yield put(Actions.setAnalyzerLoader(true));
 
-      // yield put(Actions.addStateElements(regions, root.id, { screenId }));
+      const updatedRegions: VIARegion[] = yield select(selectVIARegionsAsArray);
 
-      /*  const convertedElements = getElementsArray(recognizeResult).map((element) =>
-        convertElementToPatchRequest(element),
+      const assembleFormData = new FormData();
+      assembleFormData.append('image', file.file, file.name);
+      assembleFormData.append('name', 'image');
+      assembleFormData.append('parent_id', parentId);
+      assembleFormData.append('styles', '{}');
+      assembleFormData.append('screen', screenId.toString());
+      assembleFormData.append(
+        'parameters',
+        JSON.stringify({
+          block_type: blockType,
+          annotation: JSON.stringify({
+            [viaKey]: {
+              ...viaFile,
+              regions: updatedRegions.map(
+                ({ region_attributes, shape_attributes }) => ({
+                  region_attributes,
+                  shape_attributes,
+                }),
+              ),
+            },
+          }) /*  recognizeResult.screen_data_json */,
+        }),
       );
 
-      const {
-        result,
-        error,
-      }: Result<ServerElement<any>> = yield call(
+      const { result: assembleResult, error: assembleError } = yield call(
         reqWrapper,
-        apiUpdateElements,
-        { data: convertedElements },
+        assembleImgUsingNN,
+        {
+          data: assembleFormData,
+        },
       );
+      if (assembleResult) {
+        const convertedElements = getElementsArray(
+          assembleResult,
+        ).map((element) => convertElementToPatchRequest(element));
 
-      if (result) {
-        yield put(
-          Actions.addStateElements([recognizeResult], parentId, {
-            ...meta,
-          }),
+        const {
+          result,
+          error,
+        }: Result<ServerElement<any>> = yield call(
+          reqWrapper,
+          apiUpdateElements,
+          { data: convertedElements },
         );
 
-        if (!useHistory) {
+        if (result) {
           yield put(
-            Actions.addHistoryActions({
-              undo: [
-                Actions.deleteElement(recognizeResult.id, {
-                  screenId,
-                }),
-              ],
-              redo: [
-                Actions.restoreElement(recognizeResult.id, {
-                  screenId,
-                }),
-              ],
+            Actions.addStateElements([assembleResult], parentId, {
+              ...meta,
+            }),
+          );
+
+          if (!useHistory) {
+            yield put(
+              Actions.addHistoryActions({
+                undo: [
+                  Actions.deleteElement(assembleResult.id, {
+                    screenId,
+                  }),
+                ],
+                redo: [
+                  Actions.restoreElement(assembleResult.id, {
+                    screenId,
+                  }),
+                ],
+              }),
+            );
+          }
+
+          yield put(
+            enqueueSnackbar({
+              message: 'Image uploaded successfully',
+              options: { variant: 'success' },
             }),
           );
         }
-
-        yield put(
-          enqueueSnackbar({
-            message: 'Image uploaded successfully',
-            options: { variant: 'success' },
-          }),
-        );
+        if (error) throw new Error(error);
       }
-      if (error) throw new Error(error); */
+
+      if (assembleError) throw new Error(assembleError);
     }
     if (recognizeError) throw new Error(recognizeError);
   } catch (e) {
@@ -867,6 +886,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
     );
   } finally {
     yield put(Actions.setAnalyzerLoader(false));
+    yield put(Actions.setVIAMode(false));
   }
 });
 

@@ -201,3 +201,12 @@ export const recognizeImgUsingNN = (props: MyAxiosProps) =>
   })
     .then((res) => ({ result: res.data }))
     .catch(handleError);
+
+export const assembleImgUsingNN = (props: MyAxiosProps) =>
+  myAxios({
+    ...props,
+    method: 'POST',
+    url: '/virtualize_simple/assemble/',
+  })
+    .then((res) => ({ result: convertElementFromResponse(res.data) }))
+    .catch(handleError);
