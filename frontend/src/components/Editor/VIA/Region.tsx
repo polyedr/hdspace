@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core';
 import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/base';
 import prevent from '@Utils/preventEvent';
+import cn from 'classnames';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
@@ -10,8 +11,10 @@ import { VIARegion } from '../../../types';
 const useStyles = makeStyles({
   region: {
     border: '1px solid black',
-    backgroundColor: ({ isActive }: any) =>
-      isActive ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
+  },
+  active: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    zIndex: 999,
   },
 });
 
@@ -20,10 +23,10 @@ type Props = {
 };
 
 const Region: FC<Props> = ({ region }) => {
-  const { id, region_attributes, shape_attributes } = region;
+  const classes = useStyles();
   const dispatch = useDispatch();
+  const { id, region_attributes, shape_attributes } = region;
   const isActive = useSelector(selectIsRegionActive(region.id));
-  const classes = useStyles({ isActive });
   const { height, width, x, y } = shape_attributes;
 
   const selectRegion = (ev) => {
@@ -77,7 +80,7 @@ const Region: FC<Props> = ({ region }) => {
 
   return (
     <Rnd
-      className={classes.region}
+      className={cn(classes.region, isActive && classes.active)}
       bounds="parent"
       size={{
         width,
