@@ -51,8 +51,8 @@ from .serializers import (
     ColumnWithTasksSerializer,
     ElementCommentSerializer,
     IllustrationSetSerializer,
-    ImageSerializer
-)
+    ImageSerializer,
+    ScenarioElementMultipleRecursiveSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -203,6 +203,12 @@ class ScenarioElementMultipleViewSet(BulkModelViewSet):
         ids = self.request.query_params.get("ids", None)
         if ids:
             return qs
+
+
+class ScenarioElementMultipleRecursiveViewSet(BulkModelViewSet):
+    serializer_class = ScenarioElementMultipleRecursiveSerializer
+    queryset = ScenarioElement.objects.all()
+    http_method_names = ['patch', 'head']
 
 
 class ProjectMemberList(generics.ListCreateAPIView):
