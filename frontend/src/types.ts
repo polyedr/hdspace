@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import React from 'react';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';

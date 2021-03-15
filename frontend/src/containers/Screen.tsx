@@ -10,6 +10,7 @@ import {
 } from '@Redux/project/selectors/base';
 import { selectScreenById } from '@Redux/project/selectors/screen';
 import VIA from '@Components/Editor/VIA';
+import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import { activateScreen } from '../redux/project/actions';
 import RightPanel from '../components/RightPanel';
@@ -48,11 +49,19 @@ const Screen: React.FC<Props> = ({ screenId, elementId }) => {
 
   return (
     <div className={classes.screen}>
-      <DndProvider backend={HTML5Backend}>
-        {viaModeEnabled ? <VIA /> : <Workspace elementId={elementId} />}
+      {viaModeEnabled ? (
+        <>
+          <VIA />
 
-        <RightPanel />
-      </DndProvider>
+          <VIARightPanel />
+        </>
+      ) : (
+        <DndProvider backend={HTML5Backend}>
+          <Workspace elementId={elementId} />
+
+          <RightPanel />
+        </DndProvider>
+      )}
     </div>
   );
 };

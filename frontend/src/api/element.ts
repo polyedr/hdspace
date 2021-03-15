@@ -1,5 +1,4 @@
 import { AxiosResponse } from 'axios';
-/* eslint-disable camelcase */
 import {
   convertElementFromResponse,
   convertRecursiveElementFromResponse,

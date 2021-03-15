@@ -801,7 +801,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
       // );
 
       yield put(
-        Actions.setViaRegions(
+        Actions.setVIARegions(
           arrayToMap(
             viaFile.regions.map((region) => addId(region) as VIARegion),
           ),

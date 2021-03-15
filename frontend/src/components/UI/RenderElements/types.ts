@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import React, { DOMAttributes } from 'react';
 import {
   HeadingType,

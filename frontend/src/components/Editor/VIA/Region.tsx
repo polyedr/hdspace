@@ -1,13 +1,17 @@
 import { makeStyles } from '@material-ui/core';
-import { updateViaRegion } from '@Redux/project/actions';
+import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
+import { selectIsRegionActive } from '@Redux/project/selectors/base';
+import prevent from '@Utils/preventEvent';
 import React, { FC } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import { VIARegion } from '../../../types';
 
 const useStyles = makeStyles({
   region: {
     border: '1px solid black',
+    backgroundColor: ({ isActive }: any) =>
+      isActive ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
   },
 });
 
@@ -16,13 +20,22 @@ type Props = {
 };
 
 const Region: FC<Props> = ({ region }) => {
+  const { id, region_attributes, shape_attributes } = region;
   const dispatch = useDispatch();
-  const classes = useStyles();
-  const { height, width, x, y } = region.shape_attributes;
+  const isActive = useSelector(selectIsRegionActive(region.id));
+  const classes = useStyles({ isActive });
+  const { height, width, x, y } = shape_attributes;
+
+  const selectRegion = (ev) => {
+    prevent(ev);
+    dispatch(setActiveVIARegion(id));
+  };
 
   const onDragStop: RndDragCallback = (e, d) => {
+    if (d.x === x && d.y === y) return;
+
     dispatch(
-      updateViaRegion(region.id, {
+      updateVIARegion(region.id, {
         ...region,
         shape_attributes: {
           ...region.shape_attributes,
@@ -40,13 +53,22 @@ const Region: FC<Props> = ({ region }) => {
     delta,
     position,
   ) => {
+    if (
+      width === parseInt(ref.style.width) &&
+      height === parseInt(ref.style.height) &&
+      x === position.x &&
+      y === position.y
+    ) {
+      return;
+    }
+
     dispatch(
-      updateViaRegion(region.id, {
+      updateVIARegion(region.id, {
         ...region,
         shape_attributes: {
           ...region.shape_attributes,
-          width: +ref.style.width,
-          height: +ref.style.height,
+          width: parseInt(ref.style.width),
+          height: parseInt(ref.style.height),
           ...position,
         },
       }),
@@ -67,6 +89,9 @@ const Region: FC<Props> = ({ region }) => {
       }}
       onDragStop={onDragStop}
       onResizeStop={onResizeStop}
+      onDragStart={selectRegion}
+      onResizeStart={selectRegion}
+      onClick={selectRegion}
     >
       {region.region_attributes['HTML element']}
     </Rnd>

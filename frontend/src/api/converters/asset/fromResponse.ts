@@ -6,12 +6,10 @@ export type ServerAsset = {
   image: string | null;
   created: string;
   modified: string;
-  // eslint-disable-next-line camelcase
   illustration_set: string | null;
 };
 
 export const convertFromServerAsset = (serverAsset: ServerAsset): Asset => {
-  // eslint-disable-next-line camelcase
   const { id, image, created, modified, illustration_set } = serverAsset;
   return {
     id,

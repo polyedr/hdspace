@@ -66,6 +66,7 @@ export const initialEdit: ProjectEditState = {
   VIAMode: {
     enabled: false,
     regions: {},
+    activeRegionId: '',
   },
   freeCanvas: {
     enabled: false,

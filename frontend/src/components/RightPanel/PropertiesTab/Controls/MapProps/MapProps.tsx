@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';

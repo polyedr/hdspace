@@ -137,8 +137,11 @@ import {
   UpdateStateAssetImage,
   SetSelectedAssetListId,
   SetVIAMode,
-  SetViaRegions,
+  SetViaRegions as SetVIARegions,
   UpdateVIARegion,
+  SetActiveVIARegion,
+  CreateVIARegion,
+  DeleteVIARegion,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1285,14 +1288,14 @@ export const setVIAMode = (active: boolean): SetVIAMode => ({
   payload: active,
 });
 
-export const setViaRegions = (
+export const setVIARegions = (
   regions: Normalized<VIARegion>,
-): SetViaRegions => ({
+): SetVIARegions => ({
   type: TYPES.SET_VIA_REGIONS,
   payload: regions,
 });
 
-export const updateViaRegion = (
+export const updateVIARegion = (
   regionId: string,
   data: Partial<VIARegion>,
 ): UpdateVIARegion => ({
@@ -1301,4 +1304,18 @@ export const updateViaRegion = (
     id: regionId,
     data,
   },
+});
+
+export const setActiveVIARegion = (id: string): SetActiveVIARegion => ({
+  type: TYPES.SET_ACTIVE_VIA_REGION,
+  payload: id,
+});
+
+export const createVIARegion = (): CreateVIARegion => ({
+  type: TYPES.CREATE_VIA_REGION,
+});
+
+export const deleteVIARegion = (id: string): DeleteVIARegion => ({
+  type: TYPES.DELETE_VIA_REGION,
+  payload: id,
 });

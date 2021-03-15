@@ -77,6 +77,7 @@ export type ProjectEditState = {
   VIAMode: {
     enabled: boolean;
     regions: Normalized<VIARegion>;
+    activeRegionId: string;
   };
   freeCanvas: {
     enabled: boolean;
@@ -881,6 +882,15 @@ export type UpdateVIARegion = IAction<
   { id: VIARegion['id']; data: Partial<VIARegion> }
 >;
 
+export type SetActiveVIARegion = IAction<
+  typeof TYPES.SET_ACTIVE_VIA_REGION,
+  string
+>;
+
+export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
+
+export type DeleteVIARegion = IAction<typeof TYPES.DELETE_VIA_REGION, string>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -1021,7 +1031,10 @@ export type Action =
   | AddRedoActions
   | SetVIAMode
   | SetViaRegions
-  | UpdateVIARegion;
+  | UpdateVIARegion
+  | SetActiveVIARegion
+  | CreateVIARegion
+  | DeleteVIARegion;
 
 export type HistoryMeta = {
   useHistory?: boolean;

@@ -1,7 +1,8 @@
 import { makeStyles } from '@material-ui/core';
-import { selectVIARegions } from '@Redux/project/selectors/base';
+import { setActiveVIARegion } from '@Redux/project/actions';
+import { selectVIARegionsAsArray } from '@Redux/project/selectors/base';
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Region from './Region';
 
 const useStyles = makeStyles({
@@ -13,10 +14,13 @@ const useStyles = makeStyles({
 
 const VIA: FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
-  const regions = useSelector(selectVIARegions);
+  const handleClick = () => dispatch(setActiveVIARegion(''));
+
+  const regions = useSelector(selectVIARegionsAsArray);
   return (
-    <div className={classes.root}>
+    <div className={classes.root} onClick={handleClick}>
       {regions.map((region) => (
         <Region key={region.id} region={region} />
       ))}
