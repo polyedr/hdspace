@@ -9,9 +9,6 @@ export const selectLastHistoryRecord = createSelector(
   (history) => (!history.length ? null : history[history.length - 1]),
 );
 
-export const selectHistoryInProgress = ({ project }: AppReduxState) =>
-  project.control.historyInProgress;
-
 export const selectCurrentHistoryRecordIndex = ({ project }: AppReduxState) =>
   project.control.currentHistoryRecord;
 

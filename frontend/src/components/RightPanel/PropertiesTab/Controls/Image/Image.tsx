@@ -3,16 +3,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { uploadElementAsset } from '@Redux/project/actions';
-import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { uploadElementAsset, uploadImageByUrl } from '@Redux/project/actions';
+import { ImageElement, PropertiesChangeProps } from '@Src/types';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   selectAllAssetLists,
   selectSelectedAssetListId,
 } from '@Redux/project/selectors/asset';
-import { enqueueSnackbar } from '@Redux/notification/actions';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
+// import getImageFromUrl from './getImageFromUrl';
+
+const urlPattern = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
 
 const useStyles = makeStyles({
   wrapper: {
@@ -21,10 +24,22 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  desktop: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '10px',
+  },
+  urlContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   assetListsWrapper: {
     display: 'flex',
     flexDirection: 'column',
-    margin: '10px 0',
+    margin: '15px 10px',
     width: '100%',
   },
   assetsSelector: {
@@ -36,6 +51,7 @@ type Props = PropertiesChangeProps<ImageElement>;
 
 const Component: React.FC<Props> = ({ activeElementId }) => {
   const classes = useStyles();
+  const inputUrlRef = useRef<HTMLInputElement | null>(null);
 
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
@@ -48,6 +64,37 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
       ? assetLists[assetLists.length - 1].id
       : selectedAssetListId,
   );
+
+  const handleUploadFromUrl = useCallback(() => {
+    if (!inputUrlRef.current) {
+      return;
+    }
+    const imageUrl = inputUrlRef.current.value;
+    if (!imageUrl.trim().length) {
+      dispatch(
+        enqueueSnackbar({
+          message: 'Image URL is not provided',
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    if (!imageUrl.match(urlPattern)) {
+      dispatch(
+        enqueueSnackbar({
+          message: 'Image URL is incorrect',
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    dispatch(
+      uploadImageByUrl(activeElementId, imageUrl, assetLists[0].id, {
+        screenId: currentScreenId,
+      }),
+    );
+    inputUrlRef.current.value = '';
+  }, [dispatch, activeElementId, assetLists, currentScreenId]);
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
@@ -78,7 +125,7 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
 
   return (
     <div className={classes.wrapper}>
-      <div>
+      <div className={classes.desktop}>
         <input
           onChange={handleChangeFileInput}
           accept="image/*"
@@ -95,13 +142,29 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
           </Button>
         </label>
       </div>
+      <span>or</span>
+      <div className={classes.urlContainer}>
+        <StyledTextField
+          type="text"
+          label="Upload from URL"
+          inputRef={inputUrlRef}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          component="span"
+          style={{
+            zIndex: 2,
+          }}
+          onClick={handleUploadFromUrl}
+        >
+          Upload
+        </Button>
+      </div>
       {assetLists.length && (
         <div className={classes.assetListsWrapper}>
           <label htmlFor="image-asset-list">Upload image to asset list</label>
           <StyledTextField
-            inputRef={() => {
-              // setSelectedAsset(assetLists[0].id);
-            }}
             id="image-asset-list"
             className={classes.assetsSelector}
             select

@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
-import { call } from 'ramda';
-import { put, select } from 'redux-saga/effects';
+import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
   apiDeleteAsset,
@@ -16,15 +15,53 @@ import { enqueueSnackbar } from '@Redux/notification/actions';
 import { Asset, AssetsList, PaginatedArray } from '@Src/types';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
+import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
 import {
-  selectAssetListById,
   selectSelectedAssetListId,
+  selectAssetListById,
 } from '../selectors/asset';
 import withActionsHistory from '../wrappers/withActionsHistory';
+
+// eslint-disable-next-line consistent-return
+export function* uploadAsset(
+  { assetFile, fileName, listId, imageURL }: UploadAssetData,
+  meta?: HistoryMeta,
+) {
+  const assetFormData = new FormData();
+  if (imageURL) {
+    assetFormData.append('fileurl', imageURL);
+  } else if (assetFile) {
+    assetFormData.append('image', assetFile);
+  }
+
+  assetFormData.append('name', fileName);
+  assetFormData.append('illustration_set', listId);
+  try {
+    const asset = yield call(reqWrapper, apiCreateAsset, {
+      assetFormData,
+    });
+    if (!meta?.useHistory) {
+      yield put(
+        Actions.addUndoActions([
+          Actions.removeAsset(asset.id, asset.listId, meta),
+        ]),
+      );
+    }
+    yield put(Actions.addAssetToState(listId, asset, meta));
+    return asset;
+  } catch (error) {
+    yield put(
+      enqueueSnackbar({
+        message: error.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
 
 export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
   const { selectedListId } = action.payload;
@@ -106,13 +143,16 @@ export const addNewAssetListSaga = withActionsHistory(function* (
     if (!useHistory) {
       yield put(
         Actions.addUndoActions([
-          Actions.setSelectedAssetListId(selectedAssetId || ALL_ASSETS_LIST_ID),
+          Actions.setSelectedAssetListId(
+            selectedAssetId || ALL_ASSETS_LIST_ID,
+            { ...action.meta },
+          ),
           Actions.removeAssetList(assetList.id, { ...action.meta }),
         ]),
       );
     }
     yield put(Actions.addAssetListToState(assetList));
-    yield put(Actions.setSelectedAssetListId(assetList.id));
+    yield put(Actions.setSelectedAssetListId(assetList.id, { ...action.meta }));
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -190,7 +230,11 @@ export const removeAssetSaga = withActionsHistory(function* (
   try {
     const asset = yield select(selectAssetListById);
     if (!meta?.useHistory) {
-      yield put(Actions.addUndoActions([Actions.restoreAsset(asset, listId)]));
+      yield put(
+        Actions.addUndoActions([
+          Actions.restoreAsset(asset, listId, action.meta),
+        ]),
+      );
     }
     yield put(Actions.removeAssetRedux(id, listId));
     yield call(reqWrapper, apiDeleteAsset, { id });
@@ -222,23 +266,13 @@ export const uploadAssetSaga = withActionsHistory(function* (
     );
     return;
   }
-  const assetFormData = new FormData();
-  assetFormData.append('image', assetFile);
-  assetFormData.append('name', assetFile.name);
-  assetFormData.append('illustration_set', assetListId);
+  const fileName: string = assetFile.name;
   try {
-    const asset = yield call(reqWrapper, apiCreateAsset, {
-      assetFormData,
-    });
-    const useHistory = !!action.meta && action.meta.useHistory;
-    if (!useHistory) {
-      yield put(
-        Actions.addUndoActions([
-          Actions.removeAsset(asset.id, asset.listId, action.meta),
-        ]),
-      );
-    }
-    yield put(Actions.addAssetToState(assetListId, asset));
+    yield call(
+      uploadAsset,
+      { assetFile, fileName, listId: assetListId },
+      action.meta,
+    );
   } catch (error) {
     yield put(
       enqueueSnackbar({
@@ -262,22 +296,19 @@ export function* uploadElementAssetSaga(
   const { screenId } = action.meta;
 
   const element = yield select(selectElementById(elementId));
-  const assetFormData = new FormData();
-  assetFormData.append('image', asset);
-  assetFormData.append('name', asset.name);
-  assetFormData.append('illustration_set', listId);
   try {
-    const asset: Asset = yield call(reqWrapper, apiCreateAsset, {
-      assetFormData,
-    });
-    yield put(Actions.addAssetToState(listId, asset));
+    const assetInstance = yield call(
+      uploadAsset,
+      { assetFile: asset, fileName: asset.name, listId },
+      action.meta,
+    );
 
     yield put(
       Actions.updateElementParameters(
         elementId,
         {
           ...element.parameters,
-          imageURL: asset.image,
+          imageURL: assetInstance.image,
           imageSize: {
             width: 0,
             height: 0,

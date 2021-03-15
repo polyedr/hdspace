@@ -6,7 +6,7 @@ import {
   convertResponseToAssetList,
   ServerAssetList,
 } from './converters/assetList/fromResponse';
-import { handleError } from './project';
+import { handleError } from './helper';
 
 export const apiGetAssetLists = (
   props: MyAxiosProps & { projectId: string },

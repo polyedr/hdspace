@@ -47,11 +47,13 @@ import {
   UpdateDataActionType,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
+import { apiGetFile } from '@Api/import';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { createElements, wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { uploadAsset } from './asset';
 import {
   updateOrReplaceElementParameters,
   updateOrReplaceElementStyles,
@@ -118,7 +120,7 @@ export const moveElementSaga = withActionsHistory(function* (
       );
       return;
     }
-    const { screenId, useHistory } = action.meta;
+    const { useHistory } = action.meta;
 
     if (!useHistory) {
       yield put(
@@ -127,7 +129,7 @@ export const moveElementSaga = withActionsHistory(function* (
             elementId,
             { oldIndex: newIndex, newIndex: oldIndex },
             { oldParentId: newParentId, newParentId: oldParentId },
-            { screenId, useHistory },
+            { ...action.meta },
           ),
         ]),
       );
@@ -206,21 +208,23 @@ function* updateElementClassNames(
       );
       return;
     }
-    const { screenId, useHistory } = action.meta;
+    const { useHistory } = action.meta;
 
     if (!useHistory) {
       if (type === 'add') {
         yield put(
           Actions.addUndoActions(
             Actions.removeElementClassName(elementId, newClassName, {
-              screenId,
+              ...action.meta,
             }),
           ),
         );
       } else {
         yield put(
           Actions.addUndoActions(
-            Actions.addElementClassName(elementId, newClassName, { screenId }),
+            Actions.addElementClassName(elementId, newClassName, {
+              ...action.meta,
+            }),
           ),
         );
       }
@@ -368,16 +372,14 @@ export const copyElementStylesSaga = withActionsHistory(function* (
 
     yield call(removeElementStyles, elementID, Object.keys(styles), action);
 
-    const { screenId, useHistory } = action.meta;
-
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       yield put(
         Actions.addUndoActions([
           Actions.removeElementClassName(elementID, uniqueClassName, {
-            screenId,
+            ...action.meta,
           }),
-          Actions.updateProject(currentProject),
-          Actions.updateElementStyles(elementID, styles, { screenId }),
+          Actions.updateProject(currentProject, { ...action.meta }),
+          Actions.updateElementStyles(elementID, styles, { ...action.meta }),
         ]),
       );
     }
@@ -433,10 +435,8 @@ export const updateMultipleElementsStylesSaga = withActionsHistory(function* (
       return;
     }
 
-    const { screenId, useHistory } = action.meta;
-
     const stateElements = yield select(selectElementsByIds(ids));
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       const stylesState = stateElements.reduce((acc, element) => {
         return {
           ...acc,
@@ -446,7 +446,7 @@ export const updateMultipleElementsStylesSaga = withActionsHistory(function* (
       yield put(
         Actions.addUndoActions(
           Actions.updateMultipleElementsStyles(ids, stylesState, {
-            screenId,
+            ...action.meta,
           }),
         ),
       );
@@ -521,9 +521,8 @@ export const removeMultipleElementsStylesSaga = withActionsHistory(function* (
 
   try {
     const stateElements = yield select(selectElementsByIds(ids));
-    const { screenId, useHistory } = action.meta;
 
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       const stylesState = stateElements.reduce((acc, element) => {
         return {
           ...acc,
@@ -533,7 +532,7 @@ export const removeMultipleElementsStylesSaga = withActionsHistory(function* (
       yield put(
         Actions.addUndoActions(
           Actions.updateMultipleElementsStyles(ids, stylesState, {
-            screenId,
+            ...action.meta,
           }),
         ),
       );
@@ -609,13 +608,11 @@ export const removeElementStylesSaga = withActionsHistory(function* (
       return;
     }
 
-    const { screenId, useHistory } = action.meta;
-
-    if (!useHistory) {
+    if (!action.meta.useHistory) {
       const oldStyles = yield select(selectElementStyles(id));
       yield put(
         Actions.addUndoActions(
-          Actions.updateElementStyles(id, oldStyles, { screenId }),
+          Actions.updateElementStyles(id, oldStyles, { ...action.meta }),
         ),
       );
     }
@@ -642,7 +639,6 @@ export const updateElementImageSaga = withActionsHistory(function* (
       return;
     }
     const { itemID, image } = action.payload;
-    const { screenId } = action.meta;
 
     const parsedID = parseInt(itemID);
     const formData = new FormData();
@@ -657,7 +653,8 @@ export const updateElementImageSaga = withActionsHistory(function* (
       { data: formData, id: parsedID },
     );
     if (changedElement) {
-      yield put(
+      yield call(
+        updateOrReplaceElementParameters,
         Actions.updateElementParameters(
           itemID,
           {
@@ -670,8 +667,9 @@ export const updateElementImageSaga = withActionsHistory(function* (
             width: 'auto',
             height: 'auto',
           },
-          { screenId },
+          { ...action.meta },
         ),
+        UpdateDataActionType.UPDATE,
       );
     }
     if (error) throw new Error(error);
@@ -1045,6 +1043,71 @@ export const createElementsGroupSaga = withActionsHistory(function* (
         ]),
       );
     }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+});
+
+export const uploadElementImageByUrlSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.uploadImageByUrl>,
+) {
+  if (!action.meta) {
+    yield put(
+      enqueueSnackbar({
+        message: 'No meta information is provided',
+        options: { variant: 'error' },
+      }),
+    );
+    return;
+  }
+
+  const { elementId, url, listId } = action.payload;
+
+  try {
+    const assetName = url.slice(url.lastIndexOf('/') + 1);
+    const { error: uploadError, filename: backendImageURL } = yield call(
+      reqWrapper,
+      apiGetFile,
+      {
+        fileUrl: url,
+      },
+    );
+
+    if (uploadError) {
+      yield put(
+        enqueueSnackbar({
+          message: uploadError.message,
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+
+    yield call(
+      uploadAsset,
+      {
+        assetFile: null,
+        listId,
+        fileName: assetName,
+        imageURL: backendImageURL,
+      },
+      { ...action.meta },
+    );
+
+    yield call(
+      updateOrReplaceElementParameters,
+      Actions.updateElementParameters(
+        elementId,
+        { imageURL: backendImageURL },
+        { ...action.meta },
+      ),
+      UpdateDataActionType.UPDATE,
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar({

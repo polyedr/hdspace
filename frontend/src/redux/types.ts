@@ -98,7 +98,6 @@ export type ProjectCommunicationState = {
 export type ProjectControlState = {
   history: Array<HistoryRecord>;
   currentHistoryRecord: number;
-  historyInProgress: boolean;
 };
 
 export type ProjectState = {
@@ -161,6 +160,13 @@ export type CreateScreenData = {
   name: string;
   buoyancy: number;
   rootName?: string;
+};
+
+export type UploadAssetData = {
+  assetFile: any | null;
+  fileName: string;
+  listId: string;
+  imageURL?: string;
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
@@ -293,7 +299,8 @@ export type SetCurrentScreenId = IAction<
 >;
 export type SetSelectedAssetListId = IAction<
   typeof TYPES.SET_SELECTED_ASSET_LIST_ID,
-  { assetListId: string }
+  { assetListId: string },
+  HistoryMeta
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
@@ -310,7 +317,8 @@ export type UpdateElement = IAction<
     elementID: string;
     data: LibraryElementPatch<Entity>;
     active?: boolean;
-  }
+  },
+  HistoryMeta
 >;
 export type ToggleContainersBorders = IPlainAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS
@@ -531,9 +539,6 @@ export type StartHistoryRecord = IAction<
   typeof TYPES.START_HISTORY_RECORD,
   { source: Action }
 >;
-export type CloseHistoryRecord = IPlainAction<
-  typeof TYPES.CLOSE_HISTORY_RECORD
->;
 export type ExecuteUndoActions = IPlainAction<
   typeof TYPES.EXECUTE_UNDO_ACTIONS
 >;
@@ -542,23 +547,15 @@ export type ExecuteRedoActions = IPlainAction<
 >;
 export type AddUndoActions = IAction<
   typeof TYPES.ADD_UNDO_ACTIONS,
-  { actions: Action | Action[] }
+  { actions: Action[] }
 >;
 export type AddRedoActions = IAction<
   typeof TYPES.ADD_REDO_ACTIONS,
-  { actions: Action | Action[] }
+  { actions: Action[] }
 >;
 export type AddHistoryActions = IAction<
   typeof TYPES.ADD_HISTORY_ACTIONS,
   { undo: Action[]; redo?: Action[] }
->;
-export type AddStateUndoActions = IAction<
-  typeof TYPES.ADD_STATE_UNDO_ACTIONS,
-  { actions: Action[] }
->;
-export type AddStateRedoActions = IAction<
-  typeof TYPES.ADD_STATE_REDO_ACTIONS,
-  { actions: Action[] }
 >;
 export type MoveHistoryForward = IPlainAction<
   typeof TYPES.MOVE_HISTORY_FORWARD
@@ -643,8 +640,8 @@ export type SetAssets = IAction<
   }
 >;
 
-export type AddAssetListRedux = IAction<
-  typeof TYPES.ADD_ASSET_LIST_REDUX,
+export type AddStateAssetList = IAction<
+  typeof TYPES.ADD_STATE_ASSET_LIST,
   AssetsList
 >;
 
@@ -665,8 +662,18 @@ export type UploadAsset = IAction<
   HistoryMeta
 >;
 
-export type AddAssetRedux = IAction<
-  typeof TYPES.ADD_ASSET_REDUX,
+export type UploadImageByUrl = IAction<
+  typeof TYPES.UPLOAD_IMAGE_BY_URL,
+  {
+    elementId: string;
+    url: string;
+    listId: string;
+  },
+  ElementHistoryMeta
+>;
+
+export type AddStateAsset = IAction<
+  typeof TYPES.ADD_STATE_ASSET,
   {
     listId: string;
     asset: Asset;
@@ -694,6 +701,12 @@ export type RemoveAsset = IAction<
 export type RemoveAssetRedux = IAction<
   typeof TYPES.REMOVE_ASSET_REDUX,
   { id: string; listId: string },
+  HistoryMeta
+>;
+
+export type UpdateStateAssetImage = IAction<
+  typeof TYPES.UPDATE_STATE_ASSET_IMAGE,
+  { assetId: string; listId: string; imageUrl: string },
   HistoryMeta
 >;
 
@@ -906,8 +919,6 @@ export type Action =
   | SetEditableStyles
   | AddUndoActions
   | AddRedoActions
-  | AddStateUndoActions
-  | AddStateRedoActions
   | MoveHistoryForward
   | MoveHistoryBackward
   | UnbindGroupElementStyles
@@ -959,13 +970,14 @@ export type Action =
   | SetEditorDocument
   | SetAssetLists
   | SetAssets
-  | AddAssetListRedux
+  | AddStateAssetList
   | AddAssetList
-  | AddAssetRedux
+  | AddStateAsset
   | RemoveAssetList
   | RemoveAssetListRedux
   | RemoveAsset
   | RemoveAssetRedux
+  | UpdateStateAssetImage
   | RestoreAsset
   | SetSelectedAssetListId
   | SearchProjects
@@ -977,6 +989,7 @@ export type Action =
   | RemoveMultipleElementsStyles
   | UploadAsset
   | UploadElementAsset
+  | UploadImageByUrl
   | RemoveMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | SetCanCreateGroup
@@ -985,7 +998,6 @@ export type Action =
   | ReplaceMultipleElementsParameters
   | SetMasterScreenId
   | StartHistoryRecord
-  | CloseHistoryRecord
   | ExecuteUndoActions
   | ExecuteRedoActions
   | AddUndoActions
@@ -993,6 +1005,7 @@ export type Action =
 
 export type HistoryMeta = {
   useHistory?: boolean;
+  historyRecordIndex?: number;
 };
 
 export type ElementHistoryMeta = HistoryMeta & {

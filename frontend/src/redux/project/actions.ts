@@ -7,7 +7,6 @@ import {
   Entity,
   Indices,
   LibraryElement,
-  LibraryElementPatch,
   Normalized,
   ParentIds,
   Project,
@@ -23,6 +22,7 @@ import {
   PaginatedArray,
   ProjectsSearchParameter,
   DateRange,
+  UpdateElementData,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -109,7 +109,7 @@ import {
   UpdateMultipleStateElements,
   AddAssetList,
   UploadAsset,
-  AddAssetRedux,
+  AddStateAsset,
   MoveStateElement,
   MoveStateElementsInside,
   SetMasterScreenId,
@@ -121,13 +121,11 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
-  CloseHistoryRecord,
+  //  CloseHistoryRecord,
   ExecuteUndoActions,
   ExecuteRedoActions,
   AddUndoActions,
   AddRedoActions,
-  AddStateRedoActions,
-  AddStateUndoActions,
   MoveHistoryForward,
   MoveHistoryBackward,
   AddHistoryActions,
@@ -135,6 +133,9 @@ import {
   ReplaceElementParameters,
   ReplaceMultipleElementsParameters,
   WrapMultipleElementsIntoContainer,
+  UploadImageByUrl,
+  UpdateStateAssetImage,
+  SetSelectedAssetListId,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -487,12 +488,12 @@ export const setScreens = (screens: Screen[]): SetScreens => ({
 });
 
 export const updateElement = <T extends Entity>(
-  elementID: string,
-  data: LibraryElementPatch<T>,
-  active?: boolean,
+  { elementID, data, active }: UpdateElementData<T>,
+  meta?: HistoryMeta,
 ): UpdateElement => ({
   type: TYPES.UPDATE_ELEMENT,
   payload: { elementID, data, active },
+  meta: meta || {},
 });
 
 export const toggleContainersBorders = (): ToggleContainersBorders => ({
@@ -1102,7 +1103,7 @@ export const removeAssetRedux = (id: string, listId: string) => ({
 });
 
 export const addAssetListToState = (list: AssetsList, meta?: HistoryMeta) => ({
-  type: TYPES.ADD_ASSET_LIST_REDUX,
+  type: TYPES.ADD_STATE_ASSET_LIST,
   payload: list,
   meta,
 });
@@ -1132,8 +1133,8 @@ export const addAssetToState = (
   listId: string,
   asset: Asset,
   meta?: HistoryMeta,
-): AddAssetRedux => ({
-  type: TYPES.ADD_ASSET_REDUX,
+): AddStateAsset => ({
+  type: TYPES.ADD_STATE_ASSET,
   payload: {
     listId,
     asset,
@@ -1141,11 +1142,15 @@ export const addAssetToState = (
   meta,
 });
 
-export const setSelectedAssetListId = (listId: string) => ({
+export const setSelectedAssetListId = (
+  listId: string,
+  meta?: HistoryMeta,
+): SetSelectedAssetListId => ({
   type: TYPES.SET_SELECTED_ASSET_LIST_ID,
   payload: {
     assetListId: listId,
   },
+  meta: meta || {},
 });
 
 export const addSelectedElement = (id: string): AddSelectedElement => ({
@@ -1205,37 +1210,19 @@ export const startHistoryRecord = (source: Action): StartHistoryRecord => ({
   payload: { source },
 });
 
-export const closeHistoryRecord = (): CloseHistoryRecord => ({
-  type: TYPES.CLOSE_HISTORY_RECORD,
-});
-
 export const addUndoActions = (actions: Action | Action[]): AddUndoActions => ({
   type: TYPES.ADD_UNDO_ACTIONS,
-  payload: { actions },
+  payload: { actions: Array.isArray(actions) ? actions : [actions] },
 });
 
 export const addRedoActions = (actions: Action | Action[]): AddRedoActions => ({
   type: TYPES.ADD_REDO_ACTIONS,
-  payload: { actions },
+  payload: { actions: Array.isArray(actions) ? actions : [actions] },
 });
 
 export const addHistoryActions = ({ undo, redo }): AddHistoryActions => ({
   type: TYPES.ADD_HISTORY_ACTIONS,
   payload: { undo, redo },
-});
-
-export const addStateUndoActions = (
-  actions: Action[],
-): AddStateUndoActions => ({
-  type: TYPES.ADD_STATE_UNDO_ACTIONS,
-  payload: { actions },
-});
-
-export const addStateRedoActions = (
-  actions: Action[],
-): AddStateRedoActions => ({
-  type: TYPES.ADD_STATE_REDO_ACTIONS,
-  payload: { actions },
 });
 
 export const executeUndoActions = (): ExecuteUndoActions => ({
@@ -1252,6 +1239,28 @@ export const moveHistoryForward = (): MoveHistoryForward => ({
 
 export const moveHistoryBackward = (): MoveHistoryBackward => ({
   type: TYPES.MOVE_HISTORY_BACKWARD,
+});
+
+export const uploadImageByUrl = (
+  elementId: string,
+  url: string,
+  listId: string,
+  meta: ElementHistoryMeta,
+): UploadImageByUrl => ({
+  type: TYPES.UPLOAD_IMAGE_BY_URL,
+  payload: { elementId, url, listId },
+  meta,
+});
+
+export const updateStateAssetImage = (
+  assetId: string,
+  listId: string,
+  imageUrl: string,
+  meta: HistoryMeta,
+): UpdateStateAssetImage => ({
+  type: TYPES.UPDATE_STATE_ASSET_IMAGE,
+  payload: { assetId, listId, imageUrl },
+  meta,
 });
 
 export const unbindGroupElementStyles = (
