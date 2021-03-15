@@ -3,6 +3,7 @@ import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/base';
 import prevent from '@Utils/preventEvent';
 import cn from 'classnames';
+
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
@@ -16,6 +17,49 @@ const useStyles = makeStyles({
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     zIndex: 999,
   },
+  resizeHandle: {
+    display: ({ isActive }: any) => (isActive ? 'block' : 'none'),
+    width: '12px !important',
+    height: '12px !important',
+    backgroundColor: 'yellow',
+    border: '1px solid black',
+  },
+  topHandle: {
+    transform: 'translateX(-50%)',
+    left: '50% !important',
+    top: '-6px !important',
+  },
+  topRightHandle: {
+    right: '-6px !important',
+    top: '-6px !important',
+  },
+  rightHandle: {
+    transform: 'translateY(-50%)',
+    right: '-6px !important',
+    top: '50% !important',
+  },
+  bottomRightHandle: {
+    right: '-6px !important',
+    bottom: '-6px !important',
+  },
+  bottomHandle: {
+    bottom: '-6px !important',
+    left: '50% !important',
+    transform: 'translateX(-50%)',
+  },
+  bottomLeftHandle: {
+    bottom: '-6px !important',
+    left: '-6px !important',
+  },
+  leftHandle: {
+    top: '50% !important',
+    left: '-6px !important',
+    transform: 'translateY(-50%)',
+  },
+  topLeftHandle: {
+    left: '-6px !important',
+    top: '-6px !important',
+  },
 });
 
 type Props = {
@@ -23,10 +67,10 @@ type Props = {
 };
 
 const Region: FC<Props> = ({ region }) => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const { id, region_attributes, shape_attributes } = region;
   const isActive = useSelector(selectIsRegionActive(region.id));
+  const classes = useStyles({ isActive });
   const { height, width, x, y } = shape_attributes;
 
   const selectRegion = (ev) => {
@@ -95,6 +139,16 @@ const Region: FC<Props> = ({ region }) => {
       onDragStart={selectRegion}
       onResizeStart={selectRegion}
       onClick={selectRegion}
+      resizeHandleClasses={{
+        top: cn(classes.resizeHandle, classes.topHandle),
+        topRight: cn(classes.resizeHandle, classes.topRightHandle),
+        right: cn(classes.resizeHandle, classes.rightHandle),
+        bottomRight: cn(classes.resizeHandle, classes.bottomRightHandle),
+        bottom: cn(classes.resizeHandle, classes.bottomHandle),
+        bottomLeft: cn(classes.resizeHandle, classes.bottomLeftHandle),
+        left: cn(classes.resizeHandle, classes.leftHandle),
+        topLeft: cn(classes.resizeHandle, classes.topLeftHandle),
+      }}
     >
       {region_attributes['HTML element']}
     </Rnd>
