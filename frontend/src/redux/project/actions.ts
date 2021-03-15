@@ -1319,3 +1319,7 @@ export const deleteVIARegion = (id: string): DeleteVIARegion => ({
   type: TYPES.DELETE_VIA_REGION,
   payload: id,
 });
+
+export const assembleVIARegions = () => ({
+  type: TYPES.ASSEMBLE_VIA_REGIONS,
+});

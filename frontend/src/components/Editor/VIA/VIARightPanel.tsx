@@ -1,7 +1,7 @@
 import { StyledIconButton } from '@Components/styledComponents';
-import { makeStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { createVIARegion } from '@Redux/project/actions';
+import { assembleVIARegions, createVIARegion } from '@Redux/project/actions';
 import { selectActiveVIARegion } from '@Redux/project/selectors/base';
 import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
 import React, { FC } from 'react';
@@ -29,6 +29,8 @@ const VIARightPanel: FC = () => {
 
   const handleCreateRegion = () => dispatch(createVIARegion());
 
+  const handleAssemble = () => dispatch(assembleVIARegions());
+
   return (
     <div className={classes.root}>
       {region ? <VIADescription region={region} /> : <div>Select a region</div>}
@@ -37,6 +39,10 @@ const VIARightPanel: FC = () => {
         <StyledIconButton title="Create a region" onClick={handleCreateRegion}>
           <AddIcon />
         </StyledIconButton>
+      </div>
+
+      <div>
+        <Button onClick={handleAssemble}>Assemble</Button>
       </div>
     </div>
   );

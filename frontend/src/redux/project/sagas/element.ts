@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { put, call, select, all } from 'redux-saga/effects';
+import { put, call, select, all, take } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -51,6 +51,7 @@ import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
 import addId from '@Utils/addId';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
+import TYPES from '@Redux/actionTypes';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -747,23 +748,11 @@ export const uploadFileSaga = withActionsHistory(function* ({
     const formData = new FormData();
 
     formData.append('image', file.file, file.name);
-    // formData.append('parent_id', parentId);
-    // formData.append('struct_type', 'container');
-    // formData.append('func_type', 'container');
     formData.append('name', 'image');
-    // formData.append('screen', screenId.toString());
     formData.append(
       'screen_data_json',
       JSON.stringify({ block_type: blockType }),
     );
-    // formData.append(
-    //   'parameters',
-    //   JSON.stringify({
-    //     block_type: blockType,
-    //     styles_on: file.stylesOn === true ? '1' : '0',
-    //   }),
-    // );
-    // formData.append('styles', '{}');
 
     const {
       result: recognizeResult,
@@ -809,9 +798,13 @@ export const uploadFileSaga = withActionsHistory(function* ({
       );
       yield put(Actions.setVIAMode(true));
 
+      yield put(Actions.setAnalyzerLoader(false));
+
+      yield take(TYPES.ASSEMBLE_VIA_REGIONS);
+      console.log('assemble');
+
       // yield put(Actions.addStateElements(regions, root.id, { screenId }));
 
-      // console.log(viaFile);
       /*  const convertedElements = getElementsArray(recognizeResult).map((element) =>
         convertElementToPatchRequest(element),
       );

@@ -1,9 +1,16 @@
-import { StyledIconButton } from '@Components/styledComponents';
-import { VIARegion } from '@Src/types';
-import React, { FC } from 'react';
+import {
+  StyledIconButton,
+  StyledTextField,
+} from '@Components/styledComponents';
+import { Entity, VIARegion } from '@Src/types';
+import React, { ChangeEvent, FC } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch } from 'react-redux';
-import { deleteVIARegion } from '@Redux/project/actions';
+import { deleteVIARegion, updateVIARegion } from '@Redux/project/actions';
+import MenuItem from '@material-ui/core/MenuItem';
+import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
+import { capitalize } from '@material-ui/core';
+import { splitWords } from '@Utils/stringHelper';
 
 type Props = {
   region: VIARegion;
@@ -22,9 +29,32 @@ const VIADescription: FC<Props> = ({ region }) => {
     dispatch(deleteVIARegion(id));
   };
 
+  const handleTypeChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      updateVIARegion(id, {
+        region_attributes: {
+          'HTML element': ev.target.value as Entity,
+        },
+      }),
+    );
+  };
+
   return (
     <div>
-      <div>{region_attributes['HTML element']}</div>
+      <StyledTextField
+        value={region_attributes['HTML element']}
+        onChange={handleTypeChange}
+        label="Type"
+        select
+      >
+        {Object.keys(LIBRARY_ELEMENTS).map((key) => (
+          <MenuItem value={key} key={key}>
+            {capitalize(splitWords(key))}
+          </MenuItem>
+        ))}
+      </StyledTextField>
+
+      {/* <div>{region_attributes['HTML element']}</div> */}
 
       <div>
         height:
