@@ -62,10 +62,4 @@ describe('VIA Region', () => {
     expect(actions[actions.length - 1].type).toBe(TYPES.SET_ACTIVE_VIA_REGION);
     expect(actions[actions.length - 1].payload).toBe('');
   });
-
-  it('should handle dragEnd event', () => {
-    const region = ui.getByText(type);
-    fireEvent.dragStart(region);
-    console.log(store.getActions());
-  });
 });
