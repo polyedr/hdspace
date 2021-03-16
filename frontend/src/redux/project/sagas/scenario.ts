@@ -9,6 +9,7 @@ import {
 } from '@Api/converters/toRequest';
 import {
   apiChangeRecursiveElement,
+  apiChangeRecursiveMultipleElements,
   apiCreateElements,
   apiUpdateElement,
   apiUpdateElements,
@@ -23,6 +24,7 @@ import { updateElementParameters } from '@Utils/ElementsTreeHelper';
 import getSavedValue from '@Utils/getSavedValue';
 import {
   removeMapElement,
+  removeMapElements,
   restoreMapElement,
   restoreMapElementChildren,
 } from '@Utils/normalizedStateHelpers';
@@ -65,9 +67,12 @@ import {
   selectCustomLibraryElements,
   selectElementAsTree,
   selectElementById,
+  selectElementsAsTrees,
   selectElementsByIds,
+  selectElementsChildren,
   // selectElementsForScreen,
   selectElementTreeGroups,
+  selectMasterGroupsElementId,
   selectScreenRootElement,
   selectTreeChildIdsByParentsIds,
 } from '../selectors/element';
@@ -491,8 +496,50 @@ export const addChildToElementSaga = withActionsHistory(function* (
   }
 });
 
-export const softDeleteSaga = withActionsHistory(function* (
+export function* deleteElementSaga(
   action: ReturnType<typeof Actions.deleteElement>,
+) {
+  const { id } = action.payload;
+  try {
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      yield put(
+        enqueueSnackbar({
+          message: 'You should provide meta information for this action',
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    const element = yield select(selectElementById(id));
+    const { groupElements, sourceElementId } = element.parameters;
+    // const isGroupSource = !!element.parameters.groupElements;
+    // const isGroupInstance = !!element.parameters.sourceElementId;
+    if (groupElements) {
+      console.log('TEST GROUP ELEMENTS!!!');
+      yield put(
+        Actions.softDeleteMultipleElements([id, ...groupElements], action.meta),
+      );
+    } else if (sourceElementId) {
+      // do unbind
+      yield put(Actions.softDeleteElement(id, action.meta));
+    } else {
+      yield put(Actions.softDeleteElement(id, action.meta));
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+}
+
+export const softDeleteSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.softDeleteElement>,
 ) {
   try {
     const { id } = action.payload;
@@ -599,14 +646,114 @@ export const softDeleteSaga = withActionsHistory(function* (
   }
 });
 
+export const softDeleteMultipleSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.softDeleteMultipleElements>,
+) {
+  try {
+    const { ids } = action.payload;
+
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      yield put(
+        enqueueSnackbar({
+          message: `You have to provide metainformation for action ${action.type}`,
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    console.log('IDS!!', ids);
+    const elements: StateElement[] = yield select(selectElementsByIds(ids));
+    console.log('TEST ELEMENTS!!', elements);
+    const elementsWithoutParent = elements.filter(
+      (el) => !el.parent && !el.parameters.isGroup,
+    );
+    if (elementsWithoutParent.length) {
+      console.error(
+        `Can not remove elements without parent: ${JSON.stringify(
+          elementsWithoutParent,
+        )}`,
+      );
+      throw new Error('Can not remove some elements');
+    }
+
+    const masterGroupsElId = yield select(selectMasterGroupsElementId);
+    const parentsIds: string[] = elements
+      .filter((el) => !!el.parent)
+      .map((el) => {
+        const { isGroup } = el.parameters;
+        return isGroup ? masterGroupsElId : el.parent;
+      }) as string[];
+
+    const parents = yield select(selectElementsByIds(parentsIds));
+
+    elements.forEach((el) => {
+      const parent = parents.find((p) => p.id === el.parent);
+      if (!isElementCanBeRemove(parent, el.type as Entity)) {
+        // do something
+      }
+    });
+
+    const state = yield select(selectAllElements);
+
+    yield put(
+      Actions.updateElementsTree(removeMapElements(state, ids), {
+        ...action.meta,
+      }),
+    );
+
+    const updatedParents = yield select(
+      selectElementsAsTrees(parents.map((p) => p.id)),
+    );
+
+    const { result, error }: Result<RecursiveElement> = yield call(
+      reqWrapper,
+      apiChangeRecursiveMultipleElements,
+      {
+        elements: updatedParents.map((p) => ({
+          id: Number(p.id),
+          name: p.name,
+          children: p.children.map((child) => Number(child.id)),
+        })),
+      },
+    );
+
+    if (result) {
+      const convertedElements = updatedParents
+        .map((p) => p.children)
+        .reduce((allParents, children) => {
+          return [
+            ...allParents,
+            ...children.map((child) => convertElementToPatchRequest(child)),
+          ];
+        }, []);
+      yield call(reqWrapper, apiUpdateElements, { data: convertedElements });
+    }
+    if (error) throw new Error(error);
+  } catch (e) {
+    console.error('TEST!!!!', e);
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  }
+});
+
 export const restoreElementChildrenSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.restoreElementChildren>,
 ) {
   try {
     const { elementId, childrenIds } = action.payload;
     if (!action.meta) {
-      console.error(
-        `You have to provide metainformation for action ${action.type}`,
+      yield put(
+        enqueueSnackbar({
+          message: `You have to provide metainformation for action ${action.type}`,
+          options: { variant: 'error' },
+        }),
       );
       return;
     }
@@ -666,6 +813,75 @@ export const restoreElementChildrenSaga = withActionsHistory(function* (
     );
   }
 });
+
+// RESTORE MULTIPLE ELEMENTS CHILDREN SAGA
+export const restoreMultipleElementsChildrenSaga = withActionsHistory(
+  function* (
+    action: ReturnType<typeof Actions.restoreMultipleElementsChildren>,
+  ) {
+    const { elements } = action.payload;
+
+    try {
+      if (!action.meta) {
+        yield put(
+          enqueueSnackbar({
+            message: `You have to provide metainformation for action ${action.type}`,
+            options: { variant: 'error' },
+          }),
+        );
+        return;
+      }
+      const state: Normalized<StateElement> = yield select(selectAllElements);
+
+      const ids = elements.map((el) => el.id);
+
+      const updatedTree = elements.reduce(
+        (tree, element) => {
+          return {
+            ...tree,
+            ...restoreMapElementChildren(tree, element.id, element.children),
+          };
+        },
+        { ...state },
+      );
+
+      yield put(Actions.updateElementsTree(updatedTree, { ...action.meta }));
+
+      const allChildren = yield select(selectElementsChildren(ids));
+
+      const { error: changeError } = yield call(
+        reqWrapper,
+        apiChangeRecursiveMultipleElements,
+        {
+          elements: elements.map((el) => ({
+            id: el.id,
+            children: allChildren
+              .filter((child) => child.parent === el.id)
+              .sort((a, b) => a.buoyancy - b.buoyancy)
+              .map((child) => child.id),
+          })),
+        },
+      );
+
+      if (changeError) throw new Error(changeError);
+
+      const convertedElements = yield select(selectElementsAsTrees(ids));
+
+      const { error: updateError } = yield call(reqWrapper, apiUpdateElements, {
+        data: convertedElements,
+      });
+
+      if (updateError) throw new Error(updateError);
+    } catch (e) {
+      yield put(
+        enqueueSnackbar({
+          message: e.message,
+          options: { variant: 'error' },
+        }),
+      );
+    }
+  },
+);
 
 export function* restoreElementSaga(
   action: ReturnType<typeof Actions.restoreElement>,

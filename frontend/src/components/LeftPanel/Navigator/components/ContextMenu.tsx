@@ -56,10 +56,6 @@ const ContextMenu: React.FC<Props> = ({
   const emptyClipboard = !useSelector(selectItemToCopyInfo);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const canHaveChildren = canElementHaveChildren(type);
-  /* const masterCoreElementId = useSelector(selectMasterCoreElementId);
-  const masterCoreChildrenIds = useSelector(
-    selectTreeChildElementsIds(masterCoreElementId),
-  ); */
 
   const handleDelete = () => {
     if (!id) return;

@@ -6,11 +6,6 @@ import { selectCurrentHistoryRecordIndex } from '../selectors/control';
 export default function withActionsHistory(fn: any) {
   return function* (action: Action) {
     const useHistory = action.meta && action.meta.useHistory;
-    // const historyInProgress = yield select(selectHistoryInProgress);
-
-    /* if (historyInProgress && currentHistoryRecord.action.type === action.type) {
-      return null;
-    } */
     if (!useHistory) {
       yield put(Actions.startHistoryRecord(action));
     }
@@ -22,9 +17,6 @@ export default function withActionsHistory(fn: any) {
         historyRecordIndex,
       },
     });
-    /* if (!useHistory) {
-      yield put(Actions.closeHistoryRecord());
-    } */
     return result;
   };
 }

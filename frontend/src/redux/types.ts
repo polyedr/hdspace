@@ -169,6 +169,11 @@ export type UploadAssetData = {
   imageURL?: string;
 };
 
+export type RestoreChildrenData = {
+  id: string;
+  children: string[];
+};
+
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 export type SearchProjects = IPlainAction<typeof TYPES.SEARCH_PROJECTS>;
 export type SetProjectSearchParameter = IAction<
@@ -449,6 +454,17 @@ export type DeleteElement = IAction<
   { id: string },
   ElementHistoryMeta
 >;
+export type SoftDeleteElement = IAction<
+  typeof TYPES.SOFT_DELETE_ELEMENT,
+  { id: string },
+  ElementHistoryMeta
+>;
+
+export type SoftDeleteMultipleElements = IAction<
+  typeof TYPES.SOFT_DELETE_MULTIPLE_ELEMENTS,
+  { ids: string[] },
+  ElementHistoryMeta
+>;
 export type CreateElements = IAction<
   typeof TYPES.CREATE_ELEMENTS,
   { createdElements: CreatedElement[]; parentId?: string; index?: number },
@@ -577,6 +593,11 @@ export type UnwrapFromContainer = IAction<
 export type RestoreElementChildren = IAction<
   typeof TYPES.RESTORE_ELEMENT_CHILDREN,
   { elementId: string; childrenIds: string[] },
+  ElementHistoryMeta
+>;
+export type RestoreMultipleElementsChildren = IAction<
+  typeof TYPES.RESTORE_MULTIPLE_ELEMENTS_CHILDREN,
+  { elements: RestoreChildrenData[] },
   ElementHistoryMeta
 >;
 export type RestoreElement = IAction<

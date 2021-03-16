@@ -136,6 +136,10 @@ import {
   UploadImageByUrl,
   UpdateStateAssetImage,
   SetSelectedAssetListId,
+  RestoreMultipleElementsChildren,
+  RestoreChildrenData,
+  SoftDeleteMultipleElements,
+  SoftDeleteElement,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -732,6 +736,24 @@ export const deleteElement = (
   meta,
 });
 
+export const softDeleteElement = (
+  id: string,
+  meta: ElementHistoryMeta,
+): SoftDeleteElement => ({
+  type: TYPES.SOFT_DELETE_ELEMENT,
+  payload: { id },
+  meta,
+});
+
+export const softDeleteMultipleElements = (
+  ids: string[],
+  meta: ElementHistoryMeta,
+): SoftDeleteMultipleElements => ({
+  type: TYPES.SOFT_DELETE_MULTIPLE_ELEMENTS,
+  payload: { ids },
+  meta,
+});
+
 export const createElements = (
   { createdElements, parentId, index }: CreateElementsData,
   meta: ElementHistoryMeta,
@@ -905,6 +927,15 @@ export const restoreElementChildren = (
     elementId,
     childrenIds,
   },
+  meta,
+});
+
+export const restoreMultipleElementsChildren = (
+  elements: RestoreChildrenData[],
+  meta: ElementHistoryMeta,
+): RestoreMultipleElementsChildren => ({
+  type: TYPES.RESTORE_MULTIPLE_ELEMENTS_CHILDREN,
+  payload: { elements },
   meta,
 });
 

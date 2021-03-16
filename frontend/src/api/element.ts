@@ -86,6 +86,24 @@ export const apiChangeRecursiveElement = (
     }))
     .catch(handleError);
 
+export const apiChangeRecursiveMultipleElements = (
+  props: MyAxiosProps & { elements: RecursiveElement[] },
+): Promise<Result<RecursiveElement[]>> => {
+  const { elements, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    method: 'PATCH',
+    url: '/projects/scenario-elements-multiple-recursive/',
+    data: elements,
+  })
+    .then((res) => ({
+      result: res.data.map((element) =>
+        convertRecursiveElementFromResponse(element),
+      ),
+    }))
+    .catch(handleError);
+};
+
 export const apiGetElement = <
   T extends Entity,
   K extends Entity,

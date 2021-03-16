@@ -52,9 +52,11 @@ import {
   restoreElementChildrenSaga,
   restoreElementSaga,
   softDeleteSaga,
+  softDeleteMultipleSaga,
   unwrapFromContainerSaga,
   updateElementSaga,
   wrapIntoContainerSaga,
+  deleteElementSaga,
 } from './scenario';
 import {
   createProjectSaga,
@@ -367,7 +369,9 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.ADD_CHILDREN_TO_ELEMENT, addChildrenToElementSaga);
   yield takeEvery(TYPES.WRAP_INTO_CONTAINER, wrapIntoContainerSaga);
 
-  yield takeEvery(TYPES.DELETE_ELEMENT, softDeleteSaga);
+  yield takeEvery(TYPES.DELETE_ELEMENT, deleteElementSaga);
+  yield takeEvery(TYPES.SOFT_DELETE_ELEMENT, softDeleteSaga);
+  yield takeEvery(TYPES.SOFT_DELETE_MULTIPLE_ELEMENTS, softDeleteMultipleSaga);
   yield takeEvery(TYPES.RESTORE_ELEMENT_CHILDREN, restoreElementChildrenSaga);
   yield takeEvery(TYPES.RESTORE_ELEMENT, restoreElementSaga);
 
