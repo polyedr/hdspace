@@ -1,15 +1,12 @@
 import { v4 } from 'uuid';
-/*
-const addId = <T extends Record<string, unknown>>(
-  item: T,
-): T extends { id: string | number } & infer U ? T : U & { id: string } => {
-  if ('id' in item) return item;
 
-  return {
-    ...item,
-    id: v4(),
-  };
-}; */
+type HasId<T> = T extends { id: unknown } ? T : T & { id: unknown };
+
+const a = { type: 'a', id: 1 };
+const b = { type: 'b' };
+
+type S = HasId<typeof a>;
+type U = HasId<typeof b>;
 
 const addId = <T extends Record<string, any>>(item: T) => {
   if (

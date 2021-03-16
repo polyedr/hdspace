@@ -66,6 +66,12 @@ const VIADescription: FC<Props> = ({ region }) => {
         <StyledTextField
           value={region_attributes['HTML element']}
           onChange={handleTypeChange}
+          InputLabelProps={{
+            htmlFor: 'region_type_input',
+          }}
+          InputProps={{
+            id: 'region_type_input',
+          }}
           label="Type"
           select
           margin="dense"
@@ -89,7 +95,13 @@ const VIADescription: FC<Props> = ({ region }) => {
             variant="outlined"
             margin="dense"
             value={height}
-            InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              htmlFor: 'region_height_input',
+            }}
+            InputProps={{
+              id: 'region_height_input',
+              readOnly: true,
+            }}
             label="Height"
           />
 
@@ -97,7 +109,13 @@ const VIADescription: FC<Props> = ({ region }) => {
             variant="outlined"
             margin="dense"
             value={width}
-            InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              htmlFor: 'region_width_input',
+            }}
+            InputProps={{
+              id: 'region_width_input',
+              readOnly: true,
+            }}
             label="Width"
           />
         </div>
@@ -107,7 +125,13 @@ const VIADescription: FC<Props> = ({ region }) => {
             variant="outlined"
             margin="dense"
             value={x}
-            InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              htmlFor: 'region_x_input',
+            }}
+            InputProps={{
+              id: 'region_x_input',
+              readOnly: true,
+            }}
             label="X"
           />
 
@@ -115,7 +139,13 @@ const VIADescription: FC<Props> = ({ region }) => {
             variant="outlined"
             margin="dense"
             value={y}
-            InputProps={{ readOnly: true }}
+            InputLabelProps={{
+              htmlFor: 'region_y_input',
+            }}
+            InputProps={{
+              id: 'region_y_input',
+              readOnly: true,
+            }}
             label="Y"
           />
         </div>
