@@ -98,7 +98,8 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
-      if (!selectedAsset) {
+      const assetId = selectedAsset || listRef.current;
+      if (!assetId) {
         dispatch(
           enqueueSnackbar({
             message: 'Asset list ID is not provided',
@@ -114,7 +115,7 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
         alert('Choose image up to 5Mb!');
       } else {
         dispatch(
-          uploadElementAsset(activeElementId, file, selectedAsset, {
+          uploadElementAsset(activeElementId, file, assetId, {
             screenId: currentScreenId,
           }),
         );
