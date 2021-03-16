@@ -73,6 +73,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
     styles = serializers.JSONField()
     children = RecursiveField(required=False, allow_null=True, many=True)
     scenario = serializers.PrimaryKeyRelatedField(source="scenario.id", read_only=True)
+    # image = serializers.ImageField()
 
     class Meta:
         model = ScenarioElement
