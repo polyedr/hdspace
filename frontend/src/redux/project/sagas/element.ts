@@ -815,7 +815,10 @@ export const uploadFileSaga = withActionsHistory(function* ({
         }),
       );
 
-      const { result: assembleResult, error: assembleError } = yield call(
+      const {
+        result: assembleResult,
+        error: assembleError,
+      }: Result<LibraryElement<any>> = yield call(
         reqWrapper,
         assembleImgUsingNN,
         {

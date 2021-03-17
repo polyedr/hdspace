@@ -13,7 +13,6 @@ import { capitalize, makeStyles } from '@material-ui/core';
 import { splitWords } from '@Utils/stringHelper';
 
 const useStyles = makeStyles(({ spacing }) => ({
-  root: {},
   container: {
     display: 'flex',
     alignItems: 'center',
@@ -61,7 +60,7 @@ const VIADescription: FC<Props> = ({ region }) => {
   };
 
   return (
-    <div className={classes.root}>
+    <div>
       <div className={classes.container}>
         <StyledTextField
           value={region_attributes['HTML element']}

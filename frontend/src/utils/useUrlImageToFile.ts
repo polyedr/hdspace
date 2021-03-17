@@ -4,24 +4,8 @@ import { selectElementFileInput } from '@Redux/project/selectors/base';
 import { selectElementById } from '@Redux/project/selectors/element';
 import { addFileInput } from '@Redux/project/actions';
 
-const generateImageName = (url: string, width: number, height: number) => {
-  const sizePart = `${width}x${height}`;
-  const originalName = url.substring(url.lastIndexOf('/') + 1);
-  const lastDotIndex = originalName.lastIndexOf('.');
-
-  if (lastDotIndex < 0) {
-    return originalName + sizePart;
-  }
-
-  // return originalName.split('_').slice(0, -1).join('');
-
-  return (
-    originalName.substring(0, lastDotIndex) +
-    // originalName.substring(0, lastDotIndex).split('_').slice(0, -1).join('') +
-    // sizePart +
-    originalName.substring(lastDotIndex)
-  );
-};
+const generateImageName = (url: string) =>
+  url.substring(url.lastIndexOf('/') + 1);
 
 const useUrlImageToFile = (
   id: string,
@@ -50,7 +34,7 @@ const useUrlImageToFile = (
     canvas.getContext('2d')?.drawImage(imgDom, 0, 0, width, height);
     canvas.toBlob((blob) => {
       if (blob && url) {
-        const newFileName = generateImageName(url, width, height);
+        const newFileName = generateImageName(url);
         dispatch(addFileInput(id, new File([blob], newFileName)));
       }
       canvas.getContext('2d')?.clearRect(0, 0, width, height);

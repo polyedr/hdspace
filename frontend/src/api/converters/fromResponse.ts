@@ -16,7 +16,6 @@ import {
   ServerRecursiveElement,
   ServerUserData,
   UserData,
-  VIARegion,
 } from '@Src/types';
 import { capitalize } from '@Utils/stringHelper';
 import { defaultFreeCanvasParams } from '@Domain/core';
@@ -141,16 +140,3 @@ export const convertUserDataFromResponse = ({
   profile: convertProfileDataFromResponse(profile),
   ...rest,
 });
-
-// export const convertVIARegionToLibraryElement = (
-//   region: VIARegion,
-// ): LibraryElement<any> => ({
-//   buoyancy: 0,
-//   children: [],
-//   id: (Date.now() + Math.random() * 100).toString(),
-//   image: null,
-//   name: capitalize(region.region_attributes['HTML element']),
-//   parameters: defaultParameters,
-//   styles: getDefaultStyles(region.region_attributes['HTML element']),
-//   type: region.region_attributes['HTML element'],
-// });

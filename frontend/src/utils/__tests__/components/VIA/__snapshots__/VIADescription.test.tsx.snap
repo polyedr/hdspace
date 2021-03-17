@@ -2,14 +2,12 @@
 
 exports[`VIADescription should render a description 1`] = `
 <div>
-  <div
-    class="makeStyles-root-1"
-  >
+  <div>
     <div
-      class="makeStyles-container-2"
+      class="makeStyles-container-1"
     >
       <div
-        class="MuiFormControl-root MuiTextField-root makeStyles-root-5 MuiFormControl-marginDense MuiFormControl-fullWidth"
+        class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense MuiFormControl-fullWidth"
       >
         <label
           class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiFormLabel-filled"
@@ -49,7 +47,7 @@ exports[`VIADescription should render a description 1`] = `
         </div>
       </div>
       <button
-        class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-6"
+        class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-5"
         tabindex="0"
         title="Delete region"
         type="button"
@@ -74,13 +72,13 @@ exports[`VIADescription should render a description 1`] = `
       </button>
     </div>
     <div
-      class="makeStyles-wrapper-3"
+      class="makeStyles-wrapper-2"
     >
       <div
-        class="makeStyles-inputWrapper-4"
+        class="makeStyles-inputWrapper-3"
       >
         <div
-          class="MuiFormControl-root MuiTextField-root makeStyles-root-5 MuiFormControl-marginDense"
+          class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
@@ -102,10 +100,10 @@ exports[`VIADescription should render a description 1`] = `
             />
             <fieldset
               aria-hidden="true"
-              class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
+              class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
             >
               <legend
-                class="PrivateNotchedOutline-legendLabelled-9 PrivateNotchedOutline-legendNotched-10"
+                class="PrivateNotchedOutline-legendLabelled-8 PrivateNotchedOutline-legendNotched-9"
               >
                 <span>
                   Height
@@ -115,7 +113,7 @@ exports[`VIADescription should render a description 1`] = `
           </div>
         </div>
         <div
-          class="MuiFormControl-root MuiTextField-root makeStyles-root-5 MuiFormControl-marginDense"
+          class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
@@ -137,10 +135,10 @@ exports[`VIADescription should render a description 1`] = `
             />
             <fieldset
               aria-hidden="true"
-              class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
+              class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
             >
               <legend
-                class="PrivateNotchedOutline-legendLabelled-9 PrivateNotchedOutline-legendNotched-10"
+                class="PrivateNotchedOutline-legendLabelled-8 PrivateNotchedOutline-legendNotched-9"
               >
                 <span>
                   Width
@@ -151,10 +149,10 @@ exports[`VIADescription should render a description 1`] = `
         </div>
       </div>
       <div
-        class="makeStyles-inputWrapper-4"
+        class="makeStyles-inputWrapper-3"
       >
         <div
-          class="MuiFormControl-root MuiTextField-root makeStyles-root-5 MuiFormControl-marginDense"
+          class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
@@ -176,10 +174,10 @@ exports[`VIADescription should render a description 1`] = `
             />
             <fieldset
               aria-hidden="true"
-              class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
+              class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
             >
               <legend
-                class="PrivateNotchedOutline-legendLabelled-9 PrivateNotchedOutline-legendNotched-10"
+                class="PrivateNotchedOutline-legendLabelled-8 PrivateNotchedOutline-legendNotched-9"
               >
                 <span>
                   X
@@ -189,7 +187,7 @@ exports[`VIADescription should render a description 1`] = `
           </div>
         </div>
         <div
-          class="MuiFormControl-root MuiTextField-root makeStyles-root-5 MuiFormControl-marginDense"
+          class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
@@ -211,10 +209,10 @@ exports[`VIADescription should render a description 1`] = `
             />
             <fieldset
               aria-hidden="true"
-              class="PrivateNotchedOutline-root-7 MuiOutlinedInput-notchedOutline"
+              class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
             >
               <legend
-                class="PrivateNotchedOutline-legendLabelled-9 PrivateNotchedOutline-legendNotched-10"
+                class="PrivateNotchedOutline-legendLabelled-8 PrivateNotchedOutline-legendNotched-9"
               >
                 <span>
                   Y

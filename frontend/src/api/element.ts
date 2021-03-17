@@ -11,6 +11,7 @@ import {
   PaginatedResponse,
   RecursiveElement,
   Result,
+  Screen,
   ServerElement,
 } from '../types';
 import { handleError, onError, parseResult } from './helper';
@@ -193,7 +194,9 @@ export const parseImgUsingNN = ({
     .then((res) => ({ result: convertElementFromResponse(res.data) }))
     .catch(handleError);
 
-export const recognizeImgUsingNN = (props: MyAxiosProps) =>
+export const recognizeImgUsingNN = (
+  props: MyAxiosProps,
+): Promise<Result<Screen>> =>
   myAxios({
     ...props,
     method: 'POST',
@@ -202,7 +205,9 @@ export const recognizeImgUsingNN = (props: MyAxiosProps) =>
     .then((res) => ({ result: res.data }))
     .catch(handleError);
 
-export const assembleImgUsingNN = (props: MyAxiosProps) =>
+export const assembleImgUsingNN = (
+  props: MyAxiosProps,
+): Promise<Result<LibraryElement<any>>> =>
   myAxios({
     ...props,
     method: 'POST',

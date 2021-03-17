@@ -93,7 +93,6 @@ export type ServerElement<
   };
   children: Children;
   shared?: boolean;
-  // screen_data_json?: any;
 };
 
 export type RootServerElement = ServerElement<'root', []>;
@@ -796,7 +795,6 @@ export interface Screen {
   buoyancy: number;
   element: string;
   screen_data_json: any;
-  // removed screen_data_json, ask if it will be needed on backend
 }
 
 export type UploadedImageInfo = {
@@ -1177,5 +1175,5 @@ export type VIAFile = {
   filename: string;
   size: number | string;
   regions: VIARegionWithoutId[];
-  file_attributes: { [key: string]: any };
+  file_attributes: Record<string, any>;
 };
