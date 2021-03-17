@@ -23,8 +23,8 @@ import {
   ProjectsSearchParameter,
   DateRange,
   UpdateElementData,
+  VIARegion,
 } from '@Src/types';
-import TYPES from '../actionTypes';
 import {
   Action,
   ActivateScreen,
@@ -136,7 +136,15 @@ import {
   UploadImageByUrl,
   UpdateStateAssetImage,
   SetSelectedAssetListId,
+  SetVIAMode,
+  SetViaRegions as SetVIARegions,
+  UpdateVIARegion,
+  SetActiveVIARegion,
+  CreateVIARegion,
+  DeleteVIARegion,
+  SetAnnotatedElement,
 } from '../types';
+import TYPES from '../actionTypes';
 
 export const getProjectList = (): LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
@@ -1274,4 +1282,50 @@ export const unbindGroupElementStyles = (
     styles,
   },
   meta,
+});
+
+export const setVIAMode = (active: boolean): SetVIAMode => ({
+  type: TYPES.SET_VIA_MODE,
+  payload: active,
+});
+
+export const setVIARegions = (
+  regions: Normalized<VIARegion>,
+): SetVIARegions => ({
+  type: TYPES.SET_VIA_REGIONS,
+  payload: regions,
+});
+
+export const updateVIARegion = (
+  regionId: string,
+  data: Partial<VIARegion>,
+): UpdateVIARegion => ({
+  type: TYPES.UPDATE_VIA_REGION,
+  payload: {
+    id: regionId,
+    data,
+  },
+});
+
+export const setActiveVIARegion = (id: string): SetActiveVIARegion => ({
+  type: TYPES.SET_ACTIVE_VIA_REGION,
+  payload: id,
+});
+
+export const createVIARegion = (): CreateVIARegion => ({
+  type: TYPES.CREATE_VIA_REGION,
+});
+
+export const deleteVIARegion = (id: string): DeleteVIARegion => ({
+  type: TYPES.DELETE_VIA_REGION,
+  payload: id,
+});
+
+export const assembleVIARegions = () => ({
+  type: TYPES.ASSEMBLE_VIA_REGIONS,
+});
+
+export const setAnnotatedElementId = (id: string): SetAnnotatedElement => ({
+  type: TYPES.SET_ANNOTATED_ELEMENT_ID,
+  payload: id,
 });

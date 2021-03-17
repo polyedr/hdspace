@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { configureStylePreferences } from './modules/stylePreference';
 import { addEventListeners } from './modules/addEventListeners';
 import * as picker from './modules/picker/picker';

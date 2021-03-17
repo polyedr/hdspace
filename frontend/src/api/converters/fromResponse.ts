@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { cssCamelize } from '@Utils/CSSConverter';
 import {
   ElementGroup,

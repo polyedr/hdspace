@@ -6,7 +6,7 @@ import {
   initialEdit,
   initialUi,
 } from '@Redux/project/initial';
-import { AppReduxState } from '@Redux/types';
+import { AppReduxState, ProjectEditState } from '@Redux/types';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import {
@@ -39,6 +39,7 @@ export const mockScreen: Screen = {
   status: 'in progress',
   screenscenario: [],
   element: '1',
+  screen_data_json: '{}',
 };
 
 export const mockRootElement: StateElement = {
@@ -103,6 +104,27 @@ export const mockUserData: UserData = {
     id: 888,
   },
 };
+
+export const mockVIAState = {
+  annotatedElementId: mockStateElement.id,
+  enabled: true,
+  regions: {
+    '7343f00c-4ec0-4e71-8a07-ec1f8820d489': {
+      shape_attributes: {
+        name: 'rect',
+        x: 99,
+        y: 52,
+        width: 187,
+        height: 37,
+      },
+      region_attributes: {
+        'HTML element': 'ocrtext',
+      },
+      id: '7343f00c-4ec0-4e71-8a07-ec1f8820d489',
+    },
+  },
+  activeRegionId: '',
+} as ProjectEditState['VIAMode'];
 
 export const mockInitialState: AppReduxState = {
   user: initialUserState,

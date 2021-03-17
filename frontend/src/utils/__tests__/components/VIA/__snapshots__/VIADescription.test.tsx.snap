@@ -1,0 +1,228 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VIADescription should render a description 1`] = `
+<div>
+  <div>
+    <div
+      class="makeStyles-container-1"
+    >
+      <div
+        class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense MuiFormControl-fullWidth"
+      >
+        <label
+          class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiFormLabel-filled"
+          data-shrink="true"
+          for="region_type_input"
+        >
+          Type
+        </label>
+        <div
+          class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
+        >
+          <div
+            aria-haspopup="listbox"
+            class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+            role="button"
+            tabindex="0"
+          >
+            Ocrtext
+          </div>
+          <input
+            aria-hidden="true"
+            class="MuiSelect-nativeInput"
+            id="region_type_input"
+            tabindex="-1"
+            value="ocrtext"
+          />
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSelect-icon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M7 10l5 5 5-5z"
+            />
+          </svg>
+        </div>
+      </div>
+      <button
+        class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-5"
+        tabindex="0"
+        title="Delete region"
+        type="button"
+      >
+        <span
+          class="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"
+            />
+          </svg>
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </button>
+    </div>
+    <div
+      class="makeStyles-wrapper-2"
+    >
+      <div
+        class="makeStyles-inputWrapper-3"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+            data-shrink="true"
+            for="region_height_input"
+          >
+            Height
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+              id="region_height_input"
+              readonly=""
+              type="text"
+              value="37"
+            />
+            <fieldset
+              aria-hidden="true"
+              class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="PrivateNotchedOutline-legendLabelled-8 PrivateNotchedOutline-legendNotched-9"
+              >
+                <span>
+                  Height
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+        <div
+          class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+            data-shrink="true"
+            for="region_width_input"
+          >
+            Width
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+              id="region_width_input"
+              readonly=""
+              type="text"
+              value="187"
+            />
+            <fieldset
+              aria-hidden="true"
+              class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="PrivateNotchedOutline-legendLabelled-8 PrivateNotchedOutline-legendNotched-9"
+              >
+                <span>
+                  Width
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div
+        class="makeStyles-inputWrapper-3"
+      >
+        <div
+          class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+            data-shrink="true"
+            for="region_x_input"
+          >
+            X
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+              id="region_x_input"
+              readonly=""
+              type="text"
+              value="99"
+            />
+            <fieldset
+              aria-hidden="true"
+              class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="PrivateNotchedOutline-legendLabelled-8 PrivateNotchedOutline-legendNotched-9"
+              >
+                <span>
+                  X
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+        <div
+          class="MuiFormControl-root MuiTextField-root makeStyles-root-4 MuiFormControl-marginDense"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+            data-shrink="true"
+            for="region_y_input"
+          >
+            Y
+          </label>
+          <div
+            class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+              id="region_y_input"
+              readonly=""
+              type="text"
+              value="52"
+            />
+            <fieldset
+              aria-hidden="true"
+              class="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+            >
+              <legend
+                class="PrivateNotchedOutline-legendLabelled-8 PrivateNotchedOutline-legendNotched-9"
+              >
+                <span>
+                  Y
+                </span>
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

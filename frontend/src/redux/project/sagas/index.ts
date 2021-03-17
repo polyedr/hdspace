@@ -1,4 +1,3 @@
-/* eslint-disable camelcase, no-console */
 import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
 
 import {

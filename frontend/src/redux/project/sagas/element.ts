@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { put, call, select } from 'redux-saga/effects';
+import { put, call, select, take } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -14,21 +14,19 @@ import {
   selectActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
-
+import { selectVIARegionsAsArray } from '@Redux/project/selectors/via';
 import {
   convertElementToPatchRequest,
   convertElementToRequest,
 } from '@Api/converters/toRequest';
-import {
-  getElementsArray,
-  getTreeWithDefaultStylesAndParams,
-} from '@Utils/ElementsTreeHelper';
+import { getElementsArray } from '@Utils/ElementsTreeHelper';
 import {
   apiUpdateElement,
   apiChangeRecursiveElement,
   apiUpdateElements,
-  parseImgUsingNN,
   apiGetCustomLibraryElements,
+  recognizeImgUsingNN,
+  assembleImgUsingNN,
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
@@ -45,9 +43,15 @@ import {
   ServerElement,
   StateElement,
   UpdateDataActionType,
+  Screen,
+  VIAFile,
+  VIARegion,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
+import addId from '@Utils/addId';
+import { arrayToMap } from '@Utils/normalizedStateHelpers';
+import TYPES from '@Redux/actionTypes';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -741,82 +745,137 @@ export const uploadFileSaga = withActionsHistory(function* ({
 
     const { screenId, useHistory } = meta;
 
-    const formData = new FormData();
+    const recognizeFormData = new FormData();
 
-    formData.append('image', file.file, file.name);
-    formData.append('parent_id', parentId);
-    formData.append('struct_type', 'container');
-    formData.append('func_type', 'container');
-    formData.append('name', 'TESTING NEURAL NETWORK');
-    formData.append('screen', screenId.toString());
-    formData.append(
-      'parameters',
-      JSON.stringify({
-        block_type: blockType,
-        styles_on: file.stylesOn === true ? '1' : '0',
-      }),
+    recognizeFormData.append('image', file.file, file.name);
+    recognizeFormData.append('name', file.name);
+    recognizeFormData.append(
+      'screen_data_json',
+      JSON.stringify({ block_type: blockType }),
     );
-    formData.append('styles', '{}');
 
     const {
-      result: nnContainer,
-      error: nnError,
-    }: Result<LibraryElement<any>> = yield call(reqWrapper, parseImgUsingNN, {
-      data: formData,
+      result: recognizeResult,
+      error: recognizeError,
+    }: Result<Screen> = yield call(reqWrapper, recognizeImgUsingNN, {
+      data: recognizeFormData,
       contentType: 'multipart/form-data',
     });
-    if (nnContainer) {
-      const nnContainerWithDefaultParams = getTreeWithDefaultStylesAndParams(
-        nnContainer,
-      );
 
-      const convertedElements = getElementsArray(
-        nnContainerWithDefaultParams,
-      ).map((element) => convertElementToPatchRequest(element));
+    if (recognizeResult) {
+      if (!recognizeResult.screen_data_json) {
+        throw new Error('No VIA data has been received');
+      }
+
+      const [viaKey, viaFile] = Object.entries(
+        JSON.parse(recognizeResult.screen_data_json) as {
+          [key: string]: VIAFile;
+        },
+      )[0];
+
+      yield put(
+        Actions.setVIARegions(
+          arrayToMap(
+            viaFile.regions.map((region) => addId(region) as VIARegion),
+          ),
+        ),
+      );
+      yield put(Actions.setAnnotatedElementId(parentId));
+
+      yield put(Actions.setVIAMode(true));
+
+      yield put(Actions.setAnalyzerLoader(false));
+
+      yield take(TYPES.ASSEMBLE_VIA_REGIONS);
+      yield put(Actions.setAnalyzerLoader(true));
+
+      const updatedRegions: VIARegion[] = yield select(selectVIARegionsAsArray);
+
+      const assembleFormData = new FormData();
+      assembleFormData.append('image', file.file, file.name);
+      assembleFormData.append('name', 'image');
+      assembleFormData.append('parent_id', parentId);
+      assembleFormData.append('styles', '{}');
+      assembleFormData.append('screen', screenId.toString());
+      assembleFormData.append(
+        'parameters',
+        JSON.stringify({
+          block_type: blockType,
+          annotation: JSON.stringify({
+            [viaKey]: {
+              ...viaFile,
+              regions: updatedRegions.map(
+                ({ region_attributes, shape_attributes }) => ({
+                  region_attributes,
+                  shape_attributes,
+                }),
+              ),
+            },
+          }),
+        }),
+      );
 
       const {
-        result,
-        error,
-      }: Result<ServerElement<any>> = yield call(
+        result: assembleResult,
+        error: assembleError,
+      }: Result<LibraryElement<any>> = yield call(
         reqWrapper,
-        apiUpdateElements,
-        { data: convertedElements },
+        assembleImgUsingNN,
+        {
+          data: assembleFormData,
+        },
       );
+      if (assembleResult) {
+        const convertedElements = getElementsArray(
+          assembleResult,
+        ).map((element) => convertElementToPatchRequest(element));
 
-      if (result) {
-        yield put(
-          Actions.addStateElements([nnContainerWithDefaultParams], parentId, {
-            ...meta,
-          }),
+        const {
+          result,
+          error,
+        }: Result<ServerElement<any>> = yield call(
+          reqWrapper,
+          apiUpdateElements,
+          { data: convertedElements },
         );
 
-        if (!useHistory) {
+        if (result) {
           yield put(
-            Actions.addHistoryActions({
-              undo: [
-                Actions.deleteElement(nnContainerWithDefaultParams.id, {
-                  screenId,
-                }),
-              ],
-              redo: [
-                Actions.restoreElement(nnContainerWithDefaultParams.id, {
-                  screenId,
-                }),
-              ],
+            Actions.addStateElements([assembleResult], parentId, {
+              ...meta,
+            }),
+          );
+
+          if (!useHistory) {
+            yield put(
+              Actions.addHistoryActions({
+                undo: [
+                  Actions.deleteElement(assembleResult.id, {
+                    screenId,
+                  }),
+                ],
+                redo: [
+                  Actions.restoreElement(assembleResult.id, {
+                    screenId,
+                  }),
+                ],
+              }),
+            );
+          }
+
+          yield put(
+            enqueueSnackbar({
+              message: 'Image uploaded successfully',
+              options: { variant: 'success' },
             }),
           );
         }
-
-        yield put(
-          enqueueSnackbar({
-            message: 'Image uploaded successfully',
-            options: { variant: 'success' },
-          }),
-        );
+        if (error) throw new Error(error);
       }
-      if (error) throw new Error(error);
+
+      if (assembleError) throw new Error(assembleError);
     }
-    if (nnError) throw new Error(nnError);
+    if (recognizeError) throw new Error(recognizeError);
   } catch (e) {
     console.error('Could not upload image for NN. Error: ', e.message);
     if (process.env.NODE_ENV === 'development') {
@@ -830,6 +889,8 @@ export const uploadFileSaga = withActionsHistory(function* ({
     );
   } finally {
     yield put(Actions.setAnalyzerLoader(false));
+    yield put(Actions.setAnnotatedElementId(''));
+    yield put(Actions.setVIAMode(false));
   }
 });
 

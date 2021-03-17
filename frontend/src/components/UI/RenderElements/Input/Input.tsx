@@ -10,7 +10,7 @@ type Props = InputRendererProps;
 
 const Input = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
   const { id, params, isDisabled, className, groupClass } = props;
-  const { type, placeholder, textContent } = params;
+  const { type = 'text', placeholder, textContent } = params;
 
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);

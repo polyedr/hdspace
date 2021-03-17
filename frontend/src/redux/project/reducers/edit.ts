@@ -1,5 +1,7 @@
 import * as R from 'ramda';
 import produce, { Draft } from 'immer';
+import { VIARegion } from '@Src/types';
+import { v4 } from 'uuid';
 import { initialEdit } from '../initial';
 import TYPES from '../../actionTypes';
 import { Action, ProjectEditState } from '../../types';
@@ -125,6 +127,58 @@ const editReducer = produce(
 
       case TYPES.SET_SELECTED_ELEMENTS: {
         draft.selectedElementsIds = action.payload.ids;
+        break;
+      }
+
+      case TYPES.SET_VIA_MODE: {
+        draft.VIAMode.enabled = action.payload;
+        break;
+      }
+
+      case TYPES.SET_VIA_REGIONS: {
+        draft.VIAMode.regions = action.payload;
+        break;
+      }
+
+      case TYPES.UPDATE_VIA_REGION: {
+        draft.VIAMode.regions[action.payload.id] = {
+          ...draft.VIAMode.regions[action.payload.id],
+          ...action.payload.data,
+        };
+        break;
+      }
+
+      case TYPES.SET_ACTIVE_VIA_REGION: {
+        draft.VIAMode.activeRegionId = action.payload;
+        break;
+      }
+
+      case TYPES.CREATE_VIA_REGION: {
+        const newRegion: VIARegion = {
+          id: v4(),
+          region_attributes: {
+            'HTML element': 'container',
+          },
+          shape_attributes: {
+            height: 100,
+            width: 100,
+            x: 0,
+            y: 0,
+            name: 'rect',
+          },
+        };
+        draft.VIAMode.regions[newRegion.id] = newRegion;
+        draft.VIAMode.activeRegionId = newRegion.id;
+        break;
+      }
+
+      case TYPES.DELETE_VIA_REGION: {
+        delete draft.VIAMode.regions[action.payload];
+        break;
+      }
+
+      case TYPES.SET_ANNOTATED_ELEMENT_ID: {
+        draft.VIAMode.annotatedElementId = action.payload;
         break;
       }
 

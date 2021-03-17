@@ -30,6 +30,7 @@ import {
   AssetResults,
   ProjectsSearchParameter,
   DateRange,
+  VIARegion,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -73,6 +74,12 @@ export type ProjectEditState = {
   uploadedImageInfo?: UploadedImageInfo;
   selectedElementsIds: string[];
   masterScreenId: number | null;
+  VIAMode: {
+    enabled: boolean;
+    regions: Normalized<VIARegion>;
+    activeRegionId: string;
+    annotatedElementId: string;
+  };
   freeCanvas: {
     enabled: boolean;
     lastElements: {
@@ -864,6 +871,32 @@ export type SetMasterScreenId = IAction<
   number | null
 >;
 
+export type SetVIAMode = IAction<typeof TYPES.SET_VIA_MODE, boolean>;
+
+export type SetViaRegions = IAction<
+  typeof TYPES.SET_VIA_REGIONS,
+  Normalized<VIARegion>
+>;
+
+export type UpdateVIARegion = IAction<
+  typeof TYPES.UPDATE_VIA_REGION,
+  { id: VIARegion['id']; data: Partial<VIARegion> }
+>;
+
+export type SetActiveVIARegion = IAction<
+  typeof TYPES.SET_ACTIVE_VIA_REGION,
+  string
+>;
+
+export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
+
+export type DeleteVIARegion = IAction<typeof TYPES.DELETE_VIA_REGION, string>;
+
+export type SetAnnotatedElement = IAction<
+  typeof TYPES.SET_ANNOTATED_ELEMENT_ID,
+  string
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -1001,7 +1034,14 @@ export type Action =
   | ExecuteUndoActions
   | ExecuteRedoActions
   | AddUndoActions
-  | AddRedoActions;
+  | AddRedoActions
+  | SetVIAMode
+  | SetViaRegions
+  | UpdateVIARegion
+  | SetActiveVIARegion
+  | CreateVIARegion
+  | DeleteVIARegion
+  | SetAnnotatedElement;
 
 export type HistoryMeta = {
   useHistory?: boolean;

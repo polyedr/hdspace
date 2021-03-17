@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-
 import { AxiosError } from 'axios';
 import { myAxios } from '../config/settings';
 import { LoginFormData } from '../types';
