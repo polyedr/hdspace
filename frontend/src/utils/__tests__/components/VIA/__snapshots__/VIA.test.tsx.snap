@@ -13,9 +13,9 @@ exports[`VIA Region should render VIA Regions wrapper 1`] = `
       />
       <div
         class="makeStyles-region-3 react-draggable"
+        data-testid="7343f00c-4ec0-4e71-8a07-ec1f8820d489"
         style="position: absolute; user-select: auto; width: 187px; height: 37px; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(198px,104px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
       >
-        ocrtext
         <div>
           <div
             class="makeStyles-resizeHandle-5 makeStyles-resizeHandle-14 makeStyles-topHandle-6"

@@ -148,6 +148,7 @@ const Region: FC<Props> = ({ region }) => {
         left: cn(classes.resizeHandle, classes.leftHandle),
         topLeft: cn(classes.resizeHandle, classes.topLeftHandle),
       }}
+      data-testid={id}
     />
   );
 };
