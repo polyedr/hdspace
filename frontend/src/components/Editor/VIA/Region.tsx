@@ -3,7 +3,6 @@ import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import prevent from '@Utils/preventEvent';
 import cn from 'classnames';
-
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
@@ -68,7 +67,7 @@ type Props = {
 
 const Region: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();
-  const { id, region_attributes, shape_attributes } = region;
+  const { id, shape_attributes } = region;
   const isActive = useSelector(selectIsRegionActive(region.id));
   const classes = useStyles({ isActive });
   const { height, width, x, y } = shape_attributes;
@@ -149,9 +148,7 @@ const Region: FC<Props> = ({ region }) => {
         left: cn(classes.resizeHandle, classes.leftHandle),
         topLeft: cn(classes.resizeHandle, classes.topLeftHandle),
       }}
-    >
-      {region_attributes['HTML element']}
-    </Rnd>
+    />
   );
 };
 
