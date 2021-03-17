@@ -811,7 +811,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
                 }),
               ),
             },
-          }) /*  recognizeResult.screen_data_json */,
+          }),
         }),
       );
 
