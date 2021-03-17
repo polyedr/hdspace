@@ -67,7 +67,8 @@ export const initialEdit: ProjectEditState = {
     enabled: false,
     regions: {},
     activeRegionId: '',
-  } /* mockVIAState */,
+    annotatedElementId: '',
+  },
   freeCanvas: {
     enabled: false,
     lastElements: {},

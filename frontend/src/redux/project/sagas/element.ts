@@ -13,10 +13,8 @@ import {
   selectMasterGroupsElementId,
   selectActiveElement,
 } from '@Redux/project/selectors/element';
-import {
-  selectCurrentProject,
-  selectVIARegionsAsArray,
-} from '@Redux/project/selectors/base';
+import { selectCurrentProject } from '@Redux/project/selectors/base';
+import { selectVIARegionsAsArray } from '@Redux/project/selectors/via';
 import {
   convertElementToPatchRequest,
   convertElementToRequest,
@@ -750,7 +748,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
     const recognizeFormData = new FormData();
 
     recognizeFormData.append('image', file.file, file.name);
-    recognizeFormData.append('name', 'image');
+    recognizeFormData.append('name', file.name);
     recognizeFormData.append(
       'screen_data_json',
       JSON.stringify({ block_type: blockType }),
@@ -782,6 +780,8 @@ export const uploadFileSaga = withActionsHistory(function* ({
           ),
         ),
       );
+      yield put(Actions.setAnnotatedElementId(parentId));
+
       yield put(Actions.setVIAMode(true));
 
       yield put(Actions.setAnalyzerLoader(false));
@@ -886,6 +886,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
     );
   } finally {
     yield put(Actions.setAnalyzerLoader(false));
+    yield put(Actions.setAnnotatedElementId(''));
     yield put(Actions.setVIAMode(false));
   }
 });

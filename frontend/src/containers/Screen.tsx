@@ -4,10 +4,8 @@ import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useHistory } from 'react-router';
-import {
-  selectCurrentProjectId,
-  selectVIAModeEnabled,
-} from '@Redux/project/selectors/base';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { selectScreenById } from '@Redux/project/selectors/screen';
 import VIA from '@Components/Editor/VIA';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';

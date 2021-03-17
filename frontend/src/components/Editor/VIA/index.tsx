@@ -1,6 +1,9 @@
 import { makeStyles } from '@material-ui/core';
 import { setActiveVIARegion } from '@Redux/project/actions';
-import { selectVIARegionsAsArray } from '@Redux/project/selectors/base';
+import {
+  selectAnnotatedElement,
+  selectVIARegionsAsArray,
+} from '@Redux/project/selectors/via';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Region from './Region';
@@ -10,20 +13,31 @@ const useStyles = makeStyles({
     padding: '0.5em',
     flex: '1 1',
   },
+  canvas: {
+    position: 'relative',
+  },
 });
 
 const VIA: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const regions = useSelector(selectVIARegionsAsArray);
+  const annotatedElement = useSelector(selectAnnotatedElement);
+
+  if (!annotatedElement) return null;
+
   const handleClick = () => dispatch(setActiveVIARegion(''));
 
-  const regions = useSelector(selectVIARegionsAsArray);
   return (
-    <div className={classes.root} onClick={handleClick}>
-      {regions.map((region) => (
-        <Region key={region.id} region={region} />
-      ))}
+    <div className={classes.root}>
+      <div onClick={handleClick} className={classes.canvas}>
+        <img src={annotatedElement.parameters.imageURL} alt="annotated" />
+
+        {regions.map((region) => (
+          <Region key={region.id} region={region} />
+        ))}
+      </div>
     </div>
   );
 };

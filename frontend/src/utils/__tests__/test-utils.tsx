@@ -106,6 +106,7 @@ export const mockUserData: UserData = {
 };
 
 export const mockVIAState = {
+  annotatedElementId: mockStateElement.id,
   enabled: true,
   regions: {
     '7343f00c-4ec0-4e71-8a07-ec1f8820d489': {

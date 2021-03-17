@@ -1,4 +1,4 @@
-import { selectVIARegions } from '@Redux/project/selectors/base';
+import { selectVIARegions } from '@Redux/project/selectors/via';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import AtlasTree, { RenderItemParams, TreeData } from '@atlaskit/tree';

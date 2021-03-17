@@ -177,6 +177,11 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.SET_ANNOTATED_ELEMENT_ID: {
+        draft.VIAMode.annotatedElementId = action.payload;
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         return initialEdit;
       }

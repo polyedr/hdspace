@@ -1,7 +1,7 @@
 import { RenderItemParams } from '@atlaskit/tree';
 import { makeStyles, lighten } from '@material-ui/core';
 import { setActiveVIARegion } from '@Redux/project/actions';
-import { selectIsRegionActive } from '@Redux/project/selectors/base';
+import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import cn from 'classnames';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';

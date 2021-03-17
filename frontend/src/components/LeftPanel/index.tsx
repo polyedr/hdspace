@@ -11,7 +11,7 @@ import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import { changeMinLPanel } from '@Redux/user/actions';
 import { selectIsLeftPanelMinimized } from '@Redux/user/selectors';
 import { setBordersEnabled } from '@Redux/project/actions';
-import { selectVIAModeEnabled } from '@Redux/project/selectors/base';
+import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';

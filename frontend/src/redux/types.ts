@@ -78,6 +78,7 @@ export type ProjectEditState = {
     enabled: boolean;
     regions: Normalized<VIARegion>;
     activeRegionId: string;
+    annotatedElementId: string;
   };
   freeCanvas: {
     enabled: boolean;
@@ -891,6 +892,11 @@ export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
 
 export type DeleteVIARegion = IAction<typeof TYPES.DELETE_VIA_REGION, string>;
 
+export type SetAnnotatedElement = IAction<
+  typeof TYPES.SET_ANNOTATED_ELEMENT_ID,
+  string
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -1034,7 +1040,8 @@ export type Action =
   | UpdateVIARegion
   | SetActiveVIARegion
   | CreateVIARegion
-  | DeleteVIARegion;
+  | DeleteVIARegion
+  | SetAnnotatedElement;
 
 export type HistoryMeta = {
   useHistory?: boolean;
