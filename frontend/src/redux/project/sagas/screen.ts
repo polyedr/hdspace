@@ -377,8 +377,8 @@ export const deleteScreenSaga = withActionsHistory(function* ({
     > = yield select(selectCurrentProject);
     const screenList = currentProject.projectscreen;
 
-    if (screenList.length <= 1) {
-      throw new Error('Project must have at least 1 screen');
+    if (screenList.length <= 2) {
+      throw new Error('Project must have at least 2 screens');
     }
 
     const newScreenIdList = currentProject.projectscreen.filter(

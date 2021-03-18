@@ -30,6 +30,7 @@ import {
 
 import { DEFAULT_INDENTS } from '@Domain/libraryElements/defaultStyles';
 import {
+  ElementsToCreate,
   Entity,
   LibraryElement,
   LibraryElementUnion,
@@ -274,32 +275,63 @@ export const createGroupChildrenSaga = withActionsHistory(function* (
     );
     return;
   }
-  const parentElement = yield select(selectElementById(parentId));
-  const { sourceElementId, groupElements } = parentElement.parameters;
-  if (!sourceElementId && !groupElements) {
+  const parentElement = yield select(selectElementAsTree(parentId));
+  const { groupElements } = parentElement.parameters;
+
+  if (!groupElements) {
     yield put(
       enqueueSnackbar({
-        message: 'Element does not belong to a group!',
+        message: 'Selected element is not a part of a group',
+        options: { variant: 'warning' },
       }),
     );
     return;
   }
-  /* const parentSourceElement = yield select(
-    selectElementById(parentElement.parameters.sourceElementId),
-  ); */
-  /* yield put(
-    Actions.createElements(
-      {
-        createdElements,
-        parentId: parentElement.parameters.sourceElementId,
+
+  const linkedElements = yield select(selectElementsAsTrees(groupElements));
+
+  const customLibraryElements = yield select(selectCustomLibraryElements);
+
+  const elementGroups = yield select(selectElementTreeGroups);
+
+  const elementsToCreate = [parentElement, ...linkedElements].map(
+    (groupItemParent) => {
+      return {
+        elements: createdElements.map((dEl) => {
+          if (dEl.custom) {
+            return convertElementToRequest(
+              customLibraryElements.find((element) => element.id === dEl.id),
+            );
+          }
+          if (dEl.parameters?.isGroup) {
+            const group = elementGroups.find((group) => group.id === dEl.id);
+            return convertElementToRequest({
+              ...group,
+              parameters: {
+                ...group.parameters,
+                isGroup: false,
+              },
+            });
+          }
+          return convertCreatedElementToRequest(
+            dEl.type as Entity,
+            dEl.name || null,
+            null,
+            dEl.parameters,
+          );
+        }),
+        parent: groupItemParent,
         index,
-      },
-      { ...action.meta },
-    ),
-  );  */
-  yield put(
-    Actions.createElements({ createdElements, parentId, index }, action.meta),
+      } as ElementsToCreate<Entity>;
+    },
   );
+
+  console.log('ELEMENTS TO CREATE!!', elementsToCreate);
+  const elementsIds = yield call(createElements, elementsToCreate, {
+    ...action.meta,
+  });
+
+  yield call(createGroupsBinding, elementsIds, action.meta);
 });
 
 export const addChildrenToElementSaga = withActionsHistory(function* (
@@ -571,9 +603,7 @@ export const softDeleteMultipleSaga = withActionsHistory(function* (
       );
       return;
     }
-    console.log('IDS!!', ids);
     const elements: StateElement[] = yield select(selectElementsByIds(ids));
-    console.log('TEST ELEMENTS!!', elements);
     const elementsWithoutParent = elements.filter(
       (el) => !el.parent && !el.parameters.isGroup,
     );
