@@ -79,12 +79,15 @@ export function* activateScreenSaga({
     yield put(Actions.setActiveElement(screenElement.id));
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   } finally {
     yield put(setScreenLoader(false));
@@ -260,10 +263,13 @@ export const createScreenSaga = withActionsHistory(function* (
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message || 'Failed to create screen',
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to create screen',
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   } finally {
     yield put(Actions.setScreenCreateLoader(false));
@@ -334,10 +340,13 @@ export function* updateScreenImageSaga({
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   } finally {
     yield put(setUpdateImageLoader(false));
@@ -431,10 +440,13 @@ export const deleteScreenSaga = withActionsHistory(function* ({
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message || 'Failed to delete screen',
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to delete screen',
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -502,10 +514,13 @@ export const restoreScreenSaga = withActionsHistory(function* ({
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message || 'Failed to restore screen',
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to restore screen',
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   } finally {
     yield put(Actions.setScreenCreateLoader(false));
@@ -552,10 +567,13 @@ export function* renameScreenSaga({
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message || 'Failed to rename screen',
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to rename screen',
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -596,10 +614,13 @@ export function* getScreensSaga(screens: Screen[]) {
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -636,10 +657,13 @@ export function* changeScreensOrderSaga(
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message || 'Failed to reorder screens',
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to reorder screens',
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -684,8 +708,12 @@ export function* convertFreeCanvasSaga() {
 
     yield put(
       Actions.addStateElements(
-        [convertElementFromResponse(result)],
-        rootElement.id,
+        [
+          {
+            elements: [convertElementFromResponse(result)],
+            parentId: rootElement.id,
+          },
+        ],
         { screenId },
       ),
     );
@@ -693,10 +721,13 @@ export function* convertFreeCanvasSaga() {
     yield put(Actions.changeFreeCanvasMode(false));
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }

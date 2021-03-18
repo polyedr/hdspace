@@ -92,7 +92,6 @@ export function* reqWrapper(
 
     return result;
   } catch (e) {
-    console.error(e);
     yield put(setUserError(e));
     return { error: e.message };
   }
@@ -119,12 +118,15 @@ export function* projectUpdateHelperSaga(newProject: Project) {
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   }
 }

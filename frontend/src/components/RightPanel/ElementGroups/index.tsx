@@ -37,14 +37,13 @@ const ElementGroupsBlock: React.FC = () => {
     return Object.values(groups).map(
       (group) =>
         ({
-          key: `group-${group.id}`,
           id: group.id,
           type: group.type,
           name: group.name,
           custom: false,
           icon: Crop169Icon,
           parameters: {
-            isGroup: true,
+            isGroup: false,
           },
         } as ElementData),
     );

@@ -30,6 +30,7 @@ import {
   AssetResults,
   ProjectsSearchParameter,
   DateRange,
+  StateElementsToAdd,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -468,8 +469,13 @@ export type SoftDeleteMultipleElements = IAction<
 export type CreateElements = IAction<
   typeof TYPES.CREATE_ELEMENTS,
   { createdElements: CreatedElement[]; parentId?: string; index?: number },
-  ElementHistoryMeta,
-  string[]
+  ElementHistoryMeta
+>;
+
+export type CreateGroupChildren = IAction<
+  typeof TYPES.CREATE_GROUP_CHILDREN,
+  { createdElements: CreatedElement[]; parentId?: string; index?: number },
+  ElementHistoryMeta
 >;
 
 export type CreateElementsGroup = IAction<
@@ -583,6 +589,27 @@ export type MoveHistoryBackward = IPlainAction<
 export type UnbindGroupElementStyles = IAction<
   typeof TYPES.UNBIND_GROUP_ELEMENT_STYLES,
   { id: string; styles: React.CSSProperties },
+  ElementHistoryMeta
+>;
+
+export type UnbindGroupElement = IAction<
+  typeof TYPES.UNBIND_GROUP_ELEMENT,
+  { id: string },
+  ElementHistoryMeta
+>;
+export type UnbindGroupInstance = IAction<
+  typeof TYPES.UNBIND_GROUP_INSTANCE,
+  { id: string },
+  ElementHistoryMeta
+>;
+export type UnbindMasterGroupElement = IAction<
+  typeof TYPES.UNBIND_MASTER_ELEMENT,
+  { id: string },
+  ElementHistoryMeta
+>;
+export type UnbindMasterGroupInstance = IAction<
+  typeof TYPES.UNBIND_MASTER_INSTANCE,
+  { id: string },
   ElementHistoryMeta
 >;
 export type UnwrapFromContainer = IAction<
@@ -739,7 +766,7 @@ export type RestoreAsset = IAction<
 
 export type AddStateElements = IAction<
   typeof TYPES.ADD_STATE_ELEMENTS,
-  { elements: LibraryElement<any>[]; parentId: string; index?: number },
+  { elements: StateElementsToAdd<Entity>[] },
   ElementHistoryMeta
 >;
 
@@ -943,6 +970,10 @@ export type Action =
   | MoveHistoryForward
   | MoveHistoryBackward
   | UnbindGroupElementStyles
+  | UnbindGroupElement
+  | UnbindGroupInstance
+  | UnbindMasterGroupElement
+  | UnbindMasterGroupInstance
   | UnwrapFromContainer
   | RestoreElementChildren
   | RedoWrapIntoContainer

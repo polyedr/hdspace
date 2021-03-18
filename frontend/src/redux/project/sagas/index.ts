@@ -43,7 +43,11 @@ import {
   uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
   replaceElementParametersSaga,
-} from '@Redux/project/sagas/element';
+  unbindMasterGroupInstanceSaga,
+  /* unbindGroupElementSaga,
+  unbindGroupInstanceSaga,  
+  unbindMasterGroupElementSaga, */
+} from './element';
 import {
   addChildrenToElementSaga,
   addChildToElementSaga,
@@ -57,6 +61,7 @@ import {
   updateElementSaga,
   wrapIntoContainerSaga,
   deleteElementSaga,
+  createGroupChildrenSaga,
 } from './scenario';
 import {
   createProjectSaga,
@@ -188,7 +193,7 @@ function* copyActiveElementSaga() {
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
     );
   }
 }
@@ -254,7 +259,7 @@ function* duplicateScreenSaga(
     yield put(Actions.setScreenLoader(false));
   } catch (e) {
     yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
     );
   }
 }
@@ -310,7 +315,7 @@ const pasteCopiedElementSaga = withActionsHistory(function* ({
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
     );
   }
 });
@@ -364,6 +369,7 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
+  yield takeEvery(TYPES.CREATE_GROUP_CHILDREN, createGroupChildrenSaga);
 
   yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
   yield takeEvery(TYPES.ADD_CHILDREN_TO_ELEMENT, addChildrenToElementSaga);
@@ -415,4 +421,9 @@ export default function* projectSaga() {
     TYPES.UNBIND_GROUP_ELEMENT_STYLES,
     unbindGroupElementStylesSaga,
   );
+
+  /* yield takeEvery(TYPES.UNBIND_GROUP_ELEMENT, unbindGroupElementSaga);
+  yield takeEvery(TYPES.UNBIND_GROUP_INSTANCE, unbindGroupInstanceSaga);
+  yield takeEvery(TYPES.UNBIND_MASTER_ELEMENT, unbindMasterGroupElementSaga); */
+  yield takeEvery(TYPES.UNBIND_MASTER_INSTANCE, unbindMasterGroupInstanceSaga);
 }

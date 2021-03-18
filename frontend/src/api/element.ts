@@ -12,6 +12,7 @@ import {
   MyAxiosProps,
   PaginatedResponse,
   RecursiveElement,
+  RecursiveServerElement,
   Result,
   ServerElement,
 } from '../types';
@@ -87,7 +88,7 @@ export const apiChangeRecursiveElement = (
     .catch(handleError);
 
 export const apiChangeRecursiveMultipleElements = (
-  props: MyAxiosProps & { elements: RecursiveElement[] },
+  props: MyAxiosProps & { elements: RecursiveServerElement[] },
 ): Promise<Result<RecursiveElement[]>> => {
   const { elements, ...axiosProps } = props;
   return myAxios({

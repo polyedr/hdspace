@@ -51,13 +51,14 @@ import { apiGetFile } from '@Api/import';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import { createElements, wrapIntoContainer } from './scenario';
+import { wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
 import { uploadAsset } from './asset';
 import {
   updateOrReplaceElementParameters,
   updateOrReplaceElementStyles,
   updateOrReplaceMultipleElementsParameters,
+  createElements,
 } from './common';
 
 // eslint-disable-next-line consistent-return
@@ -87,20 +88,20 @@ export function* duplicateElements(
 
     return yield call(
       createElements,
-      { elements: convertedItemsToDuplicate },
-      targetParent,
-      {
-        ...meta,
-      },
+      [{ elements: convertedItemsToDuplicate, parent: targetParent }],
+      { ...meta },
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   }
 }
@@ -183,10 +184,13 @@ export const moveElementSaga = withActionsHistory(function* (
     if (recursiveError) throw new Error(recursiveError);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -267,10 +271,13 @@ function* updateElementClassNames(
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -321,10 +328,13 @@ function* removeElementStyles(
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -385,10 +395,13 @@ export const copyElementStylesSaga = withActionsHistory(function* (
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -414,10 +427,13 @@ export const updateElementStylesSaga = withActionsHistory(function* (
     yield call(updateOrReplaceElementStyles, action, 'update');
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -486,10 +502,13 @@ export const updateMultipleElementsStylesSaga = withActionsHistory(function* (
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -572,10 +591,13 @@ export const removeMultipleElementsStylesSaga = withActionsHistory(function* (
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -587,10 +609,13 @@ export const replaceElementStylesSaga = withActionsHistory(function* (
     yield call(updateOrReplaceElementStyles, action, 'replace');
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -620,10 +645,13 @@ export const removeElementStylesSaga = withActionsHistory(function* (
     yield call(removeElementStyles, id, cssPropertiesNames, action);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -675,10 +703,13 @@ export const updateElementImageSaga = withActionsHistory(function* (
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -785,9 +816,12 @@ export const uploadFileSaga = withActionsHistory(function* ({
 
       if (result) {
         yield put(
-          Actions.addStateElements([nnContainerWithDefaultParams], parentId, {
-            ...meta,
-          }),
+          Actions.addStateElements(
+            [{ elements: [nnContainerWithDefaultParams], parentId }],
+            {
+              ...meta,
+            },
+          ),
         );
 
         if (!useHistory) {
@@ -823,10 +857,13 @@ export const uploadFileSaga = withActionsHistory(function* ({
       console.trace(e);
     }
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   } finally {
     yield put(Actions.setAnalyzerLoader(false));
@@ -858,10 +895,13 @@ export function* loadCustomElementsSaga(
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -1045,10 +1085,13 @@ export const createElementsGroupSaga = withActionsHistory(function* (
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -1110,13 +1153,112 @@ export const uploadElementImageByUrlSaga = withActionsHistory(function* (
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
+
+/* export const unbindGroupInstanceSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.unbindGroupInstance>,
+) {});
+
+export const unbindGroupElementSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.unbindGroupElement>,
+) {
+  const { id } = action.payload;
+  const element = yield select(selectElementById(id));
+}); */
+
+export const unbindMasterGroupInstanceSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.unbindMasterGroupInstance>,
+) {
+  const { id } = action.payload;
+  try {
+    const element = yield select(selectElementById(id));
+    const childrenIds = yield select(selectTreeChildElementsIds(element.id));
+    const allElements = yield select(selectAllElements);
+    const groupElements = [id, ...childrenIds].map((elId) => allElements[elId]);
+    const allInstancesIds = groupElements
+      .map((el) => el.parameters.groupElements)
+      .reduce((ids, idsPack) => [...ids, ...idsPack], []);
+
+    const groupInstanceElements = allInstancesIds.map(
+      (elId) => allElements[elId],
+    );
+
+    const updatedGroupSourceParams = groupElements.reduce((params, el) => {
+      const newParamNames = Object.keys(params).filter(
+        (paramName) => !['isGroup', 'groupElements'].includes(paramName),
+      );
+      return {
+        ...params,
+        [el.id]: {
+          ...newParamNames.reduce(
+            (filteredParams, paramName) => ({
+              ...filteredParams,
+              [paramName]: el.parameters[paramName],
+            }),
+            {},
+          ),
+        },
+      };
+    }, {});
+
+    const updatedGroupInstanceParams = groupInstanceElements.reduce(
+      (params, el) => {
+        const newParamNames = Object.keys(params).filter(
+          (paramName) => paramName !== 'sourceElementId',
+        );
+        return {
+          ...params,
+          [el.id]: {
+            ...newParamNames.reduce(
+              (filteredParams, paramName) => ({
+                ...filteredParams,
+                [paramName]: el.parameters[paramName],
+              }),
+              {},
+            ),
+          },
+        };
+      },
+      {},
+    );
+
+    yield call(
+      updateOrReplaceMultipleElementsParameters,
+      Actions.replaceMultipleElementsParameters(
+        [id, ...childrenIds, ...allInstancesIds],
+        {
+          ...updatedGroupSourceParams,
+          ...updatedGroupInstanceParams,
+        },
+        action.meta,
+      ),
+      UpdateDataActionType.REPLACE,
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
+/* export const unbindMasterGroupElementSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.unbindMasterGroupElement>,
+) {}); */
 
 export const unbindGroupElementStylesSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.unbindGroupElementStyles>,
@@ -1170,10 +1312,13 @@ export const unbindGroupElementStylesSaga = withActionsHistory(function* (
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });

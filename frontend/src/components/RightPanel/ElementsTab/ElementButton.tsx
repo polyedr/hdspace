@@ -6,7 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
 import { splitWords } from '@Utils/stringHelper';
 import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
-import { createElements } from '@Redux/project/actions';
+import { createElements, createGroupChildren } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { ElementType } from '@Constants/dragAndDrop';
@@ -102,25 +102,27 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     }, [preview, imgRef]);
 
     const handleClick = () => {
-      dispatch(
-        createElements(
+      const createdElementsData = {
+        createdElements: [
           {
-            createdElements: [
-              {
-                id,
-                type,
-                name,
-                custom,
-                parameters,
-              },
-            ],
-            parentId: activeElement.id,
+            id,
+            type,
+            name,
+            custom,
+            parameters,
           },
-          {
+        ],
+        parentId: activeElement.id,
+      };
+      if (activeElement.parameters.groupElements) {
+        dispatch(createGroupChildren(createdElementsData, { screenId }));
+      } else {
+        dispatch(
+          createElements(createdElementsData, {
             screenId,
-          },
-        ),
-      );
+          }),
+        );
+      }
     };
 
     useEffect(() => {

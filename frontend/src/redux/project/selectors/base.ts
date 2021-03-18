@@ -110,6 +110,7 @@ export const selectElementFileInput = (id: string) => (
 export const selectFreeCanvasMode = ({ project }: AppReduxState) =>
   project.edit.freeCanvas.enabled;
 
+// think over how can we fix this one in a different way
 export const selectFreeCanvasOffset = (id: string) => (
   state: AppReduxState,
 ) => {

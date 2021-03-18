@@ -16,7 +16,6 @@ import {
 } from '@Api/element';
 import { apiCreateScenarios } from '@Api/scenario';
 import {
-  isElementCanBeAdded,
   isElementCanBeRemove,
   canElementHaveAllChildren,
 } from '@Utils/AvailableChildrenHelper';
@@ -31,7 +30,6 @@ import {
 
 import { DEFAULT_INDENTS } from '@Domain/libraryElements/defaultStyles';
 import {
-  ElementsToDrop,
   Entity,
   LibraryElement,
   LibraryElementUnion,
@@ -49,6 +47,7 @@ import {
   ElementHistoryMeta,
   WrapIntoContainerData,
 } from '@Redux/types';
+// import { convertServerElementsToDrop } from '@Utils/converters';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
@@ -56,10 +55,6 @@ import {
   selectCurrentScreenId,
 } from '../selectors/screen';
 import { reqWrapper } from './shared';
-import {
-  selectFreeCanvasMode,
-  selectFreeCanvasOffset,
-} from '../selectors/base';
 import {
   selectActiveElement,
   selectActiveElementId,
@@ -70,14 +65,16 @@ import {
   selectElementsAsTrees,
   selectElementsByIds,
   selectElementsChildren,
-  // selectElementsForScreen,
   selectElementTreeGroups,
   selectMasterGroupsElementId,
   selectScreenRootElement,
   selectTreeChildIdsByParentsIds,
 } from '../selectors/element';
 import withActionsHistory from '../wrappers/withActionsHistory';
-import { updateOrReplaceMultipleElementsParameters } from './common';
+import {
+  createElements,
+  updateOrReplaceMultipleElementsParameters,
+} from './common';
 
 // eslint-disable-next-line consistent-return
 export function* createScenarios(scenario?: Partial<ScenarioItem>) {
@@ -120,171 +117,68 @@ export function* createScenarios(scenario?: Partial<ScenarioItem>) {
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message || 'Failed to create scenarios',
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to create scenarios',
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
 
-export function* createElements(
-  { elements, index }: ElementsToDrop,
-  parent: LibraryElement<Entity>,
+export function* createGroupsBinding(
+  elementsIds: string[],
   meta: ElementHistoryMeta,
 ) {
-  try {
-    const { useHistory, screenId } = meta;
-    const disallowedElements = elements.filter(
-      (element) => !isElementCanBeAdded(parent, element.struct_type),
-    );
+  const updatedElements = yield select(selectElementsByIds(elementsIds));
+  const newGroupElements = updatedElements.filter((el) => {
+    return !!el.parameters.sourceElementId;
+  });
 
-    if (disallowedElements.length) {
-      yield put(
-        enqueueSnackbar({
-          message: 'Can not add this element!',
-          options: { variant: 'warning' },
-        }),
-      );
-      return;
-    }
-
-    const isFreeCanvasMode = yield select(selectFreeCanvasMode);
-    let offset = 0;
-    if (isFreeCanvasMode) {
-      offset = yield select(selectFreeCanvasOffset(parent.id));
-    }
-    // free canvas offset
-    const elementsWithOffset = elements.map((el, i) => {
-      if (i === 0) {
-        return {
-          ...el,
-          parameters: {
-            ...el.parameters,
-            freeCanvas: {
-              ...el.parameters.freeCanvas,
-              left: el.parameters.freeCanvas?.left || offset,
-              top: el.parameters.freeCanvas?.top || offset,
-            },
-          },
-          styles: isFreeCanvasMode
-            ? {
-                ...el.styles,
-                ownStyles: {
-                  ...el.styles.ownStyles,
-                  width: `${el.parameters.freeCanvas.width}px`,
-                  height: `${el.parameters.freeCanvas.height}px`,
-                },
-              }
-            : el.styles,
-        };
-      }
-
-      return el;
-    });
-
-    const {
-      result: newElements,
-      error,
-    }: ReturnPromisedType<typeof apiCreateElements> = yield call(
-      reqWrapper,
-      apiCreateElements,
-      { data: elementsWithOffset },
-    );
-    if (newElements) {
-      if (!useHistory) {
-        yield put(
-          Actions.addUndoActions(
-            newElements.map((el: any) =>
-              Actions.deleteElement(el.id, { ...meta }),
-            ),
-          ),
-        );
-      }
-      const newChildren = [
-        ...parent.children.map((child) => child.id),
-        ...newElements.map((element) => element.id),
-      ];
-
-      const elementData = {
-        name: parent.name,
-        children: newChildren,
-      };
-      const { result, error }: Result<RecursiveElement> = yield call(
-        reqWrapper,
-        apiChangeRecursiveElement,
-        {
-          data: elementData,
-          id: parent.id,
-        },
-      );
-      if (result) {
-        yield put(
-          Actions.addStateElements(
-            newElements,
-            parent.id,
-            {
-              screenId,
-              useHistory,
-            },
-            index,
-          ),
-        );
-        if (!useHistory) {
-          yield put(
-            Actions.addRedoActions(
-              Actions.restoreElementChildren(
-                parent.id,
-                newElements.map((element) => element.id),
-                { ...meta, useHistory: true },
-              ),
-            ),
-          );
-        }
-        yield put(
-          Actions.updateLastElements(
-            parent.id,
-            newElements.map((el) => el.id),
-            offset,
-          ),
-        );
-
-        const updatedParent: LibraryElement<Entity> = yield select(
-          selectElementAsTree(parent.id),
-        );
-        const elementsWithUpdatedBuoyancy = updatedParent.children.map(
-          (child, childIndex) => {
-            const createdElement = convertElementToPatchRequest(child);
-            createdElement.buoyancy = childIndex + (index || 0);
-            return createdElement;
-          },
-        );
-        const { result: createdElements, error } = yield call(
-          reqWrapper,
-          apiUpdateElements,
-          {
-            data: elementsWithUpdatedBuoyancy,
-          },
-        );
-        if (createdElements) {
-          // eslint-disable-next-line consistent-return
-          return createdElements.map((el) => String(el.id));
-        }
-        if (error) throw new Error(error);
-      }
-      if (error) throw new Error(error);
-    }
-    if (error) throw new Error(error);
-  } catch (e) {
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
-        },
-      }),
-    );
+  if (!newGroupElements.length) {
+    return;
   }
+
+  const allChildIds = yield select(
+    selectTreeChildIdsByParentsIds(
+      newGroupElements.reduce((allChildIds, element) => {
+        return [...allChildIds, ...element.children];
+      }, []),
+    ),
+  );
+
+  const elements = yield select(selectAllElements);
+
+  const paramsToUpdate = allChildIds.reduce((params, childId) => {
+    const newElement = elements[childId];
+    const sourceElement = elements[newElement.parameters?.sourceElementId];
+    if (!sourceElement) {
+      return params;
+    }
+    return {
+      ...params,
+      [sourceElement.id]: {
+        groupElements: [
+          ...(sourceElement.parameters?.groupElements || []),
+          newElement.id,
+        ],
+      },
+    };
+  }, {});
+
+  yield call(
+    updateOrReplaceMultipleElementsParameters,
+    Actions.updateMultipleElementsParameters(
+      Object.keys(paramsToUpdate),
+      paramsToUpdate,
+      {
+        ...meta,
+      },
+    ),
+    UpdateDataActionType.UPDATE,
+  );
 }
 
 export const createElementsSaga = withActionsHistory(function* (
@@ -309,8 +203,6 @@ export const createElementsSaga = withActionsHistory(function* (
 
     const elementGroups = yield select(selectElementTreeGroups);
 
-    const createdGroupsIds: string[] = [];
-
     const convertedCreatedElements = createdElements.map((dEl) => {
       if (dEl.custom) {
         return convertElementToRequest(
@@ -318,9 +210,6 @@ export const createElementsSaga = withActionsHistory(function* (
         );
       }
       if (dEl.parameters?.isGroup) {
-        if (dEl.id) {
-          createdGroupsIds.push(dEl.id);
-        }
         const group = elementGroups.find((group) => group.id === dEl.id);
         return convertElementToRequest({
           ...group,
@@ -340,66 +229,77 @@ export const createElementsSaga = withActionsHistory(function* (
 
     const elementsIds = yield call(
       createElements,
-      { elements: convertedCreatedElements, index },
-      activeElementTree,
+      [
+        {
+          elements: convertedCreatedElements,
+          parent: activeElementTree,
+          index,
+        },
+      ],
       {
         ...action.meta,
       },
     );
 
-    if (createdGroupsIds.length) {
-      const updatedElements = yield select(selectElementsByIds(elementsIds));
-      const newGroupElements = updatedElements.filter((el) => {
-        return !!el.parameters.sourceElementId;
-      });
-
-      const allChildIds = yield select(
-        selectTreeChildIdsByParentsIds(
-          newGroupElements.reduce((allChildIds, element) => {
-            return [...allChildIds, ...element.children];
-          }, []),
-        ),
-      );
-
-      const elements = yield select(selectAllElements);
-
-      const paramsToUpdate = allChildIds.reduce((params, childId) => {
-        const newElement = elements[childId];
-        const sourceElement = elements[newElement.parameters?.sourceElementId];
-        if (!sourceElement) {
-          return params;
-        }
-        return {
-          ...params,
-          [sourceElement.id]: {
-            groupElements: [
-              ...(sourceElement.parameters?.groupElements || []),
-              newElement.id,
-            ],
-          },
-        };
-      }, {});
-
-      yield call(
-        updateOrReplaceMultipleElementsParameters,
-        Actions.updateMultipleElementsParameters(
-          Object.keys(paramsToUpdate),
-          paramsToUpdate,
-          {
-            ...action.meta,
-          },
-        ),
-        UpdateDataActionType.UPDATE,
-      );
-    }
+    yield call(createGroupsBinding, elementsIds, action.meta);
   } catch (e) {
     yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
+export const createGroupChildrenSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.createGroupChildren>,
+) {
+  const { createdElements, parentId, index } = action.payload;
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
+  if (!parentId) {
+    yield put(
       enqueueSnackbar({
-        message: e.message,
+        message: 'Group child can not be root',
         options: { variant: 'error' },
       }),
     );
+    return;
   }
+  const parentElement = yield select(selectElementById(parentId));
+  const { sourceElementId, groupElements } = parentElement.parameters;
+  if (!sourceElementId && !groupElements) {
+    yield put(
+      enqueueSnackbar({
+        message: 'Element does not belong to a group!',
+      }),
+    );
+    return;
+  }
+  /* const parentSourceElement = yield select(
+    selectElementById(parentElement.parameters.sourceElementId),
+  ); */
+  /* yield put(
+    Actions.createElements(
+      {
+        createdElements,
+        parentId: parentElement.parameters.sourceElementId,
+        index,
+      },
+      { ...action.meta },
+    ),
+  );  */
+  yield put(
+    Actions.createElements({ createdElements, parentId, index }, action.meta),
+  );
 });
 
 export const addChildrenToElementSaga = withActionsHistory(function* (
@@ -432,18 +332,20 @@ export const addChildrenToElementSaga = withActionsHistory(function* (
 
     yield call(
       createElements,
-      { elements: convertedCreatedChildren },
-      element,
+      [{ elements: convertedCreatedChildren, parent: element }],
       {
         ...action.meta,
       },
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -480,18 +382,18 @@ export const addChildToElementSaga = withActionsHistory(function* (
 
     yield call(
       createElements,
-      { elements: [convertedChildWithUpdatedParameters] },
-      element,
-      {
-        ...action.meta,
-      },
+      [{ elements: [convertedChildWithUpdatedParameters], parent: element }],
+      { ...action.meta },
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -530,10 +432,13 @@ export function* deleteElementSaga(
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -638,10 +543,13 @@ export const softDeleteSaga = withActionsHistory(function* (
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -733,12 +641,14 @@ export const softDeleteMultipleSaga = withActionsHistory(function* (
     }
     if (error) throw new Error(error);
   } catch (e) {
-    console.error('TEST!!!!', e);
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -806,10 +716,13 @@ export const restoreElementChildrenSaga = withActionsHistory(function* (
     if (updateError) throw new Error(updateError);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -874,10 +787,13 @@ export const restoreMultipleElementsChildrenSaga = withActionsHistory(
       if (updateError) throw new Error(updateError);
     } catch (e) {
       yield put(
-        enqueueSnackbar({
-          message: e.message,
-          options: { variant: 'error' },
-        }),
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
       );
     }
   },
@@ -926,10 +842,13 @@ export function* restoreElementSaga(
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -954,10 +873,13 @@ export function* addElementToElement(elementId: string, parentId: string) {
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -1078,7 +1000,7 @@ export function* wrapIntoContainer(
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }),
+      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
     );
   }
 }
@@ -1121,10 +1043,13 @@ export const wrapIntoContainerSaga = withActionsHistory(function* (
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -1172,10 +1097,13 @@ export const unwrapFromContainerSaga = withActionsHistory(function* (
     if (elementsError) throw new Error(elementsError);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -1235,10 +1163,13 @@ export function* updateElementSaga(
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -1315,10 +1246,13 @@ export const redoWrapIntoContainerSaga = withActionsHistory(function* (
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });

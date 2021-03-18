@@ -23,6 +23,7 @@ import {
   ProjectsSearchParameter,
   DateRange,
   UpdateElementData,
+  StateElementsToAdd,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 import {
@@ -140,6 +141,8 @@ import {
   RestoreChildrenData,
   SoftDeleteMultipleElements,
   SoftDeleteElement,
+  CreateGroupChildren,
+  AddStateElements,
 } from '../types';
 
 export const getProjectList = (): LoadProjects => ({
@@ -387,21 +390,19 @@ export const updateStateElement = (
   meta,
 });
 
+// add new elements to existing ones
 export const addStateElements = (
-  elements: LibraryElement<any>[],
-  parentId: string,
+  stateElementsToAdd: StateElementsToAdd<Entity>[],
   meta: ElementHistoryMeta,
-  index?: number,
-) => ({
+): AddStateElements => ({
   type: TYPES.ADD_STATE_ELEMENTS,
   payload: {
-    elements,
-    parentId,
-    index,
+    elements: stateElementsToAdd,
   },
   meta,
 });
 
+// insert new element in the tree between existing parent and child elements
 export const insertStateElement = (
   element: LibraryElement<any>,
   parentId: string,
@@ -759,6 +760,15 @@ export const createElements = (
   meta: ElementHistoryMeta,
 ): CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
+  payload: { createdElements, parentId, index },
+  meta,
+});
+
+export const createGroupChildren = (
+  { createdElements, parentId, index }: CreateElementsData,
+  meta: ElementHistoryMeta,
+): CreateGroupChildren => ({
+  type: TYPES.CREATE_GROUP_CHILDREN,
   payload: { createdElements, parentId, index },
   meta,
 });
@@ -1304,5 +1314,35 @@ export const unbindGroupElementStyles = (
     id,
     styles,
   },
+  meta,
+});
+
+export const unbindGroupElement = (id: string, meta: ElementHistoryMeta) => ({
+  type: TYPES.UNBIND_GROUP_ELEMENT,
+  payload: { id },
+  meta,
+});
+
+export const unbindGroupInstance = (id: string, meta: ElementHistoryMeta) => ({
+  type: TYPES.UNBIND_GROUP_INSTANCE,
+  payload: { id },
+  meta,
+});
+
+export const unbindMasterGroupElement = (
+  id: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.UNBIND_MASTER_INSTANCE,
+  payload: { id },
+  meta,
+});
+
+export const unbindMasterGroupInstance = (
+  id: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.UNBIND_MASTER_ELEMENT,
+  payload: { id },
   meta,
 });
