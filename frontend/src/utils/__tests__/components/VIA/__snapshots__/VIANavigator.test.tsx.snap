@@ -62,11 +62,19 @@ exports[`VIANavigator should render VIANavigator 1`] = `
                 style="pointer-events: auto;"
               >
                 <div
+                  aria-roledescription="Draggable item. Press space bar to lift"
                   class="makeStyles-root-9"
+                  data-react-beautiful-dnd-drag-handle="0"
                   data-react-beautiful-dnd-draggable="0"
+                  draggable="false"
                   style="padding-left: 0px;"
+                  tabindex="0"
                 >
-                  ocrtext
+                  <span
+                    class="makeStyles-title-11"
+                  >
+                    ocrtext
+                  </span>
                 </div>
               </div>
             </div>

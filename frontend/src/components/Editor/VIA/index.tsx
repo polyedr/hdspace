@@ -15,6 +15,7 @@ const useStyles = makeStyles({
   },
   canvas: {
     position: 'relative',
+    minHeight: '100%',
   },
 });
 

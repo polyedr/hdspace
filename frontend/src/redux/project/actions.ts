@@ -44,7 +44,6 @@ import {
   DuplicateScreen,
   ElementHistoryMeta,
   GetProject,
-  GetScreenNN,
   HistoryMeta,
   LoadProjects,
   LoadProjectsSuccess,
@@ -121,6 +120,8 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
+  RecognizeImage,
+  FinishAnnotaion,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
   ExecuteRedoActions,
@@ -143,6 +144,7 @@ import {
   CreateVIARegion,
   DeleteVIARegion,
   SetAnnotatedElement,
+  UpdateVIARegionLayer,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -788,8 +790,19 @@ export const uploadFile = (
   meta,
 });
 
-export const getScreenNN = (): GetScreenNN => ({
-  type: TYPES.GET_SCREEN_NN,
+export const recognizeImage = (
+  file: any,
+  parentId: string,
+  blockType: NNBlockType,
+  meta: ElementHistoryMeta,
+): RecognizeImage => ({
+  type: TYPES.RECOGNIZE_IMAGE,
+  payload: {
+    file,
+    parentId,
+    blockType,
+  },
+  meta,
 });
 
 export const wrapIntoContainer = (
@@ -1328,4 +1341,20 @@ export const assembleVIARegions = () => ({
 export const setAnnotatedElementId = (id: string): SetAnnotatedElement => ({
   type: TYPES.SET_ANNOTATED_ELEMENT_ID,
   payload: id,
+});
+
+export const updateVIARegionLayer = (
+  regionId: string,
+  layer: number,
+): UpdateVIARegionLayer => ({
+  type: TYPES.UPDATE_VIA_REGION_LAYER,
+  payload: { regionId, layer },
+});
+
+export const cancelRecognizing = () => ({
+  type: TYPES.CANCEL_RECOGNIZING,
+});
+
+export const finishAnnotation = (): FinishAnnotaion => ({
+  type: TYPES.FINISH_ANNOTATION,
 });

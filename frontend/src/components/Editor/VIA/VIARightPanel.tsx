@@ -1,7 +1,11 @@
 import { StyledIconButton } from '@Components/styledComponents';
 import { Button, makeStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { assembleVIARegions, createVIARegion } from '@Redux/project/actions';
+import {
+  assembleVIARegions,
+  cancelRecognizing,
+  createVIARegion,
+} from '@Redux/project/actions';
 import { selectActiveVIARegion } from '@Redux/project/selectors/via';
 import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
 import React, { FC } from 'react';
@@ -23,6 +27,9 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    '& > *': {
+      margin: spacing(0, 0.5),
+    },
   },
 }));
 
@@ -36,6 +43,8 @@ const VIARightPanel: FC = () => {
   const handleCreateRegion = () => dispatch(createVIARegion());
 
   const handleAssemble = () => dispatch(assembleVIARegions());
+
+  const handleCancel = () => dispatch(cancelRecognizing());
 
   return (
     <div className={classes.root}>
@@ -51,6 +60,8 @@ const VIARightPanel: FC = () => {
         <Button variant="contained" color="secondary" onClick={handleAssemble}>
           Assemble
         </Button>
+
+        <Button onClick={handleCancel}>Cancel</Button>
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import * as R from 'ramda';
-import produce, { Draft } from 'immer';
-import { VIARegion } from '@Src/types';
+import produce, { current, Draft } from 'immer';
+import { Normalized, VIARegion } from '@Src/types';
 import { v4 } from 'uuid';
+import { sortByLayer } from '@Utils/viaHelpers';
 import { initialEdit } from '../initial';
 import TYPES from '../../actionTypes';
 import { Action, ProjectEditState } from '../../types';
@@ -156,6 +157,7 @@ const editReducer = produce(
       case TYPES.CREATE_VIA_REGION: {
         const newRegion: VIARegion = {
           id: v4(),
+          layer: Object.keys(draft.VIAMode.regions).length + 1,
           region_attributes: {
             'HTML element': 'container',
           },
@@ -179,6 +181,34 @@ const editReducer = produce(
 
       case TYPES.SET_ANNOTATED_ELEMENT_ID: {
         draft.VIAMode.annotatedElementId = action.payload;
+        break;
+      }
+
+      case TYPES.UPDATE_VIA_REGION_LAYER: {
+        const { regionId, layer } = action.payload;
+        const arr = Object.values(current(draft.VIAMode.regions)).sort(
+          sortByLayer,
+        );
+
+        const startIndex = draft.VIAMode.regions[regionId].layer;
+
+        const [target] = arr.splice(startIndex, 1);
+
+        arr.splice(layer, 0, target);
+
+        draft.VIAMode.regions = arr.reduce((acc, curr, i) => {
+          acc[curr.id] = {
+            ...curr,
+            layer: i,
+          };
+          return acc;
+        }, {} as Normalized<VIARegion>);
+
+        break;
+      }
+
+      case TYPES.FINISH_ANNOTATION: {
+        draft.VIAMode = initialEdit.VIAMode;
         break;
       }
 

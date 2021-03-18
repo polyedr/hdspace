@@ -492,11 +492,15 @@ export type UploadFile = IAction<
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
+export type RecognizeImage = IAction<
+  typeof TYPES.RECOGNIZE_IMAGE,
+  { file: any; parentId: string; blockType: NNBlockType },
+  ElementHistoryMeta
+>;
 export type uploadImageForNNSuccess = IAction<
   typeof TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
   { imageURL: string; screenID: number }
 >;
-export type GetScreenNN = IPlainAction<typeof TYPES.GET_SCREEN_NN>;
 export type WrapIntoContainer = IAction<
   typeof TYPES.WRAP_INTO_CONTAINER,
   { id: string },
@@ -897,6 +901,13 @@ export type SetAnnotatedElement = IAction<
   string
 >;
 
+export type UpdateVIARegionLayer = IAction<
+  typeof TYPES.UPDATE_VIA_REGION_LAYER,
+  { regionId: string; layer: number }
+>;
+
+export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -934,7 +945,6 @@ export type Action =
   | AddChildrenToElement
   | UploadFile
   | uploadImageForNNSuccess
-  | GetScreenNN
   | WrapIntoContainer
   | SetHoveredElementId
   | SetMasterCoreElementId
@@ -1041,7 +1051,9 @@ export type Action =
   | SetActiveVIARegion
   | CreateVIARegion
   | DeleteVIARegion
-  | SetAnnotatedElement;
+  | SetAnnotatedElement
+  | UpdateVIARegionLayer
+  | FinishAnnotaion;
 
 export type HistoryMeta = {
   useHistory?: boolean;

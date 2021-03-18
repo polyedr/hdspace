@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core';
 import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import prevent from '@Utils/preventEvent';
@@ -7,17 +7,18 @@ import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import { VIARegion } from '../../../types';
+import VIABorders from './VIABorders';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles<Theme, { isActive: boolean; layer: number }>({
   region: {
+    backgroundColor: ({ isActive }) =>
+      isActive ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
     border: '1px solid black',
-  },
-  active: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    zIndex: 999,
+    zIndex: ({ layer, isActive }) => (isActive ? 999 : layer),
+    position: 'relative',
   },
   resizeHandle: {
-    display: ({ isActive }: any) => (isActive ? 'block' : 'none'),
+    display: ({ isActive }) => (isActive ? 'block' : 'none'),
     width: '12px !important',
     height: '12px !important',
     backgroundColor: 'yellow',
@@ -67,9 +68,9 @@ type Props = {
 
 const Region: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();
-  const { id, shape_attributes } = region;
+  const { id, shape_attributes, layer = 0 } = region;
   const isActive = useSelector(selectIsRegionActive(region.id));
-  const classes = useStyles({ isActive });
+  const classes = useStyles({ isActive, layer });
   const { height, width, x, y } = shape_attributes;
 
   const selectRegion = (ev) => {
@@ -123,7 +124,7 @@ const Region: FC<Props> = ({ region }) => {
 
   return (
     <Rnd
-      className={cn(classes.region, isActive && classes.active)}
+      className={classes.region}
       bounds="parent"
       size={{
         width,
@@ -149,7 +150,9 @@ const Region: FC<Props> = ({ region }) => {
         topLeft: cn(classes.resizeHandle, classes.topLeftHandle),
       }}
       data-testid={id}
-    />
+    >
+      <VIABorders />
+    </Rnd>
   );
 };
 

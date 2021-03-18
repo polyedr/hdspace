@@ -48,6 +48,20 @@ exports[`VIA Right Panel should render VIA Right Panel component 1`] = `
           class="MuiTouchRipple-root"
         />
       </button>
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-text"
+        tabindex="0"
+        type="button"
+      >
+        <span
+          class="MuiButton-label"
+        >
+          Cancel
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </button>
     </div>
   </div>
 </div>

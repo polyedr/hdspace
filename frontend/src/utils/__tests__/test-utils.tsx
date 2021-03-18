@@ -121,6 +121,7 @@ export const mockVIAState = {
         'HTML element': 'ocrtext',
       },
       id: '7343f00c-4ec0-4e71-8a07-ec1f8820d489',
+      layer: 1,
     },
   },
   activeRegionId: '',
