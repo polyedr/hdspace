@@ -1,8 +1,13 @@
-import { selectVIARegions } from '@Redux/project/selectors/via';
+import { selectVIARegionsAsArray } from '@Redux/project/selectors/via';
 import React, { FC } from 'react';
-import { useSelector } from 'react-redux';
-import AtlasTree, { RenderItemParams, TreeData } from '@atlaskit/tree';
-import { Normalized, VIARegion } from '@Src/types';
+import { useDispatch, useSelector } from 'react-redux';
+import AtlasTree, {
+  RenderItemParams,
+  TreeData,
+  TreeDestinationPosition,
+  TreeSourcePosition,
+} from '@atlaskit/tree';
+import { VIARegion } from '@Src/types';
 import { makeStyles } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {
@@ -10,14 +15,19 @@ import {
   StyledAccordionDetails,
   StyledAccordionSummary,
 } from '@Components/styledComponents';
+import { updateVIARegionLayer } from '@Redux/project/actions';
+import { sortByLayer } from '@Utils/viaHelpers';
 import VIATreeItem from './VIATreeItem';
 
-const convertVIAToTree = (viaRegions: Normalized<VIARegion>): TreeData => ({
+const convertVIAToTree = (viaRegions: VIARegion[]): TreeData => ({
   rootId: 'via-tree-root',
   items: {
     'via-tree-root': {
       id: 'via-tree-root',
-      children: Object.keys(viaRegions),
+      children: viaRegions
+        .sort(sortByLayer)
+        .map((region) => region.id)
+        .reverse(),
       isExpanded: true,
       data: {
         id: 'via-tree-root',
@@ -25,8 +35,8 @@ const convertVIAToTree = (viaRegions: Normalized<VIARegion>): TreeData => ({
       hasChildren: true,
     },
     ...Object.fromEntries(
-      Object.entries(viaRegions).map(([id, region]) => [
-        id,
+      viaRegions.map((region) => [
+        region.id,
         {
           id: region.id,
           children: [],
@@ -42,20 +52,35 @@ const convertVIAToTree = (viaRegions: Normalized<VIARegion>): TreeData => ({
   },
 });
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles({
   root: {
-    padding: spacing(1),
     display: 'flex',
     flexDirection: 'column',
     alignItem: 'stretch',
   },
-}));
+});
 
 const VIANavigator: FC = () => {
+  const dispatch = useDispatch();
   const classes = useStyles();
-  const viaRegions = useSelector(selectVIARegions);
+  const viaRegions = useSelector(selectVIARegionsAsArray);
 
   const tree = convertVIAToTree(viaRegions);
+
+  const dragEnd = (
+    source: TreeSourcePosition,
+    destination?: TreeDestinationPosition,
+  ) => {
+    if (!destination) return;
+    const targetId = tree.items[source.parentId].children[source.index];
+
+    dispatch(
+      updateVIARegionLayer(
+        targetId as string,
+        Object.keys(tree.items).length - 2 - (destination.index || 0), // -2 because tree.items has one additional item 'root' for technical purposes only
+      ),
+    );
+  };
 
   const renderItem = (data: RenderItemParams) => <VIATreeItem {...data} />;
 
@@ -66,7 +91,12 @@ const VIANavigator: FC = () => {
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={classes.root}>
-        <AtlasTree tree={tree} renderItem={renderItem} />
+        <AtlasTree
+          tree={tree}
+          renderItem={renderItem}
+          isDragEnabled
+          onDragEnd={dragEnd}
+        />
       </StyledAccordionDetails>
     </StyledAccordion>
   );

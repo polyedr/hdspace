@@ -12,10 +12,14 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     '&:hover': {
       backgroundColor: lighten(palette.panel.main, 0.3),
     },
-    padding: spacing(0.5, 0),
+    display: 'flex',
+    justifyContent: 'space-between',
   },
   active: {
     backgroundColor: lighten(palette.panel.main, 0.2),
+  },
+  title: {
+    padding: spacing(0.5, 1),
   },
 }));
 
@@ -37,7 +41,7 @@ const VIATreeItem: FC<Props> = ({ item, provided }) => {
       {...provided.draggableProps}
       {...provided.dragHandleProps}
     >
-      {item.data.type}
+      <span className={classes.title}>{item.data.type}</span>
     </div>
   );
 };

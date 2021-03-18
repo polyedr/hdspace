@@ -1169,7 +1169,7 @@ export type VIARegionWithoutId = {
 
 export type VIARegion = VIARegionWithoutId & {
   id: string;
-  zIndex?: number;
+  layer: number;
 };
 
 export type VIAFile = {

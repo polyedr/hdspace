@@ -49,7 +49,7 @@ import {
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
-import { addId, addZIndices } from '@Utils/viaHelpers';
+import { addId, addLayerProperty } from '@Utils/viaHelpers';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
 import TYPES from '@Redux/actionTypes';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
@@ -776,7 +776,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
       yield put(
         Actions.setVIARegions(
           arrayToMap(
-            addZIndices(
+            addLayerProperty(
               viaFile.regions.map((region) => addId(region) as VIARegion),
             ),
           ),

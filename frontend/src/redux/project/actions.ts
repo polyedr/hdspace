@@ -143,6 +143,7 @@ import {
   CreateVIARegion,
   DeleteVIARegion,
   SetAnnotatedElement,
+  UpdateVIARegionLayer,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1328,4 +1329,12 @@ export const assembleVIARegions = () => ({
 export const setAnnotatedElementId = (id: string): SetAnnotatedElement => ({
   type: TYPES.SET_ANNOTATED_ELEMENT_ID,
   payload: id,
+});
+
+export const updateVIARegionLayer = (
+  regionId: string,
+  layer: number,
+): UpdateVIARegionLayer => ({
+  type: TYPES.UPDATE_VIA_REGION_LAYER,
+  payload: { regionId, layer },
 });

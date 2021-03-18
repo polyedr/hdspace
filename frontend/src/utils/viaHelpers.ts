@@ -23,8 +23,11 @@ export const addId = <T extends Record<string, any>>(item: T) => {
   };
 };
 
-export const addZIndices = (regions: VIARegion[]): VIARegion[] =>
+export const addLayerProperty = (regions: VIARegion[]): VIARegion[] =>
   regions.map((region, i) => ({
     ...region,
-    zIndex: regions.length - i,
+    layer: regions.length - 1 - i,
   }));
+
+export const sortByLayer = <T extends { layer: number }>(a: T, b: T) =>
+  a.layer - b.layer;

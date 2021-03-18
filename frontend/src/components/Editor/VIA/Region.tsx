@@ -8,14 +8,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import { VIARegion } from '../../../types';
 
-const useStyles = makeStyles<Theme, { isActive: boolean; zIndex: number }>({
+const useStyles = makeStyles<Theme, { isActive: boolean; layer: number }>({
+  active: {},
   region: {
+    backgroundColor: ({ isActive }) =>
+      isActive ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
     border: '1px solid black',
-    zIndex: ({ zIndex }) => zIndex,
-  },
-  active: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    zIndex: 999,
+    zIndex: ({ layer, isActive }) => (isActive ? 999 : layer),
   },
   resizeHandle: {
     display: ({ isActive }) => (isActive ? 'block' : 'none'),
@@ -68,9 +67,9 @@ type Props = {
 
 const Region: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();
-  const { id, shape_attributes, zIndex = 1 } = region;
+  const { id, shape_attributes, layer = 0 } = region;
   const isActive = useSelector(selectIsRegionActive(region.id));
-  const classes = useStyles({ isActive, zIndex });
+  const classes = useStyles({ isActive, layer });
   const { height, width, x, y } = shape_attributes;
 
   const selectRegion = (ev) => {
