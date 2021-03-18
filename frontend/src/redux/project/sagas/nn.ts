@@ -154,12 +154,12 @@ export const recognizeImageSaga = withActionsHistory(function* ({
               Actions.addHistoryActions({
                 undo: [
                   Actions.deleteElement(assembleResult.id, {
-                    screenId,
+                    ...meta,
                   }),
                 ],
                 redo: [
                   Actions.restoreElement(assembleResult.id, {
-                    screenId,
+                    ...meta,
                   }),
                 ],
               }),
@@ -195,6 +195,7 @@ export const recognizeImageSaga = withActionsHistory(function* ({
     yield put(Actions.finishAnnotation());
   }
 });
+
 export const uploadFileSaga = withActionsHistory(function* ({
   type,
   payload: { file, parentId, blockType },
@@ -259,12 +260,12 @@ export const uploadFileSaga = withActionsHistory(function* ({
             Actions.addHistoryActions({
               undo: [
                 Actions.deleteElement(nnContainer.id, {
-                  screenId,
+                  ...meta,
                 }),
               ],
               redo: [
                 Actions.restoreElement(nnContainer.id, {
-                  screenId,
+                  ...meta,
                 }),
               ],
             }),
