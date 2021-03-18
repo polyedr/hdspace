@@ -331,10 +331,6 @@ export function* createElements<T extends Entity>(
       apiCreateElements,
       { data: allElementsToCreate },
     );
-
-    console.log('ALL ELEMENTS TO CREATE!!', allElementsToCreate);
-
-    console.log('NEW ELEMENTS!!', newElements);
     if (!newElements) {
       if (createElementsError) {
         throw new Error(createElementsError);
@@ -359,12 +355,6 @@ export function* createElements<T extends Entity>(
         const newChildElements = newElements.filter(
           (el) => el.parameters.parentId === parent.id,
         );
-        console.log(
-          'NEW CHILD ELEMENTS!!',
-          // newChildElements,
-          parent,
-          // elsToCreate,
-        );
         return convertToRecursiveServerElement({
           id: parent.id,
           name: parent.name,
@@ -375,8 +365,6 @@ export function* createElements<T extends Entity>(
         });
       },
     );
-
-    console.log('RECURSIVE ELEMENTS!!', recursiveElements);
 
     const {
       result,
@@ -419,9 +407,7 @@ export function* createElements<T extends Entity>(
         index,
       };
     });
-    console.log('STATE ELEMENTS TO ADD!!!', stateElementsToAdd);
     yield put(Actions.addStateElements(stateElementsToAdd, { ...meta }));
-    console.log('SET REDO ACTIONS!!');
     if (!useHistory) {
       yield put(
         Actions.addRedoActions(
@@ -452,7 +438,6 @@ export function* createElements<T extends Entity>(
       (elToCreate) => elToCreate.parent.id,
     );
 
-    console.log('GET ELEMENTS WITH UPDATED BUOYANCY!!');
     const elementsWithUpdatedBuoyancy = parentIds.reduce(
       (createdElements, parentId) => {
         const childElements = allElements[parentId].children.map((childId) => {
@@ -473,7 +458,6 @@ export function* createElements<T extends Entity>(
       },
     );
     if (createdElements) {
-      console.log('RETURN!!!', createdElements);
       // eslint-disable-next-line consistent-return
       return createdElements.map((el) => String(el.id));
     }

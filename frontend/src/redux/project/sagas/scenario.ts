@@ -420,7 +420,6 @@ export function* deleteElementSaga(
     // const isGroupSource = !!element.parameters.groupElements;
     // const isGroupInstance = !!element.parameters.sourceElementId;
     if (groupElements) {
-      console.log('TEST GROUP ELEMENTS!!!');
       yield put(
         Actions.softDeleteMultipleElements([id, ...groupElements], action.meta),
       );
