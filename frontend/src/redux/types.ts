@@ -492,11 +492,15 @@ export type UploadFile = IAction<
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
+export type RecognizeImage = IAction<
+  typeof TYPES.RECOGNIZE_IMAGE,
+  { file: any; parentId: string; blockType: NNBlockType },
+  ElementHistoryMeta
+>;
 export type uploadImageForNNSuccess = IAction<
   typeof TYPES.UPLOAD_IMAGE_FOR_NN_SUCCESS,
   { imageURL: string; screenID: number }
 >;
-export type GetScreenNN = IPlainAction<typeof TYPES.GET_SCREEN_NN>;
 export type WrapIntoContainer = IAction<
   typeof TYPES.WRAP_INTO_CONTAINER,
   { id: string },
@@ -939,7 +943,6 @@ export type Action =
   | AddChildrenToElement
   | UploadFile
   | uploadImageForNNSuccess
-  | GetScreenNN
   | WrapIntoContainer
   | SetHoveredElementId
   | SetMasterCoreElementId

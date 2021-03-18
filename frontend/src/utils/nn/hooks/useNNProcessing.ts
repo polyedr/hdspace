@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectElementById } from '@Redux/project/selectors/element';
-import { uploadFile } from '@Redux/project/actions';
+import { recognizeImage, uploadFile } from '@Redux/project/actions';
 import { NNBlockType } from '../../../types';
 
 const useNNProcessing = (
@@ -14,35 +14,57 @@ const useNNProcessing = (
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
 
-  const handleNNProcessing = useCallback(() => {
-    if (!file) {
-      return;
-    }
+  const handleNNProcessing = useCallback(
+    (auto: boolean = true) => {
+      if (!file) {
+        return;
+      }
 
-    dispatch(
-      uploadFile(
-        {
-          name: file.name,
-          file,
-          imgPreviewUrl: element.parameters.imageUrl,
-          stylesOn: element.parameters.stylesOn,
-        },
-        elementId,
-        blockType,
-        {
-          screenId: currentScreenId,
-        },
-      ),
-    );
-  }, [
-    file,
-    dispatch,
-    element.parameters.imageUrl,
-    element.parameters.stylesOn,
-    elementId,
-    blockType,
-    currentScreenId,
-  ]);
+      if (auto) {
+        dispatch(
+          uploadFile(
+            {
+              name: file.name,
+              file,
+              imgPreviewUrl: element.parameters.imageUrl,
+              stylesOn: element.parameters.stylesOn,
+            },
+            elementId,
+            blockType,
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+        return;
+      }
+
+      dispatch(
+        recognizeImage(
+          {
+            name: file.name,
+            file,
+            imgPreviewUrl: element.parameters.imageUrl,
+            stylesOn: element.parameters.stylesOn,
+          },
+          elementId,
+          blockType,
+          {
+            screenId: currentScreenId,
+          },
+        ),
+      );
+    },
+    [
+      file,
+      dispatch,
+      element.parameters.imageUrl,
+      element.parameters.stylesOn,
+      elementId,
+      blockType,
+      currentScreenId,
+    ],
+  );
 
   return handleNNProcessing;
 };

@@ -44,7 +44,6 @@ import {
   DuplicateScreen,
   ElementHistoryMeta,
   GetProject,
-  GetScreenNN,
   HistoryMeta,
   LoadProjects,
   LoadProjectsSuccess,
@@ -121,6 +120,7 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
+  RecognizeImage,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
   ExecuteRedoActions,
@@ -789,8 +789,19 @@ export const uploadFile = (
   meta,
 });
 
-export const getScreenNN = (): GetScreenNN => ({
-  type: TYPES.GET_SCREEN_NN,
+export const recognizeImage = (
+  file: any,
+  parentId: string,
+  blockType: NNBlockType,
+  meta: ElementHistoryMeta,
+): RecognizeImage => ({
+  type: TYPES.RECOGNIZE_IMAGE,
+  payload: {
+    file,
+    parentId,
+    blockType,
+  },
+  meta,
 });
 
 export const wrapIntoContainer = (

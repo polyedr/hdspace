@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { put, call, select, take } from 'redux-saga/effects';
+import { put, call, select } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -14,19 +14,15 @@ import {
   selectActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
-import { selectVIARegionsAsArray } from '@Redux/project/selectors/via';
 import {
   convertElementToPatchRequest,
   convertElementToRequest,
 } from '@Api/converters/toRequest';
-import { getElementsArray } from '@Utils/ElementsTreeHelper';
 import {
   apiUpdateElement,
   apiChangeRecursiveElement,
   apiUpdateElements,
   apiGetCustomLibraryElements,
-  recognizeImgUsingNN,
-  assembleImgUsingNN,
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
@@ -43,15 +39,9 @@ import {
   ServerElement,
   StateElement,
   UpdateDataActionType,
-  Screen,
-  VIAFile,
-  VIARegion,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
-import { addId, addLayerProperty } from '@Utils/viaHelpers';
-import { arrayToMap } from '@Utils/normalizedStateHelpers';
-import TYPES from '@Redux/actionTypes';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -730,171 +720,6 @@ export const replaceMultipleElementsParametersSaga = withActionsHistory(
     );
   },
 );
-
-export const uploadFileSaga = withActionsHistory(function* ({
-  type,
-  payload: { file, parentId, blockType },
-  meta,
-}: ReturnType<typeof Actions.uploadFile>) {
-  try {
-    if (!meta) {
-      console.error(`You have to provide metainformation for action ${type}`);
-      return;
-    }
-    yield put(Actions.setAnalyzerLoader(true));
-
-    const { screenId, useHistory } = meta;
-
-    const recognizeFormData = new FormData();
-
-    recognizeFormData.append('image', file.file, file.name);
-    recognizeFormData.append('name', file.name);
-    recognizeFormData.append(
-      'screen_data_json',
-      JSON.stringify({ block_type: blockType }),
-    );
-
-    const {
-      result: recognizeResult,
-      error: recognizeError,
-    }: Result<Screen> = yield call(reqWrapper, recognizeImgUsingNN, {
-      data: recognizeFormData,
-      contentType: 'multipart/form-data',
-    });
-
-    if (recognizeResult) {
-      if (!recognizeResult.screen_data_json) {
-        throw new Error('No VIA data has been received');
-      }
-
-      const [viaKey, viaFile] = Object.entries(
-        JSON.parse(recognizeResult.screen_data_json) as {
-          [key: string]: VIAFile;
-        },
-      )[0];
-
-      yield put(
-        Actions.setVIARegions(
-          arrayToMap(
-            addLayerProperty(
-              viaFile.regions.map((region) => addId(region) as VIARegion),
-            ),
-          ),
-        ),
-      );
-      yield put(Actions.setAnnotatedElementId(parentId));
-
-      yield put(Actions.setVIAMode(true));
-
-      yield put(Actions.setAnalyzerLoader(false));
-
-      yield take(TYPES.ASSEMBLE_VIA_REGIONS);
-      yield put(Actions.setAnalyzerLoader(true));
-
-      const updatedRegions: VIARegion[] = yield select(selectVIARegionsAsArray);
-
-      const assembleFormData = new FormData();
-      assembleFormData.append('image', file.file, file.name);
-      assembleFormData.append('name', 'image');
-      assembleFormData.append('parent_id', parentId);
-      assembleFormData.append('styles', '{}');
-      assembleFormData.append('screen', screenId.toString());
-      assembleFormData.append(
-        'parameters',
-        JSON.stringify({
-          block_type: blockType,
-          annotation: JSON.stringify({
-            [viaKey]: {
-              ...viaFile,
-              regions: updatedRegions.map(
-                ({ region_attributes, shape_attributes }) => ({
-                  region_attributes,
-                  shape_attributes,
-                }),
-              ),
-            },
-          }),
-        }),
-      );
-
-      const {
-        result: assembleResult,
-        error: assembleError,
-      }: Result<LibraryElement<any>> = yield call(
-        reqWrapper,
-        assembleImgUsingNN,
-        {
-          data: assembleFormData,
-        },
-      );
-      if (assembleResult) {
-        const convertedElements = getElementsArray(
-          assembleResult,
-        ).map((element) => convertElementToPatchRequest(element));
-
-        const {
-          result,
-          error,
-        }: Result<ServerElement<any>> = yield call(
-          reqWrapper,
-          apiUpdateElements,
-          { data: convertedElements },
-        );
-
-        if (result) {
-          yield put(
-            Actions.addStateElements([assembleResult], parentId, {
-              ...meta,
-            }),
-          );
-
-          if (!useHistory) {
-            yield put(
-              Actions.addHistoryActions({
-                undo: [
-                  Actions.deleteElement(assembleResult.id, {
-                    screenId,
-                  }),
-                ],
-                redo: [
-                  Actions.restoreElement(assembleResult.id, {
-                    screenId,
-                  }),
-                ],
-              }),
-            );
-          }
-
-          yield put(
-            enqueueSnackbar({
-              message: 'Image uploaded successfully',
-              options: { variant: 'success' },
-            }),
-          );
-        }
-        if (error) throw new Error(error);
-      }
-
-      if (assembleError) throw new Error(assembleError);
-    }
-    if (recognizeError) throw new Error(recognizeError);
-  } catch (e) {
-    console.error('Could not upload image for NN. Error: ', e.message);
-    if (process.env.NODE_ENV === 'development') {
-      console.trace(e);
-    }
-    yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
-    );
-  } finally {
-    yield put(Actions.setAnalyzerLoader(false));
-    yield put(Actions.setAnnotatedElementId(''));
-    yield put(Actions.setVIAMode(false));
-  }
-});
 
 export function* loadCustomElementsSaga(
   action: ReturnType<typeof Actions.loadCustomElements>,

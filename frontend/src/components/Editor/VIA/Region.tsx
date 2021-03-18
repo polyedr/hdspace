@@ -7,14 +7,15 @@ import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import { VIARegion } from '../../../types';
+import VIABorders from './VIABorders';
 
 const useStyles = makeStyles<Theme, { isActive: boolean; layer: number }>({
-  active: {},
   region: {
     backgroundColor: ({ isActive }) =>
       isActive ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
     border: '1px solid black',
     zIndex: ({ layer, isActive }) => (isActive ? 999 : layer),
+    position: 'relative',
   },
   resizeHandle: {
     display: ({ isActive }) => (isActive ? 'block' : 'none'),
@@ -123,7 +124,7 @@ const Region: FC<Props> = ({ region }) => {
 
   return (
     <Rnd
-      className={cn(classes.region, isActive && classes.active)}
+      className={classes.region}
       bounds="parent"
       size={{
         width,
@@ -149,7 +150,9 @@ const Region: FC<Props> = ({ region }) => {
         topLeft: cn(classes.resizeHandle, classes.topLeftHandle),
       }}
       data-testid={id}
-    />
+    >
+      <VIABorders />
+    </Rnd>
   );
 };
 
