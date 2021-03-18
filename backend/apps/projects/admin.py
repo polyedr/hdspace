@@ -1,12 +1,14 @@
 from django.contrib import admin
+from guardian.admin import GuardedModelAdmin
 
 from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment, ProjectIllustrationSet, \
     ProjectImage, ProjectColumn
 from .models import *  # noqa
 
+
+admin.site.register(Project, GuardedModelAdmin)
 # admin.site.register(ScreenEvent)
 admin.site.register(ProjectScreen)
-admin.site.register(Project)
 admin.site.register(ScreenScenario)
 admin.site.register(ScenarioElement)
 # admin.site.register(ProjectMember)
