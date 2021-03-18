@@ -207,6 +207,11 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.FINISH_ANNOTATION: {
+        draft.VIAMode = initialEdit.VIAMode;
+        break;
+      }
+
       case TYPES.RESET_SCREEN_STATE: {
         return initialEdit;
       }

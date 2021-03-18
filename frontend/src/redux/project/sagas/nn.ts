@@ -1,4 +1,4 @@
-import { put, call, select, take } from 'redux-saga/effects';
+import { put, call, select, take, race } from 'redux-saga/effects';
 import { selectVIARegionsAsArray } from '@Redux/project/selectors/via';
 import { convertElementToPatchRequest } from '@Api/converters/toRequest';
 import { getElementsArray } from '@Utils/ElementsTreeHelper';
@@ -81,7 +81,15 @@ export const recognizeImageSaga = withActionsHistory(function* ({
 
       yield put(Actions.setAnalyzerLoader(false));
 
-      yield take(TYPES.ASSEMBLE_VIA_REGIONS);
+      const { cancel } = yield race({
+        assemble: take(TYPES.ASSEMBLE_VIA_REGIONS),
+        cancel: take(TYPES.CANCEL_RECOGNIZING),
+      });
+
+      if (cancel) {
+        return;
+      }
+
       yield put(Actions.setAnalyzerLoader(true));
 
       const updatedRegions: VIARegion[] = yield select(selectVIARegionsAsArray);
@@ -184,8 +192,7 @@ export const recognizeImageSaga = withActionsHistory(function* ({
     );
   } finally {
     yield put(Actions.setAnalyzerLoader(false));
-    yield put(Actions.setAnnotatedElementId(''));
-    yield put(Actions.setVIAMode(false));
+    yield put(Actions.finishAnnotation());
   }
 });
 export const uploadFileSaga = withActionsHistory(function* ({

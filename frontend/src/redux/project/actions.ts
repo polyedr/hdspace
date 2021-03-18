@@ -121,6 +121,7 @@ import {
   UnwrapStateElements,
   StartHistoryRecord,
   RecognizeImage,
+  FinishAnnotaion,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
   ExecuteRedoActions,
@@ -1348,4 +1349,12 @@ export const updateVIARegionLayer = (
 ): UpdateVIARegionLayer => ({
   type: TYPES.UPDATE_VIA_REGION_LAYER,
   payload: { regionId, layer },
+});
+
+export const cancelRecognizing = () => ({
+  type: TYPES.CANCEL_RECOGNIZING,
+});
+
+export const finishAnnotation = (): FinishAnnotaion => ({
+  type: TYPES.FINISH_ANNOTATION,
 });

@@ -371,6 +371,7 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
   yield takeEvery(TYPES.RECOGNIZE_IMAGE, recognizeImageSaga);
+
   yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 

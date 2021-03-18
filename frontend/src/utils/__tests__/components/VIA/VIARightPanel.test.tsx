@@ -64,4 +64,12 @@ describe('VIA Right Panel', () => {
     const actions = store.getActions();
     expect(actions[actions.length - 1].type).toBe(TYPES.ASSEMBLE_VIA_REGIONS);
   });
+
+  it('should cancel annotation mode on button click', () => {
+    const button = ui.getByText('Cancel');
+    fireEvent.click(button);
+
+    const actions = store.getActions();
+    expect(actions[actions.length - 1].type).toBe(TYPES.CANCEL_RECOGNIZING);
+  });
 });

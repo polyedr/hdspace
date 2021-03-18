@@ -906,6 +906,8 @@ export type UpdateVIARegionLayer = IAction<
   { regionId: string; layer: number }
 >;
 
+export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -1050,7 +1052,8 @@ export type Action =
   | CreateVIARegion
   | DeleteVIARegion
   | SetAnnotatedElement
-  | UpdateVIARegionLayer;
+  | UpdateVIARegionLayer
+  | FinishAnnotaion;
 
 export type HistoryMeta = {
   useHistory?: boolean;

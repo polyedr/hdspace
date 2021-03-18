@@ -114,7 +114,7 @@ const LeftPanel: React.FC = () => {
             </div>
           ) : (
             <div>
-              <Screens />
+              {!viaMode && <Screens />}
 
               {viaMode ? <VIANavigator /> : <Navigator />}
             </div>
