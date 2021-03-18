@@ -76,7 +76,9 @@ const dataReducer = produce(
 
       case TYPES.ADD_STATE_ELEMENTS: {
         const { elements } = action.payload;
+        console.log('ADD STATE ELEMENTS!!', draft.elements, elements);
         draft.elements = addMapElements(draft.elements, elements);
+        console.log('FINISH ADDING STATE ELEMENTS!!!');
         break;
       }
 

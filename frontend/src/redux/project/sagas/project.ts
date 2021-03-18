@@ -46,6 +46,7 @@ function* setMasterScreenCoreElements(screen: Screen) {
   const rootElement = yield select(selectElementById(screen.element));
   yield put(Actions.setMasterElementsIds(...rootElement.children));
   const masterCoreId = rootElement.children[0];
+  console.log('SET MASTER SCREEN CORE ELEMENTS!!', masterCoreId);
   yield put(
     Actions.addStateElements(
       [
@@ -76,10 +77,13 @@ function* createMasterScreenElements(screen: Screen) {
     selectElementAsTree(screen.element),
   );
 
+  console.log('MASTER SCREEN ROOT!!', masterRoot);
+  console.log('CREATE MASTER SCREEN ELEMENTS!!!');
   yield call(createElements, [{ elements, parent: masterRoot }], {
     screenId: screen.id,
     useHistory: true,
   });
+  console.log('DONE CREATING ELEMENTS!!!');
   yield call(setMasterScreenCoreElements, screen);
 }
 
@@ -283,6 +287,7 @@ export function* createProjectSaga(
         yield call(createMasterScreenElements, masterScreen);
       }
 
+      console.log('CREATE INITIAL SCREEN!!!');
       const initialScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(

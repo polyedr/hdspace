@@ -89,6 +89,11 @@ export const getAllElementChildrenIds = (
 ) => {
   const element = elements[id];
   const childIds = [id];
+  if (!element) {
+    console.error('SHOULD HAVE CHILDREN!!');
+    console.log(elements);
+    console.log(id);
+  }
   element.children.forEach((childId) => {
     childIds.push(...getAllElementChildrenIds(elements, childId));
   });
@@ -137,6 +142,10 @@ export const addMapElements = (
   return produce(state, (draft) => {
     elements.forEach((elementToAdd) => {
       const { elements, parentId, index: insertIndex } = elementToAdd;
+      const flatElements = flattenElements(elements, parentId);
+      Object.keys(flatElements).forEach((newElementId) => {
+        draft[newElementId] = flatElements[newElementId];
+      });
       const updatedChildren: Array<string> = [];
       if (insertIndex === undefined) {
         updatedChildren.push(...state[parentId].children);
@@ -146,10 +155,17 @@ export const addMapElements = (
         updatedChildren.push(...elements.map((el) => el.id));
         updatedChildren.push(...state[parentId].children.slice(insertIndex));
       }
-      draft[parentId].children = updatedChildren;
-      elements.forEach((el) => {
-        draft[el.id] = el;
+      console.log('TEST!!!', draft[parentId], updatedChildren);
+      const updatedParent = {
+        ...draft[parentId],
+        children: updatedChildren,
+      };
+      // updatedParent.children = updatedChildren;
+      updatedParent.children.forEach((childId, index) => {
+        console.log('CAN NOT FIND ELEMENT!!');
+        draft[childId].buoyancy = index;
       });
+      draft[parentId] = updatedParent;
     });
   });
 };
