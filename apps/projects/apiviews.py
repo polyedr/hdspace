@@ -1,12 +1,16 @@
 """Views for the projects api"""
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, viewsets, permissions
+from rest_framework import generics, viewsets, permissions, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.pagination import CursorPagination
 # from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters  # Django-Guardian
+from guardian.shortcuts import assign_perm, remove_perm, get_perms
+
+from apps.accounts.models import User
 from permissions import CustomObjectPermissions
 
 from .models import (
@@ -607,3 +611,66 @@ class ElementCommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ElementComment.objects.all()
     serializer_class = ElementCommentSerializer
+
+
+class AssignPermissionsProject(APIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+    )
+
+    def post(self, request):
+        username = request.data['username']
+        projectid = request.data['projectid']
+        permission = request.data['permission']
+        user = User.objects.get(username=username)
+        project = Project.objects.get(pk=projectid)
+        if(assign_perm(permission, user, project)):
+            return Response({"username": username}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class RemovePermissionsProject(APIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+    )
+
+    def post(self, request):
+        username = request.data['username']
+        projectid = request.data['projectid']
+        permission = request.data['permission']
+        user = User.objects.get(username=username)
+        project = Project.objects.get(pk=projectid)
+        rp = remove_perm(permission, user, project)
+        if(rp[0]):
+            return Response({"username": username}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class DisplayPermissionsProject(APIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+    )
+
+    def get(self, request):
+        username = request.data['username']
+        projectid = request.data['projectid']
+        permission = request.data['permission']
+        user = User.objects.get(username=username)
+        project = Project.objects.get(pk=projectid)
+        rp = get_perms(user, project)
+        print(rp)
+        if rp:
+            return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

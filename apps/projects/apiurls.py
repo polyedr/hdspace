@@ -32,7 +32,9 @@ from .apiviews import (
     ScenarioElementViewSet,
     ProjectViewSet, ScenarioElementRecursiveViewSet, ProjectWithScreensViewSet,
     ElementCommentList, ElementCommentDetail, ProjectIllustrationSetList, ProjectIllustrationSetDetail,
-    IllustrationSetImageList, IllustrationSetImageDetail, ScenarioElementMultipleRecursiveViewSet)
+    IllustrationSetImageList, IllustrationSetImageDetail, ScenarioElementMultipleRecursiveViewSet,
+    RemovePermissionsProject,
+    AssignPermissionsProject, DisplayPermissionsProject)
 
 app_name = "projects"
 
@@ -107,7 +109,6 @@ api_scenario_element_patterns = [
     ),
 ]
 
-
 api_element_comment_patterns = [
     path("element-comments/", ElementCommentList.as_view(),
          name="api_element_comments"),
@@ -117,6 +118,19 @@ api_element_comment_patterns = [
     ),
 ]
 
+api_permissions_project_patterns = [
+    path("permissions-projects-assign/", AssignPermissionsProject.as_view(),
+         name="api_assign_permissions_projects"),
+    path("permissions-projects-remove/", RemovePermissionsProject.as_view(),
+         name="api_remove_permissions_projects"),
+    path("permissions-projects-display/", DisplayPermissionsProject.as_view(),
+         name="api_display_permissions_projects"),
+]
+
+# path(
+#     "permissions-projects/<int:pk>/", PermissionsProjectDetail.as_view(),
+#     name="api_permissions_project"
+# ),
 
 router = routers.DefaultRouter()
 router.register(r"screen-scenarios", ScreeScenarioViewSet)
@@ -195,6 +209,7 @@ api_illustration_set_image_patterns = [
 urlpatterns = [
     # path("", include(api_project_invitation_patterns)),
     # path("", include(api_screen_event_patterns)),
+    path("", include(api_permissions_project_patterns)),
     path("", include(api_element_comment_patterns)),
     path("", include(api_project_column_patterns)),
     path("", include(api_column_task_patterns)),
