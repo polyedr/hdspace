@@ -11,6 +11,8 @@ import {
 } from '@Redux/project/selectors/base';
 import { getProject, resetProjectState } from '@Redux/project/actions';
 import LeftPanel from '@Components/LeftPanel';
+import { selectNewScreenModalOpen } from '@Redux/project/selectors/screen';
+import NewScreenModal from '@Components/Dialogs/NewScreenModal';
 import Screen from './Screen';
 
 const useStyles = makeStyles({
@@ -43,6 +45,7 @@ const Project: React.FC<Props> = ({ projectId, screenId, elementId }) => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const project = useSelector(selectProjectById(currentProjectId));
   const projectLoader = useSelector(selectProjectLoader);
+  const newScreenModalOpen = useSelector(selectNewScreenModalOpen);
 
   useEffect(() => {
     if (currentProjectId !== projectId) {
@@ -82,6 +85,8 @@ const Project: React.FC<Props> = ({ projectId, screenId, elementId }) => {
           <NNProcessingModal />
         </>
       )}
+
+      <NewScreenModal open={newScreenModalOpen} />
     </div>
   );
 };

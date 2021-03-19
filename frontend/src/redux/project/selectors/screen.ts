@@ -50,3 +50,6 @@ export const selectMasterScreenEnabled = createSelector(
     return currentScreenId === masterScreenId;
   },
 );
+
+export const selectNewScreenModalOpen = ({ project }: AppReduxState) =>
+  project.ui.newScreenModalOpen;
