@@ -1,26 +1,30 @@
-import { makeStyles } from '@material-ui/core';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import Modal from '@material-ui/core/Modal';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  makeStyles,
+} from '@material-ui/core';
 import { setNewScreenModal } from '@Redux/project/actions';
 import React, { FC } from 'react';
 import { useDispatch } from 'react-redux';
+import HtmlImportForm from './HTMLImportForm';
 
 type Props = {
   open: boolean;
 };
 
-const useStyles = makeStyles(({ palette, shadows, spacing }) => ({
+const useStyles = makeStyles(({ spacing, breakpoints }) => ({
+  wrapper: {
+    maxWidth: breakpoints.values.sm,
+    margin: 'auto',
+  },
   backdrop: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  modal: {
-    backgroundColor: palette.background.paper,
-    border: '2px solid #000',
-    boxShadow: shadows[5],
-    padding: spacing(2, 4, 3),
+  paper: {
+    padding: spacing(2),
   },
 }));
 
@@ -31,27 +35,15 @@ const NewScreenModal: FC<Props> = ({ open }) => {
   const handleClose = () => dispatch(setNewScreenModal(false));
 
   return (
-    <Modal
-      aria-labelledby="transition-modal-title"
-      aria-describedby="transition-modal-description"
-      className={classes.backdrop}
-      open={open}
-      onClose={handleClose}
-      closeAfterTransition
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
-    >
-      <Fade in={open}>
-        <div className={classes.modal}>
-          <h2 id="transition-modal-title">Transition modal</h2>
-          <p id="transition-modal-description">
-            react-transition-group animates me.
-          </p>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+      <DialogTitle>Choose the option to create a new screen</DialogTitle>
+
+      <DialogContent>
+        <div className={classes.wrapper}>
+          <HtmlImportForm onClose={handleClose} />
         </div>
-      </Fade>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 };
 

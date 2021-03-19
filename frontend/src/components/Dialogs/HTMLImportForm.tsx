@@ -1,9 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
-import { createStyles, Dialog, TextField } from '@material-ui/core';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
+import { createStyles, TextField } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -56,11 +53,17 @@ const useStyles = makeStyles(({ palette, shape, spacing }) =>
       padding: '0 0.5em',
       margin: '0.5em 0',
     },
+    formActions: {
+      padding: spacing(2, 0),
+      textAlign: 'right',
+      '& > *': {
+        margin: spacing(0, 0.5),
+      },
+    },
   }),
 );
 
 type Props = {
-  open: boolean;
   onClose: (...args: any) => any;
 };
 
@@ -72,7 +75,7 @@ const allowedMimeTypes = [
   'image/webp',
 ];
 
-const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
+const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   const dispatch = useDispatch();
   const [over, setOver] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
@@ -157,9 +160,10 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Provide a URL</DialogTitle>
-      <DialogContent>
+    <div>
+      <h3>Provide a URL</h3>
+
+      <div>
         <TextField
           type="text"
           value={url}
@@ -169,10 +173,11 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
           margin="dense"
           placeholder="URL"
         />
-      </DialogContent>
+      </div>
 
-      <DialogTitle>Or upload an HTML and CSS files</DialogTitle>
-      <DialogContent>
+      <h3>Or upload an HTML and CSS files</h3>
+
+      <div>
         <form
           onDrop={handleDrop}
           onDragEnter={handleDragEnter}
@@ -224,9 +229,9 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
             />
           </label>
         </form>
-      </DialogContent>
+      </div>
 
-      <DialogActions>
+      <div className={classes.formActions}>
         <Button variant="contained" color="primary" onClick={onClose}>
           Cancel
         </Button>
@@ -239,8 +244,8 @@ const HtmlImportForm: React.FC<Props> = ({ open, onClose }) => {
         >
           Create
         </Button>
-      </DialogActions>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
