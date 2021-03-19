@@ -268,17 +268,17 @@ export function* createProjectSaga(
         yield call(createMasterScreenElements, masterScreen);
       }
 
-      // const initialScreen: Screen = yield call(
-      //   createScreenSaga,
-      //   Actions.createScreen(
-      //     { projectID: result.id, name: 'Screen 1', buoyancy: 1 },
-      //     {
-      //       useHistory: true,
-      //     },
-      //   ),
-      // );
+      const initialScreen: Screen = yield call(
+        createScreenSaga,
+        Actions.createScreen(
+          { projectID: result.id, name: 'Screen 1', buoyancy: 1 },
+          {
+            useHistory: true,
+          },
+        ),
+      );
 
-      if (/* initialScreen && */ masterScreen) {
+      if (initialScreen && masterScreen) {
         yield put(Actions.setMasterScreenId(masterScreen.id));
         yield put(
           enqueueSnackbar({

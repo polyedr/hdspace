@@ -32,7 +32,7 @@ const useStyles = makeStyles(({ palette, shape, spacing }) =>
         `2px ${over ? 'solid' : 'dashed'} ${palette.primary.main}`,
       borderRadius: shape.borderRadius,
       opacity: ({ over, file }: any) => (over || file ? 1 : 0.5),
-      backgroundColor: palette.grey.A100,
+      backgroundColor: palette.grey[100],
       transition: 'opacity 0.1s ease',
       '&:hover': {
         opacity: 1,
@@ -59,6 +59,9 @@ const useStyles = makeStyles(({ palette, shape, spacing }) =>
       '& > *': {
         margin: spacing(0, 0.5),
       },
+    },
+    placeholder: {
+      color: palette.grey[700],
     },
   }),
 );
@@ -185,39 +188,43 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
           className={classes.form}
         >
           <label htmlFor="html-input" className={classes.label}>
-            {files.length
-              ? files.map((file) => (
-                  <Card
-                    onClick={prevent}
-                    className={classes.card}
-                    key={file.name}
-                  >
-                    <CardContent>
-                      <Typography className={classes.field} variant="subtitle1">
-                        {file.name}
-                      </Typography>
+            {files.length ? (
+              files.map((file) => (
+                <Card
+                  onClick={prevent}
+                  className={classes.card}
+                  key={file.name}
+                >
+                  <CardContent>
+                    <Typography className={classes.field} variant="subtitle1">
+                      {file.name}
+                    </Typography>
 
-                      <Typography className={classes.field} variant="caption">
-                        {`${prettyBytes(file.size)}`}
-                      </Typography>
-                    </CardContent>
+                    <Typography className={classes.field} variant="caption">
+                      {`${prettyBytes(file.size)}`}
+                    </Typography>
+                  </CardContent>
 
-                    <CardActions className={classes.actions}>
-                      <IconButton
-                        size="small"
-                        onClick={() =>
-                          setFiles((prevState) =>
-                            prevState.filter((prev) => prev.name !== file.name),
-                          )
-                        }
-                        title="Remove"
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                    </CardActions>
-                  </Card>
-                ))
-              : 'Click or drop file here to upload'}
+                  <CardActions className={classes.actions}>
+                    <IconButton
+                      size="small"
+                      onClick={() =>
+                        setFiles((prevState) =>
+                          prevState.filter((prev) => prev.name !== file.name),
+                        )
+                      }
+                      title="Remove"
+                    >
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+                  </CardActions>
+                </Card>
+              ))
+            ) : (
+              <div className={classes.placeholder}>
+                Click or drop file here to upload
+              </div>
+            )}
 
             <input
               hidden
