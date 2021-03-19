@@ -128,7 +128,6 @@ class ScreenScenarioFactory(DjangoModelFactory):
     name = "test screen scenario"
     type = ScreenScenario.LOGIN
     struct_type = ScreenScenario.SCENARIO
-    image = "8.jpg"
     direction = ScreenScenario.VERTICAL
 
 
@@ -140,7 +139,6 @@ class ScenarioElementFactory(DjangoModelFactory):
     struct_type = ScenarioElement.FRAME
     func_type = "unknown"
     direction = ScenarioElement.VERTICAL
-    image = "8.jpg"
     shared = False
 
 
