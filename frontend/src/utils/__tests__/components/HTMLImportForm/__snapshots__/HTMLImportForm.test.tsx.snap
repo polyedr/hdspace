@@ -22,11 +22,11 @@ exports[`HTMLImportForm should render properly 1`] = `
           />
           <fieldset
             aria-hidden="true"
-            class="PrivateNotchedOutline-root-8 MuiOutlinedInput-notchedOutline"
+            class="PrivateNotchedOutline-root-9 MuiOutlinedInput-notchedOutline"
             style="padding-left: 8px;"
           >
             <legend
-              class="PrivateNotchedOutline-legend-9"
+              class="PrivateNotchedOutline-legend-10"
               style="width: 0.01px;"
             >
               <span>
@@ -45,10 +45,14 @@ exports[`HTMLImportForm should render properly 1`] = `
         class="makeStyles-form-1"
       >
         <label
-          class="makeStyles-label-2 makeStyles-label-7"
+          class="makeStyles-label-2 makeStyles-label-8"
           for="html-input"
         >
-          Click or drop file here to upload
+          <div
+            class="makeStyles-placeholder-7"
+          >
+            Click or drop file here to upload
+          </div>
           <input
             accept="text/html,text/css,image/jpeg,image/png,image/webp"
             hidden=""
