@@ -340,6 +340,10 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
         return queryset
 
 
+class ProjectPermissionsSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
+    pass
+
+
 class ProjectWithScreensSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     projectscreen = ProjectScreenSerializer(many=True, read_only=True)
