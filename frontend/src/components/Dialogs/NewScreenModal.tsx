@@ -46,7 +46,7 @@ const TabPanel: FC<{ index: number; value: number }> = ({
 
   return index === value ? (
     <div className={classes.tabPanel}>{children}</div>
-  ) : null;
+  ) : null; // TODO: try to keep these elements mounted
 };
 
 const NewScreenModal: FC<Props> = ({ open }) => {
