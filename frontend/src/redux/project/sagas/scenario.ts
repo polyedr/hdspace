@@ -338,7 +338,11 @@ export const createGroupChildrenSaga = withActionsHistory(function* (
     ...action.meta,
   });
 
+  const allElements = yield select(selectAllElements);
+
   const updatedElements = yield select(selectElementsByIds(elementsIds));
+
+  console.log('UPDATED ELEMENTS!!!', updatedElements);
 
   const createdGroupElement = updatedElements.find(
     (el) =>
@@ -354,18 +358,45 @@ export const createGroupChildrenSaga = withActionsHistory(function* (
       !el.parameters.sourceElementId,
   );
 
-  const paramsToUpdate = [
-    createdGroupElement,
-    ...createdInstanceElements,
-  ].reduce((params, element) => {
+  const getPropertiesToUpdate = (
+    groupElementId: string,
+    instanceElementsIds: string[],
+    allElements: Normalized<StateElement>,
+  ) => {
+    const groupElement = allElements[groupElementId];
+    const instanceElements = instanceElementsIds.map((id) => allElements[id]);
     return {
-      ...params,
-      [element.id]:
-        element.id === createdGroupElement.id
-          ? { groupElements: createdInstanceElements.map((el) => el.id) }
-          : { sourceElementId: createdGroupElement.id },
+      [groupElement.id]: {
+        groupElements: instanceElementsIds,
+      },
+      ...instanceElementsIds.reduce(
+        (allIds, id) => ({
+          ...allIds,
+          [id]: {
+            sourceElementId: groupElementId,
+          },
+        }),
+        {},
+      ),
+      ...groupElement.children.reduce((allChildrenParams, childId, index) => {
+        return {
+          ...allChildrenParams,
+          ...getPropertiesToUpdate(
+            childId,
+            instanceElements.map((el) => el.children[index]),
+            allElements,
+          ),
+        };
+      }, {}),
     };
-  }, {});
+  };
+
+  const paramsToUpdate = getPropertiesToUpdate(
+    createdGroupElement.id,
+    createdInstanceElements.map((el) => el.id),
+    allElements,
+  );
+
   yield call(
     updateOrReplaceMultipleElementsParameters,
     Actions.updateMultipleElementsParameters(
