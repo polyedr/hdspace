@@ -342,8 +342,6 @@ export const createGroupChildrenSaga = withActionsHistory(function* (
 
   const updatedElements = yield select(selectElementsByIds(elementsIds));
 
-  console.log('UPDATED ELEMENTS!!!', updatedElements);
-
   const createdGroupElement = updatedElements.find(
     (el) =>
       el.parent === parentId &&
