@@ -6,7 +6,7 @@ import {
 } from '../types';
 
 export const ENTITIES: {
-  [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container'>]: K;
+  [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container' | 'input'>]: K;
 } = {
   button: 'button',
   textinput: 'textinput',
@@ -352,6 +352,13 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   container: [...containerStyleControls, 'layouts'],
   divBlock: [...divBlockStyleControls, 'layouts'],
   button: [...buttonStyleControls, ...buttonParamsControls, 'layouts'],
+  input: [
+    'textContent',
+    'type',
+    'placeholder',
+    ...textinputStyleControls,
+    'layouts',
+  ],
   textinput: [
     'textContent',
     'type',
@@ -466,6 +473,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   button: {},
   textinput: {},
+  input: {},
   textarea: {},
   checkbox: {},
   radiobutton: {},

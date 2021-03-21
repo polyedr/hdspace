@@ -8,6 +8,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { renameProject } from '@Redux/project/actions';
+import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';
 import Avatar from './Avatar';
@@ -46,6 +47,7 @@ const TopPanel = () => {
   const [openEdit, setOpenEdit] = useState(false);
 
   const { name: projectName, id } = useSelector(selectCurrentProject);
+  const viaMode = useSelector(selectVIAModeEnabled);
 
   const handleEditClick = () => setOpenEdit(true);
   const handleClose = () => setOpenEdit(false);
@@ -76,7 +78,7 @@ const TopPanel = () => {
           </div>
         )}
 
-        <TopBar />
+        {viaMode ? 'Annotation mode' : <TopBar />}
       </Toolbar>
 
       <Dialog

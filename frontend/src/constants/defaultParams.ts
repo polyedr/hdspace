@@ -62,6 +62,7 @@ export const DEFAULT_SCREEN: Screen = {
   buoyancy: 0,
   image: null,
   element: '-1',
+  screen_data_json: {},
 };
 
 export const DEFAULT_LAYOUT_LIST = [

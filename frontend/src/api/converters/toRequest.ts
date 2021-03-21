@@ -104,7 +104,6 @@ export const convertElementToPatchRequest = <
     struct_type: type,
     func_type: type,
     buoyancy,
-    image: null,
     parameters,
     styles: {
       ...styles,

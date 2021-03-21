@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import React from 'react';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
@@ -808,7 +807,7 @@ export interface Screen {
   screenscenario: number[];
   buoyancy: number;
   element: string;
-  // removed screen_data_json, ask if it will be needed on backend
+  screen_data_json: any;
 }
 
 export type UploadedImageInfo = {
@@ -952,7 +951,7 @@ export type AvailableControls = {
 };
 
 export type AvailableChildren = {
-  [P in Entity | string]: {
+  [P in Entity | 'custom']: {
     [key: string]: {
       min: number;
       max: number;
@@ -1041,6 +1040,7 @@ export type ElementsToAdd = {
   smartWebpage: SmartWebpageServerElement;
   button: ButtonServerElement;
   hyperlink: HyperlinkServerElement;
+  input: TextinputServerElement;
   textinput: TextinputServerElement;
   checkbox: CheckboxServerElement;
   radiobutton: RadiobuttonServerElement;
@@ -1167,3 +1167,28 @@ export type DateRange = {
 };
 
 export type PostUrlResponse = { wpname: string; owner: any };
+
+export type VIARegionWithoutId = {
+  shape_attributes: {
+    name: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  region_attributes: {
+    'HTML element': Entity;
+  };
+};
+
+export type VIARegion = VIARegionWithoutId & {
+  id: string;
+  layer: number;
+};
+
+export type VIAFile = {
+  filename: string;
+  size: number | string;
+  regions: VIARegionWithoutId[];
+  file_attributes: Record<string, any>;
+};

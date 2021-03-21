@@ -14,20 +14,14 @@ import {
   selectActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
-
 import {
   convertElementToPatchRequest,
   convertElementToRequest,
 } from '@Api/converters/toRequest';
 import {
-  getElementsArray,
-  getTreeWithDefaultStylesAndParams,
-} from '@Utils/ElementsTreeHelper';
-import {
   apiUpdateElement,
   apiChangeRecursiveElement,
   apiUpdateElements,
-  parseImgUsingNN,
   apiGetCustomLibraryElements,
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
@@ -757,118 +751,6 @@ export const replaceMultipleElementsParametersSaga = withActionsHistory(
     );
   },
 );
-
-export const uploadFileSaga = withActionsHistory(function* ({
-  type,
-  payload: { file, parentId, blockType },
-  meta,
-}: ReturnType<typeof Actions.uploadFile>) {
-  try {
-    if (!meta) {
-      console.error(`You have to provide metainformation for action ${type}`);
-      return;
-    }
-    yield put(Actions.setAnalyzerLoader(true));
-
-    const { screenId, useHistory } = meta;
-
-    const formData = new FormData();
-
-    formData.append('image', file.file, file.name);
-    formData.append('parent_id', parentId);
-    formData.append('struct_type', 'container');
-    formData.append('func_type', 'container');
-    formData.append('name', 'TESTING NEURAL NETWORK');
-    formData.append('screen', screenId.toString());
-    formData.append(
-      'parameters',
-      JSON.stringify({
-        block_type: blockType,
-        styles_on: file.stylesOn === true ? '1' : '0',
-      }),
-    );
-    formData.append('styles', '{}');
-
-    const {
-      result: nnContainer,
-      error: nnError,
-    }: Result<LibraryElement<any>> = yield call(reqWrapper, parseImgUsingNN, {
-      data: formData,
-      contentType: 'multipart/form-data',
-    });
-    if (nnContainer) {
-      const nnContainerWithDefaultParams = getTreeWithDefaultStylesAndParams(
-        nnContainer,
-      );
-
-      const convertedElements = getElementsArray(
-        nnContainerWithDefaultParams,
-      ).map((element) => convertElementToPatchRequest(element));
-
-      const {
-        result,
-        error,
-      }: Result<ServerElement<any>> = yield call(
-        reqWrapper,
-        apiUpdateElements,
-        { data: convertedElements },
-      );
-
-      if (result) {
-        yield put(
-          Actions.addStateElements(
-            [{ elements: [nnContainerWithDefaultParams], parentId }],
-            {
-              ...meta,
-            },
-          ),
-        );
-
-        if (!useHistory) {
-          yield put(
-            Actions.addHistoryActions({
-              undo: [
-                Actions.deleteElement(nnContainerWithDefaultParams.id, {
-                  screenId,
-                }),
-              ],
-              redo: [
-                Actions.restoreElement(nnContainerWithDefaultParams.id, {
-                  screenId,
-                }),
-              ],
-            }),
-          );
-        }
-
-        yield put(
-          enqueueSnackbar({
-            message: 'Image uploaded successfully',
-            options: { variant: 'success' },
-          }),
-        );
-      }
-      if (error) throw new Error(error);
-    }
-    if (nnError) throw new Error(nnError);
-  } catch (e) {
-    console.error('Could not upload image for NN. Error: ', e.message);
-    if (process.env.NODE_ENV === 'development') {
-      console.trace(e);
-    }
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
-  } finally {
-    yield put(Actions.setAnalyzerLoader(false));
-  }
-});
 
 export function* loadCustomElementsSaga(
   action: ReturnType<typeof Actions.loadCustomElements>,

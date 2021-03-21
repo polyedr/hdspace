@@ -11,6 +11,7 @@ import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import { changeMinLPanel } from '@Redux/user/actions';
 import { selectIsLeftPanelMinimized } from '@Redux/user/selectors';
 import { setBordersEnabled } from '@Redux/project/actions';
+import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
@@ -19,6 +20,7 @@ import {
   LEFT_PANEL_WIDTH_MIN,
   PANEL_TRANSITION_DURATION,
 } from '../../styles/Theme';
+import VIANavigator from './VIANavigator';
 
 const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
   createStyles({
@@ -63,6 +65,7 @@ const LeftPanel: React.FC = () => {
   const dispatch = useDispatch();
 
   const minimized = useSelector(selectIsLeftPanelMinimized);
+  const viaMode = useSelector(selectVIAModeEnabled);
   const classes = useStyles({ minimized });
 
   const enableBordersDebounce = useDebouncedCallback(() => {
@@ -111,9 +114,9 @@ const LeftPanel: React.FC = () => {
             </div>
           ) : (
             <div>
-              <Screens />
+              {!viaMode && <Screens />}
 
-              <Navigator />
+              {viaMode ? <VIANavigator /> : <Navigator />}
             </div>
           )}
 

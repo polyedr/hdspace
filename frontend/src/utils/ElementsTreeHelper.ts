@@ -1,5 +1,4 @@
 import * as R from 'ramda';
-import { LIBRARY_ELEMENTS } from '../domain/libraryElements/libraryElements';
 import { Entity, LibraryElement } from '../types';
 
 export const findParentByChildID = (
@@ -66,27 +65,4 @@ export const replaceChild = (
           replaceChild(elementID, newChild, child),
         ),
       };
-};
-
-export const getTreeWithDefaultStylesAndParams = <T extends Entity>(
-  root: LibraryElement<T>,
-): LibraryElement<T> => {
-  return getElementsArray(root).reduce((acc, element) => {
-    const params = LIBRARY_ELEMENTS[element.type].parameters;
-
-    const newElement: LibraryElement<Entity> = {
-      ...element,
-      name: element.name || element.type,
-      parameters: {
-        ...params,
-        ...element.parameters,
-      },
-      styles: {
-        classNames: [element.type],
-        ownStyles: element.styles,
-      },
-    };
-
-    return replaceChild(element.id, newElement, acc) as LibraryElement<T>;
-  }, root);
 };

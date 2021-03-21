@@ -63,15 +63,27 @@ const SmartContainer: React.FC<Props> = ({ activeElementId, blockType }) => {
       </label>
 
       {imageURL && (
-        <Button
-          variant="contained"
-          color="primary"
-          component="span"
-          disabled={!imageFile}
-          onClick={handleNNProcessing}
-        >
-          Analyze
-        </Button>
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            component="span"
+            disabled={!imageFile}
+            onClick={() => handleNNProcessing(true)}
+          >
+            Automatically Analyze
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            component="span"
+            disabled={!imageFile}
+            onClick={() => handleNNProcessing(false)}
+          >
+            Manually Analyze
+          </Button>
+        </>
       )}
     </div>
   );

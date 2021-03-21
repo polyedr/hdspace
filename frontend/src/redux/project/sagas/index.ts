@@ -1,6 +1,4 @@
-/* eslint-disable camelcase, no-console */
 import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
-
 import {
   removeProjectStyles,
   updateProjectClasses,
@@ -31,7 +29,6 @@ import {
   removeElementClassNameSaga,
   updateElementImageSaga,
   updateElementParametersSaga,
-  uploadFileSaga,
   loadCustomElementsSaga,
   toggleSelectedElementSaga,
   setActiveElementSaga,
@@ -72,9 +69,7 @@ import {
   searchProjectsSaga,
   updateProjectSaga,
 } from './project';
-
 import TYPES from '../../actionTypes';
-
 import { projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -105,6 +100,7 @@ import {
   addHistoryActionsSaga,
 } from './control';
 import withActionsHistory from '../wrappers/withActionsHistory';
+import { recognizeImageSaga, uploadFileSaga } from './nn';
 
 const removeSharedStylesSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.removeSharedStyles>,
@@ -383,6 +379,8 @@ export default function* projectSaga() {
 
   yield takeLatest(TYPES.COPY_ACTIVE_ELEMENT, copyActiveElementSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
+
+  yield takeEvery(TYPES.RECOGNIZE_IMAGE, recognizeImageSaga);
 
   yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
