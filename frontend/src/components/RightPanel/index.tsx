@@ -11,7 +11,10 @@ import {
   RIGHT_PANEL_WIDTH,
 } from '@Src/styles/Theme';
 import { RPTab } from '@Src/types';
-import { selectActiveElement } from '@Redux/project/selectors/element';
+import {
+  selectActiveElement,
+  selectAllMasterCoreElementsIds,
+} from '@Redux/project/selectors/element';
 import {
   INTERACTIVE_ELEMENTS,
   KEEP_RP_TAB_ELEMENTS,
@@ -88,6 +91,7 @@ const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const masterCoreElementsIds = useSelector(selectAllMasterCoreElementsIds);
 
   const classes = useStyles({ open: !isPrototypeMode });
   const tabClasses = useTabStyles();
@@ -108,12 +112,12 @@ const RightPanel: React.FC = () => {
     if (!isInteractive) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
     }
-    if (!isFertile) {
+    if (!isFertile || masterCoreElementsIds.includes(activeElement.id)) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
     }
 
     setTabs(newTabs);
-  }, [activeElement.type, masterScreenEnabled]);
+  }, [activeElement, masterCoreElementsIds, masterScreenEnabled]);
 
   useEffect(() => {
     if (KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {

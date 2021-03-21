@@ -43,7 +43,7 @@ const ElementGroupsBlock: React.FC = () => {
           custom: false,
           icon: Crop169Icon,
           parameters: {
-            isGroup: false,
+            isGroup: true,
           },
         } as ElementData),
     );

@@ -48,7 +48,6 @@ import {
   ElementHistoryMeta,
   WrapIntoContainerData,
 } from '@Redux/types';
-// import { convertServerElementsToDrop } from '@Utils/converters';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
@@ -134,6 +133,7 @@ export function* createGroupsBinding(
   meta: ElementHistoryMeta,
 ) {
   const updatedElements = yield select(selectElementsByIds(elementsIds));
+  // get list of group elements
   const newGroupElements = updatedElements.filter((el) => {
     return !!el.parameters.sourceElementId;
   });
@@ -142,17 +142,21 @@ export function* createGroupsBinding(
     return;
   }
 
-  const allChildIds = yield select(
+  // get list of all groups' children
+  const allGroupIds = yield select(
     selectTreeChildIdsByParentsIds(
-      newGroupElements.reduce((allChildIds, element) => {
-        return [...allChildIds, ...element.children];
-      }, []),
+      newGroupElements.reduce(
+        (allChildIds, element) => {
+          return [...allChildIds, ...element.children];
+        },
+        newGroupElements.map((group) => group.id),
+      ),
     ),
   );
 
   const elements = yield select(selectAllElements);
 
-  const paramsToUpdate = allChildIds.reduce((params, childId) => {
+  const paramsToUpdate = allGroupIds.reduce((params, childId) => {
     const newElement = elements[childId];
     const sourceElement = elements[newElement.parameters?.sourceElementId];
     if (!sourceElement) {
@@ -217,6 +221,7 @@ export const createElementsSaga = withActionsHistory(function* (
           parameters: {
             ...group.parameters,
             isGroup: false,
+            sourceElementId: group.id,
           },
         });
       }
@@ -308,8 +313,11 @@ export const createGroupChildrenSaga = withActionsHistory(function* (
             return convertElementToRequest({
               ...group,
               parameters: {
-                ...group.parameters,
-                isGroup: false,
+                ...Object.keys(group.parameters)
+                  .filter((key) => key !== 'isGroup')
+                  .map((key) => ({
+                    [key]: group.parameters[key],
+                  })),
               },
             });
           }
@@ -326,12 +334,47 @@ export const createGroupChildrenSaga = withActionsHistory(function* (
     },
   );
 
-  console.log('ELEMENTS TO CREATE!!', elementsToCreate);
   const elementsIds = yield call(createElements, elementsToCreate, {
     ...action.meta,
   });
 
-  yield call(createGroupsBinding, elementsIds, action.meta);
+  const updatedElements = yield select(selectElementsByIds(elementsIds));
+
+  const createdGroupElement = updatedElements.find(
+    (el) =>
+      el.parent === parentId &&
+      !el.parameters.groupElements &&
+      !el.parameters.sourceElementId,
+  );
+
+  const createdInstanceElements = updatedElements.filter(
+    (el) =>
+      !el.parameters.groupElements &&
+      el.parent !== parentId &&
+      !el.parameters.sourceElementId,
+  );
+
+  const paramsToUpdate = [
+    createdGroupElement,
+    ...createdInstanceElements,
+  ].reduce((params, element) => {
+    return {
+      ...params,
+      [element.id]:
+        element.id === createdGroupElement.id
+          ? { groupElements: createdInstanceElements.map((el) => el.id) }
+          : { sourceElementId: createdGroupElement.id },
+    };
+  }, {});
+  yield call(
+    updateOrReplaceMultipleElementsParameters,
+    Actions.updateMultipleElementsParameters(
+      Object.keys(paramsToUpdate),
+      paramsToUpdate,
+      { ...action.meta },
+    ),
+    UpdateDataActionType.UPDATE,
+  );
 });
 
 export const addChildrenToElementSaga = withActionsHistory(function* (
