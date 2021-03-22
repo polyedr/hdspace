@@ -100,9 +100,9 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           masterCoreElementId,
           masterGroupsElementId,
           ...masterCoreChildIds,
-        ].includes(item?.id)
+        ].includes(item.id.toString())
       : false;
-  }, [masterCoreChildIds, masterCoreElementId, state]);
+  }, [masterCoreChildIds, masterCoreElementId, masterGroupsElementId, state]);
 
   const handleMenuOpen = (
     ev: MouseEvent<HTMLDivElement>,
