@@ -16,21 +16,24 @@ type Props = {
   open: boolean;
 };
 
-const useStyles = makeStyles(({ spacing, breakpoints }) => ({
-  dialogContent: {
-    minHeight: '50vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-  },
+const useTabPanelStyles = makeStyles(({ breakpoints, spacing }) => ({
   tabPanel: {
     flex: 1,
     padding: spacing(2),
     width: '100%',
     maxWidth: breakpoints.values.sm,
     margin: 'auto',
+    display: ({ active }: any) => (active ? 'flex' : 'none'),
+    flexDirection: 'column',
+  },
+}));
+
+const useStyles = makeStyles(({ spacing }) => ({
+  dialogContent: {
+    minHeight: '50vh',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'stretch',
   },
   paper: {
     padding: spacing(2),
@@ -42,11 +45,10 @@ const TabPanel: FC<{ index: number; value: number }> = ({
   value,
   children,
 }) => {
-  const classes = useStyles();
+  const active = index === value;
+  const classes = useTabPanelStyles({ active });
 
-  return index === value ? (
-    <div className={classes.tabPanel}>{children}</div>
-  ) : null; // TODO: try to keep these elements mounted
+  return <div className={classes.tabPanel}>{children}</div>;
 };
 
 const NewScreenModal: FC<Props> = ({ open }) => {
@@ -71,7 +73,11 @@ const NewScreenModal: FC<Props> = ({ open }) => {
 
             <Tab label="Recognize an image using neural network" />
 
-            <Tab label="Import Adobe XD, Figma or Sketch" />
+            <Tab
+              label="Import PSD, Adobe XD, Figma or Sketch"
+              disabled
+              title="Coming soon"
+            />
           </Tabs>
 
           <TabPanel value={value} index={0}>

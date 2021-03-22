@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, MouseEvent } from 'react';
 import { useHistory } from 'react-router';
 import List from '@material-ui/core/List';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -9,7 +9,11 @@ import { Button, lighten, Dialog } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { createScreen, changeScreensOrder } from '@Redux/project/actions';
+import {
+  createScreen,
+  changeScreensOrder,
+  setNewScreenModal,
+} from '@Redux/project/actions';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
   selectCurrentProjectId,
@@ -21,9 +25,8 @@ import {
   selectMasterScreenId,
   selectScreensWithoutMaster,
 } from '@Redux/project/selectors/screen';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import HtmlImportForm from '@Components/Dialogs/HTMLImportForm';
+import prevent from '@Utils/preventEvent';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
 import {
@@ -68,9 +71,8 @@ const Screens = () => {
   const masterScreenId = useSelector(selectMasterScreenId);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
-  const handleCreateScreen = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+  const handleCreateScreen = (ev: MouseEvent<HTMLButtonElement>) => {
+    prevent(ev);
     dispatch(
       createScreen({
         projectID: currentProjectId,
@@ -88,20 +90,11 @@ const Screens = () => {
     dispatch(changeScreensOrder(result));
   };
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
   const [open, setOpen] = useState<boolean>(false);
 
-  const handleOpenMenu = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    setAnchorEl(ev.currentTarget);
-  };
-
-  const handleCloseMenu = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    setAnchorEl(null);
+  const handleShowMoreOptions = (ev: MouseEvent<HTMLButtonElement>) => {
+    prevent(ev);
+    dispatch(setNewScreenModal(true));
   };
 
   const handleClick = useCallback(() => {
@@ -134,28 +127,13 @@ const Screens = () => {
             </IconButton>
 
             <IconButton
-              title="more"
+              title="More options"
               size="small"
               className={classes.button}
-              onClick={handleOpenMenu}
+              onClick={handleShowMoreOptions}
             >
               <MoreHorizIcon />
             </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleCloseMenu}
-            >
-              <MenuItem
-                dense
-                onClick={(ev) => {
-                  setOpen(true);
-                  handleCloseMenu(ev);
-                }}
-              >
-                Create screen from external html file
-              </MenuItem>
-            </Menu>
           </div>
         </StyledAccordionSummary>
 

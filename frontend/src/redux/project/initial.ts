@@ -51,7 +51,7 @@ export const initialUi: ProjectUiState = {
     rotated: false,
   },
   editorDocument: null,
-  newScreenModalOpen: true,
+  newScreenModalOpen: false,
 };
 
 export const initialEdit: ProjectEditState = {

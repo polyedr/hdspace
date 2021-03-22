@@ -1,5 +1,5 @@
-import React, { FC, useState } from 'react';
-import { Button, makeStyles } from '@material-ui/core';
+import React, { FC, useState, MouseEvent } from 'react';
+import { Button, makeStyles, Menu, MenuItem } from '@material-ui/core';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { NNBlockType } from '@Src/types';
 import { useSelector } from 'react-redux';
@@ -58,14 +58,20 @@ const ImageRecognizeForm: FC<Props> = ({ onClose }) => {
 
   const rootId = useSelector(selectCurrentRootId);
 
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const [file, setFile] = useState<File | null>(null);
 
   const handleNNProcessing = useNNProcessing(rootId, NNBlockType.WEBPAGE, file);
 
-  const handleConfirm = () => {
-    handleNNProcessing(true);
-    onClose();
-  };
   return (
     <div className={classes.wrapper}>
       <div className={classes.content}>
@@ -109,11 +115,38 @@ const ImageRecognizeForm: FC<Props> = ({ onClose }) => {
         <Button
           variant="contained"
           color="secondary"
-          onClick={handleConfirm}
+          onClick={handleMenuOpen}
           disabled={!file}
         >
           Create
         </Button>
+
+        <Menu
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem
+            onClick={() => {
+              handleNNProcessing(true);
+              handleClose();
+              onClose();
+            }}
+          >
+            Auto
+          </MenuItem>
+
+          <MenuItem
+            onClick={() => {
+              handleNNProcessing(false);
+              handleClose();
+              onClose();
+            }}
+          >
+            Semi Auto
+          </MenuItem>
+        </Menu>
       </div>
     </div>
   );
