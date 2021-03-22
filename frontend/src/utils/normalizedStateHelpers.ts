@@ -249,7 +249,10 @@ export const insertMapElementWrapper = (
       newState[childId].parent = element.id;
       newState[childId].buoyancy = index;
     });
-  newState[element.id] = element;
+  newState[element.id] = {
+    ...element,
+    parent: parentId,
+  };
   return newState;
 };
 

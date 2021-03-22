@@ -521,17 +521,28 @@ export function* deleteElementSaga(
     }
     const element = yield select(selectElementById(id));
     const { groupElements, sourceElementId } = element.parameters;
-    // const isGroupSource = !!element.parameters.groupElements;
-    // const isGroupInstance = !!element.parameters.sourceElementId;
     if (groupElements) {
       yield put(
         Actions.softDeleteMultipleElements([id, ...groupElements], action.meta),
       );
-    } else if (sourceElementId) {
-      // do unbind
-      yield put(Actions.softDeleteElement(id, action.meta));
     } else {
       yield put(Actions.softDeleteElement(id, action.meta));
+      if (sourceElementId) {
+        const sourceElement = yield select(selectElementById(sourceElementId));
+        yield put(
+          Actions.updateElementParameters(
+            sourceElementId,
+            {
+              groupElements: [
+                ...sourceElement.parameters.groupElements.filter(
+                  (elId) => elId !== id,
+                ),
+              ],
+            },
+            { ...action.meta },
+          ),
+        );
+      }
     }
   } catch (e) {
     yield put(
@@ -697,7 +708,7 @@ export const softDeleteMultipleSaga = withActionsHistory(function* (
         return isGroup ? masterGroupsElId : el.parent;
       }) as string[];
 
-    const parents = yield select(selectElementsByIds(parentsIds));
+    const parents = yield select(selectElementsAsTrees(parentsIds));
 
     existingElements.forEach((el) => {
       const parent = parents.find((p) => p.id === el.parent);
@@ -709,9 +720,15 @@ export const softDeleteMultipleSaga = withActionsHistory(function* (
     const state = yield select(selectAllElements);
 
     yield put(
-      Actions.updateElementsTree(removeMapElements(state, ids), {
-        ...action.meta,
-      }),
+      Actions.updateElementsTree(
+        removeMapElements(
+          state,
+          existingElements.map((el) => el.id),
+        ),
+        {
+          ...action.meta,
+        },
+      ),
     );
 
     const updatedParents = yield select(

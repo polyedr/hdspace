@@ -3,7 +3,6 @@ import { put, call, select } from 'redux-saga/effects';
 import {
   selectElementParameters,
   selectElementStyles,
-  selectElementsForScreen,
   selectElementById,
   selectElementAsTree,
   selectAllElements,
@@ -212,7 +211,7 @@ export function* updateOrReplaceElementParameters(
       );
       return;
     }
-    const { screenId, useHistory } = action.meta;
+    const { useHistory } = action.meta;
 
     if (!useHistory) {
       const oldParameters = yield select(selectElementParameters(elementId));
@@ -225,9 +224,7 @@ export function* updateOrReplaceElementParameters(
       );
     }
 
-    const state: Normalized<StateElement> = yield select(
-      selectElementsForScreen(screenId),
-    );
+    const state: Normalized<StateElement> = yield select(selectAllElements);
 
     const parametersToUpdate =
       type === UpdateDataActionType.REPLACE

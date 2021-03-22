@@ -54,7 +54,6 @@ export const elementsGroup: ElementsGroupServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.CONTAINERS,
-    groupElements: [],
   },
   styles: {
     classNames: ['group'],
