@@ -246,6 +246,8 @@ export const createScreenSaga = withActionsHistory(function* (
             );
           }
 
+          yield put(Actions.setNewScreenModal(true));
+
           return updatedScreen;
         }
         if (savedScreenError) {

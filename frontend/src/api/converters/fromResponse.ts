@@ -50,13 +50,13 @@ export const convertElementFromResponse = <
   P
 > => ({
   id: String(id),
-  name: name || capitalize(struct_type),
+  name: name || capitalize(struct_type) || 'Container',
   children: children
     .map((child) => convertElementFromResponse(child))
     .sort(
       (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy,
     ),
-  type: struct_type,
+  type: struct_type || 'container',
   buoyancy,
   image,
   parameters: {

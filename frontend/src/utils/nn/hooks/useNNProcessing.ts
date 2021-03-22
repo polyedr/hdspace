@@ -8,7 +8,7 @@ import { NNBlockType } from '../../../types';
 const useNNProcessing = (
   elementId: string,
   blockType: NNBlockType,
-  file?: File,
+  file?: File | null,
 ) => {
   const element = useSelector(selectElementById(elementId));
   const currentScreenId = useSelector(selectCurrentScreenId);

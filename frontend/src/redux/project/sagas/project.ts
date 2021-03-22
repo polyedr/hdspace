@@ -303,6 +303,7 @@ export function* createProjectSaga(
             },
           }),
         );
+        yield put(Actions.setNewScreenModal(true));
       } else {
         throw new Error('Failed to create screens');
       }

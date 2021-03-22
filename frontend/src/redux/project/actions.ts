@@ -152,6 +152,7 @@ import {
   DeleteVIARegion,
   SetAnnotatedElement,
   UpdateVIARegionLayer,
+  SetNewScreenModal,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1407,4 +1408,9 @@ export const cancelRecognizing = () => ({
 
 export const finishAnnotation = (): FinishAnnotaion => ({
   type: TYPES.FINISH_ANNOTATION,
+});
+
+export const setNewScreenModal = (open: boolean): SetNewScreenModal => ({
+  type: TYPES.SET_NEW_SCREEN_MODAL,
+  payload: open,
 });

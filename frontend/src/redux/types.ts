@@ -62,6 +62,7 @@ export type ProjectUiState = {
     rotated: boolean;
   };
   editorDocument: Document | null;
+  newScreenModalOpen: boolean;
 };
 
 export type ProjectEditState = {
@@ -956,6 +957,11 @@ export type UpdateVIARegionLayer = IAction<
 
 export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
 
+export type SetNewScreenModal = IAction<
+  typeof TYPES.SET_NEW_SCREEN_MODAL,
+  boolean
+>;
+
 export type Action =
   | LoadProjects
   | LoadProjectsSuccess
@@ -1105,7 +1111,8 @@ export type Action =
   | DeleteVIARegion
   | SetAnnotatedElement
   | UpdateVIARegionLayer
-  | FinishAnnotaion;
+  | FinishAnnotaion
+  | SetNewScreenModal;
 
 export type HistoryMeta = {
   useHistory?: boolean;
