@@ -38,6 +38,12 @@ const useStyles = makeStyles(({ spacing }) => ({
   paper: {
     padding: spacing(2),
   },
+  coming: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 }));
 
 const TabPanel: FC<{ index: number; value: number }> = ({
@@ -73,11 +79,7 @@ const NewScreenModal: FC<Props> = ({ open }) => {
 
             <Tab label="Recognize an image using neural network" />
 
-            <Tab
-              label="Import PSD, Adobe XD, Figma or Sketch"
-              disabled
-              title="Coming soon"
-            />
+            <Tab label="Import PSD, Adobe XD, Figma or Sketch" />
           </Tabs>
 
           <TabPanel value={value} index={0}>
@@ -86,6 +88,10 @@ const NewScreenModal: FC<Props> = ({ open }) => {
 
           <TabPanel value={value} index={1}>
             <ImageRecognizeForm onClose={handleClose} />
+          </TabPanel>
+
+          <TabPanel value={value} index={2}>
+            <div className={classes.coming}>This feature is coming soon</div>
           </TabPanel>
         </DialogContent>
       </div>
