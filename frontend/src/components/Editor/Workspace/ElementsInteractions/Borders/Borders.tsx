@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { DropPosition } from '@Constants/dragAndDrop';
 import { BorderStyles } from '@Src/types';
 import {
   selectActiveElementId,
@@ -13,6 +12,7 @@ import {
 } from '@Redux/project/selectors/base';
 import { BorderPosition } from '../constants';
 import Border from './Border';
+import DropPositionMarker from './DropPositionMarker';
 
 type Props = {
   elementId: string;
@@ -32,7 +32,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
     dropTargetParams?.id,
   ].includes(elementId);
 
-  const showBordersPosition = useMemo(() => {
+  /* const showBordersPosition = useMemo(() => {
     return {
       [BorderPosition.TOP]:
         !isDropTarget ||
@@ -63,41 +63,38 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
     };
-  }, [dropTargetParams, isDropTarget]);
+  }, [dropTargetParams, isDropTarget]); */
+
+  // console.log('STYLES!!', styles);
 
   return element && styles ? (
     <>
-      {showBordersPosition[BorderPosition.TOP] && (
-        <Border
-          position={BorderPosition.TOP}
-          element={element}
-          isActive={isActiveBorder}
-          styles={styles}
-        />
-      )}
-      {showBordersPosition[BorderPosition.BOTTOM] && (
-        <Border
-          position={BorderPosition.BOTTOM}
-          element={element}
-          isActive={isActiveBorder}
-          styles={styles}
-        />
-      )}
-      {showBordersPosition[BorderPosition.LEFT] && (
-        <Border
-          position={BorderPosition.LEFT}
-          element={element}
-          isActive={isActiveBorder}
-          styles={styles}
-        />
-      )}
-      {showBordersPosition[BorderPosition.RIGHT] && (
-        <Border
-          position={BorderPosition.RIGHT}
-          element={element}
-          isActive={isActiveBorder}
-          styles={styles}
-        />
+      <Border
+        position={BorderPosition.TOP}
+        element={element}
+        isActive={isActiveBorder}
+        styles={styles}
+      />
+      <Border
+        position={BorderPosition.BOTTOM}
+        element={element}
+        isActive={isActiveBorder}
+        styles={styles}
+      />
+      <Border
+        position={BorderPosition.LEFT}
+        element={element}
+        isActive={isActiveBorder}
+        styles={styles}
+      />
+      <Border
+        position={BorderPosition.RIGHT}
+        element={element}
+        isActive={isActiveBorder}
+        styles={styles}
+      />
+      {isDropTarget && (
+        <DropPositionMarker styles={styles} isActive={isActiveBorder} />
       )}
     </>
   ) : null;
