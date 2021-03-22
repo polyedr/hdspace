@@ -26,7 +26,7 @@ import {
   Screen,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
-import CORE_MASTER_ELEMENTS from '@Components/Editor/MasterScreen/coreElements';
+import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';

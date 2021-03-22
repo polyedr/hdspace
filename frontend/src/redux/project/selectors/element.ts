@@ -436,11 +436,6 @@ export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({
   );
 };
 
-export const selectAllMasterCoreElementsIds = (state: AppReduxState) => {
-  const coreElementId = selectMasterCoreElementId(state);
-  return selectTreeChildElementsIds(coreElementId)(state);
-};
-
 export const selectMasterScreenRoot = (state: AppReduxState) => {
   const masterScreen = selectMasterScreen(state);
   if (!masterScreen) {

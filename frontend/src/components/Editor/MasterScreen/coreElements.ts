@@ -53,6 +53,20 @@ const CORE_MASTER_RESPONSE_ELEMENTS = [
   section,
 ];
 
+const getMasterElementsIds = (elements: ServerElement<Entity>[]): string[] => {
+  return elements.reduce((allIds: string[], el: ServerElement<Entity>) => {
+    return [
+      ...allIds,
+      ...getMasterElementsIds(el.children as ServerElement<Entity>[]),
+      el.id.toString(),
+    ];
+  }, [] as string[]);
+};
+
+const CORE_MASTER_ELEMENTS_IDS = getMasterElementsIds(
+  CORE_MASTER_RESPONSE_ELEMENTS,
+);
+
 const CORE_MASTER_ELEMENTS = CORE_MASTER_RESPONSE_ELEMENTS.map(
   (el: ServerElement<Entity>) => ({
     ...convertElementFromResponse(el),
@@ -60,4 +74,4 @@ const CORE_MASTER_ELEMENTS = CORE_MASTER_RESPONSE_ELEMENTS.map(
   }),
 );
 
-export default CORE_MASTER_ELEMENTS;
+export { CORE_MASTER_ELEMENTS_IDS, CORE_MASTER_ELEMENTS };
