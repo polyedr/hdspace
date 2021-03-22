@@ -292,7 +292,10 @@ export function* createElements<T extends Entity>(
     elementsToCreate.forEach((elsToCreate) => {
       const { elements, parent } = elsToCreate;
       elements.forEach((element) => {
-        element.parameters.parentId = parent.id;
+        element.parameters = {
+          ...element.parameters,
+          parentId: parent.id,
+        };
       });
     });
 
