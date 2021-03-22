@@ -111,6 +111,13 @@ function uiReducer(
       return { ...state, canCreateGroup: action.payload };
     }
 
+    case TYPES.SET_NEW_SCREEN_MODAL: {
+      return {
+        ...state,
+        newScreenModalOpen: action.payload,
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,
