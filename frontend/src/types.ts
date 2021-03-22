@@ -735,6 +735,10 @@ export type DuplicateElementsData = {
   targetParent: LibraryElement<Entity>;
 };
 
+export type FreeCanvasOffset = {
+  [parentId: string]: number;
+};
+
 export interface ICenterProp {
   lat: number;
   lng: number;

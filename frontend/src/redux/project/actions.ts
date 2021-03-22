@@ -1338,32 +1338,11 @@ export const unbindGroupElementStyles = (
   meta,
 });
 
-export const unbindGroupElement = (id: string, meta: ElementHistoryMeta) => ({
-  type: TYPES.UNBIND_GROUP_ELEMENT,
-  payload: { id },
-  meta,
-});
-
-export const unbindGroupInstance = (id: string, meta: ElementHistoryMeta) => ({
-  type: TYPES.UNBIND_GROUP_INSTANCE,
-  payload: { id },
-  meta,
-});
-
-export const unbindMasterGroupElement = (
-  id: string,
-  meta: ElementHistoryMeta,
-) => ({
-  type: TYPES.UNBIND_MASTER_INSTANCE,
-  payload: { id },
-  meta,
-});
-
 export const unbindMasterGroupInstance = (
   id: string,
   meta: ElementHistoryMeta,
 ) => ({
-  type: TYPES.UNBIND_MASTER_ELEMENT,
+  type: TYPES.UNBIND_MASTER_INSTANCE,
   payload: { id },
   meta,
 });

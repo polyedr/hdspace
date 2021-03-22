@@ -180,11 +180,6 @@ const dataReducer = produce(
       case TYPES.ADD_ELEMENTS: {
         const { parentId, elements } = action.payload;
 
-        draft.elements = {
-          ...draft.elements,
-          ...flattenElements(elements, parentId),
-        };
-
         if (parentId) {
           draft.elements[parentId].children = [
             ...new Set([
@@ -193,6 +188,12 @@ const dataReducer = produce(
             ]),
           ];
         }
+
+        draft.elements = {
+          ...draft.elements,
+          ...flattenElements(elements, parentId),
+        };
+
         break;
       }
 

@@ -603,7 +603,7 @@ export type UnbindGroupElementStyles = IAction<
   ElementHistoryMeta
 >;
 
-export type UnbindGroupElement = IAction<
+/* export type UnbindGroupElement = IAction<
   typeof TYPES.UNBIND_GROUP_ELEMENT,
   { id: string },
   ElementHistoryMeta
@@ -617,7 +617,7 @@ export type UnbindMasterGroupElement = IAction<
   typeof TYPES.UNBIND_MASTER_ELEMENT,
   { id: string },
   ElementHistoryMeta
->;
+>; */
 export type UnbindMasterGroupInstance = IAction<
   typeof TYPES.UNBIND_MASTER_INSTANCE,
   { id: string },
@@ -1013,9 +1013,9 @@ export type Action =
   | MoveHistoryForward
   | MoveHistoryBackward
   | UnbindGroupElementStyles
-  | UnbindGroupElement
+  /* | UnbindGroupElement
   | UnbindGroupInstance
-  | UnbindMasterGroupElement
+  | UnbindMasterGroupElement */
   | UnbindMasterGroupInstance
   | UnwrapFromContainer
   | RestoreElementChildren

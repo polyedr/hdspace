@@ -137,10 +137,7 @@ export const addMapElements = (
   return produce(state, (draft) => {
     elements.forEach((elementToAdd) => {
       const { elements, parentId, index: insertIndex } = elementToAdd;
-      const flatElements = flattenElements(elements, parentId);
-      Object.keys(flatElements).forEach((newElementId) => {
-        draft[newElementId] = flatElements[newElementId];
-      });
+
       const updatedChildren: Array<string> = [];
       if (insertIndex === undefined) {
         updatedChildren.push(...state[parentId].children);
@@ -150,14 +147,18 @@ export const addMapElements = (
         updatedChildren.push(...elements.map((el) => el.id));
         updatedChildren.push(...state[parentId].children.slice(insertIndex));
       }
+      const flatElements = flattenElements(elements, parentId);
+      Object.keys(flatElements).forEach((newElementId) => {
+        draft[newElementId] = flatElements[newElementId];
+      });
       const updatedParent = {
         ...draft[parentId],
         children: updatedChildren,
       };
-      // updatedParent.children = updatedChildren;
       updatedParent.children.forEach((childId, index) => {
         draft[childId].buoyancy = index;
       });
+
       draft[parentId] = updatedParent;
     });
   });

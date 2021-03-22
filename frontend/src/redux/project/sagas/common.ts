@@ -40,6 +40,7 @@ import {
 import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
+import { selectFreeCanvasOffsetList } from '../selectors/base';
 
 export function* updateOrReplaceMultipleElementsParameters(
   action: ReturnType<
@@ -319,6 +320,12 @@ export function* createElements<T extends Entity>(
       return;
     }
 
+    const parentIds = elementsToCreate.map(
+      (elToCreate) => elToCreate.parent.id,
+    );
+
+    const offsetList = yield select(selectFreeCanvasOffsetList(parentIds));
+
     const allElementsToCreate = elementsToCreate
       .map((elsToCreate) => elsToCreate.elements)
       .reduce((allEls, parentEls) => [...allEls, ...parentEls], []);
@@ -399,6 +406,11 @@ export function* createElements<T extends Entity>(
                 }),
                 {},
               ),
+            freeCanvas: {
+              ...(el.parameters.freeCanvas || {}),
+              left: el.parameters.freeCanvas?.left || offsetList[parent.id],
+              top: el.parameters.freeCanvas?.top || offsetList[parent.id],
+            },
           },
         }));
       return {
@@ -424,7 +436,21 @@ export function* createElements<T extends Entity>(
         ),
       );
     }
+
     // comment code temporarily
+    const allElements = yield select(selectAllElements);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const parentId of parentIds) {
+      const parent = allElements[parentId];
+      yield put(
+        Actions.updateLastElements(
+          parentId,
+          parent.children,
+          offsetList[parentId],
+        ),
+      );
+    }
     /* yield put(
       Actions.updateLastElements(
         parent.id,
@@ -433,10 +459,10 @@ export function* createElements<T extends Entity>(
       ),
     ); */
 
-    const allElements = yield select(selectAllElements);
-    const parentIds = elementsToCreate.map(
-      (elToCreate) => elToCreate.parent.id,
-    );
+    /* let offset = 0;
+    if (isFreeCanvasMode) {
+      offset = yield select(selectFreeCanvasOffset(parent.id));
+    } */
 
     const elementsWithUpdatedBuoyancy = parentIds.reduce(
       (createdElements, parentId) => {

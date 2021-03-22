@@ -676,7 +676,8 @@ export const softDeleteMultipleSaga = withActionsHistory(function* (
       return;
     }
     const elements: StateElement[] = yield select(selectElementsByIds(ids));
-    const elementsWithoutParent = elements.filter(
+    const existingElements = elements.filter((el) => !!el);
+    const elementsWithoutParent = existingElements.filter(
       (el) => !el.parent && !el.parameters.isGroup,
     );
     if (elementsWithoutParent.length) {
@@ -685,11 +686,11 @@ export const softDeleteMultipleSaga = withActionsHistory(function* (
           elementsWithoutParent,
         )}`,
       );
-      throw new Error('Can not remove some elements');
+      throw new Error('Can not remove elements without parent');
     }
 
     const masterGroupsElId = yield select(selectMasterGroupsElementId);
-    const parentsIds: string[] = elements
+    const parentsIds: string[] = existingElements
       .filter((el) => !!el.parent)
       .map((el) => {
         const { isGroup } = el.parameters;
@@ -698,10 +699,10 @@ export const softDeleteMultipleSaga = withActionsHistory(function* (
 
     const parents = yield select(selectElementsByIds(parentsIds));
 
-    elements.forEach((el) => {
+    existingElements.forEach((el) => {
       const parent = parents.find((p) => p.id === el.parent);
       if (!isElementCanBeRemove(parent, el.type as Entity)) {
-        // do something
+        throw new Error('Can not remove some elements');
       }
     });
 

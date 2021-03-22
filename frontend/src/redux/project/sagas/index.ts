@@ -40,10 +40,7 @@ import {
   uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
   replaceElementParametersSaga,
-  unbindMasterGroupInstanceSaga,
-  /* unbindGroupElementSaga,
-  unbindGroupInstanceSaga,  
-  unbindMasterGroupElementSaga, */
+  // unbindMasterGroupInstanceSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
@@ -419,9 +416,4 @@ export default function* projectSaga() {
     TYPES.UNBIND_GROUP_ELEMENT_STYLES,
     unbindGroupElementStylesSaga,
   );
-
-  /* yield takeEvery(TYPES.UNBIND_GROUP_ELEMENT, unbindGroupElementSaga);
-  yield takeEvery(TYPES.UNBIND_GROUP_INSTANCE, unbindGroupInstanceSaga);
-  yield takeEvery(TYPES.UNBIND_MASTER_ELEMENT, unbindMasterGroupElementSaga); */
-  yield takeEvery(TYPES.UNBIND_MASTER_INSTANCE, unbindMasterGroupInstanceSaga);
 }

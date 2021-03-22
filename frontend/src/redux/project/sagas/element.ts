@@ -1046,20 +1046,10 @@ export const uploadElementImageByUrlSaga = withActionsHistory(function* (
   }
 });
 
-/* export const unbindGroupInstanceSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.unbindGroupInstance>,
-) {});
-
-export const unbindGroupElementSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.unbindGroupElement>,
-) {
-  const { id } = action.payload;
-  const element = yield select(selectElementById(id));
-}); */
-
-export const unbindMasterGroupInstanceSaga = withActionsHistory(function* (
+/* export const unbindMasterGroupInstanceSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.unbindMasterGroupInstance>,
 ) {
+  console.log('CALL UNBIND!!!');
   const { id } = action.payload;
   try {
     const element = yield select(selectElementById(id));
@@ -1136,11 +1126,7 @@ export const unbindMasterGroupInstanceSaga = withActionsHistory(function* (
       ),
     );
   }
-});
-
-/* export const unbindMasterGroupElementSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.unbindMasterGroupElement>,
-) {}); */
+}); */
 
 export const unbindGroupElementStylesSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.unbindGroupElementStyles>,
