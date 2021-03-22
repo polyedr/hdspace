@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -22,7 +22,24 @@ import {
   selectProjectsDataNext,
 } from '@Redux/project/selectors/base';
 import Searchbar from '@Components/Projects/Searchbar';
+import Tour, { ReactourStep } from 'reactour';
+import { ELEMENT_IDS } from '@Constants/pathNames';
 import ProjectListItem from './ProjectListItem';
+
+const tourSteps: ReactourStep[] = [
+  {
+    selector: `#${ELEMENT_IDS.avatar}`,
+    content: 'Avatar leads to Profile page',
+  },
+  {
+    selector: `#${ELEMENT_IDS.projectSearch}`,
+    content: 'You can search through your projects using this searchbar',
+  },
+  {
+    selector: `#${ELEMENT_IDS.createProject}`,
+    content: 'Create new project using this button',
+  },
+];
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -67,6 +84,8 @@ const Projects: React.FC = () => {
   const projectListLoader = useSelector(selectAreProjectsLoading);
   const projectCreateLoader = useSelector(selectProjectCreateLoader);
   const hasNext = useSelector(selectProjectsDataNext);
+
+  const [tour, setTour] = useState(true);
 
   useEffect(() => {
     dispatch(getProjectList());
@@ -113,6 +132,12 @@ const Projects: React.FC = () => {
 
   return (
     <Container maxWidth="lg">
+      <Tour
+        isOpen={tour}
+        steps={tourSteps}
+        onRequestClose={() => setTour(false)}
+      />
+
       <Paper className={classes.root}>
         <div className={classes.header}>
           <Typography variant="h5" className={classes.headerText}>
@@ -122,6 +147,7 @@ const Projects: React.FC = () => {
           <Searchbar />
 
           <Button
+            id={ELEMENT_IDS.createProject}
             variant="contained"
             color="secondary"
             onClick={handleProjectAdd}

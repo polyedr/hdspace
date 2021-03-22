@@ -1,12 +1,3 @@
-export const projects = '/projects';
-export const user = {
-  signin: '/signin',
-  signup: '/signup',
-  activate: '/activate',
-  password: '/password',
-} as const;
-export const profile = '/profile';
-
 export const PATH_NAMES = {
   projects: '/projects',
   user: {
@@ -17,4 +8,10 @@ export const PATH_NAMES = {
   },
   profile: '/profile',
   passwordRestore: '/password_restore',
+};
+
+export const ELEMENT_IDS = {
+  avatar: 'avatar-button-id',
+  projectSearch: 'project-search-id',
+  createProject: 'create-project-button',
 };
