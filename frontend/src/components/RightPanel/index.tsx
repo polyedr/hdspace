@@ -5,19 +5,23 @@ import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Theme } from '@material-ui/core';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
 } from '@Src/styles/Theme';
 import { RPTab } from '@Src/types';
-import { selectActiveElement } from '@Redux/project/selectors/element';
+import {
+  selectActiveElement,
+  selectMasterCoreElementId,
+  selectMasterGroupsElementId,
+} from '@Redux/project/selectors/element';
 import {
   INTERACTIVE_ELEMENTS,
   KEEP_RP_TAB_ELEMENTS,
 } from '@Constants/defaultParams';
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
+import { CORE_MASTER_ELEMENTS_IDS } from '@Components/Editor/MasterScreen/coreElements';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import AssetsSection from './Assets';
@@ -87,11 +91,12 @@ const tabContent: Record<RPTab, any> = {
 const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
-  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const classes = useStyles({ open: !isPrototypeMode });
   const tabClasses = useTabStyles();
   const tabsClasses = useTabsStyles();
+  const masterCoreElId = useSelector(selectMasterCoreElementId);
+  const masterGroupsElId = useSelector(selectMasterGroupsElementId);
 
   const [tabs, setTabs] = useState(defaultTabs);
 
@@ -105,22 +110,28 @@ const RightPanel: React.FC = () => {
     const isFertile = canElementHaveAllChildren(activeElement.type);
 
     let newTabs = defaultTabs;
-    if (masterScreenEnabled) {
-      newTabs = [RPTab.Properties];
-    } else {
-      if (!isInteractive) {
-        newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
-      }
-      if (!isFertile) {
-        newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
-      }
+    if (!isInteractive) {
+      newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
+    }
+    if (
+      !isFertile ||
+      [masterCoreElId, masterGroupsElId, ...CORE_MASTER_ELEMENTS_IDS].includes(
+        activeElement.id,
+      )
+    ) {
+      newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
     }
 
     setTabs(newTabs);
-  }, [activeElement.type, masterScreenEnabled]);
+  }, [activeElement]);
 
   useEffect(() => {
-    if (KEEP_RP_TAB_ELEMENTS.includes(activeElement.type)) {
+    if (
+      KEEP_RP_TAB_ELEMENTS.includes(activeElement.type) &&
+      ![masterCoreElId, masterGroupsElId, ...CORE_MASTER_ELEMENTS_IDS].includes(
+        activeElement.id,
+      )
+    ) {
       const index = tabs.indexOf(RPTab.Elements);
       // eslint-disable-next-line no-bitwise
       if (~index) {

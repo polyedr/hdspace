@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
+import { FreeCanvasOffset } from '@Src/types';
 import { makeFeatureStateSelector } from '../../../shared/redux';
 import { AppReduxState } from '../../types';
 
@@ -110,6 +111,7 @@ export const selectElementFileInput = (id: string) => (
 export const selectFreeCanvasMode = ({ project }: AppReduxState) =>
   project.edit.freeCanvas.enabled;
 
+// think over how can we fix this one in a different way
 export const selectFreeCanvasOffset = (id: string) => (
   state: AppReduxState,
 ) => {
@@ -128,6 +130,16 @@ export const selectFreeCanvasOffset = (id: string) => (
 
   if (needOffset) return parent.offset + 20;
   return 0;
+};
+
+export const selectFreeCanvasOffsetList = (ids: string[]) => (
+  state: AppReduxState,
+): FreeCanvasOffset => {
+  return ids.reduce(
+    (ids, id) =>
+      ({ ...ids, [id]: selectFreeCanvasOffset(id)(state) } as FreeCanvasOffset),
+    {},
+  );
 };
 
 export const selectLayout = ({ project }: AppReduxState) =>

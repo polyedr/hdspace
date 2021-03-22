@@ -30,6 +30,7 @@ import {
   AssetResults,
   ProjectsSearchParameter,
   DateRange,
+  StateElementsToAdd,
   VIARegion,
 } from '../types';
 import TYPES from './actionTypes';
@@ -175,6 +176,11 @@ export type UploadAssetData = {
   fileName: string;
   listId: string;
   imageURL?: string;
+};
+
+export type RestoreChildrenData = {
+  id: string;
+  children: string[];
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
@@ -457,11 +463,27 @@ export type DeleteElement = IAction<
   { id: string },
   ElementHistoryMeta
 >;
+export type SoftDeleteElement = IAction<
+  typeof TYPES.SOFT_DELETE_ELEMENT,
+  { id: string },
+  ElementHistoryMeta
+>;
+
+export type SoftDeleteMultipleElements = IAction<
+  typeof TYPES.SOFT_DELETE_MULTIPLE_ELEMENTS,
+  { ids: string[] },
+  ElementHistoryMeta
+>;
 export type CreateElements = IAction<
   typeof TYPES.CREATE_ELEMENTS,
   { createdElements: CreatedElement[]; parentId?: string; index?: number },
-  ElementHistoryMeta,
-  string[]
+  ElementHistoryMeta
+>;
+
+export type CreateGroupChildren = IAction<
+  typeof TYPES.CREATE_GROUP_CHILDREN,
+  { createdElements: CreatedElement[]; parentId?: string; index?: number },
+  ElementHistoryMeta
 >;
 
 export type CreateElementsGroup = IAction<
@@ -581,6 +603,27 @@ export type UnbindGroupElementStyles = IAction<
   { id: string; styles: React.CSSProperties },
   ElementHistoryMeta
 >;
+
+/* export type UnbindGroupElement = IAction<
+  typeof TYPES.UNBIND_GROUP_ELEMENT,
+  { id: string },
+  ElementHistoryMeta
+>;
+export type UnbindGroupInstance = IAction<
+  typeof TYPES.UNBIND_GROUP_INSTANCE,
+  { id: string },
+  ElementHistoryMeta
+>;
+export type UnbindMasterGroupElement = IAction<
+  typeof TYPES.UNBIND_MASTER_ELEMENT,
+  { id: string },
+  ElementHistoryMeta
+>; */
+export type UnbindMasterGroupInstance = IAction<
+  typeof TYPES.UNBIND_MASTER_INSTANCE,
+  { id: string },
+  ElementHistoryMeta
+>;
 export type UnwrapFromContainer = IAction<
   typeof TYPES.UNWRAP_FROM_CONTAINER,
   { ids: string[]; wrapperId: string; parentId: string },
@@ -589,6 +632,11 @@ export type UnwrapFromContainer = IAction<
 export type RestoreElementChildren = IAction<
   typeof TYPES.RESTORE_ELEMENT_CHILDREN,
   { elementId: string; childrenIds: string[] },
+  ElementHistoryMeta
+>;
+export type RestoreMultipleElementsChildren = IAction<
+  typeof TYPES.RESTORE_MULTIPLE_ELEMENTS_CHILDREN,
+  { elements: RestoreChildrenData[] },
   ElementHistoryMeta
 >;
 export type RestoreElement = IAction<
@@ -730,7 +778,7 @@ export type RestoreAsset = IAction<
 
 export type AddStateElements = IAction<
   typeof TYPES.ADD_STATE_ELEMENTS,
-  { elements: LibraryElement<any>[]; parentId: string; index?: number },
+  { elements: StateElementsToAdd<Entity>[] },
   ElementHistoryMeta
 >;
 
@@ -971,6 +1019,10 @@ export type Action =
   | MoveHistoryForward
   | MoveHistoryBackward
   | UnbindGroupElementStyles
+  /* | UnbindGroupElement
+  | UnbindGroupInstance
+  | UnbindMasterGroupElement */
+  | UnbindMasterGroupInstance
   | UnwrapFromContainer
   | RestoreElementChildren
   | RedoWrapIntoContainer

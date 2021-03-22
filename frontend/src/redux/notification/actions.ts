@@ -2,7 +2,14 @@ import { SnackbarKey } from 'notistack';
 import TYPES from '../actionTypes';
 import { Notification } from '../types';
 
-export const enqueueSnackbar = (notification: Omit<Notification, 'key'>) => {
+export const enqueueSnackbar = (
+  notification: Omit<Notification, 'key'>,
+  error?: Error,
+) => {
+  if (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+  }
   return {
     type: TYPES.ENQUEUE_SNACKBAR,
     notification: {

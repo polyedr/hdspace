@@ -75,13 +75,8 @@ const dataReducer = produce(
       }
 
       case TYPES.ADD_STATE_ELEMENTS: {
-        const { elements, parentId, index } = action.payload;
-        draft.elements = addMapElements(
-          draft.elements,
-          elements,
-          parentId,
-          index,
-        );
+        const { elements } = action.payload;
+        draft.elements = addMapElements(draft.elements, elements);
         break;
       }
 
@@ -185,11 +180,6 @@ const dataReducer = produce(
       case TYPES.ADD_ELEMENTS: {
         const { parentId, elements } = action.payload;
 
-        draft.elements = {
-          ...draft.elements,
-          ...flattenElements(elements, parentId),
-        };
-
         if (parentId) {
           draft.elements[parentId].children = [
             ...new Set([
@@ -198,6 +188,12 @@ const dataReducer = produce(
             ]),
           ];
         }
+
+        draft.elements = {
+          ...draft.elements,
+          ...flattenElements(elements, parentId),
+        };
+
         break;
       }
 

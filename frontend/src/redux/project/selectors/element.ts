@@ -110,6 +110,19 @@ export const selectHoveredElementId = ({ project }: AppReduxState) =>
 export const selectAllElements = ({ project }: AppReduxState) =>
   project.data.elements;
 
+export const selectElementsAsTrees = (ids: string[]) => (
+  state: AppReduxState,
+) => {
+  const allElements = selectAllElements(state);
+
+  return ids.map((id: string) => {
+    if (!allElements[id]) {
+      return DEFAULT_ROOT;
+    }
+    return buildElementsTree(allElements, id);
+  });
+};
+
 export const selectActiveElement = createSelector(
   selectAllElements,
   selectActiveElementId,
@@ -398,12 +411,14 @@ export const selectTreeChildElementsIds = (elementId: string) => ({
   project,
 }: AppReduxState) => {
   const parent = project.data.elements[elementId];
-  return parent.children.reduce((allChildren: string[], childId) => {
-    return [
-      ...allChildren,
-      ...getAllElementChildrenIds(project.data.elements, childId),
-    ];
-  }, []);
+  return !parent
+    ? []
+    : parent.children.reduce((allChildren: string[], childId) => {
+        return [
+          ...allChildren,
+          ...getAllElementChildrenIds(project.data.elements, childId),
+        ];
+      }, []);
 };
 
 export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({
@@ -427,4 +442,16 @@ export const selectMasterScreenRoot = (state: AppReduxState) => {
     return null;
   }
   return selectElementById(masterScreen.element)(state);
+};
+
+export const selectElementsChildren = (ids: string[]) => (
+  state: AppReduxState,
+) => {
+  const allElementsArray = Object.values(selectAllElements(state));
+
+  return ids
+    .map((id: string) => {
+      return allElementsArray.filter((element) => element.parent === id);
+    })
+    .reduce((children, childrenArray) => [...children, ...childrenArray], []);
 };

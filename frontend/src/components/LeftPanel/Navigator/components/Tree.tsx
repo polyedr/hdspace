@@ -35,7 +35,12 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { Normalized, StateElement } from '@Src/types';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { selectActiveElementId } from '@Redux/project/selectors/element';
+import {
+  selectActiveElementId,
+  selectMasterCoreElementId,
+  selectMasterGroupsElementId,
+  selectTreeChildElementsIds,
+} from '@Redux/project/selectors/element';
 import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import Scrollbar from '../../../UI/Scrollbar';
@@ -74,6 +79,11 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
+  const masterCoreElementId = useSelector(selectMasterCoreElementId);
+  const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
+  const masterCoreChildIds = useSelector(
+    selectTreeChildElementsIds(masterCoreElementId),
+  );
 
   const initialState: State = {
     mouseX: null,
@@ -82,6 +92,18 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   };
 
   const [state, setState] = useState<State>(initialState);
+
+  const coreElementSelected = useMemo(() => {
+    const { item } = state;
+    return item
+      ? [
+          masterCoreElementId,
+          masterGroupsElementId,
+          ...masterCoreChildIds,
+        ].includes(item?.id)
+      : false;
+  }, [masterCoreChildIds, masterCoreElementId, state]);
+
   const handleMenuOpen = (
     ev: MouseEvent<HTMLDivElement>,
     item: TreeItemType,
@@ -175,22 +197,33 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           select(selectedItemId);
         }
 
-        if (e.keyCode === 32) {
+        if (e.keyCode === 32 && !coreElementSelected) {
           // Space
           setIsDragging((state) => !state);
         }
 
-        if (e.keyCode === 67 && (e.ctrlKey || e.metaKey)) {
+        if (
+          e.keyCode === 67 &&
+          (e.ctrlKey || e.metaKey) &&
+          !coreElementSelected
+        ) {
           // Ctrl/Cmd + C
           dispatch(copyActiveElement());
         }
 
-        if (e.keyCode === 86 && (e.ctrlKey || e.metaKey)) {
+        if (
+          e.keyCode === 86 &&
+          (e.ctrlKey || e.metaKey) &&
+          !coreElementSelected
+        ) {
           // Ctrl/Cmd + V
           dispatch(pasteCopiedElement({ screenId: currentScreenId }));
         }
 
-        if (e.keyCode === 46 || (e.keyCode === 8 && e.metaKey)) {
+        if (
+          e.keyCode === 46 ||
+          (e.keyCode === 8 && e.metaKey && !coreElementSelected)
+        ) {
           // Delete or Cmd + Backspace
           const prevItemId = findPrevNodeId(tree, selectedItemId);
           dispatch(
@@ -212,6 +245,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     },
     [
       collapse,
+      coreElementSelected,
       currentScreenId,
       dispatch,
       expand,
@@ -336,7 +370,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         </div>
       </Scrollbar>
 
-      {state.item && (
+      {state.item && !coreElementSelected && (
         <ContextMenu
           open={state.mouseY !== null}
           anchorPosition={

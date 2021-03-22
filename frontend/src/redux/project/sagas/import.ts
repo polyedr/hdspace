@@ -100,7 +100,10 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
       );
 
       yield put(
-        Actions.addStateElements([element], root.id, { screenId: screen.id }),
+        Actions.addStateElements([{ elements: [element], parentId: root.id }], {
+          screenId: screen.id,
+          useHistory: true,
+        }),
       );
 
       const elements: StateElement[] = yield select(
@@ -144,10 +147,13 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -234,10 +240,13 @@ export function* uploadImportUrlSaga({
     yield put(importHtml(Object.values(files), url));
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }

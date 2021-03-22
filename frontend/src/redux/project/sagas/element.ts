@@ -45,13 +45,14 @@ import { apiGetFile } from '@Api/import';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
-import { createElements, wrapIntoContainer } from './scenario';
+import { wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
 import { uploadAsset } from './asset';
 import {
   updateOrReplaceElementParameters,
   updateOrReplaceElementStyles,
   updateOrReplaceMultipleElementsParameters,
+  createElements,
 } from './common';
 
 // eslint-disable-next-line consistent-return
@@ -81,20 +82,20 @@ export function* duplicateElements(
 
     return yield call(
       createElements,
-      { elements: convertedItemsToDuplicate },
-      targetParent,
-      {
-        ...meta,
-      },
+      [{ elements: convertedItemsToDuplicate, parent: targetParent }],
+      { ...meta },
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   }
 }
@@ -177,10 +178,13 @@ export const moveElementSaga = withActionsHistory(function* (
     if (recursiveError) throw new Error(recursiveError);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -261,10 +265,13 @@ function* updateElementClassNames(
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -315,10 +322,13 @@ function* removeElementStyles(
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -379,10 +389,13 @@ export const copyElementStylesSaga = withActionsHistory(function* (
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -408,10 +421,13 @@ export const updateElementStylesSaga = withActionsHistory(function* (
     yield call(updateOrReplaceElementStyles, action, 'update');
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -480,10 +496,13 @@ export const updateMultipleElementsStylesSaga = withActionsHistory(function* (
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -566,10 +585,13 @@ export const removeMultipleElementsStylesSaga = withActionsHistory(function* (
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -581,10 +603,13 @@ export const replaceElementStylesSaga = withActionsHistory(function* (
     yield call(updateOrReplaceElementStyles, action, 'replace');
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -614,10 +639,13 @@ export const removeElementStylesSaga = withActionsHistory(function* (
     yield call(removeElementStyles, id, cssPropertiesNames, action);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -669,10 +697,13 @@ export const updateElementImageSaga = withActionsHistory(function* (
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -746,10 +777,13 @@ export function* loadCustomElementsSaga(
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 }
@@ -781,7 +815,12 @@ export function* toggleSelectedElementSaga(
     const canCreateGroup =
       !!selectedElements.length &&
       selectedElements.every((el) => el.parent === element.parent) &&
-      maxBuoyancy - minBuoyancy === selectedElements.length;
+      maxBuoyancy - minBuoyancy === selectedElements.length &&
+      !selectedElements.filter(
+        (groupEl) =>
+          !!groupEl.parameters.groupElements ||
+          !!groupEl.parameters.sourceElementId,
+      ).length;
     yield put(Actions.setCanCreateGroup(canCreateGroup));
     yield put(Actions.addSelectedElement(action.payload.id));
   } else {
@@ -928,10 +967,13 @@ export const createElementsGroupSaga = withActionsHistory(function* (
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -993,10 +1035,13 @@ export const uploadElementImageByUrlSaga = withActionsHistory(function* (
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });
@@ -1053,10 +1098,13 @@ export const unbindGroupElementStylesSaga = withActionsHistory(function* (
     );
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
 });

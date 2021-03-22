@@ -144,9 +144,12 @@ export const recognizeImageSaga = withActionsHistory(function* ({
 
         if (result) {
           yield put(
-            Actions.addStateElements([assembleResult], parentId, {
-              ...meta,
-            }),
+            Actions.addStateElements(
+              [{ elements: [assembleResult], parentId }],
+              {
+                ...meta,
+              },
+            ),
           );
 
           if (!useHistory) {
@@ -250,7 +253,7 @@ export const uploadFileSaga = withActionsHistory(function* ({
 
       if (result) {
         yield put(
-          Actions.addStateElements([nnContainer], parentId, {
+          Actions.addStateElements([{ elements: [nnContainer], parentId }], {
             ...meta,
           }),
         );

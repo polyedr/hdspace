@@ -23,6 +23,7 @@ import {
   ProjectsSearchParameter,
   DateRange,
   UpdateElementData,
+  StateElementsToAdd,
   VIARegion,
 } from '@Src/types';
 import {
@@ -137,6 +138,12 @@ import {
   UploadImageByUrl,
   UpdateStateAssetImage,
   SetSelectedAssetListId,
+  RestoreMultipleElementsChildren,
+  RestoreChildrenData,
+  SoftDeleteMultipleElements,
+  SoftDeleteElement,
+  CreateGroupChildren,
+  AddStateElements,
   SetVIAMode,
   SetViaRegions as SetVIARegions,
   UpdateVIARegion,
@@ -394,21 +401,19 @@ export const updateStateElement = (
   meta,
 });
 
+// add new elements to existing ones
 export const addStateElements = (
-  elements: LibraryElement<any>[],
-  parentId: string,
+  stateElementsToAdd: StateElementsToAdd<Entity>[],
   meta: ElementHistoryMeta,
-  index?: number,
-) => ({
+): AddStateElements => ({
   type: TYPES.ADD_STATE_ELEMENTS,
   payload: {
-    elements,
-    parentId,
-    index,
+    elements: stateElementsToAdd,
   },
   meta,
 });
 
+// insert new element in the tree between existing parent and child elements
 export const insertStateElement = (
   element: LibraryElement<any>,
   parentId: string,
@@ -743,11 +748,38 @@ export const deleteElement = (
   meta,
 });
 
+export const softDeleteElement = (
+  id: string,
+  meta: ElementHistoryMeta,
+): SoftDeleteElement => ({
+  type: TYPES.SOFT_DELETE_ELEMENT,
+  payload: { id },
+  meta,
+});
+
+export const softDeleteMultipleElements = (
+  ids: string[],
+  meta: ElementHistoryMeta,
+): SoftDeleteMultipleElements => ({
+  type: TYPES.SOFT_DELETE_MULTIPLE_ELEMENTS,
+  payload: { ids },
+  meta,
+});
+
 export const createElements = (
   { createdElements, parentId, index }: CreateElementsData,
   meta: ElementHistoryMeta,
 ): CreateElements => ({
   type: TYPES.CREATE_ELEMENTS,
+  payload: { createdElements, parentId, index },
+  meta,
+});
+
+export const createGroupChildren = (
+  { createdElements, parentId, index }: CreateElementsData,
+  meta: ElementHistoryMeta,
+): CreateGroupChildren => ({
+  type: TYPES.CREATE_GROUP_CHILDREN,
   payload: { createdElements, parentId, index },
   meta,
 });
@@ -927,6 +959,15 @@ export const restoreElementChildren = (
     elementId,
     childrenIds,
   },
+  meta,
+});
+
+export const restoreMultipleElementsChildren = (
+  elements: RestoreChildrenData[],
+  meta: ElementHistoryMeta,
+): RestoreMultipleElementsChildren => ({
+  type: TYPES.RESTORE_MULTIPLE_ELEMENTS_CHILDREN,
+  payload: { elements },
   meta,
 });
 
@@ -1295,6 +1336,15 @@ export const unbindGroupElementStyles = (
     id,
     styles,
   },
+  meta,
+});
+
+export const unbindMasterGroupInstance = (
+  id: string,
+  meta: ElementHistoryMeta,
+) => ({
+  type: TYPES.UNBIND_MASTER_INSTANCE,
+  payload: { id },
   meta,
 });
 

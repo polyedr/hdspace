@@ -14,6 +14,7 @@ import {
   ServerProfileData,
   ServerProject,
   ServerUserData,
+  StateElement,
   UserData,
 } from '@Src/types';
 
@@ -110,6 +111,27 @@ export const convertElementToPatchRequest = <
     },
     shared,
   };
+};
+
+export const convertStateElementToPatchRequest = (
+  element: StateElement,
+): ServerElement<Entity> => {
+  const { id, name, type, buoyancy, parameters, styles, shared } = element;
+  return {
+    id: Number(id),
+    name,
+    children: [],
+    struct_type: type,
+    func_type: type,
+    buoyancy,
+    image: null,
+    parameters,
+    styles: {
+      ...styles,
+      ownStyles: cssDecamelize(styles.ownStyles),
+    },
+    shared,
+  } as ServerElement<Entity>;
 };
 
 export const convertCreatedProjectToRequest = (

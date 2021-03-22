@@ -39,7 +39,7 @@ type Props = {
 const ScreenControls: React.FC<Props> = ({ screen, show, openEdit }) => {
   const { project, id, name } = screen;
   const screensNumber = useSelector(selectScreensLength);
-  const isLast = screensNumber === 1;
+  const canDelete = screensNumber > 2;
 
   const dispatch = useDispatch();
   const classes = useStyles({ show });
@@ -80,7 +80,7 @@ const ScreenControls: React.FC<Props> = ({ screen, show, openEdit }) => {
         <FileCopyIcon />
       </IconButton>
 
-      {!isLast && (
+      {canDelete && (
         <IconButton
           className={classes.iconButton}
           onClick={handleDelete}

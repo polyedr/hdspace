@@ -55,10 +55,13 @@ export function* uploadAsset(
     return asset;
   } catch (error) {
     yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
     );
   }
 }
@@ -79,10 +82,13 @@ export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
       yield put(Actions.setAssetsLoader(false));
     } catch (error) {
       yield put(
-        enqueueSnackbar({
-          message: error.message,
-          options: { variant: 'error' },
-        }),
+        enqueueSnackbar(
+          {
+            message: error.message,
+            options: { variant: 'error' },
+          },
+          error,
+        ),
       );
     }
   }
@@ -119,10 +125,13 @@ export function* loadAssetListsSaga() {
     yield put(Actions.setAssetsLoader(false));
   } catch (error) {
     yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
     );
   }
 }
@@ -155,10 +164,13 @@ export const addNewAssetListSaga = withActionsHistory(function* (
     yield put(Actions.setSelectedAssetListId(assetList.id, { ...action.meta }));
   } catch (error) {
     yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
     );
   }
 });
@@ -182,10 +194,13 @@ export const removeAssetListSaga = withActionsHistory(function* (
     });
   } catch (error) {
     yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
     );
   }
 });
@@ -212,10 +227,13 @@ export const restoreAssetSaga = withActionsHistory(function* (
     });
   } catch (error) {
     yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
     );
   }
 });
@@ -240,10 +258,13 @@ export const removeAssetSaga = withActionsHistory(function* (
     yield call(reqWrapper, apiDeleteAsset, { id });
   } catch (error) {
     yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
     );
   }
 });
@@ -275,10 +296,13 @@ export const uploadAssetSaga = withActionsHistory(function* (
     );
   } catch (error) {
     yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
     );
   }
 });
@@ -321,10 +345,13 @@ export function* uploadElementAssetSaga(
     );
   } catch (error) {
     yield put(
-      enqueueSnackbar({
-        message: error.message,
-        options: { variant: 'error' },
-      }),
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
     );
   }
 }

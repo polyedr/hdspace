@@ -26,7 +26,7 @@ import {
   Screen,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
-import CORE_MASTER_ELEMENTS from '@Components/Editor/MasterScreen/coreElements';
+import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -40,16 +40,22 @@ import {
 } from '../selectors/base';
 import { selectScreenById } from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
-import { createElements } from './scenario';
+import { createElements } from './common';
 
 function* setMasterScreenCoreElements(screen: Screen) {
   const rootElement = yield select(selectElementById(screen.element));
   yield put(Actions.setMasterElementsIds(...rootElement.children));
   const masterCoreId = rootElement.children[0];
   yield put(
-    Actions.addStateElements(CORE_MASTER_ELEMENTS, masterCoreId, {
-      screenId: screen.id,
-    }),
+    Actions.addStateElements(
+      [
+        {
+          elements: CORE_MASTER_ELEMENTS,
+          parentId: masterCoreId,
+        },
+      ],
+      { screenId: screen.id },
+    ),
   );
 }
 
@@ -70,7 +76,7 @@ function* createMasterScreenElements(screen: Screen) {
     selectElementAsTree(screen.element),
   );
 
-  yield call(createElements, { elements }, masterRoot, {
+  yield call(createElements, [{ elements, parent: masterRoot }], {
     screenId: screen.id,
     useHistory: true,
   });
@@ -111,12 +117,15 @@ export function* searchProjectsSaga() {
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   } finally {
     yield put(Actions.setProjectListLoader(false));
@@ -156,12 +165,15 @@ export function* getProjectListSaga() {
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   } finally {
     yield put(Actions.setProjectListLoader(false));
@@ -209,12 +221,15 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   } finally {
     yield put(Actions.setProjectLoader(false));
@@ -299,12 +314,15 @@ export function* createProjectSaga(
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   } finally {
     yield put(Actions.setProjectCreateLoader(false));
@@ -342,12 +360,15 @@ export function* deleteProjectSaga({
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   }
 }
@@ -374,12 +395,15 @@ export function* renameProjectSaga({
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   }
 }
@@ -416,12 +440,15 @@ export function* updateProjectSaga(
     }
   } catch (e) {
     yield put(
-      enqueueSnackbar({
-        message: e.message,
-        options: {
-          variant: 'error',
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
         },
-      }),
+        e,
+      ),
     );
   }
 }

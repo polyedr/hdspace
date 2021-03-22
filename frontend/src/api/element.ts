@@ -10,6 +10,7 @@ import {
   MyAxiosProps,
   PaginatedResponse,
   RecursiveElement,
+  RecursiveServerElement,
   Result,
   Screen,
   ServerElement,
@@ -84,6 +85,24 @@ export const apiChangeRecursiveElement = (
       result: convertRecursiveElementFromResponse(res.data),
     }))
     .catch(handleError);
+
+export const apiChangeRecursiveMultipleElements = (
+  props: MyAxiosProps & { elements: RecursiveServerElement[] },
+): Promise<Result<RecursiveElement[]>> => {
+  const { elements, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    method: 'PATCH',
+    url: '/projects/scenario-elements-multiple-recursive/',
+    data: elements,
+  })
+    .then((res) => ({
+      result: res.data.map((element) =>
+        convertRecursiveElementFromResponse(element),
+      ),
+    }))
+    .catch(handleError);
+};
 
 export const apiGetElement = <
   T extends Entity,

@@ -7,6 +7,7 @@ import {
   Normalized,
   ParentIds,
   StateElement,
+  StateElementsToAdd,
 } from '../types';
 
 export const arrayToMap = <T extends { id: any }>(arr: T[]): Normalized<T> => {
@@ -131,31 +132,36 @@ export const removeMapElements = (
 
 export const addMapElements = (
   state: Normalized<StateElement>,
-  elements: LibraryElement<any>[],
-  parentId: string,
-  insertIndex?: number,
+  elements: StateElementsToAdd<Entity>[],
 ): Normalized<StateElement> => {
-  const updatedChildren: Array<string> = [];
-  if (insertIndex === undefined) {
-    updatedChildren.push(...state[parentId].children);
-    updatedChildren.push(...elements.map((el) => el.id));
-  } else {
-    updatedChildren.push(...state[parentId].children.slice(0, insertIndex));
-    updatedChildren.push(...elements.map((el) => el.id));
-    updatedChildren.push(...state[parentId].children.slice(insertIndex));
-  }
-  const result = {
-    ...state,
-    ...flattenElements(elements, parentId),
-    [parentId]: {
-      ...state[parentId],
-      children: updatedChildren,
-    },
-  };
-  result[parentId].children.forEach((child, i) => {
-    result[child].buoyancy = i;
+  return produce(state, (draft) => {
+    elements.forEach((elementToAdd) => {
+      const { elements, parentId, index: insertIndex } = elementToAdd;
+
+      const updatedChildren: Array<string> = [];
+      if (insertIndex === undefined) {
+        updatedChildren.push(...state[parentId].children);
+        updatedChildren.push(...elements.map((el) => el.id));
+      } else {
+        updatedChildren.push(...state[parentId].children.slice(0, insertIndex));
+        updatedChildren.push(...elements.map((el) => el.id));
+        updatedChildren.push(...state[parentId].children.slice(insertIndex));
+      }
+      const flatElements = flattenElements(elements, parentId);
+      Object.keys(flatElements).forEach((newElementId) => {
+        draft[newElementId] = flatElements[newElementId];
+      });
+      const updatedParent = {
+        ...draft[parentId],
+        children: updatedChildren,
+      };
+      updatedParent.children.forEach((childId, index) => {
+        draft[childId].buoyancy = index;
+      });
+
+      draft[parentId] = updatedParent;
+    });
   });
-  return result;
 };
 
 export const updateMapElement = (
@@ -243,7 +249,10 @@ export const insertMapElementWrapper = (
       newState[childId].parent = element.id;
       newState[childId].buoyancy = index;
     });
-  newState[element.id] = element;
+  newState[element.id] = {
+    ...element,
+    parent: parentId,
+  };
   return newState;
 };
 
@@ -326,6 +335,13 @@ export const restoreMapElementChildren = (
       draft[id].parent = elementId;
     });
   });
+
+/* export const restoreMultipleMapElementsChildren = (
+  state: Normalized<StateElement>,
+  elements: RestoreElementData[],
+): Normalized<StateElement> => {
+  
+}; */
 
 export const canElementBeAdded = (
   elements: Normalized<StateElement>,

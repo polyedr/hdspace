@@ -63,6 +63,7 @@ export type BaseElementParams = {
   layouts: Layout[];
   freeCanvas: FreeCanvasElementParams;
   group: ElementGroup;
+  parentId?: string;
 };
 
 export enum UpdateDataActionType {
@@ -245,7 +246,13 @@ export type ServerRecursiveElement = {
 export type RecursiveElement = {
   id: string;
   name: string;
-  children: [];
+  children: Array<string>;
+};
+
+export type RecursiveServerElement = {
+  id: number;
+  name: string;
+  children: Array<number>;
 };
 
 export type LibraryElement<
@@ -680,6 +687,12 @@ export type StateElement = {
   shared?: boolean;
 };
 
+export type StateElementsToAdd<T extends Entity> = {
+  elements: LibraryElement<any>[];
+  parentId: string;
+  index?: number;
+};
+
 export type DropTargetParams = {
   id: string;
   position?: DropPosition;
@@ -720,6 +733,10 @@ export type ItemToCopyInfo = {
 export type DuplicateElementsData = {
   itemsToCopyInfo: ItemToCopyInfo[];
   targetParent: LibraryElement<Entity>;
+};
+
+export type FreeCanvasOffset = {
+  [parentId: string]: number;
 };
 
 export interface ICenterProp {
@@ -845,8 +862,9 @@ export type ParentIds = {
   newParentId: string;
 };
 
-export type ElementsToDrop = {
-  elements: ServerElement<Entity>[];
+export type ElementsToCreate<T extends Entity> = {
+  elements: ServerElement<T>[];
+  parent: LibraryElement<Entity>;
   index?: number;
 };
 
