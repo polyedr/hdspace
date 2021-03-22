@@ -2577,30 +2577,31 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     parameters = {}
                     styles["text-transform"] = "none"
 
-                    if styles_on:
-                        # Get the dominant colour for the element start
-                        bcolour_elem_value = "255,255,255,0"
-                        domcolour_elem = get_dominant_colour(elem_image)[0]
-                        domcolour_elem.append(1)
-                        bcolour_elem_value = ",".join(
-                            str(int(x)) for x in domcolour_elem
-                        )
-                        # Get the dominant colour for the element end
+                    # Extract a color palette start
+                    # Get the dominant colour for the element start
+                    bcolour_elem_value = "255,255,255,0"
+                    domcolour_elem = get_dominant_colour(elem_image)[0]
+                    domcolour_elem.append(1)
+                    bcolour_elem_value = ",".join(
+                        str(int(x)) for x in domcolour_elem
+                    )
+                    # Get the dominant colour for the element end
 
-                        # Get the font colour for the element start
-                        fcolour_elem_value = "91,91,91,0"
-                        fcolour_elem = get_dominant_colour(elem_image)[1]
-                        fcolour_elem.append(1)
-                        fcolour_elem_value = ",".join(str(int(x)) for x in fcolour_elem)
-                        # Get the font colour for the element end
+                    # Get the font colour for the element start
+                    fcolour_elem_value = "91,91,91,0"
+                    fcolour_elem = get_dominant_colour(elem_image)[1]
+                    fcolour_elem.append(1)
+                    fcolour_elem_value = ",".join(str(int(x)) for x in fcolour_elem)
+                    # Get the font colour for the element end
+                    # Extract a color palette end
 
-                        # display elem_image start
-                        """
-                        cv2.imshow(window_name2, elem_image)
-                        print(bcolour_elem_value)
-                        cv2.waitKey(0)
-                        """
-                        # display elem_image end
+                    # display elem_image start
+                    """
+                    cv2.imshow(window_name2, elem_image)
+                    print(bcolour_elem_value)
+                    cv2.waitKey(0)
+                    """
+                    # display elem_image end
 
                     if elem["region_attributes"]["HTML element"] in {
                         "textinput",
