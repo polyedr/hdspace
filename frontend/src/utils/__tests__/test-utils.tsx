@@ -1,4 +1,4 @@
-import { initialUserState } from '@Redux/user/reducer';
+import { initialUserState } from '@Redux/user/initial';
 import {
   initialCommunication,
   initialControl,

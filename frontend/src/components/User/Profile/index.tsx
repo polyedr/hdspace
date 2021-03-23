@@ -7,6 +7,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles, darken } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -14,8 +15,16 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Alert from '@material-ui/lab/Alert';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { selectProfileData, selectUserData } from '@Redux/user/selectors';
-import { changeProfileData, logout } from '@Redux/user/actions';
+import {
+  selectDropTargetBordersMode,
+  selectProfileData,
+  selectUserData,
+} from '@Redux/user/selectors';
+import {
+  changeProfileData,
+  changeDropTargetBordersMode,
+  logout,
+} from '@Redux/user/actions';
 import IMAGES from '@Constants/images';
 import { openSignScreen } from '@Redux/history';
 import { promiseListener } from '@Redux/store';
@@ -86,7 +95,7 @@ const useStyles = makeStyles((theme) =>
     hidden: {
       display: 'none',
     },
-    profileCredentials: {
+    settingsPart: {
       marginTop: 50,
       padding: theme.spacing(1),
     },
@@ -109,6 +118,7 @@ const Profile: React.FC = () => {
   const userData = useSelector(selectUserData);
   const { firstName, lastName, email } = userData;
   const { avatar, role } = useSelector(selectProfileData);
+  const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -132,6 +142,10 @@ const Profile: React.FC = () => {
     formData.append('avatar', file, file.name);
 
     dispatch(changeProfileData((formData as any) as ProfileData));
+  };
+
+  const handleChangeBordersMode = () => {
+    dispatch(changeDropTargetBordersMode());
   };
 
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
@@ -348,7 +362,7 @@ const Profile: React.FC = () => {
           />
         </div>
 
-        <div className={classes.profileCredentials}>
+        <div className={classes.settingsPart}>
           <div className={cn(classes.subheader, classes.strong)}>
             Email address
           </div>
@@ -359,9 +373,22 @@ const Profile: React.FC = () => {
           <Button styleType="link">Change</Button>
         </div>
 
-        <div className={classes.profileCredentials}>
+        <div className={classes.settingsPart}>
           <div className={classes.subheader}>Password</div>
           <Button styleType="link">Change</Button>
+        </div>
+
+        <div className={classes.settingsPart}>
+          <div className={cn(classes.subheader, classes.strong)}>
+            UI settings
+          </div>
+          <div className={classes.subheader}>
+            Always display drop target element borders
+            <Switch
+              checked={dropTargetBordersMode}
+              onChange={handleChangeBordersMode}
+            />
+          </div>
         </div>
       </Box>
     </main>

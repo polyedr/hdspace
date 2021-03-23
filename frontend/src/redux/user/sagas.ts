@@ -57,7 +57,6 @@ export function* loginSaga({
     yield put(
       Actions.setUserData({
         ...convertUserDataFromResponse(userData),
-        // ...convertProfileDataFromResponse(userData.profile),
       }),
     );
 

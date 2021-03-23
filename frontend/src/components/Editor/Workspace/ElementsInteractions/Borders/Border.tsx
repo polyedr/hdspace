@@ -32,6 +32,7 @@ const Border: React.FC<Props> = (props) => {
   const { element, position, styles, isActive, onClick } = props;
   const borderStyles = useStyles(props);
   const [styleProps, setStyleProps] = useState<StyleProps | null>(null);
+
   useEffect(() => {
     const { top, left, height, width } = styles;
     let props: StyleProps | null;
@@ -68,7 +69,7 @@ const Border: React.FC<Props> = (props) => {
         props = null;
     }
     setStyleProps(props);
-  }, [isActive, styles]);
+  }, [isActive, position, styles]);
 
   if (!styleProps) {
     return null;
