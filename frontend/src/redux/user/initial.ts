@@ -1,5 +1,5 @@
 import { UserState } from '@Redux/types';
-import { EXPERIENCE } from '@Src/types';
+import { Experience } from '@Src/types';
 
 // eslint-disable-next-line import/prefer-default-export
 export const initialUserState: UserState = {
@@ -24,7 +24,7 @@ export const initialUserState: UserState = {
       avatar: null,
       id: 0,
       role: '',
-      experienced: EXPERIENCE.BEGINNER,
+      experienced: Experience.BEGINNER,
     },
   },
   isLoggedIn: false,

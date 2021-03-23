@@ -5,7 +5,7 @@ import {
   ProfileData,
   UserData,
   SignupFormData,
-  EXPERIENCE,
+  Experience,
 } from '@Src/types';
 import TYPES from '@Redux/actionTypes';
 
@@ -173,7 +173,7 @@ export const changeProfileDataFailure = (error: any) => ({
   payload: error,
 });
 
-export const setUserExperience = (experience: EXPERIENCE) => ({
+export const setUserExperience = (experience: Experience) => ({
   type: TYPES.SET_USER_EXPERIENCE,
   payload: experience,
 });

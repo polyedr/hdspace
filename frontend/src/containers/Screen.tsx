@@ -15,7 +15,7 @@ import Tour, { ReactourStep } from 'reactour';
 import { useTheme } from '@material-ui/core';
 import { selectUserGuideActive } from '@Redux/user/selectors';
 import { setUserGuideActive, setUserExperience } from '@Redux/user/actions';
-import { EXPERIENCE } from '@Src/types';
+import { Experience } from '@Src/types';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import RightPanel from '../components/RightPanel';
 
@@ -83,7 +83,7 @@ const Screen: React.FC<Props> = ({ screenId, elementId }) => {
         isOpen={userGuideActive}
         steps={tourSteps}
         onRequestClose={() => {
-          dispatch(setUserExperience(EXPERIENCE.EXPERIENCED));
+          dispatch(setUserExperience(Experience.EXPERIENCED));
           dispatch(setUserGuideActive(false));
         }}
         disableInteraction

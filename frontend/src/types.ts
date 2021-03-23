@@ -892,7 +892,7 @@ export type ServerProfileData = {
   approved: boolean;
   role: string;
   id: number;
-  experienced: EXPERIENCE;
+  experienced: Experience;
 };
 
 export type ServerUserData = {
@@ -913,10 +913,10 @@ export type ProfileData = {
   role: string;
   hourlyRate: number;
   id: number;
-  experienced: EXPERIENCE;
+  experienced: Experience;
 };
 
-export enum EXPERIENCE {
+export enum Experience {
   BEGINNER = 'BEGINNER',
   EXPERIENCED = 'EXPERIENCED',
 }
