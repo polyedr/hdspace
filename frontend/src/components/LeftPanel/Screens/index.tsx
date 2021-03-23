@@ -27,6 +27,7 @@ import {
 } from '@Redux/project/selectors/screen';
 import HtmlImportForm from '@Components/Dialogs/HTMLImportForm';
 import prevent from '@Utils/preventEvent';
+import ELEMENT_IDS from '@Constants/elementIds';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
 import {
@@ -107,7 +108,7 @@ const Screens = () => {
 
   return (
     <>
-      <StyledAccordion defaultExpanded>
+      <StyledAccordion defaultExpanded id={ELEMENT_IDS.screenList}>
         <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
           <span>Screens</span>
 
@@ -142,6 +143,7 @@ const Screens = () => {
             color="secondary"
             variant={masterScreenEnabled ? 'contained' : 'outlined'}
             onClick={handleClick}
+            id={ELEMENT_IDS.masterScreenListItem}
           >
             Master Screen
           </Button>

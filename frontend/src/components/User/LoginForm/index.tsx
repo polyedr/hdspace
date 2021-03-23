@@ -12,7 +12,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import MakeAsyncFunction from 'react-redux-promise-listener';
-import { PATH_NAMES } from '@Constants/pathNames';
+import PATH_NAMES from '@Constants/pathNames';
 import { sendResetPasswordMail } from '@Redux/user/actions';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';

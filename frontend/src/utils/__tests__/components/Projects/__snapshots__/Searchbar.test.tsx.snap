@@ -2,9 +2,7 @@
 
 exports[`Searchbar should render a searchbar 1`] = `
 <div>
-  <div
-    id="project-search-id"
-  >
+  <div>
     <form
       class="makeStyles-form-3"
     >

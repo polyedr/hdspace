@@ -1,4 +1,4 @@
-export const PATH_NAMES = {
+const PATH_NAMES = {
   projects: '/projects',
   user: {
     signin: '/signin',
@@ -10,8 +10,4 @@ export const PATH_NAMES = {
   passwordRestore: '/password_restore',
 };
 
-export const ELEMENT_IDS = {
-  avatar: 'avatar-button-id',
-  projectSearch: 'project-search-id',
-  createProject: 'create-project-button',
-};
+export default PATH_NAMES;

@@ -8,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { ELEMENT_IDS, PATH_NAMES } from '@Constants/pathNames';
+import PATH_NAMES from '@Constants/pathNames';
 import IMAGES from '@Constants/images';
 import { logout } from '@Redux/user/actions';
 import { selectProfileData, selectUserData } from '@Redux/user/selectors';
@@ -50,11 +50,7 @@ const Avatar: React.FC = () => {
   return (
     <div>
       <Tooltip title={username} arrow enterDelay={500}>
-        <IconButton
-          size="small"
-          onClick={handleAvatarClick}
-          id={ELEMENT_IDS.avatar}
-        >
+        <IconButton size="small" onClick={handleAvatarClick}>
           <MuiAvatar alt={username} src={avatar || IMAGES.prof} />
         </IconButton>
       </Tooltip>

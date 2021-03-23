@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import { PATH_NAMES } from '@Constants/pathNames';
+import PATH_NAMES from '@Constants/pathNames';
 // import registerWithGoogle from '@Redux/user/actions';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';

@@ -15,7 +15,6 @@ import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
-import { ELEMENT_IDS } from '@Constants/pathNames';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   input: {
@@ -131,7 +130,7 @@ const Searchbar: FC = () => {
   };
 
   return (
-    <div id={ELEMENT_IDS.projectSearch}>
+    <div>
       <form onSubmit={handleSubmit} className={classes.form}>
         <div>
           {isDate && typeof parameterValue === 'object' ? (

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,9 +9,35 @@ import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { selectScreenById } from '@Redux/project/selectors/screen';
 import VIA from '@Components/Editor/VIA';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
+import { activateScreen } from '@Redux/project/actions';
+import ELEMENT_IDS from '@Constants/elementIds';
+import Tour, { ReactourStep } from 'reactour';
+import { useTheme } from '@material-ui/core';
 import Workspace from '../components/Editor/Workspace/Workspace';
-import { activateScreen } from '../redux/project/actions';
 import RightPanel from '../components/RightPanel';
+
+const tourSteps: ReactourStep[] = [
+  {
+    selector: `#${ELEMENT_IDS.screenList}`,
+    content: 'Here you can see the list of all the project screens',
+  },
+  {
+    selector: `#${ELEMENT_IDS.masterScreenListItem}`,
+    content: 'Here you can enable the master screen of the current project',
+  },
+  {
+    selector: `#${ELEMENT_IDS.navigator}`,
+    content: 'There all the elements of the current screen are displayed',
+  },
+  {
+    selector: `#${ELEMENT_IDS.rightPanel}`,
+    content: 'Create element using buttons on this panel',
+  },
+  {
+    selector: `#${ELEMENT_IDS.layoutSelector}`,
+    content: 'Try different layouts using this selector',
+  },
+];
 
 const useStyles = makeStyles({
   screen: {
@@ -45,8 +71,21 @@ const Screen: React.FC<Props> = ({ screenId, elementId }) => {
     }
   }, [history, dispatch, screen, currentProjectId]);
 
+  const [tour, setTour] = useState(true);
+  const { shape } = useTheme();
+
   return (
     <div className={classes.screen}>
+      <Tour
+        isOpen={tour}
+        steps={tourSteps}
+        onRequestClose={() => setTour(false)}
+        disableInteraction
+        rounded={shape.borderRadius}
+        maskSpace={0}
+        scrollDuration={200}
+      />
+
       {viaModeEnabled ? (
         <>
           <VIA />
