@@ -59,6 +59,7 @@ exports[`Navigator should render a Navigator component 1`] = `
             >
               <div
                 class="makeStyles-tree-8"
+                id="navigator-id"
               >
                 <div
                   style="position: relative; overflow: hidden; width: 100%; height: 300px; min-height: 300px; max-height: 300px;"

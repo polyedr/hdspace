@@ -1,5 +1,5 @@
 import { createReducer, Handlers } from 'reduxsauce';
-import { UnsafeReturnType } from '@Src/types';
+import { EXPERIENCE, UnsafeReturnType } from '@Src/types';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { UserState } from '../types';
@@ -29,6 +29,7 @@ export const initialUserState: UserState = {
       avatar: null,
       id: 0,
       role: '',
+      experienced: EXPERIENCE.BEGINNER,
     },
   },
   isLoggedIn: false,
@@ -41,7 +42,6 @@ export const initialUserState: UserState = {
   isLoading: false,
   confirmMessage: '',
   userGuide: {
-    enabled: true,
     active: false,
   },
 };
@@ -144,14 +144,17 @@ const setRestoreUserId: ActionHandler<typeof Actions.setRestoreUserId> = (
   restoreUserId,
 });
 
-const setUserGuideEnabled: ActionHandler<typeof Actions.setUserGuideEnabled> = (
+const setUserExperience: ActionHandler<typeof Actions.setUserExperience> = (
   state,
   { payload },
 ) => ({
   ...state,
-  userGuide: {
-    ...state.userGuide,
-    enabled: payload,
+  userData: {
+    ...state.userData,
+    profile: {
+      ...state.userData.profile,
+      experienced: payload,
+    },
   },
 });
 
@@ -184,7 +187,7 @@ const handlers: Handlers<UserState> = {
   [TYPES.SET_RESTORE_USER_ID]: setRestoreUserId,
   [TYPES.LOGOUT]: logout,
   [TYPES.SET_CONFIRM_MESSAGE]: setConfirmMessage,
-  [TYPES.SET_USER_GUIDE_ENABLED]: setUserGuideEnabled,
+  [TYPES.SET_USER_EXPERIENCE]: setUserExperience,
   [TYPES.SET_USER_GUIDE_ACTIVE]: setUserGuideActive,
 } as const;
 

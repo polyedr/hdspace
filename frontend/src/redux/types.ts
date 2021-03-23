@@ -133,7 +133,6 @@ export type UserState = {
   isLoading: boolean;
   confirmMessage: string;
   userGuide: {
-    enabled: boolean;
     active: boolean;
   };
 };

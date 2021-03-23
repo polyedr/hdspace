@@ -5,6 +5,7 @@ import {
   ProfileData,
   UserData,
   SignupFormData,
+  EXPERIENCE,
 } from '@Src/types';
 import TYPES from '../actionTypes';
 
@@ -168,9 +169,9 @@ export const changeProfileDataFailure = (error: any) => ({
   payload: error,
 });
 
-export const setUserGuideEnabled = (enabled: boolean) => ({
-  type: TYPES.SET_USER_GUIDE_ENABLED,
-  payload: enabled,
+export const setUserExperience = (experience: EXPERIENCE) => ({
+  type: TYPES.SET_USER_EXPERIENCE,
+  payload: experience,
 });
 
 export const setUserGuideActive = (active: boolean) => ({
