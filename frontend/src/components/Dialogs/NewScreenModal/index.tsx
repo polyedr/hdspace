@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectNewScreenModalOpen } from '@Redux/project/selectors/screen';
 import HtmlImportForm from './HTMLImportForm';
 import ImageRecognizeForm from './ImageRecognizeForm';
+import UseEditorForm from './UseEditorForm';
 
 const useTabPanelStyles = makeStyles(({ breakpoints, spacing }) => ({
   tabPanel: {
@@ -87,6 +88,8 @@ const NewScreenModal: FC = () => {
 
         <DialogContent className={classes.dialogContent}>
           <Tabs value={value} onChange={handleTabChange} variant="fullWidth">
+            <Tab label="Create a screen using editor" />
+
             <Tab label="Import external site" />
 
             <Tab label="Recognize an image using neural network" />
@@ -95,14 +98,18 @@ const NewScreenModal: FC = () => {
           </Tabs>
 
           <TabPanel value={value} index={0}>
-            <HtmlImportForm onClose={handleClose} />
+            <UseEditorForm onClose={handleClose} />
           </TabPanel>
 
           <TabPanel value={value} index={1}>
-            <ImageRecognizeForm onClose={handleClose} />
+            <HtmlImportForm onClose={handleClose} />
           </TabPanel>
 
           <TabPanel value={value} index={2}>
+            <ImageRecognizeForm onClose={handleClose} />
+          </TabPanel>
+
+          <TabPanel value={value} index={3}>
             <div className={classes.coming}>This feature is coming soon</div>
           </TabPanel>
         </DialogContent>

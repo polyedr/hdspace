@@ -1,11 +1,11 @@
-import React, { useState, useCallback, MouseEvent } from 'react';
+import React, { useCallback, MouseEvent } from 'react';
 import { useHistory } from 'react-router';
 import List from '@material-ui/core/List';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { Button, lighten, Dialog } from '@material-ui/core';
+import { Button, lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -25,7 +25,6 @@ import {
   selectMasterScreenId,
   selectScreensWithoutMaster,
 } from '@Redux/project/selectors/screen';
-import HtmlImportForm from '@Components/Dialogs/HTMLImportForm';
 import prevent from '@Utils/preventEvent';
 import ELEMENT_IDS from '@Constants/elementIds';
 import ScreenListItem from './ScreenListItem';
@@ -90,8 +89,6 @@ const Screens = () => {
     const result = newScreens.map((screen, i) => ({ ...screen, buoyancy: i }));
     dispatch(changeScreensOrder(result));
   };
-
-  const [open, setOpen] = useState<boolean>(false);
 
   const handleShowMoreOptions = (ev: MouseEvent<HTMLButtonElement>) => {
     prevent(ev);
@@ -173,17 +170,6 @@ const Screens = () => {
           </DragDropContext>
         </StyledAccordionDetails>
       </StyledAccordion>
-
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        fullWidth
-        maxWidth="sm"
-      >
-        <div className={classes.form}>
-          <HtmlImportForm onClose={() => setOpen(false)} />
-        </div>
-      </Dialog>
     </>
   );
 };
