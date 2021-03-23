@@ -3,50 +3,24 @@ import { UnsafeReturnType } from '@Src/types';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { UserState } from '../types';
+import { initialUserState } from './initial';
 
 interface ActionHandler<T> {
   (state: UserState, payload: UnsafeReturnType<T>): UserState;
 }
-
-export const initialUserState: UserState = {
-  isLPanelMinimized: false,
-  isPrototypeMode: false,
-  freeCanvasMode: {
-    enabled: false,
-  },
-  userData: {
-    isActive: false,
-    dateJoined: null,
-    username: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    id: 0,
-    profile: {
-      hourlyRate: 0,
-      approved: false,
-      avatar: null,
-      id: 0,
-      role: '',
-    },
-  },
-  isLoggedIn: false,
-  tokenPair: {
-    access: '',
-    refresh: '',
-  },
-  isTokenLoaded: true,
-  error: null,
-  isLoading: false,
-  confirmMessage: '',
-};
 
 const changeMinLPanel: ActionHandler<
   ReturnType<typeof Actions.changeMinLPanel>
 > = (state) => ({
   ...state,
   isLPanelMinimized: !state.isLPanelMinimized,
+});
+
+const changeDropTargetBordersMode: ActionHandler<
+  ReturnType<typeof Actions.changeDropTargetBordersMode>
+> = (state) => ({
+  ...state,
+  dropTargetBordersMode: !state.dropTargetBordersMode,
 });
 
 const changeSignLoader: ActionHandler<typeof Actions.toggleUserLoading> = (
@@ -147,6 +121,7 @@ const logout: ActionHandler<typeof Actions.logout> = () => ({
 // TODO: type Action in Handlers
 const handlers: Handlers<UserState> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
+  [TYPES.CHANGE_DROP_TARGET_BORDERS_MODE]: changeDropTargetBordersMode,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,

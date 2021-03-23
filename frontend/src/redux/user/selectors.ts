@@ -5,6 +5,9 @@ export const selectUserData = ({ user }: AppReduxState) => user.userData;
 export const selectProfileData = ({ user }: AppReduxState) =>
   user.userData.profile;
 
+export const selectDropTargetBordersMode = ({ user }: AppReduxState) =>
+  user.dropTargetBordersMode;
+
 export const selectIsLeftPanelMinimized = ({ user }: AppReduxState) =>
   user.isLPanelMinimized;
 

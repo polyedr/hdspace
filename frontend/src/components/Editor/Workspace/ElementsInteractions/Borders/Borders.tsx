@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BorderStyles } from '@Src/types';
 import {
@@ -10,6 +10,8 @@ import {
   selectCurrentDropTargetParams,
   selectIsDropTarget,
 } from '@Redux/project/selectors/base';
+import { DropPosition } from '@Constants/dragAndDrop';
+import { selectDropTargetBordersMode } from '@Redux/user/selectors';
 import { BorderPosition } from '../constants';
 import Border from './Border';
 import DropPositionMarker from './DropPositionMarker';
@@ -25,6 +27,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
   const isDropTarget = useSelector(selectIsDropTarget(elementId));
+  const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
 
   const isActiveBorder = [
     activeElementId,
@@ -32,9 +35,10 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
     dropTargetParams?.id,
   ].includes(elementId);
 
-  /* const showBordersPosition = useMemo(() => {
+  const showBordersPosition = useMemo(() => {
     return {
       [BorderPosition.TOP]:
+        dropTargetBordersMode ||
         !isDropTarget ||
         (dropTargetParams &&
           dropTargetParams.position &&
@@ -42,6 +46,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
       [BorderPosition.BOTTOM]:
+        dropTargetBordersMode ||
         !isDropTarget ||
         (dropTargetParams &&
           dropTargetParams.position &&
@@ -49,6 +54,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
       [BorderPosition.LEFT]:
+        dropTargetBordersMode ||
         !isDropTarget ||
         (dropTargetParams &&
           dropTargetParams.position &&
@@ -56,6 +62,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
       [BorderPosition.RIGHT]:
+        dropTargetBordersMode ||
         !isDropTarget ||
         (dropTargetParams &&
           dropTargetParams.position &&
@@ -63,41 +70,51 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
     };
-  }, [dropTargetParams, isDropTarget]); */
+  }, [dropTargetBordersMode, dropTargetParams, isDropTarget]);
 
-  // console.log('STYLES!!', styles);
+  if (!element || !styles) {
+    return null;
+  }
 
-  return element && styles ? (
+  return (
     <>
-      <Border
-        position={BorderPosition.TOP}
-        element={element}
-        isActive={isActiveBorder}
-        styles={styles}
-      />
-      <Border
-        position={BorderPosition.BOTTOM}
-        element={element}
-        isActive={isActiveBorder}
-        styles={styles}
-      />
-      <Border
-        position={BorderPosition.LEFT}
-        element={element}
-        isActive={isActiveBorder}
-        styles={styles}
-      />
-      <Border
-        position={BorderPosition.RIGHT}
-        element={element}
-        isActive={isActiveBorder}
-        styles={styles}
-      />
-      {isDropTarget && (
+      {showBordersPosition[BorderPosition.TOP] && (
+        <Border
+          position={BorderPosition.TOP}
+          element={element}
+          isActive={isActiveBorder}
+          styles={styles}
+        />
+      )}
+      {showBordersPosition[BorderPosition.BOTTOM] && (
+        <Border
+          position={BorderPosition.BOTTOM}
+          element={element}
+          isActive={isActiveBorder}
+          styles={styles}
+        />
+      )}
+      {showBordersPosition[BorderPosition.LEFT] && (
+        <Border
+          position={BorderPosition.LEFT}
+          element={element}
+          isActive={isActiveBorder}
+          styles={styles}
+        />
+      )}
+      {showBordersPosition[BorderPosition.RIGHT] && (
+        <Border
+          position={BorderPosition.RIGHT}
+          element={element}
+          isActive={isActiveBorder}
+          styles={styles}
+        />
+      )}
+      {dropTargetBordersMode && isDropTarget && (
         <DropPositionMarker styles={styles} isActive={isActiveBorder} />
       )}
     </>
-  ) : null;
+  );
 };
 
 export default Borders;
