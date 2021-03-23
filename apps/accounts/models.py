@@ -27,17 +27,24 @@ class Profile(TimeStampedModel):
         (ROLE_LIBRARIAN, "Librarian"),
         (ROLE_EXTERNAL, "External"),
     )
+
+    UEXP_BEGINNER = "BEGINNER"
+    UEXP_EXPERIENCED = "EXPERIENCED"
+
+    USER_EXP = (
+        (UEXP_BEGINNER, "Beginner"),
+        (UEXP_EXPERIENCED, "Experienced"),
+    )
     role = models.CharField(
         max_length=32, choices=USER_ROLE, default=ROLE_STAFF, null=True
+    )
+    experienced = models.CharField(
+        max_length=32, choices=USER_EXP, default=UEXP_BEGINNER, null=True
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email_confirmation_token = models.CharField(
         max_length=64, editable=False, null=True
     )
-    email_confirmation_token = models.CharField(
-        max_length=64, editable=False, null=True
-    )
-
     reset_password_token = models.CharField(max_length=64, editable=False, null=True)
     invitation_token = models.CharField(max_length=64, editable=False, null=True)
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True)
