@@ -665,7 +665,6 @@ class DisplayPermissionsProject(APIView):
     def get(self, request):
         username = request.data['username']
         projectid = request.data['projectid']
-        permission = request.data['permission']
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
         rp = get_perms(user, project)
