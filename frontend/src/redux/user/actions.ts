@@ -6,9 +6,13 @@ import {
   UserData,
   SignupFormData,
 } from '@Src/types';
-import TYPES from '../actionTypes';
+import TYPES from '@Redux/actionTypes';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
+
+export const changeDropTargetBordersMode = () => ({
+  type: TYPES.CHANGE_DROP_TARGET_BORDERS_MODE,
+});
 
 export const toggleUserLoading = (isLoading: boolean) => ({
   type: TYPES.TOGGLE_USER_LOADING,
