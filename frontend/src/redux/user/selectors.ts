@@ -24,3 +24,9 @@ export const selectIsLoggedIn = ({ user }: AppReduxState) => user.isLoggedIn;
 
 export const selectIsTokenLoaded = ({ user }: AppReduxState) =>
   user.isTokenLoaded;
+
+export const selectUserGuideEnabled = ({ user }: AppReduxState) =>
+  user.userGuide.enabled;
+
+export const selectUserGuideActive = ({ user }: AppReduxState) =>
+  user.userGuide.active;

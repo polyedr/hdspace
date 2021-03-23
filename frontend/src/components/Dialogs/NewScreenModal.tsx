@@ -7,14 +7,13 @@ import {
   Tabs,
 } from '@material-ui/core';
 import { setNewScreenModal } from '@Redux/project/actions';
+import { setUserGuideActive } from '@Redux/user/actions';
+import { selectUserGuideEnabled } from '@Redux/user/selectors';
 import React, { ChangeEvent, FC, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectNewScreenModalOpen } from '@Redux/project/selectors/screen';
 import HtmlImportForm from './HTMLImportForm';
 import ImageRecognizeForm from './ImageRecognizeForm';
-
-type Props = {
-  open: boolean;
-};
 
 const useTabPanelStyles = makeStyles(({ breakpoints, spacing }) => ({
   tabPanel: {
@@ -57,19 +56,32 @@ const TabPanel: FC<{ index: number; value: number }> = ({
   return <div className={classes.tabPanel}>{children}</div>;
 };
 
-const NewScreenModal: FC<Props> = ({ open }) => {
+const NewScreenModal: FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  const newScreenModalOpen = useSelector(selectNewScreenModalOpen);
+  const userGuideEnabled = useSelector(selectUserGuideEnabled);
 
   const [value, setValue] = useState(0);
 
   const handleTabChange = (ev: ChangeEvent<{}>, newValue: number) =>
     setValue(newValue);
 
-  const handleClose = () => dispatch(setNewScreenModal(false));
+  const handleClose = () => {
+    dispatch(setNewScreenModal(false));
+    if (userGuideEnabled) {
+      dispatch(setUserGuideActive(true));
+    }
+  };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+    <Dialog
+      open={newScreenModalOpen}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="md"
+    >
       <div>
         <DialogTitle>Choose the option to create a new screen</DialogTitle>
 

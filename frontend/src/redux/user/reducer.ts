@@ -40,6 +40,10 @@ export const initialUserState: UserState = {
   error: null,
   isLoading: false,
   confirmMessage: '',
+  userGuide: {
+    enabled: true,
+    active: false,
+  },
 };
 
 const changeMinLPanel: ActionHandler<
@@ -140,6 +144,28 @@ const setRestoreUserId: ActionHandler<typeof Actions.setRestoreUserId> = (
   restoreUserId,
 });
 
+const setUserGuideEnabled: ActionHandler<typeof Actions.setUserGuideEnabled> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  userGuide: {
+    ...state.userGuide,
+    enabled: payload,
+  },
+});
+
+const setUserGuideActive: ActionHandler<typeof Actions.setUserGuideActive> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  userGuide: {
+    ...state.userGuide,
+    active: payload,
+  },
+});
+
 const logout: ActionHandler<typeof Actions.logout> = () => ({
   ...initialUserState,
 });
@@ -158,6 +184,8 @@ const handlers: Handlers<UserState> = {
   [TYPES.SET_RESTORE_USER_ID]: setRestoreUserId,
   [TYPES.LOGOUT]: logout,
   [TYPES.SET_CONFIRM_MESSAGE]: setConfirmMessage,
+  [TYPES.SET_USER_GUIDE_ENABLED]: setUserGuideEnabled,
+  [TYPES.SET_USER_GUIDE_ACTIVE]: setUserGuideActive,
 } as const;
 
 export default createReducer(initialUserState, handlers);

@@ -167,3 +167,13 @@ export const changeProfileDataFailure = (error: any) => ({
   type: TYPES.CHANGE_PROFILE_DATA_FAILURE,
   payload: error,
 });
+
+export const setUserGuideEnabled = (enabled: boolean) => ({
+  type: TYPES.SET_USER_GUIDE_ENABLED,
+  payload: enabled,
+});
+
+export const setUserGuideActive = (active: boolean) => ({
+  type: TYPES.SET_USER_GUIDE_ACTIVE,
+  payload: active,
+});

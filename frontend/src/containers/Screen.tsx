@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,8 @@ import { activateScreen } from '@Redux/project/actions';
 import ELEMENT_IDS from '@Constants/elementIds';
 import Tour, { ReactourStep } from 'reactour';
 import { useTheme } from '@material-ui/core';
+import { selectUserGuideActive } from '@Redux/user/selectors';
+import { setUserGuideActive, setUserGuideEnabled } from '@Redux/user/actions';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import RightPanel from '../components/RightPanel';
 
@@ -71,15 +73,18 @@ const Screen: React.FC<Props> = ({ screenId, elementId }) => {
     }
   }, [history, dispatch, screen, currentProjectId]);
 
-  const [tour, setTour] = useState(true);
+  const userGuideActive = useSelector(selectUserGuideActive);
   const { shape } = useTheme();
 
   return (
     <div className={classes.screen}>
       <Tour
-        isOpen={tour}
+        isOpen={userGuideActive}
         steps={tourSteps}
-        onRequestClose={() => setTour(false)}
+        onRequestClose={() => {
+          dispatch(setUserGuideEnabled(false));
+          dispatch(setUserGuideActive(false));
+        }}
         disableInteraction
         rounded={shape.borderRadius}
         maskSpace={0}
