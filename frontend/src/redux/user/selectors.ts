@@ -29,8 +29,8 @@ export const selectIsLoggedIn = ({ user }: AppReduxState) => user.isLoggedIn;
 export const selectIsTokenLoaded = ({ user }: AppReduxState) =>
   user.isTokenLoaded;
 
-export const selectUserGuideEnabled = ({ user }: AppReduxState) =>
-  user.userData.profile.experienced === Experience.BEGINNER;
+export const selectUserGuideWatched = ({ user }: AppReduxState) =>
+  user.userData.profile.experienced !== Experience.BEGINNER;
 
 export const selectUserGuideActive = ({ user }: AppReduxState) =>
   user.userGuide.active;

@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import { setNewScreenModal } from '@Redux/project/actions';
 import { setUserGuideActive } from '@Redux/user/actions';
-import { selectUserGuideEnabled } from '@Redux/user/selectors';
+import { selectUserGuideWatched } from '@Redux/user/selectors';
 import React, { ChangeEvent, FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectNewScreenModalOpen } from '@Redux/project/selectors/screen';
@@ -61,7 +61,7 @@ const NewScreenModal: FC = () => {
   const classes = useStyles();
 
   const newScreenModalOpen = useSelector(selectNewScreenModalOpen);
-  const userGuideEnabled = useSelector(selectUserGuideEnabled);
+  const userGuideWatched = useSelector(selectUserGuideWatched);
 
   const [value, setValue] = useState(0);
 
@@ -70,7 +70,7 @@ const NewScreenModal: FC = () => {
 
   const handleClose = () => {
     dispatch(setNewScreenModal(false));
-    if (userGuideEnabled) {
+    if (!userGuideWatched) {
       dispatch(setUserGuideActive(true));
     }
   };
