@@ -450,6 +450,8 @@ export interface ElementClickEvent extends ElementEvent {
 
 export type ImageParameters = BaseElementParams & {
   imageURL: string;
+  alt: string;
+  title: string;
 };
 
 export type LinkType = 'internal' | 'external';
@@ -1136,6 +1138,8 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'isOpen',
   'videoSettings',
   'stylesOn',
+  'alt',
+  'title',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

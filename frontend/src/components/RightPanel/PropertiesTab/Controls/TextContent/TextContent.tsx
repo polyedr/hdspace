@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { ParagraphElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
+import useDebouncedChange from '@Utils/useDeboucedChange';
 
 const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   updateParams,
 }) => {
   const content = useSelector(selectActiveElementParamByName('textContent'));
 
-  const [state, setState] = useState(content);
-  useEffect(() => {
-    setState(content);
-  }, [content]);
-
-  const debounced = useDebouncedCallback((value) => {
-    updateParams({ textContent: value });
-  }, 500);
-
-  const handleChange = ({ target: { value } }) => {
-    setState(value);
-    debounced.callback(value);
-  };
+  const { state, handleChange } = useDebouncedChange(content, (value) =>
+    updateParams({ textContent: value }),
+  );
 
   return (
     <StyledTextField

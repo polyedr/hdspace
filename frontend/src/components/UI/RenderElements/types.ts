@@ -38,7 +38,9 @@ export type DivBlockRendererProps = SharedRendererProps & {
 
 export type ImageRendererProps = SharedRendererProps & {
   params: {
+    alt: string;
     imageURL: string;
+    title: string;
   };
 };
 
