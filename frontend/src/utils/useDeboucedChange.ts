@@ -18,10 +18,7 @@ const useDebouncedChange = (
     debounced.callback(value);
   };
 
-  return {
-    state,
-    handleChange,
-  };
+  return [state, handleChange];
 };
 
 export default useDebouncedChange;

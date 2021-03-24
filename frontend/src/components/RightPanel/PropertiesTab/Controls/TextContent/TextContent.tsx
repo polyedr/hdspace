@@ -10,7 +10,7 @@ const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
 }) => {
   const content = useSelector(selectActiveElementParamByName('textContent'));
 
-  const { state, handleChange } = useDebouncedChange(content, (value) =>
+  const [state, handleChange] = useDebouncedChange(content, (value) =>
     updateParams({ textContent: value }),
   );
 

@@ -8,7 +8,7 @@ import useDebouncedChange from '@Utils/useDeboucedChange';
 const Alt: FC<PropertiesChangeProps<ImageElement>> = ({ updateParams }) => {
   const alt = useSelector(selectActiveElementParamByName('alt'));
 
-  const { state, handleChange } = useDebouncedChange(alt, (value) =>
+  const [state, handleChange] = useDebouncedChange(alt, (value) =>
     updateParams({ alt: value }),
   );
 

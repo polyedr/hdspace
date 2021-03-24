@@ -8,7 +8,7 @@ import useDebouncedChange from '@Utils/useDeboucedChange';
 const Title: FC<PropertiesChangeProps<ImageElement>> = ({ updateParams }) => {
   const title = useSelector(selectActiveElementParamByName('title'));
 
-  const { state, handleChange } = useDebouncedChange(title, (value) =>
+  const [state, handleChange] = useDebouncedChange(title, (value) =>
     updateParams({ title: value }),
   );
 
