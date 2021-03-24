@@ -47,6 +47,17 @@ After that, you can run these migrations commands and run the server locally.
 
 You can find the REST API local schema here: http://127.0.0.1:8000/api/v1/schema/
 
+### Element recorded in .json file restoration
+
+Two sample .json file is provided in the folder apps/projects/element_restore/element_examples
+
+To restore them, type the following to the venv command line
+
+> *python manage.py --path ./element_examples*
+
+To restore .json from other directories, just replace what's after --path
+
+
 ## Deployment
 
 1. Copy project files to the server. Set up the parameters required at the application settings.
