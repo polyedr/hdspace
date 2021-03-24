@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { useDebouncedCallback } from 'use-debounce';
 import {
   getPermissibleValue,
   safeMatch,
@@ -17,6 +16,7 @@ import {
   MAX_BORDER_RADIUS_PERCENT,
   MIN_BORDER_RADIUS,
 } from '@Constants/defaultParams';
+import useDebouncedChange from '@Utils/useDeboucedChange';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 
@@ -77,29 +77,29 @@ const BorderBlock: React.FC<Props> = ({
     }%`;
   }, []);
 
-  const [width, setWidth] = useState(borderWidth);
-  useEffect(() => {
-    setWidth(borderWidth);
-  }, [borderWidth]);
-  const debouncedBorderWidth = useDebouncedCallback((value) => {
-    const newWidth = getPermissibleValue(
-      strToNumber(value.toString()),
-      MIN_BORDER_WIDTH,
-      MAX_BORDER_WIDTH,
-    );
+  const [width, handleWidthChange] = useDebouncedChange(
+    borderWidth,
+    (value) => {
+      const newWidth = getPermissibleValue(
+        strToNumber(value.toString()),
+        MIN_BORDER_WIDTH,
+        MAX_BORDER_WIDTH,
+      );
 
-    updateStyles({ borderWidth: `${newWidth}px` });
-  }, 250);
+      updateStyles({ borderWidth: `${newWidth}px` });
+    },
+    250,
+  );
 
-  const [radius, setRadius] = useState(borderRadius);
-  useEffect(() => {
-    setRadius(borderRadius);
-  }, [borderRadius]);
-  const debouncedBorderRadius = useDebouncedCallback((value) => {
-    updateStyles({
-      borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,
-    });
-  }, 250);
+  const [radius, handleRadiusChange] = useDebouncedChange(
+    borderRadius,
+    (value) => {
+      updateStyles({
+        borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,
+      });
+    },
+    250,
+  );
 
   const handleChangeBorderRadiusUnits = ({ target: { value } }) => {
     updateStyles({
@@ -129,10 +129,7 @@ const BorderBlock: React.FC<Props> = ({
           label="Width"
           type="number"
           value={width ? parseFloat(width as string) : ''}
-          onChange={({ target: { value } }) => {
-            setWidth(value);
-            debouncedBorderWidth.callback(value);
-          }}
+          onChange={handleWidthChange}
           margin="dense"
           className={classes.text}
         />
@@ -142,10 +139,7 @@ const BorderBlock: React.FC<Props> = ({
             label="Radius"
             type="number"
             value={safeParseFloat(validateBorderRadius(String(radius)))}
-            onChange={({ target: { value } }) => {
-              setRadius(value);
-              debouncedBorderRadius.callback(parseInt(value));
-            }}
+            onChange={handleRadiusChange}
             margin="dense"
             className={classes.text}
           />

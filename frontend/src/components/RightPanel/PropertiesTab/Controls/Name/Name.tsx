@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { PropertiesChangeProps, RadiobuttonElement } from '@Src/types';
+import useDebouncedChange from '@Utils/useDeboucedChange';
 
 const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   updateParams,
@@ -12,22 +12,16 @@ const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   const name = useSelector(
     (state: AppReduxState) => selectActiveElementParams(state).name,
   );
-  const [state, setState] = useState(name || '');
-  useEffect(() => {
-    setState(name);
-  }, [name]);
-  const debounced = useDebouncedCallback((value) => {
+
+  const [state, handleNameChange] = useDebouncedChange(name || '', (value) => {
     updateParams({ name: value });
-  }, 500);
+  });
 
   return (
     <StyledTextField
       variant="outlined"
       value={state}
-      onChange={({ target: { value } }) => {
-        setState(value);
-        debounced.callback(value);
-      }}
+      onChange={handleNameChange}
       label="Name"
       margin="dense"
       fullWidth

@@ -389,7 +389,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   textBlock: ['textContent', ...textBlockStyleControls, 'layouts'],
   list: ['listItems', 'isOrdered', ...listStyleControls, 'layouts'],
   listItem: [...listItemStyleControls, 'layouts'],
-  image: ['image', ...imageStyleControls, 'layouts'],
+  image: ['image', ...imageStyleControls, 'alt', 'title', 'layouts'],
   select: [
     'selectValue',
     'selectOptions',
