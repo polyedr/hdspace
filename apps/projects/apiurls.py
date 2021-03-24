@@ -34,7 +34,7 @@ from .apiviews import (
     ElementCommentList, ElementCommentDetail, ProjectIllustrationSetList, ProjectIllustrationSetDetail,
     IllustrationSetImageList, IllustrationSetImageDetail, ScenarioElementMultipleRecursiveViewSet,
     RemovePermissionsProject,
-    AssignPermissionsProject, DisplayPermissionsProject)
+    AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers)
 
 app_name = "projects"
 
@@ -125,6 +125,8 @@ api_permissions_project_patterns = [
          name="api_remove_permissions_projects"),
     path("permissions-projects-display/", DisplayPermissionsProject.as_view(),
          name="api_display_permissions_projects"),
+    path("permissions-allusers-display/", DisplayPermissionsAllusers.as_view(),
+         name="api_display_permissions_allusers"),
 ]
 
 # path(
