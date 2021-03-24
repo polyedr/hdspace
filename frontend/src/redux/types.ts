@@ -32,6 +32,7 @@ import {
   DateRange,
   StateElementsToAdd,
   VIARegion,
+  PaginatedResponse,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -39,6 +40,8 @@ export type ProjectDataState = {
   projectsData: PaginatedData<Project> & {
     parameter: [ProjectsSearchParameter, string | DateRange];
   };
+  usersPermissionsListData: PaginatedData<UserData> & { search: string };
+  projectUsersData: PaginatedData<UserData>;
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
@@ -185,6 +188,14 @@ export type RestoreChildrenData = {
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
+export type LoadUsers = IAction<
+  typeof TYPES.LOAD_USERS,
+  { searchValue?: string }
+>;
+export type SetUsersSearchValue = IAction<
+  typeof TYPES.SET_USERS_SEARCH,
+  { search: string }
+>;
 export type SearchProjects = IPlainAction<typeof TYPES.SEARCH_PROJECTS>;
 export type SetProjectSearchParameter = IAction<
   typeof TYPES.SET_PROJECT_SEARCH_PARAMETER,
@@ -194,7 +205,12 @@ export type LoadProjectsSuccess = IAction<
   typeof TYPES.SET_PROJECT_LIST,
   { projects: Project[] }
 >;
-export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;
+export type LoadProjectsFail = IPlainFailAction<'projects/LOAD_PROJECTS_FAIL'>;
+
+export type LoadProjectUsersSuccess = IAction<
+  typeof TYPES.SET_PROJECT_USERS_DATA,
+  { users: UserData[] }
+>;
 
 export type CreateProject = IAction<
   typeof TYPES.CREATE_PROJECT,
@@ -227,6 +243,14 @@ export type RenameProject = IAction<
 >;
 export type SetProjectListLoader = IAction<
   typeof TYPES.SET_PROJECT_LIST_LOADER,
+  { active: boolean }
+>;
+export type SetProjectUsersLoader = IAction<
+  typeof TYPES.SET_PROJECT_USERS_LOADER,
+  { active: boolean }
+>;
+export type SetUsersLoader = IAction<
+  typeof TYPES.SET_USERS_LOADER,
   { active: boolean }
 >;
 export type SetProjectLoader = IAction<
@@ -874,6 +898,16 @@ export type SetProjectsData = IAction<
   PaginatedArray<Project>
 >;
 
+export type SetUsersData = IAction<
+  typeof TYPES.SET_USERS_DATA,
+  { search: string; data: PaginatedResponse<UserData> }
+>;
+
+export type SetProjectUsersData = IAction<
+  typeof TYPES.SET_PROJECT_USERS_DATA,
+  PaginatedArray<UserData>
+>;
+
 export type UpdateLastElements = IAction<
   typeof TYPES.UPDATE_LAST_ELEMENTS,
   { parentId: string; ids: string[]; offset: number }
@@ -965,8 +999,12 @@ export type SetNewScreenModal = IAction<
 
 export type Action =
   | LoadProjects
+  | LoadUsers
+  | SetUsersSearchValue
   | LoadProjectsSuccess
   | LoadProjectsFail
+  | SetUsersData
+  | LoadProjectUsersSuccess
   | CreateProject
   | DeleteProject
   | GetProject
@@ -974,6 +1012,8 @@ export type Action =
   | ChangeScreensOrder
   | RenameProject
   | SetProjectListLoader
+  | SetProjectUsersLoader
+  | SetUsersLoader
   | SetProjectLoader
   | SetScreenLoader
   | SetMasterScreenLoader

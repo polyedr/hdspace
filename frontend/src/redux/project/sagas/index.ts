@@ -62,6 +62,7 @@ import {
   deleteProjectSaga,
   getProjectListSaga,
   getProjectSaga,
+  getUsersSaga,
   renameProjectSaga,
   searchProjectsSaga,
   updateProjectSaga,
@@ -315,6 +316,7 @@ const pasteCopiedElementSaga = withActionsHistory(function* ({
 
 export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
+  yield takeLatest(TYPES.LOAD_USERS, getUsersSaga);
   yield takeLatest(TYPES.CREATE_PROJECT, createProjectSaga);
   yield takeLatest(TYPES.DELETE_PROJECT, deleteProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);

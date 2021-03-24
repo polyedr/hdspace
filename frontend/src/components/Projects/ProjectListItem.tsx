@@ -9,6 +9,7 @@ import { createStyles } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import GroupIcon from '@material-ui/icons/Group';
 import convertDateToRelative from '@Utils/convertDateToRelative';
 import { deleteProject, renameProject } from '@Redux/project/actions';
 import Dialog from '../Dialogs/Dialog';
@@ -34,12 +35,19 @@ const useStyles = makeStyles((theme) =>
 
 type Props = {
   project: Project;
+  onPermissionsManagementClick: (projectId: number) => void;
 };
 
 type Ref = HTMLTableRowElement;
 
 const ProjectListItem = React.forwardRef<Ref, Props>(
-  ({ project: { status, id, name, updated, projectscreen } }, ref) => {
+  (
+    {
+      project: { status, id, name, updated, projectscreen },
+      onPermissionsManagementClick,
+    },
+    ref,
+  ) => {
     const dispatch = useDispatch();
     const classes = useStyles();
 
@@ -93,6 +101,13 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
           <TableCell>
             <IconButton size="small" onClick={handleRenameProject}>
               <EditIcon fontSize="small" />
+            </IconButton>
+
+            <IconButton
+              size="small"
+              onClick={() => onPermissionsManagementClick(id)}
+            >
+              <GroupIcon fontSize="small" />
             </IconButton>
 
             <IconButton size="small" onClick={handleDeleteProject}>

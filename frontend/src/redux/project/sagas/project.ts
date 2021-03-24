@@ -24,9 +24,11 @@ import {
   ProjectWithScreens,
   Result,
   Screen,
+  UserData,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
+import { apiGetUsers } from '@Api/user';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -37,6 +39,8 @@ import {
   selectProjectsAsArr,
   selectProjectsDataNext,
   selectProjectsSearchParameter,
+  selectUsersNext,
+  selectUsersSearchValue,
 } from '../selectors/base';
 import { selectScreenById } from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
@@ -177,6 +181,46 @@ export function* getProjectListSaga() {
     );
   } finally {
     yield put(Actions.setProjectListLoader(false));
+  }
+}
+
+export function* getUsersSaga(action: ReturnType<typeof Actions.getUsersList>) {
+  try {
+    const { searchValue } = action.payload;
+    yield put(Actions.setUsersLoader(true));
+    const next: string | null = yield select(selectUsersNext);
+    const prevSearchValue = yield select(selectUsersSearchValue);
+
+    const { result, error }: Result<PaginatedResponse<UserData>> = yield call(
+      reqWrapper,
+      apiGetUsers,
+      {
+        params: {
+          cursor: searchValue === prevSearchValue ? next : null,
+        },
+        search: searchValue || prevSearchValue,
+      },
+    );
+
+    if (result) {
+      yield put(Actions.setUsersData(searchValue || prevSearchValue, result));
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
+        },
+        e,
+      ),
+    );
   }
 }
 

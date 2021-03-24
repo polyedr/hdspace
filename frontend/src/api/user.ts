@@ -1,7 +1,13 @@
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { myAxios } from '../config/settings';
-import { LoginFormData } from '../types';
-import { parseResult } from './helper';
+import {
+  LoginFormData,
+  MyAxiosProps,
+  PaginatedResponse,
+  ServerUserData,
+} from '../types';
+import { convertUserDataFromResponse } from './converters/fromResponse';
+import { handleError, parseCursor, parseResult } from './helper';
 
 type SendActivationMailData = {
   username: string;
@@ -112,6 +118,28 @@ export const apiRestorePassword = (email: string) =>
     method: 'POST',
     url: '/djauth/users/reset_password/',
   }).then(parseResult);
+
+export const apiGetUsers = (props: MyAxiosProps & { search: string }) => {
+  const { search, ...axiosProps } = props;
+  console.log('API GET USERS!!', search);
+  return myAxios({
+    ...axiosProps,
+    method: 'GET',
+    url: '/accounts/users/',
+    params: {
+      ...axiosProps.params,
+      search,
+    },
+  })
+    .then((result: AxiosResponse<PaginatedResponse<ServerUserData>>) => ({
+      result: {
+        next: parseCursor(result.data.next),
+        previous: parseCursor(result.data.previous),
+        results: result.data.results.map(convertUserDataFromResponse),
+      },
+    }))
+    .catch(handleError);
+};
 
 export const apiGetUser = ({ id, ...props }) =>
   myAxios({

@@ -20,6 +20,36 @@ export const selectProjectsPageSize = ({ project }: AppReduxState) =>
 export const selectProjectsDataNext = ({ project }: AppReduxState) =>
   project.data.projectsData.next;
 
+export const selectUsersForProject = ({ project }: AppReduxState) =>
+  project.data.usersPermissionsListData.results;
+
+export const selectUsersNext = ({ project }: AppReduxState) =>
+  project.data.usersPermissionsListData.next;
+
+export const selectUsersLoading = ({ project }: AppReduxState) =>
+  project.data.usersPermissionsListData.loading;
+
+export const selectUsersSearchValue = ({ project }: AppReduxState) =>
+  project.data.usersPermissionsListData.search;
+
+export const selectUsersPrev = ({ project }: AppReduxState) =>
+  project.data.usersPermissionsListData.previous;
+
+export const selectUsersPageSize = ({ project }: AppReduxState) =>
+  project.data.usersPermissionsListData.pageSize;
+
+export const selectProjectUsersNext = ({ project }: AppReduxState) =>
+  project.data.projectUsersData.next;
+
+export const selectProjectUsersPrev = ({ project }: AppReduxState) =>
+  project.data.projectUsersData.previous;
+
+export const selectProjectUsersPageSize = ({ project }: AppReduxState) =>
+  project.data.projectUsersData.pageSize;
+
+export const selectProjectUsersLoading = ({ project }: AppReduxState) =>
+  project.data.projectUsersData.loading;
+
 export const selectProjectsSearchParameter = ({ project }: AppReduxState) =>
   project.data.projectsData.parameter;
 

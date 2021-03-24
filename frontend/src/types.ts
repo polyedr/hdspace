@@ -914,6 +914,12 @@ export type ProfileData = {
   id: number;
 };
 
+export enum UserProjectPermission {
+  UNSET = 'unset',
+  VIEW_PROJECT = 'view_project',
+  CHANGE_PROJECT = 'change_project',
+}
+
 export type UserData = {
   username: string;
   email: string;
