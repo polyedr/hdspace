@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 from rest_framework.pagination import CursorPagination
 # from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters  # Django-Guardian
-from guardian.shortcuts import assign_perm, remove_perm, get_perms
+from guardian.shortcuts import assign_perm, remove_perm, get_perms, get_users_with_perms
 
 from apps.accounts.models import User
 from permissions import CustomObjectPermissions
@@ -671,5 +671,29 @@ class DisplayPermissionsProject(APIView):
         print(rp)
         if rp:
             return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class DisplayPermissionsAllusers(APIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+    )
+
+    def get(self, request):
+        projectid = request.data['projectid']
+        project = Project.objects.get(pk=projectid)
+        users_list = get_users_with_perms(project)
+        rp_users_dictionary = {}
+        for user in users_list:
+            rp = get_perms(user, project)
+            rdictionary = {user.pk: rp}
+            rp_users_dictionary.update(rdictionary)
+
+        if rp_users_dictionary:
+            return Response({"permissions": rp_users_dictionary}, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
