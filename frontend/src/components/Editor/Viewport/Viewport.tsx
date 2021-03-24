@@ -58,10 +58,6 @@ const Viewport: React.FC = ({ children }) => {
     if (editorDocument) {
       editorDocument.head.prepend(entityStylesEl);
       editorDocument.head.append(sharedStylesEl);
-      return () => {
-        editorDocument.head.removeChild(entityStylesEl);
-        editorDocument.head.removeChild(sharedStylesEl);
-      };
     }
   }, [editorDocument, entityStylesEl, sharedStylesEl]);
 
