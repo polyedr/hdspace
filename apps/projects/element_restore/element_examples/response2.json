@@ -1,0 +1,107 @@
+{
+  "id": 72852,
+  "name": "Container",
+  "children": [
+    {
+      "id": 72853,
+      "name": "Container",
+      "children": [
+        {
+          "id": 72854,
+          "name": "Ocrtext",
+          "children": [],
+          "struct_type": "ocrtext",
+          "func_type": "ocrtext",
+          "direction": "vertical",
+          "buoyancy": 0,
+          "image": null,
+          "parameters": {
+            "freeCanvas": {
+              "left": 0,
+              "top": 0,
+              "zIndex": 0,
+              "width": 300,
+              "height": 100
+            },
+            "group": "undefined",
+            "layouts": [
+              "desktop",
+              "tablet",
+              "mobile"
+            ],
+            "textContent": "commodo consectetur"
+          },
+          "styles": {
+            "classNames": [
+              "ocrtext"
+            ],
+            "ownStyles": {}
+          },
+          "shared": false
+        }
+      ],
+      "struct_type": "container",
+      "func_type": "container",
+      "direction": "vertical",
+      "buoyancy": 0,
+      "image": null,
+      "parameters": {
+        "freeCanvas": {
+          "left": 0,
+          "top": 0,
+          "zIndex": 0,
+          "width": 300,
+          "height": 100
+        },
+        "group": "undefined",
+        "layouts": [
+          "desktop",
+          "tablet",
+          "mobile"
+        ]
+      },
+      "styles": {
+        "classNames": [
+          "container"
+        ],
+        "ownStyles": {},
+        "display": "flex",
+        "background": "lightblue",
+        "width": "104px",
+        "height": "22px",
+        "border": "1px solid green"
+      },
+      "shared": false
+    }
+  ],
+  "struct_type": "container",
+  "func_type": "container",
+  "direction": "vertical",
+  "buoyancy": 0,
+  "image": null,
+  "parameters": {
+    "freeCanvas": {
+      "left": 0,
+      "top": 0,
+      "zIndex": 0,
+      "width": 300,
+      "height": 100
+    },
+    "group": "undefined",
+    "layouts": [
+      "desktop",
+      "tablet",
+      "mobile"
+    ]
+  },
+  "styles": {
+    "classNames": [
+      "container"
+    ],
+    "ownStyles": {},
+    "display": "flex",
+    "background": "lightblue",
+    "border": "1px solid green"
+  },
+  "shared": false
+}
