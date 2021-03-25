@@ -4,7 +4,6 @@ import DOMPurify from 'dompurify';
 import {
   LibraryElement,
   PostUrlResponse,
-  Project,
   Result,
   Screen,
   StateElement,
@@ -16,20 +15,15 @@ import IMAGES from '@Constants/images';
 import { apiGetWebPage, apiPostURL } from '@Api/import';
 import * as Actions from '@Redux/project/actions';
 import {
-  createScreen,
   importHtml,
   updateElementImage,
   updateElementParameters,
 } from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import {
-  selectElementById,
-  selectElementsForScreen,
-} from '@Redux/project/selectors/element';
-import { selectCurrentProject } from '@Redux/project/selectors/base';
-import { createScreenSaga } from '@Redux/project/sagas/screen';
+import { selectElementsForScreen } from '@Redux/project/selectors/element';
 import JSZip from 'jszip';
+import { selectCurrentScreen } from '../selectors/screen';
 
 export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
   try {
@@ -79,35 +73,17 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
       },
     );
     if (element) {
-      const { id: projectId, projectscreen }: Project = yield select(
-        selectCurrentProject,
-      );
-
-      const screen: Screen = yield call(
-        createScreenSaga,
-        createScreen(
-          {
-            projectID: projectId,
-            name: 'Screen 1',
-            buoyancy: projectscreen.length,
-          },
-          { useHistory: true },
-        ),
-      );
-
-      const root: StateElement = yield select(
-        selectElementById(screen.element),
-      );
+      const { id, element: rootId }: Screen = yield select(selectCurrentScreen);
 
       yield put(
-        Actions.addStateElements([{ elements: [element], parentId: root.id }], {
-          screenId: screen.id,
+        Actions.addStateElements([{ elements: [element], parentId: rootId }], {
+          screenId: id,
           useHistory: true,
         }),
       );
 
       const elements: StateElement[] = yield select(
-        selectElementsForScreen(screen.id),
+        selectElementsForScreen(id),
       );
       const imageElements = Object.values(elements).filter(
         (element) => element.type === 'image',
@@ -121,9 +97,7 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
             element.parameters.imageURL.includes(img.name),
           );
           return image
-            ? put(
-                updateElementImage(element.id, image, { screenId: screen.id }),
-              )
+            ? put(updateElementImage(element.id, image, { screenId: id }))
             : put(
                 updateElementParameters(
                   element.id,
@@ -131,7 +105,7 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
                     imageURL: IMAGES.imageIcon,
                   },
                   {
-                    screenId: screen.id,
+                    screenId: id,
                   },
                 ),
               );
@@ -140,7 +114,7 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
 
       const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
         data: { children: [element.id] },
-        id: root.id,
+        id: rootId,
       });
       if (error) throw new Error(error);
     }
