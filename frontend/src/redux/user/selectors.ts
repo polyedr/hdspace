@@ -1,3 +1,4 @@
+import { Experience } from '@Src/types';
 import { AppReduxState } from '../types';
 
 export const selectUserData = ({ user }: AppReduxState) => user.userData;
@@ -27,3 +28,9 @@ export const selectIsLoggedIn = ({ user }: AppReduxState) => user.isLoggedIn;
 
 export const selectIsTokenLoaded = ({ user }: AppReduxState) =>
   user.isTokenLoaded;
+
+export const selectUserGuideWatched = ({ user }: AppReduxState) =>
+  user.userData.profile.experienced !== Experience.BEGINNER;
+
+export const selectUserGuideActive = ({ user }: AppReduxState) =>
+  user.userGuide.active;

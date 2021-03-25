@@ -15,6 +15,7 @@ import {
   Screen,
   UserData,
   ElementGroup,
+  Experience,
 } from '../../types';
 
 export const mockProject: Project = {
@@ -102,6 +103,7 @@ export const mockUserData: UserData = {
     approved: true,
     avatar: null,
     id: 888,
+    experienced: Experience.EXPERIENCED,
   },
 };
 

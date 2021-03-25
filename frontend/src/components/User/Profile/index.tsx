@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
@@ -19,18 +19,20 @@ import {
   selectDropTargetBordersMode,
   selectProfileData,
   selectUserData,
+  selectUserGuideWatched,
 } from '@Redux/user/selectors';
 import {
   changeProfileData,
   changeDropTargetBordersMode,
   logout,
+  setUserExperience,
 } from '@Redux/user/actions';
 import IMAGES from '@Constants/images';
 import { openSignScreen } from '@Redux/history';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
 import { ROLES } from '@Constants/defaultParams';
-import { ProfileData } from '@Src/types';
+import { Experience, ProfileData } from '@Src/types';
 import SubmitError from '../SubmitError';
 import Button from '../../UI/Button';
 
@@ -119,6 +121,7 @@ const Profile: React.FC = () => {
   const { firstName, lastName, email } = userData;
   const { avatar, role } = useSelector(selectProfileData);
   const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
+  const userGuideWatched = useSelector(selectUserGuideWatched);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -146,6 +149,20 @@ const Profile: React.FC = () => {
 
   const handleChangeBordersMode = () => {
     dispatch(changeDropTargetBordersMode());
+  };
+
+  const handleChangeUserGuideWatched = (ev: ChangeEvent<HTMLInputElement>) => {
+    const newEx = ev.target.checked
+      ? Experience.EXPERIENCED
+      : Experience.BEGINNER;
+
+    dispatch(setUserExperience(newEx));
+
+    dispatch(
+      changeProfileData({
+        experienced: newEx,
+      }),
+    );
   };
 
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
@@ -387,6 +404,14 @@ const Profile: React.FC = () => {
             <Switch
               checked={dropTargetBordersMode}
               onChange={handleChangeBordersMode}
+            />
+          </div>
+
+          <div className={classes.subheader}>
+            User guide wathched
+            <Switch
+              checked={userGuideWatched}
+              onChange={handleChangeUserGuideWatched}
             />
           </div>
         </div>

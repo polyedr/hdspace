@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
-import { user } from '@Constants/pathNames';
+import PATH_NAMES from '@Constants/pathNames';
 // import registerWithGoogle from '@Redux/user/actions';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
@@ -253,7 +253,10 @@ const Signup: React.FC = () => {
                     <p className={classes.login}>
                       {'Already have an account? '}
 
-                      <Link className={classes.link} to={user.signin}>
+                      <Link
+                        className={classes.link}
+                        to={PATH_NAMES.user.signin}
+                      >
                         Log in.
                       </Link>
                     </p>

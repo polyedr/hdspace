@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { PATH_NAMES } from '@Constants/pathNames';
+import PATH_NAMES from '@Constants/pathNames';
 import SharedWithLink from '@Components/User/SharedWithLink';
 import Signin from '../components/User/Signin';
 import Signup from '../components/User/Signup';

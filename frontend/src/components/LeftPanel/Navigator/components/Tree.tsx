@@ -43,6 +43,7 @@ import {
 } from '@Redux/project/selectors/element';
 import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
+import ELEMENT_IDS from '@Constants/elementIds';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -341,7 +342,11 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   };
 
   return (
-    <div className={classes.tree} onKeyDown={handleKeyDown}>
+    <div
+      className={classes.tree}
+      onKeyDown={handleKeyDown}
+      id={ELEMENT_IDS.navigator}
+    >
       <Scrollbar
         style={{
           height: '300px',

@@ -5,6 +5,7 @@ import {
   ProfileData,
   UserData,
   SignupFormData,
+  Experience,
 } from '@Src/types';
 import TYPES from '@Redux/actionTypes';
 
@@ -170,4 +171,14 @@ export const changeProfileDataComplete = (
 export const changeProfileDataFailure = (error: any) => ({
   type: TYPES.CHANGE_PROFILE_DATA_FAILURE,
   payload: error,
+});
+
+export const setUserExperience = (experience: Experience) => ({
+  type: TYPES.SET_USER_EXPERIENCE,
+  payload: experience,
+});
+
+export const setUserGuideActive = (active: boolean) => ({
+  type: TYPES.SET_USER_GUIDE_ACTIVE,
+  payload: active,
 });

@@ -4,8 +4,7 @@ import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
-
-import HtmlImportForm from '@Components/Dialogs/HTMLImportForm';
+import HtmlImportForm from '@Components/Dialogs/NewScreenModal/HTMLImportForm';
 import TYPES from '@Redux/actionTypes';
 
 describe('HTMLImportForm', () => {
