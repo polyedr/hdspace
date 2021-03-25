@@ -21,7 +21,6 @@ import {
 } from '@Redux/project/sagas/screen';
 import {
   assignUserPermissionsSaga,
-  // getAllUsersProjectPermissionsSaga,
   // getMyPermissionsForProjectSaga,
   getUserPermissionsForProjectSaga,
   getUsersSaga,
@@ -444,9 +443,9 @@ export default function* projectSaga() {
   /* yield takeEvery(
     TYPES.GET_MY_PERMISSIONS_FOR_PROJECT,
     getMyPermissionsForProjectSaga,
-  );
+  ); */
 
-  yield takeEvery(
+  /* yield takeEvery(
     TYPES.GET_ALL_USERS_PROJECT_PERMISSIONS,
     getAllUsersProjectPermissionsSaga,
   ); */

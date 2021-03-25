@@ -182,9 +182,12 @@ export function* getUserPermissionsForProjectSaga(
 /* export function* getAllUsersProjectPermissionsSaga() {
 // action: ReturnType<typeof Actions.getAllUsersProjectPermissions>,
   console.log('oops');
-}
+} */
 
-export function* getMyPermissionsForProjectSaga() {
-// action: ReturnType<typeof Actions.getMyPermissionsForProject>,
-  console.log('oops');
+/* export function* getMyPermissionsForProjectSaga() {
+  action: ReturnType<typeof Actions.getMyPermissionsForProject>,
+  const { projectId } = action.payload;
+  try {
+    const currentUser = yield select()
+  }
 } */

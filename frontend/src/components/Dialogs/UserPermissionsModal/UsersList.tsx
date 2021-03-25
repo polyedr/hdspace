@@ -1,4 +1,10 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, {
+  useEffect,
+  useCallback,
+  useState,
+  useRef,
+  useMemo,
+} from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useDispatch, useSelector } from 'react-redux';
 // import TableContainer from '@material-ui/core/TableContainer';
@@ -21,7 +27,7 @@ import * as Actions from '@Redux/permissions/actions';
 import {
   selectUsersForProject,
   selectUsersLoading,
-  /* selectUsersNext, */
+  selectUsersNext,
   selectUsersSearchValue,
 } from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
@@ -47,9 +53,14 @@ const useStyles = makeStyles({
 const UsersList: React.FC<Props> = ({ projectId }: Props) => {
   const dispatch = useDispatch();
   const usersListLoader = useSelector(selectUsersLoading);
-  // const hasNext = useSelector(selectUsersNext);
+  const hasNext = useSelector(selectUsersNext);
   const users = useSelector(selectUsersForProject);
   const searchValue = useSelector(selectUsersSearchValue);
+
+  const lastRowRef = useRef<HTMLTableRowElement>(null);
+  const lastRowEl = lastRowRef && lastRowRef.current;
+
+  const usersIds = useMemo(() => Object.keys(users), [users]);
 
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [
@@ -62,6 +73,37 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
   useEffect(() => {
     dispatch(Actions.getUsersList());
   }, [dispatch]);
+
+  const handleGetUsersList = useCallback(() => {
+    if (hasNext) {
+      dispatch(Actions.getUsersList());
+    }
+  }, [dispatch, hasNext]);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          handleGetUsersList();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.01,
+      },
+    );
+
+    if (lastRowEl) {
+      obs.observe(lastRowEl);
+    }
+
+    return () => {
+      if (lastRowEl) {
+        obs.unobserve(lastRowEl);
+      }
+    };
+  }, [handleGetUsersList, lastRowEl]);
 
   const handleChangePermissions = useCallback(() => {
     if (!selectedUserId) {
@@ -139,12 +181,13 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {Object.keys(users).map((userId) => {
+            {usersIds.map((userId, index) => {
               const user = users[userId];
               return (
                 <TableRow
                   key={userId}
                   onClick={() => setSelectedUserId(userId)}
+                  ref={index === usersIds.length - 1 ? lastRowRef : null}
                 >
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.firstName}</TableCell>
