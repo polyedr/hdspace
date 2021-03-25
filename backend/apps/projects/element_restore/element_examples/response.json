@@ -1,0 +1,20 @@
+{
+  "id": 72597,
+  "name": null,
+  "children": [],
+  "struct_type": "textinput",
+  "func_type": "",
+  "direction": "vertical",
+  "buoyancy": 0,
+  "image": null,
+  "parameters": {},
+  "styles": {
+    "text-transform": "none",
+    "width": "300px",
+    "height": "",
+    "padding": "3px 0",
+    "border-width": "1px",
+    "border-color": "rgba(244, 244, 244, 1)"
+  },
+  "shared": false
+}
