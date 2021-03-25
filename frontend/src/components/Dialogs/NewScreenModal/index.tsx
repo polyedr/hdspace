@@ -1,4 +1,5 @@
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -43,6 +44,9 @@ const useStyles = makeStyles(({ spacing }) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  right: {
+    textAlign: 'right',
   },
 }));
 
@@ -111,6 +115,15 @@ const NewScreenModal: FC = () => {
 
           <TabPanel value={value} index={3}>
             <div className={classes.coming}>This feature is coming soon</div>
+            <div className={classes.right}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                Ok
+              </Button>
+            </div>
           </TabPanel>
         </DialogContent>
       </div>
