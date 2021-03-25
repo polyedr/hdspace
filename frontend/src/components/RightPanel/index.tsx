@@ -104,6 +104,7 @@ const RightPanel: React.FC = () => {
   const [activeTabIndex, setActiveTabIndex] = useState<number>(
     tabs.indexOf(RPTab.Properties),
   );
+  console.log(activeTabIndex);
 
   useEffect(() => {
     setActiveTabIndex(0);

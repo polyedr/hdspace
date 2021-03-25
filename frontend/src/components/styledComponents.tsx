@@ -162,17 +162,17 @@ export const StyledAccordionSummary: React.FC<AccordionSummaryProps> = ({
   );
 };
 
-export const StyledAccordionDetails: React.FC<AccordionDetailsProps> = ({
-  children,
-  ...props
-}) => {
+export const StyledAccordionDetails = React.forwardRef<
+  any,
+  AccordionDetailsProps
+>(({ children, ...props }, ref) => {
   const classes = useAccordionDetailsStyles();
   return (
-    <MuiAccordionDetails classes={classes} {...props}>
+    <MuiAccordionDetails classes={classes} {...props} ref={ref}>
       {children}
     </MuiAccordionDetails>
   );
-};
+});
 
 export const StyledTextField: React.FC<TextFieldProps> = (props) => {
   const classes = useTextFieldStyles();

@@ -7,6 +7,7 @@ import {
   selectCustomElementsHasNext,
 } from '@Redux/project/selectors/element';
 import { loadCustomElements } from '@Redux/project/actions';
+import isInViewport from '@Utils/isInViewport';
 import { useStyles as useElementBlockStyles } from '../ElementsTab/ElementsBlock';
 import ElementButton from '../ElementsTab/ElementButton';
 import {
@@ -33,9 +34,14 @@ const CustomElementsBlock: React.FC = () => {
   const lastElementRef = useRef() as MutableRefObject<HTMLButtonElement>;
   const lastDom = lastElementRef && lastElementRef.current;
 
+  const rootRef = useRef<HTMLDivElement>(null);
+  const rootDom = rootRef?.current;
+
   useEffect(() => {
-    dispatch(loadCustomElements(true));
-  }, [dispatch]);
+    if (isInViewport(rootDom)) {
+      dispatch(loadCustomElements(true));
+    }
+  }, [dispatch, rootDom]);
 
   const elements = useMemo(
     () =>
@@ -79,7 +85,7 @@ const CustomElementsBlock: React.FC = () => {
         Custom UI
       </StyledAccordionSummary>
 
-      <StyledAccordionDetails className={styles.elementsBlock}>
+      <StyledAccordionDetails className={styles.elementsBlock} ref={rootRef}>
         {elements.map((element, index) => {
           if (index === elements.length - 1) {
             return (
