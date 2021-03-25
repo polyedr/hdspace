@@ -26,7 +26,6 @@ import {
   StateElementsToAdd,
   VIARegion,
   UserData,
-  UserProjectPermission,
 } from '@Src/types';
 import {
   Action,
@@ -155,10 +154,6 @@ import {
   SetAnnotatedElement,
   UpdateVIARegionLayer,
   SetNewScreenModal,
-  SetUsersLoader,
-  SetProjectUsersLoader,
-  LoadUsers,
-  SetUsersData,
   SetUsersSearchValue,
 } from '../types';
 import TYPES from '../actionTypes';
@@ -167,40 +162,9 @@ export const getProjectList = (): LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
 });
 
-export const getUsersList = (searchValue?: string): LoadUsers => ({
-  type: TYPES.LOAD_USERS,
-  payload: { searchValue },
-});
-
 export const setUsersSearchValue = (search: string): SetUsersSearchValue => ({
   type: TYPES.SET_USERS_SEARCH,
   payload: { search },
-});
-
-export const assignUserPermissionsForProject = (
-  projectId: number,
-  userId: string,
-  permission: UserProjectPermission,
-) => ({
-  type: TYPES.ASSIGN_USER_PERMISSIONS_FOR_PROJECT,
-  payload: {
-    userId,
-    projectId,
-    permission,
-  },
-});
-
-export const unassignUserPermissionsForProject = (
-  projectId: number,
-  userId: string,
-  permission: UserProjectPermission,
-) => ({
-  type: TYPES.UNASSIGN_USER_PERMISSIONS_FOR_PROJECT,
-  payload: {
-    userId,
-    projectId,
-    permission,
-  },
 });
 
 export const searchProjects = (): SearchProjects => ({
@@ -222,14 +186,6 @@ export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
 export const setProjectsData = (data: PaginatedResponse<Project>) => ({
   type: TYPES.SET_PROJECTS_DATA,
   payload: data,
-});
-
-export const setUsersData = (
-  search: string,
-  data: PaginatedResponse<UserData>,
-): SetUsersData => ({
-  type: TYPES.SET_USERS_DATA,
-  payload: { search, data },
 });
 
 export const setProjectUsersData = (data: PaginatedResponse<UserData>) => ({
@@ -290,18 +246,6 @@ export const setProjectListLoader = (
   active: boolean,
 ): SetProjectListLoader => ({
   type: TYPES.SET_PROJECT_LIST_LOADER,
-  payload: { active },
-});
-
-export const setProjectUsersLoader = (
-  active: boolean,
-): SetProjectUsersLoader => ({
-  type: TYPES.SET_PROJECT_USERS_LOADER,
-  payload: { active },
-});
-
-export const setUsersLoader = (active: boolean): SetUsersLoader => ({
-  type: TYPES.SET_USERS_LOADER,
   payload: { active },
 });
 

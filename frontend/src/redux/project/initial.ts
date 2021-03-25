@@ -16,21 +16,6 @@ export const initialData: ProjectDataState = {
     pageSize: 10,
     loading: false,
   },
-  usersPermissionsListData: {
-    next: null,
-    previous: null,
-    results: {},
-    pageSize: 10,
-    loading: false,
-    search: '',
-  },
-  projectUsersData: {
-    next: null,
-    previous: null,
-    results: {},
-    pageSize: 10,
-    loading: false,
-  },
   screens: {},
   elements: {},
   customElementsData: {

@@ -920,6 +920,12 @@ export enum UserProjectPermission {
   CHANGE_PROJECT = 'change_project',
 }
 
+export type UserPermissions = {
+  [id: string]: {
+    [projectId: number]: UserProjectPermission[];
+  };
+};
+
 export type UserData = {
   username: string;
   email: string;

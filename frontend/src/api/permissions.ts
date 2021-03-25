@@ -1,5 +1,6 @@
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps, UserProjectPermission } from '@Src/types';
+import { handleError } from './helper';
 
 export const apiAssignUserPermission = (
   props: MyAxiosProps & {
@@ -15,10 +16,12 @@ export const apiAssignUserPermission = (
     method: 'POST',
     data: {
       username,
-      projectId,
+      projectid: projectId,
       permission,
     },
-  });
+  })
+    .then((res) => res.data)
+    .catch(handleError);
 };
 
 export const apiUnassignUserPermission = (
@@ -38,7 +41,9 @@ export const apiUnassignUserPermission = (
       projectId,
       permission,
     },
-  });
+  })
+    .then((res) => res.data)
+    .catch(handleError);
 };
 
 export const apiGetPermissionsList = (
@@ -56,5 +61,7 @@ export const apiGetPermissionsList = (
       username,
       projectId,
     },
-  });
+  })
+    .then((res) => res.data)
+    .catch(handleError);
 };

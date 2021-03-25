@@ -20,6 +20,14 @@ import {
   convertFreeCanvasSaga,
 } from '@Redux/project/sagas/screen';
 import {
+  assignUserPermissionsSaga,
+  // getAllUsersProjectPermissionsSaga,
+  // getMyPermissionsForProjectSaga,
+  getUserPermissionsForProjectSaga,
+  getUsersSaga,
+  unassignUserPermissionsSaga,
+} from '@Redux/permissions/sagas';
+import {
   moveElementSaga,
   removeElementStylesSaga,
   updateElementStylesSaga,
@@ -62,7 +70,6 @@ import {
   deleteProjectSaga,
   getProjectListSaga,
   getProjectSaga,
-  getUsersSaga,
   renameProjectSaga,
   searchProjectsSaga,
   updateProjectSaga,
@@ -316,7 +323,7 @@ const pasteCopiedElementSaga = withActionsHistory(function* ({
 
 export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
-  yield takeLatest(TYPES.LOAD_USERS, getUsersSaga);
+
   yield takeLatest(TYPES.CREATE_PROJECT, createProjectSaga);
   yield takeLatest(TYPES.DELETE_PROJECT, deleteProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
@@ -414,8 +421,33 @@ export default function* projectSaga() {
 
   yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP, createElementsGroupSaga);
   yield takeEvery(TYPES.UPLOAD_IMAGE_BY_URL, uploadElementImageByUrlSaga);
+
   yield takeEvery(
     TYPES.UNBIND_GROUP_ELEMENT_STYLES,
     unbindGroupElementStylesSaga,
   );
+
+  yield takeLatest(TYPES.LOAD_USERS, getUsersSaga);
+  yield takeEvery(
+    TYPES.ASSIGN_USER_PERMISSIONS_FOR_PROJECT,
+    assignUserPermissionsSaga,
+  );
+  yield takeEvery(
+    TYPES.UNASSIGN_USER_PERMISSIONS_FOR_PROJECT,
+    unassignUserPermissionsSaga,
+  );
+  yield takeEvery(
+    TYPES.GET_USER_PERMISSIONS_FOR_PROJECT,
+    getUserPermissionsForProjectSaga,
+  );
+
+  /* yield takeEvery(
+    TYPES.GET_MY_PERMISSIONS_FOR_PROJECT,
+    getMyPermissionsForProjectSaga,
+  );
+
+  yield takeEvery(
+    TYPES.GET_ALL_USERS_PROJECT_PERMISSIONS,
+    getAllUsersProjectPermissionsSaga,
+  ); */
 }

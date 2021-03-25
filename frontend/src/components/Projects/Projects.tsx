@@ -166,7 +166,6 @@ const Projects: React.FC = () => {
                   project={project}
                   key={project.id}
                   onPermissionsManagementClick={(projectId) => {
-                    // console.log('ON PERMISSIONS MANAGEMENT CLICK!!', projectId);
                     setPermissionsManagementProjectId(projectId);
                   }}
                   ref={i === sortedProjectList.length - 1 ? ref : undefined}

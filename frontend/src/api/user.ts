@@ -121,7 +121,6 @@ export const apiRestorePassword = (email: string) =>
 
 export const apiGetUsers = (props: MyAxiosProps & { search: string }) => {
   const { search, ...axiosProps } = props;
-  console.log('API GET USERS!!', search);
   return myAxios({
     ...axiosProps,
     method: 'GET',

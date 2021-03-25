@@ -33,15 +33,22 @@ import {
   StateElementsToAdd,
   VIARegion,
   PaginatedResponse,
+  UserPermissions,
+  UserProjectPermission,
 } from '../types';
 import TYPES from './actionTypes';
+
+export type PermissionsState = {
+  usersPermissionsListData: PaginatedData<UserData> & { search: string };
+  projectUsersData: PaginatedData<UserData>;
+  usersPermissions: UserPermissions;
+  myProjectPermissions: Array<UserProjectPermission>;
+};
 
 export type ProjectDataState = {
   projectsData: PaginatedData<Project> & {
     parameter: [ProjectsSearchParameter, string | DateRange];
   };
-  usersPermissionsListData: PaginatedData<UserData> & { search: string };
-  projectUsersData: PaginatedData<UserData>;
   screens: Normalized<Screen>;
   elements: Normalized<StateElement>;
   customElementsData: PaginatedArray<LibraryElement<Entity>>;
@@ -160,6 +167,7 @@ export type AppReduxState = {
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;
+  permissions: PermissionsState;
 };
 
 export type WrapIntoContainerData = {
@@ -188,10 +196,7 @@ export type RestoreChildrenData = {
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
-export type LoadUsers = IAction<
-  typeof TYPES.LOAD_USERS,
-  { searchValue?: string }
->;
+
 export type SetUsersSearchValue = IAction<
   typeof TYPES.SET_USERS_SEARCH,
   { search: string }
@@ -999,7 +1004,6 @@ export type SetNewScreenModal = IAction<
 
 export type Action =
   | LoadProjects
-  | LoadUsers
   | SetUsersSearchValue
   | LoadProjectsSuccess
   | LoadProjectsFail

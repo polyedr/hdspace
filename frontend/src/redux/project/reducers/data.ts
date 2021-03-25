@@ -148,39 +148,8 @@ const dataReducer = produce(
         break;
       }
 
-      case TYPES.SET_USERS_DATA: {
-        const { search, data } = action.payload;
-        console.log('SET USERS DATA!!', search, data);
-        const { results, next, previous } = data;
-        draft.usersPermissionsListData.results = {
-          ...(draft.usersPermissionsListData.search === search
-            ? draft.usersPermissionsListData.results
-            : {}),
-          ...arrayToMap(results),
-        };
-        draft.usersPermissionsListData.search = search;
-        draft.usersPermissionsListData.next = next;
-        draft.usersPermissionsListData.previous = previous;
-        console.log(
-          'DRAFT RESULTS!!',
-          draft.usersPermissionsListData.results,
-          arrayToMap(action.payload.data.results),
-        );
-        break;
-      }
-
       case TYPES.SET_PROJECT_LIST_LOADER: {
         draft.projectsData.loading = action.payload.active;
-        break;
-      }
-
-      case TYPES.SET_PROJECT_USERS_LOADER: {
-        draft.projectUsersData.loading = action.payload.active;
-        break;
-      }
-
-      case TYPES.SET_USERS_LOADER: {
-        draft.usersPermissionsListData.loading = action.payload.active;
         break;
       }
 

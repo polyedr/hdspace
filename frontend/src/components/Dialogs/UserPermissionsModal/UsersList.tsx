@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useDispatch, useSelector } from 'react-redux';
-import TableContainer from '@material-ui/core/TableContainer';
+// import TableContainer from '@material-ui/core/TableContainer';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -10,25 +10,43 @@ import TableBody from '@material-ui/core/TableBody';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import * as Actions from '@Redux/project/actions';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import * as Actions from '@Redux/permissions/actions';
 import {
   selectUsersForProject,
-  /* selectUsersLoading,
-  selectUsersNext, */
+  selectUsersLoading,
+  /* selectUsersNext, */
   selectUsersSearchValue,
-} from '@Redux/project/selectors/base';
+} from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
 
 type Props = {
   projectId: number;
 };
 
+const useStyles = makeStyles({
+  searchSection: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  progress: {
+    minHeight: 390,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
 const UsersList: React.FC<Props> = ({ projectId }: Props) => {
   const dispatch = useDispatch();
-  // const usersListLoader = useSelector(selectUsersLoading);
+  const usersListLoader = useSelector(selectUsersLoading);
   // const hasNext = useSelector(selectUsersNext);
   const users = useSelector(selectUsersForProject);
   const searchValue = useSelector(selectUsersSearchValue);
+
+  const classes = useStyles();
 
   useEffect(() => {
     dispatch(Actions.getUsersList());
@@ -45,7 +63,6 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
 
   const handleSearchChange = useCallback(
     (search: string) => {
-      console.log('DISPATCH SEARCH USERS!!', search);
       dispatch(Actions.getUsersList(search));
     },
     [dispatch],
@@ -58,40 +75,46 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
 
   return (
     <div>
-      <span>ADEVI users</span>
-      <TextField
-        defaultValue={searchValue}
-        onChange={(
-          e: React.KeyboardEvent<HTMLInputElement> &
-            React.ChangeEvent<HTMLInputElement>,
-        ) => {
-          if (e.key === 'Enter') {
-            console.log('PRESS ENTER!!');
-            handleSearchChange((e.target as HTMLInputElement).value);
-          } else {
-            console.log('CALLBACK WORKS!!');
-            if (handleSearchDelayedChange.pending()) {
-              handleSearchDelayedChange.cancel();
+      <div className={classes.searchSection}>
+        <TextField
+          defaultValue={searchValue}
+          onChange={(
+            e: React.KeyboardEvent<HTMLInputElement> &
+              React.ChangeEvent<HTMLInputElement>,
+          ) => {
+            if (e.key === 'Enter') {
+              handleSearchChange((e.target as HTMLInputElement).value);
+            } else {
+              if (handleSearchDelayedChange.pending()) {
+                handleSearchDelayedChange.cancel();
+              }
+              handleSearchDelayedChange.callback(
+                (e.target as HTMLInputElement).value,
+              );
             }
-            handleSearchDelayedChange.callback(
-              (e.target as HTMLInputElement).value,
-            );
-          }
-        }}
-        label="Search users"
-        variant="outlined"
-        margin="dense"
-        placeholder="Search project"
-      />
-      <TableContainer>
+          }}
+          label="Search users"
+          variant="outlined"
+          margin="dense"
+          placeholder="Search users"
+        />
+      </div>
+
+      {usersListLoader && (
+        <div className={classes.progress}>
+          <CircularProgress size={24} />
+        </div>
+      )}
+
+      {!usersListLoader && (
         <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell>User name</TableCell>
-              {/* <TableCell>First name</TableCell>
-            <TableCell>Last name</TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>Role</TableCell> */}
+              <TableCell>First name</TableCell>
+              <TableCell>Last name</TableCell>
+              <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
               <TableCell>Assign permissions</TableCell>
             </TableRow>
           </TableHead>
@@ -101,10 +124,10 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
               return (
                 <TableRow key={userId}>
                   <TableCell>{user.username}</TableCell>
-                  {/* <TableCell>{user.firstName}</TableCell>
-                <TableCell>{user.lastName}</TableCell>
-                <TableCell>{user.email}</TableCell>
-            <TableCell>{user.profile?.role}</TableCell> */}
+                  <TableCell>{user.firstName}</TableCell>
+                  <TableCell>{user.lastName}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.profile?.role}</TableCell>
                   <TableCell>
                     <div>
                       <Select
@@ -134,7 +157,7 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
             })}
           </TableBody>
         </Table>
-      </TableContainer>
+      )}
     </div>
   );
 };
