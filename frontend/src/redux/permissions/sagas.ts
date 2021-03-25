@@ -76,7 +76,7 @@ export function* assignUserPermissionsSaga(
       return;
     }
     yield put(Actions.setStateUserPermissions(userId, projectId, permissions));
-    const { result, error } = yield call(reqWrapper, apiAssignUserPermission, {
+    const { error } = yield call(reqWrapper, apiAssignUserPermission, {
       username: user.username,
       projectId,
       permission,
@@ -84,7 +84,6 @@ export function* assignUserPermissionsSaga(
     if (error) {
       throw new Error(error);
     }
-    console.log('RESULT!!!', result);
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -123,19 +122,14 @@ export function* unassignUserPermissionsSaga(
     yield put(
       Actions.setStateUserPermissions(userId, projectId, newPermissions),
     );
-    const { result, error } = yield call(
-      reqWrapper,
-      apiUnassignUserPermission,
-      {
-        username: user.username,
-        projectId,
-        permission,
-      },
-    );
+    const { error } = yield call(reqWrapper, apiUnassignUserPermission, {
+      username: user.username,
+      projectId,
+      permission,
+    });
     if (error) {
       throw new Error(error);
     }
-    console.log('UNASSIGN RESPONSE!!', result);
   } catch (e) {
     yield put(
       enqueueSnackbar(

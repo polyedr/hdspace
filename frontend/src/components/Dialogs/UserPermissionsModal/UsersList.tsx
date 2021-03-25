@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useDispatch, useSelector } from 'react-redux';
 // import TableContainer from '@material-ui/core/TableContainer';
@@ -11,6 +11,11 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as Actions from '@Redux/permissions/actions';
 import {
@@ -46,20 +51,36 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
   const users = useSelector(selectUsersForProject);
   const searchValue = useSelector(selectUsersSearchValue);
 
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [
+    selectedUserPermission,
+    setSelectedUserPermission,
+  ] = useState<UserProjectPermission | null>(null);
+
   const classes = useStyles();
 
   useEffect(() => {
     dispatch(Actions.getUsersList());
   }, [dispatch]);
 
-  const handleChangePermissions = (
-    permission: UserProjectPermission,
-    userId: string,
-  ) => {
+  const handleChangePermissions = useCallback(() => {
+    if (!selectedUserId) {
+      console.error('No selected user');
+      return;
+    }
+    if (!selectedUserPermission) {
+      console.error('No selected user permission value');
+      return;
+    }
     dispatch(
-      Actions.assignUserPermissionsForProject(projectId, userId, permission),
+      Actions.assignUserPermissionsForProject(
+        projectId,
+        selectedUserId,
+        selectedUserPermission,
+      ),
     );
-  };
+    setSelectedUserId(null);
+  }, [dispatch, selectedUserPermission, projectId, selectedUserId]);
 
   const handleSearchChange = useCallback(
     (search: string) => {
@@ -115,49 +136,68 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
               <TableCell>Last name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Role</TableCell>
-              <TableCell>Assign permissions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {Object.keys(users).map((userId) => {
               const user = users[userId];
               return (
-                <TableRow key={userId}>
+                <TableRow
+                  key={userId}
+                  onClick={() => setSelectedUserId(userId)}
+                >
                   <TableCell>{user.username}</TableCell>
                   <TableCell>{user.firstName}</TableCell>
                   <TableCell>{user.lastName}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>{user.profile?.role}</TableCell>
-                  <TableCell>
-                    <div>
-                      <Select
-                        onChange={(e) =>
-                          handleChangePermissions(
-                            e.target?.value as UserProjectPermission,
-                            userId,
-                          )
-                        }
-                        value={UserProjectPermission.UNSET}
-                      >
-                        {Object.keys(UserProjectPermission).map((key) => {
-                          return (
-                            <MenuItem
-                              key={`permission-${key}`}
-                              value={UserProjectPermission[key]}
-                            >
-                              {key.replace('_', ' ')}
-                            </MenuItem>
-                          );
-                        })}
-                      </Select>
-                    </div>
-                  </TableCell>
                 </TableRow>
               );
             })}
           </TableBody>
         </Table>
       )}
+      <Dialog open={!!selectedUserId} onClose={() => setSelectedUserId(null)}>
+        <DialogTitle>Edit user permissions</DialogTitle>
+        <DialogContent>
+          <Select
+            defaultValue={UserProjectPermission.UNSET}
+            onChange={(e: React.ChangeEvent<any>) => {
+              setSelectedUserPermission(
+                (e.target as HTMLInputElement).value as UserProjectPermission,
+              );
+            }}
+          >
+            {Object.keys(UserProjectPermission).map((key) => {
+              return (
+                <MenuItem
+                  key={`permission-${key}`}
+                  value={UserProjectPermission[key]}
+                >
+                  {key.replace('_', ' ')}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setSelectedUserId(null)}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            color="secondary"
+            variant="contained"
+            onClick={handleChangePermissions}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
