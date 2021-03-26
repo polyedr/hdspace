@@ -698,7 +698,7 @@ class DisplayPermissionsProject(APIView):
         (CHANGE_PROJECT_PERMISSION, "change_project"),
     )
 
-    def get(self, request):
+    def post(self, request):
         username = request.data['username']
         projectid = request.data['projectid']
         user = User.objects.get(username=username)
