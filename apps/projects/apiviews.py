@@ -628,8 +628,10 @@ class AssignPermissionsProject(APIView):
         permission = request.data['permission']
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
-        if(assign_perm(permission, user, project)):
-            return Response({"username": username}, status=status.HTTP_201_CREATED)
+        assign_perm(permission, user, project)
+        rp = get_perms(user, project)
+        if(rp):
+            return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -648,9 +650,10 @@ class RemovePermissionsProject(APIView):
         permission = request.data['permission']
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
-        rp = remove_perm(permission, user, project)
-        if(rp[0]):
-            return Response({"username": username}, status=status.HTTP_201_CREATED)
+        remove_perm(permission, user, project)
+        rp = get_perms(user, project)
+        if(rp):
+            return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -669,7 +672,6 @@ class DisplayPermissionsProject(APIView):
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
         rp = get_perms(user, project)
-        print(rp)
         if rp:
             return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
         else:
