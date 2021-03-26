@@ -8,7 +8,7 @@ import {
   ServerElement,
 } from '../types';
 
-const convertElementToData = (
+export const convertElementToData = (
   element: ServerElement<any>,
   isCustom: boolean = false,
 ): ElementData => ({
