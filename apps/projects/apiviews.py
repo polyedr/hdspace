@@ -614,6 +614,38 @@ class ElementCommentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ElementCommentSerializer
 
 
+class AssignPermissionsmapProject(APIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    ASSIGN_PROJECT_PERMISSION = "assign_project"
+    DELETE_PROJECT_PERMISSION = "delete_project"
+    ADD_PROJECT_PERMISSION = "delete_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+        (VIEW_PROJECT_PERMISSION, "assign_project"),
+        (CHANGE_PROJECT_PERMISSION, "delete_project"),
+        (ADD_PROJECT_PERMISSION, "add_project"),
+    )
+
+    def post(self, request):
+        username = request.data['username']
+        projectid = request.data['projectid']
+        permissions = request.data['permissions']
+        user = User.objects.get(username=username)
+        project = Project.objects.get(pk=projectid)
+        for permission in self.PROJECT_PERMISSION:
+            remove_perm(permission[1], user, project)
+
+        for permission in permissions:
+            assign_perm(permission, user, project)
+        rp = get_perms(user, project)
+        if(rp):
+            return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class AssignPermissionsProject(APIView):
     VIEW_PROJECT_PERMISSION = "view_project"
     CHANGE_PROJECT_PERMISSION = "change_project"

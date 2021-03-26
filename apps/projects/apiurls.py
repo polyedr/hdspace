@@ -34,7 +34,7 @@ from .apiviews import (
     ElementCommentList, ElementCommentDetail, ProjectIllustrationSetList, ProjectIllustrationSetDetail,
     IllustrationSetImageList, IllustrationSetImageDetail, ScenarioElementMultipleRecursiveViewSet,
     RemovePermissionsProject,
-    AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers)
+    AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject)
 
 app_name = "projects"
 
@@ -119,6 +119,8 @@ api_element_comment_patterns = [
 ]
 
 api_permissions_project_patterns = [
+    path("permissionsmap-projects-assign/", AssignPermissionsmapProject.as_view(),
+         name="api_assign_permissionsmap_projects"),
     path("permissions-projects-assign/", AssignPermissionsProject.as_view(),
          name="api_assign_permissions_projects"),
     path("permissions-projects-remove/", RemovePermissionsProject.as_view(),
