@@ -4,6 +4,8 @@ import {
   getUserPermissionsForProject,
   getUsersList,
   setProjectUsersLoader,
+  setStateAllUsersPermissions,
+  setStateCurrentUserPermissions,
   setStateUserPermissions,
   setUsersData,
   setUsersLoader,
@@ -20,4 +22,6 @@ export type PermissionsAction = ReturnType<
   | typeof getUserPermissionsForProject
   | typeof getMyPermissionsForProject
   | typeof setStateUserPermissions
+  | typeof setStateAllUsersPermissions
+  | typeof setStateCurrentUserPermissions
 >;

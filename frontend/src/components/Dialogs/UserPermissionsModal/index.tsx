@@ -7,7 +7,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectProjectById } from '@Redux/project/selectors/base';
-import UsersList from './UsersList';
+import AllUsersList from './AllUsersList';
+import ProjectUsersList from './ProjectUsersList';
 
 type Props = {
   onClose: () => void;
@@ -35,9 +36,14 @@ const UserPermissionsModal: React.FC<Props> = ({
 
   return (
     <Dialog open={projectId !== null} onClose={onClose} fullWidth maxWidth="lg">
-      <DialogTitle>{`${project.name}: manage user permissions`}</DialogTitle>
+      <DialogTitle>{`${project.name}: manage users' permissions`}</DialogTitle>
       <DialogContent className={styles.dialog}>
-        {projectId && <UsersList projectId={projectId} />}
+        {projectId && (
+          <>
+            <ProjectUsersList projectId={projectId} />
+            <AllUsersList projectId={projectId} />
+          </>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary" variant="contained">

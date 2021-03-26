@@ -9,15 +9,11 @@ const initialState: PermissionsState = {
     loading: false,
     search: '',
   },
-  usersPermissions: {},
-  myProjectPermissions: [],
-  projectUsersData: {
-    next: null,
-    previous: null,
-    results: {},
-    pageSize: 10,
+  allProjectsUsersPermissions: {
     loading: false,
+    data: {},
   },
+  currentUserProjectPermissions: [],
 };
 
 export default initialState;

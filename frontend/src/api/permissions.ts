@@ -1,5 +1,6 @@
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps, UserProjectPermission } from '@Src/types';
+import { convertPermissionsUserDataFromResponse } from './converters/permissions/fromResponse';
 import { handleError } from './helper';
 
 export const apiAssignUserPermission = (
@@ -56,12 +57,33 @@ export const apiGetPermissionsList = (
   return myAxios({
     ...axiosProps,
     url: '/projects/permissions-projects-display/',
-    method: 'GET',
+    method: 'POST',
     data: {
       username,
       projectId,
     },
   })
-    .then((res) => res.data)
+    .then((res) => ({ permissions: res.data }))
+    .catch(handleError);
+};
+
+export const apiGetAllUsersPermissionsForProject = (
+  props: MyAxiosProps & { projectId: number },
+) => {
+  const { projectId, ...axiosProps } = props;
+  console.log('PROJECT ID!!', projectId);
+  return myAxios({
+    ...axiosProps,
+    url: '/projects/permissions-allusers-display/',
+    method: 'POST',
+    contentType: 'application/json',
+    data: {
+      ...axiosProps.params,
+      projectid: projectId,
+    },
+  })
+    .then((res) => ({
+      permUsersData: convertPermissionsUserDataFromResponse(res.data),
+    }))
     .catch(handleError);
 };

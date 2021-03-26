@@ -31,6 +31,7 @@ import {
   selectUsersSearchValue,
 } from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
+import { EDITABLE_USER_PERMISSIONS } from '@Constants/defaultParams';
 
 type Props = {
   projectId: number;
@@ -50,7 +51,7 @@ const useStyles = makeStyles({
   },
 });
 
-const UsersList: React.FC<Props> = ({ projectId }: Props) => {
+const AllUsersList: React.FC<Props> = ({ projectId }: Props) => {
   const dispatch = useDispatch();
   const usersListLoader = useSelector(selectUsersLoading);
   const hasNext = useSelector(selectUsersNext);
@@ -62,7 +63,7 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
 
   const usersIds = useMemo(() => Object.keys(users), [users]);
 
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [
     selectedUserPermission,
     setSelectedUserPermission,
@@ -173,11 +174,11 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>User name</TableCell>
-              <TableCell>First name</TableCell>
-              <TableCell>Last name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Role</TableCell>
+              <TableCell width="25%">User name</TableCell>
+              <TableCell width="15%">First name</TableCell>
+              <TableCell width="20%">Last name</TableCell>
+              <TableCell width="25%">Email</TableCell>
+              <TableCell width="15%">Role</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -186,14 +187,14 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
               return (
                 <TableRow
                   key={userId}
-                  onClick={() => setSelectedUserId(userId)}
+                  onClick={() => setSelectedUserId(parseInt(userId))}
                   ref={index === usersIds.length - 1 ? lastRowRef : null}
                 >
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>{user.firstName}</TableCell>
-                  <TableCell>{user.lastName}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>{user.profile?.role}</TableCell>
+                  <TableCell width="25%">{user.username}</TableCell>
+                  <TableCell width="15%">{user.firstName}</TableCell>
+                  <TableCell width="20%">{user.lastName}</TableCell>
+                  <TableCell width="25%">{user.email}</TableCell>
+                  <TableCell width="15%">{user.profile?.role}</TableCell>
                 </TableRow>
               );
             })}
@@ -204,14 +205,13 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
         <DialogTitle>Edit user permissions</DialogTitle>
         <DialogContent>
           <Select
-            defaultValue={UserProjectPermission.UNSET}
             onChange={(e: React.ChangeEvent<any>) => {
               setSelectedUserPermission(
                 (e.target as HTMLInputElement).value as UserProjectPermission,
               );
             }}
           >
-            {Object.keys(UserProjectPermission).map((key) => {
+            {EDITABLE_USER_PERMISSIONS.map((key) => {
               return (
                 <MenuItem
                   key={`permission-${key}`}
@@ -245,4 +245,4 @@ const UsersList: React.FC<Props> = ({ projectId }: Props) => {
   );
 };
 
-export default UsersList;
+export default AllUsersList;

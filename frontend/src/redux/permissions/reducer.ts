@@ -30,7 +30,19 @@ export default produce(
       }
 
       case TYPES.SET_PROJECT_USERS_LOADER: {
-        draft.projectUsersData.loading = action.payload.active;
+        draft.allProjectsUsersPermissions.loading = action.payload.active;
+        break;
+      }
+
+      case TYPES.SET_STATE_ALL_USERS_PERMISSIONS_FOR_PROJECT: {
+        const { projectId, usersData } = action.payload;
+        draft.allProjectsUsersPermissions.data[projectId] = usersData;
+        break;
+      }
+
+      case TYPES.SET_STATE_CURRENT_USER_PERMISSIONS: {
+        const { permissions } = action.payload;
+        draft.currentUserProjectPermissions = permissions;
         break;
       }
 

@@ -30,7 +30,7 @@ import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElemen
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
-// import * as PermissionsActions from '../../permissions/actions';
+import * as PermissionsActions from '../../permissions/actions';
 import { createScreenSaga, getScreensSaga } from './screen';
 import {
   selectCurrentProject,
@@ -196,6 +196,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
     );
 
     if (result) {
+      yield put(PermissionsActions.getMyPermissionsForProject(result.id));
       yield put(
         Actions.setProject({
           ...result,

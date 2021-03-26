@@ -21,8 +21,8 @@ import {
 } from '@Redux/project/sagas/screen';
 import {
   assignUserPermissionsSaga,
-  // getMyPermissionsForProjectSaga,
-  getUserPermissionsForProjectSaga,
+  getAllUsersProjectPermissionsSaga,
+  getMyPermissionsForProjectSaga,
   getUsersSaga,
   unassignUserPermissionsSaga,
 } from '@Redux/permissions/sagas';
@@ -47,7 +47,6 @@ import {
   uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
   replaceElementParametersSaga,
-  // unbindMasterGroupInstanceSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
@@ -435,18 +434,18 @@ export default function* projectSaga() {
     TYPES.UNASSIGN_USER_PERMISSIONS_FOR_PROJECT,
     unassignUserPermissionsSaga,
   );
-  yield takeEvery(
+  /* yield takeEvery(
     TYPES.GET_USER_PERMISSIONS_FOR_PROJECT,
     getUserPermissionsForProjectSaga,
-  );
+  ); */
 
-  /* yield takeEvery(
+  yield takeEvery(
     TYPES.GET_MY_PERMISSIONS_FOR_PROJECT,
     getMyPermissionsForProjectSaga,
-  ); */
+  );
 
-  /* yield takeEvery(
+  yield takeEvery(
     TYPES.GET_ALL_USERS_PROJECT_PERMISSIONS,
     getAllUsersProjectPermissionsSaga,
-  ); */
+  );
 }

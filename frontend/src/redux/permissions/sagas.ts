@@ -6,9 +6,11 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { apiGetUsers } from '@Api/user';
 import {
   apiAssignUserPermission,
+  apiGetAllUsersPermissionsForProject,
   apiGetPermissionsList,
   apiUnassignUserPermission,
 } from '@Api/permissions';
+import { selectUserData } from '@Redux/user/selectors';
 import {
   selectUserForProject,
   selectUserPermissions,
@@ -143,29 +145,22 @@ export function* unassignUserPermissionsSaga(
   }
 }
 
-export function* getUserPermissionsForProjectSaga(
-  action: ReturnType<typeof Actions.getUserPermissionsForProject>,
+export function* getAllUsersProjectPermissionsSaga(
+  action: ReturnType<typeof Actions.getAllUsersProjectPermissions>,
 ) {
-  const { userId, projectId } = action.payload;
+  const { projectId } = action.payload;
   try {
-    const user = yield select(selectUserForProject(userId));
-    if (!user) {
-      yield put(
-        enqueueSnackbar({
-          message: 'User not found',
-          options: { variant: 'error' },
-        }),
-      );
-      return;
-    }
-    const { result, error } = yield call(reqWrapper, apiGetPermissionsList, {
-      username: user.username,
-      projectId,
-    });
+    const { permUsersData, error } = yield call(
+      reqWrapper,
+      apiGetAllUsersPermissionsForProject,
+      {
+        projectId,
+      },
+    );
     if (error) {
       throw new Error(error);
     }
-    console.log('GET USER PERMISSIONS RESULT!!', result);
+    yield put(Actions.setStateAllUsersPermissions(projectId, permUsersData));
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -179,15 +174,33 @@ export function* getUserPermissionsForProjectSaga(
   }
 }
 
-/* export function* getAllUsersProjectPermissionsSaga() {
-// action: ReturnType<typeof Actions.getAllUsersProjectPermissions>,
-  console.log('oops');
-} */
-
-/* export function* getMyPermissionsForProjectSaga() {
+export function* getMyPermissionsForProjectSaga(
   action: ReturnType<typeof Actions.getMyPermissionsForProject>,
+) {
   const { projectId } = action.payload;
   try {
-    const currentUser = yield select()
+    const userData = yield select(selectUserData);
+    const { permissions, error } = yield call(
+      reqWrapper,
+      apiGetPermissionsList,
+      {
+        projectId,
+        username: userData.username,
+      },
+    );
+    if (error) {
+      throw new Error(error);
+    }
+    yield put(Actions.setStateCurrentUserPermissions(permissions));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
   }
-} */
+}

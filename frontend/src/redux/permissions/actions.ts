@@ -1,5 +1,10 @@
 import TYPES from '@Redux/actionTypes';
-import { PaginatedResponse, UserData, UserProjectPermission } from '@Src/types';
+import {
+  PaginatedResponse,
+  PermissionsUserData,
+  UserData,
+  UserProjectPermission,
+} from '@Src/types';
 
 export const getUsersList = (searchValue?: string) => ({
   type: TYPES.LOAD_USERS,
@@ -16,7 +21,7 @@ export const setUsersData = (
 
 export const assignUserPermissionsForProject = (
   projectId: number,
-  userId: string,
+  userId: number,
   permission: UserProjectPermission,
 ) => ({
   type: TYPES.ASSIGN_USER_PERMISSIONS_FOR_PROJECT,
@@ -25,7 +30,7 @@ export const assignUserPermissionsForProject = (
 
 export const unassignUserPermissionsForProject = (
   projectId: number,
-  userId: string,
+  userId: number,
   permission: UserProjectPermission,
 ) => ({
   type: TYPES.UNASSIGN_USER_PERMISSIONS_FOR_PROJECT,
@@ -34,7 +39,7 @@ export const unassignUserPermissionsForProject = (
 
 export const getUserPermissionsForProject = (
   projectId: number,
-  userId: string,
+  userId: number,
 ) => ({
   type: TYPES.GET_USER_PERMISSIONS_FOR_PROJECT,
   payload: { projectId, userId },
@@ -56,7 +61,7 @@ export const setUsersLoader = (active: boolean) => ({
 });
 
 export const setStateUserPermissions = (
-  userId: string,
+  userId: number,
   projectId: number,
   permissions: UserProjectPermission[],
 ) => ({
@@ -64,7 +69,22 @@ export const setStateUserPermissions = (
   payload: { userId, projectId, permissions },
 });
 
-export const getAllUsersProjectPermissions = (projectId: string) => ({
+export const setStateCurrentUserPermissions = (
+  permissions: UserProjectPermission[],
+) => ({
+  type: TYPES.SET_STATE_CURRENT_USER_PERMISSIONS,
+  payload: { permissions },
+});
+
+export const getAllUsersProjectPermissions = (projectId: number) => ({
   type: TYPES.GET_ALL_USERS_PROJECT_PERMISSIONS,
   payload: { projectId },
+});
+
+export const setStateAllUsersPermissions = (
+  projectId: number,
+  usersData: PermissionsUserData[],
+) => ({
+  type: TYPES.SET_STATE_ALL_USERS_PERMISSIONS_FOR_PROJECT,
+  payload: { projectId, usersData },
 });

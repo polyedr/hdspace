@@ -33,16 +33,20 @@ import {
   StateElementsToAdd,
   VIARegion,
   PaginatedResponse,
-  UserPermissions,
   UserProjectPermission,
+  PermissionsUserData,
 } from '../types';
 import TYPES from './actionTypes';
 
 export type PermissionsState = {
   usersPermissionsListData: PaginatedData<UserData> & { search: string };
-  projectUsersData: PaginatedData<UserData>;
-  usersPermissions: UserPermissions;
-  myProjectPermissions: Array<UserProjectPermission>;
+  allProjectsUsersPermissions: {
+    loading: boolean;
+    data: {
+      [id: number]: PermissionsUserData[]; // use projectId as key
+    };
+  };
+  currentUserProjectPermissions: Array<UserProjectPermission>;
 };
 
 export type ProjectDataState = {

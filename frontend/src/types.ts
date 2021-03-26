@@ -915,25 +915,31 @@ export type ProfileData = {
 };
 
 export enum UserProjectPermission {
-  UNSET = 'unset',
+  ADD_PROJECT = 'add_project',
+  DELETE_PROJECT = 'delete_project',
+  ASSIGN_PROJECT = 'assign_project',
   VIEW_PROJECT = 'view_project',
   CHANGE_PROJECT = 'change_project',
 }
 
-export type UserPermissions = {
-  [id: string]: {
-    [projectId: number]: UserProjectPermission[];
-  };
+export type PermissionsUserData = {
+  permissions: UserProjectPermission[];
+  userData: UserData;
+};
+
+export type ServerPermissionsUserData = {
+  permissions: UserProjectPermission[];
+  userdata: ServerUserData;
 };
 
 export type UserData = {
+  id: number;
   username: string;
   email: string;
   firstName: string;
   lastName: string;
   dateJoined: Date | null;
   isActive: boolean;
-  id: number;
   password: string;
   profile: ProfileData;
 };
