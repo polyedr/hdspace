@@ -1,4 +1,5 @@
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -7,14 +8,14 @@ import {
   Tabs,
 } from '@material-ui/core';
 import { setNewScreenModal } from '@Redux/project/actions';
+import { setUserGuideActive } from '@Redux/user/actions';
+import { selectUserGuideWatched } from '@Redux/user/selectors';
 import React, { ChangeEvent, FC, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectNewScreenModalOpen } from '@Redux/project/selectors/screen';
 import HtmlImportForm from './HTMLImportForm';
 import ImageRecognizeForm from './ImageRecognizeForm';
-
-type Props = {
-  open: boolean;
-};
+import UseEditorForm from './UseEditorForm';
 
 const useTabPanelStyles = makeStyles(({ breakpoints, spacing }) => ({
   tabPanel: {
@@ -44,6 +45,9 @@ const useStyles = makeStyles(({ spacing }) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  right: {
+    textAlign: 'right',
+  },
 }));
 
 const TabPanel: FC<{ index: number; value: number }> = ({
@@ -57,24 +61,39 @@ const TabPanel: FC<{ index: number; value: number }> = ({
   return <div className={classes.tabPanel}>{children}</div>;
 };
 
-const NewScreenModal: FC<Props> = ({ open }) => {
+const NewScreenModal: FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  const newScreenModalOpen = useSelector(selectNewScreenModalOpen);
+  const userGuideWatched = useSelector(selectUserGuideWatched);
 
   const [value, setValue] = useState(0);
 
   const handleTabChange = (ev: ChangeEvent<{}>, newValue: number) =>
     setValue(newValue);
 
-  const handleClose = () => dispatch(setNewScreenModal(false));
+  const handleClose = () => {
+    dispatch(setNewScreenModal(false));
+    if (!userGuideWatched) {
+      dispatch(setUserGuideActive(true));
+    }
+  };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+    <Dialog
+      open={newScreenModalOpen}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="md"
+    >
       <div>
         <DialogTitle>Choose the option to create a new screen</DialogTitle>
 
         <DialogContent className={classes.dialogContent}>
           <Tabs value={value} onChange={handleTabChange} variant="fullWidth">
+            <Tab label="Create a screen using editor" />
+
             <Tab label="Import external site" />
 
             <Tab label="Recognize an image using neural network" />
@@ -83,15 +102,28 @@ const NewScreenModal: FC<Props> = ({ open }) => {
           </Tabs>
 
           <TabPanel value={value} index={0}>
-            <HtmlImportForm onClose={handleClose} />
+            <UseEditorForm onClose={handleClose} />
           </TabPanel>
 
           <TabPanel value={value} index={1}>
-            <ImageRecognizeForm onClose={handleClose} />
+            <HtmlImportForm onClose={handleClose} />
           </TabPanel>
 
           <TabPanel value={value} index={2}>
+            <ImageRecognizeForm onClose={handleClose} />
+          </TabPanel>
+
+          <TabPanel value={value} index={3}>
             <div className={classes.coming}>This feature is coming soon</div>
+            <div className={classes.right}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                Ok
+              </Button>
+            </div>
           </TabPanel>
         </DialogContent>
       </div>

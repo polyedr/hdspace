@@ -1,13 +1,4 @@
-export const projects = '/projects';
-export const user = {
-  signin: '/signin',
-  signup: '/signup',
-  activate: '/activate',
-  password: '/password',
-} as const;
-export const profile = '/profile';
-
-export const PATH_NAMES = {
+const PATH_NAMES = {
   projects: '/projects',
   user: {
     signin: '/signin',
@@ -18,3 +9,5 @@ export const PATH_NAMES = {
   profile: '/profile',
   passwordRestore: '/password_restore',
 };
+
+export default PATH_NAMES;

@@ -1,11 +1,11 @@
-import React, { useState, useCallback, MouseEvent } from 'react';
+import React, { useCallback, MouseEvent } from 'react';
 import { useHistory } from 'react-router';
 import List from '@material-ui/core/List';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { Button, lighten, Dialog } from '@material-ui/core';
+import { Button, lighten } from '@material-ui/core';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -25,8 +25,8 @@ import {
   selectMasterScreenId,
   selectScreensWithoutMaster,
 } from '@Redux/project/selectors/screen';
-import HtmlImportForm from '@Components/Dialogs/HTMLImportForm';
 import prevent from '@Utils/preventEvent';
+import ELEMENT_IDS from '@Constants/elementIds';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
 import {
@@ -90,8 +90,6 @@ const Screens = () => {
     dispatch(changeScreensOrder(result));
   };
 
-  const [open, setOpen] = useState<boolean>(false);
-
   const handleShowMoreOptions = (ev: MouseEvent<HTMLButtonElement>) => {
     prevent(ev);
     dispatch(setNewScreenModal(true));
@@ -107,7 +105,7 @@ const Screens = () => {
 
   return (
     <>
-      <StyledAccordion defaultExpanded>
+      <StyledAccordion defaultExpanded id={ELEMENT_IDS.screenList}>
         <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
           <span>Screens</span>
 
@@ -142,6 +140,7 @@ const Screens = () => {
             color="secondary"
             variant={masterScreenEnabled ? 'contained' : 'outlined'}
             onClick={handleClick}
+            id={ELEMENT_IDS.masterScreenListItem}
           >
             Master Screen
           </Button>
@@ -171,17 +170,6 @@ const Screens = () => {
           </DragDropContext>
         </StyledAccordionDetails>
       </StyledAccordion>
-
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        fullWidth
-        maxWidth="sm"
-      >
-        <div className={classes.form}>
-          <HtmlImportForm onClose={() => setOpen(false)} />
-        </div>
-      </Dialog>
     </>
   );
 };

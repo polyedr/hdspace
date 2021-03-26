@@ -4,8 +4,8 @@ import { fireEvent, render, RenderResult } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
-import ImageRecognizeForm from '@Components/Dialogs/ImageRecognizeForm';
 import TYPES from '@Redux/actionTypes';
+import ImageRecognizeForm from '@Components/Dialogs/NewScreenModal/ImageRecognizeForm';
 
 Object.defineProperty(URL, 'createObjectURL', {
   writable: true,

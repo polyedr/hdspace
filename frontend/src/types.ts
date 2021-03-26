@@ -450,6 +450,8 @@ export interface ElementClickEvent extends ElementEvent {
 
 export type ImageParameters = BaseElementParams & {
   imageURL: string;
+  alt: string;
+  title: string;
 };
 
 export type LinkType = 'internal' | 'external';
@@ -892,6 +894,7 @@ export type ServerProfileData = {
   approved: boolean;
   role: string;
   id: number;
+  experienced: Experience;
 };
 
 export type ServerUserData = {
@@ -912,6 +915,7 @@ export type ProfileData = {
   role: string;
   hourlyRate: number;
   id: number;
+  experienced: Experience;
 };
 
 export enum UserProjectPermission {
@@ -931,6 +935,11 @@ export type ServerPermissionsUserData = {
   permissions: UserProjectPermission[];
   userdata: ServerUserData;
 };
+
+export enum Experience {
+  BEGINNER = 'BEGINNER',
+  EXPERIENCED = 'EXPERIENCED',
+}
 
 export type UserData = {
   id: number;
@@ -1154,6 +1163,8 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'isOpen',
   'videoSettings',
   'stylesOn',
+  'alt',
+  'title',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

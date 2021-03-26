@@ -22,6 +22,7 @@ import {
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
 import { CORE_MASTER_ELEMENTS_IDS } from '@Components/Editor/MasterScreen/coreElements';
+import ELEMENT_IDS from '@Constants/elementIds';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import AssetsSection from './Assets';
@@ -145,7 +146,7 @@ const RightPanel: React.FC = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} id={ELEMENT_IDS.rightPanel}>
       <>
         <Tabs
           value={activeTabIndex}

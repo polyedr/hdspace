@@ -114,6 +114,31 @@ const setRestoreUserId: ActionHandler<typeof Actions.setRestoreUserId> = (
   restoreUserId,
 });
 
+const setUserExperience: ActionHandler<typeof Actions.setUserExperience> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  userData: {
+    ...state.userData,
+    profile: {
+      ...state.userData.profile,
+      experienced: payload,
+    },
+  },
+});
+
+const setUserGuideActive: ActionHandler<typeof Actions.setUserGuideActive> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  userGuide: {
+    ...state.userGuide,
+    active: payload,
+  },
+});
+
 const logout: ActionHandler<typeof Actions.logout> = () => ({
   ...initialUserState,
 });
@@ -133,6 +158,8 @@ const handlers: Handlers<UserState> = {
   [TYPES.SET_RESTORE_USER_ID]: setRestoreUserId,
   [TYPES.LOGOUT]: logout,
   [TYPES.SET_CONFIRM_MESSAGE]: setConfirmMessage,
+  [TYPES.SET_USER_EXPERIENCE]: setUserExperience,
+  [TYPES.SET_USER_GUIDE_ACTIVE]: setUserGuideActive,
 } as const;
 
 export default createReducer(initialUserState, handlers);

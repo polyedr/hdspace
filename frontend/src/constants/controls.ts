@@ -31,6 +31,8 @@ import Value from '@Components/RightPanel/PropertiesTab/Controls/Value/Value';
 import VideoSettings from '@Components/RightPanel/PropertiesTab/Controls/VideoSettings/VideoSettings';
 import withSmartContainer from '@Components/UI/RenderElements/SmartContainer/withSmartContainer';
 import { Control, NNBlockType } from '@Src/types';
+import Alt from '@Components/RightPanel/PropertiesTab/Controls/Alt';
+import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -79,6 +81,8 @@ const CONTROLS: Record<Control, ControlInfo> = {
   placeholder: { Control: Placeholder },
   textContent: { Control: TextContent, styles: [] },
   image: { Control: Image, styles: [] },
+  alt: { Control: Alt },
+  title: { Control: Title },
   smartHeader: { Control: withSmartContainer(NNBlockType.HEADER) },
   smartFooter: { Control: withSmartContainer(NNBlockType.FOOTER) },
   smartForm: { Control: withSmartContainer(NNBlockType.FORM) },

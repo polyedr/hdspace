@@ -147,6 +147,9 @@ export type UserState = {
   restoreUserId?: number;
   isLoading: boolean;
   confirmMessage: string;
+  userGuide: {
+    active: boolean;
+  };
 };
 
 export type Notification = {

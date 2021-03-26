@@ -1,5 +1,5 @@
 import { createBrowserHistory } from 'history';
-import { PATH_NAMES } from '@Constants/pathNames';
+import PATH_NAMES from '@Constants/pathNames';
 
 const history = createBrowserHistory();
 

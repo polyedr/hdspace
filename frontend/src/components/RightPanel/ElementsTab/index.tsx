@@ -141,6 +141,7 @@ const ElementsTab = () => {
                 expandable
               />
             ))}
+
             <CustomElementsBlock />
           </Section>
         </>

@@ -266,6 +266,8 @@ export const makeImage = ({
   func_type: 'image',
   struct_type: 'image',
   parameters: {
+    alt: '',
+    title: '',
     layouts: DEFAULT_LAYOUT_LIST,
     group: ElementGroup.IMAGE,
     imageURL: IMAGES.imageIcon,

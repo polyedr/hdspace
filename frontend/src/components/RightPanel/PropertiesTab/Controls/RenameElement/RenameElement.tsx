@@ -1,26 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { updateElement } from '@Redux/project/actions';
 import { StyledTextField } from '@Components/styledComponents';
+import useDebouncedChange from '@Utils/useDeboucedChange';
 
 const RenameElement: React.FC = () => {
   const dispatch = useDispatch();
 
   const { name, id } = useSelector(selectActiveElement);
 
-  const [state, setState] = useState(name || '');
-
-  useEffect(() => {
-    setState(name || '');
-  }, [name]);
-
-  const debounced = useDebouncedCallback((value) => {
+  const [state, handleChange] = useDebouncedChange(name || '', (value) => {
     dispatch(
       updateElement({ elementID: id, data: { name: value }, active: true }),
     );
-  }, 500);
+  });
 
   return (
     <StyledTextField
@@ -28,10 +22,7 @@ const RenameElement: React.FC = () => {
       margin="dense"
       label="Name"
       value={state}
-      onChange={({ target: { value } }) => {
-        setState(value);
-        debounced.callback(value);
-      }}
+      onChange={handleChange}
     />
   );
 };

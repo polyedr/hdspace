@@ -58,8 +58,8 @@ const useNNProcessing = (
     [
       file,
       dispatch,
-      element.parameters.imageUrl,
-      element.parameters.stylesOn,
+      element?.parameters?.imageUrl,
+      element?.parameters?.stylesOn,
       elementId,
       blockType,
       currentScreenId,

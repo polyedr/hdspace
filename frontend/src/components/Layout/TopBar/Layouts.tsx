@@ -12,6 +12,7 @@ import {
 } from '@Redux/project/selectors/base';
 import { changeLayout, rotateScreenFormat } from '@Redux/project/actions';
 import { Layout } from '@Src/types';
+import ELEMENT_IDS from '@Constants/elementIds';
 import { StyledToggleButton } from '../../styledComponents';
 
 const useStyles = makeStyles({
@@ -40,7 +41,7 @@ const Layouts: React.FC = () => {
   const handleRotatedToggle = () => dispatch(rotateScreenFormat(!rotated));
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} id={ELEMENT_IDS.layoutSelector}>
       <ToggleButtonGroup
         value={layout}
         onChange={handleFormatChange}

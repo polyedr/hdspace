@@ -323,6 +323,39 @@ exports[`Profile should render profile page 1`] = `
             />
           </span>
         </div>
+        <div
+          class="makeStyles-subheader-12"
+        >
+          User guide wathched
+          <span
+            class="MuiSwitch-root"
+          >
+            <span
+              aria-disabled="false"
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-20 MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-checked-21 Mui-checked"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <input
+                  checked=""
+                  class="PrivateSwitchBase-input-23 MuiSwitch-input"
+                  type="checkbox"
+                  value=""
+                />
+                <span
+                  class="MuiSwitch-thumb"
+                />
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </span>
+            <span
+              class="MuiSwitch-track"
+            />
+          </span>
+        </div>
       </div>
     </div>
   </main>
