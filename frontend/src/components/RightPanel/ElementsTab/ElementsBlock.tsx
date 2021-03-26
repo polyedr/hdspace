@@ -36,6 +36,16 @@ export const useStyles = makeStyles({
   },
 });
 
+export const renderElementButtons = (
+  elements: Record<string, ElementData | ElementData[]>,
+) =>
+  Object.values(elements).map((element) => {
+    if (Array.isArray(element)) {
+      return <ElementDropdown options={element} key={element[0].key} />;
+    }
+    return <ElementButton elementData={element} key={element.key} />;
+  });
+
 const ElementsBlock: React.FC<Props> = ({
   title = '',
   elements,
@@ -43,13 +53,7 @@ const ElementsBlock: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
 
-  const renderContent = () =>
-    Object.values(elements).map((element) => {
-      if (Array.isArray(element)) {
-        return <ElementDropdown options={element} key={element[0].key} />;
-      }
-      return <ElementButton elementData={element} key={element.key} />;
-    });
+  const content = renderElementButtons(elements);
 
   return expandable ? (
     <StyledAccordion defaultExpanded>
@@ -58,11 +62,11 @@ const ElementsBlock: React.FC<Props> = ({
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={classes.elementsBlock}>
-        {renderContent()}
+        {content}
       </StyledAccordionDetails>
     </StyledAccordion>
   ) : (
-    <div className={classes.elementsBlock}>{renderContent()}</div>
+    <div className={classes.elementsBlock}>{content}</div>
   );
 };
 
