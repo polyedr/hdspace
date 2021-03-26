@@ -10,6 +10,7 @@ from rest_framework.pagination import CursorPagination
 from rest_framework_guardian import filters  # Django-Guardian
 from guardian.shortcuts import assign_perm, remove_perm, get_perms, get_users_with_perms
 
+from apps.accounts.serializers import UserSerializer
 from apps.accounts.models import User
 from permissions import CustomObjectPermissions
 
@@ -687,13 +688,15 @@ class DisplayPermissionsAllusers(APIView):
         projectid = request.data['projectid']
         project = Project.objects.get(pk=projectid)
         users_list = get_users_with_perms(project)
-        rp_users_dictionary = {}
+        rp_users_list = []
         for user in users_list:
+            userseries = UserSerializer(user)
+            print(userseries.data)
             rp = get_perms(user, project)
-            rdictionary = {user.pk: rp}
-            rp_users_dictionary.update(rdictionary)
+            rdictionary = {"permissions": rp, "userdata": userseries.data}
+            rp_users_list.append(rdictionary)
 
-        if rp_users_dictionary:
-            return Response({"permissions": rp_users_dictionary}, status=status.HTTP_201_CREATED)
+        if rp_users_list:
+            return Response(rp_users_list, status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
