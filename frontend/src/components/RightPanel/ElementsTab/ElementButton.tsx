@@ -115,15 +115,6 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
         parentId: activeElement.id,
       };
       dispatch(createElements(createdElementsData, { screenId }));
-      /* if (activeElement.parameters.groupElements) {
-        dispatch(createGroupChildren(createdElementsData, { screenId }));
-      } else {
-        dispatch(
-          createElements(createdElementsData, {
-            screenId,
-          }),
-        );
-      } */
     };
 
     useEffect(() => {
