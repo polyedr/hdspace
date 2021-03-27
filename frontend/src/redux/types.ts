@@ -484,6 +484,12 @@ export type CreateElements = IAction<
   ElementHistoryMeta
 >;
 
+export type CreateChildElements = IAction<
+  typeof TYPES.CREATE_CHILD_ELEMENTS,
+  { createdElements: CreatedElement[]; parentId?: string; index?: number },
+  ElementHistoryMeta
+>;
+
 export type CreateGroupChildren = IAction<
   typeof TYPES.CREATE_GROUP_CHILDREN,
   { createdElements: CreatedElement[]; parentId?: string; index?: number },

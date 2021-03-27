@@ -190,6 +190,58 @@ export const createElementsSaga = withActionsHistory(function* (
   action: ReturnType<typeof Actions.createElements>,
 ) {
   try {
+    const { createdElements, parentId, index } = action.payload;
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      return;
+    }
+    const activeElement = yield select(selectActiveElement);
+    const parentElement = yield select(
+      selectElementById(parentId || activeElement.id),
+    );
+    if (!parentElement) {
+      yield put(
+        enqueueSnackbar({
+          message: 'Parent element is not defined',
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    if (parentElement.parameters.groupElements) {
+      yield put(
+        Actions.createGroupChildren(
+          { createdElements, parentId: parentId || activeElement.id, index },
+          { ...action.meta },
+        ),
+      );
+    } else {
+      yield put(
+        Actions.createChildElements(
+          { createdElements, parentId: parentId || activeElement.id, index },
+          { ...action.meta },
+        ),
+      );
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
+export const createChildElementsSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.createChildElements>,
+) {
+  try {
     if (!action.meta) {
       console.error(
         `You have to provide metainformation for action ${action.type}`,
