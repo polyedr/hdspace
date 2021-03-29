@@ -641,7 +641,7 @@ class AssignPermissionsmapProject(APIView):
             assign_perm(permission, user, project)
         rp = get_perms(user, project)
         if(rp):
-            return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
+            return Response({"permissions": rp}, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -663,7 +663,7 @@ class AssignPermissionsProject(APIView):
         assign_perm(permission, user, project)
         rp = get_perms(user, project)
         if(rp):
-            return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
+            return Response({"permissions": rp}, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -685,7 +685,7 @@ class RemovePermissionsProject(APIView):
         remove_perm(permission, user, project)
         rp = get_perms(user, project)
         if(rp):
-            return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
+            return Response({"permissions": rp}, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -705,7 +705,7 @@ class DisplayPermissionsProject(APIView):
         project = Project.objects.get(pk=projectid)
         rp = get_perms(user, project)
         if rp:
-            return Response({"permissions": rp}, status=status.HTTP_201_CREATED)
+            return Response({"permissions": rp}, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -731,6 +731,6 @@ class DisplayPermissionsAllusers(APIView):
             rp_users_list.append(rdictionary)
 
         if rp_users_list:
-            return Response(rp_users_list, status=status.HTTP_201_CREATED)
+            return Response(rp_users_list, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
