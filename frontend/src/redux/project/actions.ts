@@ -154,6 +154,7 @@ import {
   UpdateVIARegionLayer,
   SetNewScreenModal,
   CreateChildElements,
+  SetAnnotatedImageURL,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1410,6 +1411,11 @@ export const updateVIARegionLayer = (
 ): UpdateVIARegionLayer => ({
   type: TYPES.UPDATE_VIA_REGION_LAYER,
   payload: { regionId, layer },
+});
+
+export const setAnnotatedImageURL = (url: string): SetAnnotatedImageURL => ({
+  type: TYPES.SET_ANNOTATED_IMAGE_URL,
+  payload: url,
 });
 
 export const cancelRecognizing = () => ({

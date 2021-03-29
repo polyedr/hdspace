@@ -127,6 +127,7 @@ export const mockVIAState = {
     },
   },
   activeRegionId: '',
+  annotatedImageURL: '',
 } as ProjectEditState['VIAMode'];
 
 export const mockInitialState: AppReduxState = {

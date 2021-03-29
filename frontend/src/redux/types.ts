@@ -81,6 +81,7 @@ export type ProjectEditState = {
     regions: Normalized<VIARegion>;
     activeRegionId: string;
     annotatedElementId: string;
+    annotatedImageURL: string;
   };
   freeCanvas: {
     enabled: boolean;
@@ -965,6 +966,11 @@ export type UpdateVIARegionLayer = IAction<
   { regionId: string; layer: number }
 >;
 
+export type SetAnnotatedImageURL = IAction<
+  typeof TYPES.SET_ANNOTATED_IMAGE_URL,
+  string
+>;
+
 export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
 
 export type SetNewScreenModal = IAction<
@@ -1122,7 +1128,8 @@ export type Action =
   | SetAnnotatedElement
   | UpdateVIARegionLayer
   | FinishAnnotaion
-  | SetNewScreenModal;
+  | SetNewScreenModal
+  | SetAnnotatedImageURL;
 
 export type HistoryMeta = {
   useHistory?: boolean;

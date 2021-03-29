@@ -207,6 +207,11 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.SET_ANNOTATED_IMAGE_URL: {
+        draft.VIAMode.annotatedImageURL = action.payload;
+        break;
+      }
+
       case TYPES.FINISH_ANNOTATION: {
         draft.VIAMode = initialEdit.VIAMode;
         break;
