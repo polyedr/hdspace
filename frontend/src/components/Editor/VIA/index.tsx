@@ -1,6 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import {
   copyVIARegion,
+  deleteVIARegion,
   pasteVIARegion,
   setActiveVIARegion,
 } from '@Redux/project/actions';
@@ -41,8 +42,13 @@ const VIA: FC = () => {
     dispatch(pasteVIARegion());
   };
 
+  const handleDelete = () => {
+    dispatch(deleteVIARegion());
+  };
+
   useShortcut('ctrl+c, command+c', handleCopy);
   useShortcut('ctrl+v, command+v', handlePaste);
+  useShortcut('delete, backspace', handleDelete);
 
   const handleClick = () => dispatch(setActiveVIARegion(''));
 

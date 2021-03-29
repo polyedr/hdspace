@@ -955,7 +955,10 @@ export type SetActiveVIARegion = IAction<
 
 export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
 
-export type DeleteVIARegion = IAction<typeof TYPES.DELETE_VIA_REGION, string>;
+export type DeleteVIARegion = IAction<
+  typeof TYPES.DELETE_VIA_REGION,
+  string | undefined
+>;
 
 export type SetAnnotatedElement = IAction<
   typeof TYPES.SET_ANNOTATED_ELEMENT_ID,

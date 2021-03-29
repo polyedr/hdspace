@@ -175,7 +175,8 @@ const editReducer = produce(
       }
 
       case TYPES.DELETE_VIA_REGION: {
-        delete draft.VIAMode.regions[action.payload];
+        const idToDelete = action.payload || draft.VIAMode.activeRegionId;
+        delete draft.VIAMode.regions[idToDelete];
         break;
       }
 

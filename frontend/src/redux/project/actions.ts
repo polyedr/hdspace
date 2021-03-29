@@ -1393,7 +1393,7 @@ export const createVIARegion = (): CreateVIARegion => ({
   type: TYPES.CREATE_VIA_REGION,
 });
 
-export const deleteVIARegion = (id: string): DeleteVIARegion => ({
+export const deleteVIARegion = (id?: string): DeleteVIARegion => ({
   type: TYPES.DELETE_VIA_REGION,
   payload: id,
 });
