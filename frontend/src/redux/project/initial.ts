@@ -70,6 +70,7 @@ export const initialEdit: ProjectEditState = {
     activeRegionId: '',
     annotatedElementId: '',
     annotatedImageURL: '',
+    copiedRegion: null,
   },
   freeCanvas: {
     enabled: false,

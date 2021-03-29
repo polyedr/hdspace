@@ -155,6 +155,8 @@ import {
   SetNewScreenModal,
   CreateChildElements,
   SetAnnotatedImageURL,
+  CopyVIARegion,
+  PasteVIARegion,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1424,6 +1426,14 @@ export const cancelRecognizing = () => ({
 
 export const finishAnnotation = (): FinishAnnotaion => ({
   type: TYPES.FINISH_ANNOTATION,
+});
+
+export const copyVIARegion = (): CopyVIARegion => ({
+  type: TYPES.COPY_VIA_REGION,
+});
+
+export const pasteVIARegion = (): PasteVIARegion => ({
+  type: TYPES.PASTE_VIA_REGION,
 });
 
 export const setNewScreenModal = (open: boolean): SetNewScreenModal => ({

@@ -82,6 +82,7 @@ export type ProjectEditState = {
     activeRegionId: string;
     annotatedElementId: string;
     annotatedImageURL: string;
+    copiedRegion: VIARegion | null;
   };
   freeCanvas: {
     enabled: boolean;
@@ -973,6 +974,10 @@ export type SetAnnotatedImageURL = IAction<
 
 export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
 
+export type CopyVIARegion = IPlainAction<typeof TYPES.COPY_VIA_REGION>;
+
+export type PasteVIARegion = IPlainAction<typeof TYPES.PASTE_VIA_REGION>;
+
 export type SetNewScreenModal = IAction<
   typeof TYPES.SET_NEW_SCREEN_MODAL,
   boolean
@@ -1129,7 +1134,9 @@ export type Action =
   | UpdateVIARegionLayer
   | FinishAnnotaion
   | SetNewScreenModal
-  | SetAnnotatedImageURL;
+  | SetAnnotatedImageURL
+  | CopyVIARegion
+  | PasteVIARegion;
 
 export type HistoryMeta = {
   useHistory?: boolean;

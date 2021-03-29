@@ -1,5 +1,10 @@
 import { makeStyles } from '@material-ui/core';
-import { setActiveVIARegion } from '@Redux/project/actions';
+import {
+  copyVIARegion,
+  pasteVIARegion,
+  setActiveVIARegion,
+} from '@Redux/project/actions';
+import { useHotkeys as useShortcut } from 'react-hotkeys-hook';
 import {
   selectAnnotatedImageURL,
   selectVIARegionsAsArray,
@@ -25,9 +30,19 @@ const useStyles = makeStyles({
 const VIA: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
   const regions = useSelector(selectVIARegionsAsArray);
   const annotatedImageURL = useSelector(selectAnnotatedImageURL);
+
+  const handleCopy = () => {
+    dispatch(copyVIARegion());
+  };
+
+  const handlePaste = () => {
+    dispatch(pasteVIARegion());
+  };
+
+  useShortcut('ctrl+c, command+c', handleCopy);
+  useShortcut('ctrl+v, command+v', handlePaste);
 
   const handleClick = () => dispatch(setActiveVIARegion(''));
 
