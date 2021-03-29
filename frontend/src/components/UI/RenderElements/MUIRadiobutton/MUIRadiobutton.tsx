@@ -72,9 +72,7 @@ const MUIRadiobutton: React.FC<RadioRendererProps> = React.forwardRef(
             className={cn(
               'mdc-radio',
               'mdc-radio--touch',
-              ...(!isDisabled /* && showRipple */
-                ? ['ripple', classes.rippleArea]
-                : []),
+              ...(!isDisabled ? ['ripple', classes.rippleArea] : []),
             )}
           >
             <input
