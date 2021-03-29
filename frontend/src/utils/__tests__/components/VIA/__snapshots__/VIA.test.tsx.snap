@@ -3,13 +3,14 @@
 exports[`VIA Region should render VIA Regions wrapper 1`] = `
 <div>
   <div
-    class="makeStyles-root-1"
+    class="makeStyles-viaRoot-1"
   >
     <div
       class="makeStyles-canvas-2"
     >
       <img
         alt="annotated"
+        src=""
       />
       <div
         class="makeStyles-region-3 makeStyles-region-13 react-draggable"
