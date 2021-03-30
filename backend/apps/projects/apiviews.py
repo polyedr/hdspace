@@ -77,7 +77,7 @@ class ScenarioElementCursorSetPagination(CursorPagination):
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     pagination_class = ProjectCursorSetPagination
@@ -97,7 +97,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def filter_queryset(self, queryset):
         queryset = super(ProjectViewSet, self).filter_queryset(queryset)
-        queryset = queryset.filter(user=self.request.user)
+        # queryset = queryset.filter(user=self.request.user)
         return queryset
 
 
@@ -640,10 +640,8 @@ class AssignPermissionsmapProject(APIView):
         for permission in permissions:
             assign_perm(permission, user, project)
         rp = get_perms(user, project)
-        if(rp):
-            return Response({"permissions": rp}, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"permissions": rp}, status=status.HTTP_200_OK)
 
 
 class AssignPermissionsProject(APIView):
