@@ -3,7 +3,7 @@ import { AppReduxState } from '@Redux/types';
 export const selectUsersForProject = ({ permissions }: AppReduxState) =>
   permissions.usersPermissionsListData.results;
 
-export const selectUserForProject = (userId: number) => (
+export const selectUserForProject = (userId: string) => (
   state: AppReduxState,
 ) => {
   const allUsers = selectUsersForProject(state);
@@ -25,32 +25,28 @@ export const selectUsersPrev = ({ permissions }: AppReduxState) =>
 export const selectUsersPageSize = ({ permissions }: AppReduxState) =>
   permissions.usersPermissionsListData.pageSize;
 
-export const selectUserPermissions = (projectId: number, userId: number) => ({
-  permissions,
-}: AppReduxState) => {
-  const existingProjectUserData =
-    permissions.allProjectsUsersPermissions[projectId];
-  if (!existingProjectUserData) {
-    return [];
-  }
-  const existingUserData = existingProjectUserData.data.find(
-    (dataItem) => dataItem.userData.id === userId,
-  );
-  return existingUserData ? existingUserData.permissions : [];
+export const selectAllUsersPermissions = ({ permissions }: AppReduxState) => {
+  return permissions.allUsersProjectPermissions.data;
 };
 
-export const selectIfProjectUserExists = (
-  projectId: string,
-  userId: number,
-) => ({ permissions }: AppReduxState) => {
-  const existingProjectUserData =
-    permissions.allProjectsUsersPermissions[projectId];
+export const selectUserPermissions = (userId: string) => ({
+  permissions,
+}: AppReduxState) => {
+  const existingUserData = permissions.allUsersProjectPermissions.data[userId];
+  if (!existingUserData) {
+    return [];
+  }
+  return existingUserData.permissions;
+};
+
+export const selectIfProjectUserExists = (userId: number) => ({
+  permissions,
+}: AppReduxState) => {
+  const existingProjectUserData = permissions.allUsersProjectPermissions.data;
   if (!existingProjectUserData) {
     return false;
   }
-  return !!existingProjectUserData.data.find(
-    (data) => data.userData.id === userId,
-  );
+  return !!existingProjectUserData[userId.toString()];
 };
 
 export const selectCurrentUserProjectPermissions = ({

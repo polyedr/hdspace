@@ -1,6 +1,7 @@
 import produce from 'immer';
 import { PermissionsState } from '@Redux/types';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
+import { PermissionsUserData } from '@Src/types';
 import { PermissionsAction } from './types';
 import initialPermissionsState from './initial';
 import TYPES from '../actionTypes';
@@ -30,15 +31,38 @@ export default produce(
       }
 
       case TYPES.SET_PROJECT_USERS_LOADER: {
-        draft.allProjectsUsersPermissions.loading = action.payload.active;
+        draft.allUsersProjectPermissions.loading = action.payload.active;
         break;
       }
 
       case TYPES.SET_STATE_ALL_USERS_PERMISSIONS_FOR_PROJECT: {
         const { projectId, usersData } = action.payload;
-        draft.allProjectsUsersPermissions.data[projectId] = usersData;
+        draft.allUsersProjectPermissions = {
+          loading: false,
+          projectId,
+          data: usersData.reduce(
+            (allData, userPermsData) => ({
+              ...allData,
+              [userPermsData.userData.id]: userPermsData,
+            }),
+            {},
+          ),
+        };
         break;
       }
+
+      case TYPES.SET_STATE_USER_PERMISSIONS:
+        // eslint-disable-next-line no-case-declarations
+        const { userData, permissions } = action.payload;
+        draft.allUsersProjectPermissions.data = {
+          ...draft.allUsersProjectPermissions.data,
+          [userData.id.toString()]: {
+            id: userData.id.toString(),
+            permissions,
+            userData,
+          } as PermissionsUserData & { id: string },
+        };
+        break;
 
       case TYPES.SET_STATE_CURRENT_USER_PERMISSIONS: {
         const { permissions } = action.payload;

@@ -9,8 +9,9 @@ const initialState: PermissionsState = {
     loading: false,
     search: '',
   },
-  allProjectsUsersPermissions: {
+  allUsersProjectPermissions: {
     loading: false,
+    projectId: null,
     data: {},
   },
   currentUserProjectPermissions: [],

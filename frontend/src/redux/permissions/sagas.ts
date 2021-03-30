@@ -8,6 +8,7 @@ import {
   apiAssignUserPermission,
   apiGetAllUsersPermissionsForProject,
   apiGetPermissionsList,
+  apiSetUserPermissionsForProject,
   apiUnassignUserPermission,
 } from '@Api/permissions';
 import { selectUserData } from '@Redux/user/selectors';
@@ -58,13 +59,13 @@ export function* getUsersSaga(action: ReturnType<typeof Actions.getUsersList>) {
   }
 }
 
-export function* assignUserPermissionsSaga(
-  action: ReturnType<typeof Actions.assignUserPermissionsForProject>,
+export function* assignUserPermissionSaga(
+  action: ReturnType<typeof Actions.assignUserPermissionForProject>,
 ) {
   const { userId, projectId, permission } = action.payload;
   try {
-    const permissions = yield select(selectUserPermissions(projectId, userId));
-    if (permissions.includes(permission)) {
+    const userPermissions = yield select(selectUserPermissions(userId));
+    if (userPermissions.includes(permission)) {
       return;
     }
     const user = yield select(selectUserForProject(userId));
@@ -77,7 +78,10 @@ export function* assignUserPermissionsSaga(
       );
       return;
     }
-    yield put(Actions.setStateUserPermissions(userId, projectId, permissions));
+    yield put(
+      Actions.setStateUserPermissions(user, [...userPermissions, permission]),
+    );
+    console.log('PERMISSION!!', permission);
     const { error } = yield call(reqWrapper, apiAssignUserPermission, {
       username: user.username,
       projectId,
@@ -99,13 +103,13 @@ export function* assignUserPermissionsSaga(
   }
 }
 
-export function* unassignUserPermissionsSaga(
-  action: ReturnType<typeof Actions.unassignUserPermissionsForProject>,
+export function* unassignUserPermissionSaga(
+  action: ReturnType<typeof Actions.unassignUserPermissionForProject>,
 ) {
   try {
     const { userId, projectId, permission } = action.payload;
-    const permissions = yield select(selectUserPermissions(projectId, userId));
-    if (!permissions.includes(permission)) {
+    const userPermissions = yield select(selectUserPermissions(userId));
+    if (!userPermissions.includes(permission)) {
       return;
     }
     const user = yield select(selectUserForProject(userId));
@@ -119,11 +123,9 @@ export function* unassignUserPermissionsSaga(
       return;
     }
     const newPermissions = [
-      ...permissions.filter((perm) => perm !== permission),
+      ...userPermissions.filter((perm) => perm !== permission),
     ];
-    yield put(
-      Actions.setStateUserPermissions(userId, projectId, newPermissions),
-    );
+    yield put(Actions.setStateUserPermissions(user, newPermissions));
     const { error } = yield call(reqWrapper, apiUnassignUserPermission, {
       username: user.username,
       projectId,
@@ -160,6 +162,7 @@ export function* getAllUsersProjectPermissionsSaga(
     if (error) {
       throw new Error(error);
     }
+    console.log('PERM USER DATA!!!', permUsersData);
     yield put(Actions.setStateAllUsersPermissions(projectId, permUsersData));
   } catch (e) {
     yield put(
@@ -192,6 +195,43 @@ export function* getMyPermissionsForProjectSaga(
       throw new Error(error);
     }
     yield put(Actions.setStateCurrentUserPermissions(permissions));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+}
+
+export function* updateUserPermissionsForProjectSaga(
+  action: ReturnType<typeof Actions.updateUserPermissionsForProject>,
+) {
+  const { userId, projectId, permissions } = action.payload;
+  try {
+    const user = yield select(selectUserForProject(userId));
+    if (!user) {
+      yield put(
+        enqueueSnackbar({
+          message: 'User not found',
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    yield put(Actions.setStateUserPermissions(user, permissions));
+    const { error } = yield call(reqWrapper, apiSetUserPermissionsForProject, {
+      username: user.username,
+      projectId,
+      permissions,
+    });
+    if (error) {
+      throw new Error(error);
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar(

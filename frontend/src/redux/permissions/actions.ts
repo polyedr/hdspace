@@ -19,22 +19,35 @@ export const setUsersData = (
   payload: { search, data },
 });
 
-export const assignUserPermissionsForProject = (
+export const assignUserPermissionForProject = (
   projectId: number,
-  userId: number,
+  userId: string,
   permission: UserProjectPermission,
 ) => ({
-  type: TYPES.ASSIGN_USER_PERMISSIONS_FOR_PROJECT,
+  type: TYPES.ASSIGN_USER_PERMISSION_FOR_PROJECT,
   payload: { userId, projectId, permission },
 });
 
-export const unassignUserPermissionsForProject = (
+export const unassignUserPermissionForProject = (
   projectId: number,
-  userId: number,
+  userId: string,
   permission: UserProjectPermission,
 ) => ({
-  type: TYPES.UNASSIGN_USER_PERMISSIONS_FOR_PROJECT,
+  type: TYPES.UNASSIGN_USER_PERMISSION_FOR_PROJECT,
   payload: { userId, projectId, permission },
+});
+
+export const updateUserPermissionsForProject = (
+  projectId: number,
+  userId: string,
+  permissions: UserProjectPermission[],
+) => ({
+  type: TYPES.UPDATE_USER_PERMISSIONS_FOR_PROJECT,
+  payload: {
+    projectId,
+    userId,
+    permissions,
+  },
 });
 
 export const getUserPermissionsForProject = (
@@ -61,12 +74,11 @@ export const setUsersLoader = (active: boolean) => ({
 });
 
 export const setStateUserPermissions = (
-  userId: number,
-  projectId: number,
+  userData: UserData,
   permissions: UserProjectPermission[],
 ) => ({
   type: TYPES.SET_STATE_USER_PERMISSIONS,
-  payload: { userId, projectId, permissions },
+  payload: { userData, permissions },
 });
 
 export const setStateCurrentUserPermissions = (

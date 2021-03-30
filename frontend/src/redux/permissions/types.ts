@@ -1,5 +1,5 @@
 import {
-  assignUserPermissionsForProject,
+  assignUserPermissionForProject,
   getMyPermissionsForProject,
   getUserPermissionsForProject,
   getUsersList,
@@ -9,7 +9,7 @@ import {
   setStateUserPermissions,
   setUsersData,
   setUsersLoader,
-  unassignUserPermissionsForProject,
+  unassignUserPermissionForProject,
 } from './actions';
 
 export type PermissionsAction = ReturnType<
@@ -17,8 +17,8 @@ export type PermissionsAction = ReturnType<
   | typeof setUsersData
   | typeof setUsersLoader
   | typeof setProjectUsersLoader
-  | typeof assignUserPermissionsForProject
-  | typeof unassignUserPermissionsForProject
+  | typeof assignUserPermissionForProject
+  | typeof unassignUserPermissionForProject
   | typeof getUserPermissionsForProject
   | typeof getMyPermissionsForProject
   | typeof setStateUserPermissions

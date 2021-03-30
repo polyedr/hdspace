@@ -15,6 +15,7 @@ export const apiAssignUserPermission = (
     ...axiosProps,
     url: '/projects/permissions-projects-assign/',
     method: 'POST',
+    contentType: 'application/json',
     data: {
       username,
       projectid: projectId,
@@ -47,6 +48,28 @@ export const apiUnassignUserPermission = (
     .catch(handleError);
 };
 
+export const apiSetUserPermissionsForProject = (
+  props: MyAxiosProps & {
+    username: string;
+    projectId: number;
+    permissions: UserProjectPermission[];
+  },
+) => {
+  const { username, projectId, permissions, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    url: '/projects/permissionsmap-projects-assign/',
+    method: 'POST',
+    data: {
+      username,
+      projectid: projectId,
+      permissions,
+    },
+  })
+    .then((res) => res.data)
+    .catch(handleError);
+};
+
 export const apiGetPermissionsList = (
   props: MyAxiosProps & {
     username: string;
@@ -60,7 +83,7 @@ export const apiGetPermissionsList = (
     method: 'POST',
     data: {
       username,
-      projectId,
+      projectid: projectId,
     },
   })
     .then((res) => ({ permissions: res.data }))
@@ -71,7 +94,6 @@ export const apiGetAllUsersPermissionsForProject = (
   props: MyAxiosProps & { projectId: number },
 ) => {
   const { projectId, ...axiosProps } = props;
-  console.log('PROJECT ID!!', projectId);
   return myAxios({
     ...axiosProps,
     url: '/projects/permissions-allusers-display/',

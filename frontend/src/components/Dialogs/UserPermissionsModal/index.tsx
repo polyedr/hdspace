@@ -18,8 +18,7 @@ type Props = {
 const useStyles = makeStyles({
   dialog: {
     minWidth: 640,
-    maxHeight: 480,
-    minHeight: 400,
+    minHeight: 500,
   },
 });
 

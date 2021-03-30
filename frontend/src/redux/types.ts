@@ -40,11 +40,10 @@ import TYPES from './actionTypes';
 
 export type PermissionsState = {
   usersPermissionsListData: PaginatedData<UserData> & { search: string };
-  allProjectsUsersPermissions: {
+  allUsersProjectPermissions: {
     loading: boolean;
-    data: {
-      [id: number]: PermissionsUserData[]; // use projectId as key
-    };
+    projectId: number | null;
+    data: Normalized<PermissionsUserData & { id: string }>; // use userId as key
   };
   currentUserProjectPermissions: Array<UserProjectPermission>;
 };
