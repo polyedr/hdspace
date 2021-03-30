@@ -21,6 +21,7 @@ const useStyles = makeStyles({
 
 const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const classes = useStyles();
   const videoSettings = useSelector(
@@ -85,6 +86,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
           margin="dense"
           fullWidth
           multiline
+          disabled={!canEdit}
         />
 
         {!isValidLink && <p>Enter the URL of another player</p>}
@@ -107,6 +109,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
                   name="loop"
                   checked={loop}
                   onChange={handleLoopCheckboxChange}
+                  disabled={!canEdit}
                 />
               }
               label="Loop"
@@ -121,6 +124,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
               label="Start"
               margin="dense"
               className={classes.text}
+              disabled={!canEdit}
             />
 
             <StyledTextField
@@ -130,6 +134,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
               label="End"
               margin="dense"
               className={classes.text}
+              disabled={!canEdit}
             />
           </div>
 
@@ -140,6 +145,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
                 name="show related videos"
                 checked={rel}
                 onChange={handleRelCheckboxChange}
+                disabled={!canEdit}
               />
             }
             label="Show only channel related videos"

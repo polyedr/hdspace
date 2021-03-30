@@ -5,7 +5,10 @@ import { useSelector } from 'react-redux';
 import { StyledTextField } from '@Components/styledComponents';
 import useDebouncedChange from '@Utils/useDeboucedChange';
 
-const Title: FC<PropertiesChangeProps<ImageElement>> = ({ updateParams }) => {
+const Title: FC<PropertiesChangeProps<ImageElement>> = ({
+  updateParams,
+  canEdit,
+}) => {
   const title = useSelector(selectActiveElementParamByName('title'));
 
   const [state, handleChange] = useDebouncedChange(title, (value) =>
@@ -21,6 +24,7 @@ const Title: FC<PropertiesChangeProps<ImageElement>> = ({ updateParams }) => {
       margin="dense"
       fullWidth
       multiline
+      disabled={!canEdit}
     />
   );
 };

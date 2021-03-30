@@ -5,7 +5,11 @@ import { updateElement } from '@Redux/project/actions';
 import { StyledTextField } from '@Components/styledComponents';
 import useDebouncedChange from '@Utils/useDeboucedChange';
 
-const RenameElement: React.FC = () => {
+type Props = {
+  canEdit: boolean;
+};
+
+const RenameElement: React.FC<Props> = ({ canEdit }) => {
   const dispatch = useDispatch();
 
   const { name, id } = useSelector(selectActiveElement);
@@ -23,6 +27,7 @@ const RenameElement: React.FC = () => {
       label="Name"
       value={state}
       onChange={handleChange}
+      disabled={!canEdit}
     />
   );
 };

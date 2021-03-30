@@ -33,7 +33,7 @@ import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { Normalized, StateElement } from '@Src/types';
+import { Normalized, StateElement, UserProjectPermission } from '@Src/types';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   selectActiveElementId,
@@ -44,6 +44,7 @@ import {
 import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import ELEMENT_IDS from '@Constants/elementIds';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -84,6 +85,9 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
   const masterCoreChildIds = useSelector(
     selectTreeChildElementsIds(masterCoreElementId),
+  );
+  const canEdit = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
 
   const initialState: State = {
@@ -198,7 +202,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           select(selectedItemId);
         }
 
-        if (e.keyCode === 32 && !coreElementSelected) {
+        if (e.keyCode === 32 && !coreElementSelected && canEdit) {
           // Space
           setIsDragging((state) => !state);
         }
@@ -206,7 +210,8 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         if (
           e.keyCode === 67 &&
           (e.ctrlKey || e.metaKey) &&
-          !coreElementSelected
+          !coreElementSelected &&
+          canEdit
         ) {
           // Ctrl/Cmd + C
           dispatch(copyActiveElement());
@@ -215,7 +220,8 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         if (
           e.keyCode === 86 &&
           (e.ctrlKey || e.metaKey) &&
-          !coreElementSelected
+          !coreElementSelected &&
+          canEdit
         ) {
           // Ctrl/Cmd + V
           dispatch(pasteCopiedElement({ screenId: currentScreenId }));
@@ -223,7 +229,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
 
         if (
           e.keyCode === 46 ||
-          (e.keyCode === 8 && e.metaKey && !coreElementSelected)
+          (e.keyCode === 8 && e.metaKey && !coreElementSelected && canEdit)
         ) {
           // Delete or Cmd + Backspace
           const prevItemId = findPrevNodeId(tree, selectedItemId);
@@ -245,6 +251,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       }
     },
     [
+      canEdit,
       collapse,
       coreElementSelected,
       currentScreenId,
@@ -368,14 +375,14 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
             onDragEnd={dragEnd}
             offsetPerLevel={OFFSET}
             isDragEnabled={(item) =>
-              !NOT_DRAGGABLE_COMPONENTS.includes(item.data.type)
+              !NOT_DRAGGABLE_COMPONENTS.includes(item.data.type) && canEdit
             }
             isNestingEnabled
           />
         </div>
       </Scrollbar>
 
-      {state.item && !coreElementSelected && (
+      {state.item && !coreElementSelected && canEdit && (
         <ContextMenu
           open={state.mouseY !== null}
           anchorPosition={

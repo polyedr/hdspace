@@ -22,6 +22,7 @@ const Display: React.FC<Props> = ({
   justifyContent,
   alignItems,
   masterScreenEnabled,
+  canEdit,
 }) => {
   const handleDisplayDropdownChange = useCallback(
     (event) => {
@@ -33,7 +34,7 @@ const Display: React.FC<Props> = ({
   return (
     <>
       <div>
-        {!masterScreenEnabled && (
+        {!masterScreenEnabled && canEdit && (
           <StylesHeader
             title="Display"
             onClick={removeStyles}
@@ -53,6 +54,7 @@ const Display: React.FC<Props> = ({
           value={display || 'initial'}
           onChange={handleDisplayDropdownChange}
           select
+          disabled={!canEdit}
         >
           {DISPLAY.map(({ value, label }) => (
             <MenuItem key={value} value={value} dense>
@@ -68,6 +70,7 @@ const Display: React.FC<Props> = ({
           justifyContent={justifyContent}
           alignItems={alignItems}
           updateStyles={updateStyles}
+          canEdit={canEdit}
         />
       )}
       {!!display && ['grid', 'inline-grid'].includes(display) && (
@@ -76,6 +79,7 @@ const Display: React.FC<Props> = ({
           justifyContent={justifyContent}
           alignItems={alignItems}
           updateStyles={updateStyles}
+          canEdit={canEdit}
         />
       )}
     </>

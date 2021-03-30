@@ -21,12 +21,14 @@ type Props = {
   currentColor: string;
   activeElementId: string;
   onChange(color: string): any;
+  disabled?: boolean;
 };
 
 const ColorSettings: React.FC<Props> = ({
   currentColor,
   activeElementId,
   onChange,
+  disabled,
 }) => {
   const classes = useStyles();
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
@@ -80,6 +82,7 @@ const ColorSettings: React.FC<Props> = ({
         onBlur={({ target: { value } }) => handleColorInputBlur(value)}
         onChange={({ target: { value } }) => handleColorChange(value)}
         margin="none"
+        disabled={disabled}
       />
 
       <div className={classes.wrapper}>

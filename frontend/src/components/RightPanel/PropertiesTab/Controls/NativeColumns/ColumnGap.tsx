@@ -29,9 +29,10 @@ const parse = (value: string | number | undefined) => {
 type Props = {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   value: React.CSSProperties['columnGap'];
+  canEdit: boolean;
 };
 
-const ColumnGap: React.FC<Props> = ({ updateStyles, value }) => {
+const ColumnGap: React.FC<Props> = ({ updateStyles, value, canEdit }) => {
   const classes = useColumnControlStyles();
   const [gap, units] = parse(value);
 
@@ -75,6 +76,7 @@ const ColumnGap: React.FC<Props> = ({ updateStyles, value }) => {
             onChange={handleGapChange}
             margin="dense"
             type="number"
+            disabled={!canEdit}
           />
 
           <StyledTextField
@@ -83,6 +85,7 @@ const ColumnGap: React.FC<Props> = ({ updateStyles, value }) => {
             label="Units"
             margin="dense"
             select
+            disabled={!canEdit}
           >
             {Object.keys(Units).map((option) => (
               <MenuItem key={option} value={option}>

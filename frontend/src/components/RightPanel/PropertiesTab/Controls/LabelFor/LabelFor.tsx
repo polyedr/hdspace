@@ -7,6 +7,7 @@ import { StyledTextField } from '@Components/styledComponents';
 
 const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const { inputsIDs, labelFor } = useSelector(selectActiveLabelInputs);
 
@@ -26,6 +27,7 @@ const LabelFor: React.FC<PropertiesChangeProps<LabelElement>> = ({
       value={labelFor || ''}
       onChange={handleDropdownChange}
       select
+      disabled={!canEdit}
     >
       {options.map(({ value, label }) => (
         <MenuItem key={value} value={value} dense>

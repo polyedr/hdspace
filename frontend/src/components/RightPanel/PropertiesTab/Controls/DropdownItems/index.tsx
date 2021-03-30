@@ -66,6 +66,7 @@ const DropdownItems: React.FC<Props> = ({
   updateParams,
   addChildToElement,
   deleteChildFromElement,
+  canEdit,
 }) => {
   const classes = useStyles();
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -91,18 +92,21 @@ const DropdownItems: React.FC<Props> = ({
           updateParams={updateParams}
           deleteChildFromElement={deleteChildFromElement}
           isLast={dropdownItems.length <= 1}
+          canEdit={canEdit}
         />
       ))}
 
-      <div className={classes.row}>
-        <IconButton
-          onClick={handleAddButtonClick}
-          title="Add new item"
-          className={classes.iconButton}
-        >
-          <AddIcon />
-        </IconButton>
-      </div>
+      {canEdit && (
+        <div className={classes.row}>
+          <IconButton
+            onClick={handleAddButtonClick}
+            title="Add new item"
+            className={classes.iconButton}
+          >
+            <AddIcon />
+          </IconButton>
+        </div>
+      )}
     </div>
   );
 };

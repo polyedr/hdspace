@@ -8,6 +8,7 @@ import useDebouncedChange from '@Utils/useDeboucedChange';
 
 const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const name = useSelector(
     (state: AppReduxState) => selectActiveElementParams(state).name,
@@ -26,6 +27,7 @@ const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
       margin="dense"
       fullWidth
       multiline
+      disabled={!canEdit}
     />
   );
 };

@@ -30,6 +30,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const SelectOptions: React.FC<PropertiesChangeProps<OptionElement>> = ({
   updateParams,
   activeElementId,
+  canEdit,
 }) => {
   const options = useSelector(selectActiveItemChildren('option'));
   const dispatch = useDispatch();
@@ -64,18 +65,21 @@ const SelectOptions: React.FC<PropertiesChangeProps<OptionElement>> = ({
           updateParams={updateParams}
           id={id}
           isLast={options.length <= 1}
+          canEdit={canEdit}
         />
       ))}
 
-      <div className={classes.row}>
-        <IconButton
-          onClick={handleAddButtonClick}
-          title="Add new option"
-          className={classes.iconButton}
-        >
-          <AddIcon />
-        </IconButton>
-      </div>
+      {canEdit && (
+        <div className={classes.row}>
+          <IconButton
+            onClick={handleAddButtonClick}
+            title="Add new option"
+            className={classes.iconButton}
+          >
+            <AddIcon />
+          </IconButton>
+        </div>
+      )}
     </div>
   );
 };

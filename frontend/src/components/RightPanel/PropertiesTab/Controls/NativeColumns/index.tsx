@@ -35,18 +35,35 @@ const NativeColumnsControls: React.FC<
   columnRuleColor,
   updateStyles,
   activeElementId,
+  canEdit,
 }) => {
   const classes = useStyles();
 
   return (
     <div className={classes.columnControls}>
-      <ColumnCount count={columnCount} updateStyles={updateStyles} />
+      <ColumnCount
+        count={columnCount}
+        updateStyles={updateStyles}
+        canEdit={canEdit}
+      />
 
-      <ColumnWidth value={columnWidth} updateStyles={updateStyles} />
+      <ColumnWidth
+        value={columnWidth}
+        updateStyles={updateStyles}
+        canEdit={canEdit}
+      />
 
-      <ColumnFill fill={columnFill} updateStyles={updateStyles} />
+      <ColumnFill
+        fill={columnFill}
+        updateStyles={updateStyles}
+        canEdit={canEdit}
+      />
 
-      <ColumnGap value={columnGap} updateStyles={updateStyles} />
+      <ColumnGap
+        value={columnGap}
+        updateStyles={updateStyles}
+        canEdit={canEdit}
+      />
 
       <ColumnRule
         activeElementId={activeElementId}
@@ -54,6 +71,7 @@ const NativeColumnsControls: React.FC<
         ruleStyle={columnRuleStyle}
         ruleColor={columnRuleColor}
         updateStyles={updateStyles}
+        canEdit={canEdit}
       />
     </div>
   );

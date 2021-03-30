@@ -45,6 +45,7 @@ type Props = {
   parameters: any;
   updateParams: any;
   isLast: boolean;
+  canEdit: boolean;
 };
 
 const ListItem: React.FC<Props> = ({
@@ -52,6 +53,7 @@ const ListItem: React.FC<Props> = ({
   parameters: { textContent, isLink, link },
   updateParams,
   isLast,
+  canEdit,
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -82,7 +84,7 @@ const ListItem: React.FC<Props> = ({
         <div className={classes.wrapper}>
           {textContent}
 
-          {!isLast && (
+          {!isLast && canEdit && (
             <IconButton
               title="Delete item"
               onClick={handleDeleteButtonClick}
@@ -105,6 +107,7 @@ const ListItem: React.FC<Props> = ({
           margin="dense"
           fullWidth
           multiline
+          disabled={!canEdit}
         />
 
         <FormControlLabel
@@ -114,6 +117,7 @@ const ListItem: React.FC<Props> = ({
               name="make link"
               checked={isLink}
               onChange={(event) => handleCheckboxChange(id, event)}
+              disabled={!canEdit}
             />
           }
           label="Make Link"
@@ -127,6 +131,7 @@ const ListItem: React.FC<Props> = ({
             margin="dense"
             fullWidth
             multiline
+            disabled={!canEdit}
           />
         )}
       </StyledAccordionDetails>

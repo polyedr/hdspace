@@ -13,7 +13,6 @@ import {
   selectSelectedAssetListId,
 } from '@Redux/project/selectors/asset';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
-// import getImageFromUrl from './getImageFromUrl';
 
 const urlPattern = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
 
@@ -49,7 +48,7 @@ const useStyles = makeStyles({
 
 type Props = PropertiesChangeProps<ImageElement>;
 
-const Component: React.FC<Props> = ({ activeElementId }) => {
+const Component: React.FC<Props> = ({ activeElementId, canEdit }) => {
   const classes = useStyles();
   const inputUrlRef = useRef<HTMLInputElement | null>(null);
 
@@ -135,10 +134,16 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
           }}
           id="upload-image"
           type="file"
+          disabled={!canEdit}
         />
 
         <label htmlFor="upload-image">
-          <Button variant="contained" color="primary" component="span">
+          <Button
+            variant="contained"
+            color="primary"
+            component="span"
+            disabled={!canEdit}
+          >
             Choose image
           </Button>
         </label>
@@ -149,6 +154,7 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
           type="text"
           label="Upload from URL"
           inputRef={inputUrlRef}
+          disabled={!canEdit}
         />
         <Button
           variant="contained"
@@ -158,11 +164,12 @@ const Component: React.FC<Props> = ({ activeElementId }) => {
             zIndex: 2,
           }}
           onClick={handleUploadFromUrl}
+          disabled={!canEdit}
         >
           Upload
         </Button>
       </div>
-      {assetLists.length && (
+      {assetLists.length && canEdit && (
         <div className={classes.assetListsWrapper}>
           <label htmlFor="image-asset-list">Upload image to asset list</label>
           <StyledTextField

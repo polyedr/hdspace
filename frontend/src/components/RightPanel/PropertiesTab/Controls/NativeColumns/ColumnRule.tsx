@@ -45,6 +45,7 @@ type Props = {
   ruleStyle: React.CSSProperties['columnRuleStyle'];
   ruleColor: React.CSSProperties['columnRuleColor'];
   activeElementId: PropertiesChangeProps<ColumnsElement>['activeElementId'];
+  canEdit: boolean;
 };
 
 const ColumnRule: React.FC<Props> = ({
@@ -53,6 +54,7 @@ const ColumnRule: React.FC<Props> = ({
   ruleWidth,
   ruleStyle,
   ruleColor,
+  canEdit,
 }) => {
   const classes = useStyles();
   return (
@@ -72,6 +74,7 @@ const ColumnRule: React.FC<Props> = ({
                 updateStyles({ columnRuleStyle: value })
               }
               select
+              disabled={!canEdit}
             >
               {ruleStyles.map((style) => (
                 <MenuItem
@@ -93,6 +96,7 @@ const ColumnRule: React.FC<Props> = ({
                 updateStyles({ columnRuleWidth: value })
               }
               select
+              disabled={!canEdit}
             >
               {ruleWidths.map((width) => (
                 <MenuItem
@@ -113,6 +117,7 @@ const ColumnRule: React.FC<Props> = ({
         onChange={(color: string) => {
           updateStyles({ columnRuleColor: color });
         }}
+        disabled={!canEdit}
       />
     </>
   );

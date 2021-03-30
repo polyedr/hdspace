@@ -24,6 +24,7 @@ const useStyles = makeStyles({
 
 const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   updateParams,
+  canEdit,
 }) => {
   const classes = useStyles();
 
@@ -57,6 +58,7 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
                 name={layout}
                 checked={!!layouts?.includes(layout)}
                 onChange={(ev) => handleChange(ev, layout)}
+                disabled={!canEdit}
               />
             }
             label={layout}
