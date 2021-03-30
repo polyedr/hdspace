@@ -86,7 +86,7 @@ export const apiGetPermissionsList = (
       projectid: projectId,
     },
   })
-    .then((res) => ({ permissions: res.data }))
+    .then((res) => ({ permissions: res.data.permissions }))
     .catch(handleError);
 };
 

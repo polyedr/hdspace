@@ -162,7 +162,6 @@ export function* getAllUsersProjectPermissionsSaga(
     if (error) {
       throw new Error(error);
     }
-    console.log('PERM USER DATA!!!', permUsersData);
     yield put(Actions.setStateAllUsersPermissions(projectId, permUsersData));
   } catch (e) {
     yield put(

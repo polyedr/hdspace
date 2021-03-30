@@ -22,7 +22,12 @@ import {
   toggleSelectedElement,
   updateElementParameters,
 } from '@Redux/project/actions';
-import { ElementData, StateElement, SyntheticElement } from '@Src/types';
+import {
+  ElementData,
+  StateElement,
+  SyntheticElement,
+  UserProjectPermission,
+} from '@Src/types';
 import {
   selectCurrentRootId,
   selectElementBeingEdited,
@@ -39,6 +44,7 @@ import {
   NOT_DRAGGABLE_COMPONENTS,
 } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import {
   getFlexRowDropPosition,
@@ -70,6 +76,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const screenId = useSelector(selectCurrentScreenId);
   const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
   const elementCanBeEdited = useSelector(selectElementCanBeEdited(elementId));
+  const canDragAndDrop = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
+  );
 
   const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
 
@@ -108,7 +117,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     canDrag: () =>
       !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
       elementId !== rootID &&
-      !element.parameters.sourceElementId,
+      !element.parameters.sourceElementId &&
+      canDragAndDrop,
     end: () => {
       dispatch(setCurrentDropTargetParams(null));
       dispatch(setElementBeingEdited(false));
@@ -181,7 +191,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         dragSource.original.id &&
         !parentIds.includes(dragSource.original.id);
       const allowDropConstructor = dragSource.type === ElementType.CONSTRUCTOR;
-      return isOverCurrent && (allowDropElement || allowDropConstructor);
+      return (
+        isOverCurrent &&
+        (allowDropElement || allowDropConstructor) &&
+        canDragAndDrop
+      );
     },
     collect: (monitor: DropTargetMonitor) => {
       return {

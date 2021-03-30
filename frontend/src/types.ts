@@ -618,6 +618,7 @@ export type ServerProjectWithScreens = {
   projectscreen: Screen[];
   created: string;
   updated: string;
+  user: ServerUserData;
   project_data_json: string;
   project_data_text: string;
 };
@@ -629,6 +630,7 @@ export type ServerProject = {
   projectscreen: number[];
   created: string;
   updated: string;
+  user: ServerUserData;
   project_data_json: string;
   project_data_text: string;
 };
@@ -652,6 +654,7 @@ export type Project = {
   created: Date;
   updated: Date;
   projectData: ProjectData;
+  user: UserData;
 };
 
 export type ProjectWithScreens = {
@@ -665,6 +668,7 @@ export type ProjectWithScreens = {
     classes: ProjectClass[];
   };
   projectscreen: Screen[];
+  user: UserData;
 };
 
 export type StateElement = {

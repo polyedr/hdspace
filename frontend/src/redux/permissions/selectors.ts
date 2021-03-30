@@ -1,4 +1,5 @@
 import { AppReduxState } from '@Redux/types';
+import { UserProjectPermission } from '@Src/types';
 
 export const selectUsersForProject = ({ permissions }: AppReduxState) =>
   permissions.usersPermissionsListData.results;
@@ -53,4 +54,11 @@ export const selectCurrentUserProjectPermissions = ({
   permissions,
 }: AppReduxState) => {
   return permissions.currentUserProjectPermissions;
+};
+
+export const selectIfCurrentUserHasPermission = (
+  permission: UserProjectPermission,
+) => (state: AppReduxState) => {
+  const permissions = selectCurrentUserProjectPermissions(state);
+  return permissions.includes(permission);
 };

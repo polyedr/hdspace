@@ -5,6 +5,9 @@ import {
   ElementGroup,
   Layout,
   UserProjectPermission,
+  UserData,
+  ProfileData,
+  Experience,
 } from '../types';
 import getDefaultStyles from '../utils/getDefaultStyles';
 
@@ -20,6 +23,27 @@ export const MIN_LONGITUDE = -180;
 export const MAX_LONGITUDE = 180;
 export const MIN_MAP_ZOOM = 1;
 export const MAX_MAP_ZOOM = 18;
+
+export const DEFAULT_USER_PROFILE: ProfileData = {
+  avatar: null,
+  approved: false,
+  role: '',
+  hourlyRate: -1,
+  id: -1,
+  experienced: Experience.BEGINNER,
+};
+
+export const DEFAULT_USER: UserData = {
+  id: -1,
+  username: '',
+  email: '',
+  firstName: '',
+  lastName: '',
+  dateJoined: null,
+  isActive: false,
+  password: '',
+  profile: DEFAULT_USER_PROFILE,
+};
 
 export const DEFAULT_PROJECT: Project = {
   id: -1,
@@ -38,6 +62,7 @@ export const DEFAULT_PROJECT: Project = {
       },
     ],
   },
+  user: DEFAULT_USER,
 };
 
 export const DEFAULT_ROOT: LibraryElement<'root'> = {

@@ -12,10 +12,17 @@ import {
   apiGetAssetLists,
 } from '@Api/assetList';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { Asset, AssetsList, PaginatedArray } from '@Src/types';
+import {
+  Asset,
+  AssetsList,
+  PaginatedArray,
+  UserProjectPermission,
+} from '@Src/types';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
+import { compose } from 'redux';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -136,9 +143,13 @@ export function* loadAssetListsSaga() {
   }
 }
 
-export const addNewAssetListSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.addAssetList>,
-) {
+export const addNewAssetListSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.addAssetList>) {
   const { name } = action.payload;
   const projectId = yield select(selectCurrentProjectId);
   const useHistory = !!action.meta && action.meta.useHistory;
@@ -175,9 +186,13 @@ export const addNewAssetListSaga = withActionsHistory(function* (
   }
 });
 
-export const removeAssetListSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.removeAssetList>,
-) {
+export const removeAssetListSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.removeAssetList>) {
   try {
     const assetList = yield select(selectAssetListById);
     const useHistory = !!action.meta && action.meta.useHistory;
@@ -238,9 +253,13 @@ export const restoreAssetSaga = withActionsHistory(function* (
   }
 });
 
-export const removeAssetSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.removeAsset>,
-) {
+export const removeAssetSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.removeAsset>) {
   const {
     meta,
     payload: { id, listId },
@@ -269,9 +288,13 @@ export const removeAssetSaga = withActionsHistory(function* (
   }
 });
 
-export const uploadAssetSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.uploadAsset>,
-) {
+export const uploadAssetSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.uploadAsset>) {
   const { listId, assetFile } = action.payload;
 
   let assetListId = listId;
@@ -307,9 +330,10 @@ export const uploadAssetSaga = withActionsHistory(function* (
   }
 });
 
-export function* uploadElementAssetSaga(
-  action: ReturnType<typeof Actions.uploadElementAsset>,
-) {
+export const uploadElementAssetSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.uploadElementAsset>) {
   if (!action.meta) {
     console.error(
       `You have to provide metainformation for action ${action.type}`,
@@ -354,4 +378,4 @@ export function* uploadElementAssetSaga(
       ),
     );
   }
-}
+});

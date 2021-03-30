@@ -24,9 +24,11 @@ import {
   ProjectWithScreens,
   Result,
   Screen,
+  UserProjectPermission,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -375,7 +377,10 @@ export function* deleteProjectSaga({
   }
 }
 
-export function* renameProjectSaga({
+export const renameProjectSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
   try {
@@ -408,7 +413,7 @@ export function* renameProjectSaga({
       ),
     );
   }
-}
+});
 
 export function* updateProjectSaga(
   action: ReturnType<typeof Actions.updateProject>,

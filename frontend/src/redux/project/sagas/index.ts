@@ -8,6 +8,7 @@ import {
   LibraryElement,
   Normalized,
   StateElement,
+  UserProjectPermission,
 } from '@Src/types';
 import {
   activateScreenSaga,
@@ -27,6 +28,8 @@ import {
   unassignUserPermissionSaga,
   updateUserPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import { compose } from 'redux';
 import {
   moveElementSaga,
   removeElementStylesSaga,
@@ -106,9 +109,13 @@ import {
 import withActionsHistory from '../wrappers/withActionsHistory';
 import { recognizeImageSaga, uploadFileSaga } from './nn';
 
-const removeSharedStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.removeSharedStyles>,
-) {
+const removeSharedStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.removeSharedStyles>) {
   const { className, cssPropertiesNames } = action.payload;
 
   if (!action.meta) {
@@ -142,9 +149,13 @@ const removeSharedStylesSaga = withActionsHistory(function* (
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 
-const updateSharedStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.updateSharedStyles>,
-) {
+const updateSharedStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateSharedStyles>) {
   const { className, styles } = action.payload;
 
   if (!action.meta) {
@@ -174,7 +185,10 @@ const updateSharedStylesSaga = withActionsHistory(function* (
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 
-function* copyActiveElementSaga() {
+const copyActiveElementSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* () {
   try {
     const { id: activeItemID, name }: StateElement = yield select(
       selectActiveElement,
@@ -196,11 +210,12 @@ function* copyActiveElementSaga() {
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
     );
   }
-}
+});
 
-function* duplicateScreenSaga(
-  action: ReturnType<typeof Actions.duplicateScreen>,
-) {
+const duplicateScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.duplicateScreen>) {
   try {
     const { name, screenID } = action.payload;
 
@@ -262,12 +277,15 @@ function* duplicateScreenSaga(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
     );
   }
-}
+});
 
-const pasteCopiedElementSaga = withActionsHistory(function* ({
-  type,
-  meta,
-}: ReturnType<typeof Actions.pasteCopiedElement>) {
+const pasteCopiedElementSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* ({ type, meta }: ReturnType<typeof Actions.pasteCopiedElement>) {
   try {
     if (!meta) {
       console.error(`You have to provide metainformation for action ${type}`);

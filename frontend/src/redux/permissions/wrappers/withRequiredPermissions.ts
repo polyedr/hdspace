@@ -4,10 +4,10 @@ import { UserProjectPermission } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { selectCurrentUserProjectPermissions } from '../selectors';
 
-const withRequiredPermissions = (permissions: UserProjectPermission[]) => (
+const withRequiredPermissions = (...permissions: UserProjectPermission[]) => (
   fn: any,
-) => {
-  return function* (action: Action) {
+) =>
+  function* (action?: Action) {
     const userPermissions = yield select(selectCurrentUserProjectPermissions);
     const allowToExecute = permissions.reduce((predefinedPerms, perm) => {
       return predefinedPerms && userPermissions.includes(perm);
@@ -21,9 +21,9 @@ const withRequiredPermissions = (permissions: UserProjectPermission[]) => (
       );
       return;
     }
+    const result = yield call(fn, action);
     // eslint-disable-next-line consistent-return
-    return call(fn, action);
+    return result;
   };
-};
 
 export default withRequiredPermissions;

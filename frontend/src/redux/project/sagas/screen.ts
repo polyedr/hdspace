@@ -24,8 +24,11 @@ import {
   Screen,
   ServerElement,
   StateElement,
+  UserProjectPermission,
 } from '@Src/types';
 import generateUniqueName from '@Utils/generateUniqueName';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import { compose } from 'redux';
 import * as Actions from '../actions';
 import {
   activateScreen,
@@ -59,9 +62,10 @@ import {
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
 import withActionsHistory from '../wrappers/withActionsHistory';
 
-export function* activateScreenSaga({
-  payload: { screenId },
-}: ReturnType<typeof activateScreen>) {
+export const activateScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({ payload: { screenId } }: ReturnType<typeof activateScreen>) {
   try {
     const currentScreenId = yield select(selectCurrentScreenId);
     if (currentScreenId === screenId) return;
@@ -92,12 +96,17 @@ export function* activateScreenSaga({
   } finally {
     yield put(setScreenLoader(false));
   }
-}
+});
 
 // eslint-disable-next-line consistent-return
-export const createScreenSaga = withActionsHistory(function* (
-  action: ReturnType<typeof createScreen>,
-) {
+export const createScreenSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+  // eslint-disable-next-line consistent-return
+)(function* (action: ReturnType<typeof createScreen>) {
   const { payload } = action;
   const useHistory = action.meta?.useHistory;
   try {
@@ -289,9 +298,10 @@ async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return dataBlob;
 }
 
-export function* updateScreenImageSaga({
-  payload: { screenId },
-}: ReturnType<typeof updateScreenImage>) {
+export const updateScreenImageSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({ payload: { screenId } }: ReturnType<typeof updateScreenImage>) {
   try {
     yield put(setUpdateImageLoader(true));
 
@@ -353,9 +363,15 @@ export function* updateScreenImageSaga({
   } finally {
     yield put(setUpdateImageLoader(false));
   }
-}
+});
 
-export const deleteScreenSaga = withActionsHistory(function* ({
+export const deleteScreenSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* ({
   payload: { projectId, screenId },
   meta,
   type,
@@ -529,9 +545,10 @@ export const restoreScreenSaga = withActionsHistory(function* ({
   }
 });
 
-export function* renameScreenSaga({
-  payload,
-}: ReturnType<typeof renameScreen>) {
+export const renameScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({ payload }: ReturnType<typeof renameScreen>) {
   try {
     const { screenID, name } = payload;
 
@@ -578,7 +595,7 @@ export function* renameScreenSaga({
       ),
     );
   }
-}
+});
 
 export function* getScreensSaga(screens: Screen[]) {
   try {
@@ -627,9 +644,10 @@ export function* getScreensSaga(screens: Screen[]) {
   }
 }
 
-export function* changeScreensOrderSaga(
-  action: ReturnType<typeof Actions.changeScreensOrder>,
-) {
+export const changeScreensOrderSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.changeScreensOrder>) {
   try {
     const { screens } = action.payload;
 
@@ -668,9 +686,12 @@ export function* changeScreensOrderSaga(
       ),
     );
   }
-}
+});
 
-export function* convertFreeCanvasSaga() {
+export const convertFreeCanvasSaga = compose(
+  withRequiredPermissions(UserProjectPermission.VIEW_PROJECT),
+  withActionsHistory,
+)(function* () {
   try {
     const rootElement: LibraryElement<'root'> = yield select(
       selectCurrentRootElement,
@@ -732,4 +753,4 @@ export function* convertFreeCanvasSaga() {
       ),
     );
   }
-}
+});
