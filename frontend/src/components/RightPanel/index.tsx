@@ -9,9 +9,10 @@ import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
 } from '@Src/styles/Theme';
-import { RPTab } from '@Src/types';
+import { RPTab, UserProjectPermission } from '@Src/types';
 import {
   selectActiveElement,
+  selectActiveElementId,
   selectMasterCoreElementId,
   selectMasterGroupsElementId,
 } from '@Redux/project/selectors/element';
@@ -23,6 +24,7 @@ import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
 import { CORE_MASTER_ELEMENTS_IDS } from '@Components/Editor/MasterScreen/coreElements';
 import ELEMENT_IDS from '@Constants/elementIds';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import AssetsSection from './Assets';
@@ -92,12 +94,16 @@ const tabContent: Record<RPTab, any> = {
 const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
+  const activeElementId = useSelector(selectActiveElementId);
 
   const classes = useStyles({ open: !isPrototypeMode });
   const tabClasses = useTabStyles();
   const tabsClasses = useTabsStyles();
   const masterCoreElId = useSelector(selectMasterCoreElementId);
   const masterGroupsElId = useSelector(selectMasterGroupsElementId);
+  const canEditProject = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
+  );
 
   const [tabs, setTabs] = useState(defaultTabs);
 
@@ -111,26 +117,27 @@ const RightPanel: React.FC = () => {
     const isFertile = canElementHaveAllChildren(activeElement.type);
 
     let newTabs = defaultTabs;
-    if (!isInteractive) {
+    if (!isInteractive || !canEditProject) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
     }
     if (
       !isFertile ||
       [masterCoreElId, masterGroupsElId, ...CORE_MASTER_ELEMENTS_IDS].includes(
         activeElement.id,
-      )
+      ) ||
+      !canEditProject
     ) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Elements);
     }
 
     setTabs(newTabs);
-  }, [activeElement]);
+  }, [activeElement, canEditProject, masterCoreElId, masterGroupsElId]);
 
   useEffect(() => {
     if (
       KEEP_RP_TAB_ELEMENTS.includes(activeElement.type) &&
       ![masterCoreElId, masterGroupsElId, ...CORE_MASTER_ELEMENTS_IDS].includes(
-        activeElement.id,
+        activeElementId,
       )
     ) {
       const index = tabs.indexOf(RPTab.Elements);
@@ -139,7 +146,13 @@ const RightPanel: React.FC = () => {
         setActiveTabIndex(index);
       }
     }
-  }, [tabs, activeElement.type]);
+  }, [
+    tabs,
+    activeElement.type,
+    activeElementId,
+    masterCoreElId,
+    masterGroupsElId,
+  ]);
 
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {
     setActiveTabIndex(index);

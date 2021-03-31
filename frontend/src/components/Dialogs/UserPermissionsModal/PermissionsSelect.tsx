@@ -41,11 +41,18 @@ const PermissionsSelect: React.FC<Props> = (props: Props) => {
   const handlePermissionManagement = (
     newPermissions: UserProjectPermission[],
   ) => {
+    const updatedPermissions = [...newPermissions];
+    if (
+      updatedPermissions.includes(UserProjectPermission.CHANGE_PROJECT) &&
+      !updatedPermissions.includes(UserProjectPermission.VIEW_PROJECT)
+    ) {
+      updatedPermissions.push(UserProjectPermission.VIEW_PROJECT);
+    }
     dispatch(
       Actions.updateUserPermissionsForProject(
         projectId,
         userId,
-        newPermissions,
+        updatedPermissions,
       ),
     );
   };
@@ -77,8 +84,21 @@ const PermissionsSelect: React.FC<Props> = (props: Props) => {
     >
       {EDITABLE_USER_PERMISSIONS.map((perm) => {
         return (
-          <MenuItem key={`permission-${perm}`} value={perm}>
-            <Checkbox checked={permissions.includes(perm)} />
+          <MenuItem
+            key={`permission-${perm}`}
+            value={perm}
+            disabled={
+              permissions.includes(UserProjectPermission.CHANGE_PROJECT) &&
+              perm === UserProjectPermission.VIEW_PROJECT
+            }
+          >
+            <Checkbox
+              checked={permissions.includes(perm)}
+              disabled={
+                permissions.includes(UserProjectPermission.CHANGE_PROJECT) &&
+                perm === UserProjectPermission.VIEW_PROJECT
+              }
+            />
             <ListItemText primary={PERMISSION_LABELS[perm]} />
           </MenuItem>
         );
