@@ -94,6 +94,8 @@ export type ProjectEditState = {
     regions: Normalized<VIARegion>;
     activeRegionId: string;
     annotatedElementId: string;
+    annotatedImageURL: string;
+    copiedRegion: VIARegion | null;
   };
   freeCanvas: {
     enabled: boolean;
@@ -995,7 +997,10 @@ export type SetActiveVIARegion = IAction<
 
 export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
 
-export type DeleteVIARegion = IAction<typeof TYPES.DELETE_VIA_REGION, string>;
+export type DeleteVIARegion = IAction<
+  typeof TYPES.DELETE_VIA_REGION,
+  string | undefined
+>;
 
 export type SetAnnotatedElement = IAction<
   typeof TYPES.SET_ANNOTATED_ELEMENT_ID,
@@ -1007,7 +1012,16 @@ export type UpdateVIARegionLayer = IAction<
   { regionId: string; layer: number }
 >;
 
+export type SetAnnotatedImageURL = IAction<
+  typeof TYPES.SET_ANNOTATED_IMAGE_URL,
+  string
+>;
+
 export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
+
+export type CopyVIARegion = IPlainAction<typeof TYPES.COPY_VIA_REGION>;
+
+export type PasteVIARegion = IPlainAction<typeof TYPES.PASTE_VIA_REGION>;
 
 export type SetNewScreenModal = IAction<
   typeof TYPES.SET_NEW_SCREEN_MODAL,
@@ -1169,7 +1183,10 @@ export type Action =
   | SetAnnotatedElement
   | UpdateVIARegionLayer
   | FinishAnnotaion
-  | SetNewScreenModal;
+  | SetNewScreenModal
+  | SetAnnotatedImageURL
+  | CopyVIARegion
+  | PasteVIARegion;
 
 export type HistoryMeta = {
   useHistory?: boolean;

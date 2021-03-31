@@ -86,6 +86,10 @@ export const recognizeImageSaga = compose(
       );
       yield put(Actions.setAnnotatedElementId(parentId));
 
+      const url = URL.createObjectURL(file.file);
+
+      yield put(Actions.setAnnotatedImageURL(url));
+
       yield put(Actions.setVIAMode(true));
 
       yield put(Actions.setAnalyzerLoader(false));

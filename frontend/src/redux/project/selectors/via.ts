@@ -33,3 +33,9 @@ export const selectAnnotatedElement = createSelector(
   selectAnnotatedElementId,
   (elements, id) => elements[id],
 );
+
+export const selectAnnotatedImageURL = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.annotatedImageURL;
+
+export const selectCopiedVIARegion = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.copiedRegion;

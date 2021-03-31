@@ -1,7 +1,13 @@
 import { makeStyles } from '@material-ui/core';
-import { setActiveVIARegion } from '@Redux/project/actions';
 import {
-  selectAnnotatedElement,
+  copyVIARegion,
+  deleteVIARegion,
+  pasteVIARegion,
+  setActiveVIARegion,
+} from '@Redux/project/actions';
+import { useHotkeys as useShortcut } from 'react-hotkeys-hook';
+import {
+  selectAnnotatedImageURL,
   selectVIARegionsAsArray,
 } from '@Redux/project/selectors/via';
 import React, { FC } from 'react';
@@ -9,9 +15,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Region from './Region';
 
 const useStyles = makeStyles({
-  root: {
+  viaRoot: {
     padding: '0.5em',
     flex: '1 1',
+    flexDirection: 'column',
+    overflow: 'auto',
+    display: 'block',
   },
   canvas: {
     position: 'relative',
@@ -22,18 +31,31 @@ const useStyles = makeStyles({
 const VIA: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
   const regions = useSelector(selectVIARegionsAsArray);
-  const annotatedElement = useSelector(selectAnnotatedElement);
+  const annotatedImageURL = useSelector(selectAnnotatedImageURL);
 
-  if (!annotatedElement) return null;
+  const handleCopy = () => {
+    dispatch(copyVIARegion());
+  };
+
+  const handlePaste = () => {
+    dispatch(pasteVIARegion());
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteVIARegion());
+  };
+
+  useShortcut('ctrl+c, command+c', handleCopy);
+  useShortcut('ctrl+v, command+v', handlePaste);
+  useShortcut('delete, command+backspace', handleDelete);
 
   const handleClick = () => dispatch(setActiveVIARegion(''));
 
   return (
-    <div className={classes.root}>
+    <div className={classes.viaRoot}>
       <div onClick={handleClick} className={classes.canvas}>
-        <img src={annotatedElement.parameters.imageURL} alt="annotated" />
+        <img src={annotatedImageURL} alt="annotated" />
 
         {regions.map((region) => (
           <Region key={region.id} region={region} />
