@@ -5,17 +5,14 @@ import { PaginatedResponse, Result, UserData } from '@Src/types';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { apiGetUsers } from '@Api/user';
 import {
-  // apiAssignUserPermission,
   apiGetAllUsersPermissionsForProject,
   apiGetPermissionsList,
   apiSetUserPermissionsForProject,
-  // apiUnassignUserPermission,
 } from '@Api/permissions';
 import { selectUserData } from '@Redux/user/selectors';
 import {
   selectUserFromAllUsers,
   selectUserFromProjectUsers,
-  // selectUserPermissions,
   selectUsersNext,
   selectUsersSearchValue,
 } from './selectors';
@@ -59,93 +56,6 @@ export function* getUsersSaga(action: ReturnType<typeof Actions.getUsersList>) {
     );
   }
 }
-
-/* export function* assignUserPermissionSaga(
-  action: ReturnType<typeof Actions.assignUserPermissionForProject>,
-) {
-  const { userId, projectId, permission } = action.payload;
-  try {
-    const userPermissions = yield select(selectUserPermissions(userId));
-    if (userPermissions.includes(permission)) {
-      return;
-    }
-    const user = yield select(selectUserForProject(userId));
-    if (!user) {
-      yield put(
-        enqueueSnackbar({
-          message: 'User not found',
-          options: { variant: 'error' },
-        }),
-      );
-      return;
-    }
-    /* yield put(
-      Actions.setStateUserPermissions(user, [...userPermissions, permission]),
-    );
-    const { error } = yield call(reqWrapper, apiAssignUserPermission, {
-      username: user.username,
-      projectId,
-      permission,
-    });
-    if (error) {
-      throw new Error(error);
-    }
-  } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
-  }
-}
-
-export function* unassignUserPermissionSaga(
-  action: ReturnType<typeof Actions.unassignUserPermissionForProject>,
-) {
-  try {
-    const { userId, projectId, permission } = action.payload;
-    const userPermissions = yield select(selectUserPermissions(userId));
-    if (!userPermissions.includes(permission)) {
-      return;
-    }
-    const user = yield select(selectUserForProject(userId));
-    if (!user) {
-      yield put(
-        enqueueSnackbar({
-          message: 'User not found',
-          options: { variant: 'error' },
-        }),
-      );
-      return;
-    }
-    /* const newPermissions = [
-      ...userPermissions.filter((perm) => perm !== permission),
-    ];
-    yield put(Actions.setStateUserPermissions(user, newPermissions)); 
-    const { error } = yield call(reqWrapper, apiUnassignUserPermission, {
-      username: user.username,
-      projectId,
-      permission,
-    });
-    if (error) {
-      throw new Error(error);
-    }
-  } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
-  }
-} */
 
 export function* getAllUsersProjectPermissionsSaga(
   action: ReturnType<typeof Actions.getAllUsersProjectPermissions>,

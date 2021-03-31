@@ -930,11 +930,6 @@ export enum UserProjectPermission {
   CHANGE_PROJECT = 'change_project',
 }
 
-/* export type PermissionListItem = {
-  label: string;
-  permissions: UserProjectPermission | UserProjectPermission[];
-}; */
-
 export type PermissionsUserData = {
   permissions: UserProjectPermission[];
   userData: UserData;

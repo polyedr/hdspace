@@ -3,51 +3,6 @@ import { MyAxiosProps, UserProjectPermission } from '@Src/types';
 import { convertPermissionsUserDataFromResponse } from './converters/permissions/fromResponse';
 import { handleError } from './helper';
 
-export const apiAssignUserPermission = (
-  props: MyAxiosProps & {
-    username: string;
-    projectId: number;
-    permission: UserProjectPermission;
-  },
-) => {
-  const { username, projectId, permission, ...axiosProps } = props;
-  return myAxios({
-    ...axiosProps,
-    url: '/projects/permissions-projects-assign/',
-    method: 'POST',
-    contentType: 'application/json',
-    data: {
-      username,
-      projectid: projectId,
-      permission,
-    },
-  })
-    .then((res) => res.data)
-    .catch(handleError);
-};
-
-export const apiUnassignUserPermission = (
-  props: MyAxiosProps & {
-    username: string;
-    projectId: number;
-    permission: UserProjectPermission;
-  },
-) => {
-  const { username, projectId, permission, ...axiosProps } = props;
-  return myAxios({
-    ...axiosProps,
-    url: '/projects/permissions-projects-remove/',
-    method: 'POST',
-    data: {
-      username,
-      projectId,
-      permission,
-    },
-  })
-    .then((res) => res.data)
-    .catch(handleError);
-};
-
 export const apiSetUserPermissionsForProject = (
   props: MyAxiosProps & {
     username: string;

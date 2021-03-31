@@ -171,15 +171,3 @@ export const PERMISSION_LABELS = {
   [UserProjectPermission.VIEW_PROJECT]: 'View project',
   [UserProjectPermission.CHANGE_PROJECT]: 'Change project',
 };
-
-/* export const PERMISSIONS_LIST: Array<PermissionListItem> = [
-  {label: 'Unset', permissions: []} as PermissionListItem,
-  { label: 'View project', permissions: [UserProjectPermission.VIEW_PROJECT]}
-  { [UserProjectPermission.UNSET]:  },
-  {
-    []: '',
-  } as PermissionListItem,
-  {
-    [UserProjectPermission.CHANGE_PROJECT]: 'Edit project',
-  } as PermissionListItem,
-]; */

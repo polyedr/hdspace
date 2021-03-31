@@ -6,11 +6,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
-/* import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem'; */
 import TextField from '@material-ui/core/TextField';
-/* import Checkbox from '@material-ui/core/Checkbox';
-import ListItemText from '@material-ui/core/ListItemText'; */
 import CircularProgress from '@material-ui/core/CircularProgress';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as Actions from '@Redux/permissions/actions';

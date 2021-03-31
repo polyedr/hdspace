@@ -27,7 +27,6 @@ const useStyles = makeStyles({
 });
 
 const ProjectUsersList: React.FC<Props> = ({ projectId }: Props) => {
-  // const projectUsers = useSelector(select);
   const classes = useStyles();
   const dispatch = useDispatch();
   const projectUsers = useSelector(selectAllUsersPermissions);
