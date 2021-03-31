@@ -17,6 +17,7 @@ const useStyles = makeStyles({
 
 const Ripple: React.FC<PropertiesChangeProps<ButtonElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const classes = useStyles();
   const showRipple = useSelector(
@@ -31,7 +32,11 @@ const Ripple: React.FC<PropertiesChangeProps<ButtonElement>> = ({
     <div className={classes.wrapper}>
       <FormControlLabel
         control={
-          <Switch checked={showRipple || false} onChange={handleSwitchChange} />
+          <Switch
+            checked={showRipple || false}
+            onChange={handleSwitchChange}
+            disabled={!canEdit}
+          />
         }
         label="Show Ripple"
       />

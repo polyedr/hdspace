@@ -17,7 +17,11 @@ type StateProps = {
 
 type Props = StateProps & PropertiesChangeProps<HeadingElement>;
 
-const HeadingType: React.FC<Props> = ({ updateParams, updateStyles }) => {
+const HeadingType: React.FC<Props> = ({
+  updateParams,
+  updateStyles,
+  canEdit,
+}) => {
   const headingType = useSelector(
     (state: AppReduxState) => selectActiveElementParams(state).headingType,
   );
@@ -36,6 +40,7 @@ const HeadingType: React.FC<Props> = ({ updateParams, updateStyles }) => {
       onChange={handleDropdownChange}
       value={headingType || 'h3'}
       select
+      disabled={!canEdit}
     >
       {HEADING_TYPE.map(({ label, value }) => (
         <MenuItem value={value} key={value} dense>

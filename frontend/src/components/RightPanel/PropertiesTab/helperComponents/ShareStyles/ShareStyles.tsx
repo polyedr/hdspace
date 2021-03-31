@@ -13,6 +13,8 @@ import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { AppReduxState } from '@Redux/types';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { UserProjectPermission } from '@Src/types';
 import EditableStyles from '../EditableStyles/EditableStyles';
 
 const useStyles = makeStyles(({ spacing }) => ({
@@ -91,6 +93,9 @@ const ShareStyles: React.FC<Props> = ({
   elementClassNames,
 }) => {
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const canEditProject = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
+  );
 
   const handleCopyButtonClick = () =>
     activeElement &&
@@ -120,7 +125,7 @@ const ShareStyles: React.FC<Props> = ({
     activeElement && Object.keys(activeElement.styles.ownStyles).length;
   const isElementHasSharedClassName = activeElement?.styles.classNames?.[1];
   const disableShareButton =
-    !isElementHasOwnStyles || isElementHasSharedClassName;
+    !isElementHasOwnStyles || isElementHasSharedClassName || !canEditProject;
 
   const classes = useStyles();
 
@@ -144,7 +149,7 @@ const ShareStyles: React.FC<Props> = ({
               variant="outlined"
               className={classes.chip}
               label={sharedClass.className}
-              clickable
+              clickable={canEditProject}
               color="primary"
               onClick={() => handlePasteButtonClick(sharedClass.className)}
             />
@@ -162,7 +167,7 @@ const ShareStyles: React.FC<Props> = ({
               size="small"
               className={classes.elementsStylesChip}
               label={className}
-              clickable={!isTagClassName(className)}
+              clickable={!isTagClassName(className) && canEditProject}
               color="primary"
               {...(!isTagClassName(className) && {
                 deleteIcon: <CancelIcon />,
@@ -180,7 +185,7 @@ const ShareStyles: React.FC<Props> = ({
         )}
       </div>
 
-      <EditableStyles />
+      <EditableStyles disabled={!canEditProject} />
     </div>
   );
 };

@@ -94,6 +94,7 @@ const IndentsBlock: React.FC<Props> = ({
   paddingBottom,
   paddingLeft,
   paddingRight,
+  canEdit,
 }) => {
   const classes = useStyles();
   const [state, setState] = useState({
@@ -139,7 +140,7 @@ const IndentsBlock: React.FC<Props> = ({
 
   return (
     <div>
-      {!masterScreenEnabled && (
+      {!masterScreenEnabled && canEdit && (
         <StylesHeader
           title="Margins & Paddings"
           onClick={removeStyles}
@@ -168,6 +169,7 @@ const IndentsBlock: React.FC<Props> = ({
           className={cn(classes.input, classes.marginTop)}
           value={parseInt(state.marginTop as string) || 0}
           onChange={handleChange}
+          disabled={!canEdit}
         />
 
         <StyledTextField
@@ -179,6 +181,7 @@ const IndentsBlock: React.FC<Props> = ({
           className={cn(classes.input, classes.marginRight)}
           value={parseInt(state.marginRight as string) || 0}
           onChange={handleChange}
+          disabled={!canEdit}
         />
 
         <StyledTextField
@@ -190,6 +193,7 @@ const IndentsBlock: React.FC<Props> = ({
           className={cn(classes.input, classes.marginBottom)}
           value={parseInt(state.marginBottom as string) || 0}
           onChange={handleChange}
+          disabled={!canEdit}
         />
 
         <StyledTextField
@@ -201,6 +205,7 @@ const IndentsBlock: React.FC<Props> = ({
           className={cn(classes.input, classes.marginLeft)}
           value={parseInt(state.marginLeft as string) || 0}
           onChange={handleChange}
+          disabled={!canEdit}
         />
 
         <div className={classes.paddingGrid}>
@@ -215,6 +220,7 @@ const IndentsBlock: React.FC<Props> = ({
             className={cn(classes.input, classes.paddingTop)}
             value={parseInt(state.paddingTop as string) || 0}
             onChange={handleChange}
+            disabled={!canEdit}
           />
 
           <StyledTextField
@@ -226,6 +232,7 @@ const IndentsBlock: React.FC<Props> = ({
             className={cn(classes.input, classes.paddingRight)}
             value={parseInt(state.paddingRight as string) || 0}
             onChange={handleChange}
+            disabled={!canEdit}
           />
 
           <StyledTextField
@@ -237,6 +244,7 @@ const IndentsBlock: React.FC<Props> = ({
             className={cn(classes.input, classes.paddingBottom)}
             value={parseInt(state.paddingBottom as string) || 0}
             onChange={handleChange}
+            disabled={!canEdit}
           />
 
           <StyledTextField
@@ -248,6 +256,7 @@ const IndentsBlock: React.FC<Props> = ({
             className={cn(classes.input, classes.paddingLeft)}
             value={parseInt(state.paddingLeft as string) || 0}
             onChange={handleChange}
+            disabled={!canEdit}
           />
         </div>
       </div>

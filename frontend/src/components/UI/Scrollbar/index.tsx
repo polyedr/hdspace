@@ -14,7 +14,7 @@ interface IScrollbarProps {
   className?: string;
   trackStylesBg?: string;
   autoHeightMax?: number | string;
-  autoHeightMin?: string;
+  autoHeightMin?: number | string;
   hideTracksWhenNotNeeded?: boolean;
   onScroll?: (event: { srcElement: HTMLElement }) => void;
 }

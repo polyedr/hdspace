@@ -11,6 +11,7 @@ type Props = {
   justifyContent?: React.CSSProperties['justifyContent'];
   alignItems?: React.CSSProperties['alignItems'];
   updateStyles: PropertiesChangeProps<LibraryElement<Entity>>['updateStyles'];
+  canEdit: boolean;
 };
 
 const PlaceItemsProperties: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const PlaceItemsProperties: React.FC<Props> = ({
   reversed,
   alignItems,
   justifyContent,
+  canEdit,
 }) => {
   const classes = useWrapperStyles();
   return (
@@ -32,6 +34,7 @@ const PlaceItemsProperties: React.FC<Props> = ({
           });
         }}
         select
+        disabled={!canEdit}
       >
         {JUSTIFY_VALUES.map(({ label, value }) => (
           <MenuItem key={value} value={value} dense>
@@ -50,6 +53,7 @@ const PlaceItemsProperties: React.FC<Props> = ({
           });
         }}
         select
+        disabled={!canEdit}
       >
         {ALIGN_VALUES.map(({ label, value }) => (
           <MenuItem key={value} value={value} dense>

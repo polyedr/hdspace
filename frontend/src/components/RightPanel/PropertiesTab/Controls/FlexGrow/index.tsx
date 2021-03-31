@@ -17,6 +17,7 @@ const FlexGrow: React.FC<Props> = ({
   activeElementId,
   flexGrow = 0,
   masterScreenEnabled,
+  canEdit,
 }) => {
   const editorDocument = useSelector(selectEditorDocument);
 
@@ -33,7 +34,7 @@ const FlexGrow: React.FC<Props> = ({
 
   return isFlexItem ? (
     <div>
-      {!masterScreenEnabled && (
+      {!masterScreenEnabled && canEdit && (
         <StylesHeader
           title="Flex Grow"
           onClick={removeStyles}
@@ -47,6 +48,7 @@ const FlexGrow: React.FC<Props> = ({
         type="number"
         value={state}
         onChange={handleFlexGrowChange}
+        disabled={!canEdit}
       />
     </div>
   ) : null;

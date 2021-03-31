@@ -39,9 +39,12 @@ import {
   ServerElement,
   StateElement,
   UpdateDataActionType,
+  UserProjectPermission,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
+import { compose } from 'redux';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -100,9 +103,13 @@ export function* duplicateElements(
   }
 }
 
-export const moveElementSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.moveElement>,
-) {
+export const moveElementSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.moveElement>) {
   try {
     const { indices, elementId, parents } = action.payload;
 
@@ -333,9 +340,13 @@ function* removeElementStyles(
   }
 }
 
-export const copyElementStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.copyElementStyles>,
-) {
+export const copyElementStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.copyElementStyles>) {
   try {
     const { elementType, elementID, styles } = action.payload;
 
@@ -400,23 +411,35 @@ export const copyElementStylesSaga = withActionsHistory(function* (
   }
 });
 
-export const addElementClassNameSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.addElementClassName>,
-) {
+export const addElementClassNameSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.addElementClassName>) {
   const { elementID, className } = action.payload;
   yield call(updateElementClassNames, elementID, className, action, 'add');
 });
 
-export const removeElementClassNameSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.removeElementClassName>,
-) {
+export const removeElementClassNameSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.removeElementClassName>) {
   const { elementID, className } = action.payload;
   yield call(updateElementClassNames, elementID, className, action, 'remove');
 });
 
-export const updateElementStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.updateElementStyles>,
-) {
+export const updateElementStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateElementStyles>) {
   try {
     yield call(updateOrReplaceElementStyles, action, 'update');
   } catch (e) {
@@ -432,9 +455,13 @@ export const updateElementStylesSaga = withActionsHistory(function* (
   }
 });
 
-export const updateMultipleElementsStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.updateMultipleElementsStyles>,
-) {
+export const updateMultipleElementsStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateMultipleElementsStyles>) {
   try {
     const { ids, styles } = action.payload;
 
@@ -507,9 +534,13 @@ export const updateMultipleElementsStylesSaga = withActionsHistory(function* (
   }
 });
 
-export const removeMultipleElementsStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.removeMultipleElementsStyles>,
-) {
+export const removeMultipleElementsStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.removeMultipleElementsStyles>) {
   const { ids, cssPropertiesNames } = action.payload;
 
   if (!ids || !ids.length) {
@@ -596,9 +627,13 @@ export const removeMultipleElementsStylesSaga = withActionsHistory(function* (
   }
 });
 
-export const replaceElementStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.replaceElementStyles>,
-) {
+export const replaceElementStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.replaceElementStyles>) {
   try {
     yield call(updateOrReplaceElementStyles, action, 'replace');
   } catch (e) {
@@ -614,9 +649,13 @@ export const replaceElementStylesSaga = withActionsHistory(function* (
   }
 });
 
-export const removeElementStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.removeElementStyles>,
-) {
+export const removeElementStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.removeElementStyles>) {
   try {
     const { id, cssPropertiesNames } = action.payload;
 
@@ -650,9 +689,13 @@ export const removeElementStylesSaga = withActionsHistory(function* (
   }
 });
 
-export const updateElementImageSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.updateElementImage>,
-) {
+export const updateElementImageSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateElementImage>) {
   try {
     if (!action.meta) {
       console.error(
@@ -708,9 +751,13 @@ export const updateElementImageSaga = withActionsHistory(function* (
   }
 });
 
-export const updateElementParametersSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.updateElementParameters>,
-) {
+export const updateElementParametersSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateElementParameters>) {
   yield call(
     updateOrReplaceElementParameters,
     action,
@@ -718,9 +765,13 @@ export const updateElementParametersSaga = withActionsHistory(function* (
   );
 });
 
-export const replaceElementParametersSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.replaceElementParameters>,
-) {
+export const replaceElementParametersSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.replaceElementParameters>) {
   yield call(
     updateOrReplaceElementParameters,
     action,
@@ -728,17 +779,21 @@ export const replaceElementParametersSaga = withActionsHistory(function* (
   );
 });
 
-export const updateMultipleElementsParametersSaga = withActionsHistory(
-  function* (
-    action: ReturnType<typeof Actions.updateMultipleElementsParameters>,
-  ) {
-    yield call(
-      updateOrReplaceMultipleElementsParameters,
-      action,
-      UpdateDataActionType.UPDATE,
-    );
-  },
-);
+export const updateMultipleElementsParametersSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (
+  action: ReturnType<typeof Actions.updateMultipleElementsParameters>,
+) {
+  yield call(
+    updateOrReplaceMultipleElementsParameters,
+    action,
+    UpdateDataActionType.UPDATE,
+  );
+});
 
 export const replaceMultipleElementsParametersSaga = withActionsHistory(
   function* (
@@ -788,19 +843,19 @@ export function* loadCustomElementsSaga(
   }
 }
 
-export function* setActiveElementSaga(
-  action: ReturnType<typeof Actions.setActiveElement>,
-) {
+export const setActiveElementSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(function* (action: ReturnType<typeof Actions.setActiveElement>) {
   yield put(Actions.setEditableStyles('ownStyles'));
   yield put(Actions.setActiveElementId(action.payload));
   yield put(Actions.setCanCreateGroup(false));
   yield put(Actions.resetElementEditState());
   yield put(Actions.setSelectedElements([action.payload]));
-}
+});
 
-export function* toggleSelectedElementSaga(
-  action: ReturnType<typeof Actions.toggleSelectedElement>,
-) {
+export const toggleSelectedElementSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(function* (action: ReturnType<typeof Actions.toggleSelectedElement>) {
   const isElementSelected = yield select(selectIsElementSelected);
   if (isElementSelected) {
     const element = yield select(selectElementById(action.payload.id));
@@ -826,11 +881,15 @@ export function* toggleSelectedElementSaga(
   } else {
     yield put(Actions.removeSelectedElement(action.payload.id));
   }
-}
+});
 
-export const createElementsGroupSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.createElementsGroup>,
-) {
+export const createElementsGroupSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.createElementsGroup>) {
   if (!action.meta) {
     yield put(
       enqueueSnackbar({
@@ -978,9 +1037,13 @@ export const createElementsGroupSaga = withActionsHistory(function* (
   }
 });
 
-export const uploadElementImageByUrlSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.uploadImageByUrl>,
-) {
+export const uploadElementImageByUrlSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.uploadImageByUrl>) {
   if (!action.meta) {
     yield put(
       enqueueSnackbar({
@@ -1046,9 +1109,13 @@ export const uploadElementImageByUrlSaga = withActionsHistory(function* (
   }
 });
 
-export const unbindGroupElementStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.unbindGroupElementStyles>,
-) {
+export const unbindGroupElementStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.unbindGroupElementStyles>) {
   const { id, styles } = action.payload;
   if (!action.meta) {
     yield put(

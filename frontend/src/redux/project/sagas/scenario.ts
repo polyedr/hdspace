@@ -42,12 +42,15 @@ import {
   ServerElement,
   StateElement,
   UpdateDataActionType,
+  UserProjectPermission,
 } from '@Src/types';
 import {
   Action,
   ElementHistoryMeta,
   WrapIntoContainerData,
 } from '@Redux/types';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import { compose } from 'redux';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
@@ -186,9 +189,13 @@ export function* createGroupsBinding(
   );
 }
 
-export const createElementsSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.createElements>,
-) {
+export const createElementsSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.createElements>) {
   try {
     const { createdElements, parentId, index } = action.payload;
     if (!action.meta) {
@@ -313,9 +320,13 @@ export const createChildElementsSaga = withActionsHistory(function* (
   }
 });
 
-export const createGroupChildrenSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.createGroupChildren>,
-) {
+export const createGroupChildrenSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.createGroupChildren>) {
   const { createdElements, parentId, index } = action.payload;
   if (!action.meta) {
     console.error(
@@ -458,9 +469,13 @@ export const createGroupChildrenSaga = withActionsHistory(function* (
   );
 });
 
-export const addChildrenToElementSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.addChildrenToElement>,
-) {
+export const addChildrenToElementSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.addChildrenToElement>) {
   try {
     const { children, elementId } = action.payload;
     if (!action.meta) {
@@ -506,9 +521,13 @@ export const addChildrenToElementSaga = withActionsHistory(function* (
   }
 });
 
-export const addChildToElementSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.addChildToElement>,
-) {
+export const addChildToElementSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.addChildToElement>) {
   try {
     const { childType, elementId, parameters } = action.payload;
     if (!action.meta) {
@@ -554,9 +573,10 @@ export const addChildToElementSaga = withActionsHistory(function* (
   }
 });
 
-export function* deleteElementSaga(
-  action: ReturnType<typeof Actions.deleteElement>,
-) {
+export const deleteElementSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.deleteElement>) {
   const { id } = action.payload;
   try {
     if (!action.meta) {
@@ -607,11 +627,15 @@ export function* deleteElementSaga(
       ),
     );
   }
-}
+});
 
-export const softDeleteSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.softDeleteElement>,
-) {
+export const softDeleteSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.softDeleteElement>) {
   try {
     const { id } = action.payload;
 
@@ -720,9 +744,13 @@ export const softDeleteSaga = withActionsHistory(function* (
   }
 });
 
-export const softDeleteMultipleSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.softDeleteMultipleElements>,
-) {
+export const softDeleteMultipleSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.softDeleteMultipleElements>) {
   try {
     const { ids } = action.payload;
 
@@ -824,9 +852,13 @@ export const softDeleteMultipleSaga = withActionsHistory(function* (
   }
 });
 
-export const restoreElementChildrenSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.restoreElementChildren>,
-) {
+export const restoreElementChildrenSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.restoreElementChildren>) {
   try {
     const { elementId, childrenIds } = action.payload;
     if (!action.meta) {
@@ -1176,9 +1208,13 @@ export function* wrapIntoContainer(
   }
 }
 
-export const wrapIntoContainerSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.wrapIntoContainer>,
-) {
+export const wrapIntoContainerSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.wrapIntoContainer>) {
   try {
     const { id } = action.payload;
     if (!action.meta) {
@@ -1225,9 +1261,13 @@ export const wrapIntoContainerSaga = withActionsHistory(function* (
   }
 });
 
-export const unwrapFromContainerSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.unwrapFromContainer>,
-) {
+export const unwrapFromContainerSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.unwrapFromContainer>) {
   try {
     const { meta } = action;
     if (!meta) {
@@ -1279,9 +1319,13 @@ export const unwrapFromContainerSaga = withActionsHistory(function* (
   }
 });
 
-export function* updateElementSaga(
-  action: ReturnType<typeof Actions.updateElement>,
-) {
+export const updateElementSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateElement>) {
   try {
     const screenId = yield select(selectCurrentScreenId);
     const { elementID, data } = action.payload;
@@ -1343,11 +1387,15 @@ export function* updateElementSaga(
       ),
     );
   }
-}
+});
 
-export const redoWrapIntoContainerSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.redoWrapIntoContainer>,
-) {
+export const redoWrapIntoContainerSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.redoWrapIntoContainer>) {
   try {
     if (!action.meta) {
       console.error(

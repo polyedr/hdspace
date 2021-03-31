@@ -54,6 +54,7 @@ const TypographyBlock: React.FC<Props> = ({
   fontStyle,
   textAlign,
   color,
+  canEdit,
 }) => {
   const classes = useStyles();
 
@@ -109,7 +110,7 @@ const TypographyBlock: React.FC<Props> = ({
 
   return (
     <div>
-      {!masterScreenEnabled && (
+      {!masterScreenEnabled && canEdit && (
         <StylesHeader
           title="Font"
           onClick={removeStyles}
@@ -132,6 +133,7 @@ const TypographyBlock: React.FC<Props> = ({
           value={fontFamily || FONTS[0].value}
           onChange={handleFontFamilyChange}
           select
+          disabled={!canEdit}
         >
           {FONTS.map(({ label, value }) => (
             <MenuItem value={value} key={value} dense>
@@ -151,6 +153,7 @@ const TypographyBlock: React.FC<Props> = ({
               setState(ev.target.value);
               debounced.callback(ev.target.value);
             }}
+            disabled={!canEdit}
           />
 
           <ToggleButtonGroup
@@ -161,11 +164,11 @@ const TypographyBlock: React.FC<Props> = ({
             onChange={handleFormatChange}
             size="small"
           >
-            <StyledToggleButton value="italic">
+            <StyledToggleButton value="italic" disabled={!canEdit}>
               <FormatItalicIcon fontSize="small" />
             </StyledToggleButton>
 
-            <StyledToggleButton value="bold">
+            <StyledToggleButton value="bold" disabled={!canEdit}>
               <FormatBoldIcon fontSize="small" />
             </StyledToggleButton>
           </ToggleButtonGroup>
@@ -176,15 +179,15 @@ const TypographyBlock: React.FC<Props> = ({
             exclusive
             size="small"
           >
-            <StyledToggleButton value="left">
+            <StyledToggleButton value="left" disabled={!canEdit}>
               <FormatAlignLeftIcon fontSize="small" />
             </StyledToggleButton>
 
-            <StyledToggleButton value="center">
+            <StyledToggleButton value="center" disabled={!canEdit}>
               <FormatAlignCenterIcon fontSize="small" />
             </StyledToggleButton>
 
-            <StyledToggleButton value="right">
+            <StyledToggleButton value="right" disabled={!canEdit}>
               <FormatAlignRightIcon fontSize="small" />
             </StyledToggleButton>
           </ToggleButtonGroup>
@@ -195,6 +198,7 @@ const TypographyBlock: React.FC<Props> = ({
             currentColor={color || 'transparent'}
             activeElementId={activeElementId}
             onChange={handleColorSettingsChange}
+            disabled={!canEdit}
           />
         </div>
       </div>

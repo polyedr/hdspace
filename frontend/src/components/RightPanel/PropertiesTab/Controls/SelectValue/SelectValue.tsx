@@ -11,6 +11,7 @@ import { StyledTextField } from '@Components/styledComponents';
 
 const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const value = useSelector(
     (state: AppReduxState) => selectActiveElementParams(state).value,
@@ -41,6 +42,7 @@ const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
       value={value}
       onChange={handleDropdownChange}
       select
+      disabled={!canEdit}
     >
       {optionsValues.map((option) => (
         <MenuItem key={option} value={option} dense>

@@ -7,14 +7,24 @@ import {
 } from '@Src/types';
 import SmartContainer from './SmartContainer';
 
+type SmartContainerProps = {
+  activeElementId: PropertiesChangeProps<
+    SmartElement<Entity>
+  >['activeElementId'];
+  canEdit: boolean;
+};
+
 const withSmartContainer = (blockType: NNBlockType) => {
-  const Container: React.FC<{
-    activeElementId: PropertiesChangeProps<
-      SmartElement<Entity>
-    >['activeElementId'];
-  }> = ({ activeElementId }) => {
+  const Container: React.FC<SmartContainerProps> = ({
+    activeElementId,
+    canEdit,
+  }) => {
     return (
-      <SmartContainer blockType={blockType} activeElementId={activeElementId} />
+      <SmartContainer
+        blockType={blockType}
+        activeElementId={activeElementId}
+        canEdit={canEdit}
+      />
     );
   };
 

@@ -17,6 +17,7 @@ const useStyles = makeStyles({
 
 const Ordered: React.FC<PropertiesChangeProps<ListElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const classes = useStyles();
 
@@ -31,7 +32,11 @@ const Ordered: React.FC<PropertiesChangeProps<ListElement>> = ({
     <div className={classes.root}>
       <FormControlLabel
         control={
-          <Switch checked={isOrdered || false} onChange={handleSwitchChange} />
+          <Switch
+            checked={isOrdered || false}
+            onChange={handleSwitchChange}
+            disabled={!canEdit}
+          />
         }
         label="Is Ordered"
       />

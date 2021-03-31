@@ -9,9 +9,10 @@ import GridList from '@material-ui/core/GridList';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Button, GridListTile } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { Asset } from '@Src/types';
+import { Asset, UserProjectPermission } from '@Src/types';
 import { uploadAsset } from '@Redux/project/actions';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import AssetImage from './AssetImage';
 
 const useStyles = makeStyles({
@@ -30,6 +31,9 @@ const AssetsGrid = () => {
   const dispatch = useDispatch();
   const assets = useSelector(selectDisplayAssets);
   const selectedAssetListId = useSelector(selectSelectedAssetListId);
+  const canEditProject = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
+  );
 
   const handleUploadAsset = useCallback(
     ({ target }) => {
@@ -59,6 +63,7 @@ const AssetsGrid = () => {
         id="upload-asset"
         type="file"
         onChange={handleUploadAsset}
+        disabled={!canEditProject}
       />
       <Button
         color="primary"
@@ -68,7 +73,9 @@ const AssetsGrid = () => {
         }}
         startIcon={<AddIcon />}
         disabled={
-          !selectedAssetListId || selectedAssetListId === ALL_ASSETS_LIST_ID
+          !selectedAssetListId ||
+          selectedAssetListId === ALL_ASSETS_LIST_ID ||
+          !canEditProject
         }
         onClick={() => {
           if (!newAssetRef.current) {

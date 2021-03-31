@@ -21,6 +21,7 @@ import {
   Entity,
   Params,
   PropertyName,
+  UserProjectPermission,
 } from '@Src/types';
 import {
   removeElementStyles,
@@ -40,6 +41,7 @@ import {
 } from '@Redux/project/selectors/screen';
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Scrollbar from '../../UI/Scrollbar';
@@ -67,6 +69,9 @@ const PropertiesTab: React.FC = () => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
   const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
+  const canEdit = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
+  );
   const [editedStyles, setEditedStyles] = useState<React.CSSProperties | null>(
     null,
   );
@@ -307,6 +312,7 @@ const PropertiesTab: React.FC = () => {
                 <ControlSection key={controlName} title={controlName}>
                   <Control
                     {...getControlStyles(controlName, currentEditableStyles)}
+                    canEdit={canEdit}
                     activeElementId={activeElement.id}
                     removeStyles={!masterScreenEnabled && removeStyles}
                     updateStyles={updateStyles}
@@ -328,7 +334,7 @@ const PropertiesTab: React.FC = () => {
                   )}
 
                   <ControlSection title="Element name">
-                    <RenameElement />
+                    <RenameElement canEdit={canEdit} />
                   </ControlSection>
                 </>
               )}

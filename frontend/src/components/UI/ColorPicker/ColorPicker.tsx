@@ -35,11 +35,13 @@ type ColorPickerProps = {
   color: string;
   colors?: string[];
   onChangeComplete(color: Pick<ColorResult, 'hex'>): void;
+  disabled?: boolean;
 };
 
 const ColorPicker: React.FC<ColorPickerProps> = ({
   color,
   onChangeComplete,
+  disabled,
 }) => {
   const classes = useStyles({ color });
   const [startColor, setStartColor] = useState({ hex: color });
@@ -74,8 +76,11 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
   }, [setIsPopoverOpen]);
 
   const handleColorPickerContainerClick = useCallback(() => {
+    if (disabled) {
+      return;
+    }
     setIsPopoverOpen(!isPopoverOpen);
-  }, [setIsPopoverOpen, isPopoverOpen]);
+  }, [disabled, isPopoverOpen]);
 
   return (
     <Popover

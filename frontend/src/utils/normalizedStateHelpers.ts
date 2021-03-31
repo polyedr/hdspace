@@ -336,13 +336,6 @@ export const restoreMapElementChildren = (
     });
   });
 
-/* export const restoreMultipleMapElementsChildren = (
-  state: Normalized<StateElement>,
-  elements: RestoreElementData[],
-): Normalized<StateElement> => {
-  
-}; */
-
 export const canElementBeAdded = (
   elements: Normalized<StateElement>,
   parentId: string,

@@ -618,6 +618,7 @@ export type ServerProjectWithScreens = {
   projectscreen: Screen[];
   created: string;
   updated: string;
+  user: ServerUserData;
   project_data_json: string;
   project_data_text: string;
 };
@@ -629,6 +630,7 @@ export type ServerProject = {
   projectscreen: number[];
   created: string;
   updated: string;
+  user: ServerUserData;
   project_data_json: string;
   project_data_text: string;
 };
@@ -652,6 +654,7 @@ export type Project = {
   created: Date;
   updated: Date;
   projectData: ProjectData;
+  user: UserData;
 };
 
 export type ProjectWithScreens = {
@@ -665,6 +668,7 @@ export type ProjectWithScreens = {
     classes: ProjectClass[];
   };
   projectscreen: Screen[];
+  user: UserData;
 };
 
 export type StateElement = {
@@ -918,19 +922,37 @@ export type ProfileData = {
   experienced: Experience;
 };
 
+export enum UserProjectPermission {
+  ADD_PROJECT = 'add_project',
+  DELETE_PROJECT = 'delete_project',
+  ASSIGN_PROJECT = 'assign_project',
+  VIEW_PROJECT = 'view_project',
+  CHANGE_PROJECT = 'change_project',
+}
+
+export type PermissionsUserData = {
+  permissions: UserProjectPermission[];
+  userData: UserData;
+};
+
+export type ServerPermissionsUserData = {
+  permissions: UserProjectPermission[];
+  userdata: ServerUserData;
+};
+
 export enum Experience {
   BEGINNER = 'BEGINNER',
   EXPERIENCED = 'EXPERIENCED',
 }
 
 export type UserData = {
+  id: number;
   username: string;
   email: string;
   firstName: string;
   lastName: string;
   dateJoined: Date | null;
   isActive: boolean;
-  id: number;
   password: string;
   profile: ProfileData;
 };
@@ -986,6 +1008,7 @@ export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
   masterScreenEnabled?: boolean;
+  canEdit: boolean;
 };
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';

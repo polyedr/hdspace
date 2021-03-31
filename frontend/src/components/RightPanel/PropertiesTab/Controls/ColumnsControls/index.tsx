@@ -19,6 +19,7 @@ const useStyles = makeStyles({
 
 const ColumnsControls: FC<PropertiesChangeProps<LibraryElement<any>>> = ({
   activeElementId,
+  canEdit,
 }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const ColumnsControls: FC<PropertiesChangeProps<LibraryElement<any>>> = ({
         onChange={handleChangeColumnsCount}
         InputProps={{ inputProps: { min: 2, max: 6 } }}
         type="number"
+        disabled={!canEdit}
       />
     </div>
   );

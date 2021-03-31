@@ -25,6 +25,7 @@ import {
   UpdateElementData,
   StateElementsToAdd,
   VIARegion,
+  UserData,
 } from '@Src/types';
 import {
   Action,
@@ -153,6 +154,7 @@ import {
   SetAnnotatedElement,
   UpdateVIARegionLayer,
   SetNewScreenModal,
+  SetUsersSearchValue,
   CreateChildElements,
   SetAnnotatedImageURL,
   CopyVIARegion,
@@ -162,6 +164,11 @@ import TYPES from '../actionTypes';
 
 export const getProjectList = (): LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
+});
+
+export const setUsersSearchValue = (search: string): SetUsersSearchValue => ({
+  type: TYPES.SET_USERS_SEARCH,
+  payload: { search },
 });
 
 export const searchProjects = (): SearchProjects => ({
@@ -182,6 +189,11 @@ export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
 
 export const setProjectsData = (data: PaginatedResponse<Project>) => ({
   type: TYPES.SET_PROJECTS_DATA,
+  payload: data,
+});
+
+export const setProjectUsersData = (data: PaginatedResponse<UserData>) => ({
+  type: TYPES.SET_PROJECT_USERS_DATA,
   payload: data,
 });
 

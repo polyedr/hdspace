@@ -27,9 +27,10 @@ const parse = (value: string | number | undefined) => {
 type Props = {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   value: React.CSSProperties['columnWidth'];
+  canEdit: boolean;
 };
 
-const ColumnWidth: React.FC<Props> = ({ updateStyles, value }) => {
+const ColumnWidth: React.FC<Props> = ({ updateStyles, value, canEdit }) => {
   const classes = useColumnControlStyles();
 
   const [width, units] = parse(value);
@@ -78,7 +79,7 @@ const ColumnWidth: React.FC<Props> = ({ updateStyles, value }) => {
             onChange={handleWidthChange}
             margin="dense"
             type={unitsState === Units.auto ? 'text' : 'number'}
-            disabled={unitsState === Units.auto}
+            disabled={unitsState === Units.auto || !canEdit}
           />
 
           <StyledTextField
@@ -87,6 +88,7 @@ const ColumnWidth: React.FC<Props> = ({ updateStyles, value }) => {
             label="Units"
             margin="dense"
             select
+            disabled={!canEdit}
           >
             <MenuItem value="px">px</MenuItem>
             <MenuItem value="auto">auto</MenuItem>

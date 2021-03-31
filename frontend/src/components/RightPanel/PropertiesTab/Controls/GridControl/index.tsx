@@ -23,7 +23,7 @@ type Props = {
 
 const GridControl: FC<
   Props & PropertiesChangeProps<LibraryElement<Entity>>
-> = ({ gridTemplateColumns, updateStyles, activeElementId }) => {
+> = ({ gridTemplateColumns, updateStyles, activeElementId, canEdit }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -69,6 +69,7 @@ const GridControl: FC<
         label="Select grid type"
         margin="dense"
         select
+        disabled={!canEdit}
       >
         <MenuItem value="2">2x2</MenuItem>
         <MenuItem value="3">3x3</MenuItem>

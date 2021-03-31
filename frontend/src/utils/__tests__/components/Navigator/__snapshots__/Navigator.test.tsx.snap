@@ -77,16 +77,12 @@ exports[`Navigator should render a Navigator component 1`] = `
                       >
                         <div
                           aria-expanded="true"
-                          aria-roledescription="Draggable item. Press space bar to lift"
                           aria-selected="false"
                           class="makeStyles-treeItem-9 makeStyles-treeItem-12"
-                          data-react-beautiful-dnd-drag-handle="0"
                           data-react-beautiful-dnd-draggable="0"
-                          draggable="false"
                           id="treeitem-1"
                           role="group"
                           style="padding-left: 0px;"
-                          tabindex="0"
                         >
                           <span>
                             <button
@@ -114,16 +110,12 @@ exports[`Navigator should render a Navigator component 1`] = `
                           </span>
                         </div>
                         <div
-                          aria-roledescription="Draggable item. Press space bar to lift"
                           aria-selected="false"
                           class="makeStyles-treeItem-9 makeStyles-treeItem-14"
-                          data-react-beautiful-dnd-drag-handle="0"
                           data-react-beautiful-dnd-draggable="0"
-                          draggable="false"
                           id="treeitem-2"
                           role="treeitem"
                           style="padding-left: 15px;"
-                          tabindex="0"
                         >
                           <span>
                             <span

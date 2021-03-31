@@ -160,7 +160,10 @@ export const convertCreatedProjectToRequest = (
 
 export const convertProjectToPatchRequest = (
   project: Project,
-): Omit<ServerProject, 'created' | 'updated' | 'project_data_text'> => {
+): Omit<
+  ServerProject,
+  'created' | 'updated' | 'project_data_text' | 'user'
+> => {
   const { id, name, status, projectscreen, projectData } = project;
 
   return {

@@ -6,9 +6,10 @@ import {
   initialEdit,
   initialUi,
 } from '@Redux/project/initial';
+import initialPermissions from '@Redux/permissions/initial';
 import { AppReduxState, ProjectEditState } from '@Redux/types';
 import { defaultFreeCanvasParams } from '@Domain/core';
-import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
 import {
   Project,
   StateElement,
@@ -29,6 +30,7 @@ export const mockProject: Project = {
   projectData: {
     classes: [],
   },
+  user: DEFAULT_USER,
 };
 
 export const mockScreen: Screen = {
@@ -153,6 +155,7 @@ export const mockInitialState: AppReduxState = {
   notification: {
     notifications: [],
   },
+  permissions: initialPermissions,
 };
 
 export const mockState: AppReduxState = {

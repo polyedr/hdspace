@@ -18,6 +18,7 @@ const useStyles = makeStyles({
 type StateProps = {
   editableStyles: string;
   classNames: string[];
+  disabled?: boolean;
 };
 
 const mapState = (state: AppReduxState) => {
@@ -41,6 +42,7 @@ const EditableStyles: React.FC<Props> = ({
   editableStyles,
   classNames,
   setEditableStyles,
+  disabled,
 }) => {
   const classes = useStyles();
 
@@ -56,6 +58,7 @@ const EditableStyles: React.FC<Props> = ({
       onChange={handleDropdownChange}
       select
       className={classes.capitalized}
+      disabled={disabled}
     >
       {classNames.map((className) => (
         <MenuItem

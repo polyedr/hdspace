@@ -13,6 +13,7 @@ import { StyledTextField } from '../../../../styledComponents';
 
 const Type: React.FC<PropertiesChangeProps<TextinputElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const type = useSelector(selectActiveElementParamByName('type'));
   const handleDropdownChange = (ev) => {
@@ -26,6 +27,7 @@ const Type: React.FC<PropertiesChangeProps<TextinputElement>> = ({
       value={type}
       onChange={handleDropdownChange}
       select
+      disabled={!canEdit}
     >
       {TYPE.map(({ label, value }) => (
         <MenuItem value={value} key={value} dense>

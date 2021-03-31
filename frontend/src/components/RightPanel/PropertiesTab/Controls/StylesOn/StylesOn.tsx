@@ -15,6 +15,7 @@ const useStyles = makeStyles({
 
 const StylesOn: React.FC<PropertiesChangeProps<SmartElement<Entity>>> = ({
   updateParams,
+  canEdit,
 }) => {
   const { stylesOn } = useSelector(selectActiveElementParams);
   const classes = useStyles();
@@ -26,7 +27,11 @@ const StylesOn: React.FC<PropertiesChangeProps<SmartElement<Entity>>> = ({
     <div className={classes.wrapper}>
       <FormControlLabel
         control={
-          <Switch checked={stylesOn || false} onClick={handleSwitchChange} />
+          <Switch
+            checked={stylesOn || false}
+            onClick={handleSwitchChange}
+            disabled={!canEdit}
+          />
         }
         label="Styles On"
       />
