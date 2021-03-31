@@ -16,6 +16,8 @@ import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import TextField from '@material-ui/core/TextField';
 import { addAssetList } from '@Redux/project/actions';
+import { UserProjectPermission } from '@Src/types';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 
 type Props = {
   onListChange: (listId: string | null) => void;
@@ -51,6 +53,9 @@ const AssetLists = ({ onListChange }: Props) => {
   const [newAssetName, setNewAssetName] = useState<string>('');
   const assetLists = useSelector(selectAllAssetLists);
   const selectedAssetListId = useSelector(selectSelectedAssetListId);
+  const canEditProject = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
+  );
 
   const handleAddList = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -86,6 +91,7 @@ const AssetLists = ({ onListChange }: Props) => {
                   setAddInProgress(false);
                 }}
                 className={classes.newAssetListCloseBtn}
+                disabled={!canEditProject}
               >
                 <CloseIcon />
               </IconButton>
@@ -113,7 +119,7 @@ const AssetLists = ({ onListChange }: Props) => {
       <IconButton
         aria-label="add"
         title="Upload asset"
-        disabled={addInProgress}
+        disabled={addInProgress || !canEditProject}
         onClick={() => {
           setAddInProgress(true);
         }}

@@ -138,7 +138,8 @@ const RightPanel: React.FC = () => {
       KEEP_RP_TAB_ELEMENTS.includes(activeElement.type) &&
       ![masterCoreElId, masterGroupsElId, ...CORE_MASTER_ELEMENTS_IDS].includes(
         activeElementId,
-      )
+      ) &&
+      canEditProject
     ) {
       const index = tabs.indexOf(RPTab.Elements);
       // eslint-disable-next-line no-bitwise
@@ -152,6 +153,7 @@ const RightPanel: React.FC = () => {
     activeElementId,
     masterCoreElId,
     masterGroupsElId,
+    canEditProject,
   ]);
 
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {

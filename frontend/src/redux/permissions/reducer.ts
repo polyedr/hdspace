@@ -67,13 +67,10 @@ export default produce(
       case TYPES.CLEAR_STATE_USER_PERMISSIONS:
         // eslint-disable-next-line no-case-declarations
         const { userId } = action.payload;
-        console.log('CLEAR STATE USER PERMISSIONS!!', userId);
         // eslint-disable-next-line no-case-declarations
         const filteredUsersIds = Object.keys(
           draft.projectUsersPermissionsList.data,
         ).filter((uId) => uId !== userId);
-
-        console.log('TEST DATA!!!', filteredUsersIds);
 
         draft.projectUsersPermissionsList = {
           ...draft.projectUsersPermissionsList,

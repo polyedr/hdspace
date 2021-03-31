@@ -89,6 +89,7 @@ const ColorSettings: React.FC<Props> = ({
         <ColorPicker
           color={currentColor}
           onChangeComplete={handleColorChange}
+          disabled={disabled}
         />
       </div>
     </div>

@@ -64,7 +64,6 @@ import withActionsHistory from '../wrappers/withActionsHistory';
 
 export const activateScreenSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
-  UserProjectPermission.CHANGE_PROJECT,
 )(function* ({ payload: { screenId } }: ReturnType<typeof activateScreen>) {
   try {
     const currentScreenId = yield select(selectCurrentScreenId);

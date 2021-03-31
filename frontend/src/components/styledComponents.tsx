@@ -107,27 +107,31 @@ const useTextFieldStyles = makeStyles(({ palette }) =>
   }),
 );
 
-const useToggleButtonStyles = makeStyles(({ palette }) =>
-  createStyles({
-    root: {
+const useToggleButtonStyles = makeStyles(({ palette }) => ({
+  root: {
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.light, 0.1),
+      borderLeftColor: palette.grey.A200,
+    },
+    color: palette.common.white,
+    borderColor: palette.grey.A200,
+    '&.Mui-selected': {
       '&:hover': {
         backgroundColor: lighten(palette.panel.light, 0.1),
         borderLeftColor: palette.grey.A200,
       },
       color: palette.common.white,
-      borderColor: palette.grey.A200,
-      '&.Mui-selected': {
-        '&:hover': {
-          backgroundColor: lighten(palette.panel.light, 0.1),
-          borderLeftColor: palette.grey.A200,
-        },
-        color: palette.common.white,
-        backgroundColor: lighten(palette.panel.light, 0.2),
-        borderLeftColor: palette.grey.A200,
-      },
+      backgroundColor: lighten(palette.panel.light, 0.2),
+      borderLeftColor: palette.grey.A200,
     },
-  }),
-);
+  },
+  disabled: {
+    color: palette.grey.A200,
+  },
+  label: {
+    color: palette.grey.A200,
+  },
+}));
 
 const useIconButtonClasses = makeStyles(({ palette }) => ({
   iconButton: {

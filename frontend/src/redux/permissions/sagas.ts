@@ -82,7 +82,6 @@ export function* getUsersSaga(action: ReturnType<typeof Actions.getUsersList>) {
     /* yield put(
       Actions.setStateUserPermissions(user, [...userPermissions, permission]),
     );
-    console.log('PERMISSION!!', permission); 
     const { error } = yield call(reqWrapper, apiAssignUserPermission, {
       username: user.username,
       projectId,
@@ -217,7 +216,6 @@ export function* updateUserPermissionsForProjectSaga(
     if (!user) {
       user = yield select(selectUserFromAllUsers(userId));
     }
-    console.log('GOT USER!!!', user);
     if (!user) {
       yield put(
         enqueueSnackbar({

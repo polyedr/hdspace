@@ -31,7 +31,6 @@ const ProjectUsersList: React.FC<Props> = ({ projectId }: Props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const projectUsers = useSelector(selectAllUsersPermissions);
-  console.log('PROJECT USERS!!', projectUsers);
 
   useEffect(() => {
     dispatch(Actions.getAllUsersProjectPermissions(projectId));
