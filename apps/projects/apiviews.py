@@ -102,7 +102,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
 
 class ProjectWithScreensViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Project.objects.all()
     serializer_class = ProjectWithScreensSerializer
     pagination_class = None
@@ -117,12 +117,12 @@ class ProjectWithScreensViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def filter_queryset(self, queryset):
-        queryset = queryset.filter(user=self.request.user)
+        # queryset = queryset.filter(user=self.request.user)
         return queryset
 
 
 class ProjectWithColumnsViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = Project.objects.all()
     serializer_class = ProjectWithColumnsSerializer
     pagination_class = None
@@ -137,7 +137,7 @@ class ProjectWithColumnsViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def filter_queryset(self, queryset):
-        queryset = queryset.filter(user=self.request.user)
+        # queryset = queryset.filter(user=self.request.user)
         return queryset
 
 
