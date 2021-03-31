@@ -154,6 +154,9 @@ import {
   UpdateVIARegionLayer,
   SetNewScreenModal,
   CreateChildElements,
+  SetAnnotatedImageURL,
+  CopyVIARegion,
+  PasteVIARegion,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1390,7 +1393,7 @@ export const createVIARegion = (): CreateVIARegion => ({
   type: TYPES.CREATE_VIA_REGION,
 });
 
-export const deleteVIARegion = (id: string): DeleteVIARegion => ({
+export const deleteVIARegion = (id?: string): DeleteVIARegion => ({
   type: TYPES.DELETE_VIA_REGION,
   payload: id,
 });
@@ -1412,12 +1415,25 @@ export const updateVIARegionLayer = (
   payload: { regionId, layer },
 });
 
+export const setAnnotatedImageURL = (url: string): SetAnnotatedImageURL => ({
+  type: TYPES.SET_ANNOTATED_IMAGE_URL,
+  payload: url,
+});
+
 export const cancelRecognizing = () => ({
   type: TYPES.CANCEL_RECOGNIZING,
 });
 
 export const finishAnnotation = (): FinishAnnotaion => ({
   type: TYPES.FINISH_ANNOTATION,
+});
+
+export const copyVIARegion = (): CopyVIARegion => ({
+  type: TYPES.COPY_VIA_REGION,
+});
+
+export const pasteVIARegion = (): PasteVIARegion => ({
+  type: TYPES.PASTE_VIA_REGION,
 });
 
 export const setNewScreenModal = (open: boolean): SetNewScreenModal => ({

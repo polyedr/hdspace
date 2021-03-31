@@ -5,8 +5,13 @@ import {
 import { Entity, VIARegion } from '@Src/types';
 import React, { ChangeEvent, FC } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { useDispatch } from 'react-redux';
-import { deleteVIARegion, updateVIARegion } from '@Redux/project/actions';
+import {
+  copyVIARegion,
+  deleteVIARegion,
+  updateVIARegion,
+} from '@Redux/project/actions';
 import MenuItem from '@material-ui/core/MenuItem';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { capitalize, makeStyles } from '@material-ui/core';
@@ -49,6 +54,10 @@ const VIADescription: FC<Props> = ({ region }) => {
     dispatch(deleteVIARegion(id));
   };
 
+  const handleCopyRegion = () => {
+    dispatch(copyVIARegion());
+  };
+
   const handleTypeChange = (ev: ChangeEvent<HTMLInputElement>) => {
     dispatch(
       updateVIARegion(id, {
@@ -82,6 +91,10 @@ const VIADescription: FC<Props> = ({ region }) => {
             </MenuItem>
           ))}
         </StyledTextField>
+
+        <StyledIconButton title="Copy region" onClick={handleCopyRegion}>
+          <FileCopyIcon />
+        </StyledIconButton>
 
         <StyledIconButton title="Delete region" onClick={handleDeleteRegion}>
           <DeleteIcon />

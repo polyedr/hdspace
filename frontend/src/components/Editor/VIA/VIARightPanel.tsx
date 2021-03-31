@@ -1,12 +1,17 @@
 import { StyledIconButton } from '@Components/styledComponents';
 import { Button, makeStyles } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import {
   assembleVIARegions,
   cancelRecognizing,
   createVIARegion,
+  pasteVIARegion,
 } from '@Redux/project/actions';
-import { selectActiveVIARegion } from '@Redux/project/selectors/via';
+import {
+  selectActiveVIARegion,
+  selectCopiedVIARegion,
+} from '@Redux/project/selectors/via';
 import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -39,8 +44,11 @@ const VIARightPanel: FC = () => {
   const dispatch = useDispatch();
 
   const region = useSelector(selectActiveVIARegion);
+  const copiedRegion = useSelector(selectCopiedVIARegion);
 
   const handleCreateRegion = () => dispatch(createVIARegion());
+
+  const handlePasteRegion = () => dispatch(pasteVIARegion());
 
   const handleAssemble = () => dispatch(assembleVIARegions());
 
@@ -53,6 +61,14 @@ const VIARightPanel: FC = () => {
       <div>
         <StyledIconButton title="Create a region" onClick={handleCreateRegion}>
           <AddIcon />
+        </StyledIconButton>
+
+        <StyledIconButton
+          title="Paste a region"
+          onClick={handlePasteRegion}
+          disabled={!copiedRegion}
+        >
+          <AssignmentIcon />
         </StyledIconButton>
       </div>
 
