@@ -18,6 +18,9 @@ type Props = {
 };
 
 const useStyles = makeStyles({
+  root: {
+    height: '200px',
+  },
   title: {
     textAlign: 'center',
   },
@@ -25,20 +28,21 @@ const useStyles = makeStyles({
 
 const ProjectUsersList: React.FC<Props> = ({ projectId }: Props) => {
   // const projectUsers = useSelector(select);
+  const classes = useStyles();
   const dispatch = useDispatch();
   const projectUsers = useSelector(selectAllUsersPermissions);
-  const classes = useStyles();
+  console.log('PROJECT USERS!!', projectUsers);
 
   useEffect(() => {
     dispatch(Actions.getAllUsersProjectPermissions(projectId));
   }, [dispatch, projectId]);
 
   return (
-    <div>
+    <div className={classes.root}>
       <Typography variant="h6" className={classes.title}>
         Project users
       </Typography>
-      <Scrollbar autoHeightMin={200} autoHeightMax={200}>
+      <Scrollbar autoHeightMax={165}>
         <TableContainer>
           <Table size="small">
             <TableHead>

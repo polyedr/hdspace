@@ -41,35 +41,6 @@ const PermissionsSelect: React.FC<Props> = (props: Props) => {
   const handlePermissionManagement = (
     newPermissions: UserProjectPermission[],
   ) => {
-    /* if (newPermissions.length > permissions.length) {
-      const permissionToAssign = newPermissions.find(
-        (perm) => !permissions.includes(perm),
-      );
-      if (!permissionToAssign) {
-        return;
-      }
-      dispatch(
-        Actions.assignUserPermissionForProject(
-          projectId,
-          userId,
-          permissionToAssign,
-        ),
-      );
-    } else {
-      const permissionToUnassign = permissions.find(
-        (perm) => !newPermissions.includes(perm),
-      );
-      if (!permissionToUnassign) {
-        return;
-      }
-      dispatch(
-        Actions.unassignUserPermissionForProject(
-          projectId,
-          userId,
-          permissionToUnassign,
-        ),
-      );
-    } */
     dispatch(
       Actions.updateUserPermissionsForProject(
         projectId,

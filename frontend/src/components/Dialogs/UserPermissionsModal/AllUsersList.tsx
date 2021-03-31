@@ -15,7 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as Actions from '@Redux/permissions/actions';
 import {
-  selectUsersForProject,
+  selectAllUsers,
   selectUsersLoading,
   selectUsersNext,
   selectUsersSearchValue,
@@ -47,7 +47,7 @@ const AllUsersList: React.FC<Props> = ({ projectId }: Props) => {
   const dispatch = useDispatch();
   const usersListLoader = useSelector(selectUsersLoading);
   const hasNext = useSelector(selectUsersNext);
-  const users = useSelector(selectUsersForProject);
+  const users = useSelector(selectAllUsers);
   const searchValue = useSelector(selectUsersSearchValue);
 
   const lastRowRef = useRef<HTMLTableRowElement>(null);

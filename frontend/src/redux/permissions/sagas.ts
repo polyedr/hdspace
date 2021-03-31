@@ -5,16 +5,17 @@ import { PaginatedResponse, Result, UserData } from '@Src/types';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { apiGetUsers } from '@Api/user';
 import {
-  apiAssignUserPermission,
+  // apiAssignUserPermission,
   apiGetAllUsersPermissionsForProject,
   apiGetPermissionsList,
   apiSetUserPermissionsForProject,
-  apiUnassignUserPermission,
+  // apiUnassignUserPermission,
 } from '@Api/permissions';
 import { selectUserData } from '@Redux/user/selectors';
 import {
-  selectUserForProject,
-  selectUserPermissions,
+  selectUserFromAllUsers,
+  selectUserFromProjectUsers,
+  // selectUserPermissions,
   selectUsersNext,
   selectUsersSearchValue,
 } from './selectors';
@@ -59,7 +60,7 @@ export function* getUsersSaga(action: ReturnType<typeof Actions.getUsersList>) {
   }
 }
 
-export function* assignUserPermissionSaga(
+/* export function* assignUserPermissionSaga(
   action: ReturnType<typeof Actions.assignUserPermissionForProject>,
 ) {
   const { userId, projectId, permission } = action.payload;
@@ -78,10 +79,10 @@ export function* assignUserPermissionSaga(
       );
       return;
     }
-    yield put(
+    /* yield put(
       Actions.setStateUserPermissions(user, [...userPermissions, permission]),
     );
-    console.log('PERMISSION!!', permission);
+    console.log('PERMISSION!!', permission); 
     const { error } = yield call(reqWrapper, apiAssignUserPermission, {
       username: user.username,
       projectId,
@@ -122,10 +123,10 @@ export function* unassignUserPermissionSaga(
       );
       return;
     }
-    const newPermissions = [
+    /* const newPermissions = [
       ...userPermissions.filter((perm) => perm !== permission),
     ];
-    yield put(Actions.setStateUserPermissions(user, newPermissions));
+    yield put(Actions.setStateUserPermissions(user, newPermissions)); 
     const { error } = yield call(reqWrapper, apiUnassignUserPermission, {
       username: user.username,
       projectId,
@@ -145,7 +146,7 @@ export function* unassignUserPermissionSaga(
       ),
     );
   }
-}
+} */
 
 export function* getAllUsersProjectPermissionsSaga(
   action: ReturnType<typeof Actions.getAllUsersProjectPermissions>,
@@ -212,7 +213,11 @@ export function* updateUserPermissionsForProjectSaga(
 ) {
   const { userId, projectId, permissions } = action.payload;
   try {
-    const user = yield select(selectUserForProject(userId));
+    let user = yield select(selectUserFromProjectUsers(userId));
+    if (!user) {
+      user = yield select(selectUserFromAllUsers(userId));
+    }
+    console.log('GOT USER!!!', user);
     if (!user) {
       yield put(
         enqueueSnackbar({
@@ -222,7 +227,11 @@ export function* updateUserPermissionsForProjectSaga(
       );
       return;
     }
-    yield put(Actions.setStateUserPermissions(user, permissions));
+    if (permissions && permissions.length) {
+      yield put(Actions.setStateUserPermissions(user, permissions));
+    } else {
+      yield put(Actions.clearStateUserPermissions(user.id.toString()));
+    }
     const { error } = yield call(reqWrapper, apiSetUserPermissionsForProject, {
       username: user.username,
       projectId,

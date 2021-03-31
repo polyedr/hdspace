@@ -1,39 +1,44 @@
 import { AppReduxState } from '@Redux/types';
 import { UserProjectPermission } from '@Src/types';
 
-export const selectUsersForProject = ({ permissions }: AppReduxState) =>
-  permissions.usersPermissionsListData.results;
-
-export const selectUserForProject = (userId: string) => (
-  state: AppReduxState,
-) => {
-  const allUsers = selectUsersForProject(state);
-  return allUsers[userId] || null;
-};
+export const selectAllUsers = ({ permissions }: AppReduxState) =>
+  permissions.allUsersList.results;
 
 export const selectUsersNext = ({ permissions }: AppReduxState) =>
-  permissions.usersPermissionsListData.next;
+  permissions.allUsersList.next;
 
 export const selectUsersLoading = ({ permissions }: AppReduxState) =>
-  permissions.usersPermissionsListData.loading;
+  permissions.allUsersList.loading;
 
 export const selectUsersSearchValue = ({ permissions }: AppReduxState) =>
-  permissions.usersPermissionsListData.search;
+  permissions.allUsersList.search;
 
 export const selectUsersPrev = ({ permissions }: AppReduxState) =>
-  permissions.usersPermissionsListData.previous;
+  permissions.allUsersList.previous;
 
 export const selectUsersPageSize = ({ permissions }: AppReduxState) =>
-  permissions.usersPermissionsListData.pageSize;
+  permissions.allUsersList.pageSize;
 
 export const selectAllUsersPermissions = ({ permissions }: AppReduxState) => {
-  return permissions.allUsersProjectPermissions.data;
+  return permissions.projectUsersPermissionsList.data;
+};
+export const selectUserFromAllUsers = (userId: string) => (
+  state: AppReduxState,
+) => {
+  const allUsers = selectAllUsers(state);
+  return allUsers[userId];
+};
+
+export const selectUserFromProjectUsers = (userId: string) => ({
+  permissions,
+}: AppReduxState) => {
+  return permissions.projectUsersPermissionsList.data[userId]?.userData || null;
 };
 
 export const selectUserPermissions = (userId: string) => ({
   permissions,
 }: AppReduxState) => {
-  const existingUserData = permissions.allUsersProjectPermissions.data[userId];
+  const existingUserData = permissions.projectUsersPermissionsList.data[userId];
   if (!existingUserData) {
     return [];
   }
@@ -43,7 +48,7 @@ export const selectUserPermissions = (userId: string) => ({
 export const selectIfProjectUserExists = (userId: number) => ({
   permissions,
 }: AppReduxState) => {
-  const existingProjectUserData = permissions.allUsersProjectPermissions.data;
+  const existingProjectUserData = permissions.projectUsersPermissionsList.data;
   if (!existingProjectUserData) {
     return false;
   }

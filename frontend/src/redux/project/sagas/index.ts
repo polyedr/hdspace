@@ -21,11 +21,11 @@ import {
   convertFreeCanvasSaga,
 } from '@Redux/project/sagas/screen';
 import {
-  assignUserPermissionSaga,
+  // assignUserPermissionSaga,
   getAllUsersProjectPermissionsSaga,
   getMyPermissionsForProjectSaga,
   getUsersSaga,
-  unassignUserPermissionSaga,
+  // unassignUserPermissionSaga,
   updateUserPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
@@ -445,14 +445,15 @@ export default function* projectSaga() {
   );
 
   yield takeLatest(TYPES.LOAD_USERS, getUsersSaga);
-  yield takeEvery(
+
+  /* yield takeEvery(
     TYPES.ASSIGN_USER_PERMISSION_FOR_PROJECT,
     assignUserPermissionSaga,
   );
   yield takeEvery(
     TYPES.UNASSIGN_USER_PERMISSION_FOR_PROJECT,
     unassignUserPermissionSaga,
-  );
+  ); */
 
   yield takeEvery(
     TYPES.GET_MY_PERMISSIONS_FOR_PROJECT,

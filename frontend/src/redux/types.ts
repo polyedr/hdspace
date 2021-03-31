@@ -39,8 +39,8 @@ import {
 import TYPES from './actionTypes';
 
 export type PermissionsState = {
-  usersPermissionsListData: PaginatedData<UserData> & { search: string };
-  allUsersProjectPermissions: {
+  allUsersList: PaginatedData<UserData> & { search: string };
+  projectUsersPermissionsList: {
     loading: boolean;
     projectId: number | null;
     data: Normalized<PermissionsUserData & { id: string }>; // use userId as key

@@ -1,7 +1,7 @@
 import { PermissionsState } from '@Redux/types';
 
 const initialState: PermissionsState = {
-  usersPermissionsListData: {
+  allUsersList: {
     next: null,
     previous: null,
     results: {},
@@ -9,7 +9,7 @@ const initialState: PermissionsState = {
     loading: false,
     search: '',
   },
-  allUsersProjectPermissions: {
+  projectUsersPermissionsList: {
     loading: false,
     projectId: null,
     data: {},

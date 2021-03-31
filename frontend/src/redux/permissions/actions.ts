@@ -81,6 +81,11 @@ export const setStateUserPermissions = (
   payload: { userData, permissions },
 });
 
+export const clearStateUserPermissions = (userId: string) => ({
+  type: TYPES.CLEAR_STATE_USER_PERMISSIONS,
+  payload: { userId },
+});
+
 export const setStateCurrentUserPermissions = (
   permissions: UserProjectPermission[],
 ) => ({
