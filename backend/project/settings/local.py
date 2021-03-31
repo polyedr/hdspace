@@ -341,7 +341,7 @@ DJOSER = {
     "DOMAIN": "staging-26-10.firebaseapp.com",
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
-    "SERIALIZERS": {},
+    "SERIALIZERS": {'activation': 'apps.accounts.serializers.MyActivationSerializer', },
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": white_list,  # Redirected URL we listen on google console
 }
 
