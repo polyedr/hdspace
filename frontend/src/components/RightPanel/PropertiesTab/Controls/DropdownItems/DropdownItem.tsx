@@ -29,6 +29,7 @@ type Props = {
   updateParams: any;
   deleteChildFromElement: any;
   isLast: boolean;
+  canEdit: boolean;
 };
 
 const DropdownItem: React.FC<Props> = ({
@@ -37,6 +38,7 @@ const DropdownItem: React.FC<Props> = ({
   updateParams,
   deleteChildFromElement,
   isLast,
+  canEdit,
 }) => {
   const classes = useStyles();
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -59,9 +61,10 @@ const DropdownItem: React.FC<Props> = ({
         margin="dense"
         fullWidth
         multiline
+        disabled={!canEdit}
       />
 
-      {!isLast && (
+      {!isLast && canEdit && (
         <IconButton
           title="Delete item"
           onClick={() => handleDeleteButtonClick(id)}

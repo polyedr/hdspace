@@ -22,6 +22,7 @@ type Props = {
   flexDirection: React.CSSProperties['flexDirection'];
   justifyContent: React.CSSProperties['justifyContent'];
   alignItems: React.CSSProperties['alignItems'];
+  canEdit: boolean;
 };
 
 const FlexProperties: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const FlexProperties: React.FC<Props> = ({
   flexDirection,
   justifyContent,
   alignItems,
+  canEdit,
 }) => {
   const classes = useStyles();
   const handleChangeOrientation = (ev, newOrientation) => {
@@ -50,11 +52,11 @@ const FlexProperties: React.FC<Props> = ({
               onChange={handleChangeOrientation}
               exclusive
             >
-              <StyledToggleButton value="row">
+              <StyledToggleButton value="row" disabled={!canEdit}>
                 <HeightIcon className={classes.arrowRotated} />
               </StyledToggleButton>
 
-              <StyledToggleButton value="column">
+              <StyledToggleButton value="column" disabled={!canEdit}>
                 <HeightIcon />
               </StyledToggleButton>
             </ToggleButtonGroup>
@@ -69,6 +71,7 @@ const FlexProperties: React.FC<Props> = ({
         justifyContent={justifyContent}
         alignItems={alignItems}
         updateStyles={updateStyles}
+        canEdit={canEdit}
       />
     </>
   );

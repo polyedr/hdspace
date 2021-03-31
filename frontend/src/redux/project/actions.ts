@@ -25,6 +25,7 @@ import {
   UpdateElementData,
   StateElementsToAdd,
   VIARegion,
+  UserData,
 } from '@Src/types';
 import {
   Action,
@@ -153,12 +154,21 @@ import {
   SetAnnotatedElement,
   UpdateVIARegionLayer,
   SetNewScreenModal,
+  SetUsersSearchValue,
   CreateChildElements,
+  SetAnnotatedImageURL,
+  CopyVIARegion,
+  PasteVIARegion,
 } from '../types';
 import TYPES from '../actionTypes';
 
 export const getProjectList = (): LoadProjects => ({
   type: TYPES.LOAD_PROJECTS,
+});
+
+export const setUsersSearchValue = (search: string): SetUsersSearchValue => ({
+  type: TYPES.SET_USERS_SEARCH,
+  payload: { search },
 });
 
 export const searchProjects = (): SearchProjects => ({
@@ -179,6 +189,11 @@ export const setProjectList = (projects: Project[]): LoadProjectsSuccess => ({
 
 export const setProjectsData = (data: PaginatedResponse<Project>) => ({
   type: TYPES.SET_PROJECTS_DATA,
+  payload: data,
+});
+
+export const setProjectUsersData = (data: PaginatedResponse<UserData>) => ({
+  type: TYPES.SET_PROJECT_USERS_DATA,
   payload: data,
 });
 
@@ -1390,7 +1405,7 @@ export const createVIARegion = (): CreateVIARegion => ({
   type: TYPES.CREATE_VIA_REGION,
 });
 
-export const deleteVIARegion = (id: string): DeleteVIARegion => ({
+export const deleteVIARegion = (id?: string): DeleteVIARegion => ({
   type: TYPES.DELETE_VIA_REGION,
   payload: id,
 });
@@ -1412,12 +1427,25 @@ export const updateVIARegionLayer = (
   payload: { regionId, layer },
 });
 
+export const setAnnotatedImageURL = (url: string): SetAnnotatedImageURL => ({
+  type: TYPES.SET_ANNOTATED_IMAGE_URL,
+  payload: url,
+});
+
 export const cancelRecognizing = () => ({
   type: TYPES.CANCEL_RECOGNIZING,
 });
 
 export const finishAnnotation = (): FinishAnnotaion => ({
   type: TYPES.FINISH_ANNOTATION,
+});
+
+export const copyVIARegion = (): CopyVIARegion => ({
+  type: TYPES.COPY_VIA_REGION,
+});
+
+export const pasteVIARegion = (): PasteVIARegion => ({
+  type: TYPES.PASTE_VIA_REGION,
 });
 
 export const setNewScreenModal = (open: boolean): SetNewScreenModal => ({

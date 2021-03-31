@@ -7,6 +7,7 @@ import useDebouncedChange from '@Utils/useDeboucedChange';
 
 const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const content = useSelector(selectActiveElementParamByName('textContent'));
 
@@ -23,6 +24,7 @@ const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
       margin="dense"
       fullWidth
       multiline
+      disabled={!canEdit}
     />
   );
 };

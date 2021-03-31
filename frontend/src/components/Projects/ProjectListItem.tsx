@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import Typography from '@material-ui/core/Typography';
@@ -9,8 +9,10 @@ import { createStyles } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import GroupIcon from '@material-ui/icons/Group';
 import convertDateToRelative from '@Utils/convertDateToRelative';
 import { deleteProject, renameProject } from '@Redux/project/actions';
+import { selectUserData } from '@Redux/user/selectors';
 import Dialog from '../Dialogs/Dialog';
 import { Project } from '../../types';
 
@@ -34,13 +36,21 @@ const useStyles = makeStyles((theme) =>
 
 type Props = {
   project: Project;
+  onPermissionsManagementClick: (projectId: number) => void;
 };
 
 type Ref = HTMLTableRowElement;
 
 const ProjectListItem = React.forwardRef<Ref, Props>(
-  ({ project: { status, id, name, updated, projectscreen } }, ref) => {
+  (
+    {
+      project: { status, id, name, updated, projectscreen, user },
+      onPermissionsManagementClick,
+    },
+    ref,
+  ) => {
     const dispatch = useDispatch();
+    const userData = useSelector(selectUserData);
     const classes = useStyles();
 
     const [renameOpen, setRenameOpen] = useState(false);
@@ -94,6 +104,15 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
             <IconButton size="small" onClick={handleRenameProject}>
               <EditIcon fontSize="small" />
             </IconButton>
+
+            {user.id === userData.id && (
+              <IconButton
+                size="small"
+                onClick={() => onPermissionsManagementClick(id)}
+              >
+                <GroupIcon fontSize="small" />
+              </IconButton>
+            )}
 
             <IconButton size="small" onClick={handleDeleteProject}>
               <DeleteIcon fontSize="small" />

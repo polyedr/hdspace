@@ -33,6 +33,7 @@ const useStyles = makeStyles({
 
 const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const classes = useStyles();
   const mapProps = useSelector(
@@ -141,6 +142,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
           onChange={handleCenterMapCoordsChange}
           margin="dense"
           className={classes.text}
+          disabled={!canEdit}
         />
 
         <StyledTextField
@@ -150,6 +152,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
           onChange={handleCenterMapCoordsChange}
           margin="dense"
           className={classes.text}
+          disabled={!canEdit}
         />
 
         <StyledTextField
@@ -159,6 +162,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
           onChange={handleMapZoomChange}
           margin="dense"
           className={classes.zoom}
+          disabled={!canEdit}
         />
       </div>
 
@@ -168,6 +172,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
         onChange={handleMarkerTextChange}
         fullWidth
         margin="dense"
+        disabled={!canEdit}
       />
 
       <StyledTextField
@@ -186,6 +191,7 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
         onChange={handleMapApiKeyChange}
         fullWidth
         margin="dense"
+        disabled={!canEdit}
       />
     </div>
   );

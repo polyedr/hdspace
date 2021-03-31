@@ -16,6 +16,7 @@ const useStyles = makeStyles({
 
 const IsOpen: React.FC<PropertiesChangeProps<DropdownElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const isOpen = useSelector(
     (state: AppReduxState) => selectActiveElementParams(state).isOpen,
@@ -29,7 +30,11 @@ const IsOpen: React.FC<PropertiesChangeProps<DropdownElement>> = ({
     <div className={classes.wrapper}>
       <FormControlLabel
         control={
-          <Switch checked={isOpen || false} onChange={handleSwitchChange} />
+          <Switch
+            checked={isOpen || false}
+            onChange={handleSwitchChange}
+            disabled={!canEdit}
+          />
         }
         label="Is Open"
       />

@@ -14,9 +14,10 @@ enum Units {
 type Props = {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   count: React.CSSProperties['columnCount'];
+  canEdit: boolean;
 };
 
-const ColumnCount: React.FC<Props> = ({ updateStyles, count }) => {
+const ColumnCount: React.FC<Props> = ({ updateStyles, count, canEdit }) => {
   const classes = useColumnControlStyles();
 
   const [countState, setCountState] = useState<
@@ -68,7 +69,7 @@ const ColumnCount: React.FC<Props> = ({ updateStyles, count }) => {
             onChange={handleCountChange}
             margin="dense"
             type={units === 'auto' ? 'text' : 'number'}
-            disabled={units === 'auto'}
+            disabled={units === 'auto' || !canEdit}
           />
 
           <StyledTextField
@@ -77,6 +78,7 @@ const ColumnCount: React.FC<Props> = ({ updateStyles, count }) => {
             label="units"
             margin="dense"
             select
+            disabled={!canEdit}
           >
             {Object.keys(Units).map((unit) => (
               <MenuItem key={unit} value={unit}>

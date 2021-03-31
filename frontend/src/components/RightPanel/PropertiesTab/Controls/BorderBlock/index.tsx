@@ -55,6 +55,7 @@ const BorderBlock: React.FC<Props> = ({
   borderColor = 'transparent',
   borderRadius = 'px',
   masterScreenEnabled,
+  canEdit,
 }) => {
   const classes = useStyles();
   const validateBorderRadius = useCallback((radius: string | null) => {
@@ -116,7 +117,7 @@ const BorderBlock: React.FC<Props> = ({
 
   return (
     <div>
-      {!masterScreenEnabled && (
+      {!masterScreenEnabled && canEdit && (
         <StylesHeader
           title="Border"
           onClick={removeStyles}
@@ -132,6 +133,7 @@ const BorderBlock: React.FC<Props> = ({
           onChange={handleWidthChange}
           margin="dense"
           className={classes.text}
+          disabled={!canEdit}
         />
 
         <div className={classes.control}>
@@ -142,6 +144,7 @@ const BorderBlock: React.FC<Props> = ({
             onChange={handleRadiusChange}
             margin="dense"
             className={classes.text}
+            disabled={!canEdit}
           />
 
           <StyledTextField
@@ -149,6 +152,7 @@ const BorderBlock: React.FC<Props> = ({
             onChange={handleChangeBorderRadiusUnits}
             value={accessBorderRadius(String(borderRadius))}
             select
+            disabled={!canEdit}
           >
             <MenuItem value="px" dense>
               px
@@ -164,6 +168,7 @@ const BorderBlock: React.FC<Props> = ({
         currentColor={borderColor}
         activeElementId={activeElementId}
         onChange={handleColorSettingsChange}
+        disabled={!canEdit}
       />
     </div>
   );

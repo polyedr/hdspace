@@ -31,6 +31,7 @@ const BackgroundSize: React.FC<Props> = memo(
   ({
     updateStyles,
     removeStyles,
+    canEdit,
     backgroundSize,
     activeElementId,
     masterScreenEnabled,
@@ -141,7 +142,7 @@ const BackgroundSize: React.FC<Props> = memo(
             name={sizeName}
             value={inputValue}
             onChange={handleInputChange}
-            disabled={inputValue === 'auto'}
+            disabled={inputValue === 'auto' || !canEdit}
           />
 
           <select
@@ -149,6 +150,7 @@ const BackgroundSize: React.FC<Props> = memo(
             onChange={(event) => handleSelectChange(event, sizeName)}
             value={Unit[getUnitFromValue(size)]}
             name={`${sizeName}_unit`}
+            disabled={!canEdit}
           >
             {Object.keys(Unit).map((key, index) => (
               // eslint-disable-next-line react/no-array-index-key
@@ -163,7 +165,7 @@ const BackgroundSize: React.FC<Props> = memo(
 
     return (
       <div>
-        {!masterScreenEnabled && (
+        {!masterScreenEnabled && canEdit && (
           <StylesHeader
             title="Background Size"
             onClick={removeStyles}

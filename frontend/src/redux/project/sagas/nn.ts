@@ -15,6 +15,7 @@ import {
   Screen,
   VIAFile,
   VIARegion,
+  UserProjectPermission,
 } from '@Src/types';
 import { addId, addLayerProperty } from '@Utils/viaHelpers';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
@@ -23,8 +24,16 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as Actions from '@Redux/project/actions';
 import withActionsHistory from '@Redux/project/wrappers/withActionsHistory';
+import { compose } from 'redux';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 
-export const recognizeImageSaga = withActionsHistory(function* ({
+export const recognizeImageSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* ({
   type,
   payload: { file, parentId, blockType },
   meta,
@@ -76,6 +85,10 @@ export const recognizeImageSaga = withActionsHistory(function* ({
         ),
       );
       yield put(Actions.setAnnotatedElementId(parentId));
+
+      const url = URL.createObjectURL(file.file);
+
+      yield put(Actions.setAnnotatedImageURL(url));
 
       yield put(Actions.setVIAMode(true));
 
@@ -199,7 +212,13 @@ export const recognizeImageSaga = withActionsHistory(function* ({
   }
 });
 
-export const uploadFileSaga = withActionsHistory(function* ({
+export const uploadFileSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* ({
   type,
   payload: { file, parentId, blockType },
   meta,

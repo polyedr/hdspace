@@ -82,41 +82,6 @@ export const convertRecursiveElementFromResponse = (
   };
 };
 
-export function convertProjectFromResponse(
-  project: ServerProjectWithScreens,
-): ProjectWithScreens;
-export function convertProjectFromResponse(project: ServerProject): Project;
-export function convertProjectFromResponse({
-  id,
-  name,
-  status,
-  projectscreen,
-  created,
-  updated,
-  project_data_json,
-}) {
-  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
-
-  return {
-    id,
-    name,
-    status,
-    projectscreen,
-    projectLoader: false,
-    created: new Date(created),
-    updated: new Date(updated),
-    projectData: {
-      ...projectDataJSON,
-      classes: projectDataJSON.classes.map((cls: ProjectClass) => {
-        return {
-          ...cls,
-          rules: cssCamelize(cls.rules) as React.CSSProperties,
-        } as ProjectClass;
-      }),
-    },
-  };
-}
-
 export const convertProfileDataFromResponse = ({
   hourly_rate,
   ...rest
@@ -140,3 +105,40 @@ export const convertUserDataFromResponse = ({
   profile: convertProfileDataFromResponse(profile),
   ...rest,
 });
+
+export function convertProjectFromResponse(
+  project: ServerProjectWithScreens,
+): ProjectWithScreens;
+export function convertProjectFromResponse(project: ServerProject): Project;
+export function convertProjectFromResponse({
+  id,
+  name,
+  status,
+  projectscreen,
+  created,
+  updated,
+  user,
+  project_data_json,
+}) {
+  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
+
+  return {
+    id,
+    name,
+    status,
+    projectscreen,
+    projectLoader: false,
+    created: new Date(created),
+    updated: new Date(updated),
+    user: convertUserDataFromResponse(user),
+    projectData: {
+      ...projectDataJSON,
+      classes: projectDataJSON.classes.map((cls: ProjectClass) => {
+        return {
+          ...cls,
+          rules: cssCamelize(cls.rules) as React.CSSProperties,
+        } as ProjectClass;
+      }),
+    },
+  };
+}

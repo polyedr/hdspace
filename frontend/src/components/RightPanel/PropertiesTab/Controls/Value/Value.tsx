@@ -7,6 +7,7 @@ import { StyledTextField } from '@Components/styledComponents';
 
 const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const value = useSelector(selectActiveElementParamByName('value'));
 
@@ -33,6 +34,7 @@ const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({
       margin="dense"
       fullWidth
       multiline
+      disabled={!canEdit}
     />
   );
 };

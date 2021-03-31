@@ -68,6 +68,7 @@ const SizeBlock: React.FC<Props> = ({
   activeElementId,
   width,
   height,
+  canEdit,
 }) => {
   const classes = useStyles();
 
@@ -185,7 +186,7 @@ const SizeBlock: React.FC<Props> = ({
             setState(value);
             debounced.callback(name, value);
           }}
-          disabled={inputValue === 'auto'}
+          disabled={inputValue === 'auto' || !canEdit}
           margin="dense"
         />
 
@@ -196,6 +197,7 @@ const SizeBlock: React.FC<Props> = ({
           value={Unit[getUnitFromValue(size)]}
           name={`${sizeName}_unit`}
           select
+          disabled={!canEdit}
         >
           {Object.keys(Unit).map((unit) => (
             <MenuItem key={unit} value={unit} dense>
@@ -209,7 +211,7 @@ const SizeBlock: React.FC<Props> = ({
 
   return (
     <section>
-      {!masterScreenEnabled && (
+      {!masterScreenEnabled && canEdit && (
         <StylesHeader
           title="Width & Height"
           onClick={removeStyles}

@@ -21,6 +21,7 @@ const Bullets: React.FC<Props> = ({
   removeStyles,
   listStyleType = 'disc',
   masterScreenEnabled,
+  canEdit,
 }) => {
   const classes = useStyles();
 
@@ -30,7 +31,7 @@ const Bullets: React.FC<Props> = ({
 
   return (
     <div>
-      {!masterScreenEnabled && (
+      {!masterScreenEnabled && canEdit && (
         <StylesHeader
           title="Bullets"
           onClick={removeStyles}

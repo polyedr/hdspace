@@ -18,6 +18,7 @@ type Props = {
     SmartElement<Entity>
   >['activeElementId'];
   blockType: NNBlockType;
+  canEdit: boolean;
 };
 
 const useStyles = makeStyles({
@@ -31,7 +32,11 @@ const useStyles = makeStyles({
   },
 });
 
-const SmartContainer: React.FC<Props> = ({ activeElementId, blockType }) => {
+const SmartContainer: React.FC<Props> = ({
+  activeElementId,
+  blockType,
+  canEdit,
+}) => {
   const classes = useStyles();
 
   const imageURL = useSelector(selectActiveElementParamByName('imageURL'));
@@ -54,10 +59,16 @@ const SmartContainer: React.FC<Props> = ({ activeElementId, blockType }) => {
         name="upload"
         onChange={handleImageChange}
         id={`upload-component-wireframe-${activeElementId}`}
+        disabled={!canEdit}
       />
 
       <label htmlFor={`upload-component-wireframe-${activeElementId}`}>
-        <Button variant="contained" color="primary" component="span">
+        <Button
+          variant="contained"
+          color="primary"
+          component="span"
+          disabled={!canEdit}
+        >
           Choose image
         </Button>
       </label>
@@ -68,7 +79,7 @@ const SmartContainer: React.FC<Props> = ({ activeElementId, blockType }) => {
             variant="contained"
             color="primary"
             component="span"
-            disabled={!imageFile}
+            disabled={!imageFile || !canEdit}
             onClick={() => handleNNProcessing(true)}
           >
             Automatically Analyze
@@ -78,7 +89,7 @@ const SmartContainer: React.FC<Props> = ({ activeElementId, blockType }) => {
             variant="contained"
             color="primary"
             component="span"
-            disabled={!imageFile}
+            disabled={!imageFile || !canEdit}
             onClick={() => handleNNProcessing(false)}
           >
             Manually Analyze

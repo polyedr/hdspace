@@ -157,7 +157,7 @@ const editReducer = produce(
       case TYPES.CREATE_VIA_REGION: {
         const newRegion: VIARegion = {
           id: v4(),
-          layer: Object.keys(draft.VIAMode.regions).length + 1,
+          layer: Object.keys(draft.VIAMode.regions).length,
           region_attributes: {
             'HTML element': 'container',
           },
@@ -175,7 +175,8 @@ const editReducer = produce(
       }
 
       case TYPES.DELETE_VIA_REGION: {
-        delete draft.VIAMode.regions[action.payload];
+        const idToDelete = action.payload || draft.VIAMode.activeRegionId;
+        delete draft.VIAMode.regions[idToDelete];
         break;
       }
 
@@ -195,6 +196,7 @@ const editReducer = produce(
         const [target] = arr.splice(startIndex, 1);
 
         arr.splice(layer, 0, target);
+        console.log(arr);
 
         draft.VIAMode.regions = arr.reduce((acc, curr, i) => {
           acc[curr.id] = {
@@ -204,6 +206,39 @@ const editReducer = produce(
           return acc;
         }, {} as Normalized<VIARegion>);
 
+        break;
+      }
+
+      case TYPES.SET_ANNOTATED_IMAGE_URL: {
+        draft.VIAMode.annotatedImageURL = action.payload;
+        break;
+      }
+
+      case TYPES.COPY_VIA_REGION: {
+        const copy = draft.VIAMode.regions[draft.VIAMode.activeRegionId];
+        if (copy) {
+          draft.VIAMode.copiedRegion = {
+            ...copy,
+          };
+        }
+        break;
+      }
+
+      case TYPES.PASTE_VIA_REGION: {
+        const copied = draft.VIAMode.copiedRegion;
+        if (!copied) return draft;
+        const newRegion: VIARegion = {
+          id: v4(),
+          layer: Object.keys(draft.VIAMode.regions).length,
+          region_attributes: {
+            ...copied?.region_attributes,
+          },
+          shape_attributes: {
+            ...copied?.shape_attributes,
+          },
+        };
+        draft.VIAMode.regions[newRegion.id] = newRegion;
+        draft.VIAMode.activeRegionId = newRegion.id;
         break;
       }
 

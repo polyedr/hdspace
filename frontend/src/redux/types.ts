@@ -32,8 +32,21 @@ import {
   DateRange,
   StateElementsToAdd,
   VIARegion,
+  PaginatedResponse,
+  UserProjectPermission,
+  PermissionsUserData,
 } from '../types';
 import TYPES from './actionTypes';
+
+export type PermissionsState = {
+  allUsersList: PaginatedData<UserData> & { search: string };
+  projectUsersPermissionsList: {
+    loading: boolean;
+    projectId: number | null;
+    data: Normalized<PermissionsUserData & { id: string }>; // use userId as key
+  };
+  currentUserProjectPermissions: Array<UserProjectPermission>;
+};
 
 export type ProjectDataState = {
   projectsData: PaginatedData<Project> & {
@@ -81,6 +94,8 @@ export type ProjectEditState = {
     regions: Normalized<VIARegion>;
     activeRegionId: string;
     annotatedElementId: string;
+    annotatedImageURL: string;
+    copiedRegion: VIARegion | null;
   };
   freeCanvas: {
     enabled: boolean;
@@ -160,6 +175,7 @@ export type AppReduxState = {
   project: ProjectState;
   router: RouterState;
   notification: NotificationState;
+  permissions: PermissionsState;
 };
 
 export type WrapIntoContainerData = {
@@ -188,6 +204,11 @@ export type RestoreChildrenData = {
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
+
+export type SetUsersSearchValue = IAction<
+  typeof TYPES.SET_USERS_SEARCH,
+  { search: string }
+>;
 export type SearchProjects = IPlainAction<typeof TYPES.SEARCH_PROJECTS>;
 export type SetProjectSearchParameter = IAction<
   typeof TYPES.SET_PROJECT_SEARCH_PARAMETER,
@@ -197,7 +218,12 @@ export type LoadProjectsSuccess = IAction<
   typeof TYPES.SET_PROJECT_LIST,
   { projects: Project[] }
 >;
-export type LoadProjectsFail = IPlainFailAction<'PROJECTS:LOAD_PROJECTS_FAIL'>;
+export type LoadProjectsFail = IPlainFailAction<'projects/LOAD_PROJECTS_FAIL'>;
+
+export type LoadProjectUsersSuccess = IAction<
+  typeof TYPES.SET_PROJECT_USERS_DATA,
+  { users: UserData[] }
+>;
 
 export type CreateProject = IAction<
   typeof TYPES.CREATE_PROJECT,
@@ -230,6 +256,14 @@ export type RenameProject = IAction<
 >;
 export type SetProjectListLoader = IAction<
   typeof TYPES.SET_PROJECT_LIST_LOADER,
+  { active: boolean }
+>;
+export type SetProjectUsersLoader = IAction<
+  typeof TYPES.SET_PROJECT_USERS_LOADER,
+  { active: boolean }
+>;
+export type SetUsersLoader = IAction<
+  typeof TYPES.SET_USERS_LOADER,
   { active: boolean }
 >;
 export type SetProjectLoader = IAction<
@@ -883,6 +917,16 @@ export type SetProjectsData = IAction<
   PaginatedArray<Project>
 >;
 
+export type SetUsersData = IAction<
+  typeof TYPES.SET_USERS_DATA,
+  { search: string; data: PaginatedResponse<UserData> }
+>;
+
+export type SetProjectUsersData = IAction<
+  typeof TYPES.SET_PROJECT_USERS_DATA,
+  PaginatedArray<UserData>
+>;
+
 export type UpdateLastElements = IAction<
   typeof TYPES.UPDATE_LAST_ELEMENTS,
   { parentId: string; ids: string[]; offset: number }
@@ -953,7 +997,10 @@ export type SetActiveVIARegion = IAction<
 
 export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
 
-export type DeleteVIARegion = IAction<typeof TYPES.DELETE_VIA_REGION, string>;
+export type DeleteVIARegion = IAction<
+  typeof TYPES.DELETE_VIA_REGION,
+  string | undefined
+>;
 
 export type SetAnnotatedElement = IAction<
   typeof TYPES.SET_ANNOTATED_ELEMENT_ID,
@@ -965,7 +1012,16 @@ export type UpdateVIARegionLayer = IAction<
   { regionId: string; layer: number }
 >;
 
+export type SetAnnotatedImageURL = IAction<
+  typeof TYPES.SET_ANNOTATED_IMAGE_URL,
+  string
+>;
+
 export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
+
+export type CopyVIARegion = IPlainAction<typeof TYPES.COPY_VIA_REGION>;
+
+export type PasteVIARegion = IPlainAction<typeof TYPES.PASTE_VIA_REGION>;
 
 export type SetNewScreenModal = IAction<
   typeof TYPES.SET_NEW_SCREEN_MODAL,
@@ -974,8 +1030,11 @@ export type SetNewScreenModal = IAction<
 
 export type Action =
   | LoadProjects
+  | SetUsersSearchValue
   | LoadProjectsSuccess
   | LoadProjectsFail
+  | SetUsersData
+  | LoadProjectUsersSuccess
   | CreateProject
   | DeleteProject
   | GetProject
@@ -983,6 +1042,8 @@ export type Action =
   | ChangeScreensOrder
   | RenameProject
   | SetProjectListLoader
+  | SetProjectUsersLoader
+  | SetUsersLoader
   | SetProjectLoader
   | SetScreenLoader
   | SetMasterScreenLoader
@@ -1122,7 +1183,10 @@ export type Action =
   | SetAnnotatedElement
   | UpdateVIARegionLayer
   | FinishAnnotaion
-  | SetNewScreenModal;
+  | SetNewScreenModal
+  | SetAnnotatedImageURL
+  | CopyVIARegion
+  | PasteVIARegion;
 
 export type HistoryMeta = {
   useHistory?: boolean;

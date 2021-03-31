@@ -24,12 +24,15 @@ import {
   ProjectWithScreens,
   Result,
   Screen,
+  UserProjectPermission,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
+import * as PermissionsActions from '../../permissions/actions';
 import { createScreenSaga, getScreensSaga } from './screen';
 import {
   selectCurrentProject,
@@ -195,6 +198,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
     );
 
     if (result) {
+      yield put(PermissionsActions.getMyPermissionsForProject(result.id));
       yield put(
         Actions.setProject({
           ...result,
@@ -373,7 +377,10 @@ export function* deleteProjectSaga({
   }
 }
 
-export function* renameProjectSaga({
+export const renameProjectSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
   try {
@@ -406,7 +413,7 @@ export function* renameProjectSaga({
       ),
     );
   }
-}
+});
 
 export function* updateProjectSaga(
   action: ReturnType<typeof Actions.updateProject>,

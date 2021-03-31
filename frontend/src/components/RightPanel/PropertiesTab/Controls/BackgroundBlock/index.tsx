@@ -13,6 +13,7 @@ const BackgroundBlock: React.FC<Props> = ({
   activeElementId,
   backgroundColor = 'transparent',
   masterScreenEnabled,
+  canEdit,
 }) => {
   const handleColorSettingsChange = useCallback(
     (color: string) => {
@@ -23,7 +24,7 @@ const BackgroundBlock: React.FC<Props> = ({
 
   return (
     <div>
-      {!masterScreenEnabled && (
+      {!masterScreenEnabled && canEdit && (
         <StylesHeader
           title="Background"
           onClick={removeStyles}
@@ -35,6 +36,7 @@ const BackgroundBlock: React.FC<Props> = ({
         currentColor={backgroundColor || 'transparent'}
         activeElementId={activeElementId}
         onChange={handleColorSettingsChange}
+        disabled={!canEdit}
       />
     </div>
   );

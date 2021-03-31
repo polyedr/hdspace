@@ -26,6 +26,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
   updateParams,
   activeElementId,
+  canEdit,
 }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -56,18 +57,21 @@ const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
           parameters={parameters}
           updateParams={updateParams}
           isLast={listItems.length <= 1}
+          canEdit={canEdit}
         />
       ))}
 
-      <div className={classes.row}>
-        <IconButton
-          onClick={handleAddButtonClick}
-          title="Add new item"
-          className={classes.iconButton}
-        >
-          <AddIcon />
-        </IconButton>
-      </div>
+      {canEdit && (
+        <div className={classes.row}>
+          <IconButton
+            onClick={handleAddButtonClick}
+            title="Add new item"
+            className={classes.iconButton}
+          >
+            <AddIcon />
+          </IconButton>
+        </div>
+      )}
     </div>
   );
 };

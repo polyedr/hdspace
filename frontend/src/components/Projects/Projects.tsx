@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -22,6 +22,7 @@ import {
   selectProjectsDataNext,
 } from '@Redux/project/selectors/base';
 import Searchbar from '@Components/Projects/Searchbar';
+import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
 import ProjectListItem from './ProjectListItem';
 
 const useStyles = makeStyles((theme) =>
@@ -62,6 +63,11 @@ const Projects: React.FC = () => {
 
   const ref = useRef<HTMLTableRowElement>(null);
   const el = ref && ref.current;
+
+  const [
+    permissionsManagementProjectId,
+    setPermissionsManagementProjectId,
+  ] = useState<number | null>(null);
 
   const projects = useSelector(selectProjects);
   const projectListLoader = useSelector(selectAreProjectsLoading);
@@ -159,6 +165,9 @@ const Projects: React.FC = () => {
                 <ProjectListItem
                   project={project}
                   key={project.id}
+                  onPermissionsManagementClick={(projectId) => {
+                    setPermissionsManagementProjectId(projectId);
+                  }}
                   ref={i === sortedProjectList.length - 1 ? ref : undefined}
                 />
               ))}
@@ -182,6 +191,12 @@ const Projects: React.FC = () => {
           </Table>
         </TableContainer>
       </Paper>
+      {!!sortedProjectList.length && (
+        <UserPermissionsModal
+          projectId={permissionsManagementProjectId}
+          onClose={() => setPermissionsManagementProjectId(null)}
+        />
+      )}
     </Container>
   );
 };

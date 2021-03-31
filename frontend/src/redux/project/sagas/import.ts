@@ -7,6 +7,7 @@ import {
   Result,
   Screen,
   StateElement,
+  UserProjectPermission,
 } from '@Src/types';
 import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
@@ -23,9 +24,13 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { selectElementsForScreen } from '@Redux/project/selectors/element';
 import JSZip from 'jszip';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { selectCurrentScreen } from '../selectors/screen';
 
-export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
+export const importHtmlSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof importHtml>) {
   try {
     const { files, url } = action.payload;
 
@@ -130,7 +135,7 @@ export function* importHtmlSaga(action: ReturnType<typeof importHtml>) {
       ),
     );
   }
-}
+});
 
 const getTypeFromName = (name: string) => {
   if (!name.includes('.')) return 'text/html'; // in case of html file comes with no extension
@@ -168,9 +173,10 @@ const getTypeFromName = (name: string) => {
   }
 };
 
-export function* uploadImportUrlSaga({
-  payload: url,
-}: ReturnType<typeof Actions.uploadImportUrl>) {
+export const uploadImportUrlSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
   try {
     const { result, error }: Result<PostUrlResponse> = yield call(
       reqWrapper,
@@ -223,4 +229,4 @@ export function* uploadImportUrlSaga({
       ),
     );
   }
-}
+});

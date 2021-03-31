@@ -13,9 +13,10 @@ enum Options {
 type Props = {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   fill: React.CSSProperties['columnFill'];
+  canEdit: boolean;
 };
 
-const ColumnFill: React.FC<Props> = ({ updateStyles, fill }) => {
+const ColumnFill: React.FC<Props> = ({ updateStyles, fill, canEdit }) => {
   const classes = useColumnControlStyles();
 
   const handleFillChange = ({
@@ -36,6 +37,7 @@ const ColumnFill: React.FC<Props> = ({ updateStyles, fill }) => {
           onChange={handleFillChange}
           margin="dense"
           select
+          disabled={!canEdit}
         >
           {Object.keys(Options).map((option) => (
             <MenuItem key={option} value={option}>

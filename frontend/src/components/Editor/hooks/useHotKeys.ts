@@ -16,6 +16,8 @@ import {
   executeRedoActions,
   wrapIntoContainer,
 } from '@Redux/project/actions';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { UserProjectPermission } from '@Src/types';
 
 const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -25,6 +27,9 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
   const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
   const coreElementsIds = useSelector(
     selectTreeChildElementsIds(masterCoreElementId),
+  );
+  const canEdit = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
   const dispatch = useDispatch();
 
@@ -44,7 +49,8 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
         !beingEdited &&
         (event.key === 'Delete' ||
           (event.key === 'Backspace' && event.metaKey)) &&
-        !coreElementSelected
+        !coreElementSelected &&
+        canEdit
       ) {
         dispatch(deleteElement(id, { screenId: currentScreenId }));
         element?.focus();
@@ -53,7 +59,15 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener, false);
     return () => element?.removeEventListener('keydown', listener, false);
-  }, [ref, id, currentScreenId, dispatch, beingEdited, coreElementSelected]);
+  }, [
+    ref,
+    id,
+    currentScreenId,
+    dispatch,
+    beingEdited,
+    coreElementSelected,
+    canEdit,
+  ]);
 
   useEffect(() => {
     const element = ref.current;
@@ -63,7 +77,8 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
         !beingEdited &&
         event.code === 'KeyC' &&
         event.altKey &&
-        !coreElementSelected
+        !coreElementSelected &&
+        canEdit
       ) {
         dispatch(wrapIntoContainer(id, { screenId: currentScreenId }));
         element?.focus();
@@ -72,7 +87,15 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, id, currentScreenId, dispatch, beingEdited, coreElementSelected]);
+  }, [
+    ref,
+    id,
+    currentScreenId,
+    dispatch,
+    beingEdited,
+    coreElementSelected,
+    canEdit,
+  ]);
 
   useEffect(() => {
     const element = ref.current;
@@ -83,7 +106,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
         event.code === 'KeyC' &&
         (event.metaKey || event.ctrlKey);
 
-      if (isItemCopyEvent && !coreElementSelected) {
+      if (isItemCopyEvent && !coreElementSelected && canEdit) {
         dispatch(copyActiveElement());
         navigator.clipboard.writeText('');
         element?.focus();
@@ -92,7 +115,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [beingEdited, coreElementSelected, dispatch, ref]);
+  }, [beingEdited, canEdit, coreElementSelected, dispatch, ref]);
 
   useEffect(() => {
     const element = ref.current;
@@ -103,7 +126,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
         event.code === 'KeyV' &&
         (event.metaKey || event.ctrlKey);
 
-      if (isItemPasteEvent && !coreElementSelected) {
+      if (isItemPasteEvent && !coreElementSelected && canEdit) {
         dispatch(pasteCopiedElement({ screenId: currentScreenId }));
         element?.focus();
       }
@@ -111,7 +134,14 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, currentScreenId, dispatch, beingEdited, coreElementSelected]);
+  }, [
+    ref,
+    currentScreenId,
+    dispatch,
+    beingEdited,
+    coreElementSelected,
+    canEdit,
+  ]);
 
   useEffect(() => {
     const element = ref.current;

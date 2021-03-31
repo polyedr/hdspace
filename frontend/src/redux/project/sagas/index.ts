@@ -8,6 +8,7 @@ import {
   LibraryElement,
   Normalized,
   StateElement,
+  UserProjectPermission,
 } from '@Src/types';
 import {
   activateScreenSaga,
@@ -19,6 +20,16 @@ import {
   updateScreenImageSaga,
   convertFreeCanvasSaga,
 } from '@Redux/project/sagas/screen';
+import {
+  // assignUserPermissionSaga,
+  getAllUsersProjectPermissionsSaga,
+  getMyPermissionsForProjectSaga,
+  getUsersSaga,
+  // unassignUserPermissionSaga,
+  updateUserPermissionsForProjectSaga,
+} from '@Redux/permissions/sagas';
+import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import { compose } from 'redux';
 import {
   moveElementSaga,
   removeElementStylesSaga,
@@ -40,7 +51,6 @@ import {
   uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
   replaceElementParametersSaga,
-  // unbindMasterGroupInstanceSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
@@ -100,9 +110,13 @@ import {
 import withActionsHistory from '../wrappers/withActionsHistory';
 import { recognizeImageSaga, uploadFileSaga } from './nn';
 
-const removeSharedStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.removeSharedStyles>,
-) {
+const removeSharedStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.removeSharedStyles>) {
   const { className, cssPropertiesNames } = action.payload;
 
   if (!action.meta) {
@@ -136,9 +150,13 @@ const removeSharedStylesSaga = withActionsHistory(function* (
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 
-const updateSharedStylesSaga = withActionsHistory(function* (
-  action: ReturnType<typeof Actions.updateSharedStyles>,
-) {
+const updateSharedStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateSharedStyles>) {
   const { className, styles } = action.payload;
 
   if (!action.meta) {
@@ -168,7 +186,10 @@ const updateSharedStylesSaga = withActionsHistory(function* (
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 
-function* copyActiveElementSaga() {
+const copyActiveElementSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* () {
   try {
     const { id: activeItemID, name }: StateElement = yield select(
       selectActiveElement,
@@ -190,11 +211,12 @@ function* copyActiveElementSaga() {
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
     );
   }
-}
+});
 
-function* duplicateScreenSaga(
-  action: ReturnType<typeof Actions.duplicateScreen>,
-) {
+const duplicateScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.duplicateScreen>) {
   try {
     const { name, screenID } = action.payload;
 
@@ -256,12 +278,15 @@ function* duplicateScreenSaga(
       enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
     );
   }
-}
+});
 
-const pasteCopiedElementSaga = withActionsHistory(function* ({
-  type,
-  meta,
-}: ReturnType<typeof Actions.pasteCopiedElement>) {
+const pasteCopiedElementSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* ({ type, meta }: ReturnType<typeof Actions.pasteCopiedElement>) {
   try {
     if (!meta) {
       console.error(`You have to provide metainformation for action ${type}`);
@@ -316,6 +341,7 @@ const pasteCopiedElementSaga = withActionsHistory(function* ({
 
 export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_PROJECTS, getProjectListSaga);
+
   yield takeLatest(TYPES.CREATE_PROJECT, createProjectSaga);
   yield takeLatest(TYPES.DELETE_PROJECT, deleteProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
@@ -414,8 +440,26 @@ export default function* projectSaga() {
 
   yield takeEvery(TYPES.CREATE_ELEMENTS_GROUP, createElementsGroupSaga);
   yield takeEvery(TYPES.UPLOAD_IMAGE_BY_URL, uploadElementImageByUrlSaga);
+
   yield takeEvery(
     TYPES.UNBIND_GROUP_ELEMENT_STYLES,
     unbindGroupElementStylesSaga,
+  );
+
+  yield takeLatest(TYPES.LOAD_USERS, getUsersSaga);
+
+  yield takeEvery(
+    TYPES.GET_MY_PERMISSIONS_FOR_PROJECT,
+    getMyPermissionsForProjectSaga,
+  );
+
+  yield takeEvery(
+    TYPES.GET_ALL_USERS_PROJECT_PERMISSIONS,
+    getAllUsersProjectPermissionsSaga,
+  );
+
+  yield takeEvery(
+    TYPES.UPDATE_USER_PERMISSIONS_FOR_PROJECT,
+    updateUserPermissionsForProjectSaga,
   );
 }

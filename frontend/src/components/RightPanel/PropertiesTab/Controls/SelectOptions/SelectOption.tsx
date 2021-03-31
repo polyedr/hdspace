@@ -43,6 +43,7 @@ type Props = {
   parameters: any;
   updateParams: any;
   isLast: boolean;
+  canEdit: boolean;
 };
 
 const SelectOption: React.FC<Props> = ({
@@ -50,6 +51,7 @@ const SelectOption: React.FC<Props> = ({
   updateParams,
   id,
   isLast,
+  canEdit,
 }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -73,7 +75,7 @@ const SelectOption: React.FC<Props> = ({
         <div className={classes.wrapper}>
           {name}
 
-          {!isLast && (
+          {!isLast && canEdit && (
             <IconButton
               title="Delete option"
               onClick={handleDeleteButtonClick}
@@ -95,6 +97,7 @@ const SelectOption: React.FC<Props> = ({
           margin="dense"
           fullWidth
           multiline
+          disabled={!canEdit}
         />
 
         <StyledTextField
@@ -105,6 +108,7 @@ const SelectOption: React.FC<Props> = ({
           margin="dense"
           fullWidth
           multiline
+          disabled={!canEdit}
         />
       </StyledAccordionDetails>
     </StyledAccordion>

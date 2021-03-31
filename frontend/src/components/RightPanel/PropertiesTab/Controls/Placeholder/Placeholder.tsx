@@ -7,6 +7,7 @@ import useDebouncedChange from '@Utils/useDeboucedChange';
 
 const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
   updateParams,
+  canEdit,
 }) => {
   const { placeholder } = useSelector(selectActiveElementParams);
 
@@ -23,6 +24,7 @@ const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
       onChange={handleChange}
       margin="dense"
       label="Placeholder"
+      disabled={!canEdit}
     />
   );
 };

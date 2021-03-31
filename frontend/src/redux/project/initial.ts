@@ -69,6 +69,8 @@ export const initialEdit: ProjectEditState = {
     regions: {},
     activeRegionId: '',
     annotatedElementId: '',
+    annotatedImageURL: '',
+    copiedRegion: null,
   },
   freeCanvas: {
     enabled: false,

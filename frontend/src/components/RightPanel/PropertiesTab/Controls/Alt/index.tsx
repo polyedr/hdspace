@@ -5,7 +5,10 @@ import { useSelector } from 'react-redux';
 import { StyledTextField } from '@Components/styledComponents';
 import useDebouncedChange from '@Utils/useDeboucedChange';
 
-const Alt: FC<PropertiesChangeProps<ImageElement>> = ({ updateParams }) => {
+const Alt: FC<PropertiesChangeProps<ImageElement>> = ({
+  updateParams,
+  canEdit,
+}) => {
   const alt = useSelector(selectActiveElementParamByName('alt'));
 
   const [state, handleChange] = useDebouncedChange(alt, (value) =>
@@ -21,6 +24,7 @@ const Alt: FC<PropertiesChangeProps<ImageElement>> = ({ updateParams }) => {
       margin="dense"
       fullWidth
       multiline
+      disabled={!canEdit}
     />
   );
 };
