@@ -55,7 +55,7 @@ import {
 import {
   addChildrenToElementSaga,
   addChildToElementSaga,
-  createElementsSaga,
+  createChildElementsSaga,
   redoWrapIntoContainerSaga,
   restoreElementChildrenSaga,
   restoreElementSaga,
@@ -66,6 +66,7 @@ import {
   wrapIntoContainerSaga,
   deleteElementSaga,
   createGroupChildrenSaga,
+  createElementsSaga,
 } from './scenario';
 import {
   createProjectSaga,
@@ -388,6 +389,7 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
+  yield takeEvery(TYPES.CREATE_CHILD_ELEMENTS, createChildElementsSaga);
   yield takeEvery(TYPES.CREATE_GROUP_CHILDREN, createGroupChildrenSaga);
 
   yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);

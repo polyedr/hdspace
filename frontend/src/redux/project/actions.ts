@@ -155,6 +155,7 @@ import {
   UpdateVIARegionLayer,
   SetNewScreenModal,
   SetUsersSearchValue,
+  CreateChildElements,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -778,11 +779,11 @@ export const softDeleteMultipleElements = (
   meta,
 });
 
-export const createElements = (
+export const createChildElements = (
   { createdElements, parentId, index }: CreateElementsData,
   meta: ElementHistoryMeta,
-): CreateElements => ({
-  type: TYPES.CREATE_ELEMENTS,
+): CreateChildElements => ({
+  type: TYPES.CREATE_CHILD_ELEMENTS,
   payload: { createdElements, parentId, index },
   meta,
 });
@@ -792,6 +793,15 @@ export const createGroupChildren = (
   meta: ElementHistoryMeta,
 ): CreateGroupChildren => ({
   type: TYPES.CREATE_GROUP_CHILDREN,
+  payload: { createdElements, parentId, index },
+  meta,
+});
+
+export const createElements = (
+  { createdElements, parentId, index }: CreateElementsData,
+  meta: ElementHistoryMeta,
+): CreateElements => ({
+  type: TYPES.CREATE_ELEMENTS,
   payload: { createdElements, parentId, index },
   meta,
 });

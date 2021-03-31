@@ -12,6 +12,7 @@ import {
 import prevent from '@Utils/preventEvent';
 import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
 import { DOMHandler } from '../Workspace/DOMHandler';
+import DraggableElement from '../Draggable/DraggableElement';
 
 type Props = {
   elementId: string;
@@ -93,7 +94,11 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId }) => {
                 className={classes.divider}
               />
             )}
-          <MasterElement elementId={childId} parentId={element.id} />
+          {element.id === masterGroupsElId ? (
+            <DraggableElement elementId={childId} />
+          ) : (
+            <MasterElement elementId={childId} parentId={element.id} />
+          )}
         </Fragment>
       ))}
     </Renderer>
