@@ -48,7 +48,7 @@ const VIA: FC = () => {
 
   useShortcut('ctrl+c, command+c', handleCopy);
   useShortcut('ctrl+v, command+v', handlePaste);
-  useShortcut('delete, backspace', handleDelete);
+  useShortcut('delete, command+backspace', handleDelete);
 
   const handleClick = () => dispatch(setActiveVIARegion(''));
 
