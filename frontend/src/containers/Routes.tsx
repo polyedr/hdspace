@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
 import SharedWithLink from '@Components/User/SharedWithLink';
+import SideModule from '@Components/SideModule';
 import Signin from '../components/User/Signin';
 import Signup from '../components/User/Signup';
 import Activation from '../components/User/Activation';
@@ -26,6 +27,10 @@ const Routes: React.FC = () => {
   return (
     <Switch>
       <Route path={PATH_NAMES.user.signin} component={Signin} />
+
+      <Route path="/side-module">
+        <SideModule />
+      </Route>
 
       <Route path={PATH_NAMES.user.signup} component={Signup} />
 
