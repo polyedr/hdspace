@@ -11,12 +11,14 @@ import {
 } from '@Redux/project/selectors/element';
 import prevent from '@Utils/preventEvent';
 import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
+import Scrollbars from 'react-custom-scrollbars';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';
 
 type Props = {
   elementId: string;
   parentId?: string;
+  scrollRef: React.RefObject<Scrollbars>;
 };
 
 const getElementProps = (element) => ({
@@ -36,7 +38,7 @@ const useStyles = makeStyles({
   },
 });
 
-const MasterElement: React.FC<Props> = ({ elementId, parentId }) => {
+const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const element = useSelector(selectElementById(elementId));
@@ -95,9 +97,13 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId }) => {
               />
             )}
           {element.id === masterGroupsElId ? (
-            <DraggableElement elementId={childId} />
+            <DraggableElement elementId={childId} scrollRef={scrollRef} />
           ) : (
-            <MasterElement elementId={childId} parentId={element.id} />
+            <MasterElement
+              elementId={childId}
+              parentId={element.id}
+              scrollRef={scrollRef}
+            />
           )}
         </Fragment>
       ))}

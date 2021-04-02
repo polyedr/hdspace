@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
 import SharedWithLink from '@Components/User/SharedWithLink';
+import ElementSelectionLink from '@Components/User/ElementSelectionLink';
 import Signin from '../components/User/Signin';
 import Signup from '../components/User/Signup';
 import Activation from '../components/User/Activation';
@@ -35,19 +36,24 @@ const Routes: React.FC = () => {
 
       <Route path="/share/" component={SharedWithLink} exact />
 
+      <Route
+        path="/project/:projectId/:screenId/:elementId/"
+        component={ElementSelectionLink}
+        exact
+      />
+
       <PrivateRoute path={PATH_NAMES.projects}>
         <Layout>
           <Projects />
         </Layout>
       </PrivateRoute>
 
-      <PrivateRoute path="/project/:projectId/:screenId?/:elementId?/">
+      <PrivateRoute path="/project/:projectId/:screenId?">
         {({ match: { params } }: any) => (
           <Layout>
             <Project
               projectId={parseInt(params.projectId)}
               screenId={parseInt(params.screenId)}
-              elementId={params.elementId}
             />
           </Layout>
         )}

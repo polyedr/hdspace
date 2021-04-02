@@ -1,31 +1,39 @@
-import { logout, setTokenPair, setUserData } from '@Redux/user/actions';
-import { FC, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
+import { loadUser } from '@Redux/user/actions';
+import { selectUserData } from '@Redux/user/selectors';
 
-const SharedWithLink: FC = () => {
+const SharedWithLink: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const userData = useSelector(selectUserData);
 
-  let projectId;
-  let screenId;
-  let accessToken;
+  const url = new URL(window.location.href);
+  const userId = url.searchParams.get('user');
+
+  const projectId = url.searchParams.get('project');
+  const screenId = url.searchParams.get('screen');
+  const access = url.searchParams.get('token');
+  const refresh = url.searchParams.get('refresh');
+  const elementId = url.searchParams.get('element');
 
   useEffect(() => {
-    const url = new URL(window.location.href);
-    projectId = url.searchParams.get('project');
-    screenId = url.searchParams.get('screen');
-    accessToken = url.searchParams.get('token');
+    if (!userId || !access || !refresh) {
+      return;
+    }
+    dispatch(loadUser(userId, { access, refresh }));
+  }, [access, dispatch, refresh, userId]);
 
-    dispatch(logout());
-    dispatch(setTokenPair({ access: accessToken, refresh: '' }));
-    dispatch(
-      setUserData({
-        username: 'anonymous',
-      }),
+  useEffect(() => {
+    if (!userData.isActive) {
+      return;
+    }
+
+    history.push(
+      `/project/${projectId}/${screenId}${elementId ? `/${elementId}/` : ''}`,
     );
-    history.push(`/project/${projectId}/${screenId}`);
-  }, []);
+  }, [dispatch, elementId, history, projectId, screenId, userData.isActive]);
 
   return null;
 };

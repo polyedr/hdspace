@@ -19,6 +19,7 @@ import {
   setElementBeingEdited,
   setElementCanBeEdited,
   setHoveredElementId,
+  setPreSelectedElementId,
   toggleSelectedElement,
   updateElementParameters,
 } from '@Redux/project/actions';
@@ -34,6 +35,7 @@ import {
   selectElementByChildId,
   selectElementById,
   selectElementCanBeEdited,
+  selectPreSelectedElementId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -45,6 +47,7 @@ import {
 } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import Scrollbars from 'react-custom-scrollbars';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import {
   getFlexRowDropPosition,
@@ -59,12 +62,14 @@ type DraggableElementProps = {
   elementId: string;
   parentDomStyles?: CSSStyleDeclaration | null;
   parentIds?: Array<string>;
+  scrollRef: React.RefObject<Scrollbars>;
 };
 
 const DraggableElement: React.FC<DraggableElementProps> = ({
   elementId,
   parentDomStyles,
   parentIds = [],
+  scrollRef,
 }) => {
   const dispatch = useDispatch();
   const frameWindow = useContext(WindowContext);
@@ -76,11 +81,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const screenId = useSelector(selectCurrentScreenId);
   const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
   const elementCanBeEdited = useSelector(selectElementCanBeEdited(elementId));
+  const preSelectedElementId = useSelector(selectPreSelectedElementId);
   const canDragAndDrop = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
 
-  const ref = useRef<HTMLElement>() as React.MutableRefObject<HTMLElement>;
+  const ref = useRef<HTMLElement>(null) as React.MutableRefObject<HTMLElement>;
 
   const [
     dropDomStyles,
@@ -361,6 +367,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
               drag(ref);
               drop(ref);
             }
+            if (dom && elementId === preSelectedElementId) {
+              dom.scrollIntoView();
+              dispatch(setPreSelectedElementId(null));
+            }
           }}
           onMouseEnter={mouseEnterHandler}
           onMouseLeave={mouseLeaveHandler}
@@ -374,6 +384,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
               elementId={childId}
               parentDomStyles={dropDomStyles}
               parentIds={[...parentIds, elementId]}
+              scrollRef={scrollRef}
             />
           ))}
         </ElementRenderer>

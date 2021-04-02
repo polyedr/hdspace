@@ -82,6 +82,7 @@ export type ProjectEditState = {
   currentProjectId: number;
   currentScreenId: number;
   activeElementId: string;
+  preSelectedElementId: string | null;
   hoveredElementId: string;
   masterCoreElementId: string;
   masterGroupsElementId: string;
@@ -892,6 +893,11 @@ export type SetActiveElementId = IAction<
   string
 >;
 
+export type SetPreSelectedElementId = IAction<
+  typeof TYPES.SET_PRE_SELECTED_ELEMENT_ID,
+  string | null
+>;
+
 export type SetElementCanBeEdited = IAction<
   typeof TYPES.SET_ELEMENT_CAN_BE_EDITED,
   boolean
@@ -1090,9 +1096,6 @@ export type Action =
   | MoveHistoryForward
   | MoveHistoryBackward
   | UnbindGroupElementStyles
-  /* | UnbindGroupElement
-  | UnbindGroupInstance
-  | UnbindMasterGroupElement */
   | UnbindMasterGroupInstance
   | UnwrapFromContainer
   | RestoreElementChildren
@@ -1112,6 +1115,7 @@ export type Action =
   | AddElements
   | RestoreElement
   | SetActiveElementId
+  | SetPreSelectedElementId
   | SetElementCanBeEdited
   | SetElementBeingEdited
   | ResetElementEditState

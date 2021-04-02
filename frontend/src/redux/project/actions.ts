@@ -159,6 +159,7 @@ import {
   SetAnnotatedImageURL,
   CopyVIARegion,
   PasteVIARegion,
+  SetPreSelectedElementId,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -888,6 +889,13 @@ export const setActiveElement = (id: string) => ({
 
 export const setActiveElementId = (id: string) => ({
   type: TYPES.SET_ACTIVE_ELEMENT_ID,
+  payload: id,
+});
+
+export const setPreSelectedElementId = (
+  id: string | null,
+): SetPreSelectedElementId => ({
+  type: TYPES.SET_PRE_SELECTED_ELEMENT_ID,
   payload: id,
 });
 

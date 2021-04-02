@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
@@ -13,10 +13,11 @@ import {
   selectCurrentScreenId,
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
-import { setActiveElement } from '@Redux/project/actions';
+// import { setActiveElement } from '@Redux/project/actions';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import Screen from '@Components/Editor/Screen';
+import Scrollbars from 'react-custom-scrollbars';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
@@ -63,8 +64,8 @@ type Props = {
   elementId?: string;
 };
 
-const Workspace: React.FC<Props> = ({ elementId }) => {
-  const dispatch = useDispatch();
+const Workspace: React.FC<Props> = () => {
+  // const dispatch = useDispatch();
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const format = useSelector(selectLayout);
@@ -74,6 +75,7 @@ const Workspace: React.FC<Props> = ({ elementId }) => {
 
   const classes = useStyles(rotated);
   const ref = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<Scrollbars>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
 
@@ -95,11 +97,7 @@ const Workspace: React.FC<Props> = ({ elementId }) => {
           <FrameWrapper className={cn(classes[format])}>
             <EditorViewport>
               <Scrollbar
-                ref={() => {
-                  if (elementId) {
-                    dispatch(setActiveElement(elementId));
-                  }
-                }}
+                ref={scrollRef}
                 autoHeightMin="100%"
                 autoHeightMax={
                   ref.current
@@ -116,7 +114,11 @@ const Workspace: React.FC<Props> = ({ elementId }) => {
                   <FreeCanvas />
                 ) : (
                   <>
-                    {masterScreenEnabled ? <MasterScreen /> : <Screen />}
+                    {masterScreenEnabled ? (
+                      <MasterScreen scrollRef={scrollRef} />
+                    ) : (
+                      <Screen scrollRef={scrollRef} />
+                    )}
                     {!freeCanvasMode && !isPrototypeMode && (
                       <ElementsInteractions posRight={scrollLeft} />
                     )}

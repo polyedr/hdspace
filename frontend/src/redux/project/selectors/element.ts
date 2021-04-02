@@ -455,3 +455,6 @@ export const selectElementsChildren = (ids: string[]) => (
     })
     .reduce((children, childrenArray) => [...children, ...childrenArray], []);
 };
+
+export const selectPreSelectedElementId = ({ project }: AppReduxState) =>
+  project.edit.preSelectedElementId;

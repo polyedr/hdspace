@@ -69,6 +69,15 @@ const setUserData: ActionHandler<typeof Actions.setUserData> = (
   authError: null,
 });
 
+const resetUserData: ActionHandler<typeof Actions.resetUserData> = (state) => ({
+  ...state,
+  userData: {
+    ...initialUserState.userData,
+  },
+  isLoggedIn: true,
+  authError: null,
+});
+
 const setProfileData: ActionHandler<typeof Actions.setProfileData> = (
   state,
   { payload },
@@ -151,6 +160,7 @@ const handlers: Handlers<UserState> = {
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
   [TYPES.SET_USER_DATA]: setUserData,
+  [TYPES.RESET_USER_DATA]: resetUserData,
   [TYPES.SET_PROFILE_DATA]: setProfileData,
   [TYPES.SET_LOADED_TOKEN]: setLoadedToken,
   [TYPES.SET_USER_ERROR]: setAuthError,

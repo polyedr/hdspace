@@ -64,6 +64,13 @@ const editReducer = produce(
         return { ...draft, activeElementId: action.payload };
       }
 
+      case TYPES.SET_PRE_SELECTED_ELEMENT_ID: {
+        if (draft.preSelectedElementId === action.payload) {
+          return draft;
+        }
+        return { ...draft, preSelectedElementId: action.payload };
+      }
+
       case TYPES.SET_MASTER_SCREEN_ID: {
         if (draft.masterScreenId === action.payload) {
           return draft;
