@@ -3,7 +3,6 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
 import SharedWithLink from '@Components/User/SharedWithLink';
-import ElementSelectionLink from '@Components/User/ElementSelectionLink';
 import Signin from '../components/User/Signin';
 import Signup from '../components/User/Signup';
 import Activation from '../components/User/Activation';
@@ -35,12 +34,6 @@ const Routes: React.FC = () => {
       <Route path={PATH_NAMES.user.password} component={ResetPassword} />
 
       <Route path="/share/" component={SharedWithLink} exact />
-
-      <Route
-        path="/project/:projectId/:screenId/:elementId/"
-        component={ElementSelectionLink}
-        exact
-      />
 
       <PrivateRoute path={PATH_NAMES.projects}>
         <Layout>

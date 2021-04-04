@@ -52,13 +52,13 @@ export const initialUi: ProjectUiState = {
   },
   editorDocument: null,
   newScreenModalOpen: false,
+  preSelectedElementParams: null,
 };
 
 export const initialEdit: ProjectEditState = {
   currentProjectId: -1,
   currentScreenId: -1,
   activeElementId: '-1',
-  preSelectedElementId: null,
   hoveredElementId: '-1',
   masterScreenId: null,
   masterCoreElementId: '-1',

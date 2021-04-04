@@ -35,6 +35,7 @@ import {
   PaginatedResponse,
   UserProjectPermission,
   PermissionsUserData,
+  PreSelectedElementParams,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -76,13 +77,13 @@ export type ProjectUiState = {
   };
   editorDocument: Document | null;
   newScreenModalOpen: boolean;
+  preSelectedElementParams: PreSelectedElementParams | null;
 };
 
 export type ProjectEditState = {
   currentProjectId: number;
   currentScreenId: number;
   activeElementId: string;
-  preSelectedElementId: string | null;
   hoveredElementId: string;
   masterCoreElementId: string;
   masterGroupsElementId: string;
@@ -893,9 +894,9 @@ export type SetActiveElementId = IAction<
   string
 >;
 
-export type SetPreSelectedElementId = IAction<
-  typeof TYPES.SET_PRE_SELECTED_ELEMENT_ID,
-  string | null
+export type SetPreSelectedElementParams = IAction<
+  typeof TYPES.SET_PRESELECTED_ELEMENT_PARAMS,
+  PreSelectedElementParams | null
 >;
 
 export type SetElementCanBeEdited = IAction<
@@ -1115,7 +1116,7 @@ export type Action =
   | AddElements
   | RestoreElement
   | SetActiveElementId
-  | SetPreSelectedElementId
+  | SetPreSelectedElementParams
   | SetElementCanBeEdited
   | SetElementBeingEdited
   | ResetElementEditState

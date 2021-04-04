@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { loadUser } from '@Redux/user/actions';
 import { selectUserData } from '@Redux/user/selectors';
+import { setPreSelectedElementParams } from '@Redux/project/actions';
 
 const SharedWithLink: React.FC = () => {
   const dispatch = useDispatch();
@@ -29,10 +30,13 @@ const SharedWithLink: React.FC = () => {
     if (!userData.isActive) {
       return;
     }
+    if (elementId) {
+      dispatch(
+        setPreSelectedElementParams({ id: elementId, keepVisible: true }),
+      );
+    }
 
-    history.push(
-      `/project/${projectId}/${screenId}${elementId ? `/${elementId}/` : ''}`,
-    );
+    history.push(`/project/${projectId}/${screenId}`);
   }, [dispatch, elementId, history, projectId, screenId, userData.isActive]);
 
   return null;

@@ -13,7 +13,6 @@ import {
   selectCurrentScreenId,
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
-// import { setActiveElement } from '@Redux/project/actions';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import Screen from '@Components/Editor/Screen';

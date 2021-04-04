@@ -19,7 +19,7 @@ import {
   setElementBeingEdited,
   setElementCanBeEdited,
   setHoveredElementId,
-  setPreSelectedElementId,
+  setPreSelectedElementParams,
   toggleSelectedElement,
   updateElementParameters,
 } from '@Redux/project/actions';
@@ -35,7 +35,7 @@ import {
   selectElementByChildId,
   selectElementById,
   selectElementCanBeEdited,
-  selectPreSelectedElementId,
+  selectPreSelectedElementParams,
 } from '@Redux/project/selectors/element';
 import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -81,7 +81,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const screenId = useSelector(selectCurrentScreenId);
   const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
   const elementCanBeEdited = useSelector(selectElementCanBeEdited(elementId));
-  const preSelectedElementId = useSelector(selectPreSelectedElementId);
+  const preSelectedElementParams = useSelector(selectPreSelectedElementParams);
   const canDragAndDrop = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -367,9 +367,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
               drag(ref);
               drop(ref);
             }
-            if (dom && elementId === preSelectedElementId) {
+            if (dom && elementId === preSelectedElementParams?.id) {
               dom.scrollIntoView();
-              dispatch(setPreSelectedElementId(null));
+              if (!preSelectedElementParams?.keepVisible) {
+                dispatch(setPreSelectedElementParams(null));
+              }
             }
           }}
           onMouseEnter={mouseEnterHandler}
