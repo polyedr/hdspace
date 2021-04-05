@@ -4,7 +4,6 @@ import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import SharedWithLink from '@Components/User/SharedWithLink';
-import TYPES from '@Redux/actionTypes';
 
 const { Provider } = jest.requireActual('react-redux');
 
@@ -28,21 +27,6 @@ describe('Share', () => {
         <SharedWithLink />
       </Provider>,
     );
-  });
-
-  it('should dispatch logout first', () => {
-    const actions = store.getActions();
-    expect(actions[0].type).toBe(TYPES.LOGOUT);
-  });
-
-  it('should dispatch setTokenPair action', () => {
-    const actions = store.getActions();
-    expect(actions[1].type).toBe(TYPES.SET_TOKEN_PAIR);
-  });
-
-  it('should dispatch setUserData action', () => {
-    const actions = store.getActions();
-    expect(actions[2].type).toBe(TYPES.SET_USER_DATA);
   });
 
   it('should push to another route', () => {

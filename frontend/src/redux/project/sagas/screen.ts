@@ -57,6 +57,7 @@ import {
 import {
   selectAllElements,
   selectCurrentRootElement,
+  selectPreSelectedElementId,
   selectScreenRootElement,
 } from '../selectors/element';
 import { selectCurrentProject, selectEditorDocument } from '../selectors/base';
@@ -76,10 +77,15 @@ export const activateScreenSaga = withRequiredPermissions(
 
     yield put(setCurrentScreenId(screen.id));
 
-    const screenElement = yield select(selectScreenRootElement(screenId));
-    if (!screenElement) return;
+    const preSelectedElementId = yield select(selectPreSelectedElementId);
 
-    yield put(Actions.setActiveElement(screenElement.id));
+    const screenElement = yield select(selectScreenRootElement(screenId));
+
+    const elementToSelect = preSelectedElementId || screenElement?.id;
+
+    if (elementToSelect) {
+      yield put(Actions.setActiveElement(elementToSelect));
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar(

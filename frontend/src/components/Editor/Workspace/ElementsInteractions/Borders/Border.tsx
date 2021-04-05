@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { BorderStyles, StateElement, StyleProps } from '@Src/types';
+import { selectPreSelectedElementId } from '@Redux/project/selectors/element';
 import { BorderPosition } from '../constants';
 
 type Props = {
@@ -9,9 +12,26 @@ type Props = {
   styles: BorderStyles;
   isActive: boolean;
   onClick?: (event: React.SyntheticEvent<EventTarget>) => void;
+  visiblePreSelect: boolean;
 };
 
 const useStyles = makeStyles((theme) => ({
+  '@global': {
+    '@keyframes sharedHighlight': {
+      '0%': {
+        borderColor: '#5A899D',
+      },
+      '50%': {
+        borderColor: 'red',
+      },
+      '100%': {
+        borderColor: '#5A899D',
+      },
+    },
+  },
+  shared: {
+    animation: 'sharedHighlight 1.5s ease-in-out infinite',
+  },
   border: ({ position, isActive }: Props) => {
     const borderPosPrefix =
       position.charAt(0).toUpperCase() + position.substring(1);
@@ -32,6 +52,7 @@ const Border: React.FC<Props> = (props) => {
   const { element, position, styles, isActive, onClick } = props;
   const borderStyles = useStyles(props);
   const [styleProps, setStyleProps] = useState<StyleProps | null>(null);
+  const preSelectedElementId = useSelector(selectPreSelectedElementId);
 
   useEffect(() => {
     const { top, left, height, width } = styles;
@@ -80,7 +101,10 @@ const Border: React.FC<Props> = (props) => {
       data-border-id={element.id}
       data-element-name={element.name}
       data-position={position}
-      className={borderStyles.border}
+      className={cn(
+        borderStyles.border,
+        element.id === preSelectedElementId ? borderStyles.shared : '',
+      )}
       style={styleProps}
       onClick={onClick}
     />

@@ -58,10 +58,9 @@ const useStyles = makeStyles({
 
 type Props = {
   screenId: number;
-  elementId?: string;
 };
 
-const Screen: React.FC<Props> = ({ screenId, elementId }) => {
+const Screen: React.FC<Props> = ({ screenId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -109,7 +108,7 @@ const Screen: React.FC<Props> = ({ screenId, elementId }) => {
         </>
       ) : (
         <DndProvider backend={HTML5Backend}>
-          <Workspace elementId={elementId} />
+          <Workspace />
 
           <RightPanel />
         </DndProvider>

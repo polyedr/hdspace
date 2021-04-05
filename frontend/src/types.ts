@@ -704,6 +704,11 @@ export type DropTargetParams = {
   position?: DropPosition;
 };
 
+export type PreSelectedElementParams = {
+  id: string;
+  keepVisible: boolean;
+};
+
 export type Indices = {
   newIndex: number;
   oldIndex: number;
