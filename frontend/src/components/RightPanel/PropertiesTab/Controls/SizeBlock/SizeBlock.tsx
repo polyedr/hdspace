@@ -137,6 +137,7 @@ const SizeBlock: React.FC<Props> = ({
   const handleInputChange = useCallback(
     (name, value) => {
       const size = String(name === 'width' ? width : height) || 'auto';
+
       const unitValue = Unit[getUnitFromValue(size?.toString() || Unit.px)];
 
       const finalValue =
@@ -161,11 +162,11 @@ const SizeBlock: React.FC<Props> = ({
   );
 
   const SizeControl: React.FC<ControlProps> = ({ sizeName }) => {
-    const size = String(sizeName === 'width' ? width : height) || 'auto';
+    const size = String((sizeName === 'width' ? width : height) || 'auto');
     const parsedSize = Number.isNaN(parseFloat(size))
       ? ''
       : String(parseFloat(size));
-    const inputValue = size === 'auto' ? 'auto' : parsedSize;
+    const inputValue = !size || size === 'auto' ? 'auto' : parsedSize;
     const [state, setState] = useState(inputValue || 0);
     useEffect(() => {
       setState(inputValue);
