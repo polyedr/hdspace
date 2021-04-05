@@ -1,10 +1,19 @@
-import React, { FC } from 'react';
+import React, { FC, useRef } from 'react';
+
+const host = 'http://localhost:3000';
 
 const SideModule: FC = () => {
+  const ref = useRef<HTMLIFrameElement>(null);
+
   return (
     <div>
-      side module
-      <iframe src="http://localhost:3000" frameBorder="0" title="sidebar" />
+      <iframe
+        onLoad={() => ref.current?.contentWindow?.postMessage('test', host)}
+        ref={ref}
+        src={host}
+        frameBorder="0"
+        title="sidebar"
+      />
     </div>
   );
 };
