@@ -258,6 +258,12 @@ export function* createProjectSaga(
     );
 
     if (result?.created) {
+      yield put(
+        PermissionsActions.setStateCurrentUserPermissions([
+          UserProjectPermission.VIEW_PROJECT,
+          UserProjectPermission.CHANGE_PROJECT,
+        ]),
+      );
       const assetList = yield call(reqWrapper, apiCreateAssetList, {
         projectId: result.id,
         name: DEFAULT_ASSET_LIST_NAME,
