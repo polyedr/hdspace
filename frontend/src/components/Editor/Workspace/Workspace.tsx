@@ -64,7 +64,6 @@ type Props = {
 };
 
 const Workspace: React.FC<Props> = () => {
-  // const dispatch = useDispatch();
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const format = useSelector(selectLayout);
