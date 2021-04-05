@@ -125,20 +125,22 @@ const ShareStyles: React.FC<Props> = ({
     activeElement && Object.keys(activeElement.styles.ownStyles).length;
   const isElementHasSharedClassName = activeElement?.styles.classNames?.[1];
   const disableShareButton =
-    !isElementHasOwnStyles || isElementHasSharedClassName || !canEditProject;
+    !isElementHasOwnStyles || isElementHasSharedClassName;
 
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <Button
-        color="secondary"
-        onClick={handleCopyButtonClick}
-        disabled={!!disableShareButton}
-        variant="contained"
-      >
-        Share styles
-      </Button>
+      {canEditProject && (
+        <Button
+          color="secondary"
+          onClick={handleCopyButtonClick}
+          disabled={!!disableShareButton}
+          variant="contained"
+        >
+          Share styles
+        </Button>
+      )}
 
       <div className={classes.chipContainer}>
         {sharedClasses.length ? (

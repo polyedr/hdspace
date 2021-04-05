@@ -11,6 +11,22 @@ import {
 import React, { ChangeEvent, FC } from 'react';
 import { useSelector } from 'react-redux';
 
+const useFormControlLabelStyles = makeStyles(({ palette }) => ({
+  label: {
+    '&.Mui-disabled': {
+      color: palette.grey.A200,
+    },
+  },
+}));
+
+const useCheckboxStyles = makeStyles(({ palette }) => ({
+  root: {
+    '&.Mui-disabled': {
+      color: palette.grey.A200,
+    },
+  },
+}));
+
 const useStyles = makeStyles({
   root: {
     display: 'flex',
@@ -27,6 +43,8 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   canEdit,
 }) => {
   const classes = useStyles();
+  const labelClasses = useFormControlLabelStyles();
+  const checkboxClasses = useCheckboxStyles();
 
   const { layouts } = useSelector(selectActiveElementParams) as {
     layouts: Layout[];
@@ -53,9 +71,11 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       {list.map((layout) => (
         <div className={classes.label} key={layout}>
           <FormControlLabel
+            classes={labelClasses}
             control={
               <Checkbox
                 name={layout}
+                classes={checkboxClasses}
                 checked={!!layouts?.includes(layout)}
                 onChange={(ev) => handleChange(ev, layout)}
                 disabled={!canEdit}

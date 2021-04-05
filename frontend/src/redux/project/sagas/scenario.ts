@@ -169,8 +169,10 @@ export function* createGroupsBinding(
       ...params,
       [sourceElement.id]: {
         groupElements: [
-          ...(sourceElement.parameters?.groupElements || []),
-          newElement.id,
+          ...new Set([
+            ...(sourceElement.parameters?.groupElements || []),
+            newElement.id,
+          ]),
         ],
       },
     };
@@ -428,7 +430,7 @@ export const createGroupChildrenSaga = compose(
     const instanceElements = instanceElementsIds.map((id) => allElements[id]);
     return {
       [groupElement.id]: {
-        groupElements: instanceElementsIds,
+        groupElements: [...new Set(instanceElementsIds)],
       },
       ...instanceElementsIds.reduce(
         (allIds, id) => ({
@@ -606,9 +608,11 @@ export const deleteElementSaga = withRequiredPermissions(
             sourceElementId,
             {
               groupElements: [
-                ...sourceElement.parameters.groupElements.filter(
-                  (elId) => elId !== id,
-                ),
+                ...new Set([
+                  ...sourceElement.parameters.groupElements.filter(
+                    (elId) => elId !== id,
+                  ),
+                ]),
               ],
             },
             { ...action.meta },

@@ -451,18 +451,6 @@ export function* createElements<T extends Entity>(
         ),
       );
     }
-    /* yield put(
-      Actions.updateLastElements(
-        parent.id,
-        newElements.map((el) => el.id),
-        offset,
-      ),
-    ); */
-
-    /* let offset = 0;
-    if (isFreeCanvasMode) {
-      offset = yield select(selectFreeCanvasOffset(parent.id));
-    } */
 
     const elementsWithUpdatedBuoyancy = parentIds.reduce(
       (createdElements, parentId) => {
