@@ -138,7 +138,6 @@ const SizeBlock: React.FC<Props> = ({
     (name, value) => {
       const size = String(name === 'width' ? width : height) || 'auto';
 
-      console.log('TEST!!', size, name);
       const unitValue = Unit[getUnitFromValue(size?.toString() || Unit.px)];
 
       const finalValue =

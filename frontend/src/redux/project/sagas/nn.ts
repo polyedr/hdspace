@@ -256,7 +256,6 @@ export const uploadFileSaga = compose(
       data: formData,
       contentType: 'multipart/form-data',
     });
-    console.log('NN CONTAINER!!!', nnContainer);
     if (nnContainer) {
       const convertedElements = getElementsArray(nnContainer).map((element) =>
         convertElementToPatchRequest(element),
