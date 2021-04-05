@@ -137,6 +137,8 @@ const SizeBlock: React.FC<Props> = ({
   const handleInputChange = useCallback(
     (name, value) => {
       const size = String(name === 'width' ? width : height) || 'auto';
+
+      console.log('TEST!!', size, name);
       const unitValue = Unit[getUnitFromValue(size?.toString() || Unit.px)];
 
       const finalValue =
@@ -161,11 +163,11 @@ const SizeBlock: React.FC<Props> = ({
   );
 
   const SizeControl: React.FC<ControlProps> = ({ sizeName }) => {
-    const size = String(sizeName === 'width' ? width : height) || 'auto';
+    const size = String((sizeName === 'width' ? width : height) || 'auto');
     const parsedSize = Number.isNaN(parseFloat(size))
       ? ''
       : String(parseFloat(size));
-    const inputValue = size === 'auto' ? 'auto' : parsedSize;
+    const inputValue = !size || size === 'auto' ? 'auto' : parsedSize;
     const [state, setState] = useState(inputValue || 0);
     useEffect(() => {
       setState(inputValue);
@@ -173,7 +175,7 @@ const SizeBlock: React.FC<Props> = ({
     const debounced = useDebouncedCallback((name, value) => {
       handleInputChange(name, value);
     }, 500);
-
+    console.log('TEST!!', size, sizeName);
     return (
       <div className={classes.sizeControl}>
         <StyledTextField
