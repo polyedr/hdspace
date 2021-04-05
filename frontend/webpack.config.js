@@ -121,7 +121,7 @@ module.exports = ({ MODE }) => {
         },
         {
           test: /\.(eot|ttf|woff|woff2|otf|svg)$/,
-          include: [/assets\/fonts/],
+          include: [path.resolve(__dirname, 'src', 'assets', 'fonts')],
           use: {
             loader: 'file-loader',
             options: {
