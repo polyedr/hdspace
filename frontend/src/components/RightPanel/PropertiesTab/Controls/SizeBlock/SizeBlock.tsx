@@ -175,7 +175,7 @@ const SizeBlock: React.FC<Props> = ({
     const debounced = useDebouncedCallback((name, value) => {
       handleInputChange(name, value);
     }, 500);
-    console.log('TEST!!', size, sizeName);
+
     return (
       <div className={classes.sizeControl}>
         <StyledTextField
