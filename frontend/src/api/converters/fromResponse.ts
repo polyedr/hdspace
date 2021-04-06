@@ -70,6 +70,44 @@ export const convertElementFromResponse = <
   },
 });
 
+export const convertNNElementFromResponse = <
+  T extends Entity,
+  K extends Entity,
+  P extends ServerElement<T>['parameters']
+>({
+  id,
+  name,
+  children,
+  struct_type,
+  buoyancy,
+  image,
+  parameters,
+  styles,
+}: ServerElement<T, ServerElement<K>[], P>): LibraryElement<
+  T,
+  LibraryElement<K>[],
+  P
+> => ({
+  id: String(id),
+  name: name || capitalize(struct_type) || 'Container',
+  children: children
+    .map((child) => convertNNElementFromResponse(child))
+    .sort(
+      (firstChild, secondChild) => firstChild.buoyancy - secondChild.buoyancy,
+    ),
+  type: struct_type || 'container',
+  buoyancy,
+  image,
+  parameters: {
+    ...defaultParameters,
+    ...parameters,
+  },
+  styles: {
+    ...getDefaultStyles(struct_type),
+    ownStyles: styles ? cssCamelize(styles) : {},
+  },
+});
+
 export const convertRecursiveElementFromResponse = (
   element: ServerRecursiveElement,
 ): RecursiveElement => {

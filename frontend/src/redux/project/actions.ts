@@ -26,7 +26,6 @@ import {
   StateElementsToAdd,
   VIARegion,
   UserData,
-  PreSelectedElementParams,
   ScreenInfo,
 } from '@Src/types';
 import {
@@ -161,7 +160,8 @@ import {
   SetAnnotatedImageURL,
   CopyVIARegion,
   PasteVIARegion,
-  SetPreSelectedElementParams,
+  SetPreSelectedElementId,
+  SetMasterSourceElementId,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -898,11 +898,18 @@ export const setActiveElementId = (id: string) => ({
   payload: id,
 });
 
-export const setPreSelectedElementParams = (
-  params: PreSelectedElementParams | null,
-): SetPreSelectedElementParams => ({
-  type: TYPES.SET_PRESELECTED_ELEMENT_PARAMS,
-  payload: params,
+export const setPreSelectedElementId = (
+  id: string | null,
+): SetPreSelectedElementId => ({
+  type: TYPES.SET_PRESELECTED_ELEMENT_ID,
+  payload: id,
+});
+
+export const setMasterSourceElementId = (
+  id: string | null,
+): SetMasterSourceElementId => ({
+  type: TYPES.SET_MASTER_SOURCE_ELEMENT_ID,
+  payload: id,
 });
 
 export const setElementCanBeEdited = (edited: boolean) => ({

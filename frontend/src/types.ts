@@ -96,6 +96,14 @@ export type ServerElement<
   shared?: boolean;
 };
 
+export type NNServerElement<
+  Type extends Entity,
+  Children = any[],
+  Params = BaseElementParams
+> = Omit<ServerElement<Type, Children, Params>, 'styles'> & {
+  styles: React.CSSProperties;
+};
+
 export type RootServerElement = ServerElement<'root', []>;
 export type SectionServerElement = ServerElement<
   'section',
@@ -702,11 +710,6 @@ export type StateElementsToAdd<T extends Entity> = {
 export type DropTargetParams = {
   id: string;
   position?: DropPosition;
-};
-
-export type PreSelectedElementParams = {
-  id: string;
-  keepVisible: boolean;
 };
 
 export type Indices = {

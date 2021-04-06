@@ -214,8 +214,8 @@ const dataReducer = produce(
         break;
       case TYPES.ADD_CUSTOM_ELEMENT:
         draft.customElementsData.results = [
-          action.payload.element,
           ...draft.customElementsData.results,
+          action.payload.element,
         ];
         break;
       case TYPES.REMOVE_CUSTOM_ELEMENT:
