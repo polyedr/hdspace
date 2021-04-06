@@ -12,6 +12,7 @@ import {
 import { getProject, resetProjectState } from '@Redux/project/actions';
 import LeftPanel from '@Components/LeftPanel';
 import NewScreenModal from '@Components/Dialogs/NewScreenModal';
+import SideModule from '@Components/SideModule';
 import Screen from './Screen';
 
 const useStyles = makeStyles({
@@ -83,6 +84,8 @@ const Project: React.FC<Props> = ({ projectId, screenId, elementId }) => {
           <NNProcessingModal />
         </>
       )}
+
+      <SideModule />
 
       <NewScreenModal />
     </div>
