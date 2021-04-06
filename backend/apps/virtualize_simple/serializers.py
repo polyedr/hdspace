@@ -2487,6 +2487,23 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     buoyancy=0,
                 )
 
+                # Create an empty divs for the endpoint checking
+                ScenarioElement.objects.create(
+                    parent=outer_div_node,
+                    struct_type="container",
+                    parameters=parameters,
+                    styles=styles,
+                    buoyancy=1,
+                )
+
+                ScenarioElement.objects.create(
+                    parent=outer_div_node,
+                    struct_type="container",
+                    parameters=parameters,
+                    styles=styles,
+                    buoyancy=2,
+                )
+
             else:
                 node.div = ET.SubElement(node.parent.div, "div")
 
