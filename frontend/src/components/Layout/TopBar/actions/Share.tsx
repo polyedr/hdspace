@@ -1,4 +1,4 @@
-import React, { FC, useState, MouseEvent } from 'react';
+import React, { FC, useState, useCallback, MouseEvent } from 'react';
 import ShareIcon from '@material-ui/icons/Share';
 import IconButton from '@material-ui/core/IconButton';
 import Popover from '@material-ui/core/Popover';
@@ -6,13 +6,16 @@ import Container from '@material-ui/core/Container';
 import { Button, makeStyles } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { selectTokenPair } from '@Redux/user/selectors';
+import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectActiveElementId } from '@Redux/project/selectors/element';
 
 const useStyles = makeStyles({
   popup: {
     padding: '1em',
+    display: 'flex',
+    flexDirection: 'column',
   },
 });
 
@@ -23,9 +26,11 @@ type Props = {
 const Share: FC<Props> = ({ className = '' }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { access } = useSelector(selectTokenPair);
+  const user = useSelector(selectUserData);
+  const { access, refresh } = useSelector(selectTokenPair);
   const projectId = useSelector(selectCurrentProjectId);
   const screenId = useSelector(selectCurrentScreenId);
+  const activeElementId = useSelector(selectActiveElementId);
 
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
 
@@ -38,6 +43,28 @@ const Share: FC<Props> = ({ className = '' }) => {
   };
 
   const open = Boolean(anchor);
+
+  const handleCopyLink = useCallback(
+    (includeElement = false) => {
+      const { origin } = window.location;
+
+      navigator.clipboard.writeText(
+        `${origin}/share/?user=${
+          user.id
+        }&project=${projectId}&screen=${screenId}${
+          activeElementId && includeElement ? `&element=${activeElementId}` : ''
+        }&token=${access}&refresh=${refresh}`,
+      );
+
+      handleClose();
+      dispatch(
+        enqueueSnackbar({
+          message: 'Project link was successfully copied to the clipboard',
+        }),
+      );
+    },
+    [access, activeElementId, dispatch, projectId, refresh, screenId, user.id],
+  );
 
   return (
     <div>
@@ -60,25 +87,20 @@ const Share: FC<Props> = ({ className = '' }) => {
       >
         <Container maxWidth="xs" className={classes.popup}>
           <Button
+            style={{ marginBottom: '1em' }}
             variant="contained"
             color="primary"
-            onClick={() => {
-              const { origin } = window.location;
-
-              navigator.clipboard.writeText(
-                `${origin}/share?project=${projectId}&screen=${screenId}&token=${access}`,
-              );
-
-              handleClose();
-              dispatch(
-                enqueueSnackbar({
-                  message:
-                    'Project link was successfully copied to the clipboard',
-                }),
-              );
-            }}
+            onClick={() => handleCopyLink()}
           >
-            Copy link
+            Copy screen link
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleCopyLink(true)}
+            disabled={!activeElementId || parseInt(activeElementId) <= 0}
+          >
+            Copy element link
           </Button>
         </Container>
       </Popover>

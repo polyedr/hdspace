@@ -37,7 +37,7 @@ type Props = {
   elementId?: string;
 };
 
-const Project: React.FC<Props> = ({ projectId, screenId, elementId }) => {
+const Project: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
@@ -61,9 +61,9 @@ const Project: React.FC<Props> = ({ projectId, screenId, elementId }) => {
 
   useEffect(() => {
     if (!screenId && currentProjectId !== -1) {
-      const firstScreenId = project.projectscreen[0];
-      if (firstScreenId) {
-        history.push(`/project/${currentProjectId}/${firstScreenId}`);
+      const firstUserScreenId = project.projectscreen[1];
+      if (firstUserScreenId) {
+        history.push(`/project/${currentProjectId}/${firstUserScreenId}`);
       }
     }
   }, [screenId, currentProjectId, project, history]);
@@ -79,7 +79,7 @@ const Project: React.FC<Props> = ({ projectId, screenId, elementId }) => {
       ) : (
         <>
           {currentProjectId !== -1 && !!screenId && (
-            <Screen screenId={screenId} elementId={elementId} />
+            <Screen screenId={screenId} />
           )}
           <NNProcessingModal />
         </>

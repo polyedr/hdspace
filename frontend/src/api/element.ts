@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import {
   convertElementFromResponse,
+  convertNNElementFromResponse,
   convertRecursiveElementFromResponse,
 } from './converters/fromResponse';
 import { myAxios } from '../config/settings';
@@ -210,7 +211,7 @@ export const parseImgUsingNN = ({
     method: 'POST',
     url: `/virtualize_simple/virtualize-simple/`,
   })
-    .then((res) => ({ result: convertElementFromResponse(res.data) }))
+    .then((res) => ({ result: convertNNElementFromResponse(res.data) }))
     .catch(handleError);
 
 export const recognizeImgUsingNN = (

@@ -56,6 +56,10 @@ export const setUserData = (data: Partial<UserData>) => ({
   payload: data,
 });
 
+export const resetUserData = () => ({
+  type: TYPES.RESET_USER_DATA,
+});
+
 export const setProfileData = (data: Partial<ProfileData>) => ({
   type: TYPES.SET_PROFILE_DATA,
   payload: data,
@@ -102,6 +106,11 @@ export const activateUser = (uid: string, token: string) => ({
     uid,
     token,
   },
+});
+
+export const loadUser = (uid: string, tokenPair: TokenPair) => ({
+  type: TYPES.LOAD_USER_DATA,
+  payload: { uid, tokenPair },
 });
 
 export const setUserError = (error: Error | null) => ({

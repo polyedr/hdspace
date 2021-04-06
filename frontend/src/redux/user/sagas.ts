@@ -18,6 +18,7 @@ import {
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
@@ -224,6 +225,32 @@ export function* registerWithGoogleSaga() {
   // TODO Write when the backend will register new users using google token
 }
 
+export function* loadUserDataSaga(action: ReturnType<typeof Actions.loadUser>) {
+  try {
+    const { uid, tokenPair } = action.payload;
+    yield put(Actions.resetUserData());
+    yield put(Actions.setTokenPair(tokenPair));
+    const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
+      id: uid,
+    });
+    yield put(
+      Actions.setUserData({
+        ...convertUserDataFromResponse(userData),
+      }),
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+}
+
 export default function* userSaga() {
   yield takeLatest(TYPES.LOGIN, loginSaga);
   yield takeLatest(TYPES.REGISTER, registerSaga);
@@ -236,4 +263,5 @@ export default function* userSaga() {
   yield takeLatest(TYPES.REGISTER_WITH_GOOGLE, registerWithGoogleSaga);
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
+  yield takeEvery(TYPES.LOAD_USER_DATA, loadUserDataSaga);
 }

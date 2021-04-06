@@ -12,6 +12,7 @@ import { AppReduxState } from '@Redux/types';
 import Share from '@Components/Layout/TopBar/actions/Share';
 
 const mockWriteText = jest.fn();
+
 Object.assign(navigator, {
   clipboard: {
     writeText: mockWriteText,
@@ -40,14 +41,23 @@ describe('Share', () => {
   it('should open a popup on click', () => {
     const button = screen.getByTitle('Share');
     fireEvent.click(button);
-    expect(screen.getByText('Copy link'));
+    expect(screen.getByText('Copy screen link'));
+    expect(screen.getByText('Copy element link'));
   });
 
-  it('should paste a link to a clipboard', () => {
+  it('should paste a screen link to a clipboard', () => {
     const shareButton = screen.getByTitle('Share');
     fireEvent.click(shareButton);
-    const copyButton = screen.getByText('Copy link');
-    fireEvent.click(copyButton);
+    const copyScreenLinkButton = screen.getByText('Copy screen link');
+    fireEvent.click(copyScreenLinkButton);
+    expect(mockWriteText).toBeCalledTimes(1);
+  });
+
+  it('should paste an element link to a clipboard', () => {
+    const shareButton = screen.getByTitle('Share');
+    fireEvent.click(shareButton);
+    const copyElementLinkButton = screen.getByText('Copy element link');
+    fireEvent.click(copyElementLinkButton);
     expect(mockWriteText).toBeCalledTimes(1);
   });
 });
