@@ -242,6 +242,20 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.SET_PRESELECTED_ELEMENT_ID: {
+        if (draft.preSelectedElementId !== action.payload) {
+          draft.preSelectedElementId = action.payload;
+        }
+        break;
+      }
+
+      case TYPES.SET_MASTER_SOURCE_ELEMENT_ID: {
+        if (draft.masterSourceElementId !== action.payload) {
+          draft.masterSourceElementId = action.payload;
+        }
+        break;
+      }
+
       case TYPES.FINISH_ANNOTATION: {
         draft.VIAMode = initialEdit.VIAMode;
         break;
