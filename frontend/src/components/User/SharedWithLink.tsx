@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { loadUser } from '@Redux/user/actions';
 import { selectUserData } from '@Redux/user/selectors';
-import { setPreSelectedElementParams } from '@Redux/project/actions';
+import { setPreSelectedElementId } from '@Redux/project/actions';
 
 const SharedWithLink: React.FC = () => {
   const dispatch = useDispatch();
@@ -31,9 +31,7 @@ const SharedWithLink: React.FC = () => {
       return;
     }
     if (elementId) {
-      dispatch(
-        setPreSelectedElementParams({ id: elementId, keepVisible: true }),
-      );
+      dispatch(setPreSelectedElementId(elementId));
     }
 
     history.push(`/project/${projectId}/${screenId}`);

@@ -14,7 +14,8 @@ import {
 } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
 import { selectMasterScreenId } from '@Redux/project/selectors/screen';
-import { setPreSelectedElementParams } from '@Redux/project/actions';
+// import { setPreSelectedElementId } from '@Redux/project/actions';
+import { setMasterSourceElementId } from '@Redux/project/actions';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
 type Props = {
@@ -78,17 +79,12 @@ const BorderCrumb: React.FC<Props> = (props) => {
     (showBorders || elementId === activeElementId);
 
   const handleSourceElementClick = useCallback(() => {
-    dispatch(
-      setPreSelectedElementParams({
-        id: element.parameters.sourceEelmentId,
-        keepVisible: false,
-      }),
-    );
+    dispatch(setMasterSourceElementId(element.parameters.sourceElementId));
     history.push(`/project/${currentProjectId}/${masterScreenId}`);
   }, [
     currentProjectId,
     dispatch,
-    element.parameters.sourceEelmentId,
+    element.parameters.sourceElementId,
     history,
     masterScreenId,
   ]);

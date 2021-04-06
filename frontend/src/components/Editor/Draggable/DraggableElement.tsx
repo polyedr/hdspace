@@ -19,7 +19,7 @@ import {
   setElementBeingEdited,
   setElementCanBeEdited,
   setHoveredElementId,
-  setPreSelectedElementParams,
+  setMasterSourceElementId,
   toggleSelectedElement,
   updateElementParameters,
 } from '@Redux/project/actions';
@@ -35,7 +35,8 @@ import {
   selectElementByChildId,
   selectElementById,
   selectElementCanBeEdited,
-  selectPreSelectedElementParams,
+  selectMasterSourceElementId,
+  selectPreSelectedElementId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -81,7 +82,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const screenId = useSelector(selectCurrentScreenId);
   const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
   const elementCanBeEdited = useSelector(selectElementCanBeEdited(elementId));
-  const preSelectedElementParams = useSelector(selectPreSelectedElementParams);
+  const preSelectedElementId = useSelector(selectPreSelectedElementId);
+  const masterSourceElementId = useSelector(selectMasterSourceElementId);
   const canDragAndDrop = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -350,6 +352,16 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     dispatch(setHoveredElementId(element?.parent || null));
   }, [dispatch, element?.parent]);
 
+  const handleScrollIntoView = useDebouncedCallback((dom: HTMLElement) => {
+    if ([preSelectedElementId, masterSourceElementId].includes(elementId)) {
+      dom.scrollIntoView();
+      if (masterSourceElementId === elementId) {
+        dispatch(setMasterSourceElementId(null));
+        dispatch(setActiveElement(elementId));
+      }
+    }
+  }, 0); // delay to allow all elements to render correctly first
+
   if (!element) {
     return null;
   }
@@ -361,17 +373,14 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         <ElementRenderer
           {...elementProps}
           ref={(dom: HTMLElement) => {
+            if (dom && !ref.current) {
+              handleScrollIntoView.callback(dom); // need to call inside a timeout to wait for elements to be rendered correctly
+            }
             ref.current = dom;
             DOMHandler.INSTANCE.addElementDom(elementId, dom);
             if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
               drag(ref);
               drop(ref);
-            }
-            if (dom && elementId === preSelectedElementParams?.id) {
-              dom.scrollIntoView();
-              if (!preSelectedElementParams?.keepVisible) {
-                dispatch(setPreSelectedElementParams(null));
-              }
             }
           }}
           onMouseEnter={mouseEnterHandler}
