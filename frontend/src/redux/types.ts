@@ -76,6 +76,7 @@ export type ProjectUiState = {
   };
   editorDocument: Document | null;
   newScreenModalOpen: boolean;
+  sidebarOpen: boolean;
 };
 
 export type ProjectEditState = {
@@ -1040,6 +1041,8 @@ export type SetNewScreenModal = IAction<
   boolean
 >;
 
+export type SetSidebarOpen = IAction<typeof TYPES.SET_SIDEBAR_OPEN, boolean>;
+
 export type Action =
   | LoadProjects
   | SetUsersSearchValue
@@ -1197,7 +1200,8 @@ export type Action =
   | SetNewScreenModal
   | SetAnnotatedImageURL
   | CopyVIARegion
-  | PasteVIARegion;
+  | PasteVIARegion
+  | SetSidebarOpen;
 
 export type HistoryMeta = {
   useHistory?: boolean;

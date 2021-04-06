@@ -156,3 +156,6 @@ export const selectEditorDocument = ({ project }: AppReduxState) =>
 
 export const selectAssetsLoader = ({ project }: AppReduxState) =>
   project.communication.assetsLoader;
+
+export const selectSidebarOpen = ({ project }: AppReduxState) =>
+  project.ui.sidebarOpen;

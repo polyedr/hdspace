@@ -118,6 +118,13 @@ function uiReducer(
       };
     }
 
+    case TYPES.SET_SIDEBAR_OPEN: {
+      return {
+        ...state,
+        sidebarOpen: action.payload,
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

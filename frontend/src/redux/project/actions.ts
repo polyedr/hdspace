@@ -161,6 +161,7 @@ import {
   PasteVIARegion,
   SetPreSelectedElementId,
   SetMasterSourceElementId,
+  SetSidebarOpen,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1466,5 +1467,10 @@ export const pasteVIARegion = (): PasteVIARegion => ({
 
 export const setNewScreenModal = (open: boolean): SetNewScreenModal => ({
   type: TYPES.SET_NEW_SCREEN_MODAL,
+  payload: open,
+});
+
+export const setSidebarOpen = (open: boolean): SetSidebarOpen => ({
+  type: TYPES.SET_SIDEBAR_OPEN,
   payload: open,
 });
