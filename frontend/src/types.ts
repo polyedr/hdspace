@@ -1235,3 +1235,10 @@ export type VIAFile = {
   regions: VIARegionWithoutId[];
   file_attributes: Record<string, any>;
 };
+
+export type ScreenInfo = {
+  name: string;
+  description: string;
+  keywords: string;
+  title: string;
+};

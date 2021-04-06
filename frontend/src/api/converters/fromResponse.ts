@@ -126,7 +126,13 @@ export function convertProjectFromResponse({
     id,
     name,
     status,
-    projectscreen,
+    projectscreen: projectscreen.map((item) => ({
+      ...item,
+      screen_data_json:
+        typeof item.screen_data_json === 'string'
+          ? JSON.parse(item.screen_data_json)
+          : item.screen_data_json,
+    })),
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),

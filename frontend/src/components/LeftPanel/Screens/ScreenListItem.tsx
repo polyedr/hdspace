@@ -7,12 +7,12 @@ import { lighten } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
-import { renameScreen } from '@Redux/project/actions';
+import { editScreen } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import Dialog from '../../Dialogs/Dialog';
 import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
+import ScreenEditDialog from './ScreenEditDialog';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   listItem: {
@@ -55,7 +55,13 @@ type Props = {
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();
-  const { name, project, id, image } = screen;
+  const {
+    name,
+    project,
+    id,
+    image,
+    screen_data_json: { title, description, keywords },
+  } = screen;
   const classes = useStyles();
   const history = useHistory();
   const currentProjectId = useSelector(selectCurrentProjectId);
@@ -70,7 +76,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const closeEdit = () => setEdit(false);
 
   const handleSubmit = async (values) => {
-    dispatch(renameScreen(project, id, values.name));
+    dispatch(editScreen(project, id, values));
     closeEdit();
   };
 
@@ -109,15 +115,16 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
               closeEdit={closeEdit}
             />
           </ListItem>
-
-          <Dialog
+          <ScreenEditDialog
             open={edit}
             onSubmit={handleSubmit}
             onClose={closeEdit}
             fieldName="name"
             title="Rename Screen"
-            description="Enter screen's new name"
-            initialValue={name}
+            initialValueName={name}
+            initialValueTitle={title}
+            initialValueDescription={description}
+            initialValueKeywords={keywords}
           />
         </div>
       )}
