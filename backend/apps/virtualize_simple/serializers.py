@@ -58,9 +58,11 @@ config_tesseract = "-l eng --oem 1 --psm 3"
 SQUARES_OVERLAP_THRESHOLD = 0.9
 
 # The constant to calculate horizontal overlap during the vertical groups detection
+# An empirical value derived from observations
 VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD = 0.75
 
 # The constant to calculate vertical overlap during the horizontal groups detection
+# An empirical value derived from observations
 HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD = 0.25
 
 VIA_ANNOTATION_ASSEMBLING_FILE = "elements_websites_assembling.txt"
@@ -363,6 +365,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                 if region_dataset == "footers":
                     results = model_footers.detect([img], verbose=1)
 
+                # Results of the Mask R CNN recognition
                 r = results[0]
                 # Detect elements with Mask R CNN model end
 
@@ -402,6 +405,10 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                         "region_attributes": {"HTML element": element},
                     }
                     # Filter out small text contours with height > width
+                    # Here is the filtering of the text blocks.
+                    # The small text contours with height > width were often a junk contours,
+                    # especially not for the whole webpages, but for some smaller blocks (forms, headers, footers).
+                    # Probably a better filtering strategy will be found later here
                     if w > h:
                         fdict[fnamesize]["regions"].append(attributes_dict)
                     # cv2.rectangle(image_opencv_input, (x, y), (x + w, y + h), (255, 0, 0), 1)
@@ -447,6 +454,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                             # cv2.rectangle(image_opencv_input, (x3, y3), (x4, y4), (255, 100, 255), 1)
 
                             # Borders of the rectangles overlapped area
+                            # Define the overlapping area between the rectangles
                             left = max(x1, x3)
                             bottom = max(y1, y3)
                             right = min(x2, x4)
@@ -474,6 +482,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                             )
 
                             # Check if width, height of the overlapped area less or equal 0
+                            # I compare the two rectangles to detect if they overlap.
                             if not (width <= 0 or height <= 0):
                                 # If the square > 0, calculate the squares of the 3 rectangles
                                 square = width * height
@@ -903,6 +912,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 if region_dataset == "footers":
                     results = model_footers.detect([img], verbose=1)
 
+                # Results of the Mask R CNN recognition
                 r = results[0]
                 # Detect elements with Mask R CNN model end
 
@@ -961,6 +971,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         "region_attributes": {"HTML element": element},
                     }
                     # Filter out small text contours with height > width
+                    # Here is the filtering of the text blocks.
+                    # The small text contours with height > width were often a junk contours,
+                    # especially not for the whole webpages, but for some smaller blocks (forms, headers, footers).
+                    # Probably a better filtering strategy will be found later here
                     if w > h:
                         fdict[fnamesize]["regions"].append(attributes_dict)
                     cv2.rectangle(
@@ -1010,6 +1024,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             # cv2.rectangle(image_opencv_input, (x3, y3), (x4, y4), (255, 100, 255), 1)
 
                             # Borders of the rectangles overlapped area
+                            # Define the overlapping area between the rectangles
                             left = max(x1, x3)
                             bottom = max(y1, y3)
                             right = min(x2, x4)
@@ -1037,6 +1052,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             )
 
                             # Check if width, height of the overlapped area less or equal 0
+                            # I compare the two rectangles to detect if they overlap.
                             if not (width <= 0 or height <= 0):
                                 # If the square > 0, calculate the squares of the 3 rectangles
                                 square = width * height
@@ -1169,6 +1185,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         "region_attributes": {"HTML element": element},
                     }
                     # Filter out small text contours with height > width
+                    # Here is the filtering of the text blocks.
+                    # The small text contours with height > width were often a junk contours,
+                    # especially not for the whole webpages, but for some smaller blocks (forms, headers, footers).
+                    # Probably a better filtering strategy will be found later here
                     if w > h:
                         fordict[fnamesize]["regions"].append(attributes_dict)
                     cv2.rectangle(
@@ -1215,6 +1235,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             # cv2.rectangle(image_opencv_input, (x3, y3), (x4, y4), (255, 100, 255), 1)
 
                             # Borders of the rectangles overlapped area
+                            # Define the overlapping area between the rectangles
                             left = max(x1, x3)
                             bottom = max(y1, y3)
                             right = min(x2, x4)
@@ -1242,6 +1263,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                             )
 
                             # Check if width, height of the overlapped area less or equal 0
+                            # I compare the two rectangles to detect if they overlap.
                             if not (width <= 0 or height <= 0):
                                 # If the square > 0, calculate the squares of the 3 rectangles
                                 square = width * height
@@ -1552,6 +1574,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         )
 
                         # Borders of the rectangles overlapped area
+                        # Define the overlapping area between the rectangles
                         left = max(x1, x3)
                         bottom = max(y1, y3)
                         right = min(x2, x4)
@@ -1567,6 +1590,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         width2, height2 = x4 - x3, y4 - y3
 
                         # Check if width, height of the overlapped area less or equal 0
+                        # I compare the two rectangles to detect if they overlap.
                         if not (width <= 0 or height <= 0):
                             # If the square > 0, calculate the squares of the 3 rectangles
                             square = width * height
@@ -1630,6 +1654,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         )
 
                         # Borders of the rectangles overlapped area
+                        # Define the overlapping area between the rectangles
                         left = max(x1, x3)
                         bottom = max(y1, y3)
                         right = min(x2, x4)
@@ -1645,6 +1670,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         width2, height2 = x4 - x3, y4 - y3
 
                         # Check if width, height of the overlapped area less or equal 0
+                        # I compare the two rectangles to detect if they overlap.
                         if not (width <= 0 or height <= 0):
                             # If the square > 0, calculate the squares of the 3 rectangles
                             square = width * height
@@ -3245,6 +3271,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                         )
 
                         # Borders of the rectangles overlapped area
+                        # Define the overlapping area between the rectangles
                         left = max(x1, x3)
                         bottom = max(y1, y3)
                         right = min(x2, x4)
@@ -3260,6 +3287,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                         width2, height2 = x4 - x3, y4 - y3
 
                         # Check if width, height of the overlapped area less or equal 0
+                        # I compare the two rectangles to detect if they overlap.
                         if not (width <= 0 or height <= 0):
                             # If the square > 0, calculate the squares of the 3 rectangles
                             square = width * height
@@ -4568,6 +4596,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                         )
 
                         # Borders of the rectangles overlapped area
+                        # Define the overlapping area between the rectangles
                         left = max(x1, x3)
                         bottom = max(y1, y3)
                         right = min(x2, x4)
@@ -4583,6 +4612,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                         width2, height2 = x4 - x3, y4 - y3
 
                         # Check if width, height of the overlapped area less or equal 0
+                        # I compare the two rectangles to detect if they overlap.
                         if not (width <= 0 or height <= 0):
                             # If the square > 0, calculate the squares of the 3 rectangles
                             square = width * height

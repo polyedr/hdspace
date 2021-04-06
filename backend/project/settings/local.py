@@ -370,7 +370,9 @@ class LoginConfig(Config):
     # Adjust down if you use a smaller GPU.
     IMAGES_PER_GPU = 2
 
-    # Number of classes (including background)
+    # Number of classes (including background).
+    # Different models have different number of classes.
+    # Here is the case of the login forms config
     NUM_CLASSES = 1 + 7  # Background + form_login
 
     # Number of training steps per epoch
@@ -387,14 +389,16 @@ class HeadersConfig(Config):
     """
 
     # Give the configuration a recognizable name
-    NAME = "form_login"
+    NAME = "headers"
 
     # We use a GPU with 12GB memory, which can fit two images.
     # Adjust down if you use a smaller GPU.
     IMAGES_PER_GPU = 2
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 8  # Background + form_login
+    # Different models have different number of classes.
+    # Here is the case of the login forms config
+    NUM_CLASSES = 1 + 8  # Background + headers
 
     # Number of training steps per epoch
     STEPS_PER_EPOCH = 200
@@ -410,14 +414,16 @@ class FootersConfig(Config):
     """
 
     # Give the configuration a recognizable name
-    NAME = "form_login"
+    NAME = "footers"
 
     # We use a GPU with 12GB memory, which can fit two images.
     # Adjust down if you use a smaller GPU.
     IMAGES_PER_GPU = 2
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 5  # Background + form_login
+    # Different models have different number of classes.
+    # Here is the case of the login forms config
+    NUM_CLASSES = 1 + 5  # Background + footers
 
     # Number of training steps per epoch
     STEPS_PER_EPOCH = 200
