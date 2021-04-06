@@ -111,13 +111,6 @@ function uiReducer(
       return { ...state, canCreateGroup: action.payload };
     }
 
-    case TYPES.SET_PRESELECTED_ELEMENT_PARAMS: {
-      if (state.preSelectedElementParams?.id === action.payload?.id) {
-        return state;
-      }
-      return { ...state, preSelectedElementParams: action.payload };
-    }
-
     case TYPES.SET_NEW_SCREEN_MODAL: {
       return {
         ...state,

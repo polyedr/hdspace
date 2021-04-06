@@ -5,7 +5,7 @@ import {
   selectActiveElementId,
   selectElementById,
   selectHoveredElementId,
-  selectPreSelectedElementParams,
+  selectPreSelectedElementId,
 } from '@Redux/project/selectors/element';
 import {
   selectCurrentDropTargetParams,
@@ -27,17 +27,9 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
-  const preSelectedElementParams = useSelector(selectPreSelectedElementParams);
+  const preSelectedElementId = useSelector(selectPreSelectedElementId);
   const isDropTarget = useSelector(selectIsDropTarget(elementId));
   const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
-
-  const shouldElementBeHighlighted = useMemo(() => {
-    if (!preSelectedElementParams) {
-      return false;
-    }
-    const { id, keepVisible } = preSelectedElementParams;
-    return keepVisible && id === elementId;
-  }, [elementId, preSelectedElementParams]);
 
   const isActiveBorder = [
     activeElementId,
@@ -94,7 +86,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
           element={element}
           isActive={isActiveBorder}
           styles={styles}
-          visiblePreSelect={shouldElementBeHighlighted}
+          visiblePreSelect={elementId === preSelectedElementId}
         />
       )}
       {showBordersPosition[BorderPosition.BOTTOM] && (
@@ -103,7 +95,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
           element={element}
           isActive={isActiveBorder}
           styles={styles}
-          visiblePreSelect={shouldElementBeHighlighted}
+          visiblePreSelect={elementId === preSelectedElementId}
         />
       )}
       {showBordersPosition[BorderPosition.LEFT] && (
@@ -112,7 +104,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
           element={element}
           isActive={isActiveBorder}
           styles={styles}
-          visiblePreSelect={shouldElementBeHighlighted}
+          visiblePreSelect={elementId === preSelectedElementId}
         />
       )}
       {showBordersPosition[BorderPosition.RIGHT] && (
@@ -121,7 +113,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
           element={element}
           isActive={isActiveBorder}
           styles={styles}
-          visiblePreSelect={shouldElementBeHighlighted}
+          visiblePreSelect={elementId === preSelectedElementId}
         />
       )}
       {dropTargetBordersMode && isDropTarget && (
