@@ -75,6 +75,7 @@ import {
   getProjectSaga,
   renameProjectSaga,
   searchProjectsSaga,
+  transferDataToSidebarSaga,
   updateProjectSaga,
 } from './project';
 import TYPES from '../../actionTypes';
@@ -462,4 +463,6 @@ export default function* projectSaga() {
     TYPES.UPDATE_USER_PERMISSIONS_FOR_PROJECT,
     updateUserPermissionsForProjectSaga,
   );
+
+  yield takeEvery(TYPES.TRANSFER_DATA_TO_SIDEBAR, transferDataToSidebarSaga);
 }

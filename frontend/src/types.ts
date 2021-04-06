@@ -1238,3 +1238,8 @@ export type VIAFile = {
   regions: VIARegionWithoutId[];
   file_attributes: Record<string, any>;
 };
+
+// export type IframeMessage = {
+//   type: string;
+//   payload: any;
+// };

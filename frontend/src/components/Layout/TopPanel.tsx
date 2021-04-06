@@ -96,13 +96,15 @@ const TopPanel = () => {
 
         {viaMode ? 'Annotation mode' : <TopBar />}
 
-        <IconButton
-          className={classes.sidebarButton}
-          onClick={handleSidebarToggle}
-          title="Toggle Sidebar"
-        >
-          <DehazeIcon />
-        </IconButton>
+        {projectName && (
+          <IconButton
+            className={classes.sidebarButton}
+            onClick={handleSidebarToggle}
+            title="Toggle Sidebar"
+          >
+            <DehazeIcon />
+          </IconButton>
+        )}
       </Toolbar>
 
       <Dialog

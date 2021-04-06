@@ -26,6 +26,7 @@ import {
   StateElementsToAdd,
   VIARegion,
   UserData,
+  // IframeMessage,
 } from '@Src/types';
 import {
   Action,
@@ -1473,4 +1474,28 @@ export const setNewScreenModal = (open: boolean): SetNewScreenModal => ({
 export const setSidebarOpen = (open: boolean): SetSidebarOpen => ({
   type: TYPES.SET_SIDEBAR_OPEN,
   payload: open,
+});
+
+// export const postIframeMessage = (
+//   iframe: HTMLIFrameElement,
+//   message: IframeMessage,
+//   host: string,
+// ) => ({
+//   type: TYPES.POST_IFRAME_MESSAGE,
+//   payload: {
+//     iframe,
+//     message,
+//     host,
+//   },
+// });
+
+export const transferDataToSidebar = (
+  iframe: HTMLIFrameElement,
+  host: string,
+) => ({
+  type: TYPES.TRANSFER_DATA_TO_SIDEBAR,
+  payload: {
+    iframe,
+    host,
+  },
 });
