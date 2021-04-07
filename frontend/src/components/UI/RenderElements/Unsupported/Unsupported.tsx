@@ -10,13 +10,12 @@ const useStyles = makeComponentStyles('unknown');
 
 const Unknown: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { tag, attributes, groupClass } = props;
+    const { params } = props;
+    const { tag, attributes, groupClass } = params;
     const classes = useStyles();
-
     try {
       return React.createElement(tag, {
         ...attributes,
-        ...props,
         ref,
         className: cn(groupClass, classes.ownStyles),
       });

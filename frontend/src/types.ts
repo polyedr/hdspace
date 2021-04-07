@@ -1205,6 +1205,7 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'bullets',
   'flexGrow',
   'backgroundSize',
+  'styleSheets',
 ] as const;
 
 export type Control =
