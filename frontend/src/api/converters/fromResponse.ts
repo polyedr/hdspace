@@ -144,10 +144,6 @@ export const convertUserDataFromResponse = ({
   ...rest,
 });
 
-export function convertProjectFromResponse(
-  project: ServerProjectWithScreens,
-): ProjectWithScreens;
-export function convertProjectFromResponse(project: ServerProject): Project;
 export function convertProjectFromResponse({
   id,
   name,
@@ -157,14 +153,54 @@ export function convertProjectFromResponse({
   updated,
   user,
   project_data_json,
-}) {
+}: ServerProject): Project {
   const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
-
   return {
     id,
     name,
     status,
     projectscreen,
+    projectLoader: false,
+    created: new Date(created),
+    updated: new Date(updated),
+    user: convertUserDataFromResponse(user),
+    projectData: {
+      ...projectDataJSON,
+      classes: projectDataJSON.classes.map((cls: ProjectClass) => {
+        return {
+          ...cls,
+          rules: cssCamelize(cls.rules) as React.CSSProperties,
+        } as ProjectClass;
+      }),
+    },
+  };
+}
+
+export function convertProjectWithScreensFromResponse({
+  id,
+  name,
+  status,
+  projectscreen,
+  created,
+  updated,
+  user,
+  project_data_json,
+}: ServerProjectWithScreens): ProjectWithScreens {
+  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
+  const convetrScreen = () => {
+    return projectscreen.map((item) => ({
+      ...item,
+      screen_data_json:
+        typeof item.screen_data_json === 'string'
+          ? JSON.parse(item.screen_data_json)
+          : item.screen_data_json,
+    }));
+  };
+  return {
+    id,
+    name,
+    status,
+    projectscreen: convetrScreen(),
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),

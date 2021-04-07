@@ -35,7 +35,7 @@ import {
   addElements,
   createScreen,
   deleteScreen,
-  renameScreen,
+  editScreen,
   restoreScreen,
   setCurrentScreenId,
   setProject,
@@ -550,24 +550,48 @@ export const restoreScreenSaga = withActionsHistory(function* ({
   }
 });
 
-export const renameScreenSaga = withRequiredPermissions(
+export const editScreenSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* ({ payload }: ReturnType<typeof renameScreen>) {
+)(function* ({ payload }: ReturnType<typeof editScreen>) {
   try {
-    const { screenID, name } = payload;
+    const { screenID, screenInfo } = payload;
+    const {
+      name,
+      description,
+      keywords,
+      title,
+      viewport,
+      author,
+      refresh,
+    } = screenInfo;
 
+    const convertedKeywordsinArray = () => {
+      if (keywords) {
+        return keywords.split(',').map((word) => word.trim());
+      }
+      return keywords;
+    };
+
+    const nameWithoutSpace = name.trim();
     const screens: ReturnType<typeof selectScreens> = yield select(
       selectScreens,
     );
-
     const numberedName = generateUniqueName(
-      name,
+      nameWithoutSpace,
       screens.map((screen) => screen.name),
     );
 
-    const renamedScreen: Partial<Screen> = {
+    const newData: Partial<Screen> = {
       name: numberedName,
+      screen_data_json: JSON.stringify({
+        title,
+        description,
+        keywords: convertedKeywordsinArray(),
+        viewport,
+        author,
+        refresh,
+      }),
     };
 
     const { result, error }: Result<Screen> = yield call(
@@ -575,17 +599,27 @@ export const renameScreenSaga = withRequiredPermissions(
       apiUpdateScreen,
       {
         id: screenID,
-        data: renamedScreen,
+        data: newData,
       },
     );
 
     if (result) {
       const newScreens = screens.map((screen) => {
         return screen.id === screenID
-          ? { ...screen, name: numberedName }
+          ? {
+              ...screen,
+              name: numberedName,
+              screen_data_json: {
+                description,
+                keywords: convertedKeywordsinArray(),
+                title,
+                viewport,
+                author,
+                refresh,
+              },
+            }
           : screen;
       });
-
       yield put(setScreens(newScreens));
     }
     if (error) throw new Error(error);

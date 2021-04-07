@@ -35,6 +35,7 @@ import {
   PaginatedResponse,
   UserProjectPermission,
   PermissionsUserData,
+  ScreenInfo,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -310,9 +311,13 @@ export type RestoreScreen = IAction<
   { projectId: number; screenId: number },
   HistoryMeta
 >;
-export type RenameScreen = IAction<
-  typeof TYPES.RENAME_SCREEN,
-  { projectID: number; screenID: number; name: string }
+export type EditScreen = IAction<
+  typeof TYPES.EDIT_SCREEN,
+  {
+    projectID: number;
+    screenID: number;
+    screenInfo: ScreenInfo;
+  }
 >;
 export type CreateScreen = IAction<
   typeof TYPES.CREATE_SCREEN,
@@ -1078,7 +1083,7 @@ export type Action =
   | SetAnalyzerLoader
   | SetAssetsLoader
   | DeleteScreen
-  | RenameScreen
+  | EditScreen
   | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen

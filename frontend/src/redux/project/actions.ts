@@ -27,6 +27,7 @@ import {
   VIARegion,
   UserData,
   // IframeMessage,
+  ScreenInfo,
 } from '@Src/types';
 import {
   Action,
@@ -59,7 +60,7 @@ import {
   RemoveAsset,
   RestoreAsset,
   RenameProject,
-  RenameScreen,
+  EditScreen,
   ReplaceElementStyles,
   ResetProjectState,
   RestoreElement,
@@ -323,13 +324,17 @@ export const restoreScreen = (
   meta,
 });
 
-export const renameScreen = (
+export const editScreen = (
   projectID: number,
   screenID: number,
-  name: string,
-): RenameScreen => ({
-  type: TYPES.RENAME_SCREEN,
-  payload: { projectID, screenID, name },
+  screenInfo: ScreenInfo,
+): EditScreen => ({
+  type: TYPES.EDIT_SCREEN,
+  payload: {
+    projectID,
+    screenID,
+    screenInfo,
+  },
 });
 
 export const createScreen = (

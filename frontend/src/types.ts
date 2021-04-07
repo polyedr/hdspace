@@ -1243,3 +1243,13 @@ export type IFrameMessage = {
   type: string;
   payload: any;
 };
+
+export type ScreenInfo = {
+  name: string;
+  description: string;
+  keywords: string;
+  title: string;
+  viewport: string;
+  author: string;
+  refresh: string;
+};
