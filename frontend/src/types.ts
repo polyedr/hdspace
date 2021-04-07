@@ -1244,4 +1244,7 @@ export type ScreenInfo = {
   description: string;
   keywords: string;
   title: string;
+  viewport: string;
+  author: string;
+  refresh: string;
 };

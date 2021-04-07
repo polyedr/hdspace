@@ -556,13 +556,29 @@ export const editScreenSaga = withRequiredPermissions(
 )(function* ({ payload }: ReturnType<typeof editScreen>) {
   try {
     const { screenID, screenInfo } = payload;
-    const { name, description, keywords, title } = screenInfo;
+    const {
+      name,
+      description,
+      keywords,
+      title,
+      viewport,
+      author,
+      refresh,
+    } = screenInfo;
+
+    const convertedKeywordsinArray = () => {
+      if (keywords) {
+        return keywords.split(',').map((word) => word.trim());
+      }
+      return keywords;
+    };
+
+    const nameWithoutSpace = name.trim();
     const screens: ReturnType<typeof selectScreens> = yield select(
       selectScreens,
     );
-
     const numberedName = generateUniqueName(
-      name,
+      nameWithoutSpace,
       screens.map((screen) => screen.name),
     );
 
@@ -571,7 +587,10 @@ export const editScreenSaga = withRequiredPermissions(
       screen_data_json: JSON.stringify({
         title,
         description,
-        keywords,
+        keywords: convertedKeywordsinArray(),
+        viewport,
+        author,
+        refresh,
       }),
     };
 
@@ -590,6 +609,14 @@ export const editScreenSaga = withRequiredPermissions(
           ? {
               ...screen,
               name: numberedName,
+              screen_data_json: {
+                description,
+                keywords: convertedKeywordsinArray(),
+                title,
+                viewport,
+                author,
+                refresh,
+              },
             }
           : screen;
       });

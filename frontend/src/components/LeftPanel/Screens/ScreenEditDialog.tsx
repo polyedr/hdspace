@@ -10,15 +10,13 @@ import { makeStyles } from '@material-ui/core/styles';
 
 type Props = {
   open: boolean;
-  title: string;
+  titleDialog: string;
   onSubmit: (...args: any) => void;
   onClose: () => void;
   withoutField?: boolean;
   fieldName?: string;
   initialValueName?: any;
-  initialValueTitle?: any;
-  initialValueDescription?: any;
-  initialValueKeywords?: any;
+  initialValueTags?: any;
   type?: string;
   validation?: any;
 };
@@ -32,26 +30,33 @@ const useStyles = makeStyles({
 });
 const ScreenEditDialog: React.FC<Props> = ({
   open,
-  title,
+  titleDialog,
   onSubmit,
   onClose,
   fieldName = '',
   initialValueName,
-  initialValueTitle,
-  initialValueDescription,
-  initialValueKeywords,
+  initialValueTags: { title, description, keywords, viewport, author, refresh },
   withoutField = false,
   type,
   validation,
 }) => {
   const classes = useStyles();
+  const convertedKeywordsinString = () => {
+    if (keywords) {
+      return keywords.join(', ');
+    }
+    return keywords;
+  };
+
   return (
     <MuiDialog open={open} onClose={onClose}>
       <Form
         onSubmit={onSubmit}
         render={({ handleSubmit }) => (
           <form onSubmit={handleSubmit}>
-            <DialogTitle className={classes.dialogTitle}>{title}</DialogTitle>
+            <DialogTitle className={classes.dialogTitle}>
+              {titleDialog}
+            </DialogTitle>
             <DialogContent>
               {!withoutField && (
                 <>
@@ -66,7 +71,7 @@ const ScreenEditDialog: React.FC<Props> = ({
                         required
                         label="name screen"
                         variant="outlined"
-                        margin="normal"
+                        margin="dense"
                         type={type || 'text'}
                         fullWidth
                         {...input}
@@ -80,13 +85,13 @@ const ScreenEditDialog: React.FC<Props> = ({
                   <Field
                     name="title"
                     validate={validation}
-                    initialValue={initialValueTitle}
+                    initialValue={title}
                   >
                     {({ input }) => (
                       <TextField
                         label="title"
                         variant="outlined"
-                        margin="normal"
+                        margin="dense"
                         fullWidth
                         placeholder="Page title"
                         type={type || 'text'}
@@ -98,36 +103,93 @@ const ScreenEditDialog: React.FC<Props> = ({
                   <Field
                     name="description"
                     validate={validation}
-                    initialValue={initialValueDescription}
+                    initialValue={description}
                   >
                     {({ input }) => (
                       <TextField
                         label="description"
                         variant="outlined"
-                        margin="normal"
+                        margin="dense"
                         fullWidth
                         placeholder="Short description of the page"
                         type={type || 'text'}
                         {...input}
-                        style={{ marginTop: '5px' }}
+                        style={{ marginTop: '12px' }}
                       />
                     )}
                   </Field>
                   <Field
                     name="keywords"
                     validate={validation}
-                    initialValue={initialValueKeywords}
+                    initialValue={convertedKeywordsinString()}
                   >
                     {({ input }) => (
                       <TextField
                         label="keywords"
                         variant="outlined"
-                        margin="normal"
+                        margin="dense"
                         type={type || 'text'}
                         fullWidth
                         placeholder="List of keywords"
                         {...input}
-                        style={{ marginTop: '5px' }}
+                        style={{ marginTop: '12px' }}
+                      />
+                    )}
+                  </Field>
+
+                  <Field
+                    name="viewport"
+                    validate={validation}
+                    initialValue={viewport}
+                  >
+                    {({ input }) => (
+                      <TextField
+                        label="viewport"
+                        variant="outlined"
+                        margin="dense"
+                        type={type || 'text'}
+                        fullWidth
+                        placeholder="Setting the viewport to make your website look good on all devices"
+                        {...input}
+                        style={{ marginTop: '12px' }}
+                      />
+                    )}
+                  </Field>
+
+                  <Field
+                    name="author"
+                    validate={validation}
+                    initialValue={author}
+                  >
+                    {({ input }) => (
+                      <TextField
+                        label="author"
+                        variant="outlined"
+                        margin="dense"
+                        type={type || 'text'}
+                        fullWidth
+                        placeholder="Define the author of a page"
+                        {...input}
+                        style={{ marginTop: '12px' }}
+                      />
+                    )}
+                  </Field>
+
+                  <Field
+                    name="refresh"
+                    validate={validation}
+                    initialValue={refresh}
+                  >
+                    {({ input }) => (
+                      <TextField
+                        label="refresh"
+                        variant="outlined"
+                        margin="dense"
+                        type={type || 'text'}
+                        fullWidth
+                        placeholder="Page refresh interval in seconds"
+                        {...input}
+                        style={{ marginTop: '12px' }}
                       />
                     )}
                   </Field>

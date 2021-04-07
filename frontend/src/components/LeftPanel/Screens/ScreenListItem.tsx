@@ -55,17 +55,10 @@ type Props = {
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();
-  const {
-    name,
-    project,
-    id,
-    image,
-    screen_data_json: { title, description, keywords },
-  } = screen;
+  const { name, project, id, image, screen_data_json } = screen;
   const classes = useStyles();
   const history = useHistory();
   const currentProjectId = useSelector(selectCurrentProjectId);
-
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
 
@@ -120,11 +113,9 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
             onSubmit={handleSubmit}
             onClose={closeEdit}
             fieldName="name"
-            title="Rename Screen"
+            titleDialog="Rename Screen"
             initialValueName={name}
-            initialValueTitle={title}
-            initialValueDescription={description}
-            initialValueKeywords={keywords}
+            initialValueTags={screen_data_json}
           />
         </div>
       )}
