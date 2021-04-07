@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
@@ -237,7 +237,13 @@ export type DropdownItemServerElement = ServerElement<
   [],
   DropdownItemParameters
 >;
-export type UndefinedServerElement = ServerElement<'undefined', []>;
+export type UndefinedServerElement = ServerElement<'undefined', []>; // if element's tag is not an HTML element
+
+export type UnsupportedServerElement = ServerElement<
+  'unsupported',
+  [],
+  UnsupportedParameters
+>; // if element's tag is an HTML element not supported by ADEVI functionality
 
 export type ElementsGroupServerElement = ServerElement<
   'group',
@@ -593,6 +599,11 @@ export type VideoSettingsType = {
 
 export type VideoParameters = BaseElementParams & {
   videoSettings: VideoSettingsType;
+};
+
+export type UnsupportedParameters = BaseElementParams & {
+  tag: string;
+  attributes: HTMLAttributes<HTMLElement> & { [name: string]: string };
 };
 
 export type DropdownParameters = BaseElementParams & {
@@ -1107,6 +1118,7 @@ export type ElementsToAdd = {
   featureSection: FeatureSectionServerElement;
   section: SectionServerElement;
   group: ElementsGroupServerElement;
+  unsupported: UnsupportedServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;

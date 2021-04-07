@@ -21,6 +21,7 @@ import {
   SmartHeaderServerElement,
   SmartWebpageServerElement,
   UndefinedServerElement,
+  UnsupportedServerElement,
   VideoServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
@@ -500,5 +501,29 @@ export const undefinedElement: UndefinedServerElement = {
     ownStyles: {},
   },
   name: 'undefined',
+  children: [],
+};
+
+export const unsupportedElement: UnsupportedServerElement = {
+  id: 'unsupported',
+  buoyancy: 0,
+  func_type: 'unsupported',
+  struct_type: 'unsupported',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    group: ElementGroup.UNDEFINED,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 100,
+      height: 100,
+    },
+    tag: 'div',
+    attributes: {},
+  },
+  styles: {
+    classNames: [],
+    ownStyles: {},
+  },
+  name: 'div',
   children: [],
 };

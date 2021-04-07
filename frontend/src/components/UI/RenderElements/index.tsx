@@ -34,6 +34,7 @@ import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
 import Select from './Select/Select';
 import Option from './Option/Option';
+import Unsupported from './Unsupported/Unsupported';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -81,6 +82,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   featureSection: Container,
   section: Section,
   group: ElementsGroup,
+  unsupported: Unsupported,
 };
 
 export default RENDERERS;

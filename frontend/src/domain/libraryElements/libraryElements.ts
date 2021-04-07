@@ -45,6 +45,7 @@ import {
   column,
   nativeColumns,
   elementsGroup,
+  unsupportedElement,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -122,6 +123,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   featureSection,
   section,
   group: elementsGroup,
+  unsupported: unsupportedElement,
 };
 
 export const ICONS: Partial<
