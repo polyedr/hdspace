@@ -24,14 +24,11 @@ import {
   ProjectWithScreens,
   Result,
   Screen,
-  TokenPair,
-  UserData,
   UserProjectPermission,
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -39,7 +36,6 @@ import * as PermissionsActions from '../../permissions/actions';
 import { createScreenSaga, getScreensSaga } from './screen';
 import {
   selectCurrentProject,
-  selectCurrentProjectId,
   selectProjectById,
   selectProjectsAsArr,
   selectProjectsDataNext,
@@ -468,33 +464,4 @@ export function* updateProjectSaga(
       ),
     );
   }
-}
-
-export function* transferDataToSidebarSaga(
-  action: ReturnType<typeof Actions.transferDataToSidebar>,
-) {
-  const { iframe, host } = action.payload;
-
-  if (!iframe.contentWindow) {
-    throw new Error('No iframe mounted');
-  }
-
-  const userData: UserData = yield select(selectUserData);
-  const projectId: number = yield select(selectCurrentProjectId);
-  const { access }: TokenPair = yield select(selectTokenPair);
-
-  iframe.contentWindow.postMessage(
-    { type: 'setAccessToken', payload: access },
-    host,
-  );
-
-  iframe.contentWindow.postMessage(
-    { type: 'setProjectId', payload: projectId },
-    host,
-  );
-
-  iframe.contentWindow.postMessage(
-    { type: 'setUserData', payload: userData },
-    host,
-  );
 }

@@ -1,9 +1,9 @@
 import { makeStyles } from '@material-ui/core';
 import { selectSidebarOpen } from '@Redux/project/selectors/base';
-import React, { FC, useRef } from 'react';
+import React, { FC, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
-import { transferDataToSidebar } from '@Redux/project/actions';
+import { setUpSidebar, sidebarLogoutSuccess } from '@Redux/project/actions';
 
 const host = 'http://localhost:3000';
 
@@ -29,6 +29,19 @@ const useStyles = makeStyles({
 const Sidebar: FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+
+  useEffect(() => {
+    const listener = (ev) => {
+      if (ev?.data?.type === 'sidebarLogoutSuccess') {
+        dispatch(sidebarLogoutSuccess());
+      }
+    };
+    window.addEventListener('message', listener);
+    return () => {
+      window.removeEventListener('message', listener);
+    };
+  }, [dispatch]);
+
   const open = useSelector(selectSidebarOpen);
   const ref = useRef<HTMLIFrameElement>(null);
 
@@ -37,7 +50,7 @@ const Sidebar: FC = () => {
       return;
     }
 
-    dispatch(transferDataToSidebar(ref.current, host));
+    dispatch(setUpSidebar(ref.current, host));
   };
 
   return (

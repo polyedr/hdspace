@@ -75,9 +75,9 @@ import {
   getProjectSaga,
   renameProjectSaga,
   searchProjectsSaga,
-  transferDataToSidebarSaga,
   updateProjectSaga,
 } from './project';
+import { setUpSidebarSaga } from './sidebar';
 import TYPES from '../../actionTypes';
 import { projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -464,5 +464,5 @@ export default function* projectSaga() {
     updateUserPermissionsForProjectSaga,
   );
 
-  yield takeEvery(TYPES.TRANSFER_DATA_TO_SIDEBAR, transferDataToSidebarSaga);
+  yield takeEvery(TYPES.SET_UP_SIDEBAR, setUpSidebarSaga);
 }

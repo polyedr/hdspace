@@ -121,7 +121,30 @@ function uiReducer(
     case TYPES.SET_SIDEBAR_OPEN: {
       return {
         ...state,
-        sidebarOpen: action.payload,
+        sidebar: {
+          ...state.sidebar,
+          open: action.payload,
+        },
+      };
+    }
+
+    case TYPES.SET_SIDEBAR_IFRAME: {
+      return {
+        ...state,
+        sidebar: {
+          ...state.sidebar,
+          iframe: action.payload,
+        },
+      };
+    }
+
+    case TYPES.SET_SIDEBAR_HOST: {
+      return {
+        ...state,
+        sidebar: {
+          ...state.sidebar,
+          host: action.payload,
+        },
       };
     }
 

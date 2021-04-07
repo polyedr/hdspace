@@ -163,6 +163,8 @@ import {
   SetPreSelectedElementId,
   SetMasterSourceElementId,
   SetSidebarOpen,
+  SetSidebarHost,
+  SetSidebarIframe,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1476,26 +1478,30 @@ export const setSidebarOpen = (open: boolean): SetSidebarOpen => ({
   payload: open,
 });
 
-// export const postIframeMessage = (
-//   iframe: HTMLIFrameElement,
-//   message: IframeMessage,
-//   host: string,
-// ) => ({
-//   type: TYPES.POST_IFRAME_MESSAGE,
-//   payload: {
-//     iframe,
-//     message,
-//     host,
-//   },
-// });
-
-export const transferDataToSidebar = (
-  iframe: HTMLIFrameElement,
-  host: string,
-) => ({
-  type: TYPES.TRANSFER_DATA_TO_SIDEBAR,
+export const setUpSidebar = (iframe: HTMLIFrameElement, host: string) => ({
+  type: TYPES.SET_UP_SIDEBAR,
   payload: {
     iframe,
     host,
   },
+});
+
+export const setSidebarIframe = (
+  iframe: HTMLIFrameElement | null,
+): SetSidebarIframe => ({
+  type: TYPES.SET_SIDEBAR_IFRAME,
+  payload: iframe,
+});
+
+export const setSidebarHost = (host: string): SetSidebarHost => ({
+  type: TYPES.SET_SIDEBAR_HOST,
+  payload: host,
+});
+
+export const sidebarLogout = () => ({
+  type: TYPES.SIDEBAR_LOGOUT,
+});
+
+export const sidebarLogoutSuccess = () => ({
+  type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
 });

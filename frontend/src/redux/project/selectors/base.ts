@@ -158,4 +158,10 @@ export const selectAssetsLoader = ({ project }: AppReduxState) =>
   project.communication.assetsLoader;
 
 export const selectSidebarOpen = ({ project }: AppReduxState) =>
-  project.ui.sidebarOpen;
+  project.ui.sidebar.open;
+
+export const selectSidebarIframe = ({ project }: AppReduxState) =>
+  project.ui.sidebar.iframe;
+
+export const selectSidebarHost = ({ project }: AppReduxState) =>
+  project.ui.sidebar.host;
