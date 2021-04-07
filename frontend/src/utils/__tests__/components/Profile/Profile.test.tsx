@@ -36,6 +36,6 @@ describe('Profile', () => {
     fireEvent.click(button);
 
     const actions = store.getActions();
-    expect(actions[actions.length - 1].type).toBe(TYPES.LOGOUT);
+    expect(actions[actions.length - 1].type).toBe(TYPES.LOGOUT_START);
   });
 });
