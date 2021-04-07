@@ -1239,7 +1239,7 @@ export type VIAFile = {
   file_attributes: Record<string, any>;
 };
 
-// export type IframeMessage = {
-//   type: string;
-//   payload: any;
-// };
+export type IFrameMessage = {
+  type: string;
+  payload: any;
+};
