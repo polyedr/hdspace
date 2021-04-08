@@ -150,7 +150,6 @@ export const mockInitialState: AppReduxState = {
       pathname: '',
       search: '',
       state: '',
-      query: {},
     },
   },
   notification: {
