@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { SharedRendererProps } from '../types';
 import Undefined from '../Undefined/Undefined';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../useEventHandlers';
 
 const useStyles = makeComponentStyles('unknown');
 
@@ -13,10 +14,12 @@ const Unknown: React.FC<SharedRendererProps> = React.forwardRef(
     const { params, children } = props;
     const { tag, attributes, groupClass, textContent } = params;
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
     try {
       return React.createElement(
         tag,
         {
+          ...eventHandlers,
           ...attributes,
           ref,
           className: cn(groupClass, classes.ownStyles),
