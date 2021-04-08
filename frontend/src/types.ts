@@ -1190,6 +1190,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'stylesOn',
   'alt',
   'title',
+  'attributes',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

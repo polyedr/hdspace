@@ -33,7 +33,8 @@ import withSmartContainer from '@Components/UI/RenderElements/SmartContainer/wit
 import { Control, NNBlockType } from '@Src/types';
 import Alt from '@Components/RightPanel/PropertiesTab/Controls/Alt';
 import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
-import EditStyleSheets from '@Components/RightPanel/PropertiesTab/Controls/EditStyleSheets/EditStyleSheets';
+import StyleSheets from '@Components/RightPanel/PropertiesTab/Controls/StyleSheets/StyleSheets';
+import Attributes from '@Components/RightPanel/PropertiesTab/Controls/Attributes/Attributes';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -124,7 +125,8 @@ const CONTROLS: Record<Control, ControlInfo> = {
       'columnRuleColor',
     ],
   },
-  styleSheets: { Control: EditStyleSheets },
+  styleSheets: { Control: StyleSheets },
+  attributes: { Control: Attributes },
 };
 
 export default CONTROLS;

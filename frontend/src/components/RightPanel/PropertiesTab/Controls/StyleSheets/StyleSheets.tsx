@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { CodeEditorEditable } from 'react-code-editor-editable';
 import validateCSS from 'simple-css-validator';
 import { useDebouncedCallback } from 'use-debounce';
 import { cssCamelize, cssDecamelize } from '@Utils/CSSConverter';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { selectElementById } from '@Redux/project/selectors/element';
+import { selectActiveElement } from '@Redux/project/selectors/element';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
-import 'highlight.js/styles/dracula.css';
+import 'highlight.js/styles/arta.css';
 
 const transformToEditorStyles = (styles: React.CSSProperties) => {
   return Object.keys(styles).reduce((stringStyles, styleName) => {
@@ -17,25 +18,27 @@ const transformToEditorStyles = (styles: React.CSSProperties) => {
   }, '');
 };
 
-const useStyles = makeStyles({
-  editorError: {
-    outline: '1px solid #ff0000',
-  },
-  error: {
-    color: '#ff0000',
-  },
+const useStyles = makeStyles((theme) => {
+  return {
+    editorError: {
+      outline: '1px solid #ff0000',
+    },
+    editorWrapper: {
+      margin: '7px 0',
+      '& textarea': {
+        lineHeight: theme.typography.body2.lineHeight,
+      },
+    },
+  };
 });
 
-const EditStyleSheets: React.FC<
-  PropertiesChangeProps<LibraryElement<Entity>>
-> = ({
-  activeElementId,
+const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   removeStyles,
   updateStyles,
   canEdit,
   masterScreenEnabled,
 }) => {
-  const element = useSelector(selectElementById(activeElementId));
+  const element = useSelector(selectActiveElement);
   const classes = useStyles();
 
   const handleEditorChange = useDebouncedCallback(
@@ -47,7 +50,7 @@ const EditStyleSheets: React.FC<
     transformToEditorStyles(cssDecamelize(element.styles.ownStyles)),
   );
 
-  const [inputError, setInputError] = useState<string | null>(null);
+  const [editorError, setEditorError] = useState<string | null>(null);
 
   return (
     <>
@@ -56,24 +59,28 @@ const EditStyleSheets: React.FC<
           <StylesHeader
             title="Edit styles"
             onClick={removeStyles}
-            cssPropertiesNames={[
-              'display',
-              'justifyContent',
-              'alignItems',
-              'flexDirection',
-            ]}
+            cssPropertiesNames={Object.keys(element.styles.ownStyles)}
           />
         )}
       </div>
-      <div className={inputError ? classes.editorError : ''}>
+      <div
+        className={cn(
+          classes.editorWrapper,
+          editorError ? classes.editorError : '',
+        )}
+      >
         <CodeEditorEditable
           value={editorStyles}
           setValue={(newStyles: string) => {
             setEditorStyles(newStyles);
             try {
               const stylesJson = newStyles
+                .replaceAll('\r\n', '')
                 .split(';')
                 .reduce((json, styleRule) => {
+                  if (!styleRule.trim().length) {
+                    return json;
+                  }
                   const [ruleName, ruleValue, ...otherValues] = styleRule.split(
                     ':',
                   );
@@ -87,11 +94,14 @@ const EditStyleSheets: React.FC<
                 }, {});
               const validationResult = validateCSS(stylesJson);
               if (validationResult.valid) {
+                if (editorError) {
+                  setEditorError(null);
+                }
                 handleEditorChange.flush();
                 handleEditorChange.callback(stylesJson);
               }
             } catch (e) {
-              setInputError(e.message);
+              setEditorError(e.message);
             }
           }}
           width="280px"
@@ -104,4 +114,4 @@ const EditStyleSheets: React.FC<
   );
 };
 
-export default EditStyleSheets;
+export default StyleSheets;

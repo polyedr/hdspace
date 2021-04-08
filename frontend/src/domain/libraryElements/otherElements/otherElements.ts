@@ -518,7 +518,10 @@ export const unsupportedElement: UnsupportedServerElement = {
       height: 100,
     },
     tag: 'div',
-    attributes: {},
+    attributes: {
+      attr1: 'value1',
+      attr2: 'value2',
+    },
   },
   styles: {
     classNames: [],

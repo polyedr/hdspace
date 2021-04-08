@@ -10,15 +10,19 @@ const useStyles = makeComponentStyles('unknown');
 
 const Unknown: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
-    const { params } = props;
-    const { tag, attributes, groupClass } = params;
+    const { params, children } = props;
+    const { tag, attributes, groupClass, textContent } = params;
     const classes = useStyles();
     try {
-      return React.createElement(tag, {
-        ...attributes,
-        ref,
-        className: cn(groupClass, classes.ownStyles),
-      });
+      return React.createElement(
+        tag,
+        {
+          ...attributes,
+          ref,
+          className: cn(groupClass, classes.ownStyles),
+        },
+        textContent || children,
+      );
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(`Undefined tag: ${tag}`);
