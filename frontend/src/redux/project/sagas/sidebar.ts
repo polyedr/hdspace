@@ -16,7 +16,6 @@ export function* sidebarLogoutSaga() {
     const host: string = yield select(selectSidebarHost);
 
     if (!iframe?.contentWindow) {
-      // yield put(Actions.sidebarLogoutSuccess());
       return;
     }
 

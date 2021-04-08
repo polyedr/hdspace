@@ -6,7 +6,7 @@ import cn from 'classnames';
 import { setUpSidebar } from '@Redux/project/actions';
 import useMessageListener from './useMessageListener';
 
-const host = 'http://localhost:3000';
+const host = process.env.SIDE_MODULE_HOST;
 
 const useStyles = makeStyles({
   wrapper: {
@@ -37,7 +37,7 @@ const Sidebar: FC = () => {
   const ref = useRef<HTMLIFrameElement>(null);
 
   const handleLoad = () => {
-    if (!ref.current?.contentWindow) {
+    if (!ref.current?.contentWindow || !host) {
       return;
     }
 
@@ -46,14 +46,18 @@ const Sidebar: FC = () => {
 
   return (
     <div className={cn(classes.wrapper, open && classes.open)}>
-      <iframe
-        className={classes.iframe}
-        onLoad={handleLoad}
-        ref={ref}
-        src={host}
-        frameBorder="0"
-        title="sidebar"
-      />
+      {host ? (
+        <iframe
+          className={classes.iframe}
+          onLoad={handleLoad}
+          ref={ref}
+          src={host}
+          frameBorder="0"
+          title="sidebar"
+        />
+      ) : (
+        <div>Experiencing problems while loading sidebar</div>
+      )}
     </div>
   );
 };
