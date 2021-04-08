@@ -10,6 +10,7 @@ const host = process.env.SIDE_MODULE_HOST;
 
 const useStyles = makeStyles({
   wrapper: {
+    background: '#fff',
     position: 'absolute',
     top: 0,
     width: 0,
