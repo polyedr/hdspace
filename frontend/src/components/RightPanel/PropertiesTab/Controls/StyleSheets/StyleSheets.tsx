@@ -43,7 +43,7 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 
   const handleEditorChange = useDebouncedCallback(
     (stylesJson: React.CSSProperties) => updateStyles(cssCamelize(stylesJson)),
-    100,
+    500,
   );
 
   const [editorStyles, setEditorStyles] = useState<string>(
@@ -97,7 +97,7 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
                 if (editorError) {
                   setEditorError(null);
                 }
-                handleEditorChange.flush();
+                handleEditorChange.cancel();
                 handleEditorChange.callback(stylesJson);
               }
             } catch (e) {

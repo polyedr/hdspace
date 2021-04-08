@@ -1,18 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
+import { Button, IconButton, makeStyles, lighten } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
-import { Button, makeStyles } from '@material-ui/core';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   flexWrapper: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
   },
-});
+  iconButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+    width: 45,
+    height: 45,
+  },
+  attrWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  attrName: {
+    width: '100%',
+  },
+  attrValue: {
+    width: 45,
+    height: 45,
+  },
+}));
 
 const Attributes: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   updateParams,
@@ -22,13 +44,21 @@ const Attributes: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 }) => {
   const classes = useStyles();
   const element = useSelector(selectActiveElement);
-  // const [addInProgress, setAddInProgress] = useState<boolean>(false);
+  const [addInProgress, setAddInProgress] = useState<boolean>(false);
   const { attributes } = element.parameters;
-  console.log('ATTRIBUTES!!!', attributes);
 
   const handleUpdateAttribute = useDebouncedCallback(
-    (name, value) => updateParams({ [name]: value }, activeElementId),
-    100,
+    (name, value) =>
+      updateParams(
+        {
+          attributes: {
+            ...attributes,
+            [name]: value,
+          },
+        },
+        activeElementId,
+      ),
+    500,
   );
   return (
     <>
@@ -36,38 +66,77 @@ const Attributes: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
         {Object.keys(attributes).map((attrName) => {
           const attrValue = attributes[attrName];
           return (
-            <StyledTextField
-              key={`attribute-${attrName}`}
-              style={{ width: '100%' }}
-              label={attrName}
-              defaultValue={attrValue}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                const { value } = event.target;
-                handleUpdateAttribute.flush();
-                handleUpdateAttribute.callback(attrName, value);
-              }}
-              margin="dense"
-              disabled={!canEdit}
-            />
+            <div key={`attribute-${attrName}`} className={classes.attrWrapper}>
+              <StyledTextField
+                className={classes.attrName}
+                label={attrName}
+                defaultValue={attrValue}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  const { value } = event.target;
+                  handleUpdateAttribute.cancel();
+                  handleUpdateAttribute.callback(attrName, value);
+                }}
+                margin="dense"
+                disabled={!canEdit}
+              />
+              <IconButton
+                onClick={() => {
+                  updateParams({
+                    attributes: Object.keys(attributes).reduce(
+                      (newAttributes, name) => {
+                        if (name === attrName) {
+                          return newAttributes;
+                        }
+                        return {
+                          ...newAttributes,
+                          [name]: attributes[name],
+                        };
+                      },
+                      {},
+                    ),
+                  });
+                }}
+                size="small"
+                title="Delete element"
+                disabled={!canEdit}
+                className={classes.iconButton}
+                disableRipple
+                disableFocusRipple
+                disableTouchRipple
+              >
+                <DeleteIcon />
+              </IconButton>
+            </div>
           );
         })}
-        {/* addInProgress && (
+        {addInProgress && (
           <StyledTextField
             style={{ width: '100%' }}
-            label={attrName}
-            defaultValue={attrValue}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              const { value } = event.target;
-              handleUpdateAttribute.flush();
-              handleUpdateAttribute.callback(attrName, value);
-            }}
+            label="New attribute name"
             margin="dense"
             disabled={!canEdit}
+            onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
+              if (event.target && event.key === 'Enter') {
+                const { value } = event.target as HTMLInputElement;
+                updateParams({
+                  attributes: {
+                    ...attributes,
+                    [value.toLowerCase().replaceAll(' ', '_')]: '',
+                  },
+                  activeElementId,
+                });
+                setAddInProgress(false);
+              }
+            }}
           />
-          ) */}
+        )}
         <div className={classes.flexWrapper}>
-          {canEdit && (
-            <Button color="secondary" variant="contained">
+          {canEdit && !addInProgress && (
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => setAddInProgress(true)}
+            >
               Add attribute
             </Button>
           )}
