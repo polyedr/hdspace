@@ -42,7 +42,10 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   const classes = useStyles();
 
   const handleEditorChange = useDebouncedCallback(
-    (stylesJson: React.CSSProperties) => updateStyles(cssCamelize(stylesJson)),
+    (stylesJson: React.CSSProperties) => {
+      console.log('UPDATED STYLES JSON!!', cssCamelize(stylesJson));
+      updateStyles(cssCamelize(stylesJson));
+    },
     500,
   );
 
@@ -104,8 +107,8 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
               setEditorError(e.message);
             }
           }}
-          width="280px"
-          height="280px"
+          width="284px"
+          height="284px"
           language="css"
           inlineNumbers={false}
         />

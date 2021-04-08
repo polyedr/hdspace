@@ -453,7 +453,13 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   featureSection: [...featureSectionStyleControls, 'layouts'],
   section: [...containerStyleControls, 'layouts'],
   group: elementsGroupStyleControls,
-  unsupported: [...unsupportedControls, 'layouts', 'styleSheets', 'attributes'],
+  unsupported: [
+    'textContent',
+    ...unsupportedControls,
+    'styleSheets',
+    'attributes',
+    'layouts',
+  ],
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {

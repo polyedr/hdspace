@@ -12,7 +12,7 @@ const Unknown: React.FC<SharedRendererProps> = React.forwardRef(
   (props, ref) => {
     const { params, children } = props;
     const { tag, attributes, groupClass, textContent } = params;
-    const classes = useStyles();
+    const classes = useStyles(props);
     try {
       return React.createElement(
         tag,
