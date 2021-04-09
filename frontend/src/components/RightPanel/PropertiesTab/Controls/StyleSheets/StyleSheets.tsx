@@ -43,7 +43,6 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 
   const handleEditorChange = useDebouncedCallback(
     (stylesJson: React.CSSProperties) => {
-      console.log('UPDATED STYLES JSON!!', cssCamelize(stylesJson));
       updateStyles(cssCamelize(stylesJson));
     },
     500,
@@ -61,7 +60,10 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
         {!masterScreenEnabled && canEdit && (
           <StylesHeader
             title="Edit styles"
-            onClick={removeStyles}
+            onClick={(styleNames: string[]) => {
+              setEditorStyles('');
+              removeStyles(styleNames);
+            }}
             cssPropertiesNames={Object.keys(element.styles.ownStyles)}
           />
         )}
