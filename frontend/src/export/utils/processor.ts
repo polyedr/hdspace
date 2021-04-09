@@ -4,7 +4,7 @@ import pretty from 'pretty';
 import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
 import { toClassName } from '@Utils/stringHelper';
-import { ProjectClass, StateElement } from '@Src/types';
+import { ProjectClass, ScreenMeta, StateElement } from '@Src/types';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
@@ -169,6 +169,7 @@ export const processJS = async (jsFolder: JSZip | null) => {
 export const getHtmlFromTemplate = (
   screenName: string,
   body: string,
+  meta: ScreenMeta,
   mapComponents: StateElement[],
 ) =>
   pretty(`
@@ -177,10 +178,9 @@ export const getHtmlFromTemplate = (
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
-    />
+    ${Object.entries(meta).map(
+      ([key, value]) => `<meta name="${key}" content="${value}"/>`,
+    )}
     <meta
       name="google-site-verification"
       content="m2BjG5J2rJf552uAF0lgzMClJyuz0N-tjQ5kh5yewOo"
@@ -203,8 +203,8 @@ export const getHtmlFromTemplate = (
     <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
     <link rel="stylesheet" type="text/css" href="css/clock.css" />
     <link rel="stylesheet" type="text/css" href="css/ripple.css" />
-    <link rel="stylesheet" type="text/css" href="css/shared.css" />    
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/color-calendar/dist/css/theme-basic.css" />    
+    <link rel="stylesheet" type="text/css" href="css/shared.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/color-calendar/dist/css/theme-basic.css" />
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/color-calendar/dist/bundle.js"></script>
     <script src="https://unpkg.com/mat-ripple"></script>
     <script type="text/javascript" src="js/map.js" defer></script>

@@ -4,7 +4,10 @@ import { all, call, fork, put, select } from 'redux-saga/effects';
 import * as R from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
-import { convertElementFromResponse } from '@Api/converters/fromResponse';
+import {
+  convertElementFromResponse,
+  convertScreenFromResponse,
+} from '@Api/converters/fromResponse';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import { apiCreateElements, apiGetElements } from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
@@ -136,7 +139,9 @@ export const createScreenSaga = compose(
         status: 'in_progress',
         buoyancy,
         image: null,
-        screen_data_json: {},
+        screen_data_json: JSON.stringify({
+          viewport: 'width=device-width, initial-scale=1.0, minimum-scale=1.0', // default viewport value
+        }),
         styles_root: {},
       },
     });
@@ -209,14 +214,8 @@ export const createScreenSaga = compose(
         });
 
         if (savedScreen) {
-          // Can not get why do we need to mix created screen with the current one. Let's keep these comments for some time
-          // const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-          //   selectors.selectCurrentScreen,
-          // );
-
           const updatedScreen = {
-            // ...currentScreen,
-            ...savedScreen,
+            ...convertScreenFromResponse(savedScreen),
             element: elements[0].id,
           };
 

@@ -42,7 +42,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const currentScreen = useSelector(selectCurrentScreen);
+  const { id, name, screen_data_json } = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
 
@@ -52,10 +52,10 @@ const Actions: React.FC = () => {
 
   const onHistoryForward = () => dispatch(executeRedoActions());
 
-  const handleSaveScreen = () => dispatch(updateScreenImage(currentScreen.id));
+  const handleSaveScreen = () => dispatch(updateScreenImage(id));
 
   const handleExportScreen = () => {
-    exportHTML(currentScreen.name);
+    exportHTML(name, screen_data_json);
   };
 
   return (
