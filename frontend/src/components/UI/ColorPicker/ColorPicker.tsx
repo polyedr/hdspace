@@ -96,7 +96,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
           >
             <SketchPicker
               color={color}
-              onChangeComplete={onChangeComplete}
+              onChange={onChangeComplete}
               width="210px"
               presetColors={['transparent']}
             />

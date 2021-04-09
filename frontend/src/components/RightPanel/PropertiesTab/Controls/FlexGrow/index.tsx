@@ -3,7 +3,7 @@ import { ContainerElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
-import useDebouncedChange from '@Utils/useDeboucedChange';
+import { useDebouncedInputChange } from '@Utils/debounceHooks';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
 type Props = PropertiesChangeProps<ContainerElement> & {
@@ -25,7 +25,7 @@ const FlexGrow: React.FC<Props> = ({
   const parentStyles = el?.parentElement && getComputedStyle(el.parentElement);
   const isFlexItem = parentStyles?.display === 'flex';
 
-  const [state, handleFlexGrowChange] = useDebouncedChange(
+  const [state, handleFlexGrowChange] = useDebouncedInputChange(
     flexGrow || 'initial',
     (value) => {
       updateStyles({ flexGrow: Number(value) });

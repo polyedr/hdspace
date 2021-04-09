@@ -131,7 +131,13 @@ const RightPanel: React.FC = () => {
     }
 
     setTabs(newTabs);
-  }, [activeElement, canEditProject, masterCoreElId, masterGroupsElId]);
+  }, [
+    activeElement.id,
+    activeElement.type,
+    canEditProject,
+    masterCoreElId,
+    masterGroupsElId,
+  ]);
 
   useEffect(() => {
     if (

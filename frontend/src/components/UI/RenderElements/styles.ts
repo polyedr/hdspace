@@ -34,7 +34,7 @@ export const makeComponentStyles: any = (
         cursor: 'default',
         transition: 'none',
         '& > *': {
-          pointerEvents: 'none',
+          // pointerEvents: 'none',
         },
       },
       ...(style instanceof Function ? style(theme) : style),

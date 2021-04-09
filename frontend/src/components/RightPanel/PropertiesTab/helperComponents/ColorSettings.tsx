@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 type Props = {
   currentColor: string;
   activeElementId: string;
-  onChange(color: string): any;
+  onChange(color: string): any | void;
   disabled?: boolean;
 };
 
@@ -30,6 +30,7 @@ const ColorSettings: React.FC<Props> = ({
   onChange,
   disabled,
 }) => {
+  useEffect(() => {});
   const classes = useStyles();
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
     currentColor,
