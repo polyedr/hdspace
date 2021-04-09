@@ -565,13 +565,6 @@ export const editScreenSaga = withRequiredPermissions(
       refresh,
     } = screenInfo;
 
-    // const convertedKeywordsinArray = () => {
-    //   if (keywords) {
-    //     return keywords.split(',').map((word) => word.trim());
-    //   }
-    //   return keywords;
-    // };
-
     const nameWithoutSpace = name.trim();
     const screens: ReturnType<typeof selectScreens> = yield select(
       selectScreens,
