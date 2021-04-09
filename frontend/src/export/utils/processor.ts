@@ -178,9 +178,15 @@ export const getHtmlFromTemplate = (
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    ${Object.entries(meta).map(
-      ([key, value]) => `<meta name="${key}" content="${value}"/>`,
-    )}
+    ${Object.entries(meta)
+      .map(([key, value]) => {
+        if (value && key !== 'title') {
+          return `<meta name="${key}" content="${value}"/>`;
+        }
+        return '';
+      })
+      .join('\n')}
+
     <meta
       name="google-site-verification"
       content="m2BjG5J2rJf552uAF0lgzMClJyuz0N-tjQ5kh5yewOo"
@@ -216,7 +222,7 @@ export const getHtmlFromTemplate = (
       }" defer></script>`;
     })}
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-    <title>${screenName}</title>
+    <title>${!meta.title ? screenName : meta.title}</title>
   </head>
   <body>
     ${body}

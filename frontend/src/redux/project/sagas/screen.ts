@@ -519,7 +519,7 @@ export const restoreScreenSaga = withActionsHistory(function* ({
 
       if (elements) {
         screen.element = elements[0].id;
-        yield put(setScreens([screen, ...screens]));
+        yield put(setScreens([convertScreenFromResponse(screen), ...screens]));
 
         yield put(setProject(result));
 
@@ -565,12 +565,12 @@ export const editScreenSaga = withRequiredPermissions(
       refresh,
     } = screenInfo;
 
-    const convertedKeywordsinArray = () => {
-      if (keywords) {
-        return keywords.split(',').map((word) => word.trim());
-      }
-      return keywords;
-    };
+    // const convertedKeywordsinArray = () => {
+    //   if (keywords) {
+    //     return keywords.split(',').map((word) => word.trim());
+    //   }
+    //   return keywords;
+    // };
 
     const nameWithoutSpace = name.trim();
     const screens: ReturnType<typeof selectScreens> = yield select(
@@ -586,7 +586,7 @@ export const editScreenSaga = withRequiredPermissions(
       screen_data_json: JSON.stringify({
         title,
         description,
-        keywords: convertedKeywordsinArray(),
+        keywords,
         viewport,
         author,
         refresh,
@@ -610,7 +610,7 @@ export const editScreenSaga = withRequiredPermissions(
               name: numberedName,
               screen_data_json: {
                 description,
-                keywords: convertedKeywordsinArray(),
+                keywords,
                 title,
                 viewport,
                 author,
@@ -690,7 +690,6 @@ export const changeScreensOrderSaga = withRequiredPermissions(
     const { screens } = action.payload;
 
     yield put(setScreens(screens));
-
     const results: Result<Screen>[] = yield all(
       screens.map(({ id, buoyancy }) =>
         call(reqWrapper, apiUpdateScreen, {
