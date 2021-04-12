@@ -24,11 +24,10 @@ import {
 import {
   changeProfileData,
   changeDropTargetBordersMode,
-  logout,
   setUserExperience,
+  logoutStart,
 } from '@Redux/user/actions';
 import IMAGES from '@Constants/images';
-import { openSignScreen } from '@Redux/history';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
 import { ROLES } from '@Constants/defaultParams';
@@ -124,8 +123,7 @@ const Profile: React.FC = () => {
   const userGuideWatched = useSelector(selectUserGuideWatched);
 
   const handleLogout = () => {
-    dispatch(logout());
-    openSignScreen('signin');
+    dispatch(logoutStart());
   };
 
   const handleChangeProfileData = async (values: any) => {

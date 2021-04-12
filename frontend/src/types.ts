@@ -1239,6 +1239,11 @@ export type VIAFile = {
   file_attributes: Record<string, any>;
 };
 
+export type IFrameMessage = {
+  type: string;
+  payload: any;
+};
+
 export type ScreenInfo = {
   name: string;
   description: string;
