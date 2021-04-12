@@ -9,6 +9,7 @@ import {
   ProjectData,
   ProjectWithScreens,
   RecursiveElement,
+  Screen,
   ServerElement,
   ServerProfileData,
   ServerProject,
@@ -175,6 +176,14 @@ export function convertProjectFromResponse({
   };
 }
 
+export const convertScreenFromResponse = (screen: Screen) => ({
+  ...screen,
+  screen_data_json:
+    typeof screen.screen_data_json === 'string'
+      ? JSON.parse(screen.screen_data_json)
+      : screen.screen_data_json,
+});
+
 export function convertProjectWithScreensFromResponse({
   id,
   name,
@@ -186,20 +195,12 @@ export function convertProjectWithScreensFromResponse({
   project_data_json,
 }: ServerProjectWithScreens): ProjectWithScreens {
   const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
-  const convetrScreen = () => {
-    return projectscreen.map((item) => ({
-      ...item,
-      screen_data_json:
-        typeof item.screen_data_json === 'string'
-          ? JSON.parse(item.screen_data_json)
-          : item.screen_data_json,
-    }));
-  };
+
   return {
     id,
     name,
     status,
-    projectscreen: convetrScreen(),
+    projectscreen: projectscreen.map(convertScreenFromResponse),
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),

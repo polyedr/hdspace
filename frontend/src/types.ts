@@ -1244,12 +1244,15 @@ export type IFrameMessage = {
   payload: any;
 };
 
-export type ScreenInfo = {
-  name: string;
+export type ScreenMeta = {
   description: string;
   keywords: string;
   title: string;
   viewport: string;
   author: string;
   refresh: string;
+};
+
+export type ScreenInfo = ScreenMeta & {
+  name: string;
 };

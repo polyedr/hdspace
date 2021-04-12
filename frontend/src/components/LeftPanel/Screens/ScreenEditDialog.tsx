@@ -41,12 +41,6 @@ const ScreenEditDialog: React.FC<Props> = ({
   validation,
 }) => {
   const classes = useStyles();
-  const convertedKeywordsinString = () => {
-    if (keywords) {
-      return keywords.join(', ');
-    }
-    return keywords;
-  };
 
   return (
     <MuiDialog open={open} onClose={onClose}>
@@ -121,7 +115,7 @@ const ScreenEditDialog: React.FC<Props> = ({
                   <Field
                     name="keywords"
                     validate={validation}
-                    initialValue={convertedKeywordsinString()}
+                    initialValue={keywords}
                   >
                     {({ input }) => (
                       <TextField
