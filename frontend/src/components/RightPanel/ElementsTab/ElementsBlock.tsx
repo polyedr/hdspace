@@ -30,7 +30,7 @@ export const useStyles = makeStyles({
     flexFlow: 'row wrap',
     padding: '0 2px 2px',
     '& > *': {
-      width: 'calc(100%/4)',
+      width: '25%',
       height: 'calc(300px/4)',
     },
   },

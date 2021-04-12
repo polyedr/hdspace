@@ -77,6 +77,11 @@ export type ProjectUiState = {
   };
   editorDocument: Document | null;
   newScreenModalOpen: boolean;
+  sidebar: {
+    open: boolean;
+    iframe: null | HTMLIFrameElement;
+    host: string;
+  };
 };
 
 export type ProjectEditState = {
@@ -1045,6 +1050,15 @@ export type SetNewScreenModal = IAction<
   boolean
 >;
 
+export type SetSidebarOpen = IAction<typeof TYPES.SET_SIDEBAR_OPEN, boolean>;
+
+export type SetSidebarIframe = IAction<
+  typeof TYPES.SET_SIDEBAR_IFRAME,
+  null | HTMLIFrameElement
+>;
+
+export type SetSidebarHost = IAction<typeof TYPES.SET_SIDEBAR_HOST, string>;
+
 export type Action =
   | LoadProjects
   | SetUsersSearchValue
@@ -1202,7 +1216,10 @@ export type Action =
   | SetNewScreenModal
   | SetAnnotatedImageURL
   | CopyVIARegion
-  | PasteVIARegion;
+  | PasteVIARegion
+  | SetSidebarOpen
+  | SetSidebarIframe
+  | SetSidebarHost;
 
 export type HistoryMeta = {
   useHistory?: boolean;

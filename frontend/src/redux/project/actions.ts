@@ -26,6 +26,7 @@ import {
   StateElementsToAdd,
   VIARegion,
   UserData,
+  // IframeMessage,
   ScreenInfo,
 } from '@Src/types';
 import {
@@ -162,6 +163,9 @@ import {
   PasteVIARegion,
   SetPreSelectedElementId,
   SetMasterSourceElementId,
+  SetSidebarOpen,
+  SetSidebarHost,
+  SetSidebarIframe,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1472,4 +1476,37 @@ export const pasteVIARegion = (): PasteVIARegion => ({
 export const setNewScreenModal = (open: boolean): SetNewScreenModal => ({
   type: TYPES.SET_NEW_SCREEN_MODAL,
   payload: open,
+});
+
+export const setSidebarOpen = (open: boolean): SetSidebarOpen => ({
+  type: TYPES.SET_SIDEBAR_OPEN,
+  payload: open,
+});
+
+export const setUpSidebar = (iframe: HTMLIFrameElement, host: string) => ({
+  type: TYPES.SET_UP_SIDEBAR,
+  payload: {
+    iframe,
+    host,
+  },
+});
+
+export const setSidebarIframe = (
+  iframe: HTMLIFrameElement | null,
+): SetSidebarIframe => ({
+  type: TYPES.SET_SIDEBAR_IFRAME,
+  payload: iframe,
+});
+
+export const setSidebarHost = (host: string): SetSidebarHost => ({
+  type: TYPES.SET_SIDEBAR_HOST,
+  payload: host,
+});
+
+export const sidebarLogout = () => ({
+  type: TYPES.SIDEBAR_LOGOUT,
+});
+
+export const sidebarLogoutSuccess = () => ({
+  type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
 });
