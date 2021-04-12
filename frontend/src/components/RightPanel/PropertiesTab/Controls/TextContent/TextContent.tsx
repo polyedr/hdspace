@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { ParagraphElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import useDebouncedChange from '@Utils/useDeboucedChange';
+import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   updateParams,
@@ -11,7 +11,7 @@ const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
 }) => {
   const content = useSelector(selectActiveElementParamByName('textContent'));
 
-  const [state, handleChange] = useDebouncedChange(content, (value) =>
+  const [state, handleChange] = useDebouncedInputChange(content, (value) =>
     updateParams({ textContent: value }),
   );
 

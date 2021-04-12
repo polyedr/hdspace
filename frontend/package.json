@@ -181,7 +181,6 @@
     "react-rnd": "^10.2.3",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-tiny-popover": "^4.0.0",
     "reactour": "^1.18.3",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",

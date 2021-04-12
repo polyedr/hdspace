@@ -65,8 +65,7 @@ export const convertElementFromResponse = <
   },
   styles: {
     ...getDefaultStyles(struct_type),
-    ...styles,
-    ...(styles.ownStyles ? cssCamelize(styles.ownStyles) : {}),
+    ownStyles: styles.ownStyles ? cssCamelize(styles.ownStyles) : {},
   },
 });
 
