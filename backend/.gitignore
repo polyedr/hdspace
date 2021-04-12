@@ -94,4 +94,7 @@ apps/virtualize_simple/mask_rcnn/train_shapes.ipynb
 merge_assemble.py
 virtualize_simple.py
 serializers.py.bak
+apps/virtualize_simple/ScenarioElementAssemblingSerializer.py
+apps/virtualize_simple/ScenarioElementFreecanvasSerializer.py
+apps/virtualize_simple/ScenarioElementSerializer.py
 
