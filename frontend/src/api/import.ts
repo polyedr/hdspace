@@ -12,7 +12,7 @@ export const apiPostURL = ({
     ...props,
     url: '/uploadapps/wpg/',
     method: 'POST',
-    contentType: 'application/json',
+    contentType: 'multipart/form-data',
     data: {
       wpname,
     },

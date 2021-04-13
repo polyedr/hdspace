@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { CodeEditorEditable } from 'react-code-editor-editable';
-import validateCSS from 'simple-css-validator';
-import { useDebouncedCallback } from 'use-debounce';
-import { cssCamelize, cssDecamelize } from '@Utils/CSSConverter';
+import AceEditor from 'react-ace';
+// import { useDebouncedCallback } from 'use-debounce';
+import { /* cssCamelize, */ cssDecamelize } from '@Utils/CSSConverter';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
-import StylesHeader from '../../helperComponents/StylesHeader';
 
-import 'highlight.js/styles/arta.css';
+import ReactAce from 'react-ace/lib/ace';
+import StylesHeader from '../../helperComponents/StylesHeader';
+import editorRules from './highlightRules';
+
+import 'ace-builds/webpack-resolver';
+import 'ace-builds/src-noconflict/ace';
+import 'ace-builds/src-noconflict/mode-css';
+import 'ace-builds/src-noconflict/theme-dracula';
 
 const transformToEditorStyles = (styles: React.CSSProperties) => {
   return Object.keys(styles).reduce((stringStyles, styleName) => {
@@ -18,41 +23,56 @@ const transformToEditorStyles = (styles: React.CSSProperties) => {
   }, '');
 };
 
-const useStyles = makeStyles((theme) => {
+const useStyles = makeStyles(() => {
   return {
     editorError: {
       outline: '1px solid #ff0000',
     },
     editorWrapper: {
       margin: '7px 0',
-      '& textarea': {
+      position: 'relative',
+      /* '& textarea': {
         lineHeight: theme.typography.body2.lineHeight,
-      },
+      }, */
     },
   };
 });
 
+// const modeRulesToExclude = ['start', 'media', 'comments', 'escapes'];
+
 const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   removeStyles,
-  updateStyles,
+  // updateStyles,
+  activeElementId,
   canEdit,
   masterScreenEnabled,
 }) => {
   const element = useSelector(selectActiveElement);
   const classes = useStyles();
+  const editorRef = useRef<ReactAce>(null);
 
-  const handleEditorChange = useDebouncedCallback(
+  useEffect(() => {
+    if (!editorRef.current) {
+      return;
+    }
+    const currentMode = editorRef.current.editor.getSession().getMode() as any;
+    /* cssMode.HighlightRules.$rules = {
+      ...Object.keys(cssMode.HighlightRules.$rules).filter((keyName) => )
+    } */
+    currentMode.$rules = editorRules;
+    editorRef.current.editor.getSession().setMode(currentMode);
+  });
+
+  /* const handleEditorChange = useDebouncedCallback(
     (stylesJson: React.CSSProperties) => {
       updateStyles(cssCamelize(stylesJson));
     },
     500,
-  );
+  ); */
 
   const [editorStyles, setEditorStyles] = useState<string>(
     transformToEditorStyles(cssDecamelize(element.styles.ownStyles)),
   );
-
-  const [editorError, setEditorError] = useState<string | null>(null);
 
   return (
     <>
@@ -68,51 +88,21 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
           />
         )}
       </div>
-      <div
-        className={cn(
-          classes.editorWrapper,
-          editorError ? classes.editorError : '',
-        )}
-      >
-        <CodeEditorEditable
+      <div className={cn(classes.editorWrapper)}>
+        <AceEditor
+          ref={editorRef}
+          mode="css"
+          theme="dracula"
+          name={`css-editor-${activeElementId}`}
+          width="280px"
+          height="280px"
+          onChange={() => {}}
+          fontSize={14}
+          showPrintMargin
+          showGutter
+          highlightActiveLine
+          editorProps={{ $blockScrolling: true }}
           value={editorStyles}
-          setValue={(newStyles: string) => {
-            setEditorStyles(newStyles);
-            try {
-              const stylesJson = newStyles
-                .replaceAll('\r\n', '')
-                .split(';')
-                .reduce((json, styleRule) => {
-                  if (!styleRule.trim().length) {
-                    return json;
-                  }
-                  const [ruleName, ruleValue, ...otherValues] = styleRule.split(
-                    ':',
-                  );
-                  if (!ruleName || !ruleValue || otherValues.length) {
-                    throw new Error('Invalid CSS input');
-                  }
-                  return {
-                    ...json,
-                    [ruleName.trim()]: ruleValue.trimLeft(),
-                  };
-                }, {});
-              const validationResult = validateCSS(stylesJson);
-              if (validationResult.valid) {
-                if (editorError) {
-                  setEditorError(null);
-                }
-                handleEditorChange.cancel();
-                handleEditorChange.callback(stylesJson);
-              }
-            } catch (e) {
-              setEditorError(e.message);
-            }
-          }}
-          width="284px"
-          height="284px"
-          language="css"
-          inlineNumbers={false}
         />
       </div>
     </>

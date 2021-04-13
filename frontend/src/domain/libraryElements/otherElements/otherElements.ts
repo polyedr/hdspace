@@ -519,14 +519,13 @@ export const unsupportedElement: UnsupportedServerElement = {
     },
     tag: 'div',
     attributes: {
-      attr1: 'value1',
-      attr2: 'value2',
+      name: 'Unsupported element',
     },
   },
   styles: {
     classNames: [],
     ownStyles: {},
   },
-  name: 'div',
+  name: 'Unsupported element',
   children: [],
 };
