@@ -233,7 +233,7 @@ def write_elem_value(region_dataset, class_id_recognized):
 
 
 # Detect elements for the root block function
-def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0, children=[]):
+def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, multiple_output_on = 0, serializing="virtualize_simple", node_width=0, node_height=0, children=[]):
     # Function elements creation, loop through the root_block start
     for pre, fill, node in RenderTree(root_block):
         # if(node.elements):
@@ -307,22 +307,23 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 buoyancy=0,
             )
 
-            # Create an empty divs for the endpoint checking
-            ScenarioElement.objects.create(
-                parent=outer_div_node,
-                struct_type="container",
-                parameters=parameters,
-                styles=styles,
-                buoyancy=1,
-            )
+            if multiple_output_on:
+                # Create an empty divs for the endpoint checking
+                ScenarioElement.objects.create(
+                    parent=outer_div_node,
+                    struct_type="container",
+                    parameters=parameters,
+                    styles=styles,
+                    buoyancy=1,
+                )
 
-            ScenarioElement.objects.create(
-                parent=outer_div_node,
-                struct_type="container",
-                parameters=parameters,
-                styles=styles,
-                buoyancy=2,
-            )
+                ScenarioElement.objects.create(
+                    parent=outer_div_node,
+                    struct_type="container",
+                    parameters=parameters,
+                    styles=styles,
+                    buoyancy=2,
+                )
 
         else:
             node.div = ET.SubElement(node.parent.div, "div")
@@ -1074,7 +1075,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                                 square = width * height
                                 square1 = width1 * height1
                                 square2 = width2 * height2
-
+                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT, as this part of the script is not for the text blocks.
                                 if (
                                     square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
                                 ) or (
@@ -1644,6 +1645,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 square = width * height
                                 square1 = width1 * height1
                                 square2 = width2 * height2
+                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT, as this part of the script is not for the text blocks.
 
                                 if (
                                     square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
@@ -1855,7 +1857,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 square = width * height
                                 square1 = width1 * height1
                                 square2 = width2 * height2
-
+                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT, as this part of the script is not for the text blocks.
                                 if (
                                     square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
                                 ) or (
@@ -2078,6 +2080,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # compare this rectangle of visible elements with whole image
         # crop if the distance is more than 20px
         # extend borders if the distance is less than 20px
+        # Cropping the image is essential for further OCR applying.
         min_x1 = img_width
         min_y1 = img_height
         max_x2 = 0
@@ -3011,7 +3014,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Obtaining the absolute path for the parameters directly. Should change this later.
         o = urlparse(self.context["request"].build_absolute_uri())
         # Detect elements for the root block
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple")
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple", multiple_output_on=1)
         # Generating HTML for printing
         html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
         # print("html=", html)
@@ -3258,6 +3261,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # compare this rectangle of visible elements with whole image
             # crop if the distance is more than 20px
             # extend borders if the distance is less than 20px
+            # Cropping the image is essential for further OCR applying
             min_x1 = img_width
             min_y1 = img_height
             max_x2 = 0
@@ -4206,6 +4210,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             # compare this rectangle of visible elements with whole image
             # crop if the distance is more than 20px
             # extend borders if the distance is less than 20px
+            # Cropping the image is essential for further OCR applying.
             min_x1 = img_width
             min_y1 = img_height
             max_x2 = 0
