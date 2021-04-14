@@ -118,6 +118,36 @@ function uiReducer(
       };
     }
 
+    case TYPES.SET_SIDEBAR_OPEN: {
+      return {
+        ...state,
+        sidebar: {
+          ...state.sidebar,
+          open: action.payload,
+        },
+      };
+    }
+
+    case TYPES.SET_SIDEBAR_IFRAME: {
+      return {
+        ...state,
+        sidebar: {
+          ...state.sidebar,
+          iframe: action.payload,
+        },
+      };
+    }
+
+    case TYPES.SET_SIDEBAR_HOST: {
+      return {
+        ...state,
+        sidebar: {
+          ...state.sidebar,
+          host: action.payload,
+        },
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

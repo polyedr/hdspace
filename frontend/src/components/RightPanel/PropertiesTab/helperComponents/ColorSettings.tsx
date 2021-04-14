@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 type Props = {
   currentColor: string;
   activeElementId: string;
-  onChange(color: string): any;
+  onChange(color: string): any | void;
   disabled?: boolean;
 };
 

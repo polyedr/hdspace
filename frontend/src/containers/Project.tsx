@@ -12,6 +12,7 @@ import {
 import { getProject, resetProjectState } from '@Redux/project/actions';
 import LeftPanel from '@Components/LeftPanel';
 import NewScreenModal from '@Components/Dialogs/NewScreenModal';
+import Sidebar from '@Components/Sidebar';
 import Screen from './Screen';
 
 const useStyles = makeStyles({
@@ -20,6 +21,7 @@ const useStyles = makeStyles({
     minHeight: '100%',
     height: 1, // allows children use height in %
     maxWidth: '100vw',
+    position: 'relative',
   },
   loader: {
     flex: 1,
@@ -83,6 +85,8 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
           <NNProcessingModal />
         </>
       )}
+
+      <Sidebar />
 
       <NewScreenModal />
     </div>

@@ -10,9 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import PATH_NAMES from '@Constants/pathNames';
 import IMAGES from '@Constants/images';
-import { logout } from '@Redux/user/actions';
+import { logoutStart } from '@Redux/user/actions';
 import { selectProfileData, selectUserData } from '@Redux/user/selectors';
-import { openSignScreen } from '@Redux/history';
 
 const useStyles = makeStyles({
   menu: {
@@ -43,8 +42,7 @@ const Avatar: React.FC = () => {
 
   const handleLogoutClick = () => {
     handleMenuClose();
-    dispatch(logout());
-    openSignScreen('signin');
+    dispatch(logoutStart());
   };
 
   return (

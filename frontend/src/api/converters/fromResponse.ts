@@ -9,6 +9,7 @@ import {
   ProjectData,
   ProjectWithScreens,
   RecursiveElement,
+  Screen,
   ServerElement,
   ServerProfileData,
   ServerProject,
@@ -65,8 +66,7 @@ export const convertElementFromResponse = <
   },
   styles: {
     ...getDefaultStyles(struct_type),
-    ...styles,
-    ...(styles.ownStyles ? cssCamelize(styles.ownStyles) : {}),
+    ownStyles: styles.ownStyles ? cssCamelize(styles.ownStyles) : {},
   },
 });
 
@@ -144,10 +144,6 @@ export const convertUserDataFromResponse = ({
   ...rest,
 });
 
-export function convertProjectFromResponse(
-  project: ServerProjectWithScreens,
-): ProjectWithScreens;
-export function convertProjectFromResponse(project: ServerProject): Project;
 export function convertProjectFromResponse({
   id,
   name,
@@ -157,14 +153,54 @@ export function convertProjectFromResponse({
   updated,
   user,
   project_data_json,
-}) {
+}: ServerProject): Project {
+  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
+  return {
+    id,
+    name,
+    status,
+    projectscreen,
+    projectLoader: false,
+    created: new Date(created),
+    updated: new Date(updated),
+    user: convertUserDataFromResponse(user),
+    projectData: {
+      ...projectDataJSON,
+      classes: projectDataJSON.classes.map((cls: ProjectClass) => {
+        return {
+          ...cls,
+          rules: cssCamelize(cls.rules) as React.CSSProperties,
+        } as ProjectClass;
+      }),
+    },
+  };
+}
+
+export const convertScreenFromResponse = (screen: Screen) => ({
+  ...screen,
+  screen_data_json:
+    typeof screen.screen_data_json === 'string'
+      ? JSON.parse(screen.screen_data_json)
+      : screen.screen_data_json,
+});
+
+export function convertProjectWithScreensFromResponse({
+  id,
+  name,
+  status,
+  projectscreen,
+  created,
+  updated,
+  user,
+  project_data_json,
+}: ServerProjectWithScreens): ProjectWithScreens {
   const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
 
   return {
     id,
     name,
     status,
-    projectscreen,
+    projectscreen: projectscreen.map(convertScreenFromResponse),
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),

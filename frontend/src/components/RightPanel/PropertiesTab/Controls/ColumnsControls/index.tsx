@@ -7,7 +7,7 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { StyledTextField } from '@Components/styledComponents';
-import useDebouncedChange from '@Utils/useDeboucedChange';
+import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const useStyles = makeStyles({
   root: {
@@ -28,7 +28,7 @@ const ColumnsControls: FC<PropertiesChangeProps<LibraryElement<any>>> = ({
   const columns = useSelector(selectActiveItemChildren('column'));
   const { length } = columns;
 
-  const [state, handleChangeColumnsCount] = useDebouncedChange(
+  const [state, handleChangeColumnsCount] = useDebouncedInputChange(
     length,
     (value) => {
       if (+value === length) return;

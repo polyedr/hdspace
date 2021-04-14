@@ -42,6 +42,10 @@ export const loginFailure = (errors: any) => ({
   payload: errors,
 });
 
+export const logoutStart = () => ({
+  type: TYPES.LOGOUT_START,
+});
+
 export const logout = () => ({
   type: TYPES.LOGOUT,
 });

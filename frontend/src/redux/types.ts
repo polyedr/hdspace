@@ -35,6 +35,7 @@ import {
   PaginatedResponse,
   UserProjectPermission,
   PermissionsUserData,
+  ScreenInfo,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -76,6 +77,11 @@ export type ProjectUiState = {
   };
   editorDocument: Document | null;
   newScreenModalOpen: boolean;
+  sidebar: {
+    open: boolean;
+    iframe: null | HTMLIFrameElement;
+    host: string;
+  };
 };
 
 export type ProjectEditState = {
@@ -305,9 +311,13 @@ export type RestoreScreen = IAction<
   { projectId: number; screenId: number },
   HistoryMeta
 >;
-export type RenameScreen = IAction<
-  typeof TYPES.RENAME_SCREEN,
-  { projectID: number; screenID: number; name: string }
+export type EditScreen = IAction<
+  typeof TYPES.EDIT_SCREEN,
+  {
+    projectID: number;
+    screenID: number;
+    screenInfo: ScreenInfo;
+  }
 >;
 export type CreateScreen = IAction<
   typeof TYPES.CREATE_SCREEN,
@@ -1040,6 +1050,15 @@ export type SetNewScreenModal = IAction<
   boolean
 >;
 
+export type SetSidebarOpen = IAction<typeof TYPES.SET_SIDEBAR_OPEN, boolean>;
+
+export type SetSidebarIframe = IAction<
+  typeof TYPES.SET_SIDEBAR_IFRAME,
+  null | HTMLIFrameElement
+>;
+
+export type SetSidebarHost = IAction<typeof TYPES.SET_SIDEBAR_HOST, string>;
+
 export type Action =
   | LoadProjects
   | SetUsersSearchValue
@@ -1064,7 +1083,7 @@ export type Action =
   | SetAnalyzerLoader
   | SetAssetsLoader
   | DeleteScreen
-  | RenameScreen
+  | EditScreen
   | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen
@@ -1197,7 +1216,10 @@ export type Action =
   | SetNewScreenModal
   | SetAnnotatedImageURL
   | CopyVIARegion
-  | PasteVIARegion;
+  | PasteVIARegion
+  | SetSidebarOpen
+  | SetSidebarIframe
+  | SetSidebarHost;
 
 export type HistoryMeta = {
   useHistory?: boolean;

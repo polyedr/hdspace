@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { PropertiesChangeProps, TextinputElement } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import useDebouncedChange from '@Utils/useDeboucedChange';
+import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
   updateParams,
@@ -11,7 +11,7 @@ const Placeholder: React.FC<PropertiesChangeProps<TextinputElement>> = ({
 }) => {
   const { placeholder } = useSelector(selectActiveElementParams);
 
-  const [state, handleChange] = useDebouncedChange(
+  const [state, handleChange] = useDebouncedInputChange(
     placeholder || '',
     (value) => {
       updateParams({ placeholder: value });
