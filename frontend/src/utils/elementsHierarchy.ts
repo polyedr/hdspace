@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import { keys } from 'ramda';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
 import {
   ElementData,
@@ -130,7 +130,7 @@ export const getRightPanelCategoryTabs = (
 export const createElementsHierarchy = (
   libraryElements: ElementsToAdd,
 ): ElementsHierarchy =>
-  R.keys(libraryElements).reduce(
+  keys(libraryElements).reduce(
     (acc, structType) => ({
       ...acc,
       ...getRightPanelCategoryTabs(structType, libraryElements, acc),

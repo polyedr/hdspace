@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { all, call, fork, put, select } from 'redux-saga/effects';
-import * as R from 'ramda';
+import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
 import {
@@ -163,7 +163,7 @@ export const createScreenSaga = compose(
         throw new Error('Failed to create scenario');
       }
 
-      const newScreen = R.omit(['screen_data_text'], createdScreen);
+      const newScreen = omit(['screen_data_text'], createdScreen);
 
       const rootElement = convertCreatedElementToRequest(
         'root',
@@ -196,9 +196,9 @@ export const createScreenSaga = compose(
           typeof selectCurrentProject
         > = yield select(selectCurrentProject);
 
-        const updateProject: Project = R.assoc(
+        const updateProject: Project = assoc(
           'projectscreen',
-          R.prepend(newScreen.id, currentProject.projectscreen),
+          prepend(newScreen.id, currentProject.projectscreen),
           currentProject,
         );
 
@@ -207,7 +207,7 @@ export const createScreenSaga = compose(
           error: savedScreenError,
         }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
           id: newScreen.id,
-          data: R.omit(
+          data: omit(
             ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
             newScreen,
           ),
@@ -431,7 +431,7 @@ export const deleteScreenSaga = compose(
 
       yield put(setProject(result));
 
-      const lastScreenID = R.head(result.projectscreen);
+      const lastScreenID = head(result.projectscreen);
 
       if (!lastScreenID) {
         yield put(setCurrentScreenId(-1));

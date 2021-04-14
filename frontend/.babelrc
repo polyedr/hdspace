@@ -14,9 +14,12 @@
           // "transform": "@material-ui/icons/esm/${member}",
           "transform": "@material-ui/icons/${member}",
           "preventFullImport": true
+        },
+        "ramda": {
+          "transform": "ramda/es/${member}",
+          "preventFullImport": true
         }
       }
     ]
   ]
-
 }

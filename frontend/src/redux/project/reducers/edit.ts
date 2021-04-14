@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import { pick } from 'ramda';
 import produce, { current, Draft } from 'immer';
 import { Normalized, VIARegion } from '@Src/types';
 import { v4 } from 'uuid';
@@ -17,7 +17,7 @@ const editReducer = produce(
       case TYPES.CLEAN_AFTER_PREV_SCREEN: {
         return {
           ...draft,
-          ...R.pick(
+          ...pick(
             [
               'currentScreen',
               'scenarios',
@@ -196,7 +196,6 @@ const editReducer = produce(
         const [target] = arr.splice(startIndex, 1);
 
         arr.splice(layer, 0, target);
-        console.log(arr);
 
         draft.VIAMode.regions = arr.reduce((acc, curr, i) => {
           acc[curr.id] = {
