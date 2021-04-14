@@ -233,7 +233,7 @@ def write_elem_value(region_dataset, class_id_recognized):
 
 
 # Detect elements for the root block function
-def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, multiple_output_on = 0, serializing="virtualize_simple", node_width=0, node_height=0, children=[]):
+def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0, children=[]):
     # Function elements creation, loop through the root_block start
     for pre, fill, node in RenderTree(root_block):
         # if(node.elements):
@@ -306,7 +306,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 styles=styles,
                 buoyancy=0,
             )
-
+            '''
             if multiple_output_on:
                 # Create an empty divs for the endpoint checking
                 ScenarioElement.objects.create(
@@ -324,6 +324,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     styles=styles,
                     buoyancy=2,
                 )
+            '''
 
         else:
             node.div = ET.SubElement(node.parent.div, "div")
@@ -394,7 +395,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                                         if int(child.parameters["freeCanvas"]["top"]) == y1:
                                             # print(child, child.struct_type, child.parent, child.parent_id)
                                             # input()
-                                            child.move_to(node.scenarioelement_inner)
+                                            child.move_to(node.scenarioelement)
         elif (serializing in {"virtualize_simple", "assemble"}):
             # Display elements for some fcluster
             if node.types == "fcluster":
@@ -3014,7 +3015,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Obtaining the absolute path for the parameters directly. Should change this later.
         o = urlparse(self.context["request"].build_absolute_uri())
         # Detect elements for the root block
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple", multiple_output_on=1)
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple")
         # Generating HTML for printing
         html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
         # print("html=", html)
