@@ -1,5 +1,6 @@
 import { StyledIconButton } from '@Components/styledComponents';
-import { Button, makeStyles } from '@material-ui/core';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import {

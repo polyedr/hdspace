@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
 import MuiLink from '@material-ui/core/Link';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
+import { createStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import PATH_NAMES from '@Constants/pathNames';

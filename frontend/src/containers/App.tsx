@@ -1,6 +1,7 @@
 import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
-import { MuiThemeProvider, CssBaseline } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import history from '../redux/history';
 import Routes from './Routes';
 import theme from '../styles/Theme';

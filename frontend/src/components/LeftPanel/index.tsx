@@ -5,7 +5,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import SubjectIcon from '@material-ui/icons/Subject';
 import WebIcon from '@material-ui/icons/Web';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles, lighten, Theme } from '@material-ui/core';
+import { lighten, Theme, createStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import { changeMinLPanel } from '@Redux/user/actions';

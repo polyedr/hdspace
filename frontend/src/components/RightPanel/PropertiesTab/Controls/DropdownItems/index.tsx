@@ -3,7 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lighten } from '@material-ui/core';
+import { lighten } from '@material-ui/core/styles';
 import {
   selectActiveElementId,
   selectElementAsTree,

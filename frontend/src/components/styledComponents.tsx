@@ -3,15 +3,17 @@ import MuiAccordion, { AccordionProps } from '@material-ui/core/Accordion';
 import {
   AccordionDetailsProps,
   AccordionSummaryProps,
-  createStyles,
-  darken,
   IconButtonProps,
-  lighten,
   TextFieldProps,
 } from '@material-ui/core';
+import {
+  createStyles,
+  lighten,
+  makeStyles,
+  darken,
+} from '@material-ui/core/styles';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import TextField from '@material-ui/core/TextField';
 import { ToggleButtonProps } from '@material-ui/lab';
 import ToggleButton from '@material-ui/lab/ToggleButton';

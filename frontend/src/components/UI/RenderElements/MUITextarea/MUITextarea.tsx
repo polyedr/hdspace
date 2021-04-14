@@ -2,7 +2,8 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as R from 'ramda';
 import { TextareaRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';

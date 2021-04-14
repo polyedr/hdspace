@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import Calendar from './colorCalendar';
 

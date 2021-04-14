@@ -13,7 +13,7 @@ import {
 import { renameProject, setSidebarOpen } from '@Redux/project/actions';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import DehazeIcon from '@material-ui/icons/Dehaze';
-import { lighten } from '@material-ui/core';
+import { lighten } from '@material-ui/core/styles';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';
 import Avatar from './Avatar';

@@ -4,7 +4,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lighten } from '@material-ui/core';
+import { lighten } from '@material-ui/core/styles';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { StyledTextField } from '@Components/styledComponents';
 

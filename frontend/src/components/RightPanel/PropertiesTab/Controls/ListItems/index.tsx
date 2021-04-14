@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { lighten } from '@material-ui/core';
+import { lighten } from '@material-ui/core/styles';
 import { addChildToElement } from '@Redux/project/actions';
 import { ListItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';

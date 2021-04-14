@@ -8,7 +8,7 @@ import AtlasTree, {
   TreeSourcePosition,
 } from '@atlaskit/tree';
 import { VIARegion } from '@Src/types';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {
   StyledAccordion,

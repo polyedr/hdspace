@@ -12,7 +12,7 @@ import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import { activateScreen } from '@Redux/project/actions';
 import ELEMENT_IDS from '@Constants/elementIds';
 import Tour, { ReactourStep } from 'reactour';
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 import { selectUserGuideActive } from '@Redux/user/selectors';
 import {
   setUserGuideActive,

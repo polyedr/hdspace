@@ -4,7 +4,7 @@ import { Field, Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
 // import { GoogleLogin } from 'react-google-login';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
+import { createStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';

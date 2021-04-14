@@ -2,7 +2,7 @@ import React, { MouseEvent, useCallback } from 'react';
 import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lighten } from '@material-ui/core';
+import { lighten } from '@material-ui/core/styles';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
 import ChevronDown from './Icons/chevron-down';

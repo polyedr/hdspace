@@ -3,10 +3,10 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  makeStyles,
   Tab,
   Tabs,
 } from '@material-ui/core';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { setNewScreenModal } from '@Redux/project/actions';
 import { setUserGuideActive } from '@Redux/user/actions';
 import { selectUserGuideWatched } from '@Redux/user/selectors';

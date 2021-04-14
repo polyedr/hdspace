@@ -6,7 +6,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { CircularProgress, lighten } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
+import { lighten } from '@material-ui/core/styles';
 import {
   selectFreeCanvasMode,
   selectUpdateScreenImageLoader,

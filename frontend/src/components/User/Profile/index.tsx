@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles, darken } from '@material-ui/core';
+import { createStyles, darken } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Switch from '@material-ui/core/Switch';

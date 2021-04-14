@@ -5,7 +5,7 @@ const safePostCssParser = require('postcss-safe-parser');
 // plugins
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'); // uncomment to pretty view modules size
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'); // uncomment to pretty view modules size
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -228,7 +228,7 @@ module.exports = ({ MODE }) => {
           : {}),
       }),
       new ForkTsCheckerWebpackPlugin(),
-      // new BundleAnalyzerPlugin(),
+      new BundleAnalyzerPlugin(),
       new CopyWebpackPlugin({
         patterns: [
           {

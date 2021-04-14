@@ -4,7 +4,7 @@ import Popover from '@material-ui/core/Popover';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
+import { createStyles } from '@material-ui/core/styles';
 import transparentBg from '../../../assets/sprites/background_empty.png';
 
 const useStyles = makeStyles((theme) =>

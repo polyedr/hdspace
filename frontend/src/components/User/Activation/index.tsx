@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
+import { createStyles } from '@material-ui/core/styles';
 import * as Actions from '@Redux/user/actions';
 import { AppReduxState } from '@Redux/types';
 import LoginForm from '../LoginForm';

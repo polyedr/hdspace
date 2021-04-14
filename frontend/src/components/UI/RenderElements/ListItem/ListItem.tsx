@@ -2,7 +2,7 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import * as R from 'ramda';
 import { ListItemRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';

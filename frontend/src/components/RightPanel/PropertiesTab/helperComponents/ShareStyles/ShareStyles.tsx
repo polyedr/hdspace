@@ -1,5 +1,6 @@
 import React from 'react';
-import { Chip, makeStyles } from '@material-ui/core';
+import { Chip } from '@material-ui/core';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { connect, useSelector } from 'react-redux';
 import Button from '@material-ui/core/Button';
