@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
-import SharedWithLink from '@Components/User/SharedWithLink';
-import Signin from '../components/User/Signin';
-import Signup from '../components/User/Signup';
-import Activation from '../components/User/Activation';
-import ResetPassword from '../components/User/ResetPassword/ResetPassword';
-import Projects from '../components/Projects/Projects';
 import Layout from '../components/Layout';
-import Project from './Project';
-import Profile from '../components/User/Profile';
 import { selectIsLoggedIn } from '../redux/user/selectors';
+
+const Profile = lazy(() => import('../components//User/Profile'));
+const Signin = lazy(() => import('../components//User/Signin'));
+const Signup = lazy(() => import('../components//User/Signup'));
+const Activation = lazy(() => import('../components/User/Activation/'));
+const ResetPassword = lazy(
+  () => import('../components/User/ResetPassword/ResetPassword'),
+);
+const Projects = lazy(() => import('../components/Projects/Projects'));
+const Project = lazy(() => import('./Project'));
+const SharedWithLink = lazy(() => import('@Components/User/SharedWithLink'));
 
 const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
@@ -24,42 +27,44 @@ const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
 
 const Routes: React.FC = () => {
   return (
-    <Switch>
-      <Route path={PATH_NAMES.user.signin} component={Signin} />
+    <Suspense fallback={<div>Loading...</div>}>
+      <Switch>
+        <Route path={PATH_NAMES.user.signin} component={Signin} />
 
-      <Route path={PATH_NAMES.user.signup} component={Signup} />
+        <Route path={PATH_NAMES.user.signup} component={Signup} />
 
-      <Route path={PATH_NAMES.user.activate} component={Activation} />
+        <Route path={PATH_NAMES.user.activate} component={Activation} />
 
-      <Route path={PATH_NAMES.user.password} component={ResetPassword} />
+        <Route path={PATH_NAMES.user.password} component={ResetPassword} />
 
-      <Route path="/share/" component={SharedWithLink} exact />
+        <Route path="/share/" component={SharedWithLink} exact />
 
-      <PrivateRoute path={PATH_NAMES.projects}>
-        <Layout>
-          <Projects />
-        </Layout>
-      </PrivateRoute>
-
-      <PrivateRoute path="/project/:projectId/:screenId?">
-        {({ match: { params } }: any) => (
+        <PrivateRoute path={PATH_NAMES.projects}>
           <Layout>
-            <Project
-              projectId={parseInt(params.projectId)}
-              screenId={parseInt(params.screenId)}
-            />
+            <Projects />
           </Layout>
-        )}
-      </PrivateRoute>
+        </PrivateRoute>
 
-      <PrivateRoute path={PATH_NAMES.profile}>
-        <Layout>
-          <Profile />
-        </Layout>
-      </PrivateRoute>
+        <PrivateRoute path="/project/:projectId/:screenId?">
+          {({ match: { params } }: any) => (
+            <Layout>
+              <Project
+                projectId={parseInt(params.projectId)}
+                screenId={parseInt(params.screenId)}
+              />
+            </Layout>
+          )}
+        </PrivateRoute>
 
-      <Redirect from="/*" to={PATH_NAMES.projects} />
-    </Switch>
+        <PrivateRoute path={PATH_NAMES.profile}>
+          <Layout>
+            <Profile />
+          </Layout>
+        </PrivateRoute>
+
+        <Redirect from="/*" to={PATH_NAMES.projects} />
+      </Switch>
+    </Suspense>
   );
 };
 
