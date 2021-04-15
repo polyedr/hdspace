@@ -683,10 +683,9 @@ export function* getScreensSaga(screens: Screen[]) {
   }
 }
 
-export const changeScreensOrderSaga = withRequiredPermissions(
-  UserProjectPermission.VIEW_PROJECT,
-  UserProjectPermission.CHANGE_PROJECT,
-)(function* (action: ReturnType<typeof Actions.changeScreensOrder>) {
+export const changeScreensOrder = function* (
+  action: ReturnType<typeof Actions.changeScreensOrder>,
+) {
   try {
     const { screens } = action.payload;
 
@@ -725,7 +724,12 @@ export const changeScreensOrderSaga = withRequiredPermissions(
       ),
     );
   }
-});
+};
+
+export const changeScreensOrderSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(changeScreensOrder);
 
 export const convertFreeCanvasSaga = compose(
   withRequiredPermissions(UserProjectPermission.VIEW_PROJECT),

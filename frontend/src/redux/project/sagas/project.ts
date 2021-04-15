@@ -29,6 +29,7 @@ import {
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import { renameProject } from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -62,7 +63,7 @@ function* setMasterScreenCoreElements(screen: Screen) {
   );
 }
 
-function* createMasterScreenElements(screen: Screen) {
+export function* createMasterScreenElements(screen: Screen) {
   const elements = [
     convertCreatedElementToRequest(
       'container',
@@ -249,15 +250,14 @@ export function* createProjectSaga(
   try {
     yield put(Actions.setProjectCreateLoader(true));
 
-    const { result, error }: Result<Project> = yield call(
+    const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
         data: convertCreatedProjectToRequest(name),
       },
     );
-
-    if (result?.created) {
+    if (createdProject?.created) {
       yield put(
         PermissionsActions.setStateCurrentUserPermissions([
           UserProjectPermission.VIEW_PROJECT,
@@ -265,20 +265,20 @@ export function* createProjectSaga(
         ]),
       );
       const assetList = yield call(reqWrapper, apiCreateAssetList, {
-        projectId: result.id,
+        projectId: createdProject.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
       yield put(Actions.addAssetListToState(assetList, { useHistory: true }));
       const projects: Project[] = yield select(selectProjectsAsArr);
-      yield put(Actions.setProjectList([...projects, result]));
+      yield put(Actions.setProjectList([...projects, createdProject]));
 
-      yield put(Actions.setCurrentProjectId(result.id));
+      yield put(Actions.setCurrentProjectId(createdProject.id));
 
       const masterScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
           {
-            projectID: result.id,
+            projectID: createdProject.id,
             name: 'Master Screen',
             buoyancy: 0,
             rootName: 'Master Screen',
@@ -296,7 +296,7 @@ export function* createProjectSaga(
       const initialScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
-          { projectID: result.id, name: 'Screen 1', buoyancy: 1 },
+          { projectID: createdProject.id, name: 'Screen 1', buoyancy: 1 },
           {
             useHistory: true,
           },
@@ -307,7 +307,7 @@ export function* createProjectSaga(
         yield put(Actions.setMasterScreenId(masterScreen.id));
         yield put(
           enqueueSnackbar({
-            message: `Project ${result.name} created`,
+            message: `Project ${createdProject.name} created`,
             options: {
               variant: 'success',
             },
@@ -383,10 +383,7 @@ export function* deleteProjectSaga({
   }
 }
 
-export const renameProjectSaga = withRequiredPermissions(
-  UserProjectPermission.VIEW_PROJECT,
-  UserProjectPermission.CHANGE_PROJECT,
-)(function* ({
+export const renameProjects = function* ({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
   try {
@@ -419,7 +416,12 @@ export const renameProjectSaga = withRequiredPermissions(
       ),
     );
   }
-});
+};
+
+export const renameProjectSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(renameProjects);
 
 export function* updateProjectSaga(
   action: ReturnType<typeof Actions.updateProject>,

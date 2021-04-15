@@ -17,6 +17,10 @@ import {
   UserData,
   ElementGroup,
   Experience,
+  AssetsList,
+  ProjectWithScreens,
+  ProjectsSearchParameter,
+  DateRange,
 } from '../../types';
 
 export const mockProject: Project = {
@@ -189,3 +193,83 @@ export const mockState: AppReduxState = {
     },
   },
 };
+
+const randomInteger = (max, min) =>
+  Math.floor(Math.random() * (max - min)) + min;
+
+const testId = randomInteger(9999, 1);
+export const createMockProject = (): Project => ({
+  id: testId,
+  name: 'test project',
+  status: 'pending',
+  projectscreen: [],
+  projectLoader: true,
+  created: new Date(),
+  updated: new Date(),
+  projectData: {
+    classes: [],
+  },
+  user: DEFAULT_USER,
+});
+
+export const createAssetListMock = (): AssetsList => ({
+  created: new Date(),
+  id: '9999',
+  images: [],
+  modified: new Date(),
+  name: 'Project assets',
+  projectId: '715',
+});
+
+export const createMasterScreenMock = (projectId: number): Screen => ({
+  buoyancy: 0,
+  element: '99999',
+  id: testId,
+  image: null,
+  name: 'Master Screen',
+  project: projectId,
+  screen_data_json: {},
+  screenscenario: [],
+  status: 'pending',
+});
+
+export const createScreenMock = (projectId: number): Screen => ({
+  buoyancy: 1,
+  element: '99999',
+  id: testId,
+  image: null,
+  name: 'Screen 1',
+  project: projectId,
+  screen_data_json: {},
+  screenscenario: [],
+  status: 'pending',
+});
+
+export const projectWithScreensMock = (
+  projectId: number,
+): ProjectWithScreens => ({
+  created: new Date(),
+  id: projectId,
+  name: 'test name',
+  projectData: {
+    classes: [],
+  },
+  projectLoader: false,
+  projectscreen: [
+    createMasterScreenMock(projectId),
+    createScreenMock(projectId),
+  ],
+  status: 'pending',
+  updated: new Date(),
+  user: DEFAULT_USER,
+});
+
+export const projectSearchParameterMock: [
+  ProjectsSearchParameter,
+  string | DateRange,
+] = [ProjectsSearchParameter.name, 'text search'];
+
+export const projectScreensMock = [
+  createMasterScreenMock(testId),
+  createScreenMock(testId),
+];
