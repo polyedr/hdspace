@@ -539,8 +539,11 @@ export const updateElement = <T extends Entity>(
   meta: meta || {},
 });
 
-export const toggleContainersBorders = (): ToggleContainersBorders => ({
+export const toggleContainersBorders = (
+  enabled: boolean,
+): ToggleContainersBorders => ({
   type: TYPES.TOGGLE_CONTAINERS_BORDERS,
+  payload: enabled,
 });
 
 export const setBordersEnabled = (enabled: boolean): SetBordersEnabled => ({
