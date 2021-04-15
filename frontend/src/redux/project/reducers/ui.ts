@@ -19,7 +19,7 @@ function uiReducer(
     }
 
     case TYPES.TOGGLE_CONTAINERS_BORDERS: {
-      return { ...state, showContainersBorders: !state.showContainersBorders };
+      return { ...state, showContainersBorders: action.payload };
     }
 
     case TYPES.SET_BORDERS_ENABLED: {

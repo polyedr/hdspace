@@ -384,8 +384,9 @@ export type UpdateElement = IAction<
   },
   HistoryMeta
 >;
-export type ToggleContainersBorders = IPlainAction<
-  typeof TYPES.TOGGLE_CONTAINERS_BORDERS
+export type ToggleContainersBorders = IAction<
+  typeof TYPES.TOGGLE_CONTAINERS_BORDERS,
+  boolean
 >;
 export type SetBordersEnabled = IAction<
   typeof TYPES.SET_BORDERS_ENABLED,

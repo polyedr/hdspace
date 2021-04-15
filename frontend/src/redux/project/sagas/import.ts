@@ -124,7 +124,7 @@ export const importHtmlSaga = withRequiredPermissions(
       if (error) throw new Error(error);
     }
     if (error) throw new Error(error);
-    yield put(Actions.toggleContainersBorders());
+    yield put(Actions.toggleContainersBorders(true));
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -219,7 +219,7 @@ export const uploadImportUrlSaga = withRequiredPermissions(
     );
 
     yield put(importHtml(Object.values(files), url));
-    yield put(Actions.toggleContainersBorders());
+    yield put(Actions.toggleContainersBorders(true));
   } catch (e) {
     yield put(
       enqueueSnackbar(
