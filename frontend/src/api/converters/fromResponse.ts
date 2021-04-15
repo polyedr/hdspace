@@ -166,12 +166,13 @@ export function convertProjectFromResponse({
     user: convertUserDataFromResponse(user),
     projectData: {
       ...projectDataJSON,
-      classes: projectDataJSON.classes.map((cls: ProjectClass) => {
-        return {
-          ...cls,
-          rules: cssCamelize(cls.rules) as React.CSSProperties,
-        } as ProjectClass;
-      }),
+      classes:
+        projectDataJSON.classes?.map((cls: ProjectClass) => {
+          return {
+            ...cls,
+            rules: cssCamelize(cls.rules) as React.CSSProperties,
+          } as ProjectClass;
+        }) || [],
     },
   };
 }
@@ -207,12 +208,13 @@ export function convertProjectWithScreensFromResponse({
     user: convertUserDataFromResponse(user),
     projectData: {
       ...projectDataJSON,
-      classes: projectDataJSON.classes.map((cls: ProjectClass) => {
-        return {
-          ...cls,
-          rules: cssCamelize(cls.rules) as React.CSSProperties,
-        } as ProjectClass;
-      }),
+      classes:
+        projectDataJSON.classes?.map((cls: ProjectClass) => {
+          return {
+            ...cls,
+            rules: cssCamelize(cls.rules) as React.CSSProperties,
+          } as ProjectClass;
+        }) || [],
     },
   };
 }
