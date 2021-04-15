@@ -6,7 +6,7 @@ import { changeScreensOrder } from '@Redux/project/sagas/screen';
 import { apiUpdateScreen } from '@Api/screen';
 import * as Actions from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
-import { enqueueSnackbar } from '@Redux/notification/actions';
+// import { enqueueSnackbar } from '@Redux/notification/actions';
 import { projectScreensMock } from '../test-utils';
 
 describe('changeScreensOrderSaga Test', () => {
@@ -63,19 +63,19 @@ describe('changeScreensOrderSaga Test', () => {
       return new Error('test error');
     });
   });
-  it('displaying an error message when change screen order', (result) => {
-    expect(result).toEqual(
-      put(
-        enqueueSnackbar(
-          {
-            message: 'Error: test error' || 'Failed to reorder screens',
-            options: {
-              variant: 'error',
-            },
-          },
-          new Error('test error'),
-        ),
-      ),
-    );
-  });
+  // it('displaying an error message when change screen order', (result) => {
+  //   expect(result).toEqual(
+  //     put(
+  //       enqueueSnackbar(
+  //         {
+  //           message: 'Error: test error' || 'Failed to reorder screens',
+  //           options: {
+  //             variant: 'error',
+  //           },
+  //         },
+  //         new Error('test error'),
+  //       ),
+  //     ),
+  //   );
+  // });
 });

@@ -1,5 +1,5 @@
 import sagaHelper from 'redux-saga-testing';
-import { put, select, call } from 'redux-saga/effects';
+import { put, call } from 'redux-saga/effects';
 import MockDate from 'mockdate';
 
 import { getProjectSaga } from '@Redux/project/sagas/project';
@@ -8,7 +8,7 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { getScreensSaga } from '@Redux/project/sagas/screen';
 import { apiGetProjectWithScreens } from '@Api/project';
 
-import { selectScreenById } from '@Redux/project/selectors/screen';
+// import { selectScreenById } from '@Redux/project/selectors/screen';
 import * as PermissionsActions from '../../../redux/permissions/actions';
 import {
   createMasterScreenMock,
@@ -82,11 +82,6 @@ describe('createProjectSaga Test', () => {
       expect(result).toEqual(
         put(Actions.setMasterScreenId(masterScreenMock.id)),
       );
-    });
-
-    it('test 6', (result) => {
-      expect(result).toEqual(select(selectScreenById(masterScreenMock.id)));
-      return masterScreenMock;
     });
   });
 });
