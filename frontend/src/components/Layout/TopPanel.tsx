@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import EditIcon from '@material-ui/icons/Edit';
 import {
   selectCurrentProject,
@@ -9,7 +8,7 @@ import {
 import { renameProject, setSidebarOpen } from '@Redux/project/actions';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import DehazeIcon from '@material-ui/icons/Dehaze';
-import { lighten } from '@material-ui/core/styles';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';

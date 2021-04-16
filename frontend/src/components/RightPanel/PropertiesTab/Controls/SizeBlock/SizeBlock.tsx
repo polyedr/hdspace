@@ -1,13 +1,13 @@
 import React, { useCallback, memo, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import capitalize from '@material-ui/core/utils/capitalize';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { capitalize } from '@material-ui/core/utils';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
 const useStyles = makeStyles({

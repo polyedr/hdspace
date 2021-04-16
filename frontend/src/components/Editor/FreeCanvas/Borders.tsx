@@ -4,13 +4,13 @@ import cn from 'classnames';
 import SettingsIcon from '@material-ui/icons/Settings';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { splitWords } from '@Utils/stringHelper';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { StateElement } from '@Src/types';
-
 import { Divider, IconButton } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   crumb: {

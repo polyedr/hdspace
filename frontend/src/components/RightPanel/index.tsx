@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Theme, Tabs, Tab } from '@material-ui/core';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
@@ -23,6 +22,7 @@ import EventsTab from '@Components/RightPanel/EventsTab';
 import { CORE_MASTER_ELEMENTS_IDS } from '@Components/Editor/MasterScreen/coreElements';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { makeStyles } from '@material-ui/core/styles';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import AssetsSection from './Assets';

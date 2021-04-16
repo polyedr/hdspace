@@ -2,7 +2,6 @@ import React, { useEffect, useRef, MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { splitWords } from '@Utils/stringHelper';
 import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
 import { createElements } from '@Redux/project/actions';
@@ -11,6 +10,7 @@ import { selectActiveElement } from '@Redux/project/selectors/element';
 import { ElementType } from '@Constants/dragAndDrop';
 import { ElementData } from '@Src/types';
 import { Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 type Props = {
   elementData: ElementData;

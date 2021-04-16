@@ -4,7 +4,7 @@ import { Switch, FormControlLabel } from '@material-ui/core';
 import { ListElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   root: {

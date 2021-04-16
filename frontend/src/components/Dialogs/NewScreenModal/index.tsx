@@ -6,13 +6,13 @@ import {
   Tab,
   Tabs,
 } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { setNewScreenModal } from '@Redux/project/actions';
 import { setUserGuideActive } from '@Redux/user/actions';
 import { selectUserGuideWatched } from '@Redux/user/selectors';
 import React, { ChangeEvent, FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectNewScreenModalOpen } from '@Redux/project/selectors/screen';
+import { makeStyles } from '@material-ui/core/styles';
 import HtmlImportForm from './HTMLImportForm';
 import ImageRecognizeForm from './ImageRecognizeForm';
 import UseEditorForm from './UseEditorForm';

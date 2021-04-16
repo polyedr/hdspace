@@ -1,5 +1,4 @@
 import React, { FC, FormEvent } from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Button, TextField, MenuItem } from '@material-ui/core';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +12,7 @@ import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   input: {

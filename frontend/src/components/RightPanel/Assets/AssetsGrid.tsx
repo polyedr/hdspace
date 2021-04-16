@@ -5,13 +5,13 @@ import {
 } from '@Redux/project/selectors/asset';
 import { useSelector, useDispatch } from 'react-redux';
 import Scrollbar from '@Components/UI/Scrollbar';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Button, GridListTile, GridList } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { Asset, UserProjectPermission } from '@Src/types';
 import { uploadAsset } from '@Redux/project/actions';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { makeStyles } from '@material-ui/core/styles';
 import AssetImage from './AssetImage';
 
 const useStyles = makeStyles({

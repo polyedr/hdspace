@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lighten } from '@material-ui/core/styles';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';

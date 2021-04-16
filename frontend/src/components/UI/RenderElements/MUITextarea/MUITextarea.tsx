@@ -3,8 +3,8 @@
 import React from 'react';
 import cn from 'classnames';
 import { TextField } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { omit, pick } from 'ramda';
+import { makeStyles } from '@material-ui/core/styles';
 import { TextareaRendererProps } from '../types';
 import useEventHandlers from '../useEventHandlers';
 

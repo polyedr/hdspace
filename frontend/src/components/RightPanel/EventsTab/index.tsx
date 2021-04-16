@@ -10,13 +10,13 @@ import {
   selectActiveElement,
   selectActiveElementParams,
 } from '@Redux/project/selectors/element';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import Click from '@Components/RightPanel/EventsTab/Click';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import EventListItem from '@Components/RightPanel/EventsTab/EventListItem';
-
 import { MenuItem, Button } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   root: {

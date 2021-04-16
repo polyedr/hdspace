@@ -4,10 +4,10 @@ import { setEditableStyles } from '@Redux/project/actions';
 import { AppReduxState } from '@Redux/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { StyledTextField } from '@Components/styledComponents';
 import { splitWords } from '@Utils/stringHelper';
 import { MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   capitalized: {

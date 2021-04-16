@@ -1,8 +1,8 @@
 import React from 'react';
 import { Theme } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Styles } from '@material-ui/core/styles/withStyles';
 import { omit } from 'ramda';
+import { makeStyles } from '@material-ui/core/styles';
 import { SharedRendererProps } from './types';
 
 const getComputedStyle = (

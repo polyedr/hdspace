@@ -1,7 +1,7 @@
 import React from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
+import { makeStyles } from '@material-ui/core/styles';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
 import {

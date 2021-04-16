@@ -4,8 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import SubjectIcon from '@material-ui/icons/Subject';
 import WebIcon from '@material-ui/icons/Web';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lighten, Theme, createStyles } from '@material-ui/core/styles';
+import {
+  lighten,
+  Theme,
+  createStyles,
+  makeStyles,
+} from '@material-ui/core/styles';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import { changeMinLPanel } from '@Redux/user/actions';
 import { selectIsLeftPanelMinimized } from '@Redux/user/selectors';

@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { changePrototypeMode } from '@Redux/user/actions';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
@@ -27,6 +26,7 @@ import {
   Checkbox,
   Button,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import Layouts from './Layouts';
 import Actions from './actions';
 

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import PATH_NAMES from '@Constants/pathNames';
 import IMAGES from '@Constants/images';
 import { logoutStart } from '@Redux/user/actions';
 import { selectProfileData, selectUserData } from '@Redux/user/selectors';
-
 import {
   Avatar as MuiAvatar,
   Tooltip,
@@ -15,6 +13,8 @@ import {
   MenuItem,
   Divider,
 } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   menu: {

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox, FormControlLabel, Switch } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { extractPlayerLinkInfo } from '@Utils/extractVideoLink';
 import { PropertiesChangeProps, VideoElement } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   wrapper: {

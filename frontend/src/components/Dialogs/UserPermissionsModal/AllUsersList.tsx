@@ -1,7 +1,6 @@
 import React, { useEffect, useCallback, useRef, useMemo } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useDispatch, useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as Actions from '@Redux/permissions/actions';
 import {
   selectAllUsers,
@@ -19,6 +18,7 @@ import {
   TextField,
   CircularProgress,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import PermissionsSelect from './PermissionsSelect';
 
 type Props = {

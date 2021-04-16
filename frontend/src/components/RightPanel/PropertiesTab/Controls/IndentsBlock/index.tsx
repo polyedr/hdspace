@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { useDebouncedCallback } from 'use-debounce';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
+import { makeStyles } from '@material-ui/core/styles';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
 const useStyles = makeStyles(({ palette }) => ({

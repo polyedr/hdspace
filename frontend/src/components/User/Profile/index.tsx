@@ -3,8 +3,7 @@ import MakeAsyncFunction from 'react-redux-promise-listener';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import cn from 'classnames';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles, darken } from '@material-ui/core/styles';
+import { createStyles, darken, makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import {
   selectDropTargetBordersMode,

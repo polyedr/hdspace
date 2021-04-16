@@ -13,7 +13,7 @@ import {
   TableCell,
   TableBody,
 } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 import PermissionsSelect from './PermissionsSelect';
 
 type Props = {

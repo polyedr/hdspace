@@ -1,9 +1,8 @@
 import React, { useEffect, useCallback, useState, memo } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 
-import { createStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Popover } from '@material-ui/core';
 import transparentBg from '../../../assets/sprites/background_empty.png';
 

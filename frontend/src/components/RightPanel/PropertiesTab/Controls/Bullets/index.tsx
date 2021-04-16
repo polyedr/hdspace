@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, FormControlLabel } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { ListElement, PropertiesChangeProps } from '@Src/types';
+import { makeStyles } from '@material-ui/core/styles';
 import StylesHeader from '../../helperComponents/StylesHeader';
 
 const useStyles = makeStyles({
