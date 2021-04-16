@@ -9,7 +9,6 @@ const useStyles = makeComponentStyles('undef');
 const Undefined = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
     const { element, children } = props;
-    console.log('SOURCE ELEMENT!!', element);
     const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);

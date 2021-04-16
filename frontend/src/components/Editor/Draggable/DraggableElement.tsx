@@ -13,7 +13,6 @@ import { useDebouncedCallback } from 'use-debounce';
 import {
   createElements,
   moveElement,
-  // resetElementEditState,
   setActiveElement,
   setCurrentDropTargetParams,
   setElementBeingEdited,
@@ -21,7 +20,6 @@ import {
   setHoveredElementId,
   setMasterSourceElementId,
   toggleSelectedElement,
-  // updateElementParameters,
 } from '@Redux/project/actions';
 import {
   ElementData,
@@ -55,7 +53,6 @@ import {
   getBlockDropPosition,
   getDropIndex,
 } from './helper';
-// import useElementProps from '../hooks/useElementProps';
 import RENDERERS from '../../UI/RenderElements';
 import { WindowContext } from '../FrameWrapper/FrameContext';
 
