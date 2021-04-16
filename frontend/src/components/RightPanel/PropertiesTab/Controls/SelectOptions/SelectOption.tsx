@@ -1,5 +1,4 @@
 import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -7,6 +6,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { lighten } from '@material-ui/core/styles';
 import { deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { IconButton } from '@material-ui/core';
 import {
   StyledAccordion,
   StyledAccordionDetails,

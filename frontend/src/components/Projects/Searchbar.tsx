@@ -1,8 +1,6 @@
 import React, { FC, FormEvent } from 'react';
-import TextField from '@material-ui/core/TextField';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { Button } from '@material-ui/core';
-import MenuItem from '@material-ui/core/MenuItem';
+import { Button, TextField, MenuItem } from '@material-ui/core';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateRange, ProjectsSearchParameter } from '@Src/types';

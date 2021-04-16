@@ -5,7 +5,6 @@ import {
   StyledAccordionSummary,
 } from '@Components/styledComponents';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import {
   loadAssetLists,
   loadAssets,
@@ -17,6 +16,7 @@ import {
 } from '@Redux/project/selectors/base';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { selectSelectedAssetListId } from '@Redux/project/selectors/asset';
+import { CircularProgress } from '@material-ui/core';
 import AssetsGrid from './AssetsGrid';
 import AssetLists from './AssetLists';
 

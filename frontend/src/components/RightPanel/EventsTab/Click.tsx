@@ -6,7 +6,6 @@ import {
 } from '@Components/styledComponents';
 import LinkIcon from '@material-ui/icons/Link';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import MenuItem from '@material-ui/core/MenuItem';
 import { ElementClickEvent, LinkType } from '@Src/types';
 import { useSelector } from 'react-redux';
 import {
@@ -14,6 +13,7 @@ import {
   selectScreens,
 } from '@Redux/project/selectors/screen';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { MenuItem } from '@material-ui/core';
 
 type Props = {
   eventData: ElementClickEvent['data'];

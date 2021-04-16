@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
-import MuiAvatar from '@material-ui/core/Avatar';
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
 import { NavLink } from 'react-router-dom';
-import MenuItem from '@material-ui/core/MenuItem';
-import Divider from '@material-ui/core/Divider';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import PATH_NAMES from '@Constants/pathNames';
 import IMAGES from '@Constants/images';
 import { logoutStart } from '@Redux/user/actions';
 import { selectProfileData, selectUserData } from '@Redux/user/selectors';
+
+import {
+  Avatar as MuiAvatar,
+  Tooltip,
+  IconButton,
+  Menu,
+  MenuItem,
+  Divider,
+} from '@material-ui/core';
 
 const useStyles = makeStyles({
   menu: {

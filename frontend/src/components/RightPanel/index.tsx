@@ -1,9 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { Theme } from '@material-ui/core';
+import { Theme, Tabs, Tab } from '@material-ui/core';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
   PANEL_TRANSITION_DURATION,

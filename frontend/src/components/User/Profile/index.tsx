@@ -5,16 +5,7 @@ import { Form, Field } from 'react-final-form';
 import cn from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles, darken } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Switch from '@material-ui/core/Switch';
-import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import Alert from '@material-ui/lab/Alert';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import {
   selectDropTargetBordersMode,
   selectProfileData,
@@ -32,6 +23,17 @@ import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
 import { ROLES } from '@Constants/defaultParams';
 import { Experience, ProfileData } from '@Src/types';
+import {
+  Typography,
+  Box,
+  Switch,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+} from '@material-ui/core';
 import SubmitError from '../SubmitError';
 import Button from '../../UI/Button';
 

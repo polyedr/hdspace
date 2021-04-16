@@ -1,9 +1,7 @@
 import React from 'react';
-import { Checkbox } from '@material-ui/core';
+import { Checkbox, IconButton, FormControlLabel } from '@material-ui/core';
 import { lighten } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';

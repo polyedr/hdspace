@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Checkbox } from '@material-ui/core';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { Checkbox, FormControlLabel, Switch } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import Switch from '@material-ui/core/Switch';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { extractPlayerLinkInfo } from '@Utils/extractVideoLink';
 import { PropertiesChangeProps, VideoElement } from '@Src/types';

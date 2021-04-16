@@ -5,9 +5,8 @@ import {
 } from '@Redux/project/selectors/asset';
 import { useSelector, useDispatch } from 'react-redux';
 import Scrollbar from '@Components/UI/Scrollbar';
-import GridList from '@material-ui/core/GridList';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import { Button, GridListTile } from '@material-ui/core';
+import { Button, GridListTile, GridList } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { Asset, UserProjectPermission } from '@Src/types';
 import { uploadAsset } from '@Redux/project/actions';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Switch } from '@material-ui/core';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import { Switch, FormControlLabel } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Entity, PropertiesChangeProps, SmartElement } from '@Src/types';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';

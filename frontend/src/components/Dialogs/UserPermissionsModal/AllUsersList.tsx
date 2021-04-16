@@ -1,13 +1,6 @@
 import React, { useEffect, useCallback, useRef, useMemo } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { useDispatch, useSelector } from 'react-redux';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import TableBody from '@material-ui/core/TableBody';
-import TextField from '@material-ui/core/TextField';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import * as Actions from '@Redux/permissions/actions';
 import {
@@ -17,6 +10,15 @@ import {
   selectUsersSearchValue,
 } from '@Redux/permissions/selectors';
 import Scrollbar from '@Components/UI/Scrollbar';
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TextField,
+  CircularProgress,
+} from '@material-ui/core';
 import PermissionsSelect from './PermissionsSelect';
 
 type Props = {

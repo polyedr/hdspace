@@ -1,9 +1,6 @@
 import React, { FC, useState, useCallback, MouseEvent } from 'react';
 import ShareIcon from '@material-ui/icons/Share';
-import IconButton from '@material-ui/core/IconButton';
-import Popover from '@material-ui/core/Popover';
-import Container from '@material-ui/core/Container';
-import { Button } from '@material-ui/core';
+import { Button, IconButton, Popover, Container } from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';

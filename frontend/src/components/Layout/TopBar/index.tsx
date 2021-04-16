@@ -1,14 +1,9 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import Switch from '@material-ui/core/Switch';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Typography from '@material-ui/core/Typography';
-import Checkbox from '@material-ui/core/Checkbox';
 import { changePrototypeMode } from '@Redux/user/actions';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import Button from '@material-ui/core/Button';
 import {
   changeFreeCanvasMode,
   convertFreeCanvas,
@@ -25,6 +20,13 @@ import {
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
+import {
+  Switch,
+  FormControlLabel,
+  Typography,
+  Checkbox,
+  Button,
+} from '@material-ui/core';
 import Layouts from './Layouts';
 import Actions from './actions';
 

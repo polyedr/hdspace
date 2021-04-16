@@ -5,15 +5,12 @@ import { Link } from 'react-router-dom';
 // import { GoogleLogin } from 'react-google-login';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { createStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert';
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
 import PATH_NAMES from '@Constants/pathNames';
 // import registerWithGoogle from '@Redux/user/actions';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
+import { Typography, TextField, Button, Container } from '@material-ui/core';
 import { Info } from '../Info';
 
 const useStyles = makeStyles((theme) =>

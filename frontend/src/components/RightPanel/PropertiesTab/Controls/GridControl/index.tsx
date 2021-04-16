@@ -1,12 +1,12 @@
 import React, { ChangeEvent, FC } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { addChildrenToElement, deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { MenuItem } from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {

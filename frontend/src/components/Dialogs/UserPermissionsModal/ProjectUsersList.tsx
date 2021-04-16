@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import TableContainer from '@material-ui/core/TableContainer';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import TableBody from '@material-ui/core/TableBody';
 
 import * as Actions from '@Redux/permissions/actions';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import Scrollbar from '@Components/UI/Scrollbar';
-import { Typography } from '@material-ui/core';
+import {
+  Typography,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from '@material-ui/core';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import PermissionsSelect from './PermissionsSelect';
 

@@ -1,10 +1,15 @@
 import React, { useRef } from 'react';
-import MuiAccordion, { AccordionProps } from '@material-ui/core/Accordion';
+import { AccordionProps } from '@material-ui/core/Accordion';
 import {
   AccordionDetailsProps,
   AccordionSummaryProps,
   IconButtonProps,
   TextFieldProps,
+  Accordion as MuiAccordion,
+  AccordionSummary as MuiAccordionSummary,
+  AccordionDetails as MuiAccordionDetails,
+  TextField,
+  IconButton,
 } from '@material-ui/core';
 import {
   createStyles,
@@ -12,12 +17,8 @@ import {
   makeStyles,
   darken,
 } from '@material-ui/core/styles';
-import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
-import TextField from '@material-ui/core/TextField';
 import { ToggleButtonProps } from '@material-ui/lab';
 import ToggleButton from '@material-ui/lab/ToggleButton';
-import IconButton from '@material-ui/core/IconButton';
 
 const useAccordionStyles = makeStyles(({ palette }) => ({
   root: {
