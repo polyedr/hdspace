@@ -12,7 +12,7 @@ const useStyles = makeComponentStyles('text', [], {
 
 const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { element } = props;
+    const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
     const { textContent } = element.parameters;
 
@@ -33,6 +33,7 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
           classes.textBlock,
           groupClass,
           classes.ownStyles,
+          isDisabled && classes.disabled,
         )}
         {...eventHandlers}
         dangerouslySetInnerHTML={{ __html: textContent }}

@@ -72,6 +72,7 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
         dispatch(setHoveredElementId(parentId || null));
       }}
       element={element}
+      isDisabled={disableInteractions}
     >
       {element.children.map((childId, index) => (
         <Fragment key={`master-${childId}`}>
