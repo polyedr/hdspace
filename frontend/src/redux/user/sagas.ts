@@ -19,6 +19,8 @@ import {
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
+import { sidebarLogout } from '@Redux/project/actions';
+import { sidebarLogoutSaga } from '@Redux/project/sagas/sidebar';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
@@ -69,6 +71,26 @@ export function* loginSaga({
     } else {
       yield put(Actions.loginComplete({ [FORM_ERROR]: e.message }));
     }
+  }
+}
+
+export function* logoutSaga() {
+  try {
+    yield put(sidebarLogout());
+    yield call(sidebarLogoutSaga);
+
+    yield put(Actions.logout());
+    openSignScreen('signin');
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
   }
 }
 
@@ -253,6 +275,7 @@ export function* loadUserDataSaga(action: ReturnType<typeof Actions.loadUser>) {
 
 export default function* userSaga() {
   yield takeLatest(TYPES.LOGIN, loginSaga);
+  yield takeEvery(TYPES.LOGOUT_START, logoutSaga);
   yield takeLatest(TYPES.REGISTER, registerSaga);
   yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);
   yield takeLatest(

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
@@ -16,7 +16,10 @@ import {
   MAX_BORDER_RADIUS_PERCENT,
   MIN_BORDER_RADIUS,
 } from '@Constants/defaultParams';
-import useDebouncedChange from '@Utils/useDeboucedChange';
+import {
+  useDebouncedInputChange,
+  useDebouncedValueChange,
+} from '@Utils/debounceHooks';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 
@@ -58,6 +61,11 @@ const BorderBlock: React.FC<Props> = ({
   canEdit,
 }) => {
   const classes = useStyles();
+  const borderRadiusUnits = useMemo(
+    () => accessBorderRadius(String(borderRadius)),
+    [borderRadius],
+  );
+
   const validateBorderRadius = useCallback((radius: string | null) => {
     if (!radius) {
       return undefined;
@@ -78,7 +86,7 @@ const BorderBlock: React.FC<Props> = ({
     }%`;
   }, []);
 
-  const [width, handleWidthChange] = useDebouncedChange(
+  const [width, handleWidthChange] = useDebouncedInputChange(
     borderWidth,
     (value) => {
       const newWidth = getPermissibleValue(
@@ -86,13 +94,12 @@ const BorderBlock: React.FC<Props> = ({
         MIN_BORDER_WIDTH,
         MAX_BORDER_WIDTH,
       );
-
       updateStyles({ borderWidth: `${newWidth}px` });
     },
     250,
   );
 
-  const [radius, handleRadiusChange] = useDebouncedChange(
+  const [radius, handleRadiusChange] = useDebouncedInputChange(
     borderRadius,
     (value) => {
       updateStyles({
@@ -102,17 +109,20 @@ const BorderBlock: React.FC<Props> = ({
     250,
   );
 
-  const handleChangeBorderRadiusUnits = ({ target: { value } }) => {
-    updateStyles({
-      borderRadius: `${parseInt(borderRadius.toString())}${value}`,
-    });
-  };
-
-  const handleColorSettingsChange = useCallback(
-    (color: string) => {
-      updateStyles({ borderColor: color });
+  const [radiusUnitsValue, handleRadiusUnitsChange] = useDebouncedInputChange(
+    borderRadiusUnits,
+    (unitsValue: string) => {
+      updateStyles({
+        borderRadius: `${parseInt(borderRadius.toString())}${unitsValue}`,
+      });
     },
-    [updateStyles],
+  );
+
+  const [borderColorValue, handleBorderColorChange] = useDebouncedValueChange(
+    borderColor,
+    (newBorderColor: string) => {
+      updateStyles({ borderColor: newBorderColor });
+    },
   );
 
   return (
@@ -149,8 +159,8 @@ const BorderBlock: React.FC<Props> = ({
 
           <StyledTextField
             margin="dense"
-            onChange={handleChangeBorderRadiusUnits}
-            value={accessBorderRadius(String(borderRadius))}
+            onChange={handleRadiusUnitsChange}
+            value={radiusUnitsValue}
             select
             disabled={!canEdit}
           >
@@ -165,9 +175,9 @@ const BorderBlock: React.FC<Props> = ({
       </div>
 
       <ColorSettings
-        currentColor={borderColor}
+        currentColor={borderColorValue as string}
         activeElementId={activeElementId}
-        onChange={handleColorSettingsChange}
+        onChange={handleBorderColorChange as (newBorderColor: string) => void}
         disabled={!canEdit}
       />
     </div>

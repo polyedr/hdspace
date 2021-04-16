@@ -52,6 +52,11 @@ export const initialUi: ProjectUiState = {
   },
   editorDocument: null,
   newScreenModalOpen: false,
+  sidebar: {
+    open: false,
+    iframe: null,
+    host: '',
+  },
 };
 
 export const initialEdit: ProjectEditState = {

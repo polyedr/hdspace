@@ -23,8 +23,8 @@ module.exports = ({ MODE }) => {
     },
     output: {
       path: path.join(__dirname, './dist'),
-      filename: 'bundle.js',
-      chunkFilename: '[chunkhash].js',
+      filename: '[name].bundle.js',
+      chunkFilename: '[name].chunk.js',
       publicPath: '/',
     },
     target: 'web',
@@ -32,7 +32,7 @@ module.exports = ({ MODE }) => {
       extensions: ['.js', '.ts', '.tsx'],
       // Fix webpack's default behavior to not load packages with jsnext:main module
       // (jsnext:main directs not usually distributable es6 format, but es6 sources)
-      mainFields: ['module', 'browser', 'main'],
+      mainFields: ['browser', 'module', 'main'],
       alias: {
         '@Components': path.resolve(__dirname, 'src', 'components'),
         '@Constants': path.resolve(__dirname, 'src', 'constants'),
@@ -199,6 +199,7 @@ module.exports = ({ MODE }) => {
       new webpack.EnvironmentPlugin({
         NODE_ENV: MODE || 'development', // use 'development' unless process.env.NODE_ENV is defined
         DEBUG: false,
+        SIDE_MODULE_HOST: 'http://adevi-intern-staging.herokuapp.com/main',
       }),
       new MiniCssExtractPlugin({
         filename: '[contenthash].css',

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { updateElement } from '@Redux/project/actions';
 import { StyledTextField } from '@Components/styledComponents';
-import useDebouncedChange from '@Utils/useDeboucedChange';
+import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 type Props = {
   canEdit: boolean;
@@ -14,7 +14,7 @@ const RenameElement: React.FC<Props> = ({ canEdit }) => {
 
   const { name, id } = useSelector(selectActiveElement);
 
-  const [state, handleChange] = useDebouncedChange(name || '', (value) => {
+  const [state, handleChange] = useDebouncedInputChange(name || '', (value) => {
     dispatch(
       updateElement({ elementID: id, data: { name: value }, active: true }),
     );
