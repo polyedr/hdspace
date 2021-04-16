@@ -97,7 +97,7 @@ const MUITextarea = React.forwardRef<HTMLTextAreaElement, RendererProps>(
     const eventHandlers = useEventHandlers(props);
 
     const textFieldClasses = getTextFieldStyles(
-      isDisabled,
+      isDisabled || false,
       element.styles.ownStyles,
     )();
     const inputClasses = getInputStyles(element.styles.ownStyles)();

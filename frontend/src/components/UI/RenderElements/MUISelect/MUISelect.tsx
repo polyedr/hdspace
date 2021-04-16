@@ -51,7 +51,7 @@ const SelectComponent = React.forwardRef<HTMLDivElement, RendererProps>(
 
     useEffect(() => {
       if (mdcSelect) {
-        mdcSelect.disabled = isDisabled;
+        mdcSelect.disabled = isDisabled || false;
       }
     }, [mdcSelect, isDisabled]);
 

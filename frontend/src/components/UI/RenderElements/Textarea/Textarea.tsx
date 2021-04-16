@@ -29,7 +29,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, RendererProps>(
           classes.ownStyles,
           isDisabled && classes.disabled,
         )}
-        value={textContent}
+        defaultValue={textContent}
         {...eventHandlers}
         style={{ resize: 'none' }}
       />
