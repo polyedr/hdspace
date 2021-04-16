@@ -129,7 +129,7 @@ const TopBar: React.FC = () => {
                 name="Show borders"
                 checked={showBorders}
                 disabled={!bordersEnabled && !isProtoMode}
-                onChange={() => dispatch(toggleContainersBorders())}
+                onChange={() => dispatch(toggleContainersBorders(!showBorders))}
               />
             }
             label={
