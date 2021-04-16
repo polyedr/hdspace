@@ -3016,6 +3016,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         o = urlparse(self.context["request"].build_absolute_uri())
         # Detect elements for the root block
         elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple")
+        # Detect elements for the root block double
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple")
         # Generating HTML for printing
         html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
         # print("html=", html)
@@ -5044,39 +5046,4 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                                    outer_div_node, image_original, fname, o, serializing = "freecanvas", node_width=node_width, node_height=node_height, children=children)
 
-                '''
-                # Attach elements for some fcluster
-                if node.types == "fcluster":
-                    # Arrange the fcluster children based on their coordinates
-                    if node.direction == 0:
-                        array_elements = sorted(
-                            node.elements, key=lambda i: i["shape_attributes"]["y"]
-                        )
-                    elif node.direction == 1:
-                        array_elements = sorted(
-                            node.elements, key=lambda i: i["shape_attributes"]["x"]
-                        )
-                    else:
-                        array_elements = node.elements
-                    for elem in array_elements:
-                        # Define the element dimensions start
-                        elem_width = int(elem["shape_attributes"]["width"])
-                        elem_height = int(elem["shape_attributes"]["height"])
-
-                        x1 = int(elem["shape_attributes"]["x"])
-                        y1 = int(elem["shape_attributes"]["y"])
-                        # Define the element dimensions end
-
-                        # Attach element to cluster
-                        for child in children:
-                            if (child.parameters):
-                                if int(child.parameters["freeCanvas"]["width"]) == elem_width:
-                                    if int(child.parameters["freeCanvas"]["height"]) == elem_height:
-                                        if int(child.parameters["freeCanvas"]["left"]) == x1:
-                                            if int(child.parameters["freeCanvas"]["top"]) == y1:
-                                                # print(child, child.struct_type, child.parent, child.parent_id)
-                                                # input()
-                                                child.move_to(node.scenarioelement_inner)
-            # Pro-function elements creation, loop through the root_block end
-            '''
         return serializer_node
