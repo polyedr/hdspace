@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import React, { useEffect, useState } from 'react';
 // import { useSelector } from 'react-redux';
 import cn from 'classnames';
@@ -11,9 +9,9 @@ import '@material/menu-surface/dist/mdc.menu-surface.min.css';
 import '@material/menu/dist/mdc.menu.min.css';
 import '@Src/styles/export/material/mdc.select.css';
 
-import { SelectRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('select', (theme) => ({
   component: {
@@ -28,22 +26,15 @@ const useStyles = makeComponentStyles('select', (theme) => ({
   }),
 }));
 
-const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
+const SelectComponent = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const {
-      id,
-      name,
-      isDisabled,
-      params,
-      className,
-      children,
-      groupClass,
-    } = props;
-    const { isOpen } = params;
+    const { element, isDisabled, children } = props;
+    const { isOpen } = element.parameters;
+    const [className, groupClass] = element.styles.classNames;
     const eventHandlers = useEventHandlers(props);
     const classes = useStyles(props);
 
-    const [mdcSelect, setMdcSelect] = useState();
+    const [mdcSelect, setMdcSelect] = useState<MDCSelect>();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -66,28 +57,27 @@ const SelectComponent: React.FC<SelectRendererProps> = React.forwardRef(
 
     return (
       <div
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         ref={ref}
         className={cn(className, classes.root, groupClass, classes.ownStyles)}
         {...eventHandlers}
       >
         <div
-          ref={(dom: HTMLElement) => {
+          ref={(dom: HTMLDivElement) => {
             if (dom && !mdcSelect) {
               setMdcSelect(new MDCSelect(dom));
               setIsMenuOpen(isOpen); // hook to turn menu back on
             }
           }}
           className={cn(
-            `select-${id}-component`,
+            `select-${element.id}-component`,
             'mdc-select',
             'mdc-select--outlined',
             classes.component,
           )}
         >
-          <input type="hidden" name={name} />
+          <input type="hidden" name={element.parameters.name} />
           <div
             className={cn('mdc-select__anchor', isDisabled && classes.disabled)}
           >

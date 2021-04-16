@@ -1,18 +1,8 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-import { SharedRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
-
-type Props = SharedRendererProps & {
-  id: string;
-  name: string;
-  value: string;
-  showRipple: boolean;
-  children: React.Component[];
-};
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('select-item', {
   root: {
@@ -22,38 +12,36 @@ const useStyles = makeComponentStyles('select-item', {
   },
 });
 
-const SelectItem: React.FC<Props> = React.forwardRef((props, ref) => {
-  const {
-    id,
-    params: { name },
-    isDisabled,
-    className,
-    groupClass,
-  } = props;
-  const classes = useStyles(props);
-  const eventHandlers = useEventHandlers(props);
+const SelectItem = React.forwardRef<HTMLDivElement, RendererProps>(
+  (props, ref) => {
+    const { element, isDisabled } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { name } = element.parameters;
+    const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
-  return (
-    <li
-      id={id}
-      ref={ref}
-      data-ls-id={id}
-      className={cn(
-        'mdc-list-item',
-        className,
-        classes.root,
-        groupClass,
-        isDisabled && classes.disabled,
-        classes.ownStyles,
-      )}
-      aria-selected="false"
-      data-value="grains"
-      role="option"
-      {...eventHandlers}
-    >
-      <span className="mdc-list-item__text">{name}</span>
-    </li>
-  );
-});
+    return (
+      <li
+        id={element.id}
+        ref={ref}
+        data-ls-id={element.id}
+        className={cn(
+          'mdc-list-item',
+          className,
+          classes.root,
+          groupClass,
+          isDisabled && classes.disabled,
+          classes.ownStyles,
+        )}
+        aria-selected="false"
+        data-value="grains"
+        role="option"
+        {...eventHandlers}
+      >
+        <span className="mdc-list-item__text">{name}</span>
+      </li>
+    );
+  },
+);
 
 export default SelectItem;

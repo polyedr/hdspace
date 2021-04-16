@@ -1,29 +1,32 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 
-import { TextBlockRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('text', [], {
   wordBreak: 'break-word',
 });
 
-const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
+const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { id, params, className, contentEditable, groupClass } = props;
+    const { element } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { textContent } = element.parameters;
 
     const classes = useStyles(props);
-    const eventHandlers = useEventHandlers(props);
+    const [contentEditable, handleResetState] = useContentEditable(element.id);
+    const eventHandlers = useEventHandlers(props, {
+      onBlur: handleResetState,
+    });
 
     return (
       <div
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         contentEditable={contentEditable}
         className={cn(
           className,
@@ -32,7 +35,7 @@ const TextBlock: React.FC<TextBlockRendererProps> = React.forwardRef(
           classes.ownStyles,
         )}
         {...eventHandlers}
-        dangerouslySetInnerHTML={{ __html: params.textContent }}
+        dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
       />
     );

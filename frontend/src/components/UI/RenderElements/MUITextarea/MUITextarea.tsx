@@ -1,11 +1,9 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles, TextField } from '@material-ui/core';
 import * as R from 'ramda';
-import { TextareaRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import { RendererProps } from '../types';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
 const styles = require('../styles.scss');
 
@@ -90,27 +88,23 @@ const getInputStyles = (ownStyles: React.CSSProperties) =>
     input: {},
   });
 
-const MUITextarea: React.FC<TextareaRendererProps> = React.forwardRef(
+const MUITextarea = React.forwardRef<HTMLTextAreaElement, RendererProps>(
   (props, ref) => {
-    const {
-      id,
-      params,
-      isDisabled,
-      currentValue,
-      className,
-      ownStyles,
-      groupClass,
-    } = props;
-    const { placeholder } = params;
+    const { element, isDisabled } = props;
+    const { placeholder, textContent } = element.parameters;
+    const [className, groupClass] = element.styles.classNames;
 
     const eventHandlers = useEventHandlers(props);
 
-    const textFieldClasses = getTextFieldStyles(isDisabled, ownStyles)();
-    const inputClasses = getInputStyles(ownStyles)();
+    const textFieldClasses = getTextFieldStyles(
+      isDisabled,
+      element.styles.ownStyles,
+    )();
+    const inputClasses = getInputStyles(element.styles.ownStyles)();
 
     const ownInlineStyles = R.pick(
       ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
-      ownStyles,
+      element.styles.ownStyles,
     );
     const inlineStyles = {
       ...ownInlineStyles,
@@ -130,9 +124,8 @@ const MUITextarea: React.FC<TextareaRendererProps> = React.forwardRef(
     return (
       <TextField
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         multiline
         rows={4}
         placeholder={placeholder}
@@ -146,7 +139,7 @@ const MUITextarea: React.FC<TextareaRendererProps> = React.forwardRef(
         )}
         style={inlineStyles}
         InputProps={InputProps}
-        value={currentValue}
+        defaultValue={textContent}
         {...eventHandlers}
       />
     );

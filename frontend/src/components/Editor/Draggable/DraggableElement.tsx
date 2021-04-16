@@ -13,7 +13,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import {
   createElements,
   moveElement,
-  resetElementEditState,
+  // resetElementEditState,
   setActiveElement,
   setCurrentDropTargetParams,
   setElementBeingEdited,
@@ -21,7 +21,7 @@ import {
   setHoveredElementId,
   setMasterSourceElementId,
   toggleSelectedElement,
-  updateElementParameters,
+  // updateElementParameters,
 } from '@Redux/project/actions';
 import {
   ElementData,
@@ -55,7 +55,7 @@ import {
   getBlockDropPosition,
   getDropIndex,
 } from './helper';
-import useElementProps from '../hooks/useElementProps';
+// import useElementProps from '../hooks/useElementProps';
 import RENDERERS from '../../UI/RenderElements';
 import { WindowContext } from '../FrameWrapper/FrameContext';
 
@@ -64,12 +64,14 @@ type DraggableElementProps = {
   parentDomStyles?: CSSStyleDeclaration | null;
   parentIds?: Array<string>;
   scrollRef: React.RefObject<Scrollbars>;
+  isDisabled: boolean;
 };
 
 const DraggableElement: React.FC<DraggableElementProps> = ({
   elementId,
   parentDomStyles,
   parentIds = [],
+  isDisabled,
   scrollRef,
 }) => {
   const dispatch = useDispatch();
@@ -98,12 +100,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const isContainer = useMemo(
     () =>
       elementId === rootID ||
-      CONTAINER_GROUPS.includes(element.parameters.group),
+      CONTAINER_GROUPS.includes(element?.parameters.group),
     [elementId, element, rootID],
   );
 
-  const elementProps = useElementProps(elementId);
-  const isDisplayed = useLayout(elementProps?.params?.layouts);
+  const isDisplayed = useLayout(element?.parameters.layouts);
 
   const dropTarget = useMemo(() => {
     if (
@@ -315,24 +316,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     ],
   );
 
-  const blurHandler = useCallback(
-    (event: React.FormEvent<HTMLElement>) => {
-      if (elementProps?.contentEditable) {
-        dispatch(resetElementEditState());
-        dispatch(
-          updateElementParameters(
-            elementId,
-            {
-              textContent: (event?.target as HTMLElement).innerText,
-            },
-            { screenId },
-          ),
-        );
-      }
-    },
-    [dispatch, elementId, elementProps?.contentEditable, screenId],
-  );
-
   const keyDownHandler = useCallback(
     (e: React.FormEvent<HTMLElement>) => {
       e.stopPropagation();
@@ -362,45 +345,45 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, 0); // delay to allow all elements to render correctly first
 
-  if (!element) {
+  if (!element || !isDisplayed) {
     return null;
   }
 
   const ElementRenderer = RENDERERS[element.type];
 
-  return isDisplayed
-    ? elementProps && (
-        <ElementRenderer
-          {...elementProps}
-          ref={(dom: HTMLElement) => {
-            if (dom && !ref.current) {
-              handleScrollIntoView.callback(dom); // need to call inside a timeout to wait for elements to be rendered correctly
-            }
-            ref.current = dom;
-            DOMHandler.INSTANCE.addElementDom(elementId, dom);
-            if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
-              drag(ref);
-              drop(ref);
-            }
-          }}
-          onMouseEnter={mouseEnterHandler}
-          onMouseLeave={mouseLeaveHandler}
-          onKeyDown={keyDownHandler}
-          onClick={clickHandler}
-          onBlur={blurHandler}
-        >
-          {element.children.map((childId: string) => (
-            <DraggableElement
-              key={`element-${childId}`}
-              elementId={childId}
-              parentDomStyles={dropDomStyles}
-              parentIds={[...parentIds, elementId]}
-              scrollRef={scrollRef}
-            />
-          ))}
-        </ElementRenderer>
-      )
-    : null;
+  return element ? (
+    <ElementRenderer
+      element={element}
+      isDisabled={isDisabled}
+      ref={(dom: HTMLElement) => {
+        if (dom && !ref.current) {
+          handleScrollIntoView.callback(dom); // need to call inside a timeout to wait for elements to be rendered correctly
+        }
+        ref.current = dom;
+        DOMHandler.INSTANCE.addElementDom(elementId, dom);
+        if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
+          drag(ref);
+          drop(ref);
+        }
+      }}
+      onMouseEnter={mouseEnterHandler}
+      onMouseLeave={mouseLeaveHandler}
+      onKeyDown={keyDownHandler}
+      onClick={clickHandler}
+      // onBlur={blurHandler}
+    >
+      {element.children.map((childId: string) => (
+        <DraggableElement
+          key={`element-${childId}`}
+          elementId={childId}
+          parentDomStyles={dropDomStyles}
+          parentIds={[...parentIds, elementId]}
+          scrollRef={scrollRef}
+          isDisabled={isDisabled}
+        />
+      ))}
+    </ElementRenderer>
+  ) : null;
 };
 
 export default DraggableElement;

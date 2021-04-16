@@ -1,42 +1,38 @@
 import React from 'react';
-import { OptionRendererProps } from '@Components/UI/RenderElements/types';
-import useEventHandlers from '@Components/UI/RenderElements/useEventHandlers';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('option', {});
 
-type Props = OptionRendererProps;
+const Option = React.forwardRef<HTMLOptionElement, RendererProps>(
+  (props, ref) => {
+    const { element, isDisabled } = props;
+    const { name, value } = element.parameters;
+    const [className, groupClass] = element.styles.classNames;
 
-const Option = React.forwardRef<HTMLOptionElement, Props>((props, ref) => {
-  const {
-    id,
-    params: { name, value },
-    isDisabled,
-    className,
-    groupClass,
-  } = props;
+    const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
-  const classes = useStyles(props);
-  const eventHandlers = useEventHandlers(props);
-
-  return (
-    <option
-      value={value}
-      id={id}
-      ref={ref}
-      data-ls-id={id}
-      className={cn(
-        className,
-        groupClass,
-        isDisabled && classes.disabled,
-        classes.ownStyles,
-      )}
-      {...eventHandlers}
-    >
-      {name}
-    </option>
-  );
-});
+    return (
+      <option
+        value={value}
+        id={element.id}
+        ref={ref}
+        data-ls-id={element.id}
+        className={cn(
+          className,
+          groupClass,
+          isDisabled && classes.disabled,
+          classes.ownStyles,
+        )}
+        {...eventHandlers}
+      >
+        {name}
+      </option>
+    );
+  },
+);
 
 export default Option;

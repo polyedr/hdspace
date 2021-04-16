@@ -12,6 +12,7 @@ import {
 import prevent from '@Utils/preventEvent';
 import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
 import Scrollbars from 'react-custom-scrollbars';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';
 
@@ -45,6 +46,7 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
   const masterCoreElId = useSelector(selectMasterCoreElementId);
   const masterGroupsElId = useSelector(selectMasterGroupsElementId);
   const rootElement = useSelector(selectMasterScreenRoot);
+  const disableInteractions = useSelector(selectIsPrototypeMode);
 
   const { type } = element;
 
@@ -97,7 +99,11 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
               />
             )}
           {element.id === masterGroupsElId ? (
-            <DraggableElement elementId={childId} scrollRef={scrollRef} />
+            <DraggableElement
+              elementId={childId}
+              scrollRef={scrollRef}
+              isDisabled={disableInteractions}
+            />
           ) : (
             <MasterElement
               elementId={childId}

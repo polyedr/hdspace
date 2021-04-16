@@ -1,34 +1,24 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-import { DivBlockRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import { RendererProps } from '../types';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
 const useStyles = makeComponentStyles('div');
 
-const DivBlockRenderer: React.FC<DivBlockRendererProps> = React.forwardRef(
+const DivBlockRenderer = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const {
-      id,
-      isDisabled,
-      children,
-      className,
-      isBorderVisible,
-      groupClass,
-    } = props;
+    const { element, children } = props;
+    const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
     return (
       <div
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         className={cn(className, groupClass, classes.ownStyles)}
-        style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
         {...eventHandlers}
       >
         {children}

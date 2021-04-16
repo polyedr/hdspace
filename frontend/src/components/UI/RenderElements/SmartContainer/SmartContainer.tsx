@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import React, { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
@@ -12,14 +10,13 @@ import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
 import useUrlImageToFile from '@Utils/useUrlImageToFile';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
-import { NNBlockType, SyntheticGlobalElement } from '@Src/types';
+import { NNBlockType } from '@Src/types';
 import { updateElementParameters } from '@Redux/project/actions';
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
-import { selectElementById } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { SmartContainerRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 type SizeProps = {
   width: number;
@@ -76,203 +73,194 @@ const useStyles = makeComponentStyles('smart', {
   },
 });
 
-const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forwardRef(
-  (props, ref) => {
-    const {
-      id,
-      isDisabled,
-      className,
-      isBorderVisible,
-      blockType,
-      children,
-      groupClass,
-    } = props;
-    const element = useSelector(selectElementById(id));
-    const currentScreenId = useSelector(selectCurrentScreenId);
-    const dispatch = useDispatch();
+const SmartContainerRenderer = React.forwardRef<
+  HTMLDivElement,
+  RendererProps & { blockType: NNBlockType }
+>((props, ref) => {
+  const { element, isDisabled, blockType, children } = props;
+  const [className, groupClass] = element.styles.classNames;
 
-    const classes = useStyles(props);
-    const eventHandlers = useEventHandlers(props);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const dispatch = useDispatch();
 
-    const imgRef = useRef<HTMLImageElement>();
-    const resizeRef = useRef<HTMLElement>();
+  const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
-    const imageFile = useUrlImageToFile(element.id, imgRef);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const resizeRef = useRef<HTMLDivElement | null>(null);
 
-    const imageUpload = useImageUpload(element.id);
+  const imageFile = useUrlImageToFile(element.id, imgRef);
 
-    const handleNNProcessing = useNNProcessing(
-      element.id,
-      blockType || NNBlockType.WEBPAGE,
-      imageFile,
-    );
+  const imageUpload = useImageUpload(element.id);
 
-    const { imageURL, imageSize } = element.parameters;
+  const handleNNProcessing = useNNProcessing(
+    element.id,
+    blockType || NNBlockType.WEBPAGE,
+    imageFile,
+  );
 
-    const [size, setSize] = useState<SizeProps>({
-      width: imageSize?.width || imgRef.current?.naturalWidth || 0,
-      height: imageSize?.height || imgRef.current?.naturalHeight || 0,
-    });
+  const { imageURL, imageSize } = element.parameters;
 
-    const [, drag] = useDrag({
-      item: {
-        type: element.type,
-        drop: () => {
-          const newSize = {
-            width: parseInt(imgRef.current?.style.width) || 0,
-            height: parseInt(imgRef.current?.style.height) || 0,
-          };
-          dispatch(
-            updateElementParameters(
-              element.id,
-              {
-                imageSize: newSize,
-              },
-              {
-                screenId: currentScreenId,
-              },
-            ),
-          );
-        },
-        hover: (monitor: DropTargetMonitor) => {
-          if (!imgRef || !imgRef.current) {
-            return;
-          }
-          const offsetDiff = monitor.getDifferenceFromInitialOffset();
-          const aspectRatio =
-            imgRef.current.naturalWidth / imgRef.current.naturalHeight;
-          const newHeight =
-            (imageSize.height || imgRef.current.naturalHeight) + offsetDiff.y;
-          const newWidth = newHeight * aspectRatio;
-          setSize({
-            width: newWidth,
-            height: newHeight,
-          });
-        },
-      } as SyntheticGlobalElement,
-    });
+  const [size, setSize] = useState<SizeProps>({
+    width: imageSize?.width || imgRef.current?.naturalWidth || 0,
+    height: imageSize?.height || imgRef.current?.naturalHeight || 0,
+  });
 
-    const resizeRefDom = resizeRef.current;
+  const [, drag] = useDrag({
+    item: {
+      type: element.type,
+      drop: () => {
+        if (!imgRef.current) {
+          return;
+        }
+        const newSize = {
+          width: parseInt(imgRef.current.style.width) || 0,
+          height: parseInt(imgRef.current.style.height) || 0,
+        };
+        dispatch(
+          updateElementParameters(
+            element.id,
+            {
+              imageSize: newSize,
+            },
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+      },
+      hover: (monitor: DropTargetMonitor) => {
+        const offsetDiff = monitor.getDifferenceFromInitialOffset();
+        if (!imgRef || !imgRef.current || !offsetDiff) {
+          return;
+        }
+        const aspectRatio =
+          imgRef.current.naturalWidth / imgRef.current.naturalHeight;
+        const newHeight =
+          (imageSize.height || imgRef.current.naturalHeight) + offsetDiff.y;
+        const newWidth = newHeight * aspectRatio;
+        setSize({
+          width: newWidth,
+          height: newHeight,
+        });
+      },
+    },
+  });
 
-    useEffect(() => {
-      if (resizeRef && resizeRefDom) {
-        drag(resizeRef);
-      }
-    }, [drag, resizeRef, resizeRefDom]);
+  const resizeRefDom = resizeRef.current;
 
-    return (
-      <div
-        ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
-        className={cn(className, groupClass, classes.ownStyles)}
-        style={{
-          ...(isBorderVisible && isDisabled && { outline: 'none' }),
-          position: 'relative',
-        }}
-        {...eventHandlers}
-      >
-        {children?.length ? (
-          children
-        ) : (
-          <>
-            {imageURL && (
-              <div
+  useEffect(() => {
+    if (resizeRef && resizeRefDom) {
+      drag(resizeRef);
+    }
+  }, [drag, resizeRef, resizeRefDom]);
+
+  return (
+    <div
+      ref={ref}
+      id={element.id}
+      data-ls-id={element.id}
+      className={cn(className, groupClass, classes.ownStyles)}
+      style={{
+        position: 'relative',
+      }}
+      {...eventHandlers}
+    >
+      {children || (
+        <>
+          {imageURL && (
+            <div
+              style={{
+                position: 'relative',
+                width: imgRef.current?.width,
+                height: imgRef.current?.height,
+              }}
+            >
+              <img
+                src={imageURL}
+                alt="Not found"
+                className={classes.wireframe}
+                ref={imgRef}
                 style={{
-                  position: 'relative',
-                  width: imgRef.current?.width,
-                  height: imgRef.current?.height,
+                  width: size.width || imageSize?.width || 'auto',
+                  height: size.height || imageSize?.height || 'auto',
                 }}
-              >
-                <img
-                  src={imageURL}
-                  alt="Not found"
-                  className={classes.wireframe}
-                  ref={imgRef}
-                  style={{
-                    width: size.width || imageSize?.width || 'auto',
-                    height: size.height || imageSize?.height || 'auto',
-                  }}
-                  crossOrigin="anonymous"
-                  onLoad={() => {
+                crossOrigin="anonymous"
+                onLoad={() => {
+                  setSize({
+                    width: imgRef.current?.naturalWidth || 0,
+                    height: imgRef.current?.naturalHeight || 0,
+                  });
+                }}
+              />
+              <div className={classes.resizeSection} ref={resizeRef}>
+                <AspectRatioRoundedIcon fontSize="inherit" />
+              </div>
+            </div>
+          )}
+          <div className={classes.innerContent}>
+            <h4 className={classes.nameHeading}>{element.name}</h4>
+
+            {isDisabled && (
+              <>
+                <input
+                  id={`upload-image-wireframe-${element.id}`}
+                  className={classes.uploadField}
+                  type="file"
+                  accept=".jpg, .jpeg, .png"
+                  name="upload"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                     setSize({
-                      width: imgRef.current?.naturalWidth,
-                      height: imgRef.current?.naturalHeight,
+                      width: 0,
+                      height: 0,
                     });
+                    imageUpload(event);
                   }}
                 />
-                <div className={classes.resizeSection} ref={resizeRef}>
-                  <AspectRatioRoundedIcon fontSize="inherit" />
-                </div>
-              </div>
-            )}
-            <div className={classes.innerContent}>
-              <h4 className={classes.nameHeading}>{element.name}</h4>
 
-              {isDisabled && (
-                <>
-                  <input
-                    id={`upload-image-wireframe-${element.id}`}
-                    className={classes.uploadField}
-                    type="file"
-                    accept=".jpg, .jpeg, .png"
-                    name="upload"
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                      setSize({
-                        width: 0,
-                        height: 0,
-                      });
-                      imageUpload(event);
-                    }}
-                  />
+                <label htmlFor={`upload-image-wireframe-${element.id}`}>
+                  <Tooltip title="Upload image" placement="top">
+                    <IconButton aria-label="upload picture" component="span">
+                      <CloudUploadIcon className={classes.icon} />
+                    </IconButton>
+                  </Tooltip>
+                </label>
 
-                  <label htmlFor={`upload-image-wireframe-${element.id}`}>
-                    <Tooltip title="Upload image" placement="top">
-                      <IconButton aria-label="upload picture" component="span">
-                        <CloudUploadIcon className={classes.icon} />
+                {imageURL && (
+                  <>
+                    <Tooltip
+                      title="Automatically Analyze image"
+                      placement="top"
+                    >
+                      <IconButton
+                        aria-label="automatically analyze picture"
+                        component="span"
+                        disabled={!imageFile}
+                        onClick={() => handleNNProcessing(true)}
+                      >
+                        <SyncIcon className={classes.icon} />
                       </IconButton>
                     </Tooltip>
-                  </label>
 
-                  {imageURL && (
-                    <>
-                      <Tooltip
-                        title="Automatically Analyze image"
-                        placement="top"
+                    <Tooltip title="Manually Analyze image" placement="top">
+                      <IconButton
+                        aria-label="manually analyze picture"
+                        component="span"
+                        disabled={!imageFile}
+                        onClick={() => handleNNProcessing(false)}
                       >
-                        <IconButton
-                          aria-label="automatically analyze picture"
-                          label=""
-                          component="span"
-                          disabled={!imageFile}
-                          onClick={() => handleNNProcessing(true)}
-                        >
-                          <SyncIcon className={classes.icon} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Manually Analyze image" placement="top">
-                        <IconButton
-                          aria-label="manually analyze picture"
-                          label=""
-                          component="span"
-                          disabled={!imageFile}
-                          onClick={() => handleNNProcessing(false)}
-                        >
-                          <SyncProblemIcon className={classes.icon} />
-                        </IconButton>
-                      </Tooltip>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          </>
-        )}
-      </div>
-    );
-  },
-);
+                        <SyncProblemIcon className={classes.icon} />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+});
 
 export default SmartContainerRenderer;

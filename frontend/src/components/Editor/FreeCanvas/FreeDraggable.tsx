@@ -15,8 +15,9 @@ import {
   selectIncludesActiveElement,
   selectIsElementActive,
 } from '@Redux/project/selectors/element';
-import useElementProps from '@Components/Editor/hooks/useElementProps';
+// import useElementProps from '@Components/Editor/hooks/useElementProps';
 import cn from 'classnames';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 
 const lockedAspectRatioElements: Entity[] = [
@@ -58,6 +59,7 @@ type Props = {
 
 const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const dispatch = useDispatch();
+  const disableInteractions = useSelector(selectIsPrototypeMode);
 
   const element = useSelector(selectElementById(elementId));
   const includesActiveElement = useSelector(
@@ -156,15 +158,13 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
     );
   };
 
-  const elementProps = useElementProps(elementId);
-
   const Renderer = RENDERERS[type as Entity];
 
   const activeHandle = (dir: string) =>
     resizeDir === dir && classes.activeResizeHandle;
 
   const renderElement = () => (
-    <Renderer {...elementProps}>
+    <Renderer element={element} isDisabled={disableInteractions}>
       {element.children.map((childId) => (
         <FreeDraggable key={childId} elementId={childId} />
       ))}
