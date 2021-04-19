@@ -57,3 +57,6 @@ dist
 
 # MacOS deps
 .DS_Store
+
+.env
+.env.*

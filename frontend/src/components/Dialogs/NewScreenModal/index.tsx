@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  makeStyles,
   Tab,
   Tabs,
 } from '@material-ui/core';
@@ -13,6 +12,7 @@ import { selectUserGuideWatched } from '@Redux/user/selectors';
 import React, { ChangeEvent, FC, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectNewScreenModalOpen } from '@Redux/project/selectors/screen';
+import { makeStyles } from '@material-ui/core/styles';
 import HtmlImportForm from './HTMLImportForm';
 import ImageRecognizeForm from './ImageRecognizeForm';
 import UseEditorForm from './UseEditorForm';

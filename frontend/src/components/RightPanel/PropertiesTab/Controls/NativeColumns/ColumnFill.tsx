@@ -1,8 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import MenuItem from '@material-ui/core/MenuItem';
-import { FormControlLabel } from '@material-ui/core';
+import { FormControlLabel, MenuItem } from '@material-ui/core';
 import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/NativeColumns/styles';
 
 enum Options {

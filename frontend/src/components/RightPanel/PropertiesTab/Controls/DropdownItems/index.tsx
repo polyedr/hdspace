@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect, useSelector } from 'react-redux';
-import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { lighten } from '@material-ui/core';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import {
   selectActiveElementId,
   selectElementAsTree,
@@ -12,6 +10,7 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
 import { DropdownItemElement, PropertiesChangeProps } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
+import { IconButton } from '@material-ui/core';
 import DropdownItem from './DropdownItem';
 
 const useStyles = makeStyles(({ palette }) => ({

@@ -31,7 +31,6 @@ import {
 } from '@Components/LeftPanel/Navigator/utils';
 import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { Normalized, StateElement, UserProjectPermission } from '@Src/types';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -45,6 +44,7 @@ import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu'
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { makeStyles } from '@material-ui/core/styles';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({

@@ -1,6 +1,5 @@
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import MenuItem from '@material-ui/core/MenuItem';
 import { PropertiesChangeProps, SelectElement } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import {
@@ -8,6 +7,7 @@ import {
   selectActiveItemChildren,
 } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
+import { MenuItem } from '@material-ui/core';
 
 const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,

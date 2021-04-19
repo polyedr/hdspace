@@ -1,5 +1,6 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 
@@ -15,11 +16,11 @@ const BackgroundBlock: React.FC<Props> = ({
   masterScreenEnabled,
   canEdit,
 }) => {
-  const handleColorSettingsChange = useCallback(
-    (color: string) => {
-      updateStyles({ backgroundColor: `${color}` });
+  const [color, handleColorChange] = useDebouncedValueChange(
+    backgroundColor,
+    (updatedColorValue: string) => {
+      updateStyles({ backgroundColor: updatedColorValue });
     },
-    [updateStyles],
   );
 
   return (
@@ -33,9 +34,9 @@ const BackgroundBlock: React.FC<Props> = ({
       )}
 
       <ColorSettings
-        currentColor={backgroundColor || 'transparent'}
+        currentColor={color as string}
         activeElementId={activeElementId}
-        onChange={handleColorSettingsChange}
+        onChange={handleColorChange as (color: string) => any}
         disabled={!canEdit}
       />
     </div>

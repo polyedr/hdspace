@@ -1,6 +1,6 @@
-/* eslint-disable import/prefer-default-export */
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 
+// eslint-disable-next-line import/prefer-default-export
 export const useButtonStyles = makeStyles({
   iconButton: {
     margin: 0,

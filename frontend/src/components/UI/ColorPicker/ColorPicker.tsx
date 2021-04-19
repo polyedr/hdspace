@@ -1,8 +1,9 @@
 import React, { useEffect, useCallback, useState, memo } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
-import Popover from 'react-tiny-popover';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
+
+import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { Popover } from '@material-ui/core';
 import transparentBg from '../../../assets/sprites/background_empty.png';
 
 const useStyles = makeStyles((theme) =>
@@ -23,14 +24,6 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const popoverStyle = {
-  opacity: '0',
-  overflow: 'visibility',
-  zIndex: '2',
-  border: '1px solid #e7eaec',
-  borderRadius: '4px',
-};
-
 type ColorPickerProps = {
   color: string;
   colors?: string[];
@@ -46,7 +39,6 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
   const classes = useStyles({ color });
   const [startColor, setStartColor] = useState({ hex: color });
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
-
   const handleKeys = useCallback(
     (event) => {
       if (event.keyCode === 27 && isPopoverOpen) {
@@ -71,10 +63,6 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
     };
   }, [handleKeys]);
 
-  const handleOverlayClick = useCallback(() => {
-    setIsPopoverOpen(false);
-  }, [setIsPopoverOpen]);
-
   const handleColorPickerContainerClick = useCallback(() => {
     if (disabled) {
       return;
@@ -83,29 +71,38 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
   }, [disabled, isPopoverOpen]);
 
   return (
-    <Popover
-      isOpen={isPopoverOpen}
-      position="bottom"
-      onClickOutside={handleOverlayClick}
-      align="start"
-      transitionDuration={0}
-      containerStyle={popoverStyle}
-      content={
-        <SketchPicker
-          color={color}
-          onChangeComplete={onChangeComplete}
-          width="210px"
-          presetColors={['transparent']}
-        />
-      }
-    >
-      <div className={classes.transparent}>
-        <div
-          onClick={handleColorPickerContainerClick}
-          className={classes.container}
-        />
-      </div>
-    </Popover>
+    <PopupState variant="popover" popupId="demo-popup-popover">
+      {(popupState) => (
+        <div>
+          <div className={classes.transparent} {...bindTrigger(popupState)}>
+            <div
+              onClick={handleColorPickerContainerClick}
+              className={classes.container}
+            />
+          </div>
+          <Popover
+            {...bindPopover(popupState)}
+            open={isPopoverOpen}
+            onClose={handleColorPickerContainerClick}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <SketchPicker
+              color={color}
+              onChange={onChangeComplete}
+              width="210px"
+              presetColors={['transparent']}
+            />
+          </Popover>
+        </div>
+      )}
+    </PopupState>
   );
 };
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
+import { makeStyles } from '@material-ui/core/styles';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
 import {
@@ -30,7 +30,7 @@ export const useStyles = makeStyles({
     flexFlow: 'row wrap',
     padding: '0 2px 2px',
     '& > *': {
-      width: 'calc(100%/4)',
+      width: '25%',
       height: 'calc(300px/4)',
     },
   },

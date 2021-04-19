@@ -2,7 +2,7 @@ import { convertProjectToPatchRequest } from '@Api/converters/toRequest';
 import { apiUpdateProject } from '@Api/project';
 import { apiRefreshToken } from '@Api/user';
 import getSavedValue from '@Utils/getSavedValue';
-import * as R from 'ramda';
+import { path } from 'ramda';
 import { call, put, select, take } from 'redux-saga/effects';
 import { MAX_TOKEN_TRIALS } from '../../../config/settings';
 import {
@@ -51,7 +51,7 @@ export function* reqWrapper(
     const result = yield call(requestAction as any, { access, ...props });
 
     if (
-      R.path(['response', 'data', 'code'], result) === 'token_not_valid' ||
+      path(['response', 'data', 'code'], result) === 'token_not_valid' ||
       result?.error === 'Given token not valid for any token type'
     ) {
       const isTokenLoaded: boolean = yield select(selectIsTokenLoaded);
@@ -79,14 +79,14 @@ export function* reqWrapper(
       return yield call(reqWrapper, requestAction, props, tries + 1);
     }
 
-    if (R.path(['response', 'statusText'], result) === 'Unauthorized') {
+    if (path(['response', 'statusText'], result) === 'Unauthorized') {
       yield put(logout());
       openSignScreen('signin');
 
       return { error: 'Logged out' };
     }
 
-    if (R.path(['response', 'status'], result)) {
+    if (path(['response', 'status'], result)) {
       return null;
     }
 

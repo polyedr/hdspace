@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Field, Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
-// import GoogleLogin from 'react-google-login';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 import Alert from '@material-ui/lab/Alert';
-import MuiLink from '@material-ui/core/Link';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
-import Container from '@material-ui/core/Container';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import PATH_NAMES from '@Constants/pathNames';
 import { sendResetPasswordMail } from '@Redux/user/actions';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
+import {
+  Typography,
+  TextField,
+  Button,
+  Link as MuiLink,
+  Container,
+} from '@material-ui/core';
 import Dialog from '../../Dialogs/Dialog';
 import SubmitError from '../SubmitError';
 

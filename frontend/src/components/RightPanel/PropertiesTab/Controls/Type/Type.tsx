@@ -1,14 +1,14 @@
 import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
-import MenuItem from '@material-ui/core/MenuItem';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import { MenuItem } from '@material-ui/core';
 import TYPE from './constants';
-
 import {
   InputType,
   PropertiesChangeProps,
   TextinputElement,
 } from '../../../../../types';
+
 import { StyledTextField } from '../../../../styledComponents';
 
 const Type: React.FC<PropertiesChangeProps<TextinputElement>> = ({
