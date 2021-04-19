@@ -1,21 +1,15 @@
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
-import { GridItemRendererProps } from '../types';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('gridItem');
 
-const Columns = React.forwardRef<HTMLDivElement, GridItemRendererProps>(
+const Columns = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const {
-      id,
-      isDisabled,
-      children,
-      className,
-      isBorderVisible,
-      groupClass,
-    } = props;
+    const { element, children } = props;
+    const [className, groupClass] = element.styles.classNames;
 
     const classes: Record<string, any> = useStyles(props);
     const eventHandlers = useEventHandlers(props);
@@ -23,11 +17,9 @@ const Columns = React.forwardRef<HTMLDivElement, GridItemRendererProps>(
     return (
       <div
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         className={cn(className, groupClass, classes.ownStyles)}
-        style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
         {...eventHandlers}
       >
         {children}

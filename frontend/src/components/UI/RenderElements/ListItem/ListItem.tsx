@@ -1,12 +1,11 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { omit } from 'ramda';
-import { ListItemRendererProps } from '../types';
+import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import { RendererProps } from '../types';
 
 const omitEditableStyles = [
   'paddingTop',
@@ -28,11 +27,13 @@ const omitLinkStyles = [
 const useItemStyles = makeComponentStyles('list-item');
 
 const useEditableItemStyles = makeStyles({
-  ownStyles: ({ ownStyles }) => omit(omitEditableStyles, ownStyles),
+  ownStyles: ({ element }: RendererProps) =>
+    omit(omitEditableStyles, element.styles.ownStyles),
 });
 
 const useLinkStyles = makeStyles({
-  ownStyles: ({ ownStyles }) => omit(omitLinkStyles, ownStyles),
+  ownStyles: ({ element }: RendererProps) =>
+    omit(omitLinkStyles, element.styles.ownStyles),
   link: {
     width: '100%',
     height: '100%',
@@ -41,22 +42,19 @@ const useLinkStyles = makeStyles({
   },
 });
 
-const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
+const ListItem = React.forwardRef<HTMLLinkElement, RendererProps>(
   (props, ref) => {
-    const {
-      id,
-      params,
-      isDisabled,
-      className,
-      groupClass,
-      contentEditable,
-    } = props;
-    const { textContent, isLink, link } = params;
+    const { element, isDisabled } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { textContent, isLink, link } = element.parameters;
 
     const listItemClasses = useItemStyles(props);
     const listItemWithLinkClasses = useEditableItemStyles(props);
     const linkClasses = useLinkStyles(props);
-    const eventHandlers = useEventHandlers(props);
+    const [contentEditable, handleResetState] = useContentEditable(element.id);
+    const eventHandlers = useEventHandlers(props, {
+      onBlur: handleResetState,
+    });
 
     const clickHandler = eventHandlers.onClick;
     eventHandlers.onClick = (event: React.MouseEvent<HTMLLIElement>) => {
@@ -73,8 +71,8 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
         {isLink ? (
           <li
             ref={ref}
-            id={id}
-            data-ls-id={id}
+            id={element.id}
+            data-ls-id={element.id}
             className={cn(
               className,
               isDisabled && listItemClasses.disabled,
@@ -89,7 +87,7 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
                 groupClass,
                 linkClasses.ownStyles,
               )}
-              aria-label={`Link-${id}`}
+              aria-label={`Link-${element.id}`}
               href={link}
               target="_blank"
               rel="noreferrer"
@@ -100,15 +98,15 @@ const ListItem: React.FC<ListItemRendererProps> = React.forwardRef(
         ) : (
           <li
             ref={ref}
-            id={id}
-            data-ls-id={id}
+            id={element.id}
+            data-ls-id={element.id}
             className={cn(
               className,
               isDisabled && listItemClasses.disabled,
               groupClass,
               listItemClasses.ownStyles,
             )}
-            aria-label={`Button-${id}`}
+            aria-label={`Button-${element.id}`}
             {...eventHandlers}
             contentEditable={contentEditable}
             dangerouslySetInnerHTML={{ __html: textContent }}

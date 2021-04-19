@@ -1,40 +1,41 @@
 import React from 'react';
 import cn from 'classnames';
-import { SelectRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
-
-type Props = SelectRendererProps;
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('select', {});
 
-const Select = React.forwardRef<HTMLSelectElement, Props>((props, ref) => {
-  const { id, isDisabled, className, children, groupClass } = props;
+const Select = React.forwardRef<HTMLSelectElement, RendererProps>(
+  (props, ref) => {
+    const { element, isDisabled, children } = props;
+    const [className, groupClass] = element.styles.classNames;
 
-  const classes = useStyles(props);
-  const eventHandlers = useEventHandlers(props);
+    const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
-  return (
-    <select
-      ref={ref}
-      id={id}
-      data-ls-id={id}
-      className={cn(
-        className,
-        groupClass,
-        classes.ownStyles,
-        isDisabled && classes.disabled,
-      )}
-      {...eventHandlers}
-      {...(isDisabled && {
-        onMouseDown: (ev) => {
-          ev.preventDefault();
-        },
-      })}
-    >
-      {children}
-    </select>
-  );
-});
+    return (
+      <select
+        ref={ref}
+        id={element.id}
+        data-ls-id={element.id}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          isDisabled && classes.disabled,
+        )}
+        {...eventHandlers}
+        {...(isDisabled && {
+          onMouseDown: (ev) => {
+            ev.preventDefault();
+          },
+        })}
+      >
+        {children}
+      </select>
+    );
+  },
+);
 
 export default Select;

@@ -1,10 +1,8 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
-import { DropdownItemRendererProps } from '../types';
+import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
 const useStyles = makeComponentStyles('dropdown-item', {
   'item:hover': ({ isDisabled }) => {
@@ -17,18 +15,19 @@ const useStyles = makeComponentStyles('dropdown-item', {
   },
 });
 
-const DropdownItem: React.FC<DropdownItemRendererProps> = React.forwardRef(
+const DropdownItem = React.forwardRef<HTMLLIElement, RendererProps>(
   (props, ref) => {
-    const { id, isDisabled, params, className, groupClass } = props;
-    const { textContent } = params;
+    const { element, isDisabled } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { textContent } = element.parameters;
 
     const styles = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
     return (
       <li
-        id={id}
-        data-ls-id={id}
+        id={element.id}
+        data-ls-id={element.id}
         ref={ref}
         className={cn(
           styles.root,
