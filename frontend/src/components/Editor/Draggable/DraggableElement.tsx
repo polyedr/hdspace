@@ -348,7 +348,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   const ElementRenderer = RENDERERS[element.type];
 
-  return element ? (
+  return (
     <ElementRenderer
       element={element}
       isDisabled={isDisabled}
@@ -367,7 +367,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onKeyDown={keyDownHandler}
       onClick={clickHandler}
-      // onBlur={blurHandler}
     >
       {element.children.map((childId: string) => (
         <DraggableElement
@@ -380,7 +379,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         />
       ))}
     </ElementRenderer>
-  ) : null;
+  );
 };
 
 export default DraggableElement;

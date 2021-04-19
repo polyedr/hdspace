@@ -14,7 +14,6 @@ import {
   selectIncludesActiveElement,
   selectIsElementActive,
 } from '@Redux/project/selectors/element';
-// import useElementProps from '@Components/Editor/hooks/useElementProps';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
