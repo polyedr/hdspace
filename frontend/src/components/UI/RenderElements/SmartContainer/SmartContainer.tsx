@@ -13,10 +13,18 @@ import useUrlImageToFile from '@Utils/useUrlImageToFile';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { NNBlockType, SyntheticGlobalElement } from '@Src/types';
-import { updateElementParameters } from '@Redux/project/actions';
+import {
+  updateElementParameters,
+  uploadElementAsset,
+} from '@Redux/project/actions';
+
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
 import { selectElementById } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import {
+  selectAllAssetLists,
+  selectSelectedAssetListId,
+} from '@Redux/project/selectors/asset';
 import { SmartContainerRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
@@ -153,6 +161,27 @@ const SmartContainerRenderer: React.FC<SmartContainerRendererProps> = React.forw
     });
 
     const resizeRefDom = resizeRef.current;
+
+    const assetLists = useSelector(selectAllAssetLists);
+    const selectSelectedAssetList = useSelector(selectSelectedAssetListId);
+    // const assetId = assetLists.length ? assetLists[0].id : 0;
+    useEffect(() => {
+      if (imageURL) {
+        const assetId = selectSelectedAssetList || assetLists[0].id;
+        dispatch(
+          uploadElementAsset(element.id, { imageURL }, assetId, {
+            screenId: currentScreenId,
+          }),
+        );
+      }
+    }, [
+      element.id,
+      imageURL,
+      currentScreenId,
+      assetLists,
+      selectSelectedAssetList,
+      dispatch,
+    ]);
 
     useEffect(() => {
       if (resizeRef && resizeRefDom) {

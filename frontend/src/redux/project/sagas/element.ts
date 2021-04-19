@@ -50,7 +50,7 @@ import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
-import { uploadAsset } from './asset';
+import { uploadAssetHelper } from './asset';
 import {
   updateOrReplaceElementParameters,
   updateOrReplaceElementStyles,
@@ -1077,7 +1077,7 @@ export const uploadElementImageByUrlSaga = compose(
     }
 
     yield call(
-      uploadAsset,
+      uploadAssetHelper,
       {
         assetFile: null,
         listId,

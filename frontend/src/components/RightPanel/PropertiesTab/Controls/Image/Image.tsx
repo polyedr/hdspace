@@ -114,7 +114,7 @@ const Component: React.FC<Props> = ({ activeElementId, canEdit }) => {
         alert('Choose image up to 5Mb!');
       } else {
         dispatch(
-          uploadElementAsset(activeElementId, file, assetId, {
+          uploadElementAsset(activeElementId, { file }, assetId, {
             screenId: currentScreenId,
           }),
         );

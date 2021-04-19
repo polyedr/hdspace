@@ -166,6 +166,7 @@ import {
   SetSidebarOpen,
   SetSidebarHost,
   SetSidebarIframe,
+  AssetData,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -673,14 +674,17 @@ export const updateElementImage = (
 
 export const uploadElementAsset = (
   elementId: string,
-  asset: File,
+  { file, imageURL }: AssetData,
   listId: string,
-  meta: ElementHistoryMeta,
+  meta?: ElementHistoryMeta,
 ): UploadElementAsset => ({
   type: TYPES.UPLOAD_ELEMENT_ASSET,
   payload: {
     elementId,
-    asset,
+    asset: {
+      file,
+      imageURL,
+    },
     listId,
   },
   meta,
