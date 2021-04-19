@@ -29,7 +29,7 @@ import Type from '@Components/RightPanel/PropertiesTab/Controls/Type/Type';
 import TypographyBlock from '@Components/RightPanel/PropertiesTab/Controls/TypographyBlock';
 import Value from '@Components/RightPanel/PropertiesTab/Controls/Value/Value';
 import VideoSettings from '@Components/RightPanel/PropertiesTab/Controls/VideoSettings/VideoSettings';
-import withSmartContainer from '@Components/UI/RenderElements/SmartContainer/withSmartContainer';
+import withSmartContainer from '@Components/RightPanel/PropertiesTab/Controls/SmartContainer/withSmartContainer';
 import { Control, NNBlockType } from '@Src/types';
 import Alt from '@Components/RightPanel/PropertiesTab/Controls/Alt';
 import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';

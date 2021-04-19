@@ -1,21 +1,21 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 
-import { SharedRendererProps } from './types';
+import { RendererProps } from '../RenderElements/types';
 
 type DefaultHandlers = {
   [eventName: string]: (event: React.SyntheticEvent) => void;
 };
 
 const useEventHandlers = (
-  props: SharedRendererProps,
+  props: RendererProps,
   defaultHandlers: DefaultHandlers = {},
   skipHandlers: string[] = [],
-) => {
+): any => {
   const eventNames = Object.keys(props).filter((name) => {
     return name.startsWith('on') && props[name] instanceof Function;
   });
 
-  return useMemo(
+  const handlers = useMemo(
     () => {
       return {
         ...defaultHandlers,
@@ -39,6 +39,8 @@ const useEventHandlers = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [eventNames.length, defaultHandlers, skipHandlers],
   );
+
+  return handlers;
 };
 
 export default useEventHandlers;

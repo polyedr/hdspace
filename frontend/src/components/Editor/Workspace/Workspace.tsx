@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import {
@@ -8,10 +8,7 @@ import {
 } from '@Redux/project/selectors/base';
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import {
-  selectCurrentScreenId,
-  selectMasterScreenEnabled,
-} from '@Redux/project/selectors/screen';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import Screen from '@Components/Editor/Screen';
@@ -22,7 +19,6 @@ import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
-import { DOMHandler } from './DOMHandler';
 
 const useStyles = makeStyles({
   workspace: {
@@ -68,7 +64,6 @@ const Workspace: React.FC<Props> = () => {
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
-  const currentScreenId = useSelector(selectCurrentScreenId);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const classes = useStyles(rotated);
@@ -76,12 +71,6 @@ const Workspace: React.FC<Props> = () => {
   const scrollRef = useRef<Scrollbars>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!masterScreenEnabled) {
-      DOMHandler.INSTANCE.reset();
-    }
-  }, [currentScreenId, masterScreenEnabled]);
 
   useGlobalDropTarget(
     ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],

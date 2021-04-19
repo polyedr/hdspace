@@ -19,6 +19,7 @@ import {
   changeProfileData,
 } from '@Redux/user/actions';
 import { Experience } from '@Src/types';
+import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import RightPanel from '../components/RightPanel';
 
@@ -70,6 +71,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
 
   useEffect(() => {
     if (screen) {
+      DOMHandler.INSTANCE.reset();
       dispatch(activateScreen(screen.id));
     } else {
       history.push(`/project/${currentProjectId}`);

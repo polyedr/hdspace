@@ -1,11 +1,9 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import { TextField } from '@material-ui/core';
-import { InputRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('input', {
   input: {
@@ -16,10 +14,11 @@ const useStyles = makeComponentStyles('input', {
   },
 });
 
-const MUIInput: React.FC<InputRendererProps> = React.forwardRef(
+const MUIInput = React.forwardRef<HTMLInputElement, RendererProps>(
   (props, ref) => {
-    const { id, params, isDisabled, className, groupClass } = props;
-    const { type, placeholder, textContent } = params;
+    const { element, isDisabled } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { type, placeholder, textContent } = element.parameters;
 
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
@@ -27,9 +26,8 @@ const MUIInput: React.FC<InputRendererProps> = React.forwardRef(
     return (
       <TextField
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         variant="outlined"
         className={cn(className, isDisabled && classes.disabled)}
         type={type}
