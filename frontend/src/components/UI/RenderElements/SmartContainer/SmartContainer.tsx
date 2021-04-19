@@ -77,6 +77,7 @@ const SmartContainerRenderer = React.forwardRef<
   RendererProps & { blockType: NNBlockType }
 >((props, ref) => {
   const { element, isDisabled, blockType, children } = props;
+  console.log('ELEMENT!!', element, props);
   const [className, groupClass] = element.styles.classNames;
 
   const currentScreenId = useSelector(selectCurrentScreenId);
