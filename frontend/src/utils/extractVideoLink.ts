@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import { head, toPairs } from 'ramda';
 import { PLAYERS } from '@Constants/players';
 import { VideoSettingsType } from '../types';
 
@@ -8,7 +8,7 @@ type LinkInfo = {
 };
 
 export function extractPlayerLinkInfo(link: string): LinkInfo {
-  const currentVideoLink = R.toPairs(PLAYERS)
+  const currentVideoLink = toPairs(PLAYERS)
     .filter(([, parameters]) =>
       parameters.aliases.some((alias) => link.startsWith(alias)),
     )
@@ -17,7 +17,7 @@ export function extractPlayerLinkInfo(link: string): LinkInfo {
         link.startsWith(targetAlias),
       )!;
       const linkWithID = link.replace(alias, parameters.playerLink);
-      const linkWithoutAttributes = R.head(linkWithID.split('?')) || linkWithID;
+      const linkWithoutAttributes = head(linkWithID.split('?')) || linkWithID;
 
       return {
         player: name as keyof typeof PLAYERS,
@@ -25,7 +25,7 @@ export function extractPlayerLinkInfo(link: string): LinkInfo {
       };
     });
 
-  return R.head(currentVideoLink) || { player: 'none', link: '' };
+  return head(currentVideoLink) || { player: 'none', link: '' };
 }
 
 export function getPlayerLink(

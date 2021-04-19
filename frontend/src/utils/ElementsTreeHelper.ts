@@ -1,4 +1,4 @@
-import * as R from 'ramda';
+import { flatten } from 'ramda';
 import { Entity, LibraryElement } from '../types';
 
 export const findParentByChildID = (
@@ -24,7 +24,7 @@ export const getElementsArray = (
   root: LibraryElement<Entity, LibraryElement<Entity>[]>,
 ): LibraryElement<Entity, LibraryElement<Entity>[]>[] => {
   const array = root.children.map((child) => getElementsArray(child));
-  return R.flatten([root, array]) as LibraryElement<
+  return flatten([root, array]) as LibraryElement<
     Entity,
     LibraryElement<Entity>[]
   >[];

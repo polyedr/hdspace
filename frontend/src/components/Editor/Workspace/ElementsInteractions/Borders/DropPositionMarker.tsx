@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
 import { DropPosition } from '@Constants/dragAndDrop';

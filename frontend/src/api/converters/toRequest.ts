@@ -1,4 +1,3 @@
-// import * as R from 'ramda';
 import getDefaultStyles from '@Utils/getDefaultStyles';
 import { cssDecamelize } from '@Utils/CSSConverter';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';

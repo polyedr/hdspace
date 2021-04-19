@@ -1,5 +1,5 @@
 import { StyledIconButton } from '@Components/styledComponents';
-import { Button, makeStyles } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import {
@@ -15,6 +15,7 @@ import {
 import { RIGHT_PANEL_WIDTH } from '@Src/styles/Theme';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
 import VIADescription from './VIADescription';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({

@@ -2,12 +2,12 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Popover, IconButton } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
 import { selectElementById } from '@Redux/project/selectors/element';
 import { SAVEABLE_ELEMENTS } from '@Constants/defaultParams';
 import { updateElement } from '@Redux/project/actions';
+import { makeStyles } from '@material-ui/core/styles';
 import { useButtonStyles } from '../hooks/styles';
 
 type Props = {

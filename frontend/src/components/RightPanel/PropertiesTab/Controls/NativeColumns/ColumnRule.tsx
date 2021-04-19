@@ -1,11 +1,10 @@
 import React from 'react';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
-import { FormControlLabel } from '@material-ui/core';
+import { FormControlLabel, MenuItem } from '@material-ui/core';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   wrapper: {

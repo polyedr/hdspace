@@ -2,8 +2,8 @@
 
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core';
-import * as R from 'ramda';
+import { makeStyles } from '@material-ui/core/styles';
+import { omit } from 'ramda';
 import { ListItemRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../useEventHandlers';
@@ -28,11 +28,11 @@ const omitLinkStyles = [
 const useItemStyles = makeComponentStyles('list-item');
 
 const useEditableItemStyles = makeStyles({
-  ownStyles: ({ ownStyles }) => R.omit(omitEditableStyles, ownStyles),
+  ownStyles: ({ ownStyles }) => omit(omitEditableStyles, ownStyles),
 });
 
 const useLinkStyles = makeStyles({
-  ownStyles: ({ ownStyles }) => R.omit(omitLinkStyles, ownStyles),
+  ownStyles: ({ ownStyles }) => omit(omitLinkStyles, ownStyles),
   link: {
     width: '100%',
     height: '100%',

@@ -1,6 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   getPermissibleValue,
   safeMatch,
@@ -20,6 +18,8 @@ import {
   useDebouncedInputChange,
   useDebouncedValueChange,
 } from '@Utils/debounceHooks';
+import { MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 

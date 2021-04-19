@@ -1,5 +1,5 @@
 import { RenderItemParams } from '@atlaskit/tree';
-import { makeStyles, lighten } from '@material-ui/core';
+import { makeStyles, lighten } from '@material-ui/core/styles';
 import { setActiveVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import cn from 'classnames';

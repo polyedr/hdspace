@@ -1,9 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { lighten } from '@material-ui/core';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import { addChildToElement } from '@Redux/project/actions';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { PropertiesChangeProps, OptionElement } from '@Src/types';
@@ -12,6 +10,7 @@ import {
   // selectElementsByIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { IconButton } from '@material-ui/core';
 import SelectOption from './SelectOption';
 
 const useStyles = makeStyles(({ palette }) => ({
