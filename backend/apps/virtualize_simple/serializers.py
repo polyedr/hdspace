@@ -821,6 +821,144 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
     # Function elements creation, loop through the root_block end
 
 
+def htmltree_initialize(fname, bcolour_container_value, img_width):
+    root = ET.Element("html", version="5.0")
+    # Передайте родительский узел, имя дочернего узла,
+    # и любое количество дополнительных атрибутов
+    html_head = ET.SubElement(root, "head")
+    html_title = ET.SubElement(root, "title")
+    html_title.text = "Title, " + fname
+    html_body = ET.SubElement(root, "body")
+
+    # Define the outer container parameters
+    outer_div = ET.SubElement(html_body, "div")
+
+    styles = {}
+    parameters = {}
+    styles["background-color"] = "rgba(" + bcolour_container_value + ")"
+    # The magic number 30 to solve presence of wide elements have been measured with px
+    styles["width"] = str(img_width + 30) + "px"
+    str_styles = "; ".join("{}:{}".format(key, val) for key, val in styles.items())
+    outer_div.set("style", str_styles)
+    return root, outer_div, styles, parameters
+
+def clusters_printing(root_block, fname, image_allclusters=[], image_cclusters=[], image_allcluelems=[]):
+    # Go through all the blocks obtained after the ternary algorithm
+    if len(image_cclusters):
+        # Print all the cclusters
+        for pre, fill, node in RenderTree(root_block):
+            if node.types == "ccluster":
+                cv2.rectangle(
+                    image_cclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (20, 50, 107),
+                    1,
+                )
+        # Printing cclusters to file
+        cv2.imwrite("cclusters_" + fname, image_cclusters)
+
+    # Go through all the blocks obtained after the ternary algorithm
+    if len(image_allclusters):
+        # Print all the clusters
+        for pre, fill, node in RenderTree(root_block):
+            if node.types == "ccluster":
+                cv2.rectangle(
+                    image_allclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (20, 50, 107),
+                    1,
+                )
+
+            if node.types == "dbcluster":
+                cv2.rectangle(
+                    image_allclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (164, 24, 4),
+                    1,
+                )
+
+            if node.types == "fcluster":
+                cv2.rectangle(
+                    image_allclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (0, 0, 255),
+                    1,
+                )
+
+        # Printing all clusters to file
+        cv2.imwrite("allclusters_" + fname, image_allclusters)
+
+    if len(image_allcluelems):
+        # Go through all the blocks obtained after the ternary algorithm
+        # Print all the clusters with elements
+        for pre, fill, node in RenderTree(root_block):
+            if node.types == "ccluster":
+                cv2.rectangle(
+                    image_allcluelems,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (20, 50, 107),
+                    1,
+                )
+
+            if node.types == "dbcluster":
+                cv2.rectangle(
+                    image_allcluelems,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (164, 24, 4),
+                    1,
+                )
+
+            if node.types == "fcluster":
+                cv2.rectangle(
+                    image_allcluelems,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (0, 0, 255),
+                    1,
+                )
+
+            if node.elements:
+                for elem in node.elements:
+                    # Define the element dimensions start
+                    elem_width = int(elem["shape_attributes"]["width"])
+                    elem_height = int(elem["shape_attributes"]["height"])
+
+                    x1 = int(elem["shape_attributes"]["x"])
+                    y1 = int(elem["shape_attributes"]["y"])
+                    # Define the element dimensions end
+                    cv2.rectangle(
+                        image_allcluelems,
+                        (x1, y1),
+                        (x1 + elem_width, y1 + elem_height),
+                        (255, 0, 255),
+                        1,
+                    )
+
+                    label_element = str(elem["region_attributes"]["HTML element"])
+
+                    # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
+                    cv2.putText(
+                        image_allcluelems,
+                        label_element,
+                        (x1, y1 + elem_height),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5,
+                        (36, 255, 12),
+                        2,
+                    )
+
+        # Printing all clusters with elements to file
+        cv2.imwrite("allclusters_with_elements_" + fname, image_allcluelems)
+
+    return True
+
+
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
 
@@ -2874,136 +3012,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Ternary assembling algorithm run after the clusters end
 
-        # Go through all the blocks obtained after the ternary algorithm
-        # Print all the cclusters
-        for pre, fill, node in RenderTree(root_block):
-            if node.types == "ccluster":
-                cv2.rectangle(
-                    image_cclusters,
-                    (node.x1, node.y1),
-                    (node.x2, node.y2),
-                    (20, 50, 107),
-                    1,
-                )
-        # Printing cclusters to file
-        cv2.imwrite("cclusters_" + fname, image_cclusters)
 
-        # Go through all the blocks obtained after the ternary algorithm
-        # Print all the clusters
-        for pre, fill, node in RenderTree(root_block):
-            if node.types == "ccluster":
-                cv2.rectangle(
-                    image_allclusters,
-                    (node.x1, node.y1),
-                    (node.x2, node.y2),
-                    (20, 50, 107),
-                    1,
-                )
+        # Printing clusters function calling
+        clusters_printing(root_block, fname, image_allclusters=image_allclusters, image_cclusters=image_cclusters, image_allcluelems=image_allcluelems)
 
-            if node.types == "dbcluster":
-                cv2.rectangle(
-                    image_allclusters,
-                    (node.x1, node.y1),
-                    (node.x2, node.y2),
-                    (164, 24, 4),
-                    1,
-                )
+        # HTML tree initialize function call
+        root, outer_div, styles, parameters = htmltree_initialize(fname, bcolour_container_value, img_width)
 
-            if node.types == "fcluster":
-                cv2.rectangle(
-                    image_allclusters,
-                    (node.x1, node.y1),
-                    (node.x2, node.y2),
-                    (0, 0, 255),
-                    1,
-                )
-
-        # Printing all clusters to file
-        cv2.imwrite("allclusters_" + fname, image_allclusters)
-
-        # Go through all the blocks obtained after the ternary algorithm
-        # Print all the clusters with elements
-        for pre, fill, node in RenderTree(root_block):
-            if node.types == "ccluster":
-                cv2.rectangle(
-                    image_allcluelems,
-                    (node.x1, node.y1),
-                    (node.x2, node.y2),
-                    (20, 50, 107),
-                    1,
-                )
-
-            if node.types == "dbcluster":
-                cv2.rectangle(
-                    image_allcluelems,
-                    (node.x1, node.y1),
-                    (node.x2, node.y2),
-                    (164, 24, 4),
-                    1,
-                )
-
-            if node.types == "fcluster":
-                cv2.rectangle(
-                    image_allcluelems,
-                    (node.x1, node.y1),
-                    (node.x2, node.y2),
-                    (0, 0, 255),
-                    1,
-                )
-
-            if node.elements:
-                for elem in node.elements:
-                    # Define the element dimensions start
-                    elem_width = int(elem["shape_attributes"]["width"])
-                    elem_height = int(elem["shape_attributes"]["height"])
-
-                    x1 = int(elem["shape_attributes"]["x"])
-                    y1 = int(elem["shape_attributes"]["y"])
-                    # Define the element dimensions end
-                    cv2.rectangle(
-                        image_allcluelems,
-                        (x1, y1),
-                        (x1 + elem_width, y1 + elem_height),
-                        (255, 0, 255),
-                        1,
-                    )
-
-                    label_element = str(elem["region_attributes"]["HTML element"])
-
-                    # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
-                    cv2.putText(
-                        image_allcluelems,
-                        label_element,
-                        (x1, y1 + elem_height),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (36, 255, 12),
-                        2,
-                    )
-
-        # Printing all clusters with elements to file
-        cv2.imwrite("allclusters_with_elements_" + fname, image_allcluelems)
-
-        # Printing containerization results and all clusters results
-
-        root = ET.Element("html", version="5.0")
-        # Передайте родительский узел, имя дочернего узла,
-        # и любое количество дополнительных атрибутов
-        html_head = ET.SubElement(root, "head")
-        html_title = ET.SubElement(root, "title")
-        html_title.text = "Title, " + fname
-        html_body = ET.SubElement(root, "body")
-
-        # Define the outer container parameters
-        outer_div = ET.SubElement(html_body, "div")
-        styles = {}
-        parameters = {}
-        styles["background-color"] = "rgba(" + bcolour_container_value + ")"
-        # The magic number 30 to solve presence of wide elements have been measured with px
-        styles["width"] = str(img_width + 30) + "px"
-        str_styles = "; ".join("{}:{}".format(key, val) for key, val in styles.items())
-        outer_div.set("style", str_styles)
-        # print(1694, styles, str_styles)
         # Define the export node
         outer_div_node = ScenarioElement.objects.create(
             parent=serializer_node,
@@ -3940,26 +3955,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
             os.chdir(SAVE_DIR)
 
-            root = ET.Element("html", version="5.0")
-            # Передайте родительский узел, имя дочернего узла,
-            # и любое количество дополнительных атрибутов
-            html_head = ET.SubElement(root, "head")
-            html_title = ET.SubElement(root, "title")
-            html_title.text = "Title, " + fname
-            html_body = ET.SubElement(root, "body")
+            # HTML tree initialize function call
+            root, outer_div, styles, parameters = htmltree_initialize(fname, bcolour_container_value, img_width)
 
-            # Define the outer container parameters
-            outer_div = ET.SubElement(html_body, "div")
-            styles = {}
-            parameters = {}
-            styles["background-color"] = "rgba(" + bcolour_container_value + ")"
-            styles["height"] = str(img_height) + "px"
-            styles["width"] = str(img_width) + "px"
-            str_styles = "; ".join(
-                "{}:{}".format(key, val) for key, val in styles.items()
-            )
-            outer_div.set("style", str_styles)
-            # print(1277, styles, str_styles)
             # Define the export node
             outer_div_node = ScenarioElement.objects.create(
                 parent=serializer_node,
@@ -4891,26 +4889,14 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
             os.chdir(SAVE_DIR)
 
-            root = ET.Element("html", version="5.0")
-            # Передайте родительский узел, имя дочернего узла,
-            # и любое количество дополнительных атрибутов
-            html_head = ET.SubElement(root, "head")
-            html_title = ET.SubElement(root, "title")
-            html_title.text = "Title, " + fname
-            html_body = ET.SubElement(root, "body")
+            # Printing clusters function calling
+            # clusters_printing(root_block, fname, image_allclusters=image_allclusters)
 
-            # Define the outer container parameters
-            outer_div = ET.SubElement(html_body, "div")
-            styles = {}
-            parameters = {}
-            styles["background-color"] = "white"
-            styles["height"] = str(img_height) + "px"
-            styles["width"] = str(img_width) + "px"
-            str_styles = "; ".join(
-                "{}:{}".format(key, val) for key, val in styles.items()
-            )
-            outer_div.set("style", str_styles)
-            # print(1277, styles, str_styles)
+            # Define bcolour_container_value for the free canvas
+            bcolour_container_value = "255,255,255,0"
+            # HTML tree initialize function call
+            root, outer_div, styles, parameters = htmltree_initialize(fname, bcolour_container_value, img_width)
+
             # Define the export node
             outer_div_node = ScenarioElement.objects.create(
                 parent=serializer_node,
@@ -4920,169 +4906,6 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 buoyancy=0,
             )
 
-            '''
-            # Pro-function elements creation, loop through the root_block start
-            for pre, fill, node in RenderTree(root_block):
-                # if(node.elements):
-                #     print("elements: ", len(node.elements))
-                #     input()
-                styles = {}
-                parameters = {}
-                parameters["freeCanvas"] = {}
-
-                # Define the node dimensions start
-                node_width = int(node.x2 - node.x1)
-                node_height = int(node.y2 - node.y1)
-                # Define the node dimensions end
-
-                # Define freeCanvas sub-parameter
-                parameters["freeCanvas"]["zIndex"] = 0
-                parameters["freeCanvas"]["width"] = node_width
-                parameters["freeCanvas"]["height"] = node_height
-                parameters["freeCanvas"]["left"] = int(node.x1)
-                parameters["freeCanvas"]["top"] = int(node.y1)
-
-                # Define the direction of the container start
-                # Horizontal
-                if node.direction == 1:
-                    styles["display"] = "flex"
-                    styles["background"] = "aliceblue"
-                    if region_dataset in ["headers", "footers"]:
-                        styles["justify-content"] = "space-between"
-                # Vertical
-                if node.direction == 0:
-                    styles["display"] = "block"
-                    styles["background"] = "lavenderblush"
-                if node.direction == 2:
-                    if (node.types == "ccluster") or (
-                        region_dataset in ["headers", "webpages"]
-                    ):
-                        styles["display"] = "flex"
-                        styles["background"] = "lightblue"
-                    else:
-                        styles["display"] = "flex"
-                        styles["background"] = "lightblue"
-                        # Sometimes node_width and height are 0, should check this.
-                        if node_width:
-                            styles["width"] = str(node_width) + "px"
-                        if node_height:
-                            styles["height"] = str(node_height) + "px"
-                # Define the direction of the container end
-
-                if node == root_block:
-                    # print(node)
-                    margin_lr = int((img_width - node_width) / 2)
-                    margin_tp = int((img_height - node_height) / 2)
-                    node.div = ET.SubElement(outer_div, "div")
-                    styles["border"] = "1px solid green"
-                    styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
-
-                    str_styles = "; ".join(
-                        "{}:{}".format(key, val) for key, val in styles.items()
-                    )
-                    node.div.set("style", str_styles)
-
-                    # Create a new Scenario Element for the elements chain
-                    node.scenarioelement_inner = ScenarioElement.objects.create(
-                        parent=outer_div_node,
-                        struct_type="container",
-                        parameters=parameters,
-                        styles=styles,
-                        buoyancy=0,
-                    )
-                else:
-                    # print(node, dir(node.parent))
-                    node.div = ET.SubElement(node.parent.div, "div")
-
-                    styles["border"] = "1px solid green"
-
-                    str_styles = "; ".join(
-                        "{}:{}".format(key, val) for key, val in styles.items()
-                    )
-                    node.div.set("style", str_styles)
-
-                    # Create a new Scenario Element for the elements chain
-                    node.scenarioelement_inner = ScenarioElement.objects.create(
-                        parent=node.parent.scenarioelement_inner,
-                        struct_type="container",
-                        parameters=parameters,
-                        styles=styles,
-                        buoyancy=0,
-                    )
-            '''
-            '''
-                # Go through all the blocks obtained after the ternary algorithm
-                # Print all the clusters
-                for pre, fill, node in RenderTree(root_block):
-                    if node.types == "ccluster":
-                        cv2.rectangle(
-                            image_allclusters,
-                            (node.x1, node.y1),
-                            (node.x2, node.y2),
-                            (20, 50, 107),
-                            1,
-                        )
-
-                    if node.types == "dbcluster":
-                        cv2.rectangle(
-                            image_allclusters,
-                            (node.x1, node.y1),
-                            (node.x2, node.y2),
-                            (164, 24, 4),
-                            1,
-                        )
-
-                    if node.types == "fcluster":
-                        cv2.rectangle(
-                            image_allclusters,
-                            (node.x1, node.y1),
-                            (node.x2, node.y2),
-                            (0, 0, 255),
-                            1,
-                        )
-
-                # Printing all clusters to file
-                # cv2.imwrite("allclusters_", image_allclusters)
-                cv2.imshow(window_name1, image_allclusters)
-                cv2.waitKey(0)
-            '''
-
-
-            '''
-                # Attach elements for some fcluster
-                if node.types == "fcluster":
-                    # Arrange the fcluster children based on their coordinates
-                    if node.direction == 0:
-                        array_elements = sorted(
-                            node.elements, key=lambda i: i["shape_attributes"]["y"]
-                        )
-                    elif node.direction == 1:
-                        array_elements = sorted(
-                            node.elements, key=lambda i: i["shape_attributes"]["x"]
-                        )
-                    else:
-                        array_elements = node.elements
-                    for elem in array_elements:
-                        # Define the element dimensions start
-                        elem_width = int(elem["shape_attributes"]["width"])
-                        elem_height = int(elem["shape_attributes"]["height"])
-
-                        x1 = int(elem["shape_attributes"]["x"])
-                        y1 = int(elem["shape_attributes"]["y"])
-                        # Define the element dimensions end
-
-                        # Attach element to cluster
-                        for child in children:
-                            if (child.parameters):
-                                if int(child.parameters["freeCanvas"]["width"]) == elem_width:
-                                    if int(child.parameters["freeCanvas"]["height"]) == elem_height:
-                                        if int(child.parameters["freeCanvas"]["left"]) == x1:
-                                            if int(child.parameters["freeCanvas"]["top"]) == y1:
-                                                # print(child, child.struct_type, child.parent, child.parent_id)
-                                                # input()
-                                                child.move_to(node.scenarioelement_inner)
-            # Pro-function elements creation, loop through the root_block end
-            '''
             # Obtaining the absolute path for the parameters directly. Should change this later.
             o = urlparse(self.context["request"].build_absolute_uri())
             # Detect elements for the root block
