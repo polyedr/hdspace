@@ -82,7 +82,6 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
                 }
               })
               .catch((error: AxiosError) => {
-                // eslint-disable-next-line no-console
                 console.error(error);
                 return Promise.resolve();
               });
@@ -109,7 +108,6 @@ export const processCSS = async (
     .then((responses: AxiosResponse[]) => {
       responses.forEach((response: AxiosResponse) => {
         if (!response.request) {
-          // eslint-disable-next-line no-console
           console.error('Request is not defined!', response);
           return;
         }

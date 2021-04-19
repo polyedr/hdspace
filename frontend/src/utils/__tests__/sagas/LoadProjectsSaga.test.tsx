@@ -65,7 +65,6 @@ describe('getProjectListSaga Test', () => {
 
   describe('WHEN method is called and API returns an error', () => {
     beforeAll(() => {
-      // eslint-disable-next-line no-console
       console.error = jest.fn();
       // stub current date and random value generator to pass enqueueSnackbar equality
       MockDate.set('2000-11-22');

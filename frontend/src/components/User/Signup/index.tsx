@@ -67,7 +67,7 @@ const Signup: React.FC = () => {
   // TODO add google button and this method, when the backend will register new users using google token
   /* const responseGoogle = (response: any) => {
   dispatch(registerWithGoogle());
-    // eslint-disable-next-line no-console
+
     console.log(response);
   }; */
 

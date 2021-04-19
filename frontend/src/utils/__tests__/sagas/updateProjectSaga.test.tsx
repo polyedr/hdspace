@@ -9,7 +9,6 @@ import { mockProject } from '../test-utils';
 
 describe('updateProjectSaga Test', () => {
   beforeAll(() => {
-    // eslint-disable-next-line no-console
     console.error = jest.fn();
     // stub current date and random value generator to pass enqueueSnackbar equality
     MockDate.set('2000-11-22');

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { put, call, select } from 'redux-saga/effects';
 
 import {

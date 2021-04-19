@@ -301,7 +301,6 @@ export function rerenderSelectedDay(
       previousElement.nextSibling,
     );
   } else {
-    // eslint-disable-next-line no-console
     console.log('Previous element does not have parent');
   }
 

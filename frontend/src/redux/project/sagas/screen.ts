@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { all, call, fork, put, select } from 'redux-saga/effects';
 import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
