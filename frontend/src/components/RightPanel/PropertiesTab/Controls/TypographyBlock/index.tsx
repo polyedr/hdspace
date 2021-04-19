@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useState, memo } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
 import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
@@ -10,13 +8,16 @@ import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import * as CSS from 'csstype';
 import { getPermissibleValue } from '@Utils/NumberHelper';
-
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import FONTS from '@Constants/fonts';
+
 import {
   StyledTextField,
   StyledToggleButton,
 } from '@Components/styledComponents';
+import { useDebouncedValueChange } from '@Utils/debounceHooks';
+import { MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
 
@@ -53,17 +54,17 @@ const TypographyBlock: React.FC<Props> = ({
   fontWeight,
   fontStyle,
   textAlign,
-  color,
+  color = 'transparent',
   canEdit,
 }) => {
   const classes = useStyles();
 
-  const handleColorSettingsChange = useCallback(
+  /* const handleColorSettingsChange = useCallback(
     (newColor: string) => {
       updateStyles({ color: newColor });
     },
     [updateStyles],
-  );
+  ); */
 
   const handleFontFamilyChange = (ev) => {
     updateStyles({ fontFamily: ev.target.value });
@@ -107,6 +108,13 @@ const TypographyBlock: React.FC<Props> = ({
       textAlign: newAlignment,
     });
   };
+
+  const [colorValue, handleColorValueChange] = useDebouncedValueChange(
+    color,
+    (newColor: string) => {
+      updateStyles({ color: newColor });
+    },
+  );
 
   return (
     <div>
@@ -195,9 +203,9 @@ const TypographyBlock: React.FC<Props> = ({
 
         <div>
           <ColorSettings
-            currentColor={color || 'transparent'}
+            currentColor={(colorValue as string) || 'transparent'}
             activeElementId={activeElementId}
-            onChange={handleColorSettingsChange}
+            onChange={handleColorValueChange as (color: string) => void}
             disabled={!canEdit}
           />
         </div>

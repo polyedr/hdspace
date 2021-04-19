@@ -1,18 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import { lighten } from '@material-ui/core';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
-import { renameScreen } from '@Redux/project/actions';
+import { editScreen } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import Dialog from '../../Dialogs/Dialog';
+import { ListItem, ListItemIcon } from '@material-ui/core';
 import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
+import ScreenEditDialog from './ScreenEditDialog';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   listItem: {
@@ -55,11 +53,10 @@ type Props = {
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();
-  const { name, project, id, image } = screen;
+  const { name, project, id, image, screen_data_json } = screen;
   const classes = useStyles();
   const history = useHistory();
   const currentProjectId = useSelector(selectCurrentProjectId);
-
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
 
@@ -70,7 +67,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const closeEdit = () => setEdit(false);
 
   const handleSubmit = async (values) => {
-    dispatch(renameScreen(project, id, values.name));
+    dispatch(editScreen(project, id, values));
     closeEdit();
   };
 
@@ -109,15 +106,14 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
               closeEdit={closeEdit}
             />
           </ListItem>
-
-          <Dialog
+          <ScreenEditDialog
             open={edit}
             onSubmit={handleSubmit}
             onClose={closeEdit}
             fieldName="name"
-            title="Rename Screen"
-            description="Enter screen's new name"
-            initialValue={name}
+            titleDialog="Rename Screen"
+            initialValueName={name}
+            initialValueTags={screen_data_json}
           />
         </div>
       )}

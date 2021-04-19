@@ -4,14 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import { Popover, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectCanCreateGroup,
   selectSelectedElementsIds,
 } from '@Redux/project/selectors/element';
 import { createElementsGroup } from '@Redux/project/actions';
-
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+
+import { makeStyles } from '@material-ui/core/styles';
 import { useButtonStyles } from '../hooks/styles';
 
 type Props = {

@@ -1,0 +1,48 @@
+import React, { useEffect, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+
+export const useDebouncedInputChange = (
+  value: any,
+  cb: (...args: any) => void,
+  delay: number = 500,
+) => {
+  const [state, setState] = useState(value);
+  useEffect(() => {
+    setState(value);
+  }, [value]);
+
+  const debounced = useDebouncedCallback(cb, delay);
+
+  const handleChange = (event: React.SyntheticEvent<HTMLInputElement>) => {
+    const { value } = event.target as HTMLInputElement;
+    setState(value);
+    if (debounced.pending()) {
+      debounced.cancel();
+    }
+    debounced.callback(value);
+  };
+
+  return [state, handleChange];
+};
+
+export const useDebouncedValueChange = <T>(
+  value: T,
+  cb: (newValue: T) => void,
+  delay: number = 250,
+) => {
+  const [state, setState] = useState<T>(value);
+  useEffect(() => {
+    setState(value);
+  }, [value]);
+
+  const debounced = useDebouncedCallback(cb, delay);
+
+  const handleChange = (value: T) => {
+    setState(value);
+    if (debounced.pending()) {
+      debounced.cancel();
+    }
+    debounced.callback(value);
+  };
+  return [state, handleChange];
+};

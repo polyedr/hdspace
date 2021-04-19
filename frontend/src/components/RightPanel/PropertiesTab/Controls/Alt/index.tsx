@@ -3,7 +3,7 @@ import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { StyledTextField } from '@Components/styledComponents';
-import useDebouncedChange from '@Utils/useDeboucedChange';
+import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const Alt: FC<PropertiesChangeProps<ImageElement>> = ({
   updateParams,
@@ -11,7 +11,7 @@ const Alt: FC<PropertiesChangeProps<ImageElement>> = ({
 }) => {
   const alt = useSelector(selectActiveElementParamByName('alt'));
 
-  const [state, handleChange] = useDebouncedChange(alt, (value) =>
+  const [state, handleChange] = useDebouncedInputChange(alt, (value) =>
     updateParams({ alt: value }),
   );
 

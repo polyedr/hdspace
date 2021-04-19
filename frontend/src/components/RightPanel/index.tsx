@@ -1,9 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { Theme } from '@material-ui/core';
+import { Theme, Tabs, Tab } from '@material-ui/core';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
   PANEL_TRANSITION_DURATION,
@@ -25,6 +22,7 @@ import EventsTab from '@Components/RightPanel/EventsTab';
 import { CORE_MASTER_ELEMENTS_IDS } from '@Components/Editor/MasterScreen/coreElements';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { makeStyles } from '@material-ui/core/styles';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import AssetsSection from './Assets';
@@ -131,7 +129,13 @@ const RightPanel: React.FC = () => {
     }
 
     setTabs(newTabs);
-  }, [activeElement, canEditProject, masterCoreElId, masterGroupsElId]);
+  }, [
+    activeElement.id,
+    activeElement.type,
+    canEditProject,
+    masterCoreElId,
+    masterGroupsElId,
+  ]);
 
   useEffect(() => {
     if (

@@ -1,4 +1,4 @@
-import { makeStyles, Theme } from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import prevent from '@Utils/preventEvent';

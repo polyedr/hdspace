@@ -19,7 +19,7 @@ function uiReducer(
     }
 
     case TYPES.TOGGLE_CONTAINERS_BORDERS: {
-      return { ...state, showContainersBorders: !state.showContainersBorders };
+      return { ...state, showContainersBorders: action.payload };
     }
 
     case TYPES.SET_BORDERS_ENABLED: {
@@ -115,6 +115,36 @@ function uiReducer(
       return {
         ...state,
         newScreenModalOpen: action.payload,
+      };
+    }
+
+    case TYPES.SET_SIDEBAR_OPEN: {
+      return {
+        ...state,
+        sidebar: {
+          ...state.sidebar,
+          open: action.payload,
+        },
+      };
+    }
+
+    case TYPES.SET_SIDEBAR_IFRAME: {
+      return {
+        ...state,
+        sidebar: {
+          ...state.sidebar,
+          iframe: action.payload,
+        },
+      };
+    }
+
+    case TYPES.SET_SIDEBAR_HOST: {
+      return {
+        ...state,
+        sidebar: {
+          ...state.sidebar,
+          host: action.payload,
+        },
       };
     }
 

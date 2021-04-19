@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Typography from '@material-ui/core/Typography';
 import EditIcon from '@material-ui/icons/Edit';
-import IconButton from '@material-ui/core/IconButton';
-import { selectCurrentProject } from '@Redux/project/selectors/base';
-import { renameProject } from '@Redux/project/actions';
+import {
+  selectCurrentProject,
+  selectSidebarOpen,
+} from '@Redux/project/selectors/base';
+import { renameProject, setSidebarOpen } from '@Redux/project/actions';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
+import DehazeIcon from '@material-ui/icons/Dehaze';
+import { lighten, makeStyles } from '@material-ui/core/styles';
+import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';
 import Avatar from './Avatar';
@@ -39,6 +40,12 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     fontFamily: typography.fontFamily,
     fontWeight: 'bold',
   },
+  sidebarButton: {
+    color: palette.common.white,
+    '&:hover': {
+      backgroundColor: lighten(palette.panel.main, 0.1),
+    },
+  },
 }));
 
 const TopPanel = () => {
@@ -48,12 +55,17 @@ const TopPanel = () => {
 
   const { name: projectName, id } = useSelector(selectCurrentProject);
   const viaMode = useSelector(selectVIAModeEnabled);
+  const sidebarOpen = useSelector(selectSidebarOpen);
 
   const handleEditClick = () => setOpenEdit(true);
   const handleClose = () => setOpenEdit(false);
   const handleSubmitRename = async (values) => {
     dispatch(renameProject(id, values.name));
     handleClose();
+  };
+
+  const handleSidebarToggle = () => {
+    dispatch(setSidebarOpen(!sidebarOpen));
   };
 
   return (
@@ -79,6 +91,16 @@ const TopPanel = () => {
         )}
 
         {viaMode ? 'Annotation mode' : <TopBar />}
+
+        {projectName && (
+          <IconButton
+            className={classes.sidebarButton}
+            onClick={handleSidebarToggle}
+            title="Toggle Sidebar"
+          >
+            <DehazeIcon />
+          </IconButton>
+        )}
       </Toolbar>
 
       <Dialog

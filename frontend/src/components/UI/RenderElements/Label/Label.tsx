@@ -1,10 +1,9 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
-import { LabelRendererProps } from '../types';
+import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('label', {
   label: ({ isDisabled }) => ({
@@ -14,28 +13,33 @@ const useStyles = makeComponentStyles('label', {
   }),
 });
 
-const Label: React.FC<LabelRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, className, contentEditable, groupClass } = props;
-  const { labelFor, textContent } = params;
+const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
+  (props, ref) => {
+    const { element } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { labelFor, textContent } = element.parameters;
 
-  const styles = useStyles(props);
-  const eventHandlers = useEventHandlers(props);
+    const styles = useStyles(props);
+    const [contentEditable, handleResetState] = useContentEditable(element.id);
+    const eventHandlers = useEventHandlers(props, {
+      onBlur: handleResetState,
+    });
 
-  return (
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-    <label
-      ref={ref}
-      id={id}
-      data-ls-id={id}
-      key={id}
-      {...(labelFor !== 'no for attribute' && { htmlFor: labelFor })}
-      className={cn(className, styles.label, groupClass, styles.ownStyles)}
-      contentEditable={contentEditable}
-      dangerouslySetInnerHTML={{ __html: textContent }}
-      data-gramm_editor={false}
-      {...eventHandlers}
-    />
-  );
-});
+    return (
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+      <label
+        ref={ref}
+        id={element.id}
+        data-ls-id={element.id}
+        {...(labelFor !== 'no for attribute' && { htmlFor: labelFor })}
+        className={cn(className, styles.label, groupClass, styles.ownStyles)}
+        contentEditable={contentEditable}
+        dangerouslySetInnerHTML={{ __html: textContent }}
+        data-gramm_editor={false}
+        {...eventHandlers}
+      />
+    );
+  },
+);
 
 export default Label;

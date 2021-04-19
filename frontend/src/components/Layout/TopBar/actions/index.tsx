@@ -1,12 +1,11 @@
 import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
 import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { CircularProgress, lighten } from '@material-ui/core';
+import { CircularProgress, IconButton } from '@material-ui/core';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import {
   selectFreeCanvasMode,
   selectUpdateScreenImageLoader,
@@ -42,7 +41,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const currentScreen = useSelector(selectCurrentScreen);
+  const { id, name, screen_data_json } = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
 
@@ -52,10 +51,10 @@ const Actions: React.FC = () => {
 
   const onHistoryForward = () => dispatch(executeRedoActions());
 
-  const handleSaveScreen = () => dispatch(updateScreenImage(currentScreen.id));
+  const handleSaveScreen = () => dispatch(updateScreenImage(id));
 
   const handleExportScreen = () => {
-    exportHTML(currentScreen.name);
+    exportHTML(name, screen_data_json);
   };
 
   return (

@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useState, useEffect } from 'react';
 import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 import { ColorPicker, normalizeColor, useColor } from '../../../UI/ColorPicker';
 import { StyledTextField } from '../../../styledComponents';
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 type Props = {
   currentColor: string;
   activeElementId: string;
-  onChange(color: string): any;
+  onChange(color: string): any | void;
   disabled?: boolean;
 };
 

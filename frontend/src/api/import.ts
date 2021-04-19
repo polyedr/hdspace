@@ -15,6 +15,7 @@ export const apiPostURL = ({
     contentType: 'multipart/form-data',
     data: {
       wpname,
+      parse_with_splash: wpname.endsWith('/') ? 1 : 0,
     },
   })
     .then((res: AxiosResponse<PostUrlResponse>) => ({ result: res.data }))

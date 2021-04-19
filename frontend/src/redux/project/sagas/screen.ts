@@ -1,10 +1,13 @@
 /* eslint-disable no-console */
 
 import { all, call, fork, put, select } from 'redux-saga/effects';
-import * as R from 'ramda';
+import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
-import { convertElementFromResponse } from '@Api/converters/fromResponse';
+import {
+  convertElementFromResponse,
+  convertScreenFromResponse,
+} from '@Api/converters/fromResponse';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import { apiCreateElements, apiGetElements } from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
@@ -35,7 +38,7 @@ import {
   addElements,
   createScreen,
   deleteScreen,
-  renameScreen,
+  editScreen,
   restoreScreen,
   setCurrentScreenId,
   setProject,
@@ -136,7 +139,9 @@ export const createScreenSaga = compose(
         status: 'in_progress',
         buoyancy,
         image: null,
-        screen_data_json: {},
+        screen_data_json: JSON.stringify({
+          viewport: 'width=device-width, initial-scale=1.0, minimum-scale=1.0', // default viewport value
+        }),
         styles_root: {},
       },
     });
@@ -158,7 +163,7 @@ export const createScreenSaga = compose(
         throw new Error('Failed to create scenario');
       }
 
-      const newScreen = R.omit(['screen_data_text'], createdScreen);
+      const newScreen = omit(['screen_data_text'], createdScreen);
 
       const rootElement = convertCreatedElementToRequest(
         'root',
@@ -191,9 +196,9 @@ export const createScreenSaga = compose(
           typeof selectCurrentProject
         > = yield select(selectCurrentProject);
 
-        const updateProject: Project = R.assoc(
+        const updateProject: Project = assoc(
           'projectscreen',
-          R.prepend(newScreen.id, currentProject.projectscreen),
+          prepend(newScreen.id, currentProject.projectscreen),
           currentProject,
         );
 
@@ -202,21 +207,15 @@ export const createScreenSaga = compose(
           error: savedScreenError,
         }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
           id: newScreen.id,
-          data: R.omit(
+          data: omit(
             ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
             newScreen,
           ),
         });
 
         if (savedScreen) {
-          // Can not get why do we need to mix created screen with the current one. Let's keep these comments for some time
-          // const currentScreen: ReturnType<typeof selectors.selectCurrentScreen> = yield select(
-          //   selectors.selectCurrentScreen,
-          // );
-
           const updatedScreen = {
-            // ...currentScreen,
-            ...savedScreen,
+            ...convertScreenFromResponse(savedScreen),
             element: elements[0].id,
           };
 
@@ -432,7 +431,7 @@ export const deleteScreenSaga = compose(
 
       yield put(setProject(result));
 
-      const lastScreenID = R.head(result.projectscreen);
+      const lastScreenID = head(result.projectscreen);
 
       if (!lastScreenID) {
         yield put(setCurrentScreenId(-1));
@@ -520,7 +519,7 @@ export const restoreScreenSaga = withActionsHistory(function* ({
 
       if (elements) {
         screen.element = elements[0].id;
-        yield put(setScreens([screen, ...screens]));
+        yield put(setScreens([convertScreenFromResponse(screen), ...screens]));
 
         yield put(setProject(result));
 
@@ -550,24 +549,41 @@ export const restoreScreenSaga = withActionsHistory(function* ({
   }
 });
 
-export const renameScreenSaga = withRequiredPermissions(
+export const editScreenSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* ({ payload }: ReturnType<typeof renameScreen>) {
+)(function* ({ payload }: ReturnType<typeof editScreen>) {
   try {
-    const { screenID, name } = payload;
+    const { screenID, screenInfo } = payload;
+    const {
+      name,
+      description,
+      keywords,
+      title,
+      viewport,
+      author,
+      refresh,
+    } = screenInfo;
 
+    const nameWithoutSpace = name.trim();
     const screens: ReturnType<typeof selectScreens> = yield select(
       selectScreens,
     );
-
     const numberedName = generateUniqueName(
-      name,
+      nameWithoutSpace,
       screens.map((screen) => screen.name),
     );
 
-    const renamedScreen: Partial<Screen> = {
+    const newData: Partial<Screen> = {
       name: numberedName,
+      screen_data_json: JSON.stringify({
+        title,
+        description,
+        keywords,
+        viewport,
+        author,
+        refresh,
+      }),
     };
 
     const { result, error }: Result<Screen> = yield call(
@@ -575,17 +591,27 @@ export const renameScreenSaga = withRequiredPermissions(
       apiUpdateScreen,
       {
         id: screenID,
-        data: renamedScreen,
+        data: newData,
       },
     );
 
     if (result) {
       const newScreens = screens.map((screen) => {
         return screen.id === screenID
-          ? { ...screen, name: numberedName }
+          ? {
+              ...screen,
+              name: numberedName,
+              screen_data_json: {
+                description,
+                keywords,
+                title,
+                viewport,
+                author,
+                refresh,
+              },
+            }
           : screen;
       });
-
       yield put(setScreens(newScreens));
     }
     if (error) throw new Error(error);
@@ -657,7 +683,6 @@ export const changeScreensOrderSaga = withRequiredPermissions(
     const { screens } = action.payload;
 
     yield put(setScreens(screens));
-
     const results: Result<Screen>[] = yield all(
       screens.map(({ id, buoyancy }) =>
         call(reqWrapper, apiUpdateScreen, {

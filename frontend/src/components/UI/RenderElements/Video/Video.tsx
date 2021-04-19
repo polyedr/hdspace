@@ -1,12 +1,10 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import IMAGES from '@Constants/images';
 import { getPlayerLink } from '@Utils/extractVideoLink';
-import { VideoRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('video', {
   iframe: {
@@ -18,9 +16,10 @@ const useStyles = makeComponentStyles('video', {
   },
 });
 
-const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, isDisabled, className, groupClass } = props;
-  const { videoSettings } = params;
+const Video = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
+  const { element, isDisabled } = props;
+  const [className, groupClass] = element.styles.classNames;
+  const { videoSettings } = element.parameters;
 
   const playerLink = getPlayerLink(videoSettings, !isDisabled);
 
@@ -29,9 +28,8 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
 
   return playerLink ? (
     <div
-      id={id}
-      data-ls-id={id}
-      key={id}
+      id={element.id}
+      data-ls-id={element.id}
       ref={ref}
       className={cn(
         className,
@@ -60,9 +58,8 @@ const Video: React.FC<VideoRendererProps> = React.forwardRef((props, ref) => {
   ) : (
     <div
       ref={ref}
-      id={id}
-      data-ls-id={id}
-      key={id}
+      id={element.id}
+      data-ls-id={element.id}
       className={cn(className, groupClass, styles.empty, styles.ownStyles)}
     />
   );

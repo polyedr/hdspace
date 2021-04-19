@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
-import * as R from 'ramda';
+import { equals } from 'ramda';
 import {
   selectElementBeingEdited,
   selectElementById,
@@ -58,7 +58,7 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
         entry as HTMLElement,
         rootDom,
       );
-      if (!R.equals(updatedBorderStyles, styles)) {
+      if (!equals(updatedBorderStyles, styles)) {
         setStyles(updatedBorderStyles);
       }
     },

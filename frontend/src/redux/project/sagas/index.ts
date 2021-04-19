@@ -15,7 +15,7 @@ import {
   createScreenSaga,
   changeScreensOrderSaga,
   deleteScreenSaga,
-  renameScreenSaga,
+  editScreenSaga,
   restoreScreenSaga,
   updateScreenImageSaga,
   convertFreeCanvasSaga,
@@ -77,6 +77,7 @@ import {
   searchProjectsSaga,
   updateProjectSaga,
 } from './project';
+import { setUpSidebarSaga } from './sidebar';
 import TYPES from '../../actionTypes';
 import { projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -356,7 +357,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.UPDATE_SCREEN_IMAGE, updateScreenImageSaga);
   yield takeLatest(TYPES.DELETE_SCREEN, deleteScreenSaga);
   yield takeEvery(TYPES.RESTORE_SCREEN, restoreScreenSaga);
-  yield takeLatest(TYPES.RENAME_SCREEN, renameScreenSaga);
+  yield takeLatest(TYPES.EDIT_SCREEN, editScreenSaga);
   yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);
 
   yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);
@@ -462,4 +463,6 @@ export default function* projectSaga() {
     TYPES.UPDATE_USER_PERMISSIONS_FOR_PROJECT,
     updateUserPermissionsForProjectSaga,
   );
+
+  yield takeEvery(TYPES.SET_UP_SIDEBAR, setUpSidebarSaga);
 }

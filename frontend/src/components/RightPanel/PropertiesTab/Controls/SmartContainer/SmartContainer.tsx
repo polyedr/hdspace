@@ -1,7 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Button from '@material-ui/core/Button';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import {
@@ -12,6 +10,8 @@ import {
 } from '@Src/types';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { selectElementFileInput } from '@Redux/project/selectors/base';
+import { Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 type Props = {
   activeElementId: PropertiesChangeProps<

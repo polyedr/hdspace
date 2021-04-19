@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useHistory } from 'react-router';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
@@ -12,7 +11,7 @@ import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import { activateScreen } from '@Redux/project/actions';
 import ELEMENT_IDS from '@Constants/elementIds';
 import Tour, { ReactourStep } from 'reactour';
-import { useTheme } from '@material-ui/core';
+import { useTheme, makeStyles } from '@material-ui/core/styles';
 import { selectUserGuideActive } from '@Redux/user/selectors';
 import {
   setUserGuideActive,
@@ -20,6 +19,7 @@ import {
   changeProfileData,
 } from '@Redux/user/actions';
 import { Experience } from '@Src/types';
+import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import RightPanel from '../components/RightPanel';
 
@@ -71,6 +71,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
 
   useEffect(() => {
     if (screen) {
+      DOMHandler.INSTANCE.reset();
       dispatch(activateScreen(screen.id));
     } else {
       history.push(`/project/${currentProjectId}`);

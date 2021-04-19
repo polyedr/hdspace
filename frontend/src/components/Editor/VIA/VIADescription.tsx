@@ -12,10 +12,11 @@ import {
   deleteVIARegion,
   updateVIARegion,
 } from '@Redux/project/actions';
-import MenuItem from '@material-ui/core/MenuItem';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
-import { capitalize, makeStyles } from '@material-ui/core';
+import { capitalize } from '@material-ui/core/utils';
 import { splitWords } from '@Utils/stringHelper';
+import { MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(({ spacing }) => ({
   container: {

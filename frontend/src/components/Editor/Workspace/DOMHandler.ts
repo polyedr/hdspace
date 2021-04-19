@@ -11,7 +11,6 @@ export class DOMHandler {
 
   public addElementDom(id: string, element: HTMLElement) {
     if (!element) return;
-
     if (!this._elementsDom[id]) {
       this._elementsDom[id] = element;
     }
@@ -28,8 +27,6 @@ export class DOMHandler {
   public reset() {
     this._elementsDom = {};
   }
-
-  // private constructor() {}
 
   private _elementsDom: ElementsDom = {};
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
-import { FormControlLabel } from '@material-ui/core';
+import { FormControlLabel, MenuItem } from '@material-ui/core';
+import { useDebouncedValueChange } from '@Utils/debounceHooks';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -53,10 +53,18 @@ const ColumnRule: React.FC<Props> = ({
   activeElementId,
   ruleWidth,
   ruleStyle,
-  ruleColor,
+  ruleColor = 'transparent',
   canEdit,
 }) => {
   const classes = useStyles();
+
+  const [ruleColorValue, handleRuleColorChange] = useDebouncedValueChange(
+    ruleColor,
+    (newRuleColor) => {
+      updateStyles({ columnRuleColor: newRuleColor });
+    },
+  );
+
   return (
     <>
       <FormControlLabel
@@ -112,11 +120,9 @@ const ColumnRule: React.FC<Props> = ({
         }
       />
       <ColorSettings
-        currentColor={(ruleColor as string) || 'transparent'}
+        currentColor={ruleColorValue as string}
         activeElementId={activeElementId}
-        onChange={(color: string) => {
-          updateStyles({ columnRuleColor: color });
-        }}
+        onChange={handleRuleColorChange as (color: string) => void}
         disabled={!canEdit}
       />
     </>
