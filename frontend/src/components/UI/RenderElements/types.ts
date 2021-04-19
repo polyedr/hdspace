@@ -1,7 +1,8 @@
+import { ReactElement } from 'react';
 import { StateElement } from '@Src/types';
-import React from 'react';
 
-export type RendererProps = React.PropsWithChildren<{
+export type RendererProps = {
   element: StateElement;
   isDisabled?: boolean;
-}>;
+  children?: ReactElement[];
+};

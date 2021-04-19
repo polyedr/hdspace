@@ -166,7 +166,9 @@ const SmartContainerRenderer = React.forwardRef<
       }}
       {...eventHandlers}
     >
-      {children || (
+      {children?.length ? (
+        children
+      ) : (
         <>
           {imageURL && (
             <div
