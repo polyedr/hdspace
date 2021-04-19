@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectLayout,
   selectScreenRotated,
@@ -17,6 +16,7 @@ import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import Screen from '@Components/Editor/Screen';
 import Scrollbars from 'react-custom-scrollbars';
+import { makeStyles } from '@material-ui/core/styles';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';

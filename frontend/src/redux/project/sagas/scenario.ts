@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import * as R from 'ramda';
+import { omit } from 'ramda';
 import { call, put, select } from 'redux-saga/effects';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import {
@@ -108,7 +108,7 @@ export function* createScenarios(scenario?: Partial<ScenarioItem>) {
     const { result, error }: Result<ScenarioItem[]> = yield call(
       reqWrapper,
       apiCreateScenarios,
-      { data: [R.omit(['id'], containerToCreate)] },
+      { data: [omit(['id'], containerToCreate)] },
     );
 
     if (result) {

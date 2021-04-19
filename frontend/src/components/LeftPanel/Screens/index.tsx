@@ -1,14 +1,11 @@
 import React, { useCallback, MouseEvent } from 'react';
 import { useHistory } from 'react-router';
-import List from '@material-ui/core/List';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import { Button, lighten } from '@material-ui/core';
+import { Button, List, IconButton, CircularProgress } from '@material-ui/core';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import {
   createScreen,
   changeScreensOrder,

@@ -1,20 +1,20 @@
 import React from 'react';
-import { Chip, makeStyles } from '@material-ui/core';
+import { Chip, Button } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { connect, useSelector } from 'react-redux';
-import Button from '@material-ui/core/Button';
 import {
   addElementClassName,
   copyElementStyles,
   removeElementClassName,
 } from '@Redux/project/actions';
-
 import { selectActiveElement } from '@Redux/project/selectors/element';
+
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { AppReduxState } from '@Redux/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
+import { makeStyles } from '@material-ui/core/styles';
 import EditableStyles from '../EditableStyles/EditableStyles';
 
 const useStyles = makeStyles(({ spacing }) => ({

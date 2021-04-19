@@ -1,6 +1,6 @@
 import React from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import cn from 'classnames';
+import { makeStyles } from '@material-ui/core/styles';
 import Scrollbar from '../../UI/Scrollbar';
 
 const useStyles = makeStyles({

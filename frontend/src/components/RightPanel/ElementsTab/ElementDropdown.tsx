@@ -1,11 +1,9 @@
 import React from 'react';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import Menu from '@material-ui/core/Menu';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
+import { ButtonGroup, MenuItem, Menu } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import ElementButton from './ElementButton';
 import Button from '../../UI/Button';
 

@@ -199,7 +199,7 @@ module.exports = ({ MODE }) => {
       new webpack.EnvironmentPlugin({
         NODE_ENV: MODE || 'development', // use 'development' unless process.env.NODE_ENV is defined
         DEBUG: false,
-        SIDE_MODULE_HOST: 'http://adevi-intern-staging.herokuapp.com/main',
+        SIDE_MODULE_HOST: 'https://adevi-sidebar-production.firebaseapp.com/',
       }),
       new MiniCssExtractPlugin({
         filename: '[contenthash].css',

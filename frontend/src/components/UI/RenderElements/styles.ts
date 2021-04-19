@@ -1,15 +1,15 @@
 import React from 'react';
 import { Theme } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Styles } from '@material-ui/core/styles/withStyles';
-import * as R from 'ramda';
+import { omit } from 'ramda';
+import { makeStyles } from '@material-ui/core/styles';
 import { SharedRendererProps } from './types';
 
 const getComputedStyle = (
   style: React.CSSProperties = {},
   stylesToOmit: Array<string> = [],
 ) => {
-  return stylesToOmit.length ? R.omit(stylesToOmit, style) : style;
+  return stylesToOmit.length ? omit(stylesToOmit, style) : style;
 };
 
 export const getComputedComponentStyles = (

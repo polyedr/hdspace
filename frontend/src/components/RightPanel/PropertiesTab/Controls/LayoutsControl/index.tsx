@@ -1,6 +1,4 @@
 import { makeStyles } from '@material-ui/core/styles';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import {
   Entity,
@@ -10,6 +8,8 @@ import {
 } from '@Src/types';
 import React, { ChangeEvent, FC } from 'react';
 import { useSelector } from 'react-redux';
+
+import { Checkbox, FormControlLabel } from '@material-ui/core';
 
 const useFormControlLabelStyles = makeStyles(({ palette }) => ({
   label: {

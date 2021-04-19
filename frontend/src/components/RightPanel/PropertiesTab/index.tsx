@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
   selectActiveElement,
@@ -42,6 +41,7 @@ import {
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { makeStyles } from '@material-ui/core/styles';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Scrollbar from '../../UI/Scrollbar';

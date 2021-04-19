@@ -1,14 +1,13 @@
 import React from 'react';
-import IconButton from '@material-ui/core/IconButton';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { darken, Theme } from '@material-ui/core';
+import { darken, Theme, makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteScreen, duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
+import { IconButton } from '@material-ui/core';
 
 const useStyles = makeStyles<Theme, { show: boolean }>({
   root: {
