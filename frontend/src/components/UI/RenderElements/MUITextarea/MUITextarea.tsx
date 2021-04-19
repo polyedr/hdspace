@@ -1,9 +1,10 @@
 import React from 'react';
 import cn from 'classnames';
-import { makeStyles, TextField } from '@material-ui/core';
-import * as R from 'ramda';
+import { TextField } from '@material-ui/core';
+import { omit, pick } from 'ramda';
+import { makeStyles } from '@material-ui/core/styles';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
-import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
 const styles = require('../styles.scss');
 
@@ -35,7 +36,7 @@ const getTextFieldStyles = (
   });
 
 const getInputClassStyles = (style: React.CSSProperties) => ({
-  ...R.omit(
+  ...omit(
     [
       'width',
       'height',
@@ -102,7 +103,7 @@ const MUITextarea = React.forwardRef<HTMLTextAreaElement, RendererProps>(
     )();
     const inputClasses = getInputStyles(element.styles.ownStyles)();
 
-    const ownInlineStyles = R.pick(
+    const ownInlineStyles = pick(
       ['marginTop', 'marginRight', 'marginBottom', 'marginLeft'],
       element.styles.ownStyles,
     );

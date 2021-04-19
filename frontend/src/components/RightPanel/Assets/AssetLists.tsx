@@ -1,8 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectAllAssetLists,
   selectSelectedAssetListId,
@@ -11,13 +8,14 @@ import {
   ALL_ASSET_LIST_NAME,
   ALL_ASSETS_LIST_ID,
 } from '@Constants/defaultParams';
-import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
-import TextField from '@material-ui/core/TextField';
 import { addAssetList } from '@Redux/project/actions';
 import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { Select, MenuItem, IconButton, TextField } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 type Props = {
   onListChange: (listId: string | null) => void;

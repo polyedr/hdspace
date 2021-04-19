@@ -5,7 +5,6 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import TabletMacIcon from '@material-ui/icons/TabletMac';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
 import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectLayout,
   selectScreenRotated,
@@ -13,6 +12,7 @@ import {
 import { changeLayout, rotateScreenFormat } from '@Redux/project/actions';
 import { Layout } from '@Src/types';
 import ELEMENT_IDS from '@Constants/elementIds';
+import { makeStyles } from '@material-ui/core/styles';
 import { StyledToggleButton } from '../../styledComponents';
 
 const useStyles = makeStyles({

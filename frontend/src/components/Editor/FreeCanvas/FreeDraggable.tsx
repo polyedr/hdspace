@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   setActiveElement,
   updateElementParameters,
@@ -17,6 +16,7 @@ import {
 } from '@Redux/project/selectors/element';
 // import useElementProps from '@Components/Editor/hooks/useElementProps';
 import cn from 'classnames';
+import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 

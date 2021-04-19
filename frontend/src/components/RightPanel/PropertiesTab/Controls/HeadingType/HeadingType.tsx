@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import MenuItem from '@material-ui/core/MenuItem';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import {
   HeadingElement,
@@ -9,6 +8,7 @@ import {
 } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
+import { MenuItem } from '@material-ui/core';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
 
 type StateProps = {

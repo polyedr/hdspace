@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Divider from '@material-ui/core/Divider';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
   selectElementById,
@@ -12,6 +10,8 @@ import {
 import prevent from '@Utils/preventEvent';
 import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
 import Scrollbars from 'react-custom-scrollbars';
+import { Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';

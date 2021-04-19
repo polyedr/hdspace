@@ -1,14 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import { lighten } from '@material-ui/core';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
 import { editScreen } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { ListItem, ListItemIcon } from '@material-ui/core';
 import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { useHistory } from 'react-router';
 import { CircularProgress } from '@material-ui/core';
 import NNProcessingModal from '@Components/Dialogs/NNProcessing';
@@ -13,6 +12,7 @@ import { getProject, resetProjectState } from '@Redux/project/actions';
 import LeftPanel from '@Components/LeftPanel';
 import NewScreenModal from '@Components/Dialogs/NewScreenModal';
 import Sidebar from '@Components/Sidebar';
+import { makeStyles } from '@material-ui/core/styles';
 import Screen from './Screen';
 
 const useStyles = makeStyles({

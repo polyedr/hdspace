@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { render, RenderResult } from '@testing-library/react';
 import { mockState, mockVIAState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
-import { MuiThemeProvider } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import theme from '@Src/styles/Theme';
 
 describe('VIANavigator', () => {

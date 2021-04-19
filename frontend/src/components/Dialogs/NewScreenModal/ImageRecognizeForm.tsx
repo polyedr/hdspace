@@ -1,9 +1,10 @@
 import React, { FC, useState, MouseEvent } from 'react';
-import { Button, makeStyles, Menu, MenuItem } from '@material-ui/core';
+import { Button, Menu, MenuItem } from '@material-ui/core';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { NNBlockType } from '@Src/types';
 import { useSelector } from 'react-redux';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
   wrapper: {

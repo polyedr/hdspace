@@ -2,10 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import { DropTargetMonitor, useDrag } from 'react-dnd';
-import IconButton from '@material-ui/core/IconButton';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import SyncIcon from '@material-ui/icons/Sync';
-import Tooltip from '@material-ui/core/Tooltip';
 import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
 import useUrlImageToFile from '@Utils/useUrlImageToFile';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
@@ -14,9 +12,10 @@ import { NNBlockType } from '@Src/types';
 import { updateElementParameters } from '@Redux/project/actions';
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { IconButton, Tooltip } from '@material-ui/core';
+import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
-import { RendererProps } from '../types';
 
 type SizeProps = {
   width: number;

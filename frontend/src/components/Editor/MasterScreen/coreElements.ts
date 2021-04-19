@@ -27,7 +27,7 @@ import {
   makeParagraph,
   textBlock,
 } from '@Domain/libraryElements/typographyElements/typographyElements';
-import { capitalize } from '@material-ui/core';
+import { capitalize } from '@material-ui/core/utils';
 import { Entity, ServerElement } from '@Src/types';
 
 const CORE_MASTER_RESPONSE_ELEMENTS = [

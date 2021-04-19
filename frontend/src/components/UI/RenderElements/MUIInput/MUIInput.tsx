@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import TextField from '@material-ui/core/TextField';
+import { TextField } from '@material-ui/core';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
