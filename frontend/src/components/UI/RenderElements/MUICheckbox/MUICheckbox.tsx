@@ -1,10 +1,8 @@
-// @ts-nocheck
-
 import React, { useState, useCallback } from 'react';
 import cn from 'classnames';
 import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
-import { CheckboxRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import { RendererProps } from '../types';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
 import '@Src/styles/export/material/mdc.checkbox.css';
@@ -28,10 +26,10 @@ const useStyles = makeComponentStyles(
   ['backgroundColor', 'width', 'height'],
 );
 
-const MUICheckbox: React.FC<CheckboxRendererProps> = React.forwardRef(
+const MUICheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { id, /* params, */ isDisabled, className, groupClass } = props;
-    // const { showRipple } = params;
+    const { element, isDisabled } = props;
+    const [className, groupClass] = element.styles.classNames;
 
     const eventHandlers = useEventHandlers(props);
     const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -49,9 +47,8 @@ const MUICheckbox: React.FC<CheckboxRendererProps> = React.forwardRef(
     return (
       <div
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         className={cn(
           className,
           groupClass,
@@ -72,13 +69,13 @@ const MUICheckbox: React.FC<CheckboxRendererProps> = React.forwardRef(
           >
             <input
               type="checkbox"
-              id={`checkbox-${id}`}
+              id={`checkbox-${element.id}`}
               className={cn('mdc-checkbox__native-control', classes.root)}
               checked={!isDisabled && isChecked}
               onChange={handleCheckboxChange}
             />
             <div
-              id={`checkbox-${id}-background`}
+              id={`checkbox-${element.id}-background`}
               className={cn(
                 'mdc-checkbox__background',
                 `checkbox-background`,

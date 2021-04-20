@@ -1,24 +1,15 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-import { ContainerRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import { RendererProps } from '../types';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
 const useStyles = makeComponentStyles('div');
 
-const Container: React.FC<ContainerRendererProps> = React.forwardRef(
-  (props, ref: React.RefObject<HTMLElement>) => {
-    const {
-      id,
-      isDisabled,
-      children,
-      className,
-      isBorderVisible,
-      groupClass,
-    } = props;
-
+const Container = React.forwardRef<HTMLDivElement, RendererProps>(
+  (props, ref) => {
+    const { element, children } = props;
+    const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -26,11 +17,9 @@ const Container: React.FC<ContainerRendererProps> = React.forwardRef(
       <>
         <div
           ref={ref}
-          id={id}
-          data-ls-id={id}
-          key={id}
+          id={element.id}
+          data-ls-id={element.id}
           className={cn(className, groupClass, classes.ownStyles)}
-          style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
           {...eventHandlers}
         >
           {children}

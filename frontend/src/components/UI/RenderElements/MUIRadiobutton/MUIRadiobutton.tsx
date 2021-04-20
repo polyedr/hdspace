@@ -1,13 +1,12 @@
-// @ts-nocheck
 import React, { useState } from 'react';
 import cn from 'classnames';
 import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 
-import { RadioRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
 import '@Src/styles/export/material/mdc.radio.css';
+import { RendererProps } from '../types';
 
 const useDivStyles = makeComponentStyles(
   'radiobutton',
@@ -41,10 +40,11 @@ const useDivStyles = makeComponentStyles(
   },
 );
 
-const MUIRadiobutton: React.FC<RadioRendererProps> = React.forwardRef(
+const MUIRadiobutton = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { id, name, /* params, */ isDisabled, className, groupClass } = props;
-    // const { showRipple } = params;
+    const { element, isDisabled } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { name } = element.parameters;
 
     const classes = useDivStyles(props);
 
@@ -55,9 +55,8 @@ const MUIRadiobutton: React.FC<RadioRendererProps> = React.forwardRef(
     return (
       <div
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         className={cn(
           className,
           classes.root,
@@ -78,8 +77,8 @@ const MUIRadiobutton: React.FC<RadioRendererProps> = React.forwardRef(
             <input
               className={cn('mdc-radio__native-control', classes.radio)}
               type="radio"
-              id={`radio-${id}`}
-              name={`${name}-${id}`}
+              id={`radio-${element.id}`}
+              name={`${name}-${element.id}`}
               checked={!isDisabled && isChecked}
               onChange={() => {
                 if (!isDisabled && !isChecked) {

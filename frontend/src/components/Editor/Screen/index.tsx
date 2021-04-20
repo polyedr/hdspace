@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
 
 import Scrollbars from 'react-custom-scrollbars';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import DraggableElement from '../Draggable/DraggableElement';
 
 type Props = {
@@ -11,7 +12,15 @@ type Props = {
 
 const Screen: React.FC<Props> = ({ scrollRef }) => {
   const rootId = useSelector(selectCurrentRootId);
-  return <DraggableElement elementId={rootId} scrollRef={scrollRef} />;
+  const disableInteractions = useSelector(selectIsPrototypeMode);
+
+  return (
+    <DraggableElement
+      elementId={rootId}
+      scrollRef={scrollRef}
+      isDisabled={!disableInteractions}
+    />
+  );
 };
 
 export default Screen;

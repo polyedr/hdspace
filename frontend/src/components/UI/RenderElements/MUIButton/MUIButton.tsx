@@ -1,8 +1,8 @@
 import React from 'react';
 import cn from 'classnames';
-import { ButtonRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('button', {
   root: ({ isDisabled, ownStyles }) => {
@@ -22,41 +22,41 @@ const useStyles = makeComponentStyles('button', {
   },
 });
 
-type Props = ButtonRendererProps;
+const MUIButton = React.forwardRef<HTMLButtonElement, RendererProps>(
+  (props, ref) => {
+    const { element, isDisabled } = props;
+    const { textContent } = element.parameters;
+    const [className, groupClass] = element.styles.classNames;
 
-const MUIButton = React.forwardRef<HTMLButtonElement, Props>((props, ref) => {
-  const { id, isDisabled, params, className, groupClass } = props;
-  const { /* showRipple, */ textContent } = params || {};
+    const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
-  const classes = useStyles(props);
-  const eventHandlers = useEventHandlers(props);
-
-  return (
-    <button
-      type="button"
-      ref={(dom) => {
-        if (typeof ref === 'function') {
-          ref(dom);
-        } else if (ref) {
-          ref.current = dom;
-        }
-      }}
-      id={id}
-      data-ls-id={id}
-      key={id}
-      className={cn(
-        'mdc-button',
-        // !isDisabled && showRipple ? 'ripple' : '',
-        className,
-        classes.root,
-        groupClass,
-        isDisabled && classes.disabled,
-        classes.ownStyles,
-      )}
-      {...eventHandlers}
-      dangerouslySetInnerHTML={{ __html: textContent }}
-    />
-  );
-});
+    return (
+      <button
+        type="button"
+        ref={(dom) => {
+          if (typeof ref === 'function') {
+            ref(dom);
+          } else if (ref) {
+            ref.current = dom;
+          }
+        }}
+        id={element.id}
+        data-ls-id={element.id}
+        className={cn(
+          'mdc-button',
+          // !isDisabled && showRipple ? 'ripple' : '',
+          className,
+          classes.root,
+          groupClass,
+          isDisabled && classes.disabled,
+          classes.ownStyles,
+        )}
+        {...eventHandlers}
+        dangerouslySetInnerHTML={{ __html: textContent }}
+      />
+    );
+  },
+);
 
 export default MUIButton;
