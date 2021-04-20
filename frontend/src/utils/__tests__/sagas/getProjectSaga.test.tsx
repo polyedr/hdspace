@@ -26,8 +26,8 @@ describe('createProjectSaga Test', () => {
   const mockProject = createMockProject();
   const masterScreenMock = createMasterScreenMock(mockProject.id);
   const projectWithScreens = projectWithScreensMock(mockProject.id);
-  describe('normal behavior', () => {
-    // @ts-expect-error getProjectSaga type is not compatible with IterableIterator
+  describe('under normal behavior', () => {
+    // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(getProjectSaga(action));
 
     it('should set projects list loader flag to true', (result) => {
@@ -81,9 +81,7 @@ describe('createProjectSaga Test', () => {
     });
 
     it('should select master screen', (result) => {
-      expect(result).toStrictEqual(
-        select(selectScreenById, masterScreenMock.id),
-      );
+      expect(result).toEqual(select(selectScreenById, masterScreenMock.id));
     });
   });
 

@@ -23,9 +23,14 @@ export const selectProjectsDataNext = ({ project }: AppReduxState) =>
 export const selectProjectsSearchParameter = ({ project }: AppReduxState) =>
   project.data.projectsData.parameter;
 
-export const selectProjectById = (projectId: number) => ({
-  project,
-}: AppReduxState) => project.data.projectsData.results[projectId];
+export const selectProjectById = (
+  { project }: AppReduxState,
+  projectId: number,
+) => project.data.projectsData.results[projectId];
+
+export const selectProjectByIdWrapper = (projectId: number) => (
+  state: AppReduxState,
+) => selectProjectById(state, projectId);
 
 export const selectCurrentProjectId = ({ project }: AppReduxState) =>
   project.edit.currentProjectId;

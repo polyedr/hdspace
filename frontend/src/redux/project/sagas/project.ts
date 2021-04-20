@@ -388,7 +388,7 @@ export const renameProjects = function* ({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
   try {
-    const project: Project = yield select(selectProjectById(projectID));
+    const project: Project = yield select(selectProjectById, projectID);
 
     const { result, error }: Result<Project> = yield call(
       reqWrapper,

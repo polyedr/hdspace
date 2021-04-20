@@ -1,4 +1,5 @@
 import { initialUserState } from '@Redux/user/initial';
+import MockDate from 'mockdate';
 import {
   initialCommunication,
   initialControl,
@@ -273,3 +274,10 @@ export const projectScreensMock = [
   createMasterScreenMock(testId),
   createScreenMock(testId),
 ];
+
+export const prepareSagaTest = () => {
+  console.error = jest.fn();
+  // stub current date and random value generator to pass enqueueSnackbar equality
+  MockDate.set('2000-11-22');
+  jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
+};

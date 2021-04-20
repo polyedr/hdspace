@@ -5,7 +5,7 @@ import { CircularProgress } from '@material-ui/core';
 import NNProcessingModal from '@Components/Dialogs/NNProcessing';
 import {
   selectCurrentProjectId,
-  selectProjectById,
+  selectProjectByIdWrapper,
   selectProjectLoader,
 } from '@Redux/project/selectors/base';
 import { getProject, resetProjectState } from '@Redux/project/actions';
@@ -44,7 +44,7 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
   const history = useHistory();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
-  const project = useSelector(selectProjectById(currentProjectId));
+  const project = useSelector(selectProjectByIdWrapper(currentProjectId));
   const projectLoader = useSelector(selectProjectLoader);
 
   useEffect(() => {
