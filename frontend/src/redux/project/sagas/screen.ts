@@ -52,6 +52,7 @@ import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
   selectCurrentScreenId,
+  selectMasterScreen,
   selectScreenById,
   selectScreens,
   selectScreensWithoutMaster,
@@ -680,6 +681,7 @@ export const changeScreensOrder = function* (
   try {
     const { newIndex, oldIndex } = action.payload;
     const screens: Screen[] = yield select(selectScreensWithoutMaster);
+    const masterScreen = yield select(selectMasterScreen);
 
     const [target] = screens.splice(oldIndex, 1);
     screens.splice(newIndex, 0, target);
@@ -688,7 +690,8 @@ export const changeScreensOrder = function* (
       buoyancy: i + 1, // MasterScreen should always have buoyancy 0
     }));
 
-    yield put(setScreens(newScreenList));
+    yield put(setScreens([masterScreen, ...newScreenList]));
+
     const results: Result<Screen>[] = yield all(
       newScreenList.map(({ id, buoyancy }) =>
         call(reqWrapper, apiUpdateScreen, {
