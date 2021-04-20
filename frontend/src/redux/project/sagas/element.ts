@@ -57,6 +57,10 @@ import {
   updateOrReplaceMultipleElementsParameters,
   createElements,
 } from './common';
+import {
+  selectAllAssetLists,
+  selectSelectedAssetListId,
+} from '../selectors/asset';
 
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(
@@ -736,6 +740,29 @@ export const updateElementImageSaga = compose(
         ),
         UpdateDataActionType.UPDATE,
       );
+      const selectedListId = yield select(selectSelectedAssetListId);
+      const assetLists = yield select(selectAllAssetLists);
+      const listId =
+        selectedListId || assetLists.length ? assetLists[0].id : null;
+      if (listId && changedElement.image) {
+        yield put(
+          Actions.uploadElementAsset(
+            changedElement.id,
+            {
+              imageURL: changedElement.image,
+            },
+            listId,
+            action.meta,
+          ),
+        );
+      } else {
+        if (!listId) {
+          throw new Error('Asset lists are not loaded');
+        }
+        if (!changedElement.image) {
+          throw new Error('Could not save image');
+        }
+      }
     }
     if (error) throw new Error(error);
   } catch (e) {
