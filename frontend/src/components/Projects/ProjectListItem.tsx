@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import Typography from '@material-ui/core/Typography';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import GroupIcon from '@material-ui/icons/Group';
 import convertDateToRelative from '@Utils/convertDateToRelative';
 import { deleteProject, renameProject } from '@Redux/project/actions';
 import { selectUserData } from '@Redux/user/selectors';
+import { TableRow, TableCell, Typography, IconButton } from '@material-ui/core';
 import Dialog from '../Dialogs/Dialog';
 import { Project } from '../../types';
 

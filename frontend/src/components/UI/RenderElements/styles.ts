@@ -1,22 +1,22 @@
 import React from 'react';
 import { Theme } from '@material-ui/core';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { Styles } from '@material-ui/core/styles/withStyles';
-import * as R from 'ramda';
-import { SharedRendererProps } from './types';
+import { omit } from 'ramda';
+import { makeStyles } from '@material-ui/core/styles';
+import { RendererProps } from './types';
 
 const getComputedStyle = (
   style: React.CSSProperties = {},
   stylesToOmit: Array<string> = [],
 ) => {
-  return stylesToOmit.length ? R.omit(stylesToOmit, style) : style;
+  return stylesToOmit.length ? omit(stylesToOmit, style) : style;
 };
 
 export const getComputedComponentStyles = (
-  props: SharedRendererProps,
+  props: RendererProps,
   stylesToOmit?: Array<string>,
 ) => ({
-  ownStyles: getComputedStyle(props.ownStyles, stylesToOmit),
+  ownStyles: getComputedStyle(props.element.styles.ownStyles, stylesToOmit),
 });
 
 export const makeComponentStyles: any = (
@@ -26,8 +26,8 @@ export const makeComponentStyles: any = (
 ) =>
   makeStyles(
     (theme) => ({
-      ownStyles: (props: SharedRendererProps) =>
-        getComputedStyle(props.ownStyles, stylesToOmit),
+      ownStyles: (props: RendererProps) =>
+        getComputedStyle(props.element.styles.ownStyles, stylesToOmit),
 
       disabled: {
         color: '#000',

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
-import MenuItem from '@material-ui/core/MenuItem';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import { MenuItem } from '@material-ui/core';
 import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
 import { DISPLAY } from './constants';

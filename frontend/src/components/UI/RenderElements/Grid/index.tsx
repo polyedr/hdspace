@@ -1,39 +1,29 @@
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
-import { GridRendererProps } from '../types';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('grid');
 
-const Grid = React.forwardRef<HTMLDivElement, GridRendererProps>(
-  (props, ref) => {
-    const {
-      id,
-      isDisabled,
-      children,
-      className,
-      isBorderVisible,
-      groupClass,
-    } = props;
+const Grid = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
+  const { element, children } = props;
+  const [className, groupClass] = element.styles.classNames;
 
-    const classes: Record<string, any> = useStyles(props);
-    const eventHandlers = useEventHandlers(props);
+  const classes: Record<string, any> = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
-    return (
-      <div
-        ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
-        className={cn(className, groupClass, classes.ownStyles)}
-        style={{ ...(isBorderVisible && isDisabled && { outline: 'none' }) }}
-        {...eventHandlers}
-      >
-        {children}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={ref}
+      id={element.id}
+      data-ls-id={element.id}
+      className={cn(className, groupClass, classes.ownStyles)}
+      {...eventHandlers}
+    >
+      {children}
+    </div>
+  );
+});
 
 export default Grid;

@@ -1,10 +1,9 @@
 // @ts-nocheck
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import cn from 'classnames';
 import { MDCMenu } from '@material/menu';
-import { DropdownRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import { RendererProps } from '../types';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('dropdown', {
@@ -22,10 +21,11 @@ const useStyles = makeComponentStyles('dropdown', {
   },
 });
 
-const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
+const Dropdown = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { id, isDisabled, params, children, className, groupClass } = props;
-    const { textContent, showRipple, isOpen } = params;
+    const { element, isDisabled, children } = props;
+    const { textContent, showRipple, isOpen } = element.parameters;
+    const [className, groupClass] = element.styles.classNames;
 
     const classes = useStyles(props);
     const [mdcMenu, setMdcMenu] = useState<MDCMenu | null>(null);
@@ -49,7 +49,7 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
         mdcMenu.destroy();
         setMdcMenu(null);
       }
-      if (!isDisabled && !mdcMenu) {
+      if (!isDisabled && !mdcMenu && menuRef.current) {
         const menu = new MDCMenu(menuRef.current);
         setMdcMenu(menu);
       }
@@ -61,8 +61,8 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
 
     return (
       <div
-        id={id}
-        data-ls-id={id}
+        id={element.id}
+        data-ls-id={element.id}
         ref={ref}
         className={cn(
           className,
@@ -77,7 +77,7 @@ const Dropdown: React.FC<DropdownRendererProps> = React.forwardRef(
             <span className={classes.label}>{textContent}</span>
           </div>
           <div
-            ref={(dom: HTMLElement) => {
+            ref={(dom) => {
               if (!dom) {
                 return;
               }

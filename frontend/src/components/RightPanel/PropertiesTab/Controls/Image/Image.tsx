@@ -1,8 +1,5 @@
 import React, { useCallback, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { StyledTextField } from '@Components/styledComponents';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { uploadElementAsset, uploadImageByUrl } from '@Redux/project/actions';
@@ -13,6 +10,9 @@ import {
   selectSelectedAssetListId,
 } from '@Redux/project/selectors/asset';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
+import { Button, MenuItem } from '@material-ui/core';
+
+import { makeStyles } from '@material-ui/core/styles';
 
 const urlPattern = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
 

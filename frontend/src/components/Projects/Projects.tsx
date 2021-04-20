@@ -1,19 +1,6 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Paper from '@material-ui/core/Paper';
-import makeStyles from '@material-ui/core/styles/makeStyles';
-import { createStyles } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import Table from '@material-ui/core/Table';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import TableBody from '@material-ui/core/TableBody';
-import Button from '@material-ui/core/Button';
-import TableContainer from '@material-ui/core/TableContainer';
-import Container from '@material-ui/core/Container';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { createProject, getProjectList } from '@Redux/project/actions';
 import {
   selectAreProjectsLoading,
@@ -23,6 +10,20 @@ import {
 } from '@Redux/project/selectors/base';
 import Searchbar from '@Components/Projects/Searchbar';
 import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
+import {
+  Paper,
+  Typography,
+  Divider,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Button,
+  TableContainer,
+  Container,
+  CircularProgress,
+} from '@material-ui/core';
 import ProjectListItem from './ProjectListItem';
 
 const useStyles = makeStyles((theme) =>

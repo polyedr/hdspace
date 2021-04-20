@@ -241,9 +241,9 @@ export const updateProject = (
   meta,
 });
 
-export const changeScreensOrder = (screens: Screen[]): ChangeScreensOrder => ({
+export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
   type: TYPES.CHANGE_SCREENS_ORDER,
-  payload: { screens },
+  payload: indices,
 });
 
 export const renameProject = (

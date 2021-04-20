@@ -3,9 +3,9 @@ import { useHistory } from 'react-router';
 import cn from 'classnames';
 import prevent from '@Utils/preventEvent';
 import { ElementClickEvent, EventType } from '@Src/types';
-import { HyperLinkRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('link', {
   disabledLink: {
@@ -14,11 +14,12 @@ const useStyles = makeComponentStyles('link', {
   },
 });
 
-const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
+const Link = React.forwardRef<HTMLAnchorElement, RendererProps>(
   (props, ref) => {
     const classes = useStyles(props);
-    const { id, isDisabled, params, className, groupClass } = props;
-    const { textContent, events } = params;
+    const { element, isDisabled } = props;
+    const { textContent, events } = element.parameters;
+    const [className, groupClass] = element.styles.classNames;
 
     const history = useHistory();
 
@@ -50,9 +51,8 @@ const Link = React.forwardRef<HTMLAnchorElement, HyperLinkRendererProps>(
       // eslint-disable-next-line jsx-a11y/anchor-is-valid
       <a
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         className={cn(
           className,
           groupClass,

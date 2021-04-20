@@ -1,9 +1,9 @@
 import { ColorResult } from 'react-color';
 import { toState } from 'react-color/lib/helpers';
-import * as R from 'ramda';
+import { equals } from 'ramda';
 
 const needOpacityNormalize = (color: ColorResult, prevColor: ColorResult) => {
-  const isRGBChanged = !R.equals(prevColor.rgb, color.rgb);
+  const isRGBChanged = !equals(prevColor.rgb, color.rgb);
   const isOpacityZero = prevColor.rgb.a === 0 && color.rgb.a === 0;
 
   return isRGBChanged && isOpacityZero;

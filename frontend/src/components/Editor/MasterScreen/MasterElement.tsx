@@ -1,7 +1,5 @@
-import React, { useMemo, useCallback, useEffect, Fragment } from 'react';
+import React, { useCallback, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Divider from '@material-ui/core/Divider';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
   selectElementById,
@@ -12,6 +10,9 @@ import {
 import prevent from '@Utils/preventEvent';
 import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
 import Scrollbars from 'react-custom-scrollbars';
+import { Divider } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';
 
@@ -20,17 +21,6 @@ type Props = {
   parentId?: string;
   scrollRef: React.RefObject<Scrollbars>;
 };
-
-const getElementProps = (element) => ({
-  id: element.id,
-  className: element.styles.classNames?.[0] || '',
-  isDisabled: true,
-  contentEditable: false,
-  ownStyles: element.parameters.groupElements ? element.styles.ownStyles : {},
-  groupClass: '',
-  active: false,
-  params: element.parameters,
-});
 
 const useStyles = makeStyles({
   divider: {
@@ -45,12 +35,11 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
   const masterCoreElId = useSelector(selectMasterCoreElementId);
   const masterGroupsElId = useSelector(selectMasterGroupsElementId);
   const rootElement = useSelector(selectMasterScreenRoot);
+  const disableInteractions = useSelector(selectIsPrototypeMode);
 
   const { type } = element;
 
   const Renderer = RENDERERS[type];
-
-  const elementProps = useMemo(() => getElementProps(element), [element]);
 
   const handleClick = useCallback(
     (ev: React.MouseEvent<HTMLElement>) => {
@@ -82,7 +71,8 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
       onMouseLeave={() => {
         dispatch(setHoveredElementId(parentId || null));
       }}
-      {...elementProps}
+      element={element}
+      isDisabled={disableInteractions}
     >
       {element.children.map((childId, index) => (
         <Fragment key={`master-${childId}`}>
@@ -97,7 +87,11 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
               />
             )}
           {element.id === masterGroupsElId ? (
-            <DraggableElement elementId={childId} scrollRef={scrollRef} />
+            <DraggableElement
+              elementId={childId}
+              scrollRef={scrollRef}
+              isDisabled={disableInteractions}
+            />
           ) : (
             <MasterElement
               elementId={childId}

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import makeStyles from '@material-ui/core/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 import RemoveStyles from './RemoveStyles/RemoveStyles';
 
 const useStyles = makeStyles({

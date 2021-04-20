@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import { BorderStyles, StateElement, StyleProps } from '@Src/types';
 import { selectPreSelectedElementId } from '@Redux/project/selectors/element';
+import { makeStyles } from '@material-ui/core/styles';
 import { BorderPosition } from '../constants';
 
 type Props = {

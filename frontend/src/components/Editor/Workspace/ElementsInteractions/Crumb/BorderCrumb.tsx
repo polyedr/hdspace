@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   selectActiveElementId,
   selectCurrentRootId,
@@ -14,8 +13,8 @@ import {
 } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
 import { selectMasterScreenId } from '@Redux/project/selectors/screen';
-// import { setPreSelectedElementId } from '@Redux/project/actions';
 import { setMasterSourceElementId } from '@Redux/project/actions';
+import { makeStyles } from '@material-ui/core/styles';
 import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
 type Props = {
@@ -30,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
     left: elementId === rootId ? 'auto' : styles.left,
     right: elementId === rootId ? styles.right : 'auto',
     zIndex: 9999999,
+    fontFamily: 'Roboto',
     position: 'absolute',
     padding: '2px 4px',
     fontSize: '12px',

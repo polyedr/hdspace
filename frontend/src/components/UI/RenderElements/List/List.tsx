@@ -1,33 +1,29 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
-import { ListRendererProps } from '../types';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('list', {
-  list: ({ params: { isOrdered } }) => ({
+  list: ({ element }: RendererProps) => ({
     listStylePosition: 'inside',
-    ...(isOrdered && { 'list-style-type': 'decimal' }),
+    ...(element.parameters.isOrdered && { 'list-style-type': 'decimal' }),
   }),
 });
 
-const List: React.FC<ListRendererProps> = React.forwardRef((props, ref) => {
-  const { id, params, className, children, groupClass } = props;
-  const { isOrdered } = params;
-
+const List = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
+  const { element, children } = props;
+  const [className, groupClass] = element.styles.classNames;
+  const { isOrdered } = element.parameters;
   const ListTag = isOrdered ? 'ol' : 'ul';
-
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
 
   return (
     <ListTag
       ref={ref}
-      id={id}
-      data-ls-id={id}
-      key={id}
+      id={element.id}
+      data-ls-id={element.id}
       className={cn(className, classes.list, groupClass, classes.ownStyles)}
       {...eventHandlers}
     >

@@ -1,16 +1,15 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
-import { DropdownMenuRendererProps } from '../types';
+import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
 const useStyles = makeComponentStyles('dropdown-menu');
 
-const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
+const DropdownMenu = React.forwardRef<HTMLUListElement, RendererProps>(
   (props, ref) => {
-    const { id, children, isDisabled, className, groupClass } = props;
+    const { element, isDisabled, children } = props;
+    const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
     const clickHandler = eventHandlers.onClick;
@@ -24,8 +23,8 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
 
     return (
       <ul
-        id={id}
-        data-ls-id={id}
+        id={element.id}
+        data-ls-id={element.id}
         ref={ref}
         className={cn(
           'mdc-list',
@@ -37,7 +36,7 @@ const DropdownMenu: React.FC<DropdownMenuRendererProps> = React.forwardRef(
         role="menu"
         aria-hidden="true"
         aria-orientation="vertical"
-        tabIndex="-1"
+        tabIndex={-1}
       >
         {children}
       </ul>

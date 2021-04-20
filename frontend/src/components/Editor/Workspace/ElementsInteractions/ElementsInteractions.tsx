@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   selectSelectedElementsIds,
   selectActiveElementId,
@@ -45,7 +45,6 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   const activeElementDom = DOMHandler.INSTANCE.getDomById(activeElementId);
   const hoveredElementDom = DOMHandler.INSTANCE.getDomById(hoveredElementId);
   const dropTargetDom = DOMHandler.INSTANCE.getDomById(dropTargetId);
-
   const showBorders = useSelector(selectShowingBorders);
   const bordersEnabled = useSelector(selectBordersEnabled);
 

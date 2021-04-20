@@ -256,7 +256,7 @@ export type UpdateProject = IAction<
 >;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
-  { screens: Screen[] }
+  Indices
 >;
 export type RenameProject = IAction<
   typeof TYPES.RENAME_PROJECT,
@@ -471,7 +471,7 @@ export type UploadElementAsset = IAction<
 >;
 
 export type AssetData = {
-  file: any | null;
+  file?: any | null;
   imageURL?: string;
 };
 export type UpdateElementParameters = IAction<

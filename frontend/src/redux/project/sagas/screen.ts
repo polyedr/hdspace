@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { all, call, fork, put, select } from 'redux-saga/effects';
-import * as R from 'ramda';
+import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
 import {
@@ -54,8 +54,10 @@ import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
   selectCurrentScreenId,
+  selectMasterScreen,
   selectScreenById,
   selectScreens,
+  selectScreensWithoutMaster,
 } from '../selectors/screen';
 import {
   selectAllElements,
@@ -163,7 +165,7 @@ export const createScreenSaga = compose(
         throw new Error('Failed to create scenario');
       }
 
-      const newScreen = R.omit(['screen_data_text'], createdScreen);
+      const newScreen = omit(['screen_data_text'], createdScreen);
 
       const rootElement = convertCreatedElementToRequest(
         'root',
@@ -196,9 +198,9 @@ export const createScreenSaga = compose(
           typeof selectCurrentProject
         > = yield select(selectCurrentProject);
 
-        const updateProject: Project = R.assoc(
+        const updateProject: Project = assoc(
           'projectscreen',
-          R.prepend(newScreen.id, currentProject.projectscreen),
+          prepend(newScreen.id, currentProject.projectscreen),
           currentProject,
         );
 
@@ -207,7 +209,7 @@ export const createScreenSaga = compose(
           error: savedScreenError,
         }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
           id: newScreen.id,
-          data: R.omit(
+          data: omit(
             ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
             newScreen,
           ),
@@ -431,7 +433,7 @@ export const deleteScreenSaga = compose(
 
       yield put(setProject(result));
 
-      const lastScreenID = R.head(result.projectscreen);
+      const lastScreenID = head(result.projectscreen);
 
       if (!lastScreenID) {
         yield put(setCurrentScreenId(-1));
@@ -680,11 +682,21 @@ export const changeScreensOrderSaga = withRequiredPermissions(
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof Actions.changeScreensOrder>) {
   try {
-    const { screens } = action.payload;
+    const { newIndex, oldIndex } = action.payload;
+    const screens: Screen[] = yield select(selectScreensWithoutMaster);
+    const masterScreen = yield select(selectMasterScreen);
 
-    yield put(setScreens(screens));
+    const [target] = screens.splice(oldIndex, 1);
+    screens.splice(newIndex, 0, target);
+    const newScreenList = screens.map((screen, i) => ({
+      ...screen,
+      buoyancy: i + 1, // MasterScreen should always have buoyancy 0
+    }));
+
+    yield put(setScreens([masterScreen, ...newScreenList]));
+
     const results: Result<Screen>[] = yield all(
-      screens.map(({ id, buoyancy }) =>
+      newScreenList.map(({ id, buoyancy }) =>
         call(reqWrapper, apiUpdateScreen, {
           id,
           data: {
