@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
-import { selectScreenById } from '@Redux/project/selectors/screen';
+import { selectScreenByIdWrapper } from '@Redux/project/selectors/screen';
 import VIA from '@Components/Editor/VIA';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import { activateScreen } from '@Redux/project/actions';
@@ -65,7 +65,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const screen = useSelector(selectScreenById(screenId));
+  const screen = useSelector(selectScreenByIdWrapper(screenId));
   const currentProjectId = useSelector(selectCurrentProjectId);
   const viaModeEnabled = useSelector(selectVIAModeEnabled);
 

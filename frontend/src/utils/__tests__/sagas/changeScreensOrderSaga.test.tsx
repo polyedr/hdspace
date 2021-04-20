@@ -1,7 +1,6 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, call, all } from 'redux-saga/effects';
 import MockDate from 'mockdate';
-
 import { changeScreensOrder } from '@Redux/project/sagas/screen';
 import { apiUpdateScreen } from '@Api/screen';
 import * as Actions from '@Redux/project/actions';

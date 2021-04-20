@@ -29,8 +29,11 @@ export const selectScreens = (state: AppReduxState) =>
 export const selectScreensLength = (state: AppReduxState) =>
   selectScreens(state).length;
 
-export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
+export const selectScreenById = ({ project }: AppReduxState, id: number) =>
   project.data.screens[id];
+
+export const selectScreenByIdWrapper = (id: number) => (state: AppReduxState) =>
+  selectScreenById(state, id);
 
 export const selectMasterScreenId = ({ project }: AppReduxState) =>
   project.edit.masterScreenId;

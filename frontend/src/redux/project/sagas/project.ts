@@ -214,7 +214,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
         -1;
       yield put(Actions.setMasterScreenId(masterScreenId));
-      const masterScreen = yield select(selectScreenById(masterScreenId));
+
+      const masterScreen = yield select(selectScreenById, masterScreenId);
+
       if (masterScreen) {
         yield call(setMasterScreenCoreElements, masterScreen);
       }

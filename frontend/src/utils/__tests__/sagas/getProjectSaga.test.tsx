@@ -1,11 +1,13 @@
 import sagaHelper from 'redux-saga-testing';
-import { put, call } from 'redux-saga/effects';
+import { put, call, select } from 'redux-saga/effects';
 import MockDate from 'mockdate';
 import { getProjectSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { getScreensSaga } from '@Redux/project/sagas/screen';
 import { apiGetProjectWithScreens } from '@Api/project';
+import { selectScreenById } from '@Redux/project/selectors/screen';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as PermissionsActions from '../../../redux/permissions/actions';
 import {
   createMasterScreenMock,
@@ -20,20 +22,18 @@ describe('createProjectSaga Test', () => {
     MockDate.set('2000-11-22');
     jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
   });
-  // @ts-ignore
   const action = Actions.getProject(10);
-  // @ts-ignore
   const mockProject = createMockProject();
   const masterScreenMock = createMasterScreenMock(mockProject.id);
   const projectWithScreens = projectWithScreensMock(mockProject.id);
-  describe('WHEN method is called and API is in its working state', () => {
-    // @ts-ignore
+  describe('normal behavior', () => {
+    // @ts-expect-error getProjectSaga type is not compatible with IterableIterator
     const it = sagaHelper(getProjectSaga(action));
 
     it('should set projects list loader flag to true', (result) => {
       expect(result).toEqual(put(Actions.setProjectLoader(true)));
     });
-    it('test 1', (result) => {
+    it('should fetch project with screens', (result) => {
       expect(result).toEqual(
         call(reqWrapper, apiGetProjectWithScreens, {
           id: 10,
@@ -44,7 +44,7 @@ describe('createProjectSaga Test', () => {
       };
     });
 
-    it('test 2', (result) => {
+    it('should put getMyPermissionsForProject action', (result) => {
       expect(result).toEqual(
         put(
           PermissionsActions.getMyPermissionsForProject(projectWithScreens.id),
@@ -52,7 +52,7 @@ describe('createProjectSaga Test', () => {
       );
     });
 
-    it('test 3', (result) => {
+    it('should dispatch setProject action', (result) => {
       expect(result).toEqual(
         put(
           Actions.setProject({
@@ -64,19 +64,57 @@ describe('createProjectSaga Test', () => {
         ),
       );
     });
-    it('test call', (result) => {
+    it('should call getScreenSaga', (result) => {
       expect(result).toEqual(
         call(getScreensSaga, projectWithScreens.projectscreen),
       );
     });
-    it('test 4', (result) => {
+    it('put setCurrentProjectId action', (result) => {
       expect(result).toEqual(
         put(Actions.setCurrentProjectId(projectWithScreens.id)),
       );
     });
-    it('test 5', (result) => {
+    it('should put setMasterScreenId action', (result) => {
       expect(result).toEqual(
         put(Actions.setMasterScreenId(masterScreenMock.id)),
+      );
+    });
+
+    it('should select master screen', (result) => {
+      expect(result).toStrictEqual(
+        select(selectScreenById, masterScreenMock.id),
+      );
+    });
+  });
+
+  describe('when project with screens request fails', () => {
+    const errorMessage = 'Error message';
+    const error = new Error(errorMessage);
+    // @ts-expect-error getProjectSaga type is not compatible with IterableIterator
+    const it = sagaHelper(getProjectSaga(action));
+
+    it('should set projects list loader flag to true', (result) => {
+      expect(result).toEqual(put(Actions.setProjectLoader(true)));
+    });
+    it('should fetch project with screens', (result) => {
+      expect(result).toEqual(
+        call(reqWrapper, apiGetProjectWithScreens, {
+          id: 10,
+        }),
+      );
+      return {
+        error,
+      };
+    });
+
+    it('should put error notification', (result) => {
+      expect(result).toEqual(
+        put(
+          enqueueSnackbar({
+            message: `Error: ${errorMessage}`,
+            options: { variant: 'error' },
+          }),
+        ),
       );
     });
   });

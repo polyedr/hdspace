@@ -74,7 +74,7 @@ export const activateScreenSaga = withRequiredPermissions(
     yield put(setScreenLoader(true));
     yield put(setActiveElementId('none'));
 
-    const screen: Screen = yield select(selectScreenById(screenId));
+    const screen: Screen = yield select(selectScreenById, screenId);
 
     yield put(setCurrentScreenId(screen.id));
 
