@@ -24,6 +24,7 @@ import {
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
 import ELEMENT_IDS from '@Constants/elementIds';
+import { Indices } from '@Src/types';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
 import {
@@ -74,17 +75,18 @@ const Screens = () => {
       createScreen({
         projectID: currentProjectId,
         name: 'Screen 1',
-        buoyancy: screens.length,
+        buoyancy: screens.length + 1, // + 1 because masterScreen should always have buoyancy 0
       }),
     );
   };
 
   const handleReorder = ({ destination, source }) => {
-    const newScreens = [...screens];
-    const [target] = newScreens.splice(source.index, 1);
-    newScreens.splice(destination.index, 0, target);
-    const result = newScreens.map((screen, i) => ({ ...screen, buoyancy: i }));
-    dispatch(changeScreensOrder(result));
+    if (!destination) return;
+    const indices: Indices = {
+      newIndex: destination.index,
+      oldIndex: source.index,
+    };
+    dispatch(changeScreensOrder(indices));
   };
 
   const handleShowMoreOptions = (ev: MouseEvent<HTMLButtonElement>) => {
