@@ -1,22 +1,15 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, select, call } from 'redux-saga/effects';
-import MockDate from 'mockdate';
-
 import { deleteProjectSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import { selectProjectsAsArr } from '@Redux/project/selectors/base';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { apiDeleteProject } from '@Api/project';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { mockProject } from '../test-utils';
+import { mockProject, beforeSagaTest } from '../test-utils';
 
 describe('deleteProjectSaga Test', () => {
-  beforeAll(() => {
-    console.error = jest.fn();
-    // stub current date and random value generator to pass enqueueSnackbar equality
-    MockDate.set('2000-11-22');
-    jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
-  });
+  beforeAll(beforeSagaTest);
   const action = Actions.deleteProject(10);
   describe('WHEN method is called and API is in its working state', () => {
     // @ts-ignore

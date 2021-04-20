@@ -1,7 +1,5 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, select, call } from 'redux-saga/effects';
-import MockDate from 'mockdate';
-
 import {
   createProjectSaga,
   createMasterScreenElements,
@@ -25,18 +23,12 @@ import {
   createMasterScreenMock,
   createMockProject,
   createScreenMock,
+  beforeSagaTest,
 } from '../test-utils';
 
 describe('createProjectSaga Test', () => {
-  beforeAll(() => {
-    console.error = jest.fn();
-    // stub current date and random value generator to pass enqueueSnackbar equality
-    MockDate.set('2000-11-22');
-    jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
-  });
-  // @ts-ignore
+  beforeAll(beforeSagaTest);
   const action = Actions.createProject('test project');
-  // @ts-ignore
   const assetListMock = createAssetListMock();
   const mockProject = createMockProject();
   const masterScreenMock = createMasterScreenMock(mockProject.id);

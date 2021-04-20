@@ -683,9 +683,11 @@ export const changeScreensOrder = function* (
     const screens: Screen[] = yield select(selectScreensWithoutMaster);
     const masterScreen = yield select(selectMasterScreen);
 
-    const [target] = screens.splice(oldIndex, 1);
-    screens.splice(newIndex, 0, target);
-    const newScreenList = screens.map((screen, i) => ({
+    const copy = [...screens];
+
+    const [target] = copy.splice(oldIndex, 1);
+    copy.splice(newIndex, 0, target);
+    const newScreenList = copy.map((screen, i) => ({
       ...screen,
       buoyancy: i + 1, // MasterScreen should always have buoyancy 0
     }));
@@ -703,17 +705,18 @@ export const changeScreensOrder = function* (
       ),
     );
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const res of results) {
-      if (res.error) {
-        yield put(
-          enqueueSnackbar({
-            message: res.error,
-            options: { variant: 'error' },
-          }),
-        );
-      }
-    }
+    yield all(
+      results
+        .filter((res) => res.error)
+        .map((res) =>
+          put(
+            enqueueSnackbar({
+              message: res.error || 'Failed to reorder screens',
+              options: { variant: 'error' },
+            }),
+          ),
+        ),
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar(

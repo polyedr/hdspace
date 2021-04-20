@@ -1,31 +1,58 @@
 import sagaHelper from 'redux-saga-testing';
-import { put, call, all } from 'redux-saga/effects';
-import MockDate from 'mockdate';
+import { put, call, all, select } from 'redux-saga/effects';
 import { changeScreensOrder } from '@Redux/project/sagas/screen';
 import { apiUpdateScreen } from '@Api/screen';
 import * as Actions from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
-// import { enqueueSnackbar } from '@Redux/notification/actions';
-import { projectScreensMock } from '../test-utils';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import {
+  selectMasterScreen,
+  selectScreensWithoutMaster,
+} from '@Redux/project/selectors/screen';
+import {
+  beforeSagaTest,
+  createMasterScreenMock,
+  createScreenMock,
+  projectScreensMock,
+} from '../test-utils';
 
-describe('changeScreensOrderSaga Test', () => {
-  beforeAll(() => {
-    console.error = jest.fn();
-    // stub current date and random value generator to pass enqueueSnackbar equality
-    MockDate.set('2000-11-22');
-    jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
-  });
-  const action = Actions.changeScreensOrder(projectScreensMock);
-  describe('WHEN method is called and API is in its working state', () => {
-    // @ts-ignore
+describe('changeScreensOrderSaga', () => {
+  beforeAll(beforeSagaTest);
+  const oldIndex = 0;
+  const newIndex = 1;
+  const action = Actions.changeScreensOrder({ oldIndex, newIndex });
+  const screen1 = createScreenMock(1, 1);
+  const screen2 = createScreenMock(1, 2);
+  const screenList = [screen1, screen2];
+  const newScreenList = [
+    { ...screen2, buoyancy: 1 },
+    { ...screen1, buoyancy: 2 },
+  ];
+  const masterScreen = createMasterScreenMock(1);
+
+  describe('under normal behavior', () => {
+    // @ts-expect-error saga type is not compatible with
     const it = sagaHelper(changeScreensOrder(action));
-    it('test 1', (result) => {
-      expect(result).toEqual(put(Actions.setScreens(projectScreensMock)));
+    it('should select screens without master', (result) => {
+      expect(result).toEqual(select(selectScreensWithoutMaster));
+      return screenList;
     });
-    it('test 2', (result) => {
+
+    it('should select master screen', (result) => {
+      expect(result).toEqual(select(selectMasterScreen));
+      return masterScreen;
+    });
+
+    it('should put setScreens action', (result) => {
+      expect(result).toEqual(
+        put(Actions.setScreens([masterScreen, ...newScreenList])),
+      );
+    });
+
+    it('should call screen update request for each screen', (result) => {
       expect(result).toEqual(
         all(
-          projectScreensMock.map(({ id, buoyancy }) => {
+          newScreenList.map(({ id, buoyancy }) => {
             return call(reqWrapper, apiUpdateScreen, {
               id,
               data: {
@@ -39,16 +66,29 @@ describe('changeScreensOrderSaga Test', () => {
     });
   });
 
-  describe('WHEN method is called and API is in its working state', () => {
-    // @ts-ignore
+  describe('when api request fails', () => {
+    // @ts-expect-error saga type is not compatible with
     const it = sagaHelper(changeScreensOrder(action));
-    it('error test 1', (result) => {
-      expect(result).toEqual(put(Actions.setScreens(projectScreensMock)));
+    it('should select screens without master', (result) => {
+      expect(result).toEqual(select(selectScreensWithoutMaster));
+      return screenList;
     });
+
+    it('should select master screen', (result) => {
+      expect(result).toEqual(select(selectMasterScreen));
+      return masterScreen;
+    });
+
+    it('should put setScreens action', (result) => {
+      expect(result).toEqual(
+        put(Actions.setScreens([masterScreen, ...newScreenList])),
+      );
+    });
+
     it('error test 2', (result) => {
       expect(result).toEqual(
         all(
-          projectScreensMock.map(({ id, buoyancy }) => {
+          newScreenList.map(({ id, buoyancy }) => {
             return call(reqWrapper, apiUpdateScreen, {
               id,
               data: {
@@ -58,22 +98,29 @@ describe('changeScreensOrderSaga Test', () => {
           }),
         ),
       );
-      return new Error('test error');
+      return newScreenList.map(() => ({
+        error: 'test error',
+      }));
+    });
+
+    it('should display an error message when change screen order', (result) => {
+      expect(result).toEqual(
+        all(
+          newScreenList.map(() =>
+            put(
+              enqueueSnackbar(
+                {
+                  message: 'test error' || 'Failed to reorder screens',
+                  options: {
+                    variant: 'error',
+                  },
+                },
+                new Error('test error'),
+              ),
+            ),
+          ),
+        ),
+      );
     });
   });
-  // it('displaying an error message when change screen order', (result) => {
-  //   expect(result).toEqual(
-  //     put(
-  //       enqueueSnackbar(
-  //         {
-  //           message: 'Error: test error' || 'Failed to reorder screens',
-  //           options: {
-  //             variant: 'error',
-  //           },
-  //         },
-  //         new Error('test error'),
-  //       ),
-  //     ),
-  //   );
-  // });
 });

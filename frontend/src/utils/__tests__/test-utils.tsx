@@ -198,9 +198,9 @@ export const mockState: AppReduxState = {
 const randomInteger = (max, min) =>
   Math.floor(Math.random() * (max - min)) + min;
 
-const testId = randomInteger(9999, 1);
+const getTestId = () => randomInteger(9999, 1);
 export const createMockProject = (): Project => ({
-  id: testId,
+  id: getTestId(),
   name: 'test project',
   status: 'pending',
   projectscreen: [],
@@ -225,7 +225,7 @@ export const createAssetListMock = (): AssetsList => ({
 export const createMasterScreenMock = (projectId: number): Screen => ({
   buoyancy: 0,
   element: '99999',
-  id: testId,
+  id: getTestId(),
   image: null,
   name: 'Master Screen',
   project: projectId,
@@ -234,10 +234,13 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
   status: 'pending',
 });
 
-export const createScreenMock = (projectId: number): Screen => ({
-  buoyancy: 1,
+export const createScreenMock = (
+  projectId: number,
+  buoyancy: number = 1,
+): Screen => ({
+  buoyancy,
   element: '99999',
-  id: testId,
+  id: getTestId(),
   image: null,
   name: 'Screen 1',
   project: projectId,
@@ -271,11 +274,11 @@ export const projectSearchParameterMock: [
 ] = [ProjectsSearchParameter.name, 'text search'];
 
 export const projectScreensMock = [
-  createMasterScreenMock(testId),
-  createScreenMock(testId),
+  createMasterScreenMock(getTestId()),
+  createScreenMock(getTestId()),
 ];
 
-export const prepareSagaTest = () => {
+export const beforeSagaTest = () => {
   console.error = jest.fn();
   // stub current date and random value generator to pass enqueueSnackbar equality
   MockDate.set('2000-11-22');

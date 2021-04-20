@@ -1,7 +1,5 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, select, call } from 'redux-saga/effects';
-import MockDate from 'mockdate';
-
 import { getProjectListSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import {
@@ -12,6 +10,7 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { apiGetProjectList } from '@Api/project';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
 import { enqueueSnackbar } from '@Redux/notification/actions';
+import { beforeSagaTest } from '../test-utils';
 
 describe('getProjectListSaga Test', () => {
   describe('WHEN method is called and API is in its working state', () => {
@@ -64,12 +63,7 @@ describe('getProjectListSaga Test', () => {
   });
 
   describe('WHEN method is called and API returns an error', () => {
-    beforeAll(() => {
-      console.error = jest.fn();
-      // stub current date and random value generator to pass enqueueSnackbar equality
-      MockDate.set('2000-11-22');
-      jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
-    });
+    beforeAll(beforeSagaTest);
 
     // reset all stubs
     afterAll(() => {

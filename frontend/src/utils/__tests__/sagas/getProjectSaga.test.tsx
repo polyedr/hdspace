@@ -1,6 +1,5 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, call, select } from 'redux-saga/effects';
-import MockDate from 'mockdate';
 import { getProjectSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
@@ -10,18 +9,14 @@ import { selectScreenById } from '@Redux/project/selectors/screen';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as PermissionsActions from '../../../redux/permissions/actions';
 import {
+  beforeSagaTest,
   createMasterScreenMock,
   createMockProject,
   projectWithScreensMock,
 } from '../test-utils';
 
 describe('createProjectSaga Test', () => {
-  beforeAll(() => {
-    console.error = jest.fn();
-    // stub current date and random value generator to pass enqueueSnackbar equality
-    MockDate.set('2000-11-22');
-    jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
-  });
+  beforeAll(beforeSagaTest);
   const action = Actions.getProject(10);
   const mockProject = createMockProject();
   const masterScreenMock = createMasterScreenMock(mockProject.id);
