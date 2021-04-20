@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+  CSSProperties,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import { DropTargetMonitor, useDrag } from 'react-dnd';
@@ -11,6 +17,7 @@ import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { NNBlockType } from '@Src/types';
 import { updateElementParameters } from '@Redux/project/actions';
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
+import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { IconButton, Tooltip } from '@material-ui/core';
 import { RendererProps } from '../types';
@@ -72,6 +79,40 @@ const useStyles = makeComponentStyles('smart', {
   },
 });
 
+const getSizeForImage = (
+  size: SizeProps,
+  frameWindow: Window | null,
+): CSSProperties | undefined => {
+  const innerWidth = frameWindow?.innerWidth || 0;
+  const innerHeight = frameWindow?.innerHeight || 0;
+  if (size.width > innerWidth && size.height < innerHeight) {
+    return {
+      position: 'relative',
+      width: innerWidth,
+      height: 'auto',
+      maxHeight: innerHeight,
+    };
+  }
+  if (size.height > innerHeight && size.width < innerWidth) {
+    return {
+      position: 'relative',
+      width: 'auto',
+      maxWidth: innerWidth,
+      height: innerHeight,
+      minHeight: innerHeight / 2,
+    };
+  }
+  if (size.height > innerHeight && size.width > innerWidth) {
+    return {
+      position: 'relative',
+      width: 'auto',
+      maxWidth: innerWidth,
+      height: innerHeight,
+      minHeight: innerHeight / 2,
+    };
+  }
+  return undefined;
+};
 const SmartContainerRenderer = React.forwardRef<
   HTMLDivElement,
   RendererProps & { blockType: NNBlockType }
@@ -153,7 +194,8 @@ const SmartContainerRenderer = React.forwardRef<
       drag(resizeRef);
     }
   }, [drag, resizeRef, resizeRefDom]);
-
+  const frameWindow = useContext(WindowContext);
+  const resultGetSizeForImage = getSizeForImage(size, frameWindow);
   return (
     <div
       ref={ref}
@@ -170,22 +212,13 @@ const SmartContainerRenderer = React.forwardRef<
       ) : (
         <>
           {imageURL && (
-            <div
-              style={{
-                position: 'relative',
-                width: imgRef.current?.width,
-                height: imgRef.current?.height,
-              }}
-            >
+            <div style={resultGetSizeForImage}>
               <img
                 src={imageURL}
                 alt="Not found"
                 className={classes.wireframe}
                 ref={imgRef}
-                style={{
-                  width: size.width || imageSize?.width || 'auto',
-                  height: size.height || imageSize?.height || 'auto',
-                }}
+                style={resultGetSizeForImage}
                 crossOrigin="anonymous"
                 onLoad={() => {
                   setSize({
