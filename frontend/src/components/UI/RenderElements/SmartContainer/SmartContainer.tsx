@@ -1,6 +1,10 @@
-// @ts-nocheck
-
-import React, { useRef, useEffect, useState, useContext } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useContext,
+  CSSProperties,
+} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import { DropTargetMonitor, useDrag } from 'react-dnd';
@@ -16,6 +20,7 @@ import SyncProblemIcon from '@material-ui/icons/SyncProblem';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { IconButton, Tooltip } from '@material-ui/core';
+import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
@@ -74,6 +79,40 @@ const useStyles = makeComponentStyles('smart', {
   },
 });
 
+const getSizeForImage = (
+  size: SizeProps,
+  frameWindow: any,
+): CSSProperties | undefined => {
+  const innerWidth = frameWindow?.innerWidth || 0;
+  const innerHeight = frameWindow?.innerHeight || 0;
+  if (size.width > innerWidth && size.height < innerHeight) {
+    return {
+      position: 'relative',
+      width: innerWidth,
+      height: 'auto',
+      maxHeight: innerHeight,
+    };
+  }
+  if (size.height > innerHeight && size.width < innerWidth) {
+    return {
+      position: 'relative',
+      width: 'auto',
+      maxWidth: innerWidth,
+      height: innerHeight,
+      minHeight: innerHeight / 2,
+    };
+  }
+  if (size.height > innerHeight && size.width > innerWidth) {
+    return {
+      position: 'relative',
+      width: 'auto',
+      maxWidth: innerWidth,
+      height: innerHeight,
+      minHeight: innerHeight / 2,
+    };
+  }
+  return undefined;
+};
 const SmartContainerRenderer = React.forwardRef<
   HTMLDivElement,
   RendererProps & { blockType: NNBlockType }
@@ -156,44 +195,6 @@ const SmartContainerRenderer = React.forwardRef<
     }
   }, [drag, resizeRef, resizeRefDom]);
   const frameWindow = useContext(WindowContext);
-  const sizeForImage = () => {
-    if (
-      size.width > frameWindow?.innerWidth &&
-      size.height < frameWindow?.innerHeight
-    ) {
-      return {
-        position: 'relative',
-        width: frameWindow?.innerWidth,
-        height: 'auto',
-        maxHeight: frameWindow?.innerHeight,
-      };
-    }
-    if (
-      size.height > frameWindow?.innerHeight &&
-      size.width < frameWindow?.innerWidth
-    ) {
-      return {
-        position: 'relative',
-        width: 'auto',
-        maxWidth: frameWindow?.innerWidth,
-        height: frameWindow?.innerHeight,
-        minHeight: frameWindow?.innerHeight / 2,
-      };
-    }
-    if (
-      size.height > frameWindow?.innerHeight &&
-      size.width > frameWindow?.innerWidth
-    ) {
-      return {
-        position: 'relative',
-        width: 'auto',
-        maxWidth: frameWindow?.innerWidth,
-        height: frameWindow?.innerHeight,
-        minHeight: frameWindow?.innerHeight / 2,
-      };
-    }
-    return null;
-  };
   return (
     <div
       ref={ref}
@@ -210,13 +211,13 @@ const SmartContainerRenderer = React.forwardRef<
       ) : (
         <>
           {imageURL && (
-            <div style={sizeForImage()}>
+            <div style={getSizeForImage(size, frameWindow)}>
               <img
                 src={imageURL}
                 alt="Not found"
                 className={classes.wireframe}
                 ref={imgRef}
-                style={sizeForImage()}
+                style={getSizeForImage(size, frameWindow)}
                 crossOrigin="anonymous"
                 onLoad={() => {
                   setSize({
