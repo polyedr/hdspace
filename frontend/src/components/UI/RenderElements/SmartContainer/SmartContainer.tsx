@@ -15,17 +15,10 @@ import useUrlImageToFile from '@Utils/useUrlImageToFile';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { NNBlockType } from '@Src/types';
-import {
-  updateElementParameters,
-  uploadElementAsset,
-} from '@Redux/project/actions';
+import { updateElementParameters } from '@Redux/project/actions';
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import {
-  selectAllAssetLists,
-  selectSelectedAssetListId,
-} from '@Redux/project/selectors/asset';
 import { IconButton, Tooltip } from '@material-ui/core';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
@@ -194,27 +187,7 @@ const SmartContainerRenderer = React.forwardRef<
     },
   });
 
-  const assetLists = useSelector(selectAllAssetLists);
-  const selectSelectedAssetList = useSelector(selectSelectedAssetListId);
   const resizeRefDom = resizeRef.current;
-
-  useEffect(() => {
-    if (imageURL) {
-      const assetId = selectSelectedAssetList || assetLists[0].id;
-      dispatch(
-        uploadElementAsset(element.id, { imageURL }, assetId, {
-          screenId: currentScreenId,
-        }),
-      );
-    }
-  }, [
-    element.id,
-    imageURL,
-    currentScreenId,
-    assetLists,
-    selectSelectedAssetList,
-    dispatch,
-  ]);
 
   useEffect(() => {
     if (resizeRef && resizeRefDom) {
@@ -237,6 +210,12 @@ const SmartContainerRenderer = React.forwardRef<
       className={cn(className, groupClass, classes.ownStyles)}
       style={{
         position: 'relative',
+        ...(size.width && {
+          width: size.width,
+        }),
+        ...(size.height && {
+          height: size.height,
+        }),
       }}
       {...eventHandlers}
     >
@@ -253,7 +232,7 @@ const SmartContainerRenderer = React.forwardRef<
                 ref={imgRef}
                 style={resultGetSizeForImage}
                 crossOrigin="anonymous"
-                onLoad={() => {
+                onChange={() => {
                   setSize({
                     width: imgRef.current?.naturalWidth || 0,
                     height: imgRef.current?.naturalHeight || 0,

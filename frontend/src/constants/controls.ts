@@ -29,7 +29,7 @@ import Type from '@Components/RightPanel/PropertiesTab/Controls/Type/Type';
 import TypographyBlock from '@Components/RightPanel/PropertiesTab/Controls/TypographyBlock';
 import Value from '@Components/RightPanel/PropertiesTab/Controls/Value/Value';
 import VideoSettings from '@Components/RightPanel/PropertiesTab/Controls/VideoSettings/VideoSettings';
-import withSmartContainer from '@Components/RightPanel/PropertiesTab/Controls/SmartContainer/withSmartContainer';
+import withSmartContainerControl from '@Components/RightPanel/PropertiesTab/Controls/SmartContainerControl/withSmartContainerControl';
 import { Control, NNBlockType } from '@Src/types';
 import Alt from '@Components/RightPanel/PropertiesTab/Controls/Alt';
 import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
@@ -83,10 +83,10 @@ const CONTROLS: Record<Control, ControlInfo> = {
   image: { Control: Image, styles: [] },
   alt: { Control: Alt },
   title: { Control: Title },
-  smartHeader: { Control: withSmartContainer(NNBlockType.HEADER) },
-  smartFooter: { Control: withSmartContainer(NNBlockType.FOOTER) },
-  smartForm: { Control: withSmartContainer(NNBlockType.FORM) },
-  smartWebpage: { Control: withSmartContainer(NNBlockType.WEBPAGE) },
+  smartHeader: { Control: withSmartContainerControl(NNBlockType.HEADER) },
+  smartFooter: { Control: withSmartContainerControl(NNBlockType.FOOTER) },
+  smartForm: { Control: withSmartContainerControl(NNBlockType.FORM) },
+  smartWebpage: { Control: withSmartContainerControl(NNBlockType.WEBPAGE) },
   stylesOn: { Control: StylesOn },
   type: { Control: Type },
   value: { Control: Value },
