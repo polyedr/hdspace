@@ -756,12 +756,9 @@ export const updateElementImageSaga = compose(
           ),
         );
       } else {
-        if (!listId) {
-          throw new Error('Asset lists are not loaded');
-        }
-        if (!changedElement.image) {
-          throw new Error('Could not save image');
-        }
+        throw new Error(
+          !listId ? 'Asset lists are not loaded' : 'Could not save image',
+        );
       }
     }
     if (error) throw new Error(error);
