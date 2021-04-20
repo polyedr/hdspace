@@ -40,7 +40,6 @@ const Attributes: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   updateParams,
   canEdit,
   activeElementId,
-  // masterScreenEnabled,
 }) => {
   const classes = useStyles();
   const element = useSelector(selectActiveElement);
