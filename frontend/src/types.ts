@@ -239,10 +239,10 @@ export type DropdownItemServerElement = ServerElement<
 >;
 export type UndefinedServerElement = ServerElement<'undefined', []>; // if element's tag is not an HTML element
 
-export type UnsupportedServerElement = ServerElement<
-  'unsupported',
+export type HTMLServerElement = ServerElement<
+  'html',
   [],
-  UnsupportedParameters
+  HTMLElementParameters
 >; // if element's tag is an HTML element not supported by ADEVI functionality
 
 export type ElementsGroupServerElement = ServerElement<
@@ -601,7 +601,7 @@ export type VideoParameters = BaseElementParams & {
   videoSettings: VideoSettingsType;
 };
 
-export type UnsupportedParameters = BaseElementParams & {
+export type HTMLElementParameters = BaseElementParams & {
   tag: string;
   attributes: HTMLAttributes<HTMLElement> & { [name: string]: string };
 };
@@ -1118,7 +1118,7 @@ export type ElementsToAdd = {
   featureSection: FeatureSectionServerElement;
   section: SectionServerElement;
   group: ElementsGroupServerElement;
-  unsupported: UnsupportedServerElement;
+  html: HTMLServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;

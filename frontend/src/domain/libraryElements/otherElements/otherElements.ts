@@ -21,7 +21,7 @@ import {
   SmartHeaderServerElement,
   SmartWebpageServerElement,
   UndefinedServerElement,
-  UnsupportedServerElement,
+  HTMLServerElement,
   VideoServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
@@ -504,11 +504,11 @@ export const undefinedElement: UndefinedServerElement = {
   children: [],
 };
 
-export const unsupportedElement: UnsupportedServerElement = {
-  id: 'unsupported',
+export const htmlElement: HTMLServerElement = {
+  id: 'html',
   buoyancy: 0,
-  func_type: 'unsupported',
-  struct_type: 'unsupported',
+  func_type: 'html',
+  struct_type: 'html',
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
     group: ElementGroup.UNDEFINED,
@@ -519,13 +519,13 @@ export const unsupportedElement: UnsupportedServerElement = {
     },
     tag: 'div',
     attributes: {
-      name: 'Unsupported element',
+      name: 'HTML element',
     },
   },
   styles: {
     classNames: [],
     ownStyles: {},
   },
-  name: 'Unsupported element',
+  name: 'HTML element',
   children: [],
 };

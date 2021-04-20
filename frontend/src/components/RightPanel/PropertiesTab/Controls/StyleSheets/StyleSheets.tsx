@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useDebouncedCallback } from 'use-debounce';
@@ -42,12 +42,6 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     transformToEditorStyles(cssDecamelize(element.styles.ownStyles || {})),
   );
 
-  useEffect(() => {
-    setEditorStyles(
-      transformToEditorStyles(cssDecamelize(element.styles.ownStyles || {})),
-    );
-  }, [element.styles.ownStyles]);
-
   const handleEditorChange = useDebouncedCallback(
     (stylesJson: React.CSSProperties) => {
       updateStyles(stylesJson);
@@ -70,14 +64,6 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
         )}
       </div>
 
-      {/* <StyleSheetsCodeEditor
-        value={element.styles.ownStyles}
-        style={{ width: 290, height: 290 }}
-        onChange={(styles) => {
-          handleEditorChange.cancel();
-          handleEditorChange.callback(styles);
-        }}
-      /> */}
       <div className={classes.editorWrapper}>
         <CodeEditor
           value={editorStyles}

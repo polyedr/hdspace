@@ -46,7 +46,7 @@ import {
   column,
   nativeColumns,
   elementsGroup,
-  unsupportedElement,
+  htmlElement,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -124,7 +124,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   featureSection,
   section,
   group: elementsGroup,
-  unsupported: unsupportedElement,
+  html: htmlElement,
 };
 
 export const ICONS: Partial<
@@ -159,5 +159,5 @@ export const ICONS: Partial<
   smartForm: CropOriginalIcon,
   smartWebpage: CropOriginalIcon,
   section: Crop75Icon,
-  unsupported: HelpIcon,
+  html: HelpIcon,
 };

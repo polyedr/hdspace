@@ -47,7 +47,7 @@ export const getRightPanelCategoryTabs = (
     case 'video':
     case 'textBlock':
     case 'undefined':
-    case 'unsupported':
+    case 'html':
       return {
         elements: {
           ...obj.elements,

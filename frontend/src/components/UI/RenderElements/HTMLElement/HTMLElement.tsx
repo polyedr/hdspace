@@ -7,9 +7,9 @@ import { RendererProps } from '../types';
 import Undefined from '../Undefined/Undefined';
 import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles('unsupported');
+const useStyles = makeComponentStyles('html');
 
-const Unsupported: React.FC<RendererProps> = React.forwardRef((props, ref) => {
+const HTMLElement: React.FC<RendererProps> = React.forwardRef((props, ref) => {
   const { element, children } = props;
   const { tag, attributes, groupClass, textContent } = element.parameters;
   const classes = useStyles(props);
@@ -32,4 +32,4 @@ const Unsupported: React.FC<RendererProps> = React.forwardRef((props, ref) => {
   return <Undefined ref={ref} {...props} {...attributes} />;
 });
 
-export default Unsupported;
+export default HTMLElement;

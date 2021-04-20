@@ -38,7 +38,7 @@ import {
   videoStyleControls,
   columnsStyleControls,
   elementsGroupStyleControls,
-  unsupportedControls,
+  htmlElementControls,
 } from '../core';
 
 const columnsMinHeight = '100px';
@@ -340,7 +340,7 @@ type DropdownMenuControls = typeof dropdownMenuStyleControls[number];
 type DropdownItemControls = typeof dropdownItemStyleControls[number];
 type VideoControls = typeof videoStyleControls[number];
 type UndefinedControls = typeof undefinedControls[number];
-type UnsupportedControls = typeof unsupportedControls[number];
+type HTMLElementControls = typeof htmlElementControls[number];
 type NativeColumnsControls = typeof nativeColumnsStyleControls[number];
 type ColumnsControls = typeof columnsStyleControls[number];
 type ColumnControls = typeof columnStyleControls[number];
@@ -1090,8 +1090,8 @@ export const defaultFeatureSectionStyles: {
   },
 };
 
-export const defaultUnsupportedStyles: {
-  [K in UnsupportedControls]: React.CSSProperties;
+export const defaultHTMLElementStyles: {
+  [K in HTMLElementControls]: React.CSSProperties;
 } = {
   background: DEFAULT_BACKGROUND,
 };
@@ -1144,5 +1144,5 @@ export const DEFAULT_ELEMENTS_STYLES: {
   featureSection: defaultFeatureSectionStyles,
   section: defaultSectionStyles,
   group: defaultElementsGroupStyles,
-  unsupported: defaultUnsupportedStyles,
+  html: defaultHTMLElementStyles,
 };
