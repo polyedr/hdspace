@@ -81,7 +81,7 @@ const useStyles = makeComponentStyles('smart', {
 
 const getSizeForImage = (
   size: SizeProps,
-  frameWindow: any,
+  frameWindow: Window | null,
 ): CSSProperties | undefined => {
   const innerWidth = frameWindow?.innerWidth || 0;
   const innerHeight = frameWindow?.innerHeight || 0;
@@ -195,6 +195,7 @@ const SmartContainerRenderer = React.forwardRef<
     }
   }, [drag, resizeRef, resizeRefDom]);
   const frameWindow = useContext(WindowContext);
+  const resultGetSizeForImage = getSizeForImage(size, frameWindow);
   return (
     <div
       ref={ref}
@@ -211,13 +212,13 @@ const SmartContainerRenderer = React.forwardRef<
       ) : (
         <>
           {imageURL && (
-            <div style={getSizeForImage(size, frameWindow)}>
+            <div style={resultGetSizeForImage}>
               <img
                 src={imageURL}
                 alt="Not found"
                 className={classes.wireframe}
                 ref={imgRef}
-                style={getSizeForImage(size, frameWindow)}
+                style={resultGetSizeForImage}
                 crossOrigin="anonymous"
                 onLoad={() => {
                   setSize({
