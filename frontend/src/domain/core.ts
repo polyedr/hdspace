@@ -455,6 +455,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   group: elementsGroupStyleControls,
   html: [
     'textContent',
+    'tagName',
     ...htmlElementControls,
     'styleSheets',
     'attributes',

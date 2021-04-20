@@ -351,6 +351,11 @@ export type SmartElement<T extends Entity> = LibraryElement<
   [],
   SmartElementParameters
 >;
+export type HTMLLibraryElement = LibraryElement<
+  'html',
+  [],
+  HTMLElementParameters
+>;
 export type SelectMenuElement = LibraryElement<'selectMenu', OptionElement[]>;
 export type OptionElement = LibraryElement<'option', [], OptionParameters>;
 export type TextareaElement = LibraryElement<
@@ -438,7 +443,8 @@ export type LibraryElementUnion =
   | PageTemplateElement
   | UndefinedElement
   | SubscribeFormElement
-  | FeatureSectionElement;
+  | FeatureSectionElement
+  | HTMLLibraryElement;
 
 type InteractiveElementParams = {
   events: ElementEvent[];
@@ -1191,6 +1197,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'alt',
   'title',
   'attributes',
+  'tagName',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

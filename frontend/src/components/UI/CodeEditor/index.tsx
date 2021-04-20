@@ -63,7 +63,7 @@ const useStyles = makeStyles({
     margin: 0,
     width: '100%',
     height: '100%',
-    overflow: 'hidden',
+    overflow: 'hidden !important',
     boxSizing: 'border-box',
     scrollbarColor: '#5c5c5c transparent',
     scrollbarWidth: 'thin',
