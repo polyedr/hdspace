@@ -464,11 +464,16 @@ export type UploadElementAsset = IAction<
   typeof TYPES.UPLOAD_ELEMENT_ASSET,
   {
     elementId: string;
-    asset: File;
+    asset: AssetData;
     listId: string;
   },
   ElementHistoryMeta
 >;
+
+export type AssetData = {
+  file?: any | null;
+  imageURL?: string;
+};
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
   {
