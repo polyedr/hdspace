@@ -202,21 +202,15 @@ const SmartContainerRenderer = React.forwardRef<
   }, [drag, resizeRef, resizeRefDom]);
   const frameWindow = useContext(WindowContext);
   const resultGetSizeForImage = getSizeForImage(size, frameWindow);
+
+  const imageHeight = resultGetSizeForImage?.height || size?.height;
   return (
     <div
       ref={ref}
       id={element.id}
       data-ls-id={element.id}
       className={cn(className, groupClass, classes.ownStyles)}
-      style={{
-        position: 'relative',
-        ...(size.width && {
-          width: size.width,
-        }),
-        ...(size.height && {
-          height: size.height,
-        }),
-      }}
+      style={{ position: 'relative' }}
       {...eventHandlers}
     >
       {children?.length ? (
@@ -224,7 +218,15 @@ const SmartContainerRenderer = React.forwardRef<
       ) : (
         <>
           {imageURL && (
-            <div style={resultGetSizeForImage}>
+            <div
+              style={
+                imageHeight
+                  ? {
+                      height: imageHeight,
+                    }
+                  : {}
+              }
+            >
               <img
                 src={imageURL}
                 alt="Not found"
@@ -232,7 +234,7 @@ const SmartContainerRenderer = React.forwardRef<
                 ref={imgRef}
                 style={resultGetSizeForImage}
                 crossOrigin="anonymous"
-                onChange={() => {
+                onLoad={() => {
                   setSize({
                     width: imgRef.current?.naturalWidth || 0,
                     height: imgRef.current?.naturalHeight || 0,
