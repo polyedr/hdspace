@@ -124,10 +124,8 @@ export const importHtmlSaga = withRequiredPermissions(
       if (error) throw new Error(error);
     }
     if (error) throw new Error(error);
-    yield put(Actions.setValueImportLoader(false));
     yield put(Actions.toggleContainersBorders(true));
   } catch (e) {
-    yield put(Actions.setValueImportLoader(false));
     yield put(
       enqueueSnackbar(
         {
@@ -137,6 +135,8 @@ export const importHtmlSaga = withRequiredPermissions(
         e,
       ),
     );
+  } finally {
+    yield put(Actions.setValueImportLoader(false));
   }
 });
 
