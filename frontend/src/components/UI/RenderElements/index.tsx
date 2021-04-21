@@ -34,6 +34,7 @@ import Checkbox from './Checkbox/Checkbox';
 import Radiobutton from './Radiobutton/Radiobutton';
 import Select from './Select/Select';
 import Option from './Option/Option';
+import HTMLElement from './HTMLElement/HTMLElement';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -81,6 +82,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   featureSection: Container,
   section: Section,
   group: ElementsGroup,
+  html: HTMLElement,
 };
 
 export default RENDERERS;

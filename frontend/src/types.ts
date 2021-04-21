@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
@@ -237,7 +237,13 @@ export type DropdownItemServerElement = ServerElement<
   [],
   DropdownItemParameters
 >;
-export type UndefinedServerElement = ServerElement<'undefined', []>;
+export type UndefinedServerElement = ServerElement<'undefined', []>; // if element's tag is not an HTML element
+
+export type HTMLServerElement = ServerElement<
+  'html',
+  [],
+  HTMLElementParameters
+>; // if element's tag is an HTML element not supported by ADEVI functionality
 
 export type ElementsGroupServerElement = ServerElement<
   'group',
@@ -345,6 +351,11 @@ export type SmartElement<T extends Entity> = LibraryElement<
   [],
   SmartElementParameters
 >;
+export type HTMLLibraryElement = LibraryElement<
+  'html',
+  [],
+  HTMLElementParameters
+>;
 export type SelectMenuElement = LibraryElement<'selectMenu', OptionElement[]>;
 export type OptionElement = LibraryElement<'option', [], OptionParameters>;
 export type TextareaElement = LibraryElement<
@@ -432,7 +443,8 @@ export type LibraryElementUnion =
   | PageTemplateElement
   | UndefinedElement
   | SubscribeFormElement
-  | FeatureSectionElement;
+  | FeatureSectionElement
+  | HTMLLibraryElement;
 
 type InteractiveElementParams = {
   events: ElementEvent[];
@@ -593,6 +605,11 @@ export type VideoSettingsType = {
 
 export type VideoParameters = BaseElementParams & {
   videoSettings: VideoSettingsType;
+};
+
+export type HTMLElementParameters = BaseElementParams & {
+  tag: string;
+  attributes: HTMLAttributes<HTMLElement> & { [name: string]: string };
 };
 
 export type DropdownParameters = BaseElementParams & {
@@ -1107,6 +1124,7 @@ export type ElementsToAdd = {
   featureSection: FeatureSectionServerElement;
   section: SectionServerElement;
   group: ElementsGroupServerElement;
+  html: HTMLServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -1178,6 +1196,8 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'stylesOn',
   'alt',
   'title',
+  'attributes',
+  'tagName',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
@@ -1193,6 +1213,7 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'bullets',
   'flexGrow',
   'backgroundSize',
+  'styleSheets',
 ] as const;
 
 export type Control =
