@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
