@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { all, call, fork, put, select } from 'redux-saga/effects';
 import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
@@ -78,7 +76,7 @@ export const activateScreenSaga = withRequiredPermissions(
     yield put(setScreenLoader(true));
     yield put(setActiveElementId('none'));
 
-    const screen: Screen = yield select(selectScreenById(screenId));
+    const screen: Screen = yield select(selectScreenById, screenId);
 
     yield put(setCurrentScreenId(screen.id));
 
@@ -677,18 +675,19 @@ export function* getScreensSaga(screens: Screen[]) {
   }
 }
 
-export const changeScreensOrderSaga = withRequiredPermissions(
-  UserProjectPermission.VIEW_PROJECT,
-  UserProjectPermission.CHANGE_PROJECT,
-)(function* (action: ReturnType<typeof Actions.changeScreensOrder>) {
+export const changeScreensOrder = function* (
+  action: ReturnType<typeof Actions.changeScreensOrder>,
+) {
   try {
     const { newIndex, oldIndex } = action.payload;
     const screens: Screen[] = yield select(selectScreensWithoutMaster);
     const masterScreen = yield select(selectMasterScreen);
 
-    const [target] = screens.splice(oldIndex, 1);
-    screens.splice(newIndex, 0, target);
-    const newScreenList = screens.map((screen, i) => ({
+    const copy = [...screens];
+
+    const [target] = copy.splice(oldIndex, 1);
+    copy.splice(newIndex, 0, target);
+    const newScreenList = copy.map((screen, i) => ({
       ...screen,
       buoyancy: i + 1, // MasterScreen should always have buoyancy 0
     }));
@@ -706,17 +705,18 @@ export const changeScreensOrderSaga = withRequiredPermissions(
       ),
     );
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const res of results) {
-      if (res.error) {
-        yield put(
-          enqueueSnackbar({
-            message: res.error,
-            options: { variant: 'error' },
-          }),
-        );
-      }
-    }
+    yield all(
+      results
+        .filter((res) => res.error)
+        .map((res) =>
+          put(
+            enqueueSnackbar({
+              message: res.error || 'Failed to reorder screens',
+              options: { variant: 'error' },
+            }),
+          ),
+        ),
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -728,7 +728,12 @@ export const changeScreensOrderSaga = withRequiredPermissions(
       ),
     );
   }
-});
+};
+
+export const changeScreensOrderSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(changeScreensOrder);
 
 export const convertFreeCanvasSaga = compose(
   withRequiredPermissions(UserProjectPermission.VIEW_PROJECT),

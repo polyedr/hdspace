@@ -23,9 +23,20 @@ export const selectProjectsDataNext = ({ project }: AppReduxState) =>
 export const selectProjectsSearchParameter = ({ project }: AppReduxState) =>
   project.data.projectsData.parameter;
 
-export const selectProjectById = (projectId: number) => ({
-  project,
-}: AppReduxState) => project.data.projectsData.results[projectId];
+/**
+ * use this selector in sagas
+ */
+export const selectProjectById = (
+  { project }: AppReduxState,
+  projectId: number,
+) => project.data.projectsData.results[projectId];
+
+/**
+ * use this selector in components with useSelector hook
+ */
+export const selectProjectByIdWrapper = (projectId: number) => (
+  state: AppReduxState,
+) => selectProjectById(state, projectId);
 
 export const selectCurrentProjectId = ({ project }: AppReduxState) =>
   project.edit.currentProjectId;

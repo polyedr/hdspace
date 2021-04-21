@@ -254,7 +254,7 @@ export const selectCustomLibraryElements = (
 };
 
 export const selectElementsForScreenById = (state, screenId) => {
-  const screen = selectScreenById(screenId)(state);
+  const screen = selectScreenById(state, screenId);
   const rootId = screen.element;
   const tree = buildElementsTree(state.project.data.elements, rootId);
   return flattenElements([tree]);

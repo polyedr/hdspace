@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { takeLatest, call, put, takeEvery, select } from 'redux-saga/effects';
 import { FORM_ERROR } from 'final-form';
 import {

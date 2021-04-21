@@ -5,7 +5,7 @@ import {
   PropertiesChangeProps,
   SmartElement,
 } from '@Src/types';
-import SmartContainer from './SmartContainer';
+import SmartContainerControl from './SmartContainerControl';
 
 type SmartContainerProps = {
   activeElementId: PropertiesChangeProps<
@@ -14,13 +14,13 @@ type SmartContainerProps = {
   canEdit: boolean;
 };
 
-const withSmartContainer = (blockType: NNBlockType) => {
+const withSmartContainerControl = (blockType: NNBlockType) => {
   const Container: React.FC<SmartContainerProps> = ({
     activeElementId,
     canEdit,
   }) => {
     return (
-      <SmartContainer
+      <SmartContainerControl
         blockType={blockType}
         activeElementId={activeElementId}
         canEdit={canEdit}
@@ -31,4 +31,4 @@ const withSmartContainer = (blockType: NNBlockType) => {
   return Container;
 };
 
-export default withSmartContainer;
+export default withSmartContainerControl;

@@ -26,3 +26,6 @@ export const safeMatch = (value: string | undefined) => {
   if (value === undefined) return null;
   return value.match(/px|%/i);
 };
+
+export const generateRandomInteger = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min)) + min;

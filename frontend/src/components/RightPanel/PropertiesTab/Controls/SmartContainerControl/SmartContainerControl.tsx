@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   },
 });
 
-const SmartContainer: React.FC<Props> = ({
+const SmartContainerControl: React.FC<Props> = ({
   activeElementId,
   blockType,
   canEdit,
@@ -100,4 +100,4 @@ const SmartContainer: React.FC<Props> = ({
   );
 };
 
-export default SmartContainer;
+export default SmartContainerControl;

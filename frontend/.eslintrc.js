@@ -74,5 +74,6 @@ module.exports = {
     'lines-between-class-members': 'off',
     'func-names': ['error', 'as-needed', { generators: 'never' }],
     camelcase: 'off',
+    'no-console': 'off',
   },
 };

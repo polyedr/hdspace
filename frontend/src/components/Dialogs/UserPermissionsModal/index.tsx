@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectProjectById } from '@Redux/project/selectors/base';
+import { selectProjectByIdWrapper } from '@Redux/project/selectors/base';
 import {
   Dialog,
   DialogContent,
@@ -28,7 +28,7 @@ const UserPermissionsModal: React.FC<Props> = ({
   onClose,
   projectId,
 }: Props) => {
-  const project = useSelector(selectProjectById(projectId || -1));
+  const project = useSelector(selectProjectByIdWrapper(projectId || -1));
   const styles = useStyles();
 
   if (!project) {

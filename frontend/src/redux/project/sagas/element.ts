@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { put, call, select } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
@@ -50,13 +49,17 @@ import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
 import { wrapIntoContainer } from './scenario';
 import withActionsHistory from '../wrappers/withActionsHistory';
-import { uploadAsset } from './asset';
+import { uploadAssetHelper } from './asset';
 import {
   updateOrReplaceElementParameters,
   updateOrReplaceElementStyles,
   updateOrReplaceMultipleElementsParameters,
   createElements,
 } from './common';
+import {
+  selectAllAssetLists,
+  selectSelectedAssetListId,
+} from '../selectors/asset';
 
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(
@@ -736,6 +739,26 @@ export const updateElementImageSaga = compose(
         ),
         UpdateDataActionType.UPDATE,
       );
+      const selectedListId = yield select(selectSelectedAssetListId);
+      const assetLists = yield select(selectAllAssetLists);
+      const listId =
+        selectedListId || assetLists.length ? assetLists[0].id : null;
+      if (listId && changedElement.image) {
+        yield put(
+          Actions.uploadElementAsset(
+            changedElement.id,
+            {
+              imageURL: changedElement.image,
+            },
+            listId,
+            action.meta,
+          ),
+        );
+      } else {
+        throw new Error(
+          !listId ? 'Asset lists are not loaded' : 'Could not save image',
+        );
+      }
     }
     if (error) throw new Error(error);
   } catch (e) {
@@ -1077,7 +1100,7 @@ export const uploadElementImageByUrlSaga = compose(
     }
 
     yield call(
-      uploadAsset,
+      uploadAssetHelper,
       {
         assetFile: null,
         listId,
