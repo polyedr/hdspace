@@ -233,8 +233,9 @@ def write_elem_value(region_dataset, class_id_recognized):
 
 
 # Detect elements for the root block function
-def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0, children=[]):
-    # Function elements creation, loop through the root_block start
+def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+                       image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0, children=[]):
+    # Function elements creation, loop through the root_block
     for pre, fill, node in RenderTree(root_block):
         # if(node.elements):
         #     print("elements: ", len(node.elements))
@@ -307,25 +308,6 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 styles=styles,
                 buoyancy=0,
             )
-            '''
-            if multiple_output_on:
-                # Create an empty divs for the endpoint checking
-                ScenarioElement.objects.create(
-                    parent=outer_div_node,
-                    struct_type="container",
-                    parameters=parameters,
-                    styles=styles,
-                    buoyancy=1,
-                )
-
-                ScenarioElement.objects.create(
-                    parent=outer_div_node,
-                    struct_type="container",
-                    parameters=parameters,
-                    styles=styles,
-                    buoyancy=2,
-                )
-            '''
 
         else:
             node.div = ET.SubElement(node.parent.div, "div")
@@ -364,7 +346,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 buoyancy=buoyancy,
             )
 
-        if (serializing=="freecanvas"):
+        if (serializing == "freecanvas"):
             # Attach elements for some fcluster
             if node.types == "fcluster":
                 # Arrange the fcluster children based on their coordinates
@@ -411,9 +393,11 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     )
                 else:
                     array_elements = node.elements
+                # print(len(array_elements))
+                node.scenarioelement_inner_kwargs_list = []
                 for elem in array_elements:
                     # Prepare an empty list to define scenario element structure for the further chain joining
-                    scenarioelement_inner = {}
+                    scenarioelement_inner_kwargs = {}
                     # Define the element dimensions start
                     elem_width = int(elem["shape_attributes"]["width"])
                     elem_height = int(elem["shape_attributes"]["height"])
@@ -442,7 +426,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                         "button",
                     }:
                         # Defiine a scenarioelement_inner dictionary
-                        scenarioelement_inner = {}
+                        scenarioelement_inner_kwargs = {}
                         # Detect the font-size with tesseract for some element start
                         # Convert to the grey colour
                         elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
@@ -529,7 +513,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "textinput",
                             "parameters": parameters,
                             "styles": styles,
@@ -551,7 +535,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "checkbox",
                             "parameters": parameters,
                             "styles": styles,
@@ -571,7 +555,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "radiobutton",
                             "parameters": parameters,
                             "styles": styles,
@@ -597,7 +581,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "select",
                             "parameters": parameters,
                             "styles": styles,
@@ -624,7 +608,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "ocrtext",
                             "parameters": parameters,
                             "styles": styles,
@@ -648,7 +632,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "textarea",
                             "parameters": parameters,
                             "styles": styles,
@@ -674,7 +658,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "heading",
                             "parameters": parameters,
                             "styles": styles,
@@ -693,7 +677,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "container",
                             "parameters": parameters,
                             "styles": styles,
@@ -726,7 +710,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "image",
                             "image": elem_image_sourcename,
                             "parameters": parameters,
@@ -760,7 +744,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "button",
                             "parameters": parameters,
                             "styles": styles,
@@ -778,7 +762,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "list",
                             "parameters": parameters,
                             "styles": styles,
@@ -804,21 +788,23 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                         # Create a new Scenario Element for the elements chain
                         # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner = {
+                        scenarioelement_inner_kwargs = {
                             "struct_type": "listItem",
                             "parameters": parameters,
                             "styles": styles,
                             "buoyancy": 0,
                         }
 
-                # print("scenarioelement_inner", scenarioelement_inner)
+                    # print("scenarioelement_inner", scenarioelement_inner)
+                    node.scenarioelement_inner_kwargs = scenarioelement_inner_kwargs
+                    node.scenarioelement_inner_kwargs_list.append(scenarioelement_inner_kwargs)
 
-                node.scenarioelement_inner = ScenarioElement.objects.create(
-                    parent=node.scenarioelement, **scenarioelement_inner
-                )
+                for inner_kwarg in node.scenarioelement_inner_kwargs_list:
+                    node.scenarioelement_inner = ScenarioElement.objects.create(
+                        parent=node.scenarioelement, **inner_kwarg
+                    )
 
             # print(node, root_block, node.scenarioelement)
-    # Function elements creation, loop through the root_block end
 
 
 def htmltree_initialize(fname, bcolour_container_value, img_width):
@@ -841,6 +827,7 @@ def htmltree_initialize(fname, bcolour_container_value, img_width):
     str_styles = "; ".join("{}:{}".format(key, val) for key, val in styles.items())
     outer_div.set("style", str_styles)
     return root, outer_div, styles, parameters
+
 
 def clusters_printing(root_block, fname, image_allclusters=[], image_cclusters=[], image_allcluelems=[]):
     # Go through all the blocks obtained after the ternary algorithm
@@ -942,7 +929,8 @@ def clusters_printing(root_block, fname, image_allclusters=[], image_cclusters=[
 
                     label_element = str(elem["region_attributes"]["HTML element"])
 
-                    # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
+                    # Put the class id as a label.
+                    # Keep in mind, that this label will be different for the specific block types
                     cv2.putText(
                         image_allcluelems,
                         label_element,
@@ -1215,7 +1203,8 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                                 square = width * height
                                 square1 = width1 * height1
                                 square2 = width2 * height2
-                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT, as this part of the script is not for the text blocks.
+                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT,
+                                # as this part of the script is not for the text blocks.
                                 if (
                                     square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
                                 ) or (
@@ -1785,7 +1774,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 square = width * height
                                 square1 = width1 * height1
                                 square2 = width2 * height2
-                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT, as this part of the script is not for the text blocks.
+                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT,
+                                # as this part of the script is not for the text blocks.
 
                                 if (
                                     square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
@@ -1997,7 +1987,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 square = width * height
                                 square1 = width1 * height1
                                 square2 = width2 * height2
-                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT, as this part of the script is not for the text blocks.
+                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT,
+                                # as this part of the script is not for the text blocks.
                                 if (
                                     square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
                                 ) or (
@@ -2170,7 +2161,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 cnndict[fnamesize]["regions"].append(attributes_dict)
 
                 cv2.rectangle(image_maskrcnn, (x3, y3), (x4, y4), (255, 100, 255), 1)
-                # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
+                # Put the class id as a label.
+                # Keep in mind, that this label will be different for the specific block types
                 cv2.putText(
                     image_maskrcnn,
                     str(class_id1),
@@ -2268,7 +2260,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # cv2.imshow(window_name1, image_opencv_input)
         # cv2.waitKey(0)
 
-        # This should be replaced to create nested structure. Clusters obtained from text blocks and from rect blocks should save this information
+        # This should be replaced to create nested structure. Clusters obtained from text blocks
+        # and from rect blocks should save this information
         if region_dataset in {"webpages"}:
             # Calculation of the excluded indices to remove overlapped elements start
             # Second, calculate the non-text blocks overlap
@@ -2351,7 +2344,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Calculation of the excluded indices to remove overlapped elements end
 
         # Create oclusters
-        # Creating a nested structure. Clusters obtained from text blocks and from rect blocks should save this information
+        # Creating a nested structure.
+        # Clusters obtained from text blocks and from rect blocks should save this information
         if region_dataset in {"webpages"}:
             # Calculation of the excluded indices to remove overlapped elements for a some oclusters level start
             # Second, calculate the non-text blocks overlap
@@ -3012,9 +3006,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Ternary assembling algorithm run after the clusters end
 
-
         # Printing clusters function calling
-        clusters_printing(root_block, fname, image_allclusters=image_allclusters, image_cclusters=image_cclusters, image_allcluelems=image_allcluelems)
+        clusters_printing(root_block, fname, image_allclusters=image_allclusters, image_cclusters=image_cclusters,
+                          image_allcluelems=image_allcluelems)
 
         # HTML tree initialize function call
         root, outer_div, styles, parameters = htmltree_initialize(fname, bcolour_container_value, img_width)
@@ -3031,11 +3025,14 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Obtaining the absolute path for the parameters directly. Should change this later.
         o = urlparse(self.context["request"].build_absolute_uri())
         # Detect elements for the root block
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple")
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+                           image_original, fname, o, serializing="virtualize_simple")
         # Detect elements for the root block double
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple")
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+                           image_original, fname, o, serializing="virtualize_simple")
         # Detect elements for the root block triple
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node, image_original, fname, o, serializing = "virtualize_simple")
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+                           image_original, fname, o, serializing="virtualize_simple")
         # Generating HTML for printing
         html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
         # print("html=", html)
@@ -3117,7 +3114,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             "styles": {},
         }
 
-        # Define styles variable switching on, this variable is plased at parameters for some other serializers as a flag
+        # Define styles variable switching on, this variable is plased at parameters with other serializers as a flag
         styles_on = 1
         # Pre-Root element assignment
         element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
@@ -3971,7 +3968,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             o = urlparse(self.context["request"].build_absolute_uri())
             # Detect elements for the root block
             elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
-                               image_original, fname, o, serializing = "assemble")
+                               image_original, fname, o, serializing="assemble")
 
         return serializer_node
 
@@ -4014,7 +4011,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
         }
         # Nested elements should be detected at the free canvas
 
-        # Define styles variable switching on, this variable is plased at parameters for some other serializers as a flag
+        # Define styles variable switching on, this variable is plased at parameters with other serializers as a flag
         styles_on = 1
         # Pre-Root element assignment
         element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
@@ -4910,5 +4907,5 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             o = urlparse(self.context["request"].build_absolute_uri())
             # Detect elements for the root block
             elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
-                               outer_div_node, image_original, fname, o, serializing = "freecanvas", children=children)
+                               outer_div_node, image_original, fname, o, serializing="freecanvas", children=children)
         return serializer_node
