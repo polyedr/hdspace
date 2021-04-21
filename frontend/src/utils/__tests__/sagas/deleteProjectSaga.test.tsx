@@ -11,8 +11,8 @@ import { mockProject, beforeSagaTest } from '../test-utils';
 describe('deleteProjectSaga Test', () => {
   beforeAll(beforeSagaTest);
   const action = Actions.deleteProject(10);
-  describe('WHEN method is called and API is in its working state', () => {
-    // @ts-ignore
+  describe('under normal behavior', () => {
+    // @ts-expect-error saga type is not compatible with IterableIterator”
     const it = sagaHelper(deleteProjectSaga(action));
     it('request to delete a project', (result) => {
       expect(result).toEqual(
@@ -46,8 +46,8 @@ describe('deleteProjectSaga Test', () => {
       );
     });
 
-    describe('WHEN method is called and API returns an error', () => {
-      // @ts-ignore
+    describe('when apiDeleteProject request fails', () => {
+      // @ts-expect-error saga type is not compatible with IterableIterator”
       const it = sagaHelper(deleteProjectSaga(action));
 
       it('error when requesting deletion', (result) => {

@@ -1,5 +1,4 @@
 import { put, call, select } from 'redux-saga/effects';
-
 import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
@@ -28,7 +27,6 @@ import {
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import { renameProject } from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';

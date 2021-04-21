@@ -31,7 +31,7 @@ describe('changeScreensOrderSaga', () => {
   const masterScreen = createMasterScreenMock(1);
 
   describe('under normal behavior', () => {
-    // @ts-expect-error saga type is not compatible with
+    // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(changeScreensOrder(action));
     it('should select screens without master', (result) => {
       expect(result).toEqual(select(selectScreensWithoutMaster));
@@ -67,7 +67,7 @@ describe('changeScreensOrderSaga', () => {
   });
 
   describe('when api request fails', () => {
-    // @ts-expect-error saga type is not compatible with
+    // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(changeScreensOrder(action));
     it('should select screens without master', (result) => {
       expect(result).toEqual(select(selectScreensWithoutMaster));
@@ -85,7 +85,7 @@ describe('changeScreensOrderSaga', () => {
       );
     });
 
-    it('error test 2', (result) => {
+    it('should call apiUpdateScreen request', (result) => {
       expect(result).toEqual(
         all(
           newScreenList.map(({ id, buoyancy }) => {

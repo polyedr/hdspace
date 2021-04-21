@@ -11,6 +11,7 @@ import initialPermissions from '@Redux/permissions/initial';
 import { AppReduxState, ProjectEditState } from '@Redux/types';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
+import { generateRandomInteger } from '@Utils/NumberHelper';
 import {
   Project,
   StateElement,
@@ -195,10 +196,8 @@ export const mockState: AppReduxState = {
   },
 };
 
-const randomInteger = (max, min) =>
-  Math.floor(Math.random() * (max - min)) + min;
+const getTestId = () => generateRandomInteger(1, 9999);
 
-const getTestId = () => randomInteger(9999, 1);
 export const createMockProject = (): Project => ({
   id: getTestId(),
   name: 'test project',

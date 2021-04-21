@@ -33,8 +33,8 @@ describe('createProjectSaga Test', () => {
   const mockProject = createMockProject();
   const masterScreenMock = createMasterScreenMock(mockProject.id);
   const screenMock = createScreenMock(mockProject.id);
-  describe('WHEN method is called and API is in its working state', () => {
-    // @ts-ignore
+  describe('under normal behavior', () => {
+    // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(createProjectSaga(action));
 
     it('should set projects list loader flag to true', (result) => {
@@ -154,8 +154,9 @@ describe('createProjectSaga Test', () => {
       expect(result).toEqual(put(Actions.setNewScreenModal(true)));
     });
   });
-  describe('WHEN method is called and API returns an error', () => {
-    // @ts-ignore
+
+  describe('when apiCreateProject fails', () => {
+    // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(createProjectSaga(action));
     it('should set projects list loader flag to true', (result) => {
       expect(result).toEqual(put(Actions.setProjectCreateLoader(true)));
