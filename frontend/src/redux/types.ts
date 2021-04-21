@@ -125,6 +125,7 @@ export type ProjectCommunicationState = {
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
   assetsLoader: boolean;
+  importLoader: boolean;
 };
 
 export type ProjectControlState = {
@@ -1225,7 +1226,13 @@ export type Action =
   | PasteVIARegion
   | SetSidebarOpen
   | SetSidebarIframe
-  | SetSidebarHost;
+  | SetSidebarHost
+  | SetValueImportLoader;
+
+export type SetValueImportLoader = IAction<
+  typeof TYPES.SET_VALUE_IMPORT_LOADER,
+  boolean
+>;
 
 export type HistoryMeta = {
   useHistory?: boolean;

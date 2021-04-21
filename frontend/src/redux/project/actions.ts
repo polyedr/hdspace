@@ -167,6 +167,7 @@ import {
   SetSidebarHost,
   SetSidebarIframe,
   AssetData,
+  SetValueImportLoader,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1148,9 +1149,14 @@ export const importHtml = (files: File[], url?: string) => ({
   },
 });
 
-export const uploadImportUrl = (url) => ({
+export const uploadImportUrl = (url: string) => ({
   type: TYPES.UPLOAD_IMPORT_URL,
   payload: url,
+});
+
+export const setValueImportLoader = (value: boolean): SetValueImportLoader => ({
+  type: TYPES.SET_VALUE_IMPORT_LOADER,
+  payload: value,
 });
 
 export const setEditorDocument = (doc: Document): SetEditorDocument => ({

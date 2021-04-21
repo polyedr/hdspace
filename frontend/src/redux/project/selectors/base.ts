@@ -34,6 +34,9 @@ export const selectProjectById = (
 /**
  * use this selector in components with useSelector hook
  */
+export function selectImportLoader(state: AppReduxState): boolean {
+  return selectProjectState(state).communication.importLoader;
+}
 export const selectProjectByIdWrapper = (projectId: number) => (
   state: AppReduxState,
 ) => selectProjectById(state, projectId);

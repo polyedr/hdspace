@@ -69,6 +69,12 @@ const communicationReducer = (
       };
     }
 
+    case TYPES.SET_VALUE_IMPORT_LOADER: {
+      return {
+        ...state,
+        importLoader: action.payload,
+      };
+    }
     default:
       return state;
   }

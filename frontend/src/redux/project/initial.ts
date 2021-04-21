@@ -94,6 +94,7 @@ export const initialCommunication: ProjectCommunicationState = {
   projectCreateLoader: false,
   analyzerLoader: false,
   assetsLoader: false,
+  importLoader: false,
 };
 
 export const initialControl: ProjectControlState = {
