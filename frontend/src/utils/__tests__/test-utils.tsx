@@ -249,7 +249,7 @@ export const createScreenMock = (
   status: 'pending',
 });
 
-export const projectWithScreensMock = (
+export const createProjectWithScreensMock = (
   projectId: number,
 ): ProjectWithScreens => ({
   created: new Date(),

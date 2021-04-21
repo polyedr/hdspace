@@ -1,6 +1,9 @@
 import sagaHelper from 'redux-saga-testing';
 import { put, call, select } from 'redux-saga/effects';
-import { getProjectSaga } from '@Redux/project/sagas/project';
+import {
+  getProjectSaga,
+  setMasterScreenCoreElements,
+} from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { getScreensSaga } from '@Redux/project/sagas/screen';
@@ -12,15 +15,16 @@ import {
   beforeSagaTest,
   createMasterScreenMock,
   createMockProject,
-  projectWithScreensMock,
+  createProjectWithScreensMock,
 } from '../test-utils';
 
 describe('createProjectSaga Test', () => {
   beforeAll(beforeSagaTest);
   const action = Actions.getProject(10);
   const mockProject = createMockProject();
-  const masterScreenMock = createMasterScreenMock(mockProject.id);
-  const projectWithScreens = projectWithScreensMock(mockProject.id);
+  const masterScreenMock = createMasterScreenMock(1);
+  const projectWithScreens = createProjectWithScreensMock(mockProject.id);
+  const masterScreenId = projectWithScreens.projectscreen[0].id;
   describe('under normal behavior', () => {
     // @ts-expect-error saga type is not compatible with IterableIterator
     const it = sagaHelper(getProjectSaga(action));
@@ -70,13 +74,18 @@ describe('createProjectSaga Test', () => {
       );
     });
     it('should put setMasterScreenId action', (result) => {
-      expect(result).toEqual(
-        put(Actions.setMasterScreenId(masterScreenMock.id)),
-      );
+      expect(result).toEqual(put(Actions.setMasterScreenId(masterScreenId)));
     });
 
     it('should select master screen', (result) => {
-      expect(result).toEqual(select(selectScreenById, masterScreenMock.id));
+      expect(result).toEqual(select(selectScreenById, masterScreenId));
+      return masterScreenMock;
+    });
+
+    it('should set master screen core elements', (result) => {
+      expect(result).toEqual(
+        call(setMasterScreenCoreElements, masterScreenMock),
+      );
     });
   });
 
