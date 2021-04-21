@@ -19,7 +19,7 @@ import { updateElementParameters } from '@Redux/project/actions';
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
@@ -253,39 +253,36 @@ const SmartContainerRenderer = React.forwardRef<
                 />
 
                 <label htmlFor={`upload-image-wireframe-${element.id}`}>
-                  <Tooltip title="Upload image" placement="top">
-                    <IconButton aria-label="upload picture" component="span">
-                      <CloudUploadIcon className={classes.icon} />
-                    </IconButton>
-                  </Tooltip>
+                  <IconButton
+                    aria-label="upload picture"
+                    component="span"
+                    title="Upload image"
+                  >
+                    <CloudUploadIcon className={classes.icon} />
+                  </IconButton>
                 </label>
 
                 {imageURL && (
                   <>
-                    <Tooltip
+                    <IconButton
+                      aria-label="automatically analyze picture"
                       title="Automatically Analyze image"
-                      placement="top"
+                      component="span"
+                      disabled={!imageFile}
+                      onClick={() => handleNNProcessing(true)}
                     >
-                      <IconButton
-                        aria-label="automatically analyze picture"
-                        component="span"
-                        disabled={!imageFile}
-                        onClick={() => handleNNProcessing(true)}
-                      >
-                        <SyncIcon className={classes.icon} />
-                      </IconButton>
-                    </Tooltip>
+                      <SyncIcon className={classes.icon} />
+                    </IconButton>
 
-                    <Tooltip title="Manually Analyze image" placement="top">
-                      <IconButton
-                        aria-label="manually analyze picture"
-                        component="span"
-                        disabled={!imageFile}
-                        onClick={() => handleNNProcessing(false)}
-                      >
-                        <SyncProblemIcon className={classes.icon} />
-                      </IconButton>
-                    </Tooltip>
+                    <IconButton
+                      aria-label="manually analyze picture"
+                      title="Manually Analyze image"
+                      component="span"
+                      disabled={!imageFile}
+                      onClick={() => handleNNProcessing(false)}
+                    >
+                      <SyncProblemIcon className={classes.icon} />
+                    </IconButton>
                   </>
                 )}
               </>
