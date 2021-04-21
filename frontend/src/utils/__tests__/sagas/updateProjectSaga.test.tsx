@@ -1,18 +1,64 @@
 import sagaHelper from 'redux-saga-testing';
-import { select } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 import { updateProjectSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
-import { beforeSagaTest, mockProject } from '../test-utils';
+import { projectUpdateHelperSaga } from '@Redux/project/sagas/shared';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import { beforeSagaTest, createMockProject, mockProject } from '../test-utils';
 
-describe('updateProjectSaga Test', () => {
+describe('updateProjectSaga', () => {
   beforeAll(beforeSagaTest);
   const action = Actions.updateProject(mockProject);
-  describe('WHEN method is called and API is in its working state', () => {
-    // @ts-ignore
+  const currentProject = createMockProject();
+  describe('under normal behavior', () => {
+    // @ts-expect-error saga type is not compotible with IterableIterator
     const it = sagaHelper(updateProjectSaga(action));
-    it('test 1', (result) => {
+    it('should select current project', (result) => {
       expect(result).toEqual(select(selectCurrentProject));
+      return currentProject;
+    });
+
+    it('should call projectUpdateHelperSaga', (result) => {
+      expect(result).toEqual(call(projectUpdateHelperSaga, mockProject));
+      return true;
+    });
+
+    it('should add undo action', (result) => {
+      expect(result).toEqual(
+        put(
+          Actions.addUndoActions(
+            Actions.updateProject(currentProject, { ...action.meta }),
+          ),
+        ),
+      );
+    });
+  });
+
+  describe('when projectUpdateHelperSaga fails', () => {
+    // @ts-expect-error saga type is not compotible with IterableIterator
+    const it = sagaHelper(updateProjectSaga(action));
+    it('should select current project', (result) => {
+      expect(result).toEqual(select(selectCurrentProject));
+      return currentProject;
+    });
+
+    it('should call projectUpdateHelperSaga', (result) => {
+      expect(result).toEqual(call(projectUpdateHelperSaga, mockProject));
+      return false;
+    });
+
+    it('should display error notification', (result) => {
+      expect(result).toEqual(
+        put(
+          enqueueSnackbar({
+            message: `Failed to update project ${mockProject.name}`,
+            options: {
+              variant: 'error',
+            },
+          }),
+        ),
+      );
     });
   });
 });
