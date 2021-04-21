@@ -10,7 +10,7 @@ type Props = {
   scrollRef: React.RefObject<Scrollbars>;
 };
 
-const Screen: React.FC<Props> = ({ scrollRef }) => {
+const TreeCanvas: React.FC<Props> = ({ scrollRef }) => {
   const rootId = useSelector(selectCurrentRootId);
   const disableInteractions = useSelector(selectIsPrototypeMode);
 
@@ -23,4 +23,4 @@ const Screen: React.FC<Props> = ({ scrollRef }) => {
   );
 };
 
-export default Screen;
+export default TreeCanvas;

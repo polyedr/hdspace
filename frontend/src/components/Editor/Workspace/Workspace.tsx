@@ -11,7 +11,7 @@ import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
-import Screen from '@Components/Editor/Screen';
+import TreeCanvas from '@Components/Editor/TreeCanvas';
 import Scrollbars from 'react-custom-scrollbars';
 import { makeStyles } from '@material-ui/core/styles';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
@@ -104,7 +104,7 @@ const Workspace: React.FC<Props> = () => {
                     {masterScreenEnabled ? (
                       <MasterScreen scrollRef={scrollRef} />
                     ) : (
-                      <Screen scrollRef={scrollRef} />
+                      <TreeCanvas scrollRef={scrollRef} />
                     )}
                     {!freeCanvasMode && !isPrototypeMode && (
                       <ElementsInteractions posRight={scrollLeft} />
