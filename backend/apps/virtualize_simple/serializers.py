@@ -234,12 +234,9 @@ def write_elem_value(region_dataset, class_id_recognized):
 
 # Detect elements for the root block function
 def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
-                       image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0, children=[]):
+                       image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0):
     # Function elements creation, loop through the root_block
     for pre, fill, node in RenderTree(root_block):
-        # if(node.elements):
-        #     print("elements: ", len(node.elements))
-        #     input()
         styles = {}
         parameters = {}
         if serializing == "freecanvas":
@@ -300,14 +297,18 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             )
             node.div.set("style", str_styles)
 
-            # Create a new Scenario Element for the elements chain
-            node.scenarioelement = ScenarioElement.objects.create(
-                parent=outer_div_node,
-                struct_type="container",
-                parameters=parameters,
-                styles=styles,
-                buoyancy=0,
-            )
+            node.scenarioelement_kwargs = {
+                "struct_type": "container",
+                "parameters": parameters,
+                "styles": styles,
+                "buoyancy": 0,
+            }
+
+            # # Create a new Scenario Element for the elements chain
+            # node.scenarioelement = ScenarioElement.objects.create(
+            #     parent=outer_div_node,
+            #     **node.scenarioelement_kwargs
+            # )
 
         else:
             node.div = ET.SubElement(node.parent.div, "div")
@@ -338,47 +339,19 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             # Before that, check that the node is not final and doesn't have element
             # if(node.elements):
             # if((len(node.children) > 0) or (len(node.elements) > 0)):
-            node.scenarioelement = ScenarioElement.objects.create(
-                parent=node.parent.scenarioelement,
-                struct_type="container",
-                parameters=parameters,
-                styles=styles,
-                buoyancy=buoyancy,
-            )
+            node.scenarioelement_kwargs = {
+                "struct_type": "container",
+                "parameters": parameters,
+                "styles": styles,
+                "buoyancy": buoyancy,
+            }
 
         if (serializing == "freecanvas"):
             # Attach elements for some fcluster
             if node.types == "fcluster":
                 # Arrange the fcluster children based on their coordinates
-                if node.direction == 0:
-                    array_elements = sorted(
-                        node.elements, key=lambda i: i["shape_attributes"]["y"]
-                    )
-                elif node.direction == 1:
-                    array_elements = sorted(
-                        node.elements, key=lambda i: i["shape_attributes"]["x"]
-                    )
-                else:
-                    array_elements = node.elements
-                for elem in array_elements:
-                    # Define the element dimensions start
-                    elem_width = int(elem["shape_attributes"]["width"])
-                    elem_height = int(elem["shape_attributes"]["height"])
+                pass
 
-                    x1 = int(elem["shape_attributes"]["x"])
-                    y1 = int(elem["shape_attributes"]["y"])
-                    # Define the element dimensions end
-
-                    # Attach element to cluster
-                    for child in children:
-                        if (child.parameters):
-                            if int(child.parameters["freeCanvas"]["width"]) == elem_width:
-                                if int(child.parameters["freeCanvas"]["height"]) == elem_height:
-                                    if int(child.parameters["freeCanvas"]["left"]) == x1:
-                                        if int(child.parameters["freeCanvas"]["top"]) == y1:
-                                            # print(child, child.struct_type, child.parent, child.parent_id)
-                                            # input()
-                                            child.move_to(node.scenarioelement)
         elif (serializing in {"virtualize_simple", "assemble"}):
             # Display elements for some fcluster
             if node.types == "fcluster":
@@ -795,16 +768,70 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                             "buoyancy": 0,
                         }
 
-                    # print("scenarioelement_inner", scenarioelement_inner)
                     node.scenarioelement_inner_kwargs = scenarioelement_inner_kwargs
                     node.scenarioelement_inner_kwargs_list.append(scenarioelement_inner_kwargs)
 
+    return True
+
+
+# Create elements for the root block function serializer
+def elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple", children=[]):
+    # Function elements creation, loop through the root_block
+    for pre, fill, node in RenderTree(root_block):
+        if node == root_block:
+            # Create a new Scenario Element for the elements chain
+            node.scenarioelement = ScenarioElement.objects.create(
+                parent=outer_div_node,
+                **node.scenarioelement_kwargs
+            )
+        else:
+            node.scenarioelement = ScenarioElement.objects.create(
+                parent=node.parent.scenarioelement,
+                **node.scenarioelement_kwargs
+            )
+        if (serializing == "freecanvas"):
+            # Attach elements for some fcluster
+            if node.types == "fcluster":
+                # Arrange the fcluster children based on their coordinates
+                if node.direction == 0:
+                    array_elements = sorted(
+                        node.elements, key=lambda i: i["shape_attributes"]["y"]
+                    )
+                elif node.direction == 1:
+                    array_elements = sorted(
+                        node.elements, key=lambda i: i["shape_attributes"]["x"]
+                    )
+                else:
+                    array_elements = node.elements
+                for elem in array_elements:
+                    # Define the element dimensions start
+                    elem_width = int(elem["shape_attributes"]["width"])
+                    elem_height = int(elem["shape_attributes"]["height"])
+
+                    x1 = int(elem["shape_attributes"]["x"])
+                    y1 = int(elem["shape_attributes"]["y"])
+                    # Define the element dimensions end
+
+                    # Attach element to cluster
+                    for child in children:
+                        if (child.parameters):
+                            if int(child.parameters["freeCanvas"]["width"]) == elem_width:
+                                if int(child.parameters["freeCanvas"]["height"]) == elem_height:
+                                    if int(child.parameters["freeCanvas"]["left"]) == x1:
+                                        if int(child.parameters["freeCanvas"]["top"]) == y1:
+                                            # print(child, child.struct_type, child.parent, child.parent_id)
+                                            # input()
+                                            child.move_to(node.scenarioelement)
+
+        elif (serializing in {"virtualize_simple", "assemble"}):
+            # Create elements for some fcluster
+            if node.types == "fcluster":
                 for inner_kwarg in node.scenarioelement_inner_kwargs_list:
                     node.scenarioelement_inner = ScenarioElement.objects.create(
                         parent=node.scenarioelement, **inner_kwarg
                     )
 
-            # print(node, root_block, node.scenarioelement)
+    return True
 
 
 def htmltree_initialize(fname, bcolour_container_value, img_width):
@@ -3027,12 +3054,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Detect elements for the root block
         elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
                            image_original, fname, o, serializing="virtualize_simple")
+        # Serializer only
+        elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
         # Detect elements for the root block double
         elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
                            image_original, fname, o, serializing="virtualize_simple")
+        # Serializer only
+        elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
         # Detect elements for the root block triple
         elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
                            image_original, fname, o, serializing="virtualize_simple")
+        # Serializer only
+        elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
         # Generating HTML for printing
         html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
         # print("html=", html)
@@ -3969,6 +4002,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # Detect elements for the root block
             elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
                                image_original, fname, o, serializing="assemble")
+            # Serializer only
+            elements_rootblock_create(root_block, outer_div_node, serializing="assemble")
 
         return serializer_node
 
@@ -4907,5 +4942,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             o = urlparse(self.context["request"].build_absolute_uri())
             # Detect elements for the root block
             elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
-                               outer_div_node, image_original, fname, o, serializing="freecanvas", children=children)
+                               outer_div_node, image_original, fname, o, serializing="freecanvas")
+            # Serializer only
+            elements_rootblock_create(root_block, outer_div_node, serializing="freecanvas", children=children)
         return serializer_node
