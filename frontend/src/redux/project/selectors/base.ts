@@ -34,9 +34,6 @@ export const selectProjectById = (
 /**
  * use this selector in components with useSelector hook
  */
-export function selectImportLoader(state: AppReduxState): boolean {
-  return selectProjectState(state).communication.importLoader;
-}
 export const selectProjectByIdWrapper = (projectId: number) => (
   state: AppReduxState,
 ) => selectProjectById(state, projectId);
@@ -179,3 +176,7 @@ export const selectSidebarIframe = ({ project }: AppReduxState) =>
 
 export const selectSidebarHost = ({ project }: AppReduxState) =>
   project.ui.sidebar.host;
+
+export function selectImportLoader(state: AppReduxState): boolean {
+  return selectProjectState(state).communication.importLoader;
+}
