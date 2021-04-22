@@ -573,13 +573,13 @@ export type AddChildToElement = IAction<
   },
   ElementHistoryMeta
 >;
-export type UploadFile = IAction<
-  typeof TYPES.UPLOAD_FILE,
+export type AutoAnalyzeImage = IAction<
+  typeof TYPES.AUTO_ANALYZE_IMAGE,
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
-export type RecognizeImage = IAction<
-  typeof TYPES.RECOGNIZE_IMAGE,
+export type SemiautoAnalyzeImage = IAction<
+  typeof TYPES.SEMIAUTO_ANALYZE_IMAGE,
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
@@ -1106,7 +1106,7 @@ export type Action =
   | DeleteElement
   | AddChildToElement
   | AddChildrenToElement
-  | UploadFile
+  | AutoAnalyzeImage
   | uploadImageForNNSuccess
   | WrapIntoContainer
   | SetHoveredElementId

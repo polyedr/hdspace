@@ -109,7 +109,7 @@ import {
   addHistoryActionsSaga,
 } from './control';
 import withActionsHistory from '../wrappers/withActionsHistory';
-import { recognizeImageSaga, uploadFileSaga } from './nn';
+import { semiautoAnalyzeImageSaga, autoAnalyzeImageSaga } from './nn';
 
 const removeSharedStylesSaga = compose(
   withRequiredPermissions(
@@ -406,9 +406,9 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.COPY_ACTIVE_ELEMENT, copyActiveElementSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
-  yield takeEvery(TYPES.RECOGNIZE_IMAGE, recognizeImageSaga);
+  yield takeEvery(TYPES.SEMIAUTO_ANALYZE_IMAGE, semiautoAnalyzeImageSaga);
 
-  yield takeLatest(TYPES.UPLOAD_FILE, uploadFileSaga);
+  yield takeLatest(TYPES.AUTO_ANALYZE_IMAGE, autoAnalyzeImageSaga);
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 
   // history actions

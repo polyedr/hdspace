@@ -93,7 +93,7 @@ import {
   UpdateSavedElementValues,
   UpdateScreen,
   UpdateSharedStyles,
-  UploadFile,
+  AutoAnalyzeImage,
   WrapIntoContainer,
   SetScreenCreateLoader,
   SetBordersEnabled,
@@ -124,7 +124,7 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
-  RecognizeImage,
+  SemiautoAnalyzeImage,
   FinishAnnotaion,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
@@ -852,13 +852,13 @@ export const addChildToElement = (
   meta,
 });
 
-export const uploadFile = (
+export const autoAnalyzeImage = (
   file: any,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
-): UploadFile => ({
-  type: TYPES.UPLOAD_FILE,
+): AutoAnalyzeImage => ({
+  type: TYPES.AUTO_ANALYZE_IMAGE,
   payload: {
     file,
     parentId,
@@ -867,13 +867,13 @@ export const uploadFile = (
   meta,
 });
 
-export const recognizeImage = (
+export const semiAutoAnalyzeImage = (
   file: any,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
-): RecognizeImage => ({
-  type: TYPES.RECOGNIZE_IMAGE,
+): SemiautoAnalyzeImage => ({
+  type: TYPES.SEMIAUTO_ANALYZE_IMAGE,
   payload: {
     file,
     parentId,

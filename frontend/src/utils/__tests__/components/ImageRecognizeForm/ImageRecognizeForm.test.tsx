@@ -92,7 +92,7 @@ describe('ImageRecognizeForm', () => {
 
     const actions = store.getActions();
 
-    expect(actions[actions.length - 1].type).toBe(TYPES.UPLOAD_FILE);
+    expect(actions[actions.length - 1].type).toBe(TYPES.AUTO_ANALYZE_IMAGE);
   });
 
   it('should dispatch recognizeImage action of confirm', () => {
@@ -113,6 +113,6 @@ describe('ImageRecognizeForm', () => {
 
     const actions = store.getActions();
 
-    expect(actions[actions.length - 1].type).toBe(TYPES.RECOGNIZE_IMAGE);
+    expect(actions[actions.length - 1].type).toBe(TYPES.SEMIAUTO_ANALYZE_IMAGE);
   });
 });

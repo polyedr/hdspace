@@ -27,7 +27,7 @@ import withActionsHistory from '@Redux/project/wrappers/withActionsHistory';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 
-export const recognizeImageSaga = compose(
+export const semiautoAnalyzeImageSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
     UserProjectPermission.CHANGE_PROJECT,
@@ -37,7 +37,7 @@ export const recognizeImageSaga = compose(
   type,
   payload: { file, parentId, blockType },
   meta,
-}: ReturnType<typeof Actions.recognizeImage>) {
+}: ReturnType<typeof Actions.semiAutoAnalyzeImage>) {
   try {
     if (!meta) {
       console.error(`You have to provide metainformation for action ${type}`);
@@ -212,7 +212,7 @@ export const recognizeImageSaga = compose(
   }
 });
 
-export const uploadFileSaga = compose(
+export const autoAnalyzeImageSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
     UserProjectPermission.CHANGE_PROJECT,
@@ -222,7 +222,7 @@ export const uploadFileSaga = compose(
   type,
   payload: { file, parentId, blockType },
   meta,
-}: ReturnType<typeof Actions.uploadFile>) {
+}: ReturnType<typeof Actions.autoAnalyzeImage>) {
   try {
     if (!meta) {
       console.error(`You have to provide metainformation for action ${type}`);
