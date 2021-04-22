@@ -39,6 +39,7 @@ const TYPES = {
 
   // UI Actions
   SET_SIDEBAR_OPEN: 'ui/SET_SIDEBAR_OPEN',
+  TOGGLE_TABS_AUTOSWITCH: 'ui/TOGGLE_TABS_AUTOSWITCH',
 
   // Sidebar Actions
   SET_UP_SIDEBAR: 'sidebar/SET_UP_SIDEBAR',
