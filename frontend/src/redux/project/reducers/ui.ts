@@ -154,10 +154,10 @@ function uiReducer(
       };
     }
 
-    case TYPES.SET_ENABLE_TABS_AUTO_SWITCH: {
+    case TYPES.TOGGLE_TABS_AUTOSWITCH: {
       return {
         ...state,
-        enableTabsAutoSwitch: !state.enableTabsAutoSwitch,
+        tabsAutoSwitch: !state.tabsAutoSwitch,
       };
     }
 
