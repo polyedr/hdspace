@@ -168,6 +168,7 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
+  SetEnableTabsAutoSwitch,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1522,4 +1523,8 @@ export const sidebarLogout = () => ({
 
 export const sidebarLogoutSuccess = () => ({
   type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
+});
+
+export const setEnableTabsAutoSwitch = (): SetEnableTabsAutoSwitch => ({
+  type: TYPES.SET_ENABLE_TABS_AUTO_SWITCH,
 });

@@ -39,6 +39,7 @@ const TYPES = {
 
   // UI Actions
   SET_SIDEBAR_OPEN: 'ui/SET_SIDEBAR_OPEN',
+  SET_ENABLE_TABS_AUTO_SWITCH: 'ui/SET_ENABLE_TABS_AUTO_SWITCH',
 
   // Sidebar Actions
   SET_UP_SIDEBAR: 'sidebar/SET_UP_SIDEBAR',

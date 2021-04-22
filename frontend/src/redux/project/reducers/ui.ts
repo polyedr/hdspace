@@ -154,6 +154,13 @@ function uiReducer(
       };
     }
 
+    case TYPES.SET_ENABLE_TABS_AUTO_SWITCH: {
+      return {
+        ...state,
+        enableTabsAutoSwitch: !state.enableTabsAutoSwitch,
+      };
+    }
+
     default:
       return state;
   }
