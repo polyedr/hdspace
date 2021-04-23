@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.conf import settings
+from jsonfield import JSONField
 from apps.utils.models import TimeStampedModel
 from .utils import utils
 
@@ -50,6 +51,7 @@ class Profile(TimeStampedModel):
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True)
     approved = models.BooleanField(default=False)
     hourly_rate = models.IntegerField(default=0)
+    parameters = JSONField(blank=True)
 
     def get_confirmation_url(self) -> str:
         return reverse(
