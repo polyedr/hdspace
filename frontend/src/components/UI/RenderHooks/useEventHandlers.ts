@@ -1,14 +1,10 @@
 import React, { useMemo } from 'react';
 
-import { RendererProps } from '../RenderElements/types';
-
-type DefaultHandlers = {
-  [eventName: string]: (event: React.SyntheticEvent) => void;
-};
+import { RendererProps, DefaultEventHandlers } from '../RenderElements/types';
 
 const useEventHandlers = (
   props: RendererProps,
-  defaultHandlers: DefaultHandlers = {},
+  defaultHandlers: DefaultEventHandlers = {},
   skipHandlers: string[] = [],
 ): any => {
   const eventNames = Object.keys(props).filter((name) => {
@@ -24,7 +20,7 @@ const useEventHandlers = (
             return acc;
           }
           const handler = defaultHandlers[eventName]
-            ? (event: React.SyntheticEvent) => {
+            ? (event: React.SyntheticEvent<HTMLElement>) => {
                 defaultHandlers[eventName](event);
                 props[eventName](event);
               }

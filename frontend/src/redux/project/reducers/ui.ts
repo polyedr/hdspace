@@ -91,22 +91,6 @@ function uiReducer(
       };
     }
 
-    case TYPES.SET_ELEMENT_CAN_BE_EDITED: {
-      return { ...state, elementCanBeEdited: action.payload };
-    }
-
-    case TYPES.SET_ELEMENT_BEING_EDITED: {
-      return {
-        ...state,
-        elementCanBeEdited: false,
-        elementBeingEdited: action.payload,
-      };
-    }
-
-    case TYPES.RESET_ELEMENT_EDIT_STATE: {
-      return { ...state, elementBeingEdited: false, elementCanBeEdited: false };
-    }
-
     case TYPES.SET_CAN_CREATE_GROUP: {
       return { ...state, canCreateGroup: action.payload };
     }

@@ -1,6 +1,8 @@
-import { BaseSyntheticEvent } from 'react';
+import { BaseSyntheticEvent, SyntheticEvent } from 'react';
 
-const prevent = (ev: BaseSyntheticEvent) => {
+const prevent = (
+  ev: BaseSyntheticEvent<HTMLElement> | SyntheticEvent<HTMLElement>,
+) => {
   ev.stopPropagation();
   ev.preventDefault();
 };

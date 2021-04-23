@@ -4,9 +4,8 @@ import React, {
   useRef,
   useEffect,
   useCallback,
-  useContext,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { useDebouncedCallback } from 'use-debounce';
@@ -15,37 +14,25 @@ import {
   moveElement,
   setActiveElement,
   setCurrentDropTargetParams,
-  setElementBeingEdited,
-  setElementCanBeEdited,
   setHoveredElementId,
   setMasterSourceElementId,
   toggleSelectedElement,
 } from '@Redux/project/actions';
 import {
+  DropTargetParams,
   ElementData,
+  Normalized,
   StateElement,
   SyntheticElement,
-  UserProjectPermission,
 } from '@Src/types';
-import {
-  selectCurrentRootId,
-  selectElementBeingEdited,
-  selectElementByChildId,
-  selectElementById,
-  selectElementCanBeEdited,
-  selectMasterSourceElementId,
-  selectPreSelectedElementId,
-} from '@Redux/project/selectors/element';
-import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   CONTAINER_GROUPS,
-  EDITABLE_COMPONENTS_LIST,
+  // EDITABLE_COMPONENTS_LIST,
   NOT_DRAGGABLE_COMPONENTS,
 } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
-import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import Scrollbars from 'react-custom-scrollbars';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import {
@@ -54,37 +41,44 @@ import {
   getDropIndex,
 } from './helper';
 import RENDERERS from '../../UI/RenderElements';
-import { WindowContext } from '../FrameWrapper/FrameContext';
 
 type DraggableElementProps = {
+  screenId: number;
   elementId: string;
+  allElements: Normalized<StateElement>;
+  isDisabled: boolean;
+  dropTargetParams: DropTargetParams | null;
+  preSelectedElementId: string | null;
+  masterSourceElementId: string | null;
+  canDragAndDrop: boolean;
+  frameWindow: Window | null;
+
   parentDomStyles?: CSSStyleDeclaration | null;
   parentIds?: Array<string>;
   scrollRef: React.RefObject<Scrollbars>;
-  isDisabled: boolean;
 };
 
 const DraggableElement: React.FC<DraggableElementProps> = ({
+  screenId,
   elementId,
+  allElements,
+  isDisabled,
+  dropTargetParams,
+  preSelectedElementId,
+  masterSourceElementId,
+  canDragAndDrop,
+  frameWindow,
+
   parentDomStyles,
   parentIds = [],
-  isDisabled,
   scrollRef,
 }) => {
   const dispatch = useDispatch();
-  const frameWindow = useContext(WindowContext);
 
-  const element = useSelector(selectElementById(elementId));
-  const parent = useSelector(selectElementByChildId(elementId));
-  const rootID = useSelector(selectCurrentRootId);
-  const dropTargetParams = useSelector(selectCurrentDropTargetParams);
-  const screenId = useSelector(selectCurrentScreenId);
-  const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
-  const elementCanBeEdited = useSelector(selectElementCanBeEdited(elementId));
-  const preSelectedElementId = useSelector(selectPreSelectedElementId);
-  const masterSourceElementId = useSelector(selectMasterSourceElementId);
-  const canDragAndDrop = useSelector(
-    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
+  const element = allElements[elementId];
+  const parent = useMemo(
+    () => (element?.parent ? allElements[element.parent] : null),
+    [allElements, element?.parent],
   );
 
   const ref = useRef<HTMLElement>(null) as React.MutableRefObject<HTMLElement>;
@@ -95,10 +89,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   ] = useState<CSSStyleDeclaration | null>(null);
 
   const isContainer = useMemo(
-    () =>
-      elementId === rootID ||
-      CONTAINER_GROUPS.includes(element?.parameters.group),
-    [elementId, element, rootID],
+    () => !parent || CONTAINER_GROUPS.includes(element?.parameters.group),
+    [parent, element?.parameters.group],
   );
 
   const isDisplayed = useLayout(element?.parameters.layouts);
@@ -112,7 +104,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       return parent;
     }
     return element;
-  }, [element, parent, dropTargetParams]);
+  }, [parent, dropTargetParams, element]);
 
   const [, drag, preview] = useDrag({
     item: {
@@ -122,12 +114,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     } as SyntheticElement<StateElement>,
     canDrag: () =>
       !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
-      elementId !== rootID &&
+      !!parent &&
       !element.parameters.sourceElementId &&
       canDragAndDrop,
     end: () => {
       dispatch(setCurrentDropTargetParams(null));
-      dispatch(setElementBeingEdited(false));
     },
   });
 
@@ -221,7 +212,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         let dropPosition = DropPosition.INSIDE;
         const clientOffset = monitor.getClientOffset();
         const rect = ref.current.getBoundingClientRect();
-        if (parentDomStyles && clientOffset && elementId !== rootID) {
+        if (parentDomStyles && clientOffset && !!parent) {
           if (
             parentDomStyles.display === 'flex' &&
             parentDomStyles.flexDirection === 'row'
@@ -259,70 +250,30 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     } else if (dropDomStyles && !isOverArea) {
       setDropDomStyles(null);
     }
-  }, [isOverArea, frameWindow]);
+  }, [isOverArea, frameWindow, dropDomStyles]);
 
   useEffect(() => {
-    if (!isOverArea && dropTargetParams && elementId === rootID) {
+    if (!isOverArea && dropTargetParams && !parent) {
       dispatch(setCurrentDropTargetParams(null));
     }
-  }, [isOverArea, rootID, dropTargetParams]);
+  }, [isOverArea, dropTargetParams, parent, dispatch]);
 
   useEffect(() => {
     return () => {
       DOMHandler.INSTANCE.removeElementDom(elementId);
     };
-  }, []);
-
-  const runResetEditState = useDebouncedCallback(() => {
-    dispatch(setElementCanBeEdited(false));
-  }, 300);
+  }, [elementId]);
 
   const clickHandler = useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation();
       if (event.ctrlKey || event.metaKey) {
         dispatch(toggleSelectedElement(element.id));
-        return;
-      }
-      dispatch(setActiveElement(element.id));
-      if (
-        element &&
-        EDITABLE_COMPONENTS_LIST.includes(element.type) &&
-        !elementBeingEdited
-      ) {
-        if (runResetEditState.pending()) {
-          runResetEditState.cancel();
-        }
-        if (!elementCanBeEdited) {
-          dispatch(setElementCanBeEdited(true));
-        } else if (!elementBeingEdited) {
-          runResetEditState.callback();
-        }
-      }
-      if (elementCanBeEdited) {
-        dispatch(setElementBeingEdited(true));
-        ref.current.focus();
+      } else {
+        dispatch(setActiveElement(element.id));
       }
     },
-    [
-      dispatch,
-      element,
-      elementBeingEdited,
-      elementCanBeEdited,
-      runResetEditState,
-    ],
-  );
-
-  const keyDownHandler = useCallback(
-    (e: React.FormEvent<HTMLElement>) => {
-      e.stopPropagation();
-      const event = e.nativeEvent as KeyboardEvent;
-      if (event.code === 'Enter' && elementBeingEdited) {
-        (event.target as HTMLElement).blur();
-        e.preventDefault();
-      }
-    },
-    [elementBeingEdited],
+    [dispatch, element],
   );
 
   const mouseEnterHandler = useCallback(() => {
@@ -365,7 +316,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       }}
       onMouseEnter={mouseEnterHandler}
       onMouseLeave={mouseLeaveHandler}
-      onKeyDown={keyDownHandler}
       onClick={clickHandler}
     >
       {element.children.map((childId: string) => (
@@ -376,6 +326,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           parentIds={[...parentIds, elementId]}
           scrollRef={scrollRef}
           isDisabled={isDisabled}
+          screenId={screenId}
+          allElements={allElements}
+          dropTargetParams={dropTargetParams}
+          preSelectedElementId={preSelectedElementId}
+          masterSourceElementId={masterSourceElementId}
+          canDragAndDrop={canDragAndDrop}
+          frameWindow={frameWindow}
         />
       ))}
     </ElementRenderer>

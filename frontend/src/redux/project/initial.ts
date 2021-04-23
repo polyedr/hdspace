@@ -41,8 +41,6 @@ export const initialUi: ProjectUiState = {
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,
-  elementCanBeEdited: false,
-  elementBeingEdited: false,
   bordersEnabled: true,
   currentDropTargetParams: null,
   canCreateGroup: false,

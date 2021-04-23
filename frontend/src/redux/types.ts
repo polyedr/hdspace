@@ -67,8 +67,6 @@ export type ProjectUiState = {
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   currentDropTargetParams: DropTargetParams | null;
-  elementCanBeEdited: boolean;
-  elementBeingEdited: boolean;
   bordersEnabled: boolean;
   canCreateGroup: boolean;
   layout: {
@@ -920,21 +918,6 @@ export type SetMasterSourceElementId = IAction<
   string | null
 >;
 
-export type SetElementCanBeEdited = IAction<
-  typeof TYPES.SET_ELEMENT_CAN_BE_EDITED,
-  boolean
->;
-
-export type SetElementBeingEdited = IAction<
-  typeof TYPES.SET_ELEMENT_BEING_EDITED,
-  boolean
->;
-
-export type ResetElementEditState = IAction<
-  typeof TYPES.RESET_ELEMENT_EDIT_STATE,
-  unknown
->;
-
 export type SetCanCreateGroup = IAction<
   typeof TYPES.SET_CAN_CREATE_GROUP,
   boolean
@@ -1148,9 +1131,6 @@ export type Action =
   | SetActiveElementId
   | SetPreSelectedElementId
   | SetMasterSourceElementId
-  | SetElementCanBeEdited
-  | SetElementBeingEdited
-  | ResetElementEditState
   | MoveStateElement
   | UpdateStateElement
   | UpdateMultipleStateElements

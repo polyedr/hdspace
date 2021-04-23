@@ -6,3 +6,7 @@ export type RendererProps = {
   isDisabled?: boolean;
   children?: ReactElement[];
 };
+
+export type DefaultEventHandlers = {
+  [eventName: string]: (event: React.SyntheticEvent<HTMLElement>) => void;
+};
