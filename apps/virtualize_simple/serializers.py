@@ -1087,6 +1087,129 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_openc
     return root_block
 
 
+def calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters = []):
+    # Clear the array of dbclusters pro-function start
+    dbclusters = []
+    # DBSCAN clustering start
+    # #############################################################################
+    # Create numpy centers array clusters-based start
+    centers_array = []
+    for cluster in clusters:
+        centers_array.append(cluster.center)
+
+    centers = np.array(centers_array)
+    # print("centers=", centers)
+    # Create numpy centers array clusters-based end
+
+    # Compute DBSCAN for the artificial dataset with 750 samples with data centers
+    X, labels_true = make_blobs(
+        n_samples=750, centers=centers, cluster_std=0.4, random_state=0
+    )
+
+    # Concatenate centers and X next after the make_blobs function
+    centers_closest_nodes = []
+    for center in centers:
+        # Find the closest element from X
+        # Map the array of centers with array X
+        centers_closest_nodes.append(closest_node(center, X))
+
+    # Fit transform X
+    X = StandardScaler().fit_transform(X)
+
+    if region_dataset in ["footers", "webpages"]:
+        db = clustermethod.DBSCAN(eps=0.4).fit(X)
+        # print("db=", db, X, db.labels_, len(X), len(db.labels_))
+        # input()
+
+    if region_dataset == "headers":
+        db = clustermethod.DBSCAN(eps=0.55).fit(X)
+
+    core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+    core_samples_mask[db.core_sample_indices_] = True
+    labels = db.labels_
+
+    # Number of dbclusters in labels, ignoring noise if present.
+    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+    # DBSCAN.labels are included to fclusters start
+    for cluster in clusters:
+        center = cluster.center
+        # DB clusters
+        # cv2.rectangle(
+        #     image_opencv_input,
+        #     (int(center[0]), int(center[1])),
+        #     (int(center[0]) + 10, int(center[1]) + 10),
+        #     (0, 0, 255),
+        #     1,
+        # )
+
+        for center_closest_node in centers_closest_nodes:
+            # Closest node comparison
+            if (center[0] == center_closest_node[1][0]) and (
+                    center[1] == center_closest_node[1][1]
+            ):
+                cluster.X = center_closest_node[2]
+                idx = cluster.idx = center_closest_node[0]
+                cluster.label = labels[idx]
+    #
+    # cv2.imshow(window_name1, image_opencv_input)
+    # cv2.waitKey(0)
+    # DBSCAN.labels are included to fclusters end
+
+    # Create dbcluster as a class object
+    # Assign elements to dbclusters based on centers information
+    for n_cluster in range(n_clusters_):
+        # Collect all the elements related to some dbcluster to this array
+        cluster_sources = []
+        dbcluster = ClusterClass(x1=9999, y1=9999, x2=0, y2=0, elements=[])
+        # Set some flags to the dbcluster
+        dbcluster.types = "dbcluster"
+        dbcluster.is_elements_only = False
+        dbcluster.processing = (
+            "unsplitted"  # check if the ternary algorithm was applied
+        )
+        # Check the directiom with some function
+        # dbcluster.direction = ?
+        # Check is_solid parameter later
+        # is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
+        # clusters-based solution start
+        for cluster in clusters:
+            # Cluster number label
+            label = cluster.label
+            if label == n_cluster:
+                cluster_sources.append(cluster)
+                # Add flusters to dbclusters
+                cluster.parent = dbcluster
+
+        for cluster_source in cluster_sources:
+            # Construct the dbcluster object
+            # Find min max x1 y1 x2 y2
+            # dbcluster.elements.append(cluster_source)
+            dbcluster.x1 = min(dbcluster.x1, cluster_source.x1)
+            dbcluster.y1 = min(dbcluster.y1, cluster_source.y1)
+            dbcluster.x2 = max(dbcluster.x2, cluster_source.x2)
+            dbcluster.y2 = max(dbcluster.y2, cluster_source.y2)
+        # clusters-based solution end
+
+        dbclusters.append(dbcluster)
+
+        # Display dbclusters
+        cv2.rectangle(
+            image_dbclusters,
+            (dbcluster.x1, dbcluster.y1),
+            (dbcluster.x2, dbcluster.y2),
+            (164, 24, 4),
+            1,
+        )
+
+    if image_dbclusters:
+        # Printing dbclusters to file
+        cv2.imwrite("dbclusters_" + fname, image_dbclusters)
+        # Clear the array of dbclusters pro-function end
+
+    return dbclusters
+
+
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
 
@@ -2483,11 +2606,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             ]
             # Calculation of the excluded indices to remove overlapped elements end
 
-        # Create oclusters
+        # Create opencv_clusters
         # Creating a nested structure.
         # Clusters obtained from text blocks and from rect blocks should save this information
         if region_dataset in {"webpages"}:
-            # Calculation of the excluded indices to remove overlapped elements for a some oclusters level start
+            # Calculation of the excluded indices to remove overlapped elements for a some opencv_clusters level start
             # Second, calculate the non-text blocks overlap
             excluded_elements = []
             # for rect1 in fdict[filenamesize]["regions"]:
@@ -2586,18 +2709,18 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 if ele not in excluded_elements
             ]
 
-            # Create a set of independent oclusters
+            # Create a set of independent opencv_clusters
             for rect in fdict[fnamesize]["regions"]:
                 x1 = rect["shape_attributes"]["x"]
                 y1 = rect["shape_attributes"]["y"]
                 x2 = rect["shape_attributes"]["x"] + rect["shape_attributes"]["width"]
                 y2 = rect["shape_attributes"]["y"] + rect["shape_attributes"]["height"]
-                ocluster = ClusterClass(x1, y1, x2, y2)
-                # Set some flags for this novel ocluster
-                ocluster.types = "ocluster"
+                opencv_cluster = ClusterClass(x1, y1, x2, y2)
+                # Set some flags for this novel opencv_cluster
+                opencv_cluster.types = "opencv_cluster"
                 # Check a cluster definition
 
-            # Calculation of the excluded indices to remove overlapped elements for a some oclusters level end
+            # Calculation of the excluded indices to remove overlapped elements for a some opencv_clusters level end
 
         # find all the clusters based on cluster-making elements
         # (inputs, selects, buttons, free text blocks, maybe large images)
@@ -2909,122 +3032,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 clusters.append(cluster)
 
         if region_dataset in ["headers", "footers", "webpages"]:
-            # Clear the array of dbclusters
-            dbclusters = []
-            # DBSCAN clustering start
-            # #############################################################################
-            # Create numpy centers array clusters-based start
-            centers_array = []
-            for cluster in clusters:
-                centers_array.append(cluster.center)
-
-            centers = np.array(centers_array)
-            # print("centers=", centers)
-            # Create numpy centers array clusters-based end
-
-            # Compute DBSCAN for the artificial dataset with 750 samples with data centers
-            X, labels_true = make_blobs(
-                n_samples=750, centers=centers, cluster_std=0.4, random_state=0
-            )
-
-            # Concatenate centers and X next after the make_blobs function
-            centers_closest_nodes = []
-            for center in centers:
-                # Find the closest element from X
-                # Map the array of centers with array X
-                centers_closest_nodes.append(closest_node(center, X))
-
-            # Fit transform X
-            X = StandardScaler().fit_transform(X)
-
-            if region_dataset in ["footers", "webpages"]:
-                db = clustermethod.DBSCAN(eps=0.4).fit(X)
-                # print("db=", db, X, db.labels_, len(X), len(db.labels_))
-                # input()
-
-            if region_dataset == "headers":
-                db = clustermethod.DBSCAN(eps=0.55).fit(X)
-
-            core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-            core_samples_mask[db.core_sample_indices_] = True
-            labels = db.labels_
-
-            # Number of dbclusters in labels, ignoring noise if present.
-            n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-
-            # DBSCAN.labels are included to fclusters start
-            for cluster in clusters:
-                center = cluster.center
-                # DB clusters
-                # cv2.rectangle(
-                #     image_opencv_input,
-                #     (int(center[0]), int(center[1])),
-                #     (int(center[0]) + 10, int(center[1]) + 10),
-                #     (0, 0, 255),
-                #     1,
-                # )
-
-                for center_closest_node in centers_closest_nodes:
-                    # Closest node comparison
-                    if (center[0] == center_closest_node[1][0]) and (
-                        center[1] == center_closest_node[1][1]
-                    ):
-                        cluster.X = center_closest_node[2]
-                        idx = cluster.idx = center_closest_node[0]
-                        cluster.label = labels[idx]
-            #
-            # cv2.imshow(window_name1, image_opencv_input)
-            # cv2.waitKey(0)
-            # DBSCAN.labels are included to fclusters end
-
-            # Create dbcluster as a class object
-            # Assign elements to dbclusters based on centers information
-            for n_cluster in range(n_clusters_):
-                # Collect all the elements related to some dbcluster to this array
-                cluster_sources = []
-                dbcluster = ClusterClass(x1=9999, y1=9999, x2=0, y2=0, elements=[])
-                # Set some flags to the dbcluster
-                dbcluster.types = "dbcluster"
-                dbcluster.is_elements_only = False
-                dbcluster.processing = (
-                    "unsplitted"  # check if the ternary algorithm was applied
-                )
-                # Check the directiom with some function
-                # dbcluster.direction = ?
-                # Check is_solid parameter later
-                # is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
-                # clusters-based solution start
-                for cluster in clusters:
-                    # Cluster number label
-                    label = cluster.label
-                    if label == n_cluster:
-                        cluster_sources.append(cluster)
-                        # Add flusters to dbclusters
-                        cluster.parent = dbcluster
-
-                for cluster_source in cluster_sources:
-                    # Construct the dbcluster object
-                    # Find min max x1 y1 x2 y2
-                    # dbcluster.elements.append(cluster_source)
-                    dbcluster.x1 = min(dbcluster.x1, cluster_source.x1)
-                    dbcluster.y1 = min(dbcluster.y1, cluster_source.y1)
-                    dbcluster.x2 = max(dbcluster.x2, cluster_source.x2)
-                    dbcluster.y2 = max(dbcluster.y2, cluster_source.y2)
-                # clusters-based solution end
-
-                dbclusters.append(dbcluster)
-
-                # Display dbclusters
-                cv2.rectangle(
-                    image_dbclusters,
-                    (dbcluster.x1, dbcluster.y1),
-                    (dbcluster.x2, dbcluster.y2),
-                    (164, 24, 4),
-                    1,
-                )
-
-            # Printing dbclusters to file
-            cv2.imwrite("dbclusters_" + fname, image_dbclusters)
+            dbclusters = calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters)
 
         try:
             # Replace clusters for dbclusters if possible
@@ -3035,120 +3043,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         finally:
             pass
 
+        # Ternary assembling algorithm function calling
         root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input, window_name1, fclusters)
-
-        '''
-        # Ternary assembling algorithm run after the clusters pro function start
-        # Define the root block
-        root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
-        root_block.types = "ccluster"
-
-        x_layout_intervals = []
-        y_layout_intervals = []
-        for cluster in clusters:
-            x_average = int((cluster.x1 + cluster.x2) / 2)
-            y_average = int((cluster.y1 + cluster.y2) / 2)
-            x_layout_intervals.append([cluster.x1, cluster.x2])
-            y_layout_intervals.append([cluster.y1, cluster.y2])
-
-        # print(x_layout_intervals)
-        ob1_x = Partition()
-        ob1_x_merged = ob1_x.merge(x_layout_intervals)
-        # print("ob1_x_merged", ob1_x_merged, type(ob1_x_merged), len(ob1_x_merged))
-        #
-        # print(y_layout_intervals)
-        ob1_y = Partition()
-        ob1_y_merged = ob1_y.merge(y_layout_intervals)
-        # print("ob1_y_merged", ob1_y_merged, type(ob1_y_merged), len(ob1_y_merged))
-
-        # Choose if the block horizontal vertical or final
-        # horizontal
-        if len(ob1_x_merged) >= len(ob1_y_merged):
-            root_block.direction = 0
-
-        # vertiical
-        if len(ob1_x_merged) < len(ob1_y_merged):
-            root_block.direction = 1
-
-        # horizontal y length 1 case
-        if len(ob1_x_merged) >= len(ob1_y_merged) and (len(ob1_y_merged) == 1):
-            root_block.direction = 1
-
-        # vertiical x length 1 case
-        if len(ob1_x_merged) < len(ob1_y_merged) and (len(ob1_x_merged) == 1):
-            root_block.direction = 0
-
-        # final
-        if (len(ob1_x_merged) == 1) and (len(ob1_y_merged) == 1):
-            root_block.direction = 2
-
-        # Prepare the copy of image as overlay before rectangles calculations
-        overlay = image_opencv_input.copy()
-        # Assign the children based on direction
-        if root_block.direction == 0:
-            for interval in ob1_y_merged:
-                ccluster = ClusterClass(
-                    min_x1, interval[0], max_x2, interval[1], parent=root_block
-                )
-                ccluster.types = "ccluster"
-                # cv2.rectangle(
-                #     image_opencv_input,
-                #     (min_x1, interval[0]),
-                #     (max_x2, interval[1]),
-                #     (70, 50, 135),
-                #     -1,
-                # )
-
-        if root_block.direction == 1:
-            for interval in ob1_x_merged:
-                ccluster = ClusterClass(
-                    interval[0], min_y1, interval[1], max_y2, parent=root_block
-                )
-                ccluster.types = "ccluster"
-                # cv2.rectangle(
-                #     image_opencv_input,
-                #     (interval[0], min_y1),
-                #     (interval[1], max_y2),
-                #     (20, 50, 107),
-                #     -1,
-                # )
-
-        if root_block.direction == 2:
-            for interval_x in ob1_x_merged:
-                for interval_y in ob1_y_merged:
-                    ccluster = ClusterClass(
-                        interval_x[0],
-                        interval_y[0],
-                        interval_x[1],
-                        interval_y[1],
-                        parent=root_block,
-                    )
-                    ccluster.types = "ccluster"
-
-        # Go through all the blocks obtained after the ternary algorithm
-        # Split each block
-        for pre, fill, node in RenderTree(root_block):
-            if node != root_block:
-                # print(node.name)
-                blocks_split(node, window_name1, image_opencv_input, overlay, clusters)
-
-        # Go through all the blocks obtained after the ternary algorithm
-        # Correct the direction of the fclusters
-        for pre, fill, node in RenderTree(root_block):
-            if node.types == "fcluster":
-                if len(node.elements) > 1:
-                    node.direction = node.origin_direction
-
-        # Go through all the blocks obtained after the ternary algorithm
-        # Correct the dbclusters splitting
-        # This part of code should split complex dbclusters and re-arrange their child nodes to descendants
-        for pre, fill, node in RenderTree(root_block):
-            if node.types == "dbcluster":
-                if len(node.children) > 1:
-                    dbcluster_split(node, fclusters)
-
-        # Ternary assembling algorithm run after the clusters pro function end
-        '''
 
         # Printing clusters function calling
         clusters_printing(root_block, fname, image_allclusters=image_allclusters, image_cclusters=image_cclusters,
@@ -3871,6 +3767,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     clusters.append(cluster)
 
             if region_dataset in ["headers", "footers", "webpages"]:
+                dbclusters = calculate_dbclusters(region_dataset, clusters, fname)
+                '''
                 # Clear the array of dbclusters
                 dbclusters = []
                 # DBSCAN clustering start
@@ -3975,7 +3873,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     # clusters-based solution end
 
                     dbclusters.append(dbcluster)
-
+                    '''
             try:
                 # Replace clusters for dbclusters if possible
                 fclusters = copy.copy(clusters)
@@ -3987,120 +3885,6 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
             root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
                                                 window_name1, fclusters)
-            '''
-            # Ternary assembling algorithm run after the clusters pro function start
-            # Define the root block
-            root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
-            root_block.types = "ccluster"
-
-            x_layout_intervals = []
-            y_layout_intervals = []
-            for cluster in clusters:
-                x_average = int((cluster.x1 + cluster.x2) / 2)
-                y_average = int((cluster.y1 + cluster.y2) / 2)
-                x_layout_intervals.append([cluster.x1, cluster.x2])
-                y_layout_intervals.append([cluster.y1, cluster.y2])
-
-            # print(x_layout_intervals)
-            ob1_x = Partition()
-            ob1_x_merged = ob1_x.merge(x_layout_intervals)
-            # print("ob1_x_merged", ob1_x_merged, type(ob1_x_merged), len(ob1_x_merged))
-            #
-            # print(y_layout_intervals)
-            ob1_y = Partition()
-            ob1_y_merged = ob1_y.merge(y_layout_intervals)
-            # print("ob1_y_merged", ob1_y_merged, type(ob1_y_merged), len(ob1_y_merged))
-
-            # Choose if the block horizontal vertical or final
-            # horizontal
-            if len(ob1_x_merged) >= len(ob1_y_merged):
-                root_block.direction = 0
-
-            # vertiical
-            if len(ob1_x_merged) < len(ob1_y_merged):
-                root_block.direction = 1
-
-            # horizontal y length 1 case
-            if len(ob1_x_merged) >= len(ob1_y_merged) and (len(ob1_y_merged) == 1):
-                root_block.direction = 1
-
-            # vertiical x length 1 case
-            if len(ob1_x_merged) < len(ob1_y_merged) and (len(ob1_x_merged) == 1):
-                root_block.direction = 0
-
-            # final
-            if (len(ob1_x_merged) == 1) and (len(ob1_y_merged) == 1):
-                root_block.direction = 2
-
-            # Prepare the copy of image as overlay before rectangles calculations
-            overlay = image_opencv_input.copy()
-            # Assign the children based on direction
-            if root_block.direction == 0:
-                for interval in ob1_y_merged:
-                    ccluster = ClusterClass(
-                        min_x1, interval[0], max_x2, interval[1], parent=root_block
-                    )
-                    ccluster.types = "ccluster"
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (min_x1, interval[0]),
-                    #     (max_x2, interval[1]),
-                    #     (70, 50, 135),
-                    #     -1,
-                    # )
-
-            if root_block.direction == 1:
-                for interval in ob1_x_merged:
-                    ccluster = ClusterClass(
-                        interval[0], min_y1, interval[1], max_y2, parent=root_block
-                    )
-                    ccluster.types = "ccluster"
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (interval[0], min_y1),
-                    #     (interval[1], max_y2),
-                    #     (20, 50, 107),
-                    #     -1,
-                    # )
-
-            if root_block.direction == 2:
-                for interval_x in ob1_x_merged:
-                    for interval_y in ob1_y_merged:
-                        ccluster = ClusterClass(
-                            interval_x[0],
-                            interval_y[0],
-                            interval_x[1],
-                            interval_y[1],
-                            parent=root_block,
-                        )
-                        ccluster.types = "ccluster"
-
-            # Go through all the blocks obtained
-            for pre, fill, node in RenderTree(root_block):
-                if node != root_block:
-                    # print(node.name)
-                    # Split each block
-                    blocks_split(
-                        node, window_name1, image_opencv_input, overlay, clusters
-                    )
-
-            # Go through all the blocks obtained after the ternary algorithm
-            # Correct the direction of the fclusters
-            for pre, fill, node in RenderTree(root_block):
-                if node.types == "fcluster":
-                    if len(node.elements) > 1:
-                        node.direction = node.origin_direction
-
-            # Go through all the blocks obtained after the ternary algorithm
-            # Correct the dbclusters splitting
-            # This part of code should split complex dbclusters and re-arrange their child nodes to descendants
-            for pre, fill, node in RenderTree(root_block):
-                if node.types == "dbcluster":
-                    if len(node.children) > 1:
-                        dbcluster_split(node, fclusters)
-
-            # Ternary assembling algorithm run after the clusters pro function end
-            '''
 
             # Create directtory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
@@ -4811,6 +4595,8 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                     clusters.append(cluster)
 
             if region_dataset in ["headers", "footers", "webpages"]:
+                dbclusters = calculate_dbclusters(region_dataset, clusters, fname)
+                '''
                 # Clear the array of dbclusters
                 dbclusters = []
                 # DBSCAN clustering start
@@ -4915,6 +4701,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                     # clusters-based solution end
 
                     dbclusters.append(dbcluster)
+                    '''
 
             try:
                 # Replace clusters for dbclusters if possible
@@ -4927,120 +4714,6 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
             root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
                                                 window_name1, fclusters)
-            '''
-            # Ternary assembling algorithm run after the clusters pro function start
-            # Define the root block
-            root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
-            root_block.types = "ccluster"
-
-            x_layout_intervals = []
-            y_layout_intervals = []
-            for cluster in clusters:
-                x_average = int((cluster.x1 + cluster.x2) / 2)
-                y_average = int((cluster.y1 + cluster.y2) / 2)
-                x_layout_intervals.append([cluster.x1, cluster.x2])
-                y_layout_intervals.append([cluster.y1, cluster.y2])
-
-            # print(x_layout_intervals)
-            ob1_x = Partition()
-            ob1_x_merged = ob1_x.merge(x_layout_intervals)
-            # print("ob1_x_merged", ob1_x_merged, type(ob1_x_merged), len(ob1_x_merged))
-            #
-            # print(y_layout_intervals)
-            ob1_y = Partition()
-            ob1_y_merged = ob1_y.merge(y_layout_intervals)
-            # print("ob1_y_merged", ob1_y_merged, type(ob1_y_merged), len(ob1_y_merged))
-
-            # Choose if the block horizontal vertical or final
-            # horizontal
-            if len(ob1_x_merged) >= len(ob1_y_merged):
-                root_block.direction = 0
-
-            # vertiical
-            if len(ob1_x_merged) < len(ob1_y_merged):
-                root_block.direction = 1
-
-            # horizontal y length 1 case
-            if len(ob1_x_merged) >= len(ob1_y_merged) and (len(ob1_y_merged) == 1):
-                root_block.direction = 1
-
-            # vertiical x length 1 case
-            if len(ob1_x_merged) < len(ob1_y_merged) and (len(ob1_x_merged) == 1):
-                root_block.direction = 0
-
-            # final
-            if (len(ob1_x_merged) == 1) and (len(ob1_y_merged) == 1):
-                root_block.direction = 2
-
-            # Prepare the copy of image as overlay before rectangles calculations
-            overlay = image_opencv_input.copy()
-            # Assign the children based on direction
-            if root_block.direction == 0:
-                for interval in ob1_y_merged:
-                    ccluster = ClusterClass(
-                        min_x1, interval[0], max_x2, interval[1], parent=root_block
-                    )
-                    ccluster.types = "ccluster"
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (min_x1, interval[0]),
-                    #     (max_x2, interval[1]),
-                    #     (70, 50, 135),
-                    #     -1,
-                    # )
-
-            if root_block.direction == 1:
-                for interval in ob1_x_merged:
-                    ccluster = ClusterClass(
-                        interval[0], min_y1, interval[1], max_y2, parent=root_block
-                    )
-                    ccluster.types = "ccluster"
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (interval[0], min_y1),
-                    #     (interval[1], max_y2),
-                    #     (20, 50, 107),
-                    #     -1,
-                    # )
-
-            if root_block.direction == 2:
-                for interval_x in ob1_x_merged:
-                    for interval_y in ob1_y_merged:
-                        ccluster = ClusterClass(
-                            interval_x[0],
-                            interval_y[0],
-                            interval_x[1],
-                            interval_y[1],
-                            parent=root_block,
-                        )
-                        ccluster.types = "ccluster"
-
-            # Go through all the blocks obtained
-            for pre, fill, node in RenderTree(root_block):
-                if node != root_block:
-                    # print(node.name)
-                    # Split each block
-                    blocks_split(
-                        node, window_name1, image_opencv_input, overlay, clusters
-                    )
-
-            # Go through all the blocks obtained after the ternary algorithm
-            # Correct the direction of the fclusters
-            for pre, fill, node in RenderTree(root_block):
-                if node.types == "fcluster":
-                    if len(node.elements) > 1:
-                        node.direction = node.origin_direction
-
-            # Go through all the blocks obtained after the ternary algorithm
-            # Correct the dbclusters splitting
-            # This part of code should split complex dbclusters and re-arrange their child nodes to descendants
-            for pre, fill, node in RenderTree(root_block):
-                if node.types == "dbcluster":
-                    if len(node.children) > 1:
-                        dbcluster_split(node, fclusters)
-
-            # Ternary assembling algorithm run after the clusters pro function end
-            '''
 
             # Create directtory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
