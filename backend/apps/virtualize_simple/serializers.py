@@ -1193,21 +1193,337 @@ def calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters = [])
 
         dbclusters.append(dbcluster)
 
-        # Display dbclusters
-        cv2.rectangle(
-            image_dbclusters,
-            (dbcluster.x1, dbcluster.y1),
-            (dbcluster.x2, dbcluster.y2),
-            (164, 24, 4),
-            1,
-        )
+        if len(image_dbclusters):
+            # Display dbclusters
+            cv2.rectangle(
+                image_dbclusters,
+                (dbcluster.x1, dbcluster.y1),
+                (dbcluster.x2, dbcluster.y2),
+                (164, 24, 4),
+                1,
+            )
 
-    if image_dbclusters:
+    if len(image_dbclusters):
         # Printing dbclusters to file
         cv2.imwrite("dbclusters_" + fname, image_dbclusters)
         # Clear the array of dbclusters pro-function end
 
     return dbclusters
+
+
+def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
+    # find all the clusters based on cluster-making elements
+    # (inputs, selects, buttons, free text blocks, maybe large images)
+    # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
+    clusters = []
+    # Run the ternary assembling algorithm
+    # print(min_x1, min_y1, max_x2, max_y2)
+
+    # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction start
+    #
+    #
+    # Vertical clusters input-like with text labels detection
+    # The first position is input or select, and the second position is text
+    # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
+    for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
+        if recognized_element["region_attributes"]["HTML element"] in {
+            "input",
+            "select",
+            "button",
+        }:
+            # Assign the textContent values after grouping with text
+            # Vertical group when input or select element has another text element
+            # at the distance 0.5 from its width
+            # Horizontal group when input or select or text are placed horizontally
+
+            # Loop through all the elements recognized
+            # Find all the close-by elements if one of them input (1) or select (4),
+            # and second one is the text (3)
+            # Horizontal overlap 75% of the element with minimal width
+            # Vertical max +- 50% for input/select width,
+            # middle of the text element should be within this interval
+
+            # First rectangle coordinates
+            x1 = int(recognized_element["shape_attributes"]["x"])
+            y1 = int(recognized_element["shape_attributes"]["y"])
+            x2 = int(x1 + recognized_element["shape_attributes"]["width"])
+            y2 = int(y1 + recognized_element["shape_attributes"]["height"])
+
+            # First rectangle width
+            width_elem = recognized_element["shape_attributes"]["width"]
+            height_elem = recognized_element["shape_attributes"]["height"]
+
+            # Add the initial element to the cluster
+            cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
+            # Set some flags for this novel cluster
+            cluster.types = "fcluster"
+            cluster.is_elements_only = True
+            for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
+                if recognized_element1["region_attributes"]["HTML element"] in {
+                    "text",
+                    "ocrtext",
+                }:
+                    # Check if the elements were not assigned to the clusters before
+                    if (
+                            (recognized_element1 not in clr.elements)
+                            for clr in clusters
+                    ):
+
+                        # Second rectangle coordinates
+                        x11 = int(recognized_element1["shape_attributes"]["x"])
+                        y11 = int(recognized_element1["shape_attributes"]["y"])
+                        x21 = int(
+                            x11 + recognized_element1["shape_attributes"]["width"]
+                        )
+                        y21 = int(
+                            y11 + recognized_element1["shape_attributes"]["height"]
+                        )
+
+                        # Second rectangle width
+                        width_elem1 = x21 - x11
+                        height_elem1 = y21 - y11
+
+                        # Borders of the overlapped area
+                        left = max(x1, x11)
+                        bottom = max(y1, y11)
+                        right = min(x2, x21)
+                        top = min(y2, y21)
+
+                        # Size of the overlapped area
+                        horizontal_overlap = right - left
+                        vertical_overlap = top - bottom
+
+                        # Check if the vertical distance between roi and roi1 is sufficient
+                        # Middle of the input or select element
+                        mid_input = (y1 + y2) / 2
+
+                        # Middle of the text element
+                        mid_text = (y11 + y21) / 2
+
+                        border_bottom = y1 - (0.6 * height_elem)
+                        border_top = y2 + (0.4 * height_elem)
+
+                        # Check if the text and input elements are close to each other by vertical direction
+                        if (border_bottom < mid_text < mid_input) or (
+                                mid_input < mid_text < border_top
+                        ):
+                            # Assign the results to the vertical_group
+                            # Check if the horizontal overlap between text label and input is sufficient
+                            if (
+                                    horizontal_overlap
+                                    > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD
+                                    * width_elem1
+                            ):
+                                # Fill the cluster
+                                # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
+                                # max(y2, y21), elements = [recognized_element, recognized_element1])
+                                # Update the cluster with new text element
+                                cluster.elements.append(recognized_element1)
+
+                                # Set some flags for this vertical fcluster
+                                # The cluster contains more than one element
+                                cluster.is_solid = False
+                                # The cluster direction is vertical
+                                cluster.direction = 0
+                                cluster.origin_direction = 0
+
+                                cluster.x1 = min(cluster.x1, x11)
+                                cluster.y1 = min(cluster.y1, y11)
+                                cluster.x2 = max(cluster.x2, x21)
+                                cluster.y2 = max(cluster.y2, y21)
+
+                                # Find the center of cluster
+                                center_x = (cluster.x1 + cluster.x2) / 2
+                                center_y = (cluster.y1 + cluster.y2) / 2
+                                cluster.center = center_x, center_y
+
+                                # Update the clusters list
+                                clusters.append(cluster)
+
+            if len(image_fclusters):
+                # Display input-based fclusters
+                cv2.rectangle(
+                    image_fclusters,
+                    (cluster.x1, cluster.y1),
+                    (cluster.x2, cluster.y2),
+                    (0, 0, 255),
+                    1,
+                )
+                # cv2.imshow(window_name1, image_opencv_input)
+                # cv2.waitKey(0)
+
+    # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction end
+
+    # Clusters checkboxes with text labels direction start
+    #
+    #
+    # Horizontal clusters checkbox-like with text labels detection
+    # The first position is a checkbox or radiobutton or even the small image,
+    # and the second position is text
+    # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
+    for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
+        if recognized_element["region_attributes"]["HTML element"] in {
+            "checkbox",
+            "radiobutton",
+            "image",
+        }:
+            # Horizontal group when checkbox or radiobutton element has another text element
+            # at the distance 0.8 from its width
+
+            # Loop through all the elements recognized
+            # Find all the close-by elements if one of them is a checkbox or radiobutton,
+            # and second one is the text (3)
+            # Vertical overlap 75% of the element with minimal width
+            # Horizontal min/max +- 80% for checkbox/radiobutton width,
+            # start/end of the text element should be within this interval
+
+            # First rectangle coordinates
+            x1 = int(recognized_element["shape_attributes"]["x"])
+            y1 = int(recognized_element["shape_attributes"]["y"])
+            x2 = int(x1 + recognized_element["shape_attributes"]["width"])
+            y2 = int(y1 + recognized_element["shape_attributes"]["height"])
+
+            # First rectangle width
+            width_elem = recognized_element["shape_attributes"]["width"]
+            height_elem = recognized_element["shape_attributes"]["height"]
+
+            # Add the initial element to a cluster
+            cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
+            # Set some flags for this novel cluster
+            cluster.types = "fcluster"
+            cluster.is_elements_only = True
+            for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
+                if recognized_element1["region_attributes"]["HTML element"] in {
+                    "text",
+                    "ocrtext",
+                }:
+                    # Check if the elements were not assigned to the clusters before
+                    if (
+                            (recognized_element1 not in clr.elements)
+                            for clr in clusters
+                    ):
+
+                        # Second rectangle coordinates
+                        x11 = int(recognized_element1["shape_attributes"]["x"])
+                        y11 = int(recognized_element1["shape_attributes"]["y"])
+                        x21 = int(
+                            x11 + recognized_element1["shape_attributes"]["width"]
+                        )
+                        y21 = int(
+                            y11 + recognized_element1["shape_attributes"]["height"]
+                        )
+
+                        # Second rectangle width
+                        width_elem1 = x21 - x11
+                        height_elem1 = y21 - y11
+
+                        # Borders of the overlapped area
+                        left = max(x1, x11)
+                        bottom = max(y1, y11)
+                        right = min(x2, x21)
+                        top = min(y2, y21)
+
+                        # Size of the overlapped area
+                        horizontal_overlap = right - left
+                        vertical_overlap = top - bottom
+
+                        # Middle of the checkbox or radiobutton element
+                        mid_checkbox = (x1 + x2) / 2
+
+                        # Borders of the text element
+                        left_text = x11
+                        right_text = x21
+
+                        border_left = x1 - (0.6 * height_elem)
+                        border_right = x2 + (0.8 * height_elem)
+
+                        # Check if the text and checkbox elements are close to each other
+                        # by horizontal direction
+                        if (border_left < right_text < mid_checkbox) or (
+                                mid_checkbox < left_text < border_right
+                        ):
+                            # Assign the results to the horizontal group
+                            # Check if the vertical overlap between text label and input is sufficient
+                            if (
+                                    vertical_overlap
+                                    > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD
+                                    * height_elem1
+                            ):
+                                # Fill the cluster
+                                # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
+                                # max(y2, y21), elements = [recognized_element, recognized_element1])
+                                # Update the cluster with new text element
+                                cluster.elements.append(recognized_element1)
+
+                                # Set some flags for this horizontal fcluster
+                                # The cluster contains more than one element
+                                cluster.is_solid = False
+                                # The cluster direction is horizontal
+                                cluster.direction = 1
+                                cluster.origin_direction = 1
+
+                                cluster.x1 = min(cluster.x1, x11)
+                                cluster.y1 = min(cluster.y1, y11)
+                                cluster.x2 = max(cluster.x2, x21)
+                                cluster.y2 = max(cluster.y2, y21)
+
+                                # Find the center of cluster
+                                center_x = (cluster.x1 + cluster.x2) / 2
+                                center_y = (cluster.y1 + cluster.y2) / 2
+                                cluster.center = center_x, center_y
+
+                                # Update the clusters list
+                                clusters.append(cluster)
+
+            if len(image_fclusters):
+                # Display checkbox-based fclusters
+                cv2.rectangle(
+                    image_fclusters,
+                    (cluster.x1, cluster.y1),
+                    (cluster.x2, cluster.y2),
+                    (144, 12, 2),
+                    1,
+                )
+    if len(image_fclusters):
+        # Printing fclusters to file
+        cv2.imwrite("fclusters_" + fname, image_fclusters)
+
+    # Clusters checkboxes with text labels direction end
+
+    # Place all the free elements for the 1-element clusters
+    for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
+        # First rectangle coordinates
+        x1 = int(recognized_element["shape_attributes"]["x"])
+        y1 = int(recognized_element["shape_attributes"]["y"])
+        x2 = int(x1 + recognized_element["shape_attributes"]["width"])
+        y2 = int(y1 + recognized_element["shape_attributes"]["height"])
+
+        element_unique = True
+        for cluster in clusters:
+            if recognized_element in cluster.elements:
+                element_unique = False
+        if element_unique is True:
+            # Add the element to the cluster
+            cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
+
+            # Set some flags for this novel cluster
+            cluster.types = "fcluster"
+            cluster.is_elements_only = True
+            # The cluster contains only one element
+            cluster.is_solid = True
+            # The cluster direction is unseparable
+            cluster.direction = 2
+            cluster.origin_direction = 2
+
+            # Find the center of cluster
+            center_x = (cluster.x1 + cluster.x2) / 2
+            center_y = (cluster.y1 + cluster.y2) / 2
+            cluster.center = center_x, center_y
+
+            # Update the clusters list
+            clusters.append(cluster)
+
+    return clusters
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
@@ -2722,316 +3038,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
             # Calculation of the excluded indices to remove overlapped elements for a some opencv_clusters level end
 
-        # find all the clusters based on cluster-making elements
-        # (inputs, selects, buttons, free text blocks, maybe large images)
-        # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
-        clusters = []
-        # Run the ternary assembling algorithm
-        # print(min_x1, min_y1, max_x2, max_y2)
-
-        # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction start
-        #
-        #
-        # Vertical clusters input-like with text labels detection
-        # The first position is input or select, and the second position is text
-        # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
-        for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-            if recognized_element["region_attributes"]["HTML element"] in {
-                "input",
-                "select",
-                "button",
-            }:
-                # Assign the textContent values after grouping with text
-                # Vertical group when input or select element has another text element
-                # at the distance 0.5 from its width
-                # Horizontal group when input or select or text are placed horizontally
-
-                # Loop through all the elements recognized
-                # Find all the close-by elements if one of them input (1) or select (4),
-                # and second one is the text (3)
-                # Horizontal overlap 75% of the element with minimal width
-                # Vertical max +- 50% for input/select width,
-                # middle of the text element should be within this interval
-
-                # First rectangle coordinates
-                x1 = int(recognized_element["shape_attributes"]["x"])
-                y1 = int(recognized_element["shape_attributes"]["y"])
-                x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-                y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-                # First rectangle width
-                width_elem = recognized_element["shape_attributes"]["width"]
-                height_elem = recognized_element["shape_attributes"]["height"]
-
-                # Add the initial element to the cluster
-                cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
-                # Set some flags for this novel cluster
-                cluster.types = "fcluster"
-                cluster.is_elements_only = True
-                for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
-                    if recognized_element1["region_attributes"]["HTML element"] in {
-                        "text",
-                        "ocrtext",
-                    }:
-                        # Check if the elements were not assigned to the clusters before
-                        if (
-                            (recognized_element1 not in clr.elements)
-                            for clr in clusters
-                        ):
-
-                            # Second rectangle coordinates
-                            x11 = int(recognized_element1["shape_attributes"]["x"])
-                            y11 = int(recognized_element1["shape_attributes"]["y"])
-                            x21 = int(
-                                x11 + recognized_element1["shape_attributes"]["width"]
-                            )
-                            y21 = int(
-                                y11 + recognized_element1["shape_attributes"]["height"]
-                            )
-
-                            # Second rectangle width
-                            width_elem1 = x21 - x11
-                            height_elem1 = y21 - y11
-
-                            # Borders of the overlapped area
-                            left = max(x1, x11)
-                            bottom = max(y1, y11)
-                            right = min(x2, x21)
-                            top = min(y2, y21)
-
-                            # Size of the overlapped area
-                            horizontal_overlap = right - left
-                            vertical_overlap = top - bottom
-
-                            # Check if the vertical distance between roi and roi1 is sufficient
-                            # Middle of the input or select element
-                            mid_input = (y1 + y2) / 2
-
-                            # Middle of the text element
-                            mid_text = (y11 + y21) / 2
-
-                            border_bottom = y1 - (0.6 * height_elem)
-                            border_top = y2 + (0.4 * height_elem)
-
-                            # Check if the text and input elements are close to each other by vertical direction
-                            if (border_bottom < mid_text < mid_input) or (
-                                mid_input < mid_text < border_top
-                            ):
-                                # Assign the results to the vertical_group
-                                # Check if the horizontal overlap between text label and input is sufficient
-                                if (
-                                    horizontal_overlap
-                                    > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD
-                                    * width_elem1
-                                ):
-                                    # Fill the cluster
-                                    # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
-                                    # max(y2, y21), elements = [recognized_element, recognized_element1])
-                                    # Update the cluster with new text element
-                                    cluster.elements.append(recognized_element1)
-
-                                    # Set some flags for this vertical fcluster
-                                    # The cluster contains more than one element
-                                    cluster.is_solid = False
-                                    # The cluster direction is vertical
-                                    cluster.direction = 0
-                                    cluster.origin_direction = 0
-
-                                    cluster.x1 = min(cluster.x1, x11)
-                                    cluster.y1 = min(cluster.y1, y11)
-                                    cluster.x2 = max(cluster.x2, x21)
-                                    cluster.y2 = max(cluster.y2, y21)
-
-                                    # Find the center of cluster
-                                    center_x = (cluster.x1 + cluster.x2) / 2
-                                    center_y = (cluster.y1 + cluster.y2) / 2
-                                    cluster.center = center_x, center_y
-
-                                    # Update the clusters list
-                                    clusters.append(cluster)
-
-                # Display input-based fclusters
-                cv2.rectangle(
-                    image_fclusters,
-                    (cluster.x1, cluster.y1),
-                    (cluster.x2, cluster.y2),
-                    (0, 0, 255),
-                    1,
-                )
-                # cv2.imshow(window_name1, image_opencv_input)
-                # cv2.waitKey(0)
-
-        # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction end
-
-        # Clusters checkboxes with text labels direction start
-        #
-        #
-        # Horizontal clusters checkbox-like with text labels detection
-        # The first position is a checkbox or radiobutton or even the small image,
-        # and the second position is text
-        # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
-        for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-            if recognized_element["region_attributes"]["HTML element"] in {
-                "checkbox",
-                "radiobutton",
-                "image",
-            }:
-                # Horizontal group when checkbox or radiobutton element has another text element
-                # at the distance 0.8 from its width
-
-                # Loop through all the elements recognized
-                # Find all the close-by elements if one of them is a checkbox or radiobutton,
-                # and second one is the text (3)
-                # Vertical overlap 75% of the element with minimal width
-                # Horizontal min/max +- 80% for checkbox/radiobutton width,
-                # start/end of the text element should be within this interval
-
-                # First rectangle coordinates
-                x1 = int(recognized_element["shape_attributes"]["x"])
-                y1 = int(recognized_element["shape_attributes"]["y"])
-                x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-                y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-                # First rectangle width
-                width_elem = recognized_element["shape_attributes"]["width"]
-                height_elem = recognized_element["shape_attributes"]["height"]
-
-                # Add the initial element to a cluster
-                cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
-                # Set some flags for this novel cluster
-                cluster.types = "fcluster"
-                cluster.is_elements_only = True
-                for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
-                    if recognized_element1["region_attributes"]["HTML element"] in {
-                        "text",
-                        "ocrtext",
-                    }:
-                        # Check if the elements were not assigned to the clusters before
-                        if (
-                            (recognized_element1 not in clr.elements)
-                            for clr in clusters
-                        ):
-
-                            # Second rectangle coordinates
-                            x11 = int(recognized_element1["shape_attributes"]["x"])
-                            y11 = int(recognized_element1["shape_attributes"]["y"])
-                            x21 = int(
-                                x11 + recognized_element1["shape_attributes"]["width"]
-                            )
-                            y21 = int(
-                                y11 + recognized_element1["shape_attributes"]["height"]
-                            )
-
-                            # Second rectangle width
-                            width_elem1 = x21 - x11
-                            height_elem1 = y21 - y11
-
-                            # Borders of the overlapped area
-                            left = max(x1, x11)
-                            bottom = max(y1, y11)
-                            right = min(x2, x21)
-                            top = min(y2, y21)
-
-                            # Size of the overlapped area
-                            horizontal_overlap = right - left
-                            vertical_overlap = top - bottom
-
-                            # Middle of the checkbox or radiobutton element
-                            mid_checkbox = (x1 + x2) / 2
-
-                            # Borders of the text element
-                            left_text = x11
-                            right_text = x21
-
-                            border_left = x1 - (0.6 * height_elem)
-                            border_right = x2 + (0.8 * height_elem)
-
-                            # Check if the text and checkbox elements are close to each other
-                            # by horizontal direction
-                            if (border_left < right_text < mid_checkbox) or (
-                                mid_checkbox < left_text < border_right
-                            ):
-                                # Assign the results to the horizontal group
-                                # Check if the vertical overlap between text label and input is sufficient
-                                if (
-                                    vertical_overlap
-                                    > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD
-                                    * height_elem1
-                                ):
-                                    # Fill the cluster
-                                    # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
-                                    # max(y2, y21), elements = [recognized_element, recognized_element1])
-                                    # Update the cluster with new text element
-                                    cluster.elements.append(recognized_element1)
-
-                                    # Set some flags for this horizontal fcluster
-                                    # The cluster contains more than one element
-                                    cluster.is_solid = False
-                                    # The cluster direction is horizontal
-                                    cluster.direction = 1
-                                    cluster.origin_direction = 1
-
-                                    cluster.x1 = min(cluster.x1, x11)
-                                    cluster.y1 = min(cluster.y1, y11)
-                                    cluster.x2 = max(cluster.x2, x21)
-                                    cluster.y2 = max(cluster.y2, y21)
-
-                                    # Find the center of cluster
-                                    center_x = (cluster.x1 + cluster.x2) / 2
-                                    center_y = (cluster.y1 + cluster.y2) / 2
-                                    cluster.center = center_x, center_y
-
-                                    # Update the clusters list
-                                    clusters.append(cluster)
-
-                # Display checkbox-based fclusters
-                cv2.rectangle(
-                    image_fclusters,
-                    (cluster.x1, cluster.y1),
-                    (cluster.x2, cluster.y2),
-                    (144, 12, 2),
-                    1,
-                )
-
-        # Printing fclusters to file
-        cv2.imwrite("fclusters_" + fname, image_fclusters)
-
-        # Clusters checkboxes with text labels direction end
-
-        # Place all the free elements for the 1-element clusters
-        for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-            # First rectangle coordinates
-            x1 = int(recognized_element["shape_attributes"]["x"])
-            y1 = int(recognized_element["shape_attributes"]["y"])
-            x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-            y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-            element_unique = True
-            for cluster in clusters:
-                if recognized_element in cluster.elements:
-                    element_unique = False
-            if element_unique is True:
-                # Add the element to the cluster
-                cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
-
-                # Set some flags for this novel cluster
-                cluster.types = "fcluster"
-                cluster.is_elements_only = True
-                # The cluster contains only one element
-                cluster.is_solid = True
-                # The cluster direction is unseparable
-                cluster.direction = 2
-                cluster.origin_direction = 2
-
-                # Find the center of cluster
-                center_x = (cluster.x1 + cluster.x2) / 2
-                center_y = (cluster.y1 + cluster.y2) / 2
-                cluster.center = center_x, center_y
-
-                # Update the clusters list
-                clusters.append(cluster)
+        # Calculate fclusters function calling
+        clusters = calculate_fclusters(fdict, fnamesize, fname, image_fclusters=image_fclusters)
 
         if region_dataset in ["headers", "footers", "webpages"]:
+            # Calculate dbclusters function calling
             dbclusters = calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters)
 
         try:
@@ -3456,6 +3467,10 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             ]
             # Calculation of the excluded indices to remove overlapped elements end
 
+            # Calculate fclusters function calling
+            clusters = calculate_fclusters(fdict, fnamesize, fname)
+            '''
+            # Calculate fclusters pro function start
             # find all the clusters based on cluster-making elements
             # (inputs, selects, buttons, free text blocks, maybe large images)
             # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
@@ -3730,7 +3745,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             #
             #
             # Clusters checkboxes with text labels direction end
-
+            # Calculate fclusters pro function end
+            '''
             # Place all the free elements for the 1-element clusters
             for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
                 # First rectangle coordinates
@@ -3767,113 +3783,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     clusters.append(cluster)
 
             if region_dataset in ["headers", "footers", "webpages"]:
+                # Calculate dbclusters function calling
                 dbclusters = calculate_dbclusters(region_dataset, clusters, fname)
-                '''
-                # Clear the array of dbclusters
-                dbclusters = []
-                # DBSCAN clustering start
-                # #############################################################################
-                # Create numpy centers array clusters-based start
-                centers_array = []
-                for cluster in clusters:
-                    centers_array.append(cluster.center)
 
-                centers = np.array(centers_array)
-                # print("centers=", centers)
-                # Create numpy centers array clusters-based end
-
-                # Compute DBSCAN for the artificial dataset with 750 samples with data centers
-                X, labels_true = make_blobs(
-                    n_samples=750, centers=centers, cluster_std=0.4, random_state=0
-                )
-
-                # Concatenate centers and X next after the make_blobs function
-                centers_closest_nodes = []
-                for center in centers:
-                    # Find the closest element from X
-                    # Map the array of centers with array X
-                    centers_closest_nodes.append(closest_node(center, X))
-
-                # Fit transform X
-                X = StandardScaler().fit_transform(X)
-
-                if region_dataset in ["footers", "webpages"]:
-                    db = clustermethod.DBSCAN(eps=0.4).fit(X)
-                    # print("db=", db, X, db.labels_, len(X), len(db.labels_))
-                    # input()
-
-                if region_dataset == "headers":
-                    db = clustermethod.DBSCAN(eps=0.55).fit(X)
-
-                core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-                core_samples_mask[db.core_sample_indices_] = True
-                labels = db.labels_
-
-                # Number of dbclusters in labels, ignoring noise if present.
-                n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-
-                # DBSCAN.labels are included to fclusters start
-                for cluster in clusters:
-                    center = cluster.center
-                    # DB clusters
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (int(center[0]), int(center[1])),
-                    #     (int(center[0]) + 10, int(center[1]) + 10),
-                    #     (0, 0, 255),
-                    #     1,
-                    # )
-
-                    for center_closest_node in centers_closest_nodes:
-                        # Closest node comparison
-                        if (center[0] == center_closest_node[1][0]) and (
-                            center[1] == center_closest_node[1][1]
-                        ):
-                            cluster.X = center_closest_node[2]
-                            idx = cluster.idx = center_closest_node[0]
-                            cluster.label = labels[idx]
-                #
-                # cv2.imshow(window_name1, image_opencv_input)
-                # cv2.waitKey(0)
-                # DBSCAN.labels are included to fclusters end
-
-                # Create dbcluster as a class object
-                # Assign elements to dbclusters based on centers information
-                for n_cluster in range(n_clusters_):
-                    # Collect all the elements related to some dbcluster to this array
-                    cluster_sources = []
-                    dbcluster = ClusterClass(x1=9999, y1=9999, x2=0, y2=0, elements=[])
-                    # Set some flags to the dbcluster
-                    dbcluster.types = "dbcluster"
-                    dbcluster.is_elements_only = False
-                    dbcluster.processing = (
-                        "unsplitted"  # check if the ternary algorithm was applied
-                    )
-                    # Check the directiom with some function
-                    # dbcluster.direction = ?
-                    # Check is_solid parameter later
-                    # is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
-                    # clusters-based solution start
-                    for cluster in clusters:
-                        # Cluster number label
-                        label = cluster.label
-                        if label == n_cluster:
-                            cluster_sources.append(cluster)
-                            # Add flusters to dbclusters
-                            cluster.parent = dbcluster
-
-                    for cluster_source in cluster_sources:
-                        # Construct the dbcluster object
-                        # Find min max x1 y1 x2 y2
-                        # dbcluster.elements.append(cluster_source)
-                        dbcluster.x1 = min(dbcluster.x1, cluster_source.x1)
-                        dbcluster.y1 = min(dbcluster.y1, cluster_source.y1)
-                        dbcluster.x2 = max(dbcluster.x2, cluster_source.x2)
-                        dbcluster.y2 = max(dbcluster.y2, cluster_source.y2)
-                    # clusters-based solution end
-
-                    dbclusters.append(dbcluster)
-                    '''
             try:
                 # Replace clusters for dbclusters if possible
                 fclusters = copy.copy(clusters)
@@ -4284,6 +4196,10 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             ]
             # Calculation of the excluded indices to remove overlapped elements end
 
+            # Calculate fclusters function calling
+            clusters = calculate_fclusters(fdict, fnamesize, fname)
+            '''
+            # Calculate fclusters pro function start
             # find all the clusters based on cluster-making elements
             # (inputs, selects, buttons, free text blocks, maybe large images)
             # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
@@ -4593,115 +4509,12 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
                     # Update the clusters list
                     clusters.append(cluster)
+            # Calculate fclusters pro function end
+            '''
 
             if region_dataset in ["headers", "footers", "webpages"]:
+                # Calculate dbclusters function calling
                 dbclusters = calculate_dbclusters(region_dataset, clusters, fname)
-                '''
-                # Clear the array of dbclusters
-                dbclusters = []
-                # DBSCAN clustering start
-                # #############################################################################
-                # Create numpy centers array clusters-based start
-                centers_array = []
-                for cluster in clusters:
-                    centers_array.append(cluster.center)
-
-                centers = np.array(centers_array)
-                # print("centers=", centers)
-                # Create numpy centers array clusters-based end
-
-                # Compute DBSCAN for the artificial dataset with 750 samples with data centers
-                X, labels_true = make_blobs(
-                    n_samples=750, centers=centers, cluster_std=0.4, random_state=0
-                )
-
-                # Concatenate centers and X next after the make_blobs function
-                centers_closest_nodes = []
-                for center in centers:
-                    # Find the closest element from X
-                    # Map the array of centers with array X
-                    centers_closest_nodes.append(closest_node(center, X))
-
-                # Fit transform X
-                X = StandardScaler().fit_transform(X)
-
-                if region_dataset in ["footers", "webpages"]:
-                    db = clustermethod.DBSCAN(eps=0.4).fit(X)
-                    # print("db=", db, X, db.labels_, len(X), len(db.labels_))
-                    # input()
-
-                if region_dataset == "headers":
-                    db = clustermethod.DBSCAN(eps=0.55).fit(X)
-
-                core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
-                core_samples_mask[db.core_sample_indices_] = True
-                labels = db.labels_
-
-                # Number of dbclusters in labels, ignoring noise if present.
-                n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-
-                # DBSCAN.labels are included to fclusters start
-                for cluster in clusters:
-                    center = cluster.center
-                    # Displaying centers. DB clusters
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (int(center[0]), int(center[1])),
-                    #     (int(center[0]) + 10, int(center[1]) + 10),
-                    #     (0, 0, 255),
-                    #     1,
-                    # )
-
-                    for center_closest_node in centers_closest_nodes:
-                        # Closest node comparison
-                        if (center[0] == center_closest_node[1][0]) and (
-                            center[1] == center_closest_node[1][1]
-                        ):
-                            cluster.X = center_closest_node[2]
-                            idx = cluster.idx = center_closest_node[0]
-                            cluster.label = labels[idx]
-
-                # cv2.imshow(window_name1, image_opencv_input)
-                # cv2.waitKey(0)
-                # DBSCAN.labels are included to fclusters end
-
-                # Create dbcluster as a class object
-                # Assign elements to dbclusters based on centers information
-                for n_cluster in range(n_clusters_):
-                    # Collect all the elements related to some dbcluster to this array
-                    cluster_sources = []
-                    dbcluster = ClusterClass(x1=9999, y1=9999, x2=0, y2=0, elements=[])
-                    # Set some flags to the dbcluster
-                    dbcluster.types = "dbcluster"
-                    dbcluster.is_elements_only = False
-                    dbcluster.processing = (
-                        "unsplitted"  # check if the ternary algorithm was applied
-                    )
-                    # Check the directiom with some function
-                    # dbcluster.direction = ?
-                    # Check is_solid parameter later
-                    # is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
-                    # clusters-based solution start
-                    for cluster in clusters:
-                        # Cluster number label
-                        label = cluster.label
-                        if label == n_cluster:
-                            cluster_sources.append(cluster)
-                            # Add flusters to dbclusters
-                            cluster.parent = dbcluster
-
-                    for cluster_source in cluster_sources:
-                        # Construct the dbcluster object
-                        # Find min max x1 y1 x2 y2
-                        # dbcluster.elements.append(cluster_source)
-                        dbcluster.x1 = min(dbcluster.x1, cluster_source.x1)
-                        dbcluster.y1 = min(dbcluster.y1, cluster_source.y1)
-                        dbcluster.x2 = max(dbcluster.x2, cluster_source.x2)
-                        dbcluster.y2 = max(dbcluster.y2, cluster_source.y2)
-                    # clusters-based solution end
-
-                    dbclusters.append(dbcluster)
-                    '''
 
             try:
                 # Replace clusters for dbclusters if possible
