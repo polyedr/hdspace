@@ -51,10 +51,8 @@ const ListItem = React.forwardRef<HTMLLinkElement, RendererProps>(
     const listItemClasses = useItemStyles(props);
     const listItemWithLinkClasses = useEditableItemStyles(props);
     const linkClasses = useLinkStyles(props);
-    const [contentEditable, handleResetState] = useContentEditable(element.id);
-    const eventHandlers = useEventHandlers(props, {
-      onBlur: handleResetState,
-    });
+    const contentEditableSettings = useContentEditable(element.id, textContent);
+    const eventHandlers = useEventHandlers(props);
 
     const clickHandler = eventHandlers.onClick;
     eventHandlers.onClick = (event: React.MouseEvent<HTMLLIElement>) => {
@@ -91,8 +89,9 @@ const ListItem = React.forwardRef<HTMLLinkElement, RendererProps>(
               href={link}
               target="_blank"
               rel="noreferrer"
-              contentEditable={contentEditable}
               dangerouslySetInnerHTML={{ __html: textContent }}
+              {...contentEditableSettings.props}
+              {...contentEditableSettings.events}
             />
           </li>
         ) : (
@@ -108,9 +107,10 @@ const ListItem = React.forwardRef<HTMLLinkElement, RendererProps>(
             )}
             aria-label={`Button-${element.id}`}
             {...eventHandlers}
-            contentEditable={contentEditable}
             dangerouslySetInnerHTML={{ __html: textContent }}
             data-gramm_editor={false}
+            {...contentEditableSettings.props}
+            {...contentEditableSettings.events}
           />
         )}
       </>

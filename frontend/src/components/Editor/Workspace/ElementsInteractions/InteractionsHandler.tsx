@@ -2,10 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
 import { equals } from 'ramda';
-import {
-  selectElementBeingEdited,
-  selectElementById,
-} from '@Redux/project/selectors/element';
+import { selectElementById } from '@Redux/project/selectors/element';
 import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { BorderStyles } from '@Src/types';
@@ -46,7 +43,6 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
       return value.className === element.styles.classNames?.[1];
     })?.rules;
   });
-  const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
 
   const [styles, setStyles] = useState<BorderStyles | null>(
     getBorderStyles(elementDom, rootDom),
@@ -83,16 +79,14 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
   return (
     <React.Fragment key={`element-border-${elementId}`}>
       <Borders elementId={elementId} styles={styles} />
-      {!elementBeingEdited && (
-        <BorderCrumb elementId={elementId} styles={styles}>
-          {!masterScreenEnabled && (
-            <>
-              <SaveElementAction elementId={elementId} />
-              <CreateGroupAction elementId={elementId} />
-            </>
-          )}
-        </BorderCrumb>
-      )}
+      <BorderCrumb elementId={elementId} styles={styles}>
+        {!masterScreenEnabled && (
+          <>
+            <SaveElementAction elementId={elementId} />
+            <CreateGroupAction elementId={elementId} />
+          </>
+        )}
+      </BorderCrumb>
     </React.Fragment>
   );
 };

@@ -61,6 +61,7 @@ const Video = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
       id={element.id}
       data-ls-id={element.id}
       className={cn(className, groupClass, styles.empty, styles.ownStyles)}
+      {...eventHandlers}
     />
   );
 });

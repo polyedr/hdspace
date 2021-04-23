@@ -29,7 +29,7 @@ const Link = React.forwardRef<HTMLAnchorElement, RendererProps>(
     );
 
     const eventHandlers = useEventHandlers(props, {
-      onClick: (event) => {
+      onClick: (event: React.SyntheticEvent<HTMLElement>) => {
         if (isDisabled || !clickEvent) {
           prevent(event);
           return;

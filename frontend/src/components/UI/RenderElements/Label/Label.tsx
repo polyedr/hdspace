@@ -20,22 +20,22 @@ const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
     const { labelFor, textContent } = element.parameters;
 
     const styles = useStyles(props);
-    const [contentEditable, handleResetState] = useContentEditable(element.id);
-    const eventHandlers = useEventHandlers(props, {
-      onBlur: handleResetState,
-    });
+    const contentEditableSettings = useContentEditable(element.id, textContent);
+    const eventHandlers = useEventHandlers(
+      props,
+      contentEditableSettings.events,
+    );
 
     return (
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <label
         ref={ref}
         id={element.id}
         data-ls-id={element.id}
         {...(labelFor !== 'no for attribute' && { htmlFor: labelFor })}
         className={cn(className, styles.label, groupClass, styles.ownStyles)}
-        contentEditable={contentEditable}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
+        {...contentEditableSettings.props}
         {...eventHandlers}
       />
     );

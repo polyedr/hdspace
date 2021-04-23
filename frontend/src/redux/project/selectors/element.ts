@@ -82,28 +82,6 @@ export const selectElementByChildId = (id: string) => (
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
-export const selectElementBeingEditedState = ({ project }: AppReduxState) =>
-  project.ui.elementBeingEdited;
-
-export const selectElementCanBeEditedState = ({ project }: AppReduxState) =>
-  project.ui.elementCanBeEdited;
-
-export const selectElementBeingEdited = (elementId: string) =>
-  createSelector(
-    selectActiveElementId,
-    selectElementBeingEditedState,
-    (activeElementId, elementBeingEdited) =>
-      elementId === activeElementId && elementBeingEdited,
-  );
-
-export const selectElementCanBeEdited = (elementId: string) =>
-  createSelector(
-    selectActiveElementId,
-    selectElementCanBeEditedState,
-    (activeElementId, elementCanBeEdited) =>
-      elementId === activeElementId && elementCanBeEdited,
-  );
-
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
 

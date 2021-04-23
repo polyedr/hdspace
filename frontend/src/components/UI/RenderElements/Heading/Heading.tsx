@@ -14,22 +14,22 @@ const Heading = React.forwardRef<HTMLHeadingElement, RendererProps>(
     const { headingType, textContent } = element.parameters;
     const HeadingTag = headingType || 'h3';
 
-    const [contentEditable, handleResetState] = useContentEditable(element.id);
+    const contentEditableSettings = useContentEditable(element.id, textContent);
     const styles = useStyles(props);
-    const eventHandlers = useEventHandlers(props, {
-      onBlur: handleResetState,
-    });
-
+    const eventHandlers = useEventHandlers(
+      props,
+      contentEditableSettings.events,
+    );
     return (
       <HeadingTag
         ref={ref}
         id={element.id}
         data-ls-id={element.id}
         className={cn(className, styles.ownStyles, groupClass)}
-        {...eventHandlers}
-        contentEditable={contentEditable}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
+        {...contentEditableSettings.props}
+        {...eventHandlers}
       />
     );
   },

@@ -17,17 +17,17 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
     const { textContent } = element.parameters;
 
     const classes = useStyles(props);
-    const [contentEditable, handleResetState] = useContentEditable(element.id);
-    const eventHandlers = useEventHandlers(props, {
-      onBlur: handleResetState,
-    });
+    const contentEditableSettings = useContentEditable(element.id, textContent);
+    const eventHandlers = useEventHandlers(
+      props,
+      contentEditableSettings.events,
+    );
 
     return (
       <div
         ref={ref}
         id={element.id}
         data-ls-id={element.id}
-        contentEditable={contentEditable}
         className={cn(
           className,
           classes.textBlock,
@@ -35,9 +35,10 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
           classes.ownStyles,
           isDisabled && classes.disabled,
         )}
-        {...eventHandlers}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
+        {...contentEditableSettings.props}
+        {...eventHandlers}
       />
     );
   },

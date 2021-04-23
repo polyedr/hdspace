@@ -1,41 +1,86 @@
-import React from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectElementBeingEdited,
-  selectElementCanBeEdited,
-} from '@Redux/project/selectors/element';
-import {
-  resetElementEditState,
-  updateElementParameters,
-} from '@Redux/project/actions';
+import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { useDebouncedCallback } from 'use-debounce';
+import { DefaultEventHandlers } from '../RenderElements/types';
 
-const useContentEditable = (elementId: string) => {
+export type ContentEditableProps = {
+  contentEditable: boolean;
+  tabIndex?: number;
+};
+
+export type ContentEditableConfig = {
+  props: ContentEditableProps;
+  events: DefaultEventHandlers;
+};
+
+const useContentEditable = (
+  elementId: string,
+  textContent: string,
+): ContentEditableConfig => {
   const dispatch = useDispatch();
-  const canBeEdited = useSelector(selectElementCanBeEdited(elementId));
-  const isBeingEdited = useSelector(selectElementBeingEdited(elementId));
   const screenId = useSelector(selectCurrentScreenId);
-  const contentEditable = canBeEdited || isBeingEdited;
+  const [contentEditable, setContentEditable] = useState<boolean>(false);
 
-  const handleResetState = (event: React.SyntheticEvent) => {
-    if (contentEditable) {
-      dispatch(resetElementEditState());
-      dispatch(
-        updateElementParameters(
-          elementId,
-          {
-            textContent: (event?.target as HTMLElement).innerText,
-          },
-          { screenId },
-        ),
-      );
-    }
-  };
+  const saveElementContent = useCallback(
+    (newTextContent: string) => {
+      if (textContent !== newTextContent) {
+        dispatch(
+          updateElementParameters(
+            elementId,
+            {
+              textContent: newTextContent,
+            },
+            { screenId },
+          ),
+        );
+      }
+    },
+    [dispatch, elementId, screenId, textContent],
+  );
 
-  return [contentEditable, handleResetState] as [
-    boolean,
-    (event: React.SyntheticEvent) => void,
-  ];
+  const debouncedCallback = useDebouncedCallback(saveElementContent, 500);
+
+  const config = useMemo(
+    () => ({
+      props: {
+        contentEditable,
+      },
+      events: {
+        onClick: () => {
+          if (!contentEditable) {
+            setContentEditable(true);
+          }
+        },
+        onKeyDown: (event: React.SyntheticEvent<HTMLElement>) => {
+          const e = event as React.KeyboardEvent<HTMLElement>;
+          if (e.key === 'Enter') {
+            event.stopPropagation();
+            event.preventDefault();
+            setContentEditable(false);
+            saveElementContent((event.target as HTMLElement).innerHTML.trim());
+          } else if (e.key === 'Escape') {
+            event.stopPropagation();
+            event.preventDefault();
+            setContentEditable(false);
+          }
+        },
+        onBlur: (event: React.SyntheticEvent) => {
+          if (contentEditable) {
+            setContentEditable(false);
+            debouncedCallback.cancel();
+            debouncedCallback.callback(
+              (event.target as HTMLElement).innerHTML.trim(),
+            );
+          }
+        },
+      },
+    }),
+    [contentEditable, debouncedCallback, saveElementContent],
+  );
+
+  return config;
 };
 
 export default useContentEditable;

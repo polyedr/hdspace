@@ -13,10 +13,11 @@ const Paragraph = React.forwardRef<HTMLParagraphElement, RendererProps>(
     const [className, groupClass] = element.styles.classNames;
     const { textContent } = element.parameters;
     const classes = useStyles(props);
-    const [contentEditable, handleResetState] = useContentEditable(element.id);
-    const eventHandlers = useEventHandlers(props, {
-      onBlur: handleResetState,
-    });
+    const contentEditableSettings = useContentEditable(element.id, textContent);
+    const eventHandlers = useEventHandlers(
+      props,
+      contentEditableSettings.events,
+    );
 
     return (
       <p
@@ -25,10 +26,10 @@ const Paragraph = React.forwardRef<HTMLParagraphElement, RendererProps>(
         data-ls-id={element.id}
         key={element.id}
         className={cn(className, groupClass, classes.ownStyles)}
-        contentEditable={contentEditable}
-        {...eventHandlers}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
+        {...contentEditableSettings.props}
+        {...eventHandlers}
       />
     );
   },

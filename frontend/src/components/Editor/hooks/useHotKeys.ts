@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElementId,
-  selectElementBeingEditedState,
   selectMasterCoreElementId,
   selectMasterGroupsElementId,
   selectTreeChildElementsIds,
@@ -22,7 +21,6 @@ import { UserProjectPermission } from '@Src/types';
 const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const id = useSelector(selectActiveElementId);
-  const beingEdited = useSelector(selectElementBeingEditedState);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
   const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
   const coreElementsIds = useSelector(
@@ -46,7 +44,6 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     const listener = (event: KeyboardEvent) => {
       if (
-        !beingEdited &&
         (event.key === 'Delete' ||
           (event.key === 'Backspace' && event.metaKey)) &&
         !coreElementSelected &&
@@ -59,22 +56,13 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener, false);
     return () => element?.removeEventListener('keydown', listener, false);
-  }, [
-    ref,
-    id,
-    currentScreenId,
-    dispatch,
-    beingEdited,
-    coreElementSelected,
-    canEdit,
-  ]);
+  }, [ref, id, currentScreenId, dispatch, coreElementSelected, canEdit]);
 
   useEffect(() => {
     const element = ref.current;
 
     const listener = (event: KeyboardEvent) => {
       if (
-        !beingEdited &&
         event.code === 'KeyC' &&
         event.altKey &&
         !coreElementSelected &&
@@ -87,24 +75,14 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [
-    ref,
-    id,
-    currentScreenId,
-    dispatch,
-    beingEdited,
-    coreElementSelected,
-    canEdit,
-  ]);
+  }, [ref, id, currentScreenId, dispatch, coreElementSelected, canEdit]);
 
   useEffect(() => {
     const element = ref.current;
 
     const listener = (event: KeyboardEvent) => {
       const isItemCopyEvent =
-        !beingEdited &&
-        event.code === 'KeyC' &&
-        (event.metaKey || event.ctrlKey);
+        event.code === 'KeyC' && (event.metaKey || event.ctrlKey);
 
       if (isItemCopyEvent && !coreElementSelected && canEdit) {
         dispatch(copyActiveElement());
@@ -115,16 +93,14 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [beingEdited, canEdit, coreElementSelected, dispatch, ref]);
+  }, [canEdit, coreElementSelected, dispatch, ref]);
 
   useEffect(() => {
     const element = ref.current;
 
     const listener = (event: KeyboardEvent) => {
       const isItemPasteEvent =
-        !beingEdited &&
-        event.code === 'KeyV' &&
-        (event.metaKey || event.ctrlKey);
+        event.code === 'KeyV' && (event.metaKey || event.ctrlKey);
 
       if (isItemPasteEvent && !coreElementSelected && canEdit) {
         dispatch(pasteCopiedElement({ screenId: currentScreenId }));
@@ -134,20 +110,13 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [
-    ref,
-    currentScreenId,
-    dispatch,
-    beingEdited,
-    coreElementSelected,
-    canEdit,
-  ]);
+  }, [ref, currentScreenId, dispatch, coreElementSelected, canEdit]);
 
   useEffect(() => {
     const element = ref.current;
 
     const listener = (ev: KeyboardEvent) => {
-      if (!beingEdited && ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey)) {
+      if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey)) {
         dispatch(ev.shiftKey ? executeRedoActions() : executeUndoActions());
         element?.focus();
       }
@@ -155,7 +124,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, dispatch, beingEdited]);
+  }, [ref, dispatch]);
 };
 
 export default useHotKeys;

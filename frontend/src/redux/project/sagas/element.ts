@@ -872,7 +872,6 @@ export const setActiveElementSaga = withRequiredPermissions(
   yield put(Actions.setEditableStyles('ownStyles'));
   yield put(Actions.setActiveElementId(action.payload));
   yield put(Actions.setCanCreateGroup(false));
-  yield put(Actions.resetElementEditState());
   yield put(Actions.setSelectedElements([action.payload]));
 });
 
