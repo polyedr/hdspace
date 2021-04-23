@@ -80,6 +80,7 @@ export type ProjectUiState = {
     iframe: null | HTMLIFrameElement;
     host: string;
   };
+  tabsAutoSwitch: boolean;
 };
 
 export type ProjectEditState = {
@@ -123,6 +124,7 @@ export type ProjectCommunicationState = {
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
   assetsLoader: boolean;
+  importLoader: boolean;
 };
 
 export type ProjectControlState = {
@@ -570,13 +572,13 @@ export type AddChildToElement = IAction<
   },
   ElementHistoryMeta
 >;
-export type UploadFile = IAction<
-  typeof TYPES.UPLOAD_FILE,
+export type AutoAnalyzeImage = IAction<
+  typeof TYPES.AUTO_ANALYZE_IMAGE,
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
-export type RecognizeImage = IAction<
-  typeof TYPES.RECOGNIZE_IMAGE,
+export type SemiautoAnalyzeImage = IAction<
+  typeof TYPES.SEMIAUTO_ANALYZE_IMAGE,
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
@@ -1088,7 +1090,7 @@ export type Action =
   | DeleteElement
   | AddChildToElement
   | AddChildrenToElement
-  | UploadFile
+  | AutoAnalyzeImage
   | uploadImageForNNSuccess
   | WrapIntoContainer
   | SetHoveredElementId
@@ -1205,7 +1207,14 @@ export type Action =
   | PasteVIARegion
   | SetSidebarOpen
   | SetSidebarIframe
-  | SetSidebarHost;
+  | SetSidebarHost
+  | SetValueImportLoader
+  | ToggleEnableTabsAutoSwitch;
+
+export type SetValueImportLoader = IAction<
+  typeof TYPES.SET_VALUE_IMPORT_LOADER,
+  boolean
+>;
 
 export type HistoryMeta = {
   useHistory?: boolean;
@@ -1228,3 +1237,7 @@ export interface IAction<T, P, M = HistoryMeta, R = void>
 export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {
   error: E;
 }
+
+export type ToggleEnableTabsAutoSwitch = IPlainAction<
+  typeof TYPES.TOGGLE_TABS_AUTOSWITCH
+>;

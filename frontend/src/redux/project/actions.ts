@@ -93,7 +93,7 @@ import {
   UpdateSavedElementValues,
   UpdateScreen,
   UpdateSharedStyles,
-  UploadFile,
+  AutoAnalyzeImage,
   WrapIntoContainer,
   SetScreenCreateLoader,
   SetBordersEnabled,
@@ -124,7 +124,7 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
-  RecognizeImage,
+  SemiautoAnalyzeImage,
   FinishAnnotaion,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
@@ -167,6 +167,8 @@ import {
   SetSidebarHost,
   SetSidebarIframe,
   AssetData,
+  SetValueImportLoader,
+  ToggleEnableTabsAutoSwitch,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -851,13 +853,13 @@ export const addChildToElement = (
   meta,
 });
 
-export const uploadFile = (
+export const autoAnalyzeImage = (
   file: any,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
-): UploadFile => ({
-  type: TYPES.UPLOAD_FILE,
+): AutoAnalyzeImage => ({
+  type: TYPES.AUTO_ANALYZE_IMAGE,
   payload: {
     file,
     parentId,
@@ -866,13 +868,13 @@ export const uploadFile = (
   meta,
 });
 
-export const recognizeImage = (
+export const semiAutoAnalyzeImage = (
   file: any,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
-): RecognizeImage => ({
-  type: TYPES.RECOGNIZE_IMAGE,
+): SemiautoAnalyzeImage => ({
+  type: TYPES.SEMIAUTO_ANALYZE_IMAGE,
   payload: {
     file,
     parentId,
@@ -1134,9 +1136,14 @@ export const importHtml = (files: File[], url?: string) => ({
   },
 });
 
-export const uploadImportUrl = (url) => ({
+export const uploadImportUrl = (url: string) => ({
   type: TYPES.UPLOAD_IMPORT_URL,
   payload: url,
+});
+
+export const setValueImportLoader = (value: boolean): SetValueImportLoader => ({
+  type: TYPES.SET_VALUE_IMPORT_LOADER,
+  payload: value,
 });
 
 export const setEditorDocument = (doc: Document): SetEditorDocument => ({
@@ -1502,4 +1509,8 @@ export const sidebarLogout = () => ({
 
 export const sidebarLogoutSuccess = () => ({
   type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
+});
+
+export const toggleEnableTabsAutoSwitch = (): ToggleEnableTabsAutoSwitch => ({
+  type: TYPES.TOGGLE_TABS_AUTOSWITCH,
 });

@@ -233,5 +233,5 @@ export const assembleImgUsingNN = (
     method: 'POST',
     url: '/virtualize_simple/assemble/',
   })
-    .then((res) => ({ result: convertElementFromResponse(res.data) }))
+    .then((res) => ({ result: convertNNElementFromResponse(res.data) }))
     .catch(handleError);

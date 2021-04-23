@@ -55,6 +55,7 @@ export const initialUi: ProjectUiState = {
     iframe: null,
     host: '',
   },
+  tabsAutoSwitch: false,
 };
 
 export const initialEdit: ProjectEditState = {
@@ -92,6 +93,7 @@ export const initialCommunication: ProjectCommunicationState = {
   projectCreateLoader: false,
   analyzerLoader: false,
   assetsLoader: false,
+  importLoader: false,
 };
 
 export const initialControl: ProjectControlState = {

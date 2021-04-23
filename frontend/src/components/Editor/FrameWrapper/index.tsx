@@ -2,19 +2,32 @@ import React, { FC, useEffect, useRef, useContext } from 'react';
 import { create } from 'jss';
 import {
   jssPreset,
+  makeStyles,
   StylesProvider,
   ThemeProvider,
 } from '@material-ui/core/styles';
+import { CircularProgress } from '@material-ui/core';
 import Frame, {
   FrameContext,
   FrameContextConsumer,
 } from 'react-frame-component';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
 import { setEditorDocument } from '@Redux/project/actions';
 import theme from '@Src/styles/Theme';
+import { selectImportLoader } from '../../../redux/project/selectors/base';
 
 import { WindowProvider } from './FrameContext';
+
+const useStyles = makeStyles({
+  loaderWrapper: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 const CustomHead: FC = () => {
   return (
@@ -54,14 +67,22 @@ const CustomHead: FC = () => {
 };
 
 const DndFrame = ({ children }) => {
+  const styles = useStyles();
   const { dragDropManager } = useContext(DndContext);
   const { window } = useContext(FrameContext);
+  const isImportLoader = useSelector(selectImportLoader);
 
   useEffect(() => {
     (dragDropManager?.getBackend() as any)?.addEventListeners(window);
   });
 
-  return children;
+  return isImportLoader ? (
+    <div className={styles.loaderWrapper}>
+      <CircularProgress size={80} />
+    </div>
+  ) : (
+    children
+  );
 };
 
 export const FrameWrapper: FC<any> = ({ children, ...props }) => {

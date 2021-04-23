@@ -138,6 +138,13 @@ function uiReducer(
       };
     }
 
+    case TYPES.TOGGLE_TABS_AUTOSWITCH: {
+      return {
+        ...state,
+        tabsAutoSwitch: !state.tabsAutoSwitch,
+      };
+    }
+
     default:
       return state;
   }
