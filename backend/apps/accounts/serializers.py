@@ -16,9 +16,10 @@ class MyActivationSerializer(ActivationSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     # users = UserSerializer(read_only=True)
+    parameters = serializers.JSONField(allow_null=True)
     class Meta:
         model = Profile
-        fields = ("avatar", "approved", "role", "experienced", "hourly_rate", "id")
+        fields = ("avatar", "approved", "role", "experienced", "hourly_rate", "id", "parameters")
 
 
 class UserSerializer(serializers.ModelSerializer):
