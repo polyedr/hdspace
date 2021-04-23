@@ -24,6 +24,7 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
         alt={alt}
         title={title}
         draggable={false}
+        loading="lazy"
         {...eventHandlers}
       />
     );
