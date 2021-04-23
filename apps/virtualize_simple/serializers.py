@@ -233,7 +233,7 @@ def write_elem_value(region_dataset, class_id_recognized):
 
 
 # Detect elements for the root block function
-def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                        image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0):
     # Function elements creation, loop through the root_block
     for pre, fill, node in RenderTree(root_block):
@@ -972,6 +972,119 @@ def clusters_printing(root_block, fname, image_allclusters=[], image_cclusters=[
         cv2.imwrite("allclusters_with_elements_" + fname, image_allcluelems)
 
     return True
+
+
+def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input, window_name1, fclusters):
+    # Ternary assembling algorithm run after the clusters pro function start
+    # Define the root block
+    root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
+    root_block.types = "ccluster"
+
+    x_layout_intervals = []
+    y_layout_intervals = []
+    for cluster in clusters:
+        x_average = int((cluster.x1 + cluster.x2) / 2)
+        y_average = int((cluster.y1 + cluster.y2) / 2)
+        x_layout_intervals.append([cluster.x1, cluster.x2])
+        y_layout_intervals.append([cluster.y1, cluster.y2])
+
+    # print(x_layout_intervals)
+    ob1_x = Partition()
+    ob1_x_merged = ob1_x.merge(x_layout_intervals)
+    # print("ob1_x_merged", ob1_x_merged, type(ob1_x_merged), len(ob1_x_merged))
+    #
+    # print(y_layout_intervals)
+    ob1_y = Partition()
+    ob1_y_merged = ob1_y.merge(y_layout_intervals)
+    # print("ob1_y_merged", ob1_y_merged, type(ob1_y_merged), len(ob1_y_merged))
+
+    # Choose if the block horizontal vertical or final
+    # horizontal
+    if len(ob1_x_merged) >= len(ob1_y_merged):
+        root_block.direction = 0
+
+    # vertiical
+    if len(ob1_x_merged) < len(ob1_y_merged):
+        root_block.direction = 1
+
+    # horizontal y length 1 case
+    if len(ob1_x_merged) >= len(ob1_y_merged) and (len(ob1_y_merged) == 1):
+        root_block.direction = 1
+
+    # vertiical x length 1 case
+    if len(ob1_x_merged) < len(ob1_y_merged) and (len(ob1_x_merged) == 1):
+        root_block.direction = 0
+
+    # final
+    if (len(ob1_x_merged) == 1) and (len(ob1_y_merged) == 1):
+        root_block.direction = 2
+
+    # Prepare the copy of image as overlay before rectangles calculations
+    overlay = image_opencv_input.copy()
+    # Assign the children based on direction
+    if root_block.direction == 0:
+        for interval in ob1_y_merged:
+            ccluster = ClusterClass(
+                min_x1, interval[0], max_x2, interval[1], parent=root_block
+            )
+            ccluster.types = "ccluster"
+            # cv2.rectangle(
+            #     image_opencv_input,
+            #     (min_x1, interval[0]),
+            #     (max_x2, interval[1]),
+            #     (70, 50, 135),
+            #     -1,
+            # )
+
+    if root_block.direction == 1:
+        for interval in ob1_x_merged:
+            ccluster = ClusterClass(
+                interval[0], min_y1, interval[1], max_y2, parent=root_block
+            )
+            ccluster.types = "ccluster"
+            # cv2.rectangle(
+            #     image_opencv_input,
+            #     (interval[0], min_y1),
+            #     (interval[1], max_y2),
+            #     (20, 50, 107),
+            #     -1,
+            # )
+
+    if root_block.direction == 2:
+        for interval_x in ob1_x_merged:
+            for interval_y in ob1_y_merged:
+                ccluster = ClusterClass(
+                    interval_x[0],
+                    interval_y[0],
+                    interval_x[1],
+                    interval_y[1],
+                    parent=root_block,
+                )
+                ccluster.types = "ccluster"
+
+    # Go through all the blocks obtained after the ternary algorithm
+    # Split each block
+    for pre, fill, node in RenderTree(root_block):
+        if node != root_block:
+            # print(node.name)
+            blocks_split(node, window_name1, image_opencv_input, overlay, clusters)
+
+    # Go through all the blocks obtained after the ternary algorithm
+    # Correct the direction of the fclusters
+    for pre, fill, node in RenderTree(root_block):
+        if node.types == "fcluster":
+            if len(node.elements) > 1:
+                node.direction = node.origin_direction
+
+    # Go through all the blocks obtained after the ternary algorithm
+    # Correct the dbclusters splitting
+    # This part of code should split complex dbclusters and re-arrange their child nodes to descendants
+    for pre, fill, node in RenderTree(root_block):
+        if node.types == "dbcluster":
+            if len(node.children) > 1:
+                dbcluster_split(node, fclusters)
+    # Ternary assembling algorithm run after the clusters pro function end
+    return root_block
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
@@ -2922,7 +3035,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         finally:
             pass
 
-        # Ternary assembling algorithm run after the clusters start
+        root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input, window_name1, fclusters)
+
+        '''
+        # Ternary assembling algorithm run after the clusters pro function start
         # Define the root block
         root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
         root_block.types = "ccluster"
@@ -3009,11 +3125,11 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     )
                     ccluster.types = "ccluster"
 
-        # Go through all the blocks obtained
+        # Go through all the blocks obtained after the ternary algorithm
+        # Split each block
         for pre, fill, node in RenderTree(root_block):
             if node != root_block:
                 # print(node.name)
-                # Split each block
                 blocks_split(node, window_name1, image_opencv_input, overlay, clusters)
 
         # Go through all the blocks obtained after the ternary algorithm
@@ -3031,7 +3147,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 if len(node.children) > 1:
                     dbcluster_split(node, fclusters)
 
-        # Ternary assembling algorithm run after the clusters end
+        # Ternary assembling algorithm run after the clusters pro function end
+        '''
 
         # Printing clusters function calling
         clusters_printing(root_block, fname, image_allclusters=image_allclusters, image_cclusters=image_cclusters,
@@ -3040,7 +3157,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # HTML tree initialize function call
         root, outer_div, styles, parameters = htmltree_initialize(fname, bcolour_container_value, img_width)
 
-        # Define the export node
+        # Serializer only
+        # Define the export node start
         outer_div_node = ScenarioElement.objects.create(
             parent=serializer_node,
             struct_type="container",
@@ -3048,21 +3166,22 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             styles=styles,
             buoyancy=0,
         )
+        # Define the export node end
 
         # Obtaining the absolute path for the parameters directly. Should change this later.
         o = urlparse(self.context["request"].build_absolute_uri())
         # Detect elements for the root block
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                            image_original, fname, o, serializing="virtualize_simple")
         # Serializer only
         elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
         # Detect elements for the root block double
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                            image_original, fname, o, serializing="virtualize_simple")
         # Serializer only
         elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
         # Detect elements for the root block triple
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                            image_original, fname, o, serializing="virtualize_simple")
         # Serializer only
         elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
@@ -3866,7 +3985,10 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             finally:
                 pass
 
-            # Ternary assembling algorithm run after the clusters start
+            root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
+                                                window_name1, fclusters)
+            '''
+            # Ternary assembling algorithm run after the clusters pro function start
             # Define the root block
             root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
             root_block.types = "ccluster"
@@ -3977,7 +4099,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     if len(node.children) > 1:
                         dbcluster_split(node, fclusters)
 
-            # Ternary assembling algorithm run after the clusters end
+            # Ternary assembling algorithm run after the clusters pro function end
+            '''
 
             # Create directtory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
@@ -4000,7 +4123,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # Obtaining the absolute path for the parameters directly. Should change this later.
             o = urlparse(self.context["request"].build_absolute_uri())
             # Detect elements for the root block
-            elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div, outer_div_node,
+            elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                                image_original, fname, o, serializing="assemble")
             # Serializer only
             elements_rootblock_create(root_block, outer_div_node, serializing="assemble")
@@ -4802,7 +4925,10 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             finally:
                 pass
 
-            # Ternary assembling algorithm run after the clusters start
+            root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
+                                                window_name1, fclusters)
+            '''
+            # Ternary assembling algorithm run after the clusters pro function start
             # Define the root block
             root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
             root_block.types = "ccluster"
@@ -4913,7 +5039,8 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                     if len(node.children) > 1:
                         dbcluster_split(node, fclusters)
 
-            # Ternary assembling algorithm run after the clusters end
+            # Ternary assembling algorithm run after the clusters pro function end
+            '''
 
             # Create directtory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
@@ -4942,7 +5069,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             o = urlparse(self.context["request"].build_absolute_uri())
             # Detect elements for the root block
             elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
-                               outer_div_node, image_original, fname, o, serializing="freecanvas")
+                               image_original, fname, o, serializing="freecanvas")
             # Serializer only
             elements_rootblock_create(root_block, outer_div_node, serializing="freecanvas", children=children)
         return serializer_node
