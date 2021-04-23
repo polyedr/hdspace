@@ -29,7 +29,6 @@ import {
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   CONTAINER_GROUPS,
-  // EDITABLE_COMPONENTS_LIST,
   NOT_DRAGGABLE_COMPONENTS,
 } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
