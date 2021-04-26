@@ -1,17 +1,17 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { memo } from 'react';
+import { useDispatch } from 'react-redux';
 import { Popover, IconButton } from '@material-ui/core';
 import SaveIcon from '@material-ui/icons/Save';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import cn from 'classnames';
-import { selectElementById } from '@Redux/project/selectors/element';
 import { SAVEABLE_ELEMENTS } from '@Constants/defaultParams';
 import { updateElement } from '@Redux/project/actions';
 import { makeStyles } from '@material-ui/core/styles';
+import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 
 type Props = {
-  elementId: string;
+  element: StateElement;
 };
 
 const useStyles = makeStyles({
@@ -24,10 +24,9 @@ const useStyles = makeStyles({
   },
 });
 
-const SaveElementAction: React.FC<Props> = ({ elementId }) => {
+const SaveElementAction: React.FC<Props> = ({ element }) => {
   const classes = useStyles();
   const buttonClasses = useButtonStyles();
-  const element = useSelector(selectElementById(elementId));
   const dispatch = useDispatch();
 
   const inputRef = React.createRef<HTMLInputElement>();
@@ -75,7 +74,7 @@ const SaveElementAction: React.FC<Props> = ({ elementId }) => {
                     popupState.close();
                     dispatch(
                       updateElement<'section'>({
-                        elementID: elementId,
+                        elementID: element.id,
                         data: {
                           name,
                           shared: true,
@@ -94,4 +93,4 @@ const SaveElementAction: React.FC<Props> = ({ elementId }) => {
   );
 };
 
-export default SaveElementAction;
+export default memo(SaveElementAction);

@@ -1,21 +1,20 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, memo } from 'react';
 import cn from 'classnames';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import { Popover, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import {
-  selectCanCreateGroup,
-  selectSelectedElementsIds,
-} from '@Redux/project/selectors/element';
 import { createElementsGroup } from '@Redux/project/actions';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 import { makeStyles } from '@material-ui/core/styles';
+import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 
 type Props = {
-  elementId: string;
+  element: StateElement;
+  canCreateGroup: boolean;
+  selectedElementsIds: string[];
+  screenId: number;
 };
 
 const useStyles = makeStyles({
@@ -28,12 +27,14 @@ const useStyles = makeStyles({
   },
 });
 
-const CreateGroupAction: React.FC<Props> = ({ elementId }) => {
+const CreateGroupAction: React.FC<Props> = ({
+  element,
+  screenId,
+  selectedElementsIds,
+  canCreateGroup,
+}) => {
   const classes = useStyles();
   const buttonClasses = useButtonStyles();
-  const canCreateGroup = useSelector(selectCanCreateGroup);
-  const selectedElementsIds = useSelector(selectSelectedElementsIds);
-  const screenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -49,14 +50,14 @@ const CreateGroupAction: React.FC<Props> = ({ elementId }) => {
         screenId,
       }),
     );
-  }, [dispatch, selectedElementsIds]);
+  }, [dispatch, screenId, selectedElementsIds]);
 
   if (!canCreateGroup) {
     return null;
   }
 
   return (
-    <PopupState variant="popover" popupId={`${elementId}-create-group-popup`}>
+    <PopupState variant="popover" popupId={`${element.id}-create-group-popup`}>
       {(popupState) => (
         <>
           <IconButton
@@ -102,4 +103,4 @@ const CreateGroupAction: React.FC<Props> = ({ elementId }) => {
   );
 };
 
-export default CreateGroupAction;
+export default memo(CreateGroupAction);

@@ -86,13 +86,6 @@ const Workspace: React.FC<Props> = () => {
               <Scrollbar
                 ref={scrollRef}
                 autoHeightMin="100%"
-                autoHeightMax={
-                  ref.current
-                    ? `calc(${
-                        ref.current.getBoundingClientRect().height
-                      }px - 2em)`
-                    : '100%'
-                }
                 onScroll={({ srcElement }) => {
                   setScrollLeft(srcElement.scrollLeft);
                 }}
@@ -106,10 +99,10 @@ const Workspace: React.FC<Props> = () => {
                     ) : (
                       <TreeCanvas scrollRef={scrollRef} />
                     )}
-                    {!freeCanvasMode && !isPrototypeMode && (
-                      <ElementsInteractions posRight={scrollLeft} />
-                    )}
                   </>
+                )}
+                {!freeCanvasMode && !isPrototypeMode && (
+                  <ElementsInteractions posRight={scrollLeft} />
                 )}
               </Scrollbar>
             </EditorViewport>
