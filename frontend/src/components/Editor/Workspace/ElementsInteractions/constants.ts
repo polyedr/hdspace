@@ -5,5 +5,3 @@ export enum BorderPosition {
   LEFT = 'left',
   RIGHT = 'right',
 }
-
-export const INTERSECTIONS_CHECK_COUNT = 20;
