@@ -1526,6 +1526,345 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
     return clusters
 
 
+def calculate_excluded_indices(fdict, fnamesize):
+    # Calculation of the excluded indices to remove overlapped elements
+    # Second, calculate the non-text blocks overlap
+    excluded_elements = []
+    for rect1 in fdict[fnamesize]["regions"]:
+        for rect2 in fdict[fnamesize]["regions"]:
+            is_menu = (
+                              rect1["region_attributes"]["HTML element"] == "menu"
+                      ) or (rect2["region_attributes"]["HTML element"] == "menu")
+            if (rect1 != rect2) and not is_menu:
+                x1 = rect1["shape_attributes"]["x"]
+                y1 = rect1["shape_attributes"]["y"]
+                x2 = (
+                        rect1["shape_attributes"]["x"]
+                        + rect1["shape_attributes"]["width"]
+                )
+                y2 = (
+                        rect1["shape_attributes"]["y"]
+                        + rect1["shape_attributes"]["height"]
+                )
+                x3 = rect2["shape_attributes"]["x"]
+                y3 = rect2["shape_attributes"]["y"]
+                x4 = (
+                        rect2["shape_attributes"]["x"]
+                        + rect2["shape_attributes"]["width"]
+                )
+                y4 = (
+                        rect2["shape_attributes"]["y"]
+                        + rect2["shape_attributes"]["height"]
+                )
+
+                # Borders of the rectangles overlapped area
+                # Define the overlapping area between the rectangles
+                left = max(x1, x3)
+                bottom = max(y1, y3)
+                right = min(x2, x4)
+                top = min(y2, y4)
+                # Sizes of the rectangles overlapped area
+                width = right - left
+                height = top - bottom
+
+                # The first rectangle square
+                width1, height1 = x2 - x1, y2 - y1
+
+                # The second rectangle square
+                width2, height2 = x4 - x3, y4 - y3
+
+                # Check if width, height of the overlapped area less or equal 0
+                # I compare the two rectangles to detect if they overlap.
+                if not (width <= 0 or height <= 0):
+                    # If the square > 0, calculate the squares of the 3 rectangles
+                    square = width * height
+                    square1 = width1 * height1
+                    square2 = width2 * height2
+                    #
+                    # print(square, square1, square2)
+                    # input()
+
+                    if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
+                            square > square2 * SQUARES_OVERLAP_THRESHOLD
+                    ):
+                        if square1 < square2:
+                            excluded_elements.append(rect1)
+                        else:
+                            excluded_elements.append(rect2)
+                    elif square > square1 * SQUARES_OVERLAP_THRESHOLD:
+                        excluded_elements.append(rect2)
+                    elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
+                        excluded_elements.append(rect1)
+
+    # Remove some items using list comprehension
+    fdict[fnamesize]["regions"] = [
+        ele
+        # for ele in fdict[filenamesize]["regions"]
+        for ele in fdict[fnamesize]["regions"]
+        if ele not in excluded_elements
+    ]
+    return True
+
+
+def calculate_opencv_clusters(fdict, fnamesize):
+    # Calculation of the excluded indices to remove overlapped elements pro function for a some opencv_clusters level start
+    # Second, calculate the non-text blocks overlap
+    excluded_elements = []
+    # for rect1 in fdict[filenamesize]["regions"]:
+    for rect1 in fdict[fnamesize]["regions"]:
+        # for rect2 in fdict[filenamesize]["regions"]:
+        for rect2 in fdict[fnamesize]["regions"]:
+            if rect1 != rect2:
+                x1 = rect1["shape_attributes"]["x"]
+                y1 = rect1["shape_attributes"]["y"]
+                x2 = (
+                        rect1["shape_attributes"]["x"]
+                        + rect1["shape_attributes"]["width"]
+                )
+                y2 = (
+                        rect1["shape_attributes"]["y"]
+                        + rect1["shape_attributes"]["height"]
+                )
+                x3 = rect2["shape_attributes"]["x"]
+                y3 = rect2["shape_attributes"]["y"]
+                x4 = (
+                        rect2["shape_attributes"]["x"]
+                        + rect2["shape_attributes"]["width"]
+                )
+                y4 = (
+                        rect2["shape_attributes"]["y"]
+                        + rect2["shape_attributes"]["height"]
+                )
+
+                # Borders of the rectangles overlapped area
+                # Define the overlapping area between the rectangles
+                left = max(x1, x3)
+                bottom = max(y1, y3)
+                right = min(x2, x4)
+                top = min(y2, y4)
+                # Sizes of the rectangles overlapped area
+                width = right - left
+                height = top - bottom
+
+                # The first rectangle square
+                width1, height1 = x2 - x1, y2 - y1
+
+                # The second rectangle square
+                width2, height2 = x4 - x3, y4 - y3
+
+                # Check if width, height of the overlapped area less or equal 0
+                # I compare the two rectangles to detect if they overlap.
+                if not (width <= 0 or height <= 0):
+                    # If the square > 0, calculate the squares of the 3 rectangles
+                    square = width * height
+                    square1 = width1 * height1
+                    square2 = width2 * height2
+
+                    min_square = min(square1, square2)
+                    min_square_dim = min(height, width)
+
+                    # change two borders for the min_square (rect1) to separate the item
+                    # Should correct this later, to find proper borders
+                    if square > min_square * 0.75:
+                        if square1 < square2:
+                            x1 = x1 + width
+                            y1 = y1 + height
+                        else:
+                            x3 = x3 + width
+                            y3 = y3 + height
+
+                    # change one border for the min_square to separate the item
+                    # Should correct this later. To do this, find, which borders are under intersection
+                    elif square < min_square * 0.25:
+                        if square1 < square2:
+                            if height < width:
+                                x1 = x1 + min_square_dim
+                            else:
+                                y1 = y1 + min_square_dim
+                        else:
+                            if height < width:
+                                x3 = x3 + min_square_dim
+                            else:
+                                y3 = y3 + min_square_dim
+
+                    # Remove overlapped items
+                    elif square * 0.25 < min_square < square * 0.75:
+
+                        if square1 < square2:
+                            excluded_elements.append(rect1)
+                        else:
+                            excluded_elements.append(rect2)
+
+                    else:
+                        pass
+
+    # Remove some items using list comprehension
+    fdict[fnamesize]["regions"] = [
+        ele
+        # for ele in fdict[filenamesize]["regions"]
+        for ele in fdict[fnamesize]["regions"]
+        if ele not in excluded_elements
+    ]
+
+    # Create a set of independent opencv_clusters
+    for rect in fdict[fnamesize]["regions"]:
+        x1 = rect["shape_attributes"]["x"]
+        y1 = rect["shape_attributes"]["y"]
+        x2 = rect["shape_attributes"]["x"] + rect["shape_attributes"]["width"]
+        y2 = rect["shape_attributes"]["y"] + rect["shape_attributes"]["height"]
+        opencv_cluster = ClusterClass(x1, y1, x2, y2)
+        # Set some flags for this novel opencv_cluster
+        opencv_cluster.types = "opencv_cluster"
+        # Check a cluster definition
+
+    return True
+
+
+def suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=[]):
+    # Supplementary parameters calculation and printing of the fdict start
+    # for filenamesize in fdict:
+    # os.chdir(VIA_ANNOTATION_DIR)
+    # print("Current Working Directory ", os.getcwd())
+
+    # detect the size of the whole image
+    # fsize = os.path.getsize(fname)
+
+    for idx, region in enumerate(fdict[fnamesize]["regions"]):
+        x1 = int(region["shape_attributes"]["x"])
+        y1 = int(region["shape_attributes"]["y"])
+        x2 = int(x1 + region["shape_attributes"]["width"])
+        y2 = int(y1 + region["shape_attributes"]["height"])
+
+        if len(image_via):
+            # Show VIA annotated regions on image
+            cv2.rectangle(image_via, (x1, y1), (x2, y2), (255, 0, 0), 1)
+
+    if len(image_via):
+        # Write VIA annotated regions to file
+        cv2.imwrite("via_" + fname, image_via)
+
+    # Detect the size of the visible elements region
+    # detect the size of the visible elements
+    # first do this based on annotated regions
+    # go through all the regions
+    # find xmin, xmax, ymin, ymax
+    # compare this rectangle of visible elements with whole image
+    # crop if the distance is more than 20px
+    # extend borders if the distance is less than 20px
+    # Cropping the image is essential for further OCR applying.
+    min_x1 = img_width
+    min_y1 = img_height
+    max_x2 = 0
+    max_y2 = 0
+
+    for idx, region in enumerate(fdict[fnamesize]["regions"]):
+        x1 = int(region["shape_attributes"]["x"])
+        y1 = int(region["shape_attributes"]["y"])
+        x2 = int(x1 + region["shape_attributes"]["width"])
+        y2 = int(y1 + region["shape_attributes"]["height"])
+
+        if min_x1 > x1:
+            min_x1 = x1
+
+        if min_y1 > y1:
+            min_y1 = y1
+
+        if max_x2 < x2:
+            max_x2 = x2
+
+        if max_y2 < y2:
+            max_y2 = y2
+
+    # Find the centers of the elements
+    # for idx, region in enumerate(fdict[filenamesize]["regions"]):
+    for idx, region in enumerate(fdict[fnamesize]["regions"]):
+        x1 = int(region["shape_attributes"]["x"])
+        y1 = int(region["shape_attributes"]["y"])
+        x2 = int(x1 + region["shape_attributes"]["width"])
+        y2 = int(y1 + region["shape_attributes"]["height"])
+
+        # Extend shape_attributes with average values for centers
+        x_average = int((x1 + x2) / 2)
+        y_average = int((y1 + y2) / 2)
+        region["shape_attributes"]["x_average"] = x_average
+        region["shape_attributes"]["y_average"] = y_average
+
+    # Supplementary parameters calculation and printing of the fdict end
+    return min_x1, min_y1, max_x2, max_y2
+
+
+def print_maskrcnn_output(region_dataset, image_maskrcnn_notext, fname, fnamesize, r, cnndict, element, image_maskrcnn):
+    # Printing the pure Mask R CNN output without text blocks recognized
+    for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
+        #  1,2,4,5,7 means elements except the text class and the radiobutton while merging forms
+        if (
+                ((region_dataset == "forms") and (class_id1 in {1, 2, 4, 5, 7}))
+                or ((region_dataset == "footers") and (class_id1 in {2, 3, 4, 5}))
+                or (
+                (region_dataset == "headers")
+                and (class_id1 in {2, 3, 4, 5, 6, 7, 8})
+        )
+        ):
+            x3 = rect1[1]
+            y3 = rect1[0]
+            x4 = rect1[3]
+            y4 = rect1[2]
+
+            cv2.rectangle(
+                image_maskrcnn_notext, (x3, y3), (x4, y4), (255, 100, 255), 1
+            )
+            # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
+            cv2.putText(
+                image_maskrcnn_notext,
+                str(class_id1),
+                (x3, y4),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (36, 255, 12),
+                2,
+            )
+
+    cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
+
+    # Printing the pure Mask R CNN output with text blocks and radiobuttons recognized
+    for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
+        x3 = rect1[1]
+        y3 = rect1[0]
+        x4 = rect1[3]
+        y4 = rect1[2]
+
+        # The second rectangle square
+        width, height = x4 - x3, y4 - y3
+
+        # Fill the attributes dictionary
+        attributes_dict = {
+            "shape_attributes": {
+                "name": "rect",
+                "x": int(x3),
+                "y": int(y3),
+                "width": int(width),
+                "height": int(height),
+            },
+            "region_attributes": {"HTML element": element},
+        }
+        cnndict[fnamesize]["regions"].append(attributes_dict)
+
+        cv2.rectangle(image_maskrcnn, (x3, y3), (x4, y4), (255, 100, 255), 1)
+        # Put the class id as a label.
+        # Keep in mind, that this label will be different for the specific block types
+        cv2.putText(
+            image_maskrcnn,
+            str(class_id1),
+            (x3, y4),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.6,
+            (36, 255, 12),
+            2,
+        )
+
+    cv2.imwrite("maskrcnn_" + fname, image_maskrcnn)
+
+
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
 
@@ -2192,12 +2531,13 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Create the recognized_elements array start
         if imgpath:
-            if region_dataset in {"forms", "headers", "footers"}:
-                # Detect elements with Mask R CNN model start
-                # imgpath = fname
-                img = load_img(imgpath)
-                img = img_to_array(img)
+            # imgpath = fname
+            img = load_img(imgpath)
+            img = img_to_array(img)
 
+            if region_dataset in {"forms", "headers", "footers"}:
+                '''
+                # Detect elements with Mask R CNN model start
                 if region_dataset == "forms":
                     results = model_forms.detect([img], verbose=1)
 
@@ -2210,9 +2550,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # Results of the Mask R CNN recognition
                 r = results[0]
                 # Detect elements with Mask R CNN model end
-
-            img = load_img(imgpath)
-            img = img_to_array(img)
+                '''
+                pass
 
             fsize = str(os.path.getsize(imgpath))
             fnamesize = fname + fsize
@@ -2247,6 +2586,20 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             os.chdir(SAVE_DIR)
 
             if region_dataset in {"forms", "headers", "footers"}:
+                # Detect elements with Mask R CNN model start
+                if region_dataset == "forms":
+                    results = model_forms.detect([img], verbose=1)
+
+                if region_dataset == "headers":
+                    results = model_headers.detect([img], verbose=1)
+
+                if region_dataset == "footers":
+                    results = model_footers.detect([img], verbose=1)
+
+                # Results of the Mask R CNN recognition
+                r = results[0]
+                # Detect elements with Mask R CNN model end
+
                 # Printing text contours preparations (AND) start
                 for text_contour in text_contours:
                     x, y, w, h = text_contour
@@ -2466,8 +2819,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 # Printing text contours preparations (OR) start
                 for text_contour in text_contours:
                     x, y, w, h = text_contour
-                    # location = i.location  # y, x
-                    # size = i.size  # width, height
                     element = "ocrtext"
 
                     # Fill the attributes dictionary
@@ -2675,84 +3026,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                     fdict[fnamesize]["regions"].append(attributes_dict)
                     # Printing rect contours preparations end
 
-        # os.chdir(SCRIPT_DIR)
-        """
-        # Print the json data to the validation dataset
-        with open(region_dataset + "_elements_websites_tr.json", "w") as json_file:
-            # print(file_dict)
-            json.dump(fdict, json_file)
-        """
-
         if region_dataset not in {"webpages"}:
-            # Printing the pure Mask R CNN output without text blocks recognized
-            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
-                #  1,2,4,5,7 means elements except the text class and the radiobutton while merging forms
-                if (
-                    ((region_dataset == "forms") and (class_id1 in {1, 2, 4, 5, 7}))
-                    or ((region_dataset == "footers") and (class_id1 in {2, 3, 4, 5}))
-                    or (
-                        (region_dataset == "headers")
-                        and (class_id1 in {2, 3, 4, 5, 6, 7, 8})
-                    )
-                ):
-                    x3 = rect1[1]
-                    y3 = rect1[0]
-                    x4 = rect1[3]
-                    y4 = rect1[2]
-
-                    cv2.rectangle(
-                        image_maskrcnn_notext, (x3, y3), (x4, y4), (255, 100, 255), 1
-                    )
-                    # Put the class id as a label. Keep in mind, that this label will be different for the specific block types
-                    cv2.putText(
-                        image_maskrcnn_notext,
-                        str(class_id1),
-                        (x3, y4),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.6,
-                        (36, 255, 12),
-                        2,
-                    )
-
-            cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
-
-            # Printing the pure Mask R CNN output with text blocks and radiobuttons recognized
-            for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
-                x3 = rect1[1]
-                y3 = rect1[0]
-                x4 = rect1[3]
-                y4 = rect1[2]
-
-                # The second rectangle square
-                width, height = x4 - x3, y4 - y3
-
-                # Fill the attributes dictionary
-                attributes_dict = {
-                    "shape_attributes": {
-                        "name": "rect",
-                        "x": int(x3),
-                        "y": int(y3),
-                        "width": int(width),
-                        "height": int(height),
-                    },
-                    "region_attributes": {"HTML element": element},
-                }
-                cnndict[fnamesize]["regions"].append(attributes_dict)
-
-                cv2.rectangle(image_maskrcnn, (x3, y3), (x4, y4), (255, 100, 255), 1)
-                # Put the class id as a label.
-                # Keep in mind, that this label will be different for the specific block types
-                cv2.putText(
-                    image_maskrcnn,
-                    str(class_id1),
-                    (x3, y4),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.6,
-                    (36, 255, 12),
-                    2,
-                )
-
-            cv2.imwrite("maskrcnn_" + fname, image_maskrcnn)
+            # Printing the Mask R CNN output function call
+            # Try to fill cnndict (second time)
+            print_maskrcnn_output(region_dataset, image_maskrcnn_notext, fname, fnamesize, r, cnndict, element, image_maskrcnn)
 
         # fdict obtained
         # file_dict = fdict
@@ -2764,279 +3041,21 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # print("fdict: ", fdict)
 
         # Assembling start
-        # for filenamesize in fdict:
-        # os.chdir(VIA_ANNOTATION_DIR)
-        # print("Current Working Directory ", os.getcwd())
-
-        # detect the size of the whole image
-        # fsize = os.path.getsize(fname)
-
-        for idx, region in enumerate(fdict[fnamesize]["regions"]):
-            x1 = int(region["shape_attributes"]["x"])
-            y1 = int(region["shape_attributes"]["y"])
-            x2 = int(x1 + region["shape_attributes"]["width"])
-            y2 = int(y1 + region["shape_attributes"]["height"])
-
-            # Show VIA annotated regions on image
-            cv2.rectangle(image_via, (x1, y1), (x2, y2), (255, 0, 0), 1)
-
-        # Write VIA annotated regions to file
-        cv2.imwrite("via_" + fname, image_via)
-
-        # Detect the size of the visible elements region
-        # detect the size of the visible elements
-        # first do this based on annotated regions
-        # go through all the regions
-        # find xmin, xmax, ymin, ymax
-        # compare this rectangle of visible elements with whole image
-        # crop if the distance is more than 20px
-        # extend borders if the distance is less than 20px
-        # Cropping the image is essential for further OCR applying.
-        min_x1 = img_width
-        min_y1 = img_height
-        max_x2 = 0
-        max_y2 = 0
-        # for idx, region in enumerate(fdict[filenamesize]["regions"]):
-        for idx, region in enumerate(fdict[fnamesize]["regions"]):
-            x1 = int(region["shape_attributes"]["x"])
-            y1 = int(region["shape_attributes"]["y"])
-            x2 = int(x1 + region["shape_attributes"]["width"])
-            y2 = int(y1 + region["shape_attributes"]["height"])
-
-            if min_x1 > x1:
-                min_x1 = x1
-
-            if min_y1 > y1:
-                min_y1 = y1
-
-            if max_x2 < x2:
-                max_x2 = x2
-
-            if max_y2 < y2:
-                max_y2 = y2
-
-        # cv2.rectangle(
-        #     image_opencv_input, (min_x1, min_y1), (max_x2, max_y2), (255, 255, 0), 1
-        # )
-        # cv2.imshow(window_name1, image_opencv_input)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-
-        # Find the centers of the elements
-        # for idx, region in enumerate(fdict[filenamesize]["regions"]):
-        for idx, region in enumerate(fdict[fnamesize]["regions"]):
-            x1 = int(region["shape_attributes"]["x"])
-            y1 = int(region["shape_attributes"]["y"])
-            x2 = int(x1 + region["shape_attributes"]["width"])
-            y2 = int(y1 + region["shape_attributes"]["height"])
-
-            # Extend shape_attributes with average values for centers
-            x_average = int((x1 + x2) / 2)
-            y_average = int((y1 + y2) / 2)
-            region["shape_attributes"]["x_average"] = x_average
-            region["shape_attributes"]["y_average"] = y_average
-
-        # cv2.imshow(window_name1, image_opencv_input)
-        # cv2.waitKey(0)
+        # Supplementary parameters calculation and printing of the fdict function call
+        min_x1, min_y1, max_x2, max_y2 = suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=image_via)
 
         # This should be replaced to create nested structure. Clusters obtained from text blocks
         # and from rect blocks should save this information
         if region_dataset in {"webpages"}:
-            # Calculation of the excluded indices to remove overlapped elements start
-            # Second, calculate the non-text blocks overlap
-            excluded_elements = []
-            # for rect1 in fdict[filenamesize]["regions"]:
-            for rect1 in fdict[fnamesize]["regions"]:
-                # for rect2 in fdict[filenamesize]["regions"]:
-                for rect2 in fdict[fnamesize]["regions"]:
-                    is_menu = (
-                        rect1["region_attributes"]["HTML element"] == "menu"
-                    ) or (rect2["region_attributes"]["HTML element"] == "menu")
-                    if (rect1 != rect2) and not is_menu:
-                        x1 = rect1["shape_attributes"]["x"]
-                        y1 = rect1["shape_attributes"]["y"]
-                        x2 = (
-                            rect1["shape_attributes"]["x"]
-                            + rect1["shape_attributes"]["width"]
-                        )
-                        y2 = (
-                            rect1["shape_attributes"]["y"]
-                            + rect1["shape_attributes"]["height"]
-                        )
-                        x3 = rect2["shape_attributes"]["x"]
-                        y3 = rect2["shape_attributes"]["y"]
-                        x4 = (
-                            rect2["shape_attributes"]["x"]
-                            + rect2["shape_attributes"]["width"]
-                        )
-                        y4 = (
-                            rect2["shape_attributes"]["y"]
-                            + rect2["shape_attributes"]["height"]
-                        )
-
-                        # Borders of the rectangles overlapped area
-                        # Define the overlapping area between the rectangles
-                        left = max(x1, x3)
-                        bottom = max(y1, y3)
-                        right = min(x2, x4)
-                        top = min(y2, y4)
-                        # Sizes of the rectangles overlapped area
-                        width = right - left
-                        height = top - bottom
-
-                        # The first rectangle square
-                        width1, height1 = x2 - x1, y2 - y1
-
-                        # The second rectangle square
-                        width2, height2 = x4 - x3, y4 - y3
-
-                        # Check if width, height of the overlapped area less or equal 0
-                        # I compare the two rectangles to detect if they overlap.
-                        if not (width <= 0 or height <= 0):
-                            # If the square > 0, calculate the squares of the 3 rectangles
-                            square = width * height
-                            square1 = width1 * height1
-                            square2 = width2 * height2
-                            #
-                            # print(square, square1, square2)
-                            # input()
-
-                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
-                                square > square2 * SQUARES_OVERLAP_THRESHOLD
-                            ):
-                                if square1 < square2:
-                                    excluded_elements.append(rect1)
-                                else:
-                                    excluded_elements.append(rect2)
-                            elif square > square1 * SQUARES_OVERLAP_THRESHOLD:
-                                excluded_elements.append(rect2)
-                            elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
-                                excluded_elements.append(rect1)
-
-            # Remove some items using list comprehension
-            fdict[fnamesize]["regions"] = [
-                ele
-                # for ele in fdict[filenamesize]["regions"]
-                for ele in fdict[fnamesize]["regions"]
-                if ele not in excluded_elements
-            ]
-            # Calculation of the excluded indices to remove overlapped elements end
+            # Calculate the excluded indices to remove overlapped elements function calling
+            calculate_excluded_indices(fdict, fnamesize)
 
         # Create opencv_clusters
         # Creating a nested structure.
         # Clusters obtained from text blocks and from rect blocks should save this information
         if region_dataset in {"webpages"}:
-            # Calculation of the excluded indices to remove overlapped elements for a some opencv_clusters level start
-            # Second, calculate the non-text blocks overlap
-            excluded_elements = []
-            # for rect1 in fdict[filenamesize]["regions"]:
-            for rect1 in fdict[fnamesize]["regions"]:
-                # for rect2 in fdict[filenamesize]["regions"]:
-                for rect2 in fdict[fnamesize]["regions"]:
-                    if rect1 != rect2:
-                        x1 = rect1["shape_attributes"]["x"]
-                        y1 = rect1["shape_attributes"]["y"]
-                        x2 = (
-                            rect1["shape_attributes"]["x"]
-                            + rect1["shape_attributes"]["width"]
-                        )
-                        y2 = (
-                            rect1["shape_attributes"]["y"]
-                            + rect1["shape_attributes"]["height"]
-                        )
-                        x3 = rect2["shape_attributes"]["x"]
-                        y3 = rect2["shape_attributes"]["y"]
-                        x4 = (
-                            rect2["shape_attributes"]["x"]
-                            + rect2["shape_attributes"]["width"]
-                        )
-                        y4 = (
-                            rect2["shape_attributes"]["y"]
-                            + rect2["shape_attributes"]["height"]
-                        )
-
-                        # Borders of the rectangles overlapped area
-                        # Define the overlapping area between the rectangles
-                        left = max(x1, x3)
-                        bottom = max(y1, y3)
-                        right = min(x2, x4)
-                        top = min(y2, y4)
-                        # Sizes of the rectangles overlapped area
-                        width = right - left
-                        height = top - bottom
-
-                        # The first rectangle square
-                        width1, height1 = x2 - x1, y2 - y1
-
-                        # The second rectangle square
-                        width2, height2 = x4 - x3, y4 - y3
-
-                        # Check if width, height of the overlapped area less or equal 0
-                        # I compare the two rectangles to detect if they overlap.
-                        if not (width <= 0 or height <= 0):
-                            # If the square > 0, calculate the squares of the 3 rectangles
-                            square = width * height
-                            square1 = width1 * height1
-                            square2 = width2 * height2
-
-                            min_square = min(square1, square2)
-                            min_square_dim = min(height, width)
-
-                            # change two borders for the min_square (rect1) to separate the item
-                            # Should correct this later, to find proper borders
-                            if square > min_square * 0.75:
-                                if square1 < square2:
-                                    x1 = x1 + width
-                                    y1 = y1 + height
-                                else:
-                                    x3 = x3 + width
-                                    y3 = y3 + height
-
-                            # change one border for the min_square to separate the item
-                            # Should correct this later. To do this, find, which borders are under intersection
-                            elif square < min_square * 0.25:
-                                if square1 < square2:
-                                    if height < width:
-                                        x1 = x1 + min_square_dim
-                                    else:
-                                        y1 = y1 + min_square_dim
-                                else:
-                                    if height < width:
-                                        x3 = x3 + min_square_dim
-                                    else:
-                                        y3 = y3 + min_square_dim
-
-                            # Remove overlapped items
-                            elif square * 0.25 < min_square < square * 0.75:
-
-                                if square1 < square2:
-                                    excluded_elements.append(rect1)
-                                else:
-                                    excluded_elements.append(rect2)
-
-                            else:
-                                pass
-
-            # Remove some items using list comprehension
-            fdict[fnamesize]["regions"] = [
-                ele
-                # for ele in fdict[filenamesize]["regions"]
-                for ele in fdict[fnamesize]["regions"]
-                if ele not in excluded_elements
-            ]
-
-            # Create a set of independent opencv_clusters
-            for rect in fdict[fnamesize]["regions"]:
-                x1 = rect["shape_attributes"]["x"]
-                y1 = rect["shape_attributes"]["y"]
-                x2 = rect["shape_attributes"]["x"] + rect["shape_attributes"]["width"]
-                y2 = rect["shape_attributes"]["y"] + rect["shape_attributes"]["height"]
-                opencv_cluster = ClusterClass(x1, y1, x2, y2)
-                # Set some flags for this novel opencv_cluster
-                opencv_cluster.types = "opencv_cluster"
-                # Check a cluster definition
-
-            # Calculation of the excluded indices to remove overlapped elements for a some opencv_clusters level end
+            # Calculate opencv_clusters function calling
+            calculate_opencv_clusters(fdict, fnamesize)
 
         # Calculate fclusters function calling
         clusters = calculate_fclusters(fdict, fnamesize, fname, image_fclusters=image_fclusters)
@@ -3309,6 +3328,10 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             fdict = json.loads(fdict)
             # print(type(fdict), fdict)
             # Assembling start
+            # Supplementary parameters calculation and printing of the fdict function call
+            min_x1, min_y1, max_x2, max_y2 = suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
+            '''
+            # Supplementary parameters calculation and printing of the fdict start
             # for filenamesize in fdict:
             # os.chdir(VIA_ANNOTATION_DIR)
             # print("Current Working Directory ", os.getcwd())
@@ -3386,367 +3409,15 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # cv2.imshow(window_name1, image_opencv_input)
             # cv2.waitKey(0)
 
-            # Calculation of the excluded indices to remove overlapped elements start
-            # Second, calculate the non-text blocks overlap
-            excluded_elements = []
-            # for rect1 in fdict[filenamesize]["regions"]:
-            for rect1 in fdict[fnamesize]["regions"]:
-                # for rect2 in fdict[filenamesize]["regions"]:
-                for rect2 in fdict[fnamesize]["regions"]:
-                    is_menu = (
-                        rect1["region_attributes"]["HTML element"] == "menu"
-                    ) or (rect2["region_attributes"]["HTML element"] == "menu")
-                    if (rect1 != rect2) and not is_menu:
-                        x1 = rect1["shape_attributes"]["x"]
-                        y1 = rect1["shape_attributes"]["y"]
-                        x2 = (
-                            rect1["shape_attributes"]["x"]
-                            + rect1["shape_attributes"]["width"]
-                        )
-                        y2 = (
-                            rect1["shape_attributes"]["y"]
-                            + rect1["shape_attributes"]["height"]
-                        )
-                        x3 = rect2["shape_attributes"]["x"]
-                        y3 = rect2["shape_attributes"]["y"]
-                        x4 = (
-                            rect2["shape_attributes"]["x"]
-                            + rect2["shape_attributes"]["width"]
-                        )
-                        y4 = (
-                            rect2["shape_attributes"]["y"]
-                            + rect2["shape_attributes"]["height"]
-                        )
+            # Supplementary parameters calculation and printing of the fdict end
+            '''
 
-                        # Borders of the rectangles overlapped area
-                        # Define the overlapping area between the rectangles
-                        left = max(x1, x3)
-                        bottom = max(y1, y3)
-                        right = min(x2, x4)
-                        top = min(y2, y4)
-                        # Sizes of the rectangles overlapped area
-                        width = right - left
-                        height = top - bottom
-
-                        # The first rectangle square
-                        width1, height1 = x2 - x1, y2 - y1
-
-                        # The second rectangle square
-                        width2, height2 = x4 - x3, y4 - y3
-
-                        # Check if width, height of the overlapped area less or equal 0
-                        # I compare the two rectangles to detect if they overlap.
-                        if not (width <= 0 or height <= 0):
-                            # If the square > 0, calculate the squares of the 3 rectangles
-                            square = width * height
-                            square1 = width1 * height1
-                            square2 = width2 * height2
-                            #
-                            # print(square, square1, square2)
-                            # input()
-
-                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
-                                square > square2 * SQUARES_OVERLAP_THRESHOLD
-                            ):
-                                if square1 < square2:
-                                    excluded_elements.append(rect1)
-                                else:
-                                    excluded_elements.append(rect2)
-                            elif square > square1 * SQUARES_OVERLAP_THRESHOLD:
-                                excluded_elements.append(rect2)
-                            elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
-                                excluded_elements.append(rect1)
-
-            # Remove some items using list comprehension
-            # fdict[filenamesize]["regions"] = [
-            fdict[fnamesize]["regions"] = [
-                ele
-                # for ele in fdict[filenamesize]["regions"]
-                for ele in fdict[fnamesize]["regions"]
-                if ele not in excluded_elements
-            ]
-            # Calculation of the excluded indices to remove overlapped elements end
+            # Calculate the excluded indices to remove overlapped elements function calling
+            calculate_excluded_indices(fdict, fnamesize)
 
             # Calculate fclusters function calling
             clusters = calculate_fclusters(fdict, fnamesize, fname)
-            '''
-            # Calculate fclusters pro function start
-            # find all the clusters based on cluster-making elements
-            # (inputs, selects, buttons, free text blocks, maybe large images)
-            # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
-            clusters = []
-            # Run the ternary assembling algorithm
-            # print(min_x1, min_y1, max_x2, max_y2)
 
-            # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction start
-            #
-            #
-            # Vertical clusters input-like with text labels detection
-            # The first position is input or select, and the second position is text
-            # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
-            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-                if recognized_element["region_attributes"]["HTML element"] in {
-                    "input",
-                    "select",
-                    "button",
-                }:
-                    # Assign the textContent values after grouping with text
-                    # Vertical group when input or select element has another text element
-                    # at the distance 0.5 from its width
-                    # Horizontal group when input or select or text are placed horizontally
-
-                    # Loop through all the elements recognized
-                    # Find all the close-by elements if one of them input (1) or select (4),
-                    # and second one is the text (3)
-                    # Horizontal overlap 75% of the element with minimal width
-                    # Vertical max +- 50% for input/select width,
-                    # middle of the text element should be within this interval
-
-                    # First rectangle coordinates
-                    x1 = int(recognized_element["shape_attributes"]["x"])
-                    y1 = int(recognized_element["shape_attributes"]["y"])
-                    x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-                    y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-                    # First rectangle width
-                    width_elem = recognized_element["shape_attributes"]["width"]
-                    height_elem = recognized_element["shape_attributes"]["height"]
-
-                    # Add the initial element to the cluster
-                    cluster = ClusterClass(
-                        x1, y1, x2, y2, elements=[recognized_element]
-                    )
-                    # Set some flags for this novel cluster
-                    cluster.types = "fcluster"
-                    cluster.is_elements_only = True
-                    for idx1, recognized_element1 in enumerate(
-                        fdict[fnamesize]["regions"]
-                    ):
-                        if recognized_element1["region_attributes"]["HTML element"] in {
-                            "text"
-                        }:
-                            # Check if the elements were not assigned to the clusters before
-                            if (
-                                (recognized_element1 not in clr.elements)
-                                for clr in clusters
-                            ):
-
-                                # Second rectangle coordinates
-                                x11 = int(recognized_element1["shape_attributes"]["x"])
-                                y11 = int(recognized_element1["shape_attributes"]["y"])
-                                x21 = int(
-                                    x11
-                                    + recognized_element1["shape_attributes"]["width"]
-                                )
-                                y21 = int(
-                                    y11
-                                    + recognized_element1["shape_attributes"]["height"]
-                                )
-
-                                # Second rectangle width
-                                width_elem1 = x21 - x11
-                                height_elem1 = y21 - y11
-
-                                # Borders of the overlapped area
-                                left = max(x1, x11)
-                                bottom = max(y1, y11)
-                                right = min(x2, x21)
-                                top = min(y2, y21)
-
-                                # Size of the overlapped area
-                                horizontal_overlap = right - left
-                                vertical_overlap = top - bottom
-
-                                # Check if the vertical distance between roi and roi1 is sufficient
-                                # Middle of the input or select element
-                                mid_input = (y1 + y2) / 2
-
-                                # Middle of the text element
-                                mid_text = (y11 + y21) / 2
-
-                                border_bottom = y1 - (0.6 * height_elem)
-                                border_top = y2 + (0.4 * height_elem)
-
-                                # Check if the text and input elements are close to each other by vertical direction
-                                if (border_bottom < mid_text < mid_input) or (
-                                    mid_input < mid_text < border_top
-                                ):
-                                    # Assign the results to the vertical_group
-                                    # Check if the horizontal overlap between text label and input is sufficient
-                                    if (
-                                        horizontal_overlap
-                                        > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD
-                                        * width_elem1
-                                    ):
-                                        # Fill the cluster
-                                        # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
-                                        # max(y2, y21), elements = [recognized_element, recognized_element1])
-                                        # Update the cluster with new text element
-                                        cluster.elements.append(recognized_element1)
-
-                                        # Set some flags for this vertical fcluster
-                                        # The cluster contains more than one element
-                                        cluster.is_solid = False
-                                        # The cluster direction is vertical
-                                        cluster.direction = 0
-                                        cluster.origin_direction = 0
-
-                                        cluster.x1 = min(cluster.x1, x11)
-                                        cluster.y1 = min(cluster.y1, y11)
-                                        cluster.x2 = max(cluster.x2, x21)
-                                        cluster.y2 = max(cluster.y2, y21)
-
-                                        # Find the center of cluster
-                                        center_x = (cluster.x1 + cluster.x2) / 2
-                                        center_y = (cluster.y1 + cluster.y2) / 2
-                                        cluster.center = center_x, center_y
-
-                                        # Update the clusters list
-                                        clusters.append(cluster)
-
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (cluster.x1, cluster.y1),
-                    #     (cluster.x2, cluster.y2),
-                    #     (0, 0, 255),
-                    #     1,
-                    # )
-                    # cv2.imshow(window_name1, image_opencv_input)
-                    # cv2.waitKey(0)
-
-            # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction end
-
-            # Clusters checkboxes with text labels direction start
-            #
-            #
-            # Horizontal clusters checkbox-like with text labels detection
-            # The first position is a checkbox or radiobutton or even the small image,
-            # and the second position is text
-            # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
-            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-                if recognized_element["region_attributes"]["HTML element"] in {
-                    "checkbox",
-                    "radiobutton",
-                    "image",
-                }:
-                    # Horizontal group when checkbox or radiobutton element has another text element
-                    # at the distance 0.8 from its width
-
-                    # Loop through all the elements recognized
-                    # Find all the close-by elements if one of them is a checkbox or radiobutton,
-                    # and second one is the text (3)
-                    # Vertical overlap 75% of the element with minimal width
-                    # Horizontal min/max +- 80% for checkbox/radiobutton width,
-                    # start/end of the text element should be within this interval
-
-                    # First rectangle coordinates
-                    x1 = int(recognized_element["shape_attributes"]["x"])
-                    y1 = int(recognized_element["shape_attributes"]["y"])
-                    x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-                    y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-                    # First rectangle width
-                    width_elem = recognized_element["shape_attributes"]["width"]
-                    height_elem = recognized_element["shape_attributes"]["height"]
-
-                    # Add the initial element to the cluster
-                    cluster = ClusterClass(
-                        x1, y1, x2, y2, elements=[recognized_element]
-                    )
-                    # Set some flags for this novel cluster
-                    cluster.types = "fcluster"
-                    cluster.is_elements_only = True
-                    for idx1, recognized_element1 in enumerate(
-                        fdict[fnamesize]["regions"]
-                    ):
-                        if recognized_element1["region_attributes"]["HTML element"] in {
-                            "text"
-                        }:
-                            # Check if the elements were not assigned to the clusters before
-                            if (
-                                (recognized_element1 not in clr.elements)
-                                for clr in clusters
-                            ):
-
-                                # Second rectangle coordinates
-                                x11 = int(recognized_element1["shape_attributes"]["x"])
-                                y11 = int(recognized_element1["shape_attributes"]["y"])
-                                x21 = int(
-                                    x11
-                                    + recognized_element1["shape_attributes"]["width"]
-                                )
-                                y21 = int(
-                                    y11
-                                    + recognized_element1["shape_attributes"]["height"]
-                                )
-
-                                # Second rectangle width
-                                width_elem1 = x21 - x11
-                                height_elem1 = y21 - y11
-
-                                # Borders of the overlapped area
-                                left = max(x1, x11)
-                                bottom = max(y1, y11)
-                                right = min(x2, x21)
-                                top = min(y2, y21)
-
-                                # Size of the overlapped area
-                                horizontal_overlap = right - left
-                                vertical_overlap = top - bottom
-
-                                # Middle of the checkbox or radiobutton element
-                                mid_checkbox = (x1 + x2) / 2
-
-                                # Borders of the text element
-                                left_text = x11
-                                right_text = x21
-
-                                border_left = x1 - (0.6 * height_elem)
-                                border_right = x2 + (0.8 * height_elem)
-
-                                # Check if the text and checkbox elements are close to each other
-                                # by horizontal direction
-                                if (border_left < right_text < mid_checkbox) or (
-                                    mid_checkbox < left_text < border_right
-                                ):
-                                    # Assign the results to the horizontal group
-                                    # Check if the vertical overlap between text label and input is sufficient
-                                    if (
-                                        vertical_overlap
-                                        > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD
-                                        * height_elem1
-                                    ):
-                                        # Fill the cluster
-                                        # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
-                                        # max(y2, y21), elements = [recognized_element, recognized_element1])
-                                        # Update the cluster with new text element
-                                        cluster.elements.append(recognized_element1)
-
-                                        # Set some flags for this horizontal fcluster
-                                        # The cluster contains more than one element
-                                        cluster.is_solid = False
-                                        # The cluster direction is horizontal
-                                        cluster.direction = 1
-                                        cluster.origin_direction = 1
-
-                                        cluster.x1 = min(cluster.x1, x11)
-                                        cluster.y1 = min(cluster.y1, y11)
-                                        cluster.x2 = max(cluster.x2, x21)
-                                        cluster.y2 = max(cluster.y2, y21)
-
-                                        # Find the center of cluster
-                                        center_x = (cluster.x1 + cluster.x2) / 2
-                                        center_y = (cluster.y1 + cluster.y2) / 2
-                                        cluster.center = center_x, center_y
-
-                                        # Update the clusters list
-                                        clusters.append(cluster)
-
-            #
-            #
-            # Clusters checkboxes with text labels direction end
-            # Calculate fclusters pro function end
-            '''
             # Place all the free elements for the 1-element clusters
             for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
                 # First rectangle coordinates
@@ -4036,15 +3707,18 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
         if fdict:
             # Assembling start
+            # Show text contours on image start
+            window_name1 = "image_opencv_text"
+            # Supplementary parameters calculation and printing of the fdict function call
+            min_x1, min_y1, max_x2, max_y2 = suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
+            '''
+            # Supplementary parameters calculation and printing of the fdict start
             # for filenamesize in fdict:
             # os.chdir(VIA_ANNOTATION_DIR)
             # print("Current Working Directory ", os.getcwd())
 
             # detect the size of the whole image
             # fsize = os.path.getsize(fname)
-
-            # Show text contours on image start
-            window_name1 = "image_opencv_text"
 
             for idx, region in enumerate(fdict[fnamesize]["regions"]):
                 x1 = int(region["shape_attributes"]["x"])
@@ -4098,6 +3772,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             # cv2.waitKey(0)
             # cv2.destroyAllWindows()
 
+
             # Find the centers of the elements
             # for idx, region in enumerate(fdict[filenamesize]["regions"]):
             for idx, region in enumerate(fdict[fnamesize]["regions"]):
@@ -4114,403 +3789,14 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
             # cv2.imshow(window_name1, image_opencv_input)
             # cv2.waitKey(0)
+            # Supplementary parameters calculation and printing of the fdict end
+            '''
 
-            # Calculation of the excluded indices to remove overlapped elements start
-            # Second, calculate the non-text blocks overlap
-            excluded_elements = []
-            # for rect1 in fdict[filenamesize]["regions"]:
-            for rect1 in fdict[fnamesize]["regions"]:
-                # for rect2 in fdict[filenamesize]["regions"]:
-                for rect2 in fdict[fnamesize]["regions"]:
-                    is_menu = (
-                        rect1["region_attributes"]["HTML element"] == "menu"
-                    ) or (rect2["region_attributes"]["HTML element"] == "menu")
-                    if (rect1 != rect2) and not is_menu:
-                        x1 = rect1["shape_attributes"]["x"]
-                        y1 = rect1["shape_attributes"]["y"]
-                        x2 = (
-                            rect1["shape_attributes"]["x"]
-                            + rect1["shape_attributes"]["width"]
-                        )
-                        y2 = (
-                            rect1["shape_attributes"]["y"]
-                            + rect1["shape_attributes"]["height"]
-                        )
-                        x3 = rect2["shape_attributes"]["x"]
-                        y3 = rect2["shape_attributes"]["y"]
-                        x4 = (
-                            rect2["shape_attributes"]["x"]
-                            + rect2["shape_attributes"]["width"]
-                        )
-                        y4 = (
-                            rect2["shape_attributes"]["y"]
-                            + rect2["shape_attributes"]["height"]
-                        )
-
-                        # Borders of the rectangles overlapped area
-                        # Define the overlapping area between the rectangles
-                        left = max(x1, x3)
-                        bottom = max(y1, y3)
-                        right = min(x2, x4)
-                        top = min(y2, y4)
-                        # Sizes of the rectangles overlapped area
-                        width = right - left
-                        height = top - bottom
-
-                        # The first rectangle square
-                        width1, height1 = x2 - x1, y2 - y1
-
-                        # The second rectangle square
-                        width2, height2 = x4 - x3, y4 - y3
-
-                        # Check if width, height of the overlapped area less or equal 0
-                        # I compare the two rectangles to detect if they overlap.
-                        if not (width <= 0 or height <= 0):
-                            # If the square > 0, calculate the squares of the 3 rectangles
-                            square = width * height
-                            square1 = width1 * height1
-                            square2 = width2 * height2
-                            #
-                            # print(square, square1, square2)
-                            # input()
-
-                            if (square > square1 * SQUARES_OVERLAP_THRESHOLD) or (
-                                square > square2 * SQUARES_OVERLAP_THRESHOLD
-                            ):
-                                if square1 < square2:
-                                    excluded_elements.append(rect1)
-                                else:
-                                    excluded_elements.append(rect2)
-                            elif square > square1 * SQUARES_OVERLAP_THRESHOLD:
-                                excluded_elements.append(rect2)
-                            elif square > square2 * SQUARES_OVERLAP_THRESHOLD:
-                                excluded_elements.append(rect1)
-
-            # Remove some items using list comprehension
-            # fdict[filenamesize]["regions"] = [
-            fdict[fnamesize]["regions"] = [
-                ele
-                # for ele in fdict[filenamesize]["regions"]
-                for ele in fdict[fnamesize]["regions"]
-                if ele not in excluded_elements
-            ]
-            # Calculation of the excluded indices to remove overlapped elements end
+            # Calculate the excluded indices to remove overlapped elements function calling
+            calculate_excluded_indices(fdict, fnamesize)
 
             # Calculate fclusters function calling
             clusters = calculate_fclusters(fdict, fnamesize, fname)
-            '''
-            # Calculate fclusters pro function start
-            # find all the clusters based on cluster-making elements
-            # (inputs, selects, buttons, free text blocks, maybe large images)
-            # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
-            clusters = []
-            # Run the ternary assembling algorithm
-            # print(min_x1, min_y1, max_x2, max_y2)
-
-            # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction start
-            #
-            #
-            # Vertical clusters input-like with text labels detection
-            # The first position is input or select, and the second position is text
-            # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
-            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-                if recognized_element["region_attributes"]["HTML element"] in {
-                    "input",
-                    "select",
-                    "button",
-                }:
-                    # Assign the textContent values after grouping with text
-                    # Vertical group when input or select element has another text element
-                    # at the distance 0.5 from its width
-                    # Horizontal group when input or select or text are placed horizontally
-
-                    # Loop through all the elements recognized
-                    # Find all the close-by elements if one of them input (1) or select (4),
-                    # and second one is the text (3)
-                    # Horizontal overlap 75% of the element with minimal width
-                    # Vertical max +- 50% for input/select width,
-                    # middle of the text element should be within this interval
-
-                    # First rectangle coordinates
-                    x1 = int(recognized_element["shape_attributes"]["x"])
-                    y1 = int(recognized_element["shape_attributes"]["y"])
-                    x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-                    y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-                    # First rectangle width
-                    width_elem = recognized_element["shape_attributes"]["width"]
-                    height_elem = recognized_element["shape_attributes"]["height"]
-
-                    # Add the initial element to the cluster
-                    cluster = ClusterClass(
-                        x1, y1, x2, y2, elements=[recognized_element]
-                    )
-                    # Set some flags for this novel cluster
-                    cluster.types = "fcluster"
-                    cluster.is_elements_only = True
-                    for idx1, recognized_element1 in enumerate(
-                        fdict[fnamesize]["regions"]
-                    ):
-                        if recognized_element1["region_attributes"]["HTML element"] in {
-                            "text"
-                        }:
-                            # Check if the elements were not assigned to the clusters before
-                            if (
-                                (recognized_element1 not in clr.elements)
-                                for clr in clusters
-                            ):
-
-                                # Second rectangle coordinates
-                                x11 = int(recognized_element1["shape_attributes"]["x"])
-                                y11 = int(recognized_element1["shape_attributes"]["y"])
-                                x21 = int(
-                                    x11
-                                    + recognized_element1["shape_attributes"]["width"]
-                                )
-                                y21 = int(
-                                    y11
-                                    + recognized_element1["shape_attributes"]["height"]
-                                )
-
-                                # Second rectangle width
-                                width_elem1 = x21 - x11
-                                height_elem1 = y21 - y11
-
-                                # Borders of the overlapped area
-                                left = max(x1, x11)
-                                bottom = max(y1, y11)
-                                right = min(x2, x21)
-                                top = min(y2, y21)
-
-                                # Size of the overlapped area
-                                horizontal_overlap = right - left
-                                vertical_overlap = top - bottom
-
-                                # Check if the vertical distance between roi and roi1 is sufficient
-                                # Middle of the input or select element
-                                mid_input = (y1 + y2) / 2
-
-                                # Middle of the text element
-                                mid_text = (y11 + y21) / 2
-
-                                border_bottom = y1 - (0.6 * height_elem)
-                                border_top = y2 + (0.4 * height_elem)
-
-                                # Check if the text and input elements are close to each other by vertical direction
-                                if (border_bottom < mid_text < mid_input) or (
-                                    mid_input < mid_text < border_top
-                                ):
-                                    # Assign the results to the vertical_group
-                                    # Check if the horizontal overlap between text label and input is sufficient
-                                    if (
-                                        horizontal_overlap
-                                        > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD
-                                        * width_elem1
-                                    ):
-                                        # Fill the cluster
-                                        # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
-                                        # max(y2, y21), elements = [recognized_element, recognized_element1])
-                                        # Update the cluster with new text element
-                                        cluster.elements.append(recognized_element1)
-
-                                        # Set some flags for this vertical fcluster
-                                        # The cluster contains more than one element
-                                        cluster.is_solid = False
-                                        # The cluster direction is vertical
-                                        cluster.direction = 0
-                                        cluster.origin_direction = 0
-
-                                        cluster.x1 = min(cluster.x1, x11)
-                                        cluster.y1 = min(cluster.y1, y11)
-                                        cluster.x2 = max(cluster.x2, x21)
-                                        cluster.y2 = max(cluster.y2, y21)
-
-                                        # Find the center of cluster
-                                        center_x = (cluster.x1 + cluster.x2) / 2
-                                        center_y = (cluster.y1 + cluster.y2) / 2
-                                        cluster.center = center_x, center_y
-
-                                        # Update the clusters list
-                                        clusters.append(cluster)
-
-                    # cv2.rectangle(
-                    #     image_opencv_input,
-                    #     (cluster.x1, cluster.y1),
-                    #     (cluster.x2, cluster.y2),
-                    #     (0, 0, 255),
-                    #     1,
-                    # )
-                    # cv2.imshow(window_name1, image_opencv_input)
-                    # cv2.waitKey(0)
-
-            # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction end
-
-            # Clusters checkboxes with text labels direction start
-            #
-            #
-            # Horizontal clusters checkbox-like with text labels detection
-            # The first position is a checkbox or radiobutton or even the small image,
-            # and the second position is text
-            # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
-            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-                if recognized_element["region_attributes"]["HTML element"] in {
-                    "checkbox",
-                    "radiobutton",
-                    "image",
-                }:
-                    # Horizontal group when checkbox or radiobutton element has another text element
-                    # at the distance 0.8 from its width
-
-                    # Loop through all the elements recognized
-                    # Find all the close-by elements if one of them is a checkbox or radiobutton,
-                    # and second one is the text (3)
-                    # Vertical overlap 75% of the element with minimal width
-                    # Horizontal min/max +- 80% for checkbox/radiobutton width,
-                    # start/end of the text element should be within this interval
-
-                    # First rectangle coordinates
-                    x1 = int(recognized_element["shape_attributes"]["x"])
-                    y1 = int(recognized_element["shape_attributes"]["y"])
-                    x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-                    y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-                    # First rectangle width
-                    width_elem = recognized_element["shape_attributes"]["width"]
-                    height_elem = recognized_element["shape_attributes"]["height"]
-
-                    # Add the initial element to the cluster
-                    cluster = ClusterClass(
-                        x1, y1, x2, y2, elements=[recognized_element]
-                    )
-                    # Set some flags for this novel cluster
-                    cluster.types = "fcluster"
-                    cluster.is_elements_only = True
-                    for idx1, recognized_element1 in enumerate(
-                        fdict[fnamesize]["regions"]
-                    ):
-                        if recognized_element1["region_attributes"]["HTML element"] in {
-                            "text"
-                        }:
-                            # Check if the elements were not assigned to the clusters before
-                            if (
-                                (recognized_element1 not in clr.elements)
-                                for clr in clusters
-                            ):
-
-                                # Second rectangle coordinates
-                                x11 = int(recognized_element1["shape_attributes"]["x"])
-                                y11 = int(recognized_element1["shape_attributes"]["y"])
-                                x21 = int(
-                                    x11
-                                    + recognized_element1["shape_attributes"]["width"]
-                                )
-                                y21 = int(
-                                    y11
-                                    + recognized_element1["shape_attributes"]["height"]
-                                )
-
-                                # Second rectangle width
-                                width_elem1 = x21 - x11
-                                height_elem1 = y21 - y11
-
-                                # Borders of the overlapped area
-                                left = max(x1, x11)
-                                bottom = max(y1, y11)
-                                right = min(x2, x21)
-                                top = min(y2, y21)
-
-                                # Size of the overlapped area
-                                horizontal_overlap = right - left
-                                vertical_overlap = top - bottom
-
-                                # Middle of the checkbox or radiobutton element
-                                mid_checkbox = (x1 + x2) / 2
-
-                                # Borders of the text element
-                                left_text = x11
-                                right_text = x21
-
-                                border_left = x1 - (0.6 * height_elem)
-                                border_right = x2 + (0.8 * height_elem)
-
-                                # Check if the text and checkbox elements are close to each other
-                                # by horizontal direction
-                                if (border_left < right_text < mid_checkbox) or (
-                                    mid_checkbox < left_text < border_right
-                                ):
-                                    # Assign the results to the horizontal group
-                                    # Check if the vertical overlap between text label and input is sufficient
-                                    if (
-                                        vertical_overlap
-                                        > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD
-                                        * height_elem1
-                                    ):
-                                        # Fill the cluster
-                                        # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
-                                        # max(y2, y21), elements = [recognized_element, recognized_element1])
-                                        # Update the cluster with new text element
-                                        cluster.elements.append(recognized_element1)
-
-                                        # Set some flags for this horizontal fcluster
-                                        # The cluster contains more than one element
-                                        cluster.is_solid = False
-                                        # The cluster direction is horizontal
-                                        cluster.direction = 1
-                                        cluster.origin_direction = 1
-
-                                        cluster.x1 = min(cluster.x1, x11)
-                                        cluster.y1 = min(cluster.y1, y11)
-                                        cluster.x2 = max(cluster.x2, x21)
-                                        cluster.y2 = max(cluster.y2, y21)
-
-                                        # Find the center of cluster
-                                        center_x = (cluster.x1 + cluster.x2) / 2
-                                        center_y = (cluster.y1 + cluster.y2) / 2
-                                        cluster.center = center_x, center_y
-
-                                        # Update the clusters list
-                                        clusters.append(cluster)
-
-            #
-            #
-            # Clusters checkboxes with text labels direction end
-
-            # Place all the free elements for the 1-element clusters
-            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-                # First rectangle coordinates
-                x1 = int(recognized_element["shape_attributes"]["x"])
-                y1 = int(recognized_element["shape_attributes"]["y"])
-                x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-                y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-                element_unique = True
-                for cluster in clusters:
-                    if recognized_element in cluster.elements:
-                        element_unique = False
-                if element_unique is True:
-                    # Add the element to the cluster
-                    cluster = ClusterClass(
-                        x1, y1, x2, y2, elements=[recognized_element]
-                    )
-
-                    # Set some flags for this novel cluster
-                    cluster.types = "fcluster"
-                    cluster.is_elements_only = True
-                    # The cluster contains only one element
-                    cluster.is_solid = True
-                    # The cluster direction is unseparable
-                    cluster.direction = 2
-                    cluster.origin_direction = 2
-
-                    # Find the center of cluster
-                    center_x = (cluster.x1 + cluster.x2) / 2
-                    center_y = (cluster.y1 + cluster.y2) / 2
-                    cluster.center = center_x, center_y
-
-                    # Update the clusters list
-                    clusters.append(cluster)
-            # Calculate fclusters pro function end
-            '''
 
             if region_dataset in ["headers", "footers", "webpages"]:
                 # Calculate dbclusters function calling
