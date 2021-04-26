@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import {
-  selectElementsForCurrentScreen,
   selectCurrentRootId,
+  selectAllElements,
 } from '@Redux/project/selectors/element';
 import Tree from '@Components/LeftPanel/Navigator/components/Tree';
 import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
@@ -18,7 +18,7 @@ import {
 } from '../../styledComponents';
 
 const Navigator: React.FC = () => {
-  const elements = useSelector(selectElementsForCurrentScreen);
+  const elements = useSelector(selectAllElements);
   const rootId = useSelector(selectCurrentRootId);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
