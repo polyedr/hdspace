@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { sidebarLogoutSuccess } from '@Redux/project/actions';
 import { useDispatch } from 'react-redux';
+import { chatLogout, setChatCredentials } from '@Redux/user/actions';
 import { IFrameMessage } from '../../types';
 
 const useMessageListener = () => {
@@ -15,6 +16,14 @@ const useMessageListener = () => {
       switch (data.type) {
         case 'sidebarLogoutSuccess':
           dispatch(sidebarLogoutSuccess());
+          break;
+
+        case 'setChatCredentials':
+          dispatch(setChatCredentials(data.payload));
+          break;
+
+        case 'chatLogout':
+          dispatch(chatLogout());
           break;
 
         default:

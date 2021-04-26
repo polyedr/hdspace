@@ -6,6 +6,7 @@ import {
   UserData,
   SignupFormData,
   Experience,
+  ChatCredentials,
 } from '@Src/types';
 import TYPES from '@Redux/actionTypes';
 
@@ -194,4 +195,13 @@ export const setUserExperience = (experience: Experience) => ({
 export const setUserGuideActive = (active: boolean) => ({
   type: TYPES.SET_USER_GUIDE_ACTIVE,
   payload: active,
+});
+
+export const setChatCredentials = (data: ChatCredentials) => ({
+  type: TYPES.SET_CHAT_CREDENTIALS,
+  payload: data,
+});
+
+export const chatLogout = () => ({
+  type: TYPES.CHAT_LOGOUT,
 });

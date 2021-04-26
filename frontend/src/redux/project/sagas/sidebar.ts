@@ -1,6 +1,10 @@
 import { select, put, take } from 'redux-saga/effects';
-import { TokenPair, UserData } from '@Src/types';
-import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
+import { ChatCredentials, TokenPair, UserData } from '@Src/types';
+import {
+  selectChatCredentials,
+  selectTokenPair,
+  selectUserData,
+} from '@Redux/user/selectors';
 import * as Actions from '@Redux/project/actions';
 import {
   selectCurrentProjectId,
@@ -50,6 +54,9 @@ export function* setUpSidebarSaga(
     const userData: UserData = yield select(selectUserData);
     const projectId: number = yield select(selectCurrentProjectId);
     const { access }: TokenPair = yield select(selectTokenPair);
+    const chatCredentials: ChatCredentials = yield select(
+      selectChatCredentials,
+    );
 
     iframe.contentWindow.postMessage(
       { type: 'setAccessToken', payload: access },
@@ -63,6 +70,11 @@ export function* setUpSidebarSaga(
 
     iframe.contentWindow.postMessage(
       { type: 'setUserData', payload: userData },
+      host,
+    );
+
+    iframe.contentWindow.postMessage(
+      { type: 'setChatCredentials', payload: chatCredentials },
       host,
     );
   } catch (e) {

@@ -29,6 +29,7 @@ const userPersistConfig: PersistConfig = {
     'tokenPair',
     'userData',
     'isLoggedIn',
+    'chat',
   ],
   storage,
 };

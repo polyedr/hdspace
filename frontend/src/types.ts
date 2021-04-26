@@ -1277,3 +1277,9 @@ export type ScreenMeta = {
 export type ScreenInfo = ScreenMeta & {
   name: string;
 };
+
+export type ChatCredentials = {
+  realm: string;
+  username: string;
+  apiKey: string;
+};
