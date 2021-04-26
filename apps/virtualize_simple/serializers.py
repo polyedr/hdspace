@@ -1826,6 +1826,7 @@ def print_maskrcnn_output(region_dataset, image_maskrcnn_notext, fname, fnamesiz
 
     cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
 
+    '''
     # Printing the pure Mask R CNN output with text blocks and radiobuttons recognized
     for idx1, (rect1, class_id1) in enumerate(zip(r["rois"], r["class_ids"])):
         x3 = rect1[1]
@@ -1863,6 +1864,7 @@ def print_maskrcnn_output(region_dataset, image_maskrcnn_notext, fname, fnamesiz
         )
 
     cv2.imwrite("maskrcnn_" + fname, image_maskrcnn)
+    '''
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
@@ -2535,24 +2537,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             img = load_img(imgpath)
             img = img_to_array(img)
 
-            if region_dataset in {"forms", "headers", "footers"}:
-                '''
-                # Detect elements with Mask R CNN model start
-                if region_dataset == "forms":
-                    results = model_forms.detect([img], verbose=1)
-
-                if region_dataset == "headers":
-                    results = model_headers.detect([img], verbose=1)
-
-                if region_dataset == "footers":
-                    results = model_footers.detect([img], verbose=1)
-
-                # Results of the Mask R CNN recognition
-                r = results[0]
-                # Detect elements with Mask R CNN model end
-                '''
-                pass
-
             fsize = str(os.path.getsize(imgpath))
             fnamesize = fname + fsize
 
@@ -3038,11 +3022,15 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # this asignment used for headers testing purposes
         # fdict = cnndict
+        # cnndict = fordict
         # print("fdict: ", fdict)
 
         # Assembling start
         # Supplementary parameters calculation and printing of the fdict function call
         min_x1, min_y1, max_x2, max_y2 = suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=image_via)
+
+        # Supplementary parameters calculation and printing of the cnndict function call
+        min_cnnx1, min_cnny1, max_cnnx2, max_cnny2 = suppement_fdict_calc_printing(cnndict, fname, fnamesize, img_width, img_height)
 
         # This should be replaced to create nested structure. Clusters obtained from text blocks
         # and from rect blocks should save this information
@@ -3060,9 +3048,15 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Calculate fclusters function calling
         clusters = calculate_fclusters(fdict, fnamesize, fname, image_fclusters=image_fclusters)
 
+        # Calculate fclusters cnn function calling
+        clusters_cnn = calculate_fclusters(cnndict, fnamesize, fname)
+
         if region_dataset in ["headers", "footers", "webpages"]:
             # Calculate dbclusters function calling
             dbclusters = calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters)
+            # Calculate dbclusters cnn function calling.
+            # Should remove image_dbclusters here to display info properly
+            dbclusters_cnn = calculate_dbclusters(region_dataset, clusters_cnn, fname, image_dbclusters)
 
         try:
             # Replace clusters for dbclusters if possible
@@ -3073,8 +3067,21 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         finally:
             pass
 
+        try:
+            # Replace clusters cnn for dbclusters cnn if possible
+            fclusters_cnn = copy.copy(clusters_cnn)
+            clusters_cnn = dbclusters_cnn
+        except Exception:
+            pass
+        finally:
+            pass
+
         # Ternary assembling algorithm function calling
         root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input, window_name1, fclusters)
+
+        # Ternary assembling algorithm cnn function calling
+        # Should remove image_opencv_input here to display info properly
+        root_block_cnn = ternary_assembling_run(min_cnnx1, min_cnny1, max_cnnx2, max_cnny2, clusters_cnn, image_opencv_input, window_name1, fclusters_cnn)
 
         # Printing clusters function calling
         clusters_printing(root_block, fname, image_allclusters=image_allclusters, image_cclusters=image_cclusters,
@@ -3101,16 +3108,21 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                            image_original, fname, o, serializing="virtualize_simple")
         # Serializer only
         elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
-        # Detect elements for the root block double
-        elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
+
+        # Detect elements for the root block double cnn
+        elements_rootblock(root_block_cnn, styles_on, region_dataset, img_width, img_height, outer_div,
                            image_original, fname, o, serializing="virtualize_simple")
-        # Serializer only
-        elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
+        # Serializer only cnn
+        elements_rootblock_create(root_block_cnn, outer_div_node, serializing="virtualize_simple")
+
+        '''
         # Detect elements for the root block triple
         elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                            image_original, fname, o, serializing="virtualize_simple")
         # Serializer only
         elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
+        '''
+
         # Generating HTML for printing
         html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
         # print("html=", html)
@@ -3309,13 +3321,6 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             fsize = str(os.path.getsize(imgpath))
             fnamesize = fname + fsize
 
-            # fdict[fnamesize] = {
-            #     "filename": fname,
-            #     "size": fsize,
-            #     "regions": [],
-            #     "file_attributes": {},
-            # }
-
         # Read the region annotation from parameters
         fdict = None
         if validated_data.get("parameters"):
@@ -3330,87 +3335,6 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # Assembling start
             # Supplementary parameters calculation and printing of the fdict function call
             min_x1, min_y1, max_x2, max_y2 = suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
-            '''
-            # Supplementary parameters calculation and printing of the fdict start
-            # for filenamesize in fdict:
-            # os.chdir(VIA_ANNOTATION_DIR)
-            # print("Current Working Directory ", os.getcwd())
-
-            # detect the size of the whole image
-            # fsize = os.path.getsize(fname)
-
-            # Show text contours on image start
-            window_name1 = "image_opencv_text"
-
-            for idx, region in enumerate(fdict[fnamesize]["regions"]):
-                x1 = int(region["shape_attributes"]["x"])
-                y1 = int(region["shape_attributes"]["y"])
-                x2 = int(x1 + region["shape_attributes"]["width"])
-                y2 = int(y1 + region["shape_attributes"]["height"])
-
-            #     cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
-            # cv2.imshow(window_name1, image_opencv_input)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-            # Detect the size of the visible elements region
-            # detect the size of the visible elements
-            # first do this based on annotated regions
-            # go through all the regions
-            # find xmin, xmax, ymin, ymax
-            # compare this rectangle of visible elements with whole image
-            # crop if the distance is more than 20px
-            # extend borders if the distance is less than 20px
-            # Cropping the image is essential for further OCR applying
-            min_x1 = img_width
-            min_y1 = img_height
-            max_x2 = 0
-            max_y2 = 0
-            # for idx, region in enumerate(fdict[filenamesize]["regions"]):
-            for idx, region in enumerate(fdict[fnamesize]["regions"]):
-                x1 = int(region["shape_attributes"]["x"])
-                y1 = int(region["shape_attributes"]["y"])
-                x2 = int(x1 + region["shape_attributes"]["width"])
-                y2 = int(y1 + region["shape_attributes"]["height"])
-
-                if min_x1 > x1:
-                    min_x1 = x1
-
-                if min_y1 > y1:
-                    min_y1 = y1
-
-                if max_x2 < x2:
-                    max_x2 = x2
-
-                if max_y2 < y2:
-                    max_y2 = y2
-
-            # cv2.rectangle(
-            #     image_opencv_input, (min_x1, min_y1), (max_x2, max_y2), (255, 255, 0), 1
-            # )
-            # cv2.imshow(window_name1, image_opencv_input)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-            # Find the centers of the elements
-            # for idx, region in enumerate(fdict[filenamesize]["regions"]):
-            for idx, region in enumerate(fdict[fnamesize]["regions"]):
-                x1 = int(region["shape_attributes"]["x"])
-                y1 = int(region["shape_attributes"]["y"])
-                x2 = int(x1 + region["shape_attributes"]["width"])
-                y2 = int(y1 + region["shape_attributes"]["height"])
-
-                # Extend shape_attributes with average values for centers
-                x_average = int((x1 + x2) / 2)
-                y_average = int((y1 + y2) / 2)
-                region["shape_attributes"]["x_average"] = x_average
-                region["shape_attributes"]["y_average"] = y_average
-
-            # cv2.imshow(window_name1, image_opencv_input)
-            # cv2.waitKey(0)
-
-            # Supplementary parameters calculation and printing of the fdict end
-            '''
 
             # Calculate the excluded indices to remove overlapped elements function calling
             calculate_excluded_indices(fdict, fnamesize)
