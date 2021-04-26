@@ -38,8 +38,6 @@ type Props = {
   posRight: number | null;
 };
 
-// const everyNth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
-
 const ElementsInteractions: React.FC<Props> = (props) => {
   const allElements = useSelector(selectAllElements);
   const preSelectedElementId = useSelector(selectPreSelectedElementId);
