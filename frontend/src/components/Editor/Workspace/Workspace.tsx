@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import cn from 'classnames';
 import {
   selectLayout,
@@ -14,6 +14,10 @@ import MasterScreen from '@Components/Editor/MasterScreen';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
 import Scrollbars from 'react-custom-scrollbars';
 import { makeStyles } from '@material-ui/core/styles';
+import {
+  setCanvasScrollInProgress,
+  setSyncBordersInProgress,
+} from '@Redux/project/actions';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
@@ -60,6 +64,7 @@ type Props = {
 };
 
 const Workspace: React.FC<Props> = () => {
+  const dispatch = useDispatch();
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const format = useSelector(selectLayout);
@@ -86,15 +91,15 @@ const Workspace: React.FC<Props> = () => {
               <Scrollbar
                 ref={scrollRef}
                 autoHeightMin="100%"
-                autoHeightMax={
-                  ref.current
-                    ? `calc(${
-                        ref.current.getBoundingClientRect().height
-                      }px - 2em)`
-                    : '100%'
-                }
                 onScroll={({ srcElement }) => {
                   setScrollLeft(srcElement.scrollLeft);
+                }}
+                onScrollStart={() => {
+                  dispatch(setCanvasScrollInProgress(true));
+                  dispatch(setSyncBordersInProgress(true));
+                }}
+                onScrollStop={() => {
+                  dispatch(setCanvasScrollInProgress(false));
                 }}
               >
                 {freeCanvasMode ? (
@@ -106,10 +111,10 @@ const Workspace: React.FC<Props> = () => {
                     ) : (
                       <TreeCanvas scrollRef={scrollRef} />
                     )}
-                    {!freeCanvasMode && !isPrototypeMode && (
-                      <ElementsInteractions posRight={scrollLeft} />
-                    )}
                   </>
+                )}
+                {!freeCanvasMode && !isPrototypeMode && (
+                  <ElementsInteractions posRight={scrollLeft} />
                 )}
               </Scrollbar>
             </EditorViewport>

@@ -1,33 +1,26 @@
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import cn from 'classnames';
-import {
-  selectActiveElementId,
-  selectCurrentRootId,
-  selectElementById,
-} from '@Redux/project/selectors/element';
-import {
-  selectCurrentProjectId,
-  selectShowingBorders,
-} from '@Redux/project/selectors/base';
-import { BorderStyles } from '@Src/types';
-import { selectMasterScreenId } from '@Redux/project/selectors/screen';
+import { BorderStyles, StateElement } from '@Src/types';
 import { setMasterSourceElementId } from '@Redux/project/actions';
 import { makeStyles } from '@material-ui/core/styles';
-import { ELEMENTS_WITHOUT_CRUMB } from '../constants';
 
 type Props = {
-  elementId: string;
+  element: StateElement;
+  show: boolean;
+  currentProjectId: number;
+  rootId: string;
   styles: BorderStyles;
   children?: any;
+  masterScreenId: number | null;
 };
 
 const useStyles = makeStyles((theme) => ({
-  crumb: ({ styles, elementId, rootId }: Props & { rootId: string }) => ({
-    top: elementId === rootId ? styles.top : styles.top + styles.height - 1,
-    left: elementId === rootId ? 'auto' : styles.left,
-    right: elementId === rootId ? styles.right : 'auto',
+  crumb: ({ styles, element, rootId }: Props & { rootId: string }) => ({
+    top: element.id === rootId ? styles.top : styles.top + styles.height - 1,
+    left: element.id === rootId ? 'auto' : styles.left,
+    right: element.id === rootId ? styles.right : 'auto',
     zIndex: 9999999,
     fontFamily: 'Roboto',
     position: 'absolute',
@@ -57,26 +50,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BorderCrumb: React.FC<Props> = (props) => {
-  const { elementId, children } = props;
-  const dispatch = useDispatch();
-  const element = useSelector(selectElementById(elementId));
+  const { element, children, show, currentProjectId, masterScreenId } = props;
 
-  const rootId = useSelector(selectCurrentRootId);
-  const showBorders = useSelector(selectShowingBorders);
-  const activeElementId = useSelector(selectActiveElementId);
-  const currentProjectId = useSelector(selectCurrentProjectId);
-  const masterScreenId = useSelector(selectMasterScreenId);
+  const dispatch = useDispatch();
 
   const history = useHistory();
 
-  const classes = useStyles({
-    ...props,
-    rootId,
-  });
-
-  const showCrumb =
-    !ELEMENTS_WITHOUT_CRUMB.includes(element.type) &&
-    (showBorders || elementId === activeElementId);
+  const classes = useStyles(props);
 
   const handleSourceElementClick = useCallback(() => {
     dispatch(setMasterSourceElementId(element.parameters.sourceElementId));
@@ -89,7 +69,7 @@ const BorderCrumb: React.FC<Props> = (props) => {
     masterScreenId,
   ]);
 
-  return element && showCrumb ? (
+  return element && show ? (
     <div className={cn(classes.crumb)}>
       <span
         className={classes.label}
@@ -114,4 +94,4 @@ const BorderCrumb: React.FC<Props> = (props) => {
   ) : null;
 };
 
-export default BorderCrumb;
+export default memo(BorderCrumb);

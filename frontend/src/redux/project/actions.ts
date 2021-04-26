@@ -169,6 +169,8 @@ import {
   AssetData,
   SetValueImportLoader,
   ToggleEnableTabsAutoSwitch,
+  SetSyncBordersInProgress,
+  SetCanvasScrollInProgress,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -552,6 +554,20 @@ export const toggleContainersBorders = (
 export const setBordersEnabled = (enabled: boolean): SetBordersEnabled => ({
   type: TYPES.SET_BORDERS_ENABLED,
   payload: enabled,
+});
+
+export const setSyncBordersInProgress = (
+  sync: boolean,
+): SetSyncBordersInProgress => ({
+  type: TYPES.SET_SYNC_BORDERS_IN_PROGRESS,
+  payload: sync,
+});
+
+export const setCanvasScrollInProgress = (
+  scrollInProgress: boolean,
+): SetCanvasScrollInProgress => ({
+  type: TYPES.SET_CANVAS_SCROLL_IN_PROGRESS,
+  payload: scrollInProgress,
 });
 
 export const updateSharedStyles = (

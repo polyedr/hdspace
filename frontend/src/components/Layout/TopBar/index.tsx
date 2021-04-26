@@ -7,13 +7,8 @@ import {
   changeFreeCanvasMode,
   convertFreeCanvas,
   setBordersEnabled,
-  toggleContainersBorders,
 } from '@Redux/project/actions';
-import {
-  selectBordersEnabled,
-  selectFreeCanvasMode,
-  selectShowingBorders,
-} from '@Redux/project/selectors/base';
+import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
   selectMasterScreenEnabled,
@@ -23,12 +18,13 @@ import {
   Switch,
   FormControlLabel,
   Typography,
-  Checkbox,
   Button,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
 import Layouts from './Layouts';
 import Actions from './actions';
+import ShowBordersSection from './ShowBordersSection';
 
 const useStyles = makeStyles(({ typography, spacing }) => ({
   root: {
@@ -62,8 +58,6 @@ const TopBar: React.FC = () => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
-  const showBorders = useSelector(selectShowingBorders);
-  const bordersEnabled = useSelector(selectBordersEnabled);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const createFlex = () => {
@@ -125,15 +119,7 @@ const TopBar: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="Show borders"
-                checked={showBorders}
-                disabled={!bordersEnabled && !isProtoMode}
-                onChange={() => dispatch(toggleContainersBorders(!showBorders))}
-              />
-            }
+          <ShowBordersSection
             label={
               <Typography className={classes.title}>Show blocks</Typography>
             }

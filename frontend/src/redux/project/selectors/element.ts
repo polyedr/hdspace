@@ -439,3 +439,9 @@ export const selectPreSelectedElementId = ({ project }: AppReduxState) =>
 
 export const selectMasterSourceElementId = ({ project }: AppReduxState) =>
   project.edit.masterSourceElementId;
+
+export const selectSyncBordersInProgress = ({ project }: AppReduxState) =>
+  project.ui.syncBordersInProgress;
+
+export const selectCanvasScrollInProgress = ({ project }: AppReduxState) =>
+  project.ui.canvasScrollInProgress;

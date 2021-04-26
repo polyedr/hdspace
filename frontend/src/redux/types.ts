@@ -66,6 +66,8 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
+  syncBordersInProgress: boolean;
+  canvasScrollInProgress: boolean;
   currentDropTargetParams: DropTargetParams | null;
   bordersEnabled: boolean;
   canCreateGroup: boolean;
@@ -390,6 +392,14 @@ export type ToggleContainersBorders = IAction<
 >;
 export type SetBordersEnabled = IAction<
   typeof TYPES.SET_BORDERS_ENABLED,
+  boolean
+>;
+export type SetSyncBordersInProgress = IAction<
+  typeof TYPES.SET_SYNC_BORDERS_IN_PROGRESS,
+  boolean
+>;
+export type SetCanvasScrollInProgress = IAction<
+  typeof TYPES.SET_CANVAS_SCROLL_IN_PROGRESS,
   boolean
 >;
 export type CopyElementStyles = IAction<
@@ -1099,6 +1109,8 @@ export type Action =
   | SetMasterElementsIds
   | ToggleContainersBorders
   | SetBordersEnabled
+  | SetSyncBordersInProgress
+  | SetCanvasScrollInProgress
   | SetElementToCopy
   | CopyActiveElement
   | PasteCopiedElement

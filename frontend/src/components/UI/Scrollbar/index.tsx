@@ -17,6 +17,8 @@ interface IScrollbarProps {
   autoHeightMin?: number | string;
   hideTracksWhenNotNeeded?: boolean;
   onScroll?: (event: { srcElement: HTMLElement }) => void;
+  onScrollStart?: () => void;
+  onScrollStop?: () => void;
 }
 
 const renderTrack = ({ style, trackStylesBg, scroll, show, ...props }: any) => {
@@ -109,6 +111,8 @@ const Scrollbar = React.forwardRef<any, IScrollbarProps>((props, ref) => {
     autoHeightMax,
     hideTracksWhenNotNeeded = true,
     onScroll,
+    onScrollStart,
+    onScrollStop,
   } = props;
   const [show, setShow] = useState(false);
   const [scroll, setScroll] = useState(false);
@@ -149,6 +153,8 @@ const Scrollbar = React.forwardRef<any, IScrollbarProps>((props, ref) => {
       onScroll={handleScroll}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
+      onScrollStart={onScrollStart}
+      onScrollStop={onScrollStop}
     >
       {children}
     </Scrollbars>
