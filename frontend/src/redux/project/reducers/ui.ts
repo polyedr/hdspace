@@ -132,20 +132,6 @@ function uiReducer(
       };
     }
 
-    case TYPES.SET_SYNC_BORDERS_IN_PROGRESS: {
-      if (state.syncBordersInProgress === action.payload) {
-        return state;
-      }
-      return { ...state, syncBordersInProgress: action.payload };
-    }
-
-    case TYPES.SET_CANVAS_SCROLL_IN_PROGRESS: {
-      if (state.canvasScrollInProgress === action.payload) {
-        return state;
-      }
-      return { ...state, canvasScrollInProgress: action.payload };
-    }
-
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

@@ -42,8 +42,6 @@ export const initialUi: ProjectUiState = {
   savedElementsValues: {},
   showContainersBorders: false,
   bordersEnabled: true,
-  syncBordersInProgress: false,
-  canvasScrollInProgress: false,
   currentDropTargetParams: null,
   canCreateGroup: false,
   layout: {

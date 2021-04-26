@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   selectSelectedElementsIds,
@@ -21,7 +21,6 @@ import {
   selectMasterScreenId,
 } from '@Redux/project/selectors/screen';
 import { selectDropTargetBordersMode } from '@Redux/user/selectors';
-import { setSyncBordersInProgress } from '@Redux/project/actions';
 import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
 
@@ -42,8 +41,6 @@ type Props = {
 // const everyNth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
 
 const ElementsInteractions: React.FC<Props> = (props) => {
-  const dispatch = useDispatch();
-
   const allElements = useSelector(selectAllElements);
   const preSelectedElementId = useSelector(selectPreSelectedElementId);
   const activeElementId = useSelector(selectActiveElementId);
@@ -75,10 +72,6 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   }
 
   const classes = useStyles(props);
-
-  useEffect(() => {
-    dispatch(setSyncBordersInProgress(false));
-  });
 
   const borderedElementsIds = !showBorders
     ? [
