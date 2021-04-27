@@ -10,6 +10,7 @@ import {
   selectProfileData,
   selectUserData,
   selectUserGuideWatched,
+  selectToggleEnableTabsAutoSwitch,
 } from '@Redux/user/selectors';
 import {
   changeProfileData,
@@ -33,6 +34,7 @@ import {
   MenuItem,
   FormHelperText,
 } from '@material-ui/core';
+import { toggleEnableTabsAutoSwitch } from '@Redux/project/actions';
 import SubmitError from '../SubmitError';
 import Button from '../../UI/Button';
 
@@ -122,6 +124,7 @@ const Profile: React.FC = () => {
   const { avatar, role } = useSelector(selectProfileData);
   const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
   const userGuideWatched = useSelector(selectUserGuideWatched);
+  const tabsAutoSwitchEnabled = useSelector(selectToggleEnableTabsAutoSwitch);
 
   const handleLogout = () => {
     dispatch(logoutStart());
@@ -164,6 +167,9 @@ const Profile: React.FC = () => {
     );
   };
 
+  const handleTabsAutoSwitch = () => {
+    dispatch(toggleEnableTabsAutoSwitch());
+  };
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
 
   return (
@@ -411,6 +417,14 @@ const Profile: React.FC = () => {
             <Switch
               checked={userGuideWatched}
               onChange={handleChangeUserGuideWatched}
+            />
+          </div>
+
+          <div className={classes.subheader}>
+            Enable Tabs Auto Switch
+            <Switch
+              checked={tabsAutoSwitchEnabled}
+              onChange={handleTabsAutoSwitch}
             />
           </div>
         </div>

@@ -1,33 +1,35 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
-import { HeadingRendererProps } from '../types';
+import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('heading');
 
-const Heading: React.FC<HeadingRendererProps> = React.forwardRef(
+const Heading = React.forwardRef<HTMLHeadingElement, RendererProps>(
   (props, ref) => {
-    const { id, params, className, contentEditable } = props;
-    const { headingType, textContent, groupClass } = params;
+    const { element } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { headingType, textContent } = element.parameters;
     const HeadingTag = headingType || 'h3';
 
+    const contentEditableSettings = useContentEditable(element.id, textContent);
     const styles = useStyles(props);
-    const eventHandlers = useEventHandlers(props);
-
+    const eventHandlers = useEventHandlers(
+      props,
+      contentEditableSettings.events,
+    );
     return (
       <HeadingTag
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         className={cn(className, styles.ownStyles, groupClass)}
-        {...eventHandlers}
-        contentEditable={contentEditable}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
+        {...contentEditableSettings.props}
+        {...eventHandlers}
       />
     );
   },

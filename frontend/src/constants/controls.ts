@@ -29,10 +29,13 @@ import Type from '@Components/RightPanel/PropertiesTab/Controls/Type/Type';
 import TypographyBlock from '@Components/RightPanel/PropertiesTab/Controls/TypographyBlock';
 import Value from '@Components/RightPanel/PropertiesTab/Controls/Value/Value';
 import VideoSettings from '@Components/RightPanel/PropertiesTab/Controls/VideoSettings/VideoSettings';
-import withSmartContainer from '@Components/UI/RenderElements/SmartContainer/withSmartContainer';
+import withSmartContainerControl from '@Components/RightPanel/PropertiesTab/Controls/SmartContainerControl/withSmartContainerControl';
 import { Control, NNBlockType } from '@Src/types';
 import Alt from '@Components/RightPanel/PropertiesTab/Controls/Alt';
 import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
+import StyleSheets from '@Components/RightPanel/PropertiesTab/Controls/StyleSheets/StyleSheets';
+import Attributes from '@Components/RightPanel/PropertiesTab/Controls/Attributes/Attributes';
+import TagName from '@Components/RightPanel/PropertiesTab/Controls/TagName/TagName';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -83,10 +86,10 @@ const CONTROLS: Record<Control, ControlInfo> = {
   image: { Control: Image, styles: [] },
   alt: { Control: Alt },
   title: { Control: Title },
-  smartHeader: { Control: withSmartContainer(NNBlockType.HEADER) },
-  smartFooter: { Control: withSmartContainer(NNBlockType.FOOTER) },
-  smartForm: { Control: withSmartContainer(NNBlockType.FORM) },
-  smartWebpage: { Control: withSmartContainer(NNBlockType.WEBPAGE) },
+  smartHeader: { Control: withSmartContainerControl(NNBlockType.HEADER) },
+  smartFooter: { Control: withSmartContainerControl(NNBlockType.FOOTER) },
+  smartForm: { Control: withSmartContainerControl(NNBlockType.FORM) },
+  smartWebpage: { Control: withSmartContainerControl(NNBlockType.WEBPAGE) },
   stylesOn: { Control: StylesOn },
   type: { Control: Type },
   value: { Control: Value },
@@ -123,6 +126,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
       'columnRuleColor',
     ],
   },
+  styleSheets: { Control: StyleSheets },
+  attributes: { Control: Attributes },
+  tagName: { Control: TagName },
 };
 
 export default CONTROLS;

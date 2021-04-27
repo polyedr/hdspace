@@ -23,10 +23,11 @@ import {
   Switch,
   FormControlLabel,
   Typography,
-  Checkbox,
   Button,
+  Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
 import Layouts from './Layouts';
 import Actions from './actions';
 
@@ -62,9 +63,9 @@ const TopBar: React.FC = () => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
   const showBorders = useSelector(selectShowingBorders);
   const bordersEnabled = useSelector(selectBordersEnabled);
-  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const createFlex = () => {
     dispatch(convertFreeCanvas());

@@ -1,7 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Theme, Tabs, Tab } from '@material-ui/core';
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import {
+  selectIsPrototypeMode,
+  selectToggleEnableTabsAutoSwitch,
+} from '@Redux/user/selectors';
 import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
@@ -102,7 +105,7 @@ const RightPanel: React.FC = () => {
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
-
+  const tabsAutoswitchEnabled = useSelector(selectToggleEnableTabsAutoSwitch);
   const [tabs, setTabs] = useState(defaultTabs);
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(
@@ -143,7 +146,8 @@ const RightPanel: React.FC = () => {
       ![masterCoreElId, masterGroupsElId, ...CORE_MASTER_ELEMENTS_IDS].includes(
         activeElementId,
       ) &&
-      canEditProject
+      canEditProject &&
+      !tabsAutoswitchEnabled
     ) {
       const index = tabs.indexOf(RPTab.Elements);
       // eslint-disable-next-line no-bitwise

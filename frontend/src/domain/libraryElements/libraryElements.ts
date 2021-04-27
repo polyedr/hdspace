@@ -10,6 +10,7 @@ import ImageIcon from '@material-ui/icons/Image';
 import MovieIcon from '@material-ui/icons/Movie';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import HelpIcon from '@material-ui/icons/Help';
 import ArrowDropDownCircleIcon from '@material-ui/icons/ArrowDropDownCircle';
 import MessageIcon from '@material-ui/icons/Message';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
@@ -45,6 +46,7 @@ import {
   column,
   nativeColumns,
   elementsGroup,
+  htmlElement,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -122,6 +124,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   featureSection,
   section,
   group: elementsGroup,
+  html: htmlElement,
 };
 
 export const ICONS: Partial<
@@ -156,4 +159,5 @@ export const ICONS: Partial<
   smartForm: CropOriginalIcon,
   smartWebpage: CropOriginalIcon,
   section: Crop75Icon,
+  html: HelpIcon,
 };

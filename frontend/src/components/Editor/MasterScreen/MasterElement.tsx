@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect, Fragment } from 'react';
+import React, { useCallback, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
@@ -12,25 +12,24 @@ import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
 import Scrollbars from 'react-custom-scrollbars';
 import { Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { DropTargetParams, Normalized, StateElement } from '@Src/types';
+import { selectMasterScreenId } from '@Redux/project/selectors/screen';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';
 
 type Props = {
+  allElements: Normalized<StateElement>;
+  isDisabled: boolean;
+  dropTargetParams: DropTargetParams | null;
+  preSelectedElementId: string | null;
+  masterSourceElementId: string | null;
+  canDragAndDrop: boolean;
+  frameWindow: Window | null;
+
   elementId: string;
   parentId?: string;
   scrollRef: React.RefObject<Scrollbars>;
 };
-
-const getElementProps = (element) => ({
-  id: element.id,
-  className: element.styles.classNames?.[0] || '',
-  isDisabled: true,
-  contentEditable: false,
-  ownStyles: element.parameters.groupElements ? element.styles.ownStyles : {},
-  groupClass: '',
-  active: false,
-  params: element.parameters,
-});
 
 const useStyles = makeStyles({
   divider: {
@@ -38,10 +37,24 @@ const useStyles = makeStyles({
   },
 });
 
-const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
+const MasterElement: React.FC<Props> = (props: Props) => {
+  const {
+    allElements,
+    isDisabled,
+    dropTargetParams,
+    preSelectedElementId,
+    masterSourceElementId,
+    canDragAndDrop,
+    frameWindow,
+
+    elementId,
+    parentId,
+    scrollRef,
+  } = props;
   const dispatch = useDispatch();
   const classes = useStyles();
   const element = useSelector(selectElementById(elementId));
+  const masterScreenId = useSelector(selectMasterScreenId);
   const masterCoreElId = useSelector(selectMasterCoreElementId);
   const masterGroupsElId = useSelector(selectMasterGroupsElementId);
   const rootElement = useSelector(selectMasterScreenRoot);
@@ -49,8 +62,6 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
   const { type } = element;
 
   const Renderer = RENDERERS[type];
-
-  const elementProps = useMemo(() => getElementProps(element), [element]);
 
   const handleClick = useCallback(
     (ev: React.MouseEvent<HTMLElement>) => {
@@ -70,7 +81,7 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
     return null;
   }
 
-  return (
+  return masterScreenId ? (
     <Renderer
       ref={(dom: HTMLElement) => {
         DOMHandler.INSTANCE.addElementDom(element.id, dom);
@@ -82,7 +93,8 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
       onMouseLeave={() => {
         dispatch(setHoveredElementId(parentId || null));
       }}
-      {...elementProps}
+      element={element}
+      isDisabled={isDisabled}
     >
       {element.children.map((childId, index) => (
         <Fragment key={`master-${childId}`}>
@@ -97,18 +109,36 @@ const MasterElement: React.FC<Props> = ({ elementId, parentId, scrollRef }) => {
               />
             )}
           {element.id === masterGroupsElId ? (
-            <DraggableElement elementId={childId} scrollRef={scrollRef} />
+            <DraggableElement
+              screenId={masterScreenId}
+              elementId={elementId}
+              allElements={allElements}
+              scrollRef={scrollRef}
+              isDisabled={isDisabled}
+              dropTargetParams={dropTargetParams}
+              preSelectedElementId={preSelectedElementId}
+              masterSourceElementId={masterSourceElementId}
+              canDragAndDrop={canDragAndDrop}
+              frameWindow={frameWindow}
+            />
           ) : (
             <MasterElement
               elementId={childId}
               parentId={element.id}
               scrollRef={scrollRef}
+              allElements={allElements}
+              isDisabled={isDisabled}
+              dropTargetParams={dropTargetParams}
+              preSelectedElementId={preSelectedElementId}
+              masterSourceElementId={masterSourceElementId}
+              canDragAndDrop={canDragAndDrop}
+              frameWindow={frameWindow}
             />
           )}
         </Fragment>
       ))}
     </Renderer>
-  );
+  ) : null;
 };
 
 export default MasterElement;

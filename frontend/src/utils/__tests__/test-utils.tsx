@@ -1,4 +1,5 @@
 import { initialUserState } from '@Redux/user/initial';
+import MockDate from 'mockdate';
 import {
   initialCommunication,
   initialControl,
@@ -10,6 +11,7 @@ import initialPermissions from '@Redux/permissions/initial';
 import { AppReduxState, ProjectEditState } from '@Redux/types';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
+import { generateRandomInteger } from '@Utils/NumberHelper';
 import {
   Project,
   StateElement,
@@ -17,6 +19,10 @@ import {
   UserData,
   ElementGroup,
   Experience,
+  AssetsList,
+  ProjectWithScreens,
+  ProjectsSearchParameter,
+  DateRange,
 } from '../../types';
 
 export const mockProject: Project = {
@@ -188,4 +194,92 @@ export const mockState: AppReduxState = {
       currentScreenId: mockScreen.id,
     },
   },
+};
+
+const getTestId = () => generateRandomInteger(1, 9999);
+
+export const createMockProject = (): Project => ({
+  id: getTestId(),
+  name: 'test project',
+  status: 'pending',
+  projectscreen: [],
+  projectLoader: true,
+  created: new Date(),
+  updated: new Date(),
+  projectData: {
+    classes: [],
+  },
+  user: DEFAULT_USER,
+});
+
+export const createAssetListMock = (): AssetsList => ({
+  created: new Date(),
+  id: '9999',
+  images: [],
+  modified: new Date(),
+  name: 'Project assets',
+  projectId: '715',
+});
+
+export const createMasterScreenMock = (projectId: number): Screen => ({
+  buoyancy: 0,
+  element: '99999',
+  id: getTestId(),
+  image: null,
+  name: 'Master Screen',
+  project: projectId,
+  screen_data_json: {},
+  screenscenario: [],
+  status: 'pending',
+});
+
+export const createScreenMock = (
+  projectId: number,
+  buoyancy: number = 1,
+): Screen => ({
+  buoyancy,
+  element: '99999',
+  id: getTestId(),
+  image: null,
+  name: 'Screen 1',
+  project: projectId,
+  screen_data_json: {},
+  screenscenario: [],
+  status: 'pending',
+});
+
+export const createProjectWithScreensMock = (
+  projectId: number,
+): ProjectWithScreens => ({
+  created: new Date(),
+  id: projectId,
+  name: 'test name',
+  projectData: {
+    classes: [],
+  },
+  projectLoader: false,
+  projectscreen: [
+    createMasterScreenMock(projectId),
+    createScreenMock(projectId),
+  ],
+  status: 'pending',
+  updated: new Date(),
+  user: DEFAULT_USER,
+});
+
+export const projectSearchParameterMock: [
+  ProjectsSearchParameter,
+  string | DateRange,
+] = [ProjectsSearchParameter.name, 'text search'];
+
+export const projectScreensMock = [
+  createMasterScreenMock(getTestId()),
+  createScreenMock(getTestId()),
+];
+
+export const beforeSagaTest = () => {
+  console.error = jest.fn();
+  // stub current date and random value generator to pass enqueueSnackbar equality
+  MockDate.set('2000-11-22');
+  jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
 };

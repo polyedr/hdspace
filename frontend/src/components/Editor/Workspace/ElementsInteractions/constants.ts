@@ -1,5 +1,4 @@
-export const ELEMENTS_WITHOUT_CRUMB = ['hyperlink'];
-
+// eslint-disable-next-line import/prefer-default-export
 export enum BorderPosition {
   TOP = 'top',
   BOTTOM = 'bottom',

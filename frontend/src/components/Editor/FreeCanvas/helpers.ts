@@ -10,7 +10,6 @@ export const useElementClassNames = (element: StateElement) => {
 };
 
 export const getWrapperStyles = (ownStyles: React.CSSProperties) =>
-  // @ts-ignore
   makeStyles({
     ownStyles: { ...(ownStyles as Object) },
   });

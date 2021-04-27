@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
 import { equals } from 'ramda';
-import {
-  selectElementBeingEdited,
-  selectElementById,
-} from '@Redux/project/selectors/element';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
-import { BorderStyles } from '@Src/types';
+import {
+  BorderStyles,
+  DropTargetParams,
+  Screen,
+  StateElement,
+} from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import SaveElementAction from './Actions/SaveElement/SaveElementAction';
 import Borders from './Borders/Borders';
@@ -16,9 +16,20 @@ import BorderCrumb from './Crumb/BorderCrumb';
 import CreateGroupAction from './Actions/CreateGroup/CreateGroupAction';
 
 type Props = {
-  elementId: string;
+  element: StateElement;
   elementDom: HTMLElement;
   rootDom: HTMLElement;
+  canCreateGroup: boolean;
+  screen: Screen;
+  selectedElementsIds: string[];
+  showBorders: boolean;
+  activeElementId: string;
+  currentProjectId: number;
+  masterScreenId: number | null;
+  hoveredElementId: string;
+  preSelectedElementId: string | null;
+  dropTargetParams: DropTargetParams | null;
+  enableDropTargetBordersMode: boolean;
 };
 
 const getBorderStyles = (elDom: HTMLElement, rootElDom: HTMLElement) => {
@@ -37,16 +48,27 @@ const getBorderStyles = (elDom: HTMLElement, rootElDom: HTMLElement) => {
     : null;
 };
 
-const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
-  const element = useSelector(selectElementById(elementId));
-  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
-
+const InteractionsHandler = ({
+  element,
+  elementDom,
+  rootDom,
+  canCreateGroup,
+  screen,
+  selectedElementsIds,
+  showBorders,
+  activeElementId,
+  currentProjectId,
+  masterScreenId,
+  hoveredElementId,
+  preSelectedElementId,
+  dropTargetParams,
+  enableDropTargetBordersMode,
+}: Props) => {
   const elementGroupStyles = useSelector((state: AppReduxState) => {
     return selectCurrentProject(state).projectData.classes.find((value) => {
       return value.className === element.styles.classNames?.[1];
     })?.rules;
   });
-  const elementBeingEdited = useSelector(selectElementBeingEdited(elementId));
 
   const [styles, setStyles] = useState<BorderStyles | null>(
     getBorderStyles(elementDom, rootDom),
@@ -81,20 +103,42 @@ const InteractionsHandler = ({ elementId, elementDom, rootDom }: Props) => {
   }
 
   return (
-    <React.Fragment key={`element-border-${elementId}`}>
-      <Borders elementId={elementId} styles={styles} />
-      {!elementBeingEdited && (
-        <BorderCrumb elementId={elementId} styles={styles}>
-          {!masterScreenEnabled && (
-            <>
-              <SaveElementAction elementId={elementId} />
-              <CreateGroupAction elementId={elementId} />
-            </>
-          )}
-        </BorderCrumb>
-      )}
+    <React.Fragment key={`element-border-${element.id}`}>
+      <Borders
+        elementId={element.id}
+        styles={styles}
+        dropTargetParams={dropTargetParams}
+        preSelectedElementId={preSelectedElementId}
+        enableDropTargetBordersMode={enableDropTargetBordersMode}
+        isActiveBorder={[
+          activeElementId,
+          hoveredElementId,
+          dropTargetParams?.id,
+          preSelectedElementId,
+        ].includes(element.id)}
+      />
+      <BorderCrumb
+        element={element}
+        styles={styles}
+        rootId={screen.element}
+        currentProjectId={currentProjectId}
+        masterScreenId={masterScreenId}
+        show={showBorders || element.id === activeElementId}
+      >
+        {screen.id !== masterScreenId && (
+          <>
+            <SaveElementAction element={element} />
+            <CreateGroupAction
+              element={element}
+              canCreateGroup={canCreateGroup}
+              selectedElementsIds={selectedElementsIds}
+              screenId={screen.id}
+            />
+          </>
+        )}
+      </BorderCrumb>
     </React.Fragment>
   );
 };
 
-export default InteractionsHandler;
+export default memo(InteractionsHandler);

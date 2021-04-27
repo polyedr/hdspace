@@ -1,19 +1,26 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
+import { selectElementById } from '@Redux/project/selectors/element';
 import { ParagraphElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
+  activeElementId,
   updateParams,
   canEdit,
 }) => {
-  const content = useSelector(selectActiveElementParamByName('textContent'));
+  const element = useSelector(selectElementById(activeElementId));
 
-  const [state, handleChange] = useDebouncedInputChange(content, (value) =>
+  const { textContent } = element.parameters;
+
+  const [state, handleChange] = useDebouncedInputChange(textContent, (value) =>
     updateParams({ textContent: value }),
   );
+
+  if (element.children && element.children.length) {
+    return <span>Text content not allowed</span>;
+  }
 
   return (
     <StyledTextField

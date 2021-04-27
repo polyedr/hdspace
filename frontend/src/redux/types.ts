@@ -67,8 +67,6 @@ export type ProjectUiState = {
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   currentDropTargetParams: DropTargetParams | null;
-  elementCanBeEdited: boolean;
-  elementBeingEdited: boolean;
   bordersEnabled: boolean;
   canCreateGroup: boolean;
   layout: {
@@ -82,6 +80,7 @@ export type ProjectUiState = {
     iframe: null | HTMLIFrameElement;
     host: string;
   };
+  tabsAutoSwitch: boolean;
 };
 
 export type ProjectEditState = {
@@ -125,6 +124,7 @@ export type ProjectCommunicationState = {
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
   assetsLoader: boolean;
+  importLoader: boolean;
 };
 
 export type ProjectControlState = {
@@ -256,7 +256,7 @@ export type UpdateProject = IAction<
 >;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
-  { screens: Screen[] }
+  Indices
 >;
 export type RenameProject = IAction<
   typeof TYPES.RENAME_PROJECT,
@@ -464,11 +464,16 @@ export type UploadElementAsset = IAction<
   typeof TYPES.UPLOAD_ELEMENT_ASSET,
   {
     elementId: string;
-    asset: File;
+    asset: AssetData;
     listId: string;
   },
   ElementHistoryMeta
 >;
+
+export type AssetData = {
+  file?: any | null;
+  imageURL?: string;
+};
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
   {
@@ -567,13 +572,13 @@ export type AddChildToElement = IAction<
   },
   ElementHistoryMeta
 >;
-export type UploadFile = IAction<
-  typeof TYPES.UPLOAD_FILE,
+export type AutoAnalyzeImage = IAction<
+  typeof TYPES.AUTO_ANALYZE_IMAGE,
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
-export type RecognizeImage = IAction<
-  typeof TYPES.RECOGNIZE_IMAGE,
+export type SemiautoAnalyzeImage = IAction<
+  typeof TYPES.SEMIAUTO_ANALYZE_IMAGE,
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
@@ -915,21 +920,6 @@ export type SetMasterSourceElementId = IAction<
   string | null
 >;
 
-export type SetElementCanBeEdited = IAction<
-  typeof TYPES.SET_ELEMENT_CAN_BE_EDITED,
-  boolean
->;
-
-export type SetElementBeingEdited = IAction<
-  typeof TYPES.SET_ELEMENT_BEING_EDITED,
-  boolean
->;
-
-export type ResetElementEditState = IAction<
-  typeof TYPES.RESET_ELEMENT_EDIT_STATE,
-  unknown
->;
-
 export type SetCanCreateGroup = IAction<
   typeof TYPES.SET_CAN_CREATE_GROUP,
   boolean
@@ -1100,7 +1090,7 @@ export type Action =
   | DeleteElement
   | AddChildToElement
   | AddChildrenToElement
-  | UploadFile
+  | AutoAnalyzeImage
   | uploadImageForNNSuccess
   | WrapIntoContainer
   | SetHoveredElementId
@@ -1143,9 +1133,6 @@ export type Action =
   | SetActiveElementId
   | SetPreSelectedElementId
   | SetMasterSourceElementId
-  | SetElementCanBeEdited
-  | SetElementBeingEdited
-  | ResetElementEditState
   | MoveStateElement
   | UpdateStateElement
   | UpdateMultipleStateElements
@@ -1220,7 +1207,14 @@ export type Action =
   | PasteVIARegion
   | SetSidebarOpen
   | SetSidebarIframe
-  | SetSidebarHost;
+  | SetSidebarHost
+  | SetValueImportLoader
+  | ToggleEnableTabsAutoSwitch;
+
+export type SetValueImportLoader = IAction<
+  typeof TYPES.SET_VALUE_IMPORT_LOADER,
+  boolean
+>;
 
 export type HistoryMeta = {
   useHistory?: boolean;
@@ -1243,3 +1237,7 @@ export interface IAction<T, P, M = HistoryMeta, R = void>
 export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {
   error: E;
 }
+
+export type ToggleEnableTabsAutoSwitch = IPlainAction<
+  typeof TYPES.TOGGLE_TABS_AUTOSWITCH
+>;

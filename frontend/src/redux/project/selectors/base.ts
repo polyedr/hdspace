@@ -23,9 +23,20 @@ export const selectProjectsDataNext = ({ project }: AppReduxState) =>
 export const selectProjectsSearchParameter = ({ project }: AppReduxState) =>
   project.data.projectsData.parameter;
 
-export const selectProjectById = (projectId: number) => ({
-  project,
-}: AppReduxState) => project.data.projectsData.results[projectId];
+/**
+ * use this selector in sagas
+ */
+export const selectProjectById = (
+  { project }: AppReduxState,
+  projectId: number,
+) => project.data.projectsData.results[projectId];
+
+/**
+ * use this selector in components with useSelector hook
+ */
+export const selectProjectByIdWrapper = (projectId: number) => (
+  state: AppReduxState,
+) => selectProjectById(state, projectId);
 
 export const selectCurrentProjectId = ({ project }: AppReduxState) =>
   project.edit.currentProjectId;
@@ -89,11 +100,6 @@ export const selectCurrentDropTargetId = (state: AppReduxState) => {
 
 export const selectCurrentDropTargetParams = (state: AppReduxState) => {
   return selectProjectState(state).ui.currentDropTargetParams;
-};
-
-export const selectIsDropTarget = (id: string) => (state: AppReduxState) => {
-  const dropTargetId = selectCurrentDropTargetId(state);
-  return id === dropTargetId;
 };
 
 export const selectProjectClasses = createSelector(
@@ -165,3 +171,7 @@ export const selectSidebarIframe = ({ project }: AppReduxState) =>
 
 export const selectSidebarHost = ({ project }: AppReduxState) =>
   project.ui.sidebar.host;
+
+export function selectImportLoader(state: AppReduxState): boolean {
+  return selectProjectState(state).communication.importLoader;
+}

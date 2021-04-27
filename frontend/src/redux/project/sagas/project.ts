@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 import { put, call, select } from 'redux-saga/effects';
-
 import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
@@ -45,7 +43,7 @@ import { selectScreenById } from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
 import { createElements } from './common';
 
-function* setMasterScreenCoreElements(screen: Screen) {
+export function* setMasterScreenCoreElements(screen: Screen) {
   const rootElement = yield select(selectElementById(screen.element));
   yield put(Actions.setMasterElementsIds(...rootElement.children));
   const masterCoreId = rootElement.children[0];
@@ -62,7 +60,7 @@ function* setMasterScreenCoreElements(screen: Screen) {
   );
 }
 
-function* createMasterScreenElements(screen: Screen) {
+export function* createMasterScreenElements(screen: Screen) {
   const elements = [
     convertCreatedElementToRequest(
       'container',
@@ -214,7 +212,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
         -1;
       yield put(Actions.setMasterScreenId(masterScreenId));
-      const masterScreen = yield select(selectScreenById(masterScreenId));
+
+      const masterScreen = yield select(selectScreenById, masterScreenId);
+
       if (masterScreen) {
         yield call(setMasterScreenCoreElements, masterScreen);
       }
@@ -249,15 +249,14 @@ export function* createProjectSaga(
   try {
     yield put(Actions.setProjectCreateLoader(true));
 
-    const { result, error }: Result<Project> = yield call(
+    const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
         data: convertCreatedProjectToRequest(name),
       },
     );
-
-    if (result?.created) {
+    if (createdProject?.created) {
       yield put(
         PermissionsActions.setStateCurrentUserPermissions([
           UserProjectPermission.VIEW_PROJECT,
@@ -265,20 +264,20 @@ export function* createProjectSaga(
         ]),
       );
       const assetList = yield call(reqWrapper, apiCreateAssetList, {
-        projectId: result.id,
+        projectId: createdProject.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
       yield put(Actions.addAssetListToState(assetList, { useHistory: true }));
       const projects: Project[] = yield select(selectProjectsAsArr);
-      yield put(Actions.setProjectList([...projects, result]));
+      yield put(Actions.setProjectList([...projects, createdProject]));
 
-      yield put(Actions.setCurrentProjectId(result.id));
+      yield put(Actions.setCurrentProjectId(createdProject.id));
 
       const masterScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
           {
-            projectID: result.id,
+            projectID: createdProject.id,
             name: 'Master Screen',
             buoyancy: 0,
             rootName: 'Master Screen',
@@ -296,7 +295,7 @@ export function* createProjectSaga(
       const initialScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
-          { projectID: result.id, name: 'Screen 1', buoyancy: 1 },
+          { projectID: createdProject.id, name: 'Screen 1', buoyancy: 1 },
           {
             useHistory: true,
           },
@@ -307,7 +306,7 @@ export function* createProjectSaga(
         yield put(Actions.setMasterScreenId(masterScreen.id));
         yield put(
           enqueueSnackbar({
-            message: `Project ${result.name} created`,
+            message: `Project ${createdProject.name} created`,
             options: {
               variant: 'success',
             },
@@ -383,14 +382,11 @@ export function* deleteProjectSaga({
   }
 }
 
-export const renameProjectSaga = withRequiredPermissions(
-  UserProjectPermission.VIEW_PROJECT,
-  UserProjectPermission.CHANGE_PROJECT,
-)(function* ({
+export const renameProjects = function* ({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
   try {
-    const project: Project = yield select(selectProjectById(projectID));
+    const project: Project = yield select(selectProjectById, projectID);
 
     const { result, error }: Result<Project> = yield call(
       reqWrapper,
@@ -419,7 +415,12 @@ export const renameProjectSaga = withRequiredPermissions(
       ),
     );
   }
-});
+};
+
+export const renameProjectSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(renameProjects);
 
 export function* updateProjectSaga(
   action: ReturnType<typeof Actions.updateProject>,

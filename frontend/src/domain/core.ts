@@ -43,6 +43,7 @@ export const ENTITIES: {
   featureSection: 'featureSection',
   section: 'section',
   group: 'group',
+  html: 'html',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -326,6 +327,8 @@ export const subscribeFormStyleControls = [
 
 export const undefinedControls = ['size', 'background'] as const;
 
+export const htmlElementControls = ['background'] as const;
+
 export const cardsSectionStyleControls = [
   'indents',
   'size',
@@ -450,6 +453,14 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   featureSection: [...featureSectionStyleControls, 'layouts'],
   section: [...containerStyleControls, 'layouts'],
   group: elementsGroupStyleControls,
+  html: [
+    'textContent',
+    'tagName',
+    ...htmlElementControls,
+    'styleSheets',
+    'attributes',
+    'layouts',
+  ],
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
@@ -619,6 +630,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   custom: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
+  html: {
     all: {
       min: 0,
       max: Infinity,

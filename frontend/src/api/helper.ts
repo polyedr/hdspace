@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { AxiosError, AxiosResponse } from 'axios';
 
 export const onError = ({ response: r }: AxiosError) => {

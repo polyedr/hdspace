@@ -29,8 +29,17 @@ export const selectScreens = (state: AppReduxState) =>
 export const selectScreensLength = (state: AppReduxState) =>
   selectScreens(state).length;
 
-export const selectScreenById = (id: number) => ({ project }: AppReduxState) =>
+/**
+ * use this selector in sagas
+ */
+export const selectScreenById = ({ project }: AppReduxState, id: number) =>
   project.data.screens[id];
+
+/**
+ * use this selector in components with useSelector hook
+ */
+export const selectScreenByIdWrapper = (id: number) => (state: AppReduxState) =>
+  selectScreenById(state, id);
 
 export const selectMasterScreenId = ({ project }: AppReduxState) =>
   project.edit.masterScreenId;

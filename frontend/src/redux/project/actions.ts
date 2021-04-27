@@ -93,7 +93,7 @@ import {
   UpdateSavedElementValues,
   UpdateScreen,
   UpdateSharedStyles,
-  UploadFile,
+  AutoAnalyzeImage,
   WrapIntoContainer,
   SetScreenCreateLoader,
   SetBordersEnabled,
@@ -124,7 +124,7 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
-  RecognizeImage,
+  SemiautoAnalyzeImage,
   FinishAnnotaion,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
@@ -166,6 +166,9 @@ import {
   SetSidebarOpen,
   SetSidebarHost,
   SetSidebarIframe,
+  AssetData,
+  SetValueImportLoader,
+  ToggleEnableTabsAutoSwitch,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -240,9 +243,9 @@ export const updateProject = (
   meta,
 });
 
-export const changeScreensOrder = (screens: Screen[]): ChangeScreensOrder => ({
+export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
   type: TYPES.CHANGE_SCREENS_ORDER,
-  payload: { screens },
+  payload: indices,
 });
 
 export const renameProject = (
@@ -673,14 +676,17 @@ export const updateElementImage = (
 
 export const uploadElementAsset = (
   elementId: string,
-  asset: File,
+  { file, imageURL }: AssetData,
   listId: string,
-  meta: ElementHistoryMeta,
+  meta?: ElementHistoryMeta,
 ): UploadElementAsset => ({
   type: TYPES.UPLOAD_ELEMENT_ASSET,
   payload: {
     elementId,
-    asset,
+    asset: {
+      file,
+      imageURL,
+    },
     listId,
   },
   meta,
@@ -847,13 +853,13 @@ export const addChildToElement = (
   meta,
 });
 
-export const uploadFile = (
+export const autoAnalyzeImage = (
   file: any,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
-): UploadFile => ({
-  type: TYPES.UPLOAD_FILE,
+): AutoAnalyzeImage => ({
+  type: TYPES.AUTO_ANALYZE_IMAGE,
   payload: {
     file,
     parentId,
@@ -862,13 +868,13 @@ export const uploadFile = (
   meta,
 });
 
-export const recognizeImage = (
+export const semiAutoAnalyzeImage = (
   file: any,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
-): RecognizeImage => ({
-  type: TYPES.RECOGNIZE_IMAGE,
+): SemiautoAnalyzeImage => ({
+  type: TYPES.SEMIAUTO_ANALYZE_IMAGE,
   payload: {
     file,
     parentId,
@@ -917,20 +923,6 @@ export const setMasterSourceElementId = (
 ): SetMasterSourceElementId => ({
   type: TYPES.SET_MASTER_SOURCE_ELEMENT_ID,
   payload: id,
-});
-
-export const setElementCanBeEdited = (edited: boolean) => ({
-  type: TYPES.SET_ELEMENT_CAN_BE_EDITED,
-  payload: edited,
-});
-
-export const setElementBeingEdited = (edited: boolean) => ({
-  type: TYPES.SET_ELEMENT_BEING_EDITED,
-  payload: edited,
-});
-
-export const resetElementEditState = () => ({
-  type: TYPES.RESET_ELEMENT_EDIT_STATE,
 });
 
 export const setHoveredElementId = (
@@ -1144,9 +1136,14 @@ export const importHtml = (files: File[], url?: string) => ({
   },
 });
 
-export const uploadImportUrl = (url) => ({
+export const uploadImportUrl = (url: string) => ({
   type: TYPES.UPLOAD_IMPORT_URL,
   payload: url,
+});
+
+export const setValueImportLoader = (value: boolean): SetValueImportLoader => ({
+  type: TYPES.SET_VALUE_IMPORT_LOADER,
+  payload: value,
 });
 
 export const setEditorDocument = (doc: Document): SetEditorDocument => ({
@@ -1512,4 +1509,8 @@ export const sidebarLogout = () => ({
 
 export const sidebarLogoutSuccess = () => ({
   type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
+});
+
+export const toggleEnableTabsAutoSwitch = (): ToggleEnableTabsAutoSwitch => ({
+  type: TYPES.TOGGLE_TABS_AUTOSWITCH,
 });

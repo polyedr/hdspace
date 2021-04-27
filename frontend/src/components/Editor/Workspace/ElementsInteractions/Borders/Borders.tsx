@@ -1,18 +1,6 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { BorderStyles } from '@Src/types';
-import {
-  selectActiveElementId,
-  selectElementById,
-  selectHoveredElementId,
-  selectPreSelectedElementId,
-} from '@Redux/project/selectors/element';
-import {
-  selectCurrentDropTargetParams,
-  selectIsDropTarget,
-} from '@Redux/project/selectors/base';
+import { BorderStyles, DropTargetParams } from '@Src/types';
 import { DropPosition } from '@Constants/dragAndDrop';
-import { selectDropTargetBordersMode } from '@Redux/user/selectors';
 import { BorderPosition } from '../constants';
 import Border from './Border';
 import DropPositionMarker from './DropPositionMarker';
@@ -20,27 +8,26 @@ import DropPositionMarker from './DropPositionMarker';
 type Props = {
   elementId: string;
   styles: BorderStyles;
+  isActiveBorder: boolean;
+  dropTargetParams: DropTargetParams | null;
+  enableDropTargetBordersMode: boolean;
+  preSelectedElementId: string | null;
 };
 
-const Borders: React.FC<Props> = ({ elementId, styles }) => {
-  const element = useSelector(selectElementById(elementId));
-  const activeElementId = useSelector(selectActiveElementId);
-  const hoveredElementId = useSelector(selectHoveredElementId);
-  const dropTargetParams = useSelector(selectCurrentDropTargetParams);
-  const preSelectedElementId = useSelector(selectPreSelectedElementId);
-  const isDropTarget = useSelector(selectIsDropTarget(elementId));
-  const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
-
-  const isActiveBorder = [
-    activeElementId,
-    hoveredElementId,
-    dropTargetParams?.id,
-  ].includes(elementId);
+const Borders: React.FC<Props> = ({
+  elementId,
+  styles,
+  isActiveBorder,
+  dropTargetParams,
+  enableDropTargetBordersMode,
+  preSelectedElementId,
+}) => {
+  const isDropTarget = dropTargetParams?.id === elementId;
 
   const showBordersPosition = useMemo(() => {
     return {
       [BorderPosition.TOP]:
-        dropTargetBordersMode ||
+        enableDropTargetBordersMode ||
         !isDropTarget ||
         (dropTargetParams &&
           dropTargetParams.position &&
@@ -48,7 +35,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
       [BorderPosition.BOTTOM]:
-        dropTargetBordersMode ||
+        enableDropTargetBordersMode ||
         !isDropTarget ||
         (dropTargetParams &&
           dropTargetParams.position &&
@@ -56,7 +43,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
       [BorderPosition.LEFT]:
-        dropTargetBordersMode ||
+        enableDropTargetBordersMode ||
         !isDropTarget ||
         (dropTargetParams &&
           dropTargetParams.position &&
@@ -64,7 +51,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
       [BorderPosition.RIGHT]:
-        dropTargetBordersMode ||
+        enableDropTargetBordersMode ||
         !isDropTarget ||
         (dropTargetParams &&
           dropTargetParams.position &&
@@ -72,9 +59,9 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
             dropTargetParams.position,
           )),
     };
-  }, [dropTargetBordersMode, dropTargetParams, isDropTarget]);
+  }, [dropTargetParams, enableDropTargetBordersMode, isDropTarget]);
 
-  if (!element || !styles) {
+  if (!elementId || !styles) {
     return null;
   }
 
@@ -83,7 +70,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
       {showBordersPosition[BorderPosition.TOP] && (
         <Border
           position={BorderPosition.TOP}
-          element={element}
+          elementId={elementId}
           isActive={isActiveBorder}
           styles={styles}
           visiblePreSelect={elementId === preSelectedElementId}
@@ -92,7 +79,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
       {showBordersPosition[BorderPosition.BOTTOM] && (
         <Border
           position={BorderPosition.BOTTOM}
-          element={element}
+          elementId={elementId}
           isActive={isActiveBorder}
           styles={styles}
           visiblePreSelect={elementId === preSelectedElementId}
@@ -101,7 +88,7 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
       {showBordersPosition[BorderPosition.LEFT] && (
         <Border
           position={BorderPosition.LEFT}
-          element={element}
+          elementId={elementId}
           isActive={isActiveBorder}
           styles={styles}
           visiblePreSelect={elementId === preSelectedElementId}
@@ -110,13 +97,13 @@ const Borders: React.FC<Props> = ({ elementId, styles }) => {
       {showBordersPosition[BorderPosition.RIGHT] && (
         <Border
           position={BorderPosition.RIGHT}
-          element={element}
+          elementId={elementId}
           isActive={isActiveBorder}
           styles={styles}
           visiblePreSelect={elementId === preSelectedElementId}
         />
       )}
-      {dropTargetBordersMode && isDropTarget && (
+      {enableDropTargetBordersMode && isDropTarget && (
         <DropPositionMarker styles={styles} isActive={isActiveBorder} />
       )}
     </>

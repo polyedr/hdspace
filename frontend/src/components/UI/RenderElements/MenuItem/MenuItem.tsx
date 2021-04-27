@@ -1,11 +1,9 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import { MenuItem as MaterialMenuItem } from '@material-ui/core';
-import { MenuItemRendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../useEventHandlers';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('menu-item', {
   menuItem: ({ isDisabled }) => {
@@ -13,10 +11,11 @@ const useStyles = makeComponentStyles('menu-item', {
   },
 });
 
-const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
+const MenuItem = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { id, isDisabled, params, className, groupClass } = props;
-    const { showRipple, name, value } = params;
+    const { element, isDisabled } = props;
+    const [className, groupClass] = element.styles.classNames;
+    const { showRipple, name, value } = element.parameters;
 
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
@@ -24,9 +23,8 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
     return isDisabled ? (
       <MaterialMenuItem
         ref={ref}
-        id={id}
-        data-ls-id={id}
-        key={id}
+        id={element.id}
+        data-ls-id={element.id}
         className={cn(
           className,
           classes.menuItem,
@@ -42,7 +40,6 @@ const MenuItem: React.FC<MenuItemRendererProps> = React.forwardRef(
       </MaterialMenuItem>
     ) : (
       <MaterialMenuItem
-        key={id}
         className={cn(className, groupClass, classes.ownStyles)}
         value={value}
         disableRipple={!showRipple}

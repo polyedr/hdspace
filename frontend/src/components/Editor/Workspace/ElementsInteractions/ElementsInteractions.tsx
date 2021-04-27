@@ -4,15 +4,23 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   selectSelectedElementsIds,
   selectActiveElementId,
-  selectCurrentRootId,
   selectHoveredElementId,
   selectPreSelectedElementId,
+  selectCanCreateGroup,
+  selectAllElements,
 } from '@Redux/project/selectors/element';
 import {
   selectBordersEnabled,
   selectCurrentDropTargetId,
+  selectCurrentDropTargetParams,
+  selectCurrentProjectId,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
+import {
+  selectCurrentScreen,
+  selectMasterScreenId,
+} from '@Redux/project/selectors/screen';
+import { selectDropTargetBordersMode } from '@Redux/user/selectors';
 import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
 
@@ -31,23 +39,22 @@ type Props = {
 };
 
 const ElementsInteractions: React.FC<Props> = (props) => {
+  const allElements = useSelector(selectAllElements);
   const preSelectedElementId = useSelector(selectPreSelectedElementId);
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetId = useSelector(selectCurrentDropTargetId);
-  const selectedElements = useSelector(selectSelectedElementsIds);
-  const rootId = useSelector(selectCurrentRootId);
-
-  const rootDom = DOMHandler.INSTANCE.getDomById(rootId);
-  const preSelectedElementDom = DOMHandler.INSTANCE.getDomById(
-    preSelectedElementId,
-  );
-  const activeElementDom = DOMHandler.INSTANCE.getDomById(activeElementId);
-  const hoveredElementDom = DOMHandler.INSTANCE.getDomById(hoveredElementId);
-  const dropTargetDom = DOMHandler.INSTANCE.getDomById(dropTargetId);
-
   const showBorders = useSelector(selectShowingBorders);
+  const currentScreen = useSelector(selectCurrentScreen);
+  const masterScreenId = useSelector(selectMasterScreenId);
+  const canCreateGroup = useSelector(selectCanCreateGroup);
+  const selectedElementsIds = useSelector(selectSelectedElementsIds);
+  const dropTargetParams = useSelector(selectCurrentDropTargetParams);
+  const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
   const bordersEnabled = useSelector(selectBordersEnabled);
+  const currentProjectId = useSelector(selectCurrentProjectId);
+
+  const rootDom = DOMHandler.INSTANCE.getDomById(currentScreen.element);
 
   const idsToExclude = [preSelectedElementId, activeElementId];
   if (!!hoveredElementId && hoveredElementId !== activeElementId) {
@@ -64,92 +71,55 @@ const ElementsInteractions: React.FC<Props> = (props) => {
 
   const classes = useStyles(props);
 
+  const borderedElementsIds = !showBorders
+    ? [
+        ...new Set(
+          [
+            ...selectedElementsIds,
+            activeElementId,
+            hoveredElementId,
+            dropTargetParams?.id,
+            preSelectedElementId,
+            currentScreen.element,
+          ].filter((id) => !!id),
+        ),
+      ]
+    : DOMHandler.INSTANCE.visibleElementsIds;
+
   if (!rootDom || !bordersEnabled) {
     return null;
   }
 
   return (
     <div className={classes.container}>
-      {preSelectedElementId && preSelectedElementDom && (
-        <InteractionsHandler
-          key={`border-handler-${preSelectedElementId}`}
-          elementId={preSelectedElementId}
-          elementDom={preSelectedElementDom}
-          rootDom={rootDom}
-        />
-      )}
-      {activeElementDom && activeElementId !== preSelectedElementId && (
-        <InteractionsHandler
-          key={`border-handler-${activeElementId}`}
-          elementId={activeElementId}
-          elementDom={activeElementDom}
-          rootDom={rootDom}
-        />
-      )}
-      {hoveredElementDom &&
-        ![preSelectedElementId, activeElementId].includes(hoveredElementId) && (
+      {borderedElementsIds.map((id) => {
+        if (!id) {
+          return null;
+        }
+        const elementDom = DOMHandler.INSTANCE.getDomById(id);
+        if (!elementDom) {
+          return null;
+        }
+        return (
           <InteractionsHandler
-            key={`border-handler-${hoveredElementId}`}
-            elementId={hoveredElementId}
-            elementDom={hoveredElementDom}
+            key={`border-handler-${id}`}
+            element={allElements[id]}
+            elementDom={elementDom}
             rootDom={rootDom}
+            activeElementId={activeElementId}
+            hoveredElementId={hoveredElementId}
+            dropTargetParams={dropTargetParams}
+            preSelectedElementId={preSelectedElementId}
+            canCreateGroup={canCreateGroup}
+            screen={currentScreen}
+            currentProjectId={currentProjectId}
+            enableDropTargetBordersMode={dropTargetBordersMode}
+            masterScreenId={masterScreenId}
+            showBorders={showBorders}
+            selectedElementsIds={selectedElementsIds}
           />
-        )}
-      {dropTargetDom &&
-        dropTargetId &&
-        ![preSelectedElementId, hoveredElementId, activeElementId].includes(
-          dropTargetId,
-        ) && (
-          <InteractionsHandler
-            key={`border-handler-${dropTargetId}`}
-            elementId={dropTargetId}
-            elementDom={dropTargetDom}
-            rootDom={rootDom}
-          />
-        )}
-      {showBorders &&
-        [
-          ...new Set(
-            [...Object.keys(DOMHandler.INSTANCE.elementsDom)].filter(
-              (elementId) => !idsToExclude.includes(elementId),
-            ),
-          ),
-        ].map((id) => {
-          const elDom = DOMHandler.INSTANCE.getDomById(id);
-          if (!elDom || !id) {
-            return null;
-          }
-          return (
-            <InteractionsHandler
-              key={`border-handler-${id}`}
-              elementId={id}
-              elementDom={elDom}
-              rootDom={rootDom}
-            />
-          );
-        })}
-      {!showBorders &&
-        selectedElements.length &&
-        [
-          ...new Set(
-            selectedElements.filter(
-              (elementId) => !idsToExclude.includes(elementId),
-            ),
-          ),
-        ].map((id) => {
-          const elDom = DOMHandler.INSTANCE.getDomById(id);
-          if (!elDom || !id) {
-            return null;
-          }
-          return (
-            <InteractionsHandler
-              key={`border-handler-${id}`}
-              elementId={id}
-              elementDom={elDom}
-              rootDom={rootDom}
-            />
-          );
-        })}
+        );
+      })}
     </div>
   );
 };

@@ -21,6 +21,7 @@ import {
   SmartHeaderServerElement,
   SmartWebpageServerElement,
   UndefinedServerElement,
+  HTMLServerElement,
   VideoServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
@@ -500,5 +501,31 @@ export const undefinedElement: UndefinedServerElement = {
     ownStyles: {},
   },
   name: 'undefined',
+  children: [],
+};
+
+export const htmlElement: HTMLServerElement = {
+  id: 'html',
+  buoyancy: 0,
+  func_type: 'html',
+  struct_type: 'html',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    group: ElementGroup.UNDEFINED,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 100,
+      height: 100,
+    },
+    tag: 'div',
+    attributes: {
+      name: 'HTML element',
+    },
+  },
+  styles: {
+    classNames: [],
+    ownStyles: {},
+  },
+  name: 'HTML element',
   children: [],
 };

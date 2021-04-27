@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
@@ -34,7 +33,7 @@ import {
 import withActionsHistory from '../wrappers/withActionsHistory';
 
 // eslint-disable-next-line consistent-return
-export function* uploadAsset(
+export function* uploadAssetHelper(
   { assetFile, fileName, listId, imageURL }: UploadAssetData,
   meta?: HistoryMeta,
 ) {
@@ -313,7 +312,7 @@ export const uploadAssetSaga = compose(
   const fileName: string = assetFile.name;
   try {
     yield call(
-      uploadAsset,
+      uploadAssetHelper,
       { assetFile, fileName, listId: assetListId },
       action.meta,
     );
@@ -345,28 +344,61 @@ export const uploadElementAssetSaga = withRequiredPermissions(
 
   const element = yield select(selectElementById(elementId));
   try {
-    const assetInstance = yield call(
-      uploadAsset,
-      { assetFile: asset, fileName: asset.name, listId },
-      action.meta,
-    );
-
-    yield put(
-      Actions.updateElementParameters(
-        elementId,
+    if (asset.imageURL) {
+      yield call(
+        uploadAssetHelper,
         {
-          ...element.parameters,
-          imageURL: assetInstance.image,
-          imageSize: {
-            width: 0,
-            height: 0,
-          },
-          width: 'auto',
-          height: 'auto',
+          assetFile: null,
+          fileName: `smart header image ${elementId}`,
+          listId,
+          imageURL: asset.imageURL,
         },
-        { screenId },
-      ),
-    );
+        action.meta,
+      );
+      yield put(
+        Actions.updateElementParameters(
+          elementId,
+          {
+            ...element.parameters,
+            imageURL: asset.imageURL,
+            imageSize: {
+              width: 0,
+              height: 0,
+            },
+            width: 'auto',
+            height: 'auto',
+          },
+          { screenId },
+        ),
+      );
+    } else if (asset.file) {
+      const assetInstance = yield call(
+        uploadAssetHelper,
+        {
+          assetFile: asset.file,
+          fileName: asset.file.name,
+          listId,
+        },
+        action.meta,
+      );
+
+      yield put(
+        Actions.updateElementParameters(
+          elementId,
+          {
+            ...element.parameters,
+            imageURL: assetInstance.image,
+            imageSize: {
+              width: 0,
+              height: 0,
+            },
+            width: 'auto',
+            height: 'auto',
+          },
+          { screenId },
+        ),
+      );
+    }
   } catch (error) {
     yield put(
       enqueueSnackbar(

@@ -135,6 +135,8 @@ export const importHtmlSaga = withRequiredPermissions(
         e,
       ),
     );
+  } finally {
+    yield put(Actions.setValueImportLoader(false));
   }
 });
 
@@ -179,6 +181,7 @@ export const uploadImportUrlSaga = withRequiredPermissions(
   UserProjectPermission.CHANGE_PROJECT,
 )(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
   try {
+    yield put(Actions.setValueImportLoader(true));
     const { result, error }: Result<PostUrlResponse> = yield call(
       reqWrapper,
       apiPostURL,
@@ -221,6 +224,7 @@ export const uploadImportUrlSaga = withRequiredPermissions(
     yield put(importHtml(Object.values(files), url));
     yield put(Actions.toggleContainersBorders(true));
   } catch (e) {
+    yield put(Actions.setValueImportLoader(false));
     yield put(
       enqueueSnackbar(
         {

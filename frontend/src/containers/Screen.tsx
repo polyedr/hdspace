@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
-import { selectScreenById } from '@Redux/project/selectors/screen';
+import { selectScreenByIdWrapper } from '@Redux/project/selectors/screen';
 import VIA from '@Components/Editor/VIA';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
 import { activateScreen } from '@Redux/project/actions';
@@ -19,6 +19,7 @@ import {
   changeProfileData,
 } from '@Redux/user/actions';
 import { Experience } from '@Src/types';
+import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import RightPanel from '../components/RightPanel';
 
@@ -64,12 +65,13 @@ const Screen: React.FC<Props> = ({ screenId }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const screen = useSelector(selectScreenById(screenId));
+  const screen = useSelector(selectScreenByIdWrapper(screenId));
   const currentProjectId = useSelector(selectCurrentProjectId);
   const viaModeEnabled = useSelector(selectVIAModeEnabled);
 
   useEffect(() => {
     if (screen) {
+      DOMHandler.INSTANCE.reset();
       dispatch(activateScreen(screen.id));
     } else {
       history.push(`/project/${currentProjectId}`);
