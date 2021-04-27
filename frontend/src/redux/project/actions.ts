@@ -26,7 +26,6 @@ import {
   StateElementsToAdd,
   VIARegion,
   UserData,
-  // IframeMessage,
   ScreenInfo,
 } from '@Src/types';
 import {

@@ -12,6 +12,8 @@ import {
   selectSidebarIframe,
 } from '@Redux/project/selectors/base';
 import TYPES from '@Redux/actionTypes';
+import postMessage from '@Components/Sidebar/postMessage';
+import { MessageType } from '@Components/Sidebar/messageType';
 import { enqueueSnackbar } from '../../notification/actions';
 
 export function* sidebarLogoutSaga() {
@@ -19,11 +21,7 @@ export function* sidebarLogoutSaga() {
     const iframe: HTMLIFrameElement | null = yield select(selectSidebarIframe);
     const host: string = yield select(selectSidebarHost);
 
-    if (!iframe?.contentWindow) {
-      return;
-    }
-
-    iframe.contentWindow.postMessage({ type: 'logout' }, host);
+    postMessage(iframe, MessageType.logout, null, host);
     yield take(TYPES.SIDEBAR_LOGOUT_SUCCESS);
   } catch (e) {
     yield put(
@@ -58,25 +56,10 @@ export function* setUpSidebarSaga(
       selectChatCredentials,
     );
 
-    iframe.contentWindow.postMessage(
-      { type: 'setAccessToken', payload: access },
-      host,
-    );
-
-    iframe.contentWindow.postMessage(
-      { type: 'setProjectId', payload: projectId },
-      host,
-    );
-
-    iframe.contentWindow.postMessage(
-      { type: 'setUserData', payload: userData },
-      host,
-    );
-
-    iframe.contentWindow.postMessage(
-      { type: 'setChatCredentials', payload: chatCredentials },
-      host,
-    );
+    postMessage(iframe, MessageType.setAccessToken, access, host);
+    postMessage(iframe, MessageType.setProjectId, projectId, host);
+    postMessage(iframe, MessageType.setUserData, userData, host);
+    postMessage(iframe, MessageType.setChatCredentials, chatCredentials, host);
   } catch (e) {
     yield put(
       enqueueSnackbar(
