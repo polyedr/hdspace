@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { Button, IconButton, makeStyles, lighten } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveElement } from '@Redux/project/selectors/element';
