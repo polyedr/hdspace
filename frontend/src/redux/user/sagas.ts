@@ -18,8 +18,12 @@ import {
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { sidebarLogout } from '@Redux/project/actions';
+import {
+  sidebarLogout,
+  updateUISettingsParameters,
+} from '@Redux/project/actions';
 import { sidebarLogoutSaga } from '@Redux/project/sagas/sidebar';
+
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
@@ -143,6 +147,62 @@ export function* changeProfileDataSaga({
     }
   }
 }
+
+export const updateUISettingsParametersSaga = function* ({
+  payload: { isValue, nameParameters },
+}: ReturnType<typeof updateUISettingsParameters>) {
+  try {
+    const {
+      id,
+      parameters: {
+        profileDataParameters: { autoSwitchTabs, dropTargetBordersMode },
+      },
+    } = yield select(selectProfileData);
+    if (nameParameters.includes('borders')) {
+      const newProfileData = yield call(reqWrapper, apiChangeProfileData, {
+        id,
+        data: {
+          parameters: {
+            profileDataParameters: {
+              dropTargetBordersMode: isValue,
+              autoSwitchTabs,
+            },
+          },
+        },
+      });
+      yield put(
+        Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
+      );
+    } else {
+      const newProfileData = yield call(reqWrapper, apiChangeProfileData, {
+        id,
+        data: {
+          parameters: {
+            profileDataParameters: {
+              autoSwitchTabs: isValue,
+              dropTargetBordersMode,
+            },
+          },
+        },
+      });
+      yield put(
+        Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
+      );
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
+        },
+        e,
+      ),
+    );
+  }
+};
 
 function* registerSaga({
   payload: { username, email, password, firstName, lastName },

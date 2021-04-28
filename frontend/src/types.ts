@@ -924,6 +924,7 @@ export type ServerProfileData = {
   role: string;
   id: number;
   experienced: Experience;
+  parameters: ProfileDataParameters;
 };
 
 export type ServerUserData = {
@@ -945,8 +946,16 @@ export type ProfileData = {
   hourlyRate: number;
   id: number;
   experienced: Experience;
+  parameters: ProfileDataParameters;
 };
 
+export type ProfileDataParameters = {
+  profileDataParameters: ProfileDataParametersValue;
+};
+export type ProfileDataParametersValue = {
+  autoSwitchTabs: boolean;
+  dropTargetBordersMode: boolean;
+};
 export enum UserProjectPermission {
   ADD_PROJECT = 'add_project',
   DELETE_PROJECT = 'delete_project',

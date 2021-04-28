@@ -55,7 +55,6 @@ export const initialUi: ProjectUiState = {
     iframe: null,
     host: '',
   },
-  tabsAutoSwitch: false,
 };
 
 export const initialEdit: ProjectEditState = {

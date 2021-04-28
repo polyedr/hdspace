@@ -29,6 +29,7 @@ import {
   ScreenInfo,
 } from '@Src/types';
 import {
+  UpdateUISettingsParameters,
   Action,
   ActivateScreen,
   AddChildToElement,
@@ -167,8 +168,8 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
-  ToggleEnableTabsAutoSwitch,
 } from '../types';
+
 import TYPES from '../actionTypes';
 
 export const getProjectList = (): LoadProjects => ({
@@ -1510,6 +1511,10 @@ export const sidebarLogoutSuccess = () => ({
   type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
 });
 
-export const toggleEnableTabsAutoSwitch = (): ToggleEnableTabsAutoSwitch => ({
-  type: TYPES.TOGGLE_TABS_AUTOSWITCH,
+export const updateUISettingsParameters = (
+  isValue: boolean,
+  nameParameters: string,
+): UpdateUISettingsParameters => ({
+  type: TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+  payload: { isValue, nameParameters },
 });

@@ -16,13 +16,6 @@ const changeMinLPanel: ActionHandler<
   isLPanelMinimized: !state.isLPanelMinimized,
 });
 
-const changeDropTargetBordersMode: ActionHandler<
-  ReturnType<typeof Actions.changeDropTargetBordersMode>
-> = (state) => ({
-  ...state,
-  dropTargetBordersMode: !state.dropTargetBordersMode,
-});
-
 const changeSignLoader: ActionHandler<typeof Actions.toggleUserLoading> = (
   state,
   { isLoading },
@@ -171,7 +164,6 @@ const logout: ActionHandler<typeof Actions.logout> = () => ({
 // TODO: type Action in Handlers
 const handlers: Handlers<UserState> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
-  [TYPES.CHANGE_DROP_TARGET_BORDERS_MODE]: changeDropTargetBordersMode,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,

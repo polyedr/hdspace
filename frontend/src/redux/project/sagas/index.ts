@@ -30,6 +30,7 @@ import {
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { compose } from 'redux';
+import { updateUISettingsParametersSaga } from '../../user/sagas';
 import {
   moveElementSaga,
   removeElementStylesSaga,
@@ -465,4 +466,9 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.SET_UP_SIDEBAR, setUpSidebarSaga);
+
+  yield takeEvery(
+    TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+    updateUISettingsParametersSaga,
+  );
 }

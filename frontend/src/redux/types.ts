@@ -81,7 +81,6 @@ export type ProjectUiState = {
     iframe: null | HTMLIFrameElement;
     host: string;
   };
-  tabsAutoSwitch: boolean;
 };
 
 export type ProjectEditState = {
@@ -1211,7 +1210,7 @@ export type Action =
   | SetSidebarIframe
   | SetSidebarHost
   | SetValueImportLoader
-  | ToggleEnableTabsAutoSwitch;
+  | UpdateUISettingsParameters;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,
@@ -1240,6 +1239,7 @@ export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {
   error: E;
 }
 
-export type ToggleEnableTabsAutoSwitch = IPlainAction<
-  typeof TYPES.TOGGLE_TABS_AUTOSWITCH
+export type UpdateUISettingsParameters = IAction<
+  typeof TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+  { isValue: boolean; nameParameters: string }
 >;

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Theme, Tabs, Tab } from '@material-ui/core';
 import {
   selectIsPrototypeMode,
-  selectToggleEnableTabsAutoSwitch,
+  selectUserProfileDataParameters,
 } from '@Redux/user/selectors';
 import {
   PANEL_TRANSITION_DURATION,
@@ -105,7 +105,9 @@ const RightPanel: React.FC = () => {
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
-  const tabsAutoswitchEnabled = useSelector(selectToggleEnableTabsAutoSwitch);
+  const { autoSwitchTabs: tabsAutoswitchEnabled } = useSelector(
+    selectUserProfileDataParameters,
+  );
   const [tabs, setTabs] = useState(defaultTabs);
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(
