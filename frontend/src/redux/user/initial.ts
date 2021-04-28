@@ -39,4 +39,9 @@ export const initialUserState: UserState = {
   userGuide: {
     active: false,
   },
+  chat: {
+    apiKey: '',
+    realm: '',
+    username: '',
+  },
 };

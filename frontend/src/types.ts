@@ -1260,11 +1260,6 @@ export type VIAFile = {
   file_attributes: Record<string, any>;
 };
 
-export type IFrameMessage = {
-  type: string;
-  payload: any;
-};
-
 export type ScreenMeta = {
   description: string;
   keywords: string;
@@ -1276,4 +1271,10 @@ export type ScreenMeta = {
 
 export type ScreenInfo = ScreenMeta & {
   name: string;
+};
+
+export type ChatCredentials = {
+  realm: string;
+  username: string;
+  apiKey: string;
 };

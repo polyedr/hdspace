@@ -36,6 +36,7 @@ import {
   UserProjectPermission,
   PermissionsUserData,
   ScreenInfo,
+  ChatCredentials,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -159,6 +160,7 @@ export type UserState = {
   userGuide: {
     active: boolean;
   };
+  chat: ChatCredentials;
 };
 
 export type Notification = {

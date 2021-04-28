@@ -40,3 +40,5 @@ export const selectToggleEnableTabsAutoSwitch = ({
 }: AppReduxState) => {
   return project.ui.tabsAutoSwitch;
 };
+
+export const selectChatCredentials = ({ user }: AppReduxState) => user.chat;
