@@ -20,7 +20,7 @@ import {
   selectCurrentScreen,
   selectMasterScreenId,
 } from '@Redux/project/selectors/screen';
-import { selectDropTargetBordersMode } from '@Redux/user/selectors';
+import { selectUserProfileDataParameters } from '@Redux/user/selectors';
 import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
 
@@ -50,7 +50,9 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   const canCreateGroup = useSelector(selectCanCreateGroup);
   const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
-  const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
+  const { dropTargetBordersMode } = useSelector(
+    selectUserProfileDataParameters,
+  );
   const bordersEnabled = useSelector(selectBordersEnabled);
   const currentProjectId = useSelector(selectCurrentProjectId);
 

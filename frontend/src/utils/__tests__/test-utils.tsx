@@ -112,6 +112,12 @@ export const mockUserData: UserData = {
     avatar: null,
     id: 888,
     experienced: Experience.EXPERIENCED,
+    parameters: {
+      profileDataParameters: {
+        autoSwitchTabs: false,
+        dropTargetBordersMode: true,
+      },
+    },
   },
 };
 

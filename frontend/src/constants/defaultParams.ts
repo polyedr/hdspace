@@ -31,6 +31,12 @@ export const DEFAULT_USER_PROFILE: ProfileData = {
   hourlyRate: -1,
   id: -1,
   experienced: Experience.BEGINNER,
+  parameters: {
+    profileDataParameters: {
+      autoSwitchTabs: false,
+      dropTargetBordersMode: true,
+    },
+  },
 };
 
 export const DEFAULT_USER: UserData = {
