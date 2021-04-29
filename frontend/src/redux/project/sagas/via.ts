@@ -159,8 +159,6 @@ const updateVIARegionLayerSaga = withActionsHistory(function* ({
     );
   }
 
-  console.log('sdaga');
-
   yield put(updateVIARegionLayerSuccess(id, layer));
 });
 

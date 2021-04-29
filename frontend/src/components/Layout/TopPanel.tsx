@@ -6,13 +6,14 @@ import {
   selectSidebarOpen,
 } from '@Redux/project/selectors/base';
 import { renameProject, setSidebarOpen } from '@Redux/project/actions';
-// import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
+import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import DehazeIcon from '@material-ui/icons/Dehaze';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';
 import Avatar from './Avatar';
+import History from './History';
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
@@ -54,7 +55,7 @@ const TopPanel = () => {
   const [openEdit, setOpenEdit] = useState(false);
 
   const { name: projectName, id } = useSelector(selectCurrentProject);
-  // const viaMode = useSelector(selectVIAModeEnabled);
+  const viaMode = useSelector(selectVIAModeEnabled);
   const sidebarOpen = useSelector(selectSidebarOpen);
 
   const handleEditClick = () => setOpenEdit(true);
@@ -90,8 +91,7 @@ const TopPanel = () => {
           </div>
         )}
 
-        {/* {viaMode ? 'Annotation mode' : <TopBar />} */}
-        <TopBar />
+        {viaMode ? <History /> : <TopBar />}
 
         {projectName && (
           <IconButton

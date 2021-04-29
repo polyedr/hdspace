@@ -27,7 +27,6 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
 import Layouts from './Layouts';
 import Actions from './actions';
 
