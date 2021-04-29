@@ -1,7 +1,6 @@
 import { pick } from 'ramda';
 import produce, { current, Draft } from 'immer';
 import { Normalized, VIARegion } from '@Src/types';
-import { v4 } from 'uuid';
 import { sortByLayer } from '@Utils/viaHelpers';
 import { initialEdit } from '../initial';
 import TYPES from '../../actionTypes';
@@ -205,24 +204,6 @@ const editReducer = produce(
             ...copy,
           };
         }
-        break;
-      }
-
-      case TYPES.PASTE_VIA_REGION: {
-        const copied = draft.VIAMode.copiedRegion;
-        if (!copied) return draft;
-        const newRegion: VIARegion = {
-          id: v4(),
-          layer: Object.keys(draft.VIAMode.regions).length,
-          region_attributes: {
-            ...copied?.region_attributes,
-          },
-          shape_attributes: {
-            ...copied?.shape_attributes,
-          },
-        };
-        draft.VIAMode.regions[newRegion.id] = newRegion;
-        draft.VIAMode.activeRegionId = newRegion.id;
         break;
       }
 

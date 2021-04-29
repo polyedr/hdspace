@@ -9,12 +9,14 @@ import {
   createVIARegionSuccess,
   deleteVIARegion,
   deleteVIARegionSuccess,
+  pasteVIARegion,
   restoreVIARegion,
   setActiveVIARegion,
 } from '../actions';
 import withActionsHistory from '../wrappers/withActionsHistory';
 import {
   selectActiveVIARegionId,
+  selectCopiedVIARegion,
   selectVIARegionByIdInSaga,
   selectVIARegions,
 } from '../selectors/via';
@@ -93,8 +95,46 @@ const restoreVIARegionSaga = withActionsHistory(function* ({
   yield put(createVIARegionSuccess(payload));
 });
 
+const pasteVIARegionSaga = withActionsHistory(function* ({
+  meta,
+}: ReturnType<typeof pasteVIARegion>) {
+  const useHistory = meta?.useHistory;
+
+  const copied: VIARegion | null = yield select(selectCopiedVIARegion);
+  if (!copied) return;
+
+  const regions: Normalized<VIARegion> = yield select(selectVIARegions);
+
+  const newRegion: VIARegion = {
+    id: v4(),
+    layer: Object.keys(regions).length,
+    region_attributes: {
+      ...copied?.region_attributes,
+    },
+    shape_attributes: {
+      ...copied?.shape_attributes,
+    },
+  };
+
+  if (!useHistory) {
+    yield put(addUndoActions(deleteVIARegion(newRegion.id, { ...meta })));
+    yield put(
+      addRedoActions(
+        restoreVIARegion(newRegion, {
+          ...meta,
+          useHistory: true,
+        }),
+      ),
+    );
+  }
+
+  yield put(createVIARegionSuccess(newRegion));
+  yield put(setActiveVIARegion(newRegion.id));
+});
+
 export default function* viaSaga() {
   yield takeEvery(TYPES.CREATE_VIA_REGION, createVIARegionSaga);
   yield takeEvery(TYPES.DELETE_VIA_REGION, deleteVIARegionSaga);
   yield takeEvery(TYPES.RESTORE_VIA_REGION, restoreVIARegionSaga);
+  yield takeEvery(TYPES.PASTE_VIA_REGION, pasteVIARegionSaga);
 }
