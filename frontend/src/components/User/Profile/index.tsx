@@ -6,15 +6,12 @@ import cn from 'classnames';
 import { createStyles, darken, makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import {
-  selectDropTargetBordersMode,
   selectProfileData,
   selectUserData,
   selectUserGuideWatched,
-  selectToggleEnableTabsAutoSwitch,
 } from '@Redux/user/selectors';
 import {
   changeProfileData,
-  changeDropTargetBordersMode,
   setUserExperience,
   logoutStart,
 } from '@Redux/user/actions';
@@ -34,7 +31,7 @@ import {
   MenuItem,
   FormHelperText,
 } from '@material-ui/core';
-import { toggleEnableTabsAutoSwitch } from '@Redux/project/actions';
+import { updateUISettingsParameters } from '@Redux/project/actions';
 import SubmitError from '../SubmitError';
 import Button from '../../UI/Button';
 
@@ -120,12 +117,14 @@ const Profile: React.FC = () => {
   const dispatch = useDispatch();
 
   const userData = useSelector(selectUserData);
-  const { firstName, lastName, email } = userData;
+  const { firstName, lastName, email, profile } = userData;
+  const {
+    parameters: {
+      profileDataParameters: { autoSwitchTabs, dropTargetBordersMode },
+    },
+  } = profile;
   const { avatar, role } = useSelector(selectProfileData);
-  const dropTargetBordersMode = useSelector(selectDropTargetBordersMode);
   const userGuideWatched = useSelector(selectUserGuideWatched);
-  const tabsAutoSwitchEnabled = useSelector(selectToggleEnableTabsAutoSwitch);
-
   const handleLogout = () => {
     dispatch(logoutStart());
   };
@@ -150,7 +149,11 @@ const Profile: React.FC = () => {
   };
 
   const handleChangeBordersMode = () => {
-    dispatch(changeDropTargetBordersMode());
+    dispatch(
+      updateUISettingsParameters({
+        dropTargetBordersMode: !dropTargetBordersMode,
+      }),
+    );
   };
 
   const handleChangeUserGuideWatched = (ev: ChangeEvent<HTMLInputElement>) => {
@@ -168,7 +171,7 @@ const Profile: React.FC = () => {
   };
 
   const handleTabsAutoSwitch = () => {
-    dispatch(toggleEnableTabsAutoSwitch());
+    dispatch(updateUISettingsParameters({ autoSwitchTabs: !autoSwitchTabs }));
   };
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
 
@@ -422,10 +425,7 @@ const Profile: React.FC = () => {
 
           <div className={classes.subheader}>
             Enable Tabs Auto Switch
-            <Switch
-              checked={tabsAutoSwitchEnabled}
-              onChange={handleTabsAutoSwitch}
-            />
+            <Switch checked={autoSwitchTabs} onChange={handleTabsAutoSwitch} />
           </div>
         </div>
       </Box>

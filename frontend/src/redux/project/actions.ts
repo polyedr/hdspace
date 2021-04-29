@@ -27,8 +27,10 @@ import {
   VIARegion,
   UserData,
   ScreenInfo,
+  ProfileDataUIParameters,
 } from '@Src/types';
 import {
+  UpdateUISettingsParameters,
   Action,
   ActivateScreen,
   AddChildToElement,
@@ -167,13 +169,13 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
-  ToggleEnableTabsAutoSwitch,
   CreateVIARegion,
   DeleteVIARegion,
   RestoreVIARegion,
   UpdateVIARegionSuccess,
   UpdateVIARegionLayerSuccess,
 } from '../types';
+
 import TYPES from '../actionTypes';
 
 export const getProjectList = (): LoadProjects => ({
@@ -1567,6 +1569,9 @@ export const sidebarLogoutSuccess = () => ({
   type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
 });
 
-export const toggleEnableTabsAutoSwitch = (): ToggleEnableTabsAutoSwitch => ({
-  type: TYPES.TOGGLE_TABS_AUTOSWITCH,
+export const updateUISettingsParameters = (
+  uiParameters: Partial<ProfileDataUIParameters>,
+): UpdateUISettingsParameters => ({
+  type: TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+  payload: uiParameters,
 });

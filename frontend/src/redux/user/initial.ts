@@ -25,6 +25,12 @@ export const initialUserState: UserState = {
       id: 0,
       role: '',
       experienced: Experience.BEGINNER,
+      parameters: {
+        profileDataParameters: {
+          autoSwitchTabs: false,
+          dropTargetBordersMode: true,
+        },
+      },
     },
   },
   isLoggedIn: false,
