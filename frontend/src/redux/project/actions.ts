@@ -172,6 +172,7 @@ import {
   DeleteVIARegion,
   RestoreVIARegion,
   UpdateVIARegionSuccess,
+  UpdateVIARegionLayerSuccess,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1487,11 +1488,24 @@ export const setAnnotatedElementId = (id: string): SetAnnotatedElement => ({
 });
 
 export const updateVIARegionLayer = (
-  regionId: string,
+  id: string,
   layer: number,
+  meta?: HistoryMeta,
 ): UpdateVIARegionLayer => ({
   type: TYPES.UPDATE_VIA_REGION_LAYER,
-  payload: { regionId, layer },
+  payload: { id, layer },
+  meta,
+});
+
+export const updateVIARegionLayerSuccess = (
+  id: string,
+  layer: number,
+): UpdateVIARegionLayerSuccess => ({
+  type: TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
+  payload: {
+    id,
+    layer,
+  },
 });
 
 export const setAnnotatedImageURL = (url: string): SetAnnotatedImageURL => ({

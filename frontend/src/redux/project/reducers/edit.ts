@@ -169,13 +169,13 @@ const editReducer = produce(
         break;
       }
 
-      case TYPES.UPDATE_VIA_REGION_LAYER: {
-        const { regionId, layer } = action.payload;
+      case TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS: {
+        const { id, layer } = action.payload;
         const arr = Object.values(current(draft.VIAMode.regions)).sort(
           sortByLayer,
         );
 
-        const startIndex = draft.VIAMode.regions[regionId].layer;
+        const startIndex = draft.VIAMode.regions[id].layer;
 
         const [target] = arr.splice(startIndex, 1);
 

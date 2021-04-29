@@ -13,6 +13,8 @@ import {
   restoreVIARegion,
   setActiveVIARegion,
   updateVIARegion,
+  updateVIARegionLayer,
+  updateVIARegionLayerSuccess,
   updateVIARegionSuccess,
 } from '../actions';
 import withActionsHistory from '../wrappers/withActionsHistory';
@@ -146,10 +148,27 @@ const updateVIARegionSaga = withActionsHistory(function* ({
   yield put(updateVIARegionSuccess(id, data));
 });
 
+const updateVIARegionLayerSaga = withActionsHistory(function* ({
+  payload: { id, layer },
+  meta,
+}: ReturnType<typeof updateVIARegionLayer>) {
+  if (!meta?.useHistory) {
+    const oldRegion: VIARegion = yield select(selectVIARegionByIdInSaga, id);
+    yield put(
+      addUndoActions(updateVIARegionLayer(id, oldRegion.layer, { ...meta })),
+    );
+  }
+
+  console.log('sdaga');
+
+  yield put(updateVIARegionLayerSuccess(id, layer));
+});
+
 export default function* viaSaga() {
   yield takeEvery(TYPES.CREATE_VIA_REGION, createVIARegionSaga);
   yield takeEvery(TYPES.DELETE_VIA_REGION, deleteVIARegionSaga);
   yield takeEvery(TYPES.RESTORE_VIA_REGION, restoreVIARegionSaga);
   yield takeEvery(TYPES.PASTE_VIA_REGION, pasteVIARegionSaga);
   yield takeEvery(TYPES.UPDATE_VIA_REGION, updateVIARegionSaga);
+  yield takeEvery(TYPES.UPDATE_VIA_REGION_LAYER, updateVIARegionLayerSaga);
 }

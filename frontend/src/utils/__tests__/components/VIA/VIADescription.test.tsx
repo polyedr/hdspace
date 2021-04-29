@@ -70,9 +70,7 @@ describe('VIADescription', () => {
     fireEvent.click(deleteButton);
 
     const actions = store.getActions();
-    expect(actions[actions.length - 1].type).toBe(
-      TYPES.DELETE_VIA_REGION_SUCCESS,
-    );
+    expect(actions[actions.length - 1].type).toBe(TYPES.DELETE_VIA_REGION);
   });
 
   it('should display region width', () => {

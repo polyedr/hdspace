@@ -1044,7 +1044,12 @@ export type SetAnnotatedElement = IAction<
 
 export type UpdateVIARegionLayer = IAction<
   typeof TYPES.UPDATE_VIA_REGION_LAYER,
-  { regionId: string; layer: number }
+  { id: string; layer: number }
+>;
+
+export type UpdateVIARegionLayerSuccess = IAction<
+  typeof TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
+  { id: string; layer: number }
 >;
 
 export type SetAnnotatedImageURL = IAction<
@@ -1234,6 +1239,7 @@ export type Action =
   | SetSidebarIframe
   | SetSidebarHost
   | SetValueImportLoader
+  | UpdateVIARegionLayerSuccess
   | ToggleEnableTabsAutoSwitch;
 
 export type SetValueImportLoader = IAction<
