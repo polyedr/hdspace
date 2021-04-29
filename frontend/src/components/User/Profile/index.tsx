@@ -149,7 +149,11 @@ const Profile: React.FC = () => {
   };
 
   const handleChangeBordersMode = () => {
-    dispatch(updateUISettingsParameters(!dropTargetBordersMode, 'borders'));
+    dispatch(
+      updateUISettingsParameters({
+        dropTargetBordersMode: !dropTargetBordersMode,
+      }),
+    );
   };
 
   const handleChangeUserGuideWatched = (ev: ChangeEvent<HTMLInputElement>) => {
@@ -167,7 +171,7 @@ const Profile: React.FC = () => {
   };
 
   const handleTabsAutoSwitch = () => {
-    dispatch(updateUISettingsParameters(!autoSwitchTabs, 'tabs'));
+    dispatch(updateUISettingsParameters({ autoSwitchTabs: !autoSwitchTabs }));
   };
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
 

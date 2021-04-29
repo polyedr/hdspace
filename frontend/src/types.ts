@@ -950,9 +950,9 @@ export type ProfileData = {
 };
 
 export type ProfileDataParameters = {
-  profileDataParameters: ProfileDataParametersValue;
+  profileDataParameters: ProfileDataUIParameters;
 };
-export type ProfileDataParametersValue = {
+export type ProfileDataUIParameters = {
   autoSwitchTabs: boolean;
   dropTargetBordersMode: boolean;
 };

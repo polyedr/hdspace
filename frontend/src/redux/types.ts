@@ -37,6 +37,7 @@ import {
   PermissionsUserData,
   ScreenInfo,
   ChatCredentials,
+  ProfileDataUIParameters,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -1241,5 +1242,5 @@ export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {
 
 export type UpdateUISettingsParameters = IAction<
   typeof TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
-  { isValue: boolean; nameParameters: string }
+  Partial<ProfileDataUIParameters>
 >;

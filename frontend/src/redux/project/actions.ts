@@ -27,6 +27,7 @@ import {
   VIARegion,
   UserData,
   ScreenInfo,
+  ProfileDataUIParameters,
 } from '@Src/types';
 import {
   UpdateUISettingsParameters,
@@ -1512,9 +1513,8 @@ export const sidebarLogoutSuccess = () => ({
 });
 
 export const updateUISettingsParameters = (
-  isValue: boolean,
-  nameParameters: string,
+  uiParameters: Partial<ProfileDataUIParameters>,
 ): UpdateUISettingsParameters => ({
   type: TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
-  payload: { isValue, nameParameters },
+  payload: uiParameters,
 });

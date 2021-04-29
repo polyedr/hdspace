@@ -149,46 +149,28 @@ export function* changeProfileDataSaga({
 }
 
 export const updateUISettingsParametersSaga = function* ({
-  payload: { isValue, nameParameters },
+  payload,
 }: ReturnType<typeof updateUISettingsParameters>) {
   try {
     const {
       id,
-      parameters: {
-        profileDataParameters: { autoSwitchTabs, dropTargetBordersMode },
-      },
+      parameters: { profileDataParameters },
     } = yield select(selectProfileData);
-    if (nameParameters.includes('borders')) {
-      const newProfileData = yield call(reqWrapper, apiChangeProfileData, {
-        id,
-        data: {
-          parameters: {
-            profileDataParameters: {
-              dropTargetBordersMode: isValue,
-              autoSwitchTabs,
-            },
-          },
+    const newUIParameters = { ...profileDataParameters, ...payload };
+    const { result, error } = yield call(reqWrapper, apiChangeProfileData, {
+      id,
+      data: {
+        parameters: {
+          profileDataParameters: newUIParameters,
         },
-      });
-      yield put(
-        Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
-      );
-    } else {
-      const newProfileData = yield call(reqWrapper, apiChangeProfileData, {
-        id,
-        data: {
-          parameters: {
-            profileDataParameters: {
-              autoSwitchTabs: isValue,
-              dropTargetBordersMode,
-            },
-          },
-        },
-      });
-      yield put(
-        Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
-      );
+      },
+    });
+    if (error) {
+      throw new Error(error);
     }
+    yield put(
+      Actions.setProfileData(convertProfileDataFromResponse(result.data)),
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar(
