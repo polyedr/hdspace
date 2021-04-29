@@ -13,6 +13,7 @@ import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';
 import Avatar from './Avatar';
+import History from './History';
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
@@ -90,7 +91,7 @@ const TopPanel = () => {
           </div>
         )}
 
-        {viaMode ? 'Annotation mode' : <TopBar />}
+        {viaMode ? <History /> : <TopBar />}
 
         {projectName && (
           <IconButton

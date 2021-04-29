@@ -39,3 +39,8 @@ export const selectAnnotatedImageURL = ({ project }: AppReduxState) =>
 
 export const selectCopiedVIARegion = ({ project }: AppReduxState) =>
   project.edit.VIAMode.copiedRegion;
+
+export const selectVIARegionByIdInSaga = (
+  { project }: AppReduxState,
+  regionId: string,
+) => project.edit.VIAMode.regions[regionId];

@@ -1005,6 +1005,11 @@ export type UpdateVIARegion = IAction<
   { id: VIARegion['id']; data: Partial<VIARegion> }
 >;
 
+export type UpdateVIARegionSuccess = IAction<
+  typeof TYPES.UPDATE_VIA_REGION_SUCCESS,
+  { id: VIARegion['id']; data: Partial<VIARegion> }
+>;
+
 export type SetActiveVIARegion = IAction<
   typeof TYPES.SET_ACTIVE_VIA_REGION,
   string
@@ -1012,9 +1017,24 @@ export type SetActiveVIARegion = IAction<
 
 export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
 
+export type CreateVIARegionSuccess = IAction<
+  typeof TYPES.CREATE_VIA_REGION_SUCCESS,
+  VIARegion
+>;
+
+export type RestoreVIARegion = IAction<
+  typeof TYPES.RESTORE_VIA_REGION,
+  VIARegion
+>;
+
 export type DeleteVIARegion = IAction<
   typeof TYPES.DELETE_VIA_REGION,
   string | undefined
+>;
+
+export type DeleteVIARegionSuccess = IAction<
+  typeof TYPES.DELETE_VIA_REGION_SUCCESS,
+  string
 >;
 
 export type SetAnnotatedElement = IAction<
@@ -1024,7 +1044,12 @@ export type SetAnnotatedElement = IAction<
 
 export type UpdateVIARegionLayer = IAction<
   typeof TYPES.UPDATE_VIA_REGION_LAYER,
-  { regionId: string; layer: number }
+  { id: string; layer: number }
+>;
+
+export type UpdateVIARegionLayerSuccess = IAction<
+  typeof TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
+  { id: string; layer: number }
 >;
 
 export type SetAnnotatedImageURL = IAction<
@@ -1197,9 +1222,12 @@ export type Action =
   | SetVIAMode
   | SetViaRegions
   | UpdateVIARegion
+  | UpdateVIARegionSuccess
   | SetActiveVIARegion
-  | CreateVIARegion
+  | CreateVIARegionSuccess
+  | DeleteVIARegionSuccess
   | DeleteVIARegion
+  | RestoreVIARegion
   | SetAnnotatedElement
   | UpdateVIARegionLayer
   | FinishAnnotaion
@@ -1211,6 +1239,7 @@ export type Action =
   | SetSidebarIframe
   | SetSidebarHost
   | SetValueImportLoader
+  | UpdateVIARegionLayerSuccess
   | UpdateUISettingsParameters;
 
 export type SetValueImportLoader = IAction<

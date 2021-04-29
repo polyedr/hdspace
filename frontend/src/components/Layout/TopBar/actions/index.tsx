@@ -1,6 +1,4 @@
 import React from 'react';
-import UndoIcon from '@material-ui/icons/Undo';
-import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
 import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,15 +8,11 @@ import {
   selectFreeCanvasMode,
   selectUpdateScreenImageLoader,
 } from '@Redux/project/selectors/base';
-import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { selectCurrentScreen } from '@Redux/project/selectors/screen';
-import {
-  executeUndoActions,
-  updateScreenImage,
-  executeRedoActions,
-} from '@Redux/project/actions';
+import { updateScreenImage } from '@Redux/project/actions';
 
 import exportHTML from '@Src/export/app';
+import History from '@Components/Layout/History';
 import Share from './Share';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -45,12 +39,6 @@ const Actions: React.FC = () => {
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
 
-  const canUndo = useSelector(selectCanUndo);
-  const canRedo = useSelector(selectCanRedo);
-  const onHistoryBack = () => dispatch(executeUndoActions());
-
-  const onHistoryForward = () => dispatch(executeRedoActions());
-
   const handleSaveScreen = () => dispatch(updateScreenImage(id));
 
   const handleExportScreen = () => {
@@ -59,23 +47,7 @@ const Actions: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <IconButton
-        onClick={onHistoryBack}
-        disabled={!canUndo}
-        title="Undo"
-        className={classes.iconButton}
-      >
-        <UndoIcon />
-      </IconButton>
-
-      <IconButton
-        onClick={onHistoryForward}
-        disabled={!canRedo}
-        title="Redo"
-        className={classes.iconButton}
-      >
-        <RedoIcon />
-      </IconButton>
+      <History />
 
       <IconButton
         onClick={handleSaveScreen}

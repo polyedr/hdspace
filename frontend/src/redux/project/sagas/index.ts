@@ -1,4 +1,11 @@
-import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
+import {
+  takeLatest,
+  takeEvery,
+  put,
+  call,
+  select,
+  fork,
+} from 'redux-saga/effects';
 import {
   removeProjectStyles,
   updateProjectClasses,
@@ -111,6 +118,7 @@ import {
 } from './control';
 import withActionsHistory from '../wrappers/withActionsHistory';
 import { semiautoAnalyzeImageSaga, autoAnalyzeImageSaga } from './nn';
+import viaSaga from './via';
 
 const removeSharedStylesSaga = compose(
   withRequiredPermissions(
@@ -466,6 +474,8 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.SET_UP_SIDEBAR, setUpSidebarSaga);
+
+  yield fork(viaSaga);
 
   yield takeEvery(
     TYPES.UPDATE_UI_SETTINGS_PARAMETERS,

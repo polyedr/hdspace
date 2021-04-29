@@ -152,8 +152,8 @@ import {
   SetViaRegions as SetVIARegions,
   UpdateVIARegion,
   SetActiveVIARegion,
-  CreateVIARegion,
-  DeleteVIARegion,
+  CreateVIARegionSuccess,
+  DeleteVIARegionSuccess,
   SetAnnotatedElement,
   UpdateVIARegionLayer,
   SetNewScreenModal,
@@ -169,6 +169,11 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
+  CreateVIARegion,
+  DeleteVIARegion,
+  RestoreVIARegion,
+  UpdateVIARegionSuccess,
+  UpdateVIARegionLayerSuccess,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -1414,8 +1419,21 @@ export const setVIARegions = (
 export const updateVIARegion = (
   regionId: string,
   data: Partial<VIARegion>,
+  meta?: HistoryMeta,
 ): UpdateVIARegion => ({
   type: TYPES.UPDATE_VIA_REGION,
+  payload: {
+    id: regionId,
+    data,
+  },
+  meta,
+});
+
+export const updateVIARegionSuccess = (
+  regionId: string,
+  data: Partial<VIARegion>,
+): UpdateVIARegionSuccess => ({
+  type: TYPES.UPDATE_VIA_REGION_SUCCESS,
   payload: {
     id: regionId,
     data,
@@ -1427,12 +1445,38 @@ export const setActiveVIARegion = (id: string): SetActiveVIARegion => ({
   payload: id,
 });
 
-export const createVIARegion = (): CreateVIARegion => ({
+export const createVIARegion = (meta?: HistoryMeta): CreateVIARegion => ({
   type: TYPES.CREATE_VIA_REGION,
+  meta,
 });
 
-export const deleteVIARegion = (id?: string): DeleteVIARegion => ({
+export const createVIARegionSuccess = (
+  region: VIARegion,
+): CreateVIARegionSuccess => ({
+  type: TYPES.CREATE_VIA_REGION_SUCCESS,
+  payload: region,
+});
+
+export const restoreVIARegion = (
+  region: VIARegion,
+  meta?: HistoryMeta,
+): RestoreVIARegion => ({
+  type: TYPES.RESTORE_VIA_REGION,
+  payload: region,
+  meta,
+});
+
+export const deleteVIARegion = (
+  id?: string,
+  meta?: HistoryMeta,
+): DeleteVIARegion => ({
   type: TYPES.DELETE_VIA_REGION,
+  payload: id,
+  meta,
+});
+
+export const deleteVIARegionSuccess = (id: string): DeleteVIARegionSuccess => ({
+  type: TYPES.DELETE_VIA_REGION_SUCCESS,
   payload: id,
 });
 
@@ -1446,11 +1490,24 @@ export const setAnnotatedElementId = (id: string): SetAnnotatedElement => ({
 });
 
 export const updateVIARegionLayer = (
-  regionId: string,
+  id: string,
   layer: number,
+  meta?: HistoryMeta,
 ): UpdateVIARegionLayer => ({
   type: TYPES.UPDATE_VIA_REGION_LAYER,
-  payload: { regionId, layer },
+  payload: { id, layer },
+  meta,
+});
+
+export const updateVIARegionLayerSuccess = (
+  id: string,
+  layer: number,
+): UpdateVIARegionLayerSuccess => ({
+  type: TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
+  payload: {
+    id,
+    layer,
+  },
 });
 
 export const setAnnotatedImageURL = (url: string): SetAnnotatedImageURL => ({
