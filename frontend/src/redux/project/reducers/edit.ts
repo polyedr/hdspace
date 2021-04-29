@@ -140,7 +140,7 @@ const editReducer = produce(
         break;
       }
 
-      case TYPES.UPDATE_VIA_REGION: {
+      case TYPES.UPDATE_VIA_REGION_SUCCESS: {
         draft.VIAMode.regions[action.payload.id] = {
           ...draft.VIAMode.regions[action.payload.id],
           ...action.payload.data,

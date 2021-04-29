@@ -1005,6 +1005,11 @@ export type UpdateVIARegion = IAction<
   { id: VIARegion['id']; data: Partial<VIARegion> }
 >;
 
+export type UpdateVIARegionSuccess = IAction<
+  typeof TYPES.UPDATE_VIA_REGION_SUCCESS,
+  { id: VIARegion['id']; data: Partial<VIARegion> }
+>;
+
 export type SetActiveVIARegion = IAction<
   typeof TYPES.SET_ACTIVE_VIA_REGION,
   string
@@ -1212,6 +1217,7 @@ export type Action =
   | SetVIAMode
   | SetViaRegions
   | UpdateVIARegion
+  | UpdateVIARegionSuccess
   | SetActiveVIARegion
   | CreateVIARegionSuccess
   | DeleteVIARegionSuccess

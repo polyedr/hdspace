@@ -171,6 +171,7 @@ import {
   CreateVIARegion,
   DeleteVIARegion,
   RestoreVIARegion,
+  UpdateVIARegionSuccess,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1415,8 +1416,21 @@ export const setVIARegions = (
 export const updateVIARegion = (
   regionId: string,
   data: Partial<VIARegion>,
+  meta?: HistoryMeta,
 ): UpdateVIARegion => ({
   type: TYPES.UPDATE_VIA_REGION,
+  payload: {
+    id: regionId,
+    data,
+  },
+  meta,
+});
+
+export const updateVIARegionSuccess = (
+  regionId: string,
+  data: Partial<VIARegion>,
+): UpdateVIARegionSuccess => ({
+  type: TYPES.UPDATE_VIA_REGION_SUCCESS,
   payload: {
     id: regionId,
     data,
