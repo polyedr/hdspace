@@ -64,7 +64,7 @@ const createArchive = (
     zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(content);
-      a.download = 'page.zip';
+      a.download = `${screenName}.zip`;
       a.click();
     });
   });
