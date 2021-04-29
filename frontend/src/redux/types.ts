@@ -1012,9 +1012,24 @@ export type SetActiveVIARegion = IAction<
 
 export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
 
+export type CreateVIARegionSuccess = IAction<
+  typeof TYPES.CREATE_VIA_REGION_SUCCESS,
+  VIARegion
+>;
+
+export type RestoreVIARegion = IAction<
+  typeof TYPES.RESTORE_VIA_REGION,
+  VIARegion
+>;
+
 export type DeleteVIARegion = IAction<
   typeof TYPES.DELETE_VIA_REGION,
   string | undefined
+>;
+
+export type DeleteVIARegionSuccess = IAction<
+  typeof TYPES.DELETE_VIA_REGION_SUCCESS,
+  string
 >;
 
 export type SetAnnotatedElement = IAction<
@@ -1198,8 +1213,10 @@ export type Action =
   | SetViaRegions
   | UpdateVIARegion
   | SetActiveVIARegion
-  | CreateVIARegion
+  | CreateVIARegionSuccess
+  | DeleteVIARegionSuccess
   | DeleteVIARegion
+  | RestoreVIARegion
   | SetAnnotatedElement
   | UpdateVIARegionLayer
   | FinishAnnotaion

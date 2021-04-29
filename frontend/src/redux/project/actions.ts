@@ -150,8 +150,8 @@ import {
   SetViaRegions as SetVIARegions,
   UpdateVIARegion,
   SetActiveVIARegion,
-  CreateVIARegion,
-  DeleteVIARegion,
+  CreateVIARegionSuccess,
+  DeleteVIARegionSuccess,
   SetAnnotatedElement,
   UpdateVIARegionLayer,
   SetNewScreenModal,
@@ -168,6 +168,9 @@ import {
   AssetData,
   SetValueImportLoader,
   ToggleEnableTabsAutoSwitch,
+  CreateVIARegion,
+  DeleteVIARegion,
+  RestoreVIARegion,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -1425,12 +1428,38 @@ export const setActiveVIARegion = (id: string): SetActiveVIARegion => ({
   payload: id,
 });
 
-export const createVIARegion = (): CreateVIARegion => ({
+export const createVIARegion = (meta?: HistoryMeta): CreateVIARegion => ({
   type: TYPES.CREATE_VIA_REGION,
+  meta,
 });
 
-export const deleteVIARegion = (id?: string): DeleteVIARegion => ({
+export const createVIARegionSuccess = (
+  region: VIARegion,
+): CreateVIARegionSuccess => ({
+  type: TYPES.CREATE_VIA_REGION_SUCCESS,
+  payload: region,
+});
+
+export const restoreVIARegion = (
+  region: VIARegion,
+  meta?: HistoryMeta,
+): RestoreVIARegion => ({
+  type: TYPES.RESTORE_VIA_REGION,
+  payload: region,
+  meta,
+});
+
+export const deleteVIARegion = (
+  id?: string,
+  meta?: HistoryMeta,
+): DeleteVIARegion => ({
   type: TYPES.DELETE_VIA_REGION,
+  payload: id,
+  meta,
+});
+
+export const deleteVIARegionSuccess = (id: string): DeleteVIARegionSuccess => ({
+  type: TYPES.DELETE_VIA_REGION_SUCCESS,
   payload: id,
 });
 

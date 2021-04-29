@@ -49,7 +49,9 @@ describe('VIA Right Panel', () => {
     fireEvent.click(button);
 
     const actions = store.getActions();
-    expect(actions[actions.length - 1].type).toBe(TYPES.CREATE_VIA_REGION);
+    expect(actions[actions.length - 1].type).toBe(
+      TYPES.CREATE_VIA_REGION_SUCCESS,
+    );
   });
 
   it('should display "assemble" button', () => {

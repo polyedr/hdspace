@@ -154,29 +154,14 @@ const editReducer = produce(
         break;
       }
 
-      case TYPES.CREATE_VIA_REGION: {
-        const newRegion: VIARegion = {
-          id: v4(),
-          layer: Object.keys(draft.VIAMode.regions).length,
-          region_attributes: {
-            'HTML element': 'container',
-          },
-          shape_attributes: {
-            height: 100,
-            width: 100,
-            x: 0,
-            y: 0,
-            name: 'rect',
-          },
-        };
+      case TYPES.CREATE_VIA_REGION_SUCCESS: {
+        const { payload: newRegion } = action;
         draft.VIAMode.regions[newRegion.id] = newRegion;
-        draft.VIAMode.activeRegionId = newRegion.id;
         break;
       }
 
-      case TYPES.DELETE_VIA_REGION: {
-        const idToDelete = action.payload || draft.VIAMode.activeRegionId;
-        delete draft.VIAMode.regions[idToDelete];
+      case TYPES.DELETE_VIA_REGION_SUCCESS: {
+        delete draft.VIAMode.regions[action.payload];
         break;
       }
 
