@@ -2,6 +2,7 @@ import { takeEvery, put, select } from 'redux-saga/effects/';
 import TYPES from '@Redux/actionTypes';
 import { Normalized, VIARegion } from '@Src/types';
 import { v4 } from 'uuid';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   addRedoActions,
   addUndoActions,
@@ -29,137 +30,212 @@ const deleteVIARegionSaga = withActionsHistory(function* ({
   payload,
   meta,
 }: ReturnType<typeof deleteVIARegion>) {
-  const useHistory = meta?.useHistory;
+  try {
+    const useHistory = meta?.useHistory;
 
-  const activeRegionId: string = yield select(selectActiveVIARegionId);
-  const idToDelete = payload || activeRegionId;
+    const activeRegionId: string = yield select(selectActiveVIARegionId);
+    const idToDelete = payload || activeRegionId;
 
-  const target: VIARegion = yield select(selectVIARegionByIdInSaga, idToDelete);
+    const target: VIARegion = yield select(
+      selectVIARegionByIdInSaga,
+      idToDelete,
+    );
 
-  if (!useHistory) {
+    if (!useHistory) {
+      yield put(
+        addUndoActions(
+          restoreVIARegion(target, {
+            ...meta,
+            useHistory: true,
+          }),
+        ),
+      );
+    }
+
+    yield put(deleteVIARegionSuccess(idToDelete));
+  } catch (e) {
     yield put(
-      addUndoActions(
-        restoreVIARegion(target, {
-          ...meta,
-          useHistory: true,
-        }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
       ),
     );
   }
-
-  yield put(deleteVIARegionSuccess(idToDelete));
 });
 
 const createVIARegionSaga = withActionsHistory(function* (
   action: ReturnType<typeof createVIARegion>,
 ) {
-  const useHistory = action.meta?.useHistory;
+  try {
+    const useHistory = action.meta?.useHistory;
 
-  const regions: Normalized<VIARegion> = yield select(selectVIARegions);
+    const regions: Normalized<VIARegion> = yield select(selectVIARegions);
 
-  const newRegion: VIARegion = {
-    id: v4(),
-    layer: Object.keys(regions).length,
-    region_attributes: {
-      'HTML element': 'container',
-    },
-    shape_attributes: {
-      height: 100,
-      width: 100,
-      x: 0,
-      y: 0,
-      name: 'rect',
-    },
-  };
-  if (!useHistory) {
+    const newRegion: VIARegion = {
+      id: v4(),
+      layer: Object.keys(regions).length,
+      region_attributes: {
+        'HTML element': 'container',
+      },
+      shape_attributes: {
+        height: 100,
+        width: 100,
+        x: 0,
+        y: 0,
+        name: 'rect',
+      },
+    };
+    if (!useHistory) {
+      yield put(
+        addUndoActions(deleteVIARegion(newRegion.id, { ...action.meta })),
+      );
+      yield put(
+        addRedoActions(
+          restoreVIARegion(newRegion, {
+            ...action.meta,
+            useHistory: true,
+          }),
+        ),
+      );
+    }
+
+    yield put(createVIARegionSuccess(newRegion));
+    yield put(setActiveVIARegion(newRegion.id));
+  } catch (e) {
     yield put(
-      addUndoActions(deleteVIARegion(newRegion.id, { ...action.meta })),
-    );
-    yield put(
-      addRedoActions(
-        restoreVIARegion(newRegion, {
-          ...action.meta,
-          useHistory: true,
-        }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
       ),
     );
   }
-
-  yield put(createVIARegionSuccess(newRegion));
-  yield put(setActiveVIARegion(newRegion.id));
 });
 
 const restoreVIARegionSaga = withActionsHistory(function* ({
   payload,
   meta,
 }: ReturnType<typeof restoreVIARegion>) {
-  if (!meta?.useHistory) {
-    yield put(addUndoActions(deleteVIARegion(payload.id, { ...meta })));
+  try {
+    if (!meta?.useHistory) {
+      yield put(addUndoActions(deleteVIARegion(payload.id, { ...meta })));
+    }
+    yield put(createVIARegionSuccess(payload));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
   }
-  yield put(createVIARegionSuccess(payload));
 });
 
 const pasteVIARegionSaga = withActionsHistory(function* ({
   meta,
 }: ReturnType<typeof pasteVIARegion>) {
-  const useHistory = meta?.useHistory;
+  try {
+    const useHistory = meta?.useHistory;
 
-  const copied: VIARegion | null = yield select(selectCopiedVIARegion);
-  if (!copied) return;
+    const copied: VIARegion | null = yield select(selectCopiedVIARegion);
+    if (!copied) return;
 
-  const regions: Normalized<VIARegion> = yield select(selectVIARegions);
+    const regions: Normalized<VIARegion> = yield select(selectVIARegions);
 
-  const newRegion: VIARegion = {
-    id: v4(),
-    layer: Object.keys(regions).length,
-    region_attributes: {
-      ...copied?.region_attributes,
-    },
-    shape_attributes: {
-      ...copied?.shape_attributes,
-    },
-  };
+    const newRegion: VIARegion = {
+      id: v4(),
+      layer: Object.keys(regions).length,
+      region_attributes: {
+        ...copied?.region_attributes,
+      },
+      shape_attributes: {
+        ...copied?.shape_attributes,
+      },
+    };
 
-  if (!useHistory) {
-    yield put(addUndoActions(deleteVIARegion(newRegion.id, { ...meta })));
+    if (!useHistory) {
+      yield put(addUndoActions(deleteVIARegion(newRegion.id, { ...meta })));
+      yield put(
+        addRedoActions(
+          restoreVIARegion(newRegion, {
+            ...meta,
+            useHistory: true,
+          }),
+        ),
+      );
+    }
+
+    yield put(createVIARegionSuccess(newRegion));
+    yield put(setActiveVIARegion(newRegion.id));
+  } catch (e) {
     yield put(
-      addRedoActions(
-        restoreVIARegion(newRegion, {
-          ...meta,
-          useHistory: true,
-        }),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
       ),
     );
   }
-
-  yield put(createVIARegionSuccess(newRegion));
-  yield put(setActiveVIARegion(newRegion.id));
 });
 
 const updateVIARegionSaga = withActionsHistory(function* ({
   payload: { id, data },
   meta,
 }: ReturnType<typeof updateVIARegion>) {
-  if (!meta?.useHistory) {
-    const oldRegion: VIARegion = yield select(selectVIARegionByIdInSaga, id);
-    yield put(addUndoActions(updateVIARegion(id, oldRegion, { ...meta })));
-  }
+  try {
+    if (!meta?.useHistory) {
+      const oldRegion: VIARegion = yield select(selectVIARegionByIdInSaga, id);
+      yield put(addUndoActions(updateVIARegion(id, oldRegion, { ...meta })));
+    }
 
-  yield put(updateVIARegionSuccess(id, data));
+    yield put(updateVIARegionSuccess(id, data));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
 });
 
 const updateVIARegionLayerSaga = withActionsHistory(function* ({
   payload: { id, layer },
   meta,
 }: ReturnType<typeof updateVIARegionLayer>) {
-  if (!meta?.useHistory) {
-    const oldRegion: VIARegion = yield select(selectVIARegionByIdInSaga, id);
+  try {
+    if (!meta?.useHistory) {
+      const oldRegion: VIARegion = yield select(selectVIARegionByIdInSaga, id);
+      yield put(
+        addUndoActions(updateVIARegionLayer(id, oldRegion.layer, { ...meta })),
+      );
+    }
+
+    yield put(updateVIARegionLayerSuccess(id, layer));
+  } catch (e) {
     yield put(
-      addUndoActions(updateVIARegionLayer(id, oldRegion.layer, { ...meta })),
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
     );
   }
-
-  yield put(updateVIARegionLayerSuccess(id, layer));
 });
 
 export default function* viaSaga() {
