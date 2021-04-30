@@ -138,6 +138,11 @@ module.exports = {
             message:
               "Please use named import from '@material-ui/core/styles' instead.",
           },
+          {
+            name: 'ramda',
+            importNames: ['*'],
+            message: "Please use named import from 'ramda' instead.",
+          },
         ],
       },
     ],
