@@ -1,4 +1,10 @@
-import React, { useState, MouseEvent, useMemo, useCallback } from 'react';
+import React, {
+  KeyboardEvent,
+  useState,
+  MouseEvent,
+  useMemo,
+  useCallback,
+} from 'react';
 import AtlasTree, {
   mutateTree,
   RenderItemParams,
@@ -8,8 +14,20 @@ import AtlasTree, {
   TreeItem as TreeItemType,
 } from '@atlaskit/tree';
 import TreeItem from '@Components/LeftPanel/Navigator/components/TreeItem';
-import { moveElement, setActiveElement } from '@Redux/project/actions';
-import { getRulerHeight } from '@Components/LeftPanel/Navigator/utils';
+import {
+  copyActiveElement,
+  deleteElement,
+  moveElement,
+  pasteCopiedElement,
+  executeUndoActions,
+  setActiveElement,
+  executeRedoActions,
+} from '@Redux/project/actions';
+import {
+  findPrevNodeId,
+  focusTreeItem,
+  getRulerHeight,
+} from '@Components/LeftPanel/Navigator/utils';
 import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -125,6 +143,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   ]);
 
   const [selectedItemId, setSelectedItem] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const expand = useCallback(
     (itemId) =>
@@ -152,6 +171,68 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     setSelectedItem(null);
   };
 
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (selectedItemId && !isDragging) {
+        if (e.keyCode === 32 && !coreElementSelected && canEdit) {
+          // Space
+          setIsDragging((state) => !state);
+        }
+
+        if (
+          e.keyCode === 67 &&
+          (e.ctrlKey || e.metaKey) &&
+          !coreElementSelected &&
+          canEdit
+        ) {
+          // Ctrl/Cmd + C
+          dispatch(copyActiveElement());
+        }
+
+        if (
+          e.keyCode === 86 &&
+          (e.ctrlKey || e.metaKey) &&
+          !coreElementSelected &&
+          canEdit
+        ) {
+          // Ctrl/Cmd + V
+          dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+        }
+
+        if (
+          e.keyCode === 46 ||
+          (e.keyCode === 8 && e.metaKey && !coreElementSelected && canEdit)
+        ) {
+          // Delete or Cmd + Backspace
+          const prevItemId = findPrevNodeId(tree, selectedItemId);
+          dispatch(
+            deleteElement(selectedItemId, { screenId: currentScreenId }),
+          );
+          focusTreeItem(prevItemId);
+        }
+
+        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+          // Ctrl/Cmd + Z
+          dispatch(executeUndoActions());
+        }
+
+        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+          // Ctrl/Cmd + Shift + Z
+          dispatch(executeRedoActions());
+        }
+      }
+    },
+    [
+      canEdit,
+      coreElementSelected,
+      currentScreenId,
+      dispatch,
+      isDragging,
+      selectedItemId,
+      tree,
+    ],
+  );
+
   const dragStart = (itemId) => select(itemId);
 
   const dragEnd = (
@@ -159,6 +240,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     destination?: TreeDestinationPosition,
   ) => {
     if (!destination) {
+      setIsDragging(false);
       return;
     }
 
@@ -177,6 +259,14 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     const childId = oldParent.children[source.index];
     const child = items[childId];
 
+    const parentElement = elements[newParent.id];
+
+    if (!parentElement) {
+      console.error(`No element ${newParent.id}`);
+      setIsDragging(false);
+      return;
+    }
+
     if (!canElementBeAdded(elements, newParent.id as string, child.data.type)) {
       dispatch(
         enqueueSnackbar({
@@ -184,6 +274,12 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           options: { variant: 'warning' },
         }),
       );
+      setIsDragging(false);
+      return;
+    }
+
+    if (newParent.id === oldParent.id && source.index === destination.index) {
+      setIsDragging(false);
       return;
     }
 
@@ -198,6 +294,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         { screenId: currentScreenId },
       ),
     );
+    setIsDragging(false);
     select(
       newParent.isExpanded ? oldParent.children[source.index] : newParent.id,
     );
@@ -221,7 +318,11 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   };
 
   return (
-    <div className={classes.tree} id={ELEMENT_IDS.navigator}>
+    <div
+      className={classes.tree}
+      onKeyDown={handleKeyDown}
+      id={ELEMENT_IDS.navigator}
+    >
       <Scrollbar
         style={{
           height: '300px',
