@@ -38,6 +38,7 @@ import {
   selectActiveElementId,
   selectMasterCoreElementId,
   selectMasterGroupsElementId,
+  selectSelectedElementsIds,
   selectTreeChildElementsIds,
 } from '@Redux/project/selectors/element';
 import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
@@ -79,6 +80,7 @@ const OFFSET = 15;
 const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
@@ -173,7 +175,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (selectedItemId && !isDragging) {
-        if (e.keyCode === 38) {
+        if (e.key === '38') {
           // ArrowUp
           // TODO: add throttling
           e.preventDefault();
@@ -182,7 +184,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           focusTreeItem(prevNodeId);
         }
 
-        if (e.keyCode === 40) {
+        if (e.key === '40') {
           // ArrowDown
           // TODO: add throttling
           e.preventDefault();
@@ -190,25 +192,25 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           focusTreeItem(nextNodeId);
         }
 
-        if (e.keyCode === 39) {
+        if (e.key === '39') {
           // ArrowRight
           expand(selectedItemId);
           select(selectedItemId);
         }
 
-        if (e.keyCode === 37) {
+        if (e.key === '37') {
           // ArrowLeft
           collapse(selectedItemId);
           select(selectedItemId);
         }
 
-        if (e.keyCode === 32 && !coreElementSelected && canEdit) {
+        if (e.key === '32' && !coreElementSelected && canEdit) {
           // Space
           setIsDragging((state) => !state);
         }
 
         if (
-          e.keyCode === 67 &&
+          e.key === '67' &&
           (e.ctrlKey || e.metaKey) &&
           !coreElementSelected &&
           canEdit
@@ -218,7 +220,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         }
 
         if (
-          e.keyCode === 86 &&
+          e.key === '86' &&
           (e.ctrlKey || e.metaKey) &&
           !coreElementSelected &&
           canEdit
@@ -228,8 +230,8 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         }
 
         if (
-          e.keyCode === 46 ||
-          (e.keyCode === 8 && e.metaKey && !coreElementSelected && canEdit)
+          e.key === '46' ||
+          (e.key === '8' && e.metaKey && !coreElementSelected && canEdit)
         ) {
           // Delete or Cmd + Backspace
           const prevItemId = findPrevNodeId(tree, selectedItemId);
@@ -239,12 +241,12 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           focusTreeItem(prevItemId);
         }
 
-        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+        if (e.key === '90' && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
           // Ctrl/Cmd + Z
           dispatch(executeUndoActions());
         }
 
-        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+        if (e.key === '90' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
           // Ctrl/Cmd + Shift + Z
           dispatch(executeRedoActions());
         }
@@ -343,7 +345,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         rulerHeight={getRulerHeight(props.item, expandedTree, height)}
         height={height}
         onContextMenu={handleMenuOpen}
-        isActive={activeElementId === props.item.id}
+        isActive={selectedElementsIds.includes(String(props.item.id))}
       />
     );
   };
