@@ -193,7 +193,7 @@ const editReducer = produce(
       }
 
       case TYPES.SET_ANNOTATED_IMAGE_URL: {
-        draft.VIAMode.annotatedImageURL = action.payload;
+        draft.VIAMode.annotatedImageFile = action.payload;
         break;
       }
 
@@ -218,6 +218,23 @@ const editReducer = produce(
         if (draft.masterSourceElementId !== action.payload) {
           draft.masterSourceElementId = action.payload;
         }
+        break;
+      }
+
+      case TYPES.SET_VIA_RESULT_ID: {
+        draft.VIAMode.resultId = action.payload;
+        break;
+      }
+
+      case TYPES.SET_BLOCK_TYPE: {
+        draft.VIAMode.blockType = action.payload;
+        break;
+      }
+
+      case TYPES.SET_VIA_DATA: {
+        draft.VIAMode.viaData = {
+          [action.payload.key]: action.payload.value,
+        };
         break;
       }
 

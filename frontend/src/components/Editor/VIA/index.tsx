@@ -9,7 +9,7 @@ import {
 } from '@Redux/project/actions';
 import { useHotkeys as useShortcut } from 'react-hotkeys-hook';
 import {
-  selectAnnotatedImageURL,
+  selectAnnotatedImageFile,
   selectVIARegionsAsArray,
 } from '@Redux/project/selectors/via';
 import React, { FC } from 'react';
@@ -34,7 +34,8 @@ const VIA: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const regions = useSelector(selectVIARegionsAsArray);
-  const annotatedImageURL = useSelector(selectAnnotatedImageURL);
+  const annotatedImageFile = useSelector(selectAnnotatedImageFile);
+  const url = URL.createObjectURL(annotatedImageFile?.file);
 
   const handleCopy = () => {
     dispatch(copyVIARegion());
@@ -67,7 +68,7 @@ const VIA: FC = () => {
   return (
     <div className={classes.viaRoot}>
       <div onClick={handleClick} className={classes.canvas}>
-        <img src={annotatedImageURL} alt="annotated" />
+        <img src={url} alt="annotated" />
 
         {regions.map((region) => (
           <Region key={region.id} region={region} />
