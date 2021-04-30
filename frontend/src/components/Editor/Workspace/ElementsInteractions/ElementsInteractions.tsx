@@ -86,14 +86,6 @@ const ElementsInteractions: React.FC<Props> = (props) => {
       ]
     : DOMHandler.INSTANCE.visibleElementsIds;
 
-  console.log(
-    'ELEMENTS INTERACTIONS RENDER!!!!',
-    borderedElementsIds,
-    borderedElementsIds.map((id) =>
-      id ? DOMHandler.INSTANCE.getDomById(id) : '123',
-    ),
-  );
-
   if (!rootDom || !bordersEnabled) {
     return null;
   }

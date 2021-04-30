@@ -36,6 +36,7 @@ import {
   UserProjectPermission,
   PermissionsUserData,
   EditScreenData,
+  Framework,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -253,6 +254,10 @@ export type SetProject = IAction<
 export type UpdateProject = IAction<
   typeof TYPES.UPDATE_PROJECT,
   { project: Project }
+>;
+export type UpdateProjectUIFramework = IAction<
+  typeof TYPES.UPDATE_PROJECT_UI_FRAMEWORK,
+  { projectId: number; uiFramework: Framework }
 >;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
@@ -1121,6 +1126,7 @@ export type Action =
   | ReplaceElementStyles
   | RemoveElementClassName
   | UpdateProject
+  | UpdateProjectUIFramework
   | RemoveSharedStyles
   | UpdateSharedStyles
   | AddElementClassName

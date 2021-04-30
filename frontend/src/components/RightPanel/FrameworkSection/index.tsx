@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,27 +11,34 @@ import {
   StyledTextField,
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { FrameworkName, UserProjectPermission } from '@Src/types';
+import { Framework, FrameworkName, UserProjectPermission } from '@Src/types';
 import {
   selectCurrentScreenId,
   selectCurrentUIFramework,
+  selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
-import { editScreenNameAndData } from '@Redux/project/actions';
+import {
+  editScreenNameAndData,
+  updateProjectUIFramework,
+} from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const useStyles = makeStyles({
   details: {
     flexDirection: 'column',
   },
-  select: {
+  selectWrapper: {
     padding: '0 1em',
+  },
+  name: {
+    textTransrorm: 'capitalize',
   },
 });
 
 const FrameworkSection = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const canEditProject = useSelector(
@@ -46,57 +53,80 @@ const FrameworkSection = () => {
       : [];
   }, [currentUIFramework]);
 
-  const [
-    selectedFrameworkName,
-    handleSelectFramework,
-  ] = useDebouncedInputChange(
-    (
-      FRAMEWORKS_LIST.find(
-        (fr) => currentUIFramework && fr.name === currentUIFramework.name,
-      ) || NOT_SELECTED_FRAMEWORK
-    ).name,
+  const [frameworkName, setFrameworkName] = useState<FrameworkName | null>(
+    currentUIFramework?.name || null,
+  );
+
+  const [versionName, setVersionName] = useState<string | null>(
+    currentUIFramework?.version?.name || null,
+  );
+
+  useEffect(() => {
+    const updatedFrName =
+      currentUIFramework?.name || NOT_SELECTED_FRAMEWORK.name;
+    if (updatedFrName !== frameworkName) {
+      setFrameworkName(updatedFrName);
+    }
+  }, [currentUIFramework?.name, frameworkName]);
+
+  const updateFrameworkData = useCallback(
+    (newFramework: Framework) => {
+      if (masterScreenEnabled) {
+        dispatch(updateProjectUIFramework(currentProjectId, newFramework));
+      } else {
+        dispatch(
+          editScreenNameAndData(currentProjectId, currentScreenId, {
+            data: {
+              uiFramework: newFramework,
+            },
+          }),
+        );
+      }
+    },
+    [currentProjectId, currentScreenId, dispatch, masterScreenEnabled],
+  );
+
+  const handleFrameworkChange = useCallback(
     (newFrameworkName: FrameworkName) => {
+      if (newFrameworkName === frameworkName) {
+        return;
+      }
       const selectedFramework = FRAMEWORKS_LIST.find(
         (fr) => fr.name === newFrameworkName,
       );
-      const frameworkVersions = selectedFramework?.versions || [];
-      dispatch(
-        editScreenNameAndData(currentProjectId, currentScreenId, {
-          data: {
-            uiFramework: !selectedFrameworkName
-              ? NOT_SELECTED_FRAMEWORK
-              : {
-                  name: newFrameworkName,
-                  version: frameworkVersions.length
-                    ? frameworkVersions[0]
-                    : null,
-                },
-          },
-        }),
-      );
+      const newFrameworkVersion = selectedFramework?.versions?.length
+        ? selectedFramework.versions[0]
+        : null;
+      setFrameworkName(newFrameworkName);
+      setVersionName(newFrameworkVersion?.name || null);
+      const newUIFramework: Framework = {
+        name: newFrameworkName,
+        version: newFrameworkVersion,
+      };
+      updateFrameworkData(newUIFramework);
     },
+    [frameworkName, updateFrameworkData],
   );
 
-  const [selectedVersionName, handleSelectVersion] = useDebouncedInputChange(
-    (currentUIFramework || NOT_SELECTED_FRAMEWORK).version?.name || '',
-    (selectedVersion: string) => {
-      const frameworkVersions =
-        FRAMEWORKS_LIST.find(
-          (fr) => currentUIFramework && fr.name === currentUIFramework.name,
-        )?.versions || [];
-      dispatch(
-        editScreenNameAndData(currentProjectId, currentScreenId, {
-          data: {
-            uiFramework: {
-              name: selectedFrameworkName,
-              version:
-                frameworkVersions.find((frV) => frV.name === selectedVersion) ||
-                null,
-            },
-          },
-        }),
-      );
+  const handleVersionChange = useCallback(
+    (versionName: string) => {
+      setVersionName(versionName);
+      if (!currentUIFramework) {
+        return;
+      }
+      const selectedFrameworkVersions = FRAMEWORKS_LIST.find(
+        (fr) => fr.name === currentUIFramework.name,
+      )?.versions;
+      const newVersion =
+        selectedFrameworkVersions?.find((frV) => frV.name === versionName) ||
+        null;
+      const newUIFramework: Framework = {
+        name: frameworkName || NOT_SELECTED_FRAMEWORK.name,
+        version: newVersion,
+      };
+      updateFrameworkData(newUIFramework);
     },
+    [currentUIFramework, frameworkName, updateFrameworkData],
   );
 
   return (
@@ -106,36 +136,40 @@ const FrameworkSection = () => {
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={classes.details}>
-        <div>
+        <div className={classes.selectWrapper}>
           <StyledTextField
-            className={classes.select}
             fullWidth
             margin="dense"
             label="Framework"
             select
             disabled={!canEditProject}
-            value={selectedFrameworkName}
-            onChange={handleSelectFramework}
+            value={
+              frameworkName ||
+              currentUIFramework?.name ||
+              NOT_SELECTED_FRAMEWORK.name
+            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              handleFrameworkChange(e.target.value as FrameworkName);
+            }}
           >
             {FRAMEWORKS_LIST.map((framework) => (
               <MenuItem key={framework.name} value={framework.name}>
-                {framework.name}
+                {framework.label}
               </MenuItem>
             ))}
           </StyledTextField>
-        </div>
 
-        {!!currentUIFramework?.version && (
-          <div>
+          {!!currentUIFramework?.version && (
             <StyledTextField
-              className={classes.select}
               fullWidth
               margin="dense"
               label="Version"
               select
               disabled={!canEditProject}
-              value={selectedVersionName}
-              onChange={handleSelectVersion}
+              value={versionName || currentUIFramework.version.name}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                handleVersionChange(event.target.value);
+              }}
             >
               {availableVersions.map((version) => (
                 <MenuItem key={version.name} value={version.name}>
@@ -143,8 +177,8 @@ const FrameworkSection = () => {
                 </MenuItem>
               ))}
             </StyledTextField>
-          </div>
-        )}
+          )}
+        </div>
       </StyledAccordionDetails>
     </StyledAccordion>
   );

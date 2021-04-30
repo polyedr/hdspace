@@ -466,3 +466,33 @@ export function* updateProjectSaga(
     );
   }
 }
+
+export const updateProjectUIFrameworkSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.updateProjectUIFramework>) {
+  const { projectId, uiFramework } = action.payload;
+  try {
+    const project = yield select(selectProjectById, projectId);
+    const newProject: Project = {
+      ...project,
+      projectData: {
+        ...project.projectData,
+        uiFramework,
+      },
+    };
+    yield put(Actions.updateProject(newProject));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
+        },
+        e,
+      ),
+    );
+  }
+});

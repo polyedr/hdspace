@@ -27,6 +27,7 @@ import {
   VIARegion,
   UserData,
   EditScreenData,
+  Framework,
 } from '@Src/types';
 import {
   Action,
@@ -168,6 +169,7 @@ import {
   SetValueImportLoader,
   ToggleEnableTabsAutoSwitch,
   EditScreenNameAndData,
+  UpdateProjectUIFramework,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -240,6 +242,17 @@ export const updateProject = (
   type: TYPES.UPDATE_PROJECT,
   payload: { project },
   meta,
+});
+
+export const updateProjectUIFramework = (
+  projectId: number,
+  uiFramework: Framework,
+): UpdateProjectUIFramework => ({
+  type: TYPES.UPDATE_PROJECT_UI_FRAMEWORK,
+  payload: {
+    projectId,
+    uiFramework,
+  },
 });
 
 export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({

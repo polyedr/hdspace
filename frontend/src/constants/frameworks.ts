@@ -58,18 +58,20 @@ export const NOT_SELECTED_FRAMEWORK: Framework = {
   version: null,
 };
 
-export const BOOTSTRAP_FRAMEWORK = {
-  name: 'bootstrap',
-  versions: BOOTSTRAP_VERSIONS,
-};
-
-export const MATERIALIZE_FRAMEWORK = {
-  name: 'materialize',
-  versions: MATERIALIZE_VERSIONS,
-};
-
 export const FRAMEWORKS_LIST: FrameworkSelection[] = [
-  NOT_SELECTED_FRAMEWORK,
-  BOOTSTRAP_FRAMEWORK,
-  MATERIALIZE_FRAMEWORK,
+  {
+    name: 'not_selected',
+    label: 'Not selected',
+    versions: [],
+  },
+  {
+    name: 'bootstrap',
+    label: 'Bootstrap',
+    versions: BOOTSTRAP_VERSIONS,
+  },
+  {
+    name: 'materialize',
+    label: 'Materialize',
+    versions: MATERIALIZE_VERSIONS,
+  },
 ];

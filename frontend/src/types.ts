@@ -1311,6 +1311,7 @@ export type Framework = {
 
 export type FrameworkSelection = {
   name: string;
+  label: string;
   versions?: FrameworkVersion[];
 };
 
