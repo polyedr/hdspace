@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_SCREEN } from '@Constants/defaultParams';
+import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import { AppReduxState } from '../../types';
+import { selectCurrentProject } from './base';
 
 export const selectCurrentScreenId = ({ project }: AppReduxState) =>
   project.edit.currentScreenId;
@@ -62,3 +64,14 @@ export const selectMasterScreenEnabled = createSelector(
 
 export const selectNewScreenModalOpen = ({ project }: AppReduxState) =>
   project.ui.newScreenModalOpen;
+
+export const selectCurrentUIFramework = createSelector(
+  selectCurrentProject,
+  selectCurrentScreen,
+  selectMasterScreenId,
+  (project, screen, masterScreenId) => {
+    return screen.id === masterScreenId
+      ? project.projectData.uiFramework
+      : screen.screenData?.uiFramework || NOT_SELECTED_FRAMEWORK;
+  },
+);

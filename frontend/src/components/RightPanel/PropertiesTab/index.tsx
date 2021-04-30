@@ -281,7 +281,10 @@ const PropertiesTab: React.FC = () => {
     [dispatch, activeElement.id, currentScreenId],
   );
 
-  if ([masterCoreElementId, masterGroupsElementId].includes(activeElement.id)) {
+  if (
+    !activeElement ||
+    [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
+  ) {
     return null;
   }
 
@@ -314,6 +317,7 @@ const PropertiesTab: React.FC = () => {
                     {...getControlStyles(controlName, currentEditableStyles)}
                     canEdit={canEdit}
                     activeElementId={activeElement.id}
+                    element={activeElement}
                     removeStyles={!masterScreenEnabled && removeStyles}
                     updateStyles={updateStyles}
                     updateParams={!masterScreenEnabled && updateParams}

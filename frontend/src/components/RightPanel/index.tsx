@@ -162,6 +162,7 @@ const RightPanel: React.FC = () => {
     masterCoreElId,
     masterGroupsElId,
     canEditProject,
+    tabsAutoswitchEnabled,
   ]);
 
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {
@@ -170,26 +171,24 @@ const RightPanel: React.FC = () => {
 
   return (
     <div className={classes.root} id={ELEMENT_IDS.rightPanel}>
-      <>
-        <Tabs
-          value={activeTabIndex}
-          onChange={handleChange}
-          classes={tabsClasses}
-          variant="fullWidth"
-        >
-          {tabs.map((tab) => (
-            <Tab key={tab} classes={tabClasses} label={tab} />
-          ))}
-        </Tabs>
+      <Tabs
+        value={activeTabIndex}
+        onChange={handleChange}
+        classes={tabsClasses}
+        variant="fullWidth"
+      >
+        {tabs.map((tab) => (
+          <Tab key={tab} classes={tabClasses} label={tab} />
+        ))}
+      </Tabs>
 
-        {tabs.map((tab, i) => {
-          return (
-            <TabPanel index={i} value={activeTabIndex} key={tab}>
-              {tabContent[tab]}
-            </TabPanel>
-          );
-        })}
-      </>
+      {tabs.map((tab, i) => {
+        return (
+          <TabPanel index={i} value={activeTabIndex} key={tab}>
+            {tabContent[tab]}
+          </TabPanel>
+        );
+      })}
       <AssetsSection />
     </div>
   );

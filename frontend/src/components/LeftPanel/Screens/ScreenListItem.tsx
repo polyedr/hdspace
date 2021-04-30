@@ -4,7 +4,7 @@ import { lighten, makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
-import { editScreen } from '@Redux/project/actions';
+import { editScreenNameAndData } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { ListItem, ListItemIcon } from '@material-ui/core';
 import { Screen } from '../../../types';
@@ -53,7 +53,7 @@ type Props = {
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();
-  const { name, project, id, image, screen_data_json } = screen;
+  const { name, project, id, image, screenData } = screen;
   const classes = useStyles();
   const history = useHistory();
   const currentProjectId = useSelector(selectCurrentProjectId);
@@ -67,7 +67,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const closeEdit = () => setEdit(false);
 
   const handleSubmit = async (values) => {
-    dispatch(editScreen(project, id, values));
+    dispatch(editScreenNameAndData(project, id, { data: { meta: values } }));
     closeEdit();
   };
 
@@ -110,10 +110,9 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
             open={edit}
             onSubmit={handleSubmit}
             onClose={closeEdit}
-            fieldName="name"
             titleDialog="Rename Screen"
             initialValueName={name}
-            initialValueTags={screen_data_json}
+            initialValueTags={screenData.meta || {}}
           />
         </div>
       )}

@@ -6,11 +6,12 @@ import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('checkbox', {});
 
-const Checkbox = React.forwardRef<HTMLInputElement, RendererProps>(
+const BootstrapCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const { id, styles } = element;
     const [className, groupClass] = styles.classNames;
+    const { label } = element.parameters;
     const eventHandlers = useEventHandlers(props);
 
     const [isChecked, setIsChecked] = useState<boolean>(false);
@@ -24,23 +25,25 @@ const Checkbox = React.forwardRef<HTMLInputElement, RendererProps>(
     const classes = useStyles(props);
 
     return (
-      <input
-        type="checkbox"
-        ref={ref}
-        id={id}
-        data-ls-id={id}
-        className={cn(
-          className,
-          groupClass,
-          classes.ownStyles,
-          isDisabled && classes.disabled,
-        )}
-        checked={!isDisabled && isChecked}
-        onChange={handleCheckboxChange}
-        {...eventHandlers}
-      />
+      <div className="form-check" ref={ref} {...eventHandlers}>
+        <input
+          type="checkbox"
+          id={id}
+          data-ls-id={id}
+          className={cn(
+            'form-check-input',
+            className,
+            groupClass,
+            classes.ownStyles,
+            isDisabled && classes.disabled,
+          )}
+          checked={!isDisabled && isChecked}
+          onChange={handleCheckboxChange}
+        />
+        <label htmlFor={element.id}>{label || ''}</label>
+      </div>
     );
   },
 );
 
-export default Checkbox;
+export default BootstrapCheckbox;

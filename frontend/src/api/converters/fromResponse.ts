@@ -15,12 +15,14 @@ import {
   ServerProject,
   ServerProjectWithScreens,
   ServerRecursiveElement,
+  ServerScreen,
   ServerUserData,
   UserData,
 } from '@Src/types';
 import { capitalize } from '@Utils/stringHelper';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 
 const defaultParameters = {
   freeCanvas: defaultFreeCanvasParams,
@@ -173,17 +175,65 @@ export function convertProjectFromResponse({
             rules: cssCamelize(cls.rules) as React.CSSProperties,
           } as ProjectClass;
         }) || [],
+      uiFramework: projectDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
     },
   };
 }
 
-export const convertScreenFromResponse = (screen: Screen) => ({
-  ...screen,
-  screen_data_json:
-    typeof screen.screen_data_json === 'string'
-      ? JSON.parse(screen.screen_data_json)
-      : screen.screen_data_json,
-});
+export function convertScreenFromResponse({
+  id,
+  name,
+  status,
+  project,
+  image,
+  screenscenario,
+  buoyancy,
+  element,
+  screen_data_json,
+}: ServerScreen): Screen {
+  const screenDataJSON = JSON.parse(screen_data_json);
+  return {
+    id,
+    name,
+    status,
+    project,
+    image,
+    screenscenario,
+    buoyancy,
+    element,
+    screenData: {
+      meta: screenDataJSON.meta || {},
+      uiFramework: screenDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
+    },
+  };
+}
+
+export function convertNNScreenFromResponse({
+  id,
+  name,
+  status,
+  project,
+  image,
+  screenscenario,
+  buoyancy,
+  element,
+  screen_data_json,
+}: ServerScreen): Screen {
+  return {
+    id,
+    name,
+    status,
+    project,
+    image,
+    screenscenario,
+    buoyancy,
+    element,
+    screenData: {
+      uiFramework: NOT_SELECTED_FRAMEWORK,
+      nnResult: JSON.parse(screen_data_json),
+    },
+  };
+}
 
 export function convertProjectWithScreensFromResponse({
   id,

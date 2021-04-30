@@ -41,7 +41,7 @@ const useStyles = makeStyles(({ palette }) => ({
 const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { id, name, screen_data_json } = useSelector(selectCurrentScreen);
+  const { id, name, screenData } = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
 
@@ -54,7 +54,7 @@ const Actions: React.FC = () => {
   const handleSaveScreen = () => dispatch(updateScreenImage(id));
 
   const handleExportScreen = () => {
-    exportHTML(name, screen_data_json);
+    exportHTML(name, screenData.meta);
   };
 
   return (

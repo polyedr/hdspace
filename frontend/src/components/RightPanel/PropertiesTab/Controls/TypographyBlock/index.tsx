@@ -59,13 +59,6 @@ const TypographyBlock: React.FC<Props> = ({
 }) => {
   const classes = useStyles();
 
-  /* const handleColorSettingsChange = useCallback(
-    (newColor: string) => {
-      updateStyles({ color: newColor });
-    },
-    [updateStyles],
-  ); */
-
   const handleFontFamilyChange = (ev) => {
     updateStyles({ fontFamily: ev.target.value });
   };

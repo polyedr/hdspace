@@ -11,10 +11,8 @@ export class DOMHandler {
 
   public addElementDom(id: string, element: HTMLElement) {
     if (!element) return;
-    if (!this._elementsDom[id]) {
-      this._observer.observe(element);
-      this._elementsDom[id] = element;
-    }
+    this._observer.observe(element);
+    this._elementsDom[id] = element;
   }
 
   public removeElementDom(id: string) {

@@ -13,7 +13,6 @@ import {
   Result,
   ServerElement,
   Screen,
-  VIAFile,
   VIARegion,
   UserProjectPermission,
 } from '@Src/types';
@@ -65,14 +64,12 @@ export const semiautoAnalyzeImageSaga = compose(
     });
 
     if (recognizeResult) {
-      if (!recognizeResult.screen_data_json) {
+      if (!recognizeResult.screenData.nnResult) {
         throw new Error('No VIA data has been received');
       }
 
       const [viaKey, viaFile] = Object.entries(
-        JSON.parse(recognizeResult.screen_data_json) as {
-          [key: string]: VIAFile;
-        },
+        recognizeResult.screenData.nnResult,
       )[0];
 
       yield put(

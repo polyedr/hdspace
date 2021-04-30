@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
 import { setEditorDocument } from '@Redux/project/actions';
 import theme from '@Src/styles/Theme';
+import { selectCurrentUIFramework } from '@Redux/project/selectors/screen';
 import { selectImportLoader } from '../../../redux/project/selectors/base';
 
 import { WindowProvider } from './FrameContext';
@@ -30,13 +31,15 @@ const useStyles = makeStyles({
 });
 
 const CustomHead: FC = () => {
+  const uiFramework = useSelector(selectCurrentUIFramework);
+  const frameworkVersion = uiFramework?.version;
   return (
     <>
       <meta charSet="utf-8" />
       <title>Previewer</title>
       <meta name="viewport" content="width=device-width,initial-scale=1" />
       <base target="_parent" />
-      <style>
+      <style key="body_style">
         {`
           body {
             padding: 0;
@@ -62,6 +65,29 @@ const CustomHead: FC = () => {
           }
         `}
       </style>
+      {frameworkVersion &&
+        frameworkVersion.styleSheetsData.map(
+          ({ key, link, ...otherParams }) => {
+            return (
+              <link
+                key={key}
+                rel="stylesheet"
+                type="text/css"
+                href={link}
+                {...otherParams}
+              />
+            );
+          },
+        )}
+      {frameworkVersion &&
+        frameworkVersion.scriptsData.map(({ key, link, ...otherParams }) => (
+          <script
+            key={key}
+            type="text/javascript"
+            src={link}
+            {...otherParams}
+          />
+        ))}
     </>
   );
 };

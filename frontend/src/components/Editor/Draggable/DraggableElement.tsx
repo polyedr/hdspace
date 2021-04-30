@@ -51,7 +51,6 @@ type DraggableElementProps = {
   masterSourceElementId: string | null;
   canDragAndDrop: boolean;
   frameWindow: Window | null;
-
   parentDomStyles?: CSSStyleDeclaration | null;
   parentIds?: Array<string>;
   scrollRef: React.RefObject<Scrollbars>;
@@ -67,7 +66,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   masterSourceElementId,
   canDragAndDrop,
   frameWindow,
-
   parentDomStyles,
   parentIds = [],
   scrollRef,
@@ -257,11 +255,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, [isOverArea, dropTargetParams, parent, dispatch]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     return () => {
       DOMHandler.INSTANCE.removeElementDom(elementId);
     };
-  }, [elementId]);
+  }, [elementId]); */
 
   const clickHandler = useCallback(
     (event: React.MouseEvent) => {

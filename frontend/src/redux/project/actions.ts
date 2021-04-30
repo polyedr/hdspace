@@ -26,8 +26,7 @@ import {
   StateElementsToAdd,
   VIARegion,
   UserData,
-  // IframeMessage,
-  ScreenInfo,
+  EditScreenData,
 } from '@Src/types';
 import {
   Action,
@@ -60,7 +59,6 @@ import {
   RemoveAsset,
   RestoreAsset,
   RenameProject,
-  EditScreen,
   ReplaceElementStyles,
   ResetProjectState,
   RestoreElement,
@@ -169,6 +167,7 @@ import {
   AssetData,
   SetValueImportLoader,
   ToggleEnableTabsAutoSwitch,
+  EditScreenNameAndData,
 } from '../types';
 import TYPES from '../actionTypes';
 
@@ -327,16 +326,16 @@ export const restoreScreen = (
   meta,
 });
 
-export const editScreen = (
+export const editScreenNameAndData = (
   projectID: number,
   screenID: number,
-  screenInfo: ScreenInfo,
-): EditScreen => ({
-  type: TYPES.EDIT_SCREEN,
+  editData: EditScreenData,
+): EditScreenNameAndData => ({
+  type: TYPES.EDIT_SCREEN_NAME_AND_DATA,
   payload: {
     projectID,
     screenID,
-    screenInfo,
+    editData,
   },
 });
 

@@ -4,28 +4,38 @@ import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 
-const useStyles = makeComponentStyles('select-menu');
+const useStyles = makeComponentStyles('select', {});
 
-const SelectMenu = React.forwardRef<HTMLDivElement, RendererProps>(
+const Select = React.forwardRef<HTMLSelectElement, RendererProps>(
   (props, ref) => {
-    const { element, children } = props;
+    const { element, isDisabled, children } = props;
     const [className, groupClass] = element.styles.classNames;
+
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
+
     return (
-      <ul
+      <select
+        ref={ref}
         id={element.id}
         data-ls-id={element.id}
-        ref={ref}
-        className={cn('mdc-list', className, groupClass, classes.ownStyles)}
-        role="listbox"
-        aria-label={`menu-${element.id}-listbox`}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          isDisabled && classes.disabled,
+        )}
         {...eventHandlers}
+        {...(isDisabled && {
+          onMouseDown: (ev) => {
+            ev.preventDefault();
+          },
+        })}
       >
         {children}
-      </ul>
+      </select>
     );
   },
 );
 
-export default SelectMenu;
+export default Select;

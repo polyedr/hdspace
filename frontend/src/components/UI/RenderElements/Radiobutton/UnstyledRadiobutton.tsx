@@ -1,47 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 
-const useStyles = makeComponentStyles('select-item', {
-  root: {
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-    },
-  },
-});
+const useStyles = makeComponentStyles('radiobutton', {});
 
-const SelectItem = React.forwardRef<HTMLDivElement, RendererProps>(
+const UnstyledRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const { name } = element.parameters;
+
     const classes = useStyles(props);
+    const [isChecked, setIsChecked] = useState<boolean>(false);
+
     const eventHandlers = useEventHandlers(props);
 
     return (
-      <li
-        id={element.id}
+      <input
+        type="radio"
         ref={ref}
+        id={element.id}
         data-ls-id={element.id}
         className={cn(
-          'mdc-list-item',
           className,
-          classes.root,
           groupClass,
           isDisabled && classes.disabled,
           classes.ownStyles,
         )}
-        aria-selected="false"
-        data-value="grains"
-        role="option"
         {...eventHandlers}
-      >
-        <span className="mdc-list-item__text">{name}</span>
-      </li>
+        checked={!isDisabled && !isChecked}
+        onChange={() => {
+          if (!isDisabled && isChecked) {
+            setIsChecked(!isChecked);
+          }
+        }}
+      />
     );
   },
 );
 
-export default SelectItem;
+export default UnstyledRadiobutton;

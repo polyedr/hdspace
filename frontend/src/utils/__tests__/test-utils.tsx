@@ -12,6 +12,7 @@ import { AppReduxState, ProjectEditState } from '@Redux/types';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
 import { generateRandomInteger } from '@Utils/NumberHelper';
+import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import {
   Project,
   StateElement,
@@ -35,6 +36,7 @@ export const mockProject: Project = {
   projectLoader: false,
   projectData: {
     classes: [],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
   },
   user: DEFAULT_USER,
 };
@@ -48,7 +50,9 @@ export const mockScreen: Screen = {
   status: 'in progress',
   screenscenario: [],
   element: '1',
-  screen_data_json: '{}',
+  screenData: {
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+  },
 };
 
 export const mockRootElement: StateElement = {
@@ -208,6 +212,7 @@ export const createMockProject = (): Project => ({
   updated: new Date(),
   projectData: {
     classes: [],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
   },
   user: DEFAULT_USER,
 });
@@ -228,7 +233,9 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
   image: null,
   name: 'Master Screen',
   project: projectId,
-  screen_data_json: {},
+  screenData: {
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+  },
   screenscenario: [],
   status: 'pending',
 });
@@ -243,7 +250,9 @@ export const createScreenMock = (
   image: null,
   name: 'Screen 1',
   project: projectId,
-  screen_data_json: {},
+  screenData: {
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+  },
   screenscenario: [],
   status: 'pending',
 });
@@ -256,6 +265,7 @@ export const createProjectWithScreensMock = (
   name: 'test name',
   projectData: {
     classes: [],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
   },
   projectLoader: false,
   projectscreen: [

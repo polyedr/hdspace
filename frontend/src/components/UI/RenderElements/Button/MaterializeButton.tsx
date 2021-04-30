@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
@@ -6,7 +6,7 @@ import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('button', {});
 
-const Button = React.forwardRef<HTMLButtonElement, RendererProps>(
+const MaterializeButton = React.forwardRef<HTMLButtonElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const { id, parameters, styles } = element;
@@ -17,17 +17,14 @@ const Button = React.forwardRef<HTMLButtonElement, RendererProps>(
 
     return (
       <button
-        ref={(dom) => {
-          if (typeof ref === 'function') {
-            ref(dom);
-          } else if (ref) {
-            ref.current = dom;
-          }
-        }}
+        ref={ref}
         type="button"
         id={id}
         data-ls-id={id}
         className={cn(
+          'btn',
+          'waves-effect',
+          'waves-light',
           className,
           groupClass,
           classes.ownStyles,
@@ -41,4 +38,4 @@ const Button = React.forwardRef<HTMLButtonElement, RendererProps>(
   },
 );
 
-export default Button;
+export default memo(MaterializeButton);

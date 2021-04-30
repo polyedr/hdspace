@@ -4,7 +4,7 @@ import pretty from 'pretty';
 import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
 import { toClassName } from '@Utils/stringHelper';
-import { ProjectClass, ScreenMeta, StateElement } from '@Src/types';
+import { ProjectClass, ScreenMetaData, StateElement } from '@Src/types';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
@@ -167,8 +167,8 @@ export const processJS = async (jsFolder: JSZip | null) => {
 export const getHtmlFromTemplate = (
   screenName: string,
   body: string,
-  meta: ScreenMeta,
   mapComponents: StateElement[],
+  meta?: ScreenMetaData,
 ) =>
   pretty(`
 <!DOCTYPE html>
@@ -176,15 +176,17 @@ export const getHtmlFromTemplate = (
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    ${Object.entries(meta)
-      .map(([key, value]) => {
-        if (value && key !== 'title') {
-          return `<meta name="${key}" content="${value}"/>`;
-        }
-        return '';
-      })
-      .join('\n')}
-
+    ${
+      meta &&
+      Object.entries(meta)
+        .map(([key, value]) => {
+          if (value && key !== 'title') {
+            return `<meta name="${key}" content="${value}"/>`;
+          }
+          return '';
+        })
+        .join('\n')
+    }
     <meta
       name="google-site-verification"
       content="m2BjG5J2rJf552uAF0lgzMClJyuz0N-tjQ5kh5yewOo"
@@ -220,7 +222,7 @@ export const getHtmlFromTemplate = (
       }" defer></script>`;
     })}
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-    <title>${!meta.title ? screenName : meta.title}</title>
+    <title>${meta?.title || screenName}</title>
   </head>
   <body>
     ${body}

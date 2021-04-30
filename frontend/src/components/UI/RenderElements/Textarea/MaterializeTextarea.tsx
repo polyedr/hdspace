@@ -1,21 +1,25 @@
 import React from 'react';
 import cn from 'classnames';
-import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
+import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('textarea', {});
 
-const Textarea = React.forwardRef<HTMLTextAreaElement, RendererProps>(
-  (props, ref) => {
-    const { element, isDisabled } = props;
-    const { placeholder, textContent } = element.parameters;
-    const [className, groupClass] = element.styles.classNames;
+const MaterializeTextarea = React.forwardRef<
+  HTMLTextAreaElement,
+  RendererProps
+>((props, ref) => {
+  const { element, isDisabled } = props;
+  const { placeholder, textContent, label } = element.parameters;
+  const [className, groupClass] = element.styles.classNames;
 
-    const classes = useStyles(props);
-    const eventHandlers = useEventHandlers(props);
+  const classes = useStyles(props);
+  const eventHandlers = useEventHandlers(props);
 
-    return (
+  return (
+    <div className="input-field">
+      {label?.length && <label htmlFor={element.id}>{label}</label>}
       <textarea
         ref={ref}
         id={element.id}
@@ -24,6 +28,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, RendererProps>(
         readOnly={isDisabled}
         placeholder={placeholder}
         className={cn(
+          'materialize-textarea',
           className,
           groupClass,
           classes.ownStyles,
@@ -33,8 +38,8 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, RendererProps>(
         {...eventHandlers}
         style={{ resize: 'none' }}
       />
-    );
-  },
-);
+    </div>
+  );
+});
 
-export default Textarea;
+export default MaterializeTextarea;

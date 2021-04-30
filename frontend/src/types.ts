@@ -5,6 +5,26 @@ import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 
+type ScreenBase = {
+  id: number;
+  name: string;
+  status: string; // compare with entity on backend!
+  project: number;
+  image: string | null;
+  screenscenario: number[];
+  buoyancy: number;
+  element: string;
+};
+
+type ProjectBase = {
+  id: number;
+  name: string;
+  status: string;
+  projectLoader: boolean;
+  created: Date;
+  updated: Date;
+};
+
 export type PropertyName = keyof React.CSSProperties;
 
 export type Normalized<T extends { id: string | number }> = {
@@ -640,7 +660,7 @@ export type ServerProjectWithScreens = {
   id: number;
   name: string;
   status: string;
-  projectscreen: Screen[];
+  projectscreen: ServerScreen[];
   created: string;
   updated: string;
   user: ServerUserData;
@@ -660,6 +680,10 @@ export type ServerProject = {
   project_data_text: string;
 };
 
+export type ServerScreen = ScreenBase & {
+  screen_data_json: string;
+};
+
 export type ProjectClass = {
   className: string;
   supportedElement: Entity;
@@ -668,30 +692,17 @@ export type ProjectClass = {
 
 export type ProjectData = {
   classes: ProjectClass[];
+  uiFramework: Framework;
 };
 
-export type Project = {
-  id: number;
-  name: string;
-  status: string;
+export type Project = ProjectBase & {
   projectscreen: number[];
-  projectLoader: boolean;
-  created: Date;
-  updated: Date;
   projectData: ProjectData;
   user: UserData;
 };
 
-export type ProjectWithScreens = {
-  id: number;
-  name: string;
-  status: string;
-  projectLoader: boolean;
-  created: Date;
-  updated: Date;
-  projectData: {
-    classes: ProjectClass[];
-  };
+export type ProjectWithScreens = ProjectBase & {
+  projectData: ProjectData;
   projectscreen: Screen[];
   user: UserData;
 };
@@ -833,17 +844,29 @@ export interface ScenarioItem {
   styles: React.CSSProperties;
 }
 
-export interface Screen {
-  id: number;
-  name: string;
-  status: string; // compare with entity on backend!
-  project: number;
-  image: string | null;
-  screenscenario: number[];
-  buoyancy: number;
-  element: string;
-  screen_data_json: any;
-}
+export type ScreenMetaData = {
+  title: string;
+  description: string;
+  keywords: string;
+  viewport: string;
+  author: string;
+  refresh: string;
+};
+
+export type ScreenData = {
+  meta?: ScreenMetaData;
+  nnResult?: { [key: string]: VIAFile };
+  uiFramework: Framework;
+};
+
+export type EditScreenData = {
+  name?: string;
+  data?: Partial<ScreenData>;
+};
+
+export type Screen = ScreenBase & {
+  screenData: ScreenData;
+};
 
 export type UploadedImageInfo = {
   imageURL: string;
@@ -1029,6 +1052,7 @@ export type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   activeElementId: string;
+  element: StateElement;
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
@@ -1265,15 +1289,33 @@ export type IFrameMessage = {
   payload: any;
 };
 
-export type ScreenMeta = {
-  description: string;
-  keywords: string;
-  title: string;
-  viewport: string;
-  author: string;
-  refresh: string;
+export type FrameworkLink = {
+  key: string;
+  link: string;
+  crossOrigin?: string;
+  integrity?: string;
 };
 
-export type ScreenInfo = ScreenMeta & {
+export type FrameworkName = 'bootstrap' | 'materialize' | 'not_selected';
+
+export type FrameworkVersion = {
   name: string;
+  styleSheetsData: FrameworkLink[];
+  scriptsData: FrameworkLink[];
 };
+
+export type Framework = {
+  name: FrameworkName;
+  version: FrameworkVersion | null;
+};
+
+export type FrameworkSelection = {
+  name: string;
+  versions?: FrameworkVersion[];
+};
+
+export type ElementProps = {
+  uiFramework: Framework;
+};
+
+export type FrameworkComponentSettings = Record<FrameworkName, React.FC<any>>;

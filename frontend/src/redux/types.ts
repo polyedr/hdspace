@@ -35,7 +35,7 @@ import {
   PaginatedResponse,
   UserProjectPermission,
   PermissionsUserData,
-  ScreenInfo,
+  EditScreenData,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -311,12 +311,12 @@ export type RestoreScreen = IAction<
   { projectId: number; screenId: number },
   HistoryMeta
 >;
-export type EditScreen = IAction<
-  typeof TYPES.EDIT_SCREEN,
+export type EditScreenNameAndData = IAction<
+  typeof TYPES.EDIT_SCREEN_NAME_AND_DATA,
   {
     projectID: number;
     screenID: number;
-    screenInfo: ScreenInfo;
+    editData: EditScreenData;
   }
 >;
 export type CreateScreen = IAction<
@@ -1074,7 +1074,7 @@ export type Action =
   | SetAnalyzerLoader
   | SetAssetsLoader
   | DeleteScreen
-  | EditScreen
+  | EditScreenNameAndData
   | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen

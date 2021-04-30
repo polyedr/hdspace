@@ -15,17 +15,15 @@ import {
   createScreenSaga,
   changeScreensOrderSaga,
   deleteScreenSaga,
-  editScreenSaga,
+  editScreenNameAndDataSaga,
   restoreScreenSaga,
   updateScreenImageSaga,
   convertFreeCanvasSaga,
 } from '@Redux/project/sagas/screen';
 import {
-  // assignUserPermissionSaga,
   getAllUsersProjectPermissionsSaga,
   getMyPermissionsForProjectSaga,
   getUsersSaga,
-  // unassignUserPermissionSaga,
   updateUserPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
@@ -357,7 +355,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.UPDATE_SCREEN_IMAGE, updateScreenImageSaga);
   yield takeLatest(TYPES.DELETE_SCREEN, deleteScreenSaga);
   yield takeEvery(TYPES.RESTORE_SCREEN, restoreScreenSaga);
-  yield takeLatest(TYPES.EDIT_SCREEN, editScreenSaga);
+  yield takeLatest(TYPES.EDIT_SCREEN_NAME_AND_DATA, editScreenNameAndDataSaga);
   yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);
 
   yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);

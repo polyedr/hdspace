@@ -2,11 +2,11 @@ import { all, call, fork, put, select } from 'redux-saga/effects';
 import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
+import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import {
-  convertElementFromResponse,
-  convertScreenFromResponse,
-} from '@Api/converters/fromResponse';
-import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
+  convertCreatedElementToRequest,
+  convertScreenToPatchRequest,
+} from '@Api/converters/toRequest';
 import { apiCreateElements, apiGetElements } from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
 import { apiUpdateScenarios } from '@Api/scenario';
@@ -36,7 +36,7 @@ import {
   addElements,
   createScreen,
   deleteScreen,
-  editScreen,
+  editScreenNameAndData,
   restoreScreen,
   setCurrentScreenId,
   setProject,
@@ -215,7 +215,7 @@ export const createScreenSaga = compose(
 
         if (savedScreen) {
           const updatedScreen = {
-            ...convertScreenFromResponse(savedScreen),
+            ...savedScreen,
             element: elements[0].id,
           };
 
@@ -519,7 +519,7 @@ export const restoreScreenSaga = withActionsHistory(function* ({
 
       if (elements) {
         screen.element = elements[0].id;
-        yield put(setScreens([convertScreenFromResponse(screen), ...screens]));
+        yield put(setScreens([screen, ...screens]));
 
         yield put(setProject(result));
 
@@ -549,71 +549,46 @@ export const restoreScreenSaga = withActionsHistory(function* ({
   }
 });
 
-export const editScreenSaga = withRequiredPermissions(
+export const editScreenNameAndDataSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* ({ payload }: ReturnType<typeof editScreen>) {
+)(function* ({ payload }: ReturnType<typeof editScreenNameAndData>) {
   try {
-    const { screenID, screenInfo } = payload;
-    const {
-      name,
-      description,
-      keywords,
-      title,
-      viewport,
-      author,
-      refresh,
-    } = screenInfo;
+    const { screenID, editData } = payload;
+    const { name, data } = editData;
+    const oldScreen = yield select(selectScreenById, screenID);
+    if (!oldScreen) {
+      throw new Error('Screen not found');
+    }
 
-    const nameWithoutSpace = name.trim();
     const screens: ReturnType<typeof selectScreens> = yield select(
       selectScreens,
     );
-    const numberedName = generateUniqueName(
-      nameWithoutSpace,
-      screens.map((screen) => screen.name),
-    );
 
-    const newData: Partial<Screen> = {
-      name: numberedName,
-      screen_data_json: JSON.stringify({
-        title,
-        description,
-        keywords,
-        viewport,
-        author,
-        refresh,
-      }),
+    const newScreen: Screen = {
+      ...oldScreen,
+      name: name
+        ? generateUniqueName(
+            name.trim(),
+            screens.map((screen) => screen.name),
+          )
+        : oldScreen.name,
+      screenData: {
+        ...(data || {}),
+        meta: data?.meta || oldScreen.meta,
+        uiFramework: data?.uiFramework || oldScreen.uiFramework,
+      },
     };
 
-    const { result, error }: Result<Screen> = yield call(
-      reqWrapper,
-      apiUpdateScreen,
-      {
-        id: screenID,
-        data: newData,
-      },
-    );
+    yield put(Actions.updateScreen(newScreen));
 
-    if (result) {
-      const newScreens = screens.map((screen) => {
-        return screen.id === screenID
-          ? {
-              ...screen,
-              name: numberedName,
-              screen_data_json: {
-                description,
-                keywords,
-                title,
-                viewport,
-                author,
-                refresh,
-              },
-            }
-          : screen;
-      });
-      yield put(setScreens(newScreens));
-    }
+    const convertedScreen = convertScreenToPatchRequest(newScreen);
+
+    const { error }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
+      id: screenID,
+      data: convertedScreen,
+    });
+
     if (error) throw new Error(error);
   } catch (e) {
     yield put(

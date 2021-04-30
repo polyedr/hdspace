@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 
-import { RendererProps, DefaultEventHandlers } from '../RenderElements/types';
+import { RendererProps, EventHandlers } from '../RenderElements/types';
 
-const useEventHandlers = (
+const useEventHandlers = <T extends HTMLElement>(
   props: RendererProps,
-  defaultHandlers: DefaultEventHandlers = {},
+  defaultHandlers: EventHandlers<T> = {},
   skipHandlers: string[] = [],
-): any => {
+): EventHandlers<T> => {
   const eventNames = Object.keys(props).filter((name) => {
     return name.startsWith('on') && props[name] instanceof Function;
   });
@@ -20,7 +20,7 @@ const useEventHandlers = (
             return acc;
           }
           const handler = defaultHandlers[eventName]
-            ? (event: React.SyntheticEvent<HTMLElement>) => {
+            ? (event: React.SyntheticEvent<T>) => {
                 defaultHandlers[eventName](event);
                 props[eventName](event);
               }
