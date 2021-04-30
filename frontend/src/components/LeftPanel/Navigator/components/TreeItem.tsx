@@ -155,13 +155,8 @@ const TreeItem: React.FC<Props> = (props) => {
         select(item.id as string);
       }
     },
-    [item.id, select],
+    [item.id, select, dispatch],
   );
-
-  // const handleFocus = useCallback(() => select(item.id as string), [
-  //   item.id,
-  //   select,
-  // ]);
 
   return (
     <div
@@ -176,7 +171,6 @@ const TreeItem: React.FC<Props> = (props) => {
       onContextMenu={(ev) => onContextMenu(ev, item)}
       onDoubleClick={handleDoubleClick}
       onClick={handleClick}
-      // onFocus={handleFocus}
       aria-selected={isActive}
       {...(isParent
         ? { role: 'group', 'aria-expanded': item.isExpanded }
