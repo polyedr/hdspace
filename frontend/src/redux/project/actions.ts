@@ -28,6 +28,8 @@ import {
   UserData,
   ScreenInfo,
   ProfileDataUIParameters,
+  VIAFile,
+  FileToUpload,
 } from '@Src/types';
 import {
   UpdateUISettingsParameters,
@@ -125,7 +127,7 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
-  SemiautoAnalyzeImage,
+  RecognizeImage,
   FinishAnnotaion,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
@@ -174,6 +176,9 @@ import {
   RestoreVIARegion,
   UpdateVIARegionSuccess,
   UpdateVIARegionLayerSuccess,
+  SetVIAResultId,
+  SetVIAData,
+  SetBlockType,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -860,7 +865,7 @@ export const addChildToElement = (
 });
 
 export const autoAnalyzeImage = (
-  file: any,
+  file: FileToUpload,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
@@ -874,19 +879,17 @@ export const autoAnalyzeImage = (
   meta,
 });
 
-export const semiAutoAnalyzeImage = (
-  file: any,
+export const recognizeImage = (
+  file: FileToUpload,
   parentId: string,
   blockType: NNBlockType,
-  meta: ElementHistoryMeta,
-): SemiautoAnalyzeImage => ({
-  type: TYPES.SEMIAUTO_ANALYZE_IMAGE,
+): RecognizeImage => ({
+  type: TYPES.RECOGNIZE_IMAGE,
   payload: {
     file,
     parentId,
     blockType,
   },
-  meta,
 });
 
 export const wrapIntoContainer = (
@@ -1489,6 +1492,11 @@ export const setAnnotatedElementId = (id: string): SetAnnotatedElement => ({
   payload: id,
 });
 
+export const setVIAResultId = (id: string): SetVIAResultId => ({
+  type: TYPES.SET_VIA_RESULT_ID,
+  payload: id,
+});
+
 export const updateVIARegionLayer = (
   id: string,
   layer: number,
@@ -1510,9 +1518,27 @@ export const updateVIARegionLayerSuccess = (
   },
 });
 
-export const setAnnotatedImageURL = (url: string): SetAnnotatedImageURL => ({
+export const setAnnotatedImageFile = (
+  file: FileToUpload,
+): SetAnnotatedImageURL => ({
   type: TYPES.SET_ANNOTATED_IMAGE_URL,
-  payload: url,
+  payload: file,
+});
+
+export const setVIAData = (
+  key: string,
+  value: Omit<VIAFile, 'regions'>,
+): SetVIAData => ({
+  type: TYPES.SET_VIA_DATA,
+  payload: {
+    key,
+    value,
+  },
+});
+
+export const setBlockType = (blockType: NNBlockType): SetBlockType => ({
+  type: TYPES.SET_BLOCK_TYPE,
+  payload: blockType,
 });
 
 export const cancelRecognizing = () => ({

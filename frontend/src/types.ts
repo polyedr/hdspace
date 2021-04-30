@@ -1282,6 +1282,13 @@ export type ScreenInfo = ScreenMeta & {
   name: string;
 };
 
+export type FileToUpload = {
+  file: File;
+  name: string;
+  imgPreviewUrl?: string;
+  stylesOn?: boolean;
+};
+
 export type ChatCredentials = {
   realm: string;
   username: string;

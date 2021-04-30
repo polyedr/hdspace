@@ -38,6 +38,8 @@ import {
   ScreenInfo,
   ChatCredentials,
   ProfileDataUIParameters,
+  VIAFile,
+  FileToUpload,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -100,8 +102,11 @@ export type ProjectEditState = {
     regions: Normalized<VIARegion>;
     activeRegionId: string;
     annotatedElementId: string;
-    annotatedImageURL: string;
+    annotatedImageFile: FileToUpload | null;
     copiedRegion: VIARegion | null;
+    resultId: string;
+    blockType: NNBlockType;
+    viaData: Record<string, Omit<VIAFile, 'regions'>>;
   };
   freeCanvas: {
     enabled: boolean;
@@ -579,8 +584,8 @@ export type AutoAnalyzeImage = IAction<
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
-export type SemiautoAnalyzeImage = IAction<
-  typeof TYPES.SEMIAUTO_ANALYZE_IMAGE,
+export type RecognizeImage = IAction<
+  typeof TYPES.RECOGNIZE_IMAGE,
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
@@ -1042,6 +1047,8 @@ export type SetAnnotatedElement = IAction<
   string
 >;
 
+export type SetVIAResultId = IAction<typeof TYPES.SET_VIA_RESULT_ID, string>;
+
 export type UpdateVIARegionLayer = IAction<
   typeof TYPES.UPDATE_VIA_REGION_LAYER,
   { id: string; layer: number }
@@ -1054,8 +1061,18 @@ export type UpdateVIARegionLayerSuccess = IAction<
 
 export type SetAnnotatedImageURL = IAction<
   typeof TYPES.SET_ANNOTATED_IMAGE_URL,
-  string
+  FileToUpload
 >;
+
+export type SetVIAData = IAction<
+  typeof TYPES.SET_VIA_DATA,
+  {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  }
+>;
+
+export type SetBlockType = IAction<typeof TYPES.SET_BLOCK_TYPE, NNBlockType>;
 
 export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
 
@@ -1148,6 +1165,8 @@ export type Action =
   | ReplaceElementStyles
   | RemoveElementClassName
   | UpdateProject
+  | SetVIAData
+  | SetBlockType
   | RemoveSharedStyles
   | UpdateSharedStyles
   | AddElementClassName
@@ -1239,6 +1258,7 @@ export type Action =
   | SetSidebarIframe
   | SetSidebarHost
   | SetValueImportLoader
+  | SetVIAResultId
   | UpdateVIARegionLayerSuccess
   | UpdateUISettingsParameters;
 

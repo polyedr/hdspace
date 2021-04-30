@@ -1,4 +1,4 @@
-import { ProjectsSearchParameter, Layout } from '@Src/types';
+import { ProjectsSearchParameter, Layout, NNBlockType } from '@Src/types';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -74,8 +74,11 @@ export const initialEdit: ProjectEditState = {
     regions: {},
     activeRegionId: '',
     annotatedElementId: '',
-    annotatedImageURL: '',
+    annotatedImageFile: null,
     copiedRegion: null,
+    resultId: '',
+    blockType: NNBlockType.WEBPAGE,
+    viaData: {},
   },
   freeCanvas: {
     enabled: false,
