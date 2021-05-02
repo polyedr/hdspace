@@ -118,11 +118,6 @@ def apply_threshold(img, argument):
     return switcher.get(argument, "Invalid method")
 
 
-def contains_rectangle(r1, r2):
-    # Calculation for the case of rois
-    return r1[1] < r2[1] < r2[3] < r1[3] and r1[0] < r2[0] < r2[2] < r1[2]
-
-
 def detect_aligned_element(x1, width_elem, img_width):
     # Detect the alignment of the element
     # Text-align: left, if the left interval is smaller than the right interval
@@ -1606,13 +1601,11 @@ def calculate_excluded_indices(fdict, fnamesize):
     return True
 
 
-def calculate_opencv_clusters(fdict, fnamesize):
-    # Calculation of the excluded indices to remove overlapped elements pro function for a some opencv_clusters level start
+def calculate_ocvclusters(fdict, fnamesize):
+    # Calculation of the excluded indices to remove overlapped elements pro function for a some ocvclusters level start
     # Second, calculate the non-text blocks overlap
     excluded_elements = []
-    # for rect1 in fdict[filenamesize]["regions"]:
     for rect1 in fdict[fnamesize]["regions"]:
-        # for rect2 in fdict[filenamesize]["regions"]:
         for rect2 in fdict[fnamesize]["regions"]:
             if rect1 != rect2:
                 x1 = rect1["shape_attributes"]["x"]
@@ -1706,21 +1699,36 @@ def calculate_opencv_clusters(fdict, fnamesize):
         if ele not in excluded_elements
     ]
 
-    # Create a set of independent opencv_clusters
+    # Create a set of independent ocvclusters
     for rect in fdict[fnamesize]["regions"]:
         x1 = rect["shape_attributes"]["x"]
         y1 = rect["shape_attributes"]["y"]
         x2 = rect["shape_attributes"]["x"] + rect["shape_attributes"]["width"]
         y2 = rect["shape_attributes"]["y"] + rect["shape_attributes"]["height"]
-        opencv_cluster = ClusterClass(x1, y1, x2, y2)
-        # Set some flags for this novel opencv_cluster
-        opencv_cluster.types = "opencv_cluster"
+        ocvcluster = ClusterClass(x1, y1, x2, y2)
+        # Set some flags for this novel ocvcluster
+        ocvcluster.types = "ocvcluster"
         # Check a cluster definition
 
     return True
 
 
-def suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=[]):
+def calculate_uclusters(fdict, fnamesize):
+    # Create a set of independent uclusters
+    for rect in fdict[fnamesize]["regions"]:
+        x1 = rect["shape_attributes"]["x"]
+        y1 = rect["shape_attributes"]["y"]
+        x2 = rect["shape_attributes"]["x"] + rect["shape_attributes"]["width"]
+        y2 = rect["shape_attributes"]["y"] + rect["shape_attributes"]["height"]
+        ucluster = ClusterClass(x1, y1, x2, y2)
+        # Set some flags for this novel ocvcluster
+        ucluster.types = "ucluster"
+        # Check a cluster definition
+
+    return True
+
+
+def supplement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=[]):
     # Supplementary parameters calculation and printing of the fdict start
     # for filenamesize in fdict:
     # os.chdir(VIA_ANNOTATION_DIR)
@@ -1913,9 +1921,6 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             imgpath = MEDIA_ROOT + "/uploads/" + fname
         else:
             node = ProjectScreen.objects.create(**validated_data)
-        #
-        # fname = str(validated_data["image"])
-        # imgpath = MEDIA_ROOT + "/uploads/" + fname
 
         # Read an image with OpenCV start
         image_opencv_input = cv2.imread(imgpath)
@@ -1952,16 +1957,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
         # Detect text contours and rectangles on image start
         text_contours = []
         rect_contours = []
-        # Detect text regions
         text_contours = run_text_detection(image_opencv_input, text=False)
-
-        # text_contours1 = run_text_detection(image_opencv_input, text=True)
-        #
-        # print(text_contours1)
-        # print("length", len(text_contours), len(text_contours1))
-        #
-        # input()
-        # Detect rect regions
         rect_contours = get_rect_contours(image_opencv_input)
 
         for text_contour in text_contours:
@@ -1985,25 +1981,6 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
         # Create the recognized_elements array start
         if imgpath:
-            if region_dataset in {"forms", "headers", "footers"}:
-                # Detect elements with Mask R CNN model start
-                # imgpath = fname
-                img = load_img(imgpath)
-                img = img_to_array(img)
-
-                if region_dataset == "forms":
-                    results = model_forms.detect([img], verbose=1)
-
-                if region_dataset == "headers":
-                    results = model_headers.detect([img], verbose=1)
-
-                if region_dataset == "footers":
-                    results = model_footers.detect([img], verbose=1)
-
-                # Results of the Mask R CNN recognition
-                r = results[0]
-                # Detect elements with Mask R CNN model end
-
             img = load_img(imgpath)
             img = img_to_array(img)
 
@@ -2021,6 +1998,21 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             window_name1 = "image_opencv_text"
 
             if region_dataset in {"forms", "headers", "footers"}:
+                # Detect elements with Mask R CNN model start
+
+                if region_dataset == "forms":
+                    results = model_forms.detect([img], verbose=1)
+
+                if region_dataset == "headers":
+                    results = model_headers.detect([img], verbose=1)
+
+                if region_dataset == "footers":
+                    results = model_footers.detect([img], verbose=1)
+
+                # Results of the Mask R CNN recognition
+                r = results[0]
+                # Detect elements with Mask R CNN model end
+
                 # Printing text contours preparations start
                 for text_contour in text_contours:
                     x, y, w, h = text_contour
@@ -2561,7 +2553,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 "file_attributes": {},
             }
 
-            # Create directory to save HTML for some image processed
+            # Create a directory to save HTML for some image processed
             # CURRENT_DIR = os.getcwd()
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
             find_or_create_dir(SAVE_DIR)
@@ -3027,10 +3019,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Assembling start
         # Supplementary parameters calculation and printing of the fdict function call
-        min_x1, min_y1, max_x2, max_y2 = suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=image_via)
+        min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=image_via)
 
         # Supplementary parameters calculation and printing of the cnndict function call
-        min_cnnx1, min_cnny1, max_cnnx2, max_cnny2 = suppement_fdict_calc_printing(cnndict, fname, fnamesize, img_width, img_height)
+        min_cnnx1, min_cnny1, max_cnnx2, max_cnny2 = supplement_fdict_calc_printing(cnndict, fname, fnamesize, img_width, img_height)
 
         # This should be replaced to create nested structure. Clusters obtained from text blocks
         # and from rect blocks should save this information
@@ -3038,12 +3030,12 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             # Calculate the excluded indices to remove overlapped elements function calling
             calculate_excluded_indices(fdict, fnamesize)
 
-        # Create opencv_clusters
+        # Create ocvclusters
         # Creating a nested structure.
         # Clusters obtained from text blocks and from rect blocks should save this information
         if region_dataset in {"webpages"}:
-            # Calculate opencv_clusters function calling
-            calculate_opencv_clusters(fdict, fnamesize)
+            # Calculate ocvclusters function calling
+            calculate_ocvclusters(fdict, fnamesize)
 
         # Calculate fclusters function calling
         clusters = calculate_fclusters(fdict, fnamesize, fname, image_fclusters=image_fclusters)
@@ -3334,14 +3326,21 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # print(type(fdict), fdict)
             # Assembling start
             # Supplementary parameters calculation and printing of the fdict function call
-            min_x1, min_y1, max_x2, max_y2 = suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
+            min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
 
             # Calculate the excluded indices to remove overlapped elements function calling
             calculate_excluded_indices(fdict, fnamesize)
 
+            # Here should write uclusters detecting step
+            # How to detect uclusters from fdict?
+            # Maybe use this function for the first time
+            # calculate_ocvclusters(fdict, fnamesize)
+            calculate_uclusters(fdict, fnamesize)
+
             # Calculate fclusters function calling
             clusters = calculate_fclusters(fdict, fnamesize, fname)
 
+            '''
             # Place all the free elements for the 1-element clusters
             for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
                 # First rectangle coordinates
@@ -3376,6 +3375,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
                     # Update the clusters list
                     clusters.append(cluster)
+            '''
 
             if region_dataset in ["headers", "footers", "webpages"]:
                 # Calculate dbclusters function calling
@@ -3393,7 +3393,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
                                                 window_name1, fclusters)
 
-            # Create directtory to save HTML for some image processed
+            # Create a directory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
             find_or_create_dir(SAVE_DIR)
 
@@ -3634,7 +3634,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             # Show text contours on image start
             window_name1 = "image_opencv_text"
             # Supplementary parameters calculation and printing of the fdict function call
-            min_x1, min_y1, max_x2, max_y2 = suppement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
+            min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
             '''
             # Supplementary parameters calculation and printing of the fdict start
             # for filenamesize in fdict:
@@ -3738,7 +3738,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
                                                 window_name1, fclusters)
 
-            # Create directtory to save HTML for some image processed
+            # Create a directory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
             find_or_create_dir(SAVE_DIR)
 
