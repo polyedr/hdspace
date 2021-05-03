@@ -50,6 +50,7 @@ from apps.utils.fset1 import (
     calculateDistance,
     SQUARES_OVERLAP_THRESHOLD_TEXT,
     change_permissions_recursive,
+    contains_rectangle,
 )
 
 config_tesseract = "-l eng --oem 1 --psm 3"
@@ -431,19 +432,27 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                     # Extract a color palette start
                     # Get the dominant colour for the element start
-                    bcolour_elem_value = "255,255,255,0"
-                    domcolour_elem = get_dominant_colour(elem_image)[0]
-                    domcolour_elem.append(1)
-                    bcolour_elem_value = ",".join(
-                        str(int(x)) for x in domcolour_elem
-                    )
+                    try:
+                        domcolour_elem = get_dominant_colour(elem_image)[0]
+                        domcolour_elem.append(1)
+                        bcolour_elem_value = ",".join(
+                            str(int(x)) for x in domcolour_elem
+                        )
                     # Get the dominant colour for the element end
+                    except Exception:
+                        bcolour_elem_value = "255,255,255,0"
+                    finally:
+                        pass
 
                     # Get the font colour for the element start
-                    fcolour_elem_value = "91,91,91,0"
-                    fcolour_elem = get_dominant_colour(elem_image)[1]
-                    fcolour_elem.append(1)
-                    fcolour_elem_value = ",".join(str(int(x)) for x in fcolour_elem)
+                    try:
+                        fcolour_elem = get_dominant_colour(elem_image)[1]
+                        fcolour_elem.append(1)
+                        fcolour_elem_value = ",".join(str(int(x)) for x in fcolour_elem)
+                    except Exception:
+                        fcolour_elem_value = "91,91,91,0"
+                    finally:
+                        pass
                     # Get the font colour for the element end
                     # Extract a color palette end
 
@@ -1713,19 +1722,93 @@ def calculate_ocvclusters(fdict, fnamesize):
     return True
 
 
-def calculate_uclusters(fdict, fnamesize):
-    # Create a set of independent uclusters
+# This function extracts rectangle from some fdict regions
+def extract_rectangle_coordinates(rect):
+
+    x1 = rect["shape_attributes"]["x"]
+    y1 = rect["shape_attributes"]["y"]
+    x2 = rect["shape_attributes"]["x"] + rect["shape_attributes"]["width"]
+    y2 = rect["shape_attributes"]["y"] + rect["shape_attributes"]["height"]
+
+    return (x1, y1, x2, y2)
+
+
+# For some rectangle. Go through all the rectangles in (calculate this on the fly).
+# Find rectangles without parents, they are level rectangles. Create uclusters for them. Repeat the process
+def create_uclusters(rectangles, level_blocks, image_uclusters):
+    for level_block in level_blocks:
+        next_level_blocks = set()
+        for r1 in rectangles:
+            # Check if r1 in level_block
+            r1_e = extract_rectangle_coordinates(r1)
+            level_block_e = extract_rectangle_coordinates(level_block)
+            if contains_rectangle(r1_e, level_block_e) is True:
+                is_parent = False
+                for r2 in rectangles:
+                    # Check if r2 in level_block
+                    r2_e = extract_rectangle_coordinates(r2)
+                    if contains_rectangle(r2_e, level_block) is True:
+                        # find rectangles without parents
+                        if contains_rectangle(r1_e, r2_e) is False:
+                            is_parent = True
+
+                    # Extend the set of the next level blocks
+                    if (is_parent is True):
+                        next_level_blocks.add(r1)
+                        next_level_block_ucluster = ClusterClass(*r1_e)
+                        next_level_block_ucluster.types = "ucluster"
+                        next_level_block_ucluster.parent = level_block
+                        (x1, y1, x2, y2) = r1_e
+                        cv2.rectangle(
+                            image_uclusters,
+                            (x1, y1),
+                            (x2, y2),
+                            (0, 0, 255),
+                            1,
+                        )
+
+        create_uclusters(rectangles, next_level_blocks, image_uclusters)
+    return True
+
+
+def calculate_uclusters(fdict, fname, fnamesize, image_uclusters, node):
+    img_height, img_width, img_channels = image_uclusters.shape
+    # Detect top level blocks
+    top_level_blocks = []
+    # top_level_block is a nested dictionary
+    top_level_block = {}
+    top_level_block["shape_attributes"] = {}
+    top_level_block["shape_attributes"]["x"] = 0
+    top_level_block["shape_attributes"]["y"] = 0
+    top_level_block["shape_attributes"]["width"] = img_width
+    top_level_block["shape_attributes"]["height"] = img_height
+
+    top_level_blocks.append(top_level_block)
+
+    # Create a set of rectangles
+    rectangles = []
     for rect in fdict[fnamesize]["regions"]:
-        x1 = rect["shape_attributes"]["x"]
-        y1 = rect["shape_attributes"]["y"]
-        x2 = rect["shape_attributes"]["x"] + rect["shape_attributes"]["width"]
-        y2 = rect["shape_attributes"]["y"] + rect["shape_attributes"]["height"]
-        ucluster = ClusterClass(x1, y1, x2, y2)
-        # Set some flags for this novel ocvcluster
-        ucluster.types = "ucluster"
-        # Check a cluster definition
+        if (rect["region_attributes"]["HTML element"] in {"container", "list"}):
+            rectangles.append(rect)
+
+    # For some rectangle. Go through all the rectangles in. Find rectangles without parents, they are level rectangles.
+    # Save sets of rectangles placed for each level rectangle. Repeat the process.
+    create_uclusters(rectangles, top_level_blocks, image_uclusters)
+
+    # Printing uclusters to file
+    if len(image_uclusters):
+        imgpath = MEDIA_ROOT + "/uploads/" + "uclusters_" + fname
+        cv2.imwrite(imgpath, image_uclusters)
+        node.parameters["image"] = "uclusters_" + fname
 
     return True
+
+
+def print_uclusters(fdict, fnamesize):
+    pass
+    # cv2.imshow(window_name1, image_opencv_input)
+    # cv2.waitKey(0)
+    # DBSCAN.labels are included to fclusters end
 
 
 def supplement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=[]):
@@ -3237,6 +3320,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         # Read an image with OpenCV start
         image_opencv_input = cv2.imread(imgpath)
         image_original = copy.deepcopy(image_opencv_input)
+        image_uclusters = copy.deepcopy(image_opencv_input)
         # detect height and width of the image
         img_height, img_width, img_channels = image_opencv_input.shape
         # print("width:  ", img_width)
@@ -3335,47 +3419,10 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # How to detect uclusters from fdict?
             # Maybe use this function for the first time
             # calculate_ocvclusters(fdict, fnamesize)
-            calculate_uclusters(fdict, fnamesize)
+            calculate_uclusters(fdict, fname, fnamesize, image_uclusters, serializer_node)
 
             # Calculate fclusters function calling
             clusters = calculate_fclusters(fdict, fnamesize, fname)
-
-            '''
-            # Place all the free elements for the 1-element clusters
-            for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-                # First rectangle coordinates
-                x1 = int(recognized_element["shape_attributes"]["x"])
-                y1 = int(recognized_element["shape_attributes"]["y"])
-                x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-                y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-                element_unique = True
-                for cluster in clusters:
-                    if recognized_element in cluster.elements:
-                        element_unique = False
-                if element_unique is True:
-                    # Add the element to the cluster
-                    cluster = ClusterClass(
-                        x1, y1, x2, y2, elements=[recognized_element]
-                    )
-
-                    # Set some flags for this novel cluster
-                    cluster.types = "fcluster"
-                    cluster.is_elements_only = True
-                    # The cluster contains only one element
-                    cluster.is_solid = True
-                    # The cluster direction is unseparable
-                    cluster.direction = 2
-                    cluster.origin_direction = 2
-
-                    # Find the center of cluster
-                    center_x = (cluster.x1 + cluster.x2) / 2
-                    center_y = (cluster.y1 + cluster.y2) / 2
-                    cluster.center = center_x, center_y
-
-                    # Update the clusters list
-                    clusters.append(cluster)
-            '''
 
             if region_dataset in ["headers", "footers", "webpages"]:
                 # Calculate dbclusters function calling
