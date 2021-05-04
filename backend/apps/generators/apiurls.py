@@ -8,5 +8,5 @@ router = routers.DefaultRouter()
 
 
 urlpatterns = [
-    url('',GeneratorAPIView.as_view())
+    url('',GeneratorAPIView.as_view()),
 ]
