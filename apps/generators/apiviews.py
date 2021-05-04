@@ -5,20 +5,30 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.response import Response
-from apps.generators.serializers import ScenarioElementSerializer
 from rest_framework.views import APIView
 
-class GeneratorAPIView(APIView):
-    Generator_class = ScenarioElementSerializer
+from apps.projects.models import ScenarioElement
+from apps.projects.serializers import ScenarioElementSerializer
 
+
+
+class GeneratorAPIView(APIView):
+
+    serializer = ScenarioElementSerializer
 
     def get(self,request,*args, **kwargs):
-        return Response("Get received")
+        query_set = ScenarioElement.objects.all()
 
-    def post(self,request,*args, **kwargs):
+        return Response(query_set)
+
+    def post(self,request,format = None):
+        times = request.data["times"]
+
         data = request.data
-        print(data)
-        return Response("Post received")
+        data.pop('times')
+        for i in range(times):
+            print("Element created")
+        return Response(request.data)
 
     def update(self,request,*args, **kwargs):
         return Response("Update received")
