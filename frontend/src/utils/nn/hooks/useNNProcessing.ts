@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectElementById } from '@Redux/project/selectors/element';
-import { semiAutoAnalyzeImage, autoAnalyzeImage } from '@Redux/project/actions';
+import { recognizeImage, autoAnalyzeImage } from '@Redux/project/actions';
 import { NNBlockType } from '../../../types';
 
 const useNNProcessing = (
@@ -40,7 +40,7 @@ const useNNProcessing = (
       }
 
       dispatch(
-        semiAutoAnalyzeImage(
+        recognizeImage(
           {
             name: file.name,
             file,
@@ -49,9 +49,6 @@ const useNNProcessing = (
           },
           elementId,
           blockType,
-          {
-            screenId: currentScreenId,
-          },
         ),
       );
     },

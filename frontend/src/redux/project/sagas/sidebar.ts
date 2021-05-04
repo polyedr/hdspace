@@ -1,6 +1,10 @@
 import { select, put, take } from 'redux-saga/effects';
-import { TokenPair, UserData } from '@Src/types';
-import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
+import { ChatCredentials, TokenPair, UserData } from '@Src/types';
+import {
+  selectChatCredentials,
+  selectTokenPair,
+  selectUserData,
+} from '@Redux/user/selectors';
 import * as Actions from '@Redux/project/actions';
 import {
   selectCurrentProjectId,
@@ -8,6 +12,8 @@ import {
   selectSidebarIframe,
 } from '@Redux/project/selectors/base';
 import TYPES from '@Redux/actionTypes';
+import postMessage from '@Components/Sidebar/postMessage';
+import { MessageType } from '@Components/Sidebar/messageType';
 import { enqueueSnackbar } from '../../notification/actions';
 
 export function* sidebarLogoutSaga() {
@@ -15,12 +21,10 @@ export function* sidebarLogoutSaga() {
     const iframe: HTMLIFrameElement | null = yield select(selectSidebarIframe);
     const host: string = yield select(selectSidebarHost);
 
-    if (!iframe?.contentWindow) {
-      return;
+    postMessage(iframe, MessageType.logout, null, host);
+    if (iframe && host) {
+      yield take(TYPES.SIDEBAR_LOGOUT_SUCCESS);
     }
-
-    iframe.contentWindow.postMessage({ type: 'logout' }, host);
-    yield take(TYPES.SIDEBAR_LOGOUT_SUCCESS);
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -50,21 +54,14 @@ export function* setUpSidebarSaga(
     const userData: UserData = yield select(selectUserData);
     const projectId: number = yield select(selectCurrentProjectId);
     const { access }: TokenPair = yield select(selectTokenPair);
-
-    iframe.contentWindow.postMessage(
-      { type: 'setAccessToken', payload: access },
-      host,
+    const chatCredentials: ChatCredentials = yield select(
+      selectChatCredentials,
     );
 
-    iframe.contentWindow.postMessage(
-      { type: 'setProjectId', payload: projectId },
-      host,
-    );
-
-    iframe.contentWindow.postMessage(
-      { type: 'setUserData', payload: userData },
-      host,
-    );
+    postMessage(iframe, MessageType.setAccessToken, access, host);
+    postMessage(iframe, MessageType.setProjectId, projectId, host);
+    postMessage(iframe, MessageType.setUserData, userData, host);
+    postMessage(iframe, MessageType.setChatCredentials, chatCredentials, host);
   } catch (e) {
     yield put(
       enqueueSnackbar(

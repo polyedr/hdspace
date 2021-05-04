@@ -1,20 +1,29 @@
 import { useEffect } from 'react';
 import { sidebarLogoutSuccess } from '@Redux/project/actions';
 import { useDispatch } from 'react-redux';
-import { IFrameMessage } from '../../types';
+import { chatLogout, setChatCredentials } from '@Redux/user/actions';
+import { IframeMessage, MessageType } from './messageType';
 
 const useMessageListener = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const listener = (ev: MessageEvent<IFrameMessage>) => {
+    const listener = (ev: MessageEvent<IframeMessage>) => {
       const { data } = ev;
 
       if (!data) return;
 
       switch (data.type) {
-        case 'sidebarLogoutSuccess':
+        case MessageType.sidebarLogoutSuccess:
           dispatch(sidebarLogoutSuccess());
+          break;
+
+        case MessageType.setChatCredentials:
+          dispatch(setChatCredentials(data.payload));
+          break;
+
+        case MessageType.chatLogout:
+          dispatch(chatLogout());
           break;
 
         default:

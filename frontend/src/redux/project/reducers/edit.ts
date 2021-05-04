@@ -1,7 +1,6 @@
 import { pick } from 'ramda';
 import produce, { current, Draft } from 'immer';
 import { Normalized, VIARegion } from '@Src/types';
-import { v4 } from 'uuid';
 import { sortByLayer } from '@Utils/viaHelpers';
 import { initialEdit } from '../initial';
 import TYPES from '../../actionTypes';
@@ -141,7 +140,7 @@ const editReducer = produce(
         break;
       }
 
-      case TYPES.UPDATE_VIA_REGION: {
+      case TYPES.UPDATE_VIA_REGION_SUCCESS: {
         draft.VIAMode.regions[action.payload.id] = {
           ...draft.VIAMode.regions[action.payload.id],
           ...action.payload.data,
@@ -154,29 +153,14 @@ const editReducer = produce(
         break;
       }
 
-      case TYPES.CREATE_VIA_REGION: {
-        const newRegion: VIARegion = {
-          id: v4(),
-          layer: Object.keys(draft.VIAMode.regions).length,
-          region_attributes: {
-            'HTML element': 'container',
-          },
-          shape_attributes: {
-            height: 100,
-            width: 100,
-            x: 0,
-            y: 0,
-            name: 'rect',
-          },
-        };
+      case TYPES.CREATE_VIA_REGION_SUCCESS: {
+        const { payload: newRegion } = action;
         draft.VIAMode.regions[newRegion.id] = newRegion;
-        draft.VIAMode.activeRegionId = newRegion.id;
         break;
       }
 
-      case TYPES.DELETE_VIA_REGION: {
-        const idToDelete = action.payload || draft.VIAMode.activeRegionId;
-        delete draft.VIAMode.regions[idToDelete];
+      case TYPES.DELETE_VIA_REGION_SUCCESS: {
+        delete draft.VIAMode.regions[action.payload];
         break;
       }
 
@@ -185,13 +169,13 @@ const editReducer = produce(
         break;
       }
 
-      case TYPES.UPDATE_VIA_REGION_LAYER: {
-        const { regionId, layer } = action.payload;
+      case TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS: {
+        const { id, layer } = action.payload;
         const arr = Object.values(current(draft.VIAMode.regions)).sort(
           sortByLayer,
         );
 
-        const startIndex = draft.VIAMode.regions[regionId].layer;
+        const startIndex = draft.VIAMode.regions[id].layer;
 
         const [target] = arr.splice(startIndex, 1);
 
@@ -209,7 +193,7 @@ const editReducer = produce(
       }
 
       case TYPES.SET_ANNOTATED_IMAGE_URL: {
-        draft.VIAMode.annotatedImageURL = action.payload;
+        draft.VIAMode.annotatedImageFile = action.payload;
         break;
       }
 
@@ -220,24 +204,6 @@ const editReducer = produce(
             ...copy,
           };
         }
-        break;
-      }
-
-      case TYPES.PASTE_VIA_REGION: {
-        const copied = draft.VIAMode.copiedRegion;
-        if (!copied) return draft;
-        const newRegion: VIARegion = {
-          id: v4(),
-          layer: Object.keys(draft.VIAMode.regions).length,
-          region_attributes: {
-            ...copied?.region_attributes,
-          },
-          shape_attributes: {
-            ...copied?.shape_attributes,
-          },
-        };
-        draft.VIAMode.regions[newRegion.id] = newRegion;
-        draft.VIAMode.activeRegionId = newRegion.id;
         break;
       }
 
@@ -252,6 +218,23 @@ const editReducer = produce(
         if (draft.masterSourceElementId !== action.payload) {
           draft.masterSourceElementId = action.payload;
         }
+        break;
+      }
+
+      case TYPES.SET_VIA_RESULT_ID: {
+        draft.VIAMode.resultId = action.payload;
+        break;
+      }
+
+      case TYPES.SET_BLOCK_TYPE: {
+        draft.VIAMode.blockType = action.payload;
+        break;
+      }
+
+      case TYPES.SET_VIA_DATA: {
+        draft.VIAMode.viaData = {
+          [action.payload.key]: action.payload.value,
+        };
         break;
       }
 

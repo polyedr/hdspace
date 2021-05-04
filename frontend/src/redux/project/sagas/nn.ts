@@ -1,5 +1,11 @@
-import { put, call, select, take, race } from 'redux-saga/effects';
-import { selectVIARegionsAsArray } from '@Redux/project/selectors/via';
+import { put, call, select, takeEvery } from 'redux-saga/effects';
+import {
+  selectAnnotatedElementId,
+  selectAnnotatedImageFile,
+  selectBlockType,
+  selectVIAData,
+  selectVIARegionsAsArray,
+} from '@Redux/project/selectors/via';
 import { convertElementToPatchRequest } from '@Api/converters/toRequest';
 import { getElementsArray } from '@Utils/ElementsTreeHelper';
 import {
@@ -15,6 +21,9 @@ import {
   Screen,
   VIARegion,
   UserProjectPermission,
+  NNBlockType,
+  FileToUpload,
+  VIAFile,
 } from '@Src/types';
 import { addId, addLayerProperty } from '@Utils/viaHelpers';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
@@ -25,26 +34,19 @@ import * as Actions from '@Redux/project/actions';
 import withActionsHistory from '@Redux/project/wrappers/withActionsHistory';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import { omit } from 'ramda';
+import { selectCurrentScreenId } from '../selectors/screen';
 
-export const semiautoAnalyzeImageSaga = compose(
+const recognizeImageSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
     UserProjectPermission.CHANGE_PROJECT,
   ),
-  withActionsHistory,
 )(function* ({
-  type,
   payload: { file, parentId, blockType },
-  meta,
-}: ReturnType<typeof Actions.semiAutoAnalyzeImage>) {
+}: ReturnType<typeof Actions.recognizeImage>) {
   try {
-    if (!meta) {
-      console.error(`You have to provide metainformation for action ${type}`);
-      return;
-    }
     yield put(Actions.setAnalyzerLoader(true));
-
-    const { screenId, useHistory } = meta;
 
     const recognizeFormData = new FormData();
 
@@ -72,6 +74,11 @@ export const semiautoAnalyzeImageSaga = compose(
         recognizeResult.screenData.nnResult,
       )[0];
 
+      const s = omit(['regions'], viaFile);
+
+      yield put(Actions.setVIAData(viaKey, s));
+      yield put(Actions.setBlockType(blockType));
+
       yield put(
         Actions.setVIARegions(
           arrayToMap(
@@ -82,114 +89,8 @@ export const semiautoAnalyzeImageSaga = compose(
         ),
       );
       yield put(Actions.setAnnotatedElementId(parentId));
-
-      const url = URL.createObjectURL(file.file);
-
-      yield put(Actions.setAnnotatedImageURL(url));
-
+      yield put(Actions.setAnnotatedImageFile(file));
       yield put(Actions.setVIAMode(true));
-
-      yield put(Actions.setAnalyzerLoader(false));
-
-      const { cancel } = yield race({
-        assemble: take(TYPES.ASSEMBLE_VIA_REGIONS),
-        cancel: take(TYPES.CANCEL_RECOGNIZING),
-      });
-
-      if (cancel) {
-        return;
-      }
-
-      yield put(Actions.setAnalyzerLoader(true));
-
-      const updatedRegions: VIARegion[] = yield select(selectVIARegionsAsArray);
-
-      const assembleFormData = new FormData();
-      assembleFormData.append('image', file.file, file.name);
-      assembleFormData.append('name', 'image');
-      assembleFormData.append('parent_id', parentId);
-      assembleFormData.append('styles', '{}');
-      assembleFormData.append('screen', screenId.toString());
-      assembleFormData.append(
-        'parameters',
-        JSON.stringify({
-          block_type: blockType,
-          annotation: JSON.stringify({
-            [viaKey]: {
-              ...viaFile,
-              regions: updatedRegions.map(
-                ({ region_attributes, shape_attributes }) => ({
-                  region_attributes,
-                  shape_attributes,
-                }),
-              ),
-            },
-          }),
-        }),
-      );
-
-      const {
-        result: assembleResult,
-        error: assembleError,
-      }: Result<LibraryElement<any>> = yield call(
-        reqWrapper,
-        assembleImgUsingNN,
-        {
-          data: assembleFormData,
-        },
-      );
-      if (assembleResult) {
-        const convertedElements = getElementsArray(
-          assembleResult,
-        ).map((element) => convertElementToPatchRequest(element));
-
-        const {
-          result,
-          error,
-        }: Result<ServerElement<any>> = yield call(
-          reqWrapper,
-          apiUpdateElements,
-          { data: convertedElements },
-        );
-
-        if (result) {
-          yield put(
-            Actions.addStateElements(
-              [{ elements: [assembleResult], parentId }],
-              {
-                ...meta,
-              },
-            ),
-          );
-
-          if (!useHistory) {
-            yield put(
-              Actions.addHistoryActions({
-                undo: [
-                  Actions.deleteElement(assembleResult.id, {
-                    ...meta,
-                  }),
-                ],
-                redo: [
-                  Actions.restoreElement(assembleResult.id, {
-                    ...meta,
-                  }),
-                ],
-              }),
-            );
-          }
-
-          yield put(
-            enqueueSnackbar({
-              message: 'Image uploaded successfully',
-              options: { variant: 'success' },
-            }),
-          );
-        }
-        if (error) throw new Error(error);
-      }
-
-      if (assembleError) throw new Error(assembleError);
     }
     if (recognizeError) throw new Error(recognizeError);
   } catch (e) {
@@ -205,11 +106,126 @@ export const semiautoAnalyzeImageSaga = compose(
     );
   } finally {
     yield put(Actions.setAnalyzerLoader(false));
-    yield put(Actions.finishAnnotation());
   }
 });
 
-export const autoAnalyzeImageSaga = compose(
+const assembleImageSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* () {
+  try {
+    const parentId: string = yield select(selectAnnotatedElementId);
+    const image: FileToUpload = yield select(selectAnnotatedImageFile);
+    const screenId: number = yield select(selectCurrentScreenId);
+    const blockType: NNBlockType = yield select(selectBlockType);
+    const viaData: Record<string, VIAFile> = yield select(selectVIAData);
+
+    yield put(Actions.setAnalyzerLoader(true));
+
+    const updatedRegions: VIARegion[] = yield select(selectVIARegionsAsArray);
+
+    const [viaKey, viaFile] = Object.entries(viaData)[0];
+
+    const assembleFormData = new FormData();
+    assembleFormData.append('image', image.file, image.name);
+    assembleFormData.append('name', 'image');
+    assembleFormData.append('parent_id', parentId);
+    assembleFormData.append('styles', '{}');
+    assembleFormData.append('screen', screenId.toString());
+    assembleFormData.append(
+      'parameters',
+      JSON.stringify({
+        block_type: blockType,
+        annotation: JSON.stringify({
+          [viaKey]: {
+            ...viaFile,
+            regions: updatedRegions.map(
+              ({ region_attributes, shape_attributes }) => ({
+                region_attributes,
+                shape_attributes,
+              }),
+            ),
+          },
+        }),
+      }),
+    );
+
+    const {
+      result: assembleResult,
+      error: assembleError,
+    }: Result<LibraryElement<any>> = yield call(
+      reqWrapper,
+      assembleImgUsingNN,
+      {
+        data: assembleFormData,
+      },
+    );
+    if (assembleResult) {
+      const convertedElements = getElementsArray(
+        assembleResult,
+      ).map((element) => convertElementToPatchRequest(element));
+
+      const {
+        result,
+        error,
+      }: Result<ServerElement<any>> = yield call(
+        reqWrapper,
+        apiUpdateElements,
+        { data: convertedElements },
+      );
+
+      if (result) {
+        yield put(
+          Actions.addStateElements([{ elements: [assembleResult], parentId }], {
+            screenId,
+          }),
+        );
+
+        yield put(Actions.setVIAResultId(assembleResult.id));
+
+        yield put(
+          Actions.addHistoryActions({
+            undo: [
+              Actions.deleteElement(assembleResult.id, {
+                screenId,
+              }),
+            ],
+            redo: [
+              Actions.restoreElement(assembleResult.id, {
+                screenId,
+              }),
+            ],
+          }),
+        );
+
+        yield put(
+          enqueueSnackbar({
+            message: 'Image uploaded successfully',
+            options: { variant: 'success' },
+          }),
+        );
+      }
+      if (error) throw new Error(error);
+    }
+
+    if (assembleError) throw new Error(assembleError);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar({
+        message: e.message,
+        options: { variant: 'error' },
+      }),
+    );
+  } finally {
+    yield put(Actions.setAnalyzerLoader(false));
+    yield put(Actions.setVIAMode(false));
+  }
+});
+
+const autoAnalyzeImageSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
     UserProjectPermission.CHANGE_PROJECT,
@@ -316,3 +332,9 @@ export const autoAnalyzeImageSaga = compose(
     yield put(Actions.setAnalyzerLoader(false));
   }
 });
+
+export default function* nnSaga() {
+  yield takeEvery(TYPES.AUTO_ANALYZE_IMAGE, autoAnalyzeImageSaga);
+  yield takeEvery(TYPES.RECOGNIZE_IMAGE, recognizeImageSaga);
+  yield takeEvery(TYPES.ASSEMBLE_VIA_REGIONS, assembleImageSaga);
+}

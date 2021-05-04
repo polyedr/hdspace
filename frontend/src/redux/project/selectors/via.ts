@@ -34,8 +34,22 @@ export const selectAnnotatedElement = createSelector(
   (elements, id) => elements[id],
 );
 
-export const selectAnnotatedImageURL = ({ project }: AppReduxState) =>
-  project.edit.VIAMode.annotatedImageURL;
+export const selectAnnotatedImageFile = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.annotatedImageFile;
 
 export const selectCopiedVIARegion = ({ project }: AppReduxState) =>
   project.edit.VIAMode.copiedRegion;
+
+export const selectVIARegionByIdInSaga = (
+  { project }: AppReduxState,
+  regionId: string,
+) => project.edit.VIAMode.regions[regionId];
+
+export const selectVIAResultId = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.resultId;
+
+export const selectBlockType = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.blockType;
+
+export const selectVIAData = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.viaData;

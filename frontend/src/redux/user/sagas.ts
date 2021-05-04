@@ -18,8 +18,12 @@ import {
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { sidebarLogout } from '@Redux/project/actions';
+import {
+  sidebarLogout,
+  updateUISettingsParameters,
+} from '@Redux/project/actions';
 import { sidebarLogoutSaga } from '@Redux/project/sagas/sidebar';
+
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
@@ -143,6 +147,44 @@ export function* changeProfileDataSaga({
     }
   }
 }
+
+export const updateUISettingsParametersSaga = function* ({
+  payload,
+}: ReturnType<typeof updateUISettingsParameters>) {
+  try {
+    const {
+      id,
+      parameters: { profileDataParameters },
+    } = yield select(selectProfileData);
+    const newUIParameters = { ...profileDataParameters, ...payload };
+    const { result, error } = yield call(reqWrapper, apiChangeProfileData, {
+      id,
+      data: {
+        parameters: {
+          profileDataParameters: newUIParameters,
+        },
+      },
+    });
+    if (error) {
+      throw new Error(error);
+    }
+    yield put(
+      Actions.setProfileData(convertProfileDataFromResponse(result.data)),
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
+        },
+        e,
+      ),
+    );
+  }
+};
 
 function* registerSaga({
   payload: { username, email, password, firstName, lastName },

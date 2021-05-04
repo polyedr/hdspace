@@ -28,8 +28,12 @@ import {
   UserData,
   EditScreenData,
   Framework,
+  ProfileDataUIParameters,
+  VIAFile,
+  FileToUpload,
 } from '@Src/types';
 import {
+  UpdateUISettingsParameters,
   Action,
   ActivateScreen,
   AddChildToElement,
@@ -123,7 +127,7 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
-  SemiautoAnalyzeImage,
+  RecognizeImage,
   FinishAnnotaion,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
@@ -150,8 +154,8 @@ import {
   SetViaRegions as SetVIARegions,
   UpdateVIARegion,
   SetActiveVIARegion,
-  CreateVIARegion,
-  DeleteVIARegion,
+  CreateVIARegionSuccess,
+  DeleteVIARegionSuccess,
   SetAnnotatedElement,
   UpdateVIARegionLayer,
   SetNewScreenModal,
@@ -167,10 +171,18 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
-  ToggleEnableTabsAutoSwitch,
   EditScreenNameAndData,
   UpdateProjectUIFramework,
+  CreateVIARegion,
+  DeleteVIARegion,
+  RestoreVIARegion,
+  UpdateVIARegionSuccess,
+  UpdateVIARegionLayerSuccess,
+  SetVIAResultId,
+  SetVIAData,
+  SetBlockType,
 } from '../types';
+
 import TYPES from '../actionTypes';
 
 export const getProjectList = (): LoadProjects => ({
@@ -866,7 +878,7 @@ export const addChildToElement = (
 });
 
 export const autoAnalyzeImage = (
-  file: any,
+  file: FileToUpload,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
@@ -880,19 +892,17 @@ export const autoAnalyzeImage = (
   meta,
 });
 
-export const semiAutoAnalyzeImage = (
-  file: any,
+export const recognizeImage = (
+  file: FileToUpload,
   parentId: string,
   blockType: NNBlockType,
-  meta: ElementHistoryMeta,
-): SemiautoAnalyzeImage => ({
-  type: TYPES.SEMIAUTO_ANALYZE_IMAGE,
+): RecognizeImage => ({
+  type: TYPES.RECOGNIZE_IMAGE,
   payload: {
     file,
     parentId,
     blockType,
   },
-  meta,
 });
 
 export const wrapIntoContainer = (
@@ -1425,8 +1435,21 @@ export const setVIARegions = (
 export const updateVIARegion = (
   regionId: string,
   data: Partial<VIARegion>,
+  meta?: HistoryMeta,
 ): UpdateVIARegion => ({
   type: TYPES.UPDATE_VIA_REGION,
+  payload: {
+    id: regionId,
+    data,
+  },
+  meta,
+});
+
+export const updateVIARegionSuccess = (
+  regionId: string,
+  data: Partial<VIARegion>,
+): UpdateVIARegionSuccess => ({
+  type: TYPES.UPDATE_VIA_REGION_SUCCESS,
   payload: {
     id: regionId,
     data,
@@ -1438,12 +1461,38 @@ export const setActiveVIARegion = (id: string): SetActiveVIARegion => ({
   payload: id,
 });
 
-export const createVIARegion = (): CreateVIARegion => ({
+export const createVIARegion = (meta?: HistoryMeta): CreateVIARegion => ({
   type: TYPES.CREATE_VIA_REGION,
+  meta,
 });
 
-export const deleteVIARegion = (id?: string): DeleteVIARegion => ({
+export const createVIARegionSuccess = (
+  region: VIARegion,
+): CreateVIARegionSuccess => ({
+  type: TYPES.CREATE_VIA_REGION_SUCCESS,
+  payload: region,
+});
+
+export const restoreVIARegion = (
+  region: VIARegion,
+  meta?: HistoryMeta,
+): RestoreVIARegion => ({
+  type: TYPES.RESTORE_VIA_REGION,
+  payload: region,
+  meta,
+});
+
+export const deleteVIARegion = (
+  id?: string,
+  meta?: HistoryMeta,
+): DeleteVIARegion => ({
   type: TYPES.DELETE_VIA_REGION,
+  payload: id,
+  meta,
+});
+
+export const deleteVIARegionSuccess = (id: string): DeleteVIARegionSuccess => ({
+  type: TYPES.DELETE_VIA_REGION_SUCCESS,
   payload: id,
 });
 
@@ -1456,17 +1505,53 @@ export const setAnnotatedElementId = (id: string): SetAnnotatedElement => ({
   payload: id,
 });
 
-export const updateVIARegionLayer = (
-  regionId: string,
-  layer: number,
-): UpdateVIARegionLayer => ({
-  type: TYPES.UPDATE_VIA_REGION_LAYER,
-  payload: { regionId, layer },
+export const setVIAResultId = (id: string): SetVIAResultId => ({
+  type: TYPES.SET_VIA_RESULT_ID,
+  payload: id,
 });
 
-export const setAnnotatedImageURL = (url: string): SetAnnotatedImageURL => ({
+export const updateVIARegionLayer = (
+  id: string,
+  layer: number,
+  meta?: HistoryMeta,
+): UpdateVIARegionLayer => ({
+  type: TYPES.UPDATE_VIA_REGION_LAYER,
+  payload: { id, layer },
+  meta,
+});
+
+export const updateVIARegionLayerSuccess = (
+  id: string,
+  layer: number,
+): UpdateVIARegionLayerSuccess => ({
+  type: TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
+  payload: {
+    id,
+    layer,
+  },
+});
+
+export const setAnnotatedImageFile = (
+  file: FileToUpload,
+): SetAnnotatedImageURL => ({
   type: TYPES.SET_ANNOTATED_IMAGE_URL,
-  payload: url,
+  payload: file,
+});
+
+export const setVIAData = (
+  key: string,
+  value: Omit<VIAFile, 'regions'>,
+): SetVIAData => ({
+  type: TYPES.SET_VIA_DATA,
+  payload: {
+    key,
+    value,
+  },
+});
+
+export const setBlockType = (blockType: NNBlockType): SetBlockType => ({
+  type: TYPES.SET_BLOCK_TYPE,
+  payload: blockType,
 });
 
 export const cancelRecognizing = () => ({
@@ -1523,6 +1608,9 @@ export const sidebarLogoutSuccess = () => ({
   type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
 });
 
-export const toggleEnableTabsAutoSwitch = (): ToggleEnableTabsAutoSwitch => ({
-  type: TYPES.TOGGLE_TABS_AUTOSWITCH,
+export const updateUISettingsParameters = (
+  uiParameters: Partial<ProfileDataUIParameters>,
+): UpdateUISettingsParameters => ({
+  type: TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+  payload: uiParameters,
 });

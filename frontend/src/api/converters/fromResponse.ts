@@ -125,10 +125,25 @@ export const convertRecursiveElementFromResponse = (
 export const convertProfileDataFromResponse = ({
   hourly_rate,
   ...rest
-}: ServerProfileData): ProfileData => ({
-  hourlyRate: hourly_rate,
-  ...rest,
-});
+}: ServerProfileData): ProfileData => {
+  if (!rest.parameters.profileDataParameters) {
+    return {
+      ...rest,
+      hourlyRate: hourly_rate,
+      parameters: {
+        ...rest.parameters,
+        profileDataParameters: {
+          autoSwitchTabs: false,
+          dropTargetBordersMode: true,
+        },
+      },
+    };
+  }
+  return {
+    hourlyRate: hourly_rate,
+    ...rest,
+  };
+};
 
 export const convertUserDataFromResponse = ({
   first_name,

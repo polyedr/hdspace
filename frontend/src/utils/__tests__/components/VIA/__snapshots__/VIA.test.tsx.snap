@@ -10,7 +10,6 @@ exports[`VIA Region should render VIA Regions wrapper 1`] = `
     >
       <img
         alt="annotated"
-        src=""
       />
       <div
         class="makeStyles-region-3 makeStyles-region-13 react-draggable"

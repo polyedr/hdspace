@@ -16,13 +16,6 @@ const changeMinLPanel: ActionHandler<
   isLPanelMinimized: !state.isLPanelMinimized,
 });
 
-const changeDropTargetBordersMode: ActionHandler<
-  ReturnType<typeof Actions.changeDropTargetBordersMode>
-> = (state) => ({
-  ...state,
-  dropTargetBordersMode: !state.dropTargetBordersMode,
-});
-
 const changeSignLoader: ActionHandler<typeof Actions.toggleUserLoading> = (
   state,
   { isLoading },
@@ -148,6 +141,22 @@ const setUserGuideActive: ActionHandler<typeof Actions.setUserGuideActive> = (
   },
 });
 
+const setChatCredentials: ActionHandler<typeof Actions.setChatCredentials> = (
+  state,
+  { payload },
+) => ({
+  ...state,
+  chat: {
+    ...state.chat,
+    ...payload,
+  },
+});
+
+const chatLogout: ActionHandler<typeof Actions.chatLogout> = (state) => ({
+  ...state,
+  chat: initialUserState.chat,
+});
+
 const logout: ActionHandler<typeof Actions.logout> = () => ({
   ...initialUserState,
 });
@@ -155,7 +164,6 @@ const logout: ActionHandler<typeof Actions.logout> = () => ({
 // TODO: type Action in Handlers
 const handlers: Handlers<UserState> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
-  [TYPES.CHANGE_DROP_TARGET_BORDERS_MODE]: changeDropTargetBordersMode,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
@@ -170,6 +178,8 @@ const handlers: Handlers<UserState> = {
   [TYPES.SET_CONFIRM_MESSAGE]: setConfirmMessage,
   [TYPES.SET_USER_EXPERIENCE]: setUserExperience,
   [TYPES.SET_USER_GUIDE_ACTIVE]: setUserGuideActive,
+  [TYPES.SET_CHAT_CREDENTIALS]: setChatCredentials,
+  [TYPES.CHAT_LOGOUT]: chatLogout,
 } as const;
 
 export default createReducer(initialUserState, handlers);

@@ -5,14 +5,26 @@ import {
   selectCurrentProject,
   selectSidebarOpen,
 } from '@Redux/project/selectors/base';
-import { renameProject, setSidebarOpen } from '@Redux/project/actions';
-import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
+import {
+  deleteElement,
+  renameProject,
+  setSidebarOpen,
+  setVIAMode,
+} from '@Redux/project/actions';
+import {
+  selectVIAModeEnabled,
+  selectVIAResultId,
+} from '@Redux/project/selectors/via';
 import DehazeIcon from '@material-ui/icons/Dehaze';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
+import { StyledIconButton } from '@Components/styledComponents';
+import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';
 import Avatar from './Avatar';
+import History from './History';
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
@@ -56,6 +68,8 @@ const TopPanel = () => {
   const { name: projectName, id } = useSelector(selectCurrentProject);
   const viaMode = useSelector(selectVIAModeEnabled);
   const sidebarOpen = useSelector(selectSidebarOpen);
+  const viaResultId = useSelector(selectVIAResultId);
+  const screenId = useSelector(selectCurrentScreenId);
 
   const handleEditClick = () => setOpenEdit(true);
   const handleClose = () => setOpenEdit(false);
@@ -66,6 +80,11 @@ const TopPanel = () => {
 
   const handleSidebarToggle = () => {
     dispatch(setSidebarOpen(!sidebarOpen));
+  };
+
+  const handleReturnToAnnotation = () => {
+    dispatch(setVIAMode(true));
+    dispatch(deleteElement(viaResultId, { screenId }));
   };
 
   return (
@@ -90,7 +109,16 @@ const TopPanel = () => {
           </div>
         )}
 
-        {viaMode ? 'Annotation mode' : <TopBar />}
+        {viaMode ? <History /> : <TopBar />}
+
+        {!viaMode && viaResultId && (
+          <StyledIconButton
+            title="Return to annotation"
+            onClick={handleReturnToAnnotation}
+          >
+            <SettingsBackupRestoreIcon />
+          </StyledIconButton>
+        )}
 
         {projectName && (
           <IconButton

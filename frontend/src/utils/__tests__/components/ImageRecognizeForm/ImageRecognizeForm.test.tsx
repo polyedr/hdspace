@@ -113,6 +113,6 @@ describe('ImageRecognizeForm', () => {
 
     const actions = store.getActions();
 
-    expect(actions[actions.length - 1].type).toBe(TYPES.SEMIAUTO_ANALYZE_IMAGE);
+    expect(actions[actions.length - 1].type).toBe(TYPES.RECOGNIZE_IMAGE);
   });
 });

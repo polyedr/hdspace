@@ -947,6 +947,7 @@ export type ServerProfileData = {
   role: string;
   id: number;
   experienced: Experience;
+  parameters: ProfileDataParameters;
 };
 
 export type ServerUserData = {
@@ -968,8 +969,16 @@ export type ProfileData = {
   hourlyRate: number;
   id: number;
   experienced: Experience;
+  parameters: ProfileDataParameters;
 };
 
+export type ProfileDataParameters = {
+  profileDataParameters: ProfileDataUIParameters;
+};
+export type ProfileDataUIParameters = {
+  autoSwitchTabs: boolean;
+  dropTargetBordersMode: boolean;
+};
 export enum UserProjectPermission {
   ADD_PROJECT = 'add_project',
   DELETE_PROJECT = 'delete_project',
@@ -1296,6 +1305,15 @@ export type FrameworkLink = {
   integrity?: string;
 };
 
+export type ScreenMeta = {
+  description: string;
+  keywords: string;
+  title: string;
+  viewport: string;
+  author: string;
+  refresh: string;
+};
+
 export type FrameworkName = 'bootstrap' | 'materialize' | 'not_selected';
 
 export type FrameworkVersion = {
@@ -1320,3 +1338,16 @@ export type ElementProps = {
 };
 
 export type FrameworkComponentSettings = Record<FrameworkName, React.FC<any>>;
+
+export type FileToUpload = {
+  file: File;
+  name: string;
+  imgPreviewUrl?: string;
+  stylesOn?: boolean;
+};
+
+export type ChatCredentials = {
+  realm: string;
+  username: string;
+  apiKey: string;
+};

@@ -1,4 +1,11 @@
-import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
+import {
+  takeLatest,
+  takeEvery,
+  put,
+  call,
+  select,
+  fork,
+} from 'redux-saga/effects';
 import {
   removeProjectStyles,
   updateProjectClasses,
@@ -28,6 +35,8 @@ import {
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { compose } from 'redux';
+import nnSaga from './nn';
+import { updateUISettingsParametersSaga } from '../../user/sagas';
 import {
   moveElementSaga,
   removeElementStylesSaga,
@@ -108,7 +117,7 @@ import {
   addHistoryActionsSaga,
 } from './control';
 import withActionsHistory from '../wrappers/withActionsHistory';
-import { semiautoAnalyzeImageSaga, autoAnalyzeImageSaga } from './nn';
+import viaSaga from './via';
 
 const removeSharedStylesSaga = compose(
   withRequiredPermissions(
@@ -409,9 +418,6 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.COPY_ACTIVE_ELEMENT, copyActiveElementSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
-  yield takeEvery(TYPES.SEMIAUTO_ANALYZE_IMAGE, semiautoAnalyzeImageSaga);
-
-  yield takeLatest(TYPES.AUTO_ANALYZE_IMAGE, autoAnalyzeImageSaga);
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 
   // history actions
@@ -468,4 +474,12 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.SET_UP_SIDEBAR, setUpSidebarSaga);
+
+  yield fork(viaSaga);
+  yield fork(nnSaga);
+
+  yield takeEvery(
+    TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+    updateUISettingsParametersSaga,
+  );
 }

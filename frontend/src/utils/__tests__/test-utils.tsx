@@ -24,6 +24,7 @@ import {
   ProjectWithScreens,
   ProjectsSearchParameter,
   DateRange,
+  NNBlockType,
 } from '../../types';
 
 export const mockProject: Project = {
@@ -116,10 +117,19 @@ export const mockUserData: UserData = {
     avatar: null,
     id: 888,
     experienced: Experience.EXPERIENCED,
+    parameters: {
+      profileDataParameters: {
+        autoSwitchTabs: false,
+        dropTargetBordersMode: true,
+      },
+    },
   },
 };
 
 export const mockVIAState = {
+  blockType: NNBlockType.WEBPAGE,
+  resultId: '-1',
+  viaData: {},
   annotatedElementId: mockStateElement.id,
   enabled: true,
   regions: {
@@ -139,7 +149,7 @@ export const mockVIAState = {
     },
   },
   activeRegionId: '',
-  annotatedImageURL: '',
+  annotatedImageFile: null,
   copiedRegion: null,
 } as ProjectEditState['VIAMode'];
 
