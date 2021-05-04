@@ -67,22 +67,18 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const closeEdit = () => setEdit(false);
 
   const handleSubmit = async (values) => {
-    const { name: newScreenName, ...metaValues } = values;
+    const { name: newScreenName, faviconUrl, ...metaValues } = values;
     dispatch(
       editScreenNameAndData(project, id, {
         name: newScreenName,
-        data: { meta: metaValues },
+        data: {
+          meta: {
+            ...metaValues,
+            faviconUrl: faviconUrl || null,
+          },
+        },
       }),
     );
-    /* if (screen_data_json.faviconUrl) {
-      dispatch(
-        editScreen(project, id, {
-          ...values,
-          faviconUrl: screen_data_json.faviconUrl,
-        }),
-      );
-    } else dispatch(editScreen(project, id, values)); */
-
     closeEdit();
   };
   const handleClick = () => {
