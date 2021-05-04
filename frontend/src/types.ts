@@ -1276,6 +1276,7 @@ export type ScreenMeta = {
   viewport: string;
   author: string;
   refresh: string;
+  faviconUrl: string;
 };
 
 export type ScreenInfo = ScreenMeta & {

@@ -1251,6 +1251,15 @@ export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
   },
 });
 
+export const uploadIcoScreen = (file: any, project: number, id: number) => ({
+  type: TYPES.UPLOAD_ICO_SCREEN,
+  payload: {
+    file,
+    project,
+    id,
+  },
+});
+
 export const addAssetToState = (
   listId: string,
   asset: Asset,

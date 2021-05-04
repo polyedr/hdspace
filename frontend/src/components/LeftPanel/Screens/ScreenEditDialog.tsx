@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Field, Form } from 'react-final-form';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -10,6 +10,12 @@ import {
   Button,
   TextField,
 } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import IconButton from '@material-ui/core/IconButton';
+
+import { useDispatch } from 'react-redux';
+import { uploadIcoScreen } from '@Redux/project/actions';
 
 type Props = {
   open: boolean;
@@ -22,13 +28,20 @@ type Props = {
   initialValueTags?: any;
   type?: string;
   validation?: any;
+  currentScreenId: number;
+  project: number;
 };
 const useStyles = makeStyles({
   dialogTitle: {
     padding: '0',
     marginTop: '10px',
-    marginBottom: '15px',
+    marginBottom: '2px',
     textAlign: 'center',
+  },
+  favicon: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '-8px',
   },
 });
 const ScreenEditDialog: React.FC<Props> = ({
@@ -38,13 +51,39 @@ const ScreenEditDialog: React.FC<Props> = ({
   onClose,
   fieldName = '',
   initialValueName,
-  initialValueTags: { title, description, keywords, viewport, author, refresh },
+  initialValueTags: {
+    title,
+    description,
+    keywords,
+    viewport,
+    author,
+    refresh,
+    faviconUrl,
+  },
   withoutField = false,
   type,
   validation,
+  currentScreenId,
+  project,
 }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const handleChangeFileInput = useCallback(
+    (event) => {
+      const file = event.target.files[0];
 
+      if (file.size > 5242880) {
+        // eslint-disable-next-line no-alert
+        alert('Choose image up to 5Mb!');
+      } else {
+        dispatch(uploadIcoScreen(file, project, currentScreenId));
+      }
+    },
+    [dispatch, currentScreenId, project],
+  );
+  const deleteFavicon = () => {
+    dispatch(uploadIcoScreen(null, project, currentScreenId));
+  };
   return (
     <MuiDialog open={open} onClose={onClose}>
       <Form
@@ -77,6 +116,40 @@ const ScreenEditDialog: React.FC<Props> = ({
                     )}
                   </Field>
                   <DialogTitle className={classes.dialogTitle}>
+                    Upload favicon
+                  </DialogTitle>
+                  <label
+                    htmlFor="contained-button-file"
+                    className={classes.favicon}
+                  >
+                    <input
+                      accept="image/x-icon"
+                      type="file"
+                      hidden
+                      id="contained-button-file"
+                      onChange={handleChangeFileInput}
+                    />
+                    <IconButton aria-label="delete" onClick={deleteFavicon}>
+                      <DeleteIcon fontSize="large" />
+                    </IconButton>
+                    <IconButton
+                      aria-label="upload"
+                      component="span"
+                      style={{ marginRight: '10px' }}
+                    >
+                      <CloudUploadIcon fontSize="large" />
+                    </IconButton>
+                    {faviconUrl ? (
+                      <img
+                        src={faviconUrl}
+                        width={40}
+                        height={40}
+                        alt="favicon"
+                      />
+                    ) : null}
+                  </label>
+
+                  <DialogTitle className={classes.dialogTitle}>
                     Screen metatags
                   </DialogTitle>
                   <Field
@@ -93,7 +166,7 @@ const ScreenEditDialog: React.FC<Props> = ({
                         placeholder="Page title"
                         type={type || 'text'}
                         {...input}
-                        style={{ marginTop: '0' }}
+                        style={{ marginTop: '12' }}
                       />
                     )}
                   </Field>
