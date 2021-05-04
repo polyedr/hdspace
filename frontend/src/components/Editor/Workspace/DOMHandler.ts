@@ -31,7 +31,6 @@ export class DOMHandler {
   }
 
   public reset() {
-    console.log('RESET!!');
     this._observer.disconnect();
     this._mutationObserver.disconnect();
     this._observableNode = null;
@@ -40,7 +39,6 @@ export class DOMHandler {
   }
 
   public watch(dom: HTMLElement) {
-    console.log('WATCH!!', dom);
     if (!dom || this._observableNode === dom) {
       return;
     }

@@ -164,6 +164,32 @@ export const processJS = async (jsFolder: JSZip | null) => {
   });
 };
 
+export const processIco = async (
+  urlIco: string | null,
+  assetsFolder: JSZip | null,
+) => {
+  if (!urlIco) {
+    return Promise.resolve();
+  }
+  const assetName = 'favicon.ico';
+  return axios
+    .get(urlIco, {
+      responseType: 'blob',
+    })
+    .then((response) => {
+      const blob = new Blob([response.data], {
+        type: response.headers['content-type'],
+      });
+      assetsFolder?.file(assetName, blob, {
+        binary: true,
+      });
+    })
+    .catch((error: AxiosError) => {
+      console.error(error);
+      return Promise.resolve();
+    });
+};
+
 export const getHtmlFromTemplate = (
   screenName: string,
   body: string,
@@ -180,7 +206,7 @@ export const getHtmlFromTemplate = (
       meta &&
       Object.entries(meta)
         .map(([key, value]) => {
-          if (value && key !== 'title') {
+          if (value && key !== 'title' && key !== 'faviconUrl') {
             return `<meta name="${key}" content="${value}"/>`;
           }
           return '';
@@ -223,6 +249,7 @@ export const getHtmlFromTemplate = (
     })}
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <title>${meta?.title || screenName}</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   </head>
   <body>
     ${body}

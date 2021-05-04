@@ -16,6 +16,7 @@ import {
   getHtmlFromTemplate,
   processCSS,
   processHTML,
+  processIco,
   processJS,
 } from './utils/processor';
 
@@ -55,6 +56,7 @@ const createArchive = (
     processHTML(html, assetsFolder),
     processCSS(cssFolder, entityClasses, sharedClasses),
     processJS(jsFolder),
+    processIco(metadata?.faviconUrl || null, zip),
   ]).then(([htmlResponse]) => {
     zip.file(
       'index.html',

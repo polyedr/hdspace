@@ -851,6 +851,7 @@ export type ScreenMetaData = {
   viewport: string;
   author: string;
   refresh: string;
+  faviconUrl: string;
 };
 
 export type ScreenData = {
@@ -1312,6 +1313,7 @@ export type ScreenMeta = {
   viewport: string;
   author: string;
   refresh: string;
+  faviconUrl: string;
 };
 
 export type FrameworkName = 'bootstrap' | 'materialize' | 'not_selected';

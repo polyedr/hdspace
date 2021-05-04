@@ -575,7 +575,10 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
         : oldScreen.name,
       screenData: {
         ...(data || {}),
-        meta: data?.meta || oldScreen.meta,
+        meta: {
+          ...(oldScreen.meta || {}),
+          ...(data?.meta || {}),
+        },
         uiFramework: data?.uiFramework || oldScreen.uiFramework,
       },
     };

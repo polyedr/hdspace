@@ -22,14 +22,16 @@ import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import {
+  selectAllAssetLists,
+  selectSelectedAssetListId,
+  selectAssetListById,
+} from '../selectors/asset';
+import { selectScreenByIdWrapper } from '../selectors/screen';
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
-import {
-  selectSelectedAssetListId,
-  selectAssetListById,
-} from '../selectors/asset';
 import withActionsHistory from '../wrappers/withActionsHistory';
 
 // eslint-disable-next-line consistent-return
@@ -309,6 +311,7 @@ export const uploadAssetSaga = compose(
     );
     return;
   }
+
   const fileName: string = assetFile.name;
   try {
     yield call(
@@ -407,6 +410,61 @@ export const uploadElementAssetSaga = withRequiredPermissions(
           options: { variant: 'error' },
         },
         error,
+      ),
+    );
+  }
+});
+
+export const editIcoScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({ payload }) {
+  try {
+    const { file, project, id } = payload;
+    const assetLists = yield select(selectAllAssetLists);
+    const selectedAssetList = yield select(selectSelectedAssetListId);
+    const listId = selectedAssetList?.id || assetLists[0].id;
+    const screenInfo = yield select(selectScreenByIdWrapper(id));
+
+    if (file === null) {
+      yield put(
+        Actions.editScreenNameAndData(project, id, {
+          name: screenInfo.name,
+          data: {
+            meta: {
+              ...screenInfo.meta,
+              faviconUrl: undefined,
+            },
+          },
+        }),
+      );
+    } else {
+      const assetInstance = yield call(uploadAssetHelper, {
+        assetFile: file,
+        fileName: file.name,
+        listId,
+      });
+
+      yield put(
+        Actions.editScreenNameAndData(project, id, {
+          name: screenInfo.name,
+          data: {
+            meta: {
+              ...screenInfo.meta,
+              faviconUrl: assetInstance.image,
+            },
+          },
+        }),
+      );
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to edit favicon screen',
+          options: { variant: 'error' },
+        },
+        e,
       ),
     );
   }
