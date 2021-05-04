@@ -22,7 +22,9 @@ export function* sidebarLogoutSaga() {
     const host: string = yield select(selectSidebarHost);
 
     postMessage(iframe, MessageType.logout, null, host);
-    yield take(TYPES.SIDEBAR_LOGOUT_SUCCESS);
+    if (iframe && host) {
+      yield take(TYPES.SIDEBAR_LOGOUT_SUCCESS);
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar(
