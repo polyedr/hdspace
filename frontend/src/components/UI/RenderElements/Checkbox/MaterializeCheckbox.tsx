@@ -43,7 +43,6 @@ const MaterializeCheckbox = React.forwardRef<HTMLLabelElement, RendererProps>(
           data-ls-id={id}
           checked={!isDisabled && isChecked}
           onChange={handleCheckboxChange}
-          disabled={isDisabled}
         />
         <span>{label || ''}</span>
       </label>

@@ -36,7 +36,6 @@ const MaterializeRadiobutton = React.forwardRef<
         data-ls-id={element.id}
         checked={!isDisabled && !isChecked}
         className="with-gap"
-        disabled={isDisabled}
         onChange={() => {
           if (!isDisabled && isChecked) {
             setIsChecked(!isChecked);
