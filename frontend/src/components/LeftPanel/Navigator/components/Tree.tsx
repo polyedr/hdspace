@@ -38,6 +38,7 @@ import {
   selectActiveElementId,
   selectMasterCoreElementId,
   selectMasterGroupsElementId,
+  selectSelectedElementsIds,
   selectTreeChildElementsIds,
 } from '@Redux/project/selectors/element';
 import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
@@ -79,6 +80,7 @@ const OFFSET = 15;
 const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
@@ -184,6 +186,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
 
         if (e.keyCode === 40) {
           // ArrowDown
+
           // TODO: add throttling
           e.preventDefault();
           const nextNodeId = findNextNodeId(tree, selectedItemId);
@@ -198,10 +201,11 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
 
         if (e.keyCode === 37) {
           // ArrowLeft
+
           collapse(selectedItemId);
+
           select(selectedItemId);
         }
-
         if (e.keyCode === 32 && !coreElementSelected && canEdit) {
           // Space
           setIsDragging((state) => !state);
@@ -343,7 +347,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         rulerHeight={getRulerHeight(props.item, expandedTree, height)}
         height={height}
         onContextMenu={handleMenuOpen}
-        isActive={activeElementId === props.item.id}
+        isActive={selectedElementsIds.includes(String(props.item.id))}
       />
     );
   };
