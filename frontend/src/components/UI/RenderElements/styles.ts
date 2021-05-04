@@ -30,7 +30,6 @@ export const makeComponentStyles: any = (
         getComputedStyle(props.element.styles.ownStyles, stylesToOmit),
 
       disabled: {
-        color: '#000',
         cursor: 'default',
         transition: 'none',
         '& > *': {

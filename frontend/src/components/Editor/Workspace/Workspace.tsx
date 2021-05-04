@@ -19,6 +19,7 @@ import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
+import { DOMHandler } from './DOMHandler';
 
 const useStyles = makeStyles({
   workspace: {
@@ -68,7 +69,7 @@ const Workspace: React.FC<Props> = () => {
 
   const classes = useStyles(rotated);
   const ref = useRef<HTMLDivElement | null>(null);
-  const scrollRef = useRef<Scrollbars>(null);
+  const scrollRef = useRef<Scrollbars | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
 
@@ -84,7 +85,13 @@ const Workspace: React.FC<Props> = () => {
           <FrameWrapper className={cn(classes[format])}>
             <EditorViewport>
               <Scrollbar
-                ref={scrollRef}
+                ref={(scrollbars: any) => {
+                  if (!scrollbars) {
+                    return;
+                  }
+                  scrollRef.current = scrollbars;
+                  DOMHandler.INSTANCE.watch(scrollbars.view);
+                }}
                 autoHeightMin="100%"
                 onScroll={({ srcElement }) => {
                   setScrollLeft(srcElement.scrollLeft);
