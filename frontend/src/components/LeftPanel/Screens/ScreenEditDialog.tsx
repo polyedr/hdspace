@@ -152,7 +152,6 @@ const ScreenEditDialog: React.FC<Props> = ({
                   <DialogTitle className={classes.dialogTitle}>
                     Screen metatags
                   </DialogTitle>
-
                   <Field
                     name="title"
                     validate={validation}

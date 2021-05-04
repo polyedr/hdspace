@@ -33,7 +33,6 @@ import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
-
 import withActionsHistory from '../wrappers/withActionsHistory';
 
 // eslint-disable-next-line consistent-return
@@ -299,6 +298,7 @@ export const uploadAssetSaga = compose(
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.uploadAsset>) {
   const { listId, assetFile } = action.payload;
+
   let assetListId = listId;
   if (!assetListId) {
     assetListId = yield select(selectSelectedAssetListId);
@@ -454,7 +454,7 @@ export const editIcoScreenSaga = withRequiredPermissions(
     yield put(
       enqueueSnackbar(
         {
-          message: e.message || 'Failed to rename screen',
+          message: e.message || 'Failed to edit favicon screen',
           options: { variant: 'error' },
         },
         e,
