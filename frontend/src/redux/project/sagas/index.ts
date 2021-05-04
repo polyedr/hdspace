@@ -109,7 +109,7 @@ import {
   removeAssetListSaga,
   removeAssetSaga,
   restoreAssetSaga,
-  uploadIcoScreenSaga,
+  editIcoScreenSaga,
 } from './asset';
 import { importHtmlSaga, uploadImportUrlSaga } from './import';
 import {
@@ -483,5 +483,5 @@ export default function* projectSaga() {
     updateUISettingsParametersSaga,
   );
 
-  yield takeEvery(TYPES.UPLOAD_ICO_SCREEN, uploadIcoScreenSaga);
+  yield takeEvery(TYPES.UPLOAD_ICO_SCREEN, editIcoScreenSaga);
 }

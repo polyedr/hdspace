@@ -67,10 +67,17 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const closeEdit = () => setEdit(false);
 
   const handleSubmit = async (values) => {
-    dispatch(editScreen(project, id, values));
+    if (screen_data_json.faviconUrl) {
+      dispatch(
+        editScreen(project, id, {
+          ...values,
+          faviconUrl: screen_data_json.faviconUrl,
+        }),
+      );
+    } else dispatch(editScreen(project, id, values));
+
     closeEdit();
   };
-  console.log(screen, 'screen');
   const handleClick = () => {
     history.push(`/project/${currentProjectId}/${screen.id}`);
   };

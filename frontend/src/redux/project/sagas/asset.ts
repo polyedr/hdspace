@@ -416,7 +416,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   }
 });
 
-export const uploadIcoScreenSaga = withRequiredPermissions(
+export const editIcoScreenSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
 )(function* ({ payload }) {
@@ -425,21 +425,31 @@ export const uploadIcoScreenSaga = withRequiredPermissions(
     const assetLists = yield select(selectAllAssetLists);
     const selectedAssetList = yield select(selectSelectedAssetListId);
     const listId = selectedAssetList?.id || assetLists[0].id;
-    const assetInstance = yield call(uploadAssetHelper, {
-      assetFile: file,
-      fileName: file.name,
-      listId,
-    });
-
     const screenInfo = yield select(selectScreenByIdWrapper(id));
-    console.log(screenInfo, 'screenInfo');
-    yield put(
-      editScreen(project, id, {
-        ...screenInfo.screen_data_json,
-        name: screenInfo.name,
-        faviconUrl: assetInstance.image,
-      }),
-    );
+
+    if (file === null) {
+      yield put(
+        editScreen(project, id, {
+          ...screenInfo.screen_data_json,
+          name: screenInfo.name,
+          faviconUrl: undefined,
+        }),
+      );
+    } else {
+      const assetInstance = yield call(uploadAssetHelper, {
+        assetFile: file,
+        fileName: file.name,
+        listId,
+      });
+
+      yield put(
+        editScreen(project, id, {
+          ...screenInfo.screen_data_json,
+          name: screenInfo.name,
+          faviconUrl: assetInstance.image,
+        }),
+      );
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar(
