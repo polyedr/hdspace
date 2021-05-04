@@ -165,7 +165,7 @@ export const processJS = async (jsFolder: JSZip | null) => {
 };
 
 export const processIco = async (
-  urlIco: string = 'https://www.timberworkinfo.ru/media/uploads/axialisiconworkshop_1772_fx4IU4h.ico',
+  urlIco: string,
   assetsFolder: JSZip | null,
 ) => {
   const assetName = 'favicon.ico';
