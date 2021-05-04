@@ -25,18 +25,22 @@ const BootstrapCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
     const classes = useStyles(props);
 
     return (
-      <div className="form-check" ref={ref} {...eventHandlers}>
+      <div
+        ref={ref}
+        {...eventHandlers}
+        className={cn(
+          'form-check',
+          className,
+          groupClass,
+          classes.ownStyles,
+          isDisabled && classes.disabled,
+        )}
+      >
         <input
           type="checkbox"
           id={id}
           data-ls-id={id}
-          className={cn(
-            'form-check-input',
-            className,
-            groupClass,
-            classes.ownStyles,
-            isDisabled && classes.disabled,
-          )}
+          className="form-check-input"
           checked={!isDisabled && isChecked}
           onChange={handleCheckboxChange}
         />

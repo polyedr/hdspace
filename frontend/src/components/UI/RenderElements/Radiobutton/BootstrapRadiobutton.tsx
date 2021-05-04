@@ -18,18 +18,22 @@ const BootstrapRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
     const eventHandlers = useEventHandlers(props);
 
     return (
-      <div className="form-check" ref={ref} {...eventHandlers}>
+      <div
+        ref={ref}
+        {...eventHandlers}
+        className={cn(
+          'form-check',
+          className,
+          groupClass,
+          isDisabled && classes.disabled,
+          classes.ownStyles,
+        )}
+      >
         <input
           type="radio"
           id={element.id}
           data-ls-id={element.id}
-          className={cn(
-            'form-check-input',
-            className,
-            groupClass,
-            isDisabled && classes.disabled,
-            classes.ownStyles,
-          )}
+          className={cn('form-check-input')}
           checked={!isDisabled && !isChecked}
           onChange={() => {
             if (!isDisabled && isChecked) {

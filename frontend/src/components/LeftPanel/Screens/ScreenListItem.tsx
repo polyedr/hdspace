@@ -67,7 +67,13 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const closeEdit = () => setEdit(false);
 
   const handleSubmit = async (values) => {
-    dispatch(editScreenNameAndData(project, id, { data: { meta: values } }));
+    const { name: newScreenName, ...metaValues } = values;
+    dispatch(
+      editScreenNameAndData(project, id, {
+        name: newScreenName,
+        data: { meta: metaValues },
+      }),
+    );
     closeEdit();
   };
 
@@ -112,7 +118,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
             onClose={closeEdit}
             titleDialog="Rename Screen"
             initialValueName={name}
-            initialValueTags={screenData.meta || {}}
+            initialValueTags={screenData?.meta || {}}
           />
         </div>
       )}

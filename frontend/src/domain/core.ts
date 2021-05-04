@@ -76,7 +76,7 @@ export const buttonStyleControls = [
   'display',
 ] as const;
 
-export const buttonParamsControls = ['textContent', 'showRipple'] as const;
+export const buttonParamsControls = ['textContent'] as const;
 
 export const textinputStyleControls = [
   'indents',
@@ -370,20 +370,8 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   textarea: ['textContent', 'placeholder', ...textareaStyleControls, 'layouts'],
-  checkbox: [
-    'value',
-    'name',
-    ...checkboxStyleControls,
-    'showRipple',
-    'layouts',
-  ],
-  radiobutton: [
-    'value',
-    'name',
-    ...radiobuttonStyleControls,
-    'showRipple',
-    'layouts',
-  ],
+  checkbox: ['value', 'name', ...checkboxStyleControls, 'layouts'],
+  radiobutton: ['value', 'name', ...radiobuttonStyleControls, 'layouts'],
   label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
   hyperlink: ['textContent', ...hyperlinkStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
@@ -410,7 +398,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'dropdownItems',
     ...dropdownStyleControls,
     'isOpen',
-    'showRipple',
     'layouts',
   ],
   dropdownMenu: [...dropdownMenuStyleControls, 'layouts'],

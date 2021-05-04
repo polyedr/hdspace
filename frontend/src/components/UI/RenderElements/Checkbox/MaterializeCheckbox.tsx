@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('checkbox', {});
 
-const MaterializeCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
+const MaterializeCheckbox = React.forwardRef<HTMLLabelElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const { id, styles } = element;
@@ -25,24 +25,27 @@ const MaterializeCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
     const classes = useStyles(props);
 
     return (
-      <label>
+      <label
+        htmlFor={element.id}
+        ref={ref}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          isDisabled && classes.disabled,
+        )}
+        {...eventHandlers}
+      >
         <input
           type="checkbox"
+          className="filled-in"
           id={id}
           data-ls-id={id}
-          className={cn(
-            'filled-in',
-            className,
-            groupClass,
-            classes.ownStyles,
-            isDisabled && classes.disabled,
-          )}
           checked={!isDisabled && isChecked}
           onChange={handleCheckboxChange}
+          disabled={isDisabled}
         />
-        <span ref={ref} {...eventHandlers}>
-          {label || ''}
-        </span>
+        <span>{label || ''}</span>
       </label>
     );
   },

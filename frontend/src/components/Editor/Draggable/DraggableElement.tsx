@@ -255,11 +255,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, [isOverArea, dropTargetParams, parent, dispatch]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     return () => {
       DOMHandler.INSTANCE.removeElementDom(elementId);
     };
-  }, [elementId]); */
+  }, [elementId]);
 
   const clickHandler = useCallback(
     (event: React.MouseEvent) => {

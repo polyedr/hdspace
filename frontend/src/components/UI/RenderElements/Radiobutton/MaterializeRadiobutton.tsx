@@ -20,28 +20,30 @@ const MaterializeRadiobutton = React.forwardRef<
   const eventHandlers = useEventHandlers(props);
 
   return (
-    <label>
+    <label
+      ref={ref}
+      {...eventHandlers}
+      className={cn(
+        className,
+        groupClass,
+        isDisabled && classes.disabled,
+        classes.ownStyles,
+      )}
+    >
       <input
         type="radio"
         id={element.id}
         data-ls-id={element.id}
-        className={cn(
-          'with-gap',
-          className,
-          groupClass,
-          isDisabled && classes.disabled,
-          classes.ownStyles,
-        )}
         checked={!isDisabled && !isChecked}
+        className="with-gap"
+        disabled={isDisabled}
         onChange={() => {
           if (!isDisabled && isChecked) {
             setIsChecked(!isChecked);
           }
         }}
       />
-      <span ref={ref} {...eventHandlers}>
-        {label || ''}
-      </span>
+      <span>{label || ''}</span>
     </label>
   );
 });

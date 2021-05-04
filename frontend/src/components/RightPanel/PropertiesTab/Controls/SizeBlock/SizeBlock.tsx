@@ -48,11 +48,9 @@ type ControlProps = {
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
-
   if (unit in Unit) {
     return unit as UnitName;
   }
-  console.error('Incorrect unit', unit); // TODO validate users input value
   return Unit.px;
 };
 
