@@ -24,6 +24,7 @@ import {
   executeRedoActions,
 } from '@Redux/project/actions';
 import {
+  findNextNodeId,
   findPrevNodeId,
   focusTreeItem,
   getRulerHeight,
@@ -174,6 +175,37 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (selectedItemId && !isDragging) {
+        if (e.keyCode === 38) {
+          // ArrowUp
+          // TODO: add throttling
+          e.preventDefault();
+          const prevNodeId = findPrevNodeId(tree, selectedItemId);
+          select(prevNodeId);
+          focusTreeItem(prevNodeId);
+        }
+
+        if (e.keyCode === 40) {
+          // ArrowDown
+
+          // TODO: add throttling
+          e.preventDefault();
+          const nextNodeId = findNextNodeId(tree, selectedItemId);
+          focusTreeItem(nextNodeId);
+        }
+
+        if (e.keyCode === 39) {
+          // ArrowRight
+          expand(selectedItemId);
+          select(selectedItemId);
+        }
+
+        if (e.keyCode === 37) {
+          // ArrowLeft
+
+          collapse(selectedItemId);
+
+          select(selectedItemId);
+        }
         if (e.keyCode === 32 && !coreElementSelected && canEdit) {
           // Space
           setIsDragging((state) => !state);
@@ -224,10 +256,13 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     },
     [
       canEdit,
+      collapse,
       coreElementSelected,
       currentScreenId,
       dispatch,
+      expand,
       isDragging,
+      select,
       selectedItemId,
       tree,
     ],
