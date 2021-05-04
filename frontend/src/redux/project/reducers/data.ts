@@ -162,6 +162,7 @@ const dataReducer = produce(
       }
 
       case TYPES.SET_SCREENS: {
+        // debugger
         const data = arrayToMap<Screen>(action.payload.screens);
         draft.screens = data;
         break;

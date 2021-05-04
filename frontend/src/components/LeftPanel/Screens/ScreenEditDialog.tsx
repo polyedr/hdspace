@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Field, Form } from 'react-final-form';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -10,6 +10,8 @@ import {
   Button,
   TextField,
 } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { uploadIcoScreen } from '@Redux/project/actions';
 
 type Props = {
   open: boolean;
@@ -22,6 +24,8 @@ type Props = {
   initialValueTags?: any;
   type?: string;
   validation?: any;
+  currentScreenId: number;
+  project: number;
 };
 const useStyles = makeStyles({
   dialogTitle: {
@@ -38,13 +42,46 @@ const ScreenEditDialog: React.FC<Props> = ({
   onClose,
   fieldName = '',
   initialValueName,
-  initialValueTags: { title, description, keywords, viewport, author, refresh },
+  initialValueTags: {
+    title,
+    description,
+    keywords,
+    viewport,
+    author,
+    refresh,
+    faviconUrl,
+  },
   withoutField = false,
   type,
   validation,
+  currentScreenId,
+  project,
 }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const handleChangeFileInput = useCallback(
+    (event) => {
+      // if (!assetId) {
+      //   dispatch(
+      //     enqueueSnackbar({
+      //       message: 'Asset list ID is not provided',
+      //       options: { variant: 'error' },
+      //     }),
+      //   );
+      //   return;
+      // }
+      console.log(faviconUrl, 'faviconUrl');
+      const file = event.target.files[0];
 
+      if (file.size > 5242880) {
+        // eslint-disable-next-line no-alert
+        alert('Choose image up to 5Mb!');
+      } else {
+        dispatch(uploadIcoScreen(file, project, currentScreenId));
+      }
+    },
+    [dispatch, currentScreenId, project],
+  );
   return (
     <MuiDialog open={open} onClose={onClose}>
       <Form
@@ -79,6 +116,13 @@ const ScreenEditDialog: React.FC<Props> = ({
                   <DialogTitle className={classes.dialogTitle}>
                     Screen metatags
                   </DialogTitle>
+                  <input
+                    onChange={handleChangeFileInput}
+                    accept="image/x-icon"
+                    id="upload-image"
+                    type="file"
+                  />
+
                   <Field
                     name="title"
                     validate={validation}

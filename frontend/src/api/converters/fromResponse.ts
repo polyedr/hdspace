@@ -211,7 +211,7 @@ export function convertProjectWithScreensFromResponse({
   project_data_json,
 }: ServerProjectWithScreens): ProjectWithScreens {
   const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
-
+  // debugger
   return {
     id,
     name,

@@ -70,7 +70,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
     dispatch(editScreen(project, id, values));
     closeEdit();
   };
-
+  console.log(screen, 'screen');
   const handleClick = () => {
     history.push(`/project/${currentProjectId}/${screen.id}`);
   };
@@ -114,6 +114,8 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
             titleDialog="Rename Screen"
             initialValueName={name}
             initialValueTags={screen_data_json}
+            currentScreenId={id}
+            project={project}
           />
         </div>
       )}

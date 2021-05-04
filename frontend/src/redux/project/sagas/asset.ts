@@ -22,14 +22,18 @@ import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import {
+  selectAllAssetLists,
+  selectSelectedAssetListId,
+  selectAssetListById,
+} from '../selectors/asset';
+import { editScreen } from '../actions';
+import { selectScreenByIdWrapper } from '../selectors/screen';
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
-import {
-  selectSelectedAssetListId,
-  selectAssetListById,
-} from '../selectors/asset';
+
 import withActionsHistory from '../wrappers/withActionsHistory';
 
 // eslint-disable-next-line consistent-return
@@ -295,7 +299,6 @@ export const uploadAssetSaga = compose(
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.uploadAsset>) {
   const { listId, assetFile } = action.payload;
-
   let assetListId = listId;
   if (!assetListId) {
     assetListId = yield select(selectSelectedAssetListId);
@@ -309,6 +312,7 @@ export const uploadAssetSaga = compose(
     );
     return;
   }
+
   const fileName: string = assetFile.name;
   try {
     yield call(
@@ -407,6 +411,43 @@ export const uploadElementAssetSaga = withRequiredPermissions(
           options: { variant: 'error' },
         },
         error,
+      ),
+    );
+  }
+});
+
+export const uploadIcoScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({ payload }) {
+  try {
+    const { file, project, id } = payload;
+    const assetLists = yield select(selectAllAssetLists);
+    const selectedAssetList = yield select(selectSelectedAssetListId);
+    const listId = selectedAssetList?.id || assetLists[0].id;
+    const assetInstance = yield call(uploadAssetHelper, {
+      assetFile: file,
+      fileName: file.name,
+      listId,
+    });
+
+    const screenInfo = yield select(selectScreenByIdWrapper(id));
+    console.log(screenInfo, 'screenInfo');
+    yield put(
+      editScreen(project, id, {
+        ...screenInfo.screen_data_json,
+        name: screenInfo.name,
+        faviconUrl: assetInstance.image,
+      }),
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to rename screen',
+          options: { variant: 'error' },
+        },
+        e,
       ),
     );
   }

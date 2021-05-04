@@ -563,6 +563,7 @@ export const editScreenSaga = withRequiredPermissions(
       viewport,
       author,
       refresh,
+      faviconUrl,
     } = screenInfo;
 
     const nameWithoutSpace = name.trim();
@@ -583,6 +584,7 @@ export const editScreenSaga = withRequiredPermissions(
         viewport,
         author,
         refresh,
+        faviconUrl,
       }),
     };
 
@@ -608,6 +610,7 @@ export const editScreenSaga = withRequiredPermissions(
                 viewport,
                 author,
                 refresh,
+                faviconUrl,
               },
             }
           : screen;

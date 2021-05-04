@@ -17,7 +17,7 @@ import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { selectSelectedAssetListId } from '@Redux/project/selectors/asset';
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import AssetsGrid from './AssetsGrid';
 import AssetLists from './AssetLists';
 
@@ -72,7 +72,7 @@ const AssetsSection: React.FC = () => {
   return (
     <div className={classes.root}>
       <StyledAccordion defaultExpanded square className={classes.accordion}>
-        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <StyledAccordionSummary expandIcon={<ExpandLessIcon />}>
           Project assets
         </StyledAccordionSummary>
         <AssetLists onListChange={handleListChange} />
