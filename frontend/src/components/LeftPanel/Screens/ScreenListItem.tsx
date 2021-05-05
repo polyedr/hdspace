@@ -38,7 +38,7 @@ const useStyles = makeStyles(({ palette, typography }) => ({
   icon: {
     color: palette.common.white,
     minWidth: 0,
-    paddingRight: '.5em',
+    paddingRight: '.1em',
   },
   name: {
     fontFamily: typography.fontFamily,
@@ -108,19 +108,19 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
               <ListItemIcon className={classes.icon}>
                 <ScreenLogo image={image} />
               </ListItemIcon>
+              {name.length > 10 ? (
+                <ScreenLongName
+                  name={name}
+                  styles={{
+                    name: classes.name,
+                    popover: classes.popover,
+                    paper: classes.paper,
+                  }}
+                />
+              ) : (
+                <span className={classes.name}>{name}</span>
+              )}
             </div>
-            {name.length > 10 ? (
-              <ScreenLongName
-                name={name}
-                styles={{
-                  name: classes.name,
-                  popover: classes.popover,
-                  paper: classes.paper,
-                }}
-              />
-            ) : (
-              <span className={classes.name}>{name}</span>
-            )}
             {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}
             <ScreenControls
               show={show}

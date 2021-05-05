@@ -25,7 +25,7 @@ const ScreenLongName: React.FC<Props> = ({ name, styles }) => {
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
       >
-        {name.substr(0, 8)}
+        {name.substr(0, 12)}
         ...
       </span>
       <Popover
