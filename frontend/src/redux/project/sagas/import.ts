@@ -47,8 +47,7 @@ export const importHtmlSaga = withRequiredPermissions(
       ? htmlFiles
           .find((file) => file.name.includes(indexPathname.slice(1))) // remove slash at the beginning
           ?.text()
-      : htmlFiles.find((file) => file.name.includes('index.html'))?.text() ||
-        htmlFiles.find((file) => !file.name.includes('.'))?.text(); // in case of html file comes with no extension
+      : htmlFiles[0]?.text();
 
     if (!html) {
       throw new Error('At least one HTML file required');
