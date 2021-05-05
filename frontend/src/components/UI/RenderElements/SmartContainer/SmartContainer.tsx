@@ -20,6 +20,7 @@ import SyncProblemIcon from '@material-ui/icons/SyncProblem';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { IconButton } from '@material-ui/core';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
@@ -138,7 +139,29 @@ const SmartContainerRenderer = React.forwardRef<
     blockType || NNBlockType.WEBPAGE,
     imageFile,
   );
-
+  const onclickAnalyzePicture = (size: number, bool: boolean) => {
+    if (bool) {
+      if (size < 101376) {
+        handleNNProcessing(bool);
+      } else {
+        dispatch(
+          enqueueSnackbar({
+            message: 'image size is greater than 100 kB',
+            options: { variant: 'warning' },
+          }),
+        );
+      }
+    } else if (size < 306176) {
+      handleNNProcessing(bool);
+    } else {
+      dispatch(
+        enqueueSnackbar({
+          message: 'image size is greater than 300 kB',
+          options: { variant: 'warning' },
+        }),
+      );
+    }
+  };
   const { imageURL, imageSize } = element.parameters;
 
   const [size, setSize] = useState<SizeProps>({
@@ -283,7 +306,9 @@ const SmartContainerRenderer = React.forwardRef<
                       title="Automatically Analyze image"
                       component="span"
                       disabled={!imageFile}
-                      onClick={() => handleNNProcessing(true)}
+                      onClick={() =>
+                        onclickAnalyzePicture(imageFile.size, true)
+                      }
                     >
                       <SyncIcon className={classes.icon} />
                     </IconButton>
@@ -293,7 +318,9 @@ const SmartContainerRenderer = React.forwardRef<
                       title="Manually Analyze image"
                       component="span"
                       disabled={!imageFile}
-                      onClick={() => handleNNProcessing(false)}
+                      onClick={() =>
+                        onclickAnalyzePicture(imageFile.size, false)
+                      }
                     >
                       <SyncProblemIcon className={classes.icon} />
                     </IconButton>
