@@ -12,7 +12,7 @@ const useAnalyzePucture = (
   const dispatch = useDispatch();
   const handleNNProcessing = useNNProcessing(elementId, type, imageFile);
   const handleAnalyzeSizePicture = useCallback(
-    (size: number, maxSize: number) => {
+    (size: number, maxSize: 100 | 300) => {
       const isAutomatic = maxSize === 100;
       if (size < maxSize * 1024) {
         handleNNProcessing(isAutomatic);
