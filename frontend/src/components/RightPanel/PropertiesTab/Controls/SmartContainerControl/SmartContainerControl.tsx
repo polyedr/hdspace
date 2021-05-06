@@ -1,7 +1,6 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
-import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import {
   Entity,
   NNBlockType,
@@ -12,7 +11,7 @@ import { selectActiveElementParamByName } from '@Redux/project/selectors/element
 import { selectElementFileInput } from '@Redux/project/selectors/base';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { enqueueSnackbar } from '@Redux/notification/actions';
+import useAnalyzePucture from '@Utils/nn/hooks/useAnalyzePucture';
 
 type Props = {
   activeElementId: PropertiesChangeProps<
@@ -39,40 +38,16 @@ const SmartContainerControl: React.FC<Props> = ({
   canEdit,
 }) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const imageURL = useSelector(selectActiveElementParamByName('imageURL'));
   const handleImageChange = useImageUpload(activeElementId);
 
   const imageFile = useSelector(selectElementFileInput(activeElementId));
-
-  const handleNNProcessing = useNNProcessing(
+  const handleAnalyzePicture = useAnalyzePucture(
     activeElementId,
     blockType,
     imageFile,
   );
-  const onclickAnalyzePicture = (size: number, bool: boolean) => {
-    if (bool) {
-      if (size < 101376) {
-        handleNNProcessing(bool);
-      } else {
-        dispatch(
-          enqueueSnackbar({
-            message: 'image size is greater than 100 kB',
-            options: { variant: 'warning' },
-          }),
-        );
-      }
-    } else if (size < 306176) {
-      handleNNProcessing(bool);
-    } else {
-      dispatch(
-        enqueueSnackbar({
-          message: 'image size is greater than 300 kB',
-          options: { variant: 'warning' },
-        }),
-      );
-    }
-  };
+
   return (
     <div className={classes.wrapper}>
       <input
@@ -103,7 +78,7 @@ const SmartContainerControl: React.FC<Props> = ({
             color="primary"
             component="span"
             disabled={!imageFile || !canEdit}
-            onClick={() => onclickAnalyzePicture(imageFile.size, true)}
+            onClick={() => handleAnalyzePicture(imageFile.size, 100)}
           >
             Automatically Analyze
           </Button>
@@ -113,7 +88,7 @@ const SmartContainerControl: React.FC<Props> = ({
             color="primary"
             component="span"
             disabled={!imageFile || !canEdit}
-            onClick={() => onclickAnalyzePicture(imageFile.size, false)}
+            onClick={() => handleAnalyzePicture(imageFile.size, 300)}
           >
             Manually Analyze
           </Button>
