@@ -13,13 +13,10 @@ const useAnalyzePucture = (
   const handleNNProcessing = useNNProcessing(elementId, type, imageFile);
   const handleAnalyzeSizePicture = useCallback(
     (size: number, maxSize: number) => {
-      if (size < maxSize * 1024 && maxSize === 100) {
-        handleNNProcessing(true);
-      }
-      if (size < maxSize * 1024 && maxSize === 300) {
-        handleNNProcessing(false);
-      }
-      if (size >= maxSize * 1024) {
+      const isAutomatic = maxSize === 100;
+      if (size < maxSize * 1024) {
+        handleNNProcessing(isAutomatic);
+      } else {
         dispatch(
           enqueueSnackbar({
             message: `image size is greater than ${maxSize} kB`,
