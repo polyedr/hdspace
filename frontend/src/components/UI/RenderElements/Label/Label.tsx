@@ -6,11 +6,11 @@ import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('label', {
-  label: ({ isDisabled }) => ({
+  label: {
     wordBreak: 'break-word',
-    cursor: isDisabled ? 'default' : 'pointer',
+    cursor: 'default',
     outline: 0,
-  }),
+  },
 });
 
 const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
@@ -25,7 +25,6 @@ const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
       props,
       contentEditableSettings.events,
     );
-
     return (
       <label
         ref={ref}

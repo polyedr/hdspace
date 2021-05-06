@@ -53,17 +53,17 @@ const ListItem = React.forwardRef<HTMLLinkElement, RendererProps>(
     const linkClasses = useLinkStyles(props);
     const contentEditableSettings = useContentEditable(element.id, textContent);
     const eventHandlers = useEventHandlers(props);
-
-    const clickHandler = eventHandlers.onClick;
-    eventHandlers.onClick = (event: React.MouseEvent<HTMLLIElement>) => {
-      if (isDisabled) {
-        (event.target as HTMLElement).focus();
-      }
-      if (clickHandler) {
-        clickHandler(event);
-      }
-    };
-
+    if (eventHandlers) {
+      const clickHandler = eventHandlers.onClick;
+      eventHandlers.onClick = (event: React.MouseEvent<HTMLLIElement>) => {
+        if (isDisabled) {
+          (event.target as HTMLElement).focus();
+        }
+        if (clickHandler) {
+          clickHandler(event);
+        }
+      };
+    }
     return (
       <>
         {isLink ? (
