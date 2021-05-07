@@ -22,9 +22,8 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
   canEdit,
 }) => {
   const classes = useStyles();
-  const videoSettings = useSelector(
-    selectActiveElementParamByName('videoSettings'),
-  );
+  const videoSettings =
+    useSelector(selectActiveElementParamByName('videoSettings')) || {};
   const { link, autoplay, start, end, loop, rel } = videoSettings;
 
   const [linkInputValue, setLinkInputValue] = useState(link);
@@ -35,12 +34,11 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
   }: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (value && !extractPlayerLinkInfo(value).link) {
       setIsValidLink(false);
-      setLinkInputValue(value);
     } else {
       setIsValidLink(true);
-      setLinkInputValue(value);
       updateParams({ videoSettings: { ...videoSettings, link: value } });
     }
+    setLinkInputValue(value);
   };
 
   const handleSwitchChange = () => {

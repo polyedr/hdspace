@@ -9,7 +9,9 @@ import { RendererProps } from '../types';
 const useStyles = makeComponentStyles('video', {
   iframe: {
     overflow: 'hidden',
-    position: 'relative,',
+    position: 'relative',
+    paddingBottom: '56.25%',
+    height: 0,
   },
   empty: {
     background: `no-repeat center #E0E0E0 url(${IMAGES.youtubeIcon})`,
@@ -39,11 +41,9 @@ const Video = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
       )}
       {...eventHandlers}
     >
-      <div
-        className={cn(styles.iframe, className, groupClass, styles.ownStyles)}
-      >
-        {/* eslint-disable-next-line jsx-a11y/iframe-has-title */}
+      <div className={styles.iframe}>
         <iframe
+          title="Embedded video"
           width="100%"
           height="100%"
           src={playerLink}

@@ -1,4 +1,4 @@
-import { head, toPairs } from 'ramda';
+import { head } from 'ramda';
 import { PLAYERS } from '@Constants/players';
 import { VideoSettingsType } from '../types';
 
@@ -8,7 +8,7 @@ type LinkInfo = {
 };
 
 export function extractPlayerLinkInfo(link: string): LinkInfo {
-  const currentVideoLink = toPairs(PLAYERS)
+  const currentVideoLink = Object.entries(PLAYERS)
     .filter(([, parameters]) =>
       parameters.aliases.some((alias) => link.startsWith(alias)),
     )
