@@ -79,7 +79,7 @@ const useContentEditable = (
         },
       },
     }),
-    [contentEditable, debouncedCallback, saveElementContent],
+    [contentEditable, debouncedCallback, saveElementContent, isPrototypeMode],
   );
 
   return config;
