@@ -77,16 +77,6 @@ const editReducer = produce(
         return { ...draft, hoveredElementId: action.payload };
       }
 
-      case TYPES.CHANGE_FREE_CANVAS_MODE: {
-        return {
-          ...draft,
-          freeCanvas: {
-            ...draft.freeCanvas,
-            enabled: action.payload,
-          },
-        };
-      }
-
       case TYPES.UPDATE_LAST_ELEMENTS: {
         const { parentId, ids, offset } = action.payload;
         draft.freeCanvas.lastElements[parentId] = { elements: ids, offset };

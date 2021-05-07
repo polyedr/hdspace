@@ -51,6 +51,7 @@ import { createScenarios } from './scenario';
 import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import {
+  selectCurrentScreen,
   selectCurrentScreenId,
   selectMasterScreen,
   selectScreenById,
@@ -121,7 +122,7 @@ export const createScreenSaga = compose(
     yield put(Actions.setScreenCreateLoader(true));
 
     yield put(Actions.clearAfterPrevScreen());
-    const { projectID, name, buoyancy } = payload;
+    const { projectID, name, buoyancy, freeCanvas } = payload;
 
     const screens: Screen[] = yield select(selectScreens);
     const numberedName = generateUniqueName(
@@ -141,6 +142,7 @@ export const createScreenSaga = compose(
         image: null,
         screen_data_json: JSON.stringify({
           viewport: 'width=device-width, initial-scale=1.0, minimum-scale=1.0', // default viewport value
+          freeCanvas,
         }),
         styles_root: {},
       },
@@ -771,11 +773,11 @@ export const convertFreeCanvasSaga = compose(
       throw new Error('Something went wrong');
     }
 
-    const screenId: Screen['id'] = yield select(selectCurrentScreenId);
+    const screen: Screen = yield select(selectCurrentScreen);
 
     yield all(
       rootElement.children.map((child) =>
-        put(Actions.removeStateElement(child.id, { screenId })),
+        put(Actions.removeStateElement(child.id, { screenId: screen.id })),
       ),
     );
 
@@ -787,11 +789,28 @@ export const convertFreeCanvasSaga = compose(
             parentId: rootElement.id,
           },
         ],
-        { screenId },
+        { screenId: screen.id },
       ),
     );
 
-    yield put(Actions.changeFreeCanvasMode(false));
+    const { result: updatedScreen, error: screenError } = yield call(
+      reqWrapper,
+      apiUpdateScreen,
+      {
+        id: screen.id,
+        data: {
+          ...screen,
+          screen_data_json: {
+            ...screen.screen_data_json,
+            freeCanvas: false,
+          },
+        },
+      },
+    );
+
+    if (screenError) throw new Error(screenError);
+
+    yield put(updateScreen(updatedScreen));
   } catch (e) {
     yield put(
       enqueueSnackbar(

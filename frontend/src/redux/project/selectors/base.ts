@@ -3,6 +3,7 @@ import { DEFAULT_PROJECT } from '@Constants/defaultParams';
 import { FreeCanvasOffset } from '@Src/types';
 import { makeFeatureStateSelector } from '../../../shared/redux';
 import { AppReduxState } from '../../types';
+import { selectCurrentScreen } from './screen';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -114,8 +115,10 @@ export const selectElementFileInput = (id: string) => (
   return selectProjectState(state).data.elementInputs[id];
 };
 
-export const selectFreeCanvasMode = ({ project }: AppReduxState) =>
-  project.edit.freeCanvas.enabled;
+export const selectFreeCanvasMode = createSelector(
+  selectCurrentScreen,
+  (screen) => screen.screen_data_json.freeCanvas,
+);
 
 // think over how can we fix this one in a different way
 export const selectFreeCanvasOffset = (id: string) => (

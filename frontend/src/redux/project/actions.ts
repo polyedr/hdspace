@@ -352,11 +352,11 @@ export const editScreen = (
 });
 
 export const createScreen = (
-  { projectID, name, buoyancy, rootName }: CreateScreenData,
+  { projectID, name, buoyancy, rootName, freeCanvas }: CreateScreenData,
   meta?: HistoryMeta,
 ): CreateScreen => ({
   type: TYPES.CREATE_SCREEN,
-  payload: { projectID, name, buoyancy, rootName },
+  payload: { projectID, name, buoyancy, rootName, freeCanvas },
   meta,
 });
 
@@ -1096,11 +1096,6 @@ export const removeCustomElement = (id: string) => ({
 export const addFileInput = (id: string, file: File) => ({
   type: TYPES.ADD_FILE_INPUT,
   payload: { id, file },
-});
-
-export const changeFreeCanvasMode = (enabled: boolean) => ({
-  type: TYPES.CHANGE_FREE_CANVAS_MODE,
-  payload: enabled,
 });
 
 export const updateLastElements = (
