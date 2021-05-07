@@ -1,3 +1,4 @@
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import React, { useState, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateElementParameters } from '@Redux/project/actions';
@@ -22,6 +23,7 @@ const useContentEditable = (
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
   const [contentEditable, setContentEditable] = useState<boolean>(false);
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
 
   const saveElementContent = useCallback(
     (newTextContent: string) => {
@@ -49,7 +51,7 @@ const useContentEditable = (
       },
       events: {
         onClick: () => {
-          if (!contentEditable) {
+          if (!contentEditable && !isPrototypeMode) {
             setContentEditable(true);
           }
         },
@@ -77,7 +79,7 @@ const useContentEditable = (
         },
       },
     }),
-    [contentEditable, debouncedCallback, saveElementContent],
+    [contentEditable, debouncedCallback, saveElementContent, isPrototypeMode],
   );
 
   return config;

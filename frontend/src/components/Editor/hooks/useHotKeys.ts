@@ -1,3 +1,4 @@
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -26,6 +27,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
   const coreElementsIds = useSelector(
     selectTreeChildElementsIds(masterCoreElementId),
   );
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -53,8 +55,8 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
         element?.focus();
       }
     };
+    if (!isPrototypeMode) element?.addEventListener('keydown', listener, false);
 
-    element?.addEventListener('keydown', listener, false);
     return () => element?.removeEventListener('keydown', listener, false);
   }, [ref, id, currentScreenId, dispatch, coreElementSelected, canEdit]);
 
@@ -73,7 +75,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
       }
     };
 
-    element?.addEventListener('keydown', listener);
+    if (!isPrototypeMode) element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
   }, [ref, id, currentScreenId, dispatch, coreElementSelected, canEdit]);
 
@@ -91,7 +93,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
       }
     };
 
-    element?.addEventListener('keydown', listener);
+    if (!isPrototypeMode) element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
   }, [canEdit, coreElementSelected, dispatch, ref]);
 
@@ -108,7 +110,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
       }
     };
 
-    element?.addEventListener('keydown', listener);
+    if (!isPrototypeMode) element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
   }, [ref, currentScreenId, dispatch, coreElementSelected, canEdit]);
 
@@ -122,7 +124,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
       }
     };
 
-    element?.addEventListener('keydown', listener);
+    if (!isPrototypeMode) element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
   }, [ref, dispatch]);
 };
