@@ -33,29 +33,21 @@ const RenameProjectBar = ({
   const classes = useStyles();
   const isRenameProject = userIdCreator === userId;
   return (
-    <>
-      {isRenameProject ? (
-        <div className={classes.title}>
-          <Typography variant="h6" className={classes.projectName}>
-            {projectName}
-          </Typography>
-          <IconButton
-            onClick={handleEditClick}
-            className={classes.editButton}
-            size="small"
-            title="Rename project"
-          >
-            <EditIcon fontSize="small" />
-          </IconButton>
-        </div>
-      ) : (
-        <div className={classes.title}>
-          <Typography variant="h6" className={classes.projectName}>
-            {projectName}
-          </Typography>
-        </div>
+    <div className={classes.title}>
+      <Typography variant="h6" className={classes.projectName}>
+        {projectName}
+      </Typography>
+      {isRenameProject && (
+        <IconButton
+          onClick={handleEditClick}
+          className={classes.editButton}
+          size="small"
+          title="Rename project"
+        >
+          <EditIcon fontSize="small" />
+        </IconButton>
       )}
-    </>
+    </div>
   );
 };
 
