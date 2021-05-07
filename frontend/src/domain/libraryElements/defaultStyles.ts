@@ -585,11 +585,12 @@ export const defaultVideoStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    width: '640px',
-    height: '480px',
   },
   border: {
     ...DEFAULT_BORDER,
+  },
+  other: {
+    aspectRatio: '16 / 9',
   },
 };
 
