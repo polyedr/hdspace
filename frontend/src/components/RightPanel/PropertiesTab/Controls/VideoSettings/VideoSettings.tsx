@@ -6,6 +6,7 @@ import { extractPlayerLinkInfo } from '@Utils/extractVideoLink';
 import { PropertiesChangeProps, VideoElement } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
+import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -26,20 +27,22 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
     useSelector(selectActiveElementParamByName('videoSettings')) || {};
   const { link, autoplay, start, end, loop, rel } = videoSettings;
 
-  const [linkInputValue, setLinkInputValue] = useState(link);
   const [isValidLink, setIsValidLink] = useState(true);
 
-  const handleLinkInputChange = ({
-    target: { value },
-  }: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleLinkInputChange = (value: string) => {
     if (value && !extractPlayerLinkInfo(value).link) {
       setIsValidLink(false);
     } else {
       setIsValidLink(true);
       updateParams({ videoSettings: { ...videoSettings, link: value } });
     }
-    setLinkInputValue(value);
   };
+
+  const [linkInputValue, handleChangeLinkInputValue] = useDebouncedInputChange(
+    link,
+    handleLinkInputChange,
+    300,
+  );
 
   const handleSwitchChange = () => {
     updateParams({ videoSettings: { ...videoSettings, autoplay: !autoplay } });
@@ -77,7 +80,7 @@ const VideoSettings: React.FC<PropertiesChangeProps<VideoElement>> = ({
         <StyledTextField
           variant="outlined"
           value={linkInputValue}
-          onChange={handleLinkInputChange}
+          onChange={handleChangeLinkInputValue}
           label="Link"
           margin="dense"
           fullWidth

@@ -578,22 +578,17 @@ export const deleteElementSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof Actions.deleteElement>) {
-  const { id } = action.payload;
   try {
+    const { id } = action.payload;
     if (!action.meta) {
       console.error(
         `You have to provide metainformation for action ${action.type}`,
-      );
-      yield put(
-        enqueueSnackbar({
-          message: 'You should provide meta information for this action',
-          options: { variant: 'error' },
-        }),
       );
       return;
     }
     const element = yield select(selectElementById(id));
     const { groupElements, sourceElementId } = element.parameters;
+
     if (groupElements) {
       yield put(
         Actions.softDeleteMultipleElements([id, ...groupElements], action.meta),
@@ -641,7 +636,6 @@ export const softDeleteSaga = compose(
 )(function* (action: ReturnType<typeof Actions.softDeleteElement>) {
   try {
     const { id } = action.payload;
-
     if (!action.meta) {
       console.error(
         `You have to provide metainformation for action ${action.type}`,

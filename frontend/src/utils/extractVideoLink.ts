@@ -8,6 +8,11 @@ type LinkInfo = {
 };
 
 export function extractPlayerLinkInfo(link: string): LinkInfo {
+  if (!link)
+    return {
+      player: 'none',
+      link: '',
+    };
   const currentVideoLink = Object.entries(PLAYERS)
     .filter(([, parameters]) =>
       parameters.aliases.some((alias) => link.startsWith(alias)),

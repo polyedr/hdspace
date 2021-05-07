@@ -585,8 +585,6 @@ export const defaultVideoStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
-    // width: '640',
-    // height: '480px',
   },
   border: {
     ...DEFAULT_BORDER,
