@@ -261,7 +261,7 @@ export const createScreenSaga = compose(
             );
           }
 
-          yield put(Actions.setNewScreenModal(true));
+          yield put(Actions.setNewScreenModal(!freeCanvas));
 
           return updatedScreen;
         }

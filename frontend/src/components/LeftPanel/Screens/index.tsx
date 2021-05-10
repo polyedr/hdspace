@@ -21,6 +21,7 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
   selectCurrentProjectId,
+  selectFreeCanvasMode,
   selectScreenCreateLoader,
 } from '@Redux/project/selectors/base';
 import {
@@ -75,6 +76,7 @@ const Screens = () => {
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
   const masterScreenId = useSelector(selectMasterScreenId);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const freeCanvas = useSelector(selectFreeCanvasMode);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -174,6 +176,7 @@ const Screens = () => {
               size="small"
               className={classes.button}
               onClick={handleShowMoreOptions}
+              disabled={freeCanvas}
             >
               <MoreHorizIcon />
             </IconButton>
