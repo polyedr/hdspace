@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_SCREEN } from '@Constants/defaultParams';
+import { Normalized, Screen } from '@Src/types';
 import { AppReduxState } from '../../types';
 
 export const selectCurrentScreenId = ({ project }: AppReduxState) =>
@@ -22,12 +23,18 @@ export const selectScreensWithoutMaster = createSelector(
 );
 
 export const selectScreens = (state: AppReduxState) =>
-  Object.values(state.project.data.screens).sort(
-    (a, b) => a.buoyancy - b.buoyancy,
-  );
+  state.project.data.screens;
 
-export const selectScreensLength = (state: AppReduxState) =>
-  selectScreens(state).length;
+export const selectSortedScreens = createSelector(
+  selectScreens,
+  (unsortedScreens: Normalized<Screen>) =>
+    Object.values(unsortedScreens).sort((a, b) => a.buoyancy - b.buoyancy),
+);
+
+export const selectScreensLength = createSelector(
+  selectScreens,
+  (screens: Normalized<Screen>) => Object.keys(screens).length,
+);
 
 /**
  * use this selector in sagas

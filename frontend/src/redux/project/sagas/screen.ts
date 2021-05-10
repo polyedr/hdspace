@@ -52,8 +52,8 @@ import {
   selectCurrentScreenId,
   selectMasterScreen,
   selectScreenById,
-  selectScreens,
   selectScreensWithoutMaster,
+  selectSortedScreens,
 } from '../selectors/screen';
 import {
   selectAllElements,
@@ -121,7 +121,7 @@ export const createScreenSaga = compose(
     yield put(Actions.clearAfterPrevScreen());
     const { projectID, name, buoyancy, freeCanvas } = payload;
 
-    const screens: Screen[] = yield select(selectScreens);
+    const screens: Screen[] = yield select(selectSortedScreens);
     const numberedName = generateUniqueName(
       name,
       screens.map((screen) => screen.name),
@@ -438,8 +438,8 @@ export const deleteScreenSaga = compose(
         return;
       }
 
-      const screens: ReturnType<typeof selectScreens> = yield select(
-        selectScreens,
+      const screens: ReturnType<typeof selectSortedScreens> = yield select(
+        selectSortedScreens,
       );
 
       const newScreens = screens.filter((screen) => screen.id !== screenId);
@@ -504,7 +504,7 @@ export const restoreScreenSaga = withActionsHistory(function* ({
         );
       }
 
-      const screens = yield select(selectScreens);
+      const screens = yield select(selectSortedScreens);
       const screen: Screen = yield call(reqWrapper, apiGetScreen, {
         id: screenId,
       });

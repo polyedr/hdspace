@@ -13,7 +13,7 @@ import LeftPanel from '@Components/LeftPanel';
 import NewScreenModal from '@Components/Dialogs/NewScreenModal';
 import Sidebar from '@Components/Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
-import { selectScreens } from '@Redux/project/selectors/screen';
+import { selectSortedScreens } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
 import ScreenComponent from './Screen';
 
@@ -48,7 +48,7 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const project = useSelector(selectProjectByIdWrapper(currentProjectId));
   const projectLoader = useSelector(selectProjectLoader);
-  const screens = useSelector(selectScreens);
+  const screens = useSelector(selectSortedScreens);
 
   const getInitialScreenId = (screens: Screen[]) => {
     const sorted = screens.sort((a, b) => a.buoyancy - b.buoyancy);
