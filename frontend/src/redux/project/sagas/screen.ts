@@ -2,10 +2,7 @@ import { all, call, fork, put, select } from 'redux-saga/effects';
 import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
-import {
-  convertElementFromResponse,
-  convertScreenFromResponse,
-} from '@Api/converters/fromResponse';
+import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import { apiCreateElements, apiGetElements } from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
@@ -217,7 +214,7 @@ export const createScreenSaga = compose(
 
         if (savedScreen) {
           const updatedScreen = {
-            ...convertScreenFromResponse(savedScreen),
+            ...savedScreen,
             element: elements[0].id,
           };
 
@@ -521,7 +518,7 @@ export const restoreScreenSaga = withActionsHistory(function* ({
 
       if (elements) {
         screen.element = elements[0].id;
-        yield put(setScreens([convertScreenFromResponse(screen), ...screens]));
+        yield put(setScreens([screen, ...screens]));
 
         yield put(setProject(result));
 
@@ -569,18 +566,10 @@ export const editScreenSaga = withRequiredPermissions(
     } = screenInfo;
 
     const nameWithoutSpace = name.trim();
-    const screens: ReturnType<typeof selectScreens> = yield select(
-      selectScreens,
-    );
     const screen: Screen = yield select(selectScreenById, screenID);
 
-    const numberedName = generateUniqueName(
-      nameWithoutSpace,
-      screens.map((screen) => screen.name),
-    );
-
     const newData: Partial<Screen> = {
-      name: numberedName,
+      name: nameWithoutSpace,
       screen_data_json: JSON.stringify({
         ...screen.screen_data_json,
         title,
@@ -603,31 +592,14 @@ export const editScreenSaga = withRequiredPermissions(
     );
 
     if (result) {
-      const newScreens = screens.map((screen) => {
-        return screen.id === screenID
-          ? {
-              ...screen,
-              name: numberedName,
-              screen_data_json: {
-                description,
-                keywords,
-                title,
-                viewport,
-                author,
-                refresh,
-                faviconUrl,
-              },
-            }
-          : screen;
-      });
-      yield put(setScreens(newScreens));
+      yield put(updateScreen(result));
     }
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
       enqueueSnackbar(
         {
-          message: e.message || 'Failed to rename screen',
+          message: e.message || 'Failed to update screen',
           options: { variant: 'error' },
         },
         e,
