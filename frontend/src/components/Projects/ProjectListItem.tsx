@@ -97,17 +97,18 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
           <TableCell>{projectscreen.length}</TableCell>
 
           <TableCell>
-            <IconButton size="small" onClick={handleRenameProject}>
-              <EditIcon fontSize="small" />
-            </IconButton>
-
             {user.id === userData.id && (
-              <IconButton
-                size="small"
-                onClick={() => onPermissionsManagementClick(id)}
-              >
-                <GroupIcon fontSize="small" />
-              </IconButton>
+              <>
+                <IconButton size="small" onClick={handleRenameProject}>
+                  <EditIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => onPermissionsManagementClick(id)}
+                >
+                  <GroupIcon fontSize="small" />
+                </IconButton>
+              </>
             )}
 
             <IconButton size="small" onClick={handleDeleteProject}>

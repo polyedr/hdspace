@@ -1,5 +1,5 @@
 import sagaHelper from 'redux-saga-testing';
-import { renameProjects } from '@Redux/project/sagas/project';
+import { renameProjectSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import { select, call, put } from 'redux-saga/effects';
 import { selectProjectById } from '@Redux/project/selectors/base';
@@ -15,7 +15,7 @@ describe('rename project saga', () => {
   const action = Actions.renameProject(mockProject.id, testName);
   describe('under normal behavior', () => {
     // @ts-expect-error saga type is not compatible with IterableIterator
-    const it = sagaHelper(renameProjects(action));
+    const it = sagaHelper(renameProjectSaga(action));
 
     it('should select project', (result) => {
       expect(result).toEqual(select(selectProjectById, mockProject.id));
@@ -44,7 +44,7 @@ describe('rename project saga', () => {
 
   describe('if api request fails', () => {
     // @ts-expect-error saga type is not compatible with IterableIterator
-    const it = sagaHelper(renameProjects(action));
+    const it = sagaHelper(renameProjectSaga(action));
     const errorMessage = 'Error message';
     const error = new Error(errorMessage);
 

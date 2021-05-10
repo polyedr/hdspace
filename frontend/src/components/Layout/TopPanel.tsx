@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import EditIcon from '@material-ui/icons/Edit';
 import {
   selectCurrentProject,
   selectSidebarOpen,
@@ -17,14 +16,16 @@ import {
 } from '@Redux/project/selectors/via';
 import DehazeIcon from '@material-ui/icons/Dehaze';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton } from '@material-ui/core';
 import { StyledIconButton } from '@Components/styledComponents';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectUserData } from '@Redux/user/selectors';
 import Dialog from '../Dialogs/Dialog';
 import TopBar from './TopBar';
 import Avatar from './Avatar';
 import History from './History';
+import RenameProjectBar from './TopBar/RenameProjectBar';
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
@@ -64,8 +65,12 @@ const TopPanel = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [openEdit, setOpenEdit] = useState(false);
-
-  const { name: projectName, id } = useSelector(selectCurrentProject);
+  const {
+    name: projectName,
+    id,
+    user: { id: userIdCreator },
+  } = useSelector(selectCurrentProject);
+  const { id: userId } = useSelector(selectUserData);
   const viaMode = useSelector(selectVIAModeEnabled);
   const sidebarOpen = useSelector(selectSidebarOpen);
   const viaResultId = useSelector(selectVIAResultId);
@@ -93,20 +98,12 @@ const TopPanel = () => {
         <Avatar />
 
         {projectName && (
-          <div className={classes.title}>
-            <Typography variant="h6" className={classes.projectName}>
-              {projectName}
-            </Typography>
-
-            <IconButton
-              onClick={handleEditClick}
-              className={classes.editButton}
-              size="small"
-              title="Rename project"
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </div>
+          <RenameProjectBar
+            projectName={projectName}
+            userIdCreator={userIdCreator}
+            userId={userId}
+            handleEditClick={handleEditClick}
+          />
         )}
 
         {viaMode ? <History /> : <TopBar />}
