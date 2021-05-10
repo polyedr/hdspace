@@ -7,6 +7,7 @@ import {
   LibraryElement,
   ServerElement,
 } from '../types';
+import { convertScreenFromResponse } from './converters/fromResponse';
 import { handleError, onError, parseResult } from './helper';
 
 export const apiGetScreen = (
@@ -17,7 +18,7 @@ export const apiGetScreen = (
     method: 'GET',
     url: `/projects/project-screens/${props.id}/`,
   })
-    .then(parseResult)
+    .then((res) => convertScreenFromResponse(parseResult(res)))
     .catch(onError);
 
 export const apiCreateScreen = (props: MyAxiosProps): Promise<Result<Screen>> =>
@@ -26,7 +27,9 @@ export const apiCreateScreen = (props: MyAxiosProps): Promise<Result<Screen>> =>
     method: 'POST',
     url: '/projects/project-screens/',
   })
-    .then((res: AxiosResponse<Screen>) => ({ result: parseResult(res) }))
+    .then((res: AxiosResponse<Screen>) => ({
+      result: convertScreenFromResponse(parseResult(res)),
+    }))
     .catch(handleError);
 
 export const apiUpdateScreen = (
@@ -37,7 +40,7 @@ export const apiUpdateScreen = (
     method: 'PATCH',
     url: `/projects/project-screens/${props.id}/`,
   })
-    .then((res) => ({ result: parseResult(res) }))
+    .then((res) => ({ result: convertScreenFromResponse(parseResult(res)) }))
     .catch(handleError);
 
 export const apiPostFreeCanvas = (

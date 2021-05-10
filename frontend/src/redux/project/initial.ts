@@ -81,7 +81,6 @@ export const initialEdit: ProjectEditState = {
     viaData: {},
   },
   freeCanvas: {
-    enabled: false,
     lastElements: {},
   },
 };

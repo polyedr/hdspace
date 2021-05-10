@@ -109,7 +109,6 @@ export type ProjectEditState = {
     viaData: Record<string, Omit<VIAFile, 'regions'>>;
   };
   freeCanvas: {
-    enabled: boolean;
     lastElements: {
       [id: string]: {
         offset: number;
@@ -204,6 +203,7 @@ export type CreateScreenData = {
   name: string;
   buoyancy: number;
   rootName?: string;
+  freeCanvas?: boolean;
 };
 
 export type UploadAssetData = {
@@ -851,11 +851,6 @@ export type AddStateElements = IAction<
   ElementHistoryMeta
 >;
 
-export type ChangeFreeCanvasMode = IAction<
-  typeof TYPES.CHANGE_FREE_CANVAS_MODE,
-  boolean
->;
-
 export type ChangeScreenFormat = IAction<typeof TYPES.CHANGE_LAYOUT, Layout>;
 
 export type ExtractStateElement = IAction<
@@ -1189,7 +1184,6 @@ export type Action =
   | UnwrapStateElements
   | SetProjectsData
   | ExtractStateElement
-  | ChangeFreeCanvasMode
   | UpdateLastElements
   | ChangeScreenFormat
   | RotateScreenFormat
