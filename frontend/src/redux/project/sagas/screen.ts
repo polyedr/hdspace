@@ -60,6 +60,7 @@ import {
 import {
   selectAllElements,
   selectCurrentRootElement,
+  selectCurrentRootId,
   selectPreSelectedElementId,
   selectScreenRootElement,
 } from '../selectors/element';
@@ -295,8 +296,8 @@ async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   const dataBlob = await new Promise<Blob>((resolve) =>
     canvas.toBlob(
       (blob) => (blob !== null ? resolve(blob) : undefined),
-      'image/jpg',
-      1,
+      'image/webp',
+      0.1,
     ),
   );
   return dataBlob;
@@ -310,8 +311,9 @@ export const updateScreenImageSaga = withRequiredPermissions(
     yield put(setUpdateImageLoader(true));
 
     const editorDocument = yield select(selectEditorDocument);
+    const rootId = yield select(selectCurrentRootId);
 
-    const screenBody = editorDocument.getElementById('root');
+    const screenBody = editorDocument.getElementById(rootId);
     const widgets = Array.from(editorDocument.querySelectorAll('iframe'));
 
     if (screenBody === null) {
