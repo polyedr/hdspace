@@ -572,6 +572,8 @@ export const editScreenSaga = withRequiredPermissions(
     const screens: ReturnType<typeof selectScreens> = yield select(
       selectScreens,
     );
+    const screen: Screen = yield select(selectScreenById, screenID);
+
     const numberedName = generateUniqueName(
       nameWithoutSpace,
       screens.map((screen) => screen.name),
@@ -580,6 +582,7 @@ export const editScreenSaga = withRequiredPermissions(
     const newData: Partial<Screen> = {
       name: numberedName,
       screen_data_json: JSON.stringify({
+        ...screen.screen_data_json,
         title,
         description,
         keywords,
