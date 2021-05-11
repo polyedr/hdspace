@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropPosition } from '@Constants/dragAndDrop';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   ChildEntity,
   ChildrenElements,
@@ -30,7 +30,9 @@ import {
   ProfileDataUIParameters,
   VIAFile,
   FileToUpload,
+  ElementData,
 } from '@Src/types';
+import { XYCoord } from 'react-dnd';
 import {
   UpdateUISettingsParameters,
   Action,
@@ -179,6 +181,8 @@ import {
   SetVIAResultId,
   SetVIAData,
   SetBlockType,
+  ProcessDropTargetParams,
+  ProcessDropElement,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -1604,4 +1608,30 @@ export const updateUISettingsParameters = (
 ): UpdateUISettingsParameters => ({
   type: TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
   payload: uiParameters,
+});
+
+export const processDropTargetParams = (
+  elementId: string,
+  rect: DOMRect,
+  isHorizontal: boolean,
+  offset: XYCoord,
+): ProcessDropTargetParams => ({
+  type: TYPES.PROCESS_DROP_TARGET_PARAMS,
+  payload: {
+    elementId,
+    rect,
+    isHorizontal,
+    offset,
+  },
+});
+
+export const processDropElement = (
+  dragSource: StateElement | ElementData,
+  dropType: ElementType,
+): ProcessDropElement => ({
+  type: TYPES.PROCESS_DROP_ELEMENT,
+  payload: {
+    dragSource,
+    dropType,
+  },
 });

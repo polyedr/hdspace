@@ -98,9 +98,10 @@ export const makeContainer = ({
 
 export const makeGridItem = ({
   UID = 'master',
+  buoyancy = 0,
 } = {}): GridItemServerElement => ({
   id: `gridItem-${UID}`,
-  buoyancy: 0,
+  buoyancy,
   name: 'gridItem',
   func_type: 'gridItem',
   struct_type: 'gridItem' as const,
@@ -120,10 +121,10 @@ export const makeGridItem = ({
 
 export const makeGrid = ({
   items = [
-    makeGridItem({ UID: '1' }),
-    makeGridItem({ UID: '2' }),
-    makeGridItem({ UID: '3' }),
-    makeGridItem({ UID: '4' }),
+    makeGridItem({ UID: '1', buoyancy: 0 }),
+    makeGridItem({ UID: '2', buoyancy: 0 }),
+    makeGridItem({ UID: '3', buoyancy: 0 }),
+    makeGridItem({ UID: '4', buoyancy: 0 }),
   ],
   UID = 'master',
 }: {
@@ -169,9 +170,12 @@ export const column: ColumnServerElement = {
   children: [],
 };
 
-export const makeColumn = ({ UID = 'master' }): ColumnServerElement => ({
+export const makeColumn = ({
+  UID = 'master',
+  buoyancy = 0,
+}): ColumnServerElement => ({
   id: `column-${UID}`,
-  buoyancy: 0,
+  buoyancy,
   name: 'column',
   func_type: 'column',
   struct_type: 'column' as const,
@@ -209,7 +213,7 @@ export const makeColumns = (
     ownStyles: {},
   },
   children: Array.from(Array(columnsCount)).map((_undefined, index) => {
-    return makeColumn({ UID: `${index}` });
+    return makeColumn({ UID: `${index}`, buoyancy: index });
   }),
 });
 
@@ -386,12 +390,13 @@ export const makeSmartWebpage = ({
   children: [],
 });
 
-export const makeDropdownItem = (
-  textContent: string,
+export const makeDropdownItem = ({
+  textContent,
   UID = 'master',
-): DropdownItemServerElement => ({
+  buoyancy = 0,
+}): DropdownItemServerElement => ({
   id: `dropdown-item-${UID}`,
-  buoyancy: 0,
+  buoyancy,
   func_type: 'dropdownItem',
   struct_type: 'dropdownItem',
   parameters: {
@@ -424,9 +429,9 @@ export const dropdownMenu: DropdownMenuServerElement = {
   },
   name: 'dropdownMenu',
   children: [
-    makeDropdownItem('First option'),
-    makeDropdownItem('Second option'),
-    makeDropdownItem('Third option'),
+    makeDropdownItem({ textContent: 'First option' }),
+    makeDropdownItem({ textContent: 'Second option' }),
+    makeDropdownItem({ textContent: 'Third option' }),
   ],
 };
 
