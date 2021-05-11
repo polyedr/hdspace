@@ -191,18 +191,70 @@ const PropertiesTab: React.FC = () => {
   );
   const replaceStyles = useCallback(
     (styles: React.CSSProperties) => {
-      dispatch(
-        updateMultipleElementsStyles(
-          [activeElement.id],
-          {
-            [ALL_ELEMENTS_INDEX]: styles,
-          },
-          { screenId: currentScreenId },
-          'delete',
-        ),
-      );
+      if (masterScreenEnabled) {
+        if (isGroupSource) {
+          const groupElementsIds = activeElement.parameters.groupElements;
+          dispatch(
+            updateMultipleElementsStyles(
+              [activeElement.id, ...groupElementsIds],
+              {
+                [ALL_ELEMENTS_INDEX]: styles,
+              },
+              { screenId: currentScreenId },
+            ),
+          );
+        } else {
+          dispatch(
+            updateSharedStyles(
+              (masterScreenEnabled
+                ? activeElement.type
+                : editableStyles) as Entity,
+              styles,
+              {
+                screenId: currentScreenId,
+              },
+            ),
+          );
+        }
+      } else if (isGroupElement) {
+        handleOpenRemovalConfirmModal(styles);
+      } else if (editableStyles === 'ownStyles') {
+        dispatch(
+          updateMultipleElementsStyles(
+            [activeElement.id],
+            {
+              [ALL_ELEMENTS_INDEX]: styles,
+            },
+            { screenId: currentScreenId },
+            'delete',
+          ),
+        );
+      } else {
+        dispatch(
+          updateSharedStyles(
+            (masterScreenEnabled
+              ? activeElement.type
+              : editableStyles) as Entity,
+            styles,
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+      }
     },
-    [dispatch, currentScreenId, activeElement.id],
+    [
+      masterScreenEnabled,
+      isGroupElement,
+      editableStyles,
+      dispatch,
+      currentScreenId,
+      isGroupSource,
+      activeElement.parameters.groupElements,
+      activeElement.id,
+      activeElement.type,
+      handleOpenRemovalConfirmModal,
+    ],
   );
   const updateStyles = useCallback(
     (styles: React.CSSProperties) => {
