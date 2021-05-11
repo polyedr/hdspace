@@ -484,6 +484,7 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.UPLOAD_ICO_SCREEN, editIcoScreenSaga);
+
   yield takeLatest(
     TYPES.PROCESS_DROP_TARGET_PARAMS,
     processDropTargetParamsSaga,

@@ -1250,11 +1250,14 @@ export function* processDropElementSaga(
 ) {
   const { dragSource, dropType } = action.payload;
   const dropTargetParams = yield select(selectCurrentDropTargetParams);
+  if (dropTargetParams.id === dragSource.id) {
+    return;
+  }
   const screenId = yield select(selectCurrentScreenId);
   const dropTarget = yield select(selectElementById(dropTargetParams.id));
   const elementIsContainer =
     !dropTarget.parent ||
-    CONTAINER_GROUPS.includes(dropTarget?.parameters.group);
+    CONTAINER_GROUPS.includes(dropTarget.parameters.group);
 
   let dropBuoyancy = dropTarget.buoyancy;
   if (dropTargetParams.position === DropPosition.INSIDE) {
@@ -1264,6 +1267,7 @@ export function* processDropElementSaga(
   ) {
     dropBuoyancy = dropTarget.buoyancy + 1;
   }
+  const newParentId = elementIsContainer ? dropTarget.id : dropTarget.parent;
   if (dropType === ElementType.ELEMENT) {
     const dragSourceEl = dragSource as StateElement;
     yield put(
@@ -1275,7 +1279,7 @@ export function* processDropElementSaga(
         },
         {
           oldParentId: (dragSource as StateElement).parent || '',
-          newParentId: elementIsContainer ? dropTarget.id : dropTarget.parent,
+          newParentId,
         },
         { screenId },
       ),
@@ -1286,7 +1290,7 @@ export function* processDropElementSaga(
       Actions.createElements(
         {
           createdElements: [{ id, type, name, custom, parameters }],
-          parentId: elementIsContainer ? dropTarget.id : dropTarget.parent,
+          parentId: newParentId,
           index: dropBuoyancy,
         },
         { screenId },

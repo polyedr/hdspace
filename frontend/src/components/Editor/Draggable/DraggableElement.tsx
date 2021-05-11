@@ -131,6 +131,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       dragSource: SyntheticElement<StateElement | ElementData>,
       monitor: DropTargetMonitor,
     ) => {
+      if (dragSource.original.id === elementId) {
+        dispatch(setCurrentDropTargetParams(null));
+      }
       if (
         isOver &&
         monitor.canDrop() &&
