@@ -466,7 +466,7 @@ export const updateMultipleElementsStylesSaga = compose(
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.updateMultipleElementsStyles>) {
   try {
-    const { ids, styles } = action.payload;
+    const { ids, styles, type } = action.payload;
 
     if (!action.meta) {
       console.error(
@@ -497,10 +497,14 @@ export const updateMultipleElementsStylesSaga = compose(
         ...element,
         styles: {
           ...element.styles,
-          ownStyles: {
-            ...element.styles.ownStyles,
-            ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
-          },
+          ownStyles: type
+            ? {
+                ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+              }
+            : {
+                ...element.styles.ownStyles,
+                ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+              },
         },
       };
     });

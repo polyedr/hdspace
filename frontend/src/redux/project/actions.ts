@@ -649,9 +649,10 @@ export const updateMultipleElementsStyles = (
     [id: string]: React.CSSProperties;
   },
   meta: ElementHistoryMeta,
+  type?: 'delete',
 ): UpdateMultipleElementsStyles => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
-  payload: { ids, styles },
+  payload: { ids, styles, type },
   meta,
 });
 
