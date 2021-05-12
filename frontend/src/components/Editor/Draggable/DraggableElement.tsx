@@ -131,6 +131,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       dragSource: SyntheticElement<StateElement | ElementData>,
       monitor: DropTargetMonitor,
     ) => {
+      console.log('START HOVER!!');
       if (dragSource.original.id === elementId) {
         dispatch(setCurrentDropTargetParams(null));
       }
@@ -149,7 +150,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           ? null
           : parent.styles.ownStyles.flexDirection ||
             parentElementClass?.rules.flexDirection;
-        if (clientOffset && !!parent) {
+        if (clientOffset) {
           dispatch(
             processDropTargetParams(
               elementId,
