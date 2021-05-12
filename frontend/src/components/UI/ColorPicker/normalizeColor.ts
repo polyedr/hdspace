@@ -1,5 +1,4 @@
 import { ColorResult } from 'react-color';
-import { toState } from 'react-color/lib/helpers';
 import { equals } from 'ramda';
 
 const needOpacityNormalize = (color: ColorResult, prevColor: ColorResult) => {
@@ -12,7 +11,6 @@ const needOpacityNormalize = (color: ColorResult, prevColor: ColorResult) => {
 const normalizeColor = (
   color: string | ColorResult,
   prevColor: ColorResult,
-  normalizeOpacity?: boolean,
 ) => {
   if (typeof color === 'object') {
     return color.rgb.a === 1 || needOpacityNormalize(color, prevColor)
@@ -31,21 +29,14 @@ const normalizeColor = (
 
     const isRgbOrRgbaRegExp = rgbOrRgbaRegExp.test(color);
 
-    const reactColorObject: ColorResult = toState(color);
-
     if (isHex) {
       return /^#/.test(color)
         ? { value: color, isValid: true }
         : { value: `#${color}`, isValid: true };
     }
     if (isRgbOrRgbaRegExp) {
-      const needConvertToHex =
-        (normalizeOpacity &&
-          needOpacityNormalize(reactColorObject, prevColor)) ||
-        (normalizeOpacity && reactColorObject.rgb.a === 1);
-
       return {
-        value: needConvertToHex ? reactColorObject.hex : color,
+        value: color,
         isValid: true,
       };
     }
