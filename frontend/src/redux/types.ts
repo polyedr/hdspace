@@ -456,7 +456,11 @@ export type UpdateElementStyles = IAction<
 >;
 export type UpdateMultipleElementsStyles = IAction<
   typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
-  { ids: string[]; styles: { [id: string]: React.CSSProperties } },
+  {
+    ids: string[];
+    styles: { [id: string]: React.CSSProperties };
+    type?: 'delete';
+  },
   ElementHistoryMeta
 >;
 export type RemoveMultipleElementsStyles = IAction<

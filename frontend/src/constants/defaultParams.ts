@@ -154,6 +154,7 @@ export const UNIQUE_CONTROLS = [
   'videoSettings',
   'stylesOn',
   'layouts',
+  'styleSheets',
 ];
 
 export const ALL_ELEMENTS_INDEX = 'all';
