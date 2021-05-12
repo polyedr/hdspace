@@ -201,6 +201,7 @@ const PropertiesTab: React.FC = () => {
                 [ALL_ELEMENTS_INDEX]: styles,
               },
               { screenId: currentScreenId },
+              'delete',
             ),
           );
         } else {
