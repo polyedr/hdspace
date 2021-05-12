@@ -131,7 +131,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       dragSource: SyntheticElement<StateElement | ElementData>,
       monitor: DropTargetMonitor,
     ) => {
-      console.log('START HOVER!!');
       if (dragSource.original.id === elementId) {
         dispatch(setCurrentDropTargetParams(null));
       }
