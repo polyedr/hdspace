@@ -43,14 +43,21 @@ const ColorSettings: React.FC<Props> = ({
   const [checked, setChecked] = React.useState(
     currentBackgroundColor.value.includes('rgba'),
   );
+
   const formatTextColor = useCallback(
-    (bool) => {
-      if (bool) {
+    (isValueCheckBox: boolean) => {
+      if (isValueCheckBox) {
         const { r, g, b, a } = currentColorObject.rgb;
-        const newStr = `rgba(${r}, ${g}, ${b}, ${a})`;
-        const normalizedColor = normalizeColor(newStr, currentColorObject);
+        const convertedColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+        const normalizedColor = normalizeColor(
+          convertedColor,
+          currentColorObject,
+        );
         setCurrentBackgroundColor(normalizedColor);
-        onChange(newStr);
+        onChange(convertedColor);
+        const reactColorObject = toState(convertedColor);
+        setCurrentColorObject(reactColorObject);
+
         return currentBackgroundColor.value;
       }
       const normalizedColor = normalizeColor(
@@ -82,7 +89,7 @@ const ColorSettings: React.FC<Props> = ({
   const handleColorChange = useCallback(
     (color) => {
       if (typeof color === 'object') {
-        const normalizedColor = normalizeColor(color, currentColorObject, true);
+        const normalizedColor = normalizeColor(color, currentColorObject);
         onChange(normalizedColor.value);
         setCurrentBackgroundColor(normalizedColor);
         setCurrentColorObject(color);
@@ -96,7 +103,7 @@ const ColorSettings: React.FC<Props> = ({
 
   const handleColorInputBlur = useCallback(
     (color) => {
-      const normalizedColor = normalizeColor(color, currentColorObject, true);
+      const normalizedColor = normalizeColor(color, currentColorObject);
       const reactColorObject = toState(color);
 
       setCurrentBackgroundColor(normalizedColor);
