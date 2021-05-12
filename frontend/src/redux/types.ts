@@ -1,7 +1,8 @@
 import { RouterState } from 'connected-react-router';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
-import { DropPosition } from '@Constants/dragAndDrop';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
+import { XYCoord } from 'react-dnd';
 import {
   CreatedElement,
   DropTargetParams,
@@ -40,6 +41,7 @@ import {
   ProfileDataUIParameters,
   VIAFile,
   FileToUpload,
+  ElementData,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -623,6 +625,23 @@ export type SetCurrentDropTargetParams = IAction<
   typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
   { id: string; position: DropPosition }
 >;
+export type ProcessDropTargetParams = IAction<
+  typeof TYPES.PROCESS_DROP_TARGET_PARAMS,
+  {
+    elementId: string;
+    rect: DOMRect;
+    offset: XYCoord;
+    isHorizontal: boolean;
+  }
+>;
+export type ProcessDropElement = IAction<
+  typeof TYPES.PROCESS_DROP_ELEMENT,
+  {
+    dragSource: StateElement | ElementData;
+    dropType: ElementType;
+  }
+>;
+
 export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
@@ -1189,6 +1208,8 @@ export type Action =
   | RotateScreenFormat
   | SetScreens
   | SetCurrentDropTargetParams
+  | ProcessDropTargetParams
+  | ProcessDropElement
   | UpdateElement
   | UpdateElementsLoading
   | SetCustomElements

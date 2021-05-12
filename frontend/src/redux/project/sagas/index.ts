@@ -60,6 +60,8 @@ import {
   uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
   replaceElementParametersSaga,
+  processDropTargetParamsSaga,
+  processDropElementSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
@@ -482,4 +484,11 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.UPLOAD_ICO_SCREEN, editIcoScreenSaga);
+
+  yield takeLatest(
+    TYPES.PROCESS_DROP_TARGET_PARAMS,
+    processDropTargetParamsSaga,
+  );
+
+  yield takeEvery(TYPES.PROCESS_DROP_ELEMENT, processDropElementSaga);
 }

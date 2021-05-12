@@ -14,6 +14,7 @@ import { Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { DropTargetParams, Normalized, StateElement } from '@Src/types';
 import { selectMasterScreenId } from '@Redux/project/selectors/screen';
+import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';
 
@@ -58,6 +59,7 @@ const MasterElement: React.FC<Props> = (props: Props) => {
   const masterCoreElId = useSelector(selectMasterCoreElementId);
   const masterGroupsElId = useSelector(selectMasterGroupsElementId);
   const rootElement = useSelector(selectMasterScreenRoot);
+  const projectClasses = useSelector(selectCurrentProjectClasses);
 
   const { type } = element;
 
@@ -115,11 +117,10 @@ const MasterElement: React.FC<Props> = (props: Props) => {
               allElements={allElements}
               scrollRef={scrollRef}
               isDisabled={isDisabled}
-              dropTargetParams={dropTargetParams}
               preSelectedElementId={preSelectedElementId}
               masterSourceElementId={masterSourceElementId}
               canDragAndDrop={canDragAndDrop}
-              frameWindow={frameWindow}
+              projectClasses={projectClasses}
             />
           ) : (
             <MasterElement
