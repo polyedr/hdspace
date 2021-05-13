@@ -149,7 +149,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           ? null
           : parent.styles.ownStyles.flexDirection ||
             parentElementClass?.rules.flexDirection;
-        if (clientOffset && !!parent) {
+        if (clientOffset) {
           dispatch(
             processDropTargetParams(
               elementId,

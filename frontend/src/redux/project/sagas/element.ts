@@ -374,7 +374,7 @@ export const copyElementStylesSaga = compose(
       (cssClass) => cssClass.className,
     );
     const uniqueClassName = generateUniqueName(
-      `${elementType} group 1`,
+      `${elementType}-group-1`,
       sharedClassNames,
     );
 
@@ -1239,6 +1239,7 @@ export function* processDropTargetParamsSaga(
   } else {
     newDropPosition = isHorizontal ? DropPosition.AFTER : DropPosition.BELOW;
   }
+
   if (
     dropTargetParams?.id !== elementId ||
     dropTargetParams.position !== newDropPosition
@@ -1254,7 +1255,10 @@ export function* processDropElementSaga(
 ) {
   const { dragSource, dropType } = action.payload;
   const dropTargetParams = yield select(selectCurrentDropTargetParams);
-  if (dropTargetParams.id === dragSource.id) {
+  if (
+    dropType === ElementType.ELEMENT &&
+    dropTargetParams.id === dragSource.id
+  ) {
     return;
   }
   const screenId = yield select(selectCurrentScreenId);
