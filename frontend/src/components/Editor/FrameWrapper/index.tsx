@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useContext, useMemo } from 'react';
+import React, { FC, useEffect, useRef, useContext, useMemo } from 'react';
 import { create } from 'jss';
 import {
   jssPreset,
@@ -95,6 +95,24 @@ const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 export const FrameWrapper: FC<any> = ({ children, ...props }) => {
   const dispatch = useDispatch();
 
+  const ref = useRef<{ node: HTMLIFrameElement }>(null);
+
+  useEffect(() => {
+    if (ref.current?.node?.contentDocument) {
+      dispatch(setEditorDocument(ref.current.node.contentDocument));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (ref.current?.node.contentDocument?.head) {
+      [...document.head.children].forEach((child) => {
+        ref.current?.node.contentDocument?.head.appendChild(
+          child.cloneNode(true),
+        );
+      });
+    }
+  });
+
   const projectClasses = useSelector(selectCurrentProjectClasses);
 
   const entityClasses = useMemo(() => {
@@ -114,6 +132,7 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
 
   return (
     <Frame
+      ref={ref}
       {...props}
       head={<CustomHead />}
       height="100%"
@@ -130,12 +149,6 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
 
           frameDocument.head.prepend(entityStylesEl);
           frameDocument.head.prepend(sharedStylesEl);
-
-          [...document.head.children].forEach((child) => {
-            frameDocument.head.appendChild(child.cloneNode(true));
-          });
-
-          dispatch(setEditorDocument(frameDocument));
 
           return (
             <DndFrame>
