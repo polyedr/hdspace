@@ -2,6 +2,7 @@ from faker import Faker
 import random
 
 # Create your views here.
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -18,17 +19,16 @@ class GeneratorAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         query_set = ScenarioElement.objects.all()
-
-        return Response(query_set)
+        return Response(serializer(query_set, many=True).data)
 
     def post(self, request, format=None):
         if request.data["times"]:
             times = request.data["times"]
-            type = request.data["type"]
             data = request.data
             data.pop('times')
-
         if times:
+
+            return_list = []
             for _ in range(times):
                 color = color_list[random.randint(0, len(color_list) - 1)]
                 color_code = fake.color(hue=color)
@@ -69,13 +69,15 @@ class GeneratorAPIView(APIView):
                     "shared": data.get("shared") if data.get("shared") is not None else False
 
                 }
-                print("data inserted")
-                response = serializer.create(myobj)
-                print(response)
-            return Response(f"Successfully generated {times} random {type} elements")
+                serializer.create(myobj)
+                return_list.append(myobj)
+            return Response(return_list, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
         return Response("Update received")
 
     def delete(self, request, *args, **kwargs):
-        return Response("Delete received")
+        if request.data['id']:
+            print(request.data['id'])
+            response = ScenarioElement.objects.filter(id=request.data['id']).delete()
+        return Response(response)
