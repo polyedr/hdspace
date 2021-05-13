@@ -66,6 +66,7 @@ export const convertElementFromResponse = <
   },
   styles: {
     ...getDefaultStyles(struct_type),
+    ...styles,
     ownStyles: styles.ownStyles ? cssCamelize(styles.ownStyles) : {},
   },
 });
@@ -104,6 +105,7 @@ export const convertNNElementFromResponse = <
   },
   styles: {
     ...getDefaultStyles(struct_type),
+    ...styles,
     ownStyles: styles ? cssCamelize(styles) : {},
   },
 });
