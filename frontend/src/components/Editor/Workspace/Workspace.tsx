@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import cn from 'classnames';
 import {
   selectLayout,
   selectScreenRotated,
@@ -82,7 +81,7 @@ const Workspace: React.FC<Props> = () => {
     <div className={classes.workspace} ref={ref}>
       <div className={classes.wrapper}>
         <div className={classes.frameWrapper}>
-          <FrameWrapper className={cn(classes[format])}>
+          <FrameWrapper className={classes[format]}>
             <EditorViewport>
               <Scrollbar
                 ref={scrollRef}

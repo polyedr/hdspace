@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useContext } from 'react';
+import React, { FC, useEffect, useRef, useContext, useMemo } from 'react';
 import { create } from 'jss';
 import {
   jssPreset,
@@ -15,9 +15,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
 import { setEditorDocument } from '@Redux/project/actions';
 import theme from '@Src/styles/Theme';
-import { selectImportLoader } from '../../../redux/project/selectors/base';
+import {
+  selectCurrentProjectClasses,
+  selectImportLoader,
+} from '@Redux/project/selectors/base';
+import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 
 import { WindowProvider } from './FrameContext';
+import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
 
 const useStyles = makeStyles({
   loaderWrapper: {
@@ -85,6 +90,8 @@ const DndFrame = ({ children }) => {
   );
 };
 
+const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
+
 export const FrameWrapper: FC<any> = ({ children, ...props }) => {
   const dispatch = useDispatch();
 
@@ -106,6 +113,23 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
     }
   });
 
+  const projectClasses = useSelector(selectCurrentProjectClasses);
+
+  const entityClasses = useMemo(() => {
+    return projectClasses.filter((classInstance) =>
+      entityClassNames.includes(classInstance.className),
+    );
+  }, [projectClasses]);
+
+  const sharedClasses = useMemo(() => {
+    return projectClasses.filter(
+      (classInstance) => !entityClassNames.includes(classInstance.className),
+    );
+  }, [projectClasses]);
+
+  const entityStylesEl = useProjectHeaderStyles(entityClasses);
+  const sharedStylesEl = useProjectHeaderStyles(sharedClasses);
+
   return (
     <Frame
       ref={ref}
@@ -122,6 +146,9 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
             plugins: [...jssPreset().plugins],
             insertionPoint: frameDocument.head,
           });
+
+          frameDocument.head.prepend(entityStylesEl);
+          frameDocument.head.append(sharedStylesEl);
 
           return (
             <DndFrame>

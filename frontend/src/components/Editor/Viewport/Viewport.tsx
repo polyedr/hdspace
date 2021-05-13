@@ -1,17 +1,8 @@
-import React, { useRef, useMemo, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useRef } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
-import {
-  selectCurrentProjectClasses,
-  selectEditorDocument,
-} from '@Redux/project/selectors/base';
-import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 import useHotKeys from '../hooks/useHotKeys';
-import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
 
 import 'css-ripple-effect/dist/ripple.min.css';
-
-const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -28,37 +19,11 @@ const useStyles = makeStyles(() =>
 );
 
 const Viewport: React.FC = ({ children }) => {
-  const projectClasses = useSelector(selectCurrentProjectClasses);
-  const editorDocument = useSelector(selectEditorDocument);
-
-  const sharedClasses = useMemo(() => {
-    return projectClasses.filter(
-      (classInstance) => !entityClassNames.includes(classInstance.className),
-    );
-  }, [projectClasses]);
-
-  const entityClasses = useMemo(() => {
-    return projectClasses.filter((classInstance) =>
-      entityClassNames.includes(classInstance.className),
-    );
-  }, [projectClasses]);
-
   const styles = useStyles();
 
   const ref = useRef<HTMLDivElement>(null);
 
   useHotKeys(ref);
-
-  const sharedStylesEl = useProjectHeaderStyles(sharedClasses);
-  const entityStylesEl = useProjectHeaderStyles(entityClasses);
-
-  // eslint-disable-next-line consistent-return
-  useEffect(() => {
-    if (editorDocument) {
-      editorDocument.head.prepend(entityStylesEl);
-      editorDocument.head.append(sharedStylesEl);
-    }
-  }, [editorDocument, entityStylesEl, sharedStylesEl]);
 
   return (
     <div ref={ref} className={styles.editorViewport} tabIndex={-1}>
