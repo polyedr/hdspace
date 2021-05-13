@@ -80,4 +80,4 @@ class GeneratorAPIView(APIView):
         if request.data['id']:
             print(request.data['id'])
             response = ScenarioElement.objects.filter(id=request.data['id']).delete()
-        return Response(response)
+        return Response(response, status.HTTP_204_NO_CONTENT)
