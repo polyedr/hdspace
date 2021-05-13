@@ -148,7 +148,7 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
           });
 
           frameDocument.head.prepend(entityStylesEl);
-          frameDocument.head.prepend(sharedStylesEl);
+          frameDocument.head.append(sharedStylesEl);
 
           return (
             <DndFrame>
