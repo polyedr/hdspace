@@ -12,13 +12,14 @@ from apps.projects.serializers import ScenarioElementSerializer
 fake = Faker()
 Faker.seed(0)
 color_list = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink']
-serializer = ScenarioElementSerializer()
+
 
 
 class GeneratorAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         query_set = ScenarioElement.objects.all()
+        serializer = ScenarioElementSerializer
         return Response(serializer(query_set, many=True).data)
 
     def post(self, request, format=None):
@@ -69,6 +70,7 @@ class GeneratorAPIView(APIView):
                     "shared": data.get("shared") if data.get("shared") is not None else False
 
                 }
+                serializer = ScenarioElementSerializer()
                 serializer.create(myobj)
                 return_list.append(myobj)
             return Response(return_list, status=status.HTTP_201_CREATED)
