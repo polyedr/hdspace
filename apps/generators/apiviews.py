@@ -18,8 +18,11 @@ color_list = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink']
 class GeneratorAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
-        query_set = ScenarioElement.objects.all()
         serializer = ScenarioElementSerializer
+        if request.data['id']:
+            query = ScenarioElement.objects.get(pk = request.data['id'])
+            return Response(serializer(query, many=False).data)
+        query_set = ScenarioElement.objects.all()
         return Response(serializer(query_set, many=True).data)
 
     def post(self, request, format=None):
