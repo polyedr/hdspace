@@ -374,7 +374,7 @@ export const copyElementStylesSaga = compose(
       (cssClass) => cssClass.className,
     );
     const uniqueClassName = generateUniqueName(
-      `${elementType} group 1`,
+      `${elementType}-group-1`,
       sharedClassNames,
     );
 
