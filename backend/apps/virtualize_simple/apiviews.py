@@ -28,7 +28,6 @@ class ScenarioElementAssemblingList(generics.CreateAPIView):
         serializer.save()
 
 
-
 class ScenarioElementFreecanvasList(generics.CreateAPIView):
     """
     Create a new DOM of the neural network based on free canvas
