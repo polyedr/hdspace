@@ -14,14 +14,13 @@ Faker.seed(0)
 color_list = ['red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink']
 
 
-
 class GeneratorAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         serializer = ScenarioElementSerializer
         try:
             if request.data['id']:
-                query = ScenarioElement.objects.get(pk = request.data['id'])
+                query = ScenarioElement.objects.get(pk=request.data['id'])
                 return Response(serializer(query, many=False).data)
         except:
             query_set = ScenarioElement.objects.all()
