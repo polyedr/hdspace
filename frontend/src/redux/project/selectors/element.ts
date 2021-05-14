@@ -248,7 +248,7 @@ export const selectElementsForCurrentScreen = createSelector(
   selectCurrentScreenId,
   selectScreens,
   (elements, id, screens) => {
-    const screen = screens.find((screen) => screen.id === id);
+    const screen = screens[id];
     if (!screen) return {};
 
     const elementId = screen.element;

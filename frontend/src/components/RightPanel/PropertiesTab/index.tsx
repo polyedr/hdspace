@@ -9,10 +9,7 @@ import {
   selectSelectedElements,
   selectSelectedElementsIds,
 } from '@Redux/project/selectors/element';
-import {
-  selectEditableStyles,
-  selectFreeCanvasMode,
-} from '@Redux/project/selectors/base';
+import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import {
@@ -28,7 +25,6 @@ import {
   removeSharedStyles,
   unbindGroupElementStyles,
   updateElementParameters,
-  updateElementStyles,
   updateMultipleElementsStyles,
   updateSharedStyles,
 } from '@Redux/project/actions';
@@ -36,6 +32,7 @@ import { enqueueSnackbar } from '@Redux/notification/actions';
 import { ALL_ELEMENTS_INDEX, UNIQUE_CONTROLS } from '@Constants/defaultParams';
 import {
   selectCurrentScreenId,
+  selectFreeCanvasMode,
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
 import CONTROLS from '@Constants/controls';
@@ -190,7 +187,74 @@ const PropertiesTab: React.FC = () => {
       activeElement.id,
     ],
   );
-
+  const replaceStyles = useCallback(
+    (styles: React.CSSProperties) => {
+      if (masterScreenEnabled) {
+        if (isGroupSource) {
+          const groupElementsIds = activeElement.parameters.groupElements;
+          dispatch(
+            updateMultipleElementsStyles(
+              [activeElement.id, ...groupElementsIds],
+              {
+                [ALL_ELEMENTS_INDEX]: styles,
+              },
+              { screenId: currentScreenId },
+              'delete',
+            ),
+          );
+        } else {
+          dispatch(
+            updateSharedStyles(
+              (masterScreenEnabled
+                ? activeElement.type
+                : editableStyles) as Entity,
+              styles,
+              {
+                screenId: currentScreenId,
+              },
+            ),
+          );
+        }
+      } else if (isGroupElement) {
+        handleOpenRemovalConfirmModal(styles);
+      } else if (editableStyles === 'ownStyles') {
+        dispatch(
+          updateMultipleElementsStyles(
+            [activeElement.id],
+            {
+              [ALL_ELEMENTS_INDEX]: styles,
+            },
+            { screenId: currentScreenId },
+            'delete',
+          ),
+        );
+      } else {
+        dispatch(
+          updateSharedStyles(
+            (masterScreenEnabled
+              ? activeElement.type
+              : editableStyles) as Entity,
+            styles,
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+      }
+    },
+    [
+      masterScreenEnabled,
+      isGroupElement,
+      editableStyles,
+      dispatch,
+      currentScreenId,
+      isGroupSource,
+      activeElement.parameters.groupElements,
+      activeElement.id,
+      activeElement.type,
+      handleOpenRemovalConfirmModal,
+    ],
+  );
   const updateStyles = useCallback(
     (styles: React.CSSProperties) => {
       if (!selectedElementsIds.length) {
@@ -237,9 +301,13 @@ const PropertiesTab: React.FC = () => {
         handleOpenRemovalConfirmModal(styles);
       } else if (editableStyles === 'ownStyles') {
         dispatch(
-          updateElementStyles(activeElement.id, styles, {
-            screenId: currentScreenId,
-          }),
+          updateMultipleElementsStyles(
+            [activeElement.id],
+            {
+              [ALL_ELEMENTS_INDEX]: styles,
+            },
+            { screenId: currentScreenId },
+          ),
         );
       } else {
         dispatch(
@@ -320,6 +388,7 @@ const PropertiesTab: React.FC = () => {
                     element={activeElement}
                     removeStyles={!masterScreenEnabled && removeStyles}
                     updateStyles={updateStyles}
+                    replaceStyles={replaceStyles}
                     updateParams={!masterScreenEnabled && updateParams}
                     masterScreenEnabled={masterScreenEnabled}
                     editableStyles={editableStyles}

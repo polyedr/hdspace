@@ -1,13 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import cn from 'classnames';
 import {
   selectLayout,
   selectScreenRotated,
-  selectFreeCanvasMode,
 } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
+import {
+  selectMasterScreenEnabled,
+  selectFreeCanvasMode,
+} from '@Redux/project/selectors/screen';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
@@ -62,6 +63,7 @@ type Props = {
 const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
+
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
@@ -76,7 +78,7 @@ const Workspace: React.FC<Props> = () => {
     <div className={classes.workspace} ref={ref}>
       <div className={classes.wrapper}>
         <div className={classes.frameWrapper}>
-          <FrameWrapper className={cn(classes[format])}>
+          <FrameWrapper className={classes[format]}>
             <EditorViewport>
               <Scrollbar
                 ref={(scrollbars: any) => {

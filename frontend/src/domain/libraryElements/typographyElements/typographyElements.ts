@@ -180,9 +180,10 @@ export const makeList = ({
 export const makeListItem = ({
   textContent = '',
   UID = 'master',
+  buoyancy = 0,
 } = {}): ListItemServerElement => ({
   id: `list-item-${UID}`,
-  buoyancy: 0,
+  buoyancy,
   func_type: 'listItem',
   struct_type: 'listItem',
   parameters: {
@@ -224,8 +225,8 @@ export const list: ListServerElement = {
   },
   name: 'list',
   children: [
-    makeListItem({ textContent: 'First item', UID: 'list-1' }),
-    makeListItem({ textContent: 'Second item', UID: 'list-2' }),
-    makeListItem({ textContent: 'Third item', UID: 'list-3' }),
+    makeListItem({ textContent: 'First item', UID: 'list-1', buoyancy: 0 }),
+    makeListItem({ textContent: 'Second item', UID: 'list-2', buoyancy: 1 }),
+    makeListItem({ textContent: 'Third item', UID: 'list-3', buoyancy: 2 }),
   ],
 };

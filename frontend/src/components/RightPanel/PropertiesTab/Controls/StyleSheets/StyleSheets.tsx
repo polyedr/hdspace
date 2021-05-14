@@ -28,7 +28,7 @@ const transformToEditorStyles = (styles: React.CSSProperties) => {
 
 const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   removeStyles,
-  updateStyles,
+  replaceStyles,
   canEdit,
   masterScreenEnabled,
   element,
@@ -42,7 +42,7 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 
   const handleEditorChange = useDebouncedCallback(
     (stylesJson: React.CSSProperties) => {
-      updateStyles(stylesJson);
+      replaceStyles(stylesJson);
     },
     500,
   );

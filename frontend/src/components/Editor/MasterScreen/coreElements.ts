@@ -35,7 +35,7 @@ const CORE_MASTER_RESPONSE_ELEMENTS = [
   hyperlink,
   makeParagraph(),
   textBlock,
-  makeList({ items: [makeListItem()] }),
+  makeList({ items: [makeListItem({ buoyancy: 0 })] }),
   makeButton(),
   makeTextinput(),
   checkbox,

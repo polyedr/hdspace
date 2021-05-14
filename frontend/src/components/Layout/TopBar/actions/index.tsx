@@ -4,11 +4,11 @@ import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress, IconButton } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
+import { selectUpdateScreenImageLoader } from '@Redux/project/selectors/base';
 import {
+  selectCurrentScreen,
   selectFreeCanvasMode,
-  selectUpdateScreenImageLoader,
-} from '@Redux/project/selectors/base';
-import { selectCurrentScreen } from '@Redux/project/selectors/screen';
+} from '@Redux/project/selectors/screen';
 import { updateScreenImage } from '@Redux/project/actions';
 
 import exportHTML from '@Src/export/app';

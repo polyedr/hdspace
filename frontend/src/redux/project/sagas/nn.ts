@@ -333,8 +333,18 @@ const autoAnalyzeImageSaga = compose(
   }
 });
 
+const cancelAnnotationSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+)(function* () {
+  yield put(Actions.setVIAMode(false));
+});
+
 export default function* nnSaga() {
   yield takeEvery(TYPES.AUTO_ANALYZE_IMAGE, autoAnalyzeImageSaga);
   yield takeEvery(TYPES.RECOGNIZE_IMAGE, recognizeImageSaga);
   yield takeEvery(TYPES.ASSEMBLE_VIA_REGIONS, assembleImageSaga);
+  yield takeEvery(TYPES.CANCEL_RECOGNIZING, cancelAnnotationSaga);
 }

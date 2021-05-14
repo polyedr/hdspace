@@ -1,7 +1,8 @@
 import { RouterState } from 'connected-react-router';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
-import { DropPosition } from '@Constants/dragAndDrop';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
+import { XYCoord } from 'react-dnd';
 import {
   CreatedElement,
   DropTargetParams,
@@ -41,6 +42,7 @@ import {
   FileToUpload,
   ChatCredentials,
   UIFramework,
+  ElementData,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -110,7 +112,6 @@ export type ProjectEditState = {
     viaData: Record<string, Omit<VIAFile, 'regions'>>;
   };
   freeCanvas: {
-    enabled: boolean;
     lastElements: {
       [id: string]: {
         offset: number;
@@ -205,6 +206,7 @@ export type CreateScreenData = {
   name: string;
   buoyancy: number;
   rootName?: string;
+  freeCanvas?: boolean;
 };
 
 export type UploadAssetData = {
@@ -470,7 +472,11 @@ export type UpdateElementStyles = IAction<
 >;
 export type UpdateMultipleElementsStyles = IAction<
   typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
-  { ids: string[]; styles: { [id: string]: React.CSSProperties } },
+  {
+    ids: string[];
+    styles: { [id: string]: React.CSSProperties };
+    type?: 'delete';
+  },
   ElementHistoryMeta
 >;
 export type RemoveMultipleElementsStyles = IAction<
@@ -639,6 +645,23 @@ export type SetCurrentDropTargetParams = IAction<
   typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
   { id: string; position: DropPosition }
 >;
+export type ProcessDropTargetParams = IAction<
+  typeof TYPES.PROCESS_DROP_TARGET_PARAMS,
+  {
+    elementId: string;
+    rect: DOMRect;
+    offset: XYCoord;
+    isHorizontal: boolean;
+  }
+>;
+export type ProcessDropElement = IAction<
+  typeof TYPES.PROCESS_DROP_ELEMENT,
+  {
+    dragSource: StateElement | ElementData;
+    dropType: ElementType;
+  }
+>;
+
 export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
@@ -865,11 +888,6 @@ export type AddStateElements = IAction<
   typeof TYPES.ADD_STATE_ELEMENTS,
   { elements: StateElementsToAdd<Entity>[] },
   ElementHistoryMeta
->;
-
-export type ChangeFreeCanvasMode = IAction<
-  typeof TYPES.CHANGE_FREE_CANVAS_MODE,
-  boolean
 >;
 
 export type ChangeScreenFormat = IAction<typeof TYPES.CHANGE_LAYOUT, Layout>;
@@ -1208,12 +1226,13 @@ export type Action =
   | UnwrapStateElements
   | SetProjectsData
   | ExtractStateElement
-  | ChangeFreeCanvasMode
   | UpdateLastElements
   | ChangeScreenFormat
   | RotateScreenFormat
   | SetScreens
   | SetCurrentDropTargetParams
+  | ProcessDropTargetParams
+  | ProcessDropElement
   | UpdateElement
   | UpdateElementsLoading
   | SetCustomElements

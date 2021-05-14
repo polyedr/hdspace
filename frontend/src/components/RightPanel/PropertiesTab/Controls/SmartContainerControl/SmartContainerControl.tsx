@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
-import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { NNBlockType, StateElement } from '@Src/types';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { selectElementFileInput } from '@Redux/project/selectors/base';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import useAnalyzePucture from '@Utils/nn/hooks/useAnalyzePucture';
 
 type Props = {
   element: StateElement;
@@ -37,8 +37,7 @@ const SmartContainerControl: React.FC<Props> = ({
   const handleImageChange = useImageUpload(activeElementId);
 
   const imageFile = useSelector(selectElementFileInput(activeElementId));
-
-  const handleNNProcessing = useNNProcessing(
+  const handleAnalyzePicture = useAnalyzePucture(
     activeElementId,
     blockType,
     imageFile,
@@ -74,7 +73,7 @@ const SmartContainerControl: React.FC<Props> = ({
             color="primary"
             component="span"
             disabled={!imageFile || !canEdit}
-            onClick={() => handleNNProcessing(true)}
+            onClick={() => handleAnalyzePicture(imageFile.size, 100)}
           >
             Automatically Analyze
           </Button>
@@ -84,7 +83,7 @@ const SmartContainerControl: React.FC<Props> = ({
             color="primary"
             component="span"
             disabled={!imageFile || !canEdit}
-            onClick={() => handleNNProcessing(false)}
+            onClick={() => handleAnalyzePicture(imageFile.size, 300)}
           >
             Manually Analyze
           </Button>

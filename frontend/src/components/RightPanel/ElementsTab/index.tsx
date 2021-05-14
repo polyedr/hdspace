@@ -5,7 +5,7 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
-import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
+import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
 import CustomElementsBlock from '../CustomElementsLibrary/CustomElementsBlock';
 import ElementsBlock from './ElementsBlock';
 import ElementGroups from '../ElementGroups';

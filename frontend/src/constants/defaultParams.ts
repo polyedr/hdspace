@@ -98,6 +98,7 @@ export const DEFAULT_SCREEN: Screen = {
   element: '-1',
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
+    freeCanvas: false,
   },
 };
 
@@ -158,6 +159,7 @@ export const UNIQUE_CONTROLS = [
   'videoSettings',
   'stylesOn',
   'layouts',
+  'styleSheets',
 ];
 
 export const ALL_ELEMENTS_INDEX = 'all';

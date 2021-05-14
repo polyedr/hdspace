@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropPosition } from '@Constants/dragAndDrop';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   ChildEntity,
   ChildrenElements,
@@ -31,7 +31,9 @@ import {
   VIAFile,
   FileToUpload,
   UIFramework,
+  ElementData,
 } from '@Src/types';
+import { XYCoord } from 'react-dnd';
 import {
   UpdateUISettingsParameters,
   Action,
@@ -181,6 +183,8 @@ import {
   SetVIAData,
   SetBlockType,
   UpdateCurrentUIFramework,
+  ProcessDropTargetParams,
+  ProcessDropElement,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -372,11 +376,11 @@ export const editScreenNameAndData = (
 });
 
 export const createScreen = (
-  { projectID, name, buoyancy, rootName }: CreateScreenData,
+  { projectID, name, buoyancy, rootName, freeCanvas }: CreateScreenData,
   meta?: HistoryMeta,
 ): CreateScreen => ({
   type: TYPES.CREATE_SCREEN,
-  payload: { projectID, name, buoyancy, rootName },
+  payload: { projectID, name, buoyancy, rootName, freeCanvas },
   meta,
 });
 
@@ -669,9 +673,10 @@ export const updateMultipleElementsStyles = (
     [id: string]: React.CSSProperties;
   },
   meta: ElementHistoryMeta,
+  type?: 'delete',
 ): UpdateMultipleElementsStyles => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
-  payload: { ids, styles },
+  payload: { ids, styles, type },
   meta,
 });
 
@@ -1116,11 +1121,6 @@ export const removeCustomElement = (id: string) => ({
 export const addFileInput = (id: string, file: File) => ({
   type: TYPES.ADD_FILE_INPUT,
   payload: { id, file },
-});
-
-export const changeFreeCanvasMode = (enabled: boolean) => ({
-  type: TYPES.CHANGE_FREE_CANVAS_MODE,
-  payload: enabled,
 });
 
 export const updateLastElements = (
@@ -1629,4 +1629,30 @@ export const updateUISettingsParameters = (
 ): UpdateUISettingsParameters => ({
   type: TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
   payload: uiParameters,
+});
+
+export const processDropTargetParams = (
+  elementId: string,
+  rect: DOMRect,
+  isHorizontal: boolean,
+  offset: XYCoord,
+): ProcessDropTargetParams => ({
+  type: TYPES.PROCESS_DROP_TARGET_PARAMS,
+  payload: {
+    elementId,
+    rect,
+    isHorizontal,
+    offset,
+  },
+});
+
+export const processDropElement = (
+  dragSource: StateElement | ElementData,
+  dropType: ElementType,
+): ProcessDropElement => ({
+  type: TYPES.PROCESS_DROP_ELEMENT,
+  payload: {
+    dragSource,
+    dropType,
+  },
 });

@@ -11,6 +11,7 @@ import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';
+import ScreenLongName from './ScreenLongName';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   listItem: {
@@ -37,11 +38,17 @@ const useStyles = makeStyles(({ palette, typography }) => ({
   icon: {
     color: palette.common.white,
     minWidth: 0,
-    paddingRight: '.5em',
+    paddingRight: '.1em',
   },
   name: {
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize,
+  },
+  popover: {
+    pointerEvents: 'none',
+  },
+  paper: {
+    padding: '8px',
   },
 }));
 
@@ -104,10 +111,19 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
               <ListItemIcon className={classes.icon}>
                 <ScreenLogo image={image} />
               </ListItemIcon>
-
-              <span className={classes.name}>{name}</span>
+              {name.length > 10 ? (
+                <ScreenLongName
+                  name={name}
+                  styles={{
+                    name: classes.name,
+                    popover: classes.popover,
+                    paper: classes.paper,
+                  }}
+                />
+              ) : (
+                <span className={classes.name}>{name}</span>
+              )}
             </div>
-
             {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}
             <ScreenControls
               show={show}

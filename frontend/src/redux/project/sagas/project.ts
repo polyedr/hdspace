@@ -39,9 +39,9 @@ import {
   selectProjectsDataNext,
   selectProjectsSearchParameter,
 } from '../selectors/base';
+import { selectCurrentUIFramework } from '../selectors/framework';
 import {
   selectCurrentScreenId,
-  selectCurrentUIFramework,
   selectMasterScreenId,
   selectScreenById,
 } from '../selectors/screen';
@@ -387,7 +387,7 @@ export function* deleteProjectSaga({
   }
 }
 
-export const renameProjects = function* ({
+export const renameProjectSaga = function* ({
   payload: { projectID, name },
 }: ReturnType<typeof Actions.renameProject>) {
   try {
@@ -421,11 +421,6 @@ export const renameProjects = function* ({
     );
   }
 };
-
-export const renameProjectSaga = withRequiredPermissions(
-  UserProjectPermission.VIEW_PROJECT,
-  UserProjectPermission.CHANGE_PROJECT,
-)(renameProjects);
 
 export function* updateProjectSaga(
   action: ReturnType<typeof Actions.updateProject>,

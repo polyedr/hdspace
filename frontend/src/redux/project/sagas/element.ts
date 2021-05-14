@@ -1,4 +1,4 @@
-import { put, call, select } from 'redux-saga/effects';
+import { put, call, select, putResolve } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -12,7 +12,10 @@ import {
   selectMasterGroupsElementId,
   selectActiveElement,
 } from '@Redux/project/selectors/element';
-import { selectCurrentProject } from '@Redux/project/selectors/base';
+import {
+  selectCurrentDropTargetParams,
+  selectCurrentProject,
+} from '@Redux/project/selectors/base';
 import {
   convertElementToPatchRequest,
   convertElementToRequest,
@@ -25,7 +28,7 @@ import {
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
-import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
+import { ALL_ELEMENTS_INDEX, CONTAINER_GROUPS } from '@Constants/defaultParams';
 import {
   Entity,
   DuplicateElementsData,
@@ -39,11 +42,13 @@ import {
   StateElement,
   UpdateDataActionType,
   UserProjectPermission,
+  ElementData,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -60,6 +65,7 @@ import {
   selectAllAssetLists,
   selectSelectedAssetListId,
 } from '../selectors/asset';
+import { selectCurrentScreenId } from '../selectors/screen';
 
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(
@@ -368,7 +374,7 @@ export const copyElementStylesSaga = compose(
       (cssClass) => cssClass.className,
     );
     const uniqueClassName = generateUniqueName(
-      `${elementType} group 1`,
+      `${elementType}-group-1`,
       sharedClassNames,
     );
 
@@ -466,7 +472,7 @@ export const updateMultipleElementsStylesSaga = compose(
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.updateMultipleElementsStyles>) {
   try {
-    const { ids, styles } = action.payload;
+    const { ids, styles, type } = action.payload;
 
     if (!action.meta) {
       console.error(
@@ -497,10 +503,14 @@ export const updateMultipleElementsStylesSaga = compose(
         ...element,
         styles: {
           ...element.styles,
-          ownStyles: {
-            ...element.styles.ownStyles,
-            ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
-          },
+          ownStyles: type
+            ? {
+                ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+              }
+            : {
+                ...element.styles.ownStyles,
+                ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+              },
         },
       };
     });
@@ -1197,3 +1207,103 @@ export const unbindGroupElementStylesSaga = compose(
     );
   }
 });
+
+export function* processDropTargetParamsSaga(
+  action: ReturnType<typeof Actions.processDropTargetParams>,
+) {
+  const { elementId, rect, isHorizontal, offset } = action.payload;
+  const element = yield select(selectElementById(elementId));
+  const dropTargetParams = yield select(selectCurrentDropTargetParams);
+
+  const elementIsContainer =
+    !element.parent || CONTAINER_GROUPS.includes(element?.parameters.group);
+
+  let newDropPosition = DropPosition.INSIDE;
+
+  let offsetParam = offset.y;
+  let sizeParam = rect.height;
+  let posParam = rect.y;
+  if (isHorizontal) {
+    offsetParam = offset.x;
+    posParam = rect.x;
+    sizeParam = rect.width;
+  }
+
+  if (
+    offsetParam > posParam &&
+    offsetParam < posParam + (elementIsContainer ? 10 : sizeParam / 2)
+  ) {
+    newDropPosition = isHorizontal ? DropPosition.BEFORE : DropPosition.ABOVE;
+  } else if (elementIsContainer && offsetParam < posParam + sizeParam - 10) {
+    newDropPosition = DropPosition.INSIDE;
+  } else {
+    newDropPosition = isHorizontal ? DropPosition.AFTER : DropPosition.BELOW;
+  }
+
+  if (
+    dropTargetParams?.id !== elementId ||
+    dropTargetParams.position !== newDropPosition
+  ) {
+    yield putResolve(
+      Actions.setCurrentDropTargetParams(elementId, newDropPosition),
+    );
+  }
+}
+
+export function* processDropElementSaga(
+  action: ReturnType<typeof Actions.processDropElement>,
+) {
+  const { dragSource, dropType } = action.payload;
+  const dropTargetParams = yield select(selectCurrentDropTargetParams);
+  if (
+    dropType === ElementType.ELEMENT &&
+    dropTargetParams.id === dragSource.id
+  ) {
+    return;
+  }
+  const screenId = yield select(selectCurrentScreenId);
+  const dropTarget = yield select(selectElementById(dropTargetParams.id));
+  const elementIsContainer =
+    !dropTarget.parent ||
+    CONTAINER_GROUPS.includes(dropTarget.parameters.group);
+
+  let dropBuoyancy = dropTarget.buoyancy;
+  if (dropTargetParams.position === DropPosition.INSIDE) {
+    dropBuoyancy = dropTarget.children.length;
+  } else if (
+    [DropPosition.AFTER, DropPosition.BELOW].includes(dropTargetParams.position)
+  ) {
+    dropBuoyancy = dropTarget.buoyancy + 1;
+  }
+  const newParentId = elementIsContainer ? dropTarget.id : dropTarget.parent;
+  if (dropType === ElementType.ELEMENT) {
+    const dragSourceEl = dragSource as StateElement;
+    yield put(
+      Actions.moveElement(
+        dragSourceEl.id,
+        {
+          oldIndex: (dragSource as StateElement).buoyancy,
+          newIndex: dropBuoyancy,
+        },
+        {
+          oldParentId: (dragSource as StateElement).parent || '',
+          newParentId,
+        },
+        { screenId },
+      ),
+    );
+  } else {
+    const { id, type, name, custom, parameters } = dragSource as ElementData;
+    yield put(
+      Actions.createElements(
+        {
+          createdElements: [{ id, type, name, custom, parameters }],
+          parentId: newParentId,
+          index: dropBuoyancy,
+        },
+        { screenId },
+      ),
+    );
+  }
+  yield put(Actions.setCurrentDropTargetParams(null));
+}

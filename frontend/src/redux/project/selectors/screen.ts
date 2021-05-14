@@ -1,8 +1,7 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_SCREEN } from '@Constants/defaultParams';
-import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
+import { Normalized, Screen } from '@Src/types';
 import { AppReduxState } from '../../types';
-import { selectCurrentProject } from './base';
 
 export const selectCurrentScreenId = ({ project }: AppReduxState) =>
   project.edit.currentScreenId;
@@ -24,12 +23,18 @@ export const selectScreensWithoutMaster = createSelector(
 );
 
 export const selectScreens = (state: AppReduxState) =>
-  Object.values(state.project.data.screens).sort(
-    (a, b) => a.buoyancy - b.buoyancy,
-  );
+  state.project.data.screens;
 
-export const selectScreensLength = (state: AppReduxState) =>
-  selectScreens(state).length;
+export const selectSortedScreens = createSelector(
+  selectScreens,
+  (unsortedScreens: Normalized<Screen>) =>
+    Object.values(unsortedScreens).sort((a, b) => a.buoyancy - b.buoyancy),
+);
+
+export const selectScreensLength = createSelector(
+  selectScreens,
+  (screens: Normalized<Screen>) => Object.keys(screens).length,
+);
 
 /**
  * use this selector in sagas
@@ -65,15 +70,7 @@ export const selectMasterScreenEnabled = createSelector(
 export const selectNewScreenModalOpen = ({ project }: AppReduxState) =>
   project.ui.newScreenModalOpen;
 
-export const selectCurrentUIFramework = createSelector(
-  selectCurrentProject,
+export const selectFreeCanvasMode = createSelector(
   selectCurrentScreen,
-  selectMasterScreenId,
-  (project, screen, masterScreenId) => {
-    const selectedFramework =
-      screen.id !== masterScreenId && screen.screenData?.uiFramework
-        ? screen.screenData?.uiFramework
-        : project.projectData.uiFramework;
-    return selectedFramework || NOT_SELECTED_FRAMEWORK;
-  },
+  (screen) => screen.screenData.freeCanvas,
 );

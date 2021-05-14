@@ -858,6 +858,7 @@ export type ScreenData = {
   meta?: ScreenMetaData;
   nnResult?: { [key: string]: VIAFile };
   uiFramework: UIFramework;
+  freeCanvas: boolean;
 };
 
 export type EditScreenData = {
@@ -1065,6 +1066,7 @@ export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
+  replaceStyles(payload: React.CSSProperties): void;
   masterScreenEnabled?: boolean;
   canEdit: boolean;
   editableStyles: string;

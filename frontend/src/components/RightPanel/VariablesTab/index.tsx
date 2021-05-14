@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import { selectCurrentUIFramework } from '@Redux/project/selectors/screen';
+import { selectCurrentUIFramework } from '@Redux/project/selectors/framework';
 import { FRAMEWORK_VARIABLES } from '@Constants/frameworks/variables';
 import { StyledTextField } from '@Components/styledComponents';
 import Scrollbar from '@Components/UI/Scrollbar';

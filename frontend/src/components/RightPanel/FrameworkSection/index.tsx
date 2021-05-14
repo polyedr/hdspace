@@ -15,7 +15,7 @@ import {
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { FrameworkName, UIFramework, UserProjectPermission } from '@Src/types';
-import { selectCurrentUIFramework } from '@Redux/project/selectors/screen';
+import { selectCurrentUIFramework } from '@Redux/project/selectors/framework';
 import { updateCurrentUIFramework } from '@Redux/project/actions';
 
 const useStyles = makeStyles({

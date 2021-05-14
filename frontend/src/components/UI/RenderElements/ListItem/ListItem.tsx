@@ -60,16 +60,6 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
     },
   });
 
-  /* const clickHandler = eventHandlers.onClick;
-  eventHandlers.onClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (isDisabled) {
-      (event.target as HTMLElement).focus();
-    }
-    if (clickHandler) {
-      clickHandler(event);
-    }
-  }; */
-
   return (
     <>
       {isLink ? (

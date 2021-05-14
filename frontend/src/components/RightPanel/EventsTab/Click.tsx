@@ -10,7 +10,7 @@ import { ElementClickEvent, LinkType } from '@Src/types';
 import { useSelector } from 'react-redux';
 import {
   selectCurrentScreenId,
-  selectScreens,
+  selectSortedScreens,
 } from '@Redux/project/selectors/screen';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { MenuItem } from '@material-ui/core';
@@ -21,7 +21,7 @@ type Props = {
 };
 
 const Click: FC<Props> = ({ eventData, setEventData }) => {
-  const screens = useSelector(selectScreens);
+  const screens = useSelector(selectSortedScreens);
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
 

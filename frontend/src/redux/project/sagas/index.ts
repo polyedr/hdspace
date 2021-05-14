@@ -58,6 +58,8 @@ import {
   uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
   replaceElementParametersSaga,
+  processDropTargetParamsSaga,
+  processDropElementSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
@@ -497,4 +499,11 @@ export default function* projectSaga() {
     TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
     resetCurrentUIFrameworkVariablesSaga,
   );
+
+  yield takeLatest(
+    TYPES.PROCESS_DROP_TARGET_PARAMS,
+    processDropTargetParamsSaga,
+  );
+
+  yield takeEvery(TYPES.PROCESS_DROP_ELEMENT, processDropElementSaga);
 }

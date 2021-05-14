@@ -4,19 +4,18 @@ import { useDebouncedCallback } from 'use-debounce';
 import { changePrototypeMode } from '@Redux/user/actions';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
-  changeFreeCanvasMode,
   convertFreeCanvas,
   setBordersEnabled,
   toggleContainersBorders,
 } from '@Redux/project/actions';
 import {
   selectBordersEnabled,
-  selectFreeCanvasMode,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
   selectMasterScreenEnabled,
+  selectFreeCanvasMode,
 } from '@Redux/project/selectors/screen';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
 import {
@@ -80,12 +79,6 @@ const TopBar: React.FC = () => {
     enableBordersDebounce.callback();
   }, [dispatch, isProtoMode, enableBordersDebounce]);
 
-  const handleToggleFreeMode = useCallback(() => {
-    dispatch(setBordersEnabled(false));
-    dispatch(changeFreeCanvasMode(!freeCanvasMode));
-    enableBordersDebounce.callback();
-  }, [dispatch, freeCanvasMode, enableBordersDebounce]);
-
   return currentScreenId !== -1 ? (
     <div className={classes.root}>
       <Actions />
@@ -96,18 +89,6 @@ const TopBar: React.FC = () => {
             <Switch checked={isProtoMode} onChange={handleToggleProtoMode} />
           }
           label={<Typography className={classes.title}>Proto Mode</Typography>}
-          labelPlacement="end"
-          className={classes.switch}
-          disabled={masterScreenEnabled}
-        />
-
-        <FormControlLabel
-          control={
-            <Switch checked={freeCanvasMode} onChange={handleToggleFreeMode} />
-          }
-          label={
-            <Typography className={classes.title}>Free Canvas Mode</Typography>
-          }
           labelPlacement="end"
           className={classes.switch}
           disabled={masterScreenEnabled}
