@@ -71,6 +71,6 @@ export class DOMHandler {
   }
 
   private _elementsDom: ElementsDom = {};
-  _visibleElementsIds: string[] = [];
+  private _visibleElementsIds: string[] = [];
   private _observer: IntersectionObserver;
 }
