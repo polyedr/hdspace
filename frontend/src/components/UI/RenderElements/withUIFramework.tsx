@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { FrameworkComponentSettings } from '@Src/types';
-import { PropsContext } from '@Utils/ElementPropsContext';
+import { selectCurrentUIFramework } from '@Redux/project/selectors/screen';
 import { RendererProps } from './types';
 
-const withFramework = <T extends HTMLElement>(
+const withUIFramework = <T extends HTMLElement>(
   componentSettings: FrameworkComponentSettings,
 ) => {
   const FrameworkComponent = React.forwardRef<T, RendererProps>(
     (props, ref) => {
-      const { uiFramework } = useContext(PropsContext);
+      const uiFramework = useSelector(selectCurrentUIFramework);
       const RenderComponent = componentSettings[uiFramework.name];
       return <RenderComponent ref={ref} {...props} />;
     },
@@ -17,4 +18,4 @@ const withFramework = <T extends HTMLElement>(
   return FrameworkComponent;
 };
 
-export default withFramework;
+export default withUIFramework;

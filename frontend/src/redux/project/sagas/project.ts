@@ -39,7 +39,12 @@ import {
   selectProjectsDataNext,
   selectProjectsSearchParameter,
 } from '../selectors/base';
-import { selectScreenById } from '../selectors/screen';
+import {
+  selectCurrentScreenId,
+  selectCurrentUIFramework,
+  selectMasterScreenId,
+  selectScreenById,
+} from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
 import { createElements } from './common';
 
@@ -467,13 +472,15 @@ export function* updateProjectSaga(
   }
 }
 
-export const updateProjectUIFrameworkSaga = withRequiredPermissions(
+export const updateCurrentUIFrameworkSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* (action: ReturnType<typeof Actions.updateProjectUIFramework>) {
-  const { projectId, uiFramework } = action.payload;
-  try {
-    const project = yield select(selectProjectById, projectId);
+)(function* (action: ReturnType<typeof Actions.updateCurrentUIFramework>) {
+  const { uiFramework } = action.payload;
+  const project = yield select(selectCurrentProject);
+  const currentScreenId = yield select(selectCurrentScreenId);
+  const masterScreenId = yield select(selectMasterScreenId);
+  if (currentScreenId === masterScreenId) {
     const newProject: Project = {
       ...project,
       projectData: {
@@ -482,17 +489,44 @@ export const updateProjectUIFrameworkSaga = withRequiredPermissions(
       },
     };
     yield put(Actions.updateProject(newProject));
-  } catch (e) {
+  } else {
     yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
-          },
+      Actions.editScreenNameAndData(project.id, currentScreenId, {
+        data: {
+          uiFramework,
         },
-        e,
-      ),
+      }),
     );
   }
+});
+
+export const updateCurrentUIFrameworkVariablesSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (
+  action: ReturnType<typeof Actions.updateCurrentUIFrameworkVariables>,
+) {
+  const uiFramework = yield select(selectCurrentUIFramework);
+  yield put(
+    Actions.updateCurrentUIFramework({
+      ...uiFramework,
+      themeVariables: {
+        ...uiFramework.themeVariables,
+        ...action.payload,
+      },
+    }),
+  );
+});
+
+export const resetCurrentUIFrameworkVariablesSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* () {
+  const uiFramework = yield select(selectCurrentUIFramework);
+  yield put(
+    Actions.updateCurrentUIFramework({
+      ...uiFramework,
+      themeVariables: {},
+    }),
+  );
 });

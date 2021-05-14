@@ -150,6 +150,7 @@ const SmartContainerRenderer = React.forwardRef<
     item: {
       type: element.type,
       drop: () => {
+        console.log('DROP!!');
         if (!imgRef.current) {
           return;
         }
@@ -189,11 +190,11 @@ const SmartContainerRenderer = React.forwardRef<
 
   const resizeRefDom = resizeRef.current;
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (resizeRef && resizeRefDom) {
       drag(resizeRef);
     }
-  }, [drag, resizeRef, resizeRefDom]);
+  }, [drag, resizeRef, resizeRefDom]); */
 
   useEffect(() => {
     if (resizeRef && resizeRefDom) {

@@ -4,7 +4,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
-import StylesHeader from '../../helperComponents/StylesHeader';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles(({ palette }) => ({
   marginGrid: {
@@ -83,9 +83,11 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 };
 
 const IndentsBlock: React.FC<Props> = ({
+  element,
   updateStyles,
   removeStyles,
   masterScreenEnabled,
+  editableStyles,
   marginTop,
   marginBottom,
   marginLeft,
@@ -141,10 +143,9 @@ const IndentsBlock: React.FC<Props> = ({
   return (
     <div>
       {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Margins & Paddings"
+        <RemoveStyles
           onClick={removeStyles}
-          cssPropertiesNames={[
+          propsToRemove={[
             'marginTop',
             'marginRight',
             'marginBottom',
@@ -154,6 +155,8 @@ const IndentsBlock: React.FC<Props> = ({
             'paddingBottom',
             'paddingLeft',
           ]}
+          type={element.type}
+          editableStyles={editableStyles}
         />
       )}
 

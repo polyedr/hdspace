@@ -1,5 +1,5 @@
 import BootstrapCheckbox from './BootstrapCheckbox';
-import MaterializeCheckbox from './MaterializeCheckbox';
+import MaterialCheckbox from './MaterialCheckbox';
 import UnstyledCheckbox from './UnstyledCheckbox';
 
-export { BootstrapCheckbox, MaterializeCheckbox, UnstyledCheckbox };
+export { BootstrapCheckbox, MaterialCheckbox, UnstyledCheckbox };

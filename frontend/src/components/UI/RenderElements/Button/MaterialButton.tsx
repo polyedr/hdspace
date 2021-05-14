@@ -6,7 +6,7 @@ import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('button', {});
 
-const MaterializeButton = React.forwardRef<HTMLButtonElement, RendererProps>(
+const MaterialButton = React.forwardRef<HTMLButtonElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const { id, parameters, styles } = element;
@@ -22,9 +22,8 @@ const MaterializeButton = React.forwardRef<HTMLButtonElement, RendererProps>(
         id={id}
         data-ls-id={id}
         className={cn(
-          'btn',
-          'waves-effect',
-          'waves-light',
+          'mdc-button',
+          'mdc-button--raised',
           className,
           groupClass,
           classes.ownStyles,
@@ -32,10 +31,10 @@ const MaterializeButton = React.forwardRef<HTMLButtonElement, RendererProps>(
         )}
         {...eventHandlers}
       >
-        {parameters.textContent}
+        <span className="mdc-button__label">{parameters.textContent}</span>
       </button>
     );
   },
 );
 
-export default memo(MaterializeButton);
+export default memo(MaterialButton);

@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
-import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   backgroundColor?: React.CSSProperties['backgroundColor'];
@@ -11,10 +11,11 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 const BackgroundBlock: React.FC<Props> = ({
   removeStyles,
   updateStyles,
-  activeElementId,
+  element,
   backgroundColor = 'transparent',
   masterScreenEnabled,
   canEdit,
+  editableStyles,
 }) => {
   const [color, handleColorChange] = useDebouncedValueChange(
     backgroundColor,
@@ -26,16 +27,17 @@ const BackgroundBlock: React.FC<Props> = ({
   return (
     <div>
       {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Background"
+        <RemoveStyles
           onClick={removeStyles}
-          cssPropertiesNames={['backgroundColor']}
+          propsToRemove={['backgroundColor']}
+          type={element.type}
+          editableStyles={editableStyles}
         />
       )}
 
       <ColorSettings
         currentColor={color as string}
-        activeElementId={activeElementId}
+        activeElementId={element.id}
         onChange={handleColorChange as (color: string) => any}
         disabled={!canEdit}
       />

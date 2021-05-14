@@ -6,7 +6,7 @@ import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('select', {});
 
-const MaterializeSelect = React.forwardRef<HTMLSelectElement, RendererProps>(
+const MaterialSelect = React.forwardRef<HTMLSelectElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled, children } = props;
     const [className, groupClass] = element.styles.classNames;
@@ -40,4 +40,4 @@ const MaterializeSelect = React.forwardRef<HTMLSelectElement, RendererProps>(
   },
 );
 
-export default MaterializeSelect;
+export default MaterialSelect;

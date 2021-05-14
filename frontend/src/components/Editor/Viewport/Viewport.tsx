@@ -10,6 +10,8 @@ import useHotKeys from '../hooks/useHotKeys';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
 
 import 'css-ripple-effect/dist/ripple.min.css';
+// eslint-disable-next-line import/order
+import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 
 const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
@@ -59,6 +61,11 @@ const Viewport: React.FC = ({ children }) => {
       editorDocument.head.append(sharedStylesEl);
     }
   }, [editorDocument, entityStylesEl, sharedStylesEl]);
+
+  useGlobalDropTarget(
+    ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
+    ref,
+  );
 
   return (
     <div ref={ref} className={styles.editorViewport} tabIndex={-1}>

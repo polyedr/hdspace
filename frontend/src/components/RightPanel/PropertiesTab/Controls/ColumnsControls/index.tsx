@@ -18,7 +18,7 @@ const useStyles = makeStyles({
 });
 
 const ColumnsControls: FC<PropertiesChangeProps<LibraryElement<any>>> = ({
-  activeElementId,
+  element,
   canEdit,
 }) => {
   const classes = useStyles();
@@ -45,7 +45,7 @@ const ColumnsControls: FC<PropertiesChangeProps<LibraryElement<any>>> = ({
               childType: 'column',
               parameters: {},
             }),
-            activeElementId,
+            element.id,
             { screenId },
           ),
         );

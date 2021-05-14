@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { MenuItem } from '@material-ui/core';
-import StylesHeader from '../../helperComponents/StylesHeader';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
 import { DISPLAY } from './constants';
 import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
 import { StyledTextField } from '../../../../styledComponents';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   display?: React.CSSProperties['display'];
@@ -23,6 +23,8 @@ const Display: React.FC<Props> = ({
   alignItems,
   masterScreenEnabled,
   canEdit,
+  element,
+  editableStyles,
 }) => {
   const handleDisplayDropdownChange = useCallback(
     (event) => {
@@ -35,15 +37,16 @@ const Display: React.FC<Props> = ({
     <>
       <div>
         {!masterScreenEnabled && canEdit && (
-          <StylesHeader
-            title="Display"
+          <RemoveStyles
             onClick={removeStyles}
-            cssPropertiesNames={[
+            propsToRemove={[
               'display',
               'justifyContent',
               'alignItems',
               'flexDirection',
             ]}
+            type={element.type}
+            editableStyles={editableStyles}
           />
         )}
 

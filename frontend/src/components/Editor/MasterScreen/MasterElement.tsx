@@ -46,7 +46,6 @@ const MasterElement: React.FC<Props> = (props: Props) => {
     masterSourceElementId,
     canDragAndDrop,
     frameWindow,
-
     elementId,
     parentId,
     scrollRef,

@@ -18,8 +18,8 @@ import {
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;
@@ -48,7 +48,7 @@ const TypographyBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
   masterScreenEnabled,
-  activeElementId,
+  element,
   fontFamily,
   fontSize,
   fontWeight,
@@ -56,6 +56,7 @@ const TypographyBlock: React.FC<Props> = ({
   textAlign,
   color = 'transparent',
   canEdit,
+  editableStyles,
 }) => {
   const classes = useStyles();
 
@@ -112,10 +113,10 @@ const TypographyBlock: React.FC<Props> = ({
   return (
     <div>
       {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Font"
+        <RemoveStyles
+          type={element.type}
           onClick={removeStyles}
-          cssPropertiesNames={[
+          propsToRemove={[
             'fontFamily',
             'fontStyle',
             'fontWeight',
@@ -123,6 +124,7 @@ const TypographyBlock: React.FC<Props> = ({
             'textAlign',
             'color',
           ]}
+          editableStyles={editableStyles}
         />
       )}
 
@@ -197,7 +199,7 @@ const TypographyBlock: React.FC<Props> = ({
         <div>
           <ColorSettings
             currentColor={(colorValue as string) || 'transparent'}
-            activeElementId={activeElementId}
+            activeElementId={element.id}
             onChange={handleColorValueChange as (color: string) => void}
             disabled={!canEdit}
           />

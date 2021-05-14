@@ -3,7 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
-import { FRAMEWORKS_LIST, NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
+import {
+  FRAMEWORKS_LIST,
+  NOT_SELECTED_FRAMEWORK,
+} from '@Constants/frameworks/index';
 import {
   StyledAccordion,
   StyledAccordionDetails,
@@ -11,17 +14,9 @@ import {
   StyledTextField,
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { Framework, FrameworkName, UserProjectPermission } from '@Src/types';
-import {
-  selectCurrentScreenId,
-  selectCurrentUIFramework,
-  selectMasterScreenEnabled,
-} from '@Redux/project/selectors/screen';
-import {
-  editScreenNameAndData,
-  updateProjectUIFramework,
-} from '@Redux/project/actions';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { FrameworkName, UIFramework, UserProjectPermission } from '@Src/types';
+import { selectCurrentUIFramework } from '@Redux/project/selectors/screen';
+import { updateCurrentUIFramework } from '@Redux/project/actions';
 
 const useStyles = makeStyles({
   details: {
@@ -38,9 +33,7 @@ const useStyles = makeStyles({
 const FrameworkSection = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
-  const currentProjectId = useSelector(selectCurrentProjectId);
-  const currentScreenId = useSelector(selectCurrentScreenId);
+
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -70,20 +63,10 @@ const FrameworkSection = () => {
   }, [currentUIFramework?.name, frameworkName]);
 
   const updateFrameworkData = useCallback(
-    (newFramework: Framework) => {
-      if (masterScreenEnabled) {
-        dispatch(updateProjectUIFramework(currentProjectId, newFramework));
-      } else {
-        dispatch(
-          editScreenNameAndData(currentProjectId, currentScreenId, {
-            data: {
-              uiFramework: newFramework,
-            },
-          }),
-        );
-      }
+    (newFramework: UIFramework) => {
+      dispatch(updateCurrentUIFramework(newFramework));
     },
-    [currentProjectId, currentScreenId, dispatch, masterScreenEnabled],
+    [dispatch],
   );
 
   const handleFrameworkChange = useCallback(
@@ -99,9 +82,10 @@ const FrameworkSection = () => {
         : null;
       setFrameworkName(newFrameworkName);
       setVersionName(newFrameworkVersion?.name || null);
-      const newUIFramework: Framework = {
+      const newUIFramework: UIFramework = {
         name: newFrameworkName,
         version: newFrameworkVersion,
+        themingVariables: {},
       };
       updateFrameworkData(newUIFramework);
     },
@@ -120,9 +104,11 @@ const FrameworkSection = () => {
       const newVersion =
         selectedFrameworkVersions?.find((frV) => frV.name === versionName) ||
         null;
-      const newUIFramework: Framework = {
-        name: frameworkName || NOT_SELECTED_FRAMEWORK.name,
+      const newFrameworkName = frameworkName || NOT_SELECTED_FRAMEWORK.name;
+      const newUIFramework: UIFramework = {
+        name: newFrameworkName,
         version: newVersion,
+        themingVariables: {},
       };
       updateFrameworkData(newUIFramework);
     },

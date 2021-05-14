@@ -692,7 +692,7 @@ export type ProjectClass = {
 
 export type ProjectData = {
   classes: ProjectClass[];
-  uiFramework: Framework;
+  uiFramework: UIFramework;
 };
 
 export type Project = ProjectBase & {
@@ -857,7 +857,7 @@ export type ScreenMetaData = {
 export type ScreenData = {
   meta?: ScreenMetaData;
   nnResult?: { [key: string]: VIAFile };
-  uiFramework: Framework;
+  uiFramework: UIFramework;
 };
 
 export type EditScreenData = {
@@ -1061,13 +1061,13 @@ export type SyntheticElement<T> = {
 export type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
-  activeElementId: string;
   element: StateElement;
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
   masterScreenEnabled?: boolean;
   canEdit: boolean;
+  editableStyles: string;
 };
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';
@@ -1195,6 +1195,7 @@ export enum RPTab {
   Properties = 'Properties',
   Elements = 'Elements',
   Events = 'Events',
+  Variables = 'Variables',
 }
 
 export enum Layout {
@@ -1316,7 +1317,7 @@ export type ScreenMeta = {
   faviconUrl: string;
 };
 
-export type FrameworkName = 'bootstrap' | 'materialize' | 'not_selected';
+export type FrameworkName = 'bootstrap' | 'material' | 'not_selected';
 
 export type FrameworkVersion = {
   name: string;
@@ -1329,6 +1330,16 @@ export type Framework = {
   version: FrameworkVersion | null;
 };
 
+export type UIFrameworkVariables = {
+  [name: string]: { label: string; value: string };
+};
+
+export type UIFramework = Framework & {
+  themingVariables: {
+    [name: string]: string;
+  };
+};
+
 export type FrameworkSelection = {
   name: string;
   label: string;
@@ -1336,7 +1347,7 @@ export type FrameworkSelection = {
 };
 
 export type ElementProps = {
-  uiFramework: Framework;
+  uiFramework: UIFramework;
 };
 
 export type FrameworkComponentSettings = Record<FrameworkName, React.FC<any>>;

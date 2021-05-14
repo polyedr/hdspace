@@ -1,5 +1,5 @@
 import BootstrapButton from './BootstrapButton';
-import MaterializeButton from './MaterializeButton';
+import MaterialButton from './MaterialButton';
 import UnstyledButton from './UnstyledButton';
 
-export { BootstrapButton, MaterializeButton, UnstyledButton };
+export { BootstrapButton, MaterialButton, UnstyledButton };

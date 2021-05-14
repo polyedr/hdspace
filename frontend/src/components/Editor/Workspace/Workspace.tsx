@@ -6,7 +6,6 @@ import {
   selectScreenRotated,
   selectFreeCanvasMode,
 } from '@Redux/project/selectors/base';
-import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
@@ -72,11 +71,6 @@ const Workspace: React.FC<Props> = () => {
   const scrollRef = useRef<Scrollbars | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
-
-  useGlobalDropTarget(
-    ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
-    ref,
-  );
 
   return (
     <div className={classes.workspace} ref={ref}>

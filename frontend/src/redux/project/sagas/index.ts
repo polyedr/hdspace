@@ -82,8 +82,10 @@ import {
   getProjectSaga,
   renameProjectSaga,
   searchProjectsSaga,
+  updateCurrentUIFrameworkSaga,
+  updateCurrentUIFrameworkVariablesSaga,
+  resetCurrentUIFrameworkVariablesSaga,
   updateProjectSaga,
-  updateProjectUIFrameworkSaga,
 } from './project';
 import { setUpSidebarSaga } from './sidebar';
 import TYPES from '../../actionTypes';
@@ -355,10 +357,6 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.CREATE_PROJECT, createProjectSaga);
   yield takeLatest(TYPES.DELETE_PROJECT, deleteProjectSaga);
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
-  yield takeLatest(
-    TYPES.UPDATE_PROJECT_UI_FRAMEWORK,
-    updateProjectUIFrameworkSaga,
-  );
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
   yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
@@ -485,4 +483,18 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.UPLOAD_ICO_SCREEN, editIcoScreenSaga);
+  yield takeEvery(
+    TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+    updateCurrentUIFrameworkSaga,
+  );
+
+  yield takeEvery(
+    TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+    updateCurrentUIFrameworkVariablesSaga,
+  );
+
+  yield takeEvery(
+    TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
+    resetCurrentUIFrameworkVariablesSaga,
+  );
 }

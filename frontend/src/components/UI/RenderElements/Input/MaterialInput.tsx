@@ -6,7 +6,7 @@ import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('input', {});
 
-const MaterializeInput = React.forwardRef<HTMLInputElement, RendererProps>(
+const MaterialInput = React.forwardRef<HTMLInputElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
@@ -45,4 +45,4 @@ const MaterializeInput = React.forwardRef<HTMLInputElement, RendererProps>(
   },
 );
 
-export default memo(MaterializeInput);
+export default memo(MaterialInput);

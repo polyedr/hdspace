@@ -27,10 +27,10 @@ import {
   VIARegion,
   UserData,
   EditScreenData,
-  Framework,
   ProfileDataUIParameters,
   VIAFile,
   FileToUpload,
+  UIFramework,
 } from '@Src/types';
 import {
   UpdateUISettingsParameters,
@@ -172,7 +172,6 @@ import {
   AssetData,
   SetValueImportLoader,
   EditScreenNameAndData,
-  UpdateProjectUIFramework,
   CreateVIARegion,
   DeleteVIARegion,
   RestoreVIARegion,
@@ -181,6 +180,7 @@ import {
   SetVIAResultId,
   SetVIAData,
   SetBlockType,
+  UpdateCurrentUIFramework,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -256,15 +256,22 @@ export const updateProject = (
   meta,
 });
 
-export const updateProjectUIFramework = (
-  projectId: number,
-  uiFramework: Framework,
-): UpdateProjectUIFramework => ({
-  type: TYPES.UPDATE_PROJECT_UI_FRAMEWORK,
-  payload: {
-    projectId,
-    uiFramework,
-  },
+export const updateCurrentUIFramework = (
+  uiFramework: UIFramework,
+): UpdateCurrentUIFramework => ({
+  type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+  payload: { uiFramework },
+});
+
+export const updateCurrentUIFrameworkVariables = (variables: {
+  [name: string]: string;
+}) => ({
+  type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+  payload: variables,
+});
+
+export const resetCurrentUIFrameworkVariables = () => ({
+  type: TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
 });
 
 export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({

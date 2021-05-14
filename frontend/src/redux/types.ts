@@ -36,11 +36,11 @@ import {
   UserProjectPermission,
   PermissionsUserData,
   EditScreenData,
-  Framework,
   ProfileDataUIParameters,
   VIAFile,
   FileToUpload,
   ChatCredentials,
+  UIFramework,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -262,9 +262,20 @@ export type UpdateProject = IAction<
   typeof TYPES.UPDATE_PROJECT,
   { project: Project }
 >;
-export type UpdateProjectUIFramework = IAction<
-  typeof TYPES.UPDATE_PROJECT_UI_FRAMEWORK,
-  { projectId: number; uiFramework: Framework }
+export type UpdateCurrentUIFramework = IAction<
+  typeof TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+  {
+    uiFramework: UIFramework;
+  }
+>;
+export type UpdateCurrentUIFrameworkVariables = IAction<
+  typeof TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+  {
+    [name: string]: string;
+  }
+>;
+export type ResetCurrentUIFrameworkVariables = IPlainAction<
+  typeof TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES
 >;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
@@ -1170,7 +1181,9 @@ export type Action =
   | ReplaceElementStyles
   | RemoveElementClassName
   | UpdateProject
-  | UpdateProjectUIFramework
+  | UpdateCurrentUIFramework
+  | UpdateCurrentUIFrameworkVariables
+  | ResetCurrentUIFrameworkVariables
   | SetVIAData
   | SetBlockType
   | RemoveSharedStyles

@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('checkbox', {});
 
-const MaterializeCheckbox = React.forwardRef<HTMLLabelElement, RendererProps>(
+const MaterialCheckbox = React.forwardRef<HTMLLabelElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const { id, styles } = element;
@@ -50,4 +50,4 @@ const MaterializeCheckbox = React.forwardRef<HTMLLabelElement, RendererProps>(
   },
 );
 
-export default MaterializeCheckbox;
+export default MaterialCheckbox;

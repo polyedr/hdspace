@@ -27,27 +27,27 @@ import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
 import GridItem from './Grid/GridItem';
 import ElementsGroup from './ElementsGroup/ElementsGroup';
-import { BootstrapButton, MaterializeButton, UnstyledButton } from './Button';
-import { BootstrapInput, MaterializeInput, UnstyledInput } from './Input';
+import { BootstrapButton, MaterialButton, UnstyledButton } from './Button';
+import { BootstrapInput, MaterialInput, UnstyledInput } from './Input';
 import {
   BootstrapTextarea,
-  MaterializeTextarea,
+  MaterialTextarea,
   UnstyledTextarea,
 } from './Textarea';
 import {
   BootstrapCheckbox,
-  MaterializeCheckbox,
+  MaterialCheckbox,
   UnstyledCheckbox,
 } from './Checkbox';
 import {
   BootstrapRadiobutton,
-  MaterializeRadiobutton,
+  MaterialRadiobutton,
   UnstyledRadiobutton,
 } from './Radiobutton';
-import { BootstrapSelect, MaterializeSelect, UnstyledSelect } from './Select';
+import { BootstrapSelect, MaterialSelect, UnstyledSelect } from './Select';
 import Option from './Option/Option';
 import HTMLElement from './HTMLElement/HTMLElement';
-import withFramework from './withFramework';
+import withUIFramework from './withUIFramework';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -60,34 +60,34 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   grid: Grid,
   columns: Columns,
   column: Column,
-  button: withFramework({
+  button: withUIFramework({
     bootstrap: BootstrapButton,
-    materialize: MaterializeButton,
+    material: MaterialButton,
     not_selected: UnstyledButton,
   }),
-  input: withFramework({
+  input: withUIFramework({
     bootstrap: BootstrapInput,
-    materialize: MaterializeInput,
+    material: MaterialInput,
     not_selected: UnstyledInput,
   }),
-  textinput: withFramework({
+  textinput: withUIFramework({
     bootstrap: BootstrapInput,
-    materialize: MaterializeInput,
+    material: MaterialInput,
     not_selected: UnstyledInput,
   }),
-  radiobutton: withFramework({
+  radiobutton: withUIFramework({
     bootstrap: BootstrapRadiobutton,
-    materialize: MaterializeRadiobutton,
+    material: MaterialRadiobutton,
     not_selected: UnstyledRadiobutton,
   }),
-  checkbox: withFramework({
+  checkbox: withUIFramework({
     bootstrap: BootstrapCheckbox,
-    materialize: MaterializeCheckbox,
+    material: MaterialCheckbox,
     not_selected: UnstyledCheckbox,
   }),
-  textarea: withFramework({
+  textarea: withUIFramework({
     bootstrap: BootstrapTextarea,
-    materialize: MaterializeTextarea,
+    material: MaterialTextarea,
     not_selected: UnstyledTextarea,
   }),
   heading: Heading,
@@ -103,9 +103,9 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   smartFooter: withSmartContainer(NNBlockType.FOOTER),
   smartForm: withSmartContainer(NNBlockType.FORM),
   smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
-  select: withFramework({
+  select: withUIFramework({
     bootstrap: BootstrapSelect,
-    materialize: MaterializeSelect,
+    material: MaterialSelect,
     not_selected: UnstyledSelect,
   }),
   selectMenu: MUISelectMenu,

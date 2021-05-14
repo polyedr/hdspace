@@ -65,29 +65,40 @@ const CustomHead: FC = () => {
           }
         `}
       </style>
-      {frameworkVersion &&
-        frameworkVersion.styleSheetsData.map(
-          ({ key, link, ...otherParams }) => {
-            return (
-              <link
-                key={key}
-                rel="stylesheet"
-                type="text/css"
-                href={link}
-                {...otherParams}
-              />
-            );
-          },
-        )}
-      {frameworkVersion &&
-        frameworkVersion.scriptsData.map(({ key, link, ...otherParams }) => (
-          <script
-            key={key}
-            type="text/javascript"
-            src={link}
-            {...otherParams}
-          />
-        ))}
+      {frameworkVersion && (
+        <>
+          {frameworkVersion.styleSheetsData.map(
+            ({ key, link, ...otherParams }) => {
+              return (
+                <link
+                  key={key}
+                  rel="stylesheet"
+                  type="text/css"
+                  href={link}
+                  {...otherParams}
+                />
+              );
+            },
+          )}
+          {frameworkVersion.scriptsData.map(({ key, link, ...otherParams }) => (
+            <script
+              key={key}
+              type="text/javascript"
+              src={link}
+              {...otherParams}
+            />
+          ))}
+          {uiFramework.themingVariables && (
+            <style type="text/css">
+              {`:root {
+              ${Object.keys(uiFramework.themingVariables).map((varName) => {
+                return `--${varName}:${uiFramework.themingVariables[varName]};`;
+              })}
+          }`}
+            </style>
+          )}
+        </>
+      )}
     </>
   );
 };
@@ -99,6 +110,7 @@ const DndFrame = ({ children }) => {
   const isImportLoader = useSelector(selectImportLoader);
 
   useEffect(() => {
+    console.log('ADD EVENT LISTENERS!!');
     (dragDropManager?.getBackend() as any)?.addEventListeners(window);
   });
 

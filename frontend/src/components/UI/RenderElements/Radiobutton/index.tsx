@@ -1,5 +1,5 @@
 import BootstrapRadiobutton from './BootstrapRadiobutton';
-import MaterializeRadiobutton from './MaterializeRadiobutton';
+import MaterialRadiobutton from './MaterialRadiobutton';
 import UnstyledRadiobutton from './UnstyledRadiobutton';
 
-export { BootstrapRadiobutton, MaterializeRadiobutton, UnstyledRadiobutton };
+export { BootstrapRadiobutton, MaterialRadiobutton, UnstyledRadiobutton };

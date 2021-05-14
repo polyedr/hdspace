@@ -322,6 +322,7 @@ const PropertiesTab: React.FC = () => {
                     updateStyles={updateStyles}
                     updateParams={!masterScreenEnabled && updateParams}
                     masterScreenEnabled={masterScreenEnabled}
+                    editableStyles={editableStyles}
                   />
                 </ControlSection>
               );

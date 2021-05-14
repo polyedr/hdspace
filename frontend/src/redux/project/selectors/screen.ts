@@ -70,8 +70,10 @@ export const selectCurrentUIFramework = createSelector(
   selectCurrentScreen,
   selectMasterScreenId,
   (project, screen, masterScreenId) => {
-    return screen.id === masterScreenId
-      ? project.projectData.uiFramework
-      : screen.screenData?.uiFramework || NOT_SELECTED_FRAMEWORK;
+    const selectedFramework =
+      screen.id !== masterScreenId && screen.screenData?.uiFramework
+        ? screen.screenData?.uiFramework
+        : project.projectData.uiFramework;
+    return selectedFramework || NOT_SELECTED_FRAMEWORK;
   },
 );

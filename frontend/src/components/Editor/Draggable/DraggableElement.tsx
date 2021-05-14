@@ -301,6 +301,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         ref.current = dom;
         DOMHandler.INSTANCE.addElementDom(elementId, dom);
         if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
+          console.log('SET DRAGGABLE ELEMENT DROP!!!');
           drag(ref);
           drop(ref);
         }
