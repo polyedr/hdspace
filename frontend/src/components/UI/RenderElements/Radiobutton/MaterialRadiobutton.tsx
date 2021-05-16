@@ -6,42 +6,49 @@ import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('radiobutton', {});
 
-const MaterialRadiobutton = React.forwardRef<HTMLLabelElement, RendererProps>(
+const MaterialRadiobutton = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const { label } = element.parameters;
 
     const classes = useStyles(props);
     const [isChecked, setIsChecked] = useState<boolean>(false);
 
-    const eventHandlers = useEventHandlers(props);
+    const eventHandlers = useEventHandlers(props, {});
 
     return (
-      <label
+      <div
         ref={ref}
-        {...eventHandlers}
         className={cn(
+          'mdc-touch-target-wrapper',
           className,
           groupClass,
           isDisabled && classes.disabled,
           classes.ownStyles,
         )}
+        data-ls-id={element.id}
+        {...eventHandlers}
       >
-        <input
-          type="radio"
-          id={element.id}
-          data-ls-id={element.id}
-          checked={!isDisabled && !isChecked}
-          className="with-gap"
-          onChange={() => {
-            if (!isDisabled && isChecked) {
-              setIsChecked(!isChecked);
-            }
-          }}
-        />
-        <span>{label || ''}</span>
-      </label>
+        <div className="mdc-radio mdc-radio--touch">
+          <input
+            id={element.id}
+            className="mdc-radio__native-control"
+            type="radio"
+            name={element.name}
+            checked={isChecked}
+            onChange={() => {
+              if (!isDisabled && isChecked) {
+                setIsChecked(!isChecked);
+              }
+            }}
+          />
+          <div className="mdc-radio__background">
+            <div className="mdc-radio__outer-circle" />
+            <div className="mdc-radio__inner-circle" />
+          </div>
+          <div className="mdc-radio__ripple" />
+        </div>
+      </div>
     );
   },
 );

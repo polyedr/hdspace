@@ -101,6 +101,7 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
           {...eventHandlers}
           dangerouslySetInnerHTML={{ __html: textContent }}
           data-gramm_editor={false}
+          {...eventHandlers}
           {...contentEditableSettings.props}
           {...contentEditableSettings.events}
         />

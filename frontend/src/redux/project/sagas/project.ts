@@ -505,8 +505,8 @@ export const updateCurrentUIFrameworkVariablesSaga = withRequiredPermissions(
   yield put(
     Actions.updateCurrentUIFramework({
       ...uiFramework,
-      themeVariables: {
-        ...uiFramework.themeVariables,
+      themingVariables: {
+        ...uiFramework.themingVariables,
         ...action.payload,
       },
     }),
