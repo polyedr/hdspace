@@ -6,7 +6,6 @@ import {
   LabelServerElement,
   RadiobuttonServerElement,
   OptionServerElement,
-  SelectMenuServerElement,
   SelectServerElement,
   TextareaServerElement,
   TextinputServerElement,
@@ -155,28 +154,6 @@ export const makeOption = (
   name: 'option',
   children: [],
 });
-
-export const selectMenu: SelectMenuServerElement = {
-  id: 'selectMenu',
-  buoyancy: 0,
-  func_type: 'selectMenu',
-  struct_type: 'selectMenu',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
-    group: ElementGroup.OTHER,
-  },
-  styles: {
-    classNames: ['selectMenu'],
-    ownStyles: {},
-  },
-  name: 'selectMenu',
-  children: [
-    makeOption('First option', 'first option'),
-    makeOption('Second option', 'second option'),
-    makeOption('Third option', 'third option'),
-  ],
-};
 
 export const select: SelectServerElement = {
   id: 'select',

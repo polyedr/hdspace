@@ -80,6 +80,7 @@ const CustomHead: FC = () => {
                   rel="stylesheet"
                   type="text/css"
                   href={link}
+                  className="test1"
                   {...otherParams}
                 />
               );
@@ -90,15 +91,18 @@ const CustomHead: FC = () => {
               key={key}
               type="text/javascript"
               src={link}
+              className="test2"
               {...otherParams}
             />
           ))}
           {uiFramework.themingVariables && (
-            <style type="text/css">
+            <style type="text/css" className="test3">
               {`:root {
-              ${Object.keys(uiFramework.themingVariables).map((varName) => {
-                return `--${varName}:${uiFramework.themingVariables[varName]};`;
-              })}
+              ${Object.keys(uiFramework.themingVariables)
+                .map((varName) => {
+                  return `--${varName}: ${uiFramework.themingVariables[varName]}`;
+                })
+                .join(';')}
           }`}
             </style>
           )}

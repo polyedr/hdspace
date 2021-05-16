@@ -231,7 +231,7 @@ module.exports = ({ MODE }) => {
       // new BundleAnalyzerPlugin(),
       new CopyWebpackPlugin({
         patterns: [
-          {
+          /* {
             from: 'src/styles/export/material/mdc.checkbox.css',
             to: 'styles/material',
             toType: 'dir',
@@ -245,7 +245,7 @@ module.exports = ({ MODE }) => {
             from: 'src/styles/export/material/mdc.select.css',
             to: 'styles/material',
             toType: 'dir',
-          },
+          }, */
           {
             from: 'src/styles/export/clock.css',
             to: 'styles',
@@ -270,27 +270,6 @@ module.exports = ({ MODE }) => {
           {
             from: 'src/export/js/calendar.js',
             to: 'js/export',
-          },
-          {
-            from: 'node_modules/@material/form-field/dist/mdc.form-field.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from: 'node_modules/@material/list/dist/mdc.list.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from:
-              'node_modules/@material/menu-surface/dist/mdc.menu-surface.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from: 'node_modules/@material/menu/dist/mdc.menu.css',
-            to: 'styles/material',
-            toType: 'dir',
           },
           {
             from: 'node_modules/css-ripple-effect/dist/ripple.css',

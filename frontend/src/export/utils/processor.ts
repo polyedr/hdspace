@@ -9,13 +9,13 @@ import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
 const cssMaterialResources = [
-  'mdc.checkbox.css',
+  /* 'mdc.checkbox.css',
   'mdc.radio.css',
   'mdc.form-field.css',
   'mdc.list.css',
   'mdc.menu-surface.css',
   'mdc.menu.css',
-  'mdc.select.css',
+  'mdc.select.css', */
 ];
 const cssCustomResources = ['clock.css', 'ripple.css'];
 const jsResources = [
@@ -226,13 +226,6 @@ export const getHtmlFromTemplate = (
     ${getFontsLink('Roboto Mono', 'Roboto Condensed', 'Source Sans Pro')}
     <link rel="stylesheet" type="text/css" href="css/entities.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.checkbox.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.radio.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.form-field.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.list.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
     <link rel="stylesheet" type="text/css" href="css/clock.css" />
     <link rel="stylesheet" type="text/css" href="css/ripple.css" />
     <link rel="stylesheet" type="text/css" href="css/shared.css" />

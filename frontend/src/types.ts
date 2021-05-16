@@ -198,10 +198,6 @@ export type SelectServerElement = ServerElement<
   OptionServerElement[],
   SelectParameters
 >;
-export type SelectMenuServerElement = ServerElement<
-  'selectMenu',
-  OptionServerElement[]
->;
 export type OptionServerElement = ServerElement<'option', [], OptionParameters>;
 export type TextareaServerElement = ServerElement<
   'textarea',
@@ -362,7 +358,7 @@ export type RadiobuttonElement = LibraryElement<
 >;
 export type SelectElement = LibraryElement<
   'select',
-  SelectMenuElement[],
+  OptionElement[],
   SelectParameters
 >;
 
@@ -376,7 +372,6 @@ export type HTMLLibraryElement = LibraryElement<
   [],
   HTMLElementParameters
 >;
-export type SelectMenuElement = LibraryElement<'selectMenu', OptionElement[]>;
 export type OptionElement = LibraryElement<'option', [], OptionParameters>;
 export type TextareaElement = LibraryElement<
   'textarea',
@@ -443,7 +438,6 @@ export type LibraryElementUnion =
   | CheckboxElement
   | RadiobuttonElement
   | SelectElement
-  | SelectMenuElement
   | OptionElement
   | TextareaElement
   | HeadingElement
@@ -1112,7 +1106,6 @@ export type StyleProps = {
 };
 
 export type ChildrenElements = {
-  selectMenu: SelectMenuServerElement;
   option: OptionServerElement;
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;

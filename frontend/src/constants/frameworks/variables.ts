@@ -32,39 +32,39 @@ export const FRAMEWORK_VARIABLES: FrameworkVariablesDataSource = {
     },
   },
   material: {
-    'mdc-theme--primary': {
+    'mdc-theme-primary': {
       label: 'Primary color',
       value: '#6200ee',
     },
-    'mdc-theme--secondary': {
+    'mdc-theme-secondary': {
       label: 'Secondary color',
       value: '#018786',
     },
-    'mdc-theme--background': {
+    'mdc-theme-background': {
       label: 'Theme background',
       value: '#fff',
     },
-    'mdc-theme--surface': {
+    'mdc-theme-surface': {
       label: 'Surface color',
       value: '#fff',
     },
-    'mdc-theme--on-primary': {
+    'mdc-theme-on-primary': {
       label: 'On-primary color',
       value: '#fff',
     },
-    'mdc-theme--on-secondary': {
+    'mdc-theme-on-secondary': {
       label: 'On-secondary color',
       value: '#fff',
     },
-    'mdc-theme--on-surface': {
+    'mdc-theme-on-surface': {
       label: 'On-surface color',
       value: '#000',
     },
-    'mdc-theme--primary-bg': {
+    'mdc-theme-primary-bg': {
       label: 'Primary background color',
       value: '#6200ee',
     },
-    'mdc-theme--secondary-bg': {
+    'mdc-theme-secondary-bg': {
       label: 'Secondary background color',
       value: '#018786',
     },

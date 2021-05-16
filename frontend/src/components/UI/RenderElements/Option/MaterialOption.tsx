@@ -1,38 +1,47 @@
 import React from 'react';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
 import { makeComponentStyles } from '../styles';
+import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 
-const useStyles = makeComponentStyles('option', {});
+const useStyles = makeComponentStyles('select-item', {
+  root: {
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    },
+  },
+});
 
-const Option = React.forwardRef<HTMLOptionElement, RendererProps>(
+const MaterialOption = React.forwardRef<HTMLLIElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
-    const { name, value } = element.parameters;
     const [className, groupClass] = element.styles.classNames;
-
+    const { name } = element.parameters;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
     return (
-      <option
-        value={value}
+      <li
         id={element.id}
         ref={ref}
         data-ls-id={element.id}
         className={cn(
+          'mdc-list-item',
           className,
+          classes.root,
           groupClass,
           isDisabled && classes.disabled,
           classes.ownStyles,
         )}
+        aria-selected="false"
+        data-value="grains"
+        role="option"
         {...eventHandlers}
       >
-        {name}
-      </option>
+        <span className="mdc-list-item__text">{name}</span>
+      </li>
     );
   },
 );
 
-export default Option;
+export default MaterialOption;

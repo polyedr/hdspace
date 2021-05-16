@@ -128,12 +128,7 @@ export const LABELED_INPUT_TYPES = [
 export const CONTAINER_GROUPS = [ElementGroup.CONTAINERS, ElementGroup.CUSTOM];
 export const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];
 
-export const NOT_DRAGGABLE_COMPONENTS = [
-  'selectMenu',
-  'option',
-  'column',
-  'gridItem',
-];
+export const NOT_DRAGGABLE_COMPONENTS = ['option', 'column', 'gridItem'];
 
 export const ALL_ASSETS_LIST_ID = 'all';
 export const ALL_ASSET_LIST_NAME = 'All assets';

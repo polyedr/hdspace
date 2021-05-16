@@ -12,7 +12,6 @@ import Label from './Label/Label';
 import Dropdown from './Dropdown/Dropdown';
 import Video from './Video/Video';
 import ListItem from './ListItem/ListItem';
-import MUISelectMenu from './Select/MUISelectMenu';
 import DropdownMenu from './Dropdown/DropdownMenu';
 import DropdownItem from './Dropdown/DropdownItem';
 import DivBlockRenderer from './DivBlock/DivBlock';
@@ -45,7 +44,7 @@ import {
   UnstyledRadiobutton,
 } from './Radiobutton';
 import { BootstrapSelect, MaterialSelect, UnstyledSelect } from './Select';
-import Option from './Option/Option';
+import { UnstyledOption, MaterialOption } from './Option';
 import HTMLElement from './HTMLElement/HTMLElement';
 import withUIFramework from './withUIFramework';
 
@@ -108,8 +107,11 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     material: MaterialSelect,
     not_selected: UnstyledSelect,
   }),
-  selectMenu: MUISelectMenu,
-  option: Option,
+  option: withUIFramework({
+    bootstrap: UnstyledOption,
+    material: MaterialOption,
+    not_selected: UnstyledOption,
+  }),
   map: Map,
   calendar: Calendar,
   clock: Clock,

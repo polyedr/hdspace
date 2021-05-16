@@ -1,120 +1,137 @@
-import React from 'react';
+/* eslint-disable no-undef */
+// @ts-nocheck
+import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
-import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
+import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
-const useStyles = makeComponentStyles('select', {});
+const useStyles = makeComponentStyles('select', (theme) => ({
+  component: {
+    width: '100%',
+    height: '100%',
+  },
+  isOpen: {
+    top: '58px',
+  },
+  icon: ({ element }) => ({
+    fill: element.styles.ownStyles.color || theme.palette.primary.main,
+  }),
+}));
 
-const MaterialSelect = React.forwardRef<HTMLDivElement, RendererProps>(
+const SelectComponent = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { element, isDisabled } = props;
+    const { element, isDisabled, children } = props;
+    const { isOpen } = element.parameters;
     const [className, groupClass] = element.styles.classNames;
-    const { id } = element;
-
-    const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
+    const classes = useStyles(props);
 
-    /* return (
-      <div className="input-field col s12">
-        <select
-          ref={ref}
-          id={element.id}
-          data-ls-id={element.id}
-          className={cn(
-            className,
-            groupClass,
-            classes.ownStyles,
-            isDisabled && classes.disabled,
-          )}
-          {...eventHandlers}
-          {...(isDisabled && {
-            onMouseDown: (ev) => {
-              ev.preventDefault();
-            },
-          })}
-        >
-          {children}
-        </select>
-      </div>
-    ); */
+    const [select, setSelect] = useState<any>();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    useEffect(() => {
+      setIsMenuOpen(isOpen);
+    }, [isOpen, setIsMenuOpen]);
+
+    useEffect(() => {
+      return () => {
+        if (select) {
+          select.destroy();
+        }
+      };
+    }, [select]);
+
+    useEffect(() => {
+      if (select) {
+        select.disabled = isDisabled || false;
+      }
+    }, [select, isDisabled]);
+
     return (
       <div
-        data-ls-id={id}
+        id={element.id}
+        data-ls-id={element.id}
         ref={ref}
-        className={cn(
-          'mdc-select',
-          'mdc-select--filled',
-          'demo-width-class',
-          className,
-          groupClass,
-          classes.ownStyles,
-          isDisabled && classes.disabled,
-        )}
+        className={cn(className, classes.root, groupClass, classes.ownStyles)}
         {...eventHandlers}
       >
         <div
-          className="mdc-select__anchor"
-          role="button"
-          aria-haspopup="listbox"
-          aria-expanded="false"
-          aria-labelledby="demo-label demo-selected-text"
+          ref={(dom: HTMLDivElement) => {
+            if (dom && !select) {
+              setSelect(new MDCSelect(dom));
+              setIsMenuOpen(isOpen); // hook to turn menu back on
+            }
+          }}
+          className={cn(
+            `select-${element.id}-component`,
+            'mdc-select',
+            'mdc-select--outlined',
+            classes.component,
+          )}
         >
-          <span className="mdc-select__ripple" />
-          <span id="demo-label" className="mdc-floating-label">
-            Pick a Food Group
-          </span>
-          <span className="mdc-select__selected-text-container">
-            <span
-              id="demo-selected-text"
-              className="mdc-select__selected-text"
-            />
-          </span>
-          <span className="mdc-select__dropdown-icon">
-            <svg
-              className="mdc-select__dropdown-icon-graphic"
-              viewBox="7 10 10 5"
-              focusable="false"
-            >
-              <polygon
-                className="mdc-select__dropdown-icon-inactive"
-                stroke="none"
-                fillRule="evenodd"
-                points="7 10 12 15 17 10"
-              />
-              <polygon
-                className="mdc-select__dropdown-icon-active"
-                stroke="none"
-                fillRule="evenodd"
-                points="7 15 12 10 17 15"
-              />
-            </svg>
-          </span>
-          <span className="mdc-line-ripple" />
-        </div>
-
-        <div className="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
-          <ul
-            className="mdc-list"
-            role="listbox"
-            aria-label="Food picker listbox"
+          <input type="hidden" name={element.parameters.name} />
+          <div
+            className={cn('mdc-select__anchor', isDisabled && classes.disabled)}
           >
-            <li
-              className="mdc-list-item"
-              aria-selected="false"
-              data-value="grains"
-              role="option"
+            <span className="mdc-notched-outline">
+              <span className="mdc-notched-outline__leading" />
+              <span className="mdc-notched-outline__trailing" />
+            </span>
+            <span className="mdc-select__selected-text-container">
+              <span className="mdc-select__selected-text" />
+            </span>
+            <span className="mdc-select__dropdown-icon">
+              <svg
+                className={cn(
+                  classes.icon,
+                  'mdc-select__dropdown-icon-graphic',
+                )}
+                viewBox="7 10 10 5"
+                focusable="false"
+              >
+                <polygon
+                  className="mdc-select__dropdown-icon-inactive"
+                  stroke="none"
+                  fillRule="evenodd"
+                  points="7 10 12 15 17 10"
+                />
+                <polygon
+                  className="mdc-select__dropdown-icon-active"
+                  stroke="none"
+                  fillRule="evenodd"
+                  points="7 15 12 10 17 15"
+                />
+              </svg>
+            </span>
+          </div>
+
+          <div
+            className={cn(
+              'mdc-select__menu',
+              'mdc-menu mdc-menu-surface',
+              'mdc-menu-surface--fullwidth',
+              ...(isDisabled && isMenuOpen
+                ? [
+                    'mdc-menu-surface--open',
+                    'mdc-menu-surface--is-open-below',
+                    classes.isOpen,
+                  ]
+                : []),
+            )}
+          >
+            <ul
+              className="mdc-list"
+              role="listbox"
+              aria-label={`menu-${element.id}-listbox`}
             >
-              <span className="mdc-list-item__ripple" />
-              <span className="mdc-list-item__text">
-                Bread, Cereal, Rice, and Pasta
-              </span>
-            </li>
-          </ul>
+              {children}
+            </ul>
+          </div>
         </div>
       </div>
     );
   },
 );
 
-export default MaterialSelect;
+export default SelectComponent;

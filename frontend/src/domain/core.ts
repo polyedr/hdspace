@@ -381,14 +381,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   list: ['listItems', 'isOrdered', ...listStyleControls, 'layouts'],
   listItem: [...listItemStyleControls, 'layouts'],
   image: ['image', ...imageStyleControls, 'alt', 'title', 'layouts'],
-  select: [
-    'selectValue',
-    'selectOptions',
-    ...selectStyleControls,
-    'isOpen',
-    'layouts',
-  ],
-  selectMenu: [...selectMenuStyleControls, 'layouts'],
+  select: ['selectValue', 'selectOptions', ...selectStyleControls, 'layouts'],
   option: [...optionStyleControls, 'layouts'],
   map: ['mapProps', ...mapStyleControls, 'layouts'],
   calendar: [...calendarStyleControls, 'layouts'],
@@ -397,7 +390,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'textContent',
     'dropdownItems',
     ...dropdownStyleControls,
-    'isOpen',
     'layouts',
   ],
   dropdownMenu: [...dropdownMenuStyleControls, 'layouts'],
@@ -497,12 +489,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   image: {},
   select: {
     option: {
-      min: 1,
-      max: Infinity,
-    },
-  },
-  selectMenu: {
-    selectItem: {
       min: 1,
       max: Infinity,
     },

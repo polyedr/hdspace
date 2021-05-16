@@ -26,7 +26,6 @@ const lockedAspectRatioElements: Entity[] = [
 ];
 const notDraggableElements: Entity[] = [
   'option',
-  'selectMenu',
   'listItem',
   'dropdownItem',
   'dropdownMenu',
