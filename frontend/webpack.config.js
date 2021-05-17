@@ -231,21 +231,6 @@ module.exports = ({ MODE }) => {
       // new BundleAnalyzerPlugin(),
       new CopyWebpackPlugin({
         patterns: [
-          /* {
-            from: 'src/styles/export/material/mdc.checkbox.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from: 'src/styles/export/material/mdc.radio.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from: 'src/styles/export/material/mdc.select.css',
-            to: 'styles/material',
-            toType: 'dir',
-          }, */
           {
             from: 'src/styles/export/clock.css',
             to: 'styles',
