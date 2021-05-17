@@ -8,15 +8,6 @@ import { ProjectClass, ScreenMetaData, StateElement } from '@Src/types';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
-const cssMaterialResources = [
-  /* 'mdc.checkbox.css',
-  'mdc.radio.css',
-  'mdc.form-field.css',
-  'mdc.list.css',
-  'mdc.menu-surface.css',
-  'mdc.menu.css',
-  'mdc.select.css', */
-];
 const cssCustomResources = ['clock.css', 'ripple.css'];
 const jsResources = [
   'app.js',
@@ -100,9 +91,6 @@ export const processCSS = async (
   sharedClasses: ProjectClass[],
 ) => {
   const cssResourcesPromise = Promise.all([
-    ...cssMaterialResources.map((resource) =>
-      axios.get(`/styles/material/${resource}`),
-    ),
     ...cssCustomResources.map((resource) => axios.get(`/styles/${resource}`)),
   ])
     .then((responses: AxiosResponse[]) => {
