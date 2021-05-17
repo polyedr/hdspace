@@ -189,12 +189,6 @@ const SmartContainerRenderer = React.forwardRef<
 
   const resizeRefDom = resizeRef.current;
 
-  /* useEffect(() => {
-    if (resizeRef && resizeRefDom) {
-      drag(resizeRef);
-    }
-  }, [drag, resizeRef, resizeRefDom]); */
-
   useEffect(() => {
     if (resizeRef && resizeRefDom) {
       drag(resizeRef);
