@@ -34,12 +34,12 @@ import * as PermissionsActions from '../../permissions/actions';
 import { createScreenSaga, getScreensSaga } from './screen';
 import {
   selectCurrentProject,
+  selectCurrentUIFramework,
   selectProjectById,
   selectProjectsAsArr,
   selectProjectsDataNext,
   selectProjectsSearchParameter,
 } from '../selectors/base';
-import { selectCurrentUIFramework } from '../selectors/framework';
 import {
   selectCurrentScreenId,
   selectMasterScreenId,
@@ -505,8 +505,8 @@ export const updateCurrentUIFrameworkVariablesSaga = withRequiredPermissions(
   yield put(
     Actions.updateCurrentUIFramework({
       ...uiFramework,
-      themingVariables: {
-        ...uiFramework.themingVariables,
+      themeVariables: {
+        ...uiFramework.themeVariables,
         ...action.payload,
       },
     }),

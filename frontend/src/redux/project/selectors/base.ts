@@ -1,8 +1,10 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
-import { FreeCanvasOffset } from '@Src/types';
+import { FreeCanvasOffset, UIFramework } from '@Src/types';
+import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import { makeFeatureStateSelector } from '../../../shared/redux';
 import { AppReduxState } from '../../types';
+import { selectCurrentScreen, selectMasterScreenId } from './screen';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -172,3 +174,22 @@ export const selectSidebarHost = ({ project }: AppReduxState) =>
 export function selectImportLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.importLoader;
 }
+
+export const selectCurrentUIFramework = createSelector(
+  selectCurrentProject,
+  selectCurrentScreen,
+  selectMasterScreenId,
+  (project, screen, masterScreenId) => {
+    const projectUIFramework = project.projectData.uiFramework;
+    const screenUIFramework = screen.screenData?.uiFramework;
+    const selectedFramework = {
+      ...NOT_SELECTED_FRAMEWORK,
+      ...(projectUIFramework || {}),
+      ...(screenUIFramework?.name !== projectUIFramework?.name &&
+      screen.id !== masterScreenId
+        ? screenUIFramework
+        : {}),
+    } as UIFramework;
+    return selectedFramework || NOT_SELECTED_FRAMEWORK;
+  },
+);

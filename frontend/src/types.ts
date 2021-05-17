@@ -1330,7 +1330,7 @@ export type UIFrameworkVariables = {
 };
 
 export type UIFramework = Framework & {
-  themingVariables: {
+  themeVariables: {
     [name: string]: string;
   };
 };

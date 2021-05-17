@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import { selectCurrentUIFramework } from '@Redux/project/selectors/framework';
 import { FRAMEWORK_VARIABLES } from '@Constants/frameworks/variables';
 import Scrollbar from '@Components/UI/Scrollbar';
 import { updateCurrentUIFrameworkVariables } from '@Redux/project/actions';
+import { selectCurrentUIFramework } from '@Redux/project/selectors/base';
 import VarInput from './VarInput';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -47,7 +47,7 @@ const VariablesTab: React.FC<{}> = () => {
               label={defaultVariables[varName].label}
               name={varName}
               value={
-                uiFramework.themingVariables[varName] ||
+                uiFramework.themeVariables[varName] ||
                 defaultVariables[varName].value
               }
               onDelayedChange={handleVarUpdate}

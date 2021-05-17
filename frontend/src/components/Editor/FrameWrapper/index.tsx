@@ -15,9 +15,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DndContext } from 'react-dnd';
 import { setEditorDocument } from '@Redux/project/actions';
 import theme from '@Src/styles/Theme';
-import { selectCurrentUIFramework } from '@Redux/project/selectors/framework';
 import {
   selectCurrentProjectClasses,
+  selectCurrentUIFramework,
   selectImportLoader,
 } from '@Redux/project/selectors/base';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
@@ -80,7 +80,6 @@ const CustomHead: FC = () => {
                   rel="stylesheet"
                   type="text/css"
                   href={link}
-                  className="test1"
                   {...otherParams}
                 />
               );
@@ -91,16 +90,15 @@ const CustomHead: FC = () => {
               key={key}
               type="text/javascript"
               src={link}
-              className="test2"
               {...otherParams}
             />
           ))}
-          {uiFramework.themingVariables && (
-            <style type="text/css" className="test3">
+          {uiFramework.themeVariables && (
+            <style type="text/css">
               {`:root {
-              ${Object.keys(uiFramework.themingVariables)
+              ${Object.keys(uiFramework.themeVariables)
                 .map((varName) => {
-                  return `--${varName}: ${uiFramework.themingVariables[varName]}`;
+                  return `--${varName}: ${uiFramework.themeVariables[varName]}`;
                 })
                 .join(';')}
           }`}

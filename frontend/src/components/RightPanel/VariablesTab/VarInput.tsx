@@ -22,7 +22,7 @@ const VarInput: React.FC<Props> = ({ label, name, value, onDelayedChange }) => {
   const classes = useStyles();
 
   const [varValue, handleVarValueChange] = useDebouncedInputChange(
-    value || NOT_SELECTED_FRAMEWORK.themingVariables[name] || '',
+    value || NOT_SELECTED_FRAMEWORK.themeVariables[name] || '',
     (newVarValue) => {
       onDelayedChange(name, newVarValue);
     },

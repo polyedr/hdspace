@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { FrameworkComponentSettings } from '@Src/types';
-import { selectCurrentUIFramework } from '@Redux/project/selectors/framework';
+import { selectCurrentUIFramework } from '@Redux/project/selectors/base';
 import { RendererProps } from './types';
 
 const withUIFramework = <T extends HTMLElement>(

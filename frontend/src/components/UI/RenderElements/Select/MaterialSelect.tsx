@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-// @ts-nocheck
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
+import { MDCSelect } from '@material/select';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';

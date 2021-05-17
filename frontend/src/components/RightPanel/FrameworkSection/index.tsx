@@ -15,8 +15,8 @@ import {
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { FrameworkName, UIFramework, UserProjectPermission } from '@Src/types';
-import { selectCurrentUIFramework } from '@Redux/project/selectors/framework';
 import { updateCurrentUIFramework } from '@Redux/project/actions';
+import { selectCurrentUIFramework } from '@Redux/project/selectors/base';
 
 const useStyles = makeStyles({
   details: {
@@ -85,7 +85,7 @@ const FrameworkSection = () => {
       const newUIFramework: UIFramework = {
         name: newFrameworkName,
         version: newFrameworkVersion,
-        themingVariables: {},
+        themeVariables: {},
       };
       updateFrameworkData(newUIFramework);
     },
@@ -108,7 +108,7 @@ const FrameworkSection = () => {
       const newUIFramework: UIFramework = {
         name: newFrameworkName,
         version: newVersion,
-        themingVariables: {},
+        themeVariables: {},
       };
       updateFrameworkData(newUIFramework);
     },

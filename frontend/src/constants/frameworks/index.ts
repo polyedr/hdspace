@@ -49,7 +49,7 @@ export const MATERIAL_VERSIONS: Array<FrameworkVersion> = [
 export const NOT_SELECTED_FRAMEWORK: UIFramework = {
   name: 'not_selected',
   version: null,
-  themingVariables: {},
+  themeVariables: {},
 };
 
 export const FRAMEWORKS_LIST: FrameworkSelection[] = [
