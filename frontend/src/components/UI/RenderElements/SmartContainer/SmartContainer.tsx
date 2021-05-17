@@ -149,7 +149,6 @@ const SmartContainerRenderer = React.forwardRef<
     item: {
       type: element.type,
       drop: () => {
-        console.log('DROP!!');
         if (!imgRef.current) {
           return;
         }
