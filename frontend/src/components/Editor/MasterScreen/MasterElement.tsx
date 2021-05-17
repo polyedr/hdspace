@@ -30,6 +30,7 @@ type Props = {
   elementId: string;
   parentId?: string;
   scrollRef: React.RefObject<Scrollbars>;
+  pseudoClass: string | null;
 };
 
 const useStyles = makeStyles({
@@ -51,6 +52,7 @@ const MasterElement: React.FC<Props> = (props: Props) => {
     elementId,
     parentId,
     scrollRef,
+    pseudoClass,
   } = props;
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -121,6 +123,7 @@ const MasterElement: React.FC<Props> = (props: Props) => {
               masterSourceElementId={masterSourceElementId}
               canDragAndDrop={canDragAndDrop}
               projectClasses={projectClasses}
+              pseudoClass={pseudoClass}
             />
           ) : (
             <MasterElement
@@ -134,6 +137,7 @@ const MasterElement: React.FC<Props> = (props: Props) => {
               masterSourceElementId={masterSourceElementId}
               canDragAndDrop={canDragAndDrop}
               frameWindow={frameWindow}
+              pseudoClass={pseudoClass}
             />
           )}
         </Fragment>

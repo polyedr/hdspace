@@ -81,6 +81,7 @@ export type ProjectUiState = {
   };
   editorDocument: Document | null;
   newScreenModalOpen: boolean;
+  enabledPseudoClass: string | null;
   sidebar: {
     open: boolean;
     iframe: null | HTMLIFrameElement;
@@ -695,22 +696,6 @@ export type UnbindGroupElementStyles = IAction<
   { id: string; styles: React.CSSProperties },
   ElementHistoryMeta
 >;
-
-/* export type UnbindGroupElement = IAction<
-  typeof TYPES.UNBIND_GROUP_ELEMENT,
-  { id: string },
-  ElementHistoryMeta
->;
-export type UnbindGroupInstance = IAction<
-  typeof TYPES.UNBIND_GROUP_INSTANCE,
-  { id: string },
-  ElementHistoryMeta
->;
-export type UnbindMasterGroupElement = IAction<
-  typeof TYPES.UNBIND_MASTER_ELEMENT,
-  { id: string },
-  ElementHistoryMeta
->; */
 export type UnbindMasterGroupInstance = IAction<
   typeof TYPES.UNBIND_MASTER_INSTANCE,
   { id: string },
@@ -1112,6 +1097,11 @@ export type SetSidebarIframe = IAction<
 
 export type SetSidebarHost = IAction<typeof TYPES.SET_SIDEBAR_HOST, string>;
 
+export type SetEnabledPseudoClass = IAction<
+  typeof TYPES.SET_ENABLED_PSEUDO_CLASS,
+  string | null
+>;
+
 export type Action =
   | LoadProjects
   | SetUsersSearchValue
@@ -1279,7 +1269,8 @@ export type Action =
   | SetValueImportLoader
   | SetVIAResultId
   | UpdateVIARegionLayerSuccess
-  | UpdateUISettingsParameters;
+  | UpdateUISettingsParameters
+  | SetEnabledPseudoClass;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

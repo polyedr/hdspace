@@ -82,6 +82,13 @@ export const convertElementToRequest = <
     styles: {
       ...styles,
       ownStyles: cssDecamelize(styles.ownStyles),
+      pseudoClassStyles: Object.keys(styles.pseudoClassStyles).reduce(
+        (pseudoStyles, className) => ({
+          ...pseudoStyles,
+          [className]: cssDecamelize(styles.pseudoClassStyles[className]),
+        }),
+        {},
+      ),
     },
   };
   return convertFn ? convertFn(element, serverEl) : serverEl;
@@ -128,6 +135,13 @@ export const convertStateElementToPatchRequest = (
     styles: {
       ...styles,
       ownStyles: cssDecamelize(styles.ownStyles),
+      pseudoClassStyles: Object.keys(styles.pseudoClassStyles).reduce(
+        (pseudoStyles, className) => ({
+          ...pseudoStyles,
+          [className]: cssDecamelize(styles.pseudoClassStyles[className]),
+        }),
+        {},
+      ),
     },
     shared,
   } as ServerElement<Entity>;

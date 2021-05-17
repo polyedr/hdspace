@@ -51,6 +51,26 @@ export enum ElementGroup {
   NONE = 'none',
 }
 
+export type PseudoClassStyles = {
+  hover?: React.CSSProperties;
+  focus?: React.CSSProperties;
+  focusWithin?: React.CSSProperties;
+  active?: React.CSSProperties;
+  target?: React.CSSProperties;
+  visited?: React.CSSProperties;
+  hoverVisible?: React.CSSProperties;
+};
+
+export type PseudoClassesEnabled = {
+  hover: boolean;
+  focus: boolean;
+  focusWithin: boolean;
+  active: boolean;
+  target: boolean;
+  visited: boolean;
+  hoverVisible: boolean;
+};
+
 export type FreeCanvasElementParams = {
   left?: number;
   top?: number;
@@ -91,6 +111,7 @@ export type ServerElement<
   styles: {
     classNames: string[];
     ownStyles: React.CSSProperties;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
   };
   children: Children;
   shared?: boolean;
@@ -273,7 +294,7 @@ export type LibraryElement<
   Type extends Entity,
   Children = any[],
   Params = any,
-  Styles = {}
+  OwnStyles = {}
 > = {
   id: string;
   name: string;
@@ -282,7 +303,8 @@ export type LibraryElement<
   image: string | null | undefined;
   styles: {
     classNames: string[];
-    ownStyles: Styles;
+    ownStyles: OwnStyles;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
   };
   children: Children;
   parameters: { group?: string } & Params;
@@ -707,6 +729,7 @@ export type StateElement = {
   styles: {
     classNames: string[];
     ownStyles: React.CSSProperties;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
   };
   parameters: {
     freeCanvas: FreeCanvasElementParams;

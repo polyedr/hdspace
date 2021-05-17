@@ -58,6 +58,7 @@ export const mockRootElement: StateElement = {
   styles: {
     classNames: ['root'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   parameters: {
     freeCanvas: {
@@ -81,6 +82,7 @@ export const mockStateElement: StateElement = {
   styles: {
     classNames: ['paragraph'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,

@@ -183,6 +183,7 @@ import {
   SetBlockType,
   ProcessDropTargetParams,
   ProcessDropElement,
+  SetEnabledPseudoClass,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -1635,4 +1636,11 @@ export const processDropElement = (
     dragSource,
     dropType,
   },
+});
+
+export const setEnabledPseudoClass = (
+  pseudoClass: string | null,
+): SetEnabledPseudoClass => ({
+  type: TYPES.SET_ENABLED_PSEUDO_CLASS,
+  payload: pseudoClass,
 });

@@ -33,6 +33,7 @@ export const map: MapServerElement = {
   styles: {
     classNames: ['map'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'map',
   children: [],
@@ -55,6 +56,7 @@ export const calendar: CalendarServerElement = {
   styles: {
     classNames: ['calendar'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'calendar',
   children: [],
@@ -77,6 +79,7 @@ export const clock: ClockServerElement = {
   styles: {
     classNames: ['clock'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'clock',
   children: [],

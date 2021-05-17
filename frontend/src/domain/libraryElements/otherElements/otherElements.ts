@@ -41,6 +41,7 @@ export const root: RootServerElement = {
   styles: {
     classNames: ['root'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'root',
   children: [],
@@ -59,6 +60,7 @@ export const elementsGroup: ElementsGroupServerElement = {
   styles: {
     classNames: ['group'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'Group',
   children: [],
@@ -91,6 +93,7 @@ export const makeContainer = ({
   styles: {
     classNames: ['container'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name,
   children,
@@ -115,6 +118,7 @@ export const makeGridItem = ({
   styles: {
     classNames: ['gridItem'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: [],
 });
@@ -146,6 +150,7 @@ export const makeGrid = ({
   styles: {
     classNames: ['grid'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: items,
 });
@@ -166,6 +171,7 @@ export const column: ColumnServerElement = {
   styles: {
     classNames: ['column'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: [],
 };
@@ -189,6 +195,7 @@ export const makeColumn = ({
   styles: {
     classNames: ['column'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: [],
 });
@@ -211,6 +218,7 @@ export const makeColumns = (
   styles: {
     classNames: ['columns'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: Array.from(Array(columnsCount)).map((_undefined, index) => {
     return makeColumn({ UID: `${index}`, buoyancy: index });
@@ -233,6 +241,7 @@ export const nativeColumns: NativeColumnsServerElement = {
   styles: {
     classNames: ['nativeColumns'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: [],
 };
@@ -256,6 +265,7 @@ export const makeDivBlock = ({
     styles: {
       classNames: ['divBlock'],
       ownStyles: {},
+      pseudoClassStyles: {},
     },
     name: 'divBlock',
     children: [makeParagraph({ textContent, UID: 'divBlock-0' })],
@@ -285,6 +295,7 @@ export const makeImage = ({
   styles: {
     classNames: ['image'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'image',
   children: [],
@@ -310,6 +321,7 @@ export const makeSmartHeader = ({
   styles: {
     classNames: ['smartHeader'],
     ownStyles: { ...ownStyles },
+    pseudoClassStyles: {},
   },
   name,
   children: [],
@@ -335,6 +347,7 @@ export const makeSmartFooter = ({
   styles: {
     classNames: ['smartFooter'],
     ownStyles: { ...ownStyles },
+    pseudoClassStyles: {},
   },
   name,
   children: [],
@@ -360,6 +373,7 @@ export const makeSmartForm = ({
   styles: {
     classNames: ['smartForm'],
     ownStyles: { ...ownStyles },
+    pseudoClassStyles: {},
   },
   name,
   children: [],
@@ -385,6 +399,7 @@ export const makeSmartWebpage = ({
   styles: {
     classNames: ['smartWebpage'],
     ownStyles: { ...ownStyles },
+    pseudoClassStyles: {},
   },
   name,
   children: [],
@@ -408,6 +423,7 @@ export const makeDropdownItem = ({
   styles: {
     classNames: ['dropdownItem'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'dropdownItem',
   children: [],
@@ -426,6 +442,7 @@ export const dropdownMenu: DropdownMenuServerElement = {
   styles: {
     classNames: ['dropdownMenu'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'dropdownMenu',
   children: [
@@ -452,6 +469,7 @@ export const dropdown: DropdownServerElement = {
   styles: {
     classNames: ['dropdown'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'dropdown',
   children: [dropdownMenu],
@@ -482,6 +500,7 @@ export const video: VideoServerElement = {
   styles: {
     classNames: ['video'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'video',
   children: [],
@@ -504,6 +523,7 @@ export const undefinedElement: UndefinedServerElement = {
   styles: {
     classNames: ['undefined'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'undefined',
   children: [],
@@ -530,6 +550,7 @@ export const htmlElement: HTMLServerElement = {
   styles: {
     classNames: [],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'HTML element',
   children: [],

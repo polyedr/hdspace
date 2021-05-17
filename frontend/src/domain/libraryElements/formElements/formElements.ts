@@ -41,6 +41,7 @@ export const makeButton = ({
   styles: {
     classNames: ['button'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'button',
   children: [],
@@ -70,6 +71,7 @@ export const makeTextinput = ({
   styles: {
     classNames: ['textinput'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'textinput',
   children: [],
@@ -98,6 +100,7 @@ export const checkbox: CheckboxServerElement = {
     ownStyles: {
       backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
     },
+    pseudoClassStyles: {},
   },
   name: 'checkbox',
   children: [],
@@ -125,6 +128,7 @@ export const radiobutton: RadiobuttonServerElement = {
     ownStyles: {
       backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
     },
+    pseudoClassStyles: {},
   },
   name: 'radiobutton',
   children: [],
@@ -148,6 +152,7 @@ export const makeOption = (
   styles: {
     classNames: ['option'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'option',
   children: [],
@@ -166,6 +171,7 @@ export const selectMenu: SelectMenuServerElement = {
   styles: {
     classNames: ['selectMenu'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'selectMenu',
   children: [
@@ -194,6 +200,7 @@ export const select: SelectServerElement = {
   styles: {
     classNames: ['select'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'select',
   children: [
@@ -226,6 +233,7 @@ export const makeLabel = ({
   styles: {
     classNames: ['label'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'label',
   children: [],
@@ -250,6 +258,7 @@ export const textarea: TextareaServerElement = {
   styles: {
     classNames: ['textarea'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'textarea',
   children: [],

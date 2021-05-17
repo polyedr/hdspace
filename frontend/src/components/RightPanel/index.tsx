@@ -108,6 +108,8 @@ const RightPanel: React.FC = () => {
   const { autoSwitchTabs: tabsAutoswitchEnabled } = useSelector(
     selectUserProfileDataParameters,
   );
+  // const pseudoClass = useSelector(selectEnabledPseudoClass);
+
   const [tabs, setTabs] = useState(defaultTabs);
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(
@@ -164,6 +166,7 @@ const RightPanel: React.FC = () => {
     masterCoreElId,
     masterGroupsElId,
     canEditProject,
+    tabsAutoswitchEnabled,
   ]);
 
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {

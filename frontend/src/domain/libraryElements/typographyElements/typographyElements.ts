@@ -32,6 +32,7 @@ export const hyperlink: HyperlinkServerElement = {
   styles: {
     classNames: ['hyperlink'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'hyperlink',
   children: [],
@@ -64,6 +65,7 @@ export const makeHeading = ({
       fontSize: HEADING_SETTINGS[headingType].fontSize,
       ...ownStyles,
     },
+    pseudoClassStyles: {},
   },
   name: 'heading',
   children: [],
@@ -91,6 +93,7 @@ export const makeParagraph = ({
   styles: {
     classNames: ['paragraph'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'paragraph',
   children: [],
@@ -113,6 +116,7 @@ export const ocrtext: OcrtextServerElement = {
   styles: {
     classNames: ['ocrtext'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'ocrtext',
   children: [],
@@ -135,6 +139,7 @@ export const textBlock: TextBlockServerElement = {
   styles: {
     classNames: ['textBlock'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'textBlock',
   children: [],
@@ -172,6 +177,7 @@ export const makeList = ({
   styles: {
     classNames: ['list'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'list',
   children: items,
@@ -197,6 +203,7 @@ export const makeListItem = ({
   styles: {
     classNames: ['listItem'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'listItem',
   children: [],
@@ -222,6 +229,7 @@ export const list: ListServerElement = {
   styles: {
     classNames: ['list'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'list',
   children: [

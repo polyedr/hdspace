@@ -41,10 +41,12 @@ import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { makeStyles } from '@material-ui/core/styles';
+
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Scrollbar from '../../UI/Scrollbar';
 import ControlSection from './helperComponents/ControlSection';
+import PseudoSelectorsSection from './PseudoSelectorsSection';
 
 const useStyles = makeStyles({
   propertiesTab: {
@@ -71,6 +73,7 @@ const PropertiesTab: React.FC = () => {
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
+
   const [editedStyles, setEditedStyles] = useState<React.CSSProperties | null>(
     null,
   );
@@ -365,6 +368,7 @@ const PropertiesTab: React.FC = () => {
       >
         {!isPrototypeMode && (
           <>
+            <PseudoSelectorsSection />
             {SELECTION_CONTROLS.map((controlName) => {
               if (
                 (isFreeCanvasMode && controlName === 'size') ||

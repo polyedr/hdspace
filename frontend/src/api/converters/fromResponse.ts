@@ -68,6 +68,15 @@ export const convertElementFromResponse = <
     ...getDefaultStyles(struct_type),
     ...styles,
     ownStyles: styles.ownStyles ? cssCamelize(styles.ownStyles) : {},
+    pseudoClassStyles: styles.pseudoClassStyles
+      ? Object.keys(styles.pseudoClassStyles).reduce(
+          (pseudoStyles, className) => ({
+            ...pseudoStyles,
+            [className]: cssCamelize(styles.pseudoClassStyles[className]),
+          }),
+          {},
+        )
+      : {},
   },
 });
 
