@@ -1,4 +1,3 @@
-import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import {
   ButtonServerElement,
@@ -7,7 +6,6 @@ import {
   LabelServerElement,
   RadiobuttonServerElement,
   OptionServerElement,
-  SelectMenuServerElement,
   SelectServerElement,
   TextareaServerElement,
   TextinputServerElement,
@@ -84,8 +82,8 @@ export const checkbox: CheckboxServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 13,
-      height: 13,
+      width: 24,
+      height: 24,
     },
     group: ElementGroup.FORM,
     value: '',
@@ -96,7 +94,9 @@ export const checkbox: CheckboxServerElement = {
   styles: {
     classNames: ['checkbox'],
     ownStyles: {
-      backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
+      display: 'block',
+      width: 24,
+      height: 24,
     },
   },
   name: 'checkbox',
@@ -112,8 +112,8 @@ export const radiobutton: RadiobuttonServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 13,
-      height: 13,
+      width: 24,
+      height: 24,
     },
     group: ElementGroup.FORM,
     value: '',
@@ -123,7 +123,9 @@ export const radiobutton: RadiobuttonServerElement = {
   styles: {
     classNames: ['radiobutton'],
     ownStyles: {
-      backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
+      display: 'block',
+      width: '24px',
+      height: '24px',
     },
   },
   name: 'radiobutton',
@@ -152,28 +154,6 @@ export const makeOption = (
   name: 'option',
   children: [],
 });
-
-export const selectMenu: SelectMenuServerElement = {
-  id: 'selectMenu',
-  buoyancy: 0,
-  func_type: 'selectMenu',
-  struct_type: 'selectMenu',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
-    group: ElementGroup.OTHER,
-  },
-  styles: {
-    classNames: ['selectMenu'],
-    ownStyles: {},
-  },
-  name: 'selectMenu',
-  children: [
-    makeOption('First option', 'first option'),
-    makeOption('Second option', 'second option'),
-    makeOption('Third option', 'third option'),
-  ],
-};
 
 export const select: SelectServerElement = {
   id: 'select',

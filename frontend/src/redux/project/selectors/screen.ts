@@ -69,3 +69,8 @@ export const selectMasterScreenEnabled = createSelector(
 
 export const selectNewScreenModalOpen = ({ project }: AppReduxState) =>
   project.ui.newScreenModalOpen;
+
+export const selectFreeCanvasMode = createSelector(
+  selectCurrentScreen,
+  (screen) => screen.screenData.freeCanvas,
+);

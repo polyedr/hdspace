@@ -21,7 +21,6 @@ import {
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import {
   selectCurrentProjectId,
-  selectFreeCanvasMode,
   selectScreenCreateLoader,
 } from '@Redux/project/selectors/base';
 import {
@@ -29,6 +28,7 @@ import {
   selectMasterScreenEnabled,
   selectMasterScreenId,
   selectScreensWithoutMaster,
+  selectFreeCanvasMode,
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
 import ELEMENT_IDS from '@Constants/elementIds';

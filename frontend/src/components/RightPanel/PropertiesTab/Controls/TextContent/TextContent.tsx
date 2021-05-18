@@ -1,17 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectElementById } from '@Redux/project/selectors/element';
 import { ParagraphElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
-  activeElementId,
+  element,
   updateParams,
   canEdit,
 }) => {
-  const element = useSelector(selectElementById(activeElementId));
-
   const { textContent } = element.parameters;
 
   const [state, handleChange] = useDebouncedInputChange(textContent, (value) =>

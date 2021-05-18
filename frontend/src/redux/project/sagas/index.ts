@@ -22,17 +22,15 @@ import {
   createScreenSaga,
   changeScreensOrderSaga,
   deleteScreenSaga,
-  editScreenSaga,
+  editScreenNameAndDataSaga,
   restoreScreenSaga,
   updateScreenImageSaga,
   convertFreeCanvasSaga,
 } from '@Redux/project/sagas/screen';
 import {
-  // assignUserPermissionSaga,
   getAllUsersProjectPermissionsSaga,
   getMyPermissionsForProjectSaga,
   getUsersSaga,
-  // unassignUserPermissionSaga,
   updateUserPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
@@ -86,6 +84,9 @@ import {
   getProjectSaga,
   renameProjectSaga,
   searchProjectsSaga,
+  updateCurrentUIFrameworkSaga,
+  updateCurrentUIFrameworkVariablesSaga,
+  resetCurrentUIFrameworkVariablesSaga,
   updateProjectSaga,
 } from './project';
 import { setUpSidebarSaga } from './sidebar';
@@ -369,7 +370,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.UPDATE_SCREEN_IMAGE, updateScreenImageSaga);
   yield takeLatest(TYPES.DELETE_SCREEN, deleteScreenSaga);
   yield takeEvery(TYPES.RESTORE_SCREEN, restoreScreenSaga);
-  yield takeLatest(TYPES.EDIT_SCREEN, editScreenSaga);
+  yield takeLatest(TYPES.EDIT_SCREEN_NAME_AND_DATA, editScreenNameAndDataSaga);
   yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);
 
   yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);
@@ -484,6 +485,20 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.UPLOAD_ICO_SCREEN, editIcoScreenSaga);
+  yield takeEvery(
+    TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+    updateCurrentUIFrameworkSaga,
+  );
+
+  yield takeEvery(
+    TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+    updateCurrentUIFrameworkVariablesSaga,
+  );
+
+  yield takeEvery(
+    TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
+    resetCurrentUIFrameworkVariablesSaga,
+  );
 
   yield takeLatest(
     TYPES.PROCESS_DROP_TARGET_PARAMS,

@@ -8,10 +8,12 @@ import {
   LibraryElement,
   ProfileData,
   Project,
+  Screen,
   ProjectClass,
   ServerElement,
   ServerProfileData,
   ServerProject,
+  ServerScreen,
   ServerUserData,
   StateElement,
   UserData,
@@ -176,6 +178,19 @@ export const convertProjectToPatchRequest = (
         ...cls,
       })),
     }),
+  };
+};
+
+export const convertScreenToPatchRequest = (
+  screen: Screen,
+): Omit<ServerScreen, 'id' | 'project' | 'screenscenario' | 'element'> => {
+  const { name, status, image, buoyancy, screenData } = screen;
+  return {
+    name,
+    status,
+    image,
+    buoyancy,
+    screen_data_json: JSON.stringify(screenData),
   };
 };
 

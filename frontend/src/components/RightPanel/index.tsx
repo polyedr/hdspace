@@ -26,8 +26,13 @@ import { CORE_MASTER_ELEMENTS_IDS } from '@Components/Editor/MasterScreen/coreEl
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import {
+  selectCurrentScreenId,
+  selectMasterScreenId,
+} from '@Redux/project/selectors/screen';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
+import VariablesTab from './VariablesTab';
 import AssetsSection from './Assets';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({
@@ -90,6 +95,7 @@ const tabContent: Record<RPTab, any> = {
   Elements: <ElementsTab />,
   Properties: <PropertiesTab />,
   Events: <EventsTab />,
+  Variables: <VariablesTab />,
 };
 
 const RightPanel: React.FC = () => {
@@ -105,6 +111,9 @@ const RightPanel: React.FC = () => {
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
+  const masterScreenId = useSelector(selectMasterScreenId);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
   const { autoSwitchTabs: tabsAutoswitchEnabled } = useSelector(
     selectUserProfileDataParameters,
   );
@@ -123,6 +132,9 @@ const RightPanel: React.FC = () => {
     if (!isInteractive || !canEditProject) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
     }
+    if (currentScreenId !== masterScreenId) {
+      newTabs = newTabs.filter((tab) => tab !== RPTab.Variables);
+    }
     if (
       !isFertile ||
       [masterCoreElId, masterGroupsElId, ...CORE_MASTER_ELEMENTS_IDS].includes(
@@ -138,8 +150,10 @@ const RightPanel: React.FC = () => {
     activeElement.id,
     activeElement.type,
     canEditProject,
+    currentScreenId,
     masterCoreElId,
     masterGroupsElId,
+    masterScreenId,
   ]);
 
   useEffect(() => {
@@ -164,6 +178,7 @@ const RightPanel: React.FC = () => {
     masterCoreElId,
     masterGroupsElId,
     canEditProject,
+    tabsAutoswitchEnabled,
   ]);
 
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {
@@ -172,26 +187,24 @@ const RightPanel: React.FC = () => {
 
   return (
     <div className={classes.root} id={ELEMENT_IDS.rightPanel}>
-      <>
-        <Tabs
-          value={activeTabIndex}
-          onChange={handleChange}
-          classes={tabsClasses}
-          variant="fullWidth"
-        >
-          {tabs.map((tab) => (
-            <Tab key={tab} classes={tabClasses} label={tab} />
-          ))}
-        </Tabs>
+      <Tabs
+        value={activeTabIndex}
+        onChange={handleChange}
+        classes={tabsClasses}
+        variant="fullWidth"
+      >
+        {tabs.map((tab) => (
+          <Tab key={tab} classes={tabClasses} label={tab} />
+        ))}
+      </Tabs>
 
-        {tabs.map((tab, i) => {
-          return (
-            <TabPanel index={i} value={activeTabIndex} key={tab}>
-              {tabContent[tab]}
-            </TabPanel>
-          );
-        })}
-      </>
+      {tabs.map((tab, i) => {
+        return (
+          <TabPanel index={i} value={activeTabIndex} key={tab}>
+            {tabContent[tab]}
+          </TabPanel>
+        );
+      })}
       <AssetsSection />
     </div>
   );

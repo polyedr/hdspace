@@ -20,8 +20,8 @@ import {
 } from '@Utils/debounceHooks';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import StylesHeader from '../../helperComponents/StylesHeader';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -51,7 +51,6 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 };
 
 const BorderBlock: React.FC<Props> = ({
-  activeElementId,
   updateStyles,
   removeStyles,
   borderWidth,
@@ -59,6 +58,8 @@ const BorderBlock: React.FC<Props> = ({
   borderRadius = 'px',
   masterScreenEnabled,
   canEdit,
+  element,
+  editableStyles,
 }) => {
   const classes = useStyles();
   const borderRadiusUnits = useMemo(
@@ -128,10 +129,11 @@ const BorderBlock: React.FC<Props> = ({
   return (
     <div>
       {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Border"
+        <RemoveStyles
           onClick={removeStyles}
-          cssPropertiesNames={['borderColor', 'borderWidth', 'borderRadius']}
+          propsToRemove={['borderColor', 'borderWidth', 'borderRadius']}
+          type={element.type}
+          editableStyles={editableStyles}
         />
       )}
 
@@ -176,7 +178,7 @@ const BorderBlock: React.FC<Props> = ({
 
       <ColorSettings
         currentColor={borderColorValue as string}
-        activeElementId={activeElementId}
+        activeElementId={element.id}
         onChange={handleBorderColorChange as (newBorderColor: string) => void}
         disabled={!canEdit}
       />

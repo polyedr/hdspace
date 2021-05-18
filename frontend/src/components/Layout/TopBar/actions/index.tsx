@@ -4,11 +4,11 @@ import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CircularProgress, IconButton } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
+import { selectUpdateScreenImageLoader } from '@Redux/project/selectors/base';
 import {
+  selectCurrentScreen,
   selectFreeCanvasMode,
-  selectUpdateScreenImageLoader,
-} from '@Redux/project/selectors/base';
-import { selectCurrentScreen } from '@Redux/project/selectors/screen';
+} from '@Redux/project/selectors/screen';
 import { updateScreenImage } from '@Redux/project/actions';
 
 import exportHTML from '@Src/export/app';
@@ -35,14 +35,14 @@ const useStyles = makeStyles(({ palette }) => ({
 const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { id, name, screen_data_json } = useSelector(selectCurrentScreen);
+  const { id, name, screenData } = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
 
   const handleSaveScreen = () => dispatch(updateScreenImage(id));
 
   const handleExportScreen = () => {
-    exportHTML(name, screen_data_json);
+    exportHTML(name, screenData.meta);
   };
 
   return (

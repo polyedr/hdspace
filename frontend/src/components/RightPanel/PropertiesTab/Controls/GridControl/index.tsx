@@ -23,7 +23,7 @@ type Props = {
 
 const GridControl: FC<
   Props & PropertiesChangeProps<LibraryElement<Entity>>
-> = ({ gridTemplateColumns, updateStyles, activeElementId, canEdit }) => {
+> = ({ gridTemplateColumns, updateStyles, element, canEdit }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -52,7 +52,7 @@ const GridControl: FC<
             childType: 'gridItem',
             parameters: {},
           }),
-          activeElementId,
+          element.id,
           { screenId },
         ),
       );

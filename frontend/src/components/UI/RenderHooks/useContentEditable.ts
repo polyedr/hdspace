@@ -4,22 +4,22 @@ import { useSelector, useDispatch } from 'react-redux';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { useDebouncedCallback } from 'use-debounce';
-import { DefaultEventHandlers } from '../RenderElements/types';
+import { EventHandlers } from '../RenderElements/types';
 
 export type ContentEditableProps = {
   contentEditable: boolean;
   tabIndex?: number;
 };
 
-export type ContentEditableConfig = {
+export type ContentEditableConfig<T extends HTMLElement> = {
   props: ContentEditableProps;
-  events: DefaultEventHandlers;
+  events: EventHandlers<T>;
 };
 
-const useContentEditable = (
+const useContentEditable = <T extends HTMLElement>(
   elementId: string,
   textContent: string,
-): ContentEditableConfig => {
+): ContentEditableConfig<T> => {
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
   const [contentEditable, setContentEditable] = useState<boolean>(false);

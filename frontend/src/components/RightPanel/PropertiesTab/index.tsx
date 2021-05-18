@@ -9,10 +9,7 @@ import {
   selectSelectedElements,
   selectSelectedElementsIds,
 } from '@Redux/project/selectors/element';
-import {
-  selectEditableStyles,
-  selectFreeCanvasMode,
-} from '@Redux/project/selectors/base';
+import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import {
@@ -35,6 +32,7 @@ import { enqueueSnackbar } from '@Redux/notification/actions';
 import { ALL_ELEMENTS_INDEX, UNIQUE_CONTROLS } from '@Constants/defaultParams';
 import {
   selectCurrentScreenId,
+  selectFreeCanvasMode,
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
 import CONTROLS from '@Constants/controls';
@@ -351,7 +349,10 @@ const PropertiesTab: React.FC = () => {
     [dispatch, activeElement.id, currentScreenId],
   );
 
-  if ([masterCoreElementId, masterGroupsElementId].includes(activeElement.id)) {
+  if (
+    !activeElement ||
+    [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
+  ) {
     return null;
   }
 
@@ -384,11 +385,13 @@ const PropertiesTab: React.FC = () => {
                     {...getControlStyles(controlName, currentEditableStyles)}
                     canEdit={canEdit}
                     activeElementId={activeElement.id}
+                    element={activeElement}
                     removeStyles={!masterScreenEnabled && removeStyles}
                     updateStyles={updateStyles}
                     replaceStyles={replaceStyles}
                     updateParams={!masterScreenEnabled && updateParams}
                     masterScreenEnabled={masterScreenEnabled}
+                    editableStyles={editableStyles}
                   />
                 </ControlSection>
               );

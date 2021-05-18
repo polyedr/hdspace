@@ -16,6 +16,7 @@ import { selectIsLeftPanelMinimized } from '@Redux/user/selectors';
 import { setBordersEnabled } from '@Redux/project/actions';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { IconButton } from '@material-ui/core';
+import FrameworkSection from '@Components/RightPanel/FrameworkSection';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
@@ -119,7 +120,7 @@ const LeftPanel: React.FC = () => {
           ) : (
             <div>
               {!viaMode && <Screens />}
-
+              <FrameworkSection />
               {viaMode ? <VIANavigator /> : <Navigator />}
             </div>
           )}

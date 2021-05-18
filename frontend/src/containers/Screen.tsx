@@ -104,7 +104,6 @@ const Screen: React.FC<Props> = ({ screenId }) => {
       {viaModeEnabled ? (
         <>
           <VIA />
-
           <VIARightPanel />
         </>
       ) : (

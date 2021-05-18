@@ -4,7 +4,7 @@ import { StyledTextField } from '@Components/styledComponents';
 import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
-import StylesHeader from '../../helperComponents/StylesHeader';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 type Props = PropertiesChangeProps<ContainerElement> & {
   flexGrow?: React.CSSProperties['flexGrow'];
@@ -14,14 +14,15 @@ type Props = PropertiesChangeProps<ContainerElement> & {
 const FlexGrow: React.FC<Props> = ({
   updateStyles,
   removeStyles,
-  activeElementId,
+  element,
+  editableStyles,
   flexGrow = 0,
   masterScreenEnabled,
   canEdit,
 }) => {
   const editorDocument = useSelector(selectEditorDocument);
 
-  const el = editorDocument?.getElementById(activeElementId);
+  const el = editorDocument?.getElementById(element.id);
   const parentStyles = el?.parentElement && getComputedStyle(el.parentElement);
   const isFlexItem = parentStyles?.display === 'flex';
 
@@ -35,10 +36,11 @@ const FlexGrow: React.FC<Props> = ({
   return isFlexItem ? (
     <div>
       {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Flex Grow"
+        <RemoveStyles
           onClick={removeStyles}
-          cssPropertiesNames={['flexGrow']}
+          propsToRemove={['flexGrow']}
+          type={element.type}
+          editableStyles={editableStyles}
         />
       )}
 

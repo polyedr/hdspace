@@ -3,11 +3,12 @@ import { useSelector } from 'react-redux';
 import {
   selectLayout,
   selectScreenRotated,
-  selectFreeCanvasMode,
 } from '@Redux/project/selectors/base';
-import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
+import {
+  selectMasterScreenEnabled,
+  selectFreeCanvasMode,
+} from '@Redux/project/selectors/screen';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
@@ -18,6 +19,7 @@ import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
+import { DOMHandler } from './DOMHandler';
 
 const useStyles = makeStyles({
   workspace: {
@@ -68,14 +70,9 @@ const Workspace: React.FC<Props> = () => {
 
   const classes = useStyles(rotated);
   const ref = useRef<HTMLDivElement | null>(null);
-  const scrollRef = useRef<Scrollbars>(null);
+  const scrollRef = useRef<Scrollbars | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
-
-  useGlobalDropTarget(
-    ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
-    ref,
-  );
 
   return (
     <div className={classes.workspace} ref={ref}>
@@ -84,7 +81,13 @@ const Workspace: React.FC<Props> = () => {
           <FrameWrapper className={classes[format]}>
             <EditorViewport>
               <Scrollbar
-                ref={scrollRef}
+                ref={(scrollbars: any) => {
+                  if (!scrollbars) {
+                    return;
+                  }
+                  scrollRef.current = scrollbars;
+                  DOMHandler.INSTANCE.watch(scrollbars.view);
+                }}
                 autoHeightMin="100%"
                 onScroll={({ srcElement }) => {
                   setScrollLeft(srcElement.scrollLeft);

@@ -5,6 +5,26 @@ import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 
+type ScreenBase = {
+  id: number;
+  name: string;
+  status: string; // compare with entity on backend!
+  project: number;
+  image: string | null;
+  screenscenario: number[];
+  buoyancy: number;
+  element: string;
+};
+
+type ProjectBase = {
+  id: number;
+  name: string;
+  status: string;
+  projectLoader: boolean;
+  created: Date;
+  updated: Date;
+};
+
 export type PropertyName = keyof React.CSSProperties;
 
 export type Normalized<T extends { id: string | number }> = {
@@ -178,10 +198,6 @@ export type SelectServerElement = ServerElement<
   OptionServerElement[],
   SelectParameters
 >;
-export type SelectMenuServerElement = ServerElement<
-  'selectMenu',
-  OptionServerElement[]
->;
 export type OptionServerElement = ServerElement<'option', [], OptionParameters>;
 export type TextareaServerElement = ServerElement<
   'textarea',
@@ -342,7 +358,7 @@ export type RadiobuttonElement = LibraryElement<
 >;
 export type SelectElement = LibraryElement<
   'select',
-  SelectMenuElement[],
+  OptionElement[],
   SelectParameters
 >;
 
@@ -356,7 +372,6 @@ export type HTMLLibraryElement = LibraryElement<
   [],
   HTMLElementParameters
 >;
-export type SelectMenuElement = LibraryElement<'selectMenu', OptionElement[]>;
 export type OptionElement = LibraryElement<'option', [], OptionParameters>;
 export type TextareaElement = LibraryElement<
   'textarea',
@@ -423,7 +438,6 @@ export type LibraryElementUnion =
   | CheckboxElement
   | RadiobuttonElement
   | SelectElement
-  | SelectMenuElement
   | OptionElement
   | TextareaElement
   | HeadingElement
@@ -640,7 +654,7 @@ export type ServerProjectWithScreens = {
   id: number;
   name: string;
   status: string;
-  projectscreen: Screen[];
+  projectscreen: ServerScreen[];
   created: string;
   updated: string;
   user: ServerUserData;
@@ -660,6 +674,10 @@ export type ServerProject = {
   project_data_text: string;
 };
 
+export type ServerScreen = ScreenBase & {
+  screen_data_json: string;
+};
+
 export type ProjectClass = {
   className: string;
   supportedElement: Entity;
@@ -668,30 +686,17 @@ export type ProjectClass = {
 
 export type ProjectData = {
   classes: ProjectClass[];
+  uiFramework: UIFramework;
 };
 
-export type Project = {
-  id: number;
-  name: string;
-  status: string;
+export type Project = ProjectBase & {
   projectscreen: number[];
-  projectLoader: boolean;
-  created: Date;
-  updated: Date;
   projectData: ProjectData;
   user: UserData;
 };
 
-export type ProjectWithScreens = {
-  id: number;
-  name: string;
-  status: string;
-  projectLoader: boolean;
-  created: Date;
-  updated: Date;
-  projectData: {
-    classes: ProjectClass[];
-  };
+export type ProjectWithScreens = ProjectBase & {
+  projectData: ProjectData;
   projectscreen: Screen[];
   user: UserData;
 };
@@ -833,17 +838,31 @@ export interface ScenarioItem {
   styles: React.CSSProperties;
 }
 
-export interface Screen {
-  id: number;
-  name: string;
-  status: string; // compare with entity on backend!
-  project: number;
-  image: string | null;
-  screenscenario: number[];
-  buoyancy: number;
-  element: string;
-  screen_data_json: any;
-}
+export type ScreenMetaData = {
+  title: string;
+  description: string;
+  keywords: string;
+  viewport: string;
+  author: string;
+  refresh: string;
+  faviconUrl: string;
+};
+
+export type ScreenData = {
+  meta?: ScreenMetaData;
+  nnResult?: { [key: string]: VIAFile };
+  uiFramework: UIFramework;
+  freeCanvas: boolean;
+};
+
+export type EditScreenData = {
+  name?: string;
+  data?: Partial<ScreenData>;
+};
+
+export type Screen = ScreenBase & {
+  screenData: ScreenData;
+};
 
 export type UploadedImageInfo = {
   imageURL: string;
@@ -1037,13 +1056,14 @@ export type SyntheticElement<T> = {
 export type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
-  activeElementId: string;
+  element: StateElement;
   removeStyles(cssPropertiesNames: string[]): void;
   updateStyles(payload: React.CSSProperties): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
+  replaceStyles(payload: React.CSSProperties): void;
   masterScreenEnabled?: boolean;
   canEdit: boolean;
-  replaceStyles(payload: React.CSSProperties): void;
+  editableStyles: string;
 };
 
 export type ActionType = 'external-link' | 'internal-link' | 'button';
@@ -1086,7 +1106,6 @@ export type StyleProps = {
 };
 
 export type ChildrenElements = {
-  selectMenu: SelectMenuServerElement;
   option: OptionServerElement;
   listItem: ListItemServerElement;
   dropdownMenu: DropdownMenuServerElement;
@@ -1171,6 +1190,7 @@ export enum RPTab {
   Properties = 'Properties',
   Elements = 'Elements',
   Events = 'Events',
+  Variables = 'Variables',
 }
 
 export enum Layout {
@@ -1270,6 +1290,18 @@ export type VIAFile = {
   file_attributes: Record<string, any>;
 };
 
+export type IFrameMessage = {
+  type: string;
+  payload: any;
+};
+
+export type FrameworkLink = {
+  key: string;
+  link: string;
+  crossOrigin?: string;
+  integrity?: string;
+};
+
 export type ScreenMeta = {
   description: string;
   keywords: string;
@@ -1280,9 +1312,40 @@ export type ScreenMeta = {
   faviconUrl: string;
 };
 
-export type ScreenInfo = ScreenMeta & {
+export type FrameworkName = 'bootstrap' | 'material' | 'not_selected';
+
+export type FrameworkVersion = {
   name: string;
+  styleSheetsData: FrameworkLink[];
+  scriptsData: FrameworkLink[];
 };
+
+export type Framework = {
+  name: FrameworkName;
+  version: FrameworkVersion | null;
+};
+
+export type UIFrameworkVariables = {
+  [name: string]: { label: string; value: string };
+};
+
+export type UIFramework = Framework & {
+  themeVariables: {
+    [name: string]: string;
+  };
+};
+
+export type FrameworkSelection = {
+  name: string;
+  label: string;
+  versions?: FrameworkVersion[];
+};
+
+export type ElementProps = {
+  uiFramework: UIFramework;
+};
+
+export type FrameworkComponentSettings = Record<FrameworkName, React.FC<any>>;
 
 export type FileToUpload = {
   file: File;

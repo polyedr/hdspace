@@ -68,7 +68,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           (projectClass: ProjectClass) =>
             projectClass.className === parent.type,
         );
-  }, []);
+  }, [parent, projectClasses]);
 
   const ref = useRef<HTMLElement>(null) as React.MutableRefObject<HTMLElement>;
 

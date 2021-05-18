@@ -55,7 +55,6 @@ import {
   checkbox,
   radiobutton,
   select,
-  selectMenu,
   makeOption,
   makeLabel,
 } from './formElements/formElements';
@@ -102,7 +101,6 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   checkbox,
   radiobutton,
   select,
-  selectMenu,
   option: makeOption('', ''),
   label: makeLabel(),
   textarea,

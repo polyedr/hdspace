@@ -28,9 +28,10 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const SelectOptions: React.FC<PropertiesChangeProps<OptionElement>> = ({
   updateParams,
-  activeElementId,
+  element,
   canEdit,
 }) => {
+  const { id: activeElementId } = element;
   const options = useSelector(selectActiveItemChildren('option'));
   const dispatch = useDispatch();
   const classes = useStyles();

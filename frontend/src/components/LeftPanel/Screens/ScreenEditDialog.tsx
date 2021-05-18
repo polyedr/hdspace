@@ -49,7 +49,6 @@ const ScreenEditDialog: React.FC<Props> = ({
   titleDialog,
   onSubmit,
   onClose,
-  fieldName = '',
   initialValueName,
   initialValueTags: {
     title,
@@ -97,7 +96,7 @@ const ScreenEditDialog: React.FC<Props> = ({
               {!withoutField && (
                 <>
                   <Field
-                    name={fieldName}
+                    name="name"
                     initialValue={initialValueName}
                     validate={validation}
                   >

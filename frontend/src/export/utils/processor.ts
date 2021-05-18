@@ -4,19 +4,10 @@ import pretty from 'pretty';
 import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
 import { toClassName } from '@Utils/stringHelper';
-import { ProjectClass, ScreenMeta, StateElement } from '@Src/types';
+import { ProjectClass, ScreenMetaData, StateElement } from '@Src/types';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
-const cssMaterialResources = [
-  'mdc.checkbox.css',
-  'mdc.radio.css',
-  'mdc.form-field.css',
-  'mdc.list.css',
-  'mdc.menu-surface.css',
-  'mdc.menu.css',
-  'mdc.select.css',
-];
 const cssCustomResources = ['clock.css', 'ripple.css'];
 const jsResources = [
   'app.js',
@@ -100,9 +91,6 @@ export const processCSS = async (
   sharedClasses: ProjectClass[],
 ) => {
   const cssResourcesPromise = Promise.all([
-    ...cssMaterialResources.map((resource) =>
-      axios.get(`/styles/material/${resource}`),
-    ),
     ...cssCustomResources.map((resource) => axios.get(`/styles/${resource}`)),
   ])
     .then((responses: AxiosResponse[]) => {
@@ -165,11 +153,14 @@ export const processJS = async (jsFolder: JSZip | null) => {
 };
 
 export const processIco = async (
-  urlIco: string,
+  urlIco: string | null,
   assetsFolder: JSZip | null,
 ) => {
+  if (!urlIco) {
+    return Promise.resolve();
+  }
   const assetName = 'favicon.ico';
-  await axios
+  return axios
     .get(urlIco, {
       responseType: 'blob',
     })
@@ -190,8 +181,8 @@ export const processIco = async (
 export const getHtmlFromTemplate = (
   screenName: string,
   body: string,
-  meta: ScreenMeta,
   mapComponents: StateElement[],
+  meta?: ScreenMetaData,
 ) =>
   pretty(`
 <!DOCTYPE html>
@@ -199,15 +190,17 @@ export const getHtmlFromTemplate = (
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    ${Object.entries(meta)
-      .map(([key, value]) => {
-        if (value && key !== 'title' && key !== 'faviconUrl') {
-          return `<meta name="${key}" content="${value}"/>`;
-        }
-        return '';
-      })
-      .join('\n')}
-
+    ${
+      meta &&
+      Object.entries(meta)
+        .map(([key, value]) => {
+          if (value && key !== 'title' && key !== 'faviconUrl') {
+            return `<meta name="${key}" content="${value}"/>`;
+          }
+          return '';
+        })
+        .join('\n')
+    }
     <meta
       name="google-site-verification"
       content="m2BjG5J2rJf552uAF0lgzMClJyuz0N-tjQ5kh5yewOo"
@@ -221,13 +214,6 @@ export const getHtmlFromTemplate = (
     ${getFontsLink('Roboto Mono', 'Roboto Condensed', 'Source Sans Pro')}
     <link rel="stylesheet" type="text/css" href="css/entities.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.checkbox.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.radio.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.form-field.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.list.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.menu-surface.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.menu.css" />
-    <link rel="stylesheet" type="text/css" href="css/mdc.select.css" />
     <link rel="stylesheet" type="text/css" href="css/clock.css" />
     <link rel="stylesheet" type="text/css" href="css/ripple.css" />
     <link rel="stylesheet" type="text/css" href="css/shared.css" />
@@ -243,7 +229,7 @@ export const getHtmlFromTemplate = (
       }" defer></script>`;
     })}
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
-    <title>${!meta.title ? screenName : meta.title}</title>
+    <title>${meta?.title || screenName}</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   </head>
   <body>

@@ -27,7 +27,6 @@ import {
   selectSelectedAssetListId,
   selectAssetListById,
 } from '../selectors/asset';
-import { editScreen } from '../actions';
 import { selectScreenByIdWrapper } from '../selectors/screen';
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
@@ -429,10 +428,14 @@ export const editIcoScreenSaga = withRequiredPermissions(
 
     if (file === null) {
       yield put(
-        editScreen(project, id, {
-          ...screenInfo.screen_data_json,
+        Actions.editScreenNameAndData(project, id, {
           name: screenInfo.name,
-          faviconUrl: undefined,
+          data: {
+            meta: {
+              ...screenInfo.meta,
+              faviconUrl: undefined,
+            },
+          },
         }),
       );
     } else {
@@ -443,10 +446,14 @@ export const editIcoScreenSaga = withRequiredPermissions(
       });
 
       yield put(
-        editScreen(project, id, {
-          ...screenInfo.screen_data_json,
+        Actions.editScreenNameAndData(project, id, {
           name: screenInfo.name,
-          faviconUrl: assetInstance.image,
+          data: {
+            meta: {
+              ...screenInfo.meta,
+              faviconUrl: assetInstance.image,
+            },
+          },
         }),
       );
     }

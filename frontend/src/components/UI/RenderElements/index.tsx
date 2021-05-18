@@ -12,7 +12,6 @@ import Label from './Label/Label';
 import Dropdown from './Dropdown/Dropdown';
 import Video from './Video/Video';
 import ListItem from './ListItem/ListItem';
-import MUISelectMenu from './MUISelect/MUISelectMenu';
 import DropdownMenu from './Dropdown/DropdownMenu';
 import DropdownItem from './Dropdown/DropdownItem';
 import DivBlockRenderer from './DivBlock/DivBlock';
@@ -27,14 +26,27 @@ import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
 import GridItem from './Grid/GridItem';
 import ElementsGroup from './ElementsGroup/ElementsGroup';
-import Button from './Button/Button';
-import Input from './Input/Input';
-import Textarea from './Textarea/Textarea';
-import Checkbox from './Checkbox/Checkbox';
-import Radiobutton from './Radiobutton/Radiobutton';
-import Select from './Select/Select';
-import Option from './Option/Option';
+import { BootstrapButton, MaterialButton, UnstyledButton } from './Button';
+import { BootstrapInput, MaterialInput, UnstyledInput } from './Input';
+import {
+  BootstrapTextarea,
+  MaterialTextarea,
+  UnstyledTextarea,
+} from './Textarea';
+import {
+  BootstrapCheckbox,
+  MaterialCheckbox,
+  UnstyledCheckbox,
+} from './Checkbox';
+import {
+  BootstrapRadiobutton,
+  MaterialRadiobutton,
+  UnstyledRadiobutton,
+} from './Radiobutton';
+import { BootstrapSelect, MaterialSelect, UnstyledSelect } from './Select';
+import { UnstyledOption, MaterialOption } from './Option';
 import HTMLElement from './HTMLElement/HTMLElement';
+import withUIFramework from './withUIFramework';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -47,12 +59,36 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   grid: Grid,
   columns: Columns,
   column: Column,
-  button: Button,
-  input: Input,
-  textinput: Input,
-  radiobutton: Radiobutton,
-  checkbox: Checkbox,
-  textarea: Textarea,
+  button: withUIFramework({
+    bootstrap: BootstrapButton,
+    material: MaterialButton,
+    not_selected: UnstyledButton,
+  }),
+  input: withUIFramework({
+    bootstrap: BootstrapInput,
+    material: MaterialInput,
+    not_selected: UnstyledInput,
+  }),
+  textinput: withUIFramework({
+    bootstrap: BootstrapInput,
+    material: MaterialInput,
+    not_selected: UnstyledInput,
+  }),
+  radiobutton: withUIFramework({
+    bootstrap: BootstrapRadiobutton,
+    material: MaterialRadiobutton,
+    not_selected: UnstyledRadiobutton,
+  }),
+  checkbox: withUIFramework({
+    bootstrap: BootstrapCheckbox,
+    material: MaterialCheckbox,
+    not_selected: UnstyledCheckbox,
+  }),
+  textarea: withUIFramework({
+    bootstrap: BootstrapTextarea,
+    material: MaterialTextarea,
+    not_selected: UnstyledTextarea,
+  }),
   heading: Heading,
   paragraph: Paragraph,
   ocrtext: Paragraph,
@@ -66,9 +102,16 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   smartFooter: withSmartContainer(NNBlockType.FOOTER),
   smartForm: withSmartContainer(NNBlockType.FORM),
   smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
-  select: Select,
-  selectMenu: MUISelectMenu,
-  option: Option,
+  select: withUIFramework({
+    bootstrap: BootstrapSelect,
+    material: MaterialSelect,
+    not_selected: UnstyledSelect,
+  }),
+  option: withUIFramework({
+    bootstrap: UnstyledOption,
+    material: MaterialOption,
+    not_selected: UnstyledOption,
+  }),
   map: Map,
   calendar: Calendar,
   clock: Clock,

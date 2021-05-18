@@ -26,10 +26,11 @@ import {
   StateElementsToAdd,
   VIARegion,
   UserData,
-  ScreenInfo,
+  EditScreenData,
   ProfileDataUIParameters,
   VIAFile,
   FileToUpload,
+  UIFramework,
   ElementData,
 } from '@Src/types';
 import { XYCoord } from 'react-dnd';
@@ -65,7 +66,6 @@ import {
   RemoveAsset,
   RestoreAsset,
   RenameProject,
-  EditScreen,
   ReplaceElementStyles,
   ResetProjectState,
   RestoreElement,
@@ -173,6 +173,7 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
+  EditScreenNameAndData,
   CreateVIARegion,
   DeleteVIARegion,
   RestoreVIARegion,
@@ -181,6 +182,7 @@ import {
   SetVIAResultId,
   SetVIAData,
   SetBlockType,
+  UpdateCurrentUIFramework,
   ProcessDropTargetParams,
   ProcessDropElement,
 } from '../types';
@@ -256,6 +258,24 @@ export const updateProject = (
   type: TYPES.UPDATE_PROJECT,
   payload: { project },
   meta,
+});
+
+export const updateCurrentUIFramework = (
+  uiFramework: UIFramework,
+): UpdateCurrentUIFramework => ({
+  type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+  payload: { uiFramework },
+});
+
+export const updateCurrentUIFrameworkVariables = (variables: {
+  [name: string]: string;
+}) => ({
+  type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+  payload: variables,
+});
+
+export const resetCurrentUIFrameworkVariables = () => ({
+  type: TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
 });
 
 export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
@@ -342,16 +362,16 @@ export const restoreScreen = (
   meta,
 });
 
-export const editScreen = (
+export const editScreenNameAndData = (
   projectID: number,
   screenID: number,
-  screenInfo: ScreenInfo,
-): EditScreen => ({
-  type: TYPES.EDIT_SCREEN,
+  editData: EditScreenData,
+): EditScreenNameAndData => ({
+  type: TYPES.EDIT_SCREEN_NAME_AND_DATA,
   payload: {
     projectID,
     screenID,
-    screenInfo,
+    editData,
   },
 });
 

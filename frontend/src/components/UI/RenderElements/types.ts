@@ -7,6 +7,6 @@ export type RendererProps = {
   children?: ReactElement[];
 };
 
-export type DefaultEventHandlers = {
-  [eventName: string]: (event: React.SyntheticEvent<HTMLElement>) => void;
+export type EventHandlers<T extends HTMLElement> = {
+  [eventName: string]: (event: React.SyntheticEvent<T>) => void;
 };

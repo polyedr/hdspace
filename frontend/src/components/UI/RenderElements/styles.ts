@@ -29,11 +29,10 @@ export const makeComponentStyles: any = (
         getComputedStyle(props.element.styles.ownStyles, stylesToOmit),
 
       disabled: {
-        color: '#000',
         cursor: 'default',
         transition: 'none',
         '& > *': {
-          pointerEvents: 'none',
+          pointerEvents: 'none !important',
         },
       },
       ...(style instanceof Function ? style(theme) : style),
