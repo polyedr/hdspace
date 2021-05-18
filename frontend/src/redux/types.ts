@@ -460,8 +460,12 @@ export type UpdateMultipleElementsStyles = IAction<
   {
     ids: string[];
     styles: { [id: string]: React.CSSProperties };
-    type?: 'delete';
   },
+  ElementHistoryMeta
+>;
+export type ReplaceMultipleElementsStyles = IAction<
+  typeof TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
+  { ids: string[]; styles: { [id: string]: React.CSSProperties } },
   ElementHistoryMeta
 >;
 export type RemoveMultipleElementsStyles = IAction<
@@ -1231,6 +1235,7 @@ export type Action =
   | RemoveSelectedElement
   | SetSelectedElements
   | UpdateMultipleElementsStyles
+  | ReplaceMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | UploadAsset
   | UploadElementAsset

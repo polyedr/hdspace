@@ -26,6 +26,7 @@ import {
   removeElementStyles,
   removeMultipleElementsStyles,
   removeSharedStyles,
+  replaceMultipleElementsStyles,
   unbindGroupElementStyles,
   updateElementParameters,
   updateMultipleElementsStyles,
@@ -198,13 +199,12 @@ const PropertiesTab: React.FC = () => {
         if (isGroupSource) {
           const groupElementsIds = activeElement.parameters.groupElements;
           dispatch(
-            updateMultipleElementsStyles(
+            replaceMultipleElementsStyles(
               [activeElement.id, ...groupElementsIds],
               {
                 [ALL_ELEMENTS_INDEX]: styles,
               },
               { screenId: currentScreenId },
-              'delete',
             ),
           );
         } else {
@@ -224,13 +224,12 @@ const PropertiesTab: React.FC = () => {
         handleOpenRemovalConfirmModal(styles);
       } else if (editableStyles === 'ownStyles') {
         dispatch(
-          updateMultipleElementsStyles(
+          replaceMultipleElementsStyles(
             [activeElement.id],
             {
               [ALL_ELEMENTS_INDEX]: styles,
             },
             { screenId: currentScreenId },
-            'delete',
           ),
         );
       } else {

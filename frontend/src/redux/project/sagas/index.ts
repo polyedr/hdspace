@@ -62,6 +62,7 @@ import {
   replaceElementParametersSaga,
   processDropTargetParamsSaga,
   processDropElementSaga,
+  replaceMultipleElementsStylesSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
@@ -383,6 +384,10 @@ export default function* projectSaga() {
   yield takeLatest(
     TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
     updateMultipleElementsStylesSaga,
+  );
+  yield takeLatest(
+    TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
+    replaceMultipleElementsStylesSaga,
   );
   yield takeLatest(TYPES.REPLACE_ELEMENT_STYLES, replaceElementStylesSaga);
   yield takeLatest(TYPES.COPY_ELEMENT_STYLES, copyElementStylesSaga);

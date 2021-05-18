@@ -184,6 +184,7 @@ import {
   ProcessDropTargetParams,
   ProcessDropElement,
   SetEnabledPseudoClass,
+  ReplaceMultipleElementsStyles,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -654,10 +655,24 @@ export const updateMultipleElementsStyles = (
     [id: string]: React.CSSProperties;
   },
   meta: ElementHistoryMeta,
-  type?: 'delete',
 ): UpdateMultipleElementsStyles => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
-  payload: { ids, styles, type },
+  payload: { ids, styles },
+  meta,
+});
+
+export const replaceMultipleElementsStyles = (
+  ids: string[],
+  styles: {
+    [id: string]: React.CSSProperties;
+  },
+  meta: ElementHistoryMeta,
+): ReplaceMultipleElementsStyles => ({
+  type: TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
+  payload: {
+    ids,
+    styles,
+  },
   meta,
 });
 
