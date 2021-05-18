@@ -26,6 +26,9 @@ export class DOMHandler {
     return id ? this._elementsDom[id] : null;
   }
 
+  /**
+   * Used for "show blocks" function
+   */
   public get visibleElementsIds() {
     return this._visibleElementsIds;
   }
@@ -47,6 +50,15 @@ export class DOMHandler {
       subtree: true,
       childList: true,
     });
+  }
+
+  /**
+   * Clean previous screen entries for performance reasons
+   */
+  public removeEmptyEntries() {
+    this._elementsDom = Object.fromEntries(
+      Object.entries(this._elementsDom).filter(([, value]) => !!value),
+    );
   }
 
   constructor() {
