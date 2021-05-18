@@ -6,7 +6,7 @@ import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
-const useStyles = makeComponentStyles('text', [], {
+const useStyles = makeComponentStyles('text', {
   wordBreak: 'break-word',
 });
 

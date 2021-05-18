@@ -15,6 +15,7 @@ import Sidebar from '@Components/Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectSortedScreens } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
+import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import ScreenComponent from './Screen';
 
 const useStyles = makeStyles({
@@ -64,6 +65,7 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
   useEffect(
     () => () => {
       dispatch(resetProjectState());
+      DOMHandler.INSTANCE.reset();
     },
     [dispatch],
   );

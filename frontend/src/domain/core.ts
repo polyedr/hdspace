@@ -76,7 +76,7 @@ export const buttonStyleControls = [
   'display',
 ] as const;
 
-export const buttonParamsControls = ['textContent', 'showRipple'] as const;
+export const buttonParamsControls = ['textContent'] as const;
 
 export const textinputStyleControls = [
   'indents',
@@ -370,20 +370,8 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   textarea: ['textContent', 'placeholder', ...textareaStyleControls, 'layouts'],
-  checkbox: [
-    'value',
-    'name',
-    ...checkboxStyleControls,
-    'showRipple',
-    'layouts',
-  ],
-  radiobutton: [
-    'value',
-    'name',
-    ...radiobuttonStyleControls,
-    'showRipple',
-    'layouts',
-  ],
+  checkbox: ['value', 'name', ...checkboxStyleControls, 'layouts'],
+  radiobutton: ['value', 'name', ...radiobuttonStyleControls, 'layouts'],
   label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
   hyperlink: ['textContent', ...hyperlinkStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
@@ -393,14 +381,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   list: ['listItems', 'isOrdered', ...listStyleControls, 'layouts'],
   listItem: [...listItemStyleControls, 'layouts'],
   image: ['image', ...imageStyleControls, 'alt', 'title', 'layouts'],
-  select: [
-    'selectValue',
-    'selectOptions',
-    ...selectStyleControls,
-    'isOpen',
-    'layouts',
-  ],
-  selectMenu: [...selectMenuStyleControls, 'layouts'],
+  select: ['selectValue', 'selectOptions', ...selectStyleControls, 'layouts'],
   option: [...optionStyleControls, 'layouts'],
   map: ['mapProps', ...mapStyleControls, 'layouts'],
   calendar: [...calendarStyleControls, 'layouts'],
@@ -409,8 +390,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'textContent',
     'dropdownItems',
     ...dropdownStyleControls,
-    'isOpen',
-    'showRipple',
     'layouts',
   ],
   dropdownMenu: [...dropdownMenuStyleControls, 'layouts'],
@@ -510,12 +489,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   image: {},
   select: {
     option: {
-      min: 1,
-      max: Infinity,
-    },
-  },
-  selectMenu: {
-    selectItem: {
       min: 1,
       max: Infinity,
     },

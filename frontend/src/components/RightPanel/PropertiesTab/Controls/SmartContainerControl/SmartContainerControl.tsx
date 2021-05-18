@@ -1,12 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
-import {
-  Entity,
-  NNBlockType,
-  PropertiesChangeProps,
-  SmartElement,
-} from '@Src/types';
+import { NNBlockType, StateElement } from '@Src/types';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { selectElementFileInput } from '@Redux/project/selectors/base';
 import { Button } from '@material-ui/core';
@@ -14,9 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import useAnalyzePucture from '@Utils/nn/hooks/useAnalyzePucture';
 
 type Props = {
-  activeElementId: PropertiesChangeProps<
-    SmartElement<Entity>
-  >['activeElementId'];
+  element: StateElement;
   blockType: NNBlockType;
   canEdit: boolean;
 };
@@ -33,11 +26,13 @@ const useStyles = makeStyles({
 });
 
 const SmartContainerControl: React.FC<Props> = ({
-  activeElementId,
+  element,
   blockType,
   canEdit,
 }) => {
   const classes = useStyles();
+  const { id: activeElementId } = element;
+
   const imageURL = useSelector(selectActiveElementParamByName('imageURL'));
   const handleImageChange = useImageUpload(activeElementId);
 

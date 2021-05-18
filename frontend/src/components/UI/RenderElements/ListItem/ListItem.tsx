@@ -1,4 +1,5 @@
-import React from 'react';
+// @ts-ignore
+import React, { LegacyRef } from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { omit } from 'ramda';
@@ -42,80 +43,71 @@ const useLinkStyles = makeStyles({
   },
 });
 
-const ListItem = React.forwardRef<HTMLLinkElement, RendererProps>(
-  (props, ref) => {
-    const { element, isDisabled } = props;
-    const [className, groupClass] = element.styles.classNames;
-    const { textContent, isLink, link } = element.parameters;
+const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
+  const { element, isDisabled } = props;
+  const [className, groupClass] = element.styles.classNames;
+  const { textContent, isLink, link } = element.parameters;
 
-    const listItemClasses = useItemStyles(props);
-    const listItemWithLinkClasses = useEditableItemStyles(props);
-    const linkClasses = useLinkStyles(props);
-    const contentEditableSettings = useContentEditable(element.id, textContent);
-    const eventHandlers = useEventHandlers(props);
-    if (eventHandlers) {
-      const clickHandler = eventHandlers.onClick;
-      eventHandlers.onClick = (event: React.MouseEvent<HTMLLIElement>) => {
-        if (isDisabled) {
-          (event.target as HTMLElement).focus();
-        }
-        if (clickHandler) {
-          clickHandler(event);
-        }
-      };
-    }
-    return (
-      <>
-        {isLink ? (
-          <li
-            ref={ref}
-            id={element.id}
-            data-ls-id={element.id}
-            className={cn(
-              className,
-              isDisabled && listItemClasses.disabled,
-              groupClass,
-              listItemWithLinkClasses.ownStyles,
-            )}
-            {...eventHandlers}
-          >
-            <a
-              className={cn(
-                linkClasses.link,
-                groupClass,
-                linkClasses.ownStyles,
-              )}
-              aria-label={`Link-${element.id}`}
-              href={link}
-              target="_blank"
-              rel="noreferrer"
-              dangerouslySetInnerHTML={{ __html: textContent }}
-              {...contentEditableSettings.props}
-              {...contentEditableSettings.events}
-            />
-          </li>
-        ) : (
-          <li
-            ref={ref}
-            id={element.id}
-            data-ls-id={element.id}
-            className={cn(
-              className,
-              isDisabled && listItemClasses.disabled,
-              groupClass,
-              listItemClasses.ownStyles,
-            )}
-            aria-label={`Button-${element.id}`}
-            {...eventHandlers}
+  const listItemClasses = useItemStyles(props);
+  const listItemWithLinkClasses = useEditableItemStyles(props);
+  const linkClasses = useLinkStyles(props);
+  const contentEditableSettings = useContentEditable(element.id, textContent);
+  const eventHandlers = useEventHandlers<HTMLElement>(props, {
+    onClick: (event: React.SyntheticEvent<HTMLElement>) => {
+      if (isDisabled) {
+        (event.target as HTMLElement).focus();
+      }
+    },
+  });
+
+  return (
+    <>
+      {isLink ? (
+        <li
+          ref={ref as LegacyRef<HTMLLIElement>}
+          id={element.id}
+          data-ls-id={element.id}
+          className={cn(
+            className,
+            isDisabled && listItemClasses.disabled,
+            groupClass,
+            listItemWithLinkClasses.ownStyles,
+          )}
+          {...eventHandlers}
+        >
+          <a
+            className={cn(linkClasses.link, groupClass, linkClasses.ownStyles)}
+            aria-label={`Link-${element.id}`}
+            href={link}
+            target="_blank"
+            rel="noreferrer"
             dangerouslySetInnerHTML={{ __html: textContent }}
-            data-gramm_editor={false}
             {...contentEditableSettings.props}
             {...contentEditableSettings.events}
           />
-        )}
-      </>
-    );
-  },
-);
+        </li>
+      ) : (
+        <li
+          ref={ref as LegacyRef<HTMLLIElement>}
+          id={element.id}
+          data-ls-id={element.id}
+          className={cn(
+            className,
+            isDisabled && listItemClasses.disabled,
+            groupClass,
+            listItemClasses.ownStyles,
+          )}
+          aria-label={`Button-${element.id}`}
+          {...eventHandlers}
+          dangerouslySetInnerHTML={{ __html: textContent }}
+          data-gramm_editor={false}
+          {...eventHandlers}
+          {...contentEditableSettings.props}
+          {...contentEditableSettings.events}
+        />
+      )}
+    </>
+  );
+});
 
 export default ListItem;

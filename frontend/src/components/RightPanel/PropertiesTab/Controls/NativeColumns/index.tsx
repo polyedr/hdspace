@@ -34,7 +34,7 @@ const NativeColumnsControls: React.FC<
   columnRuleWidth,
   columnRuleColor,
   updateStyles,
-  activeElementId,
+  element,
   canEdit,
 }) => {
   const classes = useStyles();
@@ -66,7 +66,7 @@ const NativeColumnsControls: React.FC<
       />
 
       <ColumnRule
-        activeElementId={activeElementId}
+        element={element}
         ruleWidth={columnRuleWidth}
         ruleStyle={columnRuleStyle}
         ruleColor={columnRuleColor}

@@ -10,12 +10,12 @@ import {
 } from '@Redux/project/actions';
 import {
   selectBordersEnabled,
-  selectFreeCanvasMode,
   selectShowingBorders,
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
   selectMasterScreenEnabled,
+  selectFreeCanvasMode,
 } from '@Redux/project/selectors/screen';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
 import {

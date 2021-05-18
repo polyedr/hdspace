@@ -36,11 +36,12 @@ import {
   PaginatedResponse,
   UserProjectPermission,
   PermissionsUserData,
-  ScreenInfo,
-  ChatCredentials,
+  EditScreenData,
   ProfileDataUIParameters,
   VIAFile,
   FileToUpload,
+  ChatCredentials,
+  UIFramework,
   ElementData,
 } from '../types';
 import TYPES from './actionTypes';
@@ -264,6 +265,21 @@ export type UpdateProject = IAction<
   typeof TYPES.UPDATE_PROJECT,
   { project: Project }
 >;
+export type UpdateCurrentUIFramework = IAction<
+  typeof TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+  {
+    uiFramework: UIFramework;
+  }
+>;
+export type UpdateCurrentUIFrameworkVariables = IAction<
+  typeof TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+  {
+    [name: string]: string;
+  }
+>;
+export type ResetCurrentUIFrameworkVariables = IPlainAction<
+  typeof TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES
+>;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
   Indices
@@ -321,12 +337,12 @@ export type RestoreScreen = IAction<
   { projectId: number; screenId: number },
   HistoryMeta
 >;
-export type EditScreen = IAction<
-  typeof TYPES.EDIT_SCREEN,
+export type EditScreenNameAndData = IAction<
+  typeof TYPES.EDIT_SCREEN_NAME_AND_DATA,
   {
     projectID: number;
     screenID: number;
-    screenInfo: ScreenInfo;
+    editData: EditScreenData;
   }
 >;
 export type CreateScreen = IAction<
@@ -1130,7 +1146,7 @@ export type Action =
   | SetAnalyzerLoader
   | SetAssetsLoader
   | DeleteScreen
-  | EditScreen
+  | EditScreenNameAndData
   | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen
@@ -1177,6 +1193,9 @@ export type Action =
   | ReplaceElementStyles
   | RemoveElementClassName
   | UpdateProject
+  | UpdateCurrentUIFramework
+  | UpdateCurrentUIFrameworkVariables
+  | ResetCurrentUIFrameworkVariables
   | SetVIAData
   | SetBlockType
   | RemoveSharedStyles

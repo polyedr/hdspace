@@ -38,7 +38,7 @@ const MasterScreen: React.FC<Props> = ({ scrollRef }: Props) => {
     <MasterElement
       elementId={rootId}
       scrollRef={scrollRef}
-      isDisabled={disableInteractions}
+      isDisabled={!disableInteractions}
       frameWindow={frameWindow}
       dropTargetParams={dropTargetParams}
       preSelectedElementId={preSelectedElementId}

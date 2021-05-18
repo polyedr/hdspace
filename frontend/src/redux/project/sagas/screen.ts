@@ -3,7 +3,10 @@ import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
 import html2canvas from 'html2canvas';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
-import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
+import {
+  convertCreatedElementToRequest,
+  convertScreenToPatchRequest,
+} from '@Api/converters/toRequest';
 import { apiCreateElements, apiGetElements } from '@Api/element';
 import { apiUpdateProject } from '@Api/project';
 import { apiUpdateScenarios } from '@Api/scenario';
@@ -33,7 +36,7 @@ import {
   addElements,
   createScreen,
   deleteScreen,
-  editScreen,
+  editScreenNameAndData,
   restoreScreen,
   setCurrentScreenId,
   setProject,
@@ -550,52 +553,49 @@ export const restoreScreenSaga = withActionsHistory(function* ({
   }
 });
 
-export const editScreenSaga = withRequiredPermissions(
+export const editScreenNameAndDataSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* ({ payload }: ReturnType<typeof editScreen>) {
+)(function* ({ payload }: ReturnType<typeof editScreenNameAndData>) {
   try {
-    const { screenID, screenInfo } = payload;
-    const {
-      name,
-      description,
-      keywords,
-      title,
-      viewport,
-      author,
-      refresh,
-      faviconUrl,
-    } = screenInfo;
+    const { screenID, editData } = payload;
+    const { name, data } = editData;
+    const oldScreen = yield select(selectScreenById, screenID);
+    if (!oldScreen) {
+      throw new Error('Screen not found');
+    }
 
-    const nameWithoutSpace = name.trim();
-    const screen: Screen = yield select(selectScreenById, screenID);
-
-    const newData: Partial<Screen> = {
-      name: nameWithoutSpace,
-      screen_data_json: JSON.stringify({
-        ...screen.screen_data_json,
-        title,
-        description,
-        keywords,
-        viewport,
-        author,
-        refresh,
-        faviconUrl,
-      }),
-    };
-
-    const { result, error }: Result<Screen> = yield call(
-      reqWrapper,
-      apiUpdateScreen,
-      {
-        id: screenID,
-        data: newData,
-      },
+    const screens: ReturnType<typeof selectSortedScreens> = yield select(
+      selectSortedScreens,
     );
 
-    if (result) {
-      yield put(updateScreen(result));
-    }
+    const newScreen: Screen = {
+      ...oldScreen,
+      name: name
+        ? generateUniqueName(
+            name.trim(),
+            screens.map((screen) => screen.name),
+          )
+        : oldScreen.name,
+      screenData: {
+        ...(data || {}),
+        meta: {
+          ...(oldScreen.meta || {}),
+          ...(data?.meta || {}),
+        },
+        uiFramework: data?.uiFramework || oldScreen.uiFramework,
+      },
+    };
+
+    yield put(Actions.updateScreen(newScreen));
+
+    const convertedScreen = convertScreenToPatchRequest(newScreen);
+
+    const { error }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
+      id: screenID,
+      data: convertedScreen,
+    });
+
     if (error) throw new Error(error);
   } catch (e) {
     yield put(
@@ -770,24 +770,24 @@ export const convertFreeCanvasSaga = compose(
       ),
     );
 
-    const { result: updatedScreen, error: screenError } = yield call(
-      reqWrapper,
-      apiUpdateScreen,
-      {
-        id: screen.id,
-        data: {
-          ...screen,
-          screen_data_json: {
-            ...screen.screen_data_json,
-            freeCanvas: false,
-          },
-        },
+    const updatedScreen: Screen = {
+      ...screen,
+      screenData: {
+        ...screen.screenData,
+        freeCanvas: false,
       },
-    );
-
-    if (screenError) throw new Error(screenError);
+    };
 
     yield put(updateScreen(updatedScreen));
+
+    const convertedScreen = convertScreenToPatchRequest(updatedScreen);
+
+    const { error: screenError } = yield call(reqWrapper, apiUpdateScreen, {
+      id: screen.id,
+      data: convertedScreen,
+    });
+
+    if (screenError) throw new Error(screenError);
   } catch (e) {
     yield put(
       enqueueSnackbar(

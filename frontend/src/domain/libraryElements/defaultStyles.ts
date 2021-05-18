@@ -886,7 +886,6 @@ export const defaultSelectStyles: {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    padding: '2px 6px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -904,27 +903,6 @@ export const defaultSelectStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-  },
-};
-
-export const defaultSelectMenuStyles: {
-  [K in SelectMenuControls]: React.CSSProperties;
-} & { other?: React.CSSProperties } = {
-  indents: {
-    ...DEFAULT_INDENTS,
-    padding: '5px 0',
-  },
-  size: {
-    ...DEFAULT_SIZE,
-  },
-  border: {
-    ...DEFAULT_BORDER,
-    border: '1px solid #d9d9d9',
-    borderRadius: '4px',
-  },
-  background: {
-    ...DEFAULT_BACKGROUND,
-    backgroundColor: '#ffffff',
   },
 };
 
@@ -1130,7 +1108,6 @@ export const DEFAULT_ELEMENTS_STYLES: {
   smartForm: defaultSmartContainerStyles,
   smartWebpage: defaultSmartContainerStyles,
   select: defaultSelectStyles,
-  selectMenu: defaultSelectMenuStyles,
   option: defaultOptionStyles,
   map: defaultMapStyles,
   calendar: defaultCalendarStyles,

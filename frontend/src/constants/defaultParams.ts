@@ -10,6 +10,7 @@ import {
   Experience,
 } from '../types';
 import getDefaultStyles from '../utils/getDefaultStyles';
+import { NOT_SELECTED_FRAMEWORK } from './frameworks';
 
 export const MIN_BORDER_WIDTH = 0;
 export const MAX_BORDER_WIDTH = 10;
@@ -67,6 +68,7 @@ export const DEFAULT_PROJECT: Project = {
         rules: getDefaultStyles('root'),
       },
     ],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
   },
   user: DEFAULT_USER,
 };
@@ -95,7 +97,10 @@ export const DEFAULT_SCREEN: Screen = {
   buoyancy: 0,
   image: null,
   element: '-1',
-  screen_data_json: {},
+  screenData: {
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    freeCanvas: false,
+  },
 };
 
 export const DEFAULT_LAYOUT_LIST = [
@@ -124,12 +129,7 @@ export const LABELED_INPUT_TYPES = [
 export const CONTAINER_GROUPS = [ElementGroup.CONTAINERS, ElementGroup.CUSTOM];
 export const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];
 
-export const NOT_DRAGGABLE_COMPONENTS = [
-  'selectMenu',
-  'option',
-  'column',
-  'gridItem',
-];
+export const NOT_DRAGGABLE_COMPONENTS = ['option', 'column', 'gridItem'];
 
 export const ALL_ASSETS_LIST_ID = 'all';
 export const ALL_ASSET_LIST_NAME = 'All assets';

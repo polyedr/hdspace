@@ -11,7 +11,7 @@ const useStyles = makeComponentStyles('list', {
   }),
 });
 
-const List = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
+const List = React.forwardRef<HTMLOListElement, RendererProps>((props, ref) => {
   const { element, children } = props;
   const [className, groupClass] = element.styles.classNames;
   const { isOrdered } = element.parameters;

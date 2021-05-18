@@ -58,7 +58,15 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
     if (!isPrototypeMode) element?.addEventListener('keydown', listener, false);
 
     return () => element?.removeEventListener('keydown', listener, false);
-  }, [ref, id, currentScreenId, dispatch, coreElementSelected, canEdit]);
+  }, [
+    ref,
+    id,
+    currentScreenId,
+    dispatch,
+    coreElementSelected,
+    canEdit,
+    isPrototypeMode,
+  ]);
 
   useEffect(() => {
     const element = ref.current;
@@ -77,7 +85,15 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     if (!isPrototypeMode) element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, id, currentScreenId, dispatch, coreElementSelected, canEdit]);
+  }, [
+    ref,
+    id,
+    currentScreenId,
+    dispatch,
+    coreElementSelected,
+    canEdit,
+    isPrototypeMode,
+  ]);
 
   useEffect(() => {
     const element = ref.current;
@@ -95,7 +111,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     if (!isPrototypeMode) element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [canEdit, coreElementSelected, dispatch, ref]);
+  }, [canEdit, coreElementSelected, dispatch, isPrototypeMode, ref]);
 
   useEffect(() => {
     const element = ref.current;
@@ -112,7 +128,14 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     if (!isPrototypeMode) element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, currentScreenId, dispatch, coreElementSelected, canEdit]);
+  }, [
+    ref,
+    currentScreenId,
+    dispatch,
+    coreElementSelected,
+    canEdit,
+    isPrototypeMode,
+  ]);
 
   useEffect(() => {
     const element = ref.current;
@@ -126,7 +149,7 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
 
     if (!isPrototypeMode) element?.addEventListener('keydown', listener);
     return () => element?.removeEventListener('keydown', listener);
-  }, [ref, dispatch]);
+  }, [ref, dispatch, isPrototypeMode]);
 };
 
 export default useHotKeys;

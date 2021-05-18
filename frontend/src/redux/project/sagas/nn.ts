@@ -19,11 +19,11 @@ import {
   Result,
   ServerElement,
   Screen,
-  VIAFile,
   VIARegion,
   UserProjectPermission,
   NNBlockType,
   FileToUpload,
+  VIAFile,
 } from '@Src/types';
 import { addId, addLayerProperty } from '@Utils/viaHelpers';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
@@ -66,14 +66,12 @@ const recognizeImageSaga = compose(
     });
 
     if (recognizeResult) {
-      if (!recognizeResult.screen_data_json) {
+      if (!recognizeResult.screenData.nnResult) {
         throw new Error('No VIA data has been received');
       }
 
       const [viaKey, viaFile] = Object.entries(
-        JSON.parse(recognizeResult.screen_data_json) as {
-          [key: string]: VIAFile;
-        },
+        recognizeResult.screenData.nnResult,
       )[0];
 
       const s = omit(['regions'], viaFile);

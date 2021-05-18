@@ -71,7 +71,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
 
   useEffect(() => {
     if (screen) {
-      DOMHandler.INSTANCE.reset();
+      DOMHandler.INSTANCE.removeEmptyEntries();
       dispatch(activateScreen(screen.id));
     } else {
       history.push(`/project/${currentProjectId}`);
@@ -104,7 +104,6 @@ const Screen: React.FC<Props> = ({ screenId }) => {
       {viaModeEnabled ? (
         <>
           <VIA />
-
           <VIARightPanel />
         </>
       ) : (

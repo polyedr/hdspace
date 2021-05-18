@@ -8,7 +8,7 @@ import theme from '@Src/styles/Theme';
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
-import { ProjectClass, ScreenMeta } from '@Src/types';
+import { ProjectClass, ScreenMetaData } from '@Src/types';
 import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 import ExportedElement from './components/ExportedElement';
@@ -32,8 +32,8 @@ const createArchive = (
   screenName: string,
   html: string,
   css: string,
-  metadata: ScreenMeta,
   state: AppReduxState,
+  metadata?: ScreenMetaData,
 ) => {
   const projectClasses = selectCurrentProjectClasses(state);
 
@@ -56,11 +56,11 @@ const createArchive = (
     processHTML(html, assetsFolder),
     processCSS(cssFolder, entityClasses, sharedClasses),
     processJS(jsFolder),
-    processIco(metadata.faviconUrl, zip),
+    processIco(metadata?.faviconUrl || null, zip),
   ]).then(([htmlResponse]) => {
     zip.file(
       'index.html',
-      getHtmlFromTemplate(screenName, htmlResponse, metadata, mapComponents),
+      getHtmlFromTemplate(screenName, htmlResponse, mapComponents, metadata),
     );
     cssFolder?.file('style.css', css);
     zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
@@ -72,7 +72,7 @@ const createArchive = (
   });
 };
 
-const exportHTML = (screenName: string, metadata: ScreenMeta) => {
+const exportHTML = (screenName: string, metadata?: ScreenMetaData) => {
   const sheets = new ServerStyleSheets();
 
   const state = store.getState() as AppReduxState;
@@ -91,7 +91,7 @@ const exportHTML = (screenName: string, metadata: ScreenMeta) => {
     ),
   );
 
-  createArchive(screenName, html, sheets.toString(), metadata, state);
+  createArchive(screenName, html, sheets.toString(), state, metadata);
 };
 
 export default exportHTML;

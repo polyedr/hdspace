@@ -24,7 +24,7 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
   updateParams,
-  activeElementId,
+  element,
   canEdit,
 }) => {
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ const ListItems: React.FC<PropertiesChangeProps<ListItemElement>> = ({
     dispatch(
       addChildToElement(
         'listItem',
-        activeElementId,
+        element.id,
         {
           textContent: 'New item',
           isLink: false,

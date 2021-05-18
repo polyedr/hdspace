@@ -4,11 +4,10 @@ import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
-import { selectActiveElement } from '@Redux/project/selectors/element';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { capitalize } from '@material-ui/core/utils';
-import StylesHeader from '../../helperComponents/StylesHeader';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -48,11 +47,9 @@ type ControlProps = {
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
-
   if (unit in Unit) {
     return unit as UnitName;
   }
-  console.error('Incorrect unit', unit); // TODO validate users input value
   return Unit.px;
 };
 
@@ -65,7 +62,8 @@ const SizeBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
   masterScreenEnabled,
-  activeElementId,
+  editableStyles,
+  element,
   width,
   height,
   canEdit,
@@ -73,7 +71,7 @@ const SizeBlock: React.FC<Props> = ({
   const classes = useStyles();
 
   const editorDocument = useSelector(selectEditorDocument);
-  const { type } = useSelector(selectActiveElement);
+  const { type } = element;
 
   const handleSelectChange = useCallback(
     ({ target: { value } }, sizeName: SizeName) => {
@@ -89,7 +87,7 @@ const SizeBlock: React.FC<Props> = ({
       };
 
       if (editorDocument) {
-        const el = editorDocument.getElementById(activeElementId);
+        const el = editorDocument.getElementById(element.id);
 
         switch (value as UnitName) {
           case 'px': {
@@ -131,7 +129,7 @@ const SizeBlock: React.FC<Props> = ({
         }
       }
     },
-    [activeElementId, updateStyles, editorDocument, type],
+    [element, updateStyles, editorDocument, type],
   );
 
   const handleInputChange = useCallback(
@@ -213,10 +211,11 @@ const SizeBlock: React.FC<Props> = ({
   return (
     <section>
       {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Width & Height"
+        <RemoveStyles
           onClick={removeStyles}
-          cssPropertiesNames={['width', 'height']}
+          propsToRemove={['width', 'height']}
+          type={element.type}
+          editableStyles={editableStyles}
         />
       )}
 

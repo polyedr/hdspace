@@ -46,9 +46,12 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = PropertiesChangeProps<ImageElement>;
+const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
+  element,
+  canEdit,
+}) => {
+  const { id: activeElementId } = element;
 
-const Component: React.FC<Props> = ({ activeElementId, canEdit }) => {
   const classes = useStyles();
   const inputUrlRef = useRef<HTMLInputElement | null>(null);
 

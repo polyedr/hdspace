@@ -193,12 +193,6 @@ const SmartContainerRenderer = React.forwardRef<
       drag(resizeRef);
     }
   }, [drag, resizeRef, resizeRefDom]);
-
-  useEffect(() => {
-    if (resizeRef && resizeRefDom) {
-      drag(resizeRef);
-    }
-  }, [drag, resizeRef, resizeRefDom]);
   const frameWindow = useContext(WindowContext);
   const resultGetSizeForImage = getSizeForImage(size, frameWindow);
 

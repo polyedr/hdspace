@@ -17,6 +17,7 @@ import { setEditorDocument } from '@Redux/project/actions';
 import theme from '@Src/styles/Theme';
 import {
   selectCurrentProjectClasses,
+  selectCurrentUIFramework,
   selectImportLoader,
 } from '@Redux/project/selectors/base';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
@@ -35,13 +36,15 @@ const useStyles = makeStyles({
 });
 
 const CustomHead: FC = () => {
+  const uiFramework = useSelector(selectCurrentUIFramework);
+  const frameworkVersion = uiFramework?.version;
   return (
     <>
       <meta charSet="utf-8" />
       <title>Previewer</title>
       <meta name="viewport" content="width=device-width,initial-scale=1" />
       <base target="_parent" />
-      <style>
+      <style key="body_style">
         {`
           body {
             padding: 0;
@@ -67,6 +70,42 @@ const CustomHead: FC = () => {
           }
         `}
       </style>
+      {frameworkVersion && (
+        <>
+          {frameworkVersion.styleSheetsData.map(
+            ({ key, link, ...otherParams }) => {
+              return (
+                <link
+                  key={key}
+                  rel="stylesheet"
+                  type="text/css"
+                  href={link}
+                  {...otherParams}
+                />
+              );
+            },
+          )}
+          {frameworkVersion.scriptsData.map(({ key, link, ...otherParams }) => (
+            <script
+              key={key}
+              type="text/javascript"
+              src={link}
+              {...otherParams}
+            />
+          ))}
+          {uiFramework.themeVariables && (
+            <style type="text/css">
+              {`:root {
+              ${Object.keys(uiFramework.themeVariables)
+                .map((varName) => {
+                  return `--${varName}: ${uiFramework.themeVariables[varName]}`;
+                })
+                .join(';')}
+          }`}
+            </style>
+          )}
+        </>
+      )}
     </>
   );
 };

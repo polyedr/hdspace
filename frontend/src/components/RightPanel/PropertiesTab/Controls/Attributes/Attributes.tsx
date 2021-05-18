@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { Button, IconButton } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { selectActiveElement } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -40,12 +38,12 @@ const useStyles = makeStyles(({ palette }) => ({
 const Attributes: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   updateParams,
   canEdit,
-  activeElementId,
+  element,
 }) => {
   const classes = useStyles();
-  const element = useSelector(selectActiveElement);
   const [addInProgress, setAddInProgress] = useState<boolean>(false);
   const { attributes } = element.parameters;
+  const { id: activeElementId } = element;
 
   const handleUpdateAttribute = useDebouncedCallback(
     (name, value) =>

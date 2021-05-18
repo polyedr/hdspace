@@ -6,6 +6,7 @@ import {
   Screen,
   LibraryElement,
   ServerElement,
+  ServerScreen,
 } from '../types';
 import { convertScreenFromResponse } from './converters/fromResponse';
 import { handleError, onError, parseResult } from './helper';
@@ -27,7 +28,7 @@ export const apiCreateScreen = (props: MyAxiosProps): Promise<Result<Screen>> =>
     method: 'POST',
     url: '/projects/project-screens/',
   })
-    .then((res: AxiosResponse<Screen>) => ({
+    .then((res: AxiosResponse<ServerScreen>) => ({
       result: convertScreenFromResponse(parseResult(res)),
     }))
     .catch(handleError);
