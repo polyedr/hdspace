@@ -10,7 +10,7 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { Entity, StateElement } from '@Src/types';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
-  selectElementById,
+  selectElementByIdWrapper,
   selectIncludesActiveElement,
   selectIsElementActive,
 } from '@Redux/project/selectors/element';
@@ -59,7 +59,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const dispatch = useDispatch();
   const disableInteractions = useSelector(selectIsPrototypeMode);
 
-  const element = useSelector(selectElementById(elementId));
+  const element = useSelector(selectElementByIdWrapper(elementId));
   const includesActiveElement = useSelector(
     selectIncludesActiveElement(elementId),
   );

@@ -49,7 +49,7 @@ import { selectElementAsTree, selectElementById } from '../selectors/element';
 import { createElements } from './common';
 
 export function* setMasterScreenCoreElements(screen: Screen) {
-  const rootElement = yield select(selectElementById(screen.element));
+  const rootElement = yield select(selectElementById, screen.element);
   yield put(Actions.setMasterElementsIds(...rootElement.children));
   const masterCoreId = rootElement.children[0];
   yield put(

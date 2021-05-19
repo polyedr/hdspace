@@ -233,7 +233,8 @@ export function* updateOrReplaceElementParameters(
     );
 
     const updatedElement: StateElement = yield select(
-      selectElementById(elementId),
+      selectElementById,
+      elementId,
     );
 
     yield put(

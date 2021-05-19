@@ -927,7 +927,7 @@ export const toggleSelectedElementSaga = withRequiredPermissions(
 )(function* (action: ReturnType<typeof Actions.toggleSelectedElement>) {
   const isElementSelected = yield select(selectIsElementSelected);
   if (isElementSelected) {
-    const element = yield select(selectElementById(action.payload.id));
+    const element = yield select(selectElementById, action.payload.id);
     const selectedElementsIds = yield select(selectSelectedElementsIds);
     const selectedElements = yield select(
       selectElementsByIds(selectedElementsIds),
@@ -1196,9 +1196,10 @@ export const unbindGroupElementStylesSaga = compose(
     return;
   }
   try {
-    const element = yield select(selectElementById(id));
+    const element = yield select(selectElementById, id);
     const sourceElement = yield select(
-      selectElementById(element.parameters.sourceElementId),
+      selectElementById,
+      element.parameters.sourceElementId,
     );
     const { groupElements } = sourceElement.parameters;
     const paramsToUpdate = {
@@ -1249,7 +1250,7 @@ export function* processDropTargetParamsSaga(
   action: ReturnType<typeof Actions.processDropTargetParams>,
 ) {
   const { elementId, rect, isHorizontal, offset } = action.payload;
-  const element = yield select(selectElementById(elementId));
+  const element = yield select(selectElementById, elementId);
   const dropTargetParams = yield select(selectCurrentDropTargetParams);
 
   const elementIsContainer =
@@ -1299,7 +1300,7 @@ export function* processDropElementSaga(
     return;
   }
   const screenId = yield select(selectCurrentScreenId);
-  const dropTarget = yield select(selectElementById(dropTargetParams.id));
+  const dropTarget = yield select(selectElementById, dropTargetParams.id);
   const elementIsContainer =
     !dropTarget.parent ||
     CONTAINER_GROUPS.includes(dropTarget.parameters.group);
@@ -1345,13 +1346,12 @@ export function* processDropElementSaga(
   yield put(Actions.setCurrentDropTargetParams(null));
 }
 
-export const setEnabledPseudoClassSaga = withRequiredPermissions(
-  UserProjectPermission.VIEW_PROJECT,
-)(function* (action: ReturnType<typeof Actions.setEnabledPseudoClass>) {
+export const setEnabledPseudoClass = function* (
+  action: ReturnType<typeof Actions.setEnabledPseudoClass>,
+) {
   const { pseudoClass, elementId } = action.payload;
-
   const activeElementId = yield select(selectActiveElementId);
-  const element = yield select(selectElementById(elementId || activeElementId));
+  const element = yield select(selectElementById, elementId || activeElementId);
   if (element) {
     const pseudoClassViewStyles = pseudoClass
       ? {
@@ -1372,4 +1372,8 @@ export const setEnabledPseudoClassSaga = withRequiredPermissions(
     );
   }
   yield put(Actions.setStatePseudoClass(pseudoClass));
-});
+};
+
+export const setEnabledPseudoClassSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(setEnabledPseudoClass);

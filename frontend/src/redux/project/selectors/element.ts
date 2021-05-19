@@ -46,8 +46,14 @@ export const selectCurrentRootId = createSelector(
   (screen) => screen.element || '-1',
 );
 
-export const selectElementById = (id: string) => (state: AppReduxState) =>
+/* for use in sagas only */
+export const selectElementById = (state: AppReduxState, id: string) =>
   selectProjectState(state).data.elements[id];
+
+/* for use in components only */
+export const selectElementByIdWrapper = (id: string) => (
+  state: AppReduxState,
+) => selectProjectState(state).data.elements[id];
 
 export const selectElementsByIds = (ids: string[]) => (
   state: AppReduxState,
@@ -55,7 +61,7 @@ export const selectElementsByIds = (ids: string[]) => (
   if (!ids || !ids.length) {
     return [];
   }
-  return ids.map((id: string) => selectElementById(id)(state));
+  return ids.map((id: string) => selectElementById(state, id));
 };
 
 export const selectElementAsTree = (id: string) => ({
@@ -74,9 +80,9 @@ export const selectCurrentRootElement = (state: AppReduxState) => {
 export const selectElementByChildId = (id: string) => (
   state: AppReduxState,
 ) => {
-  const element = selectElementById(id)(state);
+  const element = selectElementById(state, id);
   return element && element.parent
-    ? selectElementById(element.parent)(state)
+    ? selectElementById(state, element.parent)
     : null;
 };
 
@@ -383,7 +389,7 @@ export const selectMasterGroupsElementId = (state: AppReduxState) =>
 
 export const selectMasterGroupsElement = (state: AppReduxState) => {
   const masterGroupsElId = selectMasterGroupsElementId(state);
-  return selectElementById(masterGroupsElId)(state);
+  return selectElementById(state, masterGroupsElId);
 };
 
 export const selectElementGroups = (state: AppReduxState) => {
@@ -434,7 +440,7 @@ export const selectMasterScreenRoot = (state: AppReduxState) => {
   if (!masterScreen) {
     return null;
   }
-  return selectElementById(masterScreen.element)(state);
+  return selectElementById(state, masterScreen.element);
 };
 
 export const selectElementsChildren = (ids: string[]) => (

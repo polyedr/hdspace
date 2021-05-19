@@ -14,7 +14,7 @@ import {
   createMasterScreenMock,
   createScreenMock,
   projectScreensMock,
-} from '../test-utils';
+} from '../../test-utils';
 
 describe('changeScreensOrderSaga', () => {
   beforeAll(beforeSagaTest);

@@ -117,7 +117,6 @@ const RightPanel: React.FC = () => {
   const { autoSwitchTabs: tabsAutoswitchEnabled } = useSelector(
     selectUserProfileDataParameters,
   );
-  // const pseudoClass = useSelector(selectEnabledPseudoClass);
 
   const [tabs, setTabs] = useState(defaultTabs);
 

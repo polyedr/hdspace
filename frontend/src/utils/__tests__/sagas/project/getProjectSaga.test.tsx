@@ -10,13 +10,13 @@ import { getScreensSaga } from '@Redux/project/sagas/screen';
 import { apiGetProjectWithScreens } from '@Api/project';
 import { selectScreenById } from '@Redux/project/selectors/screen';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import * as PermissionsActions from '../../../redux/permissions/actions';
+import * as PermissionsActions from '../../../../redux/permissions/actions';
 import {
   beforeSagaTest,
   createMasterScreenMock,
   createMockProject,
   createProjectWithScreensMock,
-} from '../test-utils';
+} from '../../test-utils';
 
 describe('createProjectSaga Test', () => {
   beforeAll(beforeSagaTest);

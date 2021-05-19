@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
-  selectElementById,
+  selectElementByIdWrapper,
   selectMasterCoreElementId,
   selectMasterGroupsElementId,
   selectMasterScreenRoot,
@@ -53,7 +53,7 @@ const MasterElement: React.FC<Props> = (props: Props) => {
   } = props;
   const dispatch = useDispatch();
   const classes = useStyles();
-  const element = useSelector(selectElementById(elementId));
+  const element = useSelector(selectElementByIdWrapper(elementId));
   const masterScreenId = useSelector(selectMasterScreenId);
   const masterCoreElId = useSelector(selectMasterCoreElementId);
   const masterGroupsElId = useSelector(selectMasterGroupsElementId);

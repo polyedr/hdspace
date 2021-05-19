@@ -5,7 +5,11 @@ import * as Actions from '@Redux/project/actions';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { projectUpdateHelperSaga } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { beforeSagaTest, createMockProject, mockProject } from '../test-utils';
+import {
+  beforeSagaTest,
+  createMockProject,
+  mockProject,
+} from '../../test-utils';
 
 describe('updateProjectSaga', () => {
   beforeAll(beforeSagaTest);

@@ -71,26 +71,6 @@ export enum ElementGroup {
   NONE = 'none',
 }
 
-export type PseudoClassStyles = {
-  hover?: React.CSSProperties;
-  focus?: React.CSSProperties;
-  focusWithin?: React.CSSProperties;
-  active?: React.CSSProperties;
-  target?: React.CSSProperties;
-  visited?: React.CSSProperties;
-  hoverVisible?: React.CSSProperties;
-};
-
-export type PseudoClassesEnabled = {
-  hover: boolean;
-  focus: boolean;
-  focusWithin: boolean;
-  active: boolean;
-  target: boolean;
-  visited: boolean;
-  hoverVisible: boolean;
-};
-
 export type FreeCanvasElementParams = {
   left?: number;
   top?: number;
