@@ -182,15 +182,15 @@ export const getHtmlFromTemplate = (
   screenName: string,
   body: string,
   mapComponents: StateElement[],
-  currentUIFramework: string,
+  currentUIFramework: any,
   meta?: ScreenMetaData,
 ) => {
-  const getUIFrameworkLink = (currentUIFramework: string) => {
-    if (currentUIFramework.includes('bootstrap')) {
+  const getUIFrameworkLink = (frameworkName: string) => {
+    if (frameworkName.includes('bootstrap')) {
       return `<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" /> 
       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>`;
     }
-    if (currentUIFramework.includes('material')) {
+    if (frameworkName.includes('material')) {
       return `<link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" />
       <script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>`;
     }
@@ -230,7 +230,7 @@ export const getHtmlFromTemplate = (
     <link rel="stylesheet" type="text/css" href="css/ripple.css" />
     <link rel="stylesheet" type="text/css" href="css/shared.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/color-calendar/dist/css/theme-basic.css" />
-    ${getUIFrameworkLink(currentUIFramework)}
+    ${getUIFrameworkLink(currentUIFramework.name)}
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/color-calendar/dist/bundle.js"></script>
     <script src="https://unpkg.com/mat-ripple"></script>
     <script type="text/javascript" src="js/map.js" defer></script>
@@ -244,6 +244,18 @@ export const getHtmlFromTemplate = (
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <title>${meta?.title || screenName}</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    ${
+      currentUIFramework.themeVariables &&
+      `<style type="text/css">
+          :root {
+        ${Object.keys(currentUIFramework.themeVariables)
+          .map((varName) => {
+            return `--${varName}: ${currentUIFramework.themeVariables[varName]}`;
+          })
+          .join(';')}
+    }
+        </style>`
+    }
   </head>
   <body>
     ${body}

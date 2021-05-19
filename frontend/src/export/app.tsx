@@ -47,7 +47,7 @@ const createArchive = (
     (classInstance) => !entityClassNames.includes(classInstance.className),
   );
   const { elements } = state.project.data;
-  const { name: currentUIFramework } = selectCurrentUIFramework(state);
+  const currentUIFramework = selectCurrentUIFramework(state);
   const mapComponents = Object.keys(elements)
     .filter((id) => elements[id].type === 'map')
     .map((id: string) => elements[id]);
