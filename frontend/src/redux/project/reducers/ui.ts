@@ -133,7 +133,6 @@ function uiReducer(
     }
 
     case TYPES.SET_STATE_PSEUDO_CLASS: {
-      console.log('SET STATE PSEUDO CLASS!!', action.payload);
       return {
         ...state,
         pseudoClass: action.payload,

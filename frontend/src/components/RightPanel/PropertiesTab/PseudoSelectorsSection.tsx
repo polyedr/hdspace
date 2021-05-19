@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { FormControl, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,18 +17,6 @@ const PseudoSelectorsSection = () => {
   const dispatch = useDispatch();
   const enabledPseudoClass = useSelector(selectEnabledPseudoClass);
   const classes = useStyles();
-  const [pseudoClass, setPseudoClass] = useState<string | null>(
-    enabledPseudoClass,
-  );
-
-  useEffect(() => {
-    console.log('SET ENABLED PSEUDO CLASS!!', pseudoClass);
-    dispatch(
-      setEnabledPseudoClass(
-        pseudoClass === 'not selected' ? null : pseudoClass,
-      ),
-    );
-  }, [dispatch, pseudoClass]);
 
   useEffect(
     () => () => {
@@ -42,10 +30,15 @@ const PseudoSelectorsSection = () => {
       <StyledTextField
         label="Pseudo-class"
         margin="dense"
-        value={pseudoClass || 'not selected'}
+        value={enabledPseudoClass || 'not selected'}
         select
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          setPseudoClass(e.target.value);
+          const pseudoClass = e.target.value;
+          dispatch(
+            setEnabledPseudoClass(
+              pseudoClass === 'not selected' ? null : pseudoClass,
+            ),
+          );
         }}
       >
         <MenuItem value="not selected">

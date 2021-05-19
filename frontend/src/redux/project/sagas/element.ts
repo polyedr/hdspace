@@ -493,8 +493,6 @@ export function* updateOrReplaceMultipleElementsStyles(
 
     const pseudoClass = yield select(selectEnabledPseudoClass);
 
-    console.log('SELECT ENABLED PSEUDO CLASS!!', pseudoClass);
-
     const elementsToUpdate = stateElements.map((element: StateElement) => {
       const stylesToUpdate = pseudoClass
         ? element.styles.pseudoClassStyles[pseudoClass]
@@ -529,7 +527,6 @@ export function* updateOrReplaceMultipleElementsStyles(
               }),
         },
       };
-      console.log('UPDATED ELEMENT!!', updatedElement, pseudoClass);
       return updatedElement;
     });
 
@@ -1364,11 +1361,6 @@ export const setEnabledPseudoClassSaga = withRequiredPermissions(
             : {}),
         }
       : null;
-    console.log(
-      'PSEUDO CLASS VIEW STYLES!!',
-      pseudoClassViewStyles,
-      element.styles.ownStyles,
-    );
     yield put(
       Actions.updateStateElement(element.id, {
         styles: {
@@ -1378,6 +1370,5 @@ export const setEnabledPseudoClassSaga = withRequiredPermissions(
       }),
     );
   }
-  console.log('SET STATE PSEUDO CLASS!!', element);
   yield put(Actions.setStatePseudoClass(pseudoClass));
 });

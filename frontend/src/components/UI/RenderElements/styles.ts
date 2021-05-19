@@ -28,13 +28,8 @@ export const makeComponentStyles: any = (
       ownStyles: (props: RendererProps) => {
         const { element } = props;
         const { styles } = element;
-        console.log(
-          'TEST!!',
-          element.styles.ownStyles,
-          styles.pseudoClassViewStyles,
-        );
         const pseudoClassStyles = styles.pseudoClassViewStyles
-          ? Object.keys(styles.pseudoClassViewStyles).reduce(
+          ? Object.keys(styles.pseudoClassStyles).reduce(
               (pseudoStyles, pseudoClassName) => {
                 const newPseudoStyles = { ...pseudoStyles };
                 if (styles.pseudoClassViewStyles) {
