@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import {
   selectAllElements,
   selectCurrentRootId,
-  selectEnabledPseudoClass,
   selectMasterSourceElementId,
   selectPreSelectedElementId,
 } from '@Redux/project/selectors/element';
@@ -31,7 +30,6 @@ const TreeCanvas: React.FC<Props> = ({ scrollRef }) => {
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
   const projectClasses = useSelector(selectCurrentProjectClasses);
-  const pseudoClass = useSelector(selectEnabledPseudoClass);
 
   return (
     <DraggableElement
@@ -44,7 +42,6 @@ const TreeCanvas: React.FC<Props> = ({ scrollRef }) => {
       masterSourceElementId={masterSourceElementId}
       canDragAndDrop={canDragAndDrop}
       projectClasses={projectClasses}
-      pseudoClass={pseudoClass}
     />
   );
 };

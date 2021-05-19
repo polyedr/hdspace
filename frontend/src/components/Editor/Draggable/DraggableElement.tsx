@@ -36,7 +36,6 @@ type DraggableElementProps = {
   masterSourceElementId: string | null;
   canDragAndDrop: boolean;
   projectClasses: ProjectClass[];
-  pseudoClass: string | null;
   parentIds?: Array<string>;
   scrollRef: React.RefObject<Scrollbars>;
 };
@@ -50,7 +49,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   masterSourceElementId,
   canDragAndDrop,
   projectClasses,
-  pseudoClass,
   parentIds = [],
   scrollRef,
 }) => {
@@ -213,7 +211,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   return (
     <ElementRenderer
       element={element}
-      pseudoClass={pseudoClass}
       isDisabled={isDisabled}
       ref={(dom: HTMLElement) => {
         if (dom && !ref.current) {
@@ -243,7 +240,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           masterSourceElementId={masterSourceElementId}
           canDragAndDrop={canDragAndDrop}
           projectClasses={projectClasses}
-          pseudoClass={pseudoClass}
         />
       ))}
     </ElementRenderer>

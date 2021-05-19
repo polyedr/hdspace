@@ -61,6 +61,7 @@ import {
   processDropTargetParamsSaga,
   processDropElementSaga,
   replaceMultipleElementsStylesSaga,
+  setEnabledPseudoClassSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
@@ -511,4 +512,6 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.PROCESS_DROP_ELEMENT, processDropElementSaga);
+
+  yield takeEvery(TYPES.SET_ENABLED_PSEUDO_CLASS, setEnabledPseudoClassSaga);
 }

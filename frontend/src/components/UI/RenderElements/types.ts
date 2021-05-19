@@ -5,7 +5,6 @@ export type RendererProps = {
   element: StateElement;
   isDisabled?: boolean;
   children?: ReactElement[];
-  pseudoClass: string | null;
 };
 
 export type EventHandlers<T extends HTMLElement> = {

@@ -82,7 +82,7 @@ export type ProjectUiState = {
   };
   editorDocument: Document | null;
   newScreenModalOpen: boolean;
-  enabledPseudoClass: string | null;
+  pseudoClass: string | null;
   sidebar: {
     open: boolean;
     iframe: null | HTMLIFrameElement;
@@ -996,8 +996,7 @@ export type SetSelectedElements = IAction<
 
 export type UpdateStateElement = IAction<
   typeof TYPES.UPDATE_STATE_ELEMENT,
-  { elementId: string; data: Partial<StateElement> },
-  ElementHistoryMeta
+  { elementId: string; data: Partial<StateElement> }
 >;
 
 export type UpdateMultipleStateElements = IAction<
@@ -1119,6 +1118,14 @@ export type SetSidebarHost = IAction<typeof TYPES.SET_SIDEBAR_HOST, string>;
 
 export type SetEnabledPseudoClass = IAction<
   typeof TYPES.SET_ENABLED_PSEUDO_CLASS,
+  {
+    pseudoClass: string | null;
+    elementId?: string | null;
+  }
+>;
+
+export type SetStatePseudoClass = IAction<
+  typeof TYPES.SET_STATE_PSEUDO_CLASS,
   string | null
 >;
 
@@ -1294,7 +1301,8 @@ export type Action =
   | SetVIAResultId
   | UpdateVIARegionLayerSuccess
   | UpdateUISettingsParameters
-  | SetEnabledPseudoClass;
+  | SetEnabledPseudoClass
+  | SetStatePseudoClass;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

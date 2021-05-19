@@ -22,12 +22,20 @@ const PseudoSelectorsSection = () => {
   );
 
   useEffect(() => {
+    console.log('SET ENABLED PSEUDO CLASS!!', pseudoClass);
     dispatch(
       setEnabledPseudoClass(
         pseudoClass === 'not selected' ? null : pseudoClass,
       ),
     );
   }, [dispatch, pseudoClass]);
+
+  useEffect(
+    () => () => {
+      dispatch(setEnabledPseudoClass(null));
+    },
+    [dispatch],
+  );
 
   return (
     <FormControl className={classes.root}>

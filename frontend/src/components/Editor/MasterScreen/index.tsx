@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import {
   selectAllElements,
   selectCurrentRootId,
-  selectEnabledPseudoClass,
   selectMasterSourceElementId,
   selectPreSelectedElementId,
 } from '@Redux/project/selectors/element';
@@ -33,7 +32,6 @@ const MasterScreen: React.FC<Props> = ({ scrollRef }: Props) => {
   const canDragAndDrop = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
-  const pseudoClass = useSelector(selectEnabledPseudoClass);
   return (
     <MasterElement
       elementId={rootId}
@@ -45,7 +43,6 @@ const MasterScreen: React.FC<Props> = ({ scrollRef }: Props) => {
       masterSourceElementId={masterSourceElementId}
       canDragAndDrop={canDragAndDrop}
       allElements={allElements}
-      pseudoClass={pseudoClass}
     />
   );
 };

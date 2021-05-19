@@ -25,9 +25,35 @@ export const makeComponentStyles: any = (
 ) =>
   makeStyles(
     (theme) => ({
-      ownStyles: (props: RendererProps) =>
-        getComputedStyle(props.element.styles.ownStyles, stylesToOmit),
-
+      ownStyles: (props: RendererProps) => {
+        const { element } = props;
+        const { styles } = element;
+        console.log(
+          'TEST!!',
+          element.styles.ownStyles,
+          styles.pseudoClassViewStyles,
+        );
+        const pseudoClassStyles = styles.pseudoClassViewStyles
+          ? Object.keys(styles.pseudoClassViewStyles).reduce(
+              (pseudoStyles, pseudoClassName) => {
+                const newPseudoStyles = { ...pseudoStyles };
+                if (styles.pseudoClassViewStyles) {
+                  newPseudoStyles[`&:${pseudoClassName}`] =
+                    styles.pseudoClassViewStyles[pseudoClassName];
+                }
+                return newPseudoStyles;
+              },
+              {},
+            )
+          : {};
+        console.log('PSEUDO CLASS STYLES!!', pseudoClassStyles);
+        return {
+          ...getComputedStyle(
+            styles.pseudoClassViewStyles || styles.ownStyles,
+            stylesToOmit,
+          ),
+        };
+      },
       disabled: {
         cursor: 'default',
         transition: 'none',

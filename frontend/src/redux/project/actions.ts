@@ -187,6 +187,7 @@ import {
   ProcessDropElement,
   SetEnabledPseudoClass,
   ReplaceMultipleElementsStyles,
+  SetStatePseudoClass,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -458,14 +459,12 @@ export const moveStateElementsInside = (
 export const updateStateElement = (
   elementId: string,
   data: Partial<StateElement>,
-  meta: ElementHistoryMeta,
 ) => ({
   type: TYPES.UPDATE_STATE_ELEMENT,
   payload: {
     elementId,
     data,
   },
-  meta,
 });
 
 // add new elements to existing ones
@@ -1675,7 +1674,18 @@ export const processDropElement = (
 
 export const setEnabledPseudoClass = (
   pseudoClass: string | null,
+  elementId?: string | null,
 ): SetEnabledPseudoClass => ({
   type: TYPES.SET_ENABLED_PSEUDO_CLASS,
+  payload: {
+    pseudoClass,
+    elementId,
+  },
+});
+
+export const setStatePseudoClass = (
+  pseudoClass: string | null,
+): SetStatePseudoClass => ({
+  type: TYPES.SET_STATE_PSEUDO_CLASS,
   payload: pseudoClass,
 });

@@ -132,10 +132,11 @@ function uiReducer(
       };
     }
 
-    case TYPES.SET_ENABLED_PSEUDO_CLASS: {
+    case TYPES.SET_STATE_PSEUDO_CLASS: {
+      console.log('SET STATE PSEUDO CLASS!!', action.payload);
       return {
         ...state,
-        enabledPseudoClass: action.payload,
+        pseudoClass: action.payload,
       };
     }
 

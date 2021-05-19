@@ -52,10 +52,7 @@ import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPer
 import { compose } from 'redux';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
-import {
-  selectCurrentScreen,
-  selectCurrentScreenId,
-} from '../selectors/screen';
+import { selectCurrentScreen } from '../selectors/screen';
 import { reqWrapper } from './shared';
 import {
   selectActiveElement,
@@ -1324,19 +1321,9 @@ export const updateElementSaga = compose(
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.updateElement>) {
   try {
-    const screenId = yield select(selectCurrentScreenId);
     const { elementID, data } = action.payload;
 
-    yield put(
-      Actions.updateStateElement(
-        elementID,
-        { ...data },
-        {
-          ...action.meta,
-          screenId,
-        },
-      ),
-    );
+    yield put(Actions.updateStateElement(elementID, { ...data }));
 
     const updatedElement: LibraryElement<any> = yield select(
       selectElementAsTree(elementID),

@@ -12,6 +12,7 @@ import {
   selectMasterGroupsElementId,
   selectActiveElement,
   selectEnabledPseudoClass,
+  selectActiveElementId,
 } from '@Redux/project/selectors/element';
 import {
   selectCurrentDropTargetParams,
@@ -248,21 +249,17 @@ function* updateElementClassNames(
     const state: Normalized<StateElement> = yield select(selectAllElements);
 
     yield put(
-      Actions.updateStateElement(
-        elementId,
-        {
-          styles: {
-            ...state[elementId].styles,
-            classNames:
-              type === 'add'
-                ? [state[elementId].styles.classNames[0], newClassName]
-                : state[elementId].styles.classNames.filter(
-                    (name) => name !== newClassName,
-                  ),
-          },
+      Actions.updateStateElement(elementId, {
+        styles: {
+          ...state[elementId].styles,
+          classNames:
+            type === 'add'
+              ? [state[elementId].styles.classNames[0], newClassName]
+              : state[elementId].styles.classNames.filter(
+                  (name) => name !== newClassName,
+                ),
         },
-        { ...action.meta },
-      ),
+      }),
     );
 
     const updatedElement: LibraryElement<any> = yield select(
@@ -310,20 +307,16 @@ function* removeElementStyles(
 
     const state: Normalized<StateElement> = yield select(selectAllElements);
     yield put(
-      Actions.updateStateElement(
-        id,
-        {
-          styles: {
-            ...state[id].styles,
-            ownStyles: Object.fromEntries(
-              Object.entries(state[id].styles.ownStyles).filter(([rule]) =>
-                cssPropertiesNames.every((name) => name !== rule),
-              ),
+      Actions.updateStateElement(id, {
+        styles: {
+          ...state[id].styles,
+          ownStyles: Object.fromEntries(
+            Object.entries(state[id].styles.ownStyles).filter(([rule]) =>
+              cssPropertiesNames.every((name) => name !== rule),
             ),
-          },
+          ),
         },
-        { ...action.meta },
-      ),
+      }),
     );
 
     const updatedElement: LibraryElement<any> = yield select(
@@ -500,6 +493,8 @@ export function* updateOrReplaceMultipleElementsStyles(
 
     const pseudoClass = yield select(selectEnabledPseudoClass);
 
+    console.log('SELECT ENABLED PSEUDO CLASS!!', pseudoClass);
+
     const elementsToUpdate = stateElements.map((element: StateElement) => {
       const stylesToUpdate = pseudoClass
         ? element.styles.pseudoClassStyles[pseudoClass]
@@ -514,12 +509,27 @@ export function* updateOrReplaceMultipleElementsStyles(
               ...stylesToUpdate,
               ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
             };
-      const updatedElement = { ...element };
-      if (pseudoClass) {
-        updatedElement.styles.pseudoClassStyles[pseudoClass] = updatedStyles;
-      } else {
-        updatedElement.styles.ownStyles = updatedStyles;
-      }
+      const updatedElement = {
+        ...element,
+        styles: {
+          ...element.styles,
+          ...(pseudoClass
+            ? {
+                pseudoClassStyles: {
+                  ...element.styles.pseudoClassStyles,
+                  [pseudoClass]: updatedStyles,
+                },
+                pseudoClassViewStyles: {
+                  ...element.styles.ownStyles,
+                  ...updatedStyles,
+                },
+              }
+            : {
+                ownStyles: updatedStyles,
+              }),
+        },
+      };
+      console.log('UPDATED ELEMENT!!', updatedElement, pseudoClass);
       return updatedElement;
     });
 
@@ -907,6 +917,7 @@ export function* loadCustomElementsSaga(
 export const setActiveElementSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
 )(function* (action: ReturnType<typeof Actions.setActiveElement>) {
+  yield put(Actions.setEnabledPseudoClass(null));
   yield put(Actions.setEditableStyles('ownStyles'));
   yield put(Actions.setActiveElementId(action.payload));
   yield put(Actions.setCanCreateGroup(false));
@@ -1335,3 +1346,38 @@ export function* processDropElementSaga(
   }
   yield put(Actions.setCurrentDropTargetParams(null));
 }
+
+export const setEnabledPseudoClassSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(function* (action: ReturnType<typeof Actions.setEnabledPseudoClass>) {
+  const { pseudoClass, elementId } = action.payload;
+
+  const activeElementId = yield select(selectActiveElementId);
+  const element = yield select(selectElementById(elementId || activeElementId));
+  if (element) {
+    const pseudoClassViewStyles = pseudoClass
+      ? {
+          ...element.styles.ownStyles,
+          ...(!!element.pseudoClassStyles &&
+          element.pseudoClassStyles[pseudoClass]
+            ? element.pseudoClassStyles[pseudoClass]
+            : {}),
+        }
+      : null;
+    console.log(
+      'PSEUDO CLASS VIEW STYLES!!',
+      pseudoClassViewStyles,
+      element.styles.ownStyles,
+    );
+    yield put(
+      Actions.updateStateElement(element.id, {
+        styles: {
+          ...element.styles,
+          pseudoClassViewStyles,
+        },
+      }),
+    );
+  }
+  console.log('SET STATE PSEUDO CLASS!!', element);
+  yield put(Actions.setStatePseudoClass(pseudoClass));
+});

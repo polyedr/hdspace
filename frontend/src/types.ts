@@ -735,6 +735,7 @@ export type StateElement = {
     classNames: string[];
     ownStyles: React.CSSProperties;
     pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassViewStyles?: React.CSSProperties | null;
   };
   parameters: {
     freeCanvas: FreeCanvasElementParams;

@@ -50,7 +50,7 @@ export const initialUi: ProjectUiState = {
   },
   editorDocument: null,
   newScreenModalOpen: false,
-  enabledPseudoClass: null,
+  pseudoClass: null,
   sidebar: {
     open: false,
     iframe: null,

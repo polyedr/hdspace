@@ -1,3 +1,4 @@
+import React from 'react';
 import { createSelector } from 'reselect';
 import { DEFAULT_ROOT, LABELED_INPUT_TYPES } from '@Constants/defaultParams';
 import {
@@ -85,6 +86,9 @@ export const selectActiveElementId = ({ project }: AppReduxState) =>
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
 
+export const selectEnabledPseudoClass = ({ project }: AppReduxState) =>
+  project.ui.pseudoClass;
+
 export const selectAllElements = ({ project }: AppReduxState) =>
   project.data.elements;
 
@@ -134,13 +138,21 @@ export const selectCurrentEditableStyles = createSelector<
   Project,
   StateElement['styles'],
   string,
+  string | null,
   React.CSSProperties
 >(
   selectActiveElement,
   selectCurrentProject,
   selectActiveElementStyles,
   selectEditableStyles,
-  (activeElement, currentProject, activeElementStyles, editableStyles) => {
+  selectEnabledPseudoClass,
+  (
+    activeElement,
+    currentProject,
+    activeElementStyles,
+    editableStyles,
+    pseudoClass,
+  ) => {
     const { type } = activeElement;
 
     const activeElementClassNames = activeElementStyles.classNames || '';
@@ -162,7 +174,10 @@ export const selectCurrentEditableStyles = createSelector<
 
     const getActiveItemStyles = (activeStyles: string): React.CSSProperties => {
       if (activeStyles === 'ownStyles' || activeStyles === '') {
-        return activeElementStyles.ownStyles as Required<React.CSSProperties>;
+        const { ownStyles, pseudoClassViewStyles } = activeElementStyles;
+        return (pseudoClass
+          ? pseudoClassViewStyles
+          : ownStyles) as Required<React.CSSProperties>;
       }
       if (activeStyles === type) {
         return activeEntityStyles;
@@ -439,6 +454,3 @@ export const selectPreSelectedElementId = ({ project }: AppReduxState) =>
 
 export const selectMasterSourceElementId = ({ project }: AppReduxState) =>
   project.edit.masterSourceElementId;
-
-export const selectEnabledPseudoClass = ({ project }: AppReduxState) =>
-  project.ui.enabledPseudoClass;

@@ -153,22 +153,18 @@ export function* updateOrReplaceElementStyles(
 
     const state: Normalized<StateElement> = yield select(selectAllElements);
     yield put(
-      Actions.updateStateElement(
-        id,
-        {
-          styles: {
-            ...state[id].styles,
-            ownStyles:
-              type === 'replace'
-                ? styles
-                : {
-                    ...state[id].styles.ownStyles,
-                    ...styles,
-                  },
-          },
+      Actions.updateStateElement(id, {
+        styles: {
+          ...state[id].styles,
+          ownStyles:
+            type === 'replace'
+              ? styles
+              : {
+                  ...state[id].styles.ownStyles,
+                  ...styles,
+                },
         },
-        { ...action.meta },
-      ),
+      }),
     );
 
     const updatedElement: LibraryElement<any> = yield select(
@@ -231,15 +227,9 @@ export function* updateOrReplaceElementParameters(
         : { ...state[elementId].parameters, ...parameters };
 
     yield put(
-      Actions.updateStateElement(
-        elementId,
-        {
-          parameters: parametersToUpdate,
-        },
-        {
-          ...action.meta,
-        },
-      ),
+      Actions.updateStateElement(elementId, {
+        parameters: parametersToUpdate,
+      }),
     );
 
     const updatedElement: StateElement = yield select(
