@@ -28,25 +28,24 @@ export const makeComponentStyles: any = (
       ownStyles: (props: RendererProps) => {
         const { element } = props;
         const { styles } = element;
-        const pseudoClassStyles = styles.pseudoClassViewStyles
-          ? Object.keys(styles.pseudoClassStyles).reduce(
-              (pseudoStyles, pseudoClassName) => {
-                const newPseudoStyles = { ...pseudoStyles };
-                if (styles.pseudoClassViewStyles) {
-                  newPseudoStyles[`&:${pseudoClassName}`] =
-                    styles.pseudoClassViewStyles[pseudoClassName];
-                }
-                return newPseudoStyles;
-              },
-              {},
-            )
-          : {};
-        console.log('PSEUDO CLASS STYLES!!', pseudoClassStyles);
         return {
           ...getComputedStyle(
             styles.pseudoClassViewStyles || styles.ownStyles,
             stylesToOmit,
           ),
+          ...(styles.pseudoClassStyles
+            ? Object.keys(styles.pseudoClassStyles).reduce(
+                (pseudoStyles, pseudoClassName) => {
+                  const newPseudoStyles = { ...pseudoStyles };
+                  if (styles.pseudoClassStyles) {
+                    newPseudoStyles[`&:${pseudoClassName}`] =
+                      styles.pseudoClassStyles[pseudoClassName];
+                  }
+                  return newPseudoStyles;
+                },
+                {},
+              )
+            : {}),
         };
       },
       disabled: {

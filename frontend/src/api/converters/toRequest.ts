@@ -66,7 +66,8 @@ export const convertElementToRequest = <
     parameters,
     styles,
   } = element;
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { pseudoClassViewStyles, ...serverStyles } = styles;
   const serverEl: ServerElement<T, ServerElement<K>[], P> = {
     id: Number(id),
     name,
@@ -82,7 +83,7 @@ export const convertElementToRequest = <
     image,
     parameters,
     styles: {
-      ...styles,
+      ...serverStyles,
       ownStyles: cssDecamelize(styles.ownStyles),
       pseudoClassStyles: Object.keys(styles.pseudoClassStyles).reduce(
         (pseudoStyles, className) => ({
@@ -105,6 +106,8 @@ export const convertElementToPatchRequest = <
 ): ServerElement<T, ServerElement<K>[], P> => {
   const { id, name, type, buoyancy, parameters, styles, shared } = element;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { pseudoClassViewStyles, ...serverStyles } = styles;
   return {
     id: Number(id),
     name,
@@ -114,8 +117,15 @@ export const convertElementToPatchRequest = <
     buoyancy,
     parameters,
     styles: {
-      ...styles,
+      ...serverStyles,
       ownStyles: cssDecamelize(styles.ownStyles),
+      pseudoClassStyles: Object.keys(styles.pseudoClassStyles).reduce(
+        (pseudoStyles, className) => ({
+          ...pseudoStyles,
+          [className]: cssDecamelize(styles.pseudoClassStyles[className]),
+        }),
+        {},
+      ),
     },
     shared,
   };

@@ -524,6 +524,7 @@ export function* updateOrReplaceMultipleElementsStyles(
               }
             : {
                 ownStyles: updatedStyles,
+                pseudoClassViewStyles: null,
               }),
         },
       };
@@ -1355,9 +1356,9 @@ export const setEnabledPseudoClassSaga = withRequiredPermissions(
     const pseudoClassViewStyles = pseudoClass
       ? {
           ...element.styles.ownStyles,
-          ...(!!element.pseudoClassStyles &&
-          element.pseudoClassStyles[pseudoClass]
-            ? element.pseudoClassStyles[pseudoClass]
+          ...(element.styles.pseudoClassStyles &&
+          element.styles.pseudoClassStyles[pseudoClass]
+            ? element.styles.pseudoClassStyles[pseudoClass]
             : {}),
         }
       : null;

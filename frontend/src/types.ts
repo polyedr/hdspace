@@ -321,6 +321,7 @@ export type LibraryElement<
     classNames: string[];
     ownStyles: OwnStyles;
     pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassViewStyles?: React.CSSProperties | null;
   };
   children: Children;
   parameters: { group?: string } & Params;
