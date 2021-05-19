@@ -9,7 +9,10 @@ import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
 import { ProjectClass, ScreenMetaData } from '@Src/types';
-import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProjectClasses,
+  selectCurrentUIFramework,
+} from '@Redux/project/selectors/base';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 import ExportedElement from './components/ExportedElement';
 import {
@@ -44,6 +47,7 @@ const createArchive = (
     (classInstance) => !entityClassNames.includes(classInstance.className),
   );
   const { elements } = state.project.data;
+  const { name: currentUIFramework } = selectCurrentUIFramework(state);
   const mapComponents = Object.keys(elements)
     .filter((id) => elements[id].type === 'map')
     .map((id: string) => elements[id]);
@@ -60,7 +64,13 @@ const createArchive = (
   ]).then(([htmlResponse]) => {
     zip.file(
       'index.html',
-      getHtmlFromTemplate(screenName, htmlResponse, mapComponents, metadata),
+      getHtmlFromTemplate(
+        screenName,
+        htmlResponse,
+        mapComponents,
+        currentUIFramework,
+        metadata,
+      ),
     );
     cssFolder?.file('style.css', css);
     zip.generateAsync({ type: 'blob' }).then((content: Blob) => {

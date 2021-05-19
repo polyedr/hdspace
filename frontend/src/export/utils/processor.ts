@@ -182,9 +182,21 @@ export const getHtmlFromTemplate = (
   screenName: string,
   body: string,
   mapComponents: StateElement[],
+  currentUIFramework: string,
   meta?: ScreenMetaData,
-) =>
-  pretty(`
+) => {
+  const getUIFrameworkLink = (currentUIFramework: string) => {
+    if (currentUIFramework.includes('bootstrap')) {
+      return `<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" /> 
+      <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>`;
+    }
+    if (currentUIFramework.includes('material')) {
+      return `<link rel="stylesheet" type="text/css" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" />
+      <script type="text/javascript" src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>`;
+    }
+    return '';
+  };
+  return pretty(`
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -218,10 +230,11 @@ export const getHtmlFromTemplate = (
     <link rel="stylesheet" type="text/css" href="css/ripple.css" />
     <link rel="stylesheet" type="text/css" href="css/shared.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/color-calendar/dist/css/theme-basic.css" />
+    ${getUIFrameworkLink(currentUIFramework)}
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/color-calendar/dist/bundle.js"></script>
     <script src="https://unpkg.com/mat-ripple"></script>
     <script type="text/javascript" src="js/map.js" defer></script>
-    <script type="text/javascript" src="js/clock-widget.js"></script>
+    <script type="text/javascript" src="js/clock-widget.js"></script> 
     ${mapComponents.map((component) => {
       const { apiKey } = component.parameters.map_props;
       return `<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?callback=__googleMapsCallback${
@@ -240,3 +253,4 @@ export const getHtmlFromTemplate = (
   </body>
 </html>
 `);
+};
