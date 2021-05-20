@@ -45,6 +45,7 @@ export const myAxios = (props: MyAxiosProps) => {
     },
     data: props.data || {},
     params: props.params,
+    timeout: 50000,
   });
 };
 
