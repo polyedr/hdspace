@@ -82,6 +82,7 @@ export type ProjectUiState = {
   };
   editorDocument: Document | null;
   newScreenModalOpen: boolean;
+  pseudoClass: string | null;
   sidebar: {
     open: boolean;
     iframe: null | HTMLIFrameElement;
@@ -475,8 +476,12 @@ export type UpdateMultipleElementsStyles = IAction<
   {
     ids: string[];
     styles: { [id: string]: React.CSSProperties };
-    type?: 'delete';
   },
+  ElementHistoryMeta
+>;
+export type ReplaceMultipleElementsStyles = IAction<
+  typeof TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
+  { ids: string[]; styles: { [id: string]: React.CSSProperties } },
   ElementHistoryMeta
 >;
 export type RemoveMultipleElementsStyles = IAction<
@@ -711,22 +716,6 @@ export type UnbindGroupElementStyles = IAction<
   { id: string; styles: React.CSSProperties },
   ElementHistoryMeta
 >;
-
-/* export type UnbindGroupElement = IAction<
-  typeof TYPES.UNBIND_GROUP_ELEMENT,
-  { id: string },
-  ElementHistoryMeta
->;
-export type UnbindGroupInstance = IAction<
-  typeof TYPES.UNBIND_GROUP_INSTANCE,
-  { id: string },
-  ElementHistoryMeta
->;
-export type UnbindMasterGroupElement = IAction<
-  typeof TYPES.UNBIND_MASTER_ELEMENT,
-  { id: string },
-  ElementHistoryMeta
->; */
 export type UnbindMasterGroupInstance = IAction<
   typeof TYPES.UNBIND_MASTER_INSTANCE,
   { id: string },
@@ -1007,8 +996,7 @@ export type SetSelectedElements = IAction<
 
 export type UpdateStateElement = IAction<
   typeof TYPES.UPDATE_STATE_ELEMENT,
-  { elementId: string; data: Partial<StateElement> },
-  ElementHistoryMeta
+  { elementId: string; data: Partial<StateElement> }
 >;
 
 export type UpdateMultipleStateElements = IAction<
@@ -1127,6 +1115,19 @@ export type SetSidebarIframe = IAction<
 >;
 
 export type SetSidebarHost = IAction<typeof TYPES.SET_SIDEBAR_HOST, string>;
+
+export type SetEnabledPseudoClass = IAction<
+  typeof TYPES.SET_ENABLED_PSEUDO_CLASS,
+  {
+    pseudoClass: string | null;
+    elementId?: string | null;
+  }
+>;
+
+export type SetStatePseudoClass = IAction<
+  typeof TYPES.SET_STATE_PSEUDO_CLASS,
+  string | null
+>;
 
 export type Action =
   | LoadProjects
@@ -1260,6 +1261,7 @@ export type Action =
   | RemoveSelectedElement
   | SetSelectedElements
   | UpdateMultipleElementsStyles
+  | ReplaceMultipleElementsStyles
   | RemoveMultipleElementsStyles
   | UploadAsset
   | UploadElementAsset
@@ -1298,7 +1300,9 @@ export type Action =
   | SetValueImportLoader
   | SetVIAResultId
   | UpdateVIARegionLayerSuccess
-  | UpdateUISettingsParameters;
+  | UpdateUISettingsParameters
+  | SetEnabledPseudoClass
+  | SetStatePseudoClass;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

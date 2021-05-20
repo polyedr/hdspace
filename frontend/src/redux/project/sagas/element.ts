@@ -11,6 +11,8 @@ import {
   selectTreeChildElementsIds,
   selectMasterGroupsElementId,
   selectActiveElement,
+  selectEnabledPseudoClass,
+  selectActiveElementId,
 } from '@Redux/project/selectors/element';
 import {
   selectCurrentDropTargetParams,
@@ -247,21 +249,17 @@ function* updateElementClassNames(
     const state: Normalized<StateElement> = yield select(selectAllElements);
 
     yield put(
-      Actions.updateStateElement(
-        elementId,
-        {
-          styles: {
-            ...state[elementId].styles,
-            classNames:
-              type === 'add'
-                ? [state[elementId].styles.classNames[0], newClassName]
-                : state[elementId].styles.classNames.filter(
-                    (name) => name !== newClassName,
-                  ),
-          },
+      Actions.updateStateElement(elementId, {
+        styles: {
+          ...state[elementId].styles,
+          classNames:
+            type === 'add'
+              ? [state[elementId].styles.classNames[0], newClassName]
+              : state[elementId].styles.classNames.filter(
+                  (name) => name !== newClassName,
+                ),
         },
-        { ...action.meta },
-      ),
+      }),
     );
 
     const updatedElement: LibraryElement<any> = yield select(
@@ -309,20 +307,16 @@ function* removeElementStyles(
 
     const state: Normalized<StateElement> = yield select(selectAllElements);
     yield put(
-      Actions.updateStateElement(
-        id,
-        {
-          styles: {
-            ...state[id].styles,
-            ownStyles: Object.fromEntries(
-              Object.entries(state[id].styles.ownStyles).filter(([rule]) =>
-                cssPropertiesNames.every((name) => name !== rule),
-              ),
+      Actions.updateStateElement(id, {
+        styles: {
+          ...state[id].styles,
+          ownStyles: Object.fromEntries(
+            Object.entries(state[id].styles.ownStyles).filter(([rule]) =>
+              cssPropertiesNames.every((name) => name !== rule),
             ),
-          },
+          ),
         },
-        { ...action.meta },
-      ),
+      }),
     );
 
     const updatedElement: LibraryElement<any> = yield select(
@@ -464,22 +458,21 @@ export const updateElementStylesSaga = compose(
   }
 });
 
-export const updateMultipleElementsStylesSaga = compose(
-  withRequiredPermissions(
-    UserProjectPermission.VIEW_PROJECT,
-    UserProjectPermission.CHANGE_PROJECT,
-  ),
-  withActionsHistory,
-)(function* (action: ReturnType<typeof Actions.updateMultipleElementsStyles>) {
+export function* updateOrReplaceMultipleElementsStyles(
+  action: ReturnType<
+    | typeof Actions.updateMultipleElementsStyles
+    | typeof Actions.replaceMultipleElementsStyles
+  >,
+  type: 'replace' | 'update',
+) {
+  if (!action.meta) {
+    console.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
   try {
-    const { ids, styles, type } = action.payload;
-
-    if (!action.meta) {
-      console.error(
-        `You have to provide metainformation for action ${action.type}`,
-      );
-      return;
-    }
+    const { ids, styles } = action.payload;
 
     const stateElements = yield select(selectElementsByIds(ids));
     if (!action.meta.useHistory) {
@@ -491,28 +484,51 @@ export const updateMultipleElementsStylesSaga = compose(
       }, {});
       yield put(
         Actions.addUndoActions(
-          Actions.updateMultipleElementsStyles(ids, stylesState, {
+          Actions.replaceMultipleElementsStyles(ids, stylesState, {
             ...action.meta,
           }),
         ),
       );
     }
 
-    const elementsToUpdate = stateElements.map((element) => {
-      return {
+    const pseudoClass = yield select(selectEnabledPseudoClass);
+
+    const elementsToUpdate = stateElements.map((element: StateElement) => {
+      const stylesToUpdate = pseudoClass
+        ? element.styles.pseudoClassStyles[pseudoClass]
+        : element.styles.ownStyles;
+
+      const updatedStyles =
+        type === 'replace'
+          ? {
+              ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+            }
+          : {
+              ...stylesToUpdate,
+              ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+            };
+      const updatedElement = {
         ...element,
         styles: {
           ...element.styles,
-          ownStyles: type
+          ...(pseudoClass
             ? {
-                ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+                pseudoClassStyles: {
+                  ...element.styles.pseudoClassStyles,
+                  [pseudoClass]: updatedStyles,
+                },
+                pseudoClassViewStyles: {
+                  ...element.styles.ownStyles,
+                  ...updatedStyles,
+                },
               }
             : {
-                ...element.styles.ownStyles,
-                ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
-              },
+                ownStyles: updatedStyles,
+                pseudoClassViewStyles: null,
+              }),
         },
       };
+      return updatedElement;
     });
 
     const elements = elementsToUpdate.reduce((acc, element) => {
@@ -545,6 +561,26 @@ export const updateMultipleElementsStylesSaga = compose(
       ),
     );
   }
+}
+
+export const updateMultipleElementsStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateMultipleElementsStyles>) {
+  yield call(updateOrReplaceMultipleElementsStyles, action, 'update');
+});
+
+export const replaceMultipleElementsStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.replaceMultipleElementsStyles>) {
+  yield call(updateOrReplaceMultipleElementsStyles, action, 'replace');
 });
 
 export const removeMultipleElementsStylesSaga = compose(
@@ -879,6 +915,7 @@ export function* loadCustomElementsSaga(
 export const setActiveElementSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
 )(function* (action: ReturnType<typeof Actions.setActiveElement>) {
+  yield put(Actions.setEnabledPseudoClass(null));
   yield put(Actions.setEditableStyles('ownStyles'));
   yield put(Actions.setActiveElementId(action.payload));
   yield put(Actions.setCanCreateGroup(false));
@@ -890,7 +927,7 @@ export const toggleSelectedElementSaga = withRequiredPermissions(
 )(function* (action: ReturnType<typeof Actions.toggleSelectedElement>) {
   const isElementSelected = yield select(selectIsElementSelected);
   if (isElementSelected) {
-    const element = yield select(selectElementById(action.payload.id));
+    const element = yield select(selectElementById, action.payload.id);
     const selectedElementsIds = yield select(selectSelectedElementsIds);
     const selectedElements = yield select(
       selectElementsByIds(selectedElementsIds),
@@ -1159,9 +1196,10 @@ export const unbindGroupElementStylesSaga = compose(
     return;
   }
   try {
-    const element = yield select(selectElementById(id));
+    const element = yield select(selectElementById, id);
     const sourceElement = yield select(
-      selectElementById(element.parameters.sourceElementId),
+      selectElementById,
+      element.parameters.sourceElementId,
     );
     const { groupElements } = sourceElement.parameters;
     const paramsToUpdate = {
@@ -1212,7 +1250,7 @@ export function* processDropTargetParamsSaga(
   action: ReturnType<typeof Actions.processDropTargetParams>,
 ) {
   const { elementId, rect, isHorizontal, offset } = action.payload;
-  const element = yield select(selectElementById(elementId));
+  const element = yield select(selectElementById, elementId);
   const dropTargetParams = yield select(selectCurrentDropTargetParams);
 
   const elementIsContainer =
@@ -1262,7 +1300,7 @@ export function* processDropElementSaga(
     return;
   }
   const screenId = yield select(selectCurrentScreenId);
-  const dropTarget = yield select(selectElementById(dropTargetParams.id));
+  const dropTarget = yield select(selectElementById, dropTargetParams.id);
   const elementIsContainer =
     !dropTarget.parent ||
     CONTAINER_GROUPS.includes(dropTarget.parameters.group);
@@ -1307,3 +1345,35 @@ export function* processDropElementSaga(
   }
   yield put(Actions.setCurrentDropTargetParams(null));
 }
+
+export const setEnabledPseudoClass = function* (
+  action: ReturnType<typeof Actions.setEnabledPseudoClass>,
+) {
+  const { pseudoClass, elementId } = action.payload;
+  const activeElementId = yield select(selectActiveElementId);
+  const element = yield select(selectElementById, elementId || activeElementId);
+  if (element) {
+    const pseudoClassViewStyles = pseudoClass
+      ? {
+          ...element.styles.ownStyles,
+          ...(element.styles.pseudoClassStyles &&
+          element.styles.pseudoClassStyles[pseudoClass]
+            ? element.styles.pseudoClassStyles[pseudoClass]
+            : {}),
+        }
+      : null;
+    yield put(
+      Actions.updateStateElement(element.id, {
+        styles: {
+          ...element.styles,
+          pseudoClassViewStyles,
+        },
+      }),
+    );
+  }
+  yield put(Actions.setStatePseudoClass(pseudoClass));
+};
+
+export const setEnabledPseudoClassSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(setEnabledPseudoClass);

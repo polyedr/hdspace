@@ -42,6 +42,7 @@ export const makePageTemplate = (
   styles: {
     classNames: ['pageTemplate'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: withoutContainers ? 'emptyPageTemplate' : 'pageTemplate',
   children: [
@@ -172,6 +173,7 @@ export const subscribeForm: SubscribeFormServerElement = {
   styles: {
     classNames: ['subscribeForm'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'subscribeForm',
   children: [
@@ -271,6 +273,7 @@ export const cardsSection: CardsSectionServerElement = {
   styles: {
     classNames: ['cardsSection'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'cardsSection',
   children: [
@@ -448,6 +451,7 @@ export const featureSection: FeatureSectionServerElement = {
   styles: {
     classNames: ['featureSection'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'featureSection',
   children: [
@@ -524,6 +528,7 @@ export const section: SectionServerElement = {
   styles: {
     classNames: ['section'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'section',
   children: [],

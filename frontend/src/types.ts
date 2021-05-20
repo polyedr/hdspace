@@ -111,6 +111,7 @@ export type ServerElement<
   styles: {
     classNames: string[];
     ownStyles: React.CSSProperties;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
   };
   children: Children;
   shared?: boolean;
@@ -289,7 +290,7 @@ export type LibraryElement<
   Type extends Entity,
   Children = any[],
   Params = any,
-  Styles = {}
+  OwnStyles = {}
 > = {
   id: string;
   name: string;
@@ -298,7 +299,9 @@ export type LibraryElement<
   image: string | null | undefined;
   styles: {
     classNames: string[];
-    ownStyles: Styles;
+    ownStyles: OwnStyles;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassViewStyles?: React.CSSProperties | null;
   };
   children: Children;
   parameters: { group?: string } & Params;
@@ -712,6 +715,8 @@ export type StateElement = {
   styles: {
     classNames: string[];
     ownStyles: React.CSSProperties;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
+    pseudoClassViewStyles?: React.CSSProperties | null;
   };
   parameters: {
     freeCanvas: FreeCanvasElementParams;

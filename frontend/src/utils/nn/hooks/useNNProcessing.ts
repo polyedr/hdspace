@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { selectElementById } from '@Redux/project/selectors/element';
+import { selectElementByIdWrapper } from '@Redux/project/selectors/element';
 import { recognizeImage, autoAnalyzeImage } from '@Redux/project/actions';
 import { NNBlockType } from '../../../types';
 
@@ -10,7 +10,7 @@ const useNNProcessing = (
   blockType: NNBlockType,
   file?: File | null,
 ) => {
-  const element = useSelector(selectElementById(elementId));
+  const element = useSelector(selectElementByIdWrapper(elementId));
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
 

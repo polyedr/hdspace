@@ -345,7 +345,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   const { listId, elementId, asset } = action.payload;
   const { screenId } = action.meta;
 
-  const element = yield select(selectElementById(elementId));
+  const element = yield select(selectElementById, elementId);
   try {
     if (asset.imageURL) {
       yield call(

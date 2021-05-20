@@ -6,7 +6,7 @@ import { selectProjectsAsArr } from '@Redux/project/selectors/base';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { apiDeleteProject } from '@Api/project';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { mockProject, beforeSagaTest } from '../test-utils';
+import { mockProject, beforeSagaTest } from '../../test-utils';
 
 describe('deleteProjectSaga Test', () => {
   beforeAll(beforeSagaTest);

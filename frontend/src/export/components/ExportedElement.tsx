@@ -11,7 +11,7 @@ type Props = {
 };
 
 const ExportedElement: React.FC<Props> = ({ elementId, state }) => {
-  const element = selectElementById(elementId)(state);
+  const element = selectElementById(state, elementId);
   const Component = RENDERERS[element.type];
 
   const { layouts } = element.parameters as { layouts: Layout[] };

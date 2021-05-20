@@ -52,10 +52,7 @@ import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPer
 import { compose } from 'redux';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
-import {
-  selectCurrentScreen,
-  selectCurrentScreenId,
-} from '../selectors/screen';
+import { selectCurrentScreen } from '../selectors/screen';
 import { reqWrapper } from './shared';
 import {
   selectActiveElement,
@@ -207,7 +204,8 @@ export const createElementsSaga = compose(
     }
     const activeElement = yield select(selectActiveElement);
     const parentElement = yield select(
-      selectElementById(parentId || activeElement.id),
+      selectElementById,
+      parentId || activeElement.id,
     );
     if (!parentElement) {
       yield put(
@@ -586,7 +584,7 @@ export const deleteElementSaga = withRequiredPermissions(
       );
       return;
     }
-    const element = yield select(selectElementById(id));
+    const element = yield select(selectElementById, id);
     const { groupElements, sourceElementId } = element.parameters;
 
     if (groupElements) {
@@ -596,7 +594,7 @@ export const deleteElementSaga = withRequiredPermissions(
     } else {
       yield put(Actions.softDeleteElement(id, action.meta));
       if (sourceElementId) {
-        const sourceElement = yield select(selectElementById(sourceElementId));
+        const sourceElement = yield select(selectElementById, sourceElementId);
         yield put(
           Actions.updateElementParameters(
             sourceElementId,
@@ -644,7 +642,7 @@ export const softDeleteSaga = compose(
     }
     const { screenId, useHistory } = action.meta;
 
-    const element: StateElement = yield select(selectElementById(id));
+    const element: StateElement = yield select(selectElementById, id);
 
     if (!element.parent) return;
 
@@ -869,7 +867,7 @@ export const restoreElementChildrenSaga = compose(
     }
     const { screenId, useHistory } = action.meta;
 
-    const element: StateElement = yield select(selectElementById(elementId));
+    const element: StateElement = yield select(selectElementById, elementId);
 
     if (!useHistory) {
       yield put(
@@ -1011,7 +1009,7 @@ export function* restoreElementSaga(
       return;
     }
     const { useHistory } = action.meta;
-    const element: StateElement = yield select(selectElementById(elementId));
+    const element: StateElement = yield select(selectElementById, elementId);
 
     if (!useHistory) {
       yield put(
@@ -1055,7 +1053,7 @@ export function* restoreElementSaga(
 
 export function* addElementToElement(elementId: string, parentId: string) {
   try {
-    const parent: StateElement = yield select(selectElementById(parentId));
+    const parent: StateElement = yield select(selectElementById, parentId);
 
     const parentData = {
       name: parent.name,
@@ -1221,8 +1219,8 @@ export const wrapIntoContainerSaga = compose(
       return;
     }
 
-    const element = yield select(selectElementById(id));
-    const parent = yield select(selectElementById(element.parent));
+    const element = yield select(selectElementById, id);
+    const parent = yield select(selectElementById, element.parent);
 
     const ids = yield call(
       wrapIntoContainer,
@@ -1324,19 +1322,9 @@ export const updateElementSaga = compose(
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.updateElement>) {
   try {
-    const screenId = yield select(selectCurrentScreenId);
     const { elementID, data } = action.payload;
 
-    yield put(
-      Actions.updateStateElement(
-        elementID,
-        { ...data },
-        {
-          ...action.meta,
-          screenId,
-        },
-      ),
-    );
+    yield put(Actions.updateStateElement(elementID, { ...data }));
 
     const updatedElement: LibraryElement<any> = yield select(
       selectElementAsTree(elementID),

@@ -185,6 +185,9 @@ import {
   UpdateCurrentUIFramework,
   ProcessDropTargetParams,
   ProcessDropElement,
+  SetEnabledPseudoClass,
+  ReplaceMultipleElementsStyles,
+  SetStatePseudoClass,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -456,14 +459,12 @@ export const moveStateElementsInside = (
 export const updateStateElement = (
   elementId: string,
   data: Partial<StateElement>,
-  meta: ElementHistoryMeta,
 ) => ({
   type: TYPES.UPDATE_STATE_ELEMENT,
   payload: {
     elementId,
     data,
   },
-  meta,
 });
 
 // add new elements to existing ones
@@ -673,10 +674,24 @@ export const updateMultipleElementsStyles = (
     [id: string]: React.CSSProperties;
   },
   meta: ElementHistoryMeta,
-  type?: 'delete',
 ): UpdateMultipleElementsStyles => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
-  payload: { ids, styles, type },
+  payload: { ids, styles },
+  meta,
+});
+
+export const replaceMultipleElementsStyles = (
+  ids: string[],
+  styles: {
+    [id: string]: React.CSSProperties;
+  },
+  meta: ElementHistoryMeta,
+): ReplaceMultipleElementsStyles => ({
+  type: TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
+  payload: {
+    ids,
+    styles,
+  },
   meta,
 });
 
@@ -1655,4 +1670,22 @@ export const processDropElement = (
     dragSource,
     dropType,
   },
+});
+
+export const setEnabledPseudoClass = (
+  pseudoClass: string | null,
+  elementId?: string | null,
+): SetEnabledPseudoClass => ({
+  type: TYPES.SET_ENABLED_PSEUDO_CLASS,
+  payload: {
+    pseudoClass,
+    elementId,
+  },
+});
+
+export const setStatePseudoClass = (
+  pseudoClass: string | null,
+): SetStatePseudoClass => ({
+  type: TYPES.SET_STATE_PSEUDO_CLASS,
+  payload: pseudoClass,
 });

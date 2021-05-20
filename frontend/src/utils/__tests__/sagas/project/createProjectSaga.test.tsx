@@ -17,14 +17,14 @@ import { apiCreateAssetList } from '@Api/assetList';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { convertCreatedProjectToRequest } from '@Api/converters/toRequest';
 import { UserProjectPermission } from '@Src/types';
-import * as PermissionsActions from '../../../redux/permissions/actions';
+import * as PermissionsActions from '../../../../redux/permissions/actions';
 import {
   createAssetListMock,
   createMasterScreenMock,
   createMockProject,
   createScreenMock,
   beforeSagaTest,
-} from '../test-utils';
+} from '../../test-utils';
 
 describe('createProjectSaga Test', () => {
   beforeAll(beforeSagaTest);

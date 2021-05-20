@@ -132,6 +132,13 @@ function uiReducer(
       };
     }
 
+    case TYPES.SET_STATE_PSEUDO_CLASS: {
+      return {
+        ...state,
+        pseudoClass: action.payload,
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,

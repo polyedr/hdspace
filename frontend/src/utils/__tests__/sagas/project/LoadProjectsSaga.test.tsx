@@ -10,7 +10,7 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { apiGetProjectList } from '@Api/project';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { beforeSagaTest } from '../test-utils';
+import { beforeSagaTest } from '../../test-utils';
 
 describe('getProjectListSaga Test', () => {
   describe('WHEN method is called and API is in its working state', () => {

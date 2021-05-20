@@ -60,6 +60,8 @@ import {
   replaceElementParametersSaga,
   processDropTargetParamsSaga,
   processDropElementSaga,
+  replaceMultipleElementsStylesSaga,
+  setEnabledPseudoClassSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
@@ -385,6 +387,10 @@ export default function* projectSaga() {
     TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
     updateMultipleElementsStylesSaga,
   );
+  yield takeLatest(
+    TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
+    replaceMultipleElementsStylesSaga,
+  );
   yield takeLatest(TYPES.REPLACE_ELEMENT_STYLES, replaceElementStylesSaga);
   yield takeLatest(TYPES.COPY_ELEMENT_STYLES, copyElementStylesSaga);
   yield takeLatest(TYPES.ADD_ELEMENT_CLASSNAME, addElementClassNameSaga);
@@ -506,4 +512,6 @@ export default function* projectSaga() {
   );
 
   yield takeEvery(TYPES.PROCESS_DROP_ELEMENT, processDropElementSaga);
+
+  yield takeEvery(TYPES.SET_ENABLED_PSEUDO_CLASS, setEnabledPseudoClassSaga);
 }

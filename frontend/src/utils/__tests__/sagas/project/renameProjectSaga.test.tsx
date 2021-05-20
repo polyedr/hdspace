@@ -6,7 +6,7 @@ import { selectProjectById } from '@Redux/project/selectors/base';
 import { apiUpdateProject } from '@Api/project';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { createMockProject, beforeSagaTest } from '../test-utils';
+import { createMockProject, beforeSagaTest } from '../../test-utils';
 
 describe('rename project saga', () => {
   beforeAll(beforeSagaTest);

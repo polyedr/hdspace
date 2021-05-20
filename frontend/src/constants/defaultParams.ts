@@ -84,6 +84,7 @@ export const DEFAULT_ROOT: LibraryElement<'root'> = {
   styles: {
     classNames: ['root'],
     ownStyles: {} as Required<React.CSSProperties>,
+    pseudoClassStyles: {},
   },
 };
 

@@ -69,13 +69,11 @@ const useContentEditable = <T extends HTMLElement>(
           }
         },
         onBlur: (event: React.SyntheticEvent) => {
-          if (contentEditable) {
-            setContentEditable(false);
-            debouncedCallback.cancel();
-            debouncedCallback.callback(
-              (event.target as HTMLElement).innerHTML.trim(),
-            );
-          }
+          setContentEditable(false);
+          debouncedCallback.cancel();
+          debouncedCallback.callback(
+            (event.target as HTMLElement).innerHTML.trim(),
+          );
         },
       },
     }),
