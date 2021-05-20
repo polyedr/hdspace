@@ -1,5 +1,5 @@
 import { myAxios } from '@Src/config/settings';
-import { Asset, MyAxiosProps, PaginatedArray } from '@Src/types';
+import { Asset, MyAxiosProps, PaginatedArray, Result } from '@Src/types';
 import { AxiosResponse } from 'axios';
 import {
   convertResponseToAsset,
@@ -20,7 +20,7 @@ export const apiGetAsset = (props: MyAxiosProps & { id: string }) => {
 
 export const apiCreateAsset = (
   props: MyAxiosProps & { assetFormData: FormData },
-) => {
+): Promise<Result<Asset>> => {
   const { assetFormData, ...axiosProps } = props;
   return myAxios({
     ...axiosProps,
@@ -29,9 +29,9 @@ export const apiCreateAsset = (
     contentType: 'multipart/form-data',
     data: assetFormData,
   })
-    .then((response: AxiosResponse<ServerAsset>) =>
-      convertResponseToAsset(response),
-    )
+    .then((response: AxiosResponse<ServerAsset>) => ({
+      result: convertResponseToAsset(response),
+    }))
     .catch(handleError);
 };
 
