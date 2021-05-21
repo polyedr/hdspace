@@ -1092,7 +1092,7 @@ export type Node = {
   children: string[];
 };
 
-export type BorderStyles = {
+export type BoundingStyles = {
   top: number;
   bottom: number;
   right: number;

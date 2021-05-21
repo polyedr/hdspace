@@ -26,6 +26,7 @@ const MasterScreen: React.FC<Props> = ({ scrollRef }: Props) => {
 
   const allElements = useSelector(selectAllElements);
   const frameWindow = useContext(WindowContext);
+  console.log('TEST!!!', frameWindow?.document.body.getBoundingClientRect());
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
   const preSelectedElementId = useSelector(selectPreSelectedElementId);
   const masterSourceElementId = useSelector(selectMasterSourceElementId);

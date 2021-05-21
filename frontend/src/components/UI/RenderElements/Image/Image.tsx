@@ -1,5 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
+// import useResizer from '@Components/UI/RenderHooks/useResizer';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
@@ -13,6 +14,8 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
     const { imageURL, alt, title } = element.parameters;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
+
+    // const [resize, Resizer] = useResizer(element);
 
     return (
       <img

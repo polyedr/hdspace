@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -21,6 +21,7 @@ import {
   selectMasterScreenId,
 } from '@Redux/project/selectors/screen';
 import { selectUserProfileDataParameters } from '@Redux/user/selectors';
+import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import InteractionsHandler from './InteractionsHandler';
 import { DOMHandler } from '../DOMHandler';
 
@@ -56,7 +57,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   const bordersEnabled = useSelector(selectBordersEnabled);
   const currentProjectId = useSelector(selectCurrentProjectId);
 
-  const rootDom = DOMHandler.INSTANCE.getDomById(currentScreen.element);
+  const frameWindow = useContext(WindowContext);
 
   const idsToExclude = [preSelectedElementId, activeElementId];
   if (!!hoveredElementId && hoveredElementId !== activeElementId) {
@@ -88,7 +89,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
       ]
     : DOMHandler.INSTANCE.visibleElementsIds;
 
-  if (!rootDom || !bordersEnabled) {
+  if (!frameWindow || !bordersEnabled) {
     return null;
   }
 
@@ -107,7 +108,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
             key={`border-handler-${id}`}
             element={allElements[id]}
             elementDom={elementDom}
-            rootDom={rootDom}
+            frameWindow={frameWindow.window}
             activeElementId={activeElementId}
             hoveredElementId={hoveredElementId}
             dropTargetParams={dropTargetParams}
