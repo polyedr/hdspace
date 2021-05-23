@@ -4,8 +4,6 @@ const getBoundingStyles = (elDom: HTMLElement, window: Window) => {
   const rect = elDom?.getBoundingClientRect();
   const bodyRect = window.document.body?.getBoundingClientRect();
 
-  console.log('ELEMENT RECT!!', rect);
-
   return rect && bodyRect
     ? ({
         top: rect.top - bodyRect.top,
