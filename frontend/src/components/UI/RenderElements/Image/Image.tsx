@@ -35,7 +35,7 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const { imageURL, alt, title } = element.parameters;
+    const { imageURL, alt, title, keepAspectRatio } = element.parameters;
     const classes = useStyles(props);
     const dndClasses = useDragAndDropStyles();
     const eventHandlers = useEventHandlers(props);
@@ -69,10 +69,15 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
           if (!offset || !imgRef.current || !size) {
             return;
           }
-          setSize({
+          const newSize: Size = {
             width: size.width + offset.x,
             height: size.height + offset.y,
-          });
+          };
+          if (keepAspectRatio) {
+            const aspectRatio = size.width / size.height;
+            newSize.width = newSize.height * aspectRatio;
+          }
+          setSize(newSize);
         },
       },
       end: () => {
