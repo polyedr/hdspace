@@ -489,6 +489,7 @@ export type ImageParameters = BaseElementParams & {
   imageURL: string;
   alt: string;
   title: string;
+  keepAspectRatio: boolean;
 };
 
 export type LinkType = 'internal' | 'external';
@@ -1092,7 +1093,7 @@ export type Node = {
   children: string[];
 };
 
-export type BorderStyles = {
+export type BoundingStyles = {
   top: number;
   bottom: number;
   right: number;
@@ -1233,6 +1234,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'title',
   'attributes',
   'tagName',
+  'resizeOptions',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
