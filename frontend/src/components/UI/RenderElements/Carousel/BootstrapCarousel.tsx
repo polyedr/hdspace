@@ -1,5 +1,6 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 
@@ -10,6 +11,7 @@ const BootstrapCarousel = React.forwardRef<HTMLElement, RendererProps>(
 
     const useStyles = makeComponentStyles('breadcrumb', {});
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return (
       <div
@@ -17,6 +19,7 @@ const BootstrapCarousel = React.forwardRef<HTMLElement, RendererProps>(
         id="carouselExampleControls"
         className={cn(classes.ownStyles, groupClass, 'carousel slide')}
         data-bs-ride="carousel"
+        {...eventHandlers}
       >
         <div className="carousel-inner">{children}</div>
         <button

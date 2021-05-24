@@ -38,14 +38,13 @@ const BootstrapBreadcrumbItem = React.forwardRef<HTMLElement, RendererProps>(
             aria-current="page"
             {...eventHandlers}
             data-gramm_editor={false}
-            {...eventHandlers}
-            {...contentEditableSettings.props}
-            {...contentEditableSettings.events}
           >
             <a
               href={link}
               aria-label={`Link-${element.id}`}
               dangerouslySetInnerHTML={{ __html: textContent }}
+              {...contentEditableSettings.props}
+              {...contentEditableSettings.events}
               target="_blank"
               rel="noreferrer"
             />
@@ -62,7 +61,6 @@ const BootstrapBreadcrumbItem = React.forwardRef<HTMLElement, RendererProps>(
               groupClass,
             )}
             aria-current="page"
-            {...eventHandlers}
             dangerouslySetInnerHTML={{ __html: textContent }}
             data-gramm_editor={false}
             {...eventHandlers}

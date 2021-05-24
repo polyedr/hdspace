@@ -28,7 +28,6 @@ const BootstrapCarouselItem = React.forwardRef<HTMLElement, RendererProps>(
           className={cn('carousel-item active', classes.ownStyles, groupClass)}
           {...eventHandlers}
           data-gramm_editor={false}
-          {...eventHandlers}
           {...contentEditableSettings.props}
           {...contentEditableSettings.events}
         >

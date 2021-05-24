@@ -1,20 +1,24 @@
 import React from 'react';
 import cn from 'classnames';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 
 const BootstrapBreadcrumb = React.forwardRef<HTMLElement, RendererProps>(
-  (props) => {
+  (props, ref) => {
     const { children, element } = props;
     const [groupClass] = element.styles.classNames;
 
     const useStyles = makeComponentStyles('breadcrumb', {});
     const classes = useStyles(props);
+    const eventHandlers = useEventHandlers(props);
 
     return (
       <nav
+        ref={ref}
         aria-label="breadcrumb"
         className={cn(classes.ownStyles, groupClass)}
+        {...eventHandlers}
       >
         <ol className="breadcrumb">{children}</ol>
       </nav>
