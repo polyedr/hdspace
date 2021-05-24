@@ -27,7 +27,7 @@ const UnstyledTextarea = React.forwardRef<HTMLTextAreaElement, RendererProps>(
           className,
           groupClass,
           classes.ownStyles,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
         defaultValue={textContent}
         {...eventHandlers}

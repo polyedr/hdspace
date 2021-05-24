@@ -53,7 +53,13 @@ const SelectComponent = React.forwardRef<HTMLDivElement, RendererProps>(
         id={element.id}
         data-ls-id={element.id}
         ref={ref}
-        className={cn(className, classes.root, groupClass, classes.ownStyles)}
+        className={cn(
+          className,
+          classes.root,
+          groupClass,
+          classes.ownStyles,
+          !isDisabled && classes.ownPseudoStyles,
+        )}
         {...eventHandlers}
       >
         <div

@@ -57,7 +57,7 @@ const Link = React.forwardRef<HTMLAnchorElement, RendererProps>(
           className,
           groupClass,
           classes.ownStyles,
-          isDisabled && classes.disabledLink,
+          isDisabled ? classes.disabledLink : classes.ownPseudoStyles,
         )}
         href={
           clickEvent?.data.linkType === 'external' ? clickEvent.data.url : ''

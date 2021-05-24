@@ -30,7 +30,7 @@ const DropdownMenu = React.forwardRef<HTMLUListElement, RendererProps>(
           'mdc-list',
           className,
           groupClass,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
           classes.ownStyles,
         )}
         role="menu"

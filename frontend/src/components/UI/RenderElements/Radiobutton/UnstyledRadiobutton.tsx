@@ -25,7 +25,7 @@ const UnstyledRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
         className={cn(
           className,
           groupClass,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
           classes.ownStyles,
         )}
         {...eventHandlers}

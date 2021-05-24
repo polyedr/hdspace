@@ -36,7 +36,7 @@ const Video = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
       className={cn(
         className,
         groupClass,
-        isDisabled && styles.disabled,
+        isDisabled ? styles.disabled : styles.ownPseudoStyles,
         styles.ownStyles,
       )}
       {...eventHandlers}
@@ -60,7 +60,13 @@ const Video = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
       ref={ref}
       id={element.id}
       data-ls-id={element.id}
-      className={cn(className, groupClass, styles.empty, styles.ownStyles)}
+      className={cn(
+        className,
+        groupClass,
+        styles.empty,
+        styles.ownStyles,
+        styles.ownPseudoStyles,
+      )}
       {...eventHandlers}
     />
   );

@@ -8,7 +8,7 @@ const useStyles = makeComponentStyles('nativeColumns');
 
 const NativeColumns = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { element, children } = props;
+    const { element, isDisabled, children } = props;
     const [className, groupClass] = element.styles.classNames;
     const classes: Record<string, any> = useStyles(props);
     const eventHandlers = useEventHandlers(props);
@@ -18,7 +18,12 @@ const NativeColumns = React.forwardRef<HTMLDivElement, RendererProps>(
         ref={ref}
         id={element.id}
         data-ls-id={element.id}
-        className={cn(className, groupClass, classes.ownStyles)}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          !isDisabled && classes.ownPseudoStyles,
+        )}
         {...eventHandlers}
       >
         {children}

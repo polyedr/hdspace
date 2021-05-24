@@ -8,7 +8,7 @@ const useStyles = makeComponentStyles('image');
 
 const Image = React.forwardRef<HTMLImageElement, RendererProps>(
   (props, ref) => {
-    const { element } = props;
+    const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
     const { imageURL, alt, title } = element.parameters;
     const classes = useStyles(props);
@@ -20,7 +20,12 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
         src={imageURL}
         id={element.id}
         data-ls-id={element.id}
-        className={cn(className, groupClass, classes.ownStyles)}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          !isDisabled && classes.ownPseudoStyles,
+        )}
         alt={alt}
         title={title}
         draggable={false}

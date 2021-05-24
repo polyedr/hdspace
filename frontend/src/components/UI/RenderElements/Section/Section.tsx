@@ -8,7 +8,7 @@ const useStyles = makeComponentStyles('section');
 
 const Container = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    const { element, children } = props;
+    const { element, isDisabled, children } = props;
     const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
@@ -18,7 +18,12 @@ const Container = React.forwardRef<HTMLDivElement, RendererProps>(
         ref={ref}
         id={element.id}
         data-ls-id={element.id}
-        className={cn(className, groupClass, classes.ownStyles)}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          !isDisabled && classes.ownPseudoStyles,
+        )}
         {...eventHandlers}
       >
         {children}

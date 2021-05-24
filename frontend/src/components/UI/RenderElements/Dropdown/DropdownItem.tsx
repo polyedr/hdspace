@@ -33,8 +33,8 @@ const DropdownItem = React.forwardRef<HTMLLIElement, RendererProps>(
           styles.root,
           className,
           groupClass,
-          ...(isDisabled ? [className, styles.disabled] : []),
           styles.ownStyles,
+          isDisabled ? styles.disabled : styles.ownPseudoStyles,
         )}
         {...(isDisabled ? eventHandlers : {})}
       >

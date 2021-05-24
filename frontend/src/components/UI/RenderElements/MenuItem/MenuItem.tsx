@@ -29,7 +29,7 @@ const MenuItem = React.forwardRef<HTMLLIElement, RendererProps>(
           className,
           classes.menuItem,
           groupClass,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
           classes.ownStyles,
         )}
         value={value}
