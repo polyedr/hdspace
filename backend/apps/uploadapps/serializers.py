@@ -40,6 +40,49 @@ class FileSerializer(serializers.ModelSerializer):
         return fileupload
 
 
+# Version 2,based on FileSerializer
+class RobotsSerializer(serializers.ModelSerializer):
+    fileurl = serializers.URLField()
+
+    class Meta:
+        model = Fileupload
+        fields = ("filename", "owner", "fileurl")
+        extra_kwargs = {
+            "fileurl": {"read_only": True},
+            "filename": {"write_only": True},
+        }
+
+    def create(self, validated_data):
+        url = validated_data.pop("fileurl", None)
+        # Remove url from the submitted data
+        # validated_data['fileurl'] = ''
+        # Download data from url (requires `requests` module.  Can also be done with urllib)
+        response = requests.get(url)
+        # Set FileField to binary file
+        filename = urlparse(url).path.split("/")[-1]
+        upfile = validated_data["filename"] = UploadedFile(
+            BytesIO(response.content), name=filename
+        )
+
+        # Printing result data set start
+        result = upfile.read().decode()
+
+        result_data_set = {"Disallowed": [], "Allowed": []}
+
+        for line in result.split("\n"):
+            if line.startswith('Allow'):  # this is for allowed url
+                result_data_set["Allowed"].append(
+                    line.split(': ')[1].split(' ')[0])  # to neglect the comments or other junk info
+            elif line.startswith('Disallow'):  # this is for disallowed url
+                result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])
+        print(result_data_set)
+        # Printing result data set end
+
+        fileupload = Fileupload(id=None, **validated_data)
+        fileupload.save()
+        return fileupload
+
+
 class WebpageSavedSerializer(serializers.ModelSerializer):
     wpurl = serializers.URLField()
 
@@ -146,3 +189,33 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
         if self.parse_with_splash:
             subprocess.run(["wget", "-p", "-k", response.url])
             print(2)
+
+
+'''
+# Version 1
+class RobotsSerializer(serializers.Serializer):
+    """Your data serializer, define your fields here."""
+    fileurl = serializers.URLField()
+    result_data_set = serializers.DictField(allow_null=True)
+
+    class Meta:
+        model = WebpageSaved
+        fields = ("fileurl", "result_data_set")
+        extra_kwargs = {"result_data_set": {"write_only": True}}
+
+
+    def create(self, validated_data):
+        print(validated_data)
+        url = validated_data["fileurl"]
+        result = os.popen("curl " + str(url)).read()
+        self.result_data_set = {"Disallowed": [], "Allowed": []}
+
+        for line in result.split("\n"):
+            if line.startswith('Allow'):  # this is for allowed url
+                self.result_data_set["Allowed"].append(
+                    line.split(': ')[1].split(' ')[0])  # to neglect the comments or other junk info
+            elif line.startswith('Disallow'):  # this is for disallowed url
+                self.result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])
+
+        return self.result_data_set
+'''
