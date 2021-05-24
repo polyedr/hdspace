@@ -7,7 +7,7 @@ exports[`Free Draggable should render free draggable component 1`] = `
     style="position: absolute; user-select: auto; width: 300px; height: 100px; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
   >
     <p
-      class="paragraph paragraph-ownStyles-5 paragraph-ownStyles-7"
+      class="paragraph paragraph-ownStyles-5 paragraph-ownStyles-8 paragraph-ownPseudoStyles-6 paragraph-ownPseudoStyles-9"
       contenteditable="false"
       data-gramm_editor="false"
       data-ls-id="2"
@@ -20,21 +20,21 @@ exports[`Free Draggable should render free draggable component 1`] = `
       hidden=""
     >
       <div
-        class="makeStyles-crumb-8"
+        class="makeStyles-crumb-10"
       >
         <div
-          class="makeStyles-general-9 makeStyles-general-18"
+          class="makeStyles-general-11 makeStyles-general-20"
         >
           <span
-            class="makeStyles-name-10"
+            class="makeStyles-name-12"
           >
             paragraph
           </span>
           <hr
-            class="MuiDivider-root makeStyles-divider-12 MuiDivider-vertical"
+            class="MuiDivider-root makeStyles-divider-14 MuiDivider-vertical"
           />
           <button
-            class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-11"
+            class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-13"
             tabindex="0"
             title="Settings"
             type="button"
@@ -63,10 +63,10 @@ exports[`Free Draggable should render free draggable component 1`] = `
           role="menu"
         >
           <div
-            class="makeStyles-general-9 makeStyles-general-18"
+            class="makeStyles-general-11 makeStyles-general-20"
           >
             <span
-              class="makeStyles-name-10"
+              class="makeStyles-name-12"
             >
               Z-index:
               <b>
@@ -74,10 +74,10 @@ exports[`Free Draggable should render free draggable component 1`] = `
               </b>
             </span>
             <hr
-              class="MuiDivider-root makeStyles-divider-12 MuiDivider-vertical"
+              class="MuiDivider-root makeStyles-divider-14 MuiDivider-vertical"
             />
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-11"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-13"
               tabindex="0"
               title="Move element up"
               type="button"
@@ -101,7 +101,7 @@ exports[`Free Draggable should render free draggable component 1`] = `
               />
             </button>
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-11 Mui-disabled Mui-disabled"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-13 Mui-disabled Mui-disabled"
               disabled=""
               tabindex="-1"
               title="Move element down"
@@ -126,16 +126,16 @@ exports[`Free Draggable should render free draggable component 1`] = `
         </div>
       </div>
       <div
-        class="makeStyles-border-13 makeStyles-border-19 makeStyles-topBorder-14"
+        class="makeStyles-border-15 makeStyles-border-21 makeStyles-topBorder-16"
       />
       <div
-        class="makeStyles-border-13 makeStyles-border-19 makeStyles-rightBorder-15"
+        class="makeStyles-border-15 makeStyles-border-21 makeStyles-rightBorder-17"
       />
       <div
-        class="makeStyles-border-13 makeStyles-border-19 makeStyles-bottomBorder-16"
+        class="makeStyles-border-15 makeStyles-border-21 makeStyles-bottomBorder-18"
       />
       <div
-        class="makeStyles-border-13 makeStyles-border-19 makeStyles-leftBorder-17"
+        class="makeStyles-border-15 makeStyles-border-21 makeStyles-leftBorder-19"
       />
     </div>
     <div>
