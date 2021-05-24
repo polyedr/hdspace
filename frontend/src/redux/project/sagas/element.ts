@@ -305,16 +305,38 @@ function* removeElementStyles(
       return;
     }
 
-    const state: Normalized<StateElement> = yield select(selectAllElements);
+    const element: StateElement = yield select(selectElementById, id);
+
+    const pseudoClass: string | null = yield select(selectEnabledPseudoClass);
+
+    const stylesToRemove = pseudoClass
+      ? element.styles.pseudoClassStyles[pseudoClass]
+      : element.styles.ownStyles;
+
+    const updatedStyles = Object.fromEntries(
+      Object.entries(stylesToRemove).filter(([rule]) =>
+        cssPropertiesNames.every((name) => name !== rule),
+      ),
+    );
+
     yield put(
       Actions.updateStateElement(id, {
         styles: {
-          ...state[id].styles,
-          ownStyles: Object.fromEntries(
-            Object.entries(state[id].styles.ownStyles).filter(([rule]) =>
-              cssPropertiesNames.every((name) => name !== rule),
-            ),
-          ),
+          ...element.styles,
+          ...(pseudoClass
+            ? {
+                pseudoClassStyles: {
+                  ...element.styles.pseudoClassStyles,
+                  [pseudoClass]: updatedStyles,
+                },
+                pseudoClassViewStyles: {
+                  ...element.styles.ownStyles,
+                  ...updatedStyles,
+                },
+              }
+            : {
+                ownStyles: updatedStyles,
+              }),
         },
       }),
     );
