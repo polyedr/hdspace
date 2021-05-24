@@ -47,7 +47,7 @@ class RobotsView(APIView):
             # print("serializer.wpurl", serializer.wpurl)
             # print("serializer.data", serializer.data)
             # return Response({"wpname": wp_name}, status=status.HTTP_201_CREATED)
-            return Response({"filename": file_name}, status=status.HTTP_201_CREATED,
+            return Response({"filename": file_name, "wget_fetch": serializer.wget_fetch, "asterisk_fetch": serializer.asterisk_fetch}, status=status.HTTP_201_CREATED,
                             headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*"})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

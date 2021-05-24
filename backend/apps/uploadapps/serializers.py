@@ -9,6 +9,7 @@ import subprocess
 import shutil
 import scrapy
 from scrapy_splash import SplashRequest
+import urllib.robotparser
 
 from project.settings import MEDIA_ROOT, MEDIA_URL
 
@@ -50,10 +51,24 @@ class RobotsSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "fileurl": {"read_only": True},
             "filename": {"write_only": True},
+            "asterisk_fetch": {"write_only": True},
+            "wget_fetch": {"write_only": True},
         }
 
     def create(self, validated_data):
         url = validated_data.pop("fileurl", None)
+
+        rp = urllib.robotparser.RobotFileParser()
+        rp.set_url(url)
+        rp.read()
+
+        # A constant to define user-agent name
+        AGENT_NAME = 'Wget'
+
+        self.asterisk_fetch = rp.can_fetch("*", "/")
+        self.wget_fetch = rp.can_fetch(AGENT_NAME, "/")
+        # print("wget_fetch", self.wget_fetch)
+
         # Remove url from the submitted data
         # validated_data['fileurl'] = ''
         # Download data from url (requires `requests` module.  Can also be done with urllib)
