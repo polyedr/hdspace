@@ -4,12 +4,13 @@ import useResizeObserver from '@react-hook/resize-observer';
 import { equals } from 'ramda';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import {
-  BorderStyles,
+  BoundingStyles,
   DropTargetParams,
   Screen,
   StateElement,
 } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
+import getBoundingStyles from '@Utils/getBoundingStyles';
 import SaveElementAction from './Actions/SaveElement/SaveElementAction';
 import Borders from './Borders/Borders';
 import BorderCrumb from './Crumb/BorderCrumb';
@@ -18,7 +19,7 @@ import CreateGroupAction from './Actions/CreateGroup/CreateGroupAction';
 type Props = {
   element: StateElement;
   elementDom: HTMLElement;
-  rootDom: HTMLElement;
+  frameWindow: Window;
   canCreateGroup: boolean;
   screen: Screen;
   selectedElementsIds: string[];
@@ -32,26 +33,10 @@ type Props = {
   enableDropTargetBordersMode: boolean;
 };
 
-const getBorderStyles = (elDom: HTMLElement, rootElDom: HTMLElement) => {
-  const rect = elDom?.getBoundingClientRect();
-  const rootRect = rootElDom?.getBoundingClientRect();
-
-  return rect && rootRect
-    ? ({
-        top: rect.top - rootRect.top,
-        bottom: rootRect.bottom - rect.bottom,
-        right: rootRect.right - rect.right,
-        left: rect.left - rootRect.left,
-        width: rect.width,
-        height: rect.height,
-      } as BorderStyles)
-    : null;
-};
-
 const InteractionsHandler = ({
   element,
   elementDom,
-  rootDom,
+  frameWindow,
   canCreateGroup,
   screen,
   selectedElementsIds,
@@ -70,21 +55,21 @@ const InteractionsHandler = ({
     })?.rules;
   });
 
-  const [styles, setStyles] = useState<BorderStyles | null>(
-    getBorderStyles(elementDom, rootDom),
+  const [styles, setStyles] = useState<BoundingStyles | null>(
+    getBoundingStyles(elementDom, frameWindow),
   );
 
   const updateBorderStyles = useCallback(
     (entry: HTMLElement) => {
-      const updatedBorderStyles = getBorderStyles(
+      const updatedBorderStyles = getBoundingStyles(
         entry as HTMLElement,
-        rootDom,
+        frameWindow,
       );
       if (!equals(updatedBorderStyles, styles)) {
         setStyles(updatedBorderStyles);
       }
     },
-    [rootDom, styles],
+    [frameWindow, styles],
   );
 
   const elRef = useRef(elementDom);
@@ -95,8 +80,8 @@ const InteractionsHandler = ({
   });
 
   useEffect(() => {
-    setStyles(getBorderStyles(elementDom, rootDom));
-  }, [element.styles.ownStyles, elementDom, elementGroupStyles, rootDom]);
+    setStyles(getBoundingStyles(elementDom, frameWindow));
+  }, [element.styles.ownStyles, elementDom, elementGroupStyles, frameWindow]);
 
   if (!styles) {
     return null;

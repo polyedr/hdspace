@@ -1,5 +1,5 @@
+import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import React, { useState, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -43,6 +43,7 @@ const useContentEditable = <T extends HTMLElement>(
   );
 
   const debouncedCallback = useDebouncedCallback(saveElementContent, 500);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const config = useMemo(
     () => ({
@@ -53,6 +54,14 @@ const useContentEditable = <T extends HTMLElement>(
         onClick: () => {
           if (!contentEditable && !isPrototypeMode) {
             setContentEditable(true);
+            if (timer.current) {
+              clearTimeout(timer.current);
+              timer.current = null;
+            }
+            timer.current = setTimeout(() => {
+              setContentEditable(false);
+              timer.current = null;
+            }, 500);
           }
         },
         onKeyDown: (event: React.SyntheticEvent<HTMLElement>) => {
@@ -66,6 +75,12 @@ const useContentEditable = <T extends HTMLElement>(
             event.stopPropagation();
             event.preventDefault();
             setContentEditable(false);
+          }
+        },
+        onFocus: () => {
+          if (timer.current) {
+            clearTimeout(timer.current);
+            timer.current = null;
           }
         },
         onBlur: (event: React.SyntheticEvent) => {

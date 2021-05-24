@@ -36,6 +36,7 @@ import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
 import StyleSheets from '@Components/RightPanel/PropertiesTab/Controls/StyleSheets/StyleSheets';
 import Attributes from '@Components/RightPanel/PropertiesTab/Controls/Attributes/Attributes';
 import TagName from '@Components/RightPanel/PropertiesTab/Controls/TagName/TagName';
+import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -129,6 +130,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
   styleSheets: { Control: StyleSheets },
   attributes: { Control: Attributes },
   tagName: { Control: TagName },
+  resizeOptions: { Control: ResizeOptionsControl },
 };
 
 export default CONTROLS;

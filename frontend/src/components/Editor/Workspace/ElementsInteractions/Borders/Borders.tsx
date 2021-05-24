@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { BorderStyles, DropTargetParams } from '@Src/types';
+import { BoundingStyles, DropTargetParams } from '@Src/types';
 import { DropPosition } from '@Constants/dragAndDrop';
 import { BorderPosition } from '../constants';
 import Border from './Border';
@@ -7,7 +7,7 @@ import DropPositionMarker from './DropPositionMarker';
 
 type Props = {
   elementId: string;
-  styles: BorderStyles;
+  styles: BoundingStyles;
   isActiveBorder: boolean;
   dropTargetParams: DropTargetParams | null;
   enableDropTargetBordersMode: boolean;
