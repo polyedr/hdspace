@@ -1123,4 +1123,10 @@ export const DEFAULT_ELEMENTS_STYLES: {
   section: defaultSectionStyles,
   group: defaultElementsGroupStyles,
   html: defaultHTMLElementStyles,
+  breadcrumb: defaultListStyles,
+  breadcrumbItem: defaultListItemStyles,
+  pagination: defaultListStyles,
+  paginationItem: defaultListItemStyles,
+  carousel: defaultListStyles,
+  carouselItem: defaultListItemStyles,
 };

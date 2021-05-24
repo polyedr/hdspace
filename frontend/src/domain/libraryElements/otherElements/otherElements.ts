@@ -23,6 +23,12 @@ import {
   UndefinedServerElement,
   HTMLServerElement,
   VideoServerElement,
+  PaginationItemServerElement,
+  PaginationServerElement,
+  BreadcrumbServerElement,
+  BreadcrumbItemServerElement,
+  CarouselServerElement,
+  CarouselItemServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { makeParagraph } from '../typographyElements/typographyElements';
@@ -554,4 +560,222 @@ export const htmlElement: HTMLServerElement = {
   },
   name: 'HTML element',
   children: [],
+};
+
+export const makeBreadcrumbItem = ({
+  textContent = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): BreadcrumbItemServerElement => ({
+  id: `breadcrumb-item-${UID}`,
+  buoyancy,
+  func_type: 'breadcrumbItem',
+  struct_type: 'breadcrumbItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    textContent,
+    isLink: false,
+    isActiveLink: false,
+  },
+  styles: {
+    classNames: ['breadcrumbItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'breadcrumbItem',
+  children: [],
+});
+
+export const breadcrumb: BreadcrumbServerElement = {
+  id: 'breadcrumb',
+  buoyancy: 0,
+  func_type: 'breadcrumb',
+  struct_type: 'breadcrumb',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    breadcrumbItems: [
+      // TODO research why we need items here
+      { textContent: 'breadcrumb item', isLink: false },
+      { textContent: 'Second breadcrumb', isLink: false },
+      { textContent: 'Third breadcrumb', isLink: false },
+    ],
+  },
+  styles: {
+    classNames: ['breadcrumb'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'breadcrumb',
+  children: [
+    makeBreadcrumbItem({
+      textContent: 'breadcrumb item',
+      UID: 'breadcrumb-1',
+      buoyancy: 0,
+    }),
+    makeBreadcrumbItem({
+      textContent: 'Second breadcrumb',
+      UID: 'breadcrumb-2',
+      buoyancy: 1,
+    }),
+    makeBreadcrumbItem({
+      textContent: 'Third breadcrumb',
+      UID: 'breadcrumb-3',
+      buoyancy: 2,
+    }),
+  ],
+};
+export const makePaginationItem = ({
+  textContent = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): PaginationItemServerElement => ({
+  id: `pagination-item-${UID}`,
+  buoyancy,
+  func_type: 'paginationItem',
+  struct_type: 'paginationItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    textContent,
+    isActiveLink: false,
+  },
+  styles: {
+    classNames: ['paginationItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'paginationItem',
+  children: [],
+});
+
+export const pagination: PaginationServerElement = {
+  id: 'pagination',
+  buoyancy: 0,
+  func_type: 'pagination',
+  struct_type: 'pagination',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    paginationItems: [
+      // TODO research why we need items here
+      { textContent: '1' },
+      { textContent: '2' },
+      { textContent: '3' },
+    ],
+    isOrdered: false,
+  },
+  styles: {
+    classNames: ['pagination'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'pagination',
+  children: [
+    makePaginationItem({
+      textContent: '1',
+      UID: 'pagination-1',
+      buoyancy: 0,
+    }),
+    makePaginationItem({
+      textContent: '2',
+      UID: 'pagination-2',
+      buoyancy: 1,
+    }),
+    makePaginationItem({
+      textContent: '3',
+      UID: 'pagination-3',
+      buoyancy: 2,
+    }),
+  ],
+};
+
+export const makeCarouselItem = ({
+  link = '',
+  alt = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): CarouselItemServerElement => ({
+  id: `carousel-item-${UID}`,
+  buoyancy,
+  func_type: 'carouselItem',
+  struct_type: 'carouselItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    link,
+    alt,
+  },
+  styles: {
+    classNames: ['carouselItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'carouselItem',
+  children: [],
+});
+
+export const carousel: CarouselServerElement = {
+  id: 'carousel',
+  buoyancy: 0,
+  func_type: 'carousel',
+  struct_type: 'carousel',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    carouselItems: [
+      // TODO research why we need items here
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        alt: 'text desc',
+      },
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        alt: 'text desc',
+      },
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        alt: 'text desc',
+      },
+    ],
+  },
+  styles: {
+    classNames: ['carousel'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'carousel',
+  children: [
+    makeCarouselItem({
+      link:
+        'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+      alt: 'text desc',
+      UID: 'carousel-1',
+      buoyancy: 0,
+    }),
+    makeCarouselItem({
+      link:
+        'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+      alt: 'text desc',
+      UID: 'carousel-2',
+      buoyancy: 1,
+    }),
+    makeCarouselItem({
+      link:
+        'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+      alt: 'text desc',
+      UID: 'carousel-3',
+      buoyancy: 2,
+    }),
+  ],
 };

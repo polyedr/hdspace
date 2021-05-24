@@ -47,6 +47,12 @@ import {
   nativeColumns,
   elementsGroup,
   htmlElement,
+  makePaginationItem,
+  pagination,
+  breadcrumb,
+  makeBreadcrumbItem,
+  carousel,
+  makeCarouselItem,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -123,6 +129,12 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   section,
   group: elementsGroup,
   html: htmlElement,
+  breadcrumbItem: makeBreadcrumbItem(),
+  breadcrumb,
+  paginationItem: makePaginationItem(),
+  pagination,
+  carouselItem: makeCarouselItem(),
+  carousel,
 };
 
 export const ICONS: Partial<
@@ -158,4 +170,7 @@ export const ICONS: Partial<
   smartWebpage: CropOriginalIcon,
   section: Crop75Icon,
   html: HelpIcon,
+  breadcrumb: HelpIcon,
+  pagination: HelpIcon,
+  carousel: HelpIcon,
 };

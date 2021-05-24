@@ -47,6 +47,12 @@ import { BootstrapSelect, MaterialSelect, UnstyledSelect } from './Select';
 import { UnstyledOption, MaterialOption } from './Option';
 import HTMLElement from './HTMLElement/HTMLElement';
 import withUIFramework from './withUIFramework';
+import BootstrapBreadcrumbItem from './BreadcrumbItem/BootstrapBreadcrumbItem';
+import BootstrapBreadcrumb from './Breadcrumb/BootstrapBreadcrumb';
+import BootstrapPagination from './Pagination/BootstrapPagination';
+import BootstrapPaginationItem from './PaginationItem/BootstrapPaginationItem';
+import BootstrapCarousel from './Carousel/BootstrapCarousel';
+import BootstrapCarouselItem from './CarouselItem/BootstrapCarouselItem';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -95,6 +101,12 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   textBlock: TextBlock,
   list: List,
   listItem: ListItem,
+  breadcrumb: BootstrapBreadcrumb,
+  breadcrumbItem: BootstrapBreadcrumbItem,
+  pagination: BootstrapPagination,
+  paginationItem: BootstrapPaginationItem,
+  carousel: BootstrapCarousel,
+  carouselItem: BootstrapCarouselItem,
   label: Label,
   hyperlink: Link,
   image: Image,

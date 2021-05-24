@@ -44,6 +44,9 @@ export const ENTITIES: {
   section: 'section',
   group: 'group',
   html: 'html',
+  breadcrumb: 'breadcrumb',
+  pagination: 'pagination',
+  carousel: 'carousel',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -168,7 +171,20 @@ export const listItemStyleControls = [
   'background',
   'border',
 ] as const;
-
+export const breadcrumbItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
+export const paginationItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
 export const imageStyleControls = [
   'indents',
   'size',
@@ -440,6 +456,12 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'attributes',
     'layouts',
   ],
+  breadcrumb: ['breadcrumb', ...listStyleControls, 'layouts'],
+  breadcrumbItem: [...breadcrumbItemStyleControls, 'layouts'],
+  pagination: ['pagination', ...listStyleControls, 'layouts'],
+  paginationItem: [...paginationItemStyleControls, 'layouts'],
+  carousel: ['carousel', ...listStyleControls, 'layouts'],
+  carouselItem: [...paginationItemStyleControls, 'layouts'],
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
@@ -614,6 +636,27 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
+  breadcrumb: {
+    breadcrumbItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  breadcrumbItem: {},
+  pagination: {
+    paginationItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  paginationItem: {},
+  carousel: {
+    carouselItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  carouselItem: {},
 };
 
 export const defaultFreeCanvasParams: Partial<FreeCanvasElementParams> = {

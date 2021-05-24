@@ -231,11 +231,43 @@ export type ListServerElement = ServerElement<
   ListItemServerElement[],
   ListParameters
 >;
+export type BreadcrumbServerElement = ServerElement<
+  'breadcrumb',
+  BreadcrumbItemServerElement[],
+  BreadcrumbParameters
+>;
+
+export type PaginationServerElement = ServerElement<
+  'pagination',
+  PaginationItemServerElement[],
+  PaginationParameters
+>;
+export type CarouselServerElement = ServerElement<
+  'carousel',
+  CarouselItemServerElement[],
+  CarouselParameters
+>;
 export type ListItemServerElement = ServerElement<
   'listItem',
   [],
   ListItemParameters
 >;
+export type BreadcrumbItemServerElement = ServerElement<
+  'breadcrumbItem',
+  [],
+  BreadcrumbItemParameters
+>;
+export type PaginationItemServerElement = ServerElement<
+  'paginationItem',
+  [],
+  PaginationItemParameters
+>;
+export type CarouselItemServerElement = ServerElement<
+  'carouselItem',
+  [],
+  CarouselItemParameters
+>;
+
 export type MapServerElement = ServerElement<'map', [], MapParameters>;
 export type CalendarServerElement = ServerElement<'calendar', []>;
 export type ClockServerElement = ServerElement<'clock', []>;
@@ -404,6 +436,11 @@ export type ListItemElement = LibraryElement<
   'listItem',
   [],
   ListItemParameters
+>;
+export type BreadcrumbItemElement = LibraryElement<
+  'breadcrumb',
+  [],
+  BreadcrumbItemParameters
 >;
 export type MapElement = LibraryElement<'map', [], MapParameters>;
 export type CalendarElement = LibraryElement<'calendar', []>;
@@ -580,13 +617,41 @@ export type ListParameters = BaseElementParams & {
   listItems: ListItem[];
   isOrdered: boolean;
 };
-
+export type BreadcrumbParameters = BaseElementParams & {
+  breadcrumbItems: BreadcrumbItem[];
+};
+export type PaginationParameters = BaseElementParams & {
+  paginationItems: PaginationItem[];
+  isOrdered: boolean;
+};
+export type CarouselParameters = BaseElementParams & {
+  carouselItems: CarouselItem[];
+};
 export type ListItemParameters = BaseElementParams & {
   textContent: string;
   isLink: boolean;
   link: string;
 };
 
+export type BreadcrumbItemParameters = BaseElementParams & {
+  textContent: string;
+  isLink: boolean;
+  isActiveLink: boolean;
+};
+export type PaginationItemParameters = BaseElementParams & {
+  textContent: string;
+  isActiveLink: boolean;
+};
+export type CarouselItemParameters = BaseElementParams & {
+  link: string;
+  alt: string;
+};
+export type BreadcrumbItemItemParameters = BaseElementParams & {
+  textContent: string;
+  isLink: boolean;
+  link: string;
+  isActiveLink: boolean;
+};
 export type MapProps = BaseElementParams & {
   map_props: {
     center: {
@@ -799,7 +864,17 @@ export type ListItem = {
   isLink: boolean;
   link: string;
 };
-
+export type BreadcrumbItem = {
+  textContent: string;
+  isLink: boolean;
+};
+export type PaginationItem = {
+  textContent: string;
+};
+export type CarouselItem = {
+  link: string;
+  alt: string;
+};
 export type ServerStructType = Entity;
 
 export type ElementParameters = {
@@ -1117,6 +1192,9 @@ export type ChildrenElements = {
   dropdownItem: DropdownItemServerElement;
   gridItem: GridItemServerElement;
   column: ColumnServerElement;
+  breadcrumbItem: BreadcrumbItemServerElement;
+  paginationItem: PaginationItemServerElement;
+  carouselItem: CarouselItemServerElement;
 };
 
 export type ElementsToAdd = {
@@ -1159,6 +1237,9 @@ export type ElementsToAdd = {
   section: SectionServerElement;
   group: ElementsGroupServerElement;
   html: HTMLServerElement;
+  breadcrumb: BreadcrumbServerElement;
+  pagination: PaginationServerElement;
+  carousel: CarouselServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -1233,6 +1314,9 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'title',
   'attributes',
   'tagName',
+  'breadcrumb',
+  'pagination',
+  'carousel',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
