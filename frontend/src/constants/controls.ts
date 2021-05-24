@@ -36,6 +36,7 @@ import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
 import StyleSheets from '@Components/RightPanel/PropertiesTab/Controls/StyleSheets/StyleSheets';
 import Attributes from '@Components/RightPanel/PropertiesTab/Controls/Attributes/Attributes';
 import TagName from '@Components/RightPanel/PropertiesTab/Controls/TagName/TagName';
+import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
 import BreadcrumbItems from '@Components/RightPanel/PropertiesTab/Controls/BreadcrumblItems/BreadcrumbItems';
 import PaginationItems from '@Components/RightPanel/PropertiesTab/Controls/PaginationItems/PaginationItems';
 import CarouselItems from '@Components/RightPanel/PropertiesTab/Controls/CarouselItems/CarouselItems';
@@ -132,6 +133,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
   styleSheets: { Control: StyleSheets },
   attributes: { Control: Attributes },
   tagName: { Control: TagName },
+  resizeOptions: { Control: ResizeOptionsControl },
   breadcrumb: { Control: BreadcrumbItems },
   pagination: { Control: PaginationItems },
   carousel: { Control: CarouselItems },
