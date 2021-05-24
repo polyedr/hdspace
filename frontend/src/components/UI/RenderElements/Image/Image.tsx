@@ -150,7 +150,12 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
         src={imageURL}
         id={element.id}
         data-ls-id={element.id}
-        className={cn(className, groupClass, classes.ownStyles)}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          !isDisabled && classes.ownPseudoStyles,
+        )}
         alt={alt}
         title={title}
         draggable={false}

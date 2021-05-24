@@ -33,6 +33,11 @@ export const makeComponentStyles: any = (
             styles.pseudoClassViewStyles || styles.ownStyles,
             stylesToOmit,
           ),
+        };
+      },
+      ownPseudoStyles: ({ element }: RendererProps) => {
+        const { styles } = element;
+        return {
           ...(styles.pseudoClassStyles
             ? Object.keys(styles.pseudoClassStyles).reduce(
                 (pseudoStyles, pseudoClassName) => {

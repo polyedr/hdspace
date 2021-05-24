@@ -32,7 +32,7 @@ const UnstyledCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
           className,
           groupClass,
           classes.ownStyles,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
         checked={!isDisabled && isChecked}
         {...eventHandlers}

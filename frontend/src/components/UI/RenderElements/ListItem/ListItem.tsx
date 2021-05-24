@@ -69,7 +69,9 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
           data-ls-id={element.id}
           className={cn(
             className,
-            isDisabled && listItemClasses.disabled,
+            isDisabled
+              ? listItemClasses.disabled
+              : listItemClasses.ownPseudoStyles,
             groupClass,
             listItemWithLinkClasses.ownStyles,
           )}
@@ -93,7 +95,9 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
           data-ls-id={element.id}
           className={cn(
             className,
-            isDisabled && listItemClasses.disabled,
+            isDisabled
+              ? listItemClasses.disabled
+              : listItemClasses.ownPseudoStyles,
             groupClass,
             listItemClasses.ownStyles,
           )}

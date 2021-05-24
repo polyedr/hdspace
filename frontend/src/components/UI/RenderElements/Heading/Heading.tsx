@@ -9,7 +9,7 @@ const useStyles = makeComponentStyles('heading');
 
 const Heading = React.forwardRef<HTMLHeadingElement, RendererProps>(
   (props, ref) => {
-    const { element } = props;
+    const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
     const { headingType, textContent } = element.parameters;
     const HeadingTag = headingType || 'h3';
@@ -25,7 +25,12 @@ const Heading = React.forwardRef<HTMLHeadingElement, RendererProps>(
         ref={ref}
         id={element.id}
         data-ls-id={element.id}
-        className={cn(className, styles.ownStyles, groupClass)}
+        className={cn(
+          className,
+          groupClass,
+          styles.ownStyles,
+          !isDisabled && styles.ownPseudoStyles,
+        )}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
         {...contentEditableSettings.props}

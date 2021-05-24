@@ -15,7 +15,7 @@ const useStyles = makeComponentStyles('label', {
 
 const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
   (props, ref) => {
-    const { element } = props;
+    const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
     const { labelFor, textContent } = element.parameters;
 
@@ -31,7 +31,13 @@ const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
         id={element.id}
         data-ls-id={element.id}
         {...(labelFor !== 'no for attribute' && { htmlFor: labelFor })}
-        className={cn(className, styles.label, groupClass, styles.ownStyles)}
+        className={cn(
+          className,
+          styles.label,
+          groupClass,
+          styles.ownStyles,
+          !isDisabled && styles.ownPseudoStyles,
+        )}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
         {...contentEditableSettings.props}

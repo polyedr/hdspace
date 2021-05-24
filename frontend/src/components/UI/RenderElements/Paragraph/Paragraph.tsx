@@ -9,7 +9,7 @@ const useStyles = makeComponentStyles('paragraph');
 
 const Paragraph = React.forwardRef<HTMLParagraphElement, RendererProps>(
   (props, ref) => {
-    const { element } = props;
+    const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
     const { textContent } = element.parameters;
     const classes = useStyles(props);
@@ -25,7 +25,12 @@ const Paragraph = React.forwardRef<HTMLParagraphElement, RendererProps>(
         id={element.id}
         data-ls-id={element.id}
         key={element.id}
-        className={cn(className, groupClass, classes.ownStyles)}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          !isDisabled && classes.ownPseudoStyles,
+        )}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}
         {...contentEditableSettings.props}

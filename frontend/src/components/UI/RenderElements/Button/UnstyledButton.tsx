@@ -25,7 +25,7 @@ const UnstyledButton = React.forwardRef<HTMLButtonElement, RendererProps>(
           className,
           groupClass,
           classes.ownStyles,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
         {...eventHandlers}
       >

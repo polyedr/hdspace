@@ -11,7 +11,7 @@ const Calendar: React.FC<RendererProps> = React.forwardRef<
   HTMLDivElement,
   RendererProps
 >((props, ref) => {
-  const { element } = props;
+  const { element, isDisabled } = props;
   const [className, groupClass] = element.styles.classNames;
 
   const classes = useStyles(props);
@@ -21,7 +21,12 @@ const Calendar: React.FC<RendererProps> = React.forwardRef<
       ref={ref}
       id={element.id}
       data-ls-id={element.id}
-      className={cn(className, groupClass, classes.ownStyles)}
+      className={cn(
+        className,
+        groupClass,
+        classes.ownStyles,
+        !isDisabled && classes.ownPseudoStyles,
+      )}
       {...eventHandlers}
     >
       <ClockWidget id={element.id} />
