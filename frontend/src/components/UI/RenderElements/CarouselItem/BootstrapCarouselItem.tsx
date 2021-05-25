@@ -28,10 +28,10 @@ const BootstrapCarouselItem = React.forwardRef<HTMLElement, RendererProps>(
           id={element.id}
           data-ls-id={element.id}
           className={cn('carousel-item active', classes.ownStyles, groupClass)}
-          {...eventHandlers}
           data-gramm_editor={false}
           {...contentEditableSettings.props}
           {...contentEditableSettings.events}
+          {...eventHandlers}
         >
           <img src={link} className="d-block w-100" alt={alt} />
         </div>
