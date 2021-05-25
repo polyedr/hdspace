@@ -26,7 +26,6 @@ const _keymap: Record<Code, Key> = {
 
 export const getKeyFromCode = (code: string) => {
   const lowerCode = code.toLowerCase();
-  console.log(lowerCode);
   if (lowerCode.startsWith('key')) {
     return lowerCode[3];
   }
@@ -56,6 +55,12 @@ export const parseModifier = (
   if (~index) arr.splice(index, 1);
   return !!~index;
 };
+
+export const parseKeys = (keys: string) =>
+  keys
+    .toLowerCase()
+    .split(',')
+    .map((elem) => elem.trim());
 
 export const parseKey = (
   key: string,

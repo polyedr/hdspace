@@ -6,6 +6,7 @@ import {
   getModifiersMatch,
   getKeysMatch,
   isModifier,
+  parseKeys,
 } from './utils';
 
 /**
@@ -13,6 +14,7 @@ import {
  * Define a key using it's sign on a keyboard with english layout.
  * For keys without signs use their names ('space', 'tab', 'delete', 'backspace', 'arrowLeft' etc.)
  * Use a '+' sign as a splitting character
+ * There are some restrictions: '+' and ',' can not be used as shortcuts
  * @param key Here you can set the key stroke you want the hook to listen to.
  * @param listener Gets executed when the defined keystroke gets hit by the user.
  * @param doc Here you can provide a document to add listener to. (e.g. iframe's contentDocument)
@@ -22,44 +24,54 @@ const useHotkeys = (
   listener: (ev: KeyboardEvent) => void,
   doc: Document = document,
 ) => {
-  const { keys: requiredKeys, modifiers: requiredModifiers } = parseKey(key);
-  const pressedKeys: Set<string> = new Set();
+  const keys = parseKeys(key);
 
-  const callback = (ev: KeyboardEvent) => {
-    if (ev.repeat) return;
-    if (isModifier(ev)) return; // no need to handle modifier keydown
+  const handlers = keys.map((key) => {
+    const { keys: requiredKeys, modifiers: requiredModifiers } = parseKey(key);
+    const pressedKeys: Set<string> = new Set();
 
-    const actualKey = getKeyFromCode(ev.code);
+    const callback = (ev: KeyboardEvent) => {
+      if (ev.repeat) return;
+      if (isModifier(ev)) return; // no need to handle modifier keydown
 
-    pressedKeys.add(actualKey);
+      const actualKey = getKeyFromCode(ev.code);
 
-    const actualModifiers = getActiveModifiers(ev);
+      pressedKeys.add(actualKey);
 
-    if (!getModifiersMatch(actualModifiers, requiredModifiers)) return; // required and actual modifiers do not match
+      const actualModifiers = getActiveModifiers(ev);
 
-    if (getKeysMatch([...pressedKeys], requiredKeys)) {
-      // required and actual keys match
-      listener(ev);
-    }
-  };
+      if (!getModifiersMatch(actualModifiers, requiredModifiers)) return; // required and actual modifiers do not match
 
-  const cleanup = (ev: KeyboardEvent) => {
-    const actualKey = getKeyFromCode(ev.code);
-    if (pressedKeys.has(actualKey)) {
-      pressedKeys.delete(actualKey);
-    }
-    if (actualKey === 'MetaLeft' || actualKey === 'MetaRight') {
-      pressedKeys.clear(); // MacOS does not fire keyup event if meta is pressed
-    }
-  };
+      if (getKeysMatch([...pressedKeys], requiredKeys)) {
+        // required and actual keys match
+        listener(ev);
+      }
+    };
+
+    const cleanup = (ev: KeyboardEvent) => {
+      const actualKey = getKeyFromCode(ev.code);
+      if (pressedKeys.has(actualKey)) {
+        pressedKeys.delete(actualKey);
+      }
+      if (actualKey === 'metaleft' || actualKey === 'metaright') {
+        pressedKeys.clear(); // MacOS does not fire keyup event if meta is pressed
+      }
+    };
+
+    return [callback, cleanup];
+  });
 
   useEffect(() => {
-    doc.addEventListener('keydown', callback);
-    doc.addEventListener('keyup', cleanup);
+    handlers.forEach(([callback, cleanup]) => {
+      doc.addEventListener('keydown', callback);
+      doc.addEventListener('keyup', cleanup);
+    });
 
     return () => {
-      doc.removeEventListener('keydown', callback);
-      doc.removeEventListener('keyup', cleanup);
+      handlers.forEach(([callback, cleanup]) => {
+        doc.removeEventListener('keydown', callback);
+        doc.removeEventListener('keyup', cleanup);
+      });
     };
   });
 };
