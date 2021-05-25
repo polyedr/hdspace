@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
   selectActiveElementId,
@@ -44,44 +44,43 @@ const useViewportHotkeys = () => {
     ].includes(id);
   }, [coreElementsIds, id, masterCoreElementId, masterGroupsElementId]);
 
-  const deleteHandler = () => {
+  const deleteHandler = useCallback(() => {
     if (!coreElementSelected && canEdit) {
       dispatch(deleteElement(id, { screenId: currentScreenId }));
     }
-  };
+  }, [canEdit, coreElementSelected, id, dispatch, currentScreenId]);
 
-  const wrapHandler = () => {
+  const wrapHandler = useCallback(() => {
     if (!coreElementSelected && canEdit) {
       dispatch(wrapIntoContainer(id, { screenId: currentScreenId }));
     }
-  };
+  }, [canEdit, coreElementSelected, id, dispatch, currentScreenId]);
 
-  const copyHanlder = () => {
+  const copyHanlder = useCallback(() => {
     if (!coreElementSelected && canEdit) {
       dispatch(copyActiveElement());
       navigator.clipboard.writeText('');
     }
-  };
+  }, [canEdit, coreElementSelected, dispatch]);
 
-  const pasteHandler = () => {
+  const pasteHandler = useCallback(() => {
     if (!coreElementSelected && canEdit) {
       dispatch(pasteCopiedElement({ screenId: currentScreenId }));
     }
-  };
+  }, [canEdit, coreElementSelected, dispatch, currentScreenId]);
 
-  const undoHandler = () => {
+  const undoHandler = useCallback(() => {
     if (!isPrototypeMode) {
       dispatch(executeUndoActions());
     }
-  };
+  }, [isPrototypeMode, dispatch]);
 
-  const redoHandler = () => {
+  const redoHandler = useCallback(() => {
     if (!isPrototypeMode) {
       dispatch(executeRedoActions());
     }
-  };
+  }, [isPrototypeMode, dispatch]);
 
-  // editor document
   useHotkeys(
     'delete, meta + backspace',
     deleteHandler,

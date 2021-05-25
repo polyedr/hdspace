@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import {
-  parseKey,
+  parseShortcut,
   getKeyFromCode,
   getActiveModifiers,
   getModifiersMatch,
   getKeysMatch,
   isModifier,
-  parseKeys,
+  parseShortcutString,
 } from './utils';
 
 /**
@@ -15,19 +15,21 @@ import {
  * For keys without signs use their names ('space', 'tab', 'delete', 'backspace', 'arrowLeft' etc.)
  * Use a '+' sign as a splitting character
  * There are some restrictions: '+' and ',' can not be used as shortcuts
- * @param key Here you can set the key stroke you want the hook to listen to.
+ * @param shortcutString Here you can set the key stroke you want the hook to listen to.
  * @param listener Gets executed when the defined keystroke gets hit by the user.
  * @param doc Here you can provide a document to add listener to. (e.g. iframe's contentDocument)
  */
 const useHotkeys = (
-  key: string,
+  shortcutString: string,
   listener: (ev: KeyboardEvent) => void,
   doc: Document = document,
 ) => {
-  const keys = parseKeys(key);
+  const shortcuts = parseShortcutString(shortcutString);
 
-  const handlers = keys.map((key) => {
-    const { keys: requiredKeys, modifiers: requiredModifiers } = parseKey(key);
+  const handlers = shortcuts.map((shortcut) => {
+    const { keys: requiredKeys, modifiers: requiredModifiers } = parseShortcut(
+      shortcut,
+    );
     const pressedKeys: Set<string> = new Set();
 
     const callback = (ev: KeyboardEvent) => {

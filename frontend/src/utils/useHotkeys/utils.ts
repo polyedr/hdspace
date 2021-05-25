@@ -7,8 +7,8 @@ export type ModifiersSet = {
   shift: boolean;
 };
 
-export type Key = string;
-export type Code = string;
+type Code = string; // ev.code
+type Key = string; // just a string denoting key
 
 const _keymap: Record<Code, Key> = {
   backquote: '`',
@@ -24,7 +24,7 @@ const _keymap: Record<Code, Key> = {
   slash: '/',
 };
 
-export const getKeyFromCode = (code: string) => {
+export const getKeyFromCode = (code: Code): Key => {
   const lowerCode = code.toLowerCase();
   if (lowerCode.startsWith('key')) {
     return lowerCode[3];
@@ -38,7 +38,7 @@ export const getKeyFromCode = (code: string) => {
   return lowerCode;
 };
 
-export const _modifiers = ['Control', 'Alt', 'Meta', 'Shift'];
+const _modifiers = ['Control', 'Alt', 'Meta', 'Shift'];
 
 export const getActiveModifiers = (ev: KeyboardEvent): ModifiersSet => ({
   meta: ev.metaKey,
@@ -47,7 +47,7 @@ export const getActiveModifiers = (ev: KeyboardEvent): ModifiersSet => ({
   shift: ev.shiftKey,
 });
 
-export const parseModifier = (
+const parseModifier = (
   mod: 'meta' | 'control' | 'alt' | 'shift',
   arr: string[],
 ) => {
@@ -56,19 +56,19 @@ export const parseModifier = (
   return !!~index;
 };
 
-export const parseKeys = (keys: string) =>
+export const parseShortcutString = (keys: string) =>
   keys
     .toLowerCase()
     .split(',')
     .map((elem) => elem.trim());
 
-export const parseKey = (
+export const parseShortcut = (
   key: string,
-): { keys: string[]; modifiers: ModifiersSet } => {
+): { keys: Key[]; modifiers: ModifiersSet } => {
   const entries = key
     .toLowerCase()
     .split('+')
-    .map((elem) => elem.trim());
+    .map((elem) => elem.trim()) as Key[];
 
   const meta = parseModifier('meta', entries);
   const control = parseModifier('control', entries);
@@ -98,7 +98,7 @@ export const getModifiersMatch = (
   );
 };
 
-export const getKeysMatch = (actual: string[], required: string[]) =>
+export const getKeysMatch = (actual: Key[], required: Key[]) =>
   actual.length === required.length &&
   required.every((key) => !!~actual.indexOf(key));
 
