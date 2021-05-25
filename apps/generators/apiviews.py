@@ -49,8 +49,8 @@ class GeneratorAPIView(APIView):
                             "left": random.randint(0, 60),
                             "top": random.randint(0, 60),
                             "zIndex": random.randint(0, 10),
-                            "width": random.randint(0, 60),
-                            "height": random.randint(0, 60)
+                            "width": random.randint(0, 200),
+                            "height": random.randint(0, 200)
                         },
                         "group": "form",
                         "layouts": [
