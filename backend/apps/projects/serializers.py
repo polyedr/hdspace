@@ -508,8 +508,9 @@ class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectImage
-        fields = ("id", "image", "created", "modified", "illustration_set", "fileurl",)
+        fields = ("id", "image", "image_url", "created", "modified", "illustration_set", "fileurl",)
         extra_kwargs = {
+            "image_url": {"read_only": True},
             "fileurl": {"write_only": True},
         }
 
@@ -523,6 +524,8 @@ class ImageSerializer(serializers.ModelSerializer):
                 BytesIO(response.content), name=filename
             )
         fileupload = ProjectImage(id=None, **validated_data)
+        fileupload.save()
+        fileupload.image_url = str(fileupload.image)
         fileupload.save()
         return fileupload
 
