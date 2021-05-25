@@ -35,7 +35,7 @@ const MaterialTextarea = React.forwardRef<HTMLLabelElement, RendererProps>(
               className,
               groupClass,
               classes.ownStyles,
-              isDisabled && classes.disabled,
+              isDisabled ? classes.disabled : classes.ownPseudoStyles,
             )}
             aria-label={`${element.name}-${element.id}`}
             defaultValue={textContent}

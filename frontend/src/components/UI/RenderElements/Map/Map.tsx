@@ -26,7 +26,7 @@ const Map = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
         'google-map',
         className,
         groupClass,
-        isDisabled && classes.disabled,
+        isDisabled ? classes.disabled : classes.ownPseudoStyles,
         classes.ownStyles,
       )}
       {...eventHandlers}

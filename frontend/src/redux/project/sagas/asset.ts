@@ -15,6 +15,7 @@ import {
   Asset,
   AssetsList,
   PaginatedArray,
+  Result,
   UserProjectPermission,
 } from '@Src/types';
 import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
@@ -49,18 +50,27 @@ export function* uploadAssetHelper(
   assetFormData.append('name', fileName);
   assetFormData.append('illustration_set', listId);
   try {
-    const asset = yield call(reqWrapper, apiCreateAsset, {
-      assetFormData,
-    });
-    if (!meta?.useHistory) {
-      yield put(
-        Actions.addUndoActions([
-          Actions.removeAsset(asset.id, asset.listId, meta),
-        ]),
-      );
+    const { result: asset, error }: Result<Asset> = yield call(
+      reqWrapper,
+      apiCreateAsset,
+      {
+        assetFormData,
+      },
+    );
+
+    if (error) throw new Error(error);
+
+    if (asset) {
+      if (!meta?.useHistory) {
+        yield put(
+          Actions.addUndoActions([
+            Actions.removeAsset(asset.id, asset.listId as string, meta),
+          ]),
+        );
+      }
+      yield put(Actions.addAssetToState(listId, asset, meta));
+      return asset;
     }
-    yield put(Actions.addAssetToState(listId, asset, meta));
-    return asset;
   } catch (error) {
     yield put(
       enqueueSnackbar(

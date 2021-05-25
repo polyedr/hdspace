@@ -30,8 +30,8 @@ const MaterialOption = React.forwardRef<HTMLLIElement, RendererProps>(
           className,
           classes.root,
           groupClass,
-          isDisabled && classes.disabled,
           classes.ownStyles,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
         aria-selected="false"
         data-value="grains"

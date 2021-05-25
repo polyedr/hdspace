@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
-import { BorderStyles, StyleProps } from '@Src/types';
+import { BoundingStyles, StyleProps } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
 import { BorderPosition } from '../constants';
 
 type Props = {
   elementId: string;
   position: BorderPosition;
-  styles: BorderStyles;
+  styles: BoundingStyles;
   isActive: boolean;
   visiblePreSelect: boolean;
 };

@@ -22,7 +22,7 @@ const Calendar = React.forwardRef<HTMLDivElement, RendererProps>(
         data-ls-id={element.id}
         className={cn(
           className,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
           groupClass,
           classes.ownStyles,
         )}

@@ -68,8 +68,8 @@ const Dropdown = React.forwardRef<HTMLDivElement, RendererProps>(
         className={cn(
           className,
           groupClass,
-          ...(isDisabled ? [classes.disabled] : []),
           classes.ownStyles,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
         {...eventHandlers}
       >

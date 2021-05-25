@@ -2,7 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
 import cn from 'classnames';
-import { BorderStyles, StateElement } from '@Src/types';
+import { BoundingStyles, StateElement } from '@Src/types';
 import { setMasterSourceElementId } from '@Redux/project/actions';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -11,7 +11,7 @@ type Props = {
   show: boolean;
   currentProjectId: number;
   rootId: string;
-  styles: BorderStyles;
+  styles: BoundingStyles;
   children?: any;
   masterScreenId: number | null;
 };

@@ -92,7 +92,6 @@ export const importHtmlSaga = withRequiredPermissions(
       const imageElements = Object.values(elements).filter(
         (element) => element.type === 'image',
       );
-
       const imageFiles = files.filter((file) => file.type.includes('image/'));
 
       yield all(
@@ -106,7 +105,7 @@ export const importHtmlSaga = withRequiredPermissions(
                 updateElementParameters(
                   element.id,
                   {
-                    imageURL: IMAGES.imageIcon,
+                    imageURL: element.parameters.imageURL || IMAGES.imageIcon,
                   },
                   {
                     screenId: id,

@@ -12,7 +12,7 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
       style="position: absolute; user-select: auto; width: 300px; height: 100px; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
     >
       <p
-        class="paragraph paragraph-ownStyles-6 paragraph-ownStyles-8"
+        class="paragraph paragraph-ownStyles-6 paragraph-ownStyles-9 paragraph-ownPseudoStyles-7 paragraph-ownPseudoStyles-10"
         contenteditable="false"
         data-gramm_editor="false"
         data-ls-id="2"
@@ -25,21 +25,21 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
         hidden=""
       >
         <div
-          class="makeStyles-crumb-9"
+          class="makeStyles-crumb-11"
         >
           <div
-            class="makeStyles-general-10 makeStyles-general-19"
+            class="makeStyles-general-12 makeStyles-general-21"
           >
             <span
-              class="makeStyles-name-11"
+              class="makeStyles-name-13"
             >
               paragraph
             </span>
             <hr
-              class="MuiDivider-root makeStyles-divider-13 MuiDivider-vertical"
+              class="MuiDivider-root makeStyles-divider-15 MuiDivider-vertical"
             />
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-14"
               tabindex="0"
               title="Settings"
               type="button"
@@ -68,10 +68,10 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
             role="menu"
           >
             <div
-              class="makeStyles-general-10 makeStyles-general-19"
+              class="makeStyles-general-12 makeStyles-general-21"
             >
               <span
-                class="makeStyles-name-11"
+                class="makeStyles-name-13"
               >
                 Z-index:
                 <b>
@@ -79,10 +79,10 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
                 </b>
               </span>
               <hr
-                class="MuiDivider-root makeStyles-divider-13 MuiDivider-vertical"
+                class="MuiDivider-root makeStyles-divider-15 MuiDivider-vertical"
               />
               <button
-                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12"
+                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-14"
                 tabindex="0"
                 title="Move element up"
                 type="button"
@@ -106,7 +106,7 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
                 />
               </button>
               <button
-                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-12 Mui-disabled Mui-disabled"
+                class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-14 Mui-disabled Mui-disabled"
                 disabled=""
                 tabindex="-1"
                 title="Move element down"
@@ -131,16 +131,16 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
           </div>
         </div>
         <div
-          class="makeStyles-border-14 makeStyles-border-20 makeStyles-topBorder-15"
+          class="makeStyles-border-16 makeStyles-border-22 makeStyles-topBorder-17"
         />
         <div
-          class="makeStyles-border-14 makeStyles-border-20 makeStyles-rightBorder-16"
+          class="makeStyles-border-16 makeStyles-border-22 makeStyles-rightBorder-18"
         />
         <div
-          class="makeStyles-border-14 makeStyles-border-20 makeStyles-bottomBorder-17"
+          class="makeStyles-border-16 makeStyles-border-22 makeStyles-bottomBorder-19"
         />
         <div
-          class="makeStyles-border-14 makeStyles-border-20 makeStyles-leftBorder-18"
+          class="makeStyles-border-16 makeStyles-border-22 makeStyles-leftBorder-20"
         />
       </div>
       <div>

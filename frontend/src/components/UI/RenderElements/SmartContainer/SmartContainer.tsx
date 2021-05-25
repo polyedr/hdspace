@@ -202,7 +202,12 @@ const SmartContainerRenderer = React.forwardRef<
       ref={ref}
       id={element.id}
       data-ls-id={element.id}
-      className={cn(className, groupClass, classes.ownStyles)}
+      className={cn(
+        className,
+        groupClass,
+        classes.ownStyles,
+        !isDisabled && classes.ownPseudoStyles,
+      )}
       style={{ position: 'relative' }}
       {...eventHandlers}
     >

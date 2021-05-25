@@ -23,7 +23,7 @@ const MaterialRadiobutton = React.forwardRef<HTMLDivElement, RendererProps>(
           'mdc-touch-target-wrapper',
           className,
           groupClass,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
           classes.ownStyles,
         )}
         data-ls-id={element.id}

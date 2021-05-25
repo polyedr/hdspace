@@ -31,7 +31,7 @@ const MaterialInput = React.forwardRef<HTMLLabelElement, RendererProps>(
           className,
           groupClass,
           classes.ownStyles,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
       >
         <span className="mdc-notched-outline">

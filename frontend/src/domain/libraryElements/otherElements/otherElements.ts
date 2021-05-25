@@ -297,6 +297,7 @@ export const makeImage = ({
       width: 300,
       height: 300,
     },
+    keepAspectRatio: false,
   },
   styles: {
     classNames: ['image'],

@@ -33,7 +33,7 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
           classes.textBlock,
           groupClass,
           classes.ownStyles,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
         dangerouslySetInnerHTML={{ __html: textContent }}
         data-gramm_editor={false}

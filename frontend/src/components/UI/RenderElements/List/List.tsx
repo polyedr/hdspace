@@ -12,7 +12,7 @@ const useStyles = makeComponentStyles('list', {
 });
 
 const List = React.forwardRef<HTMLOListElement, RendererProps>((props, ref) => {
-  const { element, children } = props;
+  const { element, isDisabled, children } = props;
   const [className, groupClass] = element.styles.classNames;
   const { isOrdered } = element.parameters;
   const ListTag = isOrdered ? 'ol' : 'ul';
@@ -24,7 +24,13 @@ const List = React.forwardRef<HTMLOListElement, RendererProps>((props, ref) => {
       ref={ref}
       id={element.id}
       data-ls-id={element.id}
-      className={cn(className, classes.list, groupClass, classes.ownStyles)}
+      className={cn(
+        className,
+        classes.list,
+        groupClass,
+        classes.ownStyles,
+        !isDisabled && classes.ownPseudoStyles,
+      )}
       {...eventHandlers}
     >
       {children}

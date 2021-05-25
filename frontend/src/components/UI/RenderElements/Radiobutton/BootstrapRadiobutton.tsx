@@ -25,7 +25,7 @@ const BootstrapRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
           'form-check',
           className,
           groupClass,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
           classes.ownStyles,
         )}
       >

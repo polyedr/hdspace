@@ -23,7 +23,7 @@ const Select = React.forwardRef<HTMLSelectElement, RendererProps>(
           className,
           groupClass,
           classes.ownStyles,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
         {...eventHandlers}
         {...(isDisabled && {

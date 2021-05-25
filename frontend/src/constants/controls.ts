@@ -39,6 +39,7 @@ import TagName from '@Components/RightPanel/PropertiesTab/Controls/TagName/TagNa
 import BreadcrumbItems from '@Components/RightPanel/PropertiesTab/Controls/BreadcrumblItems/BreadcrumbItems';
 import PaginationItems from '@Components/RightPanel/PropertiesTab/Controls/PaginationItems/PaginationItems';
 import CarouselItems from '@Components/RightPanel/PropertiesTab/Controls/CarouselItems/CarouselItems';
+import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -135,6 +136,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
   breadcrumb: { Control: BreadcrumbItems },
   pagination: { Control: PaginationItems },
   carousel: { Control: CarouselItems },
+  resizeOptions: { Control: ResizeOptionsControl },
 };
 
 export default CONTROLS;
