@@ -29,7 +29,7 @@ const Viewport: React.FC = ({ children }) => {
   const iframeDocument = useSelector(selectEditorDocument);
 
   useHotkeys(
-    'control+meta+m+k',
+    '\\ + arrowup',
     () =>
       dispatch(
         enqueueSnackbar({
