@@ -1,6 +1,6 @@
-import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useMemo } from 'react';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
   selectActiveElementId,
   selectMasterCoreElementId,
@@ -8,6 +8,8 @@ import {
   selectTreeChildElementsIds,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import { UserProjectPermission } from '@Src/types';
 import {
   copyActiveElement,
   deleteElement,
@@ -16,10 +18,11 @@ import {
   executeRedoActions,
   wrapIntoContainer,
 } from '@Redux/project/actions';
-import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { UserProjectPermission } from '@Src/types';
+import useHotkeys from '@Utils/useHotkeys';
+import { selectEditorDocument } from '@Redux/project/selectors/base';
 
-const useViewportHotkeys = (ref: React.RefObject<HTMLElement>) => {
+const useViewportHotkeys = () => {
+  const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
   const id = useSelector(selectActiveElementId);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
@@ -31,7 +34,7 @@ const useViewportHotkeys = (ref: React.RefObject<HTMLElement>) => {
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
-  const dispatch = useDispatch();
+  const iframeDocument = useSelector(selectEditorDocument);
 
   const coreElementSelected = useMemo(() => {
     return [
@@ -41,115 +44,63 @@ const useViewportHotkeys = (ref: React.RefObject<HTMLElement>) => {
     ].includes(id);
   }, [coreElementsIds, id, masterCoreElementId, masterGroupsElementId]);
 
-  useEffect(() => {
-    const element = ref.current;
+  const deleteHandler = () => {
+    if (!coreElementSelected && canEdit) {
+      dispatch(deleteElement(id, { screenId: currentScreenId }));
+    }
+  };
 
-    const listener = (event: KeyboardEvent) => {
-      if (
-        (event.key === 'Delete' ||
-          (event.key === 'Backspace' && event.metaKey)) &&
-        !coreElementSelected &&
-        canEdit
-      ) {
-        dispatch(deleteElement(id, { screenId: currentScreenId }));
-        element?.focus();
-      }
-    };
-    if (!isPrototypeMode) element?.addEventListener('keydown', listener, false);
+  const wrapHandler = () => {
+    if (!coreElementSelected && canEdit) {
+      dispatch(wrapIntoContainer(id, { screenId: currentScreenId }));
+    }
+  };
 
-    return () => element?.removeEventListener('keydown', listener, false);
-  }, [
-    ref,
-    id,
-    currentScreenId,
-    dispatch,
-    coreElementSelected,
-    canEdit,
-    isPrototypeMode,
-  ]);
+  const copyHanlder = () => {
+    if (!coreElementSelected && canEdit) {
+      dispatch(copyActiveElement());
+      navigator.clipboard.writeText('');
+    }
+  };
 
-  useEffect(() => {
-    const element = ref.current;
+  const pasteHandler = () => {
+    if (!coreElementSelected && canEdit) {
+      dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+    }
+  };
 
-    const listener = (event: KeyboardEvent) => {
-      if (
-        event.code === 'KeyC' &&
-        event.altKey &&
-        !coreElementSelected &&
-        canEdit
-      ) {
-        dispatch(wrapIntoContainer(id, { screenId: currentScreenId }));
-        element?.focus();
-      }
-    };
+  const undoHandler = () => {
+    if (!isPrototypeMode) {
+      dispatch(executeUndoActions());
+    }
+  };
 
-    if (!isPrototypeMode) element?.addEventListener('keydown', listener);
-    return () => element?.removeEventListener('keydown', listener);
-  }, [
-    ref,
-    id,
-    currentScreenId,
-    dispatch,
-    coreElementSelected,
-    canEdit,
-    isPrototypeMode,
-  ]);
+  const redoHandler = () => {
+    if (!isPrototypeMode) {
+      dispatch(executeRedoActions());
+    }
+  };
 
-  useEffect(() => {
-    const element = ref.current;
+  // editor document
+  useHotkeys(
+    'delete, meta + backspace',
+    deleteHandler,
+    iframeDocument as Document,
+  );
 
-    const listener = (event: KeyboardEvent) => {
-      const isItemCopyEvent =
-        event.code === 'KeyC' && (event.metaKey || event.ctrlKey);
+  useHotkeys('alt + c', wrapHandler, iframeDocument as Document);
 
-      if (isItemCopyEvent && !coreElementSelected && canEdit) {
-        dispatch(copyActiveElement());
-        navigator.clipboard.writeText('');
-        element?.focus();
-      }
-    };
+  useHotkeys('meta + c, control + c', copyHanlder, iframeDocument as Document);
 
-    if (!isPrototypeMode) element?.addEventListener('keydown', listener);
-    return () => element?.removeEventListener('keydown', listener);
-  }, [canEdit, coreElementSelected, dispatch, isPrototypeMode, ref]);
+  useHotkeys('meta + v, control + v', pasteHandler, iframeDocument as Document);
 
-  useEffect(() => {
-    const element = ref.current;
+  useHotkeys('meta + z, control + z', undoHandler, iframeDocument as Document);
 
-    const listener = (event: KeyboardEvent) => {
-      const isItemPasteEvent =
-        event.code === 'KeyV' && (event.metaKey || event.ctrlKey);
-
-      if (isItemPasteEvent && !coreElementSelected && canEdit) {
-        dispatch(pasteCopiedElement({ screenId: currentScreenId }));
-        element?.focus();
-      }
-    };
-
-    if (!isPrototypeMode) element?.addEventListener('keydown', listener);
-    return () => element?.removeEventListener('keydown', listener);
-  }, [
-    ref,
-    currentScreenId,
-    dispatch,
-    coreElementSelected,
-    canEdit,
-    isPrototypeMode,
-  ]);
-
-  useEffect(() => {
-    const element = ref.current;
-
-    const listener = (ev: KeyboardEvent) => {
-      if (ev.code === 'KeyZ' && (ev.metaKey || ev.ctrlKey)) {
-        dispatch(ev.shiftKey ? executeRedoActions() : executeUndoActions());
-        element?.focus();
-      }
-    };
-
-    if (!isPrototypeMode) element?.addEventListener('keydown', listener);
-    return () => element?.removeEventListener('keydown', listener);
-  }, [ref, dispatch, isPrototypeMode]);
+  useHotkeys(
+    'meta + shift + z, control + shift + z',
+    redoHandler,
+    iframeDocument as Document,
+  );
 };
 
 export default useViewportHotkeys;
