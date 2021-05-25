@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
-import useHotKeys from '../hooks/useHotKeys';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { selectEditorDocument } from '@Redux/project/selectors/base';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import useHotkeys from '../../../utils/useHotkeys';
 import 'css-ripple-effect/dist/ripple.min.css';
 
 const useStyles = makeStyles(() =>
@@ -21,10 +23,21 @@ const useStyles = makeStyles(() =>
 
 const Viewport: React.FC = ({ children }) => {
   const styles = useStyles();
+  const dispatch = useDispatch();
 
   const ref = useRef<HTMLDivElement>(null);
+  const iframeDocument = useSelector(selectEditorDocument);
 
-  useHotKeys(ref);
+  useHotkeys(
+    'control+meta+m+k',
+    () =>
+      dispatch(
+        enqueueSnackbar({
+          message: 'fire',
+        }),
+      ),
+    iframeDocument as Document,
+  );
   useGlobalDropTarget(
     ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage', 'image'],
     ref,

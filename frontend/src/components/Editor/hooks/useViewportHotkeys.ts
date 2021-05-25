@@ -19,7 +19,7 @@ import {
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { UserProjectPermission } from '@Src/types';
 
-const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
+const useViewportHotkeys = (ref: React.RefObject<HTMLElement>) => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const id = useSelector(selectActiveElementId);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
@@ -152,4 +152,4 @@ const useHotKeys = (ref: React.RefObject<HTMLElement>) => {
   }, [ref, dispatch, isPrototypeMode]);
 };
 
-export default useHotKeys;
+export default useViewportHotkeys;
