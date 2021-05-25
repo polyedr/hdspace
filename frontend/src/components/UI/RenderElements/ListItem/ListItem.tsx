@@ -102,7 +102,6 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
             listItemClasses.ownStyles,
           )}
           aria-label={`Button-${element.id}`}
-          {...eventHandlers}
           dangerouslySetInnerHTML={{ __html: textContent }}
           data-gramm_editor={false}
           {...eventHandlers}

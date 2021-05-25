@@ -16,7 +16,8 @@ const BootstrapCarousel = React.forwardRef<HTMLElement, RendererProps>(
     return (
       <div
         ref={ref as LegacyRef<HTMLDivElement>}
-        id="carouselExampleControls"
+        id={element.id}
+        data-ls-id={element.id}
         className={cn(classes.ownStyles, groupClass, 'carousel slide')}
         data-bs-ride="carousel"
         {...eventHandlers}

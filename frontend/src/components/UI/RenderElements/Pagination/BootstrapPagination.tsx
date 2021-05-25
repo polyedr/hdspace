@@ -16,6 +16,8 @@ const BootstrapPagination = React.forwardRef<HTMLElement, RendererProps>(
     return (
       <nav
         ref={ref}
+        id={element.id}
+        data-ls-id={element.id}
         aria-label="Page navigation example"
         className={cn(classes.ownStyles, groupClass)}
         {...eventHandlers}

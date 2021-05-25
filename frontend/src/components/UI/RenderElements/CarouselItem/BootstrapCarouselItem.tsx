@@ -25,6 +25,8 @@ const BootstrapCarouselItem = React.forwardRef<HTMLElement, RendererProps>(
       <>
         <div
           ref={ref as LegacyRef<HTMLDivElement>}
+          id={element.id}
+          data-ls-id={element.id}
           className={cn('carousel-item active', classes.ownStyles, groupClass)}
           {...eventHandlers}
           data-gramm_editor={false}

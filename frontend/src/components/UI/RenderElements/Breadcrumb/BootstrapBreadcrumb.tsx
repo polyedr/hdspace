@@ -18,6 +18,8 @@ const BootstrapBreadcrumb = React.forwardRef<HTMLElement, RendererProps>(
         ref={ref}
         aria-label="breadcrumb"
         className={cn(classes.ownStyles, groupClass)}
+        id={element.id}
+        data-ls-id={element.id}
         {...eventHandlers}
       >
         <ol className="breadcrumb">{children}</ol>
