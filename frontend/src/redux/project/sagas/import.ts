@@ -1,4 +1,4 @@
-import { all, call, put, select } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 import { apiChangeRecursiveElement, apiCreateElement } from '@Api/element';
 import DOMPurify from 'dompurify';
 import {
@@ -7,6 +7,7 @@ import {
   Result,
   Screen,
   StateElement,
+  UpdateDataActionType,
   UserProjectPermission,
 } from '@Src/types';
 import convertHtml from '@Utils/convertHtml';
@@ -15,17 +16,15 @@ import { extractStyles } from '@Utils/stringHelper';
 import IMAGES from '@Constants/images';
 import { apiGetWebPage, apiPostURL } from '@Api/import';
 import * as Actions from '@Redux/project/actions';
-import {
-  importHtml,
-  updateElementImage,
-  updateElementParameters,
-} from '@Redux/project/actions';
+import { importHtml, updateElementParameters } from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { selectElementsForScreen } from '@Redux/project/selectors/element';
 import JSZip from 'jszip';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { selectCurrentScreen } from '../selectors/screen';
+import { updateElementImage } from './element';
+import { updateOrReplaceElementParameters } from './common';
 
 export const importHtmlSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
@@ -94,26 +93,33 @@ export const importHtmlSaga = withRequiredPermissions(
       );
       const imageFiles = files.filter((file) => file.type.includes('image/'));
 
-      yield all(
-        imageElements.map((element) => {
-          const image = imageFiles.find((img) =>
-            element.parameters.imageURL.includes(img.name),
+      for (let i = 0; i < imageElements.length; i++) {
+        const element = imageElements[i];
+        const image = imageFiles.find((img) =>
+          element.parameters.imageURL.includes(img.name),
+        );
+        if (image) {
+          yield call(updateElementImage, element.id, image, {
+            screenId: id,
+            useHistory: true,
+          });
+        } else {
+          yield call(
+            updateOrReplaceElementParameters,
+            updateElementParameters(
+              element.id,
+              {
+                imageURL: element.parameters.imageURL || IMAGES.imageIcon,
+              },
+              {
+                screenId: id,
+                useHistory: true,
+              },
+            ),
+            UpdateDataActionType.UPDATE,
           );
-          return image
-            ? put(updateElementImage(element.id, image, { screenId: id }))
-            : put(
-                updateElementParameters(
-                  element.id,
-                  {
-                    imageURL: element.parameters.imageURL || IMAGES.imageIcon,
-                  },
-                  {
-                    screenId: id,
-                  },
-                ),
-              );
-        }),
-      );
+        }
+      }
 
       const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
         data: { children: [element.id] },
