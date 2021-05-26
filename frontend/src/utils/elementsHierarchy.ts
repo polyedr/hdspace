@@ -61,7 +61,7 @@ export const getRightPanelCategoryTabs = (
     case 'textinput':
     case 'textarea':
     case 'checkbox':
-    case 'radiobutton':
+    case 'radiobuttonGroup':
     case 'label':
     case 'select':
       return {

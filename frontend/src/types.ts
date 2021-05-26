@@ -194,6 +194,12 @@ export type RadiobuttonServerElement = ServerElement<
   [],
   RadiobuttonParameters
 >;
+export type RadiobuttonGroupServerElement = ServerElement<
+  'radiobuttonGroup',
+  RadiobuttonServerElement[],
+  RadiobuttonGroupParameters
+>;
+
 export type SelectServerElement = ServerElement<
   'select',
   OptionServerElement[],
@@ -529,6 +535,10 @@ export type RadiobuttonParameters = BaseElementParams & {
   value: string;
   name: string;
   showRipple: boolean;
+};
+
+export type RadiobuttonGroupParameters = BaseElementParams & {
+  value: string;
 };
 
 export type SelectParameters = BaseElementParams & {
@@ -1118,6 +1128,7 @@ export type ChildrenElements = {
   dropdownItem: DropdownItemServerElement;
   gridItem: GridItemServerElement;
   column: ColumnServerElement;
+  radiobutton: RadiobuttonServerElement;
 };
 
 export type ElementsToAdd = {
@@ -1139,7 +1150,7 @@ export type ElementsToAdd = {
   input: TextinputServerElement;
   textinput: TextinputServerElement;
   checkbox: CheckboxServerElement;
-  radiobutton: RadiobuttonServerElement;
+  radiobuttonGroup: RadiobuttonGroupServerElement;
   select: SelectServerElement;
   label: LabelServerElement;
   textarea: TextareaServerElement;

@@ -9,6 +9,7 @@ import {
   SelectServerElement,
   TextareaServerElement,
   TextinputServerElement,
+  RadiobuttonGroupServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 
@@ -134,6 +135,26 @@ export const radiobutton: RadiobuttonServerElement = {
   },
   name: 'radiobutton',
   children: [],
+};
+
+export const radiobuttonGroup: RadiobuttonGroupServerElement = {
+  id: 'radiobuttonGroup',
+  buoyancy: 0,
+  func_type: 'radiobuttonGroup',
+  struct_type: 'radiobuttonGroup',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.FORM,
+    value: '',
+  },
+  styles: {
+    classNames: ['radiobuttonGroup'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'radiobuttonGroup',
+  children: [radiobutton, radiobutton],
 };
 
 export const makeOption = (
