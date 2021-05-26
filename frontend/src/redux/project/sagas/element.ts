@@ -760,6 +760,66 @@ export const removeElementStylesSaga = compose(
   }
 });
 
+export function* updateElementImage(
+  elementId: string,
+  image: File,
+  meta: ElementHistoryMeta,
+) {
+  const parsedID = parseInt(elementId);
+  const formData = new FormData();
+  formData.append('image', new Blob([image]), image.name);
+
+  const {
+    result: changedElement,
+    error,
+  }: ReturnPromisedType<typeof apiUpdateElement> = yield call(
+    reqWrapper,
+    apiUpdateElement,
+    { data: formData, id: parsedID },
+  );
+  if (changedElement) {
+    yield call(
+      updateOrReplaceElementParameters,
+      Actions.updateElementParameters(
+        elementId,
+        {
+          ...changedElement.parameters,
+          imageURL: changedElement.image,
+          imageSize: {
+            width: 0,
+            height: 0,
+          },
+          width: 'auto',
+          height: 'auto',
+        },
+        { ...meta },
+      ),
+      UpdateDataActionType.UPDATE,
+    );
+    const selectedListId = yield select(selectSelectedAssetListId);
+    const assetLists = yield select(selectAllAssetLists);
+    const listId =
+      selectedListId || assetLists.length ? assetLists[0].id : null;
+    if (listId && changedElement.image) {
+      yield put(
+        Actions.uploadElementAsset(
+          changedElement.id,
+          {
+            imageURL: changedElement.image,
+          },
+          listId,
+          meta,
+        ),
+      );
+    } else {
+      throw new Error(
+        !listId ? 'Asset lists are not loaded' : 'Could not save image',
+      );
+    }
+  }
+  if (error) throw new Error(error);
+}
+
 export const updateElementImageSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
@@ -775,60 +835,7 @@ export const updateElementImageSaga = compose(
       return;
     }
     const { itemID, image } = action.payload;
-
-    const parsedID = parseInt(itemID);
-    const formData = new FormData();
-    formData.append('image', new Blob([image]), image.name);
-
-    const {
-      result: changedElement,
-      error,
-    }: ReturnPromisedType<typeof apiUpdateElement> = yield call(
-      reqWrapper,
-      apiUpdateElement,
-      { data: formData, id: parsedID },
-    );
-    if (changedElement) {
-      yield call(
-        updateOrReplaceElementParameters,
-        Actions.updateElementParameters(
-          itemID,
-          {
-            ...changedElement.parameters,
-            imageURL: changedElement.image,
-            imageSize: {
-              width: 0,
-              height: 0,
-            },
-            width: 'auto',
-            height: 'auto',
-          },
-          { ...action.meta },
-        ),
-        UpdateDataActionType.UPDATE,
-      );
-      const selectedListId = yield select(selectSelectedAssetListId);
-      const assetLists = yield select(selectAllAssetLists);
-      const listId =
-        selectedListId || assetLists.length ? assetLists[0].id : null;
-      if (listId && changedElement.image) {
-        yield put(
-          Actions.uploadElementAsset(
-            changedElement.id,
-            {
-              imageURL: changedElement.image,
-            },
-            listId,
-            action.meta,
-          ),
-        );
-      } else {
-        throw new Error(
-          !listId ? 'Asset lists are not loaded' : 'Could not save image',
-        );
-      }
-    }
-    if (error) throw new Error(error);
+    yield call(updateElementImage, itemID, image, action.meta);
   } catch (e) {
     yield put(
       enqueueSnackbar(

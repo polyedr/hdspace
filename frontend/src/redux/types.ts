@@ -491,7 +491,7 @@ export type RemoveMultipleElementsStyles = IAction<
 >;
 export type UpdateElementImage = IAction<
   typeof TYPES.UPDATE_ELEMENT_IMAGE,
-  { itemID: string; image: File; assetId?: string | null },
+  { itemID: string; image: File },
   ElementHistoryMeta
 >;
 export type UploadElementAsset = IAction<
