@@ -4,8 +4,8 @@ import {
   checkbox,
   makeButton,
   makeLabel,
+  makeRadiobutton,
   makeTextinput,
-  radiobutton,
   textarea,
 } from '@Domain/libraryElements/formElements/formElements';
 import {
@@ -39,7 +39,7 @@ const CORE_MASTER_RESPONSE_ELEMENTS = [
   makeButton(),
   makeTextinput(),
   checkbox,
-  radiobutton,
+  makeRadiobutton(),
   makeLabel(),
   textarea,
   makeContainer(),

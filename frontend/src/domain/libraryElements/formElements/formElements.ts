@@ -107,7 +107,10 @@ export const checkbox: CheckboxServerElement = {
   children: [],
 };
 
-export const radiobutton: RadiobuttonServerElement = {
+export const makeRadiobutton = (
+  value: string = '',
+  name: string = '',
+): RadiobuttonServerElement => ({
   id: 'radiobutton',
   buoyancy: 0,
   func_type: 'radiobutton',
@@ -120,8 +123,8 @@ export const radiobutton: RadiobuttonServerElement = {
       height: 24,
     },
     group: ElementGroup.FORM,
-    value: '',
-    name: '',
+    value,
+    name,
     showRipple: true,
   },
   styles: {
@@ -135,7 +138,7 @@ export const radiobutton: RadiobuttonServerElement = {
   },
   name: 'radiobutton',
   children: [],
-};
+});
 
 export const radiobuttonGroup: RadiobuttonGroupServerElement = {
   id: 'radiobuttonGroup',
@@ -154,7 +157,10 @@ export const radiobuttonGroup: RadiobuttonGroupServerElement = {
     pseudoClassStyles: {},
   },
   name: 'radiobuttonGroup',
-  children: [radiobutton, radiobutton],
+  children: [
+    makeRadiobutton('first radio', 'radio-group'),
+    makeRadiobutton('second radio', 'radio-group'),
+  ],
 };
 
 export const makeOption = (

@@ -53,11 +53,11 @@ import {
   textarea,
   makeTextinput,
   checkbox,
-  radiobutton,
   radiobuttonGroup,
   select,
   makeOption,
   makeLabel,
+  makeRadiobutton,
 } from './formElements/formElements';
 import {
   hyperlink,
@@ -100,7 +100,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   textinput: makeTextinput(),
   input: makeTextinput(),
   checkbox,
-  radiobutton,
+  radiobutton: makeRadiobutton(),
   radiobuttonGroup,
   select,
   option: makeOption('', ''),
