@@ -25,6 +25,9 @@ const Select = React.forwardRef<HTMLSelectElement, RendererProps>(
           classes.ownStyles,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        // @ts-expect-error readOnly property does not exist on type HTMLSelectElement
+        readOnly={isDisabled}
+        value={element.parameters.value}
         {...eventHandlers}
         {...(isDisabled && {
           onMouseDown: (ev) => {
