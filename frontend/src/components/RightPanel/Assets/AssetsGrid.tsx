@@ -17,7 +17,7 @@ import AssetImage from './AssetImage';
 const useStyles = makeStyles({
   root: {
     position: 'relative',
-    height: '230px',
+    height: 200,
   },
   gridList: {
     width: 300,
@@ -86,7 +86,7 @@ const AssetsGrid = () => {
         New asset
       </Button>
 
-      <Scrollbar autoHeightMin="100%" autoHeightMax={230}>
+      <Scrollbar autoHeightMax={150} style={{ height: '100%' }}>
         <GridList
           className={classes.gridList}
           cellHeight={80}
