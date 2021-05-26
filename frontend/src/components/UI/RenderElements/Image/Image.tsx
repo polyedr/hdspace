@@ -27,7 +27,7 @@ const useDragAndDropStyles = makeStyles({
   },
   resizerWrapper: {
     position: 'relative',
-    display: 'inline',
+    display: 'inline-block',
   },
 });
 
