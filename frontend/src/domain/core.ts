@@ -377,7 +377,11 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   textarea: ['textContent', 'placeholder', ...textareaStyleControls, 'layouts'],
   checkbox: ['value', 'name', ...checkboxStyleControls, 'layouts'],
   radiobutton: ['value', 'name', ...radiobuttonStyleControls, 'layouts'],
-  radiobuttonGroup: ['value', ...radiobuttonGroupStyleControls, 'layouts'],
+  radiobuttonGroup: [
+    'radiobuttons',
+    ...radiobuttonGroupStyleControls,
+    'layouts',
+  ],
   label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
   hyperlink: ['textContent', ...hyperlinkStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],

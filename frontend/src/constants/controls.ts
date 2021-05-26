@@ -37,6 +37,7 @@ import StyleSheets from '@Components/RightPanel/PropertiesTab/Controls/StyleShee
 import Attributes from '@Components/RightPanel/PropertiesTab/Controls/Attributes/Attributes';
 import TagName from '@Components/RightPanel/PropertiesTab/Controls/TagName/TagName';
 import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
+import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobuttons';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -131,6 +132,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
   attributes: { Control: Attributes },
   tagName: { Control: TagName },
   resizeOptions: { Control: ResizeOptionsControl },
+  radiobuttons: {
+    Control: Radiobuttons,
+  },
 };
 
 export default CONTROLS;

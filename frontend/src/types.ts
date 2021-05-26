@@ -365,6 +365,11 @@ export type RadiobuttonElement = LibraryElement<
   [],
   RadiobuttonParameters
 >;
+export type RadiobuttonGroupElement = LibraryElement<
+  'radiobuttonGroup',
+  [],
+  RadiobuttonGroupParameters
+>;
 export type SelectElement = LibraryElement<
   'select',
   OptionElement[],
@@ -446,6 +451,7 @@ export type LibraryElementUnion =
   | TextinputElement
   | CheckboxElement
   | RadiobuttonElement
+  | RadiobuttonGroupElement
   | SelectElement
   | OptionElement
   | TextareaElement
@@ -1246,6 +1252,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'attributes',
   'tagName',
   'resizeOptions',
+  'radiobuttons',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
