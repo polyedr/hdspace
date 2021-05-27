@@ -109,7 +109,8 @@ export const makeCheckbox = (): CheckboxServerElement => ({
 });
 
 export const makeRadiobutton = (
-  value: string = '',
+  value: string = 'radio',
+  label: string = 'Radio',
   name: string = v4(),
 ): RadiobuttonServerElement => ({
   id: 'radiobutton',
@@ -125,6 +126,7 @@ export const makeRadiobutton = (
     },
     group: ElementGroup.FORM,
     value,
+    label,
     name,
     showRipple: true,
   },
@@ -161,8 +163,8 @@ export const makeRadiobuttonGroup = (): RadiobuttonGroupServerElement => {
     },
     name: 'radiobuttonGroup',
     children: [
-      makeRadiobutton('first radio', randomName),
-      makeRadiobutton('second radio', randomName),
+      makeRadiobutton('first radio', 'First', randomName),
+      makeRadiobutton('second radio', 'Second', randomName),
     ],
   };
 };
