@@ -34,7 +34,7 @@ const MaterialRadiobutton = React.forwardRef<HTMLDivElement, RendererProps>(
             id={element.id}
             className="mdc-radio__native-control"
             type="radio"
-            name={element.name}
+            name={element.parameters.name}
             checked={isChecked}
             onChange={() => {
               if (!isDisabled && isChecked) {

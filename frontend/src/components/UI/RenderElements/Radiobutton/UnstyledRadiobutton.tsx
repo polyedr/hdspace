@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
-import { useSelector } from 'react-redux';
-import { selectEditorDocument } from '@Redux/project/selectors/base';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
@@ -16,13 +14,9 @@ const UnstyledRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
     const classes = useStyles(props);
     const [isChecked, setIsChecked] = useState<boolean>(false);
 
-    const editorDocument = useSelector(selectEditorDocument);
-    const el = editorDocument?.getElementById(element.id);
-    const parent = el?.parentElement;
-
     const eventHandlers = useEventHandlers(props);
 
-    const { value } = element.parameters;
+    const { value, name } = element.parameters;
 
     return (
       <input
@@ -37,7 +31,7 @@ const UnstyledRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
           classes.ownStyles,
         )}
         value={value}
-        name={parent?.id}
+        name={name}
         {...eventHandlers}
         checked={!isDisabled && !isChecked}
         onChange={() => {

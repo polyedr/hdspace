@@ -12,6 +12,7 @@ import {
   RadiobuttonGroupServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import { v4 } from 'uuid';
 
 export const makeButton = ({
   buoyancy = 0,
@@ -109,6 +110,7 @@ export const makeCheckbox = (): CheckboxServerElement => ({
 
 export const makeRadiobutton = (
   value: string = '',
+  name: string = v4(),
 ): RadiobuttonServerElement => ({
   id: 'radiobutton',
   buoyancy: 0,
@@ -123,6 +125,7 @@ export const makeRadiobutton = (
     },
     group: ElementGroup.FORM,
     value,
+    name,
     showRipple: true,
   },
   styles: {
@@ -138,25 +141,31 @@ export const makeRadiobutton = (
   children: [],
 });
 
-export const makeRadiobuttonGroup = (): RadiobuttonGroupServerElement => ({
-  id: 'radiobuttonGroup',
-  buoyancy: 0,
-  func_type: 'radiobuttonGroup',
-  struct_type: 'radiobuttonGroup',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
-    group: ElementGroup.FORM,
-    value: 'first radio',
-  },
-  styles: {
-    classNames: ['radiobuttonGroup'],
-    ownStyles: {},
-    pseudoClassStyles: {},
-  },
-  name: 'radiobuttonGroup',
-  children: [makeRadiobutton('first radio'), makeRadiobutton('second radio')],
-});
+export const makeRadiobuttonGroup = (): RadiobuttonGroupServerElement => {
+  const randomName = v4();
+  return {
+    id: 'radiobuttonGroup',
+    buoyancy: 0,
+    func_type: 'radiobuttonGroup',
+    struct_type: 'radiobuttonGroup',
+    parameters: {
+      layouts: DEFAULT_LAYOUT_LIST,
+      freeCanvas: defaultFreeCanvasParams,
+      group: ElementGroup.FORM,
+      value: 'first radio',
+    },
+    styles: {
+      classNames: ['radiobuttonGroup'],
+      ownStyles: {},
+      pseudoClassStyles: {},
+    },
+    name: 'radiobuttonGroup',
+    children: [
+      makeRadiobutton('first radio', randomName),
+      makeRadiobutton('second radio', randomName),
+    ],
+  };
+};
 
 export const makeOption = (
   name: string = '',
