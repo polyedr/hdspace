@@ -883,7 +883,7 @@ export const createElements = (
 export const addChildrenToElement = (
   children: {
     childType: ChildEntity;
-    parameters: ChildrenElements[ChildEntity]['parameters'];
+    parameters: ReturnType<ChildrenElements[ChildEntity]>['parameters'];
   }[],
   elementId: string,
   meta: ElementHistoryMeta,
@@ -896,7 +896,7 @@ export const addChildrenToElement = (
 export const addChildToElement = (
   childType: ChildEntity,
   elementID: string,
-  parameters: Partial<ChildrenElements[ChildEntity]['parameters']>,
+  parameters: Partial<ReturnType<ChildrenElements[ChildEntity]>['parameters']>,
   meta: ElementHistoryMeta,
 ): AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,
