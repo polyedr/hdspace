@@ -539,7 +539,6 @@ export type CheckboxParameters = BaseElementParams & {
 
 export type RadiobuttonParameters = BaseElementParams & {
   value: string;
-  name: string;
   showRipple: boolean;
 };
 

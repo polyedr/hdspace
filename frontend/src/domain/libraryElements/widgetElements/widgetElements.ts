@@ -7,7 +7,7 @@ import {
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { defaultFreeCanvasParams } from '../../core';
 
-export const map: MapServerElement = {
+export const makeMap = (): MapServerElement => ({
   id: 'map',
   buoyancy: 0,
   func_type: 'map',
@@ -37,9 +37,9 @@ export const map: MapServerElement = {
   },
   name: 'map',
   children: [],
-};
+});
 
-export const calendar: CalendarServerElement = {
+export const makeCalendar = (): CalendarServerElement => ({
   id: 'calendar',
   buoyancy: 0,
   func_type: 'calendar',
@@ -60,9 +60,9 @@ export const calendar: CalendarServerElement = {
   },
   name: 'calendar',
   children: [],
-};
+});
 
-export const clock: ClockServerElement = {
+export const makeClock = (): ClockServerElement => ({
   id: 'clock',
   buoyancy: 0,
   func_type: 'clock',
@@ -83,4 +83,4 @@ export const clock: ClockServerElement = {
   },
   name: 'clock',
   children: [],
-};
+});

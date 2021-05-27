@@ -76,7 +76,7 @@ export const makeTextinput = ({
   children: [],
 });
 
-export const checkbox: CheckboxServerElement = {
+export const makeCheckbox = (): CheckboxServerElement => ({
   id: 'checkbox',
   buoyancy: 0,
   func_type: 'checkbox',
@@ -105,11 +105,10 @@ export const checkbox: CheckboxServerElement = {
   },
   name: 'checkbox',
   children: [],
-};
+});
 
 export const makeRadiobutton = (
   value: string = '',
-  name: string = '',
 ): RadiobuttonServerElement => ({
   id: 'radiobutton',
   buoyancy: 0,
@@ -124,7 +123,6 @@ export const makeRadiobutton = (
     },
     group: ElementGroup.FORM,
     value,
-    name,
     showRipple: true,
   },
   styles: {
@@ -140,7 +138,7 @@ export const makeRadiobutton = (
   children: [],
 });
 
-export const radiobuttonGroup: RadiobuttonGroupServerElement = {
+export const makeRadiobuttonGroup = (): RadiobuttonGroupServerElement => ({
   id: 'radiobuttonGroup',
   buoyancy: 0,
   func_type: 'radiobuttonGroup',
@@ -149,7 +147,7 @@ export const radiobuttonGroup: RadiobuttonGroupServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.FORM,
-    value: '',
+    value: 'first radio',
   },
   styles: {
     classNames: ['radiobuttonGroup'],
@@ -157,15 +155,12 @@ export const radiobuttonGroup: RadiobuttonGroupServerElement = {
     pseudoClassStyles: {},
   },
   name: 'radiobuttonGroup',
-  children: [
-    makeRadiobutton('first radio', 'radio-group'),
-    makeRadiobutton('second radio', 'radio-group'),
-  ],
-};
+  children: [makeRadiobutton('first radio'), makeRadiobutton('second radio')],
+});
 
 export const makeOption = (
-  name: string,
-  value: string,
+  name: string = '',
+  value: string = '',
 ): OptionServerElement => ({
   id: 'option',
   buoyancy: 0,
@@ -187,7 +182,7 @@ export const makeOption = (
   children: [],
 });
 
-export const select: SelectServerElement = {
+export const makeSelect = (): SelectServerElement => ({
   id: 'select',
   buoyancy: 0,
   func_type: 'select',
@@ -214,7 +209,7 @@ export const select: SelectServerElement = {
     makeOption('Second option', 'second option'),
     makeOption('Third option', 'third option'),
   ],
-};
+});
 
 export const makeLabel = ({
   textContent = 'This is label',
@@ -245,7 +240,7 @@ export const makeLabel = ({
   children: [],
 });
 
-export const textarea: TextareaServerElement = {
+export const makeTextarea = (): TextareaServerElement => ({
   id: 'textarea',
   buoyancy: 0,
   func_type: 'textarea',
@@ -268,4 +263,4 @@ export const textarea: TextareaServerElement = {
   },
   name: 'textarea',
   children: [],
-};
+});
