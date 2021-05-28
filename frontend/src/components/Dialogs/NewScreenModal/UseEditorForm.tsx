@@ -66,6 +66,7 @@ const UseEditorForm: FC<Props> = ({ onClose }) => {
             renderElementButtons(
               Object.fromEntries(
                 uniq(Object.values(LIBRARY_ELEMENTS))
+                  .map((value) => value())
                   .filter((value) =>
                     value.func_type.toLowerCase().includes(query.toLowerCase()),
                   )

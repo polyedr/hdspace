@@ -205,6 +205,13 @@ export const selectCustomElementsHasNext = (state: AppReduxState) => {
   return !!selectProjectState(state).data.customElementsData.next;
 };
 
+export const selectActiveElementChildren = createSelector(
+  selectActiveElement,
+  selectAllElements,
+  (activeElement, elements) =>
+    activeElement.children.map((childId) => elements[childId]),
+);
+
 export const selectActiveItemChildren = (childType: ChildEntity) =>
   createSelector(
     selectActiveElement,

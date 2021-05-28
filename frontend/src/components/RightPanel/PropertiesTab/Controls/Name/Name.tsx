@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { PropertiesChangeProps, RadiobuttonElement } from '@Src/types';
+import { CheckboxElement, PropertiesChangeProps } from '@Src/types';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
-const Name: React.FC<PropertiesChangeProps<RadiobuttonElement>> = ({
+const Name: React.FC<PropertiesChangeProps<CheckboxElement>> = ({
   updateParams,
   canEdit,
 }) => {

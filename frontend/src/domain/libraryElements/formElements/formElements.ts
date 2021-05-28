@@ -9,8 +9,10 @@ import {
   SelectServerElement,
   TextareaServerElement,
   TextinputServerElement,
+  RadiobuttonGroupServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import { v4 } from 'uuid';
 
 export const makeButton = ({
   buoyancy = 0,
@@ -75,7 +77,7 @@ export const makeTextinput = ({
   children: [],
 });
 
-export const checkbox: CheckboxServerElement = {
+export const makeCheckbox = (): CheckboxServerElement => ({
   id: 'checkbox',
   buoyancy: 0,
   func_type: 'checkbox',
@@ -104,9 +106,13 @@ export const checkbox: CheckboxServerElement = {
   },
   name: 'checkbox',
   children: [],
-};
+});
 
-export const radiobutton: RadiobuttonServerElement = {
+export const makeRadiobutton = (
+  value: string = 'radio',
+  label: string = 'Radio',
+  name: string = v4(),
+): RadiobuttonServerElement => ({
   id: 'radiobutton',
   buoyancy: 0,
   func_type: 'radiobutton',
@@ -119,26 +125,51 @@ export const radiobutton: RadiobuttonServerElement = {
       height: 24,
     },
     group: ElementGroup.FORM,
-    value: '',
-    name: '',
+    value,
+    label,
+    name,
     showRipple: true,
   },
   styles: {
     classNames: ['radiobutton'],
     ownStyles: {
       display: 'block',
-      width: '24px',
-      height: '24px',
     },
     pseudoClassStyles: {},
   },
   name: 'radiobutton',
   children: [],
+});
+
+export const makeRadiobuttonGroup = (): RadiobuttonGroupServerElement => {
+  const randomName = v4();
+  return {
+    id: 'radiobuttonGroup',
+    buoyancy: 0,
+    func_type: 'radiobuttonGroup',
+    struct_type: 'radiobuttonGroup',
+    parameters: {
+      layouts: DEFAULT_LAYOUT_LIST,
+      freeCanvas: defaultFreeCanvasParams,
+      group: ElementGroup.FORM,
+      value: 'first radio',
+    },
+    styles: {
+      classNames: ['radiobuttonGroup'],
+      ownStyles: {},
+      pseudoClassStyles: {},
+    },
+    name: 'radiobuttonGroup',
+    children: [
+      makeRadiobutton('first radio', 'First', randomName),
+      makeRadiobutton('second radio', 'Second', randomName),
+    ],
+  };
 };
 
 export const makeOption = (
-  name: string,
-  value: string,
+  name: string = '',
+  value: string = '',
 ): OptionServerElement => ({
   id: 'option',
   buoyancy: 0,
@@ -160,7 +191,7 @@ export const makeOption = (
   children: [],
 });
 
-export const select: SelectServerElement = {
+export const makeSelect = (): SelectServerElement => ({
   id: 'select',
   buoyancy: 0,
   func_type: 'select',
@@ -187,7 +218,7 @@ export const select: SelectServerElement = {
     makeOption('Second option', 'second option'),
     makeOption('Third option', 'third option'),
   ],
-};
+});
 
 export const makeLabel = ({
   textContent = 'This is label',
@@ -218,7 +249,7 @@ export const makeLabel = ({
   children: [],
 });
 
-export const textarea: TextareaServerElement = {
+export const makeTextarea = (): TextareaServerElement => ({
   id: 'textarea',
   buoyancy: 0,
   func_type: 'textarea',
@@ -241,4 +272,4 @@ export const textarea: TextareaServerElement = {
   },
   name: 'textarea',
   children: [],
-};
+});
