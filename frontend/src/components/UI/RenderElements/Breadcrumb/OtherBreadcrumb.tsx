@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('breadcrumb', {
   breadcrumb: {
-    padding: '8px 16px',
+    padding: '8px 0px',
     listStyle: 'none',
     backgroundColor: '#eee',
   },
