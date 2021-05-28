@@ -145,12 +145,12 @@ export function* updateSavedElementsValues(elements: LibraryElementUnion[]) {
     .reduce((acc, element) => {
       const savedValue = getSavedValue(element);
 
-      if (element.type === 'radiobutton') {
-        return {
-          ...acc,
-          [element.parameters.name || '']: { savedValue: '' },
-        };
-      }
+      // if (element.type === 'radiobutton') {
+      //   return {
+      //     ...acc,
+      //     [element.parameters.name || '']: { savedValue: '' },
+      //   };
+      // }
 
       return {
         ...acc,

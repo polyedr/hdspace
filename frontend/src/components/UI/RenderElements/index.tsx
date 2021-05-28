@@ -47,6 +47,7 @@ import { BootstrapSelect, MaterialSelect, UnstyledSelect } from './Select';
 import { UnstyledOption, MaterialOption } from './Option';
 import HTMLElement from './HTMLElement/HTMLElement';
 import withUIFramework from './withUIFramework';
+import RadiobuttonGroup from './RadiobuttonGroup';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -74,6 +75,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     material: MaterialInput,
     not_selected: UnstyledInput,
   }),
+  radiobuttonGroup: RadiobuttonGroup,
   radiobutton: withUIFramework({
     bootstrap: BootstrapRadiobutton,
     material: MaterialRadiobutton,

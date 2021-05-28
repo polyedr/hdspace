@@ -30,7 +30,7 @@ export const convertCreatedElementToRequest = <
 ): ServerElement<T, ServerElement<Entity>[], K> => {
   const libraryElement = (LIBRARY_ELEMENTS[
     elementType
-  ] as unknown) as ServerElement<T, ServerElement<Entity>[], K>;
+  ]() as unknown) as ServerElement<T, ServerElement<Entity>[], K>;
   const { name } = libraryElement;
 
   return {

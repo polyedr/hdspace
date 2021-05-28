@@ -28,13 +28,17 @@ const MaterialRadiobutton = React.forwardRef<HTMLDivElement, RendererProps>(
         )}
         data-ls-id={element.id}
         {...eventHandlers}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
       >
         <div className="mdc-radio mdc-radio--touch">
           <input
             id={element.id}
             className="mdc-radio__native-control"
             type="radio"
-            name={element.name}
+            name={element.parameters.name}
             checked={isChecked}
             onChange={() => {
               if (!isDisabled && isChecked) {
@@ -48,6 +52,8 @@ const MaterialRadiobutton = React.forwardRef<HTMLDivElement, RendererProps>(
           </div>
           <div className="mdc-radio__ripple" />
         </div>
+
+        <label htmlFor={element.id}>{element.parameters.label}</label>
       </div>
     );
   },

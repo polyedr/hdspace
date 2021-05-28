@@ -1,56 +1,56 @@
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
-import { section } from '@Domain/libraryElements/blocksTemplates/blocksTemplates';
+import { makeSection } from '@Domain/libraryElements/blocksTemplates/blocksTemplates';
 import {
-  checkbox,
+  makeCheckbox,
   makeButton,
   makeLabel,
+  makeRadiobutton,
   makeTextinput,
-  radiobutton,
-  textarea,
+  makeTextarea,
 } from '@Domain/libraryElements/formElements/formElements';
 import {
-  column,
+  makeColumn,
   makeColumns,
   makeContainer,
   makeGrid,
   makeGridItem,
   makeImage,
-  nativeColumns,
-  video,
-  undefinedElement,
+  makeNativeColumns,
+  makeVideo,
+  makeUndefinedElement,
 } from '@Domain/libraryElements/otherElements/otherElements';
 import {
-  hyperlink,
+  makeHyperlink,
   makeHeading,
   makeList,
   makeListItem,
   makeParagraph,
-  textBlock,
+  makeTextBlock,
 } from '@Domain/libraryElements/typographyElements/typographyElements';
 import { capitalize } from '@material-ui/core/utils';
 import { Entity, ServerElement } from '@Src/types';
 
 const CORE_MASTER_RESPONSE_ELEMENTS = [
   makeHeading(),
-  hyperlink,
+  makeHyperlink(),
   makeParagraph(),
-  textBlock,
+  makeTextBlock(),
   makeList({ items: [makeListItem({ buoyancy: 0 })] }),
   makeButton(),
   makeTextinput(),
-  checkbox,
-  radiobutton,
+  makeCheckbox(),
+  makeRadiobutton(),
   makeLabel(),
-  textarea,
+  makeTextarea(),
   makeContainer(),
   makeGrid({ items: [makeGridItem()] }),
   makeColumns(),
-  column,
-  nativeColumns,
+  makeColumn(),
+  makeNativeColumns(),
   makeImage(),
-  video,
-  undefinedElement,
-  section,
+  makeVideo(),
+  makeUndefinedElement(),
+  makeSection(),
 ];
 
 const getMasterElementsIds = (elements: ServerElement<Entity>[]): string[] => {

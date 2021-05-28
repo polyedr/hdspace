@@ -40,6 +40,7 @@ const BootstrapRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
               setIsChecked(!isChecked);
             }
           }}
+          name={element.parameters.name}
         />
         <label
           htmlFor={element.id}

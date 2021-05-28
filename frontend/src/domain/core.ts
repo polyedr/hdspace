@@ -12,7 +12,7 @@ export const ENTITIES: {
   textinput: 'textinput',
   textarea: 'textarea',
   checkbox: 'checkbox',
-  radiobutton: 'radiobutton',
+  radiobuttonGroup: 'radiobuttonGroup',
   label: 'label',
   hyperlink: 'hyperlink',
   heading: 'heading',
@@ -33,7 +33,6 @@ export const ENTITIES: {
   grid: 'grid',
   nativeColumns: 'nativeColumns',
   columns: 'columns',
-  // column: 'column',
   smartHeader: 'smartHeader',
   smartFooter: 'smartFooter',
   smartForm: 'smartForm',
@@ -97,6 +96,12 @@ export const textareaStyleControls = [
 export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
 
 export const radiobuttonStyleControls = [
+  'indents',
+  'size',
+  'background',
+] as const;
+
+export const radiobuttonGroupStyleControls = [
   'indents',
   'size',
   'background',
@@ -371,7 +376,14 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   ],
   textarea: ['textContent', 'placeholder', ...textareaStyleControls, 'layouts'],
   checkbox: ['value', 'name', ...checkboxStyleControls, 'layouts'],
-  radiobutton: ['value', 'name', ...radiobuttonStyleControls, 'layouts'],
+  radiobutton: ['value', ...radiobuttonStyleControls, 'layouts'],
+  radiobuttonGroup: [
+    'radiobuttons',
+    'alignment',
+    'selectValue',
+    ...radiobuttonGroupStyleControls,
+    'layouts',
+  ],
   label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
   hyperlink: ['textContent', ...hyperlinkStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
@@ -473,6 +485,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   input: {},
   textarea: {},
   checkbox: {},
+  radiobuttonGroup: {
+    radiobutton: {
+      min: 2,
+      max: Infinity,
+    },
+  },
   radiobutton: {},
   label: {},
   hyperlink: {},

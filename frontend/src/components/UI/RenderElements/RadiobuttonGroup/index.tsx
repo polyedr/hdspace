@@ -1,12 +1,12 @@
 import React from 'react';
+import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
-import { makeComponentStyles } from '../styles';
-import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 
-const useStyles = makeComponentStyles('select', {});
+const useStyles = makeComponentStyles('radiobuttonGroup', {});
 
-const Select = React.forwardRef<HTMLSelectElement, RendererProps>(
+const RadiobuttonGroup = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled, children } = props;
     const [className, groupClass] = element.styles.classNames;
@@ -15,7 +15,7 @@ const Select = React.forwardRef<HTMLSelectElement, RendererProps>(
     const eventHandlers = useEventHandlers(props);
 
     return (
-      <select
+      <div
         ref={ref}
         id={element.id}
         data-ls-id={element.id}
@@ -33,9 +33,9 @@ const Select = React.forwardRef<HTMLSelectElement, RendererProps>(
         })}
       >
         {children}
-      </select>
+      </div>
     );
   },
 );
 
-export default Select;
+export default RadiobuttonGroup;
