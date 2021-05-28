@@ -46,11 +46,11 @@ class GeneratorAPIView(APIView):
                     "buoyancy": data.get("buoyancy") if data.get("buoyancy") is not None else random.randint(0, 10),
                     "parameters": data.get("parameters") if data.get("parameters") is not None else {
                         "freeCanvas": {
-                            "left": random.randint(0, 60),
-                            "top": random.randint(0, 60),
-                            "zIndex": random.randint(0, 10),
-                            "width": random.randint(0, 200),
-                            "height": random.randint(0, 200)
+                            "left": 20,
+                            "top": 20,
+                            "zIndex": 0,
+                            "width": 54,
+                            "height": 27
                         },
                         "group": "form",
                         "layouts": [
@@ -58,7 +58,7 @@ class GeneratorAPIView(APIView):
                             "tablet",
                             "mobile"
                         ],
-                        "textContent": "button",
+                        "textContent": fake.sentence(nb_words=2),
                         "showRipple": True
                     },
                     "styles": data.get("styles") if data.get("styles") is not None else {
@@ -66,8 +66,11 @@ class GeneratorAPIView(APIView):
                             "button"
                         ],
                         "ownStyles": {
-                            "color": f"{fake.color(hue=color_list[random.randint(0, len(color_list) - 1)])}",
-                            "background-color": f"{fake.color(hue=color_list[random.randint(0, len(color_list) - 1)])}"
+                            "font-color": f"{fake.color(hue=color_list[random.randint(0, len(color_list) - 1)])}",
+                            "background-color": f"{fake.color(hue=color_list[random.randint(0, len(color_list) - 1)])}",
+                            "font-size": random.randint(10, 30),
+                            "margins": random.randint(0, 50),
+                            "paddings": random.randint(0, 50)
                         }
                     },
                     "shared": data.get("shared") if data.get("shared") is not None else secrets.choice([True, False])
