@@ -62,16 +62,6 @@ export const selectIfListHasNextPage = createSelector(
     return !assetResults ? false : !!assetResults.next;
   },
 );
-/* selectCurrentAssetListId,
-  selectProjectState,
-  (assetListId: string | null, state: ProjectState) => {
-    if (!assetListId) {
-      return null;
-    }
-    const assetResults = state.data.assetResults[assetListId];
-    return assetResults ? assetResults.results : null;
-  },
-); */
 
 export const selectAssetListById = (listId: string | null) => (
   state: AppReduxState,
