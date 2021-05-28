@@ -208,33 +208,3 @@ export const makeList = ({
   name: 'list',
   children: items,
 });
-
-// export const list: ListServerElement = {
-//   id: 'list',
-//   buoyancy: 0,
-//   func_type: 'list',
-//   struct_type: 'list',
-//   parameters: {
-//     layouts: DEFAULT_LAYOUT_LIST,
-//     freeCanvas: defaultFreeCanvasParams,
-//     group: ElementGroup.TYPOGRAPHY,
-//     listItems: [
-//       // TODO research why we need items here
-//       { textContent: 'First item', isLink: false, link: '' },
-//       { textContent: 'Second item', isLink: false, link: '' },
-//       { textContent: 'Third item', isLink: false, link: '' },
-//     ],
-//     isOrdered: false,
-//   },
-//   styles: {
-//     classNames: ['list'],
-//     ownStyles: {},
-//     pseudoClassStyles: {},
-//   },
-//   name: 'list',
-//   children: [
-//     makeListItem({ textContent: 'First item', UID: 'list-1', buoyancy: 0 }),
-//     makeListItem({ textContent: 'Second item', UID: 'list-2', buoyancy: 1 }),
-//     makeListItem({ textContent: 'Third item', UID: 'list-3', buoyancy: 2 }),
-//   ],
-// };
