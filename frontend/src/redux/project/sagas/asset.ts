@@ -18,15 +18,15 @@ import {
   Result,
   UserProjectPermission,
 } from '@Src/types';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import {
   selectAllAssetLists,
-  selectSelectedAssetListId,
+  selectCurrentAssetListId,
   selectAssetListById,
+  selectCurrentAssetList,
 } from '../selectors/asset';
 import { selectScreenByIdWrapper } from '../selectors/screen';
 import { selectCurrentProjectId } from '../selectors/base';
@@ -86,7 +86,7 @@ export function* uploadAssetHelper(
 
 export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
   const { selectedListId } = action.payload;
-  if (selectedListId !== ALL_ASSETS_LIST_ID) {
+  if (selectedListId) {
     try {
       const assets: PaginatedArray<Asset> = yield call(
         reqWrapper,
@@ -97,7 +97,6 @@ export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
         },
       );
       yield put(Actions.setAssets(selectedListId, assets));
-      yield put(Actions.setAssetsLoader(false));
     } catch (error) {
       yield put(
         enqueueSnackbar(
@@ -112,35 +111,20 @@ export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
   }
 }
 
-export function* loadAssetListsSaga() {
-  const projectId = yield select(selectCurrentProjectId);
+export function* loadAssetListsSaga(
+  action: ReturnType<typeof Actions.loadAssetLists>,
+) {
   try {
-    yield put(Actions.setAssetsLoader(true));
     const assetLists: PaginatedArray<AssetsList> = yield call(
       reqWrapper,
       apiGetAssetLists,
       {
-        projectId,
+        projectId: action.payload,
       },
     );
+    yield put(Actions.setSelectedAssetListId(assetLists.results[0].id));
     yield put(Actions.setAssetLists(assetLists));
-    // compute all lists from returned response, should be removed in the future
-    const allImages = assetLists.results.reduce(
-      (acc: Array<Asset>, assetList: AssetsList) => {
-        return [...acc, ...assetList.images];
-      },
-      [],
-    );
-    yield put(
-      Actions.setAssets(ALL_ASSETS_LIST_ID, {
-        next: null,
-        previous: null,
-        pageSize: 0,
-        loading: false,
-        results: allImages,
-      }),
-    );
-    yield put(Actions.setAssetsLoader(false));
+    yield put(Actions.setAssetsListsLoader(false));
   } catch (error) {
     yield put(
       enqueueSnackbar(
@@ -165,7 +149,7 @@ export const addNewAssetListSaga = compose(
   const projectId = yield select(selectCurrentProjectId);
   const useHistory = !!action.meta && action.meta.useHistory;
   try {
-    const selectedAssetId = yield select(selectSelectedAssetListId);
+    const currentAssetListId = yield select(selectCurrentAssetListId);
 
     const assetList: AssetsList = yield call(reqWrapper, apiCreateAssetList, {
       projectId,
@@ -174,16 +158,13 @@ export const addNewAssetListSaga = compose(
     if (!useHistory) {
       yield put(
         Actions.addUndoActions([
-          Actions.setSelectedAssetListId(
-            selectedAssetId || ALL_ASSETS_LIST_ID,
-            { ...action.meta },
-          ),
+          Actions.setSelectedAssetListId(currentAssetListId),
           Actions.removeAssetList(assetList.id, { ...action.meta }),
         ]),
       );
     }
     yield put(Actions.addAssetListToState(assetList));
-    yield put(Actions.setSelectedAssetListId(assetList.id, { ...action.meta }));
+    yield put(Actions.setSelectedAssetListId(assetList.id));
   } catch (error) {
     yield put(
       enqueueSnackbar(
@@ -310,7 +291,7 @@ export const uploadAssetSaga = compose(
 
   let assetListId = listId;
   if (!assetListId) {
-    assetListId = yield select(selectSelectedAssetListId);
+    assetListId = yield select(selectCurrentAssetListId);
   }
   if (!assetListId) {
     yield put(
@@ -432,7 +413,7 @@ export const editIcoScreenSaga = withRequiredPermissions(
   try {
     const { file, project, id } = payload;
     const assetLists = yield select(selectAllAssetLists);
-    const selectedAssetList = yield select(selectSelectedAssetListId);
+    const selectedAssetList = yield select(selectCurrentAssetList);
     const listId = selectedAssetList?.id || assetLists[0].id;
     const screenInfo = yield select(selectScreenByIdWrapper(id));
 

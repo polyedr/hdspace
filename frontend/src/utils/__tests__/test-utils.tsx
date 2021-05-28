@@ -233,7 +233,6 @@ export const createMockProject = (): Project => ({
 export const createAssetListMock = (): AssetsList => ({
   created: new Date(),
   id: '9999',
-  images: [],
   modified: new Date(),
   name: 'Project assets',
   projectId: '715',

@@ -213,6 +213,8 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       }
 
       yield put(Actions.setCurrentProjectId(result.id));
+      yield put(Actions.setAssetLists(null));
+      yield put(Actions.setSelectedAssetListId(null));
       const masterScreenId: number =
         result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
         -1;

@@ -1170,7 +1170,6 @@ export type AssetsList = {
   created: Date;
   modified: Date;
   projectId: string;
-  images: Asset[];
 };
 
 export type Asset = {

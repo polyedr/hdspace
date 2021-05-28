@@ -56,10 +56,10 @@ const communicationReducer = (
       };
     }
 
-    case TYPES.SET_ASSETS_LOADER: {
+    case TYPES.SET_ASSETS_LISTS_LOADER: {
       return {
         ...state,
-        assetsLoader: action.payload.active,
+        assetsListsLoader: action.payload.active,
       };
     }
 

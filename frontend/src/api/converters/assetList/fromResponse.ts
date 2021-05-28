@@ -1,6 +1,6 @@
 import { AssetsList, PaginatedArray } from '@Src/types';
 import { AxiosResponse } from 'axios';
-import { convertFromServerAsset, ServerAsset } from '../asset/fromResponse';
+import { ServerAsset } from '../asset/fromResponse';
 
 export type ServerAssetList = {
   id: string;
@@ -13,7 +13,7 @@ export type ServerAssetList = {
 };
 
 export const convertFromServerAssetList = (list: ServerAssetList) => {
-  const { id, name, created, modified, project, images } = list;
+  const { id, name, created, modified, project } = list;
 
   return {
     id,
@@ -21,7 +21,6 @@ export const convertFromServerAssetList = (list: ServerAssetList) => {
     created: new Date(created),
     modified: new Date(modified),
     projectId: project,
-    images: images.map(convertFromServerAsset),
   } as AssetsList;
 };
 

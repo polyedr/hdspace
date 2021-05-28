@@ -1,0 +1,165 @@
+import React, { useCallback, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Button,
+  CircularProgress,
+  GridList,
+  GridListTile,
+} from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
+import {
+  selectCurrentAssetListId,
+  selectDisplayAssets,
+} from '@Redux/project/selectors/asset';
+import { uploadAsset, loadAssets } from '@Redux/project/actions';
+import Scrollbar from '@Components/UI/Scrollbar';
+
+import { Asset, UserProjectPermission } from '@Src/types';
+import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
+import AssetImage from './AssetImage';
+
+const useStyles = makeStyles({
+  root: {
+    position: 'relative',
+    height: 200,
+  },
+  progressWrapper: {
+    width: '300px',
+    height: '250px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gridList: {
+    width: 300,
+  },
+});
+
+const DisplayAssets = () => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const currentAssetListId = useSelector(selectCurrentAssetListId);
+  const assets = useSelector(selectDisplayAssets);
+  const canEditProject = useSelector(
+    selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
+  );
+
+  const newAssetRef = useRef<HTMLInputElement | null>(null);
+  const lastAssetRef = useRef<HTMLImageElement | null>(null);
+
+  const handleUploadAsset = useCallback(
+    ({ target }) => {
+      const file = target.files[0];
+      if (!file) {
+        return;
+      }
+
+      if (file.size > 5242880) {
+        // eslint-disable-next-line no-alert
+        alert('Choose image up to 5Mb!');
+      } else {
+        dispatch(uploadAsset(file));
+      }
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    console.log('LOAD ASSETS!!!', currentAssetListId, assets);
+    if (currentAssetListId && !assets) {
+      console.log('CALL LOAD DISPATCH!!', assets, currentAssetListId);
+      dispatch(loadAssets(currentAssetListId));
+    }
+  }, [assets, currentAssetListId, dispatch]);
+
+  const lastImage = lastAssetRef.current;
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && currentAssetListId) {
+          dispatch(loadAssets(currentAssetListId));
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.01,
+      },
+    );
+
+    if (lastImage) {
+      obs.observe(lastImage);
+    }
+
+    return () => {
+      if (lastImage) {
+        obs.unobserve(lastImage);
+      }
+    };
+  }, [currentAssetListId, dispatch, lastImage]);
+
+  if (!assets || !currentAssetListId) {
+    return (
+      <div className={classes.progressWrapper}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
+  return (
+    <div className={classes.root}>
+      <input
+        ref={newAssetRef}
+        accept="image/*"
+        style={{
+          display: 'none',
+        }}
+        id="upload-asset"
+        type="file"
+        onChange={handleUploadAsset}
+        disabled={!canEditProject}
+      />
+      <Button
+        color="primary"
+        component="button"
+        style={{
+          marginBottom: '8px',
+        }}
+        startIcon={<AddIcon />}
+        disabled={!currentAssetListId || !canEditProject}
+        onClick={() => {
+          if (!newAssetRef.current) {
+            return;
+          }
+          newAssetRef.current.click();
+        }}
+      >
+        New asset
+      </Button>
+
+      <Scrollbar autoHeightMax={150} style={{ height: '100%' }}>
+        <GridList
+          className={classes.gridList}
+          cellHeight={80}
+          cols={3}
+          spacing={5}
+        >
+          {assets.map((asset: Asset, index: number) => {
+            return (
+              <GridListTile key={`asset-${asset.id}`}>
+                <AssetImage
+                  asset={asset}
+                  ref={index === assets.length - 1 ? lastAssetRef : undefined}
+                />
+              </GridListTile>
+            );
+          })}
+        </GridList>
+      </Scrollbar>
+    </div>
+  );
+};
+
+export default DisplayAssets;

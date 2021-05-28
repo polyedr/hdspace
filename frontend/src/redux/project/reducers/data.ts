@@ -11,7 +11,6 @@ import {
   insertMapElementWrapper,
   removeMapElementWrapper,
 } from '@Utils/normalizedStateHelpers';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { initialData } from '../initial';
 import TYPES from '../../actionTypes';
 import { Project, Screen } from '../../../types';
@@ -235,6 +234,7 @@ const dataReducer = produce(
 
       case TYPES.SET_ASSET_LISTS: {
         draft.assetLists = action.payload;
+        draft.assetResults = {};
         break;
       }
 
@@ -242,7 +242,15 @@ const dataReducer = produce(
         const { listId } = action.payload;
         draft.assetResults = {
           ...draft.assetResults,
-          [listId]: action.payload.assets,
+          [listId]: {
+            ...action.payload.assets,
+            results: [
+              ...(draft.assetResults[listId]
+                ? draft.assetResults[listId].results
+                : []),
+              ...action.payload.assets.results,
+            ],
+          },
         };
         break;
       }
@@ -266,12 +274,6 @@ const dataReducer = produce(
             },
           };
         }
-
-        // update all images section, should be removed in the future
-        draft.assetResults[ALL_ASSETS_LIST_ID].results = [
-          action.payload.asset,
-          ...draft.assetResults[ALL_ASSETS_LIST_ID].results,
-        ];
         break;
       }
 
@@ -288,9 +290,6 @@ const dataReducer = produce(
 
       case TYPES.REMOVE_ASSET_REDUX: {
         const { id, listId } = action.payload;
-        draft.assetResults[ALL_ASSETS_LIST_ID].results = draft.assetResults[
-          ALL_ASSETS_LIST_ID
-        ].results.filter((asset) => asset.id !== id);
         if (draft.assetResults[listId]) {
           draft.assetResults[listId].results = draft.assetResults[
             listId
@@ -310,21 +309,12 @@ const dataReducer = produce(
         const listAssetIndex = draft.assetResults[listId].results.findIndex(
           (res) => res.id === asset.id,
         );
-        const allListAssetIndex = draft.assetResults[
-          ALL_ASSETS_LIST_ID
-        ].results.findIndex((res) => res.id === asset.id);
         const listResults = draft.assetResults[listId].results;
-        const allListResults = draft.assetResults[ALL_ASSETS_LIST_ID].results;
         asset.image = imageUrl;
         draft.assetResults[listId].results = [
           ...listResults.slice(0, listAssetIndex - 1),
           asset,
           ...listResults.slice(listAssetIndex + 1),
-        ];
-        draft.assetResults[ALL_ASSETS_LIST_ID].results = [
-          ...allListResults.slice(0, allListAssetIndex - 1),
-          asset,
-          ...allListResults.slice(allListAssetIndex + 1),
         ];
         break;
       }
