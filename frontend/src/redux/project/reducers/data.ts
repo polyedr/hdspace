@@ -258,7 +258,10 @@ const dataReducer = produce(
       case TYPES.ADD_STATE_ASSET_LIST: {
         draft.assetLists = {
           ...draft.assetLists,
-          results: [action.payload, ...draft.assetLists.results],
+          results: [
+            action.payload,
+            ...(draft.assetLists ? draft.assetLists.results : []),
+          ],
         };
         break;
       }

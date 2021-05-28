@@ -84,7 +84,7 @@ const AssetLists = () => {
     }
   }, [assetLists, dispatch, currentProjectId, assetListsLoading]);
 
-  if (!assetLists) {
+  if (!assetLists || !currentAssetListId) {
     return null;
   }
 
@@ -118,7 +118,7 @@ const AssetLists = () => {
       ) : (
         <Select
           label="Asset list"
-          value={currentAssetListId || undefined}
+          value={currentAssetListId}
           className={classes.assetsSelector}
           onChange={(event) =>
             handleListChange((event.target.value as string) || null)

@@ -270,11 +270,12 @@ export function* createProjectSaga(
           UserProjectPermission.CHANGE_PROJECT,
         ]),
       );
-      const assetList = yield call(reqWrapper, apiCreateAssetList, {
+      yield call(reqWrapper, apiCreateAssetList, {
         projectId: createdProject.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
-      yield put(Actions.addAssetListToState(assetList, { useHistory: true }));
+      yield put(Actions.setAssetLists(null));
+      yield put(Actions.setSelectedAssetListId(null));
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, createdProject]));
 
