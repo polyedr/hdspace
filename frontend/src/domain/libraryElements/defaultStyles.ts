@@ -846,6 +846,7 @@ export const defaultRadiobuttonStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
+    margin: '3px',
   },
   size: {
     ...DEFAULT_SIZE,

@@ -28,8 +28,8 @@ const Alignment: React.FC<
       select
       disabled={!canEdit}
     >
-      <MenuItem value={Alignments.Horizontal}>{Alignments.Horizontal}</MenuItem>
       <MenuItem value={Alignments.Vertical}>{Alignments.Vertical}</MenuItem>
+      <MenuItem value={Alignments.Horizontal}>{Alignments.Horizontal}</MenuItem>
     </StyledTextField>
   );
 };

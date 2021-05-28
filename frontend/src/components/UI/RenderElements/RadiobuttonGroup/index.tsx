@@ -2,15 +2,9 @@ import React from 'react';
 import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
-import { Alignments } from '@Src/types';
 import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('radiobuttonGroup', {});
-
-const alignmentMap = {
-  [Alignments.Vertical]: 'column',
-  [Alignments.Horizontal]: 'row',
-};
 
 const RadiobuttonGroup = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
@@ -19,8 +13,6 @@ const RadiobuttonGroup = React.forwardRef<HTMLDivElement, RendererProps>(
 
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
-
-    const { alignment } = element.parameters;
 
     return (
       <div
@@ -39,10 +31,6 @@ const RadiobuttonGroup = React.forwardRef<HTMLDivElement, RendererProps>(
             ev.preventDefault();
           },
         })}
-        style={{
-          display: 'flex',
-          flexDirection: alignmentMap[alignment],
-        }}
       >
         {children}
       </div>
