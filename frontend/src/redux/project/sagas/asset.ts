@@ -27,6 +27,7 @@ import {
   selectCurrentAssetListId,
   selectAssetListById,
   selectCurrentAssetList,
+  selectCurrentAssetsResults,
 } from '../selectors/asset';
 import { selectScreenByIdWrapper } from '../selectors/screen';
 import { selectCurrentProjectId } from '../selectors/base';
@@ -88,12 +89,16 @@ export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
   const { selectedListId } = action.payload;
   if (selectedListId) {
     try {
+      const loadedAssetResults = yield select(selectCurrentAssetsResults);
       const assets: PaginatedArray<Asset> = yield call(
         reqWrapper,
         apiGetAssets,
         {
           projectId: action.payload,
-          ...(selectedListId ? { assetListId: selectedListId } : {}),
+          assetListId: selectedListId,
+          ...(loadedAssetResults?.next
+            ? { next: loadedAssetResults.next }
+            : {}),
         },
       );
       yield put(Actions.setAssets(selectedListId, assets));

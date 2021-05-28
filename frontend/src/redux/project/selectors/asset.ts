@@ -42,6 +42,26 @@ export const selectDisplayAssets = ({ project }: AppReduxState) => {
   const assetResults = project.data.assetResults[currentAssetListId];
   return assetResults ? assetResults.results : null;
 };
+
+export const selectCurrentAssetsResults = ({ project }: AppReduxState) => {
+  const currentAssetListId = project.edit.selectedAssetListId;
+  if (!currentAssetListId) {
+    return null;
+  }
+  return project.data.assetResults[currentAssetListId];
+};
+
+export const selectIfListHasNextPage = createSelector(
+  selectCurrentAssetListId,
+  selectProjectState,
+  (currentAssetListId: string | null, state: ProjectState) => {
+    if (!currentAssetListId) {
+      return false;
+    }
+    const assetResults = state.data.assetResults[currentAssetListId];
+    return !assetResults ? false : !!assetResults.next;
+  },
+);
 /* selectCurrentAssetListId,
   selectProjectState,
   (assetListId: string | null, state: ProjectState) => {

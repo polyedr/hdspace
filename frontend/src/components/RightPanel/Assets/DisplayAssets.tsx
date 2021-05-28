@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -11,6 +11,8 @@ import AddIcon from '@material-ui/icons/Add';
 import {
   selectCurrentAssetListId,
   selectDisplayAssets,
+  selectIfListHasNextPage,
+  selectAssetsLoading,
 } from '@Redux/project/selectors/asset';
 import { uploadAsset, loadAssets } from '@Redux/project/actions';
 import Scrollbar from '@Components/UI/Scrollbar';
@@ -41,13 +43,14 @@ const DisplayAssets = () => {
   const classes = useStyles();
   const currentAssetListId = useSelector(selectCurrentAssetListId);
   const assets = useSelector(selectDisplayAssets);
+  const hasNextPage = useSelector(selectIfListHasNextPage);
+  const assetsLoading = useSelector(selectAssetsLoading);
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
 
   const newAssetRef = useRef<HTMLInputElement | null>(null);
-  const lastAssetRef = useRef<HTMLImageElement | null>(null);
-
+  const [lastImage, setLastImage] = useState<HTMLImageElement | null>(null);
   const handleUploadAsset = useCallback(
     ({ target }) => {
       const file = target.files[0];
@@ -66,19 +69,20 @@ const DisplayAssets = () => {
   );
 
   useEffect(() => {
-    console.log('LOAD ASSETS!!!', currentAssetListId, assets);
     if (currentAssetListId && !assets) {
-      console.log('CALL LOAD DISPATCH!!', assets, currentAssetListId);
       dispatch(loadAssets(currentAssetListId));
     }
   }, [assets, currentAssetListId, dispatch]);
 
-  const lastImage = lastAssetRef.current;
-
   useEffect(() => {
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && currentAssetListId) {
+        if (
+          entry.isIntersecting &&
+          currentAssetListId &&
+          hasNextPage &&
+          !assetsLoading
+        ) {
           dispatch(loadAssets(currentAssetListId));
         }
       },
@@ -98,7 +102,7 @@ const DisplayAssets = () => {
         obs.unobserve(lastImage);
       }
     };
-  }, [currentAssetListId, dispatch, lastImage]);
+  }, [assetsLoading, currentAssetListId, dispatch, hasNextPage, lastImage]);
 
   if (!assets || !currentAssetListId) {
     return (
@@ -151,7 +155,15 @@ const DisplayAssets = () => {
               <GridListTile key={`asset-${asset.id}`}>
                 <AssetImage
                   asset={asset}
-                  ref={index === assets.length - 1 ? lastAssetRef : undefined}
+                  ref={
+                    index === assets.length - 1
+                      ? (image: HTMLImageElement) => {
+                          if (image) {
+                            setLastImage(image);
+                          }
+                        }
+                      : undefined
+                  }
                 />
               </GridListTile>
             );
