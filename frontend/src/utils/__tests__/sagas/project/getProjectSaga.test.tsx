@@ -18,7 +18,7 @@ import {
   createProjectWithScreensMock,
 } from '../../test-utils';
 
-describe('createProjectSaga Test', () => {
+describe('getProjectSaga Test', () => {
   beforeAll(beforeSagaTest);
   const action = Actions.getProject(10);
   const mockProject = createMockProject();
@@ -72,6 +72,12 @@ describe('createProjectSaga Test', () => {
       expect(result).toEqual(
         put(Actions.setCurrentProjectId(projectWithScreens.id)),
       );
+    });
+    it('put setAssetLists to null action', (result) => {
+      expect(result).toEqual(put(Actions.setAssetLists(null)));
+    });
+    it('put setSelectedAssetList to null action', (result) => {
+      expect(result).toEqual(put(Actions.setSelectedAssetListId(null)));
     });
     it('should put setMasterScreenId action', (result) => {
       expect(result).toEqual(put(Actions.setMasterScreenId(masterScreenId)));
