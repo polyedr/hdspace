@@ -1,4 +1,4 @@
-import { Entity } from '@Src/types';
+import { Alignments, Entity } from '@Src/types';
 import {
   buttonStyleControls,
   calendarStyleControls,
@@ -868,6 +868,10 @@ export const defaultRadiobuttonGroupStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    display: 'flex',
+    flexDirection: Alignments.Vertical,
   },
 };
 

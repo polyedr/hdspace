@@ -378,8 +378,9 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   checkbox: ['value', 'name', ...checkboxStyleControls, 'layouts'],
   radiobutton: ['value', ...radiobuttonStyleControls, 'layouts'],
   radiobuttonGroup: [
-    'selectValue',
     'radiobuttons',
+    'alignment',
+    'selectValue',
     ...radiobuttonGroupStyleControls,
     'layouts',
   ],

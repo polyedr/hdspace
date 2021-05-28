@@ -5,6 +5,11 @@ import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 
+export enum Alignments {
+  Horizontal = 'row',
+  Vertical = 'column',
+}
+
 type ScreenBase = {
   id: number;
   name: string;
@@ -1270,6 +1275,7 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'flexGrow',
   'backgroundSize',
   'styleSheets',
+  'alignment',
 ] as const;
 
 export type Control =

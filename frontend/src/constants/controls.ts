@@ -38,6 +38,7 @@ import Attributes from '@Components/RightPanel/PropertiesTab/Controls/Attributes
 import TagName from '@Components/RightPanel/PropertiesTab/Controls/TagName/TagName';
 import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
 import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobuttons';
+import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -134,6 +135,10 @@ const CONTROLS: Record<Control, ControlInfo> = {
   resizeOptions: { Control: ResizeOptionsControl },
   radiobuttons: {
     Control: Radiobuttons,
+  },
+  alignment: {
+    Control: Alignment,
+    styles: ['flexDirection'],
   },
 };
 
