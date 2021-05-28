@@ -5,7 +5,7 @@ import cn from 'classnames';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 
-const useStyles = makeComponentStyles('breadcrumb', {});
+const useStyles = makeComponentStyles('pagination', {});
 
 const BootstrapPaginationItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {

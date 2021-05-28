@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 
 const BootstrapBreadcrumb = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
-    const { children, element } = props;
+    const { children, element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
 
     const useStyles = makeComponentStyles('breadcrumb', {});
@@ -17,7 +17,11 @@ const BootstrapBreadcrumb = React.forwardRef<HTMLElement, RendererProps>(
       <nav
         ref={ref}
         aria-label="breadcrumb"
-        className={cn(classes.ownStyles, groupClass)}
+        className={cn(
+          classes.ownStyles,
+          groupClass,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+        )}
         id={element.id}
         data-ls-id={element.id}
         {...eventHandlers}

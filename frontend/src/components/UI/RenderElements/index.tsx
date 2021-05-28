@@ -53,6 +53,10 @@ import BootstrapPagination from './Pagination/BootstrapPagination';
 import BootstrapPaginationItem from './PaginationItem/BootstrapPaginationItem';
 import BootstrapCarousel from './Carousel/BootstrapCarousel';
 import BootstrapCarouselItem from './CarouselItem/BootstrapCarouselItem';
+import OtherPagination from './Pagination/OtherPagination';
+import OtherPaginationItem from './PaginationItem/OtherPaginationItem';
+import OtherBreadcrumb from './Breadcrumb/OtherBreadcrumb';
+import OtherBreadcrumbItem from './BreadcrumbItem/OtherBreadcrumbItem';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -101,10 +105,26 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   textBlock: TextBlock,
   list: List,
   listItem: ListItem,
-  breadcrumb: BootstrapBreadcrumb,
-  breadcrumbItem: BootstrapBreadcrumbItem,
-  pagination: BootstrapPagination,
-  paginationItem: BootstrapPaginationItem,
+  breadcrumb: withUIFramework({
+    bootstrap: BootstrapBreadcrumb,
+    material: OtherBreadcrumb,
+    not_selected: OtherBreadcrumb,
+  }),
+  breadcrumbItem: withUIFramework({
+    bootstrap: BootstrapBreadcrumbItem,
+    material: OtherBreadcrumbItem,
+    not_selected: OtherBreadcrumbItem,
+  }),
+  pagination: withUIFramework({
+    bootstrap: BootstrapPagination,
+    material: OtherPagination,
+    not_selected: OtherPagination,
+  }),
+  paginationItem: withUIFramework({
+    bootstrap: BootstrapPaginationItem,
+    material: OtherPaginationItem,
+    not_selected: OtherPaginationItem,
+  }),
   carousel: BootstrapCarousel,
   carouselItem: BootstrapCarouselItem,
   label: Label,

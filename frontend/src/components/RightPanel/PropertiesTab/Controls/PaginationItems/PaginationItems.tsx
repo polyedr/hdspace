@@ -27,13 +27,13 @@ const PaginationItems: React.FC<
 > = ({ updateParams, element, canEdit }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const breadcrumbItem = useSelector(
+  const paginationItem = useSelector(
     selectActiveItemChildren('paginationItem'),
   );
   const currentScreenId = useSelector(selectCurrentScreenId);
   const handleAddButtonClick = () => {
     const lastNumber =
-      breadcrumbItem[breadcrumbItem.length - 1].parameters.textContent;
+      paginationItem[paginationItem.length - 1].parameters.textContent;
     dispatch(
       addChildToElement(
         'paginationItem',
@@ -49,13 +49,13 @@ const PaginationItems: React.FC<
 
   return (
     <div>
-      {breadcrumbItem.map(({ id, parameters }) => (
+      {paginationItem.map(({ id, parameters }) => (
         <PaginationItem
           key={id}
           id={id}
           parameters={parameters}
           updateParams={updateParams}
-          isLast={breadcrumbItem.length <= 1}
+          isLast={paginationItem.length <= 1}
           canEdit={canEdit}
         />
       ))}

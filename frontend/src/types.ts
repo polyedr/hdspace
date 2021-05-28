@@ -623,7 +623,6 @@ export type BreadcrumbParameters = BaseElementParams & {
 };
 export type PaginationParameters = BaseElementParams & {
   paginationItems: PaginationItem[];
-  isOrdered: boolean;
 };
 export type CarouselParameters = BaseElementParams & {
   carouselItems: CarouselItem[];
@@ -637,7 +636,6 @@ export type ListItemParameters = BaseElementParams & {
 export type BreadcrumbItemParameters = BaseElementParams & {
   textContent: string;
   isLink: boolean;
-  isActiveLink: boolean;
 };
 export type PaginationItemParameters = BaseElementParams & {
   textContent: string;

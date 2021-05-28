@@ -11,7 +11,7 @@ const BootstrapBreadcrumbItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
-    const { textContent, link, isLink, isActiveLink } = element.parameters;
+    const { textContent, link, isLink } = element.parameters;
     const classes = useStyles(props);
 
     const contentEditableSettings = useContentEditable(element.id, textContent);
@@ -30,8 +30,7 @@ const BootstrapBreadcrumbItem = React.forwardRef<HTMLElement, RendererProps>(
             id={element.id}
             data-ls-id={element.id}
             className={cn(
-              'breadcrumb-item',
-              { active: isActiveLink },
+              'breadcrumb-item active',
               classes.ownStyles,
               groupClass,
             )}
@@ -54,12 +53,7 @@ const BootstrapBreadcrumbItem = React.forwardRef<HTMLElement, RendererProps>(
             ref={ref as LegacyRef<HTMLLIElement>}
             id={element.id}
             data-ls-id={element.id}
-            className={cn(
-              'breadcrumb-item',
-              { active: isActiveLink },
-              classes.ownStyles,
-              groupClass,
-            )}
+            className={cn('breadcrumb-item', classes.ownStyles, groupClass)}
             aria-current="page"
             dangerouslySetInnerHTML={{ __html: textContent }}
             data-gramm_editor={false}

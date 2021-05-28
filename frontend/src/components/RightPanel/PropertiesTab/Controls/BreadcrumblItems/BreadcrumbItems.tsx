@@ -39,7 +39,6 @@ const BreadcrumbItems: React.FC<
         {
           textContent: 'breadcrumb',
           isLink: false,
-          isActiveLink: false,
         },
         { screenId: currentScreenId },
       ),

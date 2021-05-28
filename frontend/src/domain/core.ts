@@ -164,6 +164,15 @@ export const listStyleControls = [
   'bullets',
 ] as const;
 
+export const paginationStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+  'bullets',
+] as const;
+
 export const listItemStyleControls = [
   'indents',
   'size',
@@ -465,7 +474,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   ],
   breadcrumb: ['breadcrumb', ...listStyleControls, 'layouts'],
   breadcrumbItem: [...breadcrumbItemStyleControls, 'layouts'],
-  pagination: ['pagination', ...listStyleControls, 'layouts'],
+  pagination: ['pagination', ...paginationStyleControls, 'layouts'],
   paginationItem: [...paginationItemStyleControls, 'layouts'],
   carousel: ['carousel', ...listStyleControls, 'layouts'],
   carouselItem: [...paginationItemStyleControls, 'layouts'],

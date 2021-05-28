@@ -39,6 +39,7 @@ import {
   columnsStyleControls,
   elementsGroupStyleControls,
   htmlElementControls,
+  paginationStyleControls,
 } from '../core';
 
 const columnsMinHeight = '100px';
@@ -175,6 +176,7 @@ type ParagraphControls = typeof paragraphStyleControls[number];
 type TextBlockControls = typeof textBlockStyleControls[number];
 type ListControls = typeof listStyleControls[number];
 type ListItemControls = typeof listItemStyleControls[number];
+type PaginationControls = typeof paginationStyleControls[number];
 
 export const defaultHyperlinkStyles: {
   [K in HyperlinkControls]: React.CSSProperties;
@@ -288,7 +290,6 @@ export const defaultListStyles: { [K in ListControls]: React.CSSProperties } & {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    paddingLeft: '40px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -307,6 +308,30 @@ export const defaultListStyles: { [K in ListControls]: React.CSSProperties } & {
   },
 };
 
+export const defaultPaginationStyles: {
+  [K in PaginationControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  bullets: {
+    ...DEFAULT_BULLETS,
+  },
+};
 export const defaultListItemStyles: {
   [K in ListItemControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
@@ -1125,7 +1150,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   html: defaultHTMLElementStyles,
   breadcrumb: defaultListStyles,
   breadcrumbItem: defaultListItemStyles,
-  pagination: defaultListStyles,
+  pagination: defaultPaginationStyles,
   paginationItem: defaultListItemStyles,
   carousel: defaultListStyles,
   carouselItem: defaultListItemStyles,

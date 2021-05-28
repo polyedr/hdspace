@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 
 const BootstrapPagination = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
-    const { children, element } = props;
+    const { children, element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
 
     const useStyles = makeComponentStyles('pagination', {});
@@ -19,7 +19,11 @@ const BootstrapPagination = React.forwardRef<HTMLElement, RendererProps>(
         id={element.id}
         data-ls-id={element.id}
         aria-label="Page navigation example"
-        className={cn(classes.ownStyles, groupClass)}
+        className={cn(
+          classes.ownStyles,
+          groupClass,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+        )}
         {...eventHandlers}
       >
         <ul className="pagination">

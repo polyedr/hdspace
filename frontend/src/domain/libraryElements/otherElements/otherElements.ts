@@ -578,7 +578,6 @@ export const makeBreadcrumbItem = ({
     group: ElementGroup.OTHER,
     textContent,
     isLink: false,
-    isActiveLink: false,
   },
   styles: {
     classNames: ['breadcrumbItem'],
@@ -669,7 +668,6 @@ export const pagination: PaginationServerElement = {
       { textContent: '2' },
       { textContent: '3' },
     ],
-    isOrdered: false,
   },
   styles: {
     classNames: ['pagination'],

@@ -36,9 +36,6 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
       backgroundColor: lighten(palette.panel.main, 0.1),
     },
   },
-  wrapperCheckbox: {
-    display: 'flex',
-  },
 }));
 
 type Props = {
@@ -51,7 +48,7 @@ type Props = {
 
 const BreadcrumbsItem: React.FC<Props> = ({
   id,
-  parameters: { textContent, isActiveLink, isLink },
+  parameters: { textContent, isLink },
   updateParams,
   isLast,
   canEdit,
@@ -74,12 +71,7 @@ const BreadcrumbsItem: React.FC<Props> = ({
   ) => {
     updateParams({ isLink: checked }, listItemID);
   };
-  const handleCheckboxActiveLink = (
-    listItemID: string,
-    { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    updateParams({ isActiveLink: checked }, listItemID);
-  };
+
   return (
     <StyledAccordion>
       <StyledAccordionSummary className={classes.title}>
@@ -111,32 +103,18 @@ const BreadcrumbsItem: React.FC<Props> = ({
           multiline
           disabled={!canEdit}
         />
-        <div className={classes.wrapperCheckbox}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                value="make link"
-                name="make link"
-                checked={isLink}
-                onChange={(event) => handleCheckboxLink(id, event)}
-                disabled={!canEdit}
-              />
-            }
-            label="Make Link"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                value="active link"
-                name="active link"
-                checked={isActiveLink}
-                onChange={(event) => handleCheckboxActiveLink(id, event)}
-                disabled={!canEdit}
-              />
-            }
-            label="Active Link"
-          />
-        </div>
+        <FormControlLabel
+          control={
+            <Checkbox
+              value="make link"
+              name="make link"
+              checked={isLink}
+              onChange={(event) => handleCheckboxLink(id, event)}
+              disabled={!canEdit}
+            />
+          }
+          label="Make Link"
+        />
       </StyledAccordionDetails>
     </StyledAccordion>
   );
