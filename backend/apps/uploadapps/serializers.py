@@ -176,10 +176,17 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
         wpath = MEDIA_ROOT + "/uploads/"
 
         os.chdir(wpath)
-        subprocess.run(["wget", "-p", "-k", url])
 
         fname = urlparse(url).netloc
         SAVE_DIR = os.path.join(wpath, fname)
+
+        # Clear content at the SAVE_DIR
+        os.chdir(SAVE_DIR)
+        subprocess.run(["rm", "-rf", "*"])
+
+        os.chdir(wpath)
+
+        subprocess.run(["wget", "-p", "-k", url])
         # Archive all the files for a zip directory
         shutil.make_archive(SAVE_DIR, "zip", SAVE_DIR)
         zip_archive_name = fname + ".zip"
@@ -192,7 +199,6 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
 
         wpsaved.wpname = t
         wpsaved.save()
-        print(1)
 
         return wpsaved
 
@@ -203,7 +209,7 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
     def parse(self, response, validated_data):
         if self.parse_with_splash:
             subprocess.run(["wget", "-p", "-k", response.url])
-            print(2)
+
 
 
 '''
