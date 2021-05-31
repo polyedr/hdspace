@@ -213,6 +213,8 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       }
 
       yield put(Actions.setCurrentProjectId(result.id));
+      yield put(Actions.setAssetLists(null));
+      yield put(Actions.setSelectedAssetListId(null));
       const masterScreenId: number =
         result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
         -1;
@@ -268,11 +270,12 @@ export function* createProjectSaga(
           UserProjectPermission.CHANGE_PROJECT,
         ]),
       );
-      const assetList = yield call(reqWrapper, apiCreateAssetList, {
+      yield call(reqWrapper, apiCreateAssetList, {
         projectId: createdProject.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
-      yield put(Actions.addAssetListToState(assetList, { useHistory: true }));
+      yield put(Actions.setAssetLists(null));
+      yield put(Actions.setSelectedAssetListId(null));
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, createdProject]));
 

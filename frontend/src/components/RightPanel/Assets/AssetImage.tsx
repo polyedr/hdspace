@@ -33,52 +33,55 @@ const useStyles = makeStyles({
   }),
 });
 
-const AssetImage = ({ asset }: Props) => {
-  const [sizeDirection, setSizeDirection] = useState(
-    FullSizeDirection.HORIZONTAL,
-  );
-  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+const AssetImage = React.forwardRef<HTMLImageElement, Props>(
+  ({ asset }: Props, ref) => {
+    const [sizeDirection, setSizeDirection] = useState(
+      FullSizeDirection.HORIZONTAL,
+    );
+    const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
-  const classes = useStyles({ sizeDirection } as StyleProps);
+    const classes = useStyles({ sizeDirection } as StyleProps);
 
-  const [, drag] = useDrag({
-    item: {
-      type: ElementType.CONSTRUCTOR,
-      original: {
-        type: 'image',
-        name: 'Image asset',
-        custom: false,
-        parameters: {
-          imageURL: asset.image,
+    const [, drag] = useDrag({
+      item: {
+        type: ElementType.CONSTRUCTOR,
+        original: {
+          type: 'image',
+          name: 'Image asset',
+          custom: false,
+          parameters: {
+            imageURL: asset.image,
+          },
         },
       },
-    },
-  });
+    });
 
-  return (
-    <div
-      className={classes.assetWrapper}
-      ref={(dom: HTMLDivElement) => {
-        drag(dom);
-      }}
-    >
-      <img
-        src={asset.image || ''}
-        alt="No asset"
-        className={classes.assetImage}
-        style={!imageLoaded ? { display: 'none' } : {}}
-        onLoad={(event: React.SyntheticEvent) => {
-          const imgDom = event.target as HTMLImageElement;
-          setImageLoaded(true);
-          setSizeDirection(
-            imgDom.naturalWidth > imgDom.naturalHeight
-              ? FullSizeDirection.HORIZONTAL
-              : FullSizeDirection.VERTICAL,
-          );
+    return (
+      <div
+        className={classes.assetWrapper}
+        ref={(dom: HTMLDivElement) => {
+          drag(dom);
         }}
-      />
-    </div>
-  );
-};
+      >
+        <img
+          ref={ref}
+          src={asset.image || ''}
+          alt="No asset"
+          className={classes.assetImage}
+          style={!imageLoaded ? { display: 'none' } : {}}
+          onLoad={(event: React.SyntheticEvent) => {
+            const imgDom = event.target as HTMLImageElement;
+            setImageLoaded(true);
+            setSizeDirection(
+              imgDom.naturalWidth > imgDom.naturalHeight
+                ? FullSizeDirection.HORIZONTAL
+                : FullSizeDirection.VERTICAL,
+            );
+          }}
+        />
+      </div>
+    );
+  },
+);
 
 export default AssetImage;

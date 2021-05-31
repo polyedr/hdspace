@@ -65,7 +65,7 @@ import {
 } from './common';
 import {
   selectAllAssetLists,
-  selectSelectedAssetListId,
+  selectCurrentAssetListId,
 } from '../selectors/asset';
 import { selectCurrentScreenId } from '../selectors/screen';
 
@@ -796,7 +796,7 @@ export function* updateElementImage(
       ),
       UpdateDataActionType.UPDATE,
     );
-    const selectedListId = yield select(selectSelectedAssetListId);
+    const selectedListId = yield select(selectCurrentAssetListId);
     const assetLists = yield select(selectAllAssetLists);
     const listId =
       selectedListId || assetLists.length ? assetLists[0].id : null;
