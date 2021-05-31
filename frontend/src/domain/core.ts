@@ -47,6 +47,7 @@ export const ENTITIES: {
   breadcrumb: 'breadcrumb',
   pagination: 'pagination',
   carousel: 'carousel',
+  navbar: 'navbar',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -478,6 +479,8 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   paginationItem: [...paginationItemStyleControls, 'layouts'],
   carousel: ['carousel', ...listStyleControls, 'layouts'],
   carouselItem: [...paginationItemStyleControls, 'layouts'],
+  navbar: ['navbar', ...listStyleControls, 'layouts'],
+  navbarItem: [...paginationItemStyleControls, 'layouts'],
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
@@ -673,6 +676,13 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   carouselItem: {},
+  navbar: {
+    carouselItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  navbarItem: {},
 };
 
 export const defaultFreeCanvasParams: Partial<FreeCanvasElementParams> = {

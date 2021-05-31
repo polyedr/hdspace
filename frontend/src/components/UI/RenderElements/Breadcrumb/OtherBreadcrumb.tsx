@@ -8,7 +8,6 @@ const useStyles = makeComponentStyles('breadcrumb', {
   breadcrumb: {
     padding: '8px 0px',
     listStyle: 'none',
-    backgroundColor: '#eee',
   },
 });
 
@@ -21,19 +20,10 @@ const OtherBreadcrumb = React.forwardRef<HTMLElement, RendererProps>(
     const eventHandlers = useEventHandlers(props);
 
     return (
-      // <nav
-      //   ref={ref}
-      //   aria-label="breadcrumb"
-      //   className={cn(classes.ownStyles, groupClass)}
-      //   id={element.id}
-      //   data-ls-id={element.id}
-      //   {...eventHandlers}
-      // >
-      //   <ol className="breadcrumb">{children}</ol>
-      // </nav>
       <ul
         ref={ref as LegacyRef<HTMLUListElement>}
         className={cn(
+          classes.ownStyles,
           classes.breadcrumb,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
           groupClass,

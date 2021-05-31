@@ -57,6 +57,10 @@ import OtherPagination from './Pagination/OtherPagination';
 import OtherPaginationItem from './PaginationItem/OtherPaginationItem';
 import OtherBreadcrumb from './Breadcrumb/OtherBreadcrumb';
 import OtherBreadcrumbItem from './BreadcrumbItem/OtherBreadcrumbItem';
+import BootstrapNavbar from './Navbar/BootstrapNavbar';
+import BootstrapNavbarItem from './NavbarItem/BootstrapNavbarItem';
+import OtherNavbarItem from './NavbarItem/OtherNavbarItem';
+import OtherNavbar from './Navbar/OtherNavbar';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -158,6 +162,16 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   section: Section,
   group: ElementsGroup,
   html: HTMLElement,
+  navbar: withUIFramework({
+    bootstrap: BootstrapNavbar,
+    material: OtherNavbar,
+    not_selected: OtherNavbar,
+  }),
+  navbarItem: withUIFramework({
+    bootstrap: BootstrapNavbarItem,
+    material: OtherNavbarItem,
+    not_selected: OtherNavbarItem,
+  }),
 };
 
 export default RENDERERS;

@@ -332,6 +332,32 @@ export const defaultPaginationStyles: {
     ...DEFAULT_BULLETS,
   },
 };
+export const defaultNavbarStyles: {
+  [K in PaginationControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  bullets: {
+    ...DEFAULT_BULLETS,
+  },
+};
+
 export const defaultListItemStyles: {
   [K in ListItemControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
@@ -1154,4 +1180,6 @@ export const DEFAULT_ELEMENTS_STYLES: {
   paginationItem: defaultListItemStyles,
   carousel: defaultListStyles,
   carouselItem: defaultListItemStyles,
+  navbar: defaultNavbarStyles,
+  navbarItem: defaultListItemStyles,
 };

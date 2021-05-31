@@ -6,7 +6,7 @@ import { makeComponentStyles } from '../styles';
 
 const BootstrapCarousel = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
-    const { children, element } = props;
+    const { children, element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
 
     const useStyles = makeComponentStyles('breadcrumb', {});
@@ -18,7 +18,12 @@ const BootstrapCarousel = React.forwardRef<HTMLElement, RendererProps>(
         ref={ref as LegacyRef<HTMLDivElement>}
         id={element.id}
         data-ls-id={element.id}
-        className={cn(classes.ownStyles, groupClass, 'carousel slide')}
+        className={cn(
+          classes.ownStyles,
+          groupClass,
+          'carousel slide',
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+        )}
         data-bs-ride="carousel"
         {...eventHandlers}
       >

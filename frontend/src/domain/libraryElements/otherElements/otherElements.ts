@@ -29,6 +29,8 @@ import {
   BreadcrumbItemServerElement,
   CarouselServerElement,
   CarouselItemServerElement,
+  NavbarServerElement,
+  NavbarItemServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { makeParagraph } from '../typographyElements/typographyElements';
@@ -774,6 +776,91 @@ export const carousel: CarouselServerElement = {
         'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
       alt: 'text desc',
       UID: 'carousel-3',
+      buoyancy: 2,
+    }),
+  ],
+};
+
+export const makeNavbarItem = ({
+  link = '',
+  nameItem = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): NavbarItemServerElement => ({
+  id: `navbar-item-${UID}`,
+  buoyancy,
+  func_type: 'navbarItem',
+  struct_type: 'navbarItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    link,
+    nameItem,
+  },
+  styles: {
+    classNames: ['navbarItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'navbarItem',
+  children: [],
+});
+
+export const navbar: NavbarServerElement = {
+  id: 'navbar',
+  buoyancy: 0,
+  func_type: 'navbar',
+  struct_type: 'navbar',
+  parameters: {
+    titleName: 'ADEVI',
+    titleLink: '',
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    navbarItems: [
+      // TODO research why we need items here
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        nameItem: 'text desc',
+      },
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        nameItem: 'text desc',
+      },
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        nameItem: 'text desc',
+      },
+    ],
+  },
+  styles: {
+    classNames: ['navbar'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'navbar',
+  children: [
+    makeNavbarItem({
+      link: 'https://i5.walmarti',
+      nameItem: 'text desc',
+      UID: 'carousel-1',
+      buoyancy: 0,
+    }),
+    makeNavbarItem({
+      link: 'https://i5.walmarti',
+      nameItem: 'text desc',
+      UID: 'navbar-2',
+      buoyancy: 1,
+    }),
+    makeNavbarItem({
+      link:
+        'https://i5.walmartimages.com/asr/79b030ef-9b0d9af79d4e8b836b8d5a1c476dfe46',
+      nameItem: 'text desc',
+      UID: 'navbar-3',
       buoyancy: 2,
     }),
   ],

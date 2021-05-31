@@ -247,6 +247,11 @@ export type CarouselServerElement = ServerElement<
   CarouselItemServerElement[],
   CarouselParameters
 >;
+export type NavbarServerElement = ServerElement<
+  'navbar',
+  NavbarItemServerElement[],
+  NavbarParameters
+>;
 export type ListItemServerElement = ServerElement<
   'listItem',
   [],
@@ -267,7 +272,11 @@ export type CarouselItemServerElement = ServerElement<
   [],
   CarouselItemParameters
 >;
-
+export type NavbarItemServerElement = ServerElement<
+  'navbarItem',
+  [],
+  NavbarItemParameters
+>;
 export type MapServerElement = ServerElement<'map', [], MapParameters>;
 export type CalendarServerElement = ServerElement<'calendar', []>;
 export type ClockServerElement = ServerElement<'clock', []>;
@@ -336,7 +345,11 @@ export type LibraryElement<
     pseudoClassViewStyles?: React.CSSProperties | null;
   };
   children: Children;
-  parameters: { group?: string } & Params;
+  parameters: {
+    group?: string;
+    titleName?: string;
+    titleLink?: string;
+  } & Params;
   shared?: boolean;
 };
 
@@ -627,6 +640,11 @@ export type PaginationParameters = BaseElementParams & {
 export type CarouselParameters = BaseElementParams & {
   carouselItems: CarouselItem[];
 };
+export type NavbarParameters = BaseElementParams & {
+  titleName: String;
+  titleLink: String;
+  navbarItems: NavbarItem[];
+};
 export type ListItemParameters = BaseElementParams & {
   textContent: string;
   isLink: boolean;
@@ -644,6 +662,10 @@ export type PaginationItemParameters = BaseElementParams & {
 export type CarouselItemParameters = BaseElementParams & {
   link: string;
   alt: string;
+};
+export type NavbarItemParameters = BaseElementParams & {
+  link: string;
+  nameItem: string;
 };
 export type BreadcrumbItemItemParameters = BaseElementParams & {
   textContent: string;
@@ -873,6 +895,10 @@ export type PaginationItem = {
 export type CarouselItem = {
   link: string;
   alt: string;
+};
+export type NavbarItem = {
+  link: string;
+  nameItem: string;
 };
 export type ServerStructType = Entity;
 
@@ -1194,6 +1220,7 @@ export type ChildrenElements = {
   breadcrumbItem: BreadcrumbItemServerElement;
   paginationItem: PaginationItemServerElement;
   carouselItem: CarouselItemServerElement;
+  navbarItem: NavbarItemServerElement;
 };
 
 export type ElementsToAdd = {
@@ -1239,6 +1266,7 @@ export type ElementsToAdd = {
   breadcrumb: BreadcrumbServerElement;
   pagination: PaginationServerElement;
   carousel: CarouselServerElement;
+  navbar: NavbarServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -1317,6 +1345,8 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'pagination',
   'carousel',
   'resizeOptions',
+  'carousel',
+  'navbar',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

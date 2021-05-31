@@ -51,6 +51,7 @@ export const getRightPanelCategoryTabs = (
     case 'breadcrumb':
     case 'pagination':
     case 'carousel':
+    case 'navbar':
       return {
         elements: {
           ...obj.elements,

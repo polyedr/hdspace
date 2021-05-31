@@ -159,6 +159,7 @@ export const UNIQUE_CONTROLS = [
   'breadcrumb',
   'pagination',
   'carousel',
+  'navbar',
 ];
 
 export const ALL_ELEMENTS_INDEX = 'all';

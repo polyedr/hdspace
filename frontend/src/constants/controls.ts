@@ -40,6 +40,7 @@ import BreadcrumbItems from '@Components/RightPanel/PropertiesTab/Controls/Bread
 import PaginationItems from '@Components/RightPanel/PropertiesTab/Controls/PaginationItems/PaginationItems';
 import CarouselItems from '@Components/RightPanel/PropertiesTab/Controls/CarouselItems/CarouselItems';
 import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
+import NavbarItems from '@Components/RightPanel/PropertiesTab/Controls/NavbarItems/NavbarItems';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -137,6 +138,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
   pagination: { Control: PaginationItems },
   carousel: { Control: CarouselItems },
   resizeOptions: { Control: ResizeOptionsControl },
+  navbar: { Control: NavbarItems },
 };
 
 export default CONTROLS;

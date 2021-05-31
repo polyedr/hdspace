@@ -53,6 +53,8 @@ import {
   makeBreadcrumbItem,
   carousel,
   makeCarouselItem,
+  navbar,
+  makeNavbarItem,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -135,6 +137,8 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   pagination,
   carouselItem: makeCarouselItem(),
   carousel,
+  navbar,
+  navbarItem: makeNavbarItem(),
 };
 
 export const ICONS: Partial<
@@ -173,4 +177,5 @@ export const ICONS: Partial<
   breadcrumb: HelpIcon,
   pagination: HelpIcon,
   carousel: HelpIcon,
+  navbar: HelpIcon,
 };
