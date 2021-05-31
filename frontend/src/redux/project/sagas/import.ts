@@ -146,7 +146,7 @@ export const importHtmlSaga = withRequiredPermissions(
 
 const getTypeFromName = (name: string) => {
   if (!name.includes('.')) return 'text/html'; // in case of html file comes with no extension
-  const ext = name.split('.').reverse()[0];
+  const ext = name.split('?')[0].split('.').reverse()[0];
 
   switch (ext) {
     case 'html':
