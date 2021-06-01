@@ -55,7 +55,7 @@ drf-nested-routers==0.91
 drf-writable-nested==0.6.0
 drf-yasg==1.17.1
 factory-boy==2.11.1
-Faker==1.0.2
+Faker==8.0.0
 filter-and-pagination==1.1.14
 fire==0.4.0
 flake8==3.5.0
