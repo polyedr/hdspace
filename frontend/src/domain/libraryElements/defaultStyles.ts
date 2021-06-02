@@ -1,4 +1,4 @@
-import { Entity } from '@Src/types';
+import { Alignments, Entity } from '@Src/types';
 import {
   buttonStyleControls,
   calendarStyleControls,
@@ -40,6 +40,7 @@ import {
   elementsGroupStyleControls,
   htmlElementControls,
   paginationStyleControls,
+  radiobuttonGroupStyleControls,
 } from '../core';
 
 const columnsMinHeight = '100px';
@@ -790,6 +791,7 @@ type TextinputControls = typeof textinputStyleControls[number];
 type TextareaControls = typeof textareaStyleControls[number];
 type CheckboxControls = typeof checkboxStyleControls[number];
 type RadiobuttonControls = typeof radiobuttonStyleControls[number];
+type RadiobuttonGroupControls = typeof radiobuttonGroupStyleControls[number];
 type LabelControls = typeof labelStyleControls[number];
 type SelectControls = typeof selectStyleControls[number];
 type SelectMenuControls = typeof selectMenuStyleControls[number];
@@ -895,12 +897,33 @@ export const defaultRadiobuttonStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
+    margin: '3px',
   },
   size: {
     ...DEFAULT_SIZE,
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+};
+
+export const defaultRadiobuttonGroupStyles: {
+  [K in RadiobuttonGroupControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    display: 'flex',
+    flexDirection: Alignments.Vertical,
   },
 };
 
@@ -1145,6 +1168,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   textarea: defaultTextareaStyles,
   checkbox: defaultCheckboxStyles,
   radiobutton: defaultRadiobuttonStyles,
+  radiobuttonGroup: defaultRadiobuttonGroupStyles,
   label: defaultLabelStyles,
   hyperlink: defaultHyperlinkStyles,
   heading: defaultHeadingStyles,

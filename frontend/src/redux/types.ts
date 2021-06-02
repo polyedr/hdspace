@@ -132,7 +132,7 @@ export type ProjectCommunicationState = {
   projectLoader: boolean;
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
-  assetsLoader: boolean;
+  assetsListsLoader: boolean;
   importLoader: boolean;
 };
 
@@ -324,8 +324,8 @@ export type SetAnalyzerLoader = IAction<
   typeof TYPES.SET_ANALYZER_LOADER,
   { active: boolean }
 >;
-export type SetAssetsLoader = IAction<
-  typeof TYPES.SET_ASSETS_LOADER,
+export type SetAssetsListsLoader = IAction<
+  typeof TYPES.SET_ASSETS_LISTS_LOADER,
   { active: boolean }
 >;
 export type DeleteScreen = IAction<
@@ -389,8 +389,7 @@ export type SetCurrentScreenId = IAction<
 >;
 export type SetSelectedAssetListId = IAction<
   typeof TYPES.SET_SELECTED_ASSET_LIST_ID,
-  { assetListId: string },
-  HistoryMeta
+  { assetListId: string | null }
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
@@ -491,7 +490,7 @@ export type RemoveMultipleElementsStyles = IAction<
 >;
 export type UpdateElementImage = IAction<
   typeof TYPES.UPDATE_ELEMENT_IMAGE,
-  { itemID: string; image: File; assetId?: string | null },
+  { itemID: string; image: File },
   ElementHistoryMeta
 >;
 export type UploadElementAsset = IAction<
@@ -782,6 +781,15 @@ export type AddFileInput = IAction<
 export type RemoveFileInput = IAction<
   typeof TYPES.REMOVE_FILE_INPUT,
   { id: string }
+>;
+
+export type LoadAssetLists = IAction<typeof TYPES.LOAD_ASSET_LISTS, string>;
+
+export type LoadAssets = IAction<
+  typeof TYPES.LOAD_ASSETS,
+  {
+    selectedListId: string;
+  }
 >;
 
 export type SetAssetLists = IAction<
@@ -1151,7 +1159,7 @@ export type Action =
   | SetUpdateImageLoader
   | SetProjectCreateLoader
   | SetAnalyzerLoader
-  | SetAssetsLoader
+  | SetAssetsListsLoader
   | DeleteScreen
   | EditScreenNameAndData
   | CreateScreen
@@ -1263,6 +1271,8 @@ export type Action =
   | UpdateMultipleElementsStyles
   | ReplaceMultipleElementsStyles
   | RemoveMultipleElementsStyles
+  | LoadAssetLists
+  | LoadAssets
   | UploadAsset
   | UploadElementAsset
   | UploadImageByUrl

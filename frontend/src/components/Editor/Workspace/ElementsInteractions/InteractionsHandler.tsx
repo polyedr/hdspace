@@ -56,7 +56,7 @@ const InteractionsHandler = ({
   });
 
   const [styles, setStyles] = useState<BoundingStyles | null>(
-    getBoundingStyles(elementDom, frameWindow),
+    getBoundingStyles(elementDom, frameWindow, screen.element),
   );
 
   const updateBorderStyles = useCallback(
@@ -64,6 +64,7 @@ const InteractionsHandler = ({
       const updatedBorderStyles = getBoundingStyles(
         entry as HTMLElement,
         frameWindow,
+        screen.element,
       );
       if (!equals(updatedBorderStyles, styles)) {
         setStyles(updatedBorderStyles);
@@ -80,8 +81,14 @@ const InteractionsHandler = ({
   });
 
   useEffect(() => {
-    setStyles(getBoundingStyles(elementDom, frameWindow));
-  }, [element.styles.ownStyles, elementDom, elementGroupStyles, frameWindow]);
+    setStyles(getBoundingStyles(elementDom, frameWindow, screen.element));
+  }, [
+    element.styles.ownStyles,
+    elementDom,
+    elementGroupStyles,
+    frameWindow,
+    screen.element,
+  ]);
 
   if (!styles) {
     return null;

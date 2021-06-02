@@ -34,7 +34,7 @@ export const getRightPanelCategoryTabs = (
           ...obj.elements,
           layout: {
             ...(obj.elements?.layout || {}),
-            [structType]: convertElementToData(libraryElements[structType]),
+            [structType]: convertElementToData(libraryElements[structType]()),
           },
         },
       };
@@ -57,7 +57,7 @@ export const getRightPanelCategoryTabs = (
           ...obj.elements,
           basic: {
             ...(obj.elements?.basic || {}),
-            [structType]: convertElementToData(libraryElements[structType]),
+            [structType]: convertElementToData(libraryElements[structType]()),
           },
         },
       };
@@ -65,7 +65,7 @@ export const getRightPanelCategoryTabs = (
     case 'textinput':
     case 'textarea':
     case 'checkbox':
-    case 'radiobutton':
+    case 'radiobuttonGroup':
     case 'label':
     case 'select':
       return {
@@ -73,7 +73,7 @@ export const getRightPanelCategoryTabs = (
           ...obj.elements,
           form: {
             ...(obj.elements?.form || {}),
-            [structType]: convertElementToData(libraryElements[structType]),
+            [structType]: convertElementToData(libraryElements[structType]()),
           },
         },
       };
@@ -85,7 +85,7 @@ export const getRightPanelCategoryTabs = (
           ...obj.elements,
           widget: {
             ...(obj.elements?.widget || {}),
-            [structType]: convertElementToData(libraryElements[structType]),
+            [structType]: convertElementToData(libraryElements[structType]()),
           },
         },
       };
@@ -97,7 +97,7 @@ export const getRightPanelCategoryTabs = (
           ...obj.library,
           adeviLibrary: {
             ...(obj.library?.adeviLibrary || {}),
-            [structType]: convertElementToData(libraryElements[structType]),
+            [structType]: convertElementToData(libraryElements[structType]()),
           },
         },
       };
@@ -109,7 +109,7 @@ export const getRightPanelCategoryTabs = (
           ...(obj.templates || {}),
           pageTemplate: [
             ...(obj.templates?.pageTemplate || []),
-            convertElementToData(libraryElements[structType]),
+            convertElementToData(libraryElements[structType]()),
           ],
         },
       };
@@ -120,7 +120,7 @@ export const getRightPanelCategoryTabs = (
       return {
         templates: {
           ...(obj.templates || {}),
-          [structType]: convertElementToData(libraryElements[structType]),
+          [structType]: convertElementToData(libraryElements[structType]()),
         },
       };
     case 'divBlock':

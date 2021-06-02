@@ -41,6 +41,8 @@ import PaginationItems from '@Components/RightPanel/PropertiesTab/Controls/Pagin
 import CarouselItems from '@Components/RightPanel/PropertiesTab/Controls/CarouselItems/CarouselItems';
 import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
 import NavbarItems from '@Components/RightPanel/PropertiesTab/Controls/NavbarItems/NavbarItems';
+import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobuttons';
+import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -139,6 +141,13 @@ const CONTROLS: Record<Control, ControlInfo> = {
   carousel: { Control: CarouselItems },
   resizeOptions: { Control: ResizeOptionsControl },
   navbar: { Control: NavbarItems },
+  radiobuttons: {
+    Control: Radiobuttons,
+  },
+  alignment: {
+    Control: Alignment,
+    styles: ['flexDirection'],
+  },
 };
 
 export default CONTROLS;

@@ -71,12 +71,12 @@ export const apiUpdateAsset = (
 };
 
 export const apiGetAssets = (
-  props: MyAxiosProps & { assetListId?: string },
+  props: MyAxiosProps & { assetListId?: string; next: string },
 ) => {
-  const { assetListId, ...axiosProps } = props;
+  const { assetListId, next, ...axiosProps } = props;
   return myAxios({
     ...axiosProps,
-    url: `/projects/images/`,
+    url: next || `/projects/images/`,
     method: 'GET',
     params: {
       ...(axiosProps.params || {}),

@@ -36,7 +36,7 @@ import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { makeParagraph } from '../typographyElements/typographyElements';
 import { defaultFreeCanvasParams } from '../../core';
 
-export const root: RootServerElement = {
+export const makeRoot = (): RootServerElement => ({
   id: 'root',
   buoyancy: 0,
   func_type: 'root',
@@ -53,9 +53,9 @@ export const root: RootServerElement = {
   },
   name: 'root',
   children: [],
-};
+});
 
-export const elementsGroup: ElementsGroupServerElement = {
+export const makeElementsGroup = (): ElementsGroupServerElement => ({
   id: 'elementsGroup',
   buoyancy: 0,
   func_type: 'group',
@@ -72,7 +72,7 @@ export const elementsGroup: ElementsGroupServerElement = {
   },
   name: 'Group',
   children: [],
-};
+});
 
 export const makeContainer = ({
   children = [],
@@ -163,31 +163,10 @@ export const makeGrid = ({
   children: items,
 });
 
-export const column: ColumnServerElement = {
-  id: 'column',
-  buoyancy: 0,
-  name: 'column',
-  func_type: 'column',
-  struct_type: 'column' as const,
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: {
-      ...defaultFreeCanvasParams,
-    },
-    group: ElementGroup.CONTAINERS,
-  },
-  styles: {
-    classNames: ['column'],
-    ownStyles: {},
-    pseudoClassStyles: {},
-  },
-  children: [],
-};
-
 export const makeColumn = ({
   UID = 'master',
   buoyancy = 0,
-}): ColumnServerElement => ({
+} = {}): ColumnServerElement => ({
   id: `column-${UID}`,
   buoyancy,
   name: 'column',
@@ -233,7 +212,7 @@ export const makeColumns = (
   }),
 });
 
-export const nativeColumns: NativeColumnsServerElement = {
+export const makeNativeColumns = (): NativeColumnsServerElement => ({
   id: 'nativeColumns',
   buoyancy: 0,
   name: 'nativeColumns',
@@ -252,12 +231,11 @@ export const nativeColumns: NativeColumnsServerElement = {
     pseudoClassStyles: {},
   },
   children: [],
-};
+});
 
-export const makeDivBlock = ({
-  textContent,
-  UID = 'master',
-}): DivBlockServerElement => {
+export const makeDivBlock = (
+  { textContent, UID = 'master' } = { textContent: 'This is divBlock' },
+): DivBlockServerElement => {
   return {
     id: `divBlock-${UID}`,
     buoyancy: 0,
@@ -310,11 +288,11 @@ export const makeImage = ({
   children: [],
 });
 
-export const makeSmartHeader = ({
-  name = 'smartHeader',
-  ownStyles = {},
-  UID = 'master',
-}): SmartHeaderServerElement => ({
+export const makeSmartHeader = (
+  { name = 'smartHeader', ownStyles = {}, UID = 'master' } = {
+    name: 'Smart Header',
+  },
+): SmartHeaderServerElement => ({
   id: `smart-header-${UID}`,
   buoyancy: 0,
   func_type: 'smartHeader',
@@ -336,11 +314,11 @@ export const makeSmartHeader = ({
   children: [],
 });
 
-export const makeSmartFooter = ({
-  name = 'smartFooter',
-  ownStyles = {},
-  UID = 'master',
-}): SmartFooterServerElement => ({
+export const makeSmartFooter = (
+  { name = 'smartFooter', ownStyles = {}, UID = 'master' } = {
+    name: 'Smart Footer',
+  },
+): SmartFooterServerElement => ({
   id: `smart-footer-${UID}`,
   buoyancy: 0,
   func_type: 'smartFooter',
@@ -362,11 +340,11 @@ export const makeSmartFooter = ({
   children: [],
 });
 
-export const makeSmartForm = ({
-  name = 'smartForm',
-  ownStyles = {},
-  UID = 'master',
-}): SmartFormServerElement => ({
+export const makeSmartForm = (
+  { name = 'smartForm', ownStyles = {}, UID = 'master' } = {
+    name: 'Smart Form',
+  },
+): SmartFormServerElement => ({
   id: `smart-form-${UID}`,
   buoyancy: 0,
   func_type: 'smartForm',
@@ -388,11 +366,11 @@ export const makeSmartForm = ({
   children: [],
 });
 
-export const makeSmartWebpage = ({
-  name = 'smartWebpage',
-  ownStyles = {},
-  UID = 'master',
-}): SmartWebpageServerElement => ({
+export const makeSmartWebpage = (
+  { name = 'smartWebpage', ownStyles = {}, UID = 'master' } = {
+    name: 'Smart Webpage',
+  },
+): SmartWebpageServerElement => ({
   id: `smart-webpage-${UID}`,
   buoyancy: 0,
   func_type: 'smartWebpage',
@@ -414,11 +392,9 @@ export const makeSmartWebpage = ({
   children: [],
 });
 
-export const makeDropdownItem = ({
-  textContent,
-  UID = 'master',
-  buoyancy = 0,
-}): DropdownItemServerElement => ({
+export const makeDropdownItem = (
+  { textContent, UID = 'master', buoyancy = 0 } = { textContent: '' },
+): DropdownItemServerElement => ({
   id: `dropdown-item-${UID}`,
   buoyancy,
   func_type: 'dropdownItem',
@@ -438,7 +414,7 @@ export const makeDropdownItem = ({
   children: [],
 });
 
-export const dropdownMenu: DropdownMenuServerElement = {
+export const makeDropdownMenu = (): DropdownMenuServerElement => ({
   id: 'dropdown-menu',
   buoyancy: 0,
   func_type: 'dropdownMenu',
@@ -459,9 +435,9 @@ export const dropdownMenu: DropdownMenuServerElement = {
     makeDropdownItem({ textContent: 'Second option' }),
     makeDropdownItem({ textContent: 'Third option' }),
   ],
-};
+});
 
-export const dropdown: DropdownServerElement = {
+export const makeDropdown = (): DropdownServerElement => ({
   id: 'dropdown',
   buoyancy: 0,
   func_type: 'dropdown',
@@ -481,10 +457,10 @@ export const dropdown: DropdownServerElement = {
     pseudoClassStyles: {},
   },
   name: 'dropdown',
-  children: [dropdownMenu],
-};
+  children: [makeDropdownMenu()],
+});
 
-export const video: VideoServerElement = {
+export const makeVideo = (): VideoServerElement => ({
   id: 'video',
   buoyancy: 0,
   func_type: 'video',
@@ -513,9 +489,9 @@ export const video: VideoServerElement = {
   },
   name: 'video',
   children: [],
-};
+});
 
-export const undefinedElement: UndefinedServerElement = {
+export const makeUndefinedElement = (): UndefinedServerElement => ({
   id: 'undefined',
   buoyancy: 0,
   func_type: 'undefined',
@@ -536,9 +512,9 @@ export const undefinedElement: UndefinedServerElement = {
   },
   name: 'undefined',
   children: [],
-};
+});
 
-export const htmlElement: HTMLServerElement = {
+export const makeHtmlElement = (): HTMLServerElement => ({
   id: 'html',
   buoyancy: 0,
   func_type: 'html',
@@ -563,7 +539,7 @@ export const htmlElement: HTMLServerElement = {
   },
   name: 'HTML element',
   children: [],
-};
+});
 
 export const makeBreadcrumbItem = ({
   textContent = '',
@@ -590,7 +566,7 @@ export const makeBreadcrumbItem = ({
   children: [],
 });
 
-export const breadcrumb: BreadcrumbServerElement = {
+export const makeBreadcrumb = (): BreadcrumbServerElement => ({
   id: 'breadcrumb',
   buoyancy: 0,
   func_type: 'breadcrumb',
@@ -629,7 +605,7 @@ export const breadcrumb: BreadcrumbServerElement = {
       buoyancy: 2,
     }),
   ],
-};
+});
 export const makePaginationItem = ({
   textContent = '',
   UID = 'master',
@@ -655,7 +631,7 @@ export const makePaginationItem = ({
   children: [],
 });
 
-export const pagination: PaginationServerElement = {
+export const makePagination = (): PaginationServerElement => ({
   id: 'pagination',
   buoyancy: 0,
   func_type: 'pagination',
@@ -694,7 +670,7 @@ export const pagination: PaginationServerElement = {
       buoyancy: 2,
     }),
   ],
-};
+});
 
 export const makeCarouselItem = ({
   link = '',
@@ -722,7 +698,7 @@ export const makeCarouselItem = ({
   children: [],
 });
 
-export const carousel: CarouselServerElement = {
+export const makeCarousel = (): CarouselServerElement => ({
   id: 'carousel',
   buoyancy: 0,
   func_type: 'carousel',
@@ -773,7 +749,7 @@ export const carousel: CarouselServerElement = {
       buoyancy: 2,
     }),
   ],
-};
+});
 
 export const makeNavbarItem = ({
   link = '',
@@ -801,7 +777,7 @@ export const makeNavbarItem = ({
   children: [],
 });
 
-export const navbar: NavbarServerElement = {
+export const makeNavbar = (): NavbarServerElement => ({
   id: 'navbar',
   buoyancy: 0,
   func_type: 'navbar',
@@ -858,4 +834,4 @@ export const navbar: NavbarServerElement = {
       buoyancy: 2,
     }),
   ],
-};
+});

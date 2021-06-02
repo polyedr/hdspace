@@ -16,26 +16,37 @@ const UnstyledRadiobutton = React.forwardRef<HTMLInputElement, RendererProps>(
 
     const eventHandlers = useEventHandlers(props);
 
+    const { value, name, label } = element.parameters;
+
     return (
-      <input
-        type="radio"
-        ref={ref}
-        id={element.id}
-        data-ls-id={element.id}
-        className={cn(
-          className,
-          groupClass,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
-          classes.ownStyles,
-        )}
-        {...eventHandlers}
-        checked={!isDisabled && !isChecked}
-        onChange={() => {
-          if (!isDisabled && isChecked) {
-            setIsChecked(!isChecked);
-          }
-        }}
-      />
+      <label
+        htmlFor={element.id}
+        style={{ display: 'flex', alignItems: 'center' }}
+      >
+        <input
+          type="radio"
+          ref={ref}
+          id={element.id}
+          data-ls-id={element.id}
+          className={cn(
+            className,
+            groupClass,
+            isDisabled ? classes.disabled : classes.ownPseudoStyles,
+            classes.ownStyles,
+          )}
+          value={value}
+          name={name}
+          {...eventHandlers}
+          checked={!isDisabled && !isChecked}
+          onChange={() => {
+            if (!isDisabled && isChecked) {
+              setIsChecked(!isChecked);
+            }
+          }}
+        />
+
+        {label}
+      </label>
     );
   },
 );

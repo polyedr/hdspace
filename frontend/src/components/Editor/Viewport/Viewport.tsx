@@ -1,9 +1,8 @@
 import React, { useRef } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
-import useHotKeys from '../hooks/useHotKeys';
-
 import 'css-ripple-effect/dist/ripple.min.css';
+import useViewportHotkeys from '../hooks/useViewportHotkeys';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -24,7 +23,8 @@ const Viewport: React.FC = ({ children }) => {
 
   const ref = useRef<HTMLDivElement>(null);
 
-  useHotKeys(ref);
+  useViewportHotkeys();
+
   useGlobalDropTarget(
     ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage', 'image'],
     ref,

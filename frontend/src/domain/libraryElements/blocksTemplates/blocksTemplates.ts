@@ -160,7 +160,9 @@ export const makePageTemplate = (
   ],
 });
 
-export const subscribeForm: SubscribeFormServerElement = {
+export const makeEmptyPageTemplate = () => makePageTemplate(true);
+
+export const makeSubscribeForm = (): SubscribeFormServerElement => ({
   id: 'subscribe-form',
   buoyancy: 1,
   func_type: 'subscribeForm',
@@ -258,9 +260,9 @@ export const subscribeForm: SubscribeFormServerElement = {
       ],
     }),
   ],
-};
+});
 
-export const cardsSection: CardsSectionServerElement = {
+export const makeCardsSection = (): CardsSectionServerElement => ({
   id: 'cards-section',
   buoyancy: 0,
   func_type: 'cardsSection',
@@ -436,9 +438,9 @@ export const cardsSection: CardsSectionServerElement = {
       ],
     }),
   ],
-};
+});
 
-export const featureSection: FeatureSectionServerElement = {
+export const makeFeatureSection = (): FeatureSectionServerElement => ({
   id: 'feature-section',
   buoyancy: 0,
   func_type: 'featureSection',
@@ -513,9 +515,9 @@ export const featureSection: FeatureSectionServerElement = {
       ],
     }),
   ],
-};
+});
 
-export const section: SectionServerElement = {
+export const makeSection = (): SectionServerElement => ({
   id: 'section',
   buoyancy: 0,
   func_type: 'section',
@@ -532,4 +534,4 @@ export const section: SectionServerElement = {
   },
   name: 'section',
   children: [],
-};
+});

@@ -63,6 +63,7 @@ import OtherNavbarItem from './NavbarItem/OtherNavbarItem';
 import OtherCarousel from './Carousel/OtherCarousel';
 import OtherNavbar from './Navbar/OtherNavbar';
 import OtherCarouselItem from './CarouselItem/OtherCarouselItem';
+import RadiobuttonGroup from './RadiobuttonGroup';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -90,6 +91,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     material: MaterialInput,
     not_selected: UnstyledInput,
   }),
+  radiobuttonGroup: RadiobuttonGroup,
   radiobutton: withUIFramework({
     bootstrap: BootstrapRadiobutton,
     material: MaterialRadiobutton,

@@ -94,7 +94,7 @@ export const initialCommunication: ProjectCommunicationState = {
   projectLoader: false,
   projectCreateLoader: false,
   analyzerLoader: false,
-  assetsLoader: false,
+  assetsListsLoader: false,
   importLoader: false,
 };
 

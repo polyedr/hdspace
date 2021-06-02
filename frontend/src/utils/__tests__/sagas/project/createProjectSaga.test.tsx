@@ -70,14 +70,11 @@ describe('createProjectSaga Test', () => {
       );
       return assetListMock;
     });
-    it('add asset list to state', (result) => {
-      expect(result).toEqual(
-        put(
-          Actions.addAssetListToState(assetListMock, {
-            useHistory: true,
-          }),
-        ),
-      );
+    it('reset asset lists', (result) => {
+      expect(result).toEqual(put(Actions.setAssetLists(null)));
+    });
+    it('reset selected asset list', (result) => {
+      expect(result).toEqual(put(Actions.setSelectedAssetListId(null)));
     });
     it('get a list of all projects', (result) => {
       expect(result).toEqual(select(selectProjectsAsArr));

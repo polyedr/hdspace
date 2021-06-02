@@ -25,6 +25,7 @@ const Select = React.forwardRef<HTMLSelectElement, RendererProps>(
           classes.ownStyles,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        defaultValue={element.parameters.value}
         {...eventHandlers}
         {...(isDisabled && {
           onMouseDown: (ev) => {

@@ -1,10 +1,9 @@
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { PropertiesChangeProps, SelectElement } from '@Src/types';
-import { AppReduxState } from '@Redux/types';
 import {
+  selectActiveElementChildren,
   selectActiveElementParams,
-  selectActiveItemChildren,
 } from '@Redux/project/selectors/element';
 import { StyledTextField } from '@Components/styledComponents';
 import { MenuItem } from '@material-ui/core';
@@ -13,22 +12,19 @@ const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
   updateParams,
   canEdit,
 }) => {
-  const value = useSelector(
-    (state: AppReduxState) => selectActiveElementParams(state).value,
-  );
-
-  const options = useSelector(selectActiveItemChildren('option'));
-  const optionsValues = options.map((item) => item.parameters.value);
+  const { value } = useSelector(selectActiveElementParams);
+  const children = useSelector(selectActiveElementChildren);
+  const childrenValues = children.map((item) => item.parameters.value);
 
   useEffect(() => {
-    const isValueInOptions = optionsValues.some(
-      (optionValue) => optionValue === value,
+    const isValueInChildren = childrenValues.some(
+      (childValue) => childValue === value,
     );
 
-    if (!isValueInOptions && optionsValues.length) {
-      updateParams({ value: optionsValues[0] });
+    if (!isValueInChildren && childrenValues.length) {
+      updateParams({ value: childrenValues[0] });
     }
-  }, [optionsValues]);
+  }, [childrenValues]);
 
   const handleDropdownChange = (ev) => {
     updateParams({ value: ev.target.value });
@@ -44,9 +40,9 @@ const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
       select
       disabled={!canEdit}
     >
-      {optionsValues.map((option) => (
-        <MenuItem key={option} value={option} dense>
-          {option}
+      {childrenValues.map((child) => (
+        <MenuItem key={child} value={child} dense>
+          {child}
         </MenuItem>
       ))}
     </StyledTextField>

@@ -131,8 +131,6 @@ export const ROLES = ['STAFF', 'ADMINISTRATOR', 'LIBRARIAN', 'EXTERNAL'];
 
 export const NOT_DRAGGABLE_COMPONENTS = ['option', 'column', 'gridItem'];
 
-export const ALL_ASSETS_LIST_ID = 'all';
-export const ALL_ASSET_LIST_NAME = 'All assets';
 export const DEFAULT_ASSET_LIST_NAME = 'Project assets';
 
 export const INTERACTIVE_ELEMENTS = ['hyperlink'];

@@ -7,9 +7,8 @@ import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   selectAllAssetLists,
-  selectSelectedAssetListId,
+  selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { Button, MenuItem } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -58,13 +57,13 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
   const assetLists = useSelector(selectAllAssetLists);
-  const selectedAssetListId = useSelector(selectSelectedAssetListId);
+  const currentAssetListId = useSelector(selectCurrentAssetListId);
 
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
   const listRef = useRef(
-    !selectedAssetListId || selectedAssetListId === ALL_ASSETS_LIST_ID
+    !currentAssetListId
       ? assetLists[assetLists.length - 1].id
-      : selectedAssetListId,
+      : currentAssetListId,
   );
 
   const handleUploadFromUrl = useCallback(() => {

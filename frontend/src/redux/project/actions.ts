@@ -103,7 +103,7 @@ import {
   SetScreenCreateLoader,
   SetBordersEnabled,
   SetEditorDocument,
-  SetAssetsLoader,
+  SetAssetsListsLoader,
   UploadElementAsset,
   RemoveAssetList,
   AddChildrenToElement,
@@ -188,6 +188,8 @@ import {
   SetEnabledPseudoClass,
   ReplaceMultipleElementsStyles,
   SetStatePseudoClass,
+  LoadAssetLists,
+  LoadAssets,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -337,8 +339,10 @@ export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   payload: { active },
 });
 
-export const setAssetsLoader = (active: boolean): SetAssetsLoader => ({
-  type: TYPES.SET_ASSETS_LOADER,
+export const setAssetsListsLoader = (
+  active: boolean,
+): SetAssetsListsLoader => ({
+  type: TYPES.SET_ASSETS_LISTS_LOADER,
   payload: { active },
 });
 
@@ -883,7 +887,7 @@ export const createElements = (
 export const addChildrenToElement = (
   children: {
     childType: ChildEntity;
-    parameters: ChildrenElements[ChildEntity]['parameters'];
+    parameters: ReturnType<ChildrenElements[ChildEntity]>['parameters'];
   }[],
   elementId: string,
   meta: ElementHistoryMeta,
@@ -896,7 +900,7 @@ export const addChildrenToElement = (
 export const addChildToElement = (
   childType: ChildEntity,
   elementID: string,
-  parameters: Partial<ChildrenElements[ChildEntity]['parameters']>,
+  parameters: Partial<ReturnType<ChildrenElements[ChildEntity]>['parameters']>,
   meta: ElementHistoryMeta,
 ): AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,
@@ -1195,19 +1199,21 @@ export const setEditorDocument = (doc: Document): SetEditorDocument => ({
   payload: doc,
 });
 
-export const loadAssetLists = (projectId: string) => ({
+export const loadAssetLists = (projectId: string): LoadAssetLists => ({
   type: TYPES.LOAD_ASSET_LISTS,
   payload: projectId,
 });
 
-export const loadAssets = (selectedListId: string) => ({
+export const loadAssets = (selectedListId: string): LoadAssets => ({
   type: TYPES.LOAD_ASSETS,
   payload: {
     selectedListId,
   },
 });
 
-export const setAssetLists = (assetLists: PaginatedArray<AssetsList>) => ({
+export const setAssetLists = (
+  assetLists: PaginatedArray<AssetsList> | null,
+) => ({
   type: TYPES.SET_ASSET_LISTS,
   payload: assetLists,
 });
@@ -1309,14 +1315,12 @@ export const addAssetToState = (
 });
 
 export const setSelectedAssetListId = (
-  listId: string,
-  meta?: HistoryMeta,
+  listId: string | null,
 ): SetSelectedAssetListId => ({
   type: TYPES.SET_SELECTED_ASSET_LIST_ID,
   payload: {
     assetListId: listId,
   },
-  meta: meta || {},
 });
 
 export const addSelectedElement = (id: string): AddSelectedElement => ({
