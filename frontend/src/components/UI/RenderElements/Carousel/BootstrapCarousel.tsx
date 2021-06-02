@@ -9,7 +9,7 @@ const BootstrapCarousel = React.forwardRef<HTMLElement, RendererProps>(
     const { children, element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
 
-    const useStyles = makeComponentStyles('breadcrumb', {});
+    const useStyles = makeComponentStyles('carousel', {});
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 

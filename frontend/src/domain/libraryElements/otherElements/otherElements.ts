@@ -734,18 +734,15 @@ export const carousel: CarouselServerElement = {
     carouselItems: [
       // TODO research why we need items here
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://www.yana.kiev.ua/img/countries/big/21/1917977906.jpg',
         alt: 'text desc',
       },
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://pbs.twimg.com/media/CekF6jHWAAAdb9q.jpg',
         alt: 'text desc',
       },
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://planetaperm.ru/wp-content/uploads/banner-minvody.jpg',
         alt: 'text desc',
       },
     ],
@@ -758,22 +755,19 @@ export const carousel: CarouselServerElement = {
   name: 'carousel',
   children: [
     makeCarouselItem({
-      link:
-        'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+      link: 'https://www.yana.kiev.ua/img/countries/big/21/1917977906.jpg',
       alt: 'text desc',
       UID: 'carousel-1',
       buoyancy: 0,
     }),
     makeCarouselItem({
-      link:
-        'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+      link: 'https://pbs.twimg.com/media/CekF6jHWAAAdb9q.jpg',
       alt: 'text desc',
       UID: 'carousel-2',
       buoyancy: 1,
     }),
     makeCarouselItem({
-      link:
-        'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+      link: 'https://planetaperm.ru/wp-content/uploads/banner-minvody.jpg',
       alt: 'text desc',
       UID: 'carousel-3',
       buoyancy: 2,

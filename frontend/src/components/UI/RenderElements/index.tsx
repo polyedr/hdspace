@@ -60,7 +60,9 @@ import OtherBreadcrumbItem from './BreadcrumbItem/OtherBreadcrumbItem';
 import BootstrapNavbar from './Navbar/BootstrapNavbar';
 import BootstrapNavbarItem from './NavbarItem/BootstrapNavbarItem';
 import OtherNavbarItem from './NavbarItem/OtherNavbarItem';
+import OtherCarousel from './Carousel/OtherCarousel';
 import OtherNavbar from './Navbar/OtherNavbar';
+import OtherCarouselItem from './CarouselItem/OtherCarouselItem';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -129,8 +131,16 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     material: OtherPaginationItem,
     not_selected: OtherPaginationItem,
   }),
-  carousel: BootstrapCarousel,
-  carouselItem: BootstrapCarouselItem,
+  carousel: withUIFramework({
+    bootstrap: BootstrapCarousel,
+    material: OtherCarousel,
+    not_selected: OtherCarousel,
+  }),
+  carouselItem: withUIFramework({
+    bootstrap: BootstrapCarouselItem,
+    material: OtherCarouselItem,
+    not_selected: OtherCarouselItem,
+  }),
   label: Label,
   hyperlink: Link,
   image: Image,

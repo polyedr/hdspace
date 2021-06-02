@@ -21,3 +21,30 @@ if (mdc.menu) {
     });
   }
 }
+let slideIndex = 1;
+
+showDivs(slideIndex);
+
+function showDivs(n) {
+  const x = document.getElementsByClassName('mySlides');
+  if (n > x.length) {
+    slideIndex = 1;
+  }
+  if (n < 1) {
+    slideIndex = x.length;
+  }
+  for (let i = 0; i < x.length; i++) {
+    const item = x.item(i);
+    if (item) {
+      item.style.display = 'none';
+    }
+  }
+  x[slideIndex - 1].style.display = 'block';
+}
+const sliders = document.querySelectorAll('.carousel');
+for (let i = 0; i < sliders.length; i++) {
+  const prevBtn = document.getElementsByClassName('w3-display-prev');
+  const nextBtn = document.getElementsByClassName('w3-display-next');
+  prevBtn[0].addEventListener('click', () => showDivs((slideIndex += -1)));
+  nextBtn[0].addEventListener('click', () => showDivs((slideIndex += 1)));
+}
