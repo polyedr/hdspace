@@ -56,25 +56,25 @@ const OtherCarousel = React.forwardRef<HTMLElement, RendererProps>(
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
     let slideIndex = 1;
-    function showDivs(n) {
-      const x = frameWindow?.document.getElementsByClassName(
+    function showDivs(n: number) {
+      const selectElement = frameWindow?.document.getElementsByClassName(
         'mySlides',
       ) as HTMLCollectionOf<HTMLElement>;
-      if (n > x.length) {
+      if (n > selectElement.length) {
         slideIndex = 1;
       }
       if (n < 1) {
-        slideIndex = x.length;
+        slideIndex = selectElement.length;
       }
-      for (let i = 0; i < x.length; i++) {
-        const item = x.item(i);
+      for (let i = 0; i < selectElement.length; i++) {
+        const item = selectElement.item(i);
         if (item) {
           item.style.display = 'none';
         }
       }
-      x[slideIndex - 1].style.display = 'block';
+      selectElement[slideIndex - 1].style.display = 'block';
     }
-    function plusDivs(n) {
+    function plusDivs(n: number) {
       showDivs((slideIndex += n));
     }
 

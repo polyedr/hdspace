@@ -17,22 +17,20 @@ const OtherCarouselItem = React.forwardRef<HTMLElement, RendererProps>(
     const classes = useStyles(props);
 
     return (
-      <>
-        <img
-          ref={ref as LegacyRef<HTMLImageElement>}
-          id={element.id}
-          data-ls-id={element.id}
-          alt={alt}
-          className={cn(
-            'mySlides',
-            classes.mySlides,
-            classes.ownStyles,
-            groupClass,
-          )}
-          src={link}
-          style={{ width: '100%' }}
-        />
-      </>
+      <img
+        ref={ref as LegacyRef<HTMLImageElement>}
+        id={element.id}
+        data-ls-id={element.id}
+        alt={alt}
+        className={cn(
+          'mySlides',
+          classes.mySlides,
+          classes.ownStyles,
+          groupClass,
+        )}
+        src={link}
+        style={{ width: '100%' }}
+      />
     );
   },
 );

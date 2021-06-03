@@ -25,26 +25,24 @@ const OtherPaginationItem = React.forwardRef<HTMLElement, RendererProps>(
     });
 
     return (
-      <>
-        <a
-          href={link}
-          target="_blank"
-          rel="noreferrer"
-          ref={ref as LegacyRef<HTMLAnchorElement>}
-          id={element.id}
-          className={cn(
-            classes.ownStyles,
-            groupClass,
-            isDisabled ? classes.disabled : classes.ownPseudoStyles,
-            isActiveLink && classes.active,
-          )}
-          data-ls-id={element.id}
-          {...eventHandlers}
-          data-gramm_editor={false}
-        >
-          {textContent}
-        </a>
-      </>
+      <a
+        href={link}
+        target="_blank"
+        rel="noreferrer"
+        ref={ref as LegacyRef<HTMLAnchorElement>}
+        id={element.id}
+        className={cn(
+          classes.ownStyles,
+          groupClass,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          isActiveLink && classes.active,
+        )}
+        data-ls-id={element.id}
+        {...eventHandlers}
+        data-gramm_editor={false}
+      >
+        {textContent}
+      </a>
     );
   },
 );
