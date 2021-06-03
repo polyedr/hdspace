@@ -3,6 +3,7 @@ import { apiChangeRecursiveElement, apiCreateElement } from '@Api/element';
 import DOMPurify from 'dompurify';
 import {
   LibraryElement,
+  PostURLCheckRobots,
   PostUrlResponse,
   Result,
   Screen,
@@ -14,7 +15,7 @@ import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
 import { extractStyles } from '@Utils/stringHelper';
 import IMAGES from '@Constants/images';
-import { apiGetWebPage, apiPostURL } from '@Api/import';
+import { apiGetWebPage, apiPostURL, apiPostURLCheckRobots } from '@Api/import';
 import * as Actions from '@Redux/project/actions';
 import { importHtml, updateElementParameters } from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
@@ -180,12 +181,51 @@ const getTypeFromName = (name: string) => {
   }
 };
 
+export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
+  try {
+    const { result, error }: Result<PostURLCheckRobots> = yield call(
+      reqWrapper,
+      apiPostURLCheckRobots,
+      {
+        fileurl: url,
+      },
+    );
+    if (error) {
+      throw new Error(
+        error === 'Request failed with status code 400'
+          ? 'Enter a valid URL'
+          : error,
+      );
+    }
+    if (!result) {
+      throw new Error('Something went wrong');
+    }
+    if (result.asterisk_fetch && result.wget_fetch) {
+      yield put(Actions.setValueCheckRobots(true));
+    } else yield put(Actions.setValueCheckRobots(false));
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
 export const uploadImportUrlSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
 )(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
   try {
     yield put(Actions.setValueImportLoader(true));
+
     const { result, error }: Result<PostUrlResponse> = yield call(
       reqWrapper,
       apiPostURL,

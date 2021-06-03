@@ -11,7 +11,11 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import { useDispatch } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { importHtml, uploadImportUrl } from '@Redux/project/actions';
+import {
+  importHtml,
+  uploadImportUrl,
+  uploadUrlForCheckRobots,
+} from '@Redux/project/actions';
 import prettyBytes from 'pretty-bytes';
 import prevent from '@Utils/preventEvent';
 
@@ -93,6 +97,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     target: { value },
   }: ChangeEvent<HTMLInputElement>) => {
     setUrl(value);
+    dispatch(uploadUrlForCheckRobots(value));
   };
 
   const handleUrlSubmit = () => {

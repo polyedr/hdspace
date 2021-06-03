@@ -117,7 +117,11 @@ import {
   restoreAssetSaga,
   editIcoScreenSaga,
 } from './asset';
-import { importHtmlSaga, uploadImportUrlSaga } from './import';
+import {
+  checkRobotsFileFromUrlSaga,
+  importHtmlSaga,
+  uploadImportUrlSaga,
+} from './import';
 import {
   executeRedoActionsSaga,
   executeUndoActionsSaga,
@@ -440,6 +444,7 @@ export default function* projectSaga() {
 
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
   yield takeEvery(TYPES.UPLOAD_IMPORT_URL, uploadImportUrlSaga);
+  yield takeEvery(TYPES.UPLOAD_URL_CHECK_ROBOTS, checkRobotsFileFromUrlSaga);
 
   yield takeEvery(TYPES.LOAD_ASSET_LISTS, loadAssetListsSaga);
   yield takeEvery(TYPES.LOAD_ASSETS, loadAssetsSaga);
