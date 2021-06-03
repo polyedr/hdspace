@@ -6,6 +6,7 @@ import { setEnabledPseudoClass } from '@Redux/project/sagas/element';
 import {
   selectActiveElementId,
   selectElementById,
+  selectEnabledPseudoClass,
 } from '@Redux/project/selectors/element';
 
 describe('setEnabledPseudoClass', () => {
@@ -14,6 +15,11 @@ describe('setEnabledPseudoClass', () => {
   describe('when pseudo class is set without specified element', () => {
     const action = Actions.setEnabledPseudoClass('hover');
     const it = sagaHelper(setEnabledPseudoClass(action));
+
+    it('should select previous class', (result) => {
+      expect(result).toEqual(select(selectEnabledPseudoClass));
+      return 'focus';
+    });
 
     it('should select active element id', (result) => {
       expect(result).toEqual(select(selectActiveElementId));
@@ -47,6 +53,11 @@ describe('setEnabledPseudoClass', () => {
     const action = Actions.setEnabledPseudoClass('active', mockStateElement.id);
     const it = sagaHelper(setEnabledPseudoClass(action));
 
+    it('should select previous class', (result) => {
+      expect(result).toEqual(select(selectEnabledPseudoClass));
+      return 'focus';
+    });
+
     it('should select active element id', (result) => {
       expect(result).toEqual(select(selectActiveElementId));
       return 'active element id';
@@ -68,6 +79,20 @@ describe('setEnabledPseudoClass', () => {
           }),
         ),
       );
+    });
+  });
+
+  describe('when previous pseudo class is the same as previous one', () => {
+    const action = Actions.setEnabledPseudoClass('active', mockStateElement.id);
+    const it = sagaHelper(setEnabledPseudoClass(action));
+
+    it('should select previous class', (result) => {
+      expect(result).toEqual(select(selectEnabledPseudoClass));
+      return 'active';
+    });
+
+    it('should NOT call further actions', (result) => {
+      expect(result).toBeUndefined();
     });
   });
 });
