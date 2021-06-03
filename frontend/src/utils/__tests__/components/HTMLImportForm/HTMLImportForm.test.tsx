@@ -94,7 +94,7 @@ describe('HTMLImportForm', () => {
 
     fireEvent.click(submitButton);
     const actions = store.getActions();
-    expect(actions[0].type).toBe(TYPES.UPLOAD_IMPORT_URL);
-    expect(actions[0].payload).toBe(string);
+    expect(actions[1].type).toBe(TYPES.UPLOAD_IMPORT_URL);
+    expect(actions[1].payload).toBe(string);
   });
 });
