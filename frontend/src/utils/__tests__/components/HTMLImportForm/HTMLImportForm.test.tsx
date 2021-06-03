@@ -74,8 +74,8 @@ describe('HTMLImportForm', () => {
 
     fireEvent.click(submitButton);
     const actions = store.getActions();
-    expect(actions[0].type).toBe(TYPES.UPLOAD_IMPORT_URL);
-    expect(actions[0].payload).toBe(testValue);
+    expect(actions[1].type).toBe(TYPES.UPLOAD_IMPORT_URL);
+    expect(actions[1].payload).toBe(testValue);
   });
 
   it('should start process a url in case of both inputs are filled', () => {
