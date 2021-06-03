@@ -308,7 +308,27 @@ export const defaultListStyles: { [K in ListControls]: React.CSSProperties } & {
     ...DEFAULT_BULLETS,
   },
 };
-
+export const defaultBreadcrumbStyles: {
+  [K in PaginationControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
 export const defaultPaginationStyles: {
   [K in PaginationControls]: React.CSSProperties;
 } & {
@@ -329,11 +349,8 @@ export const defaultPaginationStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
-  bullets: {
-    ...DEFAULT_BULLETS,
-  },
 };
-export const defaultNavbarStyles: {
+export const defaultCarouselStyles: {
   [K in PaginationControls]: React.CSSProperties;
 } & {
   other?: React.CSSProperties;
@@ -352,10 +369,29 @@ export const defaultNavbarStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
-  bullets: {
-    ...DEFAULT_BULLETS,
+};
+export const defaultNavbarStyles: {
+  [K in PaginationControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    height: '50px',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
 };
 
@@ -1198,11 +1234,11 @@ export const DEFAULT_ELEMENTS_STYLES: {
   section: defaultSectionStyles,
   group: defaultElementsGroupStyles,
   html: defaultHTMLElementStyles,
-  breadcrumb: defaultListStyles,
+  breadcrumb: defaultBreadcrumbStyles,
   breadcrumbItem: defaultListItemStyles,
   pagination: defaultPaginationStyles,
   paginationItem: defaultListItemStyles,
-  carousel: defaultListStyles,
+  carousel: defaultCarouselStyles,
   carouselItem: defaultListItemStyles,
   navbar: defaultNavbarStyles,
   navbarItem: defaultListItemStyles,

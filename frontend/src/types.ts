@@ -687,7 +687,7 @@ export type CarouselItemParameters = BaseElementParams & {
 };
 export type NavbarItemParameters = BaseElementParams & {
   link: string;
-  nameItem: string;
+  itemName: string;
 };
 export type BreadcrumbItemItemParameters = BaseElementParams & {
   textContent: string;
@@ -920,7 +920,7 @@ export type CarouselItem = {
 };
 export type NavbarItem = {
   link: string;
-  nameItem: string;
+  itemName: string;
 };
 export type ServerStructType = Entity;
 

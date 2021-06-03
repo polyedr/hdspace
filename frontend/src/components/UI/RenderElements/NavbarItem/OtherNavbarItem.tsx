@@ -9,7 +9,7 @@ const OtherNavbarItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
     const { element } = props;
     const [groupClass] = element.styles.classNames;
-    const { nameItem, link } = element.parameters;
+    const { itemName, link } = element.parameters;
     const classes = useStyles(props);
 
     return (
@@ -22,7 +22,7 @@ const OtherNavbarItem = React.forwardRef<HTMLElement, RendererProps>(
           rel="noreferrer"
           target="_blank"
         >
-          {nameItem}
+          {itemName}
         </a>
       </>
     );

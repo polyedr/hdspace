@@ -27,7 +27,7 @@ const BreadcrumbItems: React.FC<
 > = ({ updateParams, element, canEdit }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const breadcrumbItem = useSelector(
+  const breadcrumbItems = useSelector(
     selectActiveItemChildren('breadcrumbItem'),
   );
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -47,13 +47,13 @@ const BreadcrumbItems: React.FC<
 
   return (
     <div>
-      {breadcrumbItem.map(({ id, parameters }) => (
+      {breadcrumbItems.map(({ id, parameters }) => (
         <BreadcrumbsItem
           key={id}
           id={id}
           parameters={parameters}
           updateParams={updateParams}
-          isLast={breadcrumbItem.length <= 1}
+          isLast={breadcrumbItems.length <= 1}
           canEdit={canEdit}
         />
       ))}

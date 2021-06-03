@@ -753,7 +753,7 @@ export const makeCarousel = (): CarouselServerElement => ({
 
 export const makeNavbarItem = ({
   link = '',
-  nameItem = '',
+  itemName = '',
   UID = 'master',
   buoyancy = 0,
 } = {}): NavbarItemServerElement => ({
@@ -766,7 +766,7 @@ export const makeNavbarItem = ({
     freeCanvas: defaultFreeCanvasParams,
     group: ElementGroup.OTHER,
     link,
-    nameItem,
+    itemName,
   },
   styles: {
     classNames: ['navbarItem'],
@@ -793,17 +793,17 @@ export const makeNavbar = (): NavbarServerElement => ({
       {
         link:
           'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
-        nameItem: 'text desc',
+        itemName: 'text desc',
       },
       {
         link:
           'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
-        nameItem: 'text desc',
+        itemName: 'text desc',
       },
       {
         link:
           'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
-        nameItem: 'text desc',
+        itemName: 'text desc',
       },
     ],
   },
@@ -816,20 +816,20 @@ export const makeNavbar = (): NavbarServerElement => ({
   children: [
     makeNavbarItem({
       link: 'https://i5.walmarti',
-      nameItem: 'text desc',
+      itemName: 'text desc',
       UID: 'carousel-1',
       buoyancy: 0,
     }),
     makeNavbarItem({
       link: 'https://i5.walmarti',
-      nameItem: 'text desc',
+      itemName: 'text desc',
       UID: 'navbar-2',
       buoyancy: 1,
     }),
     makeNavbarItem({
       link:
         'https://i5.walmartimages.com/asr/79b030ef-9b0d9af79d4e8b836b8d5a1c476dfe46',
-      nameItem: 'text desc',
+      itemName: 'text desc',
       UID: 'navbar-3',
       buoyancy: 2,
     }),

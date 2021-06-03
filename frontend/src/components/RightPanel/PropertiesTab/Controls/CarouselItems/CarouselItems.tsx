@@ -29,7 +29,7 @@ const CarouselItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
 }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const breadcrumbItem = useSelector(selectActiveItemChildren('carouselItem'));
+  const carouselItems = useSelector(selectActiveItemChildren('carouselItem'));
   const currentScreenId = useSelector(selectCurrentScreenId);
 
   const handleAddButtonClick = () => {
@@ -49,13 +49,13 @@ const CarouselItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
 
   return (
     <div>
-      {breadcrumbItem.map(({ id, parameters }) => (
+      {carouselItems.map(({ id, parameters }) => (
         <CarouselItem
           key={id}
           id={id}
           parameters={parameters}
           updateParams={updateParams}
-          isLast={breadcrumbItem.length <= 1}
+          isLast={carouselItems.length <= 1}
           canEdit={canEdit}
         />
       ))}

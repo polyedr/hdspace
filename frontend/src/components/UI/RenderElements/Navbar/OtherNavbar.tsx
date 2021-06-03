@@ -6,7 +6,6 @@ import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('navbar', {
   nav: (props: RendererProps) => ({
-    height: '50px',
     width: '100%',
     position: 'relative',
     '@media (min-width:600px)': {

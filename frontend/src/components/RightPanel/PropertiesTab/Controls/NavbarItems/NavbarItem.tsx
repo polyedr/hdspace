@@ -48,7 +48,7 @@ type Props = {
 
 const NavbarItem: React.FC<Props> = ({
   id,
-  parameters: { nameItem, link },
+  parameters: { itemName, link },
   updateParams,
   isLast,
   canEdit,
@@ -57,8 +57,8 @@ const NavbarItem: React.FC<Props> = ({
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
 
-  const debouncedNameItem = useDebouncedCallback((value) => {
-    updateParams({ nameItem: value }, id);
+  const debouncedItemName = useDebouncedCallback((value) => {
+    updateParams({ itemName: value }, id);
   }, 500);
 
   const debouncedLink = useDebouncedCallback((value) => {
@@ -73,7 +73,7 @@ const NavbarItem: React.FC<Props> = ({
     <StyledAccordion>
       <StyledAccordionSummary className={classes.title}>
         <div className={classes.wrapper}>
-          {nameItem}
+          {itemName}
 
           {!isLast && canEdit && (
             <IconButton
@@ -92,8 +92,8 @@ const NavbarItem: React.FC<Props> = ({
       <StyledAccordionDetails className={classes.details}>
         <StyledTextField
           variant="outlined"
-          defaultValue={nameItem}
-          onChange={(ev) => debouncedNameItem.callback(ev.target.value)}
+          defaultValue={itemName}
+          onChange={(ev) => debouncedItemName.callback(ev.target.value)}
           label="Item text"
           margin="dense"
           fullWidth

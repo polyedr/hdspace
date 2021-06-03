@@ -176,7 +176,6 @@ export const paginationStyleControls = [
   'background',
   'border',
   'display',
-  'bullets',
 ] as const;
 
 export const listItemStyleControls = [
@@ -194,6 +193,13 @@ export const breadcrumbItemStyleControls = [
   'border',
 ] as const;
 export const paginationItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
+export const navbarItemStyleControls = [
   'indents',
   'size',
   'typography',
@@ -378,6 +384,30 @@ export const featureSectionStyleControls = [
   'display',
 ] as const;
 
+export const breadcrumbStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
+export const carouselStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
+export const navbarStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
 export const elementsGroupStyleControls = ['indents', 'background'] as const;
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
@@ -485,14 +515,14 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'attributes',
     'layouts',
   ],
-  breadcrumb: ['breadcrumb', ...listStyleControls, 'layouts'],
+  breadcrumb: ['breadcrumb', ...breadcrumbStyleControls, 'layouts'],
   breadcrumbItem: [...breadcrumbItemStyleControls, 'layouts'],
   pagination: ['pagination', ...paginationStyleControls, 'layouts'],
   paginationItem: [...paginationItemStyleControls, 'layouts'],
-  carousel: ['carousel', ...listStyleControls, 'layouts'],
+  carousel: ['carousel', ...carouselStyleControls, 'layouts'],
   carouselItem: [...paginationItemStyleControls, 'layouts'],
-  navbar: ['navbar', ...listStyleControls, 'layouts'],
-  navbarItem: [...paginationItemStyleControls, 'layouts'],
+  navbar: ['navbar', ...navbarStyleControls, 'layouts'],
+  navbarItem: [...navbarItemStyleControls, 'layouts'],
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
