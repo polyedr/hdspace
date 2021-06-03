@@ -1379,6 +1379,10 @@ export const setEnabledPseudoClass = function* (
   action: ReturnType<typeof Actions.setEnabledPseudoClass>,
 ) {
   const { pseudoClass, elementId } = action.payload;
+  const previousPseudoClass = yield select(selectEnabledPseudoClass);
+  if (pseudoClass === previousPseudoClass) {
+    return;
+  }
   const activeElementId = yield select(selectActiveElementId);
   const element = yield select(selectElementById, elementId || activeElementId);
   if (element) {

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect, useCallback } from 'react';
+import React, { useMemo, useRef, useEffect, useCallback, memo } from 'react';
 import { useDispatch } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
@@ -55,7 +55,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   const dispatch = useDispatch();
 
   const element = allElements[elementId];
-
   const parent = useMemo(
     () => (element?.parent ? allElements[element.parent] : null),
     [allElements, element?.parent],
@@ -246,4 +245,4 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   );
 };
 
-export default DraggableElement;
+export default memo(DraggableElement);
