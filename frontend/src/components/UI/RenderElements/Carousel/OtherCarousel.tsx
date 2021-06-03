@@ -84,7 +84,14 @@ const OtherCarousel = React.forwardRef<HTMLElement, RendererProps>(
           if (dom) {
             showDivs(slideIndex);
           }
-          return ref;
+          if (!ref) {
+            return;
+          }
+          if (typeof ref === 'function') {
+            ref(dom);
+          } else {
+            ref.current = dom;
+          }
         }}
         id={element.id}
         data-ls-id={element.id}
