@@ -23,6 +23,14 @@ import {
   UndefinedServerElement,
   HTMLServerElement,
   VideoServerElement,
+  PaginationItemServerElement,
+  PaginationServerElement,
+  BreadcrumbServerElement,
+  BreadcrumbItemServerElement,
+  CarouselServerElement,
+  CarouselItemServerElement,
+  NavbarServerElement,
+  NavbarItemServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { makeParagraph } from '../typographyElements/typographyElements';
@@ -531,4 +539,299 @@ export const makeHtmlElement = (): HTMLServerElement => ({
   },
   name: 'HTML element',
   children: [],
+});
+
+export const makeBreadcrumbItem = ({
+  textContent = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): BreadcrumbItemServerElement => ({
+  id: `breadcrumb-item-${UID}`,
+  buoyancy,
+  func_type: 'breadcrumbItem',
+  struct_type: 'breadcrumbItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    textContent,
+    isLink: false,
+  },
+  styles: {
+    classNames: ['breadcrumbItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'breadcrumbItem',
+  children: [],
+});
+
+export const makeBreadcrumb = (): BreadcrumbServerElement => ({
+  id: 'breadcrumb',
+  buoyancy: 0,
+  func_type: 'breadcrumb',
+  struct_type: 'breadcrumb',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    breadcrumbItems: [
+      // TODO research why we need items here
+      { textContent: 'breadcrumb item', isLink: false },
+      { textContent: 'Second breadcrumb', isLink: false },
+      { textContent: 'Third breadcrumb', isLink: false },
+    ],
+  },
+  styles: {
+    classNames: ['breadcrumb'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'breadcrumb',
+  children: [
+    makeBreadcrumbItem({
+      textContent: 'breadcrumb item',
+      UID: 'breadcrumb-1',
+      buoyancy: 0,
+    }),
+    makeBreadcrumbItem({
+      textContent: 'Second breadcrumb',
+      UID: 'breadcrumb-2',
+      buoyancy: 1,
+    }),
+    makeBreadcrumbItem({
+      textContent: 'Third breadcrumb',
+      UID: 'breadcrumb-3',
+      buoyancy: 2,
+    }),
+  ],
+});
+export const makePaginationItem = ({
+  textContent = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): PaginationItemServerElement => ({
+  id: `pagination-item-${UID}`,
+  buoyancy,
+  func_type: 'paginationItem',
+  struct_type: 'paginationItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    textContent,
+    isActiveLink: false,
+  },
+  styles: {
+    classNames: ['paginationItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'paginationItem',
+  children: [],
+});
+
+export const makePagination = (): PaginationServerElement => ({
+  id: 'pagination',
+  buoyancy: 0,
+  func_type: 'pagination',
+  struct_type: 'pagination',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    paginationItems: [
+      // TODO research why we need items here
+      { textContent: '1' },
+      { textContent: '2' },
+      { textContent: '3' },
+    ],
+  },
+  styles: {
+    classNames: ['pagination'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'pagination',
+  children: [
+    makePaginationItem({
+      textContent: '1',
+      UID: 'pagination-1',
+      buoyancy: 0,
+    }),
+    makePaginationItem({
+      textContent: '2',
+      UID: 'pagination-2',
+      buoyancy: 1,
+    }),
+    makePaginationItem({
+      textContent: '3',
+      UID: 'pagination-3',
+      buoyancy: 2,
+    }),
+  ],
+});
+
+export const makeCarouselItem = ({
+  link = '',
+  alt = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): CarouselItemServerElement => ({
+  id: `carousel-item-${UID}`,
+  buoyancy,
+  func_type: 'carouselItem',
+  struct_type: 'carouselItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    link,
+    alt,
+  },
+  styles: {
+    classNames: ['carouselItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'carouselItem',
+  children: [],
+});
+
+export const makeCarousel = (): CarouselServerElement => ({
+  id: 'carousel',
+  buoyancy: 0,
+  func_type: 'carousel',
+  struct_type: 'carousel',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    carouselItems: [
+      // TODO research why we need items here
+      {
+        link: 'https://www.yana.kiev.ua/img/countries/big/21/1917977906.jpg',
+        alt: 'text desc',
+      },
+      {
+        link: 'https://pbs.twimg.com/media/CekF6jHWAAAdb9q.jpg',
+        alt: 'text desc',
+      },
+      {
+        link: 'https://planetaperm.ru/wp-content/uploads/banner-minvody.jpg',
+        alt: 'text desc',
+      },
+    ],
+  },
+  styles: {
+    classNames: ['carousel'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'carousel',
+  children: [
+    makeCarouselItem({
+      link: 'https://www.yana.kiev.ua/img/countries/big/21/1917977906.jpg',
+      alt: 'text desc',
+      UID: 'carousel-1',
+      buoyancy: 0,
+    }),
+    makeCarouselItem({
+      link: 'https://pbs.twimg.com/media/CekF6jHWAAAdb9q.jpg',
+      alt: 'text desc',
+      UID: 'carousel-2',
+      buoyancy: 1,
+    }),
+    makeCarouselItem({
+      link: 'https://planetaperm.ru/wp-content/uploads/banner-minvody.jpg',
+      alt: 'text desc',
+      UID: 'carousel-3',
+      buoyancy: 2,
+    }),
+  ],
+});
+
+export const makeNavbarItem = ({
+  link = '',
+  itemName = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): NavbarItemServerElement => ({
+  id: `navbar-item-${UID}`,
+  buoyancy,
+  func_type: 'navbarItem',
+  struct_type: 'navbarItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    link,
+    itemName,
+  },
+  styles: {
+    classNames: ['navbarItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'navbarItem',
+  children: [],
+});
+
+export const makeNavbar = (): NavbarServerElement => ({
+  id: 'navbar',
+  buoyancy: 0,
+  func_type: 'navbar',
+  struct_type: 'navbar',
+  parameters: {
+    titleName: 'ADEVI',
+    titleLink: '',
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    navbarItems: [
+      // TODO research why we need items here
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        itemName: 'text desc',
+      },
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        itemName: 'text desc',
+      },
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        itemName: 'text desc',
+      },
+    ],
+  },
+  styles: {
+    classNames: ['navbar'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'navbar',
+  children: [
+    makeNavbarItem({
+      link: 'https://i5.walmarti',
+      itemName: 'text desc',
+      UID: 'carousel-1',
+      buoyancy: 0,
+    }),
+    makeNavbarItem({
+      link: 'https://i5.walmarti',
+      itemName: 'text desc',
+      UID: 'navbar-2',
+      buoyancy: 1,
+    }),
+    makeNavbarItem({
+      link:
+        'https://i5.walmartimages.com/asr/79b030ef-9b0d9af79d4e8b836b8d5a1c476dfe46',
+      itemName: 'text desc',
+      UID: 'navbar-3',
+      buoyancy: 2,
+    }),
+  ],
 });

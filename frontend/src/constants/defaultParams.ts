@@ -154,6 +154,10 @@ export const UNIQUE_CONTROLS = [
   'stylesOn',
   'layouts',
   'styleSheets',
+  'breadcrumb',
+  'pagination',
+  'carousel',
+  'navbar',
 ];
 
 export const ALL_ELEMENTS_INDEX = 'all';

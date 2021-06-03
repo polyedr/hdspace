@@ -43,6 +43,10 @@ export const ENTITIES: {
   section: 'section',
   group: 'group',
   html: 'html',
+  breadcrumb: 'breadcrumb',
+  pagination: 'pagination',
+  carousel: 'carousel',
+  navbar: 'navbar',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -166,6 +170,14 @@ export const listStyleControls = [
   'bullets',
 ] as const;
 
+export const paginationStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
 export const listItemStyleControls = [
   'indents',
   'size',
@@ -173,7 +185,27 @@ export const listItemStyleControls = [
   'background',
   'border',
 ] as const;
-
+export const breadcrumbItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
+export const paginationItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
+export const navbarItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
 export const imageStyleControls = [
   'indents',
   'size',
@@ -352,6 +384,30 @@ export const featureSectionStyleControls = [
   'display',
 ] as const;
 
+export const breadcrumbStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
+export const carouselStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
+export const navbarStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
 export const elementsGroupStyleControls = ['indents', 'background'] as const;
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
@@ -459,6 +515,14 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'attributes',
     'layouts',
   ],
+  breadcrumb: ['breadcrumb', ...breadcrumbStyleControls, 'layouts'],
+  breadcrumbItem: [...breadcrumbItemStyleControls, 'layouts'],
+  pagination: ['pagination', ...paginationStyleControls, 'layouts'],
+  paginationItem: [...paginationItemStyleControls, 'layouts'],
+  carousel: ['carousel', ...carouselStyleControls, 'layouts'],
+  carouselItem: [...paginationItemStyleControls, 'layouts'],
+  navbar: ['navbar', ...navbarStyleControls, 'layouts'],
+  navbarItem: [...navbarItemStyleControls, 'layouts'],
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
@@ -639,6 +703,34 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
+  breadcrumb: {
+    breadcrumbItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  breadcrumbItem: {},
+  pagination: {
+    paginationItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  paginationItem: {},
+  carousel: {
+    carouselItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  carouselItem: {},
+  navbar: {
+    carouselItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  navbarItem: {},
 };
 
 export const defaultFreeCanvasParams: Partial<FreeCanvasElementParams> = {

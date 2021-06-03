@@ -47,6 +47,22 @@ import { BootstrapSelect, MaterialSelect, UnstyledSelect } from './Select';
 import { UnstyledOption, MaterialOption } from './Option';
 import HTMLElement from './HTMLElement/HTMLElement';
 import withUIFramework from './withUIFramework';
+import BootstrapBreadcrumbItem from './BreadcrumbItem/BootstrapBreadcrumbItem';
+import BootstrapBreadcrumb from './Breadcrumb/BootstrapBreadcrumb';
+import BootstrapPagination from './Pagination/BootstrapPagination';
+import BootstrapPaginationItem from './PaginationItem/BootstrapPaginationItem';
+import BootstrapCarousel from './Carousel/BootstrapCarousel';
+import BootstrapCarouselItem from './CarouselItem/BootstrapCarouselItem';
+import OtherPagination from './Pagination/OtherPagination';
+import OtherPaginationItem from './PaginationItem/OtherPaginationItem';
+import OtherBreadcrumb from './Breadcrumb/OtherBreadcrumb';
+import OtherBreadcrumbItem from './BreadcrumbItem/OtherBreadcrumbItem';
+import BootstrapNavbar from './Navbar/BootstrapNavbar';
+import BootstrapNavbarItem from './NavbarItem/BootstrapNavbarItem';
+import OtherNavbarItem from './NavbarItem/OtherNavbarItem';
+import OtherCarousel from './Carousel/OtherCarousel';
+import OtherNavbar from './Navbar/OtherNavbar';
+import OtherCarouselItem from './CarouselItem/OtherCarouselItem';
 import RadiobuttonGroup from './RadiobuttonGroup';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
@@ -97,6 +113,36 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   textBlock: TextBlock,
   list: List,
   listItem: ListItem,
+  breadcrumb: withUIFramework({
+    bootstrap: BootstrapBreadcrumb,
+    material: OtherBreadcrumb,
+    not_selected: OtherBreadcrumb,
+  }),
+  breadcrumbItem: withUIFramework({
+    bootstrap: BootstrapBreadcrumbItem,
+    material: OtherBreadcrumbItem,
+    not_selected: OtherBreadcrumbItem,
+  }),
+  pagination: withUIFramework({
+    bootstrap: BootstrapPagination,
+    material: OtherPagination,
+    not_selected: OtherPagination,
+  }),
+  paginationItem: withUIFramework({
+    bootstrap: BootstrapPaginationItem,
+    material: OtherPaginationItem,
+    not_selected: OtherPaginationItem,
+  }),
+  carousel: withUIFramework({
+    bootstrap: BootstrapCarousel,
+    material: OtherCarousel,
+    not_selected: OtherCarousel,
+  }),
+  carouselItem: withUIFramework({
+    bootstrap: BootstrapCarouselItem,
+    material: OtherCarouselItem,
+    not_selected: OtherCarouselItem,
+  }),
   label: Label,
   hyperlink: Link,
   image: Image,
@@ -128,6 +174,16 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   section: Section,
   group: ElementsGroup,
   html: HTMLElement,
+  navbar: withUIFramework({
+    bootstrap: BootstrapNavbar,
+    material: OtherNavbar,
+    not_selected: OtherNavbar,
+  }),
+  navbarItem: withUIFramework({
+    bootstrap: BootstrapNavbarItem,
+    material: OtherNavbarItem,
+    not_selected: OtherNavbarItem,
+  }),
 };
 
 export default RENDERERS;

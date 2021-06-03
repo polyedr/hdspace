@@ -39,6 +39,7 @@ import {
   columnsStyleControls,
   elementsGroupStyleControls,
   htmlElementControls,
+  paginationStyleControls,
   radiobuttonGroupStyleControls,
 } from '../core';
 
@@ -176,6 +177,7 @@ type ParagraphControls = typeof paragraphStyleControls[number];
 type TextBlockControls = typeof textBlockStyleControls[number];
 type ListControls = typeof listStyleControls[number];
 type ListItemControls = typeof listItemStyleControls[number];
+type PaginationControls = typeof paginationStyleControls[number];
 
 export const defaultHyperlinkStyles: {
   [K in HyperlinkControls]: React.CSSProperties;
@@ -289,7 +291,6 @@ export const defaultListStyles: { [K in ListControls]: React.CSSProperties } & {
 } = {
   indents: {
     ...DEFAULT_INDENTS,
-    paddingLeft: '40px',
   },
   size: {
     ...DEFAULT_SIZE,
@@ -305,6 +306,92 @@ export const defaultListStyles: { [K in ListControls]: React.CSSProperties } & {
   },
   bullets: {
     ...DEFAULT_BULLETS,
+  },
+};
+export const defaultBreadcrumbStyles: {
+  [K in PaginationControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+export const defaultPaginationStyles: {
+  [K in PaginationControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+export const defaultCarouselStyles: {
+  [K in PaginationControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+export const defaultNavbarStyles: {
+  [K in PaginationControls]: React.CSSProperties;
+} & {
+  other?: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    height: '50px',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
 };
 
@@ -1147,4 +1234,12 @@ export const DEFAULT_ELEMENTS_STYLES: {
   section: defaultSectionStyles,
   group: defaultElementsGroupStyles,
   html: defaultHTMLElementStyles,
+  breadcrumb: defaultBreadcrumbStyles,
+  breadcrumbItem: defaultListItemStyles,
+  pagination: defaultPaginationStyles,
+  paginationItem: defaultListItemStyles,
+  carousel: defaultCarouselStyles,
+  carouselItem: defaultListItemStyles,
+  navbar: defaultNavbarStyles,
+  navbarItem: defaultListItemStyles,
 };

@@ -36,7 +36,11 @@ import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
 import StyleSheets from '@Components/RightPanel/PropertiesTab/Controls/StyleSheets/StyleSheets';
 import Attributes from '@Components/RightPanel/PropertiesTab/Controls/Attributes/Attributes';
 import TagName from '@Components/RightPanel/PropertiesTab/Controls/TagName/TagName';
+import BreadcrumbItems from '@Components/RightPanel/PropertiesTab/Controls/BreadcrumblItems/BreadcrumbItems';
+import PaginationItems from '@Components/RightPanel/PropertiesTab/Controls/PaginationItems/PaginationItems';
+import CarouselItems from '@Components/RightPanel/PropertiesTab/Controls/CarouselItems/CarouselItems';
 import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
+import NavbarItems from '@Components/RightPanel/PropertiesTab/Controls/NavbarItems/NavbarItems';
 import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobuttons';
 import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
 
@@ -132,7 +136,11 @@ const CONTROLS: Record<Control, ControlInfo> = {
   styleSheets: { Control: StyleSheets },
   attributes: { Control: Attributes },
   tagName: { Control: TagName },
+  breadcrumb: { Control: BreadcrumbItems },
+  pagination: { Control: PaginationItems },
+  carousel: { Control: CarouselItems },
   resizeOptions: { Control: ResizeOptionsControl },
+  navbar: { Control: NavbarItems },
   radiobuttons: {
     Control: Radiobuttons,
   },
