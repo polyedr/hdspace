@@ -53,10 +53,27 @@ class RobotsSerializer(serializers.ModelSerializer):
             "filename": {"write_only": True},
             "asterisk_fetch": {"write_only": True},
             "wget_fetch": {"write_only": True},
+            "robots_exist": {"write_only": True},
         }
+
+    def does_url_exist(self, url):
+        try:
+            r = requests.head(url)
+            if r.status_code < 400:
+                return True
+            else:
+                return False
+        except requests.exceptions.RequestException as e:
+            return False
 
     def create(self, validated_data):
         url = validated_data.pop("fileurl", None)
+        # print(url)
+        if not (self.does_url_exist(url)):
+            self.asterisk_fetch = True
+            self.wget_fetch = True
+            self.robots_exist = False
+            return False
 
         rp = urllib.robotparser.RobotFileParser()
         rp.set_url(url)
@@ -67,6 +84,7 @@ class RobotsSerializer(serializers.ModelSerializer):
 
         self.asterisk_fetch = rp.can_fetch("*", "/")
         self.wget_fetch = rp.can_fetch(AGENT_NAME, "/")
+        self.robots_exist = True
         # print("wget_fetch", self.wget_fetch)
 
         # Remove url from the submitted data
@@ -152,7 +170,7 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
 
     class Meta:
         model = WpgSaved
-        fields = ("wpname", "owner", "parse_with_splash")
+        fields = ("wpname", "owner", "parse_with_splash", "no_robots")
         extra_kwargs = {"parse_with_splash": {"read_only": True}, "no_robots": {"read_only": True}}
 
     def create(self, validated_data):
@@ -213,34 +231,3 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
     def parse(self, response, validated_data):
         if self.parse_with_splash:
             subprocess.run(["wget", "-p", "-k", response.url])
-
-
-
-'''
-# Version 1
-class RobotsSerializer(serializers.Serializer):
-    """Your data serializer, define your fields here."""
-    fileurl = serializers.URLField()
-    result_data_set = serializers.DictField(allow_null=True)
-
-    class Meta:
-        model = WebpageSaved
-        fields = ("fileurl", "result_data_set")
-        extra_kwargs = {"result_data_set": {"write_only": True}}
-
-
-    def create(self, validated_data):
-        print(validated_data)
-        url = validated_data["fileurl"]
-        result = os.popen("curl " + str(url)).read()
-        self.result_data_set = {"Disallowed": [], "Allowed": []}
-
-        for line in result.split("\n"):
-            if line.startswith('Allow'):  # this is for allowed url
-                self.result_data_set["Allowed"].append(
-                    line.split(': ')[1].split(' ')[0])  # to neglect the comments or other junk info
-            elif line.startswith('Disallow'):  # this is for disallowed url
-                self.result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])
-
-        return self.result_data_set
-'''
