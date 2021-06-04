@@ -186,11 +186,18 @@ export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
   UserProjectPermission.CHANGE_PROJECT,
 )(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
   try {
+    const updateUrl = (url: string) => {
+      if (url[url.length - 1] === '/') {
+        return `${url}robots.txt`;
+      }
+      return `${url}/robots.txt`;
+    };
+    const newUrl = updateUrl(url);
     const { result, error }: Result<PostURLCheckRobots> = yield call(
       reqWrapper,
       apiPostURLCheckRobots,
       {
-        fileurl: url,
+        fileurl: newUrl,
       },
     );
     if (error) {
@@ -203,9 +210,7 @@ export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
     if (!result) {
       throw new Error('Something went wrong');
     }
-    if (result.asterisk_fetch && result.wget_fetch) {
-      yield put(Actions.setValueCheckRobots(true));
-    } else yield put(Actions.setValueCheckRobots(false));
+    yield put(Actions.setValueCheckRobots(result.wget_fetch));
   } catch (e) {
     yield put(
       enqueueSnackbar(

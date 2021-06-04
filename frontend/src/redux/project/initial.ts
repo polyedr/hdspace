@@ -56,7 +56,7 @@ export const initialUi: ProjectUiState = {
     iframe: null,
     host: '',
   },
-  websiteRobotsChecked: true,
+  isCanImportSite: false,
 };
 
 export const initialEdit: ProjectEditState = {

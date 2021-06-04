@@ -88,7 +88,7 @@ export type ProjectUiState = {
     iframe: null | HTMLIFrameElement;
     host: string;
   };
-  websiteRobotsChecked: boolean;
+  isCanImportSite: boolean;
 };
 
 export type ProjectEditState = {
