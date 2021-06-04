@@ -148,16 +148,18 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
     start_urls = []
     wpname = serializers.URLField()
     parse_with_splash = serializers.BooleanField(required=False)
+    no_robots = serializers.BooleanField(required=False)
 
     class Meta:
         model = WpgSaved
         fields = ("wpname", "owner", "parse_with_splash")
-        extra_kwargs = {"parse_with_splash": {"read_only": True}}
+        extra_kwargs = {"parse_with_splash": {"read_only": True}, "no_robots": {"read_only": True}}
 
     def create(self, validated_data):
         # url = validated_data.pop("wpname", None)
         url = validated_data["wpname"]
         self.parse_with_splash = validated_data.pop("parse_with_splash")
+        self.no_robots = validated_data.pop("no_robots")
         self.start_urls.append(url)
         # Remove url from the submitted data
         # validated_data['fileurl'] = ''
@@ -185,8 +187,10 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
         subprocess.run(["rm", "-rf", "*"])
 
         os.chdir(wpath)
-
-        subprocess.run(["wget", "-p", "-k", url])
+        if (self.no_robots):
+            subprocess.run(["wget", "-e robots=off", "-p", "-k", url])
+        else:
+            subprocess.run(["wget", "-p", "-k", url])
         # Archive all the files for a zip directory
         shutil.make_archive(SAVE_DIR, "zip", SAVE_DIR)
         zip_archive_name = fname + ".zip"
