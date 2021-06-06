@@ -16,6 +16,7 @@ export const apiPostURL = ({
     data: {
       wpname,
       parse_with_splash: wpname.endsWith('/') ? 1 : 0,
+      no_robots: process.env.NODE_ENV !== 'production',
     },
   })
     .then((res: AxiosResponse<PostUrlResponse>) => ({ result: res.data }))
