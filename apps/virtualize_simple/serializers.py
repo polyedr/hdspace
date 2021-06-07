@@ -1848,7 +1848,8 @@ def print_clusters_length(clusters):
     if(len(clusters)):
         # Print clusters start
         for cluster in clusters:
-            print(cluster.type, cluster, len(cluster.elements))
+            # print(cluster.type, cluster, len(cluster.elements))
+            print(cluster, len(cluster.elements))
         # Print clusters end
         return True
     else:
@@ -2488,6 +2489,9 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         text = False
         watch = True
+
+        print(imgpath)
+        print(cv2.imread(imgpath))
 
         # Read an image with OpenCV start
         image_opencv_input = cv2.imread(imgpath)
