@@ -102,7 +102,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   const handleUrlChangeDebounced = useDebouncedCallback((value) => {
     setUrl(value);
     dispatch(uploadUrlForCheckRobots(value));
-  }, 1000);
+  }, 500);
 
   const handleFormSubmit = () => {
     const htmlCount = files.reduce((acc, curr) => {
@@ -126,7 +126,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleConfirm = () => {
-    if (url) {
+    if (isCanImportSite) {
       handleUrlSubmit();
     } else {
       handleFormSubmit();
