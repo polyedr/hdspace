@@ -112,11 +112,11 @@ export const convertNNElementFromResponse = <
   image,
   parameters: {
     ...defaultParameters,
-    ...parameters,
+    ...(parameters || {}),
   },
   styles: {
     ...getDefaultStyles(struct_type),
-    ...styles,
+    pseudoClassStyles: {},
     ownStyles: styles ? cssCamelize(styles) : {},
   },
 });
