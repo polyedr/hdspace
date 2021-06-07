@@ -187,12 +187,24 @@ export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
 )(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
   try {
     const updateUrl = (url: string) => {
-      if (url[url.length - 1] === '/') {
-        return `${url}robots.txt`;
+      let newEditUrl: string = url;
+      if (url.length <= 3) {
+        return null;
       }
-      return `${url}/robots.txt`;
+      if (!url.includes('https://')) {
+        newEditUrl = `https://${url}`;
+      }
+      if (newEditUrl[newEditUrl.length - 1] === '/') {
+        newEditUrl = `${newEditUrl}robots.txt`;
+      } else {
+        newEditUrl = `${newEditUrl}/robots.txt`;
+      }
+      return newEditUrl;
     };
     const newUrl = updateUrl(url);
+    if (!newUrl) {
+      throw new Error('empty');
+    }
     const { result, error }: Result<PostURLCheckRobots> = yield call(
       reqWrapper,
       apiPostURLCheckRobots,
@@ -210,17 +222,27 @@ export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
     if (!result) {
       throw new Error('Something went wrong');
     }
+    if (!result.wget_fetch)
+      yield put(
+        enqueueSnackbar({
+          message: 'This site cannot be imported due to privacy law',
+          options: { variant: 'error' },
+        }),
+      );
     yield put(Actions.setValueCheckRobots(result.wget_fetch));
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    yield put(Actions.setValueCheckRobots(false));
+    if (e.message !== 'empty') {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 });
 
