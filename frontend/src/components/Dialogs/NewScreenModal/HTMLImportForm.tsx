@@ -9,13 +9,19 @@ import {
   IconButton,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { importHtml, uploadImportUrl } from '@Redux/project/actions';
+import {
+  importHtml,
+  uploadImportUrl,
+  uploadUrlForCheckRobots,
+} from '@Redux/project/actions';
 import prettyBytes from 'pretty-bytes';
 import prevent from '@Utils/preventEvent';
+import { useDebouncedCallback } from 'use-debounce';
 
 import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { selectCanImportSite } from '@Redux/project/selectors/screen';
 
 const useStyles = makeStyles(({ palette, shape, spacing }) =>
   createStyles({
@@ -83,22 +89,20 @@ const allowedMimeTypes = [
 
 const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   const dispatch = useDispatch();
+  const isCanImportSite = useSelector(selectCanImportSite);
   const [over, setOver] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const classes = useStyles({ over, file: files });
-
   const [url, setUrl] = useState('');
-
-  const handleUrlChange = ({
-    target: { value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    setUrl(value);
-  };
 
   const handleUrlSubmit = () => {
     dispatch(uploadImportUrl(url));
     setUrl('');
   };
+  const handleUrlChangeDebounced = useDebouncedCallback((value) => {
+    setUrl(value);
+    dispatch(uploadUrlForCheckRobots(value));
+  }, 500);
 
   const handleFormSubmit = () => {
     const htmlCount = files.reduce((acc, curr) => {
@@ -122,7 +126,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   };
 
   const handleConfirm = () => {
-    if (url) {
+    if (isCanImportSite) {
       handleUrlSubmit();
     } else {
       handleFormSubmit();
@@ -172,8 +176,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
       <div>
         <TextField
           type="text"
-          value={url}
-          onChange={handleUrlChange}
+          onChange={(ev) => handleUrlChangeDebounced.callback(ev.target.value)}
           variant="outlined"
           fullWidth
           margin="dense"
@@ -250,7 +253,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
           variant="contained"
           color="secondary"
           onClick={handleConfirm}
-          disabled={!files.length && !url}
+          disabled={!files.length && !isCanImportSite}
         >
           Create
         </Button>

@@ -1189,6 +1189,16 @@ export const uploadImportUrl = (url: string) => ({
   payload: url,
 });
 
+export const uploadUrlForCheckRobots = (url: string) => ({
+  type: TYPES.UPLOAD_URL_CHECK_ROBOTS,
+  payload: url,
+});
+
+export const setValueCheckRobots = (value: boolean) => ({
+  type: TYPES.SET_VALUE_CHECK_ROBOTS,
+  payload: value,
+});
+
 export const setValueImportLoader = (value: boolean): SetValueImportLoader => ({
   type: TYPES.SET_VALUE_IMPORT_LOADER,
   payload: value,

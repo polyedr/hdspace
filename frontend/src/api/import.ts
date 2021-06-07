@@ -1,6 +1,11 @@
 /* eslint-disable import/prefer-default-export */
 import { myAxios } from '@Src/config/settings';
-import { MyAxiosProps, PostUrlResponse, Result } from '@Src/types';
+import {
+  MyAxiosProps,
+  PostUrlResponse,
+  Result,
+  PostURLCheckRobots,
+} from '@Src/types';
 import { AxiosResponse } from 'axios';
 import { handleError } from './helper';
 
@@ -20,6 +25,22 @@ export const apiPostURL = ({
     },
   })
     .then((res: AxiosResponse<PostUrlResponse>) => ({ result: res.data }))
+    .catch(handleError);
+
+export const apiPostURLCheckRobots = ({
+  fileurl,
+  ...props
+}: MyAxiosProps & { fileurl: string }): Promise<Result<PostURLCheckRobots>> =>
+  myAxios({
+    ...props,
+    url: '/uploadapps/robots/',
+    method: 'POST',
+    contentType: 'application/json',
+    data: {
+      fileurl,
+    },
+  })
+    .then((res: AxiosResponse<PostURLCheckRobots>) => ({ result: res.data }))
     .catch(handleError);
 
 export const apiGetWebPage = ({

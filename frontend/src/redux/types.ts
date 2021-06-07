@@ -88,6 +88,7 @@ export type ProjectUiState = {
     iframe: null | HTMLIFrameElement;
     host: string;
   };
+  isCanImportSite: boolean;
 };
 
 export type ProjectEditState = {
@@ -1312,10 +1313,16 @@ export type Action =
   | UpdateVIARegionLayerSuccess
   | UpdateUISettingsParameters
   | SetEnabledPseudoClass
-  | SetStatePseudoClass;
+  | SetStatePseudoClass
+  | SetValueCheckRobots;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,
+  boolean
+>;
+
+export type SetValueCheckRobots = IAction<
+  typeof TYPES.SET_VALUE_CHECK_ROBOTS,
   boolean
 >;
 

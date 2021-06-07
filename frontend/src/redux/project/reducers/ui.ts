@@ -144,6 +144,13 @@ function uiReducer(
         ...initialUi,
       };
     }
+
+    case TYPES.SET_VALUE_CHECK_ROBOTS: {
+      return {
+        ...state,
+        isCanImportSite: action.payload,
+      };
+    }
     default:
       return state;
   }

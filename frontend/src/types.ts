@@ -1408,6 +1408,12 @@ export type DateRange = {
 
 export type PostUrlResponse = { wpname: string; owner: any };
 
+export type PostURLCheckRobots = {
+  asterisk_fetch: boolean;
+  filename: string;
+  wget_fetch: boolean;
+};
+
 export type VIARegionWithoutId = {
   shape_attributes: {
     name: string;

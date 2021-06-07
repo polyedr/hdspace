@@ -70,6 +70,9 @@ export const selectMasterScreenEnabled = createSelector(
 export const selectNewScreenModalOpen = ({ project }: AppReduxState) =>
   project.ui.newScreenModalOpen;
 
+export const selectCanImportSite = ({ project }: AppReduxState) =>
+  project.ui.isCanImportSite;
+
 export const selectFreeCanvasMode = createSelector(
   selectCurrentScreen,
   (screen) => screen.screenData.freeCanvas,
