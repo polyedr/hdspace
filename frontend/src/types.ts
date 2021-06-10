@@ -1385,6 +1385,7 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'bullets',
   'flexGrow',
   'backgroundSize',
+  'backgroundImage',
   'styleSheets',
   'alignment',
 ] as const;
