@@ -88,7 +88,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
       return;
     }
     dispatch(
-      uploadImageByUrl(activeElementId, imageUrl, assetLists[0].id, {
+      uploadImageByUrl(activeElementId, { url: imageUrl }, assetLists[0].id, {
         screenId: currentScreenId,
       }),
     );

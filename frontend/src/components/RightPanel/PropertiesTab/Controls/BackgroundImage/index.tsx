@@ -87,9 +87,14 @@ const BackgroundImage: React.FC<Props> = ({ element, canEdit }) => {
       return;
     }
     dispatch(
-      uploadImageByUrl(element.id, imageUrl, assetLists[0].id, {
-        screenId: currentScreenId,
-      }),
+      uploadImageByUrl(
+        element.id,
+        { url: imageUrl, useInBackground: true },
+        assetLists[0].id,
+        {
+          screenId: currentScreenId,
+        },
+      ),
     );
     inputUrlRef.current.value = '';
   }, [dispatch, element.id, assetLists, currentScreenId]);
@@ -113,9 +118,14 @@ const BackgroundImage: React.FC<Props> = ({ element, canEdit }) => {
         alert('Choose image up to 5Mb!');
       } else {
         dispatch(
-          uploadElementAsset(element.id, { file }, assetId, {
-            screenId: currentScreenId,
-          }),
+          uploadElementAsset(
+            element.id,
+            { file, useInBackground: true },
+            assetId,
+            {
+              screenId: currentScreenId,
+            },
+          ),
         );
       }
     },
