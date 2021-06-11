@@ -69,8 +69,8 @@ class GeneratorAPIView(APIView):
                             "font-color": f"{fake.color(hue=color_list[random.randint(0, len(color_list) - 1)])}",
                             "background-color": f"{fake.color(hue=color_list[random.randint(0, len(color_list) - 1)])}",
                             "font-size": random.randint(10, 30),
-                            "margins": random.randint(0, 50),
-                            "paddings": random.randint(0, 50)
+                            "margin": random.randint(0, 50),
+                            "padding": random.randint(0, 50)
                         }
                     },
                     "shared": data.get("shared") if data.get("shared") is not None else secrets.choice([True, False])
