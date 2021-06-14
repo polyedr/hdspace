@@ -280,7 +280,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
     projectscreen = serializers.PrimaryKeyRelatedField(
         many=True, queryset=ProjectScreen.objects.all()
     )
-    tags = TagListSerializerField()
+    tags = TagListSerializerField(required=False, allow_null=True)
 
     class Meta:
         model = Project
@@ -296,6 +296,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             "updated",
             "updated",
             "project_data_text",
+            "project_data_json",
             "tags",
         )
         extra_kwargs = {
