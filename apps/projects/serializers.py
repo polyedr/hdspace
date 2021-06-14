@@ -351,7 +351,7 @@ class ProjectPermissionsSerializer(ObjectPermissionsAssignmentMixin, serializers
 class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     projectscreen = ProjectScreenSerializer(many=True, read_only=True)
-    tags = TagListSerializerField()
+    tags = TagListSerializerField(required=False, allow_null=True)
 
     class Meta:
         model = Project

@@ -81,7 +81,7 @@ class Project(TimeStampedModel):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     project_data_text = models.TextField(blank=True)
     project_data_json = JSONField(blank=True, default=[])
