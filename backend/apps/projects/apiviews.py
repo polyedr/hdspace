@@ -83,7 +83,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectCursorSetPagination
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
     filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian and DjangoFilterBackend
-    filterset_fields = {'name': ['exact'], 'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
+    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'], 'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
                         'updated': ['lte', 'gte', 'lt', 'gt']}
 
     def get_queryset(self):

@@ -8,6 +8,8 @@ from rest_framework import serializers
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 from rest_framework_recursive.fields import RecursiveField
 
+from taggit_serializer.serializers import (TagListSerializerField,
+                                           TaggitSerializer)
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 
 from apps.accounts.serializers import UserSerializer
@@ -273,12 +275,12 @@ from django.contrib.auth.models import Group
 # from rest_framework import permissions
 
 
-class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
+class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     projectscreen = serializers.PrimaryKeyRelatedField(
         many=True, queryset=ProjectScreen.objects.all()
     )
-    # print('inside serializer, user is :' + str(user))
+    tags = TagListSerializerField()
 
     class Meta:
         model = Project
@@ -292,8 +294,9 @@ class ProjectSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSeria
             "id",
             "created",
             "updated",
+            "updated",
             "project_data_text",
-            "project_data_json",
+            "tags",
         )
         extra_kwargs = {
             "preview": {"read_only": True},
@@ -345,9 +348,10 @@ class ProjectPermissionsSerializer(ObjectPermissionsAssignmentMixin, serializers
     pass
 
 
-class ProjectWithScreensSerializer(serializers.ModelSerializer):
+class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     projectscreen = ProjectScreenSerializer(many=True, read_only=True)
+    tags = TagListSerializerField()
 
     class Meta:
         model = Project
@@ -361,6 +365,7 @@ class ProjectWithScreensSerializer(serializers.ModelSerializer):
             "id",
             "created",
             "updated",
+            "tags",
             "project_data_text",
             "project_data_json",
         )

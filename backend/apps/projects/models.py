@@ -5,6 +5,8 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from jsonfield import JSONField
+from taggit.managers import TaggableManager
+
 from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
 from django.db.models.signals import post_delete, pre_save
@@ -78,6 +80,8 @@ class Project(TimeStampedModel):
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    tags = TaggableManager()
 
     project_data_text = models.TextField(blank=True)
     project_data_json = JSONField(blank=True, default=[])
