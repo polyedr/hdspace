@@ -58,6 +58,8 @@ INSTALLED_APPS = [
     "schema_graph",
     "guardian",
     'django_filters',
+    'taggit',
+    'taggit_serializer',
 ]
 
 EXTERNAL_APPS = ["social_django"]
