@@ -84,7 +84,7 @@ import {
   deleteProjectSaga,
   getProjectListSaga,
   getProjectSaga,
-  renameProjectSaga,
+  updateNameAndTagsProjectSaga,
   searchProjectsSaga,
   updateCurrentUIFrameworkSaga,
   updateCurrentUIFrameworkVariablesSaga,
@@ -367,7 +367,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
-  yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
+  yield takeLatest(TYPES.RENAME_PROJECT, updateNameAndTagsProjectSaga);
   yield takeLatest(TYPES.SEARCH_PROJECTS, searchProjectsSaga);
 
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);

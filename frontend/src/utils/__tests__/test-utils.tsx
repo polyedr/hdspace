@@ -35,6 +35,7 @@ export const mockProject: Project = {
   updated: new Date(0),
   projectscreen: [],
   projectLoader: false,
+  tags: [],
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
@@ -223,6 +224,7 @@ export const createMockProject = (): Project => ({
   projectLoader: true,
   created: new Date(),
   updated: new Date(),
+  tags: [],
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
@@ -282,6 +284,7 @@ export const createProjectWithScreensMock = (
     uiFramework: NOT_SELECTED_FRAMEWORK,
   },
   projectLoader: false,
+  tags: [],
   projectscreen: [
     createMasterScreenMock(projectId),
     createScreenMock(projectId),

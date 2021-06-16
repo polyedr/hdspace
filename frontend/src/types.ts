@@ -28,6 +28,7 @@ type ProjectBase = {
   projectLoader: boolean;
   created: Date;
   updated: Date;
+  tags: Array<string>;
 };
 
 export type PropertyName = keyof React.CSSProperties;
@@ -771,6 +772,7 @@ export type ServerProjectWithScreens = {
   user: ServerUserData;
   project_data_json: string;
   project_data_text: string;
+  tags: Array<string>;
 };
 
 export type ServerProject = {
@@ -783,6 +785,7 @@ export type ServerProject = {
   user: ServerUserData;
   project_data_json: string;
   project_data_text: string;
+  tags: Array<string>;
 };
 
 export type ServerScreen = ScreenBase & {
@@ -1399,6 +1402,7 @@ export enum ProjectsSearchParameter {
   status = 'status',
   updated = 'updated',
   created = 'created',
+  tags = 'tags',
 }
 
 export type DateRange = {

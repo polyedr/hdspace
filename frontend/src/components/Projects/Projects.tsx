@@ -55,6 +55,13 @@ const useStyles = makeStyles((theme) =>
     createButton: {
       minWidth: 160,
     },
+    cellStatus: {
+      width: 200,
+    },
+    cellName: {
+      width: 400,
+      minWidth: 400,
+    },
   }),
 );
 
@@ -149,9 +156,11 @@ const Projects: React.FC = () => {
           <Table size="small">
             <TableHead className={classes.tableHeader}>
               <TableRow>
-                <TableCell>Project Status</TableCell>
+                <TableCell className={classes.cellStatus}>
+                  Project Status
+                </TableCell>
 
-                <TableCell>Project Name</TableCell>
+                <TableCell className={classes.cellName}>Project Name</TableCell>
 
                 <TableCell>Last Edit</TableCell>
 

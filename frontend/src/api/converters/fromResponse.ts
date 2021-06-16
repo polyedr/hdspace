@@ -181,6 +181,7 @@ export function convertProjectFromResponse({
   updated,
   user,
   project_data_json,
+  tags,
 }: ServerProject): Project {
   const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
   return {
@@ -191,6 +192,7 @@ export function convertProjectFromResponse({
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),
+    tags,
     user: convertUserDataFromResponse(user),
     projectData: {
       ...projectDataJSON,
@@ -272,6 +274,7 @@ export function convertProjectWithScreensFromResponse({
   updated,
   user,
   project_data_json,
+  tags,
 }: ServerProjectWithScreens): ProjectWithScreens {
   const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
 
@@ -284,6 +287,7 @@ export function convertProjectWithScreensFromResponse({
     created: new Date(created),
     updated: new Date(updated),
     user: convertUserDataFromResponse(user),
+    tags,
     projectData: {
       ...projectDataJSON,
       classes:

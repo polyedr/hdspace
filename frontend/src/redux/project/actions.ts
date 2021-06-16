@@ -65,7 +65,7 @@ import {
   RemoveSharedStyles,
   RemoveAsset,
   RestoreAsset,
-  RenameProject,
+  UpdateNameAndTagsProject,
   ReplaceElementStyles,
   ResetProjectState,
   RestoreElement,
@@ -288,12 +288,13 @@ export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
   payload: indices,
 });
 
-export const renameProject = (
+export const updateNameAndTagsProject = (
   projectID: number,
   name: string,
-): RenameProject => ({
+  tags: string,
+): UpdateNameAndTagsProject => ({
   type: TYPES.RENAME_PROJECT,
-  payload: { projectID, name },
+  payload: { projectID, name, tags },
 });
 
 export const setProjectListLoader = (
