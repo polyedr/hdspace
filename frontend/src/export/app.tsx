@@ -58,8 +58,8 @@ const createArchive = (
 
   Promise.all([
     processHTML(html, assetsFolder),
-    processCSS(cssFolder, entityClasses, sharedClasses),
-    processJS(jsFolder),
+    processCSS(html, cssFolder, entityClasses, sharedClasses),
+    processJS(html, jsFolder),
     processIco(metadata?.faviconUrl || null, zip),
   ]).then(([htmlResponse]) => {
     zip.file(
