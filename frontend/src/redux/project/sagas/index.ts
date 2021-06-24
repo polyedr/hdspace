@@ -25,7 +25,9 @@ import {
   editScreenNameAndDataSaga,
   restoreScreenSaga,
   updateScreenImageSaga,
+  setEditableScreenSaga,
   convertFreeCanvasSaga,
+  clearEditableScreenSaga,
 } from '@Redux/project/sagas/screen';
 import {
   getAllUsersProjectPermissionsSaga,
@@ -494,6 +496,9 @@ export default function* projectSaga() {
     TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
     updateUISettingsParametersSaga,
   );
+
+  yield takeEvery(TYPES.SET_EDITABLE_SCREEN, setEditableScreenSaga);
+  yield takeEvery(TYPES.CLEAR_EDITABLE_SCREEN, clearEditableScreenSaga);
 
   yield takeEvery(TYPES.UPLOAD_ICO_SCREEN, editIcoScreenSaga);
   yield takeEvery(

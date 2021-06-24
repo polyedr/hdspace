@@ -17,6 +17,10 @@ import { setBordersEnabled } from '@Redux/project/actions';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { IconButton } from '@material-ui/core';
 import FrameworkSection from '@Components/RightPanel/FrameworkSection';
+import {
+  selectCurrentScreen,
+  selectInfoUser,
+} from '@Redux/project/selectors/screen';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
@@ -26,6 +30,7 @@ import {
   PANEL_TRANSITION_DURATION,
 } from '../../styles/Theme';
 import VIANavigator from './VIANavigator';
+import ScreenEdits from './Screens/ScreenEdits';
 
 const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
   createStyles({
@@ -63,12 +68,26 @@ const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
         transition: 'transform 0.25s ease',
       },
     },
+    iconCircleContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginTop: '10px',
+    },
+    editingUsers: {
+      fontSize: '14px',
+      color: 'white',
+      marginLeft: '10px',
+    },
   }),
 );
 
 const LeftPanel: React.FC = () => {
   const dispatch = useDispatch();
-
+  const currentScreen = useSelector(selectCurrentScreen);
+  const infoUser = useSelector(selectInfoUser);
+  const editingUsers = currentScreen.screenData.editableScreenUser.filter(
+    (item) => item.idUser !== infoUser.idUser,
+  );
   const minimized = useSelector(selectIsLeftPanelMinimized);
   const viaMode = useSelector(selectVIAModeEnabled);
   const classes = useStyles({ minimized });
@@ -116,10 +135,24 @@ const LeftPanel: React.FC = () => {
                   <SubjectIcon />
                 </IconButton>
               </div>
+              {editingUsers.length > 0 && (
+                <div className={classes.iconCircleContainer}>
+                  <ScreenEdits
+                    editingUsers={editingUsers}
+                    isMinimized={minimized}
+                  />
+                </div>
+              )}
             </div>
           ) : (
             <div>
               {!viaMode && <Screens />}
+              {editingUsers.length > 0 && (
+                <ScreenEdits
+                  editingUsers={editingUsers}
+                  isMinimized={minimized}
+                />
+              )}
               <FrameworkSection />
               {viaMode ? <VIANavigator /> : <Navigator />}
             </div>
