@@ -343,7 +343,9 @@ export const uploadElementAssetSaga = withRequiredPermissions(
 
   const element = yield select(selectElementById, elementId);
   try {
-    if (asset.imageURL) {
+    const { imageURL, file, useInBackground } = asset;
+    let finalImageUrl = imageURL;
+    if (imageURL) {
       yield call(
         uploadAssetHelper,
         {
@@ -354,39 +356,34 @@ export const uploadElementAssetSaga = withRequiredPermissions(
         },
         action.meta,
       );
-      yield put(
-        Actions.updateElementParameters(
-          elementId,
-          {
-            ...element.parameters,
-            imageURL: asset.imageURL,
-            imageSize: {
-              width: 0,
-              height: 0,
-            },
-            width: 'auto',
-            height: 'auto',
-          },
-          { screenId },
-        ),
-      );
-    } else if (asset.file) {
+    } else if (file) {
       const assetInstance = yield call(
         uploadAssetHelper,
         {
-          assetFile: asset.file,
-          fileName: asset.file.name,
+          assetFile: file,
+          fileName: file.name,
           listId,
         },
         action.meta,
       );
 
+      finalImageUrl = assetInstance.image;
+    }
+    if (useInBackground) {
+      yield put(
+        Actions.updateElementStyles(
+          elementId,
+          { backgroundImage: `url(${finalImageUrl})` },
+          { screenId },
+        ),
+      );
+    } else {
       yield put(
         Actions.updateElementParameters(
           elementId,
           {
             ...element.parameters,
-            imageURL: assetInstance.image,
+            imageURL: finalImageUrl,
             imageSize: {
               width: 0,
               height: 0,

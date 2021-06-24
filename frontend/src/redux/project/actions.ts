@@ -190,6 +190,7 @@ import {
   SetStatePseudoClass,
   LoadAssetLists,
   LoadAssets,
+  ImageData,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -741,7 +742,7 @@ export const updateElementImage = (
 
 export const uploadElementAsset = (
   elementId: string,
-  { file, imageURL }: AssetData,
+  { file, imageURL, useInBackground }: AssetData,
   listId: string,
   meta?: ElementHistoryMeta,
 ): UploadElementAsset => ({
@@ -751,6 +752,7 @@ export const uploadElementAsset = (
     asset: {
       file,
       imageURL,
+      useInBackground,
     },
     listId,
   },
@@ -1433,12 +1435,12 @@ export const moveHistoryBackward = (): MoveHistoryBackward => ({
 
 export const uploadImageByUrl = (
   elementId: string,
-  url: string,
+  imageData: ImageData,
   listId: string,
   meta: ElementHistoryMeta,
 ): UploadImageByUrl => ({
   type: TYPES.UPLOAD_IMAGE_BY_URL,
-  payload: { elementId, url, listId },
+  payload: { elementId, imageData, listId },
   meta,
 });
 
