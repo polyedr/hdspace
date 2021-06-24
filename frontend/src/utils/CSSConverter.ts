@@ -17,7 +17,7 @@ const getExpandedStyles = (
   const expandedProps =
     typeof value === 'number'
       ? expanders[propName](`${value}px`)
-      : expanders[propName](value.split(' '));
+      : expanders[propName](...value.split(' '));
   return expandedProps;
 };
 
