@@ -77,3 +77,8 @@ export const selectFreeCanvasMode = createSelector(
   selectCurrentScreen,
   (screen) => screen.screenData.freeCanvas,
 );
+
+export const selectInfoUser = (state: AppReduxState) => ({
+  idUser: state.user.userData.id,
+  firstName: state.user.userData.firstName,
+});
