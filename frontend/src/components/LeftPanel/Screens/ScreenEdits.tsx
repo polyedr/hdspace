@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
 import Avatar from '@material-ui/core/Avatar';
 import React, { useState } from 'react';
@@ -9,15 +9,15 @@ type Props = {
   isMinimized: boolean;
 };
 
-const styles = makeStyles((theme) => ({
+const styles = makeStyles((theme: Theme) => ({
   editingUsers: {
     fontSize: '14px',
-    color: 'white',
+    color: theme.palette.link.contrastText,
     marginLeft: '10px',
     lineHeight: '4px',
     '& span': {
       cursor: 'pointer',
-      color: '#1cc09f',
+      color: theme.palette.secondary.main,
     },
   },
 
@@ -30,8 +30,8 @@ const styles = makeStyles((theme) => ({
   circle: {
     width: theme.spacing(3),
     height: theme.spacing(3),
-    backgroundColor: 'white',
-    color: '#1cc09f',
+    color: theme.palette.secondary.main,
+    backgroundColor: theme.palette.link.contrastText,
   },
 }));
 
