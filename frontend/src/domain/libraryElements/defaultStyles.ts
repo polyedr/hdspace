@@ -1,4 +1,5 @@
 import { Alignments, Entity } from '@Src/types';
+import React from 'react';
 import {
   buttonStyleControls,
   calendarStyleControls,
@@ -72,6 +73,9 @@ export const DEFAULT_BORDER: React.CSSProperties = {
 
 export const DEFAULT_BACKGROUND: React.CSSProperties = {
   backgroundColor: 'transparent',
+};
+
+export const DEFAULT_BACKGROUND_IMAGE: React.CSSProperties = {
   backgroundImage: 'none',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
@@ -413,6 +417,9 @@ export const defaultListItemStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  backgroundImage: {
+    ...DEFAULT_BACKGROUND_IMAGE,
+  },
   other: {
     outline: 0,
   },
@@ -475,6 +482,9 @@ export const defaultContainerStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  backgroundImage: {
+    ...DEFAULT_BACKGROUND_IMAGE,
+  },
   flexGrow: {
     ...DEFAULT_FLEX_GROW,
   },
@@ -515,6 +525,9 @@ export const defaultSectionStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  backgroundImage: {
+    ...DEFAULT_BACKGROUND_IMAGE,
+  },
   flexGrow: {
     ...DEFAULT_FLEX_GROW,
   },
@@ -541,6 +554,9 @@ export const defaultDivBlockStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  backgroundImage: {
+    ...DEFAULT_BACKGROUND_IMAGE,
   },
 };
 
@@ -711,6 +727,9 @@ export const defaultGridItemStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  backgroundImage: {
+    ...DEFAULT_BACKGROUND_IMAGE,
+  },
 };
 
 export const defaultGridStyles: {
@@ -766,6 +785,9 @@ export const defaultColumnsStyles: {
 } & { other?: React.CSSProperties } = {
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  backgroundImage: {
+    ...DEFAULT_BACKGROUND_IMAGE,
   },
   border: {
     ...DEFAULT_BORDER,
@@ -861,6 +883,9 @@ export const defaultButtonStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
     backgroundColor: '#efefef',
+  },
+  backgroundImage: {
+    ...DEFAULT_BACKGROUND_IMAGE,
   },
 };
 

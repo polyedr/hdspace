@@ -10,10 +10,8 @@ import {
   selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
 import { Button, MenuItem } from '@material-ui/core';
-
 import { makeStyles } from '@material-ui/core/styles';
-
-const urlPattern = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+import { URL_REGEX } from '@Constants/defaultParams';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -80,7 +78,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
       );
       return;
     }
-    if (!imageUrl.match(urlPattern)) {
+    if (!imageUrl.match(URL_REGEX)) {
       dispatch(
         enqueueSnackbar({
           message: 'Image URL is incorrect',
@@ -90,7 +88,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
       return;
     }
     dispatch(
-      uploadImageByUrl(activeElementId, imageUrl, assetLists[0].id, {
+      uploadImageByUrl(activeElementId, { url: imageUrl }, assetLists[0].id, {
         screenId: currentScreenId,
       }),
     );
