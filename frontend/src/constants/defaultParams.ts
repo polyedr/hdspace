@@ -100,6 +100,7 @@ export const DEFAULT_SCREEN: Screen = {
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
+    editableScreenUser: [],
   },
 };
 

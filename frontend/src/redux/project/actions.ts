@@ -382,6 +382,16 @@ export const editScreenNameAndData = (
   },
 });
 
+export const setEditableScreen = (idScreen: number) => ({
+  type: TYPES.SET_EDITABLE_SCREEN,
+  payload: idScreen,
+});
+
+export const clearEditableScreen = (screen: Screen) => ({
+  type: TYPES.CLEAR_EDITABLE_SCREEN,
+  payload: screen,
+});
+
 export const createScreen = (
   { projectID, name, buoyancy, rootName, freeCanvas }: CreateScreenData,
   meta?: HistoryMeta,
