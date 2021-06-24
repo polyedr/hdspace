@@ -983,8 +983,12 @@ export type ScreenData = {
   nnResult?: { [key: string]: VIAFile };
   uiFramework: UIFramework;
   freeCanvas: boolean;
+  editableScreenUser: Array<EditableScreenUser> | [];
 };
-
+export type EditableScreenUser = {
+  idUser: number;
+  firstName: string;
+};
 export type EditScreenData = {
   name?: string;
   data?: Partial<ScreenData>;

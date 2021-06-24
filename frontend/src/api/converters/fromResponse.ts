@@ -233,6 +233,7 @@ export function convertScreenFromResponse({
       meta: screenDataJSON.meta || {},
       uiFramework: screenDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
       freeCanvas: screenDataJSON.freeCanvas,
+      editableScreenUser: screenDataJSON.editableScreenUser || [],
     },
   };
 }
@@ -261,6 +262,7 @@ export function convertNNScreenFromResponse({
       uiFramework: NOT_SELECTED_FRAMEWORK,
       nnResult: JSON.parse(screen_data_json),
       freeCanvas: false,
+      editableScreenUser: [],
     },
   };
 }

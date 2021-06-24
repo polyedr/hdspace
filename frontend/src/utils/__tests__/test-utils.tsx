@@ -55,6 +55,7 @@ export const mockScreen: Screen = {
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
+    editableScreenUser: [],
   },
 };
 
@@ -250,6 +251,7 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
+    editableScreenUser: [],
   },
   screenscenario: [],
   status: 'pending',
@@ -268,6 +270,7 @@ export const createScreenMock = (
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
+    editableScreenUser: [],
   },
   screenscenario: [],
   status: 'pending',
