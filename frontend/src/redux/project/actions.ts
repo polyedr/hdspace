@@ -293,7 +293,7 @@ export const updateNameAndTagsProject = (
   name: string,
   tags: string,
 ): UpdateNameAndTagsProject => ({
-  type: TYPES.RENAME_PROJECT,
+  type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   payload: { projectID, name, tags },
 });
 

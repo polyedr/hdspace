@@ -286,7 +286,7 @@ export type ChangeScreensOrder = IAction<
   Indices
 >;
 export type UpdateNameAndTagsProject = IAction<
-  typeof TYPES.RENAME_PROJECT,
+  typeof TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   { projectID: number; name: string; tags: string }
 >;
 export type SetProjectListLoader = IAction<
