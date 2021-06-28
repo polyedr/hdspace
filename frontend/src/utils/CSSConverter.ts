@@ -14,7 +14,7 @@ const getExpandedStyles = (
   propName: keyof React.CSSProperties,
   value: string,
 ) => {
-  const expandedProps = expanders[propName](...value.split(' '));
+  const expandedProps = expanders[propName](...value.toString().split(' '));
   return expandedProps;
 };
 

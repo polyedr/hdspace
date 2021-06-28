@@ -1,71 +1,53 @@
-import React, { useState } from 'react';
-import { ParagraphElement, PropertiesChangeProps } from '@Src/types';
-// import { StyledTextField } from '@Components/styledComponents';
-// import { useDebouncedInputChange } from '@Utils/debounceHooks';
-// import RichTextEditor from 'react-rte';
-
-// import SunEditor from 'suneditor-react';
+import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import RichTextEditor from 'react-rte';
 
-const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
-  element,
-  // updateParams,
-  // canEdit,
-}) => {
+const useStyles = makeStyles(() => ({
+  editor: {
+    color: 'black',
+    fontFamily: 'Roboto',
+  },
+}));
+
+const TextContent = ({ element, updateParams, canEdit }) => {
+  const classes = useStyles();
   const { textContent } = element.parameters;
 
-  // const [state, handleChange] = useDebouncedInputChange(textContent, (value) =>
-  //   updateParams({ textContent: value }),
-  // );
-
-  const [value, setValue] = useState(
-    textContent
-      ? RichTextEditor.createValueFromString(textContent, 'html')
-      : RichTextEditor.createEmptyValue(),
+  const [state, handleChange] = useState(
+    RichTextEditor.createValueFromString(textContent, 'html'),
   );
-  // const handleChange = (value) => {
-  //   const text = value.toString('html');
-  //   updateParams({ textContent: text });
-  //   // setValue(text);
-  // };
+
+  const onChange = (value) => {
+    handleChange(value);
+    updateParams({ textContent: value.toString('html') });
+  };
+
+  const toolbarConfig: any = {
+    display: ['INLINE_STYLE_BUTTONS'],
+    INLINE_STYLE_BUTTONS: [
+      { label: 'Bold', style: 'BOLD', className: 'custom-css-class' },
+      { label: 'Italic', style: 'ITALIC' },
+      { label: 'Underline', style: 'UNDERLINE' },
+    ],
+  };
+
+  useEffect(() => {
+    handleChange(RichTextEditor.createValueFromString(textContent, 'html'));
+  }, [textContent]);
+
   if (element.children && element.children.length) {
     return <span>Text content not allowed</span>;
   }
-  console.log(setValue);
-  return (
-    <RichTextEditor value={value} />
 
-    // <StyledTextField
-    //   value={state || ''}
-    //   variant="outlined"
-    // onChange={handleChange}
-    //   label="Text Content"
-    //   margin="dense"
-    //   fullWidth
-    //   multiline
-    //   disabled={!canEdit}
-    // />
+  return (
+    <RichTextEditor
+      value={state}
+      onChange={onChange}
+      toolbarConfig={toolbarConfig}
+      editorClassName={classes.editor}
+      disabled={!canEdit}
+    />
   );
 };
 
 export default TextContent;
-// <SunEditor
-//   setContents={state}
-//   onChange={handleChange}
-//   // setDefaultStyle="font-size: 10px;"
-//   setOptions={{
-//     height: '200px',
-//     buttonList: [
-//       [
-//         'bold',
-//         'underline',
-//         'italic',
-//         'strike',
-//         'subscript',
-//         'superscript',
-//         // 'fontSize',
-//         'align',
-//       ],
-//     ],
-//   }}
-// />
