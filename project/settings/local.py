@@ -248,13 +248,24 @@ EMAIL_HOST_PASSWORD = "000"
 EMAIL_USE_TLS = True
 """
 
+'''
 ANYMAIL = {
     # (exact settings here depend on your ESP...)
     "MAILGUN_API_KEY": "9b183c06fa8ef2d44ec552d82885b75f-060550c6-baabc369",
     "MAILGUN_SENDER_DOMAIN": "sandbox923ebbd91bc2439f8f563665740f571b.mailgun.org",  # your Mailgun domain, if needed
 }
+'''
+ANYMAIL = {
+    "AMAZON_SES_CLIENT_PARAMS": {
+        # Caution: checking secrets into settings.py is really insecure!
+        "aws_access_key_id": "AKIATDSOCWITYJBFW5GL",
+        "aws_secret_access_key": "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",
+        "region_name": 'ap-southeast-2',
+    },
+}
 EMAIL_BACKEND = (
-    "anymail.backends.mailgun.EmailBackend"
+    # "anymail.backends.mailgun.EmailBackend"
+    "anymail.backends.amazon_ses.EmailBackend"
 )  # or sendgrid.EmailBackend, or...
 # DEFAULT_FROM_EMAIL = "demo@178-21-8-79.xen.vps.regruhosting.ru"  # if you don't already have this in settings
 DEFAULT_FROM_EMAIL = "info@poly-edr.com"  # if you don't already have this in settings
