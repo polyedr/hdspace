@@ -18,7 +18,7 @@ const settings = {
   },
   production: {
     api: {
-      host: 'https://www.api.adevi.info/',
+      host: 'https://www.api.adevi.info',
       version: 1,
     },
   },
