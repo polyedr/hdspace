@@ -1152,8 +1152,8 @@ export const uploadElementImageByUrlSaga = compose(
     return;
   }
 
-  const { elementId, url, listId } = action.payload;
-
+  const { elementId, imageData, listId } = action.payload;
+  const { url, useInBackground } = imageData;
   try {
     const assetName = url.slice(url.lastIndexOf('/') + 1);
     const { error: uploadError, filename: backendImageURL } = yield call(
@@ -1185,15 +1185,29 @@ export const uploadElementImageByUrlSaga = compose(
       { ...action.meta },
     );
 
-    yield call(
-      updateOrReplaceElementParameters,
-      Actions.updateElementParameters(
-        elementId,
-        { imageURL: backendImageURL },
-        { ...action.meta },
-      ),
-      UpdateDataActionType.UPDATE,
-    );
+    if (useInBackground) {
+      yield call(
+        updateOrReplaceElementStyles,
+        Actions.updateElementStyles(
+          elementId,
+          {
+            backgroundImage: `url(${backendImageURL})`,
+          },
+          { ...action.meta },
+        ),
+        UpdateDataActionType.UPDATE,
+      );
+    } else {
+      yield call(
+        updateOrReplaceElementParameters,
+        Actions.updateElementParameters(
+          elementId,
+          { imageURL: backendImageURL },
+          { ...action.meta },
+        ),
+        UpdateDataActionType.UPDATE,
+      );
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar(

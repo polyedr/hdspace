@@ -507,7 +507,14 @@ export type UploadElementAsset = IAction<
 export type AssetData = {
   file?: any | null;
   imageURL?: string;
+  useInBackground?: boolean;
 };
+
+export type ImageData = {
+  url: string;
+  useInBackground?: boolean;
+};
+
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
   {
@@ -832,7 +839,7 @@ export type UploadImageByUrl = IAction<
   typeof TYPES.UPLOAD_IMAGE_BY_URL,
   {
     elementId: string;
-    url: string;
+    imageData: ImageData;
     listId: string;
   },
   ElementHistoryMeta
