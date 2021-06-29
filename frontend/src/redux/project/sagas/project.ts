@@ -400,7 +400,6 @@ export const updateNameAndTagsProjectSaga = function* ({
 }: ReturnType<typeof Actions.updateNameAndTagsProject>) {
   try {
     const project: Project = yield select(selectProjectById, projectID);
-    // const setTags = tags ? tags.replace(/\s+/g, '').trim().split(',') : [];
     const { result, error }: Result<Project> = yield call(
       reqWrapper,
       apiUpdateProject,
