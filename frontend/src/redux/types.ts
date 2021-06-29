@@ -285,9 +285,9 @@ export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
   Indices
 >;
-export type RenameProject = IAction<
-  typeof TYPES.RENAME_PROJECT,
-  { projectID: number; name: string }
+export type UpdateNameAndTagsProject = IAction<
+  typeof TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
+  { projectID: number; name: string; tags: string }
 >;
 export type SetProjectListLoader = IAction<
   typeof TYPES.SET_PROJECT_LIST_LOADER,
@@ -1157,7 +1157,7 @@ export type Action =
   | GetProject
   | SetCurrentProjectId
   | ChangeScreensOrder
-  | RenameProject
+  | UpdateNameAndTagsProject
   | SetProjectListLoader
   | SetProjectUsersLoader
   | SetUsersLoader

@@ -189,13 +189,14 @@ export const convertProjectToPatchRequest = (
   ServerProject,
   'created' | 'updated' | 'project_data_text' | 'user'
 > => {
-  const { id, name, status, projectscreen, projectData } = project;
+  const { id, name, status, projectscreen, projectData, tags } = project;
 
   return {
     id,
     name,
     status,
     projectscreen,
+    tags,
     project_data_json: JSON.stringify({
       ...projectData,
       classes: projectData.classes.map((cls: ProjectClass) => ({
