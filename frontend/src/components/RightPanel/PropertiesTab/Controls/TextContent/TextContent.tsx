@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import RichTextEditor from 'react-rte';
 import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
+import EditorToolbarConfig from './EditorToolbarConfig';
 
 const useStyles = makeStyles(() => ({
   editor: {
@@ -21,19 +22,6 @@ const TextContent = ({ element, updateParams, canEdit }) => {
     },
   );
 
-  const toolbarConfig: any = {
-    display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS'],
-    INLINE_STYLE_BUTTONS: [
-      { label: 'Bold', style: 'BOLD' },
-      { label: 'Italic', style: 'ITALIC' },
-      { label: 'Underline', style: 'UNDERLINE' },
-    ],
-    BLOCK_TYPE_BUTTONS: [
-      { label: 'UL', style: 'unordered-list-item' },
-      { label: 'OL', style: 'ordered-list-item' },
-    ],
-  };
-
   if (element.children && element.children.length) {
     return <span>Text content not allowed</span>;
   }
@@ -42,7 +30,7 @@ const TextContent = ({ element, updateParams, canEdit }) => {
     <RichTextEditor
       value={state}
       onChange={handleChange}
-      toolbarConfig={toolbarConfig}
+      toolbarConfig={EditorToolbarConfig}
       editorClassName={classes.editor}
       disabled={!canEdit}
     />
