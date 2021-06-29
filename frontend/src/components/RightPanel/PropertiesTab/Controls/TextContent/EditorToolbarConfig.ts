@@ -17,7 +17,6 @@ export type ToolbarConfig = {
   display: Array<GroupName>;
   extraProps?: Object;
   INLINE_STYLE_BUTTONS: StyleConfigList;
-  BLOCK_TYPE_BUTTONS: StyleConfigList;
 };
 
 export const INLINE_STYLE_BUTTONS: StyleConfigList = [
@@ -33,15 +32,9 @@ export const INLINE_STYLE_BUTTONS: StyleConfigList = [
 //   { label: 'Align Justify', style: 'ALIGN_JUSTIFY' },
 // ];
 
-export const BLOCK_TYPE_BUTTONS: StyleConfigList = [
-  { label: 'UL', style: 'unordered-list-item' },
-  { label: 'OL', style: 'ordered-list-item' },
-];
-
 const EditorToolbarConfig: ToolbarConfig = {
   display: ['INLINE_STYLE_BUTTONS', 'BLOCK_TYPE_BUTTONS'],
   INLINE_STYLE_BUTTONS,
-  BLOCK_TYPE_BUTTONS,
 };
 
 export default EditorToolbarConfig;
