@@ -6,11 +6,15 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import GroupIcon from '@material-ui/icons/Group';
 import convertDateToRelative from '@Utils/convertDateToRelative';
-import { deleteProject, renameProject } from '@Redux/project/actions';
+import {
+  deleteProject,
+  updateNameAndTagsProject,
+} from '@Redux/project/actions';
 import { selectUserData } from '@Redux/user/selectors';
 import { TableRow, TableCell, Typography, IconButton } from '@material-ui/core';
 import Dialog from '../Dialogs/Dialog';
 import { Project } from '../../types';
+import TagsList from './TagsList';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -27,6 +31,13 @@ const useStyles = makeStyles((theme) =>
     tableRow: {
       height: '5em',
     },
+    cellStatus: {
+      width: 200,
+    },
+    cellName: {
+      width: 400,
+      minWidth: 400,
+    },
   }),
 );
 
@@ -40,7 +51,7 @@ type Ref = HTMLTableRowElement;
 const ProjectListItem = React.forwardRef<Ref, Props>(
   (
     {
-      project: { status, id, name, updated, projectscreen, user },
+      project: { status, id, name, updated, projectscreen, user, tags },
       onPermissionsManagementClick,
     },
     ref,
@@ -52,6 +63,10 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
     const [renameOpen, setRenameOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
 
+    const tagsWithoutSpace = tags?.map((item, index) => {
+      if (index === 0) return item;
+      return ` ${item}`;
+    });
     const closeModal = () => {
       setRenameOpen(false);
       setDeleteOpen(false);
@@ -65,8 +80,8 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
       setDeleteOpen(true);
     };
 
-    const onRenameProject = async (values) => {
-      dispatch(renameProject(id, values.name));
+    const handleSubmitNameAndTags = async (values) => {
+      dispatch(updateNameAndTagsProject(id, values.name, values.tags));
       closeModal();
     };
 
@@ -78,14 +93,15 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
     return (
       <>
         <TableRow className={classes.tableRow} ref={ref}>
-          <TableCell>
+          <TableCell className={classes.cellStatus}>
             <Typography color="secondary">{status}</Typography>
           </TableCell>
 
-          <TableCell>
+          <TableCell className={classes.cellName}>
             <Link to={`/project/${id}`} className={classes.link}>
               {name}
             </Link>
+            {tags && <TagsList tags={tags} />}
           </TableCell>
 
           <TableCell>
@@ -119,11 +135,12 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
 
         <Dialog
           open={renameOpen}
-          onSubmit={onRenameProject}
+          onSubmit={handleSubmitNameAndTags}
           onClose={closeModal}
-          title="Rename Project"
+          title="Rename or add tags for the project"
           fieldName="name"
-          initialValue={name}
+          initialValueName={name}
+          initialValueTags={tagsWithoutSpace}
           description={`Enter new name for ${name}`}
         />
 

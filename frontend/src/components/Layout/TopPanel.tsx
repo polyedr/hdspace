@@ -6,7 +6,7 @@ import {
 } from '@Redux/project/selectors/base';
 import {
   deleteElement,
-  renameProject,
+  updateNameAndTagsProject,
   setSidebarOpen,
   setVIAMode,
 } from '@Redux/project/actions';
@@ -69,6 +69,7 @@ const TopPanel = () => {
     name: projectName,
     id,
     user: { id: userIdCreator },
+    tags,
   } = useSelector(selectCurrentProject);
   const { id: userId } = useSelector(selectUserData);
   const viaMode = useSelector(selectVIAModeEnabled);
@@ -78,10 +79,15 @@ const TopPanel = () => {
 
   const handleEditClick = () => setOpenEdit(true);
   const handleClose = () => setOpenEdit(false);
-  const handleSubmitRename = async (values) => {
-    dispatch(renameProject(id, values.name));
+  const handleSubmitNameAndTags = async (values) => {
+    dispatch(updateNameAndTagsProject(id, values.name, values.tags));
     handleClose();
   };
+
+  const tagsWithoutSpace = tags?.map((item, index) => {
+    if (index === 0) return item;
+    return ` ${item}`;
+  });
 
   const handleSidebarToggle = () => {
     dispatch(setSidebarOpen(!sidebarOpen));
@@ -130,11 +136,12 @@ const TopPanel = () => {
 
       <Dialog
         open={openEdit}
-        onSubmit={handleSubmitRename}
+        onSubmit={handleSubmitNameAndTags}
         onClose={handleClose}
-        title="Rename Project"
+        title="Rename or add tags for the project"
         fieldName="name"
-        initialValue={projectName}
+        initialValueName={projectName}
+        initialValueTags={tagsWithoutSpace}
         description={`Enter new name for project ${projectName}`}
       />
     </AppBar>
