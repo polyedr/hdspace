@@ -1,5 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import RichTextEditor from 'react-rte';
+
+export const useDebouncedRichInputChange = (
+  richContent: any,
+  cb: (...args: any) => void,
+  delay: number = 500,
+) => {
+  const [state, setState] = useState<any>(
+    RichTextEditor.createValueFromString(richContent, 'html'),
+  );
+  useEffect(() => {
+    setState(RichTextEditor.createValueFromString(richContent, 'html'));
+  }, [richContent]);
+
+  const debounced = useDebouncedCallback(cb, delay);
+
+  const handleChange = (value) => {
+    setState(value);
+    if (debounced.pending()) {
+      debounced.cancel();
+    }
+    debounced.callback(value);
+  };
+
+  return [state, handleChange];
+};
 
 export const useDebouncedInputChange = (
   value: any,
