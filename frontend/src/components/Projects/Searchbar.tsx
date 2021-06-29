@@ -87,6 +87,10 @@ const Searchbar: FC = () => {
       newValue = '';
     }
 
+    if (newName === ProjectsSearchParameter.tags) {
+      newValue = '';
+    }
+
     if (newName === ProjectsSearchParameter.status) {
       [newValue] = PROJECT_STATUS_LIST;
     }
