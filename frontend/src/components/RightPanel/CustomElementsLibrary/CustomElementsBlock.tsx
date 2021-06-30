@@ -1,6 +1,5 @@
 import React, { useMemo, useEffect, useRef, MutableRefObject } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import {
   selectCustomLibraryElements,
   selectCustomElementsHasNext,
@@ -51,7 +50,7 @@ const CustomElementsBlock: React.FC = () => {
         type: element.type,
         name: element.name,
         custom: true,
-        icon: HelpOutlineIcon,
+        icon: undefined,
       })),
     [libraryElements],
   );
