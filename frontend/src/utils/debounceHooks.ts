@@ -10,13 +10,18 @@ export const useDebouncedRichInputChange = (
   const [state, setState] = useState<any>(
     RichTextEditor.createValueFromString(richContent, 'html'),
   );
+  const [check, checkOn] = useState();
   useEffect(() => {
+    if (check) {
+      return;
+    }
     setState(RichTextEditor.createValueFromString(richContent, 'html'));
-  }, [richContent]);
+  }, [check, richContent]);
 
   const debounced = useDebouncedCallback(cb, delay);
 
   const handleChange = (value) => {
+    checkOn(value);
     setState(value);
     if (debounced.pending()) {
       debounced.cancel();
