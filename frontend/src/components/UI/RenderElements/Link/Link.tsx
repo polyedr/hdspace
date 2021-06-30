@@ -66,7 +66,7 @@ const Link = React.forwardRef<HTMLAnchorElement, RendererProps>(
         draggable={false}
         {...eventHandlers}
       >
-        {textContent}
+        <span>{textContent}</span>
       </a>
     );
   },
