@@ -11,6 +11,8 @@ billiard==3.6.0.0
 black==19.3b0
 bleach==1.5.0
 blinker==1.4
+boto3==1.15.18
+botocore==1.18.18
 bs4==0.0.1
 celery==4.3.0
 certifi==2018.11.29
@@ -30,7 +32,7 @@ decorator==4.3.2
 defusedxml==0.5.0
 distro==1.5.0
 Django==2.2
-django-anymail==7.2.1
+django-anymail==8.4
 django-cors-headers==2.5.2
 django-debug-toolbar==1.9.1
 django-environ==0.4.4
@@ -165,6 +167,7 @@ requests==2.21.0
 requests-oauthlib==1.2.0
 ruamel.yaml==0.16.10
 ruamel.yaml.clib==0.2.0
+s3transfer==0.3.7
 scikit-image==0.15.0
 scikit-learn==0.21.3
 scipy==1.1.0

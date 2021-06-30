@@ -225,9 +225,9 @@ EMAIL_PORT = ENV.int("EMAIL_PORT", 1025)
 EMAIL_BACKEND_CONFIG = ENV.str(
     "EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend"
 )
-DEFAULT_FROM_EMAIL = "demo@178-21-8-79.xen.vps.regruhosting.ru"
+# DEFAULT_FROM_EMAIL = "demo@178-21-8-79.xen.vps.regruhosting.ru"
 
-SITE_NAME = "Adevi_reg"
+SITE_NAME = "www.adevi.info"
 BASE_URL = ENV.str("BASE_URL", "http://localhost:8000")
 LOGIN_REDIRECT_URL = "/"
 
@@ -348,11 +348,12 @@ white_list = [
     "https://staging-26-10.firebaseapp.com/projects",
 ]
 
+DOMAIN = ('adevi.info')
 # Djoser settings
 DJOSER = {
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
-    "DOMAIN": "staging-26-10.firebaseapp.com",
+    "DOMAIN": "adevi.info",
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {'activation': 'apps.accounts.serializers.MyActivationSerializer', },
