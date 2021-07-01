@@ -6,7 +6,7 @@ import { lighten, makeStyles } from '@material-ui/core/styles';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
-import CustomElementsBlock from '../CustomElementsLibrary/CustomElementsBlock';
+import CustomElementsBlocks from '../CustomElementsLibrary/CustomElementsBlocks';
 import ElementsBlock from './ElementsBlock';
 import ElementGroups from '../ElementGroups';
 import Section from './Section';
@@ -141,7 +141,7 @@ const ElementsTab = () => {
               />
             ))}
 
-            <CustomElementsBlock />
+            <CustomElementsBlocks />
           </Section>
         </>
       )}
