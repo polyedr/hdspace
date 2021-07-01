@@ -4,10 +4,18 @@ import RichTextEditor from 'react-rte';
 import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
 import EditorToolbarConfig from './EditorToolbarConfig';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(({ palette }) => ({
   editor: {
     color: 'black',
     fontFamily: 'Roboto',
+  },
+  toolbar: {
+    backgroundColor: palette.panel.main,
+    margin: '0 !important',
+  },
+  container: {
+    border: 'none !important',
+    borderRadius: '0 !important',
   },
 }));
 
@@ -28,10 +36,12 @@ const TextContent = ({ element, updateParams, canEdit }) => {
 
   return (
     <RichTextEditor
+      editorClassName={classes.editor}
+      toolbarClassName={classes.toolbar}
+      className={classes.container}
       value={state}
       onChange={handleChange}
       toolbarConfig={EditorToolbarConfig}
-      editorClassName={classes.editor}
       disabled={!canEdit}
     />
   );
