@@ -11,6 +11,7 @@ import { ElementType } from '@Constants/dragAndDrop';
 import { ElementData } from '@Src/types';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import ElementButtonIcon from './ElementButtonIcon';
 
 type Props = {
   elementData: ElementData;
@@ -141,7 +142,11 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
         }
       >
         <div className={classes.iconSection}>
-          {ElementIcon && <ElementIcon ref={imgRef} />}
+          {ElementIcon ? (
+            <ElementIcon ref={imgRef} />
+          ) : (
+            <ElementButtonIcon name={name} />
+          )}
         </div>
         <div className={classes.nameSection}>
           <span className={classes.name}>{splitWords(name)}</span>

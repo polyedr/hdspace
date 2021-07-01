@@ -1013,6 +1013,11 @@ export type ElementData = {
   parameters?: any;
 };
 
+export type ColorElementIcon = {
+  squareTopLeft: string;
+  squareTopRight: string;
+};
+
 export type ElementsHierarchy = {
   elements: {
     layout: {
