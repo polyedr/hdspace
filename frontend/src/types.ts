@@ -1011,6 +1011,15 @@ export type ElementData = {
   name: string;
   custom: boolean;
   parameters?: any;
+  category?: string;
+};
+
+export type CustomElementsCategory = {
+  bigBlocks: Array<ElementData>;
+  mediumBlocks: Array<ElementData>;
+  smallBlocks: Array<ElementData>;
+  htmlElements: Array<ElementData>;
+  otherElements: Array<ElementData>;
 };
 
 export type ColorElementIcon = {
