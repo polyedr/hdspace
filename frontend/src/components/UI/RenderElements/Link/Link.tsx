@@ -67,9 +67,7 @@ const Link = React.forwardRef<HTMLAnchorElement, RendererProps>(
         draggable={false}
         dangerouslySetInnerHTML={{ __html: textContent }}
         {...eventHandlers}
-      >
-        {/* {textContent} */}
-      </a>
+      />
     );
   },
 );
