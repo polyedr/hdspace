@@ -56,6 +56,7 @@ export const containerStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
   'display',
   'flexGrow',
@@ -66,6 +67,7 @@ export const divBlockStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
   'display',
 ] as const;
@@ -75,6 +77,7 @@ export const buttonStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
   'display',
 ] as const;
@@ -183,6 +186,7 @@ export const listItemStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
 ] as const;
 export const breadcrumbItemStyleControls = [
@@ -316,6 +320,7 @@ export const gridItemStyleControls = [
   'indents',
   'typography',
   'background',
+  'backgroundImage',
   'border',
 ] as const;
 
@@ -343,6 +348,7 @@ export const columnsStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
 ] as const;
 

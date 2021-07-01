@@ -65,7 +65,7 @@ import {
   RemoveSharedStyles,
   RemoveAsset,
   RestoreAsset,
-  RenameProject,
+  UpdateNameAndTagsProject,
   ReplaceElementStyles,
   ResetProjectState,
   RestoreElement,
@@ -190,6 +190,7 @@ import {
   SetStatePseudoClass,
   LoadAssetLists,
   LoadAssets,
+  ImageData,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -288,12 +289,13 @@ export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
   payload: indices,
 });
 
-export const renameProject = (
+export const updateNameAndTagsProject = (
   projectID: number,
   name: string,
-): RenameProject => ({
-  type: TYPES.RENAME_PROJECT,
-  payload: { projectID, name },
+  tags: string,
+): UpdateNameAndTagsProject => ({
+  type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
+  payload: { projectID, name, tags },
 });
 
 export const setProjectListLoader = (
@@ -380,6 +382,16 @@ export const editScreenNameAndData = (
     screenID,
     editData,
   },
+});
+
+export const setEditableScreen = (idScreen: number) => ({
+  type: TYPES.SET_EDITABLE_SCREEN,
+  payload: idScreen,
+});
+
+export const clearEditableScreen = (screen: Screen) => ({
+  type: TYPES.CLEAR_EDITABLE_SCREEN,
+  payload: screen,
 });
 
 export const createScreen = (
@@ -731,7 +743,7 @@ export const updateElementImage = (
 
 export const uploadElementAsset = (
   elementId: string,
-  { file, imageURL }: AssetData,
+  { file, imageURL, useInBackground }: AssetData,
   listId: string,
   meta?: ElementHistoryMeta,
 ): UploadElementAsset => ({
@@ -741,6 +753,7 @@ export const uploadElementAsset = (
     asset: {
       file,
       imageURL,
+      useInBackground,
     },
     listId,
   },
@@ -1423,12 +1436,12 @@ export const moveHistoryBackward = (): MoveHistoryBackward => ({
 
 export const uploadImageByUrl = (
   elementId: string,
-  url: string,
+  imageData: ImageData,
   listId: string,
   meta: ElementHistoryMeta,
 ): UploadImageByUrl => ({
   type: TYPES.UPLOAD_IMAGE_BY_URL,
-  payload: { elementId, url, listId },
+  payload: { elementId, imageData, listId },
   meta,
 });
 

@@ -17,6 +17,7 @@ import {
   apiUpdateScreen,
 } from '@Api/screen';
 import {
+  EditableScreenUser,
   LibraryElement,
   Normalized,
   Project,
@@ -53,6 +54,7 @@ import { enqueueSnackbar } from '../../notification/actions';
 import {
   selectCurrentScreen,
   selectCurrentScreenId,
+  selectInfoUser,
   selectMasterScreen,
   selectScreenById,
   selectScreensWithoutMaster,
@@ -579,6 +581,7 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
         : oldScreen.name,
       screenData: {
         ...(data || {}),
+        editableScreenUser: [...oldScreen.screenData.editableScreenUser],
         meta: {
           ...(oldScreen.meta || {}),
           ...(data?.meta || {}),
@@ -586,13 +589,98 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
         uiFramework: data?.uiFramework || oldScreen.uiFramework,
       },
     };
+    yield put(Actions.updateScreen(newScreen));
+    const convertedScreen = convertScreenToPatchRequest(newScreen);
 
+    const { error }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
+      id: screenID,
+      data: convertedScreen,
+    });
+
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to update screen',
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
+export const setEditableScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({
+  payload: idScreen,
+}: ReturnType<typeof Actions.setEditableScreen>) {
+  try {
+    const oldScreen = yield select(selectScreenById, idScreen);
+    if (!oldScreen) {
+      throw new Error('Screen not found');
+    }
+    const infoUser = yield select(selectInfoUser);
+    const newScreen: Screen = {
+      ...oldScreen,
+      screenData: {
+        ...oldScreen.screenData,
+        editableScreenUser: [
+          ...oldScreen.screenData.editableScreenUser.filter(
+            (item: EditableScreenUser) => infoUser.idUser !== item.idUser,
+          ),
+          infoUser,
+        ],
+      },
+    };
+    yield put(Actions.updateScreen(newScreen));
+
+    const convertedScreen = convertScreenToPatchRequest(newScreen);
+    const { error }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
+      id: idScreen,
+      data: convertedScreen,
+    });
+
+    if (error) throw new Error(error);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to update screen',
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
+export const clearEditableScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({
+  payload: screen,
+}: ReturnType<typeof Actions.clearEditableScreen>) {
+  try {
+    const { idUser } = yield select(selectInfoUser);
+
+    const newScreen: Screen = {
+      ...screen,
+      screenData: {
+        ...screen.screenData,
+        editableScreenUser: screen.screenData.editableScreenUser.filter(
+          (item) => idUser !== item.idUser,
+        ),
+      },
+    };
     yield put(Actions.updateScreen(newScreen));
 
     const convertedScreen = convertScreenToPatchRequest(newScreen);
 
     const { error }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
-      id: screenID,
+      id: screen.id,
       data: convertedScreen,
     });
 

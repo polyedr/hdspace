@@ -35,6 +35,7 @@ export const mockProject: Project = {
   updated: new Date(0),
   projectscreen: [],
   projectLoader: false,
+  tags: [],
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
@@ -54,6 +55,7 @@ export const mockScreen: Screen = {
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
+    editableScreenUser: [],
   },
 };
 
@@ -223,6 +225,7 @@ export const createMockProject = (): Project => ({
   projectLoader: true,
   created: new Date(),
   updated: new Date(),
+  tags: [],
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
@@ -248,6 +251,7 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
+    editableScreenUser: [],
   },
   screenscenario: [],
   status: 'pending',
@@ -266,6 +270,7 @@ export const createScreenMock = (
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
+    editableScreenUser: [],
   },
   screenscenario: [],
   status: 'pending',
@@ -282,6 +287,7 @@ export const createProjectWithScreensMock = (
     uiFramework: NOT_SELECTED_FRAMEWORK,
   },
   projectLoader: false,
+  tags: [],
   projectscreen: [
     createMasterScreenMock(projectId),
     createScreenMock(projectId),

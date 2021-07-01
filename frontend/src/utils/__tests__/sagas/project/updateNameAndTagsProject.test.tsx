@@ -1,5 +1,5 @@
 import sagaHelper from 'redux-saga-testing';
-import { renameProjectSaga } from '@Redux/project/sagas/project';
+import { updateNameAndTagsProjectSaga } from '@Redux/project/sagas/project';
 import * as Actions from '@Redux/project/actions';
 import { select, call, put } from 'redux-saga/effects';
 import { selectProjectById } from '@Redux/project/selectors/base';
@@ -8,14 +8,20 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { createMockProject, beforeSagaTest } from '../../test-utils';
 
-describe('rename project saga', () => {
+describe('update name and tags project saga', () => {
   beforeAll(beforeSagaTest);
   const mockProject = createMockProject();
   const testName = 'test name';
-  const action = Actions.renameProject(mockProject.id, testName);
+  const tags = 'tags';
+  const tagsArray = ['tags'];
+  const action = Actions.updateNameAndTagsProject(
+    mockProject.id,
+    testName,
+    tags,
+  );
   describe('under normal behavior', () => {
     // @ts-expect-error saga type is not compatible with IterableIterator
-    const it = sagaHelper(renameProjectSaga(action));
+    const it = sagaHelper(updateNameAndTagsProjectSaga(action));
 
     it('should select project', (result) => {
       expect(result).toEqual(select(selectProjectById, mockProject.id));
@@ -28,6 +34,7 @@ describe('rename project saga', () => {
           data: {
             id: mockProject.id,
             name: testName,
+            tags: tagsArray,
             projectscreen: mockProject.projectscreen,
           },
         }),
@@ -44,7 +51,7 @@ describe('rename project saga', () => {
 
   describe('if api request fails', () => {
     // @ts-expect-error saga type is not compatible with IterableIterator
-    const it = sagaHelper(renameProjectSaga(action));
+    const it = sagaHelper(updateNameAndTagsProjectSaga(action));
     const errorMessage = 'Error message';
     const error = new Error(errorMessage);
 
@@ -59,6 +66,7 @@ describe('rename project saga', () => {
           data: {
             id: mockProject.id,
             name: testName,
+            tags: tagsArray,
             projectscreen: mockProject.projectscreen,
           },
         }),

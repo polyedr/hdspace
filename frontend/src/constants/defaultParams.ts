@@ -60,6 +60,7 @@ export const DEFAULT_PROJECT: Project = {
   projectLoader: false,
   updated: new Date(),
   created: new Date(),
+  tags: [],
   projectData: {
     classes: [
       {
@@ -100,6 +101,7 @@ export const DEFAULT_SCREEN: Screen = {
   screenData: {
     uiFramework: NOT_SELECTED_FRAMEWORK,
     freeCanvas: false,
+    editableScreenUser: [],
   },
 };
 
@@ -173,3 +175,5 @@ export const PERMISSION_LABELS = {
   [UserProjectPermission.VIEW_PROJECT]: 'View project',
   [UserProjectPermission.CHANGE_PROJECT]: 'Change project',
 };
+
+export const URL_REGEX = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;

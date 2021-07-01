@@ -28,6 +28,7 @@ type ProjectBase = {
   projectLoader: boolean;
   created: Date;
   updated: Date;
+  tags: Array<string>;
 };
 
 export type PropertyName = keyof React.CSSProperties;
@@ -771,6 +772,7 @@ export type ServerProjectWithScreens = {
   user: ServerUserData;
   project_data_json: string;
   project_data_text: string;
+  tags: Array<string>;
 };
 
 export type ServerProject = {
@@ -783,6 +785,7 @@ export type ServerProject = {
   user: ServerUserData;
   project_data_json: string;
   project_data_text: string;
+  tags: Array<string>;
 };
 
 export type ServerScreen = ScreenBase & {
@@ -980,8 +983,12 @@ export type ScreenData = {
   nnResult?: { [key: string]: VIAFile };
   uiFramework: UIFramework;
   freeCanvas: boolean;
+  editableScreenUser: Array<EditableScreenUser> | [];
 };
-
+export type EditableScreenUser = {
+  idUser: number;
+  firstName: string;
+};
 export type EditScreenData = {
   name?: string;
   data?: Partial<ScreenData>;
@@ -1004,6 +1011,11 @@ export type ElementData = {
   name: string;
   custom: boolean;
   parameters?: any;
+};
+
+export type ColorElementIcon = {
+  squareTopLeft: string;
+  squareTopRight: string;
 };
 
 export type ElementsHierarchy = {
@@ -1385,6 +1397,7 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'bullets',
   'flexGrow',
   'backgroundSize',
+  'backgroundImage',
   'styleSheets',
   'alignment',
 ] as const;
@@ -1399,6 +1412,7 @@ export enum ProjectsSearchParameter {
   status = 'status',
   updated = 'updated',
   created = 'created',
+  tags = 'tags',
 }
 
 export type DateRange = {

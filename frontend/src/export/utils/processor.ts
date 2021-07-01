@@ -86,6 +86,7 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
 };
 
 export const processCSS = async (
+  html: string,
   cssFolder: JSZip | null,
   entityClasses: ProjectClass[],
   sharedClasses: ProjectClass[],
@@ -100,6 +101,8 @@ export const processCSS = async (
           return;
         }
         const { responseURL } = response.request;
+        if (responseURL.includes('clock') && !html.includes('clock-widget'))
+          return;
 
         cssFolder?.file(
           responseURL.substring(responseURL.lastIndexOf('/')),
@@ -134,7 +137,7 @@ export const processCSS = async (
   ]);
 };
 
-export const processJS = async (jsFolder: JSZip | null) => {
+export const processJS = async (html: string, jsFolder: JSZip | null) => {
   return Promise.all(
     jsResources.map((resource) => axios.get(`/js/export/${resource}`)),
   ).then((responses: AxiosResponse[]) => {
@@ -144,6 +147,19 @@ export const processJS = async (jsFolder: JSZip | null) => {
         return;
       }
       const { responseURL } = response.request;
+
+      if (responseURL.includes('calendar') && !html.includes('calendar-widget'))
+        return;
+
+      if (responseURL.includes('map') && !html.includes('google-map')) return;
+
+      if (
+        (responseURL.includes('clock-widget') ||
+          responseURL.includes('clock')) &&
+        !html.includes('clock-widget')
+      )
+        return;
+
       jsFolder?.file(
         responseURL.substring(responseURL.lastIndexOf('/')),
         response.data,
@@ -226,15 +242,24 @@ export const getHtmlFromTemplate = (
     ${getFontsLink('Roboto Mono', 'Roboto Condensed', 'Source Sans Pro')}
     <link rel="stylesheet" type="text/css" href="css/entities.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" href="css/clock.css" />
-    <link rel="stylesheet" type="text/css" href="css/ripple.css" />
+    ${
+      body.includes('clock-widget')
+        ? '<link rel="stylesheet" type="text/css" href="css/_/clock.css" />'
+        : ''
+    }
+    <link rel="stylesheet" type="text/css" href="css/_/ripple.css" />
     <link rel="stylesheet" type="text/css" href="css/shared.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/color-calendar/dist/css/theme-basic.css" />
     ${getUIFrameworkLink(currentUIFramework.name)}
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/color-calendar/dist/bundle.js"></script>
+
     <script src="https://unpkg.com/mat-ripple"></script>
-    <script type="text/javascript" src="js/map.js" defer></script>
-    <script type="text/javascript" src="js/clock-widget.js"></script> 
+    ${
+      body.includes('google-map')
+        ? '<script type="text/javascript" src="js/_/map.js" defer></script>'
+        : ''
+    }
+    
+    <script type="text/javascript" src="js/_/clock-widget.js"></script> 
     ${mapComponents.map((component) => {
       const { apiKey } = component.parameters.map_props;
       return `<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?callback=__googleMapsCallback${
@@ -259,9 +284,18 @@ export const getHtmlFromTemplate = (
   </head>
   <body>
     ${body}
-    <script src="js/app.js"></script>
-    <script src="js/calendar.js"></script>
-    <script src="js/clock.js"></script>
+    <script src="js/_/app.js"></script>
+    ${
+      body.includes('calendar-widget')
+        ? `<script src="js/_/calendar.js">\n
+        </script> <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/color-calendar/dist/bundle.js"></script>`
+        : ''
+    }
+    ${
+      body.includes('clock-widget')
+        ? '<script src="js/_/clock.js"></script>'
+        : ''
+    }
   </body>
 </html>
 `);

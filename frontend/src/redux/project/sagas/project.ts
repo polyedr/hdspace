@@ -27,6 +27,7 @@ import {
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import getTagsArr from '@Utils/getTagsArr';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -101,10 +102,14 @@ export function* searchProjectsSaga() {
     );
     yield put(Actions.setProjectList([]));
 
-    const paramData: [
-      ProjectsSearchParameter,
+    let paramData: [
+      ProjectsSearchParameter | 'tags__name',
       string | DateRange,
     ] = yield select(selectProjectsSearchParameter);
+
+    if (paramData[0] === 'tags') {
+      paramData = ['tags__name', paramData[1]];
+    }
 
     const { result, error }: Result<PaginatedResponse<Project>> = yield call(
       reqWrapper,
@@ -390,17 +395,21 @@ export function* deleteProjectSaga({
   }
 }
 
-export const renameProjectSaga = function* ({
-  payload: { projectID, name },
-}: ReturnType<typeof Actions.renameProject>) {
+export const updateNameAndTagsProjectSaga = function* ({
+  payload: { projectID, name, tags },
+}: ReturnType<typeof Actions.updateNameAndTagsProject>) {
   try {
     const project: Project = yield select(selectProjectById, projectID);
-
     const { result, error }: Result<Project> = yield call(
       reqWrapper,
       apiUpdateProject,
       {
-        data: { id: projectID, name, projectscreen: project.projectscreen },
+        data: {
+          id: projectID,
+          name,
+          tags: typeof tags !== 'object' ? getTagsArr(tags) : tags,
+          projectscreen: project.projectscreen,
+        },
       },
     );
 

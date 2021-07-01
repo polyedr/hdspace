@@ -43,6 +43,7 @@ import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/
 import NavbarItems from '@Components/RightPanel/PropertiesTab/Controls/NavbarItems/NavbarItems';
 import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobuttons';
 import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
+import BackgroundImage from '@Components/RightPanel/PropertiesTab/Controls/BackgroundImage';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -87,6 +88,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
     styles: ['borderColor', 'borderWidth', 'borderRadius'],
   },
   background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
+  backgroundImage: { Control: BackgroundImage, styles: ['backgroundImage'] },
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
   textContent: { Control: TextContent, styles: [] },

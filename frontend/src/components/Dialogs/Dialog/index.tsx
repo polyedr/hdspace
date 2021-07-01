@@ -19,7 +19,8 @@ type Props = {
   description?: string;
   withoutField?: boolean;
   fieldName?: string;
-  initialValue?: any;
+  initialValueName?: any;
+  initialValueTags?: Array<string>;
   type?: string;
   validation?: any;
 };
@@ -30,7 +31,8 @@ const Dialog: React.FC<Props> = ({
   onSubmit,
   onClose,
   fieldName = '',
-  initialValue,
+  initialValueName,
+  initialValueTags,
   description,
   withoutField = false,
   type,
@@ -48,22 +50,39 @@ const Dialog: React.FC<Props> = ({
               <DialogContentText>{description}</DialogContentText>
 
               {!withoutField && (
-                <Field
-                  name={fieldName}
-                  initialValue={initialValue}
-                  validate={validation}
-                >
-                  {({ input }) => (
-                    <TextField
-                      autoFocus
-                      required
-                      margin="normal"
-                      type={type || 'text'}
-                      fullWidth
-                      {...input}
-                    />
-                  )}
-                </Field>
+                <>
+                  <Field
+                    name={fieldName}
+                    initialValue={initialValueName}
+                    validate={validation}
+                  >
+                    {({ input }) => (
+                      <TextField
+                        autoFocus
+                        required
+                        margin="normal"
+                        type={type || 'text'}
+                        fullWidth
+                        {...input}
+                      />
+                    )}
+                  </Field>
+                  <Field
+                    name="tags"
+                    initialValue={initialValueTags}
+                    validate={validation}
+                  >
+                    {({ input }) => (
+                      <TextField
+                        margin="normal"
+                        type={type || 'text'}
+                        fullWidth
+                        placeholder="Enter tags"
+                        {...input}
+                      />
+                    )}
+                  </Field>
+                </>
               )}
             </DialogContent>
 
