@@ -69,7 +69,7 @@ const Dialog: React.FC<Props> = ({
                   </Field>
                   <Field
                     name="tags"
-                    initialValue={!initialValueTags ? '' : initialValueTags}
+                    initialValue={initialValueTags}
                     validate={validation}
                   >
                     {({ input }) => (
