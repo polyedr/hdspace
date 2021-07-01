@@ -27,6 +27,7 @@ import {
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import getTagsArr from '@Utils/getTagsArr';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -399,7 +400,6 @@ export const updateNameAndTagsProjectSaga = function* ({
 }: ReturnType<typeof Actions.updateNameAndTagsProject>) {
   try {
     const project: Project = yield select(selectProjectById, projectID);
-    const setTags = tags ? tags.replace(/\s+/g, '').trim().split(',') : [];
     const { result, error }: Result<Project> = yield call(
       reqWrapper,
       apiUpdateProject,
@@ -407,7 +407,7 @@ export const updateNameAndTagsProjectSaga = function* ({
         data: {
           id: projectID,
           name,
-          tags: setTags,
+          tags: typeof tags !== 'object' ? getTagsArr(tags) : tags,
           projectscreen: project.projectscreen,
         },
       },
