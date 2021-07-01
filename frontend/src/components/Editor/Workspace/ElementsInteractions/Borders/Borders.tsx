@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { BoundingStyles, DropTargetParams } from '@Src/types';
 import { DropPosition } from '@Constants/dragAndDrop';
-import { BorderPosition } from '../constants';
+import BorderPosition from '../constants';
 import Border from './Border';
 import DropPositionMarker from './DropPositionMarker';
 
