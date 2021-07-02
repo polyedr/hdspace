@@ -73,7 +73,7 @@ const CustomElementsBlocks = () => {
       )}
       {elements.htmlElements.length > 0 && (
         <CustomElementsBlock
-          name="Small block"
+          name="Html block"
           elements={elements.htmlElements}
         />
       )}
