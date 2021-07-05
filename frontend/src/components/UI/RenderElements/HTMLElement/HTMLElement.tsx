@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import React from 'react';
 import cn from 'classnames';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
@@ -26,7 +24,6 @@ const HTMLElement: React.FC<RendererProps> = React.forwardRef((props, ref) => {
       textContent || children,
     );
   } catch (e) {
-    // eslint-disable-next-line no-console
     console.error(`Undefined tag: ${tag}`);
   }
   return <Undefined ref={ref} {...props} {...attributes} />;
