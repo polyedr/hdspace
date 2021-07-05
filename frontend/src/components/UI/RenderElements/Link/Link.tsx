@@ -11,6 +11,7 @@ const useStyles = makeComponentStyles('link', {
   disabledLink: {
     cursor: 'default',
     transition: 'none',
+    textDecoration: 'none',
   },
 });
 

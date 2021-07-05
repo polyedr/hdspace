@@ -6,16 +6,20 @@ import EditorToolbarConfig from './EditorToolbarConfig';
 
 const useStyles = makeStyles(({ palette }) => ({
   editor: {
-    color: 'black',
     fontFamily: 'Roboto',
+    backgroundColor: palette.panel.main,
+    borderBottom: '1px solid #aaaaaa',
   },
   toolbar: {
     backgroundColor: palette.panel.main,
     margin: '0 !important',
+    padding: '0 !important',
+    border: 'none !important',
   },
   container: {
     border: 'none !important',
     borderRadius: '0 !important',
+    margin: '0 !important',
   },
 }));
 
