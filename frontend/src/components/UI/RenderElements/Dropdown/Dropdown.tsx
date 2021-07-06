@@ -1,11 +1,20 @@
-/* eslint-disable no-undef */
-// @ts-nocheck
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { MDCMenu } from '@material/menu';
 import cn from 'classnames';
 import { RendererProps } from '../types';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'mat-ripple': React.DetailedHTMLProps<
+        React.HTMLAttributes<HTMLElement>,
+        HTMLElement
+      >;
+    }
+  }
+}
 
 const useStyles = makeComponentStyles('dropdown', {
   labelWrapper: {
