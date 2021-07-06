@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { BoundingStyles, StyleProps } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
-import { BorderPosition } from '../constants';
+import BorderPosition from '../constants';
 
 type Props = {
   elementId: string;
