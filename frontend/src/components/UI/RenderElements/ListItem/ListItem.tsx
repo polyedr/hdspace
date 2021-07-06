@@ -36,7 +36,6 @@ const useLinkStyles = makeStyles({
   ownStyles: ({ element }: RendererProps) =>
     omit(omitLinkStyles, element.styles.ownStyles),
   link: {
-    width: '100%',
     height: '100%',
     display: 'inline-block',
     outline: 0,
@@ -99,15 +98,19 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
               ? listItemClasses.disabled
               : listItemClasses.ownPseudoStyles,
             groupClass,
-            listItemClasses.ownStyles,
+            listItemWithLinkClasses.ownStyles,
           )}
-          aria-label={`Button-${element.id}`}
-          dangerouslySetInnerHTML={{ __html: textContent }}
           data-gramm_editor={false}
           {...eventHandlers}
-          {...contentEditableSettings.props}
-          {...contentEditableSettings.events}
-        />
+        >
+          <div
+            className={cn(linkClasses.link, groupClass, linkClasses.ownStyles)}
+            aria-label={`Button-${element.id}`}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+            {...contentEditableSettings.props}
+            {...contentEditableSettings.events}
+          />
+        </li>
       )}
     </>
   );
