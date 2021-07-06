@@ -1,17 +1,34 @@
 import React from 'react';
-import { ParagraphElement, PropertiesChangeProps } from '@Src/types';
-import { StyledTextField } from '@Components/styledComponents';
-import { useDebouncedInputChange } from '@Utils/debounceHooks';
+import { makeStyles } from '@material-ui/core/styles';
+import RichTextEditor from 'react-rte';
+import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
+import EditorToolbarConfig from './EditorToolbarConfig';
 
-const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
-  element,
-  updateParams,
-  canEdit,
-}) => {
+const useStyles = makeStyles(({ palette }) => ({
+  editor: {
+    fontFamily: 'Roboto',
+    backgroundColor: palette.panel.main,
+    borderBottom: `1px solid ${palette.grey.A200}`,
+  },
+  toolbar: {
+    backgroundColor: palette.panel.main,
+    margin: '0 !important',
+    border: 'none !important',
+  },
+  container: {
+    border: 'none !important',
+  },
+}));
+
+const TextContent = ({ element, updateParams, canEdit }) => {
+  const classes = useStyles();
   const { textContent } = element.parameters;
 
-  const [state, handleChange] = useDebouncedInputChange(textContent, (value) =>
-    updateParams({ textContent: value }),
+  const [state, handleChange] = useDebouncedRichInputChange(
+    textContent,
+    (value) => {
+      updateParams({ textContent: value.toString('html') });
+    },
   );
 
   if (element.children && element.children.length) {
@@ -19,14 +36,13 @@ const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   }
 
   return (
-    <StyledTextField
-      value={state || ''}
-      variant="outlined"
+    <RichTextEditor
+      editorClassName={classes.editor}
+      toolbarClassName={classes.toolbar}
+      className={classes.container}
+      value={state}
       onChange={handleChange}
-      label="Text Content"
-      margin="dense"
-      fullWidth
-      multiline
+      toolbarConfig={EditorToolbarConfig}
       disabled={!canEdit}
     />
   );

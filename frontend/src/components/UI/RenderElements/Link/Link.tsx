@@ -11,6 +11,7 @@ const useStyles = makeComponentStyles('link', {
   disabledLink: {
     cursor: 'default',
     transition: 'none',
+    textDecoration: 'none',
   },
 });
 
@@ -62,12 +63,12 @@ const Link = React.forwardRef<HTMLAnchorElement, RendererProps>(
         href={
           clickEvent?.data.linkType === 'external' ? clickEvent.data.url : ''
         }
+        rel="noreferrer"
         target={clickEvent?.data.linkType === 'external' ? '_blank' : '_parent'}
         draggable={false}
+        dangerouslySetInnerHTML={{ __html: textContent }}
         {...eventHandlers}
-      >
-        <span>{textContent}</span>
-      </a>
+      />
     );
   },
 );
