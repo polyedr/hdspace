@@ -98,15 +98,19 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
               ? listItemClasses.disabled
               : listItemClasses.ownPseudoStyles,
             groupClass,
-            listItemClasses.ownStyles,
+            listItemWithLinkClasses.ownStyles,
           )}
-          aria-label={`Button-${element.id}`}
-          dangerouslySetInnerHTML={{ __html: textContent }}
           data-gramm_editor={false}
           {...eventHandlers}
-          {...contentEditableSettings.props}
-          {...contentEditableSettings.events}
-        />
+        >
+          <div
+            className={cn(linkClasses.link, groupClass, linkClasses.ownStyles)}
+            aria-label={`Button-${element.id}`}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+            {...contentEditableSettings.props}
+            {...contentEditableSettings.events}
+          />
+        </li>
       )}
     </>
   );

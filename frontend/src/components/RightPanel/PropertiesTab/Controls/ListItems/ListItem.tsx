@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Checkbox, IconButton, FormControlLabel } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -12,6 +12,8 @@ import {
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
+import RichTextEditor from 'react-rte';
+import RichTextContent from '../../helperComponents/RichTextContent';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   title: {
@@ -58,7 +60,7 @@ const ListItem: React.FC<Props> = ({
   const currentScreenId = useSelector(selectCurrentScreenId);
 
   const debouncedText = useDebouncedCallback((value) => {
-    updateParams({ textContent: value }, id);
+    updateParams({ textContent: value.toString('html') }, id);
   }, 500);
 
   const debouncedLink = useDebouncedCallback((value) => {
@@ -76,11 +78,20 @@ const ListItem: React.FC<Props> = ({
     updateParams({ isLink: checked }, listItemID);
   };
 
+  const [state, setState] = useState(
+    RichTextEditor.createValueFromString(textContent, 'html'),
+  );
+
+  const handleChange = (value) => {
+    setState(value);
+    debouncedText.callback(value);
+  };
+
   return (
     <StyledAccordion>
       <StyledAccordionSummary className={classes.title}>
         <div className={classes.wrapper}>
-          {textContent}
+          <div dangerouslySetInnerHTML={{ __html: textContent }} />
 
           {!isLast && canEdit && (
             <IconButton
@@ -97,15 +108,10 @@ const ListItem: React.FC<Props> = ({
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={classes.details}>
-        <StyledTextField
-          variant="outlined"
-          defaultValue={textContent}
-          onChange={(ev) => debouncedText.callback(ev.target.value)}
-          label="Item text"
-          margin="dense"
-          fullWidth
-          multiline
-          disabled={!canEdit}
+        <RichTextContent
+          canEdit={canEdit}
+          state={state}
+          handleChange={handleChange}
         />
 
         <FormControlLabel
