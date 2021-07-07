@@ -135,6 +135,8 @@ export const makeTextBlock = (): TextBlockServerElement => ({
     },
     group: ElementGroup.TYPOGRAPHY,
     textContent: 'This is text block',
+    isLink: false,
+    link: '',
   },
   styles: {
     classNames: ['textBlock'],
