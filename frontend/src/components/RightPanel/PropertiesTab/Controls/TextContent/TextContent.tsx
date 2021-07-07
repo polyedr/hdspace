@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { StyledTextField } from '@Components/styledComponents';
@@ -7,6 +7,17 @@ import RichTextContent from '../../helperComponents/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
   const { link, isLink, textContent } = element.parameters;
+  const [input, setInput] = useState(link);
+
+  const debouncedLink = useDebouncedCallback((value) => {
+    updateParams({ link: value }, element.id);
+  }, 500);
+
+  const changeHandler = (ev) => {
+    const { value } = ev.target;
+    setInput(value);
+    debouncedLink.callback(value);
+  };
 
   const [state, handleChange] = useDebouncedRichInputChange(
     textContent,
@@ -16,15 +27,15 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   );
 
   const handleCheckboxChange = (
-    listItemID: string,
+    textId: string,
     { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    updateParams({ isLink: checked }, listItemID);
+    updateParams({ isLink: checked }, textId);
   };
 
-  const debouncedLink = useDebouncedCallback((value) => {
-    updateParams({ link: value }, element.id);
-  }, 500);
+  useEffect(() => {
+    setInput(link);
+  }, [link]);
 
   if (element.children && element.children.length) {
     return <span>Text content not allowed</span>;
@@ -52,8 +63,8 @@ const TextContent = ({ element, updateParams, canEdit }) => {
 
       {isLink && (
         <StyledTextField
-          defaultValue={link}
-          onChange={(ev) => debouncedLink.callback(ev.target.value)}
+          value={input}
+          onChange={changeHandler}
           label="Item URL"
           margin="dense"
           fullWidth
