@@ -14,7 +14,7 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const { textContent } = element.parameters;
+    const { textContent, isLink, link } = element.parameters;
 
     const classes = useStyles(props);
     const contentEditableSettings = useContentEditable(element.id, textContent);
@@ -24,22 +24,45 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
     );
 
     return (
-      <div
-        ref={ref}
-        id={element.id}
-        data-ls-id={element.id}
-        className={cn(
-          className,
-          classes.textBlock,
-          groupClass,
-          classes.ownStyles,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+      <>
+        {isLink ? (
+          <div
+            ref={ref}
+            id={element.id}
+            data-ls-id={element.id}
+            data-gramm_editor={false}
+            {...contentEditableSettings.props}
+            {...eventHandlers}
+          >
+            <a
+              aria-label={`Link-${element.id}`}
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+              dangerouslySetInnerHTML={{ __html: textContent }}
+              {...contentEditableSettings.props}
+              {...contentEditableSettings.events}
+            />
+          </div>
+        ) : (
+          <div
+            ref={ref}
+            id={element.id}
+            data-ls-id={element.id}
+            className={cn(
+              className,
+              classes.textBlock,
+              groupClass,
+              classes.ownStyles,
+              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+            )}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+            data-gramm_editor={false}
+            {...contentEditableSettings.props}
+            {...eventHandlers}
+          />
         )}
-        dangerouslySetInnerHTML={{ __html: textContent }}
-        data-gramm_editor={false}
-        {...contentEditableSettings.props}
-        {...eventHandlers}
-      />
+      </>
     );
   },
 );
