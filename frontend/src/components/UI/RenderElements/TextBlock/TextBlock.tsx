@@ -23,6 +23,10 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
       contentEditableSettings.events,
     );
 
+    const formatText = (str: string) => {
+      return str.replace(/&nbsp;|<br>/g, '');
+    };
+
     return (
       <>
         {isLink ? (
@@ -38,7 +42,7 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
               href={link}
               target="_blank"
               rel="noreferrer"
-              dangerouslySetInnerHTML={{ __html: textContent }}
+              dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
               {...contentEditableSettings.props}
               {...contentEditableSettings.events}
             />
@@ -55,7 +59,7 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
               classes.ownStyles,
               isDisabled ? classes.disabled : classes.ownPseudoStyles,
             )}
-            dangerouslySetInnerHTML={{ __html: textContent }}
+            dangerouslySetInnerHTML={{ __html: formatText(textContent) }}
             data-gramm_editor={false}
             {...contentEditableSettings.props}
             {...eventHandlers}
