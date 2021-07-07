@@ -31,7 +31,6 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
             id={element.id}
             data-ls-id={element.id}
             data-gramm_editor={false}
-            {...contentEditableSettings.props}
             {...eventHandlers}
           >
             <a
