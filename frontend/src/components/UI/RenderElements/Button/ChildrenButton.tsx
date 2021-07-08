@@ -7,7 +7,7 @@ import { RendererProps } from '../types';
 
 const useStyles = makeComponentStyles('button', {});
 
-const ChildrenButton = React.forwardRef<HTMLButtonElement, RendererProps>(
+const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
     const classes = useStyles(props);
     const { element, isDisabled } = props;
@@ -55,15 +55,16 @@ const ChildrenButton = React.forwardRef<HTMLButtonElement, RendererProps>(
             />
           </div>
         ) : (
-          <button
-            ref={ref}
-            type="button"
-            id={id}
-            data-ls-id={id}
-            className={mainClasses}
-            dangerouslySetInnerHTML={{ __html: textContent }}
-            {...eventHandlers}
-          />
+          <div ref={ref}>
+            <button
+              type="button"
+              id={id}
+              data-ls-id={id}
+              className={mainClasses}
+              dangerouslySetInnerHTML={{ __html: textContent }}
+              {...eventHandlers}
+            />
+          </div>
         )}
       </>
     );

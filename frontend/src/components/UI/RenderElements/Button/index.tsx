@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { RendererProps } from '../types';
 import ChildrenButton from './ChildrenButton';
@@ -6,20 +5,20 @@ import ChildrenButton from './ChildrenButton';
 const bootstrapStyle = ['btn', 'btn-primary'];
 const materialStyle = ['mdc-button', 'mdc-button--raised'];
 
-export const UnstyledButton = React.forwardRef<any, RendererProps>(
+export const UnstyledButton = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    return <ChildrenButton {...props} />;
+    return <ChildrenButton {...props} {...ref} />;
   },
 );
 
-export const BootstrapButton = React.forwardRef<any, RendererProps>(
+export const BootstrapButton = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    return <ChildrenButton {...props} style={bootstrapStyle} />;
+    return <ChildrenButton {...props} {...ref} style={bootstrapStyle} />;
   },
 );
 
-export const MaterialButton = React.forwardRef<any, RendererProps>(
+export const MaterialButton = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
-    return <ChildrenButton {...props} style={materialStyle} />;
+    return <ChildrenButton {...props} {...ref} style={materialStyle} />;
   },
 );
