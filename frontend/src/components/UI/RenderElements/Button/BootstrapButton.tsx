@@ -29,10 +29,9 @@ const BootstrapButton = React.forwardRef<HTMLButtonElement, RendererProps>(
           classes.ownStyles,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        dangerouslySetInnerHTML={{ __html: parameters.textContent }}
         {...eventHandlers}
-      >
-        {parameters.textContent}
-      </button>
+      />
     );
   },
 );
