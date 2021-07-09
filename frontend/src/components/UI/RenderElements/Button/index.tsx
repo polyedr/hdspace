@@ -1,5 +1,24 @@
-import BootstrapButton from './BootstrapButton';
-import MaterialButton from './MaterialButton';
-import UnstyledButton from './UnstyledButton';
+import React from 'react';
+import { RendererProps } from '../types';
+import ChildrenButton from './ChildrenButton';
 
-export { BootstrapButton, MaterialButton, UnstyledButton };
+const bootstrapStyle = ['btn', 'btn-primary'];
+const materialStyle = ['mdc-button', 'mdc-button--raised'];
+
+export const UnstyledButton = React.forwardRef<HTMLDivElement, RendererProps>(
+  (props, ref) => {
+    return <ChildrenButton {...props} {...ref} />;
+  },
+);
+
+export const BootstrapButton = React.forwardRef<HTMLDivElement, RendererProps>(
+  (props, ref) => {
+    return <ChildrenButton {...props} {...ref} style={bootstrapStyle} />;
+  },
+);
+
+export const MaterialButton = React.forwardRef<HTMLDivElement, RendererProps>(
+  (props, ref) => {
+    return <ChildrenButton {...props} {...ref} style={materialStyle} />;
+  },
+);
