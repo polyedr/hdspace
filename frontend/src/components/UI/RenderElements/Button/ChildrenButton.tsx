@@ -45,7 +45,11 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
             <a
               aria-label={`Link-${element.id}`}
               href={link}
-              style={{ textDecoration: 'none' }}
+              style={{
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+              }}
               className={mainClasses}
               target="_blank"
               rel="noreferrer"
