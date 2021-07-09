@@ -28,7 +28,7 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
       props.style,
       className,
       groupClass,
-      classes.ownStyles,
+      // classes.ownStyles,
       isDisabled ? classes.disabled : classes.ownPseudoStyles,
     );
 
@@ -59,7 +59,7 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
             />
           </div>
         ) : (
-          <div ref={ref}>
+          <div ref={ref} className={classes.ownStyles}>
             <button
               type="button"
               id={id}
