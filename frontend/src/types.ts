@@ -1365,6 +1365,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'mapProps',
   'placeholder',
   'textContent',
+  'linkContent',
   'image',
   'smartHeader',
   'smartFooter',
