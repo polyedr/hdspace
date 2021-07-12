@@ -73,6 +73,7 @@ export enum ElementGroup {
   OTHER = 'other',
   CUSTOM = 'custom',
   NONE = 'none',
+  UNDEFINED = 'UNDEFINED',
 }
 
 export type FreeCanvasElementParams = {
@@ -183,11 +184,6 @@ export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
 export type SmartWebpageServerElement =
   SmartContainerServerElement<'smartWebpage'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
-export type HyperlinkServerElement = ServerElement<
-  'hyperlink',
-  [],
-  HyperLinkParameters
->;
 export type TextinputServerElement = ServerElement<
   'textinput',
   [],
@@ -398,11 +394,7 @@ export type CardsSectionElement = LibraryElement<
 >;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
-export type HyperlinkElement = LibraryElement<
-  'hyperlink',
-  [],
-  HyperLinkParameters
->;
+
 export type TextinputElement = LibraryElement<
   'textinput',
   [],
@@ -504,7 +496,6 @@ export type LibraryElementUnion =
   | DivBlockElement
   | ImageElement
   | ButtonElement
-  | HyperlinkElement
   | TextinputElement
   | CheckboxElement
   | RadiobuttonElement
@@ -1282,7 +1273,6 @@ export type ElementsToAdd = {
   smartForm: () => SmartFormServerElement;
   smartWebpage: () => SmartWebpageServerElement;
   button: () => ButtonServerElement;
-  hyperlink: () => HyperlinkServerElement;
   input: () => TextinputServerElement;
   textinput: () => TextinputServerElement;
   checkbox: () => CheckboxServerElement;
