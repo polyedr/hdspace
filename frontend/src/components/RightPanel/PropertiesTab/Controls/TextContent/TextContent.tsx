@@ -63,7 +63,7 @@ const TextContent = ({ element, updateParams, canEdit }) => {
 
       {isLink && (
         <StyledTextField
-          value={input}
+          value={input || ''}
           onChange={changeHandler}
           label="Item URL"
           margin="dense"
