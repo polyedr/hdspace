@@ -20,7 +20,6 @@ import {
   SmartFormServerElement,
   SmartHeaderServerElement,
   SmartWebpageServerElement,
-  UndefinedServerElement,
   HTMLServerElement,
   VideoServerElement,
   PaginationItemServerElement,
@@ -488,29 +487,6 @@ export const makeVideo = (): VideoServerElement => ({
     pseudoClassStyles: {},
   },
   name: 'video',
-  children: [],
-});
-
-export const makeUndefinedElement = (): UndefinedServerElement => ({
-  id: 'undefined',
-  buoyancy: 0,
-  func_type: 'undefined',
-  struct_type: 'undefined',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    group: ElementGroup.UNDEFINED,
-    freeCanvas: {
-      ...defaultFreeCanvasParams,
-      width: 100,
-      height: 100,
-    },
-  },
-  styles: {
-    classNames: ['undefined'],
-    ownStyles: {},
-    pseudoClassStyles: {},
-  },
-  name: 'undefined',
   children: [],
 });
 

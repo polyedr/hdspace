@@ -72,7 +72,6 @@ export enum ElementGroup {
   WIDGET = 'widget',
   OTHER = 'other',
   CUSTOM = 'custom',
-  UNDEFINED = 'undefined',
   NONE = 'none',
 }
 
@@ -184,7 +183,12 @@ export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
 export type SmartWebpageServerElement =
   SmartContainerServerElement<'smartWebpage'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
-type TextinputServerElement = ServerElement<
+export type HyperlinkServerElement = ServerElement<
+  'hyperlink',
+  [],
+  HyperLinkParameters
+>;
+export type TextinputServerElement = ServerElement<
   'textinput',
   [],
   TextinputParameters
@@ -306,7 +310,6 @@ export type DropdownItemServerElement = ServerElement<
   [],
   DropdownItemParameters
 >;
-export type UndefinedServerElement = ServerElement<'undefined', []>; // if element's tag is not an HTML element
 
 export type HTMLServerElement = ServerElement<
   'html',
@@ -395,7 +398,11 @@ export type CardsSectionElement = LibraryElement<
 >;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
-
+export type HyperlinkElement = LibraryElement<
+  'hyperlink',
+  [],
+  HyperLinkParameters
+>;
 export type TextinputElement = LibraryElement<
   'textinput',
   [],
@@ -485,7 +492,6 @@ export type DropdownItemElement = LibraryElement<
   [],
   DropdownItemParameters
 >;
-export type UndefinedElement = LibraryElement<'undefined', []>;
 
 export type FeatureSectionElement = LibraryElement<
   'featureSection',
@@ -498,6 +504,7 @@ export type LibraryElementUnion =
   | DivBlockElement
   | ImageElement
   | ButtonElement
+  | HyperlinkElement
   | TextinputElement
   | CheckboxElement
   | RadiobuttonElement
@@ -520,7 +527,6 @@ export type LibraryElementUnion =
   | DropdownMenuElement
   | DropdownItemElement
   | PageTemplateElement
-  | UndefinedElement
   | SubscribeFormElement
   | FeatureSectionElement
   | HTMLLibraryElement;
@@ -566,6 +572,11 @@ export type ButtonParameters = BaseElementParams & {
   textContent: string;
   showRipple: boolean;
 };
+
+export type HyperLinkParameters = BaseElementParams &
+  InteractiveElementParams & {
+    textContent: string;
+  };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
 
@@ -1271,6 +1282,7 @@ export type ElementsToAdd = {
   smartForm: () => SmartFormServerElement;
   smartWebpage: () => SmartWebpageServerElement;
   button: () => ButtonServerElement;
+  hyperlink: () => HyperlinkServerElement;
   input: () => TextinputServerElement;
   textinput: () => TextinputServerElement;
   checkbox: () => CheckboxServerElement;
@@ -1288,7 +1300,6 @@ export type ElementsToAdd = {
   clock: () => ClockServerElement;
   dropdown: () => DropdownServerElement;
   video: () => VideoServerElement;
-  undefined: () => UndefinedServerElement;
   subscribeForm: () => SubscribeFormServerElement;
   cardsSection: () => CardsSectionServerElement;
   featureSection: () => FeatureSectionServerElement;

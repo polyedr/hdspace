@@ -8,7 +8,6 @@ import LineWeightIcon from '@material-ui/icons/LineWeight';
 import ImageIcon from '@material-ui/icons/Image';
 import MovieIcon from '@material-ui/icons/Movie';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import HelpIcon from '@material-ui/icons/Help';
 import ArrowDropDownCircleIcon from '@material-ui/icons/ArrowDropDownCircle';
 import MessageIcon from '@material-ui/icons/Message';
@@ -34,7 +33,6 @@ import {
   makeSmartWebpage,
   makeVideo,
   makeDropdown,
-  makeUndefinedElement,
   makeDropdownMenu,
   makeDropdownItem,
   makeDivBlock,
@@ -129,7 +127,6 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   dropdownMenu: makeDropdownMenu,
   dropdownItem: makeDropdownItem,
   video: makeVideo,
-  undefined: makeUndefinedElement,
   cardsSection: makeCardsSection,
   featureSection: makeFeatureSection,
   section: makeSection,
@@ -160,7 +157,6 @@ export const ICONS: Partial<
   image: ImageIcon,
   video: MovieIcon,
   textBlock: TitleOutlinedIcon,
-  undefined: HelpOutlineIcon,
   dropdown: ArrowDropDownCircleIcon,
   textinput: MessageIcon,
   textarea: TextFieldsIcon,
