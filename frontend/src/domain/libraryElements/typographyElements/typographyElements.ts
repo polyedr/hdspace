@@ -148,7 +148,7 @@ export const makeTextBlock = (): TextBlockServerElement => ({
 });
 
 export const makeListItem = ({
-  textContent = '',
+  textContent = 'New Item',
   UID = 'master',
   buoyancy = 0,
 } = {}): ListItemServerElement => ({

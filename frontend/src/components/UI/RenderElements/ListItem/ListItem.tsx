@@ -1,10 +1,8 @@
-// @ts-ignore
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { omit } from 'ramda';
 import useContentEditable from '@Components/UI/RenderHooks/useContentEditable';
-import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -51,13 +49,6 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
   const listItemWithLinkClasses = useEditableItemStyles(props);
   const linkClasses = useLinkStyles(props);
   const contentEditableSettings = useContentEditable(element.id, textContent);
-  const eventHandlers = useEventHandlers<HTMLElement>(props, {
-    onClick: (event: React.SyntheticEvent<HTMLElement>) => {
-      if (isDisabled) {
-        (event.target as HTMLElement).focus();
-      }
-    },
-  });
 
   return (
     <>
@@ -74,7 +65,6 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
             groupClass,
             listItemWithLinkClasses.ownStyles,
           )}
-          {...eventHandlers}
         >
           <a
             className={cn(linkClasses.link, groupClass, linkClasses.ownStyles)}
@@ -101,7 +91,6 @@ const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
             listItemWithLinkClasses.ownStyles,
           )}
           data-gramm_editor={false}
-          {...eventHandlers}
         >
           <div
             className={cn(linkClasses.link, groupClass, linkClasses.ownStyles)}

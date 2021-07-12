@@ -27,7 +27,7 @@ const RichTextContent = ({ canEdit, state, handleChange }) => {
       editorClassName={classes.editor}
       toolbarClassName={classes.toolbar}
       className={classes.container}
-      value={state}
+      value={state || ''}
       onChange={handleChange}
       toolbarConfig={EditorToolbarConfig}
       disabled={!canEdit}
