@@ -5,7 +5,6 @@ import ListIcon from '@material-ui/icons/List';
 import Crop169Icon from '@material-ui/icons/Crop169';
 import NotesIcon from '@material-ui/icons/Notes';
 import LineWeightIcon from '@material-ui/icons/LineWeight';
-import LinkIcon from '@material-ui/icons/Link';
 import ImageIcon from '@material-ui/icons/Image';
 import MovieIcon from '@material-ui/icons/Movie';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
@@ -68,7 +67,6 @@ import {
   makeRadiobutton,
 } from './formElements/formElements';
 import {
-  makeHyperlink,
   makeTextBlock,
   makeOcrtext,
   makeListItem,
@@ -109,7 +107,6 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   smartForm: makeSmartForm,
   smartWebpage: makeSmartWebpage,
   button: makeButton,
-  hyperlink: makeHyperlink,
   textinput: makeTextinput,
   input: makeTextinput,
   checkbox: makeCheckbox,
@@ -160,7 +157,6 @@ export const ICONS: Partial<
   container: Crop169Icon,
   paragraph: NotesIcon,
   heading: LineWeightIcon,
-  hyperlink: LinkIcon,
   image: ImageIcon,
   video: MovieIcon,
   textBlock: TitleOutlinedIcon,

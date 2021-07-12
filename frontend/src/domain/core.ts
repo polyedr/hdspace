@@ -14,7 +14,6 @@ export const ENTITIES: {
   checkbox: 'checkbox',
   radiobuttonGroup: 'radiobuttonGroup',
   label: 'label',
-  hyperlink: 'hyperlink',
   heading: 'heading',
   paragraph: 'paragraph',
   textBlock: 'textBlock',
@@ -115,15 +114,6 @@ export const radiobuttonGroupStyleControls = [
 ] as const;
 
 export const labelStyleControls = [
-  'indents',
-  'size',
-  'typography',
-  'background',
-  'border',
-  'display',
-] as const;
-
-export const hyperlinkStyleControls = [
   'indents',
   'size',
   'typography',
@@ -447,7 +437,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
-  hyperlink: ['linkContent', ...hyperlinkStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
   paragraph: ['textContent', ...paragraphStyleControls, 'layouts'],
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
@@ -563,7 +552,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   radiobutton: {},
   label: {},
-  hyperlink: {},
   heading: {},
   paragraph: {},
   ocrtext: {},

@@ -42,7 +42,6 @@ export const getRightPanelCategoryTabs = (
     case 'container':
     case 'paragraph':
     case 'heading':
-    case 'hyperlink':
     case 'image':
     case 'video':
     case 'textBlock':

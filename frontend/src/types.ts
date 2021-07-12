@@ -184,12 +184,7 @@ export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
 export type SmartWebpageServerElement =
   SmartContainerServerElement<'smartWebpage'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
-export type HyperlinkServerElement = ServerElement<
-  'hyperlink',
-  [],
-  HyperLinkParameters
->;
-export type TextinputServerElement = ServerElement<
+type TextinputServerElement = ServerElement<
   'textinput',
   [],
   TextinputParameters
@@ -400,11 +395,7 @@ export type CardsSectionElement = LibraryElement<
 >;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
-export type HyperlinkElement = LibraryElement<
-  'hyperlink',
-  [],
-  HyperLinkParameters
->;
+
 export type TextinputElement = LibraryElement<
   'textinput',
   [],
@@ -507,7 +498,6 @@ export type LibraryElementUnion =
   | DivBlockElement
   | ImageElement
   | ButtonElement
-  | HyperlinkElement
   | TextinputElement
   | CheckboxElement
   | RadiobuttonElement
@@ -576,11 +566,6 @@ export type ButtonParameters = BaseElementParams & {
   textContent: string;
   showRipple: boolean;
 };
-
-export type HyperLinkParameters = BaseElementParams &
-  InteractiveElementParams & {
-    textContent: string;
-  };
 
 export type InputType = 'text' | 'email' | 'number' | 'phone' | 'password';
 
@@ -1286,7 +1271,6 @@ export type ElementsToAdd = {
   smartForm: () => SmartFormServerElement;
   smartWebpage: () => SmartWebpageServerElement;
   button: () => ButtonServerElement;
-  hyperlink: () => HyperlinkServerElement;
   input: () => TextinputServerElement;
   textinput: () => TextinputServerElement;
   checkbox: () => CheckboxServerElement;

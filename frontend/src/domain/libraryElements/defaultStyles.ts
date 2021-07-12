@@ -17,7 +17,6 @@ import {
   gridItemStyleControls,
   gridStyleControls,
   headingStyleControls,
-  hyperlinkStyleControls,
   imageStyleControls,
   labelStyleControls,
   listItemStyleControls,
@@ -175,38 +174,12 @@ export const defaultClockStyles: {
   },
 };
 
-type HyperlinkControls = typeof hyperlinkStyleControls[number];
 type HeadingControls = typeof headingStyleControls[number];
 type ParagraphControls = typeof paragraphStyleControls[number];
 type TextBlockControls = typeof textBlockStyleControls[number];
 type ListControls = typeof listStyleControls[number];
 type ListItemControls = typeof listItemStyleControls[number];
 type PaginationControls = typeof paginationStyleControls[number];
-
-export const defaultHyperlinkStyles: {
-  [K in HyperlinkControls]: React.CSSProperties;
-} & { other?: React.CSSProperties } = {
-  indents: {
-    ...DEFAULT_INDENTS,
-  },
-  size: {
-    ...DEFAULT_SIZE,
-  },
-  display: {
-    ...DEFAULT_DISPLAY,
-    display: 'inline',
-  },
-  typography: {
-    ...DEFAULT_TYPOGRAPHY,
-    color: '#1890ff',
-  },
-  border: {
-    ...DEFAULT_BORDER,
-  },
-  background: {
-    ...DEFAULT_BACKGROUND,
-  },
-};
 
 export const defaultHeadingStyles: {
   [K in HeadingControls]: React.CSSProperties;
@@ -1231,7 +1204,6 @@ export const DEFAULT_ELEMENTS_STYLES: {
   radiobutton: defaultRadiobuttonStyles,
   radiobuttonGroup: defaultRadiobuttonGroupStyles,
   label: defaultLabelStyles,
-  hyperlink: defaultHyperlinkStyles,
   heading: defaultHeadingStyles,
   paragraph: defaultParagraphStyles,
   ocrtext: defaultParagraphStyles,

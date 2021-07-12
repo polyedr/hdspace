@@ -5,7 +5,6 @@ import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
 import { Entity, NNBlockType } from '@Src/types';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
-import Link from './Link/Link';
 import TextBlock from './TextBlock/TextBlock';
 import List from './List/List';
 import Label from './Label/Label';
@@ -144,7 +143,6 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     not_selected: OtherCarouselItem,
   }),
   label: Label,
-  hyperlink: Link,
   image: Image,
   smartHeader: withSmartContainer(NNBlockType.HEADER),
   smartFooter: withSmartContainer(NNBlockType.FOOTER),
