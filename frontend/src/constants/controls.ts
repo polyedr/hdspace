@@ -44,6 +44,7 @@ import NavbarItems from '@Components/RightPanel/PropertiesTab/Controls/NavbarIte
 import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobuttons';
 import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
 import BackgroundImage from '@Components/RightPanel/PropertiesTab/Controls/BackgroundImage';
+import LinkContent from '@Components/RightPanel/PropertiesTab/Controls/Link';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -92,6 +93,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
   textContent: { Control: TextContent, styles: [] },
+  linkContent: { Control: LinkContent, styles: [] },
   image: { Control: Image, styles: [] },
   alt: { Control: Alt },
   title: { Control: Title },

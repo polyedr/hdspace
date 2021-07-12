@@ -28,7 +28,6 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
       props.style,
       className,
       groupClass,
-      // classes.ownStyles,
       isDisabled ? classes.disabled : classes.ownPseudoStyles,
     );
 

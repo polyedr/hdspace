@@ -447,7 +447,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
-  hyperlink: ['textContent', ...hyperlinkStyleControls, 'layouts'],
+  hyperlink: ['linkContent', ...hyperlinkStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
   paragraph: ['textContent', ...paragraphStyleControls, 'layouts'],
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
