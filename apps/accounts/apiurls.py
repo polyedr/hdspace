@@ -40,7 +40,7 @@ app_name = "api_accounts"
 urlpatterns = [
     path("", include(api_user_patterns)),
     path("", include(api_profile_patterns)),
-    path("", include(api_teammember_patterns)),
-    path("", include(api_team_patterns)),
+    # path("", include(api_teammember_patterns)),
+    # path("", include(api_team_patterns)),
     path("graph/", Schema.as_view()),
 ]

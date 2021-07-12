@@ -9,6 +9,8 @@ from .apiviews import (
     ScreenEventList,
     ProjectColumnList,
     ProjectColumnDetail,
+    ProjectMemberList,
+    ProjectMemberDetail,
     ProjectWithColumnsViewSet,
     ColumnTaskList,
     ColumnTaskDetail,
@@ -57,6 +59,15 @@ api_screen_event_patterns = [
     path(
         "screen-events/<int:pk>/", ScreenEventDetail.as_view(),
         name="api_screen_event"
+    ),
+]
+
+api_project_member_patterns = [
+    path("project-members/", ProjectMemberList.as_view(),
+         name="api_project_members"),
+    path(
+        "project-members/<int:pk>/", ProjectMemberDetail.as_view(),
+        name="api_project_member"
     ),
 ]
 
@@ -215,6 +226,7 @@ urlpatterns = [
     # path("", include(api_screen_event_patterns)),
     path("", include(api_permissions_project_patterns)),
     path("", include(api_element_comment_patterns)),
+    path("", include(api_project_member_patterns)),
     path("", include(api_project_column_patterns)),
     path("", include(api_column_task_patterns)),
     path("", include(api_illustration_set_patterns)),
