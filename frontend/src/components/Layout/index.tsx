@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     flex: 1,
   },
   placeholder: {
-    minHeight: 48, // Toolbar variant="dense" min-height
+    minHeight: 75, // Toolbar variant="dense" min-height
     flex: '0 0',
   },
 });
