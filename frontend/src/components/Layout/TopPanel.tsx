@@ -34,6 +34,7 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    minHeight: 75,
   },
   title: {
     padding: '0.5em 1em',
