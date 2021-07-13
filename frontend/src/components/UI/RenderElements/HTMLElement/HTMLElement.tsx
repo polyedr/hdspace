@@ -13,16 +13,13 @@ const HTMLElement: React.FC<RendererProps> = React.forwardRef((props, ref) => {
   const classes = useStyles(props);
   const eventHandlers = useEventHandlers(props);
   try {
-    return React.createElement(
-      tag,
-      {
-        ...eventHandlers,
-        ...attributes,
-        ref,
-        className: cn(groupClass, classes.ownStyles),
-      },
-      textContent || children,
-    );
+    return React.createElement(tag, {
+      ...eventHandlers,
+      ...attributes,
+      ref,
+      dangerouslySetInnerHTML: { __html: textContent || children },
+      className: cn(groupClass, classes.ownStyles),
+    });
   } catch (e) {
     console.error(`Undefined tag: ${tag}`);
   }
