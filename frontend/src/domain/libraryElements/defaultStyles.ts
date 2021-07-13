@@ -1224,7 +1224,6 @@ export const DEFAULT_ELEMENTS_STYLES: {
   dropdownMenu: defaultDropdownMenuStyles,
   dropdownItem: defaultDropdownItemStyles,
   video: defaultVideoStyles,
-  undefined: defaultUndefinedStyles,
   subscribeForm: defaultSubscribeFormStyles,
   cardsSection: defaultCardsSectionStyles,
   featureSection: defaultFeatureSectionStyles,

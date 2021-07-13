@@ -25,7 +25,6 @@ export const ENTITIES: {
   clock: 'clock',
   dropdown: 'dropdown',
   video: 'video',
-  undefined: 'undefined',
   divBlock: 'divBlock',
   pageTemplate: 'pageTemplate',
   emptyPageTemplate: 'emptyPageTemplate',
@@ -497,7 +496,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'smartWebpage',
     'layouts',
   ],
-  undefined: [...undefinedControls, 'layouts'],
   cardsSection: [...cardsSectionStyleControls, 'layouts'],
   featureSection: [...featureSectionStyleControls, 'layouts'],
   section: [...containerStyleControls, 'layouts'],
@@ -666,7 +664,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
-  undefined: {},
   cardsSection: {
     all: {
       min: 0,
