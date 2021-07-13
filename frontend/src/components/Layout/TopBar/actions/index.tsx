@@ -2,7 +2,12 @@ import React from 'react';
 import SaveIcon from '@material-ui/icons/Save';
 import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CircularProgress, IconButton } from '@material-ui/core';
+import {
+  CircularProgress,
+  IconButton,
+  Box,
+  Typography,
+} from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { selectUpdateScreenImageLoader } from '@Redux/project/selectors/base';
 import {
@@ -55,7 +60,10 @@ const Actions: React.FC = () => {
         disabled={imageLoader || canvasMode}
         className={classes.iconButton}
       >
-        {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
+        <Box component="div">
+          {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
+          <Typography variant="body1">Save screen</Typography>
+        </Box>
       </IconButton>
 
       <IconButton
@@ -63,7 +71,10 @@ const Actions: React.FC = () => {
         title="Export screen"
         className={classes.iconButton}
       >
-        <VerticalAlignBottomIcon />
+        <Box component="div">
+          <VerticalAlignBottomIcon />
+          <Typography variant="body1">Export screen</Typography>
+        </Box>
       </IconButton>
 
       <Share className={classes.iconButton} />
