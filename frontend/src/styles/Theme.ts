@@ -50,6 +50,10 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
     fontSize: 14,
+    body1: {
+      fontSize: 14,
+      color: '#fff',
+    },
   },
   transitions: {},
 });
