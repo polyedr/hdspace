@@ -1,4 +1,8 @@
-import { createTheme, darken, lighten } from '@material-ui/core/styles';
+import {
+  createTheme as createMuiTheme,
+  darken,
+  lighten,
+} from '@material-ui/core/styles';
 
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
@@ -17,7 +21,7 @@ export const LEFT_PANEL_WIDTH_MIN = 64;
 export const RIGHT_PANEL_WIDTH = 310;
 export const PANEL_TRANSITION_DURATION = 250;
 
-const theme = createTheme({
+const theme = createMuiTheme({
   palette: {
     primary: { main: '#51718c' },
     secondary: { main: '#1cc09f' },
