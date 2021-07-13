@@ -14,7 +14,6 @@ export const ENTITIES: {
   checkbox: 'checkbox',
   radiobuttonGroup: 'radiobuttonGroup',
   label: 'label',
-  hyperlink: 'hyperlink',
   heading: 'heading',
   paragraph: 'paragraph',
   textBlock: 'textBlock',
@@ -26,7 +25,6 @@ export const ENTITIES: {
   clock: 'clock',
   dropdown: 'dropdown',
   video: 'video',
-  undefined: 'undefined',
   divBlock: 'divBlock',
   pageTemplate: 'pageTemplate',
   emptyPageTemplate: 'emptyPageTemplate',
@@ -115,15 +113,6 @@ export const radiobuttonGroupStyleControls = [
 ] as const;
 
 export const labelStyleControls = [
-  'indents',
-  'size',
-  'typography',
-  'background',
-  'border',
-  'display',
-] as const;
-
-export const hyperlinkStyleControls = [
   'indents',
   'size',
   'typography',
@@ -436,7 +425,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     ...textinputStyleControls,
     'layouts',
   ],
-  textarea: ['textContent', 'placeholder', ...textareaStyleControls, 'layouts'],
+  textarea: ['text', 'placeholder', ...textareaStyleControls, 'layouts'],
   checkbox: ['value', 'name', ...checkboxStyleControls, 'layouts'],
   radiobutton: ['value', ...radiobuttonStyleControls, 'layouts'],
   radiobuttonGroup: [
@@ -447,7 +436,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
-  hyperlink: ['linkContent', ...hyperlinkStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
   paragraph: ['textContent', ...paragraphStyleControls, 'layouts'],
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
@@ -508,7 +496,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'smartWebpage',
     'layouts',
   ],
-  undefined: [...undefinedControls, 'layouts'],
   cardsSection: [...cardsSectionStyleControls, 'layouts'],
   featureSection: [...featureSectionStyleControls, 'layouts'],
   section: [...containerStyleControls, 'layouts'],
@@ -563,7 +550,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   radiobutton: {},
   label: {},
-  hyperlink: {},
   heading: {},
   paragraph: {},
   ocrtext: {},
@@ -678,7 +664,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
-  undefined: {},
   cardsSection: {
     all: {
       min: 0,

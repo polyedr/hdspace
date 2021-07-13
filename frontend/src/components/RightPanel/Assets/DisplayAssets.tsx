@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
   CircularProgress,
-  GridList,
+  ImageList,
   GridListTile,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -144,12 +144,7 @@ const DisplayAssets = () => {
       </Button>
 
       <Scrollbar autoHeightMax={150} style={{ height: '100%' }}>
-        <GridList
-          className={classes.gridList}
-          cellHeight={80}
-          cols={3}
-          spacing={5}
-        >
+        <ImageList className={classes.gridList} rowHeight={80} cols={3} gap={5}>
           {assets.map((asset: Asset, index: number) => {
             return (
               <GridListTile key={`asset-${asset.id}`}>
@@ -168,7 +163,7 @@ const DisplayAssets = () => {
               </GridListTile>
             );
           })}
-        </GridList>
+        </ImageList>
       </Scrollbar>
     </div>
   );

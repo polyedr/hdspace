@@ -3,7 +3,6 @@ import {
   ElementGroup,
   HeadingServerElement,
   HeadingType,
-  HyperlinkServerElement,
   ListItemServerElement,
   ListServerElement,
   OcrtextServerElement,
@@ -12,31 +11,6 @@ import {
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { defaultFreeCanvasParams } from '../../core';
-
-export const makeHyperlink = (): HyperlinkServerElement => ({
-  id: `hyperlink`,
-  buoyancy: 0,
-  func_type: 'hyperlink',
-  struct_type: 'hyperlink',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: {
-      ...defaultFreeCanvasParams,
-      height: 16,
-      width: 56,
-    },
-    group: ElementGroup.OTHER,
-    textContent: 'hyperlink',
-    events: [],
-  },
-  styles: {
-    classNames: ['hyperlink'],
-    ownStyles: {},
-    pseudoClassStyles: {},
-  },
-  name: 'hyperlink',
-  children: [],
-});
 
 export const makeHeading = ({
   buoyancy = 0,

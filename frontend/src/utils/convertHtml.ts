@@ -61,7 +61,6 @@ const unsupportedElement = {
 } as const;
 
 const tagMap: Record<Element['tagName'], Entity | null> = {
-  A: 'hyperlink',
   ABBR: 'textBlock',
   ADDRESS: 'textBlock',
   ARTICLE: 'container',
