@@ -762,7 +762,7 @@ export const uploadElementAsset = (
 
 export const updateElementParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   elementId: string,
   parameters: K,
@@ -778,7 +778,7 @@ export const updateElementParameters = <
 
 export const replaceElementParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   elementId: string,
   parameters: K,
@@ -794,7 +794,7 @@ export const replaceElementParameters = <
 
 export const updateMultipleElementsParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   ids: string[],
   parameters: {
@@ -812,7 +812,7 @@ export const updateMultipleElementsParameters = <
 
 export const replaceMultipleElementsParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   ids: string[],
   parameters: {
