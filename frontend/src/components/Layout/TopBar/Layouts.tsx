@@ -47,6 +47,10 @@ const Layouts: React.FC = () => {
 
   const handleRotatedToggle = () => dispatch(rotateScreenFormat(!rotated));
 
+  const renderFormat = Object.keys(Layout).map((key) => (
+    <option value={Layout[key]}>{key}</option>
+  ));
+
   return (
     <div className={classes.root} id={ELEMENT_IDS.layoutSelector}>
       <FormControl className={classes.formControl}>
@@ -55,9 +59,7 @@ const Layouts: React.FC = () => {
           onChange={handleFormatChange}
           className={classes.selectEmpty}
         >
-          <option value={Layout.Desktop}>Desktop</option>
-          <option value={Layout.Tablet}>Tablet</option>
-          <option value={Layout.Mobile}>Mobile</option>
+          {renderFormat}
         </NativeSelect>
       </FormControl>
       <div className={classes.rotated}>

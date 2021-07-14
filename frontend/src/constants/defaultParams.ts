@@ -109,6 +109,7 @@ export const DEFAULT_LAYOUT_LIST = [
   Layout.Desktop,
   Layout.Tablet,
   Layout.Mobile,
+  Layout.MotoG4,
 ];
 
 export const SAVEABLE_ELEMENTS = ['section'];

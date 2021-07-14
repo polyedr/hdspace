@@ -54,6 +54,9 @@ const useStyles = makeStyles({
   mobile: {
     flexBasis: (rotated) => (rotated ? 568 : 320),
   },
+  motoG4: {
+    flexBasis: (rotated) => (rotated ? 568 : 320),
+  },
 });
 
 type Props = {

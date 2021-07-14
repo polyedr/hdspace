@@ -1342,6 +1342,15 @@ export enum Layout {
   Desktop = 'desktop',
   Tablet = 'tablet',
   Mobile = 'mobile',
+  MotoG4 = 'motoG4',
+  GalaxyS5 = 'galaxyS5',
+  Pixel2 = 'pixel2',
+  iPhone5 = 'iphone5',
+  iPhone678 = 'iphone678',
+  iPhone678Plus = 'iphone678Plus',
+  iPhoneX = 'iphoneX',
+  iPad = 'ipad',
+  iPadPro = 'ipadPro',
 }
 
 export const CONTROLS_AFFECT_ON_PARAMS = [
