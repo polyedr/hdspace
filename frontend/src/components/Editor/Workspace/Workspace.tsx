@@ -55,7 +55,28 @@ const useStyles = makeStyles({
     flexBasis: (rotated) => (rotated ? 568 : 320),
   },
   motoG4: {
+    flexBasis: (rotated) => (rotated ? 640 : 360),
+  },
+  pixel2: {
+    flexBasis: (rotated) => (rotated ? 731 : 411),
+  },
+  iphone5: {
     flexBasis: (rotated) => (rotated ? 568 : 320),
+  },
+  iphone678: {
+    flexBasis: (rotated) => (rotated ? 375 : 667),
+  },
+  iphone678Plus: {
+    flexBasis: (rotated) => (rotated ? 414 : 736),
+  },
+  iphoneX: {
+    flexBasis: (rotated) => (rotated ? 375 : 812),
+  },
+  ipad: {
+    flexBasis: (rotated) => (rotated ? 768 : 1024),
+  },
+  ipadPro: {
+    flexBasis: (rotated) => (rotated ? 1024 : 1366),
   },
 });
 
