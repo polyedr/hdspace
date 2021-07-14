@@ -17,10 +17,8 @@ import {
   makeImage,
   makeNativeColumns,
   makeVideo,
-  makeUndefinedElement,
 } from '@Domain/libraryElements/otherElements/otherElements';
 import {
-  makeHyperlink,
   makeHeading,
   makeList,
   makeListItem,
@@ -32,7 +30,6 @@ import { Entity, ServerElement } from '@Src/types';
 
 const CORE_MASTER_RESPONSE_ELEMENTS = [
   makeHeading(),
-  makeHyperlink(),
   makeParagraph(),
   makeTextBlock(),
   makeList({ items: [makeListItem({ buoyancy: 0 })] }),
@@ -49,7 +46,6 @@ const CORE_MASTER_RESPONSE_ELEMENTS = [
   makeNativeColumns(),
   makeImage(),
   makeVideo(),
-  makeUndefinedElement(),
   makeSection(),
 ];
 

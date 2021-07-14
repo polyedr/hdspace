@@ -1,4 +1,8 @@
-import { createMuiTheme, darken, lighten } from '@material-ui/core/styles';
+import {
+  createTheme as createMuiTheme,
+  darken,
+  lighten,
+} from '@material-ui/core/styles';
 
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {

@@ -5,7 +5,6 @@ import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
 import { Entity, NNBlockType } from '@Src/types';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
-import Link from './Link/Link';
 import TextBlock from './TextBlock/TextBlock';
 import List from './List/List';
 import Label from './Label/Label';
@@ -21,7 +20,6 @@ import Calendar from './Calendar/Calendar';
 import Container from './Container/Container';
 import Section from './Section/Section';
 import Clock from './Clock/Clock';
-import Undefined from './Undefined/Undefined';
 import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
 import GridItem from './Grid/GridItem';
@@ -144,7 +142,6 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     not_selected: OtherCarouselItem,
   }),
   label: Label,
-  hyperlink: Link,
   image: Image,
   smartHeader: withSmartContainer(NNBlockType.HEADER),
   smartFooter: withSmartContainer(NNBlockType.FOOTER),
@@ -167,7 +164,6 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   dropdownMenu: DropdownMenu,
   dropdownItem: DropdownItem,
   video: Video,
-  undefined: Undefined,
   subscribeForm: Container,
   cardsSection: Container,
   featureSection: Container,

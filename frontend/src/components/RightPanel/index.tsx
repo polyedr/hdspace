@@ -16,10 +16,7 @@ import {
   selectMasterCoreElementId,
   selectMasterGroupsElementId,
 } from '@Redux/project/selectors/element';
-import {
-  INTERACTIVE_ELEMENTS,
-  KEEP_RP_TAB_ELEMENTS,
-} from '@Constants/defaultParams';
+import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
 import { CORE_MASTER_ELEMENTS_IDS } from '@Components/Editor/MasterScreen/coreElements';
@@ -126,13 +123,11 @@ const RightPanel: React.FC = () => {
 
   useEffect(() => {
     setActiveTabIndex(0);
-    const isInteractive = INTERACTIVE_ELEMENTS.includes(activeElement.type);
     const isFertile = canElementHaveAllChildren(activeElement.type);
 
     let newTabs = defaultTabs;
-    if (!isInteractive || !canEditProject) {
-      newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
-    }
+    newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
+
     if (currentScreenId !== masterScreenId) {
       newTabs = newTabs.filter((tab) => tab !== RPTab.Variables);
     }
