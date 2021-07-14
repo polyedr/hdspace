@@ -42,13 +42,16 @@ const Layouts: React.FC = () => {
 
   const handleFormatChange = (ev) => {
     if (!ev.target.value) return;
+
     dispatch(changeLayout(ev.target.value));
   };
 
   const handleRotatedToggle = () => dispatch(rotateScreenFormat(!rotated));
 
   const renderFormat = Object.keys(Layout).map((key) => (
-    <option value={Layout[key]}>{key}</option>
+    <option value={Layout[key]} key={key}>
+      {key}
+    </option>
   ));
 
   return (

@@ -201,7 +201,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, 0); // delay to allow all elements to render correctly first
 
-  if (!element || !isDisplayed) {
+  // if (!element || !isDisplayed) {
+  //   return null;
+  // }
+
+  if (!element) {
+    // FIX
     return null;
   }
 
