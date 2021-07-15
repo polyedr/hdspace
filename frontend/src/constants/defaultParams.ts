@@ -110,7 +110,6 @@ export const DEFAULT_LAYOUT_LIST = [
   Layout.Tablet,
   Layout.Mobile,
   Layout.MotoG4,
-  Layout.GalaxyS5,
   Layout.Pixel2,
   Layout.iPhone5,
   Layout.iPhone678,

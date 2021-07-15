@@ -1339,30 +1339,9 @@ export enum RPTab {
 }
 
 export enum baseLayout {
-  Desktop = 'desktop',
-  Tablet = 'tablet',
-  Mobile = 'mobile',
-}
-
-export enum additionalLayoutDesktop {
-  Desktop = 'desktop',
-}
-
-export enum additionalLayoutPhone {
-  Mobile = 'mobile',
-  MotoG4 = 'motoG4',
-  GalaxyS5 = 'galaxyS5',
-  Pixel2 = 'pixel2',
-  iPhone5 = 'iphone5',
-  iPhone678 = 'iphone678',
-  iPhone678Plus = 'iphone678Plus',
-  iPhoneX = 'iphoneX',
-}
-
-export enum additionalLayoutTablet {
-  iPad = 'ipad',
-  iPadPro = 'ipadPro',
-  Tablet = 'tablet',
+  Desktop = 'Desktop',
+  Tablet = 'Tablet',
+  Mobile = 'Mobile',
 }
 
 export enum Layout {
@@ -1370,7 +1349,6 @@ export enum Layout {
   Tablet = 'tablet',
   Mobile = 'mobile',
   MotoG4 = 'motoG4',
-  GalaxyS5 = 'galaxyS5',
   Pixel2 = 'pixel2',
   iPhone5 = 'iphone5',
   iPhone678 = 'iphone678',
@@ -1379,6 +1357,24 @@ export enum Layout {
   iPad = 'ipad',
   iPadPro = 'ipadPro',
 }
+
+export const additionalLayoutDesktop = [Layout.Desktop];
+
+export const additionalLayoutPhone = [
+  Layout.Mobile,
+  Layout.MotoG4,
+  Layout.Pixel2,
+  Layout.iPhone5,
+  Layout.iPhone678,
+  Layout.iPhone678Plus,
+  Layout.iPhoneX,
+];
+
+export const additionalLayoutTablet = [
+  Layout.Tablet,
+  Layout.iPad,
+  Layout.iPadPro,
+];
 
 export const CONTROLS_AFFECT_ON_PARAMS = [
   'layouts',

@@ -54,7 +54,7 @@ const Layouts: React.FC = () => {
   const handleRotatedToggle = () => dispatch(rotateScreenFormat(!rotated));
 
   const renderOption = (additionalLayout) => {
-    return Object.keys(additionalLayout).map((key) => (
+    return additionalLayout.map((key) => (
       <option value={Layout[key]} key={key}>
         {key}
       </option>

@@ -61,19 +61,12 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   ) => {
     if (!checked && layouts.length === 1) return;
 
-    const tables = Object.keys(additionalLayoutTablet).map(
-      (e) => additionalLayoutTablet[e],
-    );
-    const phones = Object.keys(additionalLayoutPhone).map(
-      (e) => additionalLayoutPhone[e],
-    );
-
     const checkedLayout = (layout) => {
       switch (layout) {
         case 'tablet':
-          return [...layouts, ...tables];
+          return [...layouts, ...additionalLayoutTablet];
         case 'mobile':
-          return [...layouts, ...phones];
+          return [...layouts, ...additionalLayoutPhone];
         default:
           return [...layouts, layout];
       }
@@ -82,9 +75,11 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     const offLayout = (layout) => {
       switch (layout) {
         case 'tablet':
-          return layouts.filter((e) => tables.indexOf(e) === -1);
+          return layouts.filter(
+            (e) => additionalLayoutTablet.indexOf(e) === -1,
+          );
         case 'mobile':
-          return layouts.filter((e) => phones.indexOf(e) === -1);
+          return layouts.filter((e) => additionalLayoutPhone.indexOf(e) === -1);
         default:
           return layouts.filter((l) => l !== layout);
       }
