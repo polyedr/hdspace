@@ -1344,6 +1344,10 @@ export enum baseLayout {
   Mobile = 'mobile',
 }
 
+export enum additionalLayoutDesktop {
+  Desktop = 'desktop',
+}
+
 export enum additionalLayoutPhone {
   Mobile = 'mobile',
   MotoG4 = 'motoG4',

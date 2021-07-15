@@ -6,7 +6,12 @@ import {
   selectScreenRotated,
 } from '@Redux/project/selectors/base';
 import { changeLayout, rotateScreenFormat } from '@Redux/project/actions';
-import { Layout } from '@Src/types';
+import {
+  additionalLayoutPhone,
+  additionalLayoutDesktop,
+  additionalLayoutTablet,
+  Layout,
+} from '@Src/types';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { FormControl, NativeSelect } from '@material-ui/core';
@@ -48,11 +53,13 @@ const Layouts: React.FC = () => {
 
   const handleRotatedToggle = () => dispatch(rotateScreenFormat(!rotated));
 
-  const renderFormat = Object.keys(Layout).map((key) => (
-    <option value={Layout[key]} key={key}>
-      {key}
-    </option>
-  ));
+  const renderOption = (additionalLayout) => {
+    return Object.keys(additionalLayout).map((key) => (
+      <option value={Layout[key]} key={key}>
+        {key}
+      </option>
+    ));
+  };
 
   return (
     <div className={classes.root} id={ELEMENT_IDS.layoutSelector}>
@@ -62,7 +69,15 @@ const Layouts: React.FC = () => {
           onChange={handleFormatChange}
           className={classes.selectEmpty}
         >
-          {renderFormat}
+          <optgroup label="Desktop">
+            {renderOption(additionalLayoutDesktop)}
+          </optgroup>
+          <optgroup label="Mobile">
+            {renderOption(additionalLayoutPhone)}
+          </optgroup>
+          <optgroup label="Tablet">
+            {renderOption(additionalLayoutTablet)}
+          </optgroup>
         </NativeSelect>
       </FormControl>
       <div className={classes.rotated}>

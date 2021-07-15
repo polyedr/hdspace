@@ -68,7 +68,7 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       (e) => additionalLayoutPhone[e],
     );
 
-    const onFn = (layout) => {
+    const checkedLayout = (layout) => {
       switch (layout) {
         case 'tablet':
           return [...layouts, ...tables];
@@ -79,7 +79,7 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       }
     };
 
-    const offFn = (layout) => {
+    const offLayout = (layout) => {
       switch (layout) {
         case 'tablet':
           return layouts.filter((e) => tables.indexOf(e) === -1);
@@ -90,7 +90,7 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       }
     };
 
-    const newLayouts = checked ? onFn(layout) : offFn(layout);
+    const newLayouts = checked ? checkedLayout(layout) : offLayout(layout);
     updateParams({
       layouts: newLayouts,
     });
