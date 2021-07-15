@@ -1338,6 +1338,28 @@ export enum RPTab {
   Variables = 'Variables',
 }
 
+export enum baseLayout {
+  Desktop = 'desktop',
+  Tablet = 'tablet',
+  Mobile = 'mobile',
+}
+
+export enum additionalLayoutPhone {
+  Mobile = 'mobile',
+  MotoG4 = 'motoG4',
+  GalaxyS5 = 'galaxyS5',
+  Pixel2 = 'pixel2',
+  iPhone5 = 'iphone5',
+  iPhone678 = 'iphone678',
+  iPhone678Plus = 'iphone678Plus',
+  iPhoneX = 'iphoneX',
+}
+
+export enum additionalLayoutTablet {
+  iPad = 'ipad',
+  iPadPro = 'ipadPro',
+}
+
 export enum Layout {
   Desktop = 'desktop',
   Tablet = 'tablet',

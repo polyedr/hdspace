@@ -3,6 +3,7 @@ import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import {
   Entity,
   Layout,
+  baseLayout,
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
