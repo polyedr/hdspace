@@ -8,6 +8,7 @@ import {
   copyActiveElement,
   deleteElement,
   pasteCopiedElement,
+  setActiveElement,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
@@ -89,6 +90,7 @@ const BorderCrumb: React.FC<Props> = (props) => {
 
   const handleDuplicate = () => {
     dispatch(copyActiveElement());
+    dispatch(setActiveElement(String(element.parent)));
     dispatch(pasteCopiedElement({ screenId: currentScreenId }));
   };
 

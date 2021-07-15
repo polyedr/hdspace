@@ -122,6 +122,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       mouseY: ev.clientY - 4,
       item,
     });
+    dispatch(setActiveElement(String(item.id)));
   };
 
   const handleClose = () => setState(initialState);
