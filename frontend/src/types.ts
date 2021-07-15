@@ -1358,6 +1358,7 @@ export enum additionalLayoutPhone {
 export enum additionalLayoutTablet {
   iPad = 'ipad',
   iPadPro = 'ipadPro',
+  Tablet = 'tablet',
 }
 
 export enum Layout {

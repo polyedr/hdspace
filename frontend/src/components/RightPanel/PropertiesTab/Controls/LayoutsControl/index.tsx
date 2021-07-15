@@ -4,8 +4,10 @@ import {
   Entity,
   Layout,
   baseLayout,
+  additionalLayoutTablet,
   LibraryElement,
   PropertiesChangeProps,
+  additionalLayoutPhone,
 } from '@Src/types';
 import React, { ChangeEvent, FC } from 'react';
 import { useSelector } from 'react-redux';
@@ -51,17 +53,44 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     layouts: Layout[];
   };
 
-  const list = Object.keys(Layout).map((k) => Layout[k] as Layout);
+  const list = Object.keys(baseLayout).map((k) => Layout[k] as Layout);
 
   const handleChange = (
     { target: { checked } }: ChangeEvent<HTMLInputElement>,
     layout: Layout,
   ) => {
     if (!checked && layouts.length === 1) return;
-    const newLayouts = checked
-      ? [...layouts, layout]
-      : layouts.filter((l) => l !== layout);
 
+    const tables = Object.keys(additionalLayoutTablet).map(
+      (e) => additionalLayoutTablet[e],
+    );
+    const phones = Object.keys(additionalLayoutPhone).map(
+      (e) => additionalLayoutPhone[e],
+    );
+
+    const onFn = (layout) => {
+      switch (layout) {
+        case 'tablet':
+          return [...layouts, ...tables];
+        case 'mobile':
+          return [...layouts, ...phones];
+        default:
+          return [...layouts, layout];
+      }
+    };
+
+    const offFn = (layout) => {
+      switch (layout) {
+        case 'tablet':
+          return layouts.filter((e) => tables.indexOf(e) === -1);
+        case 'mobile':
+          return layouts.filter((e) => phones.indexOf(e) === -1);
+        default:
+          return layouts.filter((l) => l !== layout);
+      }
+    };
+
+    const newLayouts = checked ? onFn(layout) : offFn(layout);
     updateParams({
       layouts: newLayouts,
     });

@@ -110,6 +110,14 @@ export const DEFAULT_LAYOUT_LIST = [
   Layout.Tablet,
   Layout.Mobile,
   Layout.MotoG4,
+  Layout.GalaxyS5,
+  Layout.Pixel2,
+  Layout.iPhone5,
+  Layout.iPhone678,
+  Layout.iPhone678Plus,
+  Layout.iPhoneX,
+  Layout.iPad,
+  Layout.iPadPro,
 ];
 
 export const SAVEABLE_ELEMENTS = ['section'];
