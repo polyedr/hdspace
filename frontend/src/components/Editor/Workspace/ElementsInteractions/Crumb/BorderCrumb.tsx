@@ -8,6 +8,7 @@ import {
   copyActiveElement,
   deleteElement,
   pasteCopiedElement,
+  setActiveElement,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
@@ -89,9 +90,9 @@ const BorderCrumb: React.FC<Props> = (props) => {
 
   const handleDuplicate = () => {
     dispatch(copyActiveElement());
+    dispatch(setActiveElement(String(element.parent)));
     dispatch(pasteCopiedElement({ screenId: currentScreenId }));
   };
-
   return element && show ? (
     <div className={cn(classes.crumb)}>
       <span
@@ -101,12 +102,17 @@ const BorderCrumb: React.FC<Props> = (props) => {
       >
         {element.name}
       </span>
-      <div className={classes.icon} onClick={handleDuplicate}>
-        <Icon icon="copy" size={16} color="white" />
-      </div>
-      <span className={classes.icon} onClick={handleDelete}>
-        <Icon icon="delete" size={16} color="white" />
-      </span>
+      {element.type !== 'root' && (
+        <>
+          <span className={classes.icon} onClick={handleDuplicate}>
+            <Icon icon="copy" size={16} color="white" />
+          </span>
+          <span className={classes.icon} onClick={handleDelete}>
+            <Icon icon="delete" size={16} color="white" />
+          </span>
+        </>
+      )}
+
       {element.parameters.sourceElementId && (
         <>
           <span className={classes.separator}>|</span>
