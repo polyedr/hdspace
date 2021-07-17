@@ -52,7 +52,6 @@ const theme = createMuiTheme({
     fontSize: 14,
     body1: {
       fontSize: 14,
-      color: '#fff',
     },
   },
   transitions: {},
