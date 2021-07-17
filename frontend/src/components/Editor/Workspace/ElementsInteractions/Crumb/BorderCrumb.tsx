@@ -1,10 +1,19 @@
 import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { BoundingStyles, StateElement } from '@Src/types';
-import { setMasterSourceElementId } from '@Redux/project/actions';
+import {
+  setMasterSourceElementId,
+  copyActiveElement,
+  deleteElement,
+  pasteCopiedElement,
+  setActiveElement,
+} from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+
 import { makeStyles } from '@material-ui/core/styles';
+import Icon from '../../../../UI/Icon';
 
 type Props = {
   element: StateElement;
@@ -47,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
   separator: {
     margin: '0 3px',
   },
+  icon: {
+    cursor: 'pointer',
+    paddingTop: '1px',
+  },
 }));
 
 const BorderCrumb: React.FC<Props> = (props) => {
@@ -57,6 +70,8 @@ const BorderCrumb: React.FC<Props> = (props) => {
   const history = useHistory();
 
   const classes = useStyles(props);
+
+  const currentScreenId = useSelector(selectCurrentScreenId);
 
   const handleSourceElementClick = useCallback(() => {
     dispatch(setMasterSourceElementId(element.parameters.sourceElementId));
@@ -69,6 +84,15 @@ const BorderCrumb: React.FC<Props> = (props) => {
     masterScreenId,
   ]);
 
+  const handleDelete = () => {
+    dispatch(deleteElement(element.id, { screenId: currentScreenId }));
+  };
+
+  const handleDuplicate = () => {
+    dispatch(copyActiveElement());
+    dispatch(setActiveElement(String(element.parent)));
+    dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+  };
   return element && show ? (
     <div className={cn(classes.crumb)}>
       <span
@@ -78,6 +102,17 @@ const BorderCrumb: React.FC<Props> = (props) => {
       >
         {element.name}
       </span>
+      {element.type !== 'root' && (
+        <>
+          <span className={classes.icon} onClick={handleDuplicate}>
+            <Icon icon="copy" size={16} color="white" />
+          </span>
+          <span className={classes.icon} onClick={handleDelete}>
+            <Icon icon="delete" size={16} color="white" />
+          </span>
+        </>
+      )}
+
       {element.parameters.sourceElementId && (
         <>
           <span className={classes.separator}>|</span>
