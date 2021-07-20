@@ -75,7 +75,7 @@ class Project(TimeStampedModel):
         get_user_model(), related_name="user", on_delete=models.CASCADE
     )
     members = models.ManyToManyField(
-        get_user_model(), related_name="members", through="ProjectMember", blank=True, null=True
+        get_user_model(), related_name="members", through="ProjectMember", blank=True
     )
 
     created = models.DateTimeField(auto_now_add=True)

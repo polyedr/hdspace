@@ -223,9 +223,9 @@ class ProjectMemberList(generics.ListCreateAPIView):
 
     queryset = ProjectMember.objects.all()
     serializer_class = ProjectMemberSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+    #
+    # def perform_create(self, serializer):
+    #     serializer.save(owner=self.request.user)
 
 
 class ProjectMemberDetail(generics.RetrieveUpdateDestroyAPIView):
