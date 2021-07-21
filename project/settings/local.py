@@ -48,7 +48,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "rest_framework",
+    "invitations",
+    "rest_invitations",
     "rest_framework.authtoken",
     "djoser",
     "drf_yasg",
@@ -61,6 +64,8 @@ INSTALLED_APPS = [
     'taggit',
     'taggit_serializer',
 ]
+
+SITE_ID = 1
 
 EXTERNAL_APPS = ["social_django"]
 

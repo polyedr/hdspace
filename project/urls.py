@@ -61,6 +61,7 @@ urlpatterns = [
     path("api/v1/djauth/", include("djoser.urls"), name="djoserauth"),
     path("api/v1/djauth/", include("djoser.urls.jwt"), name="djoserauthjwt"),
     path("api/v1/djauth/", include("djoser.social.urls"), name="djosersocial"),
+    path("api/v1/invitations/", include("rest_invitations.urls"), name="invitations"),
 ]
 
 
