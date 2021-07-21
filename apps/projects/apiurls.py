@@ -36,7 +36,8 @@ from .apiviews import (
     ElementCommentList, ElementCommentDetail, ProjectIllustrationSetList, ProjectIllustrationSetDetail,
     IllustrationSetImageList, IllustrationSetImageDetail, ScenarioElementMultipleRecursiveViewSet,
     RemovePermissionsProject,
-    AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject)
+    AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject,
+    ProjectWithMembersViewSet)
 
 app_name = "projects"
 
@@ -154,6 +155,7 @@ router.register(r"scenario-elements-recursive", ScenarioElementRecursiveViewSet)
 router.register(r"projects", ProjectViewSet)
 router.register(r"screens-for-project", ProjectWithScreensViewSet)
 router.register(r"columns-for-project", ProjectWithColumnsViewSet)
+router.register(r"members-for-project", ProjectWithMembersViewSet)
 router.register(r"tasks-for-column", ColumnWithTasksViewSet)
 
 router.register(r"library-elements", ElementViewSet,

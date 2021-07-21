@@ -4,7 +4,7 @@ from rest_framework import generics, viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import CursorPagination
 # from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters  # Django-Guardian
@@ -57,7 +57,7 @@ from .serializers import (
     ElementCommentSerializer,
     IllustrationSetSerializer,
     ImageSerializer,
-    ScenarioElementMultipleRecursiveSerializer)
+    ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -235,6 +235,26 @@ class ProjectMemberDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ProjectMember.objects.all()
     serializer_class = ProjectMemberSerializer
+
+
+class ProjectWithMembersViewSet(viewsets.ModelViewSet):
+    # permission_classes = [IsAuthenticated]
+    queryset = Project.objects.all()
+    serializer_class = ProjectWithMembersSerializer
+    pagination_class = None
+    permission_classes = [CustomObjectPermissions]  # Django-Guardian
+    filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
+    http_method_names = ['get', 'head']
+
+    def get_queryset(self):
+        return self.get_serializer_class().setup_eager_loading(self.queryset)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def filter_queryset(self, queryset):
+        # queryset = queryset.filter(user=self.request.user)
+        return queryset
 
 
 class ProjectScreenList(generics.ListCreateAPIView):

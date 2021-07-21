@@ -447,6 +447,7 @@ class ProjectMemberSerializer(serializers.ModelSerializer):
         "creator": {"read_only": True},
     }
 
+
 class ColumnTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTask
@@ -504,6 +505,37 @@ class ProjectWithColumnsSerializer(serializers.ModelSerializer):
     @staticmethod
     def setup_eager_loading(qs):
         queryset = qs.select_related("user").prefetch_related("projectcolumn")
+        return queryset
+
+
+class ProjectWithMembersSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    members = ProjectMemberSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Project
+        fields = (
+            "preview",
+            "name",
+            "favicon",
+            "status",
+            "members",
+            "user",
+            "id",
+            "created",
+            "updated",
+            "project_data_text",
+            "project_data_json",
+        )
+        extra_kwargs = {
+            "preview": {"read_only": True},
+            "created": {"read_only": True},
+            "updated": {"read_only": True},
+        }
+
+    @staticmethod
+    def setup_eager_loading(qs):
+        queryset = qs.select_related("user").prefetch_related("members")
         return queryset
 
 
