@@ -510,7 +510,7 @@ class ProjectWithColumnsSerializer(serializers.ModelSerializer):
 
 class ProjectWithMembersSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    members = ProjectMemberSerializer(many=True, read_only=True)
+    projectmember = ProjectMemberSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
@@ -519,7 +519,7 @@ class ProjectWithMembersSerializer(serializers.ModelSerializer):
             "name",
             "favicon",
             "status",
-            "members",
+            "projectmember",
             "user",
             "id",
             "created",
@@ -535,7 +535,7 @@ class ProjectWithMembersSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def setup_eager_loading(qs):
-        queryset = qs.select_related("user").prefetch_related("members")
+        queryset = qs.select_related("user").prefetch_related("projectmember")
         return queryset
 
 
