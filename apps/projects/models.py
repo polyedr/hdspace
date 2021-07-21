@@ -222,7 +222,7 @@ class ProjectMember(TimeStampedModel):
     status = models.CharField(
         choices=MEMBER_STATUS, default=STATUS_MEMBER, max_length=32
     )
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name="projectmember", on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     def __str__(self):
