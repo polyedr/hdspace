@@ -58,16 +58,15 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
             />
           </div>
         ) : (
-          <div ref={ref} className={classes.ownStyles}>
-            <button
-              type="button"
-              id={id}
-              data-ls-id={id}
-              className={mainClasses}
-              dangerouslySetInnerHTML={{ __html: textContent }}
-              {...eventHandlers}
-            />
-          </div>
+          <button
+            type="button"
+            id={id}
+            ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
+            data-ls-id={id}
+            className={mainClasses}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+            {...eventHandlers}
+          />
         )}
       </>
     );
