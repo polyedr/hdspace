@@ -441,7 +441,7 @@ class ProjectMemberSerializer(serializers.ModelSerializer):
     # user = UserSerializer(read_only=True)
     class Meta:
         model = ProjectMember
-        fields = ("role", "status", "project", "user")
+        fields = ("id", "role", "status", "project", "user")
 
     extra_kwargs = {
         "creator": {"read_only": True},
