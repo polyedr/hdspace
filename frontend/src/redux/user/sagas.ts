@@ -203,7 +203,7 @@ function* registerSaga({
 
     yield put(
       Actions.setConfirmMessage(
-        'Please, check your mail and confirm registration',
+        'Please, check your mail and follow the activation link',
       ),
     );
 
@@ -273,6 +273,11 @@ function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
     yield put(Actions.toggleUserLoading(true));
 
     yield call(apiActivateUser, { uid, token });
+    yield put(
+      Actions.setConfirmMessage(
+        'Your account has been activated successfully. You can now login',
+      ),
+    );
 
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
   } catch (e) {

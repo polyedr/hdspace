@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import * as Actions from '@Redux/user/actions';
 import { AppReduxState } from '@Redux/types';
+import Alert from '@material-ui/lab/Alert';
+import { selectConfirmMessage } from '@Redux/user/selectors';
 import LoginForm from '../LoginForm';
 import Spinner from '../../UI/Spinner';
 import { Info } from '../Info';
@@ -51,6 +53,7 @@ type IProps = typeof mapDispatch & {
 
 const Activation: React.FC<IProps> = ({ activateUser, isSignLoader }) => {
   const classes = useStyles();
+  const confirmMessage = useSelector(selectConfirmMessage);
   const match = useRouteMatch<{ params: any }>('/activate/:uid/:token');
 
   const { uid, token } = (match?.params as unknown) as {
@@ -60,7 +63,7 @@ const Activation: React.FC<IProps> = ({ activateUser, isSignLoader }) => {
 
   useEffect(() => {
     activateUser(uid, token);
-  }, [activateUser]);
+  }, [activateUser, token, uid]);
 
   return (
     <div className={classes.activation}>
@@ -68,7 +71,11 @@ const Activation: React.FC<IProps> = ({ activateUser, isSignLoader }) => {
 
       <div className={classes.formContainer}>
         <div className={classes.info}>
-          <p className={classes.title}>Thanks for registration!</p>
+          {confirmMessage && (
+            <Alert severity="info" variant="filled">
+              {confirmMessage}
+            </Alert>
+          )}
         </div>
 
         <LoginForm />
