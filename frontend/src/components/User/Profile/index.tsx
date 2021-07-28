@@ -313,6 +313,7 @@ const Profile: React.FC = () => {
                                 (meta.error || meta.submitError) && meta.touched
                               }
                               variant="outlined"
+                              disabled
                             >
                               <InputLabel>Role</InputLabel>
 

@@ -160,9 +160,7 @@ export const apiChangeProfileData = ({ id, ...props }) =>
     method: 'PATCH',
     url: `/accounts/profiles/${id}/`,
   })
-    .then((parseResult) => ({
-      result: parseResult,
-    }))
+    .then(parseResult)
     .catch(handleError);
 
 export const apiIdentifyUser = (props) =>
