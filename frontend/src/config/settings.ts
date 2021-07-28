@@ -6,13 +6,13 @@ export const env = process.env.NODE_ENV;
 const settings = {
   development: {
     api: {
-      host: 'https://www.timberworkinfo.ru',
+      host: 'https://www.api-staging.adevi.info',
       version: 1,
     },
   },
   staging: {
     api: {
-      host: 'https://www.timberworkinfo.ru',
+      host: 'https://www.api-staging.adevi.info',
       version: 1,
     },
   },
