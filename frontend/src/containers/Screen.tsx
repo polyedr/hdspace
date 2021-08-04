@@ -81,7 +81,7 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.navigator}`,
-    content: "Please click the mouse right button on the 'TextBlock'",
+    content: "Please click the mouse right button on the 'TextBlock'.",
   },
   {
     selector: `#${ELEMENT_IDS.navigator}`,
@@ -90,11 +90,11 @@ const tourSteps: ReactourStep[] = [
   {
     selector: `#${ELEMENT_IDS.navigator}`,
     content:
-      "Click the mouse right button on the 'root' and click 'Paste'. You can paste element to container like 'root'",
+      "Click the mouse right button on the 'root' and click 'Paste'. You can paste element to container like 'root'.",
   },
   {
     selector: `#${ELEMENT_IDS.layoutSelector}`,
-    content: 'Try different layouts using this selector',
+    content: 'Try different layouts using this selector.',
   },
   {
     selector: `#${ELEMENT_IDS.masterScreenListItem}`,
@@ -102,7 +102,7 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: ``,
-    content: 'Congratlation. Well done. Thanks for following me',
+    content: 'Congratulation. Well done. Thanks for following me.',
   },
 ];
 
