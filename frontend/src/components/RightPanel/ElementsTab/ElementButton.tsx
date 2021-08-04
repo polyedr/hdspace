@@ -127,6 +127,7 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
 
     return (
       <Button
+        id={id}
         disabled={!isAvailableChild(activeElement, type)}
         classes={buttonClasses}
         onClick={handleClick}

@@ -20,6 +20,7 @@ import {
   selectCurrentUIFramework,
   selectImportLoader,
 } from '@Redux/project/selectors/base';
+import ELEMENT_IDS from '@Constants/elementIds';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 
 import { WindowProvider } from './FrameContext';
@@ -178,6 +179,7 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
       width="100%"
       frameBorder={0}
       scrolling="no"
+      id={ELEMENT_IDS.canvas}
     >
       <FrameContextConsumer>
         {({ document: frameDocument, window: frameWindow }) => {

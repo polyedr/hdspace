@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import RichTextEditor from 'react-rte';
+import ELEMENT_IDS from '@Constants/elementIds';
 import EditorToolbarConfig from './EditorToolbarConfig';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -23,15 +24,17 @@ const RichTextContent = ({ canEdit, state, handleChange }) => {
   const classes = useStyles();
 
   return (
-    <RichTextEditor
-      editorClassName={classes.editor}
-      toolbarClassName={classes.toolbar}
-      className={classes.container}
-      value={state || ''}
-      onChange={handleChange}
-      toolbarConfig={EditorToolbarConfig}
-      disabled={!canEdit}
-    />
+    <div id={ELEMENT_IDS.richTextEditor}>
+      <RichTextEditor
+        editorClassName={classes.editor}
+        toolbarClassName={classes.toolbar}
+        className={classes.container}
+        value={state || ''}
+        onChange={handleChange}
+        toolbarConfig={EditorToolbarConfig}
+        disabled={!canEdit}
+      />
+    </div>
   );
 };
 
