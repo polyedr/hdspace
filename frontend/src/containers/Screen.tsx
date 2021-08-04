@@ -34,7 +34,7 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.rightPanel}`,
-    content: 'Create element using buttons on this panel',
+    content: 'Create element using buttons on this panel.',
   },
   {
     selector: `#${ELEMENT_IDS.textBlock}`,
@@ -52,7 +52,7 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.textBlock}`,
-    content: "Let's add new 'TextBlock' again by clicking 'TextBlock",
+    content: "Let's add new 'TextBlock' again by clicking 'TextBlock.",
   },
   {
     selector: `#${ELEMENT_IDS.canvas}`,
@@ -60,19 +60,19 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.rightPanel}`,
-    content: 'You can change properties of element you added on this panel',
+    content: 'You can change properties of element you added on this panel.',
   },
   {
     selector: `#${ELEMENT_IDS.richTextEditor}`,
-    content: "Please change 'This is text block' as 'hyperlink'",
+    content: "Please change 'This is text block' as 'hyperlink'.",
   },
   {
     selector: `#${ELEMENT_IDS.link}`,
-    content: "Select the 'Make Link' to make hyperlink",
+    content: "Select the 'Make Link' to make hyperlink.",
   },
   {
     selector: `#${ELEMENT_IDS.itemUrl}`,
-    content: 'You can input link to make hyperlink',
+    content: 'You can input link to make hyperlink.',
   },
   {
     selector: `#${ELEMENT_IDS.navigator}`,
