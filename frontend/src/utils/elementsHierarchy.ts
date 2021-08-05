@@ -12,6 +12,7 @@ export const convertElementToData = (
   element: ServerElement<any>,
   isCustom: boolean = false,
 ): ElementData => ({
+  id: element.id.toString(),
   key: element.struct_type,
   type: element.struct_type,
   icon: ICONS[element.struct_type],

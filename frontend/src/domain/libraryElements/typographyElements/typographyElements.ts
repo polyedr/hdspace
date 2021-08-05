@@ -10,6 +10,7 @@ import {
   TextBlockServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import ELEMENT_IDS from '@Constants/elementIds';
 import { defaultFreeCanvasParams } from '../../core';
 
 export const makeHeading = ({
@@ -97,7 +98,7 @@ export const makeOcrtext = (): OcrtextServerElement => ({
 });
 
 export const makeTextBlock = (): TextBlockServerElement => ({
-  id: 'textBlock',
+  id: ELEMENT_IDS.textBlock,
   buoyancy: 0,
   func_type: 'textBlock',
   struct_type: 'textBlock',

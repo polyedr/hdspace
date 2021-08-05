@@ -3,6 +3,7 @@ import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
 import { Checkbox, FormControlLabel } from '@material-ui/core';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedCallback } from 'use-debounce';
+import ELEMENT_IDS from '@Constants/elementIds';
 import RichTextContent from '../../helperComponents/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
@@ -49,6 +50,7 @@ const TextContent = ({ element, updateParams, canEdit }) => {
         handleChange={handleChange}
       />
       <FormControlLabel
+        id={ELEMENT_IDS.link}
         control={
           <Checkbox
             value="make link"
@@ -63,6 +65,7 @@ const TextContent = ({ element, updateParams, canEdit }) => {
 
       {isLink && (
         <StyledTextField
+          id={ELEMENT_IDS.itemUrl}
           value={input || ''}
           onChange={changeHandler}
           label="Item URL"

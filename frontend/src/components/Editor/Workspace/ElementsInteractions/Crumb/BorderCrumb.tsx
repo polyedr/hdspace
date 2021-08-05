@@ -102,7 +102,7 @@ const BorderCrumb: React.FC<Props> = (props) => {
       >
         {element.name}
       </span>
-      {element.type !== 'root' && (
+      {element.type !== 'root' && element.name.indexOf('Master') < 0 && (
         <>
           <span className={classes.icon} onClick={handleDuplicate}>
             <Icon icon="copy" size={16} color="white" />
