@@ -26,6 +26,7 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { HELP_LINK } from '../../../config/settings';
 import Layouts from './Layouts';
 import Actions from './actions';
 
@@ -51,6 +52,13 @@ const useStyles = makeStyles(({ typography, spacing }) => ({
   },
   magicButton: {
     height: 40,
+  },
+  helpTextStyle: {
+    textDecoration: 'none',
+    color: 'white',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
 }));
 
@@ -81,8 +89,15 @@ const TopBar: React.FC = () => {
 
   return currentScreenId !== -1 ? (
     <div className={classes.root}>
+      <a
+        className={classes.helpTextStyle}
+        target="_blank"
+        href={HELP_LINK}
+        rel="noreferrer noopener"
+      >
+        Help
+      </a>
       <Actions />
-
       <div className={classes.wrapper}>
         <FormControlLabel
           control={

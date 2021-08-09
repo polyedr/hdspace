@@ -140,7 +140,6 @@ const Screen: React.FC<Props> = ({ screenId }) => {
 
   useEffect(() => {
     dispatch(setEditableScreen(screen.id));
-    dispatch(setUserGuideActive(true));
     return () => {
       dispatch(clearEditableScreen(screen));
     };
