@@ -93,6 +93,7 @@ class Project(TimeStampedModel):
     def get_project_url(self):
         return reverse("projects:project", kwargs={"pk": self.pk})
 
+
     def __str__(self):
         return self.name
 
