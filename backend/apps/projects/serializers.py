@@ -11,7 +11,7 @@ from rest_framework_recursive.fields import RecursiveField
 from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
-
+from apps.accounts.models import User
 from apps.accounts.serializers import UserSerializer
 from .models import (
     Project,
@@ -438,13 +438,15 @@ class ProjectInvitationSerializer(serializers.ModelSerializer):
 
 
 class ProjectMemberSerializer(serializers.ModelSerializer):
-    user_extended = UserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='user', read_only=False)
     class Meta:
         model = ProjectMember
-        fields = ("id", "role", "status", "project", "user", "user_extended")
+        fields = ("id", "role", "status", "project", "user", "user_id")
 
     extra_kwargs = {
         "creator": {"read_only": True},
+        "user": {"read_only": True},
     }
 
 
