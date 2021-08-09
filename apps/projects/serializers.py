@@ -438,7 +438,7 @@ class ProjectInvitationSerializer(serializers.ModelSerializer):
 
 
 class ProjectMemberSerializer(serializers.ModelSerializer):
-    # user = UserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
     class Meta:
         model = ProjectMember
         fields = ("id", "role", "status", "project", "user")
