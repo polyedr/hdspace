@@ -36,6 +36,7 @@ const TextBlock = React.forwardRef<HTMLDivElement, RendererProps>(
             data-ls-id={element.id}
             data-gramm_editor={false}
             {...eventHandlers}
+            className={classes.ownStyles}
           >
             <a
               aria-label={`Link-${element.id}`}

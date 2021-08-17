@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
+  selectActiveElement,
   selectSelectedElementsIds,
   selectActiveElementId,
   selectHoveredElementId,
@@ -15,11 +16,21 @@ import {
   selectCurrentDropTargetParams,
   selectCurrentProjectId,
   selectShowingBorders,
+  selectEditableStyles,
 } from '@Redux/project/selectors/base';
 import {
+  selectCurrentScreenId,
   selectCurrentScreen,
   selectMasterScreenId,
+  selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
+import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import {
+  updateMultipleElementsStyles,
+  updateSharedStyles,
+} from '@Redux/project/actions';
+import { Entity } from '@Src/types';
 import { selectUserProfileDataParameters } from '@Redux/user/selectors';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import InteractionsHandler from './InteractionsHandler';
@@ -40,8 +51,10 @@ type Props = {
 };
 
 const ElementsInteractions: React.FC<Props> = (props) => {
+  const dispatch = useDispatch();
   const allElements = useSelector(selectAllElements);
   const preSelectedElementId = useSelector(selectPreSelectedElementId);
+  const activeElement = useSelector(selectActiveElement);
   const activeElementId = useSelector(selectActiveElementId);
   const hoveredElementId = useSelector(selectHoveredElementId);
   const dropTargetId = useSelector(selectCurrentDropTargetId);
@@ -51,14 +64,18 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   const canCreateGroup = useSelector(selectCanCreateGroup);
   const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const editableStyles = useSelector(selectEditableStyles);
   const { dropTargetBordersMode } = useSelector(
     selectUserProfileDataParameters,
   );
   const bordersEnabled = useSelector(selectBordersEnabled);
   const currentProjectId = useSelector(selectCurrentProjectId);
+  const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const frameWindow = useContext(WindowContext);
 
+  const isGroupSource = !!activeElement.parameters.groupElements;
   const idsToExclude = [preSelectedElementId, activeElementId];
   if (!!hoveredElementId && hoveredElementId !== activeElementId) {
     idsToExclude.push(hoveredElementId);
@@ -88,6 +105,85 @@ const ElementsInteractions: React.FC<Props> = (props) => {
         ),
       ]
     : DOMHandler.INSTANCE.visibleElementsIds;
+
+  const updateStyles = useCallback(
+    (styles: React.CSSProperties) => {
+      if (!selectedElementsIds.length) {
+        dispatch(
+          enqueueSnackbar({
+            message: 'No elements were selected',
+            options: { variant: 'error' },
+          }),
+        );
+      } else if (selectedElementsIds.length > 1) {
+        dispatch(
+          updateMultipleElementsStyles(
+            selectedElementsIds,
+            { [ALL_ELEMENTS_INDEX]: styles },
+            { screenId: currentScreenId },
+          ),
+        );
+      } else if (masterScreenEnabled) {
+        if (isGroupSource) {
+          const groupElementsIds = activeElement.parameters.groupElements;
+          dispatch(
+            updateMultipleElementsStyles(
+              [activeElement.id, ...groupElementsIds],
+              {
+                [ALL_ELEMENTS_INDEX]: styles,
+              },
+              { screenId: currentScreenId },
+            ),
+          );
+        } else {
+          dispatch(
+            updateSharedStyles(
+              (masterScreenEnabled
+                ? activeElement.type
+                : editableStyles) as Entity,
+              styles,
+              {
+                screenId: currentScreenId,
+              },
+            ),
+          );
+        }
+      } else if (editableStyles === 'ownStyles') {
+        dispatch(
+          updateMultipleElementsStyles(
+            [activeElement.id],
+            {
+              [ALL_ELEMENTS_INDEX]: styles,
+            },
+            { screenId: currentScreenId },
+          ),
+        );
+      } else {
+        dispatch(
+          updateSharedStyles(
+            (masterScreenEnabled
+              ? activeElement.type
+              : editableStyles) as Entity,
+            styles,
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+      }
+    },
+    [
+      selectedElementsIds,
+      masterScreenEnabled,
+      editableStyles,
+      dispatch,
+      currentScreenId,
+      isGroupSource,
+      activeElement.parameters.groupElements,
+      activeElement.id,
+      activeElement.type,
+    ],
+  );
 
   if (!frameWindow || !bordersEnabled) {
     return null;
@@ -120,6 +216,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
             masterScreenId={masterScreenId}
             showBorders={showBorders}
             selectedElementsIds={selectedElementsIds}
+            updateStyles={updateStyles}
           />
         );
       })}

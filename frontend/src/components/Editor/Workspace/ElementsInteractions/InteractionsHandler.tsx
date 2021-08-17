@@ -31,6 +31,7 @@ type Props = {
   preSelectedElementId: string | null;
   dropTargetParams: DropTargetParams | null;
   enableDropTargetBordersMode: boolean;
+  updateStyles(payload: React.CSSProperties): void;
 };
 
 const InteractionsHandler = ({
@@ -48,6 +49,7 @@ const InteractionsHandler = ({
   preSelectedElementId,
   dropTargetParams,
   enableDropTargetBordersMode,
+  updateStyles,
 }: Props) => {
   const elementGroupStyles = useSelector((state: AppReduxState) => {
     return selectCurrentProject(state).projectData.classes.find((value) => {
@@ -98,6 +100,7 @@ const InteractionsHandler = ({
     <React.Fragment key={`element-border-${element.id}`}>
       <Borders
         elementId={element.id}
+        type={element.type}
         styles={styles}
         dropTargetParams={dropTargetParams}
         preSelectedElementId={preSelectedElementId}
@@ -108,6 +111,7 @@ const InteractionsHandler = ({
           dropTargetParams?.id,
           preSelectedElementId,
         ].includes(element.id)}
+        updateStyles={updateStyles}
       />
       <BorderCrumb
         element={element}
