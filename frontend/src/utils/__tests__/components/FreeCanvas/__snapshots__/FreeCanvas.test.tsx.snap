@@ -13,7 +13,7 @@ exports[`Free Canvas should render a "free canvas" container 1`] = `
     >
       <p
         class="paragraph paragraph-ownStyles-6 paragraph-ownStyles-9 paragraph-ownPseudoStyles-7 paragraph-ownPseudoStyles-10"
-        contenteditable="false"
+        contenteditable="true"
         data-gramm_editor="false"
         data-ls-id="2"
         id="2"
