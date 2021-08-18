@@ -73,7 +73,7 @@ To restore .json from other directories, just replace what's after --path
 
 ## Authors
 
-* **Ivan Ishchukov** - *REST API web development* - http://allmax.team/
+* **Ivan Ishchukov** - *REST API web development*
 
 ## Acknowledgements
 
