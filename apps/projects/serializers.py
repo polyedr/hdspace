@@ -369,6 +369,7 @@ class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer
             "tags",
             "project_data_text",
             "project_data_json",
+            "project_data_activity_json",
         )
         extra_kwargs = {
             "preview": {"read_only": True},
@@ -497,6 +498,7 @@ class ProjectWithColumnsSerializer(serializers.ModelSerializer):
             "updated",
             "project_data_text",
             "project_data_json",
+            "project_data_activity_json",
         )
         extra_kwargs = {
             "preview": {"read_only": True},
@@ -528,6 +530,7 @@ class ProjectWithMembersSerializer(serializers.ModelSerializer):
             "updated",
             "project_data_text",
             "project_data_json",
+            "project_data_activity_json",
         )
         extra_kwargs = {
             "preview": {"read_only": True},
