@@ -297,6 +297,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             "updated",
             "project_data_text",
             "project_data_json",
+            "project_data_activity_json",
             "tags",
         )
         extra_kwargs = {
