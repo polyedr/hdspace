@@ -1,26 +1,32 @@
 import React, { useMemo } from 'react';
 import { BoundingStyles, DropTargetParams } from '@Src/types';
+import { ResizableBox } from 'react-resizable';
 import { DropPosition } from '@Constants/dragAndDrop';
+import './ResizableBox.css';
 import BorderPosition from '../constants';
 import Border from './Border';
 import DropPositionMarker from './DropPositionMarker';
 
 type Props = {
   elementId: string;
+  type: string;
   styles: BoundingStyles;
   isActiveBorder: boolean;
   dropTargetParams: DropTargetParams | null;
   enableDropTargetBordersMode: boolean;
   preSelectedElementId: string | null;
+  updateStyles(payload: React.CSSProperties): void;
 };
 
 const Borders: React.FC<Props> = ({
   elementId,
+  type,
   styles,
   isActiveBorder,
   dropTargetParams,
   enableDropTargetBordersMode,
   preSelectedElementId,
+  updateStyles,
 }) => {
   const isDropTarget = dropTargetParams?.id === elementId;
 
@@ -64,9 +70,40 @@ const Borders: React.FC<Props> = ({
   if (!elementId || !styles) {
     return null;
   }
+  const { top, left, height, width } = styles;
+  const onResize = (e, data) => {
+    const newWidth = { width: `${Math.trunc(data.size.width)}px` };
+    const newHeight = { height: `${Math.trunc(data.size.height)}px` };
 
+    updateStyles({
+      ...newWidth,
+      ...newHeight,
+      flexGrow: 0,
+    });
+  };
   return (
     <>
+      {isActiveBorder &&
+        !['root', 'calendar', 'clock', 'label'].includes(type) && (
+          <ResizableBox
+            style={{ left, top }}
+            className="absolutely-positioned top-aligned left-aligned resizable-box"
+            width={width}
+            height={height}
+            handle={(h, ref) => (
+              <span className={`custom-handle custom-handle-${h}`} ref={ref} />
+            )}
+            handleSize={[8, 8]}
+            onResize={onResize}
+            onResizeStop={onResize}
+            resizeHandles={
+              type === 'navbar'
+                ? ['sw', 'se', 'nw', 'ne', 'n', 's']
+                : ['sw', 'se', 'nw', 'ne', 'w', 'e', 'n', 's']
+            }
+            lockAspectRatio={type === 'carousel'}
+          />
+        )}
       {showBordersPosition[BorderPosition.TOP] && (
         <Border
           position={BorderPosition.TOP}

@@ -22,7 +22,7 @@ const useContentEditable = <T extends HTMLElement>(
 ): ContentEditableConfig<T> => {
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
-  const [contentEditable, setContentEditable] = useState<boolean>(false);
+  const [contentEditable, setContentEditable] = useState<boolean>(true);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
 
   const saveElementContent = useCallback(
@@ -59,7 +59,7 @@ const useContentEditable = <T extends HTMLElement>(
               timer.current = null;
             }
             timer.current = setTimeout(() => {
-              setContentEditable(false);
+              setContentEditable(true);
               timer.current = null;
             }, 500);
           }
@@ -69,12 +69,12 @@ const useContentEditable = <T extends HTMLElement>(
           if (e.key === 'Enter') {
             event.stopPropagation();
             event.preventDefault();
-            setContentEditable(false);
+            setContentEditable(true);
             saveElementContent((event.target as HTMLElement).innerHTML.trim());
           } else if (e.key === 'Escape') {
             event.stopPropagation();
             event.preventDefault();
-            setContentEditable(false);
+            setContentEditable(true);
           }
         },
         onFocus: () => {
@@ -84,7 +84,7 @@ const useContentEditable = <T extends HTMLElement>(
           }
         },
         onBlur: (event: React.SyntheticEvent) => {
-          setContentEditable(false);
+          setContentEditable(true);
           debouncedCallback.cancel();
           debouncedCallback.callback(
             (event.target as HTMLElement).innerHTML.trim(),

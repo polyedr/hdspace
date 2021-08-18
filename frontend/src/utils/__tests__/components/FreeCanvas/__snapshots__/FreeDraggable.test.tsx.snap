@@ -8,7 +8,7 @@ exports[`Free Draggable should render free draggable component 1`] = `
   >
     <p
       class="paragraph paragraph-ownStyles-5 paragraph-ownStyles-8 paragraph-ownPseudoStyles-6 paragraph-ownPseudoStyles-9"
-      contenteditable="false"
+      contenteditable="true"
       data-gramm_editor="false"
       data-ls-id="2"
       id="2"
