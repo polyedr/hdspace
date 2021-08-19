@@ -85,24 +85,52 @@ const Borders: React.FC<Props> = ({
     <>
       {isActiveBorder &&
         !['root', 'calendar', 'clock', 'label'].includes(type) && (
-          <ResizableBox
-            style={{ left, top }}
-            className="absolutely-positioned top-aligned left-aligned resizable-box"
-            width={width}
-            height={height}
-            handle={(h, ref) => (
-              <span className={`custom-handle custom-handle-${h}`} ref={ref} />
-            )}
-            handleSize={[8, 8]}
-            onResize={onResize}
-            onResizeStop={onResize}
-            resizeHandles={
-              type === 'navbar'
-                ? ['sw', 'se', 'nw', 'ne', 'n', 's']
-                : ['sw', 'se', 'nw', 'ne', 'w', 'e', 'n', 's']
-            }
-            lockAspectRatio={type === 'carousel'}
-          />
+          <div style={{ width }}>
+            <ResizableBox
+              style={{ left, top }}
+              className="absolutely-positioned top-aligned left-aligned resizable-box"
+              width={width}
+              height={height}
+              handle={(h, ref) => (
+                <span
+                  className={`custom-handle custom-handle-${h}`}
+                  ref={ref}
+                />
+              )}
+              handleSize={[8, 8]}
+              onResize={onResize}
+              onResizeStop={onResize}
+              resizeHandles={
+                type === 'navbar'
+                  ? ['sw', 'se', 'nw', 'ne', 'n', 's']
+                  : ['sw', 'se', 'nw', 'ne', 'w', 'e', 'n', 's']
+              }
+              lockAspectRatio={type === 'carousel'}
+            />
+            <div
+              style={{
+                left: 4 + left + width,
+                top: top + height / 2,
+                position: 'absolute',
+                color: 'red',
+                fontSize: 'x-small',
+                fontWeight: 'bold',
+              }}
+            >
+              {`${height} px`}
+            </div>
+            <div
+              style={{
+                marginTop: 4 + top + height,
+                textAlign: 'center',
+                color: 'red',
+                fontSize: 'x-small',
+                fontWeight: 'bold',
+              }}
+            >
+              {`${width} px`}
+            </div>
+          </div>
         )}
       {showBordersPosition[BorderPosition.TOP] && (
         <Border
