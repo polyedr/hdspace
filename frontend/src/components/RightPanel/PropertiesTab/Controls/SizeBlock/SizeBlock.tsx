@@ -1,4 +1,10 @@
-import React, { useCallback, memo, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  memo,
+  useEffect,
+  useState,
+  KeyboardEvent,
+} from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
@@ -25,6 +31,17 @@ const useStyles = makeStyles({
 });
 
 const sameSizeElements: (Entity | 'none')[] = ['checkbox', 'radiobutton'];
+const percentSizeElements: (Entity | 'none')[] = ['carousel'];
+const disableWidthElements: (Entity | 'none')[] = [
+  'navbar',
+  'calendar',
+  'clock',
+];
+const disableHeightElements: (Entity | 'none')[] = [
+  'calendar',
+  'calendar',
+  'clock',
+];
 
 enum Unit {
   px = 'px',
@@ -43,6 +60,7 @@ type SizeName = keyof SelectedUnit;
 
 type ControlProps = {
   sizeName: SizeName;
+  disabled: boolean;
 };
 
 const getUnitFromValue = (value: string): UnitName => {
@@ -135,21 +153,45 @@ const SizeBlock: React.FC<Props> = ({
   const handleInputChange = useCallback(
     (name, value) => {
       const size = String(name === 'width' ? width : height) || 'auto';
+      const newWidth = width === undefined ? 1 : parseFloat(`${width}`);
+      const newHeight = height === undefined ? 1 : parseFloat(`${height}`);
 
       const unitValue = Unit[getUnitFromValue(size?.toString() || Unit.px)];
 
       const finalValue =
         unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`;
-
-      const newSize = sameSizeElements.includes(type)
-        ? {
-            width: finalValue,
-            height: finalValue,
-          }
-        : {
-            [name]: finalValue,
-          };
-
+      let newSize;
+      if (sameSizeElements.includes(type)) {
+        newSize = {
+          width: finalValue,
+          height: finalValue,
+        };
+      } else if (percentSizeElements.includes(type)) {
+        newSize =
+          name === 'width'
+            ? {
+                width: finalValue,
+                height:
+                  unitValue === 'auto'
+                    ? 'auto'
+                    : `${Math.trunc((newHeight * value) / newWidth)}${
+                        Unit[unitValue]
+                      }`,
+              }
+            : {
+                width:
+                  unitValue === 'auto'
+                    ? 'auto'
+                    : `${Math.trunc((newWidth * value) / newHeight)}${
+                        Unit[unitValue]
+                      }`,
+                height: finalValue,
+              };
+      } else {
+        newSize = {
+          [name]: finalValue,
+        };
+      }
       updateStyles({
         ...newSize,
         ...(name === 'height' && { minHeight: 'auto' }),
@@ -159,13 +201,14 @@ const SizeBlock: React.FC<Props> = ({
     [updateStyles, width, height, type],
   );
 
-  const SizeControl: React.FC<ControlProps> = ({ sizeName }) => {
+  const SizeControl: React.FC<ControlProps> = ({ sizeName, disabled }) => {
     const size = String((sizeName === 'width' ? width : height) || 'auto');
     const parsedSize = Number.isNaN(parseFloat(size))
       ? ''
       : String(parseFloat(size));
     const inputValue = !size || size === 'auto' ? 'auto' : parsedSize;
     const [state, setState] = useState(inputValue || 0);
+    const [name, setName] = useState('');
     useEffect(() => {
       setState(inputValue);
     }, [inputValue]);
@@ -183,9 +226,14 @@ const SizeBlock: React.FC<Props> = ({
           value={state}
           onChange={({ target: { name, value } }) => {
             setState(value);
-            debounced.callback(name, value);
+            setName(name);
           }}
-          disabled={inputValue === 'auto' || !canEdit}
+          onKeyDown={(event: KeyboardEvent<HTMLImageElement>) => {
+            if (event.keyCode === 13) {
+              debounced.callback(name, state);
+            }
+          }}
+          disabled={inputValue === 'auto' || !canEdit || disabled}
           margin="dense"
         />
 
@@ -196,7 +244,7 @@ const SizeBlock: React.FC<Props> = ({
           value={Unit[getUnitFromValue(size)]}
           name={`${sizeName}_unit`}
           select
-          disabled={!canEdit}
+          disabled={!canEdit || disabled}
         >
           {Object.keys(Unit).map((unit) => (
             <MenuItem key={unit} value={unit} dense>
@@ -220,8 +268,14 @@ const SizeBlock: React.FC<Props> = ({
       )}
 
       <div className={classes.wrapper}>
-        <SizeControl sizeName="height" />
-        <SizeControl sizeName="width" />
+        <SizeControl
+          sizeName="height"
+          disabled={disableHeightElements.includes(type)}
+        />
+        <SizeControl
+          sizeName="width"
+          disabled={disableWidthElements.includes(type)}
+        />
       </div>
     </section>
   );

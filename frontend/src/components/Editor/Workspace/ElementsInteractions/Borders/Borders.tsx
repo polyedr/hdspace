@@ -102,7 +102,9 @@ const Borders: React.FC<Props> = ({
               onResizeStop={onResize}
               resizeHandles={
                 type === 'navbar'
-                  ? ['sw', 'se', 'nw', 'ne', 'n', 's']
+                  ? ['n', 's']
+                  : type === 'carousel'
+                  ? ['sw', 'se', 'nw', 'ne']
                   : ['sw', 'se', 'nw', 'ne', 'w', 'e', 'n', 's']
               }
               lockAspectRatio={type === 'carousel'}
