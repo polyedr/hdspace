@@ -37,7 +37,7 @@ const getDefaultStyles = (struct_type: Entity) => ({
 export const convertElementFromResponse = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters'],
+  P extends ServerElement<T>['parameters']
 >({
   id,
   name,
@@ -85,7 +85,7 @@ export const convertElementFromResponse = <
 export const convertNNElementFromResponse = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters'],
+  P extends ServerElement<T>['parameters']
 >({
   id,
   name,
@@ -183,7 +183,7 @@ export function convertProjectFromResponse({
   project_data_json,
   tags,
 }: ServerProject): Project {
-  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
+  const projectDataJSON = JSON.parse(JSON.stringify(project_data_json));
   return {
     id,
     name,

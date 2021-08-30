@@ -419,7 +419,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   textinput: [
-    'textContent',
+    'text',
     'type',
     'placeholder',
     ...textinputStyleControls,

@@ -112,7 +112,7 @@ module.exports = {
     'react/jsx-wrap-multilines': 'off', // to avoid conflicts with prettier
     'react/jsx-props-no-spreading': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
-    'no-nested-ternary': 'warn',
+    'no-nested-ternary': 'off',
     'jsx-a11y/click-events-have-key-events': 'off',
     'jsx-a11y/mouse-events-have-key-events': 'off',
     'jsx-a11y/no-static-element-interactions': 'off',
