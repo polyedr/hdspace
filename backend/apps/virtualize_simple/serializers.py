@@ -3360,6 +3360,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             )
         # Create the root element mptt end
 
+
         # Create the opencv recognition start
         image_dict = {}
         result_regions = {}
@@ -3378,6 +3379,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         # print("channel:", img_channels)
         # Read an image with OpenCV end
 
+        '''
         # Detect the font-size with tesseract for the whole image start
         whole_img = cv2.cvtColor(image_opencv_input, cv2.COLOR_BGR2GRAY)
         result = pytesseract.image_to_boxes(whole_img)
@@ -3392,13 +3394,14 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 font_size.append(12.0)  # Default font-size value is 12px
         font_size_img = int(median(font_size) * 1.7)  # Font-size value of the image
         # Detect the font-size with tesseract for the whole image end
+        '''
 
         # Get(take the whole image) the dominant colour for the parent container
         bcolour_container_value = "255,255,255,0"
         domcolour_container = get_dominant_colour(image_opencv_input)[0]
         domcolour_container.append(1)
         bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
-
+        '''
         # Detect text contours and rectangles on image start
         text_contours = []
         rect_contours = []
@@ -3430,7 +3433,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         # Save all detected regions into dictionary
         result = {"text": text_contours, "rect": rect_contours}
         # Detect text contours and rectangles on image end
-
+        '''
         window_name1 = "image_opencv_text"
 
         # Create the opencv recognition end
