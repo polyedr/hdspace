@@ -115,10 +115,17 @@ export const getRightPanelCategoryTabs = (
     case 'smartHeader':
     case 'smartFooter':
     case 'smartForm':
-    case 'smartWebpage':
+      // case 'smartWebpage':
       return {
         templates: {
           ...(obj.templates || {}),
+          [structType]: convertElementToData(libraryElements[structType]()),
+        },
+      };
+    case 'smartWebpage':
+      return {
+        generators: {
+          ...(obj.generators || {}),
           [structType]: convertElementToData(libraryElements[structType]()),
         },
       };

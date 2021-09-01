@@ -64,7 +64,7 @@ const ElementsTab = () => {
 
   const [section, setSection] = useState(sections[0]);
 
-  const { elements, templates, library } = createElementsHierarchy(
+  const { elements, templates, generators, library } = createElementsHierarchy(
     LIBRARY_ELEMENTS,
   );
 
@@ -106,6 +106,9 @@ const ElementsTab = () => {
               <span className={classes.title}>Templates</span>
             </ToggleButton>
 
+            <ToggleButton classes={toggleButtonClasses} value="generators">
+              <span className={classes.title}>Generators</span>
+            </ToggleButton>
             <ToggleButton classes={toggleButtonClasses} value="library">
               <span className={classes.title}>Library</span>
             </ToggleButton>
@@ -129,6 +132,14 @@ const ElementsTab = () => {
             className={classes.section}
           >
             <ElementsBlock elements={templates} />
+          </Section>
+
+          <Section
+            title="generators"
+            activeSection={section}
+            className={classes.section}
+          >
+            <ElementsBlock elements={generators} />
           </Section>
 
           <Section title="library" activeSection={section}>
