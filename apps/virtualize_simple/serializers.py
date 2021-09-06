@@ -3444,9 +3444,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
         # Create the recognized_elements array start
         if imgpath:
-            img = load_img(imgpath)
-            img = img_to_array(img)
-
+            # img = load_img(imgpath)
+            # img = img_to_array(img)
+            # These calculations should be moved to the previous serializer later
             fsize = str(os.path.getsize(imgpath))
             fnamesize = fname + fsize
 
