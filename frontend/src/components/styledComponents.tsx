@@ -10,6 +10,7 @@ import {
   AccordionDetails as MuiAccordionDetails,
   TextField,
   IconButton,
+  SvgIconTypeMap,
 } from '@material-ui/core';
 import {
   createStyles,
@@ -19,6 +20,20 @@ import {
 } from '@material-ui/core/styles';
 import { ToggleButtonProps } from '@material-ui/lab';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+
+const SideBarTitleStyles = makeStyles(({ spacing }) => ({
+  container: {
+    padding: spacing(1, 0),
+  },
+  titleRoot: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  actionContainer: {
+    display: 'flex',
+  },
+}));
 
 const useAccordionStyles = makeStyles(({ palette }) => ({
   root: {
@@ -198,6 +213,26 @@ export const StyledTextField: React.FC<TextFieldProps> = (props) => {
   );
 };
 
+export const PanelTextField: React.FC<TextFieldProps> = (props) => {
+  const classes = useTextFieldStyles();
+  const { select } = props;
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  return (
+    <TextField
+      {...(!select && {
+        inputRef,
+        onFocus: () => inputRef.current?.select(),
+      })}
+      classes={classes}
+      margin="dense"
+      fullWidth
+      variant="outlined"
+      {...props}
+    />
+  );
+};
+
 export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => {
   const classes = useToggleButtonStyles();
   return <ToggleButton classes={classes} {...props} />;
@@ -212,5 +247,69 @@ export const StyledIconButton: React.FC<IconButtonProps> = ({
     <IconButton className={classes.iconButton} {...props}>
       {children}
     </IconButton>
+  );
+};
+
+export const TabPanel: React.FC<{
+  index: number;
+  value: number;
+}> = ({ children, value, index }) => (
+  <div
+    role="tabpanel"
+    hidden={value !== index}
+    id={`simple-tabpanel-${index}`}
+    aria-labelledby={`simple-tab-${index}`}
+  >
+    {children}
+  </div>
+);
+
+export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
+
+export interface SideBarTitleAction {
+  callback: () => void;
+  icon: IconType;
+  title: string;
+}
+
+type SideBarTitleProps = {
+  icon: IconType;
+  title: string;
+  actions?: SideBarTitleAction[];
+};
+
+export const SideBarTitle: React.FC<SideBarTitleProps> = (props) => {
+  const classes = SideBarTitleStyles();
+  const { icon, title, actions = [], children } = props;
+
+  const Icon = icon;
+
+  return (
+    <div className={classes.container}>
+      <div className={classes.titleRoot}>
+        {Icon && <Icon />}
+
+        <h2 style={{ margin: '0 10px' }}>{title}</h2>
+
+        <div className={classes.actionContainer}>
+          {actions.map((action) => {
+            const ActionIcon = action.icon;
+
+            return (
+              <IconButton
+                key={action.title}
+                color="secondary"
+                title={action.title}
+                onClick={action.callback}
+              >
+                <ActionIcon />
+              </IconButton>
+            );
+          })}
+        </div>
+      </div>
+
+      <div data-testid="title-children">{children}</div>
+    </div>
   );
 };

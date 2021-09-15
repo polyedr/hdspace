@@ -1,10 +1,9 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { selectSidebarOpen } from '@Redux/project/selectors/base';
-import React, { FC, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { FC } from 'react';
+import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import { setUpSidebar } from '@Redux/project/actions';
-import useMessageListener from './useMessageListener';
+import Sidebar from './Sidebar';
 
 const host = process.env.SIDE_MODULE_HOST;
 
@@ -28,34 +27,14 @@ const useStyles = makeStyles({
   },
 });
 
-const Sidebar: FC = () => {
-  useMessageListener();
-
-  const dispatch = useDispatch();
+const SideModule: FC = () => {
   const classes = useStyles();
-
   const open = useSelector(selectSidebarOpen);
-  const ref = useRef<HTMLIFrameElement>(null);
-
-  const handleLoad = () => {
-    if (!ref.current?.contentWindow || !host) {
-      return;
-    }
-
-    dispatch(setUpSidebar(ref.current, host));
-  };
 
   return (
     <div className={cn(classes.wrapper, open && classes.open)}>
       {host ? (
-        <iframe
-          className={classes.iframe}
-          onLoad={handleLoad}
-          ref={ref}
-          src={host}
-          frameBorder="0"
-          title="sidebar"
-        />
+        <Sidebar />
       ) : (
         <div>Experiencing problems while loading sidebar</div>
       )}
@@ -63,4 +42,4 @@ const Sidebar: FC = () => {
   );
 };
 
-export default Sidebar;
+export default SideModule;
