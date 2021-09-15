@@ -15,7 +15,7 @@ export interface BoardRootState extends DefaultRootState {
 }
 
 export interface ActivityRootState extends DefaultRootState {
-  activityReducer: { actions: [] | Array<string> };
+  activity: { actions: [] | Array<string> };
 }
 
 export type BoardState = {
