@@ -1,15 +1,18 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { Button, CircularProgress } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { PanelTextField } from '@Components/styledComponents';
+import { useDispatch } from 'react-redux';
+import { logIn } from '@Redux/pmtools/chat/actions';
 
 const ChatLogin: React.FC = () => {
-  const authPending = false;
+  const dispatch = useDispatch();
   const [password, setPasswordInput] = useState('');
   const [realm, setRealmInput] = useState('');
   const [email, setEmailInput] = useState('');
 
   const handleSignIn = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    dispatch(logIn(realm, email, password));
   };
 
   return (
@@ -43,19 +46,7 @@ const ChatLogin: React.FC = () => {
       />
 
       <Button type="submit" color="secondary" variant="contained" fullWidth>
-        {authPending ? (
-          <>
-            <CircularProgress
-              color="secondary"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-            />
-            <span>Loading</span>
-          </>
-        ) : (
-          'Login'
-        )}
+        Login
       </Button>
     </form>
   );
