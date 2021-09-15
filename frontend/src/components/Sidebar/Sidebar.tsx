@@ -3,6 +3,9 @@ import { Tabs, Tab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { TabPanel } from '@Components/styledComponents';
 import ChatTab from './Chat';
+import ActivityTab from './Activity';
+import TasksTab from './Tasks';
+import InviteTab from './Invite';
 
 const useTabStyles = makeStyles(({ palette }) => ({
   root: {
@@ -71,15 +74,15 @@ const Sidebar: FC = () => {
       </TabPanel>
 
       <TabPanel value={tab} index={1}>
-        2
+        <TasksTab />
       </TabPanel>
 
       <TabPanel value={tab} index={2}>
-        3
+        <ActivityTab />
       </TabPanel>
 
       <TabPanel value={tab} index={3}>
-        4
+        <InviteTab />
       </TabPanel>
     </div>
   );

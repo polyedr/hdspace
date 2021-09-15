@@ -1,11 +1,8 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { Button, CircularProgress } from '@material-ui/core';
 import { PanelTextField } from '@Components/styledComponents';
-import { useDispatch } from 'react-redux';
-// import { logIn } from '@Redux/pmtools/chat/actions';
 
 const ChatLogin: React.FC = () => {
-  const dispatch = useDispatch();
   const authPending = false;
   const [password, setPasswordInput] = useState('');
   const [realm, setRealmInput] = useState('');
@@ -13,7 +10,6 @@ const ChatLogin: React.FC = () => {
 
   const handleSignIn = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // dispatch(logIn(realm, email, password));
   };
 
   return (

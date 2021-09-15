@@ -1,0 +1,96 @@
+import React from 'react';
+// import DeleteIcon from '@material-ui/icons/Delete';
+// import EditIcon from '@material-ui/icons/Edit';
+import { lighten, makeStyles } from '@material-ui/core/styles';
+
+// type Props = {
+//   column: IColumn;
+//   task: ITask;
+//   members: Array<IMember>;
+// };
+
+const useStyles = makeStyles(({ palette, spacing }) => ({
+  buttonContainer: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  task: {
+    backgroundColor: lighten(palette.panel.light, 0.1),
+    padding: spacing(1),
+    margin: spacing(1),
+    borderRadius: 4,
+  },
+  title: {
+    margin: '5px 0',
+    maxWidth: '250px',
+    wordWrap: 'break-word',
+  },
+  icon: {
+    color: palette.grey[100],
+  },
+}));
+
+const Task: React.FC<any> = () => {
+  const classes = useStyles();
+  // const dispatch = useDispatch();
+  // const projectId = useSelector(selectProjectId);
+  // const [showConfirmModal, setShowConfirmModal] = useState(false);
+  // const [showTaskModal, setShowTaskModal] = useState(false);
+
+  // const currentMember = members.find((m: IMember) => m.user_id === task.owner);
+  // const handleDeleteTask = () => {
+  //   const action = `Column "${task.title}" has been deleted`;
+  //   dispatch(requestDeleteTask({ action, taskId: task.id, projectId }));
+  // };
+
+  return (
+    <div className={classes.task}>
+      {/* <h4 className={classes.title}>{task.title}</h4>
+      <div className={classes.buttonContainer}>
+        {currentMember && (
+          <ListItem style={{ padding: 0 }}>
+            <div style={{ marginRight: 5 }}>
+              <Avatar
+                src={currentMember.user.profile.avatar || ''}
+                style={{ width: 30, height: 30 }}
+              />
+            </div>
+            <ListItemText
+              primary={currentMember.user.username}
+              secondary={currentMember.role}
+              secondaryTypographyProps={{ style: { color: '#fff' } }}
+              primaryTypographyProps={{ style: { fontSize: '14px' } }}
+            />
+          </ListItem>
+        )}
+        <div>
+          <StyledIconButton title="Edit task" action={setShowTaskModal}>
+            <EditIcon fontSize="small" className={classes.icon} />
+          </StyledIconButton>
+          <StyledIconButton title="Delete task" action={setShowConfirmModal}>
+            <DeleteIcon fontSize="small" className={classes.icon} />
+          </StyledIconButton>
+        </div>
+      </div>
+
+      <TaskModal
+        members={members}
+        show={showTaskModal}
+        hide={() => setShowTaskModal(false)}
+        task={task}
+        column={column}
+        selectedTaskId={task.id}
+        action={ModalAction.Edit}
+      />
+      <ConfirmModal
+        show={showConfirmModal}
+        elementText="task"
+        action={handleDeleteTask}
+        hide={() => setShowConfirmModal(false)}
+      /> */}
+    </div>
+  );
+};
+
+export default Task;

@@ -22,7 +22,6 @@ import {
   sidebarLogout,
   updateUISettingsParameters,
 } from '@Redux/project/actions';
-import { sidebarLogoutSaga } from '@Redux/project/sagas/sidebar';
 
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
@@ -80,7 +79,6 @@ export function* loginSaga({
 export function* logoutSaga() {
   try {
     yield put(sidebarLogout());
-    yield call(sidebarLogoutSaga);
 
     yield put(Actions.logout());
     openSignScreen('signin');
