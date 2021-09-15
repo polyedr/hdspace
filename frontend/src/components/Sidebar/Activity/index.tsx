@@ -1,19 +1,24 @@
 import { Container } from '@material-ui/core';
+import { requestGetAction } from '@Redux/pmtools/activity/actions';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import History from './History';
 
 const ActivityTab = () => {
   const actions = [];
-  // const projectId = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
+  const projectId = useSelector(selectCurrentProjectId);
 
   useEffect(() => {
-    console.log(1);
-    // dispatch(requestGetAction(projectId));
+    dispatch(requestGetAction(projectId));
   }, [dispatch]);
 
-  return <Container>{!actions ? <p>Loading... </p> : <History />}</Container>;
+  return (
+    <Container>
+      {!actions ? <p>Loading... </p> : <History id={projectId} />}
+    </Container>
+  );
 };
 
 export default ActivityTab;

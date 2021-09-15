@@ -20,6 +20,8 @@ import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
 import history from './history';
 import DevToolsOptions from './devtools';
+import activityReducer from './pmtools/activity/reducer';
+import activitySaga from './pmtools/activity/sagas';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
@@ -51,6 +53,7 @@ export const rootReducer = combineReducers({
   router: connectRouter(history),
   notification: notificationReducer,
   permissions: permissionsReducer,
+  activity: activityReducer,
 });
 
 export const store = createStore(
@@ -68,6 +71,7 @@ export const promiseListener = reduxPromiseListener;
 
 export function configureStore(): { store: Store<any>; persistor: Persistor } {
   sagaMiddleware.run(userSaga);
+  sagaMiddleware.run(activitySaga);
   sagaMiddleware.run(projectSaga as any); // TODO: type action types!
 
   const persistor = persistStore(store);

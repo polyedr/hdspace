@@ -4,10 +4,11 @@ import HistoryIcon from '@material-ui/icons/History';
 import { Button } from '@material-ui/core';
 import { SideBarTitle } from '@Components/styledComponents';
 
-const History = () => {
+const History: React.FC<{ id: number }> = ({ id }) => {
   // const actions = useSelector(selectActions);
   // const dispatch = useDispatch();
   const actions = [];
+  console.log(id);
 
   return (
     <>

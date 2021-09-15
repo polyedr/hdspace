@@ -1,5 +1,8 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { selectSidebarOpen } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProjectId,
+  selectSidebarOpen,
+} from '@Redux/project/selectors/base';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
@@ -30,6 +33,11 @@ const useStyles = makeStyles({
 const SideModule: FC = () => {
   const classes = useStyles();
   const open = useSelector(selectSidebarOpen);
+  const projectId = useSelector(selectCurrentProjectId);
+
+  if (projectId === -1) {
+    return <p>Loading... </p>;
+  }
 
   return (
     <div className={cn(classes.wrapper, open && classes.open)}>
