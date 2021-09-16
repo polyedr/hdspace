@@ -12,7 +12,7 @@ const ActivityTab = () => {
 
   useEffect(() => {
     dispatch(requestGetAction(projectId));
-  }, [dispatch]);
+  }, [dispatch, projectId]);
 
   return (
     <Container>

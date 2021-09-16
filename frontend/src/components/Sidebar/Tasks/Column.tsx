@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { IconButton, Typography } from '@material-ui/core';
-// import AddIcon from '@material-ui/icons/Add';
-// import EditIcon from '@material-ui/icons/Edit';
-// import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { IColumn } from '@Src/types/board/types';
+import { IMember } from '@Src/types/invite/types';
+import { StyledIconButton } from '@Components/styledComponents';
+import { ModalAction } from '@Src/types';
+import TaskModal from '@Components/Dialogs/PmToolsModal/Tasks/TaskModal';
 import Task from './Task';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -24,23 +29,23 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-// type Props = {
-//   tasksModal: boolean;
-//   column: IColumn;
-//   members: Array<IMember>;
-//   setTasksModal: (v: boolean) => void;
-//   setConfirmModal: (v: boolean) => void;
-//   setColumnModal: (v: boolean) => void;
-// };
+type Props = {
+  tasksModal: boolean;
+  column: IColumn;
+  members: Array<IMember>;
+  setTasksModal: (v: boolean) => void;
+  setConfirmModal: (v: boolean) => void;
+  setColumnModal: (v: boolean) => void;
+};
 
 export const Column = ({
   column,
-  // tasksModal,
+  tasksModal,
   members,
-}: // setTasksModal,
-// setConfirmModal,
-// setColumnModal,
-any) => {
+  setTasksModal,
+  setConfirmModal,
+  setColumnModal,
+}: any) => {
   const classes = useStyles();
   const [showTasks, setShowTasks] = useState(false);
 
@@ -72,15 +77,24 @@ any) => {
           )}
         </div>
         <div>
-          {/* <StyledIconButton title="Create task" action={setTasksModal}>
+          <StyledIconButton
+            title="Create task"
+            onClick={() => setTasksModal(true)}
+          >
             <AddIcon fontSize="small" />
           </StyledIconButton>
-          <StyledIconButton title="Edit column" action={setColumnModal}>
+          <StyledIconButton
+            title="Edit column"
+            onClick={() => setColumnModal(true)}
+          >
             <EditIcon fontSize="small" />
           </StyledIconButton>
-          <StyledIconButton title="Delete column" action={setConfirmModal}>
+          <StyledIconButton
+            title="Delete column"
+            onClick={() => setConfirmModal(true)}
+          >
             <DeleteIcon fontSize="small" />
-          </StyledIconButton> */}
+          </StyledIconButton>
         </div>
       </div>
 
@@ -89,13 +103,13 @@ any) => {
           <Task members={members} column={column} task={task} key={task.id} />
         ))}
 
-      {/* <TaskModal
+      <TaskModal
         show={tasksModal}
         hide={() => setTasksModal(!tasksModal)}
         column={column}
         action={ModalAction.Create}
         members={members}
-      /> */}
+      />
     </>
   );
 };

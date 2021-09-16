@@ -213,21 +213,20 @@ export const StyledTextField: React.FC<TextFieldProps> = (props) => {
   );
 };
 
-export const PanelTextField: React.FC<TextFieldProps> = (props) => {
+export const PanelTextField: React.FC<
+  TextFieldProps & { styledcolor?: string }
+> = (props) => {
   const classes = useTextFieldStyles();
-  const { select } = props;
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { styledcolor } = props;
 
   return (
     <TextField
-      {...(!select && {
-        inputRef,
-        onFocus: () => inputRef.current?.select(),
-      })}
       classes={classes}
       margin="dense"
       fullWidth
-      variant="outlined"
+      InputProps={{
+        style: { color: styledcolor || '#fff' },
+      }}
       {...props}
     />
   );

@@ -7,11 +7,11 @@ import { DefaultRootState } from 'react-redux';
 export type RootState = ReturnType<any>;
 
 export interface InviteRootState extends DefaultRootState {
-  inviteReducer: InviteState;
+  invite: InviteState;
 }
 
 export interface BoardRootState extends DefaultRootState {
-  boardReducer: BoardState;
+  board: BoardState;
 }
 
 export interface ActivityRootState extends DefaultRootState {

@@ -1,0 +1,153 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import React, { FormEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Button,
+  TextField,
+} from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import {
+  requestAddTask,
+  requestEditTask,
+} from '@Redux/pmtools/board/actions/tasks';
+import { ModalAction } from '@Src/types';
+import { PanelTextField } from '@Components/styledComponents';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { IMember } from '@Src/types/invite/types';
+import { IColumn, ITask } from '@Src/types/board/types';
+
+type Props = {
+  members: Array<IMember>;
+  show: boolean;
+  task?: ITask | null;
+  hide: () => void;
+  action: ModalAction;
+  column: IColumn;
+  selectedTaskId?: number | null;
+};
+
+const TaskModal: React.FC<Props> = ({
+  members,
+  show,
+  hide,
+  column,
+  action,
+  selectedTaskId,
+  task,
+}) => {
+  const [value, setValue] = useState<any>('');
+  const projectId = useSelector(selectCurrentProjectId);
+  const dispatch = useDispatch();
+  const [title, setTitle] = useState(task?.title || '');
+  const [disc, setDisc] = useState(task?.description || '');
+
+  useEffect(() => {
+    setValue(members[0]);
+  }, [members]);
+
+  const handleCreate = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (title) {
+      dispatch(
+        requestAddTask({
+          title,
+          description: disc,
+          status: 'created',
+          column: column.id || 0,
+          creator: value.status || '',
+          owner: value.user.id || 0,
+          projectId,
+          action: `Task "${title}" was added`,
+        }),
+      );
+    }
+    hide();
+  };
+
+  const handleEdit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (title && task) {
+      dispatch(
+        requestEditTask({
+          id: selectedTaskId || 0,
+          title,
+          description: disc,
+          creator: value.status || '',
+          owner: value.user.id || '',
+          status: task.isCompleted ? 'completed' : 'created',
+          column: column?.id || 0,
+          projectId,
+          action: `Task "${title}" was edited on "${task.title}"`,
+        }),
+      );
+    }
+
+    hide();
+  };
+
+  return (
+    <Dialog open={show} onClose={hide}>
+      <DialogContent>
+        <h2>{action === ModalAction.Create ? 'Create task' : 'Edit task'}</h2>
+        <form
+          onSubmit={action === ModalAction.Create ? handleCreate : handleEdit}
+        >
+          <PanelTextField
+            name="title"
+            styledcolor="#000"
+            value={title}
+            onChange={(e: any) => setTitle(e.target.value)}
+            placeholder="Title"
+          />
+          <PanelTextField
+            name="discription"
+            styledcolor="#000"
+            value={disc}
+            onChange={(e: any) => setDisc(e.target.value)}
+            placeholder="Discription"
+          />
+
+          <Autocomplete
+            value={value}
+            onChange={(event, newValue) => {
+              setValue(newValue);
+            }}
+            getOptionLabel={(option) =>
+              typeof option === 'string' ? option : option.user.username
+            }
+            id="controllable-states-demo"
+            options={members}
+            style={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField {...params} variant="outlined" />
+            )}
+          />
+
+          {!value && <h3>Create members to add tasks</h3>}
+
+          <DialogActions>
+            <Button
+              type="submit"
+              color="secondary"
+              disabled={!value}
+              variant="contained"
+            >
+              {action === ModalAction.Create ? 'Create' : 'Edit'}
+            </Button>
+          </DialogActions>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+TaskModal.defaultProps = {
+  task: null,
+  selectedTaskId: null,
+};
+
+export default TaskModal;

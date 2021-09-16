@@ -1,22 +1,30 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import { Container } from '@material-ui/core';
 import { SideBarTitle } from '@Components/styledComponents';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectColumnListWithTasks,
+  selectLoaderBoard,
+} from '@Redux/pmtools/board/selectors';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { requestFetchBoard } from '@Redux/pmtools/board/actions/columns';
+import { ModalAction } from '@Src/types';
+import ColumnModal from '@Components/Dialogs/PmToolsModal/Tasks/ColumnModal';
 import Columns from './Columns';
 
 const TasksTab: FC = () => {
-  // const dispatch = useDispatch();
-  // const columnList = useSelector(selectColumnListWithTasks);
-  // const projectId = useSelector(selectProjectId);
-  // const loader = useSelector(selectLoaderBoard);
+  const dispatch = useDispatch();
+  const columnList = useSelector(selectColumnListWithTasks);
+  const projectId = useSelector(selectCurrentProjectId);
+  const loader = useSelector(selectLoaderBoard);
 
-  const [, setOpen] = useState(false);
-  const columnList = [];
+  const [open, setOpen] = useState(false);
 
-  // useEffect(() => {
-  //   dispatch(requestFetchBoard(projectId));
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(requestFetchBoard(projectId));
+  }, [dispatch, projectId]);
 
   const titleActions = [
     {
@@ -26,13 +34,13 @@ const TasksTab: FC = () => {
     },
   ];
 
-  // if (loader) {
-  //   return (
-  //     <Container>
-  //       <p>Loading... </p>
-  //     </Container>
-  //   );
-  // }
+  if (loader) {
+    return (
+      <Container>
+        <p>Loading... </p>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -44,13 +52,13 @@ const TasksTab: FC = () => {
       {!columnList.length ? (
         <p>Create you first column</p>
       ) : (
-        columnList.map((item) => <Columns column={item} />)
+        columnList.map((item) => <Columns key={item.id} column={item} />)
       )}
-      {/* <ColumnModal
+      <ColumnModal
         show={open}
         hide={() => setOpen(false)}
         action={ModalAction.Create}
-      /> */}
+      />
     </Container>
   );
 };
