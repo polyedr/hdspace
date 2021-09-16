@@ -4,8 +4,8 @@ import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
   ColumnsFetchSagaGenerator,
-} from '@Src/types/board/generators';
-import { IColumn } from '@Src/types/board/types';
+} from '@Src/pm-types/board/generators';
+import { IColumn } from '@Src/pm-types/board/types';
 import { call, put } from 'redux-saga/effects';
 import { requestAction } from '../../activity/actions';
 import { errorBoard, requestLoaderBoard } from '../actions/columns';

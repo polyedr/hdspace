@@ -1,7 +1,7 @@
-import { IColumn, ITask } from '@Src/types/board/types';
-import { AuthParams } from '@Src/types/chat/types';
-import { IMember, PermissionsType } from '@Src/types/invite/types';
-import { IUser } from '@Src/types/user/types';
+import { IColumn, ITask } from '@Src/pm-types/board/types';
+import { AuthParams } from '@Src/pm-types/chat/types';
+import { IMember, PermissionsType } from '@Src/pm-types/invite/types';
+import { IUser } from '@Src/pm-types/user/types';
 import { DefaultRootState } from 'react-redux';
 
 export type RootState = ReturnType<any>;

@@ -1,13 +1,23 @@
-import React from 'react';
-// import DeleteIcon from '@material-ui/icons/Delete';
-// import EditIcon from '@material-ui/icons/Edit';
+import React, { useState } from 'react';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import { useDispatch, useSelector } from 'react-redux';
+import { Avatar, ListItem, ListItemText } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
+import { IColumn, ITask } from '@Src/pm-types/board/types';
+import { IMember } from '@Src/pm-types/invite/types';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
+import { StyledIconButton } from '@Components/styledComponents';
+import TaskModal from '@Components/Dialogs/PmToolsModal/Tasks/TaskModal';
+import { ModalAction } from '@Src/types';
+import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 
-// type Props = {
-//   column: IColumn;
-//   task: ITask;
-//   members: Array<IMember>;
-// };
+type Props = {
+  column: IColumn;
+  task: ITask;
+  members: Array<IMember>;
+};
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   buttonContainer: {
@@ -31,22 +41,23 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-const Task: React.FC<any> = () => {
+const Task: React.FC<Props> = ({ column, task, members }) => {
   const classes = useStyles();
-  // const dispatch = useDispatch();
-  // const projectId = useSelector(selectProjectId);
-  // const [showConfirmModal, setShowConfirmModal] = useState(false);
-  // const [showTaskModal, setShowTaskModal] = useState(false);
+  const dispatch = useDispatch();
+  const projectId = useSelector(selectCurrentProjectId);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showTaskModal, setShowTaskModal] = useState(false);
 
-  // const currentMember = members.find((m: IMember) => m.user_id === task.owner);
-  // const handleDeleteTask = () => {
-  //   const action = `Column "${task.title}" has been deleted`;
-  //   dispatch(requestDeleteTask({ action, taskId: task.id, projectId }));
-  // };
+  const currentMember = members.find((m: IMember) => m.user_id === task.owner);
+
+  const handleDeleteTask = () => {
+    const action = `Column "${task.title}" has been deleted`;
+    dispatch(requestDeleteTask({ action, taskId: task.id, projectId }));
+  };
 
   return (
     <div className={classes.task}>
-      {/* <h4 className={classes.title}>{task.title}</h4>
+      <h4 className={classes.title}>{task.title}</h4>
       <div className={classes.buttonContainer}>
         {currentMember && (
           <ListItem style={{ padding: 0 }}>
@@ -65,10 +76,16 @@ const Task: React.FC<any> = () => {
           </ListItem>
         )}
         <div>
-          <StyledIconButton title="Edit task" action={setShowTaskModal}>
+          <StyledIconButton
+            title="Edit task"
+            onClick={() => setShowTaskModal(true)}
+          >
             <EditIcon fontSize="small" className={classes.icon} />
           </StyledIconButton>
-          <StyledIconButton title="Delete task" action={setShowConfirmModal}>
+          <StyledIconButton
+            title="Delete task"
+            onClick={() => setShowConfirmModal(true)}
+          >
             <DeleteIcon fontSize="small" className={classes.icon} />
           </StyledIconButton>
         </div>
@@ -88,7 +105,7 @@ const Task: React.FC<any> = () => {
         elementText="task"
         action={handleDeleteTask}
         hide={() => setShowConfirmModal(false)}
-      /> */}
+      />
     </div>
   );
 };

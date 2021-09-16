@@ -16,8 +16,8 @@ import {
 import { ModalAction } from '@Src/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { IMember } from '@Src/types/invite/types';
-import { IColumn, ITask } from '@Src/types/board/types';
+import { IMember } from '@Src/pm-types/invite/types';
+import { IColumn, ITask } from '@Src/pm-types/board/types';
 
 type Props = {
   members: Array<IMember>;

@@ -1,6 +1,6 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
-import { IUser } from '@Src/types/user/types';
+import { IUser } from '@Src/pm-types/user/types';
 import { call, put } from 'redux-saga/effects';
 
 export default function* searchSaga({

@@ -1,4 +1,4 @@
-import { IColumn } from '@Src/types/board/types';
+import { IColumn } from '@Src/pm-types/board/types';
 import sortById from '@Utils/sortById';
 import { createSelector } from 'reselect';
 import { BoardRootState } from '../types';

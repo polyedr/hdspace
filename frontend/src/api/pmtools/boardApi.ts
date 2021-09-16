@@ -1,4 +1,4 @@
-import { IColumn, IFromServerTask, ITask } from '@Src/types/board/types';
+import { IColumn, IFromServerTask, ITask } from '@Src/pm-types/board/types';
 import { AxiosResponse } from 'axios';
 import api from './common/apiController';
 import getToken from './common/getToken';

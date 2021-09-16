@@ -9,7 +9,7 @@ import {
   selectSearchLoader,
 } from '@Redux/pmtools/invite/selectors';
 import { ModalAction } from '@Src/types';
-import { IMember } from '@Src/types/invite/types';
+import { IMember } from '@Src/pm-types/invite/types';
 import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SearchMember from './SearchMember';

@@ -4,7 +4,7 @@ import {
 } from '@Redux/pmtools/invite/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { ModalAction } from '@Src/types';
-import { IMemberToFrontend } from '@Src/types/invite/types';
+import { IMemberToFrontend } from '@Src/pm-types/invite/types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import MembersModal from './MembersModal';

@@ -7,7 +7,7 @@ import {
   DialogContent,
 } from '@material-ui/core';
 import { ModalAction } from '@Src/types';
-import { IColumn } from '@Src/types/board/types';
+import { IColumn } from '@Src/pm-types/board/types';
 import {
   requestAddColumn,
   requestEditColumn,

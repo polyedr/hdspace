@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { removeMemberAction } from '@Redux/pmtools/invite/actions';
-import { IMemberToFrontend, Permission } from '@Src/types/invite/types';
+import { IMemberToFrontend, Permission } from '@Src/pm-types/invite/types';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { StyledIconButton } from '@Components/styledComponents';
 import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
