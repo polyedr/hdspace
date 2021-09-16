@@ -20,6 +20,7 @@ const SearchMember = ({ user, setAddMember, isDisabled }: any) => (
       primaryTypographyProps={{ style: { fontSize: '14px' } }}
     />
     <StyledIconButton
+      size="small"
       title="Add member"
       onClick={() => setAddMember(true)}
       disabled={isDisabled}

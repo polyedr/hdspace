@@ -50,12 +50,14 @@ const Member: React.FC<PropsType> = ({ member }) => {
           <p style={{ fontSize: 10 }}>{rights ? 'READ, WRITE' : 'READ'}</p>
         )}
         <StyledIconButton
+          size="small"
           title="Edit member"
           onClick={() => setEditMember(true)}
         >
           <EditIcon />
         </StyledIconButton>
         <StyledIconButton
+          size="small"
           title="Delete member"
           onClick={() => setShowConfirmModal(true)}
         >

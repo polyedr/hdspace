@@ -11,10 +11,10 @@ import { requestAction } from '../../activity/actions';
 import { errorBoard, requestLoaderBoard } from '../actions/columns';
 import { requestFetchTask } from '../actions/tasks';
 
-export function* columnsFetchSaga(): ColumnsFetchSagaGenerator {
+export function* columnsFetchSaga({ payload }: any): ColumnsFetchSagaGenerator {
   try {
     yield put(requestLoaderBoard(true));
-    const receivedData: Array<any> = yield call(Board.fetchColumns);
+    const receivedData: Array<any> = yield call(Board.fetchColumns, payload);
     const data: IColumn[] = receivedData.map((item: any) => ({
       ...item,
       tasks: [],

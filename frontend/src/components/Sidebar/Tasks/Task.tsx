@@ -77,12 +77,14 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
         )}
         <div>
           <StyledIconButton
+            size="small"
             title="Edit task"
             onClick={() => setShowTaskModal(true)}
           >
             <EditIcon fontSize="small" className={classes.icon} />
           </StyledIconButton>
           <StyledIconButton
+            size="small"
             title="Delete task"
             onClick={() => setShowConfirmModal(true)}
           >

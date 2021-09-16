@@ -1,25 +1,16 @@
-import ChatApi from '@Api/pmtools/chatApi';
 import TYPES from '@Redux/actionTypes';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { put, takeLatest } from 'redux-saga/effects';
 import { logInFail, logInSuccess } from './actions';
 
 function* authUser({ payload }: any): Generator<any, any, any> {
   try {
     const { username, password, realm } = payload;
 
-    const client = yield call(ChatApi.authenticateUser, {
-      realm,
-      username,
-      password,
-    });
-
-    if (client && client.config) {
-      yield put(logInSuccess(client));
-      localStorage.setItem(
-        'login',
-        JSON.stringify({ realm, username, password }),
-      );
-    }
+    yield put(logInSuccess({ id: 1, username, password }));
+    localStorage.setItem(
+      'login',
+      JSON.stringify({ realm, username, password }),
+    );
   } catch (error) {
     yield put(logInFail(error));
   }

@@ -6,7 +6,7 @@ import { SideBarTitle } from '@Components/styledComponents';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectColumnListWithTasks,
-  selectLoaderBoard,
+  // selectLoaderBoard,
 } from '@Redux/pmtools/board/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestFetchBoard } from '@Redux/pmtools/board/actions/columns';
@@ -18,7 +18,7 @@ const TasksTab: FC = () => {
   const dispatch = useDispatch();
   const columnList = useSelector(selectColumnListWithTasks);
   const projectId = useSelector(selectCurrentProjectId);
-  const loader = useSelector(selectLoaderBoard);
+  // const loader = useSelector(selectLoaderBoard);
 
   const [open, setOpen] = useState(false);
 
@@ -34,13 +34,13 @@ const TasksTab: FC = () => {
     },
   ];
 
-  if (loader) {
-    return (
-      <Container>
-        <p>Loading... </p>
-      </Container>
-    );
-  }
+  // if (loader) {
+  //   return (
+  //     <Container>
+  //       <p>Loading... </p>
+  //     </Container>
+  //   );
+  // }
 
   return (
     <Container>

@@ -3,13 +3,14 @@ import { AxiosResponse } from 'axios';
 import api from './common/apiController';
 import getToken from './common/getToken';
 
-async function fetchColumns() {
+async function fetchColumns(id: number) {
   try {
     const config = await getToken();
     const res: AxiosResponse = await api.get(
-      '/projects/project-columns/',
+      `https://api-staging.adevi.info/api/v1/projects/project-columns/?project=${id}`,
       config,
     );
+    console.log(res);
     return res.data.results;
   } catch (e) {
     return e;

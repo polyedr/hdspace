@@ -78,18 +78,21 @@ export const Column = ({
         </div>
         <div>
           <StyledIconButton
+            size="small"
             title="Create task"
             onClick={() => setTasksModal(true)}
           >
             <AddIcon fontSize="small" />
           </StyledIconButton>
           <StyledIconButton
+            size="small"
             title="Edit column"
             onClick={() => setColumnModal(true)}
           >
             <EditIcon fontSize="small" />
           </StyledIconButton>
           <StyledIconButton
+            size="small"
             title="Delete column"
             onClick={() => setConfirmModal(true)}
           >
