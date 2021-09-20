@@ -393,6 +393,12 @@ export type CardsSectionElement = LibraryElement<
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 
+// Generator Elements
+export type buttonGeneratorElement = ServerElement<
+  'buttonGenerator',
+  ServerElement<Entity>[]
+>;
+
 export type TextinputElement = LibraryElement<
   'textinput',
   [],
@@ -1274,6 +1280,7 @@ export type ElementsToAdd = {
   smartForm: () => SmartFormServerElement;
   smartWebpage: () => SmartWebpageServerElement;
   button: () => ButtonServerElement;
+  buttonGenerator: () => buttonGeneratorElement;
   input: () => TextinputServerElement;
   textinput: () => TextinputServerElement;
   checkbox: () => CheckboxServerElement;

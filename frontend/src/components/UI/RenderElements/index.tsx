@@ -79,6 +79,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     material: MaterialButton,
     not_selected: UnstyledButton,
   }),
+  buttonGenerator: Container,
   input: withUIFramework({
     bootstrap: BootstrapInput,
     material: MaterialInput,

@@ -8,6 +8,7 @@ import {
   selectMasterGroupsElementId,
   selectSelectedElements,
   selectSelectedElementsIds,
+  selectParentOfActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
@@ -26,6 +27,7 @@ import {
   replaceMultipleElementsStyles,
   unbindGroupElementStyles,
   updateElementParameters,
+  updateMultipleElementsParameters,
   updateMultipleElementsStyles,
   updateSharedStyles,
 } from '@Redux/project/actions';
@@ -59,6 +61,7 @@ const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const activeElement = useSelector(selectActiveElement);
+  const parentOfActiveElement = useSelector(selectParentOfActiveElement);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
   const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
   const selectedElementsIds = useSelector(selectSelectedElementsIds);
@@ -72,7 +75,6 @@ const PropertiesTab: React.FC = () => {
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
-
   const [editedStyles, setEditedStyles] = useState<React.CSSProperties | null>(
     null,
   );
@@ -311,6 +313,20 @@ const PropertiesTab: React.FC = () => {
             { screenId: currentScreenId },
           ),
         );
+        if (
+          parentOfActiveElement &&
+          parentOfActiveElement.name === 'generator'
+        ) {
+          dispatch(
+            updateMultipleElementsStyles(
+              [...parentOfActiveElement.children],
+              {
+                [ALL_ELEMENTS_INDEX]: styles,
+              },
+              { screenId: currentScreenId },
+            ),
+          );
+        }
       } else {
         dispatch(
           updateSharedStyles(
@@ -342,11 +358,23 @@ const PropertiesTab: React.FC = () => {
 
   const updateParams = useCallback(
     (params: Params<any>, itemID?: string) => {
-      dispatch(
-        updateElementParameters(itemID || activeElement.id, params, {
-          screenId: currentScreenId,
-        }),
-      );
+      if (parentOfActiveElement && parentOfActiveElement.name === 'generator') {
+        dispatch(
+          updateMultipleElementsParameters(
+            [...parentOfActiveElement.children],
+            { [ALL_ELEMENTS_INDEX]: params },
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+      } else {
+        dispatch(
+          updateElementParameters(itemID || activeElement.id, params, {
+            screenId: currentScreenId,
+          }),
+        );
+      }
     },
     [dispatch, activeElement.id, currentScreenId],
   );
