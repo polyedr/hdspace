@@ -1122,6 +1122,35 @@ export const defaultSubscribeFormStyles: {
   },
 };
 
+export const defaultButtonGeneratorStyles: {
+  [K in subscribeFormControls]: React.CSSProperties;
+} = {
+  indents: {
+    ...DEFAULT_INDENTS,
+    padding: '100px 0',
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '100%',
+  },
+  display: {
+    ...DEFAULT_DISPLAY,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
 export const defaultCardsSectionStyles: {
   [K in cardsSectionControls]: React.CSSProperties;
 } = {
@@ -1197,6 +1226,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   columns: defaultColumnsStyles,
   column: defaultColumnStyles,
   button: defaultButtonStyles,
+  buttonGenerator: defaultButtonGeneratorStyles,
   textinput: defaultTextinputStyles,
   input: defaultTextinputStyles,
   textarea: defaultTextareaStyles,

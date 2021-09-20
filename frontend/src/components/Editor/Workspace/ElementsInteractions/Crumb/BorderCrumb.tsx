@@ -4,12 +4,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { BoundingStyles, StateElement } from '@Src/types';
 import {
+  makeButtons,
+  setTextContent,
+} from '@Src/domain/libraryElements/generatorElements/generatorElements';
+import {
   setMasterSourceElementId,
   copyActiveElement,
   deleteElement,
   pasteCopiedElement,
   setActiveElement,
+  updateMultipleElementsStyles,
+  updateElementParameters,
+  softDeleteMultipleElements,
 } from '@Redux/project/actions';
+import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
+import { selectCurrentGeneratorElements } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -64,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
 
 const BorderCrumb: React.FC<Props> = (props) => {
   const { element, children, show, currentProjectId, masterScreenId } = props;
+  const currentGeneratorElements = useSelector(selectCurrentGeneratorElements);
 
   const dispatch = useDispatch();
 
@@ -88,11 +98,86 @@ const BorderCrumb: React.FC<Props> = (props) => {
     dispatch(deleteElement(element.id, { screenId: currentScreenId }));
   };
 
+  const generatorRandom = () => {
+    if (element.name === 'generator') {
+      if (currentGeneratorElements && currentGeneratorElements.length > 2) {
+        const keys = Object.keys(
+          currentGeneratorElements[0].styles.ownStyles,
+        ).filter((key) => {
+          let count = 0;
+          for (let i = 1; i < currentGeneratorElements.length; i++) {
+            if (
+              currentGeneratorElements[0].styles.ownStyles[key] ===
+              currentGeneratorElements[i].styles.ownStyles[key]
+            )
+              count++;
+          }
+          return count === currentGeneratorElements.length - 1;
+        });
+        const predefinedStyles = {};
+        keys.forEach((key) => {
+          predefinedStyles[key] =
+            currentGeneratorElements[0].styles.ownStyles[key];
+        });
+        const newButtons = makeButtons(predefinedStyles);
+        if (
+          keys.length ===
+          Object.keys(newButtons[0].styles.ownStyles).length - 1
+        ) {
+          console.log('completed');
+          const removalElements = currentGeneratorElements.slice(
+            1,
+            currentGeneratorElements.length,
+          );
+          const removalIds = removalElements.map((element) => element.id);
+          dispatch(
+            softDeleteMultipleElements([...removalIds], {
+              screenId: currentScreenId,
+            }),
+          );
+        } else {
+          currentGeneratorElements.forEach((element, index) => {
+            dispatch(
+              updateMultipleElementsStyles(
+                [element.id],
+                {
+                  [ALL_ELEMENTS_INDEX]: newButtons[index].styles.ownStyles,
+                },
+                { screenId: currentScreenId },
+              ),
+            );
+            const value = setTextContent();
+            let count = 0;
+            for (let i = 1; i < currentGeneratorElements.length; i++) {
+              if (
+                currentGeneratorElements[0].parameters.textContent ===
+                currentGeneratorElements[i].parameters.textContent
+              )
+                count++;
+            }
+            if (count !== currentGeneratorElements.length - 1) {
+              dispatch(
+                updateElementParameters(
+                  element.id,
+                  { textContent: value.toString() },
+                  {
+                    screenId: currentScreenId,
+                  },
+                ),
+              );
+            }
+          });
+        }
+      }
+    }
+  };
+
   const handleDuplicate = () => {
     dispatch(copyActiveElement());
     dispatch(setActiveElement(String(element.parent)));
     dispatch(pasteCopiedElement({ screenId: currentScreenId }));
   };
+
   return element && show ? (
     <div className={cn(classes.crumb)}>
       <span
@@ -110,6 +195,11 @@ const BorderCrumb: React.FC<Props> = (props) => {
           <span className={classes.icon} onClick={handleDelete}>
             <Icon icon="delete" size={16} color="white" />
           </span>
+          {element.name === 'generator' && (
+            <span className={classes.icon} onClick={generatorRandom}>
+              <Icon icon="add" size={16} color="white" />
+            </span>
+          )}
         </>
       )}
 

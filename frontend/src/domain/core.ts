@@ -9,6 +9,7 @@ export const ENTITIES: {
   [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container' | 'input'>]: K;
 } = {
   button: 'button',
+  buttonGenerator: 'buttonGenerator',
   textinput: 'textinput',
   textarea: 'textarea',
   checkbox: 'checkbox',
@@ -411,6 +412,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   container: [...containerStyleControls, 'layouts'],
   divBlock: [...divBlockStyleControls, 'layouts'],
   button: [...buttonStyleControls, ...buttonParamsControls, 'layouts'],
+  buttonGenerator: [...subscribeFormStyleControls, 'layouts'],
   input: [
     'textContent',
     'type',
@@ -538,6 +540,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   button: {},
+  buttonGenerator: {},
   textinput: {},
   input: {},
   textarea: {},

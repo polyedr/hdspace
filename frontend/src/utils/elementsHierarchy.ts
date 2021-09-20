@@ -122,6 +122,13 @@ export const getRightPanelCategoryTabs = (
           [structType]: convertElementToData(libraryElements[structType]()),
         },
       };
+    case 'buttonGenerator':
+      return {
+        generators: {
+          ...(obj.generators || {}),
+          [structType]: convertElementToData(libraryElements[structType]()),
+        },
+      };
     case 'divBlock':
     case 'ocrtext':
     case 'dropdown':
