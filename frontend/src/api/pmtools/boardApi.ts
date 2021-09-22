@@ -10,7 +10,6 @@ async function fetchColumns(id: number) {
       `https://api-staging.adevi.info/api/v1/projects/project-columns/?project=${id}`,
       config,
     );
-    console.log(res);
     return res.data.results;
   } catch (e) {
     return e;

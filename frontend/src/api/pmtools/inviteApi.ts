@@ -1,6 +1,23 @@
+import { myAxios } from '@Src/config/settings';
+import { MyAxiosProps } from '@Src/types';
 import { AxiosResponse } from 'axios';
 import api from './common/apiController';
 import getToken from './common/getToken';
+
+export const apiGetMembersList = (props: MyAxiosProps): Promise<any> =>
+  myAxios({
+    ...props,
+    method: 'GET',
+    url: '/projects/projects/',
+  }).then((response: any) => console.log(response));
+// .then((result: AxiosResponse<PaginatedResponse<ServerProject>>) => ({
+//   result: {
+//     next: parseCursor(result.data.next),
+//     previous: parseCursor(result.data.previous),
+//     results: result.data.results.map(convertProjectFromResponse),
+//   },
+// }))
+// .catch(handleError);
 
 async function fetchMembers(id: number) {
   try {

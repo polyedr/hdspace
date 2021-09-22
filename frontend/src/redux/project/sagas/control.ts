@@ -28,15 +28,17 @@ export function* executeUndoActionsSaga() {
     }
     yield put(Actions.moveHistoryBackward());
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -68,15 +70,17 @@ export function* executeRedoActionsSaga() {
       });
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 

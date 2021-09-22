@@ -278,7 +278,7 @@ export function convertProjectWithScreensFromResponse({
   project_data_json,
   tags,
 }: ServerProjectWithScreens): ProjectWithScreens {
-  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
+  const projectDataJSON = JSON.parse(project_data_json || '{}') as ProjectData;
 
   return {
     id,

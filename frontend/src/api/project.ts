@@ -46,8 +46,8 @@ export const apiGetProject = (
 
 export const apiGetProjectWithScreens = (
   props: MyAxiosProps & { id: string },
-): Promise<Result<ProjectWithScreens>> =>
-  myAxios({
+): Promise<Result<ProjectWithScreens>> => {
+  return myAxios({
     ...props,
     method: 'GET',
     url: `projects/screens-for-project/${props.id}/`,
@@ -56,6 +56,7 @@ export const apiGetProjectWithScreens = (
       result: convertProjectWithScreensFromResponse(res.data),
     }))
     .catch(handleError);
+};
 
 export const apiCreateProject = (
   props: MyAxiosProps,
