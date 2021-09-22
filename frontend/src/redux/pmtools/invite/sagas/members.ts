@@ -16,6 +16,7 @@ export function* fetchMembersSaga({
   try {
     yield put({ type: TYPES.MEMBERS_LOADER, payload: true });
     const members = yield call(Invite.fetchMembers, payload);
+    // const { members }: any = yield call(reqWrapper, apiGetMembersList);
     yield put({
       type: TYPES.FETCH_MEMBERS,
       payload: members,

@@ -228,9 +228,14 @@ const copyActiveElementSaga = withRequiredPermissions(
       }),
     );
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 
@@ -295,9 +300,14 @@ const duplicateScreenSaga = withRequiredPermissions(
 
     yield put(Actions.setScreenLoader(false));
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 
@@ -354,9 +364,14 @@ const pasteCopiedElementSaga = compose(
       }
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 

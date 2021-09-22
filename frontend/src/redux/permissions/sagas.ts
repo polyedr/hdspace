@@ -43,17 +43,19 @@ export function* getUsersSaga(action: ReturnType<typeof Actions.getUsersList>) {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -74,15 +76,17 @@ export function* getAllUsersProjectPermissionsSaga(
     }
     yield put(Actions.setStateAllUsersPermissions(projectId, permUsersData));
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -105,15 +109,17 @@ export function* getMyPermissionsForProjectSaga(
     }
     yield put(Actions.setStateCurrentUserPermissions(permissions));
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -149,14 +155,16 @@ export function* updateUserPermissionsForProjectSaga(
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
