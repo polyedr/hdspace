@@ -32,6 +32,7 @@ export function* addActionSaga({
 }): AddActionSagaGenerator {
   try {
     const { projectId, action } = payload;
+
     const projectData = yield call(Activity.getActions, projectId);
     yield call(Activity.addActions, {
       projectId,

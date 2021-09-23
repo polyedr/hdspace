@@ -1,58 +1,41 @@
+import { handleError } from '@Api/helper';
+import { myAxios } from '@Src/config/settings';
+import {
+  ToServerAddMember,
+  ToServerFetchMemberList,
+  ToServerRemoveMember,
+} from '@Src/pm-types/invite/api';
 import { AxiosResponse } from 'axios';
 import api from './common/apiController';
 import getToken from './common/getToken';
 
-// export const apiGetMembersList = (props: MyAxiosProps): Promise<any> =>
-//   myAxios({
-//     ...props,
-//     method: 'GET',
-//     url: `/projects/projects/124/`,
-//   }).then((response: any) => console.log(response));
-// .then((result: AxiosResponse<PaginatedResponse<ServerProject>>) => ({
-//   result: {
-//     next: parseCursor(result.data.next),
-//     previous: parseCursor(result.data.previous),
-//     results: result.data.results.map(convertProjectFromResponse),
-//   },
-// }))
-// .catch(handleError);
+const fetchMembers = ({ projectId, access }: ToServerFetchMemberList) =>
+  myAxios({
+    access,
+    method: 'GET',
+    url: `/projects/members-for-project/${projectId}`,
+  })
+    .then((results: AxiosResponse) => results.data.projectmember)
+    .catch(handleError);
 
-async function fetchMembers(id: number) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse<any> = await api.get(
-      `/projects/members-for-project/${id}`,
-      config,
-    );
-    return res.data.projectmember;
-  } catch (e) {
-    return e;
-  }
-}
+const addMember = (data: ToServerAddMember) =>
+  myAxios({
+    access: data.access,
+    data,
+    method: 'POST',
+    url: `/projects/project-members/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
-async function addMember(data: any) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse<any> = await api.post(
-      `/projects/project-members/`,
-      data,
-      config,
-    );
-    return res.data;
-  } catch (e) {
-    return e;
-  }
-}
-
-async function removeMember(id: number) {
-  try {
-    const config = await getToken();
-    await api.delete(`/projects/project-members/${id}`, config);
-    return id;
-  } catch (e) {
-    return e;
-  }
-}
+const removeMember = (data: ToServerRemoveMember) =>
+  myAxios({
+    access: data.access,
+    method: 'DELETE',
+    url: `/projects/project-members/${data.id}`,
+  })
+    .then(() => data.id)
+    .catch(handleError);
 
 async function editMembers(data: any) {
   try {

@@ -7,6 +7,7 @@ import { ModalAction } from '@Src/types';
 import { IMemberToFrontend } from '@Src/pm-types/invite/types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectTokenPair } from '@Redux/user/selectors';
 import MembersModal from './MembersModal';
 
 type Props = {
@@ -30,6 +31,7 @@ const MembersModalContainer: React.FC<Props> = ({
   const projectId = useSelector(selectCurrentProjectId);
   const [role, setRole] = useState(member?.role || '');
   const [permissions, setPermissions] = useState(!!rights);
+  const { access } = useSelector(selectTokenPair);
 
   useEffect(() => {
     setPermissions(!!rights);
@@ -41,12 +43,13 @@ const MembersModalContainer: React.FC<Props> = ({
       dispatch(
         addMemberAction({
           role,
+          access,
           status: 'member',
           userId: member.id,
           projectId,
-          action: `${member.username} (${role}) has been added`,
-          permissions: { write: false, prevState: ['view_project'] },
-          username: member.username,
+          // action: `${member.username} (${role}) has been added`,
+          // permissions: { write: false, prevState: ['view_project'] },
+          // username: member.username,
         }),
       );
     }

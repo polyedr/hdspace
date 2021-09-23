@@ -1,4 +1,5 @@
 import TYPES from '@Redux/actionTypes';
+import { ToServerRemoveMember } from '@Src/pm-types/invite/api';
 
 export const requestPermissionsAction = (projectId: number) => ({
   type: TYPES.REQUEST_PERMISSIONS,
@@ -17,9 +18,15 @@ export const requestSearchAction = (title: string) => ({
 });
 
 // Members
-export const fetchMembersAction = (id: number) => ({
+export const fetchMembersAction = ({
+  projectId,
+  access,
+}: {
+  projectId: number;
+  access: string;
+}) => ({
   type: TYPES.REQUEST_FETCH_MEMBERS,
-  payload: id,
+  payload: { projectId, access },
 });
 
 export const editMembersAction = (editData: any) => ({
@@ -32,7 +39,7 @@ export const addMemberAction = (data: any) => ({
   payload: data,
 });
 
-export const removeMemberAction = (data: any) => ({
+export const removeMemberAction = (data: ToServerRemoveMember) => ({
   type: TYPES.REQUEST_REMOVE_MEMBER,
   payload: data,
 });

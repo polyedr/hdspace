@@ -5,6 +5,7 @@ import { TabPanel } from '@Components/styledComponents';
 import { fetchMembersAction } from '@Redux/pmtools/invite/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectTokenPair } from '@Redux/user/selectors';
 import ChatTab from './Chat';
 import ActivityTab from './Activity';
 import TasksTab from './Tasks';
@@ -37,14 +38,15 @@ const Sidebar: FC = () => {
   const tabClasses = useTabStyles();
   const projectId = useSelector(selectCurrentProjectId);
   const [tab, setTab] = useState(0);
+  const { access } = useSelector(selectTokenPair);
 
   const handleSwitchTab = (e: ChangeEvent<{}>, newValue: number) => {
     setTab(newValue);
   };
 
   useEffect(() => {
-    dispatch(fetchMembersAction(projectId));
-  }, [dispatch, projectId]);
+    dispatch(fetchMembersAction({ projectId, access }));
+  }, [access, dispatch, projectId]);
 
   return (
     <div data-testid="sidebar-container" className={classes.root}>

@@ -10,11 +10,12 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import { removeMemberAction } from '@Redux/pmtools/invite/actions';
 import { IMemberToFrontend, Permission } from '@Src/pm-types/invite/types';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+// import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { StyledIconButton } from '@Components/styledComponents';
 import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { ModalAction } from '@Src/types';
+import { selectTokenPair } from '@Redux/user/selectors';
 
 type PropsType = {
   member: IMemberToFrontend;
@@ -22,7 +23,8 @@ type PropsType = {
 
 const Member: React.FC<PropsType> = ({ member }) => {
   const dispatch = useDispatch();
-  const projectId = useSelector(selectCurrentProjectId);
+  const { access } = useSelector(selectTokenPair);
+  // const projectId = useSelector(selectCurrentProjectId);
   const { id, role, user, permissions } = member;
   const [editMember, setEditMember] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -30,8 +32,9 @@ const Member: React.FC<PropsType> = ({ member }) => {
   const rights = permissions?.find((p: Permission) => p === 'change_project');
 
   const removeHandler = () => {
-    const action = `${user.username} (${role}) has been deleted`;
-    dispatch(removeMemberAction({ memberId: id, projectId, action }));
+    // const action = `${user.username} (${role}) has been deleted`;
+    // dispatch(removeMemberAction({ memberId: id, projectId, action, access }));
+    dispatch(removeMemberAction({ id, access }));
   };
 
   return (

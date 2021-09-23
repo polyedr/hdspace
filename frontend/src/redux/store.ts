@@ -77,8 +77,8 @@ export const promiseListener = reduxPromiseListener;
 
 export function configureStore(): { store: Store<any>; persistor: Persistor } {
   sagaMiddleware.run(userSaga);
-  sagaMiddleware.run(pmToolsSaga);
   sagaMiddleware.run(projectSaga as any); // TODO: type action types!
+  sagaMiddleware.run(pmToolsSaga);
 
   const persistor = persistStore(store);
 
