@@ -5,9 +5,9 @@ import {
   ClearHistorySagaGenerator,
   GetActionSagaGenerator,
 } from '@Src/pm-types/activity/generators';
-import { put, call } from 'redux-saga/effects';
+import { put, call, takeEvery, takeLatest } from 'redux-saga/effects';
 
-export function* getActionSaga({
+function* getActionSaga({
   payload,
 }: {
   type: string;
@@ -21,7 +21,7 @@ export function* getActionSaga({
   }
 }
 
-export function* addActionSaga({
+function* addActionSaga({
   payload,
 }: {
   type: string;
@@ -45,7 +45,7 @@ export function* addActionSaga({
   }
 }
 
-export function* clearHistorySaga({
+function* clearHistorySaga({
   payload,
 }: {
   type: string;
@@ -59,4 +59,11 @@ export function* clearHistorySaga({
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
+}
+
+export default function* activitySaga() {
+  // ACTIONS
+  yield takeEvery(TYPES.REQUEST_ADD_ACTION, addActionSaga);
+  yield takeLatest(TYPES.REQUEST_GET_ACTION, getActionSaga);
+  yield takeLatest(TYPES.CLEAR_HISTORY, clearHistorySaga);
 }
