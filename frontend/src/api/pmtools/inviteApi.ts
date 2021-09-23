@@ -1,8 +1,8 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import {
-  ToServerAddMember,
   ToServerFetchMemberList,
+  ToServerMember,
   ToServerRemoveMember,
 } from '@Src/pm-types/invite/api';
 import { AxiosResponse } from 'axios';
@@ -18,7 +18,7 @@ const fetchMembers = ({ projectId, access }: ToServerFetchMemberList) =>
     .then((results: AxiosResponse) => results.data.projectmember)
     .catch(handleError);
 
-const addMember = (data: ToServerAddMember) =>
+const addMember = (data: ToServerMember) =>
   myAxios({
     access: data.access,
     data,
@@ -37,15 +37,15 @@ const removeMember = (data: ToServerRemoveMember) =>
     .then(() => data.id)
     .catch(handleError);
 
-async function editMembers(data: any) {
-  try {
-    const config = await getToken();
-    await api.put(`/projects/project-members/${data.id}/`, data, config);
-    return data;
-  } catch (e) {
-    return e;
-  }
-}
+const editMembers = (data: ToServerMember) =>
+  myAxios({
+    access: data.access,
+    data,
+    method: 'PUT',
+    url: `/projects/project-members/${data.id}/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
 async function getAllUsers() {
   try {

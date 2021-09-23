@@ -3,7 +3,8 @@ export type ToServerFetchMemberList = {
   access: string;
 };
 
-export type ToServerAddMember = {
+export type ToServerMember = {
+  id?: number;
   project: number; // projectId
   role: string;
   status: string;

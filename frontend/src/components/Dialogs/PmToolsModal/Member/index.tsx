@@ -60,23 +60,14 @@ const MembersModalContainer: React.FC<Props> = ({
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (member) {
-      const actionMember = `${member.user.username} (${member.role}) was edited on ${member.user.username} (${role})`;
-      const actionPermission = `${
-        member.user.username
-      } permissions was edited on ${!rights ? 'READ, WRITE' : 'READ'}`;
       dispatch(
         editMembersAction({
+          access,
           id: member.id,
           role,
           status: member?.status,
           projectId,
-          action: {
-            member: member.role !== role && actionMember,
-            permissions: !!permissions !== !!rights && actionPermission,
-          },
           userId: member.user_id,
-          permissions: { write: permissions, prevState: member.permissions },
-          username: member.user.username,
         }),
       );
     }

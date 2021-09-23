@@ -1,11 +1,7 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
 import { put, call, PutEffect, CallEffect } from 'redux-saga/effects';
-import { requestAction } from '../../activity/actions';
-import {
-  requestEditPermissionsAction,
-  requestPermissionsAction,
-} from '../actions';
+import { requestPermissionsAction } from '../actions';
 
 export function* fetchMembersSaga({
   payload,
@@ -49,36 +45,20 @@ export function* editMemberSaga({
   payload,
 }: any): Generator<PutEffect | CallEffect> {
   try {
-    const {
-      projectId,
-      userId,
-      action: { member, permissions },
-    } = payload;
+    const { projectId, userId, status, role, id, access } = payload;
     const data = {
-      id: payload.id,
-      role: payload.role,
-      status: payload.status,
+      id,
+      access,
+      role,
+      status,
       project: projectId,
       user_id: userId,
     };
-    if (permissions) {
-      yield put(
-        requestEditPermissionsAction({
-          projectId,
-          permissions: payload.permissions,
-          username: payload.username,
-          action: permissions,
-        }),
-      );
-    }
-    if (member) {
-      yield call(Invite.editMembers, data);
-      yield put({
-        type: TYPES.EDIT_MEMBER,
-        payload: data,
-      });
-      yield put(requestAction({ action: member, projectId }));
-    }
+    yield call(Invite.editMembers, data);
+    yield put({
+      type: TYPES.EDIT_MEMBER,
+      payload: data,
+    });
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
