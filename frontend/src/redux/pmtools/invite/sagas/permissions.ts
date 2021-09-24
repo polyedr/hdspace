@@ -1,39 +1,46 @@
+/* eslint-disable import/prefer-default-export */
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
+import { ToServerFetchMembers } from '@Src/pm-types/invite/api';
 import { call, put } from 'redux-saga/effects';
-import { requestAction } from '../../activity/actions';
 
-export function* requestEditPermissionsSaga({ payload }: any): Generator<any> {
+export function* requestPermissionsSaga(payload: ToServerFetchMembers) {
   try {
-    const { permissions, projectId, username, action } = payload;
-    let result = [...permissions.prevState];
-    if (permissions.write) {
-      result.push('change_project');
-    } else {
-      result = result.filter((e) => e !== 'change_project');
-    }
-
-    yield call(Invite.editPermissions, {
-      permissions: result,
-      projectid: projectId,
-      username,
-    });
+    const permissions = yield call(Invite.getPermissionsUser, payload);
     yield put({
-      type: TYPES.EDIT_PERMISSIONS,
-      payload: { permissions: result, username },
+      type: TYPES.PERMISSIONS,
+      payload: permissions,
     });
-    yield put(requestAction({ action, projectId }));
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
 }
 
-export function* requestPermissionsSaga({ payload }: any): Generator<any> {
+export function* requestEditPermissions(payload: any) {
   try {
-    const data: any = yield call(Invite.getPermissionsUser, payload);
+    const { permissions, project, username, access } = payload;
+    let result;
+
+    if (permissions) {
+      result = [...permissions.prevState];
+      if (permissions.write) {
+        result.push('change_project');
+      } else {
+        result = result.filter((e) => e !== 'change_project');
+      }
+    } else {
+      result = ['view_project'];
+    }
+
+    yield call(Invite.editPermissions, {
+      access,
+      permissions: result,
+      projectid: project,
+      username,
+    });
     yield put({
-      type: TYPES.PERMISSIONS,
-      payload: data,
+      type: TYPES.EDIT_PERMISSIONS,
+      payload: { permissions: result, username },
     });
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });

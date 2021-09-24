@@ -1,15 +1,16 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import {
-  ToServerFetchMemberList,
+  ToServerFetchMembers,
   ToServerMember,
+  ToServerPermissions,
   ToServerRemoveMember,
 } from '@Src/pm-types/invite/api';
 import { AxiosResponse } from 'axios';
 import api from './common/apiController';
 import getToken from './common/getToken';
 
-const fetchMembers = ({ projectId, access }: ToServerFetchMemberList) =>
+const fetchMembers = ({ projectId, access }: ToServerFetchMembers) =>
   myAxios({
     access,
     method: 'GET',
@@ -57,33 +58,25 @@ async function getAllUsers() {
   }
 }
 
-async function getPermissionsUser(projectid: number) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.post(
-      '/projects/permissions-allusers-display/',
-      { projectid },
-      config,
-    );
-    return res.data;
-  } catch (e) {
-    return e;
-  }
-}
+const getPermissionsUser = (data: ToServerFetchMembers) =>
+  myAxios({
+    access: data.access,
+    data: { projectid: data.projectId },
+    method: 'POST',
+    url: `/projects/permissions-allusers-display/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
-async function editPermissions(data: any) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.post(
-      '/projects/permissionsmap-projects-assign/',
-      data,
-      config,
-    );
-    return res.data;
-  } catch (e) {
-    return e;
-  }
-}
+const editPermissions = (data: ToServerPermissions) =>
+  myAxios({
+    access: data.access,
+    data,
+    method: 'POST',
+    url: `/projects/permissionsmap-projects-assign/`,
+  })
+    .then((results: AxiosResponse) => results.data.permissions)
+    .catch(handleError);
 
 const Invite = {
   getAllUsers,

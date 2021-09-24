@@ -1,44 +1,40 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
-import { put, call, PutEffect, CallEffect } from 'redux-saga/effects';
-import { requestPermissionsAction } from '../actions';
+import { ToServerFetchMembers, ToServerMember } from '@Src/pm-types/invite/api';
+import { put, call, PutEffect, CallEffect, fork } from 'redux-saga/effects';
+import { requestEditPermissions, requestPermissionsSaga } from './permissions';
 
-export function* fetchMembersSaga({
-  payload,
-}: {
-  type: string;
-  payload: { projectId: number; access: string };
-}): Generator<PutEffect | CallEffect> {
+export function* fetchMemberList(payload: ToServerFetchMembers) {
   try {
-    yield put({ type: TYPES.MEMBERS_LOADER, payload: true });
     const members = yield call(Invite.fetchMembers, payload);
     yield put({
       type: TYPES.FETCH_MEMBERS,
       payload: members,
     });
-    yield put(requestPermissionsAction(payload.projectId));
-    yield put({ type: TYPES.MEMBERS_LOADER, payload: false });
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
 }
 
-export function* addMemberSaga({
-  payload,
-}: any): Generator<PutEffect | CallEffect> {
+export function* fetchMembersSaga({ payload }: any) {
+  yield put({ type: TYPES.MEMBERS_LOADER, payload: true });
+  yield fork(fetchMemberList, payload);
+  yield fork(requestPermissionsSaga, payload);
+  yield put({ type: TYPES.MEMBERS_LOADER, payload: false });
+}
+
+export function* addMember(payload: ToServerMember) {
   try {
-    const { role, status, projectId, userId, access } = payload;
-    const data = yield call(Invite.addMember, {
-      access,
-      role,
-      status,
-      project: projectId,
-      user_id: userId,
-    });
+    const data = yield call(Invite.addMember, payload);
     yield put({ type: TYPES.ADD_MEMBER, payload: data });
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
+}
+
+export function* addMemberSaga({ payload }: any) {
+  yield fork(addMember, payload);
+  yield fork(requestEditPermissions, payload);
 }
 
 export function* editMemberSaga({

@@ -1,18 +1,11 @@
 import { PanelTextField } from '@Components/styledComponents';
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogContent,
-  FormControlLabel,
-} from '@material-ui/core';
+import { Button, Dialog, DialogContent } from '@material-ui/core';
 import { ModalAction } from '@Src/types';
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 
 type Props = {
   show: boolean;
   action: ModalAction;
-  permissions: boolean;
   close: () => void;
   save: (e: React.FormEvent<HTMLFormElement>) => void;
   edit: (e: React.FormEvent<HTMLFormElement>) => void;
@@ -20,7 +13,6 @@ type Props = {
     role: string;
     status: string;
   };
-  changePermissions: (e: boolean) => void;
   changeRole: (e: any) => void;
 };
 
@@ -31,8 +23,6 @@ const MembersModal: React.FC<Props> = ({
   save,
   edit,
   memberData,
-  permissions,
-  changePermissions,
   changeRole,
 }) => (
   <Dialog open={show} onClose={close}>
@@ -48,20 +38,6 @@ const MembersModal: React.FC<Props> = ({
             maxLength: 20,
           }}
         />
-        {action === ModalAction.Edit && (
-          <FormControlLabel
-            control={
-              <Checkbox
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  changePermissions(e.target.checked)
-                }
-                checked={permissions}
-                name="edit_project"
-              />
-            }
-            label="Edit Project"
-          />
-        )}
         <Button type="submit" color="secondary" variant="contained">
           {action === ModalAction.Create ? 'Add' : 'Save'}
         </Button>

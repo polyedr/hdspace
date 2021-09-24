@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Avatar,
+  Checkbox,
+  FormControlLabel,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -10,12 +12,12 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import { removeMemberAction } from '@Redux/pmtools/invite/actions';
 import { IMemberToFrontend, Permission } from '@Src/pm-types/invite/types';
-// import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { StyledIconButton } from '@Components/styledComponents';
 import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { ModalAction } from '@Src/types';
 import { selectTokenPair } from '@Redux/user/selectors';
+// import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 type PropsType = {
   member: IMemberToFrontend;
@@ -23,18 +25,21 @@ type PropsType = {
 
 const Member: React.FC<PropsType> = ({ member }) => {
   const dispatch = useDispatch();
-  const { access } = useSelector(selectTokenPair);
   // const projectId = useSelector(selectCurrentProjectId);
+  const { access } = useSelector(selectTokenPair);
   const { id, role, user, permissions } = member;
   const [editMember, setEditMember] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const rights = permissions?.find((p: Permission) => p === 'change_project');
+  const [write, setWrite] = useState(!!rights);
 
   const removeHandler = () => {
-    // const action = `${user.username} (${role}) has been deleted`;
-    // dispatch(removeMemberAction({ memberId: id, projectId, action, access }));
     dispatch(removeMemberAction({ id, access }));
+  };
+
+  const editPermissionsHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setWrite(e.target.checked);
   };
 
   return (
@@ -52,6 +57,16 @@ const Member: React.FC<PropsType> = ({ member }) => {
         {permissions && (
           <p style={{ fontSize: 10 }}>{rights ? 'READ, WRITE' : 'READ'}</p>
         )}
+        <FormControlLabel
+          control={
+            <Checkbox
+              onChange={editPermissionsHandler}
+              size="small"
+              checked={write}
+            />
+          }
+          label="write"
+        />
         <StyledIconButton
           size="small"
           title="Edit member"
@@ -70,7 +85,6 @@ const Member: React.FC<PropsType> = ({ member }) => {
 
       <MembersModalContainer
         member={member}
-        rights={rights}
         show={editMember}
         hide={() => setEditMember(false)}
         action={ModalAction.Edit}
