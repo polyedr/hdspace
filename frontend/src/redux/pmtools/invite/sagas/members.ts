@@ -1,5 +1,6 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
+import { addActionSaga } from '@Redux/pmtools/activity/sagas';
 import { ToServerFetchMembers, ToServerMember } from '@Src/pm-types/invite/api';
 import { put, call, PutEffect, CallEffect, fork } from 'redux-saga/effects';
 import { requestEditPermissions, requestPermissionsSaga } from './permissions';
@@ -35,19 +36,18 @@ export function* addMember(payload: ToServerMember) {
 export function* addMemberSaga({ payload }: any) {
   yield fork(addMember, payload);
   yield fork(requestEditPermissions, payload);
+  yield fork(addActionSaga, payload);
 }
 
-export function* editMemberSaga({
-  payload,
-}: any): Generator<PutEffect | CallEffect> {
+export function* editMember(payload: any) {
   try {
-    const { projectId, userId, status, role, id, access } = payload;
+    const { project, userId, status, role, id, access } = payload;
     const data = {
       id,
       access,
       role,
       status,
-      project: projectId,
+      project,
       user_id: userId,
     };
     yield call(Invite.editMembers, data);
@@ -58,6 +58,12 @@ export function* editMemberSaga({
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
+}
+
+export function* editMemberSaga({ payload }: any) {
+  yield fork(editMember, payload);
+  yield fork(requestEditPermissions, payload);
+  yield fork(addActionSaga, payload);
 }
 
 export function* removeMemberSaga({

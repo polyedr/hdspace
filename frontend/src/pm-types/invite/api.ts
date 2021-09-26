@@ -10,6 +10,7 @@ export type ToServerMember = {
   status: string;
   user_id: number;
   access?: string;
+  action?: string;
   username?: string;
   permissions?: { prevState: Array<string>; write: boolean };
 };

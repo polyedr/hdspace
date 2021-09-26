@@ -5,39 +5,36 @@ import {
   ClearHistorySagaGenerator,
   GetActionSagaGenerator,
 } from '@Src/pm-types/activity/generators';
-import { put, call, takeEvery, takeLatest } from 'redux-saga/effects';
+import { put, call, takeLatest } from 'redux-saga/effects';
 
-function* getActionSaga({
-  payload,
-}: {
-  type: string;
-  payload: number;
-}): GetActionSagaGenerator {
+function* getActionSaga({ payload }: any): GetActionSagaGenerator {
   try {
-    const data = yield call(Activity.getActions, payload);
-    yield put({ type: TYPES.GET_ACTION, payload: data });
+    const { project, access } = payload;
+    const data: any = yield call(Activity.getActions, project, access);
+
+    const result = data.project_data_text
+      ? data.project_data_text.split('/')
+      : [];
+    yield put({
+      type: TYPES.GET_ACTION,
+      payload: result,
+    });
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
 }
 
-function* addActionSaga({
-  payload,
-}: {
-  type: string;
-  payload: {
-    projectId: number;
-    action: string;
-  };
-}): AddActionSagaGenerator {
+export function* addActionSaga(payload): AddActionSagaGenerator {
   try {
-    const { projectId, action } = payload;
+    const { project, action, access } = payload;
 
-    const projectData = yield call(Activity.getActions, projectId);
+    const projectData: any = yield call(Activity.getActions, project, access);
+    projectData.project_data_text += `/${action}`;
+
     yield call(Activity.addActions, {
-      projectId,
-      action,
-      projectData,
+      project: projectData,
+      access,
+      projectId: project,
     });
     yield put({ type: TYPES.ADD_ACTION, payload });
   } catch (e) {
@@ -45,17 +42,18 @@ function* addActionSaga({
   }
 }
 
-function* clearHistorySaga({
-  payload,
-}: {
-  type: string;
-  payload: number;
-}): ClearHistorySagaGenerator {
+function* clearHistorySaga({ payload }: any): ClearHistorySagaGenerator {
   try {
-    const result = yield call(Activity.clearHistory, payload);
-    if (!result) {
-      yield put({ type: TYPES.CLEAR_HISTORY_SUCCESS });
-    }
+    const { project, access } = payload;
+    const projectData: any = yield call(Activity.getActions, project, access);
+    projectData.project_data_text = '';
+
+    yield call(Activity.clearHistory, {
+      project: projectData,
+      access,
+      projectId: project,
+    });
+    yield put({ type: TYPES.CLEAR_HISTORY_SUCCESS });
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
@@ -63,7 +61,6 @@ function* clearHistorySaga({
 
 export default function* activitySaga() {
   // ACTIONS
-  yield takeEvery(TYPES.REQUEST_ADD_ACTION, addActionSaga);
   yield takeLatest(TYPES.REQUEST_GET_ACTION, getActionSaga);
   yield takeLatest(TYPES.CLEAR_HISTORY, clearHistorySaga);
 }

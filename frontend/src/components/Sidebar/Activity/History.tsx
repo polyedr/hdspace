@@ -3,19 +3,22 @@ import React from 'react';
 import HistoryIcon from '@material-ui/icons/History';
 import { Button } from '@material-ui/core';
 import { SideBarTitle } from '@Components/styledComponents';
-import { useDispatch, useSelector } from 'react-redux';
-import selectActions from '@Redux/pmtools/activity/selectors';
+import { useDispatch } from 'react-redux';
 import { clearHistoryAction } from '@Redux/pmtools/activity/actions';
 
-const History: React.FC<{ id: number }> = ({ id }) => {
-  const actions: Array<string> = useSelector(selectActions);
+const History: React.FC<{
+  id: number;
+  actions: Array<string>;
+  access: string;
+}> = ({ id, actions, access }) => {
   const dispatch = useDispatch();
+  console.log(actions);
 
   return (
     <>
       <SideBarTitle title="Project history" icon={HistoryIcon} />
       <Button
-        onClick={() => dispatch(clearHistoryAction(id))}
+        onClick={() => dispatch(clearHistoryAction({ project: id, access }))}
         fullWidth
         variant="contained"
         color="secondary"

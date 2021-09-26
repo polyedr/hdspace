@@ -16,6 +16,7 @@ type Props = {
   action: ModalAction;
   member: IMemberToFrontend;
   setSearch?: any;
+  rights?: boolean;
 };
 
 const MembersModalContainer: React.FC<Props> = ({
@@ -24,11 +25,13 @@ const MembersModalContainer: React.FC<Props> = ({
   action,
   member,
   setSearch,
+  rights,
 }) => {
   const dispatch = useDispatch();
   const projectId = useSelector(selectCurrentProjectId);
   const [role, setRole] = useState(member?.role || '');
   const { access } = useSelector(selectTokenPair);
+  const [permissions, setPermissions] = useState(!!rights);
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,6 +44,7 @@ const MembersModalContainer: React.FC<Props> = ({
           user_id: member.id,
           project: projectId,
           username: member.username,
+          action: `${member.username} (${role}) has been added`,
         }),
       );
     }
@@ -57,8 +61,11 @@ const MembersModalContainer: React.FC<Props> = ({
           id: member.id,
           role,
           status: member?.status,
-          projectId,
+          project: projectId,
           userId: member.user_id,
+          permissions: { write: permissions, prevState: member.permissions },
+          username: member.user.username,
+          action: `${member.user.username} (${member.role}) was edited`,
         }),
       );
     }
@@ -74,6 +81,8 @@ const MembersModalContainer: React.FC<Props> = ({
       edit={handleEdit}
       memberData={{ role, status: member?.status || '' }}
       changeRole={setRole}
+      permissions={permissions}
+      changePermissions={setPermissions}
     />
   );
 };

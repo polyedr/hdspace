@@ -1,10 +1,8 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Avatar,
-  Checkbox,
-  FormControlLabel,
   ListItem,
   ListItemAvatar,
   ListItemText,
@@ -17,7 +15,6 @@ import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { ModalAction } from '@Src/types';
 import { selectTokenPair } from '@Redux/user/selectors';
-// import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 type PropsType = {
   member: IMemberToFrontend;
@@ -25,21 +22,15 @@ type PropsType = {
 
 const Member: React.FC<PropsType> = ({ member }) => {
   const dispatch = useDispatch();
-  // const projectId = useSelector(selectCurrentProjectId);
   const { access } = useSelector(selectTokenPair);
   const { id, role, user, permissions } = member;
   const [editMember, setEditMember] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const rights = permissions?.find((p: Permission) => p === 'change_project');
-  const [write, setWrite] = useState(!!rights);
+  const rights = !!permissions?.find((p: Permission) => p === 'change_project');
 
   const removeHandler = () => {
     dispatch(removeMemberAction({ id, access }));
-  };
-
-  const editPermissionsHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setWrite(e.target.checked);
   };
 
   return (
@@ -57,16 +48,6 @@ const Member: React.FC<PropsType> = ({ member }) => {
         {permissions && (
           <p style={{ fontSize: 10 }}>{rights ? 'READ, WRITE' : 'READ'}</p>
         )}
-        <FormControlLabel
-          control={
-            <Checkbox
-              onChange={editPermissionsHandler}
-              size="small"
-              checked={write}
-            />
-          }
-          label="write"
-        />
         <StyledIconButton
           size="small"
           title="Edit member"
@@ -84,6 +65,7 @@ const Member: React.FC<PropsType> = ({ member }) => {
       </ListItem>
 
       <MembersModalContainer
+        rights={rights}
         member={member}
         show={editMember}
         hide={() => setEditMember(false)}

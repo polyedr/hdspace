@@ -1,7 +1,13 @@
 import { PanelTextField } from '@Components/styledComponents';
-import { Button, Dialog, DialogContent } from '@material-ui/core';
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogContent,
+  FormControlLabel,
+} from '@material-ui/core';
 import { ModalAction } from '@Src/types';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 
 type Props = {
   show: boolean;
@@ -14,6 +20,8 @@ type Props = {
     status: string;
   };
   changeRole: (e: any) => void;
+  permissions: boolean;
+  changePermissions: (e: boolean) => void;
 };
 
 const MembersModal: React.FC<Props> = ({
@@ -24,6 +32,8 @@ const MembersModal: React.FC<Props> = ({
   edit,
   memberData,
   changeRole,
+  permissions,
+  changePermissions,
 }) => (
   <Dialog open={show} onClose={close}>
     <DialogContent>
@@ -38,6 +48,20 @@ const MembersModal: React.FC<Props> = ({
             maxLength: 20,
           }}
         />
+        {action === ModalAction.Edit && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                size="small"
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  changePermissions(e.target.checked)
+                }
+                checked={permissions}
+              />
+            }
+            label="write"
+          />
+        )}
         <Button type="submit" color="secondary" variant="contained">
           {action === ModalAction.Create ? 'Add' : 'Save'}
         </Button>
