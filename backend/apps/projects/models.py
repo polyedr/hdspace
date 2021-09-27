@@ -256,9 +256,9 @@ class ColumnTask(TimeStampedModel):
 
     column = models.ForeignKey(ProjectColumn, related_name="columntask", on_delete=models.CASCADE)
 
-    creator = models.ForeignKey(get_user_model(), related_name="creator", on_delete=models.CASCADE)
+    creator = models.ForeignKey(get_user_model(), related_name="creator", null=True, blank=True, on_delete=models.CASCADE)
     owner = models.ForeignKey(
-        get_user_model(), related_name="owner", on_delete=models.CASCADE
+        get_user_model(), related_name="owner", null=True, blank=True, on_delete=models.CASCADE
     )
     sub_task = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="subtask"
