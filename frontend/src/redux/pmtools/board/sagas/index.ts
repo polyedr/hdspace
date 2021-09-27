@@ -6,17 +6,11 @@ import {
   columnEditSaga,
   columnsFetchSaga,
 } from './columns';
-import {
-  taskAddSaga,
-  taskDeleteSaga,
-  taskEditSaga,
-  tasksFetchSaga,
-} from './tasks';
+import { taskAddSaga, taskDeleteSaga, taskEditSaga } from './tasks';
 
 export default function* boardSaga() {
   //   BOARD ->
   yield takeLatest(TYPES.REQUEST_FETCH_BOARD, columnsFetchSaga);
-  yield takeLatest(TYPES.REQUEST_FETCH_TASKS, tasksFetchSaga);
   // BOARD -> Task
   yield takeLatest(TYPES.REQUEST_EDIT_TASK, taskEditSaga);
   yield takeLatest(TYPES.REQUEST_ADD_TASK, taskAddSaga);

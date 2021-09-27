@@ -6,28 +6,28 @@ import {
 } from '@Src/pm-types/invite/api';
 
 // Search Members
-export const requestSearchAction = (title: string) => ({
+export const requestSearchAction = (payload: any) => ({
   type: TYPES.SEARCH,
-  payload: title,
+  payload,
 });
 
 // Members
-export const fetchMembersAction = (members: ToServerFetchMembers) => ({
+export const fetchMembersAction = (payload: ToServerFetchMembers) => ({
   type: TYPES.REQUEST_FETCH_MEMBERS,
-  payload: members,
+  payload,
 });
 
-export const editMembersAction = (editData: any) => ({
+export const editMembersAction = (payload: any) => ({
   type: TYPES.REQUEST_EDIT_MEMBER,
-  payload: editData,
+  payload,
 });
 
-export const addMemberAction = (data: ToServerMember) => ({
+export const addMemberAction = (payload: ToServerMember) => ({
   type: TYPES.REQUEST_ADD_MEMBER,
-  payload: data,
+  payload,
 });
 
-export const removeMemberAction = (data: ToServerRemoveMember) => ({
+export const removeMemberAction = (payload: ToServerRemoveMember) => ({
   type: TYPES.REQUEST_REMOVE_MEMBER,
-  payload: data,
+  payload,
 });

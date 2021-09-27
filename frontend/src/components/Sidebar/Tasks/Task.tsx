@@ -12,6 +12,7 @@ import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/Tasks/TaskModal';
 import { ModalAction } from '@Src/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
+import { selectTokenPair } from '@Redux/user/selectors';
 
 type Props = {
   column: IColumn;
@@ -47,12 +48,13 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
   const projectId = useSelector(selectCurrentProjectId);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const { access } = useSelector(selectTokenPair);
 
   const currentMember = members.find((m: IMember) => m.user_id === task.owner);
 
   const handleDeleteTask = () => {
     const action = `Column "${task.title}" has been deleted`;
-    dispatch(requestDeleteTask({ action, taskId: task.id, projectId }));
+    dispatch(requestDeleteTask({ access, action, taskId: task.id, projectId }));
   };
 
   return (

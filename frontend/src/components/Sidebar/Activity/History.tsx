@@ -12,7 +12,6 @@ const History: React.FC<{
   access: string;
 }> = ({ id, actions, access }) => {
   const dispatch = useDispatch();
-  console.log(actions);
 
   return (
     <>

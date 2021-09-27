@@ -3,24 +3,15 @@ import TYPES from '@Redux/actionTypes';
 import {
   TasksAddSagaGenerator,
   TasksEditSagaGenerator,
-  TasksSagaGenerator,
 } from '@Src/pm-types/board/generators';
 import { call, put } from 'redux-saga/effects';
 import { requestAction } from '../../activity/actions';
 import { errorBoard } from '../actions/columns';
 
-export function* tasksFetchSaga(): TasksSagaGenerator {
-  try {
-    const tasks = yield call(Board.fetchTasks);
-    yield put({ type: TYPES.SUCCESS_FETCH_TASKS, payload: tasks });
-  } catch (error) {
-    yield put(errorBoard('Error fetch tasks'));
-  }
-}
-
 export function* taskAddSaga({ payload }: any): TasksAddSagaGenerator {
   try {
     const data = {
+      access: payload.access,
       title: payload.title,
       description: payload.description,
       status: payload.status,
@@ -41,6 +32,7 @@ export function* taskAddSaga({ payload }: any): TasksAddSagaGenerator {
 export function* taskEditSaga({ payload }: any): TasksEditSagaGenerator {
   try {
     const data = {
+      access: payload.access,
       id: payload.id,
       title: payload.title,
       description: payload.description,
@@ -61,8 +53,8 @@ export function* taskEditSaga({ payload }: any): TasksEditSagaGenerator {
 
 export function* taskDeleteSaga({ payload }: any) {
   try {
-    const { taskId, projectId, action } = payload;
-    yield call(Board.deleteTask, taskId);
+    const { taskId, projectId, action, access } = payload;
+    yield call(Board.deleteTask, taskId, access);
     yield put({ type: TYPES.SUCCESS_DELETE_TASK, payload: taskId });
     yield put(requestAction({ projectId, action }));
   } catch (e) {

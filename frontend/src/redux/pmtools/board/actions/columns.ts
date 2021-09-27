@@ -1,8 +1,8 @@
 import TYPES from '@Redux/actionTypes';
 
-export const requestFetchBoard = (projectId: number) => ({
+export const requestFetchBoard = (payload: any) => ({
   type: TYPES.REQUEST_FETCH_BOARD,
-  payload: projectId,
+  payload,
 });
 
 export const requestLoaderBoard = (load: boolean) => ({

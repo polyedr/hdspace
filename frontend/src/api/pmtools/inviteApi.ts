@@ -7,8 +7,6 @@ import {
   ToServerRemoveMember,
 } from '@Src/pm-types/invite/api';
 import { AxiosResponse } from 'axios';
-import api from './common/apiController';
-import getToken from './common/getToken';
 
 const fetchMembers = ({ projectId, access }: ToServerFetchMembers) =>
   myAxios({
@@ -48,15 +46,14 @@ const editMembers = (data: ToServerMember) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-async function getAllUsers() {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.get('/accounts/users/', config);
-    return res.data.results;
-  } catch (e) {
-    return e;
-  }
-}
+const getAllUsers = (access) =>
+  myAxios({
+    access,
+    method: 'GET',
+    url: `/accounts/users/`,
+  })
+    .then((results: AxiosResponse) => results.data.results)
+    .catch(handleError);
 
 const getPermissionsUser = (data: ToServerFetchMembers) =>
   myAxios({

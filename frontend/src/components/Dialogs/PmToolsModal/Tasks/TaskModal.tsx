@@ -18,6 +18,7 @@ import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { IMember } from '@Src/pm-types/invite/types';
 import { IColumn, ITask } from '@Src/pm-types/board/types';
+import { selectTokenPair } from '@Redux/user/selectors';
 
 type Props = {
   members: Array<IMember>;
@@ -43,6 +44,7 @@ const TaskModal: React.FC<Props> = ({
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.title || '');
   const [disc, setDisc] = useState(task?.description || '');
+  const { access } = useSelector(selectTokenPair);
 
   useEffect(() => {
     setValue(members[0]);
@@ -55,6 +57,7 @@ const TaskModal: React.FC<Props> = ({
       dispatch(
         requestAddTask({
           title,
+          access,
           description: disc,
           status: 'created',
           column: column.id || 0,
@@ -74,6 +77,7 @@ const TaskModal: React.FC<Props> = ({
       dispatch(
         requestEditTask({
           id: selectedTaskId || 0,
+          access,
           title,
           description: disc,
           creator: value.status || '',

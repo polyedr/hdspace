@@ -1,128 +1,90 @@
+import { handleError } from '@Api/helper';
+import { myAxios } from '@Src/config/settings';
 import { IColumn, IFromServerTask, ITask } from '@Src/pm-types/board/types';
 import { AxiosResponse } from 'axios';
-import api from './common/apiController';
-import getToken from './common/getToken';
 
-async function fetchColumns(id: number) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.get(
-      `https://api-staging.adevi.info/api/v1/projects/project-columns/?project=${id}`,
-      config,
-    );
-    return res.data.results;
-  } catch (e) {
-    return e;
-  }
-}
+const fetchColumns = async (projectId, access) =>
+  myAxios({
+    access,
+    method: 'GET',
+    url: `/projects/project-columns/?project=${projectId}`,
+  })
+    .then((results: AxiosResponse) => results.data.results)
+    .catch(handleError);
 
-async function fetchTasks() {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.get('/projects/column-tasks/', config);
-    const tasks = res.data.results.map((item: IFromServerTask) => ({
-      ...item,
-      category: 'Readers',
-      isCompleted: item.status !== 'created',
-      status: undefined,
-    }));
-    return tasks;
-  } catch (e) {
-    return e;
-  }
-}
+const fetchTasks = (access) =>
+  myAxios({
+    access,
+    method: 'GET',
+    url: `/projects/column-tasks/`,
+  })
+    .then((results: AxiosResponse) => {
+      return results.data.results.map((item: IFromServerTask) => ({
+        ...item,
+        category: 'Readers',
+        isCompleted: item.status !== 'created',
+        status: undefined,
+      }));
+    })
+    .catch(handleError);
 
-async function createColumn(data: any) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.post(
-      `/projects/project-columns/`,
-      data,
-      config,
-    );
-    if (res.status !== 201) {
-      throw new Error('Failed to create column');
-    }
-    return res.data;
-  } catch (e) {
-    return e;
-  }
-}
+const createColumn = (data: any) =>
+  myAxios({
+    access: data.access,
+    data,
+    method: 'POST',
+    url: `/projects/project-columns/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
-async function updateColumn(data: any) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.patch(
-      `/projects/project-columns/${data.id}/`,
-      data,
-      config,
-    );
-    return res.data;
-  } catch (e) {
-    return e;
-  }
-}
+const updateColumn = (data: any) =>
+  myAxios({
+    access: data.access,
+    data,
+    method: 'PATCH',
+    url: `/projects/project-columns/${data.id}/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
-async function deleteColumn(columnId: IColumn['id']) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.delete(
-      `/projects/project-columns/${columnId}/`,
-      config,
-    );
-    if (res.status !== 204) {
-      throw new Error('Failed to delete column');
-    }
-    return {
-      result: true,
-    };
-  } catch (e) {
-    return {
-      error: e,
-    };
-  }
-}
+const deleteColumn = (columnId: IColumn['id'], access: string) =>
+  myAxios({
+    access,
+    method: 'DELETE',
+    url: `/projects/project-columns/${columnId}/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
-async function createTask(data: any) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.post(
-      `/projects/column-tasks/`,
-      data,
-      config,
-    );
-    return res.data;
-  } catch (e) {
-    return e;
-  }
-}
+const createTask = (data: any) =>
+  myAxios({
+    access: data.access,
+    data,
+    method: 'POST',
+    url: `/projects/column-tasks/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
-async function updateTask(data: any) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.patch(
-      `/projects/column-tasks/${data.id}/`,
-      data,
-      config,
-    );
-    return res.data;
-  } catch (e) {
-    return e;
-  }
-}
+const updateTask = (data: any) =>
+  myAxios({
+    access: data.access,
+    data,
+    method: 'PATCH',
+    url: `/projects/column-tasks/${data.id}/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
-async function deleteTask(taskId: ITask['id']) {
-  try {
-    const config = await getToken();
-    const res: AxiosResponse = await api.delete(
-      `/projects/column-tasks/${taskId}/`,
-      config,
-    );
-    return res;
-  } catch (e) {
-    return e;
-  }
-}
+const deleteTask = (taskId: ITask['id'], access: string) =>
+  myAxios({
+    access,
+    method: 'DELETE',
+    url: `/projects/column-tasks/${taskId}/`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
 const Board = {
   fetchColumns,

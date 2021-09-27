@@ -12,6 +12,7 @@ import { ModalAction } from '@Src/types';
 import { IMember } from '@Src/pm-types/invite/types';
 import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectTokenPair } from '@Redux/user/selectors';
 import SearchMember from './SearchMember';
 
 const Search = () => {
@@ -19,13 +20,14 @@ const Search = () => {
   const [search, setSearch] = useState('');
   const [isDisabled, setDisabled] = useState(false);
   const [addMember, setAddMember] = useState(false);
+  const { access } = useSelector(selectTokenPair);
   const searchResult = useSelector(selectSearch);
   const members = useSelector(selectMembers);
   const loader = useSelector(selectSearchLoader);
 
   const searchHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(requestSearchAction(search));
+    dispatch(requestSearchAction({ search, access }));
   };
 
   const handleClearSearch = () => {

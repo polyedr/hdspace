@@ -3,16 +3,13 @@ import TYPES from '@Redux/actionTypes';
 import { IUser } from '@Src/pm-types/user/types';
 import { call, put } from 'redux-saga/effects';
 
-export default function* searchSaga({
-  payload,
-}: {
-  type: string;
-  payload: string;
-}) {
+export default function* searchSaga({ payload }: any) {
   try {
     yield put({ type: TYPES.SEARCH_LOADER, payload: true });
-    const users: Array<IUser> = yield call(Invite.getAllUsers);
-    const result = users.find((user: IUser) => user.username === payload);
+    const users: Array<IUser> = yield call(Invite.getAllUsers, payload.access);
+    const result = users.find(
+      (user: IUser) => user.username === payload.search,
+    );
     yield put({
       type: TYPES.SEARCH_SUCCESS,
       payload: result,

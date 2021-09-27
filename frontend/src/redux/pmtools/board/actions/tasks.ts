@@ -1,20 +1,16 @@
 import TYPES from '@Redux/actionTypes';
 
-export const requestFetchTask = () => ({
-  type: TYPES.REQUEST_FETCH_TASKS,
-});
-
-export const requestAddTask = (data: any) => ({
+export const requestAddTask = (payload: any) => ({
   type: TYPES.REQUEST_ADD_TASK,
-  payload: data,
+  payload,
 });
 
-export const requestEditTask = (data: any) => ({
+export const requestEditTask = (payload: any) => ({
   type: TYPES.REQUEST_EDIT_TASK,
-  payload: data,
+  payload,
 });
 
-export const requestDeleteTask = (data: any) => ({
+export const requestDeleteTask = (payload: any) => ({
   type: TYPES.REQUEST_DELETE_TASK,
-  payload: data,
+  payload,
 });

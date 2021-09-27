@@ -1,11 +1,5 @@
 import { CallEffect, PutEffect } from 'redux-saga/effects';
-import { IFromServerColumn, ITask, IToServerTask } from './types';
-
-export type TasksSagaGenerator = Generator<
-  CallEffect | PutEffect,
-  void,
-  Array<ITask>
->;
+import { IFromServerColumn, IToServerTask } from './types';
 
 export type TasksAddSagaGenerator = Generator<
   CallEffect | PutEffect,

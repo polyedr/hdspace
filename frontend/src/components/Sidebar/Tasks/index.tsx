@@ -12,19 +12,20 @@ import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestFetchBoard } from '@Redux/pmtools/board/actions/columns';
 import { ModalAction } from '@Src/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/Tasks/ColumnModal';
+import { selectTokenPair } from '@Redux/user/selectors';
 import Columns from './Columns';
 
 const TasksTab: FC = () => {
   const dispatch = useDispatch();
   const columnList = useSelector(selectColumnListWithTasks);
   const projectId = useSelector(selectCurrentProjectId);
-  // const loader = useSelector(selectLoaderBoard);
+  const { access } = useSelector(selectTokenPair);
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(requestFetchBoard(projectId));
-  }, [dispatch, projectId]);
+    dispatch(requestFetchBoard({ projectId, access }));
+  }, [access, dispatch, projectId]);
 
   const titleActions = [
     {
@@ -33,14 +34,6 @@ const TasksTab: FC = () => {
       title: 'Create task group',
     },
   ];
-
-  // if (loader) {
-  //   return (
-  //     <Container>
-  //       <p>Loading... </p>
-  //     </Container>
-  //   );
-  // }
 
   return (
     <Container>
