@@ -1833,7 +1833,7 @@ def calculate_uclusters(fdict, fname, fnamesize, image_uclusters, node):
 
     # For some rectangle. Go through all the rectangles in. Find rectangles without parents, they are level rectangles.
     # Save sets of rectangles placed for each level rectangle. Repeat the process.
-    chain_uclusters(rectangles, root_ucluster, image_uclusters)
+    f(rectangles, root_ucluster, image_uclusters)
 
     # Printing uclusters to file
     if len(image_uclusters):
@@ -3447,6 +3447,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # img = load_img(imgpath)
             # img = img_to_array(img)
             # These calculations should be moved to the previous serializer later
+            # Maybe write this to the parameters
             fsize = str(os.path.getsize(imgpath))
             fnamesize = fname + fsize
 
