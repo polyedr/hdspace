@@ -17,7 +17,7 @@ export const fetchMembersAction = (payload: ToServerFetchMembers) => ({
   payload,
 });
 
-export const editMembersAction = (payload: any) => ({
+export const editMembersAction = (payload: ToServerMember) => ({
   type: TYPES.REQUEST_EDIT_MEMBER,
   payload,
 });

@@ -15,6 +15,7 @@ import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { ModalAction } from '@Src/types';
 import { selectTokenPair } from '@Redux/user/selectors';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 type PropsType = {
   member: IMemberToFrontend;
@@ -23,6 +24,7 @@ type PropsType = {
 const Member: React.FC<PropsType> = ({ member }) => {
   const dispatch = useDispatch();
   const { access } = useSelector(selectTokenPair);
+  const project = useSelector(selectCurrentProjectId);
   const { id, role, user, permissions } = member;
   const [editMember, setEditMember] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -30,7 +32,8 @@ const Member: React.FC<PropsType> = ({ member }) => {
   const rights = !!permissions?.find((p: Permission) => p === 'change_project');
 
   const removeHandler = () => {
-    dispatch(removeMemberAction({ id, access }));
+    const action = `${user.username} has been removed`;
+    dispatch(removeMemberAction({ id, access, action, project }));
   };
 
   return (

@@ -10,7 +10,17 @@ export const requestGetAction = (project: number, access: string) => ({
   payload: { project, access },
 });
 
+export const getActions = (payload: any) => ({
+  type: TYPES.GET_ACTION,
+  payload,
+});
+
 export const requestAction = (data: any) => ({
   type: TYPES.REQUEST_ADD_ACTION,
   payload: data,
+});
+
+export const addAction = (payload) => ({
+  type: TYPES.ADD_ACTION,
+  payload,
 });

@@ -62,7 +62,7 @@ const MembersModalContainer: React.FC<Props> = ({
           role,
           status: member?.status,
           project: projectId,
-          userId: member.user_id,
+          user_id: member.user_id,
           permissions: { write: permissions, prevState: member.permissions },
           username: member.user.username,
           action: `${member.user.username} (${member.role}) was edited`,

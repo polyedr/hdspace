@@ -777,12 +777,15 @@ export type ServerProjectWithScreens = {
 
 export type ServerProject = {
   id: number;
+  favicon?: null | string;
+  preview?: string;
   name: string;
   status: string;
   projectscreen: number[];
   created: string;
   updated: string;
   user: ServerUserData;
+  project_data_activity_json?: string;
   project_data_json: string;
   project_data_text: string;
   tags: Array<string>;

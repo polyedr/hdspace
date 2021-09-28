@@ -4,7 +4,6 @@ import {
   ToServerFetchMembers,
   ToServerMember,
   ToServerPermissions,
-  ToServerRemoveMember,
 } from '@Src/pm-types/invite/api';
 import { AxiosResponse } from 'axios';
 
@@ -27,13 +26,13 @@ const addMember = (data: ToServerMember) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const removeMember = (data: ToServerRemoveMember) =>
+const removeMember = ({ id, access }) =>
   myAxios({
-    access: data.access,
+    access,
     method: 'DELETE',
-    url: `/projects/project-members/${data.id}`,
+    url: `/projects/project-members/${id}`,
   })
-    .then(() => data.id)
+    .then(() => id)
     .catch(handleError);
 
 const editMembers = (data: ToServerMember) =>
