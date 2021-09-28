@@ -18,7 +18,7 @@ import {
   ServerScreen,
   ServerUserData,
   UserData,
-} from '@Src/types';
+} from '@Src/types/types';
 import { capitalize } from '@Utils/stringHelper';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';

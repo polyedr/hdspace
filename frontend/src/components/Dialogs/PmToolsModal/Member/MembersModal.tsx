@@ -6,7 +6,7 @@ import {
   DialogContent,
   FormControlLabel,
 } from '@material-ui/core';
-import { ModalAction } from '@Src/types';
+import { ModalAction } from '@Src/types/types';
 import React, { ChangeEvent } from 'react';
 
 type Props = {

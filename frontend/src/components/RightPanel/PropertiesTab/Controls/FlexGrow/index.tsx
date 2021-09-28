@@ -1,5 +1,5 @@
 import React from 'react';
-import { ContainerElement, PropertiesChangeProps } from '@Src/types';
+import { ContainerElement, PropertiesChangeProps } from '@Src/types/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';

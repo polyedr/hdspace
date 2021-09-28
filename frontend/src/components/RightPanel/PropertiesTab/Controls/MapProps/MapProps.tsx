@@ -12,7 +12,7 @@ import {
 } from '@Constants/defaultParams';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { getPermissibleValue } from '@Utils/NumberHelper';
-import { MapElement, PropertiesChangeProps } from '@Src/types';
+import { MapElement, PropertiesChangeProps } from '@Src/types/types';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { InputAdornment } from '@material-ui/core';

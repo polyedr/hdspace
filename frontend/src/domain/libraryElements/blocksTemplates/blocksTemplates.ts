@@ -5,7 +5,7 @@ import {
   PageTemplateServerElement,
   SectionServerElement,
   SubscribeFormServerElement,
-} from '@Src/types';
+} from '@Src/types/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import {
   makeContainer,

@@ -1,6 +1,6 @@
 import { takeEvery, put, select } from 'redux-saga/effects/';
 import TYPES from '@Redux/actionTypes';
-import { Normalized, VIARegion } from '@Src/types';
+import { Normalized, VIARegion } from '@Src/types/types';
 import { v4 } from 'uuid';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {

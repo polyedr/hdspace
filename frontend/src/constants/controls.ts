@@ -30,7 +30,7 @@ import TypographyBlock from '@Components/RightPanel/PropertiesTab/Controls/Typog
 import Value from '@Components/RightPanel/PropertiesTab/Controls/Value/Value';
 import VideoSettings from '@Components/RightPanel/PropertiesTab/Controls/VideoSettings/VideoSettings';
 import withSmartContainerControl from '@Components/RightPanel/PropertiesTab/Controls/SmartContainerControl/withSmartContainerControl';
-import { Control, NNBlockType } from '@Src/types';
+import { Control, NNBlockType } from '@Src/types/types';
 import Alt from '@Components/RightPanel/PropertiesTab/Controls/Alt';
 import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
 import StyleSheets from '@Components/RightPanel/PropertiesTab/Controls/StyleSheets/StyleSheets';

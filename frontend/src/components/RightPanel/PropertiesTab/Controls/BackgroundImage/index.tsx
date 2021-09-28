@@ -1,5 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '@Src/types/types';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { StyledTextField } from '@Components/styledComponents';

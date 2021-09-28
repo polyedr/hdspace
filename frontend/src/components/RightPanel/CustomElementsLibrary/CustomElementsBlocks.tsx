@@ -7,7 +7,7 @@ import {
 import { loadCustomElements } from '@Redux/project/actions';
 import isInViewport from '@Utils/isInViewport';
 import { createArrayCustomElements } from '@Utils/createCategoryCustomElement';
-import { CustomElementsCategory } from '@Src/types';
+import { CustomElementsCategory } from '@Src/types/types';
 import CustomElementsBlock from './CustomElementsBlock';
 
 const CustomElementsBlocks = () => {
@@ -52,7 +52,7 @@ const CustomElementsBlocks = () => {
         observer.unobserve(lastDom);
       }
     };
-  }, [lastDom]);
+  }, [dispatch, hasNext, lastDom]);
 
   return (
     <div ref={rootRef}>

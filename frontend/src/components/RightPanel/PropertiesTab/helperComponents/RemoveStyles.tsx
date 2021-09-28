@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
-import { Entity } from '@Src/types';
+import { Entity } from '@Src/types/types';
 import Button from '../../../UI/Button';
 
 type Props = {

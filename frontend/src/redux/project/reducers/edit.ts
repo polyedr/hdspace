@@ -1,6 +1,6 @@
 import { pick } from 'ramda';
 import produce, { current, Draft } from 'immer';
-import { Normalized, VIARegion } from '@Src/types';
+import { Normalized, VIARegion } from '@Src/types/types';
 import { sortByLayer } from '@Utils/viaHelpers';
 import { initialEdit } from '../initial';
 import TYPES from '../../actionTypes';

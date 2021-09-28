@@ -8,7 +8,7 @@ import {
   UserData,
   ProfileData,
   Experience,
-} from '../types';
+} from '../types/types';
 import getDefaultStyles from '../utils/getDefaultStyles';
 import { NOT_SELECTED_FRAMEWORK } from './frameworks';
 

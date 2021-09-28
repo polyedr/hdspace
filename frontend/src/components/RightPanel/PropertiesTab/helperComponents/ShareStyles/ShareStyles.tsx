@@ -13,7 +13,7 @@ import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { AppReduxState } from '@Redux/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { UserProjectPermission } from '@Src/types';
+import { UserProjectPermission } from '@Src/types/types';
 import { makeStyles } from '@material-ui/core/styles';
 import EditableStyles from '../EditableStyles/EditableStyles';
 

@@ -1,4 +1,4 @@
-import { MyAxiosProps } from '@Src/types';
+import { MyAxiosProps } from '@Src/types/types';
 import axios from 'axios';
 
 export const env = process.env.NODE_ENV;

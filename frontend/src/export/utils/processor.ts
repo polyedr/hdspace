@@ -4,7 +4,7 @@ import pretty from 'pretty';
 import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
 import { toClassName } from '@Utils/stringHelper';
-import { ProjectClass, ScreenMetaData, StateElement } from '@Src/types';
+import { ProjectClass, ScreenMetaData, StateElement } from '@Src/types/types';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];

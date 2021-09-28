@@ -3,7 +3,7 @@ import RENDERERS from '@Components/UI/RenderElements';
 import { selectElementById } from '@Redux/project/selectors/element';
 import { AppReduxState } from '@Redux/types';
 import { selectLayout } from '@Redux/project/selectors/base';
-import { Layout } from '@Src/types';
+import { Layout } from '@Src/types/types';
 
 type Props = {
   elementId: string;

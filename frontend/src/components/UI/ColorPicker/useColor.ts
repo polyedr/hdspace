@@ -14,7 +14,7 @@ const useColor = (
 
   useEffect(() => {
     setColor(defaultColor);
-  }, [activeItemID]);
+  }, [activeItemID, defaultColor]);
 
   const changeColor = (newColor: Color) => {
     setIsValid(newColor.isValid);

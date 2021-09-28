@@ -1,5 +1,5 @@
 import { myAxios } from '@Src/config/settings';
-import { Asset, MyAxiosProps, PaginatedArray, Result } from '@Src/types';
+import { Asset, MyAxiosProps, PaginatedArray, Result } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 import {
   convertResponseToAsset,

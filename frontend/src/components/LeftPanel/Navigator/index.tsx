@@ -30,7 +30,7 @@ const Navigator: React.FC = () => {
     const newTree = makeTree(convertElements(elements), rootId);
     const updatedTree = updateTree(tree, newTree);
     setTree(updatedTree);
-  }, [rootId, elements]);
+  }, [rootId, elements, tree]);
 
   const expandParents = useCallback(
     (itemId) => {

@@ -5,7 +5,7 @@ import {
   HeadingElement,
   PropertiesChangeProps,
   HeadingType as HeadingTagType,
-} from '@Src/types';
+} from '@Src/types/types';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { MenuItem } from '@material-ui/core';

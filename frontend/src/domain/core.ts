@@ -3,7 +3,7 @@ import {
   AvailableControls,
   ElementEntity,
   FreeCanvasElementParams,
-} from '../types';
+} from '../types/types';
 
 export const ENTITIES: {
   [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container' | 'input'>]: K;

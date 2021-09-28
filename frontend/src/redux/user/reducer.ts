@@ -1,5 +1,5 @@
 import { createReducer, Handlers } from 'reduxsauce';
-import { UnsafeReturnType } from '@Src/types';
+import { UnsafeReturnType } from '@Src/types/types';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { UserState } from '../types';

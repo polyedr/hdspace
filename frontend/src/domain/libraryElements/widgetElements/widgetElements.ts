@@ -3,7 +3,7 @@ import {
   ClockServerElement,
   ElementGroup,
   MapServerElement,
-} from '@Src/types';
+} from '@Src/types/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { defaultFreeCanvasParams } from '../../core';
 

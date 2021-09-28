@@ -26,7 +26,7 @@ import {
   makeTextBlock,
 } from '@Domain/libraryElements/typographyElements/typographyElements';
 import { capitalize } from '@material-ui/core/utils';
-import { Entity, ServerElement } from '@Src/types';
+import { Entity, ServerElement } from '@Src/types/types';
 
 const CORE_MASTER_RESPONSE_ELEMENTS = [
   makeHeading(),

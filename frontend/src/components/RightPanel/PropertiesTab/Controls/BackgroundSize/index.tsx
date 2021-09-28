@@ -1,5 +1,9 @@
 import React, { useCallback, memo, useMemo } from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '@Src/types/types';
 import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
@@ -110,7 +114,7 @@ const BackgroundSize: React.FC<Props> = memo(
           }
         }
       },
-      [updateStyles, width, height, editorDocument],
+      [editorDocument, element.id, height, width, updateStyles],
     );
 
     const handleInputChange = useCallback(

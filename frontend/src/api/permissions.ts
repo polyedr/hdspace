@@ -1,5 +1,5 @@
 import { myAxios } from '@Src/config/settings';
-import { MyAxiosProps, UserProjectPermission } from '@Src/types';
+import { MyAxiosProps, UserProjectPermission } from '@Src/types/types';
 import { convertPermissionsUserDataFromResponse } from './converters/permissions/fromResponse';
 import { handleError } from './helper';
 

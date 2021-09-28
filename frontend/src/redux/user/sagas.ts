@@ -16,7 +16,7 @@ import {
   apiGetUser,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
-import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
+import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   sidebarLogout,

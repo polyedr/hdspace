@@ -8,7 +8,7 @@ import theme from '@Src/styles/Theme';
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
 import { selectCurrentRootId } from '@Redux/project/selectors/element';
-import { ProjectClass, ScreenMetaData } from '@Src/types';
+import { ProjectClass, ScreenMetaData } from '@Src/types/types';
 import {
   selectCurrentProjectClasses,
   selectCurrentUIFramework,

@@ -16,7 +16,7 @@ import {
 import { apiCreateAssetList } from '@Api/assetList';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { convertCreatedProjectToRequest } from '@Api/converters/toRequest';
-import { UserProjectPermission } from '@Src/types';
+import { UserProjectPermission } from '@Src/types/types';
 import * as PermissionsActions from '../../../../redux/permissions/actions';
 import {
   createAssetListMock,

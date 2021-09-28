@@ -4,20 +4,19 @@ import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, ListItem, ListItemText } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import { IColumn, ITask } from '@Src/pm-types/board/types';
-import { IMember } from '@Src/pm-types/invite/types';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
 import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/Tasks/TaskModal';
-import { ModalAction } from '@Src/types';
+import { ModalAction } from '@Src/types/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { selectTokenPair } from '@Redux/user/selectors';
+import { ColumnData, MemberData, TaskData } from '@Src/types/pmtools/types';
 
 type Props = {
-  column: IColumn;
-  task: ITask;
-  members: Array<IMember>;
+  column: ColumnData;
+  task: TaskData;
+  members: Array<MemberData>;
 };
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
@@ -50,7 +49,9 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const { access } = useSelector(selectTokenPair);
 
-  const currentMember = members.find((m: IMember) => m.user_id === task.owner);
+  const currentMember = members.find(
+    (m: MemberData) => m.user_id === task.owner,
+  );
 
   const handleDeleteTask = () => {
     const action = `Column "${task.title}" has been deleted`;

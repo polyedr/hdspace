@@ -5,7 +5,7 @@ import {
   MyAxiosProps,
   PaginatedResponse,
   ServerUserData,
-} from '../types';
+} from '../types/types';
 import { convertUserDataFromResponse } from './converters/fromResponse';
 import { handleError, parseCursor, parseResult } from './helper';
 

@@ -1,3 +1,29 @@
+// Board
+
+export interface ToServerColumn {
+  title: string;
+  description: string;
+  project: number;
+}
+
+export interface FromServerColumn extends ToServerColumn {
+  id?: number;
+}
+
+export interface ToServerTask {
+  title: string;
+  description: string;
+  status: string;
+  column: number;
+  creator: string;
+  owner: number;
+}
+
+export interface FromServerTask extends ToServerTask {
+  id?: number;
+}
+
+// Members
 export type ToServerFetchMembers = {
   projectId: number;
   access: string;

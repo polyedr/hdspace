@@ -3,8 +3,8 @@ import TYPES from '@Redux/actionTypes';
 import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
-} from '@Src/pm-types/board/generators';
-import { IColumn } from '@Src/pm-types/board/types';
+} from '@Src/types/pmtools/generators';
+import { ColumnData } from '@Src/types/pmtools/types';
 import { call, put } from 'redux-saga/effects';
 import { requestAction } from '../../activity/actions';
 import { errorBoard, requestLoaderBoard } from '../actions/columns';
@@ -20,7 +20,7 @@ export function* columnsFetchSaga({ payload }: any): any {
     const tasks = yield call(Board.fetchTasks, payload.access);
     yield put({ type: TYPES.SUCCESS_FETCH_TASKS, payload: tasks });
 
-    const data: IColumn[] = receivedData.map((item: any) => ({
+    const data: ColumnData[] = receivedData.map((item: any) => ({
       ...item,
       tasks: [],
     }));

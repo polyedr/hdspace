@@ -10,7 +10,7 @@ import {
   StateElement,
   UpdateDataActionType,
   UserProjectPermission,
-} from '@Src/types';
+} from '@Src/types/types';
 import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
 import { extractStyles } from '@Utils/stringHelper';

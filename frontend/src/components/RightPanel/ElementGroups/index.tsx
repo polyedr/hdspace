@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectElementGroups } from '@Redux/project/selectors/element';
 import Crop169Icon from '@material-ui/icons/Crop169';
-import { ElementData } from '@Src/types';
+import { ElementData } from '@Src/types/types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   StyledAccordion,

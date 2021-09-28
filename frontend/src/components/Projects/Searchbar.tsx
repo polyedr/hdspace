@@ -2,7 +2,7 @@ import React, { FC, FormEvent } from 'react';
 import { Button, TextField, MenuItem } from '@material-ui/core';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateRange, ProjectsSearchParameter } from '@Src/types';
+import { DateRange, ProjectsSearchParameter } from '@Src/types/types';
 import {
   searchProjects,
   setProjectsSearchParameter,

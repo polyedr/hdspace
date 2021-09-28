@@ -1,7 +1,7 @@
 import React from 'react';
 import { VIMEO_HEIGHT_RATIO } from '@Constants/players';
 import { makeStyles } from '@material-ui/core/styles';
-import { StateElement } from '../../../types';
+import { StateElement } from '../../../types/types';
 
 export const useElementClassNames = (element: StateElement) => {
   return makeStyles({

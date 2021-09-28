@@ -30,7 +30,7 @@ import {
   updateMultipleElementsStyles,
   updateSharedStyles,
 } from '@Redux/project/actions';
-import { Entity } from '@Src/types';
+import { Entity } from '@Src/types/types';
 import { selectUserProfileDataParameters } from '@Redux/user/selectors';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';
 import InteractionsHandler from './InteractionsHandler';

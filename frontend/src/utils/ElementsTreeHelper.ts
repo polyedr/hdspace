@@ -1,5 +1,5 @@
 import { flatten } from 'ramda';
-import { Entity, LibraryElement } from '../types';
+import { Entity, LibraryElement } from '../types/types';
 
 export const findParentByChildID = (
   element: LibraryElement<Entity, LibraryElement<Entity>[]>,

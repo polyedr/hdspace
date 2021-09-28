@@ -3,7 +3,7 @@ import {
   ToServerFetchMembers,
   ToServerMember,
   ToServerRemoveMember,
-} from '@Src/pm-types/invite/api';
+} from '@Src/types/pmtools/api';
 
 // Search Members
 export const requestSearchAction = (payload: any) => ({

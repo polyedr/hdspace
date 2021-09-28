@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import createColorElementIcon from '@Utils/createColorElementIcon';
-import { ColorElementIcon } from '@Src/types';
+import { ColorElementIcon } from '@Src/types/types';
 
 type Props = {
   name: string;

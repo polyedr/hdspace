@@ -5,7 +5,7 @@ import {
   Alignments,
   PropertiesChangeProps,
   RadiobuttonGroupElement,
-} from '@Src/types';
+} from '@Src/types/types';
 
 type Props = {
   flexDirection: Alignments;

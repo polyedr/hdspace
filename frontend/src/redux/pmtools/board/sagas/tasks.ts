@@ -3,7 +3,7 @@ import TYPES from '@Redux/actionTypes';
 import {
   TasksAddSagaGenerator,
   TasksEditSagaGenerator,
-} from '@Src/pm-types/board/generators';
+} from '@Src/types/pmtools/generators';
 import { call, put } from 'redux-saga/effects';
 import { requestAction } from '../../activity/actions';
 import { errorBoard } from '../actions/columns';

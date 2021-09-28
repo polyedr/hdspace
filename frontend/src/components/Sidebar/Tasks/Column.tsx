@@ -6,11 +6,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { IColumn } from '@Src/pm-types/board/types';
-import { IMember } from '@Src/pm-types/invite/types';
 import { StyledIconButton } from '@Components/styledComponents';
-import { ModalAction } from '@Src/types';
+import { ModalAction } from '@Src/types/types';
 import TaskModal from '@Components/Dialogs/PmToolsModal/Tasks/TaskModal';
+import { ColumnData, MemberData } from '@Src/types/pmtools/types';
 import Task from './Task';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -31,21 +30,21 @@ const useStyles = makeStyles(({ palette }) => ({
 
 type Props = {
   tasksModal: boolean;
-  column: IColumn;
-  members: Array<IMember>;
+  column: ColumnData;
+  members: Array<MemberData>;
   setTasksModal: (v: boolean) => void;
   setConfirmModal: (v: boolean) => void;
   setColumnModal: (v: boolean) => void;
 };
 
-export const Column = ({
+export const Column: React.FC<Props> = ({
   column,
   tasksModal,
   members,
   setTasksModal,
   setConfirmModal,
   setColumnModal,
-}: any) => {
+}) => {
   const classes = useStyles();
   const [showTasks, setShowTasks] = useState(false);
 

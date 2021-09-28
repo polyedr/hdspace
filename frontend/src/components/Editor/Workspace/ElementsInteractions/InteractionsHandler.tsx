@@ -8,7 +8,7 @@ import {
   DropTargetParams,
   Screen,
   StateElement,
-} from '@Src/types';
+} from '@Src/types/types';
 import { AppReduxState } from '@Redux/types';
 import getBoundingStyles from '@Utils/getBoundingStyles';
 import SaveElementAction from './Actions/SaveElement/SaveElementAction';
@@ -72,7 +72,7 @@ const InteractionsHandler = ({
         setStyles(updatedBorderStyles);
       }
     },
-    [frameWindow, styles],
+    [frameWindow, screen.element, styles],
   );
 
   const elRef = useRef(elementDom);

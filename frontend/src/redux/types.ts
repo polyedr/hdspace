@@ -43,7 +43,7 @@ import {
   ChatCredentials,
   UIFramework,
   ElementData,
-} from '../types';
+} from '../types/types';
 import TYPES from './actionTypes';
 
 export type PermissionsState = {

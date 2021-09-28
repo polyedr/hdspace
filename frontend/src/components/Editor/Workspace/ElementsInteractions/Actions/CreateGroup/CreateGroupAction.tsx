@@ -7,7 +7,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { createElementsGroup } from '@Redux/project/actions';
 
 import { makeStyles } from '@material-ui/core/styles';
-import { StateElement } from '@Src/types';
+import { StateElement } from '@Src/types/types';
 import { useButtonStyles } from '../hooks/styles';
 
 type Props = {

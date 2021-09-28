@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { CheckboxElement, PropertiesChangeProps } from '@Src/types';
+import { CheckboxElement, PropertiesChangeProps } from '@Src/types/types';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
 const Name: React.FC<PropertiesChangeProps<CheckboxElement>> = ({

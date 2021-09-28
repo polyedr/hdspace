@@ -14,7 +14,7 @@ import NewScreenModal from '@Components/Dialogs/NewScreenModal';
 import Sidebar from '@Components/Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectSortedScreens } from '@Redux/project/selectors/screen';
-import { Screen } from '@Src/types';
+import { Screen } from '@Src/types/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import ScreenComponent from './Screen';
 

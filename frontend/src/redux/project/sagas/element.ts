@@ -45,7 +45,7 @@ import {
   UpdateDataActionType,
   UserProjectPermission,
   ElementData,
-} from '@Src/types';
+} from '@Src/types/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
 import { compose } from 'redux';

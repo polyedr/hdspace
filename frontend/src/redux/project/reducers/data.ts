@@ -13,7 +13,7 @@ import {
 } from '@Utils/normalizedStateHelpers';
 import { initialData } from '../initial';
 import TYPES from '../../actionTypes';
-import { Project, Screen } from '../../../types';
+import { Project, Screen } from '../../../types/types';
 import { Action, ProjectDataState } from '../../types';
 
 const dataReducer = produce(

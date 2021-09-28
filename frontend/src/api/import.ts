@@ -5,7 +5,7 @@ import {
   PostUrlResponse,
   Result,
   PostURLCheckRobots,
-} from '@Src/types';
+} from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 import { handleError } from './helper';
 
