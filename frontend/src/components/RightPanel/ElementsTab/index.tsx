@@ -7,6 +7,7 @@ import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
 import CustomElementsBlocks from '../CustomElementsLibrary/CustomElementsBlocks';
+import GeneratedElementsBlocks from '../CustomElementsLibrary/GeneratedElementBlocks';
 import ElementsBlock from './ElementsBlock';
 import ElementGroups from '../ElementGroups';
 import Section from './Section';
@@ -67,7 +68,6 @@ const ElementsTab = () => {
   const { elements, templates, generators, library } = createElementsHierarchy(
     LIBRARY_ELEMENTS,
   );
-
   const libraryWithCustomUI = {
     ...library,
   };
@@ -139,7 +139,13 @@ const ElementsTab = () => {
             activeSection={section}
             className={classes.section}
           >
-            <ElementsBlock elements={generators} />
+            <ElementsBlock
+              key="generators"
+              title="generators"
+              elements={generators}
+              expandable
+            />
+            <GeneratedElementsBlocks />
           </Section>
 
           <Section title="library" activeSection={section}>

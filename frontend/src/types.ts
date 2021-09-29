@@ -107,7 +107,7 @@ export type ServerElement<
 > = {
   id: number | string;
   name: string;
-  scenario?: number;
+  scenario?: number | undefined | null;
   struct_type: Type;
   func_type: string;
   buoyancy: number;
@@ -863,6 +863,12 @@ export type CreatedElement = {
   type: Entity | string;
   name: string;
   custom: boolean;
+  shared?: boolean;
+  styles?: {
+    classNames: string[];
+    ownStyles: React.CSSProperties;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
+  };
   parameters?: any;
 };
 

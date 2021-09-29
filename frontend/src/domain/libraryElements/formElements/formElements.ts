@@ -43,7 +43,7 @@ export const makeButton = ({
     ownStyles,
     pseudoClassStyles: {},
   },
-  name: 'button',
+  name: 'Generated background button',
   children: [],
 });
 

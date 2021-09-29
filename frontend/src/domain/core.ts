@@ -540,7 +540,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   button: {},
-  buttonGenerator: {},
+  buttonGenerator: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
   textinput: {},
   input: {},
   textarea: {},
