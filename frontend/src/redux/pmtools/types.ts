@@ -8,8 +8,6 @@ import {
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
 
-export type RootState = ReturnType<any>;
-
 export interface InviteRootState extends DefaultRootState {
   invite: InviteState;
 }

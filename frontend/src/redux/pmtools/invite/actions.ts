@@ -3,10 +3,11 @@ import {
   ToServerFetchMembers,
   ToServerMember,
   ToServerRemoveMember,
+  ToServerSearchMember,
 } from '@Src/types/pmtools/api';
 
 // Search Members
-export const requestSearchAction = (payload: any) => ({
+export const requestSearchAction = (payload: ToServerSearchMember) => ({
   type: TYPES.SEARCH,
   payload,
 });

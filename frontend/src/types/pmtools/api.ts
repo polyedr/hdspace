@@ -1,3 +1,8 @@
+export type ToServerSearchMember = {
+  access: string;
+  search: string;
+};
+
 export type ToServerFetchMembers = {
   projectId: number;
   access: string;
