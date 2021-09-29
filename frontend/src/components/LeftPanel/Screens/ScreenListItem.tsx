@@ -7,7 +7,7 @@ import { useHistory } from 'react-router';
 import { editScreenNameAndData } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { ListItem, ListItemIcon } from '@material-ui/core';
-import { Screen } from '../../../types';
+import { Screen } from '../../../types/types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';

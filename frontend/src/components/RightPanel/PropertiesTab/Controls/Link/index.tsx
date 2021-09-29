@@ -1,5 +1,5 @@
 import React from 'react';
-import { ParagraphElement, PropertiesChangeProps } from '@Src/types';
+import { ParagraphElement, PropertiesChangeProps } from '@Src/types/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 

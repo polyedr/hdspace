@@ -2,7 +2,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
 import Avatar from '@material-ui/core/Avatar';
 import React, { useState } from 'react';
-import { EditableScreenUser } from '@Src/types';
+import { EditableScreenUser } from '@Src/types/types';
 
 type Props = {
   editingUsers: Array<EditableScreenUser>;

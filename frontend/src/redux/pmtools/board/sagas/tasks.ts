@@ -1,12 +1,12 @@
 import Board from '@Api/pmtools/boardApi';
+import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import {
   TasksAddSagaGenerator,
   TasksEditSagaGenerator,
-} from '@Src/pm-types/board/generators';
+} from '@Src/types/pmtools/generators';
 import { call, put } from 'redux-saga/effects';
 import { requestAction } from '../../activity/actions';
-import { errorBoard } from '../actions/columns';
 
 export function* taskAddSaga({ payload }: any): TasksAddSagaGenerator {
   try {
@@ -25,7 +25,7 @@ export function* taskAddSaga({ payload }: any): TasksAddSagaGenerator {
       requestAction({ projectId: payload.projectId, action: payload.action }),
     );
   } catch (e) {
-    yield put(errorBoard('Error add task'));
+    yield put(panelErrorMsg(e));
   }
 }
 
@@ -47,7 +47,7 @@ export function* taskEditSaga({ payload }: any): TasksEditSagaGenerator {
       requestAction({ projectId: payload.projectId, action: payload.action }),
     );
   } catch (e) {
-    yield put(errorBoard('Error edit task'));
+    yield put(panelErrorMsg(e));
   }
 }
 
@@ -58,6 +58,6 @@ export function* taskDeleteSaga({ payload }: any) {
     yield put({ type: TYPES.SUCCESS_DELETE_TASK, payload: taskId });
     yield put(requestAction({ projectId, action }));
   } catch (e) {
-    yield put(errorBoard('Error delete task'));
+    yield put(panelErrorMsg(e));
   }
 }

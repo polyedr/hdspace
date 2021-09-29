@@ -3,7 +3,7 @@ import {
   ColumnsElement,
   PropertiesChangeProps,
   StateElement,
-} from '@Src/types';
+} from '@Src/types/types';
 import { StyledTextField } from '@Components/styledComponents';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
 import { FormControlLabel, MenuItem } from '@material-ui/core';

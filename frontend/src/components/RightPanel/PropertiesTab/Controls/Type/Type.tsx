@@ -7,7 +7,7 @@ import {
   InputType,
   PropertiesChangeProps,
   TextinputElement,
-} from '../../../../../types';
+} from '../../../../../types/types';
 
 import { StyledTextField } from '../../../../styledComponents';
 

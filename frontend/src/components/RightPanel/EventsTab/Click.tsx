@@ -6,7 +6,7 @@ import {
 } from '@Components/styledComponents';
 import LinkIcon from '@material-ui/icons/Link';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import { ElementClickEvent, LinkType } from '@Src/types';
+import { ElementClickEvent, LinkType } from '@Src/types/types';
 import { useSelector } from 'react-redux';
 import {
   selectCurrentScreenId,

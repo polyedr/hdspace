@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { BoundingStyles, DropTargetParams } from '@Src/types';
+import { BoundingStyles, DropTargetParams } from '@Src/types/types';
 import { ResizableBox } from 'react-resizable';
 import { DropPosition } from '@Constants/dragAndDrop';
 import './ResizableBox.css';

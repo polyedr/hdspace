@@ -32,7 +32,11 @@ import {
 import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Normalized, StateElement, UserProjectPermission } from '@Src/types';
+import {
+  Normalized,
+  StateElement,
+  UserProjectPermission,
+} from '@Src/types/types';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   selectActiveElementId,

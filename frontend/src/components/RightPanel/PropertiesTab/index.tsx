@@ -18,7 +18,7 @@ import {
   Params,
   PropertyName,
   UserProjectPermission,
-} from '@Src/types';
+} from '@Src/types/types';
 import {
   removeElementStyles,
   removeMultipleElementsStyles,

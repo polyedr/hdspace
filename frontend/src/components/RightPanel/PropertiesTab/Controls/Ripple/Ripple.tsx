@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, FormControlLabel } from '@material-ui/core';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
-import { ButtonElement, PropertiesChangeProps } from '@Src/types';
+import { ButtonElement, PropertiesChangeProps } from '@Src/types/types';
 import { AppReduxState } from '@Redux/types';
 import { makeStyles } from '@material-ui/core/styles';
 

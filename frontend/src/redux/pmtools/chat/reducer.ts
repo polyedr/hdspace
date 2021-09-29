@@ -14,8 +14,6 @@ const chatReducer = (state: any = initialState, action: any) => {
         client: action.payload,
         isAuth: true,
       };
-    case TYPES.LOGIN_ERROR:
-      return { ...state, error: action.payload };
     default:
       return state;
   }

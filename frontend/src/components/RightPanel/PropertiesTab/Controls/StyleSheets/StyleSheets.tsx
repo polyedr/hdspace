@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '@Src/types/types';
 import { makeStyles } from '@material-ui/core/styles';
 import CodeEditor from '@Components/UI/CodeEditor';
 import { cssCamelize, cssDecamelize } from '@Utils/CSSConverter';

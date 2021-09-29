@@ -1,13 +1,14 @@
 import Board from '@Api/pmtools/boardApi';
+import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
-} from '@Src/pm-types/board/generators';
-import { IColumn } from '@Src/pm-types/board/types';
+} from '@Src/types/pmtools/generators';
+import { ColumnData } from '@Src/types/pmtools/types';
 import { call, put } from 'redux-saga/effects';
 import { requestAction } from '../../activity/actions';
-import { errorBoard, requestLoaderBoard } from '../actions/columns';
+import { requestLoaderBoard } from '../actions/columns';
 
 export function* columnsFetchSaga({ payload }: any): any {
   try {
@@ -20,14 +21,14 @@ export function* columnsFetchSaga({ payload }: any): any {
     const tasks = yield call(Board.fetchTasks, payload.access);
     yield put({ type: TYPES.SUCCESS_FETCH_TASKS, payload: tasks });
 
-    const data: IColumn[] = receivedData.map((item: any) => ({
+    const data: ColumnData[] = receivedData.map((item: any) => ({
       ...item,
       tasks: [],
     }));
     yield put({ type: TYPES.SUCCESS_FETCH_COLUMNS, payload: data });
     yield put(requestLoaderBoard(false));
   } catch (e) {
-    yield put(errorBoard('Error fetch column'));
+    yield put(panelErrorMsg(e));
   }
 }
 
@@ -43,7 +44,7 @@ export function* columnAddSaga({ payload }: any): ColumnSagaGenerator {
     yield put({ type: TYPES.SUCCESS_ADD_COLUMN, payload: data });
     yield put(requestAction({ projectId, action }));
   } catch (e) {
-    yield put(errorBoard('Error add column'));
+    yield put(panelErrorMsg(e));
   }
 }
 
@@ -59,7 +60,7 @@ export function* columnEditSaga({ payload }: any): ColumnSagaGenerator {
     yield put({ type: TYPES.SUCCESS_EDIT_COLUMN, payload: data });
     yield put(requestAction({ projectId, action }));
   } catch (e) {
-    yield put(errorBoard('Error edit column'));
+    yield put(panelErrorMsg(e));
   }
 }
 
@@ -70,6 +71,6 @@ export function* columnDeleteSaga({ payload }: any): ColumnDeletSagaGenerator {
     yield put({ type: TYPES.SUCCESS_DELETE_COLUMN, payload: columnId });
     yield put(requestAction({ projectId, action }));
   } catch (e) {
-    yield put(errorBoard('Error delete column'));
+    yield put(panelErrorMsg(e));
   }
 }

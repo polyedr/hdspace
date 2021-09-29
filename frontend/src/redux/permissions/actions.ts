@@ -4,7 +4,7 @@ import {
   PermissionsUserData,
   UserData,
   UserProjectPermission,
-} from '@Src/types';
+} from '@Src/types/types';
 
 export const getUsersList = (searchValue?: string) => ({
   type: TYPES.LOAD_USERS,

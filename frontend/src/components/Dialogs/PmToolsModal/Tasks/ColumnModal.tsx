@@ -6,8 +6,7 @@ import {
   DialogActions,
   DialogContent,
 } from '@material-ui/core';
-import { ModalAction } from '@Src/types';
-import { IColumn } from '@Src/pm-types/board/types';
+import { ModalAction } from '@Src/types/types';
 import {
   requestAddColumn,
   requestEditColumn,
@@ -15,12 +14,13 @@ import {
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectTokenPair } from '@Redux/user/selectors';
+import { ColumnData } from '@Src/types/pmtools/types';
 
 type Props = {
   show: boolean;
   hide: () => void;
   action: ModalAction;
-  column?: IColumn | null;
+  column?: ColumnData | null;
 };
 
 const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {

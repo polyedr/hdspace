@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
-import { ToServerFetchMembers } from '@Src/pm-types/invite/api';
+import { ToServerFetchMembers } from '@Src/types/pmtools/api';
 import { call, put } from 'redux-saga/effects';
 
 export function* requestPermissionsSaga(payload: ToServerFetchMembers) {

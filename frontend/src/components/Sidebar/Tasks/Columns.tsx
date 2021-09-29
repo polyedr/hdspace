@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestDeleteColumn } from '@Redux/pmtools/board/actions/columns';
-import { ModalAction } from '@Src/types';
+import { ModalAction } from '@Src/types/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/Tasks/ColumnModal';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { selectMembers } from '@Redux/pmtools/invite/selectors';

@@ -1,6 +1,10 @@
 import React, { useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '@Src/types/types';
 import { FormControlLabel, Switch } from '@material-ui/core';
 
 const useStyles = makeStyles({

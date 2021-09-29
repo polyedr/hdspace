@@ -34,7 +34,7 @@ import {
   ServerElement,
   StateElement,
   UpdateDataActionType,
-} from '@Src/types';
+} from '@Src/types/types';
 import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';

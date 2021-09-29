@@ -14,7 +14,11 @@ import {
   StyledTextField,
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { FrameworkName, UIFramework, UserProjectPermission } from '@Src/types';
+import {
+  FrameworkName,
+  UIFramework,
+  UserProjectPermission,
+} from '@Src/types/types';
 import { updateCurrentUIFramework } from '@Redux/project/actions';
 import { selectCurrentUIFramework } from '@Redux/project/selectors/base';
 

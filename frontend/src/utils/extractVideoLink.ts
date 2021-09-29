@@ -1,6 +1,6 @@
 import { head } from 'ramda';
 import { PLAYERS } from '@Constants/players';
-import { VideoSettingsType } from '../types';
+import { VideoSettingsType } from '../types/types';
 
 type LinkInfo = {
   player: keyof typeof PLAYERS | 'none';

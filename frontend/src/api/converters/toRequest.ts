@@ -17,7 +17,7 @@ import {
   ServerUserData,
   StateElement,
   UserData,
-} from '@Src/types';
+} from '@Src/types/types';
 
 export const convertCreatedElementToRequest = <
   T extends Entity,

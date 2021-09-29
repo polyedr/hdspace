@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
@@ -22,7 +23,7 @@ import {
   setUserExperience,
   changeProfileData,
 } from '@Redux/user/actions';
-import { Experience } from '@Src/types';
+import { Experience } from '@Src/types/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import RightPanel from '../components/RightPanel';

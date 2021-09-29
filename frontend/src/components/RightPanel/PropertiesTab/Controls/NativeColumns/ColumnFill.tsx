@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from 'react';
-import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
+import { ColumnsElement, PropertiesChangeProps } from '@Src/types/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { FormControlLabel, MenuItem } from '@material-ui/core';
 import { useColumnControlStyles } from '@Components/RightPanel/PropertiesTab/Controls/NativeColumns/styles';

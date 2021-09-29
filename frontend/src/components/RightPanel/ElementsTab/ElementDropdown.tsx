@@ -1,7 +1,7 @@
 import React from 'react';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { splitWords } from '@Utils/stringHelper';
-import { ElementData } from '@Src/types';
+import { ElementData } from '@Src/types/types';
 import { ButtonGroup, MenuItem, Menu } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ElementButton from './ElementButton';

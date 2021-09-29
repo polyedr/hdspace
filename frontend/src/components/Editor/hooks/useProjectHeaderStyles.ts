@@ -1,6 +1,6 @@
 import { useMemo, useCallback, useEffect } from 'react';
 import decamelize from 'decamelize';
-import { ProjectClass } from '@Src/types';
+import { ProjectClass } from '@Src/types/types';
 import { toClassName } from '@Utils/stringHelper';
 
 const useProjectHeaderStyles = (classes: ProjectClass[]) => {

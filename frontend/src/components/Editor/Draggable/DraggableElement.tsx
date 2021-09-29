@@ -18,7 +18,7 @@ import {
   ProjectClass,
   StateElement,
   SyntheticElement,
-} from '@Src/types';
+} from '@Src/types/types';
 
 import { ElementType } from '@Constants/dragAndDrop';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';

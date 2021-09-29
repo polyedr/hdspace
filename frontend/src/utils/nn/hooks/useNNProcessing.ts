@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectElementByIdWrapper } from '@Redux/project/selectors/element';
 import { recognizeImage, autoAnalyzeImage } from '@Redux/project/actions';
-import { NNBlockType } from '../../../types';
+import { NNBlockType } from '../../../types/types';
 
 const useNNProcessing = (
   elementId: string,

@@ -27,7 +27,7 @@ import {
   ServerElement,
   StateElement,
   UserProjectPermission,
-} from '@Src/types';
+} from '@Src/types/types';
 import generateUniqueName from '@Utils/generateUniqueName';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { compose } from 'redux';

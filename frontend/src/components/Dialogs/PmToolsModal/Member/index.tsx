@@ -3,18 +3,18 @@ import {
   editMembersAction,
 } from '@Redux/pmtools/invite/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { ModalAction } from '@Src/types';
-import { IMemberToFrontend } from '@Src/pm-types/invite/types';
+import { ModalAction } from '@Src/types/types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTokenPair } from '@Redux/user/selectors';
+import { MemberData } from '@Src/types/pmtools/types';
 import MembersModal from './MembersModal';
 
 type Props = {
   show: boolean;
   hide: () => void;
   action: ModalAction;
-  member: IMemberToFrontend;
+  member: MemberData;
   setSearch?: any;
   rights?: boolean;
 };

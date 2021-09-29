@@ -8,7 +8,7 @@ import {
   OcrtextServerElement,
   ParagraphServerElement,
   TextBlockServerElement,
-} from '@Src/types';
+} from '@Src/types/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { defaultFreeCanvasParams } from '../../core';

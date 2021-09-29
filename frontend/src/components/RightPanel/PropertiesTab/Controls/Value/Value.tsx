@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
-import { PropertiesChangeProps, SelectElement } from '@Src/types';
+import { PropertiesChangeProps, SelectElement } from '@Src/types/types';
 import { StyledTextField } from '@Components/styledComponents';
 
 const Value: React.FC<PropertiesChangeProps<SelectElement>> = ({

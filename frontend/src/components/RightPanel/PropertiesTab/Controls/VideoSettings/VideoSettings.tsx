@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Checkbox, FormControlLabel, Switch } from '@material-ui/core';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { extractPlayerLinkInfo } from '@Utils/extractVideoLink';
-import { PropertiesChangeProps, VideoElement } from '@Src/types';
+import { PropertiesChangeProps, VideoElement } from '@Src/types/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';

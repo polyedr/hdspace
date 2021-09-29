@@ -9,7 +9,7 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { UserProjectPermission } from '@Src/types';
+import { UserProjectPermission } from '@Src/types/types';
 import {
   copyActiveElement,
   deleteElement,

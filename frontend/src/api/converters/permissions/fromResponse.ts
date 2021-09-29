@@ -1,4 +1,4 @@
-import { ServerPermissionsUserData } from '@Src/types';
+import { ServerPermissionsUserData } from '@Src/types/types';
 import { convertUserDataFromResponse } from '../fromResponse';
 
 // eslint-disable-next-line import/prefer-default-export

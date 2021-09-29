@@ -5,7 +5,6 @@ const initialState: BoardState = {
   columnList: [],
   taskList: [],
   loaderBoard: false,
-  boardError: null,
 };
 
 const boardReducer = (state: BoardState = initialState, action: any) => {
@@ -50,8 +49,7 @@ const boardReducer = (state: BoardState = initialState, action: any) => {
         ...state,
         taskList: state.taskList.filter((task) => task.id !== action.payload),
       };
-    case TYPES.BOARD_ERROR:
-      return { ...state, boardError: action.payload };
+
     default:
       return state;
   }

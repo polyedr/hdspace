@@ -1,7 +1,11 @@
-import { IColumn, ITask } from '@Src/pm-types/board/types';
-import { AuthParams } from '@Src/pm-types/chat/types';
-import { IMember, PermissionsType } from '@Src/pm-types/invite/types';
-import { IUser } from '@Src/pm-types/user/types';
+import { AuthParams } from '@Src/types/pmtools/api';
+import {
+  ColumnData,
+  MemberData,
+  PermissionsData,
+  TaskData,
+} from '@Src/types/pmtools/types';
+import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
 
 export type RootState = ReturnType<any>;
@@ -19,15 +23,14 @@ export interface ActivityRootState extends DefaultRootState {
 }
 
 export type BoardState = {
-  columnList: IColumn[];
-  taskList: ITask[];
-  boardError: string | null;
+  columnList: ColumnData[];
+  taskList: TaskData[];
   loaderBoard: boolean;
 };
 
 export type InviteState = {
-  members: Array<IMember>;
-  permissions: Array<PermissionsType>;
+  members: Array<MemberData>;
+  permissions: Array<PermissionsData>;
   searchResult: any;
   loaderSearch: boolean;
   loaderMembers: boolean;
@@ -35,7 +38,7 @@ export type InviteState = {
 };
 
 export type UserState = {
-  userData: IUser;
+  userData: ServerUserData;
   projectId: number;
   chatCredentials: AuthParams;
 };

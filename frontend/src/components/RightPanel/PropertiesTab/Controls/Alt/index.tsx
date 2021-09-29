@@ -1,5 +1,5 @@
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
-import { ImageElement, PropertiesChangeProps } from '@Src/types';
+import { ImageElement, PropertiesChangeProps } from '@Src/types/types';
 import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { StyledTextField } from '@Components/styledComponents';

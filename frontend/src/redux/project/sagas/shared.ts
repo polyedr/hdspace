@@ -10,7 +10,7 @@ import {
   Project,
   Result,
   SavedElementsValues,
-} from '../../../types';
+} from '../../../types/types';
 import TYPES from '../../actionTypes';
 import { openSignScreen } from '../../history';
 import { enqueueSnackbar } from '../../notification/actions';

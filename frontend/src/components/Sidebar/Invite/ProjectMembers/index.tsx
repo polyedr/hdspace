@@ -2,7 +2,7 @@ import {
   selectMembersLoader,
   selectMembersWithPermissions,
 } from '@Redux/pmtools/invite/selectors';
-import { IMemberToFrontend } from '@Src/pm-types/invite/types';
+import { MemberData } from '@Src/types/pmtools/types';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Member from './Member';
@@ -21,7 +21,7 @@ const ProjectMembers: React.FC = () => {
       {!members.length ? (
         <p>Members not found</p>
       ) : (
-        members.map((member: IMemberToFrontend) => (
+        members.map((member: MemberData) => (
           <Member member={member} key={member.id} />
         ))
       )}

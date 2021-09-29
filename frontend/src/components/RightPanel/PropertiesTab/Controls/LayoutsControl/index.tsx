@@ -8,7 +8,7 @@ import {
   LibraryElement,
   PropertiesChangeProps,
   additionalLayoutPhone,
-} from '@Src/types';
+} from '@Src/types/types';
 import React, { ChangeEvent, FC } from 'react';
 import { useSelector } from 'react-redux';
 

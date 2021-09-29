@@ -1,4 +1,4 @@
-import { BoundingStyles } from '@Src/types';
+import { BoundingStyles } from '@Src/types/types';
 
 const getBoundingStyles = (
   elDom: HTMLElement,

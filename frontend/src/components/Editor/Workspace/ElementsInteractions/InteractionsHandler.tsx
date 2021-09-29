@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
@@ -8,7 +9,7 @@ import {
   DropTargetParams,
   Screen,
   StateElement,
-} from '@Src/types';
+} from '@Src/types/types';
 import { AppReduxState } from '@Redux/types';
 import getBoundingStyles from '@Utils/getBoundingStyles';
 import SaveElementAction from './Actions/SaveElement/SaveElementAction';

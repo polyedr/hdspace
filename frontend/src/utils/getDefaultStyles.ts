@@ -1,4 +1,4 @@
-import { Entity } from '../types';
+import { Entity } from '../types/types';
 import { DEFAULT_ELEMENTS_STYLES } from '../domain/libraryElements/defaultStyles';
 
 const getDefaultStyles = (elementType: Entity): React.CSSProperties => {

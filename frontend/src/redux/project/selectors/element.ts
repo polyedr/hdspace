@@ -15,7 +15,7 @@ import {
   PaginatedArray,
   Project,
   StateElement,
-} from '@Src/types';
+} from '@Src/types/types';
 import {
   selectCurrentProject,
   selectEditableStyles,

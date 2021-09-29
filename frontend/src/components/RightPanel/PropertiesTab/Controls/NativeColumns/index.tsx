@@ -1,5 +1,9 @@
 import React from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '@Src/types/types';
 import { makeStyles } from '@material-ui/core/styles';
 import ColumnCount from './ColumnCount';
 import ColumnWidth from './ColumnWidth';

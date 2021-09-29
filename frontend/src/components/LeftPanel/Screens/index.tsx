@@ -32,7 +32,7 @@ import {
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
 import ELEMENT_IDS from '@Constants/elementIds';
-import { Indices } from '@Src/types';
+import { Indices } from '@Src/types/types';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
 import {

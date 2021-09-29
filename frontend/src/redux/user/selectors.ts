@@ -1,4 +1,4 @@
-import { Experience } from '@Src/types';
+import { Experience } from '@Src/types/types';
 import { AppReduxState } from '../types';
 
 export const selectUserData = ({ user }: AppReduxState) => user.userData;

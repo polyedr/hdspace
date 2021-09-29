@@ -9,7 +9,7 @@ import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
 } from '@Src/styles/Theme';
-import { RPTab, UserProjectPermission } from '@Src/types';
+import { RPTab, UserProjectPermission } from '@Src/types/types';
 import {
   selectActiveElement,
   selectActiveElementId,

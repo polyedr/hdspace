@@ -19,7 +19,7 @@ import {
   Normalized,
   StateElement,
   SyntheticElement,
-} from '@Src/types';
+} from '@Src/types/types';
 import { ElementType } from '@Constants/dragAndDrop';
 import { useElementClassNames } from './helpers';
 import FreeDraggable from './FreeDraggable';

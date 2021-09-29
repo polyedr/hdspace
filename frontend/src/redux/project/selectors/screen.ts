@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_SCREEN } from '@Constants/defaultParams';
-import { Normalized, Screen } from '@Src/types';
+import { Normalized, Screen } from '@Src/types/types';
 import { AppReduxState } from '../../types';
 
 export const selectCurrentScreenId = ({ project }: AppReduxState) =>

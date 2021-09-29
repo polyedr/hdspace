@@ -1,12 +1,12 @@
 import Activity from '@Api/pmtools/activityApi';
+import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import {
   AddActionSagaGenerator,
   ClearHistorySagaGenerator,
-} from '@Src/pm-types/activity/generators';
-import { ServerProject } from '@Src/types';
+} from '@Src/types/pmtools/generators';
+import { ServerProject } from '@Src/types/types';
 import { put, call, takeLatest } from 'redux-saga/effects';
-import sideError from '../actions';
 import { addAction, getActions } from './actions';
 
 function* getActionSaga(action: ReturnType<typeof getActions>) {
@@ -19,7 +19,7 @@ function* getActionSaga(action: ReturnType<typeof getActions>) {
     );
     yield put(getActions(data ? data.split('/') : []));
   } catch (e) {
-    yield put(sideError(e));
+    yield put(panelErrorMsg(e));
   }
 }
 
@@ -43,7 +43,7 @@ export function* addActionSaga({
     });
     yield put(addAction({ project, action, access }));
   } catch (e) {
-    yield put(sideError(e));
+    yield put(panelErrorMsg(e));
   }
 }
 
@@ -62,7 +62,7 @@ function* clearHistorySaga({
     });
     yield put({ type: TYPES.CLEAR_HISTORY_SUCCESS });
   } catch (e) {
-    yield put(sideError(e));
+    yield put(panelErrorMsg(e));
   }
 }
 

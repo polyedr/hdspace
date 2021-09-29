@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, useEffect, useRef, MutableRefObject } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -7,7 +8,7 @@ import {
 import { loadCustomElements } from '@Redux/project/actions';
 import isInViewport from '@Utils/isInViewport';
 import { createArrayCustomElements } from '@Utils/createCategoryCustomElement';
-import { CustomElementsCategory } from '@Src/types';
+import { CustomElementsCategory } from '@Src/types/types';
 import CustomElementsBlock from './CustomElementsBlock';
 
 const CustomElementsBlocks = () => {

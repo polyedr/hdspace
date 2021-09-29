@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { PropertiesChangeProps, SelectElement } from '@Src/types';
+import { PropertiesChangeProps, SelectElement } from '@Src/types/types';
 import {
   selectActiveElementChildren,
   selectActiveElementParams,

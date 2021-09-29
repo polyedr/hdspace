@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
+import { panelErrorMsg } from '@Redux/actions';
 import { put } from 'redux-saga/effects';
-import { logInFail, logInSuccess } from './actions';
+import { logInSuccess } from './actions';
 
 export function* authUser({ payload }: any): Generator<any, any, any> {
   try {
@@ -11,7 +12,7 @@ export function* authUser({ payload }: any): Generator<any, any, any> {
       'login',
       JSON.stringify({ realm, username, password }),
     );
-  } catch (error) {
-    yield put(logInFail(error));
+  } catch (e) {
+    yield put(panelErrorMsg(e));
   }
 }

@@ -7,7 +7,7 @@ import {
   LibraryElement,
   ServerElement,
   ServerScreen,
-} from '../types';
+} from '../types/types';
 import { convertScreenFromResponse } from './converters/fromResponse';
 import { handleError, onError, parseResult } from './helper';
 

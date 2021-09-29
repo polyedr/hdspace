@@ -16,7 +16,7 @@ import {
   apiGetUser,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
-import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
+import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   sidebarLogout,
@@ -37,7 +37,7 @@ export function* getTokenPairSaga(username: string, password: string) {
 
     yield put(Actions.setTokenPair(tokens));
     return tokens;
-  } catch (e) {
+  } catch (e: any) {
     if (e.response?.data) {
       yield put(Actions.loginComplete(e.response.data));
     } else {
@@ -67,7 +67,7 @@ export function* loginSaga({
 
     yield put(loginComplete());
     yield call(openProjects);
-  } catch (e) {
+  } catch (e: any) {
     if (typeof e.response?.data === 'object') {
       yield put(Actions.loginComplete(e.response.data));
     } else {
@@ -82,7 +82,7 @@ export function* logoutSaga() {
 
     yield put(Actions.logout());
     openSignScreen('signin');
-  } catch (e) {
+  } catch (e: any) {
     yield put(
       enqueueSnackbar(
         {
@@ -112,7 +112,7 @@ export function* changeUserDataSaga({
 
     yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
     yield put(Actions.changeUserDataComplete());
-  } catch (e) {
+  } catch (e: any) {
     if (typeof e.response?.data === 'object') {
       yield put(Actions.changeUserDataComplete(e.response.data));
     } else {
@@ -137,7 +137,7 @@ export function* changeProfileDataSaga({
       Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
     );
     yield put(Actions.changeProfileDataComplete());
-  } catch (e) {
+  } catch (e: any) {
     if (typeof e.response?.data === 'object') {
       yield put(Actions.changeProfileDataComplete(e.response.data));
     } else {
@@ -169,7 +169,7 @@ export const updateUISettingsParametersSaga = function* ({
     yield put(
       Actions.setProfileData(convertProfileDataFromResponse(result.data)),
     );
-  } catch (e) {
+  } catch (e: any) {
     yield put(
       enqueueSnackbar(
         {
@@ -208,7 +208,7 @@ function* registerSaga({
     yield put(Actions.registerComplete());
 
     openSignScreen('signin');
-  } catch (e) {
+  } catch (e: any) {
     if (typeof e.response?.data === 'object') {
       yield put(Actions.registerComplete(e.response.data));
     } else {
@@ -231,7 +231,7 @@ function* sendResetPasswordMailSaga(
     yield put(
       Actions.setConfirmMessage('Please, check your mail and set new password'),
     );
-  } catch (e) {
+  } catch (e: any) {
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
@@ -256,7 +256,7 @@ function* resetPasswordConfirmationSaga(
 
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
     openSignScreen('signin');
-  } catch (e) {
+  } catch (e: any) {
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
@@ -278,7 +278,7 @@ function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
     );
 
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
-  } catch (e) {
+  } catch (e: any) {
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
@@ -304,7 +304,7 @@ export function* loadUserDataSaga(action: ReturnType<typeof Actions.loadUser>) {
         ...convertUserDataFromResponse(userData),
       }),
     );
-  } catch (e) {
+  } catch (e: any) {
     yield put(
       enqueueSnackbar(
         {

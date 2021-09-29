@@ -13,20 +13,19 @@ import {
   requestAddTask,
   requestEditTask,
 } from '@Redux/pmtools/board/actions/tasks';
-import { ModalAction } from '@Src/types';
+import { ModalAction } from '@Src/types/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { IMember } from '@Src/pm-types/invite/types';
-import { IColumn, ITask } from '@Src/pm-types/board/types';
+import { ColumnData, MemberData, TaskData } from '@Src/types/pmtools/types';
 import { selectTokenPair } from '@Redux/user/selectors';
 
 type Props = {
-  members: Array<IMember>;
+  members: Array<MemberData>;
   show: boolean;
-  task?: ITask | null;
+  task?: TaskData | null;
   hide: () => void;
   action: ModalAction;
-  column: IColumn;
+  column: ColumnData;
   selectedTaskId?: number | null;
 };
 

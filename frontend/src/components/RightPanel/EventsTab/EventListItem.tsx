@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ElementEvent, EventType } from '@Src/types';
+import { ElementEvent, EventType } from '@Src/types/types';
 import { StyledIconButton } from '@Components/styledComponents';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';

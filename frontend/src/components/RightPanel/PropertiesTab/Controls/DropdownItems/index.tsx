@@ -8,7 +8,7 @@ import {
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { addChildToElement, deleteElement } from '@Redux/project/actions';
-import { DropdownItemElement, PropertiesChangeProps } from '@Src/types';
+import { DropdownItemElement, PropertiesChangeProps } from '@Src/types/types';
 import { AppReduxState } from '@Redux/types';
 import { IconButton } from '@material-ui/core';
 import DropdownItem from './DropdownItem';

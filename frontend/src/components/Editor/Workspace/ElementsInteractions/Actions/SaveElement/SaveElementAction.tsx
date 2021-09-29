@@ -7,7 +7,7 @@ import cn from 'classnames';
 import { SAVEABLE_ELEMENTS } from '@Constants/defaultParams';
 import { updateElement } from '@Redux/project/actions';
 import { makeStyles } from '@material-ui/core/styles';
-import { StateElement } from '@Src/types';
+import { StateElement } from '@Src/types/types';
 import { useButtonStyles } from '../hooks/styles';
 
 type Props = {
