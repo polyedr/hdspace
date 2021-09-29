@@ -16,9 +16,13 @@ import {
   updateMultipleElementsStyles,
   updateElementParameters,
   softDeleteMultipleElements,
+  createElements,
 } from '@Redux/project/actions';
 import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
-import { selectCurrentGeneratorElements } from '@Redux/project/selectors/element';
+import {
+  selectCurrentGeneratorElements,
+  selectCurrentRootId,
+} from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -74,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
 const BorderCrumb: React.FC<Props> = (props) => {
   const { element, children, show, currentProjectId, masterScreenId } = props;
   const currentGeneratorElements = useSelector(selectCurrentGeneratorElements);
-
+  const rootId = useSelector(selectCurrentRootId);
   const dispatch = useDispatch();
 
   const history = useHistory();
@@ -100,6 +104,34 @@ const BorderCrumb: React.FC<Props> = (props) => {
 
   const generatorRandom = () => {
     if (element.name === 'generator') {
+      dispatch(
+        softDeleteMultipleElements(
+          [
+            '7813',
+            '7826',
+            '7827',
+            '7828',
+            '7835',
+            '7836',
+            '7837',
+            '7838',
+            '7839',
+            '7840',
+            '7841',
+            '7842',
+            '7843',
+            '7848',
+            '7849',
+            '7850',
+            '7851',
+            '7852',
+            '7853',
+          ],
+          {
+            screenId: currentScreenId,
+          },
+        ),
+      );
       if (currentGeneratorElements && currentGeneratorElements.length > 2) {
         const keys = Object.keys(
           currentGeneratorElements[0].styles.ownStyles,
@@ -124,7 +156,30 @@ const BorderCrumb: React.FC<Props> = (props) => {
           keys.length ===
           Object.keys(newButtons[0].styles.ownStyles).length - 1
         ) {
-          console.log('completed');
+          const {
+            id,
+            type,
+            name,
+            parameters,
+            styles,
+          } = currentGeneratorElements[0];
+          const createdElementsData = {
+            createdElements: [
+              {
+                id,
+                type,
+                name: `generated ${name}`,
+                custom: false,
+                parameters,
+                shared: true,
+                styles,
+              },
+            ],
+            parentId: rootId,
+          };
+          dispatch(
+            createElements(createdElementsData, { screenId: currentScreenId }),
+          );
           const removalElements = currentGeneratorElements.slice(
             1,
             currentGeneratorElements.length,

@@ -39,6 +39,7 @@ import {
   Action,
   ActivateScreen,
   AddChildToElement,
+  CreateLibraryElements,
   AddElementClassName,
   AddElements,
   CreateProject,
@@ -762,7 +763,7 @@ export const uploadElementAsset = (
 
 export const updateElementParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters'],
+  K extends LibraryElement<T>['parameters']
 >(
   elementId: string,
   parameters: K,
@@ -778,7 +779,7 @@ export const updateElementParameters = <
 
 export const replaceElementParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters'],
+  K extends LibraryElement<T>['parameters']
 >(
   elementId: string,
   parameters: K,
@@ -794,7 +795,7 @@ export const replaceElementParameters = <
 
 export const updateMultipleElementsParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters'],
+  K extends LibraryElement<T>['parameters']
 >(
   ids: string[],
   parameters: {
@@ -812,7 +813,7 @@ export const updateMultipleElementsParameters = <
 
 export const replaceMultipleElementsParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters'],
+  K extends LibraryElement<T>['parameters']
 >(
   ids: string[],
   parameters: {
@@ -884,6 +885,15 @@ export const createGroupChildren = (
   meta: ElementHistoryMeta,
 ): CreateGroupChildren => ({
   type: TYPES.CREATE_GROUP_CHILDREN,
+  payload: { createdElements, parentId, index },
+  meta,
+});
+
+export const createLibraryElements = (
+  { createdElements, parentId, index }: CreateElementsData,
+  meta: ElementHistoryMeta,
+): CreateLibraryElements => ({
+  type: TYPES.CREATE_LIBRARY_ELEMENTS,
   payload: { createdElements, parentId, index },
   meta,
 });

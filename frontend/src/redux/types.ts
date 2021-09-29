@@ -589,6 +589,12 @@ export type CreateGroupChildren = IAction<
   ElementHistoryMeta
 >;
 
+export type CreateLibraryElements = IAction<
+  typeof TYPES.CREATE_LIBRARY_ELEMENTS,
+  { createdElements: CreatedElement[]; parentId?: string; index?: number },
+  ElementHistoryMeta
+>;
+
 export type CreateElementsGroup = IAction<
   typeof TYPES.CREATE_ELEMENTS_GROUP,
   { name: string; ids: string[] },

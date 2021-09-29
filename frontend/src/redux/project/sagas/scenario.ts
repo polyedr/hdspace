@@ -72,6 +72,7 @@ import {
 import withActionsHistory from '../wrappers/withActionsHistory';
 import {
   createElements,
+  createLibraryElements,
   updateOrReplaceMultipleElementsParameters,
 } from './common';
 
@@ -207,6 +208,16 @@ export const createElementsSaga = compose(
       selectElementById,
       parentId || activeElement.id,
     );
+    if (createdElements[0].shared) {
+      yield put(
+        Actions.createLibraryElements(
+          { createdElements, parentId: parentId || activeElement.id, index },
+          { ...action.meta },
+        ),
+      );
+      yield put(Actions.loadCustomElements(true));
+      return;
+    }
     if (!parentElement) {
       yield put(
         enqueueSnackbar({
@@ -290,7 +301,6 @@ export const createChildElementsSaga = withActionsHistory(function* (
         dEl.parameters,
       );
     });
-
     const elementsIds = yield call(
       createElements,
       [
@@ -306,6 +316,60 @@ export const createChildElementsSaga = withActionsHistory(function* (
     );
 
     yield call(createGroupsBinding, elementsIds, action.meta);
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
+export const createLibraryElementsSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.createChildElements>,
+) {
+  try {
+    if (!action.meta) {
+      console.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      return;
+    }
+
+    const { createdElements, parentId, index } = action.payload;
+
+    const activeElementId: string = yield select(selectActiveElementId);
+    const activeElementTree: LibraryElement<Entity> = yield select(
+      selectElementAsTree(parentId || activeElementId),
+    );
+
+    const convertedCreatedElements = createdElements.map((dEl) => {
+      return convertCreatedElementToRequest(
+        dEl.type as Entity,
+        dEl.name || null,
+        null,
+        dEl.parameters,
+        dEl.shared,
+        dEl.styles,
+      );
+    });
+    yield call(
+      createLibraryElements,
+      [
+        {
+          elements: convertedCreatedElements,
+          parent: activeElementTree,
+          index,
+        },
+      ],
+      {
+        ...action.meta,
+      },
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar(

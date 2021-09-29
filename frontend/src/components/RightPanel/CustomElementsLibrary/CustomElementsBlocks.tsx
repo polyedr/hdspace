@@ -10,7 +10,7 @@ import { createArrayCustomElements } from '@Utils/createCategoryCustomElement';
 import { CustomElementsCategory } from '@Src/types';
 import CustomElementsBlock from './CustomElementsBlock';
 
-const CustomElementsBlocks = () => {
+const GeneratedElementsBlocks = () => {
   const libraryElements = useSelector(selectCustomLibraryElements);
   const dispatch = useDispatch();
   const hasNext = useSelector(selectCustomElementsHasNext);
@@ -53,7 +53,6 @@ const CustomElementsBlocks = () => {
       }
     };
   }, [lastDom]);
-
   return (
     <div ref={rootRef}>
       {elements.bigBlocks.length > 0 && (
@@ -80,11 +79,13 @@ const CustomElementsBlocks = () => {
       {elements.otherElements.length > 0 && (
         <CustomElementsBlock
           name="Other block"
-          elements={elements.otherElements}
+          elements={elements.otherElements.filter(
+            (element) => !element.name.toLowerCase().includes('generated'),
+          )}
         />
       )}
     </div>
   );
 };
 
-export default CustomElementsBlocks;
+export default GeneratedElementsBlocks;
