@@ -1,18 +1,18 @@
 import TYPES from '@Redux/actionTypes';
+import { ChatState } from '../types';
 
 const initialState = {
-  client: {},
-  error: null,
+  client: null,
   isAuth: false,
 };
 
-const chatReducer = (state: any = initialState, action: any) => {
+const chatReducer = (state: ChatState = initialState, action: any) => {
   switch (action.type) {
     case TYPES.LOGIN_SUCCESS:
       return {
         ...state,
-        client: action.payload,
         isAuth: true,
+        client: action.payload,
       };
     default:
       return state;

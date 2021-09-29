@@ -1,5 +1,6 @@
 import { AuthParams } from '@Src/types/pmtools/api';
 import {
+  ChatLoginData,
   ColumnData,
   MemberData,
   PermissionsData,
@@ -19,6 +20,14 @@ export interface BoardRootState extends DefaultRootState {
 export interface ActivityRootState extends DefaultRootState {
   activity: { actions: [] | Array<string> };
 }
+export interface ChatRootState extends DefaultRootState {
+  chat: ChatState;
+}
+
+export type ChatState = {
+  client: ChatLoginData | null;
+  isAuth: boolean;
+};
 
 export type BoardState = {
   columnList: ColumnData[];

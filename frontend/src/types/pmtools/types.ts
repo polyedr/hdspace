@@ -38,3 +38,9 @@ export interface MemberData {
   username?: string;
   permissions: Array<Permission>;
 }
+
+export interface ChatLoginData {
+  realm: string;
+  username: string;
+  password: string;
+}

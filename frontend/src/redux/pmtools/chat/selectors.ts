@@ -1,5 +1,4 @@
-export const clientChat = (state: any) => state.chat.client;
+import { ChatRootState } from '../types';
 
-export const authChat = (state: any) => state.chat.isAuth;
-
-export const errorChat = (state: any) => state.chat.error;
+/* eslint-disable import/prefer-default-export */
+export const authChat = (state: ChatRootState) => state.chat.isAuth;
