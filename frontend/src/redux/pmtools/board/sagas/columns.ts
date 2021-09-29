@@ -18,6 +18,7 @@ export function* columnsFetchSaga({ payload }: any): any {
       payload.projectId,
       payload.access,
     );
+    console.log(receivedData);
     const tasks = yield call(Board.fetchTasks, payload.access);
     yield put({ type: TYPES.SUCCESS_FETCH_TASKS, payload: tasks });
 

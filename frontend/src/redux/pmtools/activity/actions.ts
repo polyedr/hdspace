@@ -1,8 +1,8 @@
 import TYPES from '@Redux/actionTypes';
 
-export const clearHistoryAction = (data: any) => ({
+export const clearHistoryAction = (payload) => ({
   type: TYPES.CLEAR_HISTORY,
-  payload: data,
+  payload,
 });
 
 export const requestGetAction = (project: number, access: string) => ({

@@ -26,9 +26,7 @@ export type ColumnDeletSagaGenerator = Generator<
   FromServerColumn
 >;
 
-export type ClearHistorySagaGenerator = Generator<CallEffect | PutEffect>;
-
-export type AddActionSagaGenerator = Generator<
+export type ActionSagaGenerator = Generator<
   CallEffect | PutEffect,
   void,
   ServerProject

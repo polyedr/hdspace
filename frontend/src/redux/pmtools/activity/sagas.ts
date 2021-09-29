@@ -1,13 +1,10 @@
 import Activity from '@Api/pmtools/activityApi';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
-import {
-  AddActionSagaGenerator,
-  ClearHistorySagaGenerator,
-} from '@Src/types/pmtools/generators';
+import { ActionSagaGenerator } from '@Src/types/pmtools/generators';
 import { ServerProject } from '@Src/types/types';
 import { put, call, takeLatest } from 'redux-saga/effects';
-import { addAction, getActions } from './actions';
+import { addAction, clearHistoryAction, getActions } from './actions';
 
 function* getActionSaga(action: ReturnType<typeof getActions>) {
   try {
@@ -27,7 +24,7 @@ export function* addActionSaga({
   project,
   action,
   access,
-}): AddActionSagaGenerator {
+}): ActionSagaGenerator {
   try {
     const projectData: ServerProject = yield call(
       Activity.getActions,
@@ -48,13 +45,16 @@ export function* addActionSaga({
 }
 
 function* clearHistorySaga({
-  project,
-  access,
-}: any): ClearHistorySagaGenerator {
+  payload,
+}: ReturnType<typeof clearHistoryAction>): ActionSagaGenerator {
   try {
-    const projectData: any = yield call(Activity.getActions, project, access);
+    const { project, access } = payload;
+    const projectData: ServerProject = yield call(
+      Activity.getActions,
+      project,
+      access,
+    );
     projectData.project_data_text = '';
-
     yield call(Activity.clearHistory, {
       project: projectData,
       access,
@@ -67,7 +67,6 @@ function* clearHistorySaga({
 }
 
 export default function* activitySaga() {
-  // ACTIONS
   yield takeLatest(TYPES.REQUEST_GET_ACTION, getActionSaga);
   yield takeLatest(TYPES.CLEAR_HISTORY, clearHistorySaga);
 }

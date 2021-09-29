@@ -1,7 +1,7 @@
 import TYPES from '@Redux/actionTypes';
 import { ChatState } from '../types';
 
-const initialState = {
+const initialState: ChatState = {
   client: null,
   isAuth: false,
 };

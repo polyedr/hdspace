@@ -43,7 +43,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 const Task: React.FC<Props> = ({ column, task, members }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const projectId = useSelector(selectCurrentProjectId);
+  const project = useSelector(selectCurrentProjectId);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const { access } = useSelector(selectTokenPair);
@@ -54,7 +54,7 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
 
   const handleDeleteTask = () => {
     const action = `Column "${task.title}" has been deleted`;
-    dispatch(requestDeleteTask({ access, action, taskId: task.id, projectId }));
+    dispatch(requestDeleteTask({ access, action, taskId: task.id, project }));
   };
 
   return (

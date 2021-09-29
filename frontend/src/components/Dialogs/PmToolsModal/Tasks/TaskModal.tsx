@@ -39,7 +39,7 @@ const TaskModal: React.FC<Props> = ({
   task,
 }) => {
   const [value, setValue] = useState<any>('');
-  const projectId = useSelector(selectCurrentProjectId);
+  const project = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.title || '');
   const [disc, setDisc] = useState(task?.description || '');
@@ -62,7 +62,7 @@ const TaskModal: React.FC<Props> = ({
           column: column.id || 0,
           creator: value.status || '',
           owner: value.user.id || 0,
-          projectId,
+          project,
           action: `Task "${title}" was added`,
         }),
       );
@@ -83,7 +83,7 @@ const TaskModal: React.FC<Props> = ({
           owner: value.user.id || '',
           status: task.isCompleted ? 'completed' : 'created',
           column: column?.id || 0,
-          projectId,
+          project,
           action: `Task "${title}" was edited on "${task.title}"`,
         }),
       );

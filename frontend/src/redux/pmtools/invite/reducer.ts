@@ -63,7 +63,7 @@ const inviteReducer = (state: any = initState, action: any) => {
       return {
         ...state,
         type: 'error',
-        msg: 'Failed to send invite',
+        msg: 'Something error',
       };
     default:
       return state;
