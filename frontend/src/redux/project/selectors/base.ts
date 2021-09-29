@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
-import { FreeCanvasOffset, UIFramework } from '@Src/types/types';
+import { FreeCanvasOffset, UIFramework } from '@Src/types';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import { makeFeatureStateSelector } from '../../../shared/redux';
 import { AppReduxState } from '../../types';

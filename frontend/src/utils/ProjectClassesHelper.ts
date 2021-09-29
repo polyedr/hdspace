@@ -1,4 +1,4 @@
-import { Entity, Project, PropertyName } from '../types/types';
+import { Entity, Project, PropertyName } from '../types';
 
 export const updateProjectClasses = (
   project: Project,

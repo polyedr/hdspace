@@ -1,5 +1,5 @@
 import { AVAILABLE_CHILDREN } from '../domain/core';
-import { Entity, LibraryElement, StateElement } from '../types/types';
+import { Entity, LibraryElement, StateElement } from '../types';
 
 const CHILDREN_AVAILABILITY = {
   smartHeader: (element: LibraryElement<Entity>) => !!element.children.length,

@@ -1,5 +1,5 @@
 import { AppReduxState } from '@Redux/types';
-import { UserProjectPermission } from '@Src/types/types';
+import { UserProjectPermission } from '@Src/types';
 
 export const selectAllUsers = ({ permissions }: AppReduxState) =>
   permissions.allUsersList.results;

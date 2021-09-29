@@ -1,4 +1,4 @@
-import { Alignments, Entity } from '@Src/types/types';
+import { Alignments, Entity } from '@Src/types';
 import React from 'react';
 import {
   buttonStyleControls,

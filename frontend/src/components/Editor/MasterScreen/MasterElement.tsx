@@ -12,7 +12,7 @@ import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
 import Scrollbars from 'react-custom-scrollbars';
 import { Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { DropTargetParams, Normalized, StateElement } from '@Src/types/types';
+import { DropTargetParams, Normalized, StateElement } from '@Src/types';
 import { selectMasterScreenId } from '@Redux/project/selectors/screen';
 import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { DOMHandler } from '../Workspace/DOMHandler';

@@ -8,11 +8,11 @@ import {
   selectSearch,
   selectSearchLoader,
 } from '@Redux/pmtools/invite/selectors';
-import { ModalAction } from '@Src/types/types';
+import { ModalAction } from '@Src/types';
+import { IMember } from '@Src/pm-types/invite/types';
 import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTokenPair } from '@Redux/user/selectors';
-import { MemberData } from '@Src/types/pmtools/types';
 import SearchMember from './SearchMember';
 
 const Search = () => {
@@ -41,7 +41,7 @@ const Search = () => {
   useEffect(() => {
     if (searchResult) {
       const disabled = !!members.find(
-        (m: MemberData) => m.user_id === searchResult.id,
+        (m: IMember) => m.user_id === searchResult.id,
       );
       setDisabled(disabled);
     }

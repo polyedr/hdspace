@@ -23,7 +23,7 @@ import {
   Result,
   Screen,
   UserProjectPermission,
-} from '@Src/types/types';
+} from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';

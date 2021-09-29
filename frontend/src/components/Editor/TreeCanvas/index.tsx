@@ -10,7 +10,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { UserProjectPermission } from '@Src/types/types';
+import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import DraggableElement from '../Draggable/DraggableElement';
 

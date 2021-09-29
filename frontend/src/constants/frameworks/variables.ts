@@ -1,4 +1,4 @@
-import { UIFrameworkVariables } from '@Src/types/types';
+import { UIFrameworkVariables } from '@Src/types';
 
 export type FrameworkVariablesDataSource = {
   [id: string]: UIFrameworkVariables;

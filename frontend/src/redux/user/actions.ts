@@ -7,7 +7,7 @@ import {
   SignupFormData,
   Experience,
   ChatCredentials,
-} from '@Src/types/types';
+} from '@Src/types';
 import TYPES from '@Redux/actionTypes';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });

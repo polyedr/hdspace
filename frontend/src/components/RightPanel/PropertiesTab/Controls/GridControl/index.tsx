@@ -1,9 +1,5 @@
 import React, { ChangeEvent, FC } from 'react';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '@Src/types/types';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';

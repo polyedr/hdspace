@@ -11,7 +11,7 @@ import {
   loadAssetLists,
   setSelectedAssetListId,
 } from '@Redux/project/actions';
-import { UserProjectPermission } from '@Src/types/types';
+import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { Select, MenuItem, IconButton, TextField } from '@material-ui/core';
 

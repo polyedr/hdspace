@@ -13,7 +13,7 @@ import {
   PERMISSION_LABELS,
 } from '@Constants/defaultParams';
 import { selectUserPermissions } from '@Redux/permissions/selectors';
-import { UserProjectPermission } from '@Src/types/types';
+import { UserProjectPermission } from '@Src/types';
 import { selectUserData } from '@Redux/user/selectors';
 
 type Props = {

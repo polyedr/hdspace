@@ -6,7 +6,7 @@ import { mockState } from '../../test-utils';
 import { AppReduxState } from '../../../../redux/types';
 import TYPES from '../../../../redux/actionTypes';
 import Searchbar from '../../../../components/Projects/Searchbar';
-import { ProjectsSearchParameter } from '../../../../types/types';
+import { ProjectsSearchParameter } from '../../../../types';
 
 describe('Searchbar', () => {
   let store: MockStoreEnhanced<AppReduxState>;

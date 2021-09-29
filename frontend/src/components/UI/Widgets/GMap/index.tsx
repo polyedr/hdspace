@@ -1,6 +1,6 @@
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
-import { IMapProps } from '@Src/types/types';
+import { IMapProps } from '@Src/types';
 
 const styles = require('./styles.scss');
 

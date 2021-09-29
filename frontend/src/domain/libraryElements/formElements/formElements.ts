@@ -10,7 +10,7 @@ import {
   TextareaServerElement,
   TextinputServerElement,
   RadiobuttonGroupServerElement,
-} from '@Src/types/types';
+} from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { v4 } from 'uuid';
 

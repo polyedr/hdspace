@@ -9,16 +9,16 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { removeMemberAction } from '@Redux/pmtools/invite/actions';
+import { IMemberToFrontend, Permission } from '@Src/pm-types/invite/types';
 import { StyledIconButton } from '@Components/styledComponents';
 import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
-import { ModalAction, Permission } from '@Src/types/types';
+import { ModalAction } from '@Src/types';
 import { selectTokenPair } from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { MemberData } from '@Src/types/pmtools/types';
 
 type PropsType = {
-  member: MemberData;
+  member: IMemberToFrontend;
 };
 
 const Member: React.FC<PropsType> = ({ member }) => {

@@ -1,6 +1,6 @@
 import React, { useRef, MutableRefObject } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { ElementData } from '@Src/types/types';
+import { ElementData } from '@Src/types';
 import { useStyles as useElementBlockStyles } from '../ElementsTab/ElementsBlock';
 import ElementButton from '../ElementsTab/ElementButton';
 import {

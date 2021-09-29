@@ -129,7 +129,7 @@ const Scrollbar = React.forwardRef<any, IScrollbarProps>((props, ref) => {
       setScroll(true);
       unsetScroll.callback();
     },
-    [onScroll, unsetScroll],
+    [onScroll, setScroll],
   );
 
   return (

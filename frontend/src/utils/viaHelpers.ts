@@ -1,4 +1,4 @@
-import { VIARegion } from '@Src/types/types';
+import { VIARegion } from '@Src/types';
 import { v4 } from 'uuid';
 
 type HasId<T> = T extends { id: unknown } ? T : T & { id: unknown };

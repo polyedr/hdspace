@@ -1,6 +1,6 @@
 import React from 'react';
 import SmartContainer from './SmartContainer';
-import { NNBlockType } from '../../../../types/types';
+import { NNBlockType } from '../../../../types';
 import { RendererProps } from '../types';
 
 const withSmartContainer = (blockType: NNBlockType) =>

@@ -13,7 +13,7 @@ import SyncIcon from '@material-ui/icons/Sync';
 import AspectRatioRoundedIcon from '@material-ui/icons/AspectRatioRounded';
 import useUrlImageToFile from '@Utils/useUrlImageToFile';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
-import { NNBlockType } from '@Src/types/types';
+import { NNBlockType } from '@Src/types';
 import { updateElementParameters } from '@Redux/project/actions';
 import SyncProblemIcon from '@material-ui/icons/SyncProblem';
 import { WindowContext } from '@Components/Editor/FrameWrapper/FrameContext';

@@ -16,13 +16,6 @@ export type ConfigType = {
   headers: { Authorization: string };
 };
 
-export type Permission = string;
-
-export type PermissionsType = {
-  permissions: Array<Permission>;
-  userdata: UserData;
-};
-
 export enum Alignments {
   Horizontal = 'row',
   Vertical = 'column',

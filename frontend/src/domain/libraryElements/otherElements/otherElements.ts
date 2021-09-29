@@ -30,7 +30,7 @@ import {
   CarouselItemServerElement,
   NavbarServerElement,
   NavbarItemServerElement,
-} from '@Src/types/types';
+} from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { makeParagraph } from '../typographyElements/typographyElements';
 import { defaultFreeCanvasParams } from '../../core';

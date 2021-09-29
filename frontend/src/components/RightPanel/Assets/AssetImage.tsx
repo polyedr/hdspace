@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ElementType } from '@Constants/dragAndDrop';
 import { makeStyles } from '@material-ui/core/styles';
-import { Asset } from '@Src/types/types';
+import { Asset } from '@Src/types';
 import { useDrag } from 'react-dnd';
 
 enum FullSizeDirection {

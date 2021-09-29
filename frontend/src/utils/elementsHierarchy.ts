@@ -6,7 +6,7 @@ import {
   ElementsHierarchy,
   ElementsToAdd,
   ServerElement,
-} from '../types/types';
+} from '../types';
 
 export const convertElementToData = (
   element: ServerElement<any>,

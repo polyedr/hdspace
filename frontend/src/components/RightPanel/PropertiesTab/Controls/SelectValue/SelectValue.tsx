@@ -1,6 +1,6 @@
 import React, { memo, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { PropertiesChangeProps, SelectElement } from '@Src/types/types';
+import { PropertiesChangeProps, SelectElement } from '@Src/types';
 import {
   selectActiveElementChildren,
   selectActiveElementParams,
@@ -24,7 +24,7 @@ const SelectValue: React.FC<PropertiesChangeProps<SelectElement>> = ({
     if (!isValueInChildren && childrenValues.length) {
       updateParams({ value: childrenValues[0] });
     }
-  }, [childrenValues, updateParams, value]);
+  }, [childrenValues]);
 
   const handleDropdownChange = (ev) => {
     updateParams({ value: ev.target.value });

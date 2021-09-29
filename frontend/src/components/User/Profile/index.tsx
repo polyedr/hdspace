@@ -19,7 +19,7 @@ import IMAGES from '@Constants/images';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
 import { ROLES } from '@Constants/defaultParams';
-import { Experience, ProfileData } from '@Src/types/types';
+import { Experience, ProfileData } from '@Src/types';
 import {
   Typography,
   Box,

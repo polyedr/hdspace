@@ -10,7 +10,7 @@ import {
 } from '@Redux/pmtools/board/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestFetchBoard } from '@Redux/pmtools/board/actions/columns';
-import { ModalAction } from '@Src/types/types';
+import { ModalAction } from '@Src/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/Tasks/ColumnModal';
 import { selectTokenPair } from '@Redux/user/selectors';
 import Columns from './Columns';

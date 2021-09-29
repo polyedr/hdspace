@@ -1,4 +1,4 @@
-import { ProjectsSearchParameter, Layout, NNBlockType } from '@Src/types/types';
+import { ProjectsSearchParameter, Layout, NNBlockType } from '@Src/types';
 import {
   ProjectCommunicationState,
   ProjectControlState,

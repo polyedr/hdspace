@@ -1,4 +1,4 @@
-import { ElementData, Entity, LibraryElement } from '@Src/types/types';
+import { ElementData, Entity, LibraryElement } from '@Src/types';
 
 export const createCategoryCustomElement = (nameElement: string) => {
   if (

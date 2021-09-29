@@ -86,7 +86,6 @@ const Projects: React.FC = () => {
     dispatch(getProjectList());
   }, [dispatch]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleGetProjects = () => {
     if (hasNext) {
       dispatch(getProjectList());
@@ -116,7 +115,7 @@ const Projects: React.FC = () => {
         obs.unobserve(el);
       }
     };
-  }, [el, handleGetProjects]);
+  }, [el]);
 
   const sortedProjectList = Object.values(projects).sort(
     (a, b) => b.created.getTime() - a.created.getTime(),

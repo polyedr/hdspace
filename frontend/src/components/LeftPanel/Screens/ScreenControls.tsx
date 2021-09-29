@@ -6,7 +6,7 @@ import { darken, Theme, makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteScreen, duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
-import { Screen } from '@Src/types/types';
+import { Screen } from '@Src/types';
 import { IconButton } from '@material-ui/core';
 
 const useStyles = makeStyles<Theme, { show: boolean }>({

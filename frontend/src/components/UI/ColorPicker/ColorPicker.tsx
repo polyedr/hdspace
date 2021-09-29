@@ -53,7 +53,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
     if (isPopoverOpen) {
       setStartColor({ hex: color });
     }
-  }, [color, isPopoverOpen]);
+  }, [isPopoverOpen]);
 
   useEffect(() => {
     window.addEventListener('keyup', handleKeys);

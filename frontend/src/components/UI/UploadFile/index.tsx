@@ -18,6 +18,7 @@ interface IUploadImagesProps {
 const UploadFile: React.FunctionComponent<IUploadImagesProps> = ({
   active = true,
   title = 'upload my file',
+  format = [],
   uploadFile,
 }) => {
   const handleChangeFile = useCallback(
@@ -44,7 +45,7 @@ const UploadFile: React.FunctionComponent<IUploadImagesProps> = ({
       uploadFile({ file, imgPreviewUrl: reader.result || undefined });
       // reader.readAsDataURL(file);
     },
-    [uploadFile],
+    [format, uploadFile],
   );
 
   return active ? (

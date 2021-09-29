@@ -1,17 +1,14 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
-import { ServerUserData } from '@Src/types/types';
+import { IUser } from '@Src/pm-types/user/types';
 import { call, put } from 'redux-saga/effects';
 
 export default function* searchSaga({ payload }: any) {
   try {
     yield put({ type: TYPES.SEARCH_LOADER, payload: true });
-    const users: Array<ServerUserData> = yield call(
-      Invite.getAllUsers,
-      payload.access,
-    );
+    const users: Array<IUser> = yield call(Invite.getAllUsers, payload.access);
     const result = users.find(
-      (user: ServerUserData) => user.username === payload.search,
+      (user: IUser) => user.username === payload.search,
     );
     yield put({
       type: TYPES.SEARCH_SUCCESS,

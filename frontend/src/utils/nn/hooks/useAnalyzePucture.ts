@@ -1,4 +1,4 @@
-﻿import { NNBlockType } from '@Src/types/types';
+﻿import { NNBlockType } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import useNNProcessing from '@Utils/nn/hooks/useNNProcessing';
 import { useCallback } from 'react';
@@ -25,7 +25,7 @@ const useAnalyzePucture = (
         );
       }
     },
-    [dispatch, handleNNProcessing],
+    [elementId, type, imageFile, dispatch, handleNNProcessing],
   );
   return handleAnalyzeSizePicture;
 };

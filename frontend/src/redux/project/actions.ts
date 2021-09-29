@@ -32,7 +32,7 @@ import {
   FileToUpload,
   UIFramework,
   ElementData,
-} from '@Src/types/types';
+} from '@Src/types';
 import { XYCoord } from 'react-dnd';
 import {
   UpdateUISettingsParameters,

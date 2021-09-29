@@ -2,7 +2,7 @@ import React from 'react';
 import Grid from '@Components/UI/RenderElements/Grid';
 import Column from '@Components/UI/RenderElements/Columns/Column';
 import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
-import { Entity, NNBlockType } from '@Src/types/types';
+import { Entity, NNBlockType } from '@Src/types';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
 import TextBlock from './TextBlock/TextBlock';

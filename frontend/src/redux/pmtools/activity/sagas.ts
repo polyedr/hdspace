@@ -3,8 +3,8 @@ import TYPES from '@Redux/actionTypes';
 import {
   AddActionSagaGenerator,
   ClearHistorySagaGenerator,
-} from '@Src/types/pmtools/generators';
-import { ServerProject } from '@Src/types/types';
+} from '@Src/pm-types/activity/generators';
+import { ServerProject } from '@Src/types';
 import { put, call, takeLatest } from 'redux-saga/effects';
 import sideError from '../actions';
 import { addAction, getActions } from './actions';

@@ -1,7 +1,6 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
-import { FromServerTask } from '@Src/types/pmtools/api';
-import { ColumnData, TaskData } from '@Src/types/pmtools/types';
+import { IColumn, IFromServerTask, ITask } from '@Src/pm-types/board/types';
 import { AxiosResponse } from 'axios';
 
 const fetchColumns = async (projectId, access) =>
@@ -20,7 +19,7 @@ const fetchTasks = (access) =>
     url: `/projects/column-tasks/`,
   })
     .then((results: AxiosResponse) => {
-      return results.data.results.map((item: FromServerTask) => ({
+      return results.data.results.map((item: IFromServerTask) => ({
         ...item,
         category: 'Readers',
         isCompleted: item.status !== 'created',
@@ -49,7 +48,7 @@ const updateColumn = (data: any) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const deleteColumn = (columnId: ColumnData['id'], access: string) =>
+const deleteColumn = (columnId: IColumn['id'], access: string) =>
   myAxios({
     access,
     method: 'DELETE',
@@ -78,7 +77,7 @@ const updateTask = (data: any) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const deleteTask = (taskId: TaskData['id'], access: string) =>
+const deleteTask = (taskId: ITask['id'], access: string) =>
   myAxios({
     access,
     method: 'DELETE',

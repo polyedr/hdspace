@@ -1,7 +1,7 @@
 import produce from 'immer';
 import { PermissionsState } from '@Redux/types';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
-import { PermissionsUserData } from '@Src/types/types';
+import { PermissionsUserData } from '@Src/types';
 import { PermissionsAction } from './types';
 import initialPermissionsState from './initial';
 import TYPES from '../actionTypes';

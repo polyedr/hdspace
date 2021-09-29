@@ -25,7 +25,7 @@ import {
   ProjectsSearchParameter,
   DateRange,
   NNBlockType,
-} from '../../types/types';
+} from '../../types';
 
 export const mockProject: Project = {
   id: 1,

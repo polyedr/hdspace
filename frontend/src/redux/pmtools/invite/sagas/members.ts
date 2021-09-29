@@ -1,7 +1,7 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
 import { addActionSaga } from '@Redux/pmtools/activity/sagas';
-import { ToServerFetchMembers, ToServerMember } from '@Src/types/pmtools/api';
+import { ToServerFetchMembers, ToServerMember } from '@Src/pm-types/invite/api';
 import { put, call, fork } from 'redux-saga/effects';
 import { requestEditPermissions, requestPermissionsSaga } from './permissions';
 

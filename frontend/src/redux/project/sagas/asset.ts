@@ -17,7 +17,7 @@ import {
   PaginatedArray,
   Result,
   UserProjectPermission,
-} from '@Src/types/types';
+} from '@Src/types';
 import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { compose } from 'redux';

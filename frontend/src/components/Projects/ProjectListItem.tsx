@@ -13,7 +13,7 @@ import {
 import { selectUserData } from '@Redux/user/selectors';
 import { TableRow, TableCell, Typography, IconButton } from '@material-ui/core';
 import Dialog from '../Dialogs/Dialog';
-import { Project } from '../../types/types';
+import { Project } from '../../types';
 import TagsList from './TagsList';
 
 const useStyles = makeStyles((theme) =>
