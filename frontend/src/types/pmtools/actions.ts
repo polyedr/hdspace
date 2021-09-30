@@ -28,6 +28,18 @@ export interface RequestTask {
   access: string;
 }
 
+export interface RequestPermissions {
+  access: string;
+  action: string;
+  id: number;
+  permissions: { write: boolean; prevState: Array<Permissions> };
+  role: number;
+  username: string;
+  user_id: string;
+  project: number;
+  status: string;
+}
+
 export interface RequestDeleteTask {
   taskId: number;
   project: number;

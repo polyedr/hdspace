@@ -8,7 +8,6 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { removeMemberAction } from '@Redux/pmtools/invite/actions';
 import { MemberData, Permission } from '@Src/types/pmtools/types';
 import { StyledIconButton } from '@Components/styledComponents';
 import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
@@ -16,6 +15,7 @@ import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { ModalAction } from '@Src/types/types';
 import { selectTokenPair } from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { requestRemoveMember } from '@Redux/pmtools/invite/actions/members';
 
 type PropsType = {
   member: MemberData;
@@ -33,7 +33,7 @@ const Member: React.FC<PropsType> = ({ member }) => {
 
   const removeHandler = () => {
     const action = `${user.username} has been removed`;
-    dispatch(removeMemberAction({ id, access, action, project }));
+    dispatch(requestRemoveMember({ id, access, action, project }));
   };
 
   return (

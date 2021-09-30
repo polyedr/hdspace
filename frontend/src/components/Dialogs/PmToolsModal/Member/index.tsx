@@ -1,13 +1,13 @@
-import {
-  addMemberAction,
-  editMembersAction,
-} from '@Redux/pmtools/invite/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { ModalAction } from '@Src/types/types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTokenPair } from '@Redux/user/selectors';
 import { MemberData } from '@Src/types/pmtools/types';
+import {
+  requestAddMember,
+  requestEditMember,
+} from '@Redux/pmtools/invite/actions/members';
 import MembersModal from './MembersModal';
 
 type Props = {
@@ -37,7 +37,7 @@ const MembersModalContainer: React.FC<Props> = ({
     e.preventDefault();
     if (member) {
       dispatch(
-        addMemberAction({
+        requestAddMember({
           role,
           access,
           status: 'member',
@@ -56,7 +56,7 @@ const MembersModalContainer: React.FC<Props> = ({
     e.preventDefault();
     if (member) {
       dispatch(
-        editMembersAction({
+        requestEditMember({
           access,
           id: member.id,
           role,

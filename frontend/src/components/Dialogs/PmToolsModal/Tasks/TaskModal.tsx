@@ -130,8 +130,6 @@ const TaskModal: React.FC<Props> = ({
             )}
           />
 
-          {!value && <h3>Create members to add tasks</h3>}
-
           <DialogActions>
             <Button
               type="submit"

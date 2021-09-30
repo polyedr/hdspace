@@ -3,8 +3,9 @@ import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
 import { ToServerFetchMembers } from '@Src/types/pmtools/api';
 import { call, put } from 'redux-saga/effects';
+import sidePanelError from '../actions/error';
 
-export function* requestPermissionsSaga(payload: ToServerFetchMembers) {
+export function* permissionsSaga(payload: ToServerFetchMembers) {
   try {
     const permissions = yield call(Invite.getPermissionsUser, payload);
     yield put({
@@ -12,12 +13,13 @@ export function* requestPermissionsSaga(payload: ToServerFetchMembers) {
       payload: permissions,
     });
   } catch (e) {
-    yield put({ type: TYPES.ERROR, e });
+    yield put(sidePanelError(e));
   }
 }
 
-export function* requestEditPermissions(payload: any) {
+export function* editPermissions(payload: any) {
   try {
+    console.log(payload);
     const { permissions, project, username, access } = payload;
     let result;
 
@@ -43,6 +45,6 @@ export function* requestEditPermissions(payload: any) {
       payload: { permissions: result, username },
     });
   } catch (e) {
-    yield put({ type: TYPES.ERROR, e });
+    yield put(sidePanelError(e));
   }
 }

@@ -1,3 +1,5 @@
+import { ServerUserData } from '../types';
+
 export type AccessType = string;
 
 export type RequestAction = {
@@ -14,6 +16,15 @@ export type ToServerSearchMember = {
 export type ToServerFetchMembers = {
   projectId: number;
   access: string;
+};
+
+export type FromServerMember = {
+  id: number;
+  project: number;
+  role: string;
+  status: string;
+  user: ServerUserData;
+  user_id: number;
 };
 
 export type ToServerMember = {

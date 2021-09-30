@@ -8,24 +8,14 @@ import {
 } from '@Src/types/pmtools/types';
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
-import {
-  successAction,
-  successClearHistoryAction,
-  successGetAction,
-} from './activity/actions';
-import {
-  loaderBoard,
-  successAddColumn,
-  successDeleteColumn,
-  successEditColumn,
-  successFetchColumn,
-} from './board/actions/columns';
-import {
-  successAddTask,
-  successDeleteTask,
-  successEditTask,
-  successFetchTask,
-} from './board/actions/tasks';
+import * as actionsActivity from './activity/actions';
+import * as actionsColumns from './board/actions/columns';
+import * as actionsTasks from './board/actions/tasks';
+import * as actionsSearch from './invite/actions/search';
+import * as actionsInvite from './invite/actions/members';
+import * as actionsPermissions from './invite/actions/permissions';
+import { logInSuccess } from './chat/actions';
+import sidePanelError from './invite/actions/error';
 
 export interface InviteRootState extends DefaultRootState {
   invite: InviteState;
@@ -72,20 +62,37 @@ export type UserState = {
   chatCredentials: AuthParams;
 };
 
+// Types for action inside a reducer
 export type ActivityAction = ReturnType<
-  | typeof successClearHistoryAction
-  | typeof successGetAction
-  | typeof successAction
+  | typeof actionsActivity.successClearHistoryAction
+  | typeof actionsActivity.successGetAction
+  | typeof actionsActivity.successAction
 >;
 
 export type InviteAction = ReturnType<
-  | typeof successFetchTask
-  | typeof successAddTask
-  | typeof successEditTask
-  | typeof successDeleteTask
-  | typeof loaderBoard
-  | typeof successFetchColumn
-  | typeof successAddColumn
-  | typeof successEditColumn
-  | typeof successDeleteColumn
+  | typeof actionsTasks.successFetchTask
+  | typeof actionsTasks.successAddTask
+  | typeof actionsTasks.successEditTask
+  | typeof actionsTasks.successDeleteTask
+  | typeof actionsColumns.loaderBoard
+  | typeof actionsColumns.successFetchColumn
+  | typeof actionsColumns.successAddColumn
+  | typeof actionsColumns.successEditColumn
+  | typeof actionsColumns.successDeleteColumn
+>;
+
+export type ChatAction = ReturnType<typeof logInSuccess>;
+
+export type memberAction = ReturnType<
+  | typeof actionsSearch.successSearchAction
+  | typeof actionsInvite.successfetchMembers
+  | typeof actionsInvite.successEditMembers
+  | typeof actionsInvite.successAddMember
+  | typeof actionsInvite.successRemoveMember
+  | typeof actionsSearch.clearSearch
+  | typeof sidePanelError
+  | typeof actionsInvite.membersLoader
+  | typeof actionsSearch.searchLoader
+  | typeof actionsPermissions.permissionsAction
+  | typeof actionsPermissions.editPermissions
 >;

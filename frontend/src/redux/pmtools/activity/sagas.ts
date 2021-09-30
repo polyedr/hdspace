@@ -48,7 +48,7 @@ export function* addActionSaga({
   project,
   action,
   access,
-}): ActionSagaGenerator {
+}: any): ActionSagaGenerator {
   try {
     const data: ServerProject = yield call(Activity.getActions, {
       project,

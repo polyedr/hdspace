@@ -1,5 +1,5 @@
 import TYPES from '@Redux/actionTypes';
-import { InviteState } from '../types';
+import { InviteState, memberAction } from '../types';
 
 const initState: InviteState = {
   members: [],
@@ -10,7 +10,10 @@ const initState: InviteState = {
   msg: '',
 };
 
-const inviteReducer = (state: any = initState, action: any) => {
+const inviteReducer = (
+  state: InviteState = initState,
+  action: memberAction,
+) => {
   switch (action.type) {
     case TYPES.CLEAR_SEARCH:
       return { ...state, searchResult: null };
@@ -62,8 +65,7 @@ const inviteReducer = (state: any = initState, action: any) => {
     case TYPES.ERROR:
       return {
         ...state,
-        type: 'error',
-        msg: 'Something error',
+        msg: 'unknown error',
       };
     default:
       return state;

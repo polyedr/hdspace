@@ -2,10 +2,10 @@ import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 import { Tabs, Tab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { TabPanel } from '@Components/styledComponents';
-import { fetchMembersAction } from '@Redux/pmtools/invite/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectTokenPair } from '@Redux/user/selectors';
+import { requestFetchMembers } from '@Redux/pmtools/invite/actions/members';
 import ChatTab from './Chat';
 import ActivityTab from './Activity';
 import TasksTab from './Tasks';
@@ -45,7 +45,7 @@ const Sidebar: FC = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchMembersAction({ projectId, access }));
+    dispatch(requestFetchMembers({ projectId, access }));
   }, [access, dispatch, projectId]);
 
   return (

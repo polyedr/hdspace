@@ -2,7 +2,8 @@ import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
 import { ServerUserData } from '@Src/types/types';
 import { call, put } from 'redux-saga/effects';
-import { requestSearchAction } from '../actions';
+import sidePanelError from '../actions/error';
+import { requestSearchAction } from '../actions/search';
 
 export default function* searchSaga(
   action: ReturnType<typeof requestSearchAction>,
@@ -22,6 +23,6 @@ export default function* searchSaga(
     });
     yield put({ type: TYPES.SEARCH_LOADER, payload: false });
   } catch (e) {
-    yield put({ type: TYPES.ERROR, e });
+    yield put(sidePanelError(e));
   }
 }

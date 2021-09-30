@@ -1,8 +1,6 @@
 import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
 import { PanelTextField } from '@Components/styledComponents';
 import { Button } from '@material-ui/core';
-import TYPES from '@Redux/actionTypes';
-import { requestSearchAction } from '@Redux/pmtools/invite/actions';
 import {
   selectMembers,
   selectSearch,
@@ -13,6 +11,10 @@ import { MemberData } from '@Src/types/pmtools/types';
 import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTokenPair } from '@Redux/user/selectors';
+import {
+  clearSearch,
+  requestSearchAction,
+} from '@Redux/pmtools/invite/actions/search';
 import SearchMember from './SearchMember';
 
 const Search = () => {
@@ -32,7 +34,7 @@ const Search = () => {
 
   const handleClearSearch = () => {
     setSearch('');
-    dispatch({ type: TYPES.CLEAR_SEARCH });
+    dispatch(clearSearch());
   };
 
   const changeHandler = (e: ChangeEvent<HTMLInputElement>) =>
