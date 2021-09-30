@@ -21,7 +21,7 @@ const getActions = ({ project, access }) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const clearHistory = ({ data, access, project }: any) =>
+const clearHistory = ({ data, access, project }) =>
   myAxios({
     access,
     data,

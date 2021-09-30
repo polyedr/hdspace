@@ -1,6 +1,11 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
-import { AccessType, FromServerTask } from '@Src/types/pmtools/api';
+import {
+  AccessType,
+  FromServerTask,
+  RequestColumn,
+  RequestTask,
+} from '@Src/types/pmtools/actions';
 import { ColumnData, TaskData } from '@Src/types/pmtools/types';
 import { AxiosResponse } from 'axios';
 
@@ -29,7 +34,7 @@ const fetchTasks = (access) =>
     })
     .catch(handleError);
 
-const createColumn = (data: any) =>
+const createColumn = (data: RequestColumn) =>
   myAxios({
     access: data.access,
     data,
@@ -39,7 +44,7 @@ const createColumn = (data: any) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const updateColumn = (data: any) =>
+const updateColumn = (data: RequestColumn) =>
   myAxios({
     access: data.access,
     data,
@@ -58,8 +63,9 @@ const deleteColumn = (columnId: ColumnData['id'], access: string) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const createTask = (data: any) =>
-  myAxios({
+const createTask = (data: RequestTask) => {
+  console.log('createTask', data);
+  return myAxios({
     access: data.access,
     data,
     method: 'POST',
@@ -67,9 +73,11 @@ const createTask = (data: any) =>
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
+};
 
-const updateTask = (data: any) =>
-  myAxios({
+const updateTask = (data: RequestTask) => {
+  console.log('updateTask', data);
+  return myAxios({
     access: data.access,
     data,
     method: 'PATCH',
@@ -77,6 +85,7 @@ const updateTask = (data: any) =>
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
+};
 
 const deleteTask = (taskId: TaskData['id'], access: AccessType) =>
   myAxios({

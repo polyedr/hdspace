@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
-import { ToServerFetchMembers } from '@Src/types/pmtools/api';
+import { ToServerFetchMembers } from '@Src/types/pmtools/actions';
 import { call, put } from 'redux-saga/effects';
 import sidePanelError from '../actions/error';
 

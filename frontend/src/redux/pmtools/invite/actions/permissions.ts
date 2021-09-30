@@ -1,6 +1,8 @@
 import TYPES from '@Redux/actionTypes';
-import { RequestPermissions } from '@Src/types/pmtools/actions';
-import { ToServerFetchMembers } from '@Src/types/pmtools/api';
+import {
+  RequestPermissions,
+  ToServerFetchMembers,
+} from '@Src/types/pmtools/actions';
 
 export const editPermissions = (payload: RequestPermissions) => ({
   type: TYPES.EDIT_PERMISSIONS,

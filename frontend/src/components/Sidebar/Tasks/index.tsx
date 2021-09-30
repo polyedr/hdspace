@@ -4,10 +4,7 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import { Container } from '@material-ui/core';
 import { SideBarTitle } from '@Components/styledComponents';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectColumnListWithTasks,
-  // selectLoaderBoard,
-} from '@Redux/pmtools/board/selectors';
+import { selectColumnListWithTasks } from '@Redux/pmtools/board/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestFetchBoard } from '@Redux/pmtools/board/actions/columns';
 import { ModalAction } from '@Src/types/types';

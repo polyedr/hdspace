@@ -4,7 +4,7 @@ import {
   ToServerFetchMembers,
   ToServerMember,
   ToServerPermissions,
-} from '@Src/types/pmtools/api';
+} from '@Src/types/pmtools/actions';
 import { AxiosResponse } from 'axios';
 
 const fetchMembers = ({ projectId, access }: ToServerFetchMembers) =>

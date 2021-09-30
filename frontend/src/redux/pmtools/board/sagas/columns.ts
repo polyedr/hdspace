@@ -1,6 +1,7 @@
 import Board from '@Api/pmtools/boardApi';
 import { panelErrorMsg } from '@Redux/actions';
 import { addActionSaga } from '@Redux/pmtools/activity/sagas';
+import { RequestColumn } from '@Src/types/pmtools/actions';
 import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
@@ -18,7 +19,7 @@ export function* columnsFetch({ project, access }) {
   }
 }
 
-export function* columnAdd(payload): ColumnSagaGenerator {
+export function* columnAdd(payload: RequestColumn): ColumnSagaGenerator {
   try {
     const column = yield call(Board.createColumn, payload);
     yield put(actions.successAddColumn(column));

@@ -1,24 +1,21 @@
 import TYPES from '@Redux/actionTypes';
 import { InviteState, memberAction } from '../types';
 
-const initState: InviteState = {
+const initialState: InviteState = {
   members: [],
   permissions: [],
   searchResult: null,
   loaderSearch: false,
-  loaderMembers: false,
   msg: '',
 };
 
 const inviteReducer = (
-  state: InviteState = initState,
+  state: InviteState = initialState,
   action: memberAction,
 ) => {
   switch (action.type) {
     case TYPES.CLEAR_SEARCH:
       return { ...state, searchResult: null };
-    case TYPES.MEMBERS_LOADER:
-      return { ...state, loaderMembers: action.payload };
     case TYPES.SEARCH_LOADER:
       return { ...state, loaderSearch: action.payload };
     case TYPES.EDIT_PERMISSIONS:

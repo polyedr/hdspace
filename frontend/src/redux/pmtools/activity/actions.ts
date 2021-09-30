@@ -1,5 +1,5 @@
 import TYPES from '@Redux/actionTypes';
-import { RequestAction } from '@Src/types/pmtools/api';
+import { RequestAction } from '@Src/types/pmtools/actions';
 
 export const clearHistoryAction = (project: number, access: string) => ({
   type: TYPES.CLEAR_HISTORY,

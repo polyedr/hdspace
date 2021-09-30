@@ -1,3 +1,72 @@
+import { ServerUserData } from '../types';
+import { ToServerTask } from './generators';
+
+export type ToServerPermissions = {
+  access: string;
+  permissions: Array<string>;
+  projectid: number;
+  username: string;
+};
+
+export interface FromServerTask extends ToServerTask {
+  id: number;
+}
+
+interface AuthLoginBase {
+  realm?: string;
+  username?: string;
+}
+
+export interface AuthParams extends AuthLoginBase {
+  apiKey?: string;
+}
+
+export type ToServerRemoveMember = {
+  id: number; // member id
+  access: string;
+  project: number;
+  action: string;
+};
+
+export type ToServerMember = {
+  id?: number;
+  project: number; // projectId
+  role: string;
+  status: string;
+  user_id: number;
+  access?: string;
+  action?: string;
+  username?: string;
+  permissions?: { prevState: Array<string>; write: boolean };
+};
+
+export type RequestAction = {
+  project: number;
+  action: string;
+  access: string;
+};
+
+export type FromServerMember = {
+  id: number;
+  project: number;
+  role: string;
+  status: string;
+  user: ServerUserData;
+  user_id: number;
+};
+
+export type ToServerFetchMembers = {
+  projectId: number;
+  access: string;
+};
+
+export type AccessType = string;
+
+export type ToServerSearchMember = {
+  access: string;
+  search: string;
+};
+
 export interface RequestFetchColumns {
   access: string;
   project: number;

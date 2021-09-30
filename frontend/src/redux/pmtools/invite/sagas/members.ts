@@ -1,14 +1,16 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
 import { addActionSaga } from '@Redux/pmtools/activity/sagas';
-import { ToServerFetchMembers, ToServerMember } from '@Src/types/pmtools/api';
+import {
+  ToServerFetchMembers,
+  ToServerMember,
+} from '@Src/types/pmtools/actions';
 import { put, call, fork } from 'redux-saga/effects';
 import sidePanelError from '../actions/error';
 import {
   requestAddMember,
   requestEditMember,
   requestFetchMembers,
-  membersLoader,
   requestRemoveMember,
   successAddMember,
   successEditMembers,
@@ -20,7 +22,6 @@ import { editPermissions, permissionsSaga } from './permissions';
 function* fetchMemberList(payload: ToServerFetchMembers) {
   try {
     const members = yield call(Invite.fetchMembers, payload);
-    console.log(members);
     yield put(successfetchMembers(members));
   } catch (e) {
     yield put(sidePanelError(e));
@@ -72,10 +73,8 @@ export function* editMemberSaga({
 export function* fetchMembersSaga({
   payload,
 }: ReturnType<typeof requestFetchMembers>) {
-  yield put(membersLoader(true));
   yield fork(fetchMemberList, payload);
   yield fork(permissionsSaga, payload);
-  yield put(membersLoader(false));
 }
 
 export function* addMemberSaga({

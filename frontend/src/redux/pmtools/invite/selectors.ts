@@ -13,9 +13,6 @@ export const selectPermissions = (state: InviteRootState) =>
 export const selectSearchLoader = (state: InviteRootState) =>
   state.invite.loaderSearch;
 
-export const selectMembersLoader = (state: InviteRootState) =>
-  state.invite.loaderMembers;
-
 export const selectMembersWithPermissions = createSelector(
   selectMembers,
   selectPermissions,

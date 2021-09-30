@@ -1,6 +1,21 @@
 import { CallEffect, PutEffect } from 'redux-saga/effects';
 import { ServerProject } from '../types';
-import { FromServerColumn, ToServerTask } from './api';
+
+export interface ToServerColumn {
+  id: number;
+  title: string;
+  description: string;
+  project: number;
+}
+
+export interface ToServerTask {
+  title: string;
+  description: string;
+  status: string;
+  column: number;
+  creator: string;
+  owner: number;
+}
 
 export type TasksAddSagaGenerator = Generator<
   CallEffect | PutEffect,
@@ -17,13 +32,13 @@ export type TasksEditSagaGenerator = Generator<
 export type ColumnSagaGenerator = Generator<
   CallEffect | PutEffect,
   void,
-  FromServerColumn
+  ToServerColumn
 >;
 
 export type ColumnDeletSagaGenerator = Generator<
   CallEffect | PutEffect,
   void,
-  FromServerColumn
+  ToServerColumn
 >;
 
 export type ActionSagaGenerator = Generator<

@@ -9,7 +9,6 @@ const TYPES = {
 
   // activity/LOADER
   SEARCH_LOADER: 'activity/LOADER',
-  MEMBERS_LOADER: 'activity/MEMBERS_LOADER',
   // activity/CLEAR
   CLEAR_SEARCH: 'activity/CLEAR_SEARCH',
   CLEAR_HISTORY: 'activity/CLEAR_HISTORY',

@@ -1,4 +1,3 @@
-import { AuthParams, RequestAction } from '@Src/types/pmtools/api';
 import {
   ChatLoginData,
   ColumnData,
@@ -8,6 +7,7 @@ import {
 } from '@Src/types/pmtools/types';
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
+import { AuthParams, RequestAction } from '@Src/types/pmtools/actions';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
@@ -52,7 +52,6 @@ export type InviteState = {
   permissions: Array<PermissionsData>;
   searchResult: any;
   loaderSearch: boolean;
-  loaderMembers: boolean;
   msg: string;
 };
 
@@ -91,7 +90,6 @@ export type memberAction = ReturnType<
   | typeof actionsInvite.successRemoveMember
   | typeof actionsSearch.clearSearch
   | typeof sidePanelError
-  | typeof actionsInvite.membersLoader
   | typeof actionsSearch.searchLoader
   | typeof actionsPermissions.permissionsAction
   | typeof actionsPermissions.editPermissions

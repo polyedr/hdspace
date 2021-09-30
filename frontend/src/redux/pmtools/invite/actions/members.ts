@@ -4,12 +4,7 @@ import {
   ToServerFetchMembers,
   ToServerMember,
   ToServerRemoveMember,
-} from '@Src/types/pmtools/api';
-
-export const membersLoader = (payload: boolean) => ({
-  type: TYPES.MEMBERS_LOADER,
-  payload,
-});
+} from '@Src/types/pmtools/actions';
 
 // fetch memberss
 export const requestFetchMembers = (payload: ToServerFetchMembers) => ({

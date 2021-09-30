@@ -1,6 +1,8 @@
 import TYPES from '@Redux/actionTypes';
-import { RequestPermissions } from '@Src/types/pmtools/actions';
-import { ToServerSearchMember } from '@Src/types/pmtools/api';
+import {
+  RequestPermissions,
+  ToServerSearchMember,
+} from '@Src/types/pmtools/actions';
 
 export const searchLoader = (payload: boolean) => ({
   type: TYPES.SEARCH_LOADER,
