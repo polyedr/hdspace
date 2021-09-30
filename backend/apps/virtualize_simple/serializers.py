@@ -1833,7 +1833,7 @@ def calculate_uclusters(fdict, fname, fnamesize, image_uclusters, node):
 
     # For some rectangle. Go through all the rectangles in. Find rectangles without parents, they are level rectangles.
     # Save sets of rectangles placed for each level rectangle. Repeat the process.
-    f(rectangles, root_ucluster, image_uclusters)
+    chain_uclusters(rectangles, root_ucluster, image_uclusters)
 
     # Printing uclusters to file
     if len(image_uclusters):
@@ -2380,7 +2380,8 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                     x, y, w, h = rect_contour
                     # location = i.location  # y, x
                     # size = i.size  # width, height
-                    element = "image"
+                    element = "div"
+                    # element = "image"
 
                     # Fill the attributes dictionary
                     attributes_dict = {
