@@ -1,5 +1,5 @@
 import TYPES from '@Redux/actionTypes';
-import { BoardState } from '../types';
+import { BoardState, InviteAction } from '../types';
 
 const initialState: BoardState = {
   columnList: [],
@@ -7,7 +7,10 @@ const initialState: BoardState = {
   loaderBoard: false,
 };
 
-const boardReducer = (state: BoardState = initialState, action: any) => {
+const boardReducer = (
+  state: BoardState = initialState,
+  action: InviteAction,
+) => {
   switch (action.type) {
     case TYPES.LOADER_BOARD:
       return { ...state, loaderBoard: action.payload };

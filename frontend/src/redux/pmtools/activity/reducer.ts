@@ -1,15 +1,19 @@
 import TYPES from '@Redux/actionTypes';
+import { ActivityAction, ActivityState } from '../types';
 
-const initialState = {
+const initialState: ActivityState = {
   actions: [],
 };
 
-const activityReducer = (state = initialState, action: any) => {
+const activityReducer = (
+  state: ActivityState = initialState,
+  action: ActivityAction,
+) => {
   switch (action.type) {
     case TYPES.GET_ACTION:
       return {
         ...state,
-        actions: action.payload.reverse(),
+        actions: action.payload,
       };
     case TYPES.ADD_ACTION:
       return {

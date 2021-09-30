@@ -8,7 +8,6 @@ import {
   TasksEditSagaGenerator,
 } from '@Src/types/pmtools/generators';
 import { call, fork, put } from 'redux-saga/effects';
-import { requestAction } from '../../activity/actions';
 import {
   requestAddTask,
   requestDeleteTask,
@@ -44,10 +43,9 @@ export function* taskEdit(payload: RequestTask): TasksEditSagaGenerator {
 
 export function* taskDelete(payload: RequestDeleteTask) {
   try {
-    const { taskId, project: projectId, action, access } = payload;
+    const { taskId, access } = payload;
     yield call(Board.deleteTask, taskId, access);
     yield put({ type: TYPES.SUCCESS_DELETE_TASK, payload: taskId });
-    yield put(requestAction({ projectId, action }));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }

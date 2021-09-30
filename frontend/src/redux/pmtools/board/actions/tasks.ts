@@ -15,3 +15,24 @@ export const requestDeleteTask = (payload: RequestDeleteTask) => ({
   type: TYPES.REQUEST_DELETE_TASK,
   payload,
 });
+
+// SUCCESS
+export const successFetchTask = (payload: any) => ({
+  type: TYPES.SUCCESS_FETCH_TASKS,
+  payload,
+});
+
+export const successAddTask = (payload: any) => ({
+  type: TYPES.SUCCESS_ADD_TASK,
+  payload,
+});
+
+export const successEditTask = (payload: any) => ({
+  type: TYPES.SUCCESS_EDIT_TASK,
+  payload,
+});
+
+export const successDeleteTask = (payload: any) => ({
+  type: TYPES.SUCCESS_DELETE_TASK,
+  payload,
+});

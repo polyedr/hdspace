@@ -2,17 +2,17 @@ import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import { AxiosResponse } from 'axios';
 
-const addActions = ({ project, access, projectId }) =>
+const addActions = ({ data, access, project }) =>
   myAxios({
     access,
-    data: project,
+    data,
     method: 'PATCH',
-    url: `/projects/projects/${projectId}/`,
+    url: `/projects/projects/${project}/`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const getActions = (project, access) =>
+const getActions = ({ project, access }) =>
   myAxios({
     access,
     method: 'GET',
@@ -21,12 +21,12 @@ const getActions = (project, access) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const clearHistory = ({ project, access, projectId }: any) =>
+const clearHistory = ({ data, access, project }: any) =>
   myAxios({
     access,
-    data: project,
+    data,
     method: 'PATCH',
-    url: `/projects/projects/${projectId}/`,
+    url: `/projects/projects/${project}/`,
   })
     .then((results: AxiosResponse) => results)
     .catch(handleError);

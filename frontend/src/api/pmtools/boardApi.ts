@@ -1,6 +1,6 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
-import { FromServerTask } from '@Src/types/pmtools/api';
+import { AccessType, FromServerTask } from '@Src/types/pmtools/api';
 import { ColumnData, TaskData } from '@Src/types/pmtools/types';
 import { AxiosResponse } from 'axios';
 
@@ -78,7 +78,7 @@ const updateTask = (data: any) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const deleteTask = (taskId: TaskData['id'], access: string) =>
+const deleteTask = (taskId: TaskData['id'], access: AccessType) =>
   myAxios({
     access,
     method: 'DELETE',

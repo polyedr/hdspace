@@ -17,7 +17,7 @@ const History: React.FC<{
     <>
       <SideBarTitle title="Project history" icon={HistoryIcon} />
       <Button
-        onClick={() => dispatch(clearHistoryAction({ project: id, access }))}
+        onClick={() => dispatch(clearHistoryAction(id, access))}
         fullWidth
         variant="contained"
         color="secondary"

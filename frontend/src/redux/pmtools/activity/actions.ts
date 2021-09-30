@@ -1,8 +1,9 @@
 import TYPES from '@Redux/actionTypes';
+import { RequestAction } from '@Src/types/pmtools/api';
 
-export const clearHistoryAction = (payload) => ({
+export const clearHistoryAction = (project: number, access: string) => ({
   type: TYPES.CLEAR_HISTORY,
-  payload,
+  payload: { project, access },
 });
 
 export const requestGetAction = (project: number, access: string) => ({
@@ -10,17 +11,24 @@ export const requestGetAction = (project: number, access: string) => ({
   payload: { project, access },
 });
 
-export const getActions = (payload: any) => ({
+export const requestAction = (payload: RequestAction) => ({
+  type: TYPES.REQUEST_ADD_ACTION,
+  payload,
+});
+
+// SUCCESS
+export const successClearHistoryAction = () => ({
+  type: TYPES.CLEAR_HISTORY_SUCCESS,
+});
+
+export const successGetAction = (
+  payload: Array<RequestAction['action']> | [],
+) => ({
   type: TYPES.GET_ACTION,
   payload,
 });
 
-export const requestAction = (data: any) => ({
-  type: TYPES.REQUEST_ADD_ACTION,
-  payload: data,
-});
-
-export const addAction = (payload) => ({
+export const successAction = (payload: RequestAction) => ({
   type: TYPES.ADD_ACTION,
   payload,
 });

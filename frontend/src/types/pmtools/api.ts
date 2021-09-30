@@ -1,3 +1,11 @@
+export type AccessType = string;
+
+export type RequestAction = {
+  project: number;
+  action: string;
+  access: string;
+};
+
 export type ToServerSearchMember = {
   access: string;
   search: string;
