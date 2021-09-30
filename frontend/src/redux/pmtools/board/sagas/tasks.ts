@@ -9,6 +9,20 @@ import {
 } from '@Src/types/pmtools/generators';
 import { call, fork, put } from 'redux-saga/effects';
 import { requestAction } from '../../activity/actions';
+import {
+  requestAddTask,
+  requestDeleteTask,
+  requestEditTask,
+} from '../actions/tasks';
+
+export function* tasksFetch({ access }) {
+  try {
+    const tasks = yield call(Board.fetchTasks, access);
+    yield put({ type: TYPES.SUCCESS_FETCH_TASKS, payload: tasks });
+  } catch (e) {
+    yield put(panelErrorMsg(e));
+  }
+}
 
 export function* taskAdd(payload: RequestTask): TasksAddSagaGenerator {
   try {
@@ -39,17 +53,19 @@ export function* taskDelete(payload: RequestDeleteTask) {
   }
 }
 
-export function* taskAddSaga({ payload }: any) {
+export function* taskAddSaga({ payload }: ReturnType<typeof requestAddTask>) {
   yield fork(taskAdd, payload);
   yield fork(addActionSaga, payload);
 }
 
-export function* taskEditSaga({ payload }: any) {
+export function* taskEditSaga({ payload }: ReturnType<typeof requestEditTask>) {
   yield fork(taskEdit, payload);
   yield fork(addActionSaga, payload);
 }
 
-export function* taskDeleteSaga({ payload }: any) {
+export function* taskDeleteSaga({
+  payload,
+}: ReturnType<typeof requestDeleteTask>) {
   yield fork(taskDelete, payload);
   yield fork(addActionSaga, payload);
 }

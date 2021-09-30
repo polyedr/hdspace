@@ -1,77 +1,88 @@
 import Board from '@Api/pmtools/boardApi';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
+import { addActionSaga } from '@Redux/pmtools/activity/sagas';
 import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
 } from '@Src/types/pmtools/generators';
 import { ColumnData } from '@Src/types/pmtools/types';
-import { call, put } from 'redux-saga/effects';
-import { requestAction } from '../../activity/actions';
-import { requestLoaderBoard } from '../actions/columns';
+import { call, fork, put } from 'redux-saga/effects';
+import {
+  requestAddColumn,
+  requestDeleteColumn,
+  requestEditColumn,
+  requestFetchBoard,
+  requestLoaderBoard,
+} from '../actions/columns';
+import { tasksFetch } from './tasks';
 
-export function* columnsFetchSaga({ payload }: any): any {
+export function* columnsFetch({ project, access }) {
   try {
-    yield put(requestLoaderBoard(true));
-    const receivedData: Array<any> = yield call(
+    const columns: Array<ColumnData> = yield call(
       Board.fetchColumns,
-      payload.projectId,
-      payload.access,
+      project,
+      access,
     );
-    console.log(receivedData);
-    const tasks = yield call(Board.fetchTasks, payload.access);
-    yield put({ type: TYPES.SUCCESS_FETCH_TASKS, payload: tasks });
-
-    const data: ColumnData[] = receivedData.map((item: any) => ({
-      ...item,
-      tasks: [],
-    }));
-    yield put({ type: TYPES.SUCCESS_FETCH_COLUMNS, payload: data });
-    yield put(requestLoaderBoard(false));
+    yield put({ type: TYPES.SUCCESS_FETCH_COLUMNS, payload: columns });
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
-export function* columnAddSaga({ payload }: any): ColumnSagaGenerator {
+export function* columnAdd(payload): ColumnSagaGenerator {
   try {
-    const { title, description, projectId, action, access } = payload;
-    const data = yield call(Board.createColumn, {
-      access,
-      title,
-      description,
-      project: projectId,
-    });
-    yield put({ type: TYPES.SUCCESS_ADD_COLUMN, payload: data });
-    yield put(requestAction({ projectId, action }));
+    const column = yield call(Board.createColumn, payload);
+    yield put({ type: TYPES.SUCCESS_ADD_COLUMN, payload: column });
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
-export function* columnEditSaga({ payload }: any): ColumnSagaGenerator {
+export function* columnEdit(payload): ColumnSagaGenerator {
   try {
-    const { id, title, description, projectId, action, access } = payload;
-    const data = yield call(Board.updateColumn, {
-      id,
-      title,
-      description,
-      access,
-    });
+    const data = yield call(Board.updateColumn, payload);
     yield put({ type: TYPES.SUCCESS_EDIT_COLUMN, payload: data });
-    yield put(requestAction({ projectId, action }));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
-export function* columnDeleteSaga({ payload }: any): ColumnDeletSagaGenerator {
+export function* columnDelete({ columnId, access }): ColumnDeletSagaGenerator {
   try {
-    const { columnId, projectId, action, access } = payload;
     yield call(Board.deleteColumn, columnId, access);
     yield put({ type: TYPES.SUCCESS_DELETE_COLUMN, payload: columnId });
-    yield put(requestAction({ projectId, action }));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
+}
+
+export function* columnsFetchSaga({
+  payload,
+}: ReturnType<typeof requestFetchBoard>) {
+  yield put(requestLoaderBoard(true));
+  yield fork(columnsFetch, payload);
+  yield fork(tasksFetch, payload);
+  yield put(requestLoaderBoard(false));
+}
+
+export function* columnDeleteSaga({
+  payload,
+}: ReturnType<typeof requestDeleteColumn>) {
+  yield fork(columnDelete, payload);
+  yield fork(addActionSaga, payload);
+}
+
+export function* columnAddSaga({
+  payload,
+}: ReturnType<typeof requestAddColumn>) {
+  yield fork(columnAdd, payload);
+  yield fork(addActionSaga, payload);
+}
+
+export function* columnEditSaga({
+  payload,
+}: ReturnType<typeof requestEditColumn>) {
+  yield fork(columnEdit, payload);
+  yield fork(addActionSaga, payload);
 }

@@ -18,14 +18,14 @@ import Columns from './Columns';
 const TasksTab: FC = () => {
   const dispatch = useDispatch();
   const columnList = useSelector(selectColumnListWithTasks);
-  const projectId = useSelector(selectCurrentProjectId);
+  const project = useSelector(selectCurrentProjectId);
   const { access } = useSelector(selectTokenPair);
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(requestFetchBoard({ projectId, access }));
-  }, [access, dispatch, projectId]);
+    dispatch(requestFetchBoard({ project, access }));
+  }, [access, dispatch, project]);
 
   const titleActions = [
     {

@@ -25,7 +25,7 @@ type Props = {
 
 const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
   const dispatch = useDispatch();
-  const projectId = useSelector(selectCurrentProjectId);
+  const project = useSelector(selectCurrentProjectId);
   const [title, setTitle] = useState(column?.title || '');
   const [desc, setDesc] = useState(column?.description || '');
   const { access } = useSelector(selectTokenPair);
@@ -37,7 +37,7 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
         requestAddColumn({
           access,
           title,
-          projectId,
+          project,
           description: desc || '',
           action: `Column "${title}" was added`,
         }),
@@ -55,7 +55,7 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
           id: column.id,
           title,
           description: desc || '',
-          projectId,
+          project,
           action: `Column "${column.title}" was edited on "${title}"`,
         }),
       );

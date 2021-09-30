@@ -1,3 +1,20 @@
+export interface RequestFetchColumns {
+  access: string;
+  project: number;
+}
+
+export interface RequestDeleteColumn extends RequestFetchColumns {
+  columnId: number;
+  action: string;
+}
+
+export interface RequestColumn extends RequestFetchColumns {
+  id?: number;
+  action: string;
+  description: string;
+  title: string;
+}
+
 export interface RequestTask {
   id?: number;
   title: string;

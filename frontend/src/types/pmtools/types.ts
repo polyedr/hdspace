@@ -16,7 +16,6 @@ export interface ColumnData {
   title: string;
   description: string;
   project: number;
-  tasks: Array<TaskData>;
   created?: string;
   modified?: string;
 }

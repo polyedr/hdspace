@@ -24,7 +24,7 @@ const Columns: FC<any> = ({ column }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const members = useSelector(selectMembers);
-  const projectId = useSelector(selectCurrentProjectId);
+  const project = useSelector(selectCurrentProjectId);
   const [columnModal, setColumnModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [tasksModal, setTasksModal] = useState(false);
@@ -33,7 +33,7 @@ const Columns: FC<any> = ({ column }) => {
   const handleDeleteColumn = () => {
     const action = `Column "${column.title}" has been deleted`;
     dispatch(
-      requestDeleteColumn({ columnId: column.id, projectId, action, access }),
+      requestDeleteColumn({ columnId: column.id, project, action, access }),
     );
   };
 
