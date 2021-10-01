@@ -3,16 +3,19 @@ import { ChatAction, ChatState } from '../types';
 
 const initialState: ChatState = {
   client: null,
-  isAuth: false,
 };
 
 const chatReducer = (state: ChatState = initialState, action: ChatAction) => {
   switch (action.type) {
-    case TYPES.LOGIN_SUCCESS:
+    case TYPES.LOGIN_PMTOOLS_SUCCESS:
       return {
         ...state,
-        isAuth: true,
         client: action.payload,
+      };
+    case TYPES.LOGOUT_PMTOOLS_SUCCESS:
+      return {
+        ...state,
+        client: null,
       };
     default:
       return state;

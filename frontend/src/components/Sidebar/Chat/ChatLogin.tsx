@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { Button } from '@material-ui/core';
 import { PanelTextField } from '@Components/styledComponents';
 import { useDispatch } from 'react-redux';
-import { logIn } from '@Redux/pmtools/chat/actions';
+import { requestLoginChatUser } from '@Redux/pmtools/chat/actions';
 
 const ChatLogin: React.FC = () => {
   const dispatch = useDispatch();
@@ -12,7 +12,14 @@ const ChatLogin: React.FC = () => {
 
   const handleSignIn = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(logIn(realm, email, password));
+    dispatch(requestLoginChatUser({ realm, email, password }));
+  };
+
+  const handleRealmInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const rlm = e.target.value;
+    setRealmInput(
+      rlm.replace(/^(https?)|(:)|(\.zulipchat)|(\.com)|(\/)|(@)/gi, ''),
+    );
   };
 
   return (
@@ -20,11 +27,8 @@ const ChatLogin: React.FC = () => {
       <PanelTextField
         required
         value={realm}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setRealmInput(e.target.value)
-        }
+        onChange={handleRealmInput}
         label="Zulip domain name"
-        helperText={`https://${realm || '[yourURL]'}.zulipchat.com/`}
       />
       <PanelTextField
         type="email"

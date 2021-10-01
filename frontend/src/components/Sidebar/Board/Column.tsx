@@ -37,7 +37,7 @@ type Props = {
   setColumnModal: (v: boolean) => void;
 };
 
-export const Column = ({
+export const Column: React.FC<Props> = ({
   column,
   tasksModal,
   members,
@@ -52,6 +52,9 @@ export const Column = ({
     <>
       <Typography variant="h6" className={classes.title}>
         {column.title}
+      </Typography>
+      <Typography variant="subtitle2" className={classes.title}>
+        {column.description}
       </Typography>
 
       <div className={classes.buttonContainer}>

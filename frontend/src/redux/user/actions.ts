@@ -23,7 +23,7 @@ export const changePrototypeMode = (isPrototypeMode: boolean) => ({
 });
 
 export const login = (data: LoginFormData) => ({
-  type: TYPES.LOGIN,
+  type: TYPES.LOGIN_CHAT_USER,
   payload: data,
 });
 

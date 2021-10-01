@@ -8,7 +8,7 @@ import { selectTokenPair } from '@Redux/user/selectors';
 import { requestFetchMembers } from '@Redux/pmtools/invite/actions/members';
 import ChatTab from './Chat';
 import ActivityTab from './Activity';
-import TasksTab from './Tasks';
+import TasksTab from './Board';
 import InviteTab from './Invite';
 
 const useTabStyles = makeStyles(({ palette }) => ({

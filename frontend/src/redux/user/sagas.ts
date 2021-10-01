@@ -318,7 +318,7 @@ export function* loadUserDataSaga(action: ReturnType<typeof Actions.loadUser>) {
 }
 
 export default function* userSaga() {
-  yield takeLatest(TYPES.LOGIN, loginSaga);
+  yield takeLatest(TYPES.LOGIN_CHAT_USER, loginSaga);
   yield takeEvery(TYPES.LOGOUT_START, logoutSaga);
   yield takeLatest(TYPES.REGISTER, registerSaga);
   yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);

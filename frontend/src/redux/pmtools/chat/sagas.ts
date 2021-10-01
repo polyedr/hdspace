@@ -2,21 +2,30 @@
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import { put, takeLatest } from 'redux-saga/effects';
-import { logInSuccess } from './actions';
+import { successLoginChatUser, successLogoutChatUser } from './actions';
 
-export function* authUser({ payload }: any) {
+export function* authUser({
+  payload,
+}: ReturnType<typeof successLoginChatUser>) {
   try {
-    const { username, password, realm } = payload;
-    yield put(logInSuccess({ username, password }));
-    localStorage.setItem(
-      'login',
-      JSON.stringify({ realm, username, password }),
-    );
+    const { realm, email, password } = payload;
+    yield put(successLoginChatUser({ realm, email, password }));
+    localStorage.setItem('login', JSON.stringify({ realm, email, password }));
+  } catch (e) {
+    yield put(panelErrorMsg(e));
+  }
+}
+
+export function* logoutUser() {
+  try {
+    localStorage.removeItem('login');
+    yield put(successLogoutChatUser());
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
 export default function* chatSaga() {
-  yield takeLatest(TYPES.LOGIN_REQUEST, authUser);
+  yield takeLatest(TYPES.LOGIN_PMTOOLS, authUser);
+  yield takeLatest(TYPES.LOGOUT_PMTOOLS, logoutUser);
 }

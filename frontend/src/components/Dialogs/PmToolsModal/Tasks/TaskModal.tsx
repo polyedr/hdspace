@@ -60,8 +60,8 @@ const TaskModal: React.FC<Props> = ({
           description: disc,
           status: 'created',
           column: column.id || 0,
-          creator: value.status || '',
-          owner: value.user.id || 0,
+          creator: value?.status || '',
+          owner: value?.user?.id || null,
           project,
           action: `Task "${title}" was added`,
         }),
@@ -131,12 +131,7 @@ const TaskModal: React.FC<Props> = ({
           />
 
           <DialogActions>
-            <Button
-              type="submit"
-              color="secondary"
-              disabled={!value}
-              variant="contained"
-            >
+            <Button type="submit" color="secondary" variant="contained">
               {action === ModalAction.Create ? 'Create' : 'Edit'}
             </Button>
           </DialogActions>
@@ -144,11 +139,6 @@ const TaskModal: React.FC<Props> = ({
       </DialogContent>
     </Dialog>
   );
-};
-
-TaskModal.defaultProps = {
-  task: null,
-  selectedTaskId: null,
 };
 
 export default TaskModal;

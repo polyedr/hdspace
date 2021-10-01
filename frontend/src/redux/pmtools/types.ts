@@ -14,8 +14,8 @@ import * as actionsTasks from './board/actions/tasks';
 import * as actionsSearch from './invite/actions/search';
 import * as actionsInvite from './invite/actions/members';
 import * as actionsPermissions from './invite/actions/permissions';
-import { logInSuccess } from './chat/actions';
 import sidePanelError from './invite/actions/error';
+import { successLoginChatUser, successLogoutChatUser } from './chat/actions';
 
 export interface InviteRootState extends DefaultRootState {
   invite: InviteState;
@@ -38,7 +38,6 @@ export type ActivityState = {
 
 export type ChatState = {
   client: ChatLoginData | null;
-  isAuth: boolean;
 };
 
 export type BoardState = {
@@ -72,18 +71,19 @@ export type InviteAction = ReturnType<
   | typeof actionsTasks.successAddTask
   | typeof actionsTasks.successEditTask
   | typeof actionsTasks.successDeleteTask
-  | typeof actionsColumns.loaderBoard
   | typeof actionsColumns.successFetchColumn
   | typeof actionsColumns.successAddColumn
   | typeof actionsColumns.successEditColumn
   | typeof actionsColumns.successDeleteColumn
 >;
 
-export type ChatAction = ReturnType<typeof logInSuccess>;
+export type ChatAction = ReturnType<
+  typeof successLoginChatUser | typeof successLogoutChatUser
+>;
 
 export type memberAction = ReturnType<
   | typeof actionsSearch.successSearchAction
-  | typeof actionsInvite.successfetchMembers
+  | typeof actionsInvite.successFetchMembers
   | typeof actionsInvite.successEditMembers
   | typeof actionsInvite.successAddMember
   | typeof actionsInvite.successRemoveMember

@@ -1,5 +1,11 @@
 import { ServerUserData } from '../types';
 
+export type PmToolsUserChat = {
+  realm: string;
+  email: string;
+  password: string;
+};
+
 export interface TaskData {
   id: number;
   title: string;

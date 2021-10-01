@@ -14,7 +14,7 @@ import {
   requestRemoveMember,
   successAddMember,
   successEditMembers,
-  successfetchMembers,
+  successFetchMembers,
   successRemoveMember,
 } from '../actions/members';
 import { editPermissions, permissionsSaga } from './permissions';
@@ -22,7 +22,7 @@ import { editPermissions, permissionsSaga } from './permissions';
 function* fetchMemberList(payload: ToServerFetchMembers) {
   try {
     const members = yield call(Invite.fetchMembers, payload);
-    yield put(successfetchMembers(members));
+    yield put(successFetchMembers(members));
   } catch (e) {
     yield put(sidePanelError(e));
   }

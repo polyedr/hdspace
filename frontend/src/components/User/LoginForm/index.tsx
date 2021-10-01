@@ -76,7 +76,7 @@ const LoginForm: React.FC = () => {
   return (
     <MakeAsyncFunction
       listener={promiseListener}
-      start={TYPES.LOGIN}
+      start={TYPES.LOGIN_CHAT_USER}
       resolve={TYPES.LOGIN_COMPLETE}
       reject={TYPES.LOGIN_FAILURE}
     >

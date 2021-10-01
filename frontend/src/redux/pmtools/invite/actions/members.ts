@@ -12,7 +12,7 @@ export const requestFetchMembers = (payload: ToServerFetchMembers) => ({
   payload,
 });
 
-export const successfetchMembers = (payload: FromServerMember) => ({
+export const successFetchMembers = (payload: Array<FromServerMember>) => ({
   type: TYPES.FETCH_MEMBERS_SUCCESS,
   payload,
 });
