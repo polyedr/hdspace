@@ -20,18 +20,18 @@ type Props = {
 };
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
-  buttonContainer: {
+  task: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  task: {
+
     padding: spacing(1),
-    margin: spacing(1),
-    borderRadius: 4,
+    margin: spacing(0.2),
+    borderRadius: 3,
+    backgroundColor: palette.primary.light,
   },
   title: {
-    margin: '5px 0',
+    margin: 0,
     maxWidth: '250px',
     wordWrap: 'break-word',
   },
@@ -59,8 +59,8 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
 
   return (
     <div className={classes.task}>
-      <h4 className={classes.title}>{task.title}</h4>
-      <div className={classes.buttonContainer}>
+      <div>
+        <h4 className={classes.title}>{task.title}</h4>
         {currentMember && (
           <ListItem style={{ padding: 0 }}>
             <div style={{ marginRight: 5 }}>
@@ -77,22 +77,22 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
             />
           </ListItem>
         )}
-        <div>
-          <StyledIconButton
-            size="small"
-            title="Edit task"
-            onClick={() => setShowTaskModal(true)}
-          >
-            <EditIcon fontSize="small" className={classes.icon} />
-          </StyledIconButton>
-          <StyledIconButton
-            size="small"
-            title="Delete task"
-            onClick={() => setShowConfirmModal(true)}
-          >
-            <DeleteIcon fontSize="small" className={classes.icon} />
-          </StyledIconButton>
-        </div>
+      </div>
+      <div>
+        <StyledIconButton
+          size="small"
+          title="Edit task"
+          onClick={() => setShowTaskModal(true)}
+        >
+          <EditIcon fontSize="small" className={classes.icon} />
+        </StyledIconButton>
+        <StyledIconButton
+          size="small"
+          title="Delete task"
+          onClick={() => setShowConfirmModal(true)}
+        >
+          <DeleteIcon fontSize="small" className={classes.icon} />
+        </StyledIconButton>
       </div>
 
       <TaskModal

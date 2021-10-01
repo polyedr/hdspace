@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Dialog,
@@ -7,6 +7,7 @@ import {
   DialogContent,
   Button,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import {
@@ -38,16 +39,12 @@ const TaskModal: React.FC<Props> = ({
   selectedTaskId,
   task,
 }) => {
-  const [value, setValue] = useState<any>('');
+  const [member, setMember] = useState<any>('');
   const project = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.title || '');
   const [disc, setDisc] = useState(task?.description || '');
   const { access } = useSelector(selectTokenPair);
-
-  useEffect(() => {
-    setValue(members[0]);
-  }, [members]);
 
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,8 +57,8 @@ const TaskModal: React.FC<Props> = ({
           description: disc,
           status: 'created',
           column: column.id || 0,
-          creator: value?.status || '',
-          owner: value?.user?.id || null,
+          creator: member?.status || '',
+          owner: member?.user?.id || null,
           project,
           action: `Task "${title}" was added`,
         }),
@@ -79,8 +76,8 @@ const TaskModal: React.FC<Props> = ({
           access,
           title,
           description: disc,
-          creator: value.status || '',
-          owner: value.user.id || '',
+          creator: member.status || '',
+          owner: member.user.id || '',
           status: task.isCompleted ? 'completed' : 'created',
           column: column?.id || 0,
           project,
@@ -114,21 +111,27 @@ const TaskModal: React.FC<Props> = ({
             placeholder="Discription"
           />
 
-          <Autocomplete
-            value={value}
-            onChange={(event, newValue) => {
-              setValue(newValue);
-            }}
-            getOptionLabel={(option) =>
-              typeof option === 'string' ? option : option.user.username
-            }
-            id="controllable-states-demo"
-            options={members}
-            style={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} variant="outlined" />
-            )}
-          />
+          {members.length ? (
+            <Autocomplete
+              value={member}
+              onChange={(event, newValue) => {
+                setMember(newValue);
+              }}
+              getOptionLabel={(option) =>
+                typeof option === 'string' ? option : option.user.username
+              }
+              id="controllable-states-demo"
+              options={members}
+              style={{ width: 300 }}
+              renderInput={(params) => (
+                <TextField {...params} variant="outlined" />
+              )}
+            />
+          ) : (
+            <Typography variant="subtitle2" gutterBottom component="div">
+              Note: If you want to add a user, add team members
+            </Typography>
+          )}
 
           <DialogActions>
             <Button type="submit" color="secondary" variant="contained">

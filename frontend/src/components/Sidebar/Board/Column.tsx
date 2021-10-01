@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconButton, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -13,12 +13,6 @@ import TaskModal from '@Components/Dialogs/PmToolsModal/Tasks/TaskModal';
 import Task from './Task';
 
 const useStyles = makeStyles(({ palette }) => ({
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '250px',
-  },
   title: {
     maxWidth: '250px',
     wordWrap: 'break-word',
@@ -50,35 +44,30 @@ export const Column: React.FC<Props> = ({
 
   return (
     <>
-      <Typography variant="h6" className={classes.title}>
-        {column.title}
-      </Typography>
-      <Typography variant="subtitle2" className={classes.title}>
-        {column.description}
-      </Typography>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography>
+          <Typography variant="h6" className={classes.title}>
+            {column.title}
+          </Typography>
+          <Typography variant="subtitle2" className={classes.title}>
+            {column.description}
+          </Typography>
+        </Typography>
 
-      <div className={classes.buttonContainer}>
-        <div>
+        <Typography>
           {column.tasks.length ? (
-            <>
-              <span>{`${column.tasks.length} tasks`}</span>
-              <IconButton
-                title="Show tasks"
-                onClick={() => setShowTasks(!showTasks)}
-                size="small"
-              >
-                {showTasks ? (
-                  <ExpandLessIcon fontSize="small" className={classes.icon} />
-                ) : (
-                  <ExpandMoreIcon fontSize="small" className={classes.icon} />
-                )}
-              </IconButton>
-            </>
-          ) : (
-            <span>No tasks</span>
-          )}
-        </div>
-        <div>
+            <StyledIconButton
+              title="Show tasks"
+              onClick={() => setShowTasks(!showTasks)}
+              size="small"
+            >
+              {showTasks ? (
+                <ExpandLessIcon fontSize="small" className={classes.icon} />
+              ) : (
+                <ExpandMoreIcon fontSize="small" className={classes.icon} />
+              )}
+            </StyledIconButton>
+          ) : null}
           <StyledIconButton
             size="small"
             title="Create task"
@@ -100,21 +89,22 @@ export const Column: React.FC<Props> = ({
           >
             <DeleteIcon fontSize="small" />
           </StyledIconButton>
-        </div>
+        </Typography>
       </div>
+      <div>
+        {showTasks &&
+          column.tasks.map((task: any) => (
+            <Task members={members} column={column} task={task} key={task.id} />
+          ))}
 
-      {showTasks &&
-        column.tasks.map((task: any) => (
-          <Task members={members} column={column} task={task} key={task.id} />
-        ))}
-
-      <TaskModal
-        show={tasksModal}
-        hide={() => setTasksModal(!tasksModal)}
-        column={column}
-        action={ModalAction.Create}
-        members={members}
-      />
+        <TaskModal
+          show={tasksModal}
+          hide={() => setTasksModal(!tasksModal)}
+          column={column}
+          action={ModalAction.Create}
+          members={members}
+        />
+      </div>
     </>
   );
 };
