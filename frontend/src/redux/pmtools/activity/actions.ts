@@ -7,12 +7,12 @@ export const clearHistoryAction = (project: number, access: string) => ({
 });
 
 export const requestGetAction = (project: number, access: string) => ({
-  type: TYPES.REQUEST_GET_ACTION,
+  type: TYPES.GET_ACTION,
   payload: { project, access },
 });
 
 export const requestAction = (payload: RequestAction) => ({
-  type: TYPES.REQUEST_ADD_ACTION,
+  type: TYPES.ADD_ACTION,
   payload,
 });
 
@@ -24,11 +24,11 @@ export const successClearHistoryAction = () => ({
 export const successGetAction = (
   payload: Array<RequestAction['action']> | [],
 ) => ({
-  type: TYPES.GET_ACTION,
+  type: TYPES.GET_ACTION_SUCCESS,
   payload,
 });
 
 export const successAction = (payload: RequestAction) => ({
-  type: TYPES.ADD_ACTION,
+  type: TYPES.ADD_ACTION_SUCCESS,
   payload,
 });

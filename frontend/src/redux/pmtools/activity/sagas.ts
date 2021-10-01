@@ -63,6 +63,6 @@ export function* addActionSaga({
 }
 
 export default function* activitySaga() {
-  yield takeLatest(TYPES.REQUEST_GET_ACTION, getActionSaga);
+  yield takeLatest(TYPES.GET_ACTION, getActionSaga);
   yield takeLatest(TYPES.CLEAR_HISTORY, clearHistorySaga);
 }

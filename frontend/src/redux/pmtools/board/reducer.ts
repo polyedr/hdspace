@@ -4,7 +4,6 @@ import { BoardState, InviteAction } from '../types';
 const initialState: BoardState = {
   columnList: [],
   taskList: [],
-  loaderBoard: false,
 };
 
 const boardReducer = (
@@ -12,13 +11,11 @@ const boardReducer = (
   action: InviteAction,
 ) => {
   switch (action.type) {
-    case TYPES.LOADER_BOARD:
-      return { ...state, loaderBoard: action.payload };
-    case TYPES.SUCCESS_FETCH_COLUMNS:
+    case TYPES.FETCH_COLUMNS_SUCCESS:
       return { ...state, columnList: action.payload };
-    case TYPES.SUCCESS_ADD_COLUMN:
+    case TYPES.ADD_COLUMN_SUCCESS:
       return { ...state, columnList: [...state.columnList, action.payload] };
-    case TYPES.SUCCESS_EDIT_COLUMN:
+    case TYPES.EDIT_COLUMN_SUCCESS:
       return {
         ...state,
         columnList: [
@@ -28,18 +25,18 @@ const boardReducer = (
           action.payload,
         ],
       };
-    case TYPES.SUCCESS_DELETE_COLUMN:
+    case TYPES.DELETE_COLUMN_SUCCESS:
       return {
         ...state,
         columnList: state.columnList.filter(
           (column) => column.id !== action.payload,
         ),
       };
-    case TYPES.SUCCESS_FETCH_TASKS:
+    case TYPES.FETCH_TASKS_SUCCESS:
       return { ...state, taskList: action.payload };
-    case TYPES.SUCCESS_ADD_TASK:
+    case TYPES.ADD_TASK_SUCCESS:
       return { ...state, taskList: [...state.taskList, action.payload] };
-    case TYPES.SUCCESS_EDIT_TASK:
+    case TYPES.EDIT_TASK_SUCCESS:
       return {
         ...state,
         taskList: [
@@ -47,7 +44,7 @@ const boardReducer = (
           action.payload,
         ],
       };
-    case TYPES.SUCCESS_DELETE_TASK:
+    case TYPES.DELETE_TASK_SUCCESS:
       return {
         ...state,
         taskList: state.taskList.filter((task) => task.id !== action.payload),

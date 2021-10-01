@@ -17,7 +17,7 @@ import {
 export function* tasksFetch({ access }) {
   try {
     const tasks = yield call(Board.fetchTasks, access);
-    yield put({ type: TYPES.SUCCESS_FETCH_TASKS, payload: tasks });
+    yield put({ type: TYPES.FETCH_TASKS_SUCCESS, payload: tasks });
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
@@ -26,7 +26,7 @@ export function* tasksFetch({ access }) {
 export function* taskAdd(payload: RequestTask): TasksAddSagaGenerator {
   try {
     const task = yield call(Board.createTask, payload);
-    yield put({ type: TYPES.SUCCESS_ADD_TASK, payload: task });
+    yield put({ type: TYPES.ADD_TASK_SUCCESS, payload: task });
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
@@ -35,7 +35,7 @@ export function* taskAdd(payload: RequestTask): TasksAddSagaGenerator {
 export function* taskEdit(payload: RequestTask): TasksEditSagaGenerator {
   try {
     const selectedTask = yield call(Board.updateTask, payload);
-    yield put({ type: TYPES.SUCCESS_EDIT_TASK, payload: selectedTask });
+    yield put({ type: TYPES.EDIT_TASK_SUCCESS, payload: selectedTask });
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
@@ -45,7 +45,7 @@ export function* taskDelete(payload: RequestDeleteTask) {
   try {
     const { taskId, access } = payload;
     yield call(Board.deleteTask, taskId, access);
-    yield put({ type: TYPES.SUCCESS_DELETE_TASK, payload: taskId });
+    yield put({ type: TYPES.DELETE_TASK_SUCCESS, payload: taskId });
   } catch (e) {
     yield put(panelErrorMsg(e));
   }

@@ -10,12 +10,12 @@ const activityReducer = (
   action: ActivityAction,
 ) => {
   switch (action.type) {
-    case TYPES.GET_ACTION:
+    case TYPES.GET_ACTION_SUCCESS:
       return {
         ...state,
         actions: action.payload,
       };
-    case TYPES.ADD_ACTION:
+    case TYPES.ADD_ACTION_SUCCESS:
       return {
         ...state,
         actions: [action.payload.action, ...state.actions],

@@ -44,7 +44,6 @@ export type ChatState = {
 export type BoardState = {
   columnList: ColumnData[];
   taskList: TaskData[];
-  loaderBoard: boolean;
 };
 
 export type InviteState = {

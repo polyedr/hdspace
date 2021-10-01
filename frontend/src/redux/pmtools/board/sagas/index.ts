@@ -10,10 +10,10 @@ import { taskAddSaga, taskDeleteSaga, taskEditSaga } from './tasks';
 
 export default function* boardSaga() {
   yield takeLatest(TYPES.REQUEST_FETCH_BOARD, columnsFetchSaga);
-  yield takeLatest(TYPES.REQUEST_EDIT_TASK, taskEditSaga);
-  yield takeLatest(TYPES.REQUEST_ADD_TASK, taskAddSaga);
-  yield takeLatest(TYPES.REQUEST_DELETE_TASK, taskDeleteSaga);
-  yield takeLatest(TYPES.REQUEST_EDIT_COLUMN, columnEditSaga);
-  yield takeLatest(TYPES.REQUEST_ADD_COLUMN, columnAddSaga);
-  yield takeLatest(TYPES.REQUEST_DELETE_COLUMN, columnDeleteSaga);
+  yield takeLatest(TYPES.EDIT_TASK, taskEditSaga);
+  yield takeLatest(TYPES.ADD_TASK, taskAddSaga);
+  yield takeLatest(TYPES.DELETE_TASK, taskDeleteSaga);
+  yield takeLatest(TYPES.EDIT_COLUMN, columnEditSaga);
+  yield takeLatest(TYPES.ADD_COLUMN, columnAddSaga);
+  yield takeLatest(TYPES.DELETE_COLUMN, columnDeleteSaga);
 }

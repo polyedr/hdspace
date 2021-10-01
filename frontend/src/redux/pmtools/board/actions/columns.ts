@@ -13,47 +13,41 @@ export const requestFetchBoard = (payload: RequestFetchColumns) => ({
 });
 
 export const successFetchColumn = (payload: Array<ColumnData>) => ({
-  type: TYPES.SUCCESS_FETCH_COLUMNS,
-  payload,
-});
-
-// loading
-export const loaderBoard = (payload: boolean) => ({
-  type: TYPES.LOADER_BOARD,
+  type: TYPES.FETCH_COLUMNS_SUCCESS,
   payload,
 });
 
 // requestAddColumn
 export const requestAddColumn = (payload: RequestColumn) => ({
-  type: TYPES.REQUEST_ADD_COLUMN,
+  type: TYPES.ADD_COLUMN,
   payload,
 });
 
 export const successAddColumn = (payload: ColumnData) => ({
-  type: TYPES.SUCCESS_ADD_COLUMN,
+  type: TYPES.ADD_COLUMN_SUCCESS,
   payload,
 });
 
 // requestEditColumn
 export const requestEditColumn = (payload: RequestColumn) => ({
-  type: TYPES.REQUEST_EDIT_COLUMN,
+  type: TYPES.EDIT_COLUMN,
   payload,
 });
 
 export const successEditColumn = (payload: ColumnData) => ({
-  type: TYPES.SUCCESS_EDIT_COLUMN,
+  type: TYPES.EDIT_COLUMN_SUCCESS,
   payload,
 });
 
 // requestDeleteColumn
 export const requestDeleteColumn = (payload: RequestDeleteColumn) => ({
-  type: TYPES.REQUEST_DELETE_COLUMN,
+  type: TYPES.DELETE_COLUMN,
   payload,
 });
 
 export const successDeleteColumn = (
   payload: RequestDeleteColumn['columnId'],
 ) => ({
-  type: TYPES.SUCCESS_DELETE_COLUMN,
+  type: TYPES.DELETE_COLUMN_SUCCESS,
   payload,
 });

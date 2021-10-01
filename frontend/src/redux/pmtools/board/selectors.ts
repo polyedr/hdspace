@@ -13,9 +13,6 @@ export const selectColumn = (id: ColumnData['id']) =>
     columnList.find((item: ColumnData) => item.id === id),
   );
 
-export const selectLoaderBoard = (state: BoardRootState) =>
-  state.board.loaderBoard;
-
 export const selectColumnListWithTasks = createSelector(
   selectColumnList,
   selectTaskList,

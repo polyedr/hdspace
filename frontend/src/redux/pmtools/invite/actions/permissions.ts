@@ -5,7 +5,7 @@ import {
 } from '@Src/types/pmtools/actions';
 
 export const editPermissions = (payload: RequestPermissions) => ({
-  type: TYPES.EDIT_PERMISSIONS,
+  type: TYPES.SET_PERMISSIONS_DATA,
   payload,
 });
 

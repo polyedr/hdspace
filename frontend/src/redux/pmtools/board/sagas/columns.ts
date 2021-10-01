@@ -49,10 +49,8 @@ export function* columnDelete({ columnId, access }): ColumnDeletSagaGenerator {
 export function* columnsFetchSaga({
   payload,
 }: ReturnType<typeof actions.requestFetchBoard>) {
-  yield put(actions.loaderBoard(true));
   yield fork(columnsFetch, payload);
   yield fork(tasksFetch, payload);
-  yield put(actions.loaderBoard(false));
 }
 
 export function* columnDeleteSaga({

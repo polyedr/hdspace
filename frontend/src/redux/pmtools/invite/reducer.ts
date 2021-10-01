@@ -18,7 +18,7 @@ const inviteReducer = (
       return { ...state, searchResult: null };
     case TYPES.SEARCH_LOADER:
       return { ...state, loaderSearch: action.payload };
-    case TYPES.EDIT_PERMISSIONS:
+    case TYPES.SET_PERMISSIONS_DATA:
       return {
         ...state,
         permissions: state.permissions.map((e: any) => {
@@ -35,7 +35,7 @@ const inviteReducer = (
       };
     case TYPES.SEARCH_SUCCESS:
       return { ...state, searchResult: action.payload };
-    case TYPES.EDIT_MEMBER:
+    case TYPES.EDIT_MEMBER_SUCCESS:
       return {
         ...state,
         members: state.members.map((e: any) => {
@@ -46,18 +46,18 @@ const inviteReducer = (
           return e;
         }),
       };
-    case TYPES.REMOVE_MEMBER:
+    case TYPES.REMOVE_MEMBER_SUCCESS:
       return {
         ...state,
         members: state.members.filter((e: any) => e.id !== action.payload),
       };
-    case TYPES.ADD_MEMBER:
+    case TYPES.ADD_MEMBER_SUCCESS:
       return {
         ...state,
         members: [...state.members, action.payload],
         searchResult: null,
       };
-    case TYPES.FETCH_MEMBERS:
+    case TYPES.FETCH_MEMBERS_SUCCESS:
       return { ...state, members: action.payload };
     case TYPES.ERROR:
       return {

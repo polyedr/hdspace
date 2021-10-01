@@ -41,7 +41,7 @@ export function* editPermissions(payload: any) {
       username,
     });
     yield put({
-      type: TYPES.EDIT_PERMISSIONS,
+      type: TYPES.SET_PERMISSIONS_DATA,
       payload: { permissions: result, username },
     });
   } catch (e) {
