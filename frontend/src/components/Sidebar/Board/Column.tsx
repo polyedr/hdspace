@@ -13,6 +13,9 @@ import TaskModal from '@Components/Dialogs/PmToolsModal/Tasks/TaskModal';
 import Task from './Task';
 
 const useStyles = makeStyles(({ palette }) => ({
+  root: {
+    display: 'grid',
+  },
   title: {
     maxWidth: '250px',
     wordWrap: 'break-word',
@@ -43,18 +46,14 @@ export const Column: React.FC<Props> = ({
   const [showTasks, setShowTasks] = useState(false);
 
   return (
-    <>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography>
-          <Typography variant="h6" className={classes.title}>
-            {column.title}
-          </Typography>
-          <Typography variant="subtitle2" className={classes.title}>
-            {column.description}
-          </Typography>
-        </Typography>
-
-        <Typography>
+    <div className={classes.root}>
+      <Typography style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <p>
+          {column.tasks.length
+            ? `You have ${column.tasks.length} tasks`
+            : 'Create first task'}
+        </p>
+        <div>
           {column.tasks.length ? (
             <StyledIconButton
               title="Show tasks"
@@ -89,23 +88,29 @@ export const Column: React.FC<Props> = ({
           >
             <DeleteIcon fontSize="small" />
           </StyledIconButton>
+        </div>
+      </Typography>
+      <Typography>
+        <Typography variant="h6" className={classes.title}>
+          {column.title}
         </Typography>
-      </div>
-      <div>
-        {showTasks &&
-          column.tasks.map((task: any) => (
-            <Task members={members} column={column} task={task} key={task.id} />
-          ))}
+        <Typography variant="subtitle2" className={classes.title}>
+          {column.description}
+        </Typography>
+      </Typography>
+      {showTasks &&
+        column.tasks.map((task: any) => (
+          <Task members={members} column={column} task={task} key={task.id} />
+        ))}
 
-        <TaskModal
-          show={tasksModal}
-          hide={() => setTasksModal(!tasksModal)}
-          column={column}
-          action={ModalAction.Create}
-          members={members}
-        />
-      </div>
-    </>
+      <TaskModal
+        show={tasksModal}
+        hide={() => setTasksModal(!tasksModal)}
+        column={column}
+        action={ModalAction.Create}
+        members={members}
+      />
+    </div>
   );
 };
 

@@ -75,16 +75,20 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
           <PanelTextField
             name="title"
             value={title}
+            multiline
             styledcolor="#000"
             onChange={(e: any) => setTitle(e.target.value)}
             placeholder="Title"
+            inputProps={{ maxLength: 35 }}
           />
           <PanelTextField
             name="description"
             styledcolor="#000"
             value={desc}
+            multiline
             onChange={(e: any) => setDesc(e.target.value)}
             placeholder="Description"
+            inputProps={{ maxLength: 100 }}
           />
           <DialogActions>
             <Button type="submit" color="secondary" variant="contained">
