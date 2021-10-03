@@ -76,6 +76,7 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
             name="title"
             value={title}
             multiline
+            required
             styledcolor="#000"
             onChange={(e: any) => setTitle(e.target.value)}
             placeholder="Title"
@@ -86,6 +87,7 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
             styledcolor="#000"
             value={desc}
             multiline
+            required
             onChange={(e: any) => setDesc(e.target.value)}
             placeholder="Description"
             inputProps={{ maxLength: 200 }}

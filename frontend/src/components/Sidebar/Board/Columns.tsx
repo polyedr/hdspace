@@ -10,13 +10,11 @@ import { selectMembers } from '@Redux/pmtools/invite/selectors';
 import { selectTokenPair } from '@Redux/user/selectors';
 import { Column } from './Column';
 
-const useStyles = makeStyles(({ palette, spacing, shadows, shape }) => ({
+const useStyles = makeStyles(({ spacing, shadows, shape }) => ({
   card: {
-    border: `1px solid ${palette.grey[700]}`,
     borderRadius: shape.borderRadius,
     boxShadow: shadows[5],
     margin: spacing(1, 0),
-    padding: spacing(1),
   },
 }));
 

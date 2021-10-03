@@ -15,9 +15,10 @@ import Task from './Task';
 const useStyles = makeStyles(({ palette }) => ({
   root: {
     display: 'grid',
+    padding: 10,
   },
   title: {
-    maxWidth: '250px',
+    maxWidth: '230px',
     wordWrap: 'break-word',
   },
   icon: {

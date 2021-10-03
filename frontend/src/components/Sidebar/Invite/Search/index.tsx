@@ -70,6 +70,7 @@ const Search = () => {
         <Button
           color="secondary"
           variant="contained"
+          disabled={!search}
           onClick={handleClearSearch}
         >
           Clear

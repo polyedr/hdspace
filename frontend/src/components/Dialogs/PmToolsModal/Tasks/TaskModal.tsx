@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Dialog,
@@ -39,12 +39,16 @@ const TaskModal: React.FC<Props> = ({
   selectedTaskId,
   task,
 }) => {
-  const [member, setMember] = useState<any>('');
+  const [member, setMember] = useState<any>(members[0] || '');
   const project = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.title || '');
   const [disc, setDisc] = useState(task?.description || '');
   const { access } = useSelector(selectTokenPair);
+
+  useEffect(() => {
+    setMember(members[0]);
+  }, [members]);
 
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -81,7 +85,7 @@ const TaskModal: React.FC<Props> = ({
           status: task.isCompleted ? 'completed' : 'created',
           column: column?.id || 0,
           project,
-          action: `Task "${title}" was edited on "${task.title}"`,
+          action: `Task "${task.title}" was edited on "${title}"`,
         }),
       );
     }
@@ -100,15 +104,17 @@ const TaskModal: React.FC<Props> = ({
             name="title"
             styledcolor="#000"
             multiline
+            required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
-            inputProps={{ maxLength: 35 }}
+            inputProps={{ maxLength: 30 }}
           />
           <PanelTextField
             name="discription"
             styledcolor="#000"
             multiline
+            required
             value={disc}
             onChange={(e: any) => setDisc(e.target.value)}
             placeholder="Discription"
