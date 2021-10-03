@@ -43,6 +43,7 @@ const MembersModalContainer: React.FC<Props> = ({
           status: 'member',
           user_id: member.id,
           project: projectId,
+          permissions: ['view_project'],
           username: member.username,
           action: `${member.username} (${role}) has been added`,
         }),
@@ -63,7 +64,9 @@ const MembersModalContainer: React.FC<Props> = ({
           status: member?.status,
           project: projectId,
           user_id: member.user_id,
-          permissions: { write: permissions, prevState: member.permissions },
+          permissions: permissions
+            ? ['view_project', 'change_project']
+            : ['view_project'],
           username: member.user.username,
           action: `${member.user.username} (${member.role}) was edited`,
         }),

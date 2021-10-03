@@ -1,4 +1,4 @@
-import { MemberData, PermissionsData } from '@Src/types/pmtools/types';
+import { MemberData } from '@Src/types/pmtools/types';
 import { createSelector } from 'reselect';
 import { InviteRootState } from '../types';
 
@@ -20,7 +20,7 @@ export const selectMembersWithPermissions = createSelector(
     members.map((member: MemberData) => ({
       ...member,
       permissions: permissions.find(
-        (item: PermissionsData) => item.userdata.id === member.user_id,
+        (item: any) => item.username === member.user.username,
       )?.permissions,
     })),
 );

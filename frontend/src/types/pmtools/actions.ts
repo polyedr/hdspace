@@ -1,5 +1,6 @@
 import { ServerUserData } from '../types';
 import { ToServerTask } from './generators';
+import { Permission } from './types';
 
 export type ToServerPermissions = {
   access: string;
@@ -26,7 +27,7 @@ export type ToServerRemoveMember = {
   access: string;
   project: number;
   action: string;
-  permissions: [];
+  permissions: Array<Permission>;
   username: string;
 };
 
@@ -39,7 +40,7 @@ export type ToServerMember = {
   access?: string;
   action?: string;
   username?: string;
-  permissions?: { prevState: Array<string>; write: boolean };
+  permissions?: Array<Permission>;
 };
 
 export type RequestAction = {
@@ -103,7 +104,7 @@ export interface RequestPermissions {
   access: string;
   action: string;
   id: number;
-  permissions: { write: boolean; prevState: Array<Permissions> };
+  permissions: Array<Permissions> | [];
   role: number;
   username: string;
   user_id: string;

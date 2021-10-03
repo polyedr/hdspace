@@ -63,9 +63,8 @@ const deleteColumn = (columnId: ColumnData['id'], access: string) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const createTask = (data: RequestTask) => {
-  console.log('createTask', data);
-  return myAxios({
+const createTask = (data: RequestTask) =>
+  myAxios({
     access: data.access,
     data,
     method: 'POST',
@@ -73,11 +72,9 @@ const createTask = (data: RequestTask) => {
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
-};
 
-const updateTask = (data: RequestTask) => {
-  console.log('updateTask', data);
-  return myAxios({
+const updateTask = (data: RequestTask) =>
+  myAxios({
     access: data.access,
     data,
     method: 'PATCH',
@@ -85,7 +82,6 @@ const updateTask = (data: RequestTask) => {
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
-};
 
 const deleteTask = (taskId: TaskData['id'], access: AccessType) =>
   myAxios({

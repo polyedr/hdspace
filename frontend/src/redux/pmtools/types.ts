@@ -91,5 +91,7 @@ export type memberAction = ReturnType<
   | typeof sidePanelError
   | typeof actionsSearch.searchLoader
   | typeof actionsPermissions.permissionsAction
-  | typeof actionsPermissions.editPermissions
+  | typeof actionsPermissions.successUploadPermissions
+  | typeof actionsPermissions.successAddPermissions
+  | typeof actionsPermissions.successRemovePermissions
 >;

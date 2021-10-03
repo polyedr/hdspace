@@ -7,22 +7,22 @@ import {
 } from '@Src/types/pmtools/actions';
 import { put, call, fork } from 'redux-saga/effects';
 import sidePanelError from '../actions/error';
+import * as actionsMembers from '../actions/members';
 import {
-  requestAddMember,
-  requestEditMember,
-  requestFetchMembers,
-  requestRemoveMember,
-  successAddMember,
-  successEditMembers,
-  successFetchMembers,
-  successRemoveMember,
-} from '../actions/members';
-import { updatePermissions, permissionsSaga } from './permissions';
+  successAddPermissions,
+  successUploadPermissions,
+} from '../actions/permissions';
+import {
+  updatePermissions,
+  permissionsSaga,
+  addPermissions,
+  deletePermissions,
+} from './permissions';
 
 function* fetchMemberList(payload: ToServerFetchMembers) {
   try {
     const members = yield call(Invite.fetchMembers, payload);
-    yield put(successFetchMembers(members));
+    yield put(actionsMembers.successFetchMembers(members));
   } catch (e) {
     yield put(sidePanelError(e));
   }
@@ -31,7 +31,7 @@ function* fetchMemberList(payload: ToServerFetchMembers) {
 function* addMember(payload: ToServerMember) {
   try {
     const data = yield call(Invite.addMember, payload);
-    yield put(successAddMember(data));
+    yield put(actionsMembers.successAddMember(data));
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
   }
@@ -40,7 +40,7 @@ function* addMember(payload: ToServerMember) {
 function* editMember(payload: ToServerMember) {
   try {
     yield call(Invite.editMembers, payload);
-    yield put(successEditMembers(payload));
+    yield put(actionsMembers.successEditMembers(payload));
   } catch (e) {
     yield put(sidePanelError(e));
   }
@@ -49,7 +49,7 @@ function* editMember(payload: ToServerMember) {
 function* removeMember({ id, access }) {
   try {
     yield call(Invite.removeMember, { id, access });
-    yield put(successRemoveMember(id));
+    yield put(actionsMembers.successRemoveMember(id));
   } catch (e) {
     yield put(sidePanelError(e));
   }
@@ -57,15 +57,17 @@ function* removeMember({ id, access }) {
 
 export function* removeMemberSaga({
   payload,
-}: ReturnType<typeof requestRemoveMember>) {
+}: ReturnType<typeof actionsMembers.requestRemoveMember>) {
   yield fork(removeMember, payload);
-  yield fork(updatePermissions, payload);
+  yield fork(deletePermissions, payload);
   yield fork(addActionSaga, payload);
 }
 
 export function* editMemberSaga({
   payload,
-}: ReturnType<typeof requestEditMember>) {
+}:
+  | ReturnType<typeof actionsMembers.requestEditMember>
+  | ReturnType<typeof successUploadPermissions>) {
   yield fork(editMember, payload);
   yield fork(updatePermissions, payload);
   yield fork(addActionSaga, payload);
@@ -73,15 +75,17 @@ export function* editMemberSaga({
 
 export function* fetchMembersSaga({
   payload,
-}: ReturnType<typeof requestFetchMembers>) {
+}: ReturnType<typeof actionsMembers.requestFetchMembers>) {
   yield fork(fetchMemberList, payload);
   yield fork(permissionsSaga, payload);
 }
 
 export function* addMemberSaga({
   payload,
-}: ReturnType<typeof requestAddMember>) {
+}:
+  | ReturnType<typeof actionsMembers.requestAddMember>
+  | ReturnType<typeof successAddPermissions>) {
   yield fork(addMember, payload);
-  yield fork(updatePermissions, payload);
+  yield fork(addPermissions, payload);
   yield fork(addActionSaga, payload);
 }

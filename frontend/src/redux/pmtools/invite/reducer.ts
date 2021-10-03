@@ -22,11 +22,23 @@ const inviteReducer = (
       return {
         ...state,
         permissions: state.permissions.map((e: any) => {
-          if (e.userdata.username === action.payload.username) {
+          if (e.username === action.payload.username) {
             e.permissions = action.payload.permissions;
           }
           return e;
         }),
+      };
+    case TYPES.DELETE_PERMISSIONS:
+      return {
+        ...state,
+        permissions: state.permissions.filter(
+          (e: any) => e.userdata.username !== action.payload.username,
+        ),
+      };
+    case TYPES.ADD_PERMISSIONS:
+      return {
+        ...state,
+        permissions: [...state.permissions, action.payload],
       };
     case TYPES.PERMISSIONS:
       return {

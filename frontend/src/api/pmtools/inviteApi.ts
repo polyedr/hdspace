@@ -64,17 +64,15 @@ const getPermissionsUser = (data: ToServerFetchMembers) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const updatePermissions = (data: ToServerPermissions) => {
-  console.log(data);
-  return myAxios({
+const updatePermissions = (data: ToServerPermissions) =>
+  myAxios({
     access: data.access,
     data,
     method: 'POST',
     url: `/projects/permissionsmap-projects-assign/`,
   })
-    .then((results: AxiosResponse) => results.data.permissions)
+    .then((results: AxiosResponse) => results.data)
     .catch(handleError);
-};
 
 const Invite = {
   getAllUsers,
