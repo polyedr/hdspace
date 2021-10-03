@@ -47,7 +47,7 @@ export const Column: React.FC<Props> = ({
 
   return (
     <div className={classes.root}>
-      <Typography style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <p>
           {column.tasks.length
             ? `You have ${column.tasks.length} tasks`
@@ -89,15 +89,15 @@ export const Column: React.FC<Props> = ({
             <DeleteIcon fontSize="small" />
           </StyledIconButton>
         </div>
-      </Typography>
-      <Typography>
+      </div>
+      <div>
         <Typography variant="h6" className={classes.title}>
           {column.title}
         </Typography>
         <Typography variant="subtitle2" className={classes.title}>
           {column.description}
         </Typography>
-      </Typography>
+      </div>
       {showTasks &&
         column.tasks.map((task: any) => (
           <Task members={members} column={column} task={task} key={task.id} />

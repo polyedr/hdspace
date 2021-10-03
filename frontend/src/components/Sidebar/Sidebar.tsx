@@ -27,8 +27,8 @@ const useStyles = makeStyles(({ palette }) => ({
   root: {
     color: palette.common.white,
     backgroundColor: palette.panel.main,
-    // paddingBottom: 10,
     minHeight: '100vh',
+    overflowY: 'auto',
   },
 }));
 

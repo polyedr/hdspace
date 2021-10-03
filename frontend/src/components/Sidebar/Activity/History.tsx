@@ -1,10 +1,19 @@
 /* eslint-disable react/no-array-index-key */
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import HistoryIcon from '@material-ui/icons/History';
 import { Button } from '@material-ui/core';
 import { SideBarTitle } from '@Components/styledComponents';
 import { useDispatch } from 'react-redux';
 import { clearHistoryAction } from '@Redux/pmtools/activity/actions';
+
+const useStyles = makeStyles({
+  action: {
+    maxWidth: '270px',
+    margin: '10px 0',
+    wordWrap: 'break-word',
+  },
+});
 
 const History: React.FC<{
   id: number;
@@ -12,6 +21,7 @@ const History: React.FC<{
   access: string;
 }> = ({ id, actions, access }) => {
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   return (
     <>
@@ -26,7 +36,7 @@ const History: React.FC<{
         Clear History
       </Button>
       {actions.map((e, i) => (
-        <p key={i} style={{ maxWidth: '270px', wordWrap: 'break-word' }}>
+        <p key={i} className={classes.action}>
           {e}
         </p>
       ))}
