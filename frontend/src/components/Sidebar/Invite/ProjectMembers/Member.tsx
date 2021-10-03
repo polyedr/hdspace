@@ -8,7 +8,7 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import { MemberData, Permission } from '@Src/types/pmtools/types';
+import { Permission } from '@Src/types/pmtools/types';
 import { StyledIconButton } from '@Components/styledComponents';
 import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
@@ -18,18 +18,23 @@ import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestRemoveMember } from '@Redux/pmtools/invite/actions/members';
 
 type PropsType = {
-  member: MemberData;
+  member: any;
+  userData: any;
+  projectData: any;
 };
 
-const Member: React.FC<PropsType> = ({ member }) => {
+const Member: React.FC<PropsType> = ({ member, projectData, userData }) => {
   const dispatch = useDispatch();
   const { access } = useSelector(selectTokenPair);
   const project = useSelector(selectCurrentProjectId);
   const { id, role, user, permissions } = member;
+
   const [editMember, setEditMember] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const rights = !!permissions?.find((p: Permission) => p === 'change_project');
+
+  // console.log(projectData.user.id, userData.id);
 
   const removeHandler = () => {
     const action = `${user.username} has been removed`;
@@ -60,13 +65,17 @@ const Member: React.FC<PropsType> = ({ member }) => {
         {permissions && (
           <p style={{ fontSize: 10 }}>{rights ? 'READ, WRITE' : 'READ'}</p>
         )}
-        <StyledIconButton
-          size="small"
-          title="Edit member"
-          onClick={() => setEditMember(true)}
-        >
-          <EditIcon />
-        </StyledIconButton>
+        {projectData.user.id === userData.id && (
+          <>
+            <StyledIconButton
+              size="small"
+              title="Edit member"
+              onClick={() => setEditMember(true)}
+            >
+              <EditIcon />
+            </StyledIconButton>
+          </>
+        )}
         <StyledIconButton
           size="small"
           title="Delete member"
