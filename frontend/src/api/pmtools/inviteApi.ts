@@ -64,8 +64,9 @@ const getPermissionsUser = (data: ToServerFetchMembers) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const editPermissions = (data: ToServerPermissions) =>
-  myAxios({
+const updatePermissions = (data: ToServerPermissions) => {
+  console.log(data);
+  return myAxios({
     access: data.access,
     data,
     method: 'POST',
@@ -73,6 +74,7 @@ const editPermissions = (data: ToServerPermissions) =>
   })
     .then((results: AxiosResponse) => results.data.permissions)
     .catch(handleError);
+};
 
 const Invite = {
   getAllUsers,
@@ -80,7 +82,7 @@ const Invite = {
   addMember,
   removeMember,
   editMembers,
-  editPermissions,
+  updatePermissions,
   getPermissionsUser,
 };
 

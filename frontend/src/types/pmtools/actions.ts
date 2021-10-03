@@ -26,6 +26,8 @@ export type ToServerRemoveMember = {
   access: string;
   project: number;
   action: string;
+  permissions: [];
+  username: string;
 };
 
 export type ToServerMember = {

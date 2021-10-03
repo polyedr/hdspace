@@ -33,7 +33,16 @@ const Member: React.FC<PropsType> = ({ member }) => {
 
   const removeHandler = () => {
     const action = `${user.username} has been removed`;
-    dispatch(requestRemoveMember({ id, access, action, project }));
+    dispatch(
+      requestRemoveMember({
+        id,
+        access,
+        action,
+        project,
+        permissions: [],
+        username: user.username,
+      }),
+    );
   };
 
   return (
@@ -76,7 +85,7 @@ const Member: React.FC<PropsType> = ({ member }) => {
       />
       <ConfirmModal
         show={showConfirmModal}
-        elementText="Member"
+        elementText="member"
         action={removeHandler}
         hide={() => setShowConfirmModal(false)}
       />

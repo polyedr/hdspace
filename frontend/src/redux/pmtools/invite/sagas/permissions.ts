@@ -17,13 +17,14 @@ export function* permissionsSaga(payload: ToServerFetchMembers) {
   }
 }
 
-export function* editPermissions(payload: any) {
+export function* updatePermissions(payload: any) {
   try {
-    console.log(payload);
     const { permissions, project, username, access } = payload;
     let result;
 
-    if (permissions) {
+    if (Array.isArray(permissions)) {
+      result = [];
+    } else if (permissions) {
       result = [...permissions.prevState];
       if (permissions.write) {
         result.push('change_project');
@@ -34,7 +35,7 @@ export function* editPermissions(payload: any) {
       result = ['view_project'];
     }
 
-    yield call(Invite.editPermissions, {
+    yield call(Invite.updatePermissions, {
       access,
       permissions: result,
       projectid: project,

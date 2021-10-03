@@ -17,7 +17,7 @@ import {
   successFetchMembers,
   successRemoveMember,
 } from '../actions/members';
-import { editPermissions, permissionsSaga } from './permissions';
+import { updatePermissions, permissionsSaga } from './permissions';
 
 function* fetchMemberList(payload: ToServerFetchMembers) {
   try {
@@ -59,6 +59,7 @@ export function* removeMemberSaga({
   payload,
 }: ReturnType<typeof requestRemoveMember>) {
   yield fork(removeMember, payload);
+  yield fork(updatePermissions, payload);
   yield fork(addActionSaga, payload);
 }
 
@@ -66,7 +67,7 @@ export function* editMemberSaga({
   payload,
 }: ReturnType<typeof requestEditMember>) {
   yield fork(editMember, payload);
-  yield fork(editPermissions, payload);
+  yield fork(updatePermissions, payload);
   yield fork(addActionSaga, payload);
 }
 
@@ -81,6 +82,6 @@ export function* addMemberSaga({
   payload,
 }: ReturnType<typeof requestAddMember>) {
   yield fork(addMember, payload);
-  yield fork(editPermissions, payload);
+  yield fork(updatePermissions, payload);
   yield fork(addActionSaga, payload);
 }
