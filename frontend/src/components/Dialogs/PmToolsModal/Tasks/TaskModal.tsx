@@ -99,6 +99,7 @@ const TaskModal: React.FC<Props> = ({
           <PanelTextField
             name="title"
             styledcolor="#000"
+            multiline
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
@@ -107,10 +108,10 @@ const TaskModal: React.FC<Props> = ({
           <PanelTextField
             name="discription"
             styledcolor="#000"
+            multiline
             value={disc}
             onChange={(e: any) => setDisc(e.target.value)}
             placeholder="Discription"
-            inputProps={{ maxLength: 10 }}
           />
 
           {members.length ? (

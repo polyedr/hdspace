@@ -13,6 +13,7 @@ const useStyles = makeStyles({
     top: 0,
     right: 0,
     bottom: 0,
+    width: 310,
     transition: 'width .3s ease',
     overflowY: 'auto',
     '&::-webkit-scrollbar': {
@@ -25,14 +26,6 @@ const useStyles = makeStyles({
       backgroundColor: 'rgba(0,0,0,.1)',
       outline: '1px solid slategrey',
     },
-  },
-  open: {
-    width: 310,
-  },
-  iframe: {
-    width: 310,
-    minHeight: '100vh',
-    overflowY: 'auto',
   },
 });
 

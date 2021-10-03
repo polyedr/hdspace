@@ -88,7 +88,7 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
             multiline
             onChange={(e: any) => setDesc(e.target.value)}
             placeholder="Description"
-            inputProps={{ maxLength: 100 }}
+            inputProps={{ maxLength: 200 }}
           />
           <DialogActions>
             <Button type="submit" color="secondary" variant="contained">
