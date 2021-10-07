@@ -9,20 +9,18 @@ import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestFetchBoard } from '@Redux/pmtools/board/actions/columns';
 import { ModalAction } from '@Src/types/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/Tasks/ColumnModal';
-import { selectTokenPair } from '@Redux/user/selectors';
 import Columns from './Columns';
 
 const TasksTab: FC = () => {
   const dispatch = useDispatch();
   const columnList = useSelector(selectColumnListWithTasks);
   const project = useSelector(selectCurrentProjectId);
-  const { access } = useSelector(selectTokenPair);
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(requestFetchBoard({ project, access }));
-  }, [access, dispatch, project]);
+    dispatch(requestFetchBoard({ project }));
+  }, [dispatch, project]);
 
   const titleActions = [
     {

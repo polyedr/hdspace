@@ -5,20 +5,21 @@ import {
   ToServerMember,
   ToServerPermissions,
 } from '@Src/types/pmtools/actions';
+import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
-const fetchMembers = ({ projectId, access }: ToServerFetchMembers) =>
-  myAxios({
-    access,
+const fetchMembers = ({ projectId, ...axiosProps }) => {
+  return myAxios({
+    ...axiosProps,
     method: 'GET',
-    url: `/projects/members-for-project/${projectId}`,
+    url: `/projects/members-for-project/${projectId.projectId}`,
   })
     .then((results: AxiosResponse) => results.data.projectmember)
     .catch(handleError);
-
-const addMember = (data: ToServerMember) =>
+};
+const addMember = ({ data, ...axiosProps }: ToServerMember & MyAxiosProps) =>
   myAxios({
-    access: data.access,
+    ...axiosProps,
     data,
     method: 'POST',
     url: `/projects/project-members/`,
@@ -26,18 +27,18 @@ const addMember = (data: ToServerMember) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const removeMember = ({ id, access }) =>
+const removeMember = ({ id, ...axiosProps }) =>
   myAxios({
-    access,
+    ...axiosProps,
     method: 'DELETE',
     url: `/projects/project-members/${id}`,
   })
     .then(() => id)
     .catch(handleError);
 
-const editMembers = (data: ToServerMember) =>
+const editMembers = ({ data, ...axiosProps }: ToServerMember & MyAxiosProps) =>
   myAxios({
-    access: data.access,
+    ...axiosProps,
     data,
     method: 'PUT',
     url: `/projects/project-members/${data.id}/`,
@@ -45,29 +46,38 @@ const editMembers = (data: ToServerMember) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const getAllUsers = (access) =>
+const getAllUsers = ({ ...axiosProps }: MyAxiosProps) =>
   myAxios({
-    access,
+    ...axiosProps,
     method: 'GET',
     url: `/accounts/users/`,
   })
     .then((results: AxiosResponse) => results.data.results)
     .catch(handleError);
 
-const getPermissionsUser = (data: ToServerFetchMembers) =>
-  myAxios({
-    access: data.access,
+const getPermissionsUser = ({
+  data,
+  ...axiosProps
+}: ToServerFetchMembers & MyAxiosProps) => {
+  return myAxios({
+    ...axiosProps,
     data: { projectid: data.projectId },
     method: 'POST',
     url: `/projects/permissions-allusers-display/`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
+};
 
-const updatePermissions = (data: ToServerPermissions) =>
+const updatePermissions = ({
+  permissions,
+  projectid,
+  username,
+  ...axiosProps
+}: ToServerPermissions & MyAxiosProps) =>
   myAxios({
-    access: data.access,
-    data,
+    ...axiosProps,
+    data: { permissions, projectid, username },
     method: 'POST',
     url: `/projects/permissionsmap-projects-assign/`,
   })

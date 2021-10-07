@@ -18,8 +18,7 @@ const useStyles = makeStyles({
 const History: React.FC<{
   id: number;
   actions: Array<string>;
-  access: string;
-}> = ({ id, actions, access }) => {
+}> = ({ id, actions }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
 
@@ -27,7 +26,7 @@ const History: React.FC<{
     <>
       <SideBarTitle title="Project history" icon={HistoryIcon} />
       <Button
-        onClick={() => dispatch(clearHistoryAction(id, access))}
+        onClick={() => dispatch(clearHistoryAction(id))}
         fullWidth
         variant="contained"
         color="secondary"

@@ -1,7 +1,8 @@
-import Board from '@Api/pmtools/boardApi';
+import * as Board from '@Api/pmtools/boardApi';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import { addActionSaga } from '@Redux/pmtools/activity/sagas';
+import { reqWrapper } from '@Redux/project/sagas/shared';
 import { RequestDeleteTask, RequestTask } from '@Src/types/pmtools/actions';
 import {
   TasksAddSagaGenerator,
@@ -14,9 +15,9 @@ import {
   requestEditTask,
 } from '../actions/tasks';
 
-export function* tasksFetch({ access }) {
+export function* tasksFetch() {
   try {
-    const tasks = yield call(Board.fetchTasks, access);
+    const tasks = yield call(reqWrapper, Board.fetchTasks);
     yield put({ type: TYPES.FETCH_TASKS_SUCCESS, payload: tasks });
   } catch (e) {
     yield put(panelErrorMsg(e));
@@ -25,7 +26,7 @@ export function* tasksFetch({ access }) {
 
 export function* taskAdd(payload: RequestTask): TasksAddSagaGenerator {
   try {
-    const task = yield call(Board.createTask, payload);
+    const task = yield call(reqWrapper, Board.createTask, { data: payload });
     yield put({ type: TYPES.ADD_TASK_SUCCESS, payload: task });
   } catch (e) {
     yield put(panelErrorMsg(e));
@@ -34,17 +35,18 @@ export function* taskAdd(payload: RequestTask): TasksAddSagaGenerator {
 
 export function* taskEdit(payload: RequestTask): TasksEditSagaGenerator {
   try {
-    const selectedTask = yield call(Board.updateTask, payload);
+    const selectedTask = yield call(reqWrapper, Board.updateTask, {
+      data: payload,
+    });
     yield put({ type: TYPES.EDIT_TASK_SUCCESS, payload: selectedTask });
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
-export function* taskDelete(payload: RequestDeleteTask) {
+export function* taskDelete({ taskId }: RequestDeleteTask) {
   try {
-    const { taskId, access } = payload;
-    yield call(Board.deleteTask, taskId, access);
+    yield call(reqWrapper, Board.deleteTask, { taskId });
     yield put({ type: TYPES.DELETE_TASK_SUCCESS, payload: taskId });
   } catch (e) {
     yield put(panelErrorMsg(e));

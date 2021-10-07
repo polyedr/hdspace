@@ -1,26 +1,27 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import {
-  AccessType,
   FromServerTask,
   RequestColumn,
   RequestTask,
 } from '@Src/types/pmtools/actions';
-import { ColumnData, TaskData } from '@Src/types/pmtools/types';
+import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
-const fetchColumns = async (projectId, access) =>
-  myAxios({
-    access,
+export const fetchColumns = async (props) => {
+  const { project, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
     method: 'GET',
-    url: `/projects/project-columns/?project=${projectId}`,
+    url: `/projects/project-columns/?project=${project}`,
   })
     .then((results: AxiosResponse) => results.data.results)
     .catch(handleError);
+};
 
-const fetchTasks = (access) =>
+export const fetchTasks = ({ ...axiosProps }) =>
   myAxios({
-    access,
+    ...axiosProps,
     method: 'GET',
     url: `/projects/column-tasks/`,
   })
@@ -34,9 +35,9 @@ const fetchTasks = (access) =>
     })
     .catch(handleError);
 
-const createColumn = (data: RequestColumn) =>
+export const createColumn = ({ data, ...axiosProps }) =>
   myAxios({
-    access: data.access,
+    ...axiosProps,
     data,
     method: 'POST',
     url: `/projects/project-columns/`,
@@ -44,9 +45,12 @@ const createColumn = (data: RequestColumn) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const updateColumn = (data: RequestColumn) =>
+export const updateColumn = ({
+  data,
+  ...axiosProps
+}: RequestColumn & MyAxiosProps) =>
   myAxios({
-    access: data.access,
+    ...axiosProps,
     data,
     method: 'PATCH',
     url: `/projects/project-columns/${data.id}/`,
@@ -54,18 +58,21 @@ const updateColumn = (data: RequestColumn) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const deleteColumn = (columnId: ColumnData['id'], access: string) =>
+export const deleteColumn = ({ columnId, ...axiosProps }) =>
   myAxios({
-    access,
+    ...axiosProps,
     method: 'DELETE',
     url: `/projects/project-columns/${columnId}/`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const createTask = (data: RequestTask) =>
+export const createTask = ({
+  data,
+  ...axiosProps
+}: RequestTask & MyAxiosProps) =>
   myAxios({
-    access: data.access,
+    ...axiosProps,
     data,
     method: 'POST',
     url: `/projects/column-tasks/`,
@@ -73,34 +80,25 @@ const createTask = (data: RequestTask) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const updateTask = (data: RequestTask) =>
-  myAxios({
-    access: data.access,
+export const updateTask = ({
+  data,
+  ...axiosProps
+}: RequestTask & MyAxiosProps) => {
+  return myAxios({
+    ...axiosProps,
     data,
     method: 'PATCH',
     url: `/projects/column-tasks/${data.id}/`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
+};
 
-const deleteTask = (taskId: TaskData['id'], access: AccessType) =>
+export const deleteTask = ({ taskId, ...axiosProps }) =>
   myAxios({
-    access,
+    ...axiosProps,
     method: 'DELETE',
     url: `/projects/column-tasks/${taskId}/`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
-
-const Board = {
-  fetchColumns,
-  fetchTasks,
-  createColumn,
-  updateColumn,
-  deleteColumn,
-  createTask,
-  updateTask,
-  deleteTask,
-};
-
-export default Board;

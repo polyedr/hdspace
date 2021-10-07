@@ -2,7 +2,6 @@ import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { ModalAction } from '@Src/types/types';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectTokenPair } from '@Redux/user/selectors';
 import { MemberData } from '@Src/types/pmtools/types';
 import {
   requestAddMember,
@@ -30,7 +29,6 @@ const MembersModalContainer: React.FC<Props> = ({
   const dispatch = useDispatch();
   const projectId = useSelector(selectCurrentProjectId);
   const [role, setRole] = useState(member?.role || '');
-  const { access } = useSelector(selectTokenPair);
   const [permissions, setPermissions] = useState(!!rights);
 
   const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,7 +37,6 @@ const MembersModalContainer: React.FC<Props> = ({
       dispatch(
         requestAddMember({
           role,
-          access,
           status: 'member',
           user_id: member.id,
           project: projectId,
@@ -58,7 +55,6 @@ const MembersModalContainer: React.FC<Props> = ({
     if (member) {
       dispatch(
         requestEditMember({
-          access,
           id: member.id,
           role,
           status: member?.status,

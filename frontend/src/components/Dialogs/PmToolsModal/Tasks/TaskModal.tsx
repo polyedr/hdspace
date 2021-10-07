@@ -18,7 +18,6 @@ import { ModalAction } from '@Src/types/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { ColumnData, MemberData, TaskData } from '@Src/types/pmtools/types';
-import { selectTokenPair } from '@Redux/user/selectors';
 
 type Props = {
   members: Array<MemberData>;
@@ -44,7 +43,6 @@ const TaskModal: React.FC<Props> = ({
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.title || '');
   const [disc, setDisc] = useState(task?.description || '');
-  const { access } = useSelector(selectTokenPair);
 
   useEffect(() => {
     setMember(members[0]);
@@ -57,7 +55,6 @@ const TaskModal: React.FC<Props> = ({
       dispatch(
         requestAddTask({
           title,
-          access,
           description: disc,
           status: 'created',
           column: column.id || 0,
@@ -77,11 +74,10 @@ const TaskModal: React.FC<Props> = ({
       dispatch(
         requestEditTask({
           id: selectedTaskId || 0,
-          access,
           title,
           description: disc,
-          creator: member.status || '',
-          owner: member.user.id || '',
+          creator: member?.status || '',
+          owner: member?.user?.id || '',
           status: task.isCompleted ? 'completed' : 'created',
           column: column?.id || 0,
           project,

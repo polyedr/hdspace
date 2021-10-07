@@ -1,5 +1,6 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
+import { reqWrapper } from '@Redux/project/sagas/shared';
 import { ServerUserData } from '@Src/types/types';
 import { call, put } from 'redux-saga/effects';
 import sidePanelError from '../actions/error';
@@ -11,8 +12,8 @@ export default function* searchSaga(
   try {
     yield put(searchLoader(true));
     const users: Array<ServerUserData> = yield call(
+      reqWrapper,
       Invite.getAllUsers,
-      action.payload.access,
     );
     const result = users.find(
       (user: ServerUserData) => user.username === action.payload.search,

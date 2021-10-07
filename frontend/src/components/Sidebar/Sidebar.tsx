@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { TabPanel } from '@Components/styledComponents';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { selectTokenPair } from '@Redux/user/selectors';
 import { requestFetchMembers } from '@Redux/pmtools/invite/actions/members';
 import ChatTab from './Chat';
 import ActivityTab from './Activity';
@@ -38,15 +37,14 @@ const Sidebar: FC = () => {
   const tabClasses = useTabStyles();
   const projectId = useSelector(selectCurrentProjectId);
   const [tab, setTab] = useState(0);
-  const { access } = useSelector(selectTokenPair);
 
   const handleSwitchTab = (e: ChangeEvent<{}>, newValue: number) => {
     setTab(newValue);
   };
 
   useEffect(() => {
-    dispatch(requestFetchMembers({ projectId, access }));
-  }, [access, dispatch, projectId]);
+    dispatch(requestFetchMembers({ projectId }));
+  }, [dispatch, projectId]);
 
   return (
     <div data-testid="sidebar-container" className={classes.root}>

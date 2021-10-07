@@ -1,14 +1,14 @@
 import TYPES from '@Redux/actionTypes';
 import { RequestAction } from '@Src/types/pmtools/actions';
 
-export const clearHistoryAction = (project: number, access: string) => ({
+export const clearHistoryAction = (project: number) => ({
   type: TYPES.CLEAR_HISTORY,
-  payload: { project, access },
+  payload: project,
 });
 
-export const requestGetAction = (project: number, access: string) => ({
+export const requestGetAction = (project: number) => ({
   type: TYPES.GET_ACTION,
-  payload: { project, access },
+  payload: project,
 });
 
 export const requestAction = (payload: RequestAction) => ({

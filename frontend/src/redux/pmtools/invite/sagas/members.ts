@@ -1,6 +1,7 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
 import { addActionSaga } from '@Redux/pmtools/activity/sagas';
+import { reqWrapper } from '@Redux/project/sagas/shared';
 import {
   ToServerFetchMembers,
   ToServerMember,
@@ -21,7 +22,9 @@ import {
 
 function* fetchMemberList(payload: ToServerFetchMembers) {
   try {
-    const members = yield call(Invite.fetchMembers, payload);
+    const members = yield call(reqWrapper, Invite.fetchMembers, {
+      projectId: payload,
+    });
     yield put(actionsMembers.successFetchMembers(members));
   } catch (e) {
     yield put(sidePanelError(e));
@@ -30,7 +33,7 @@ function* fetchMemberList(payload: ToServerFetchMembers) {
 
 function* addMember(payload: ToServerMember) {
   try {
-    const data = yield call(Invite.addMember, payload);
+    const data = yield call(reqWrapper, Invite.addMember, { data: payload });
     yield put(actionsMembers.successAddMember(data));
   } catch (e) {
     yield put({ type: TYPES.ERROR, e });
@@ -39,16 +42,16 @@ function* addMember(payload: ToServerMember) {
 
 function* editMember(payload: ToServerMember) {
   try {
-    yield call(Invite.editMembers, payload);
+    yield call(reqWrapper, Invite.editMembers, { data: payload });
     yield put(actionsMembers.successEditMembers(payload));
   } catch (e) {
     yield put(sidePanelError(e));
   }
 }
 
-function* removeMember({ id, access }) {
+function* removeMember({ id }) {
   try {
-    yield call(Invite.removeMember, { id, access });
+    yield call(reqWrapper, Invite.removeMember, { id });
     yield put(actionsMembers.successRemoveMember(id));
   } catch (e) {
     yield put(sidePanelError(e));

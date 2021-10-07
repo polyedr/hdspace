@@ -13,7 +13,6 @@ import {
 } from '@Redux/pmtools/board/actions/columns';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { PanelTextField } from '@Components/styledComponents';
-import { selectTokenPair } from '@Redux/user/selectors';
 import { ColumnData } from '@Src/types/pmtools/types';
 
 type Props = {
@@ -28,14 +27,12 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
   const project = useSelector(selectCurrentProjectId);
   const [title, setTitle] = useState(column?.title || '');
   const [desc, setDesc] = useState(column?.description || '');
-  const { access } = useSelector(selectTokenPair);
 
   const handleSave = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title) {
       dispatch(
         requestAddColumn({
-          access,
           title,
           project,
           description: desc || '',
@@ -51,7 +48,6 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
     if (title && column) {
       dispatch(
         requestEditColumn({
-          access,
           id: column.id,
           title,
           description: desc || '',

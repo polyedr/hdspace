@@ -1,6 +1,7 @@
-import Board from '@Api/pmtools/boardApi';
+import * as Board from '@Api/pmtools/boardApi';
 import { panelErrorMsg } from '@Redux/actions';
 import { addActionSaga } from '@Redux/pmtools/activity/sagas';
+import { reqWrapper } from '@Redux/project/sagas/shared';
 import { RequestColumn } from '@Src/types/pmtools/actions';
 import {
   ColumnDeletSagaGenerator,
@@ -10,9 +11,9 @@ import { call, fork, put } from 'redux-saga/effects';
 import * as actions from '../actions/columns';
 import { tasksFetch } from './tasks';
 
-export function* columnsFetch({ project, access }) {
+export function* columnsFetch({ project }) {
   try {
-    const columns = yield call(Board.fetchColumns, project, access);
+    const columns = yield call(reqWrapper, Board.fetchColumns, { project });
     yield put(actions.successFetchColumn(columns));
   } catch (e) {
     yield put(panelErrorMsg(e));
@@ -21,7 +22,9 @@ export function* columnsFetch({ project, access }) {
 
 export function* columnAdd(payload: RequestColumn): ColumnSagaGenerator {
   try {
-    const column = yield call(Board.createColumn, payload);
+    const column = yield call(reqWrapper, Board.createColumn, {
+      data: payload,
+    });
     yield put(actions.successAddColumn(column));
   } catch (e) {
     yield put(panelErrorMsg(e));
@@ -30,16 +33,16 @@ export function* columnAdd(payload: RequestColumn): ColumnSagaGenerator {
 
 export function* columnEdit(payload): ColumnSagaGenerator {
   try {
-    const data = yield call(Board.updateColumn, payload);
+    const data = yield call(reqWrapper, Board.updateColumn, { data: payload });
     yield put(actions.successEditColumn(data));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
-export function* columnDelete({ columnId, access }): ColumnDeletSagaGenerator {
+export function* columnDelete({ columnId }): ColumnDeletSagaGenerator {
   try {
-    yield call(Board.deleteColumn, columnId, access);
+    yield call(reqWrapper, Board.deleteColumn, { columnId });
     yield put(actions.successDeleteColumn(columnId));
   } catch (e) {
     yield put(panelErrorMsg(e));
@@ -50,7 +53,7 @@ export function* columnsFetchSaga({
   payload,
 }: ReturnType<typeof actions.requestFetchBoard>) {
   yield fork(columnsFetch, payload);
-  yield fork(tasksFetch, payload);
+  yield fork(tasksFetch);
 }
 
 export function* columnDeleteSaga({

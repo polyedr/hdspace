@@ -1,5 +1,6 @@
 import Invite from '@Api/pmtools/inviteApi';
 import TYPES from '@Redux/actionTypes';
+import { reqWrapper } from '@Redux/project/sagas/shared';
 import { ToServerFetchMembers } from '@Src/types/pmtools/actions';
 import { call, put } from 'redux-saga/effects';
 import sidePanelError from '../actions/error';
@@ -11,7 +12,9 @@ import {
 
 export function* permissionsSaga(payload: ToServerFetchMembers) {
   try {
-    const permissions = yield call(Invite.getPermissionsUser, payload);
+    const permissions = yield call(reqWrapper, Invite.getPermissionsUser, {
+      data: payload,
+    });
     const resultPermissions = permissions.map((per) => ({
       username: per.userdata.username,
       permissions: per.permissions,
@@ -25,10 +28,9 @@ export function* permissionsSaga(payload: ToServerFetchMembers) {
   }
 }
 
-export function* updatePermissions({ permissions, project, username, access }) {
+export function* updatePermissions({ permissions, project, username }) {
   try {
-    yield call(Invite.updatePermissions, {
-      access,
+    yield call(reqWrapper, Invite.updatePermissions, {
       permissions,
       projectid: project,
       username,
@@ -39,10 +41,9 @@ export function* updatePermissions({ permissions, project, username, access }) {
   }
 }
 
-export function* addPermissions({ permissions, project, username, access }) {
+export function* addPermissions({ permissions, project, username }) {
   try {
-    yield call(Invite.updatePermissions, {
-      access,
+    yield call(reqWrapper, Invite.updatePermissions, {
       permissions,
       projectid: project,
       username,
@@ -53,10 +54,9 @@ export function* addPermissions({ permissions, project, username, access }) {
   }
 }
 
-export function* deletePermissions({ permissions, project, username, access }) {
+export function* deletePermissions({ permissions, project, username }) {
   try {
-    yield call(Invite.updatePermissions, {
-      access,
+    yield call(reqWrapper, Invite.updatePermissions, {
       permissions,
       projectid: project,
       username,

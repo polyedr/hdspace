@@ -7,7 +7,6 @@ import { ModalAction } from '@Src/types/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/Tasks/ColumnModal';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { selectMembers } from '@Redux/pmtools/invite/selectors';
-import { selectTokenPair } from '@Redux/user/selectors';
 import { Column } from './Column';
 
 const useStyles = makeStyles(({ spacing, shadows, shape }) => ({
@@ -26,13 +25,10 @@ const Columns: FC<any> = ({ column }) => {
   const [columnModal, setColumnModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [tasksModal, setTasksModal] = useState(false);
-  const { access } = useSelector(selectTokenPair);
 
   const handleDeleteColumn = () => {
     const action = `Column "${column.title}" has been deleted`;
-    dispatch(
-      requestDeleteColumn({ columnId: column.id, project, action, access }),
-    );
+    dispatch(requestDeleteColumn({ columnId: column.id, project, action }));
   };
 
   return (

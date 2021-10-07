@@ -13,7 +13,6 @@ import { StyledIconButton } from '@Components/styledComponents';
 import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { ModalAction } from '@Src/types/types';
-import { selectTokenPair } from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestRemoveMember } from '@Redux/pmtools/invite/actions/members';
 
@@ -25,7 +24,6 @@ type PropsType = {
 
 const Member: React.FC<PropsType> = ({ member, projectData, userData }) => {
   const dispatch = useDispatch();
-  const { access } = useSelector(selectTokenPair);
   const project = useSelector(selectCurrentProjectId);
   const { id, role, user, permissions } = member;
 
@@ -34,14 +32,11 @@ const Member: React.FC<PropsType> = ({ member, projectData, userData }) => {
 
   const rights = !!permissions?.find((p: Permission) => p === 'change_project');
 
-  // console.log(projectData.user.id, userData.id);
-
   const removeHandler = () => {
     const action = `${user.username} has been removed`;
     dispatch(
       requestRemoveMember({
         id,
-        access,
         action,
         project,
         permissions: [],
