@@ -3,23 +3,26 @@ import { myAxios } from '@Src/config/settings';
 import {
   FromServerTask,
   RequestColumn,
+  RequestDeleteColumn,
+  RequestDeleteTask,
   RequestTask,
 } from '@Src/types/pmtools/actions';
 import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
-export const fetchColumns = async (props) => {
-  const { project, ...axiosProps } = props;
-  return myAxios({
+export const fetchColumns = async ({
+  project,
+  ...axiosProps
+}: { project: RequestColumn['project'] } & MyAxiosProps) =>
+  myAxios({
     ...axiosProps,
     method: 'GET',
     url: `/projects/project-columns/?project=${project}`,
   })
     .then((results: AxiosResponse) => results.data.results)
     .catch(handleError);
-};
 
-export const fetchTasks = ({ ...axiosProps }) =>
+export const fetchTasks = ({ ...axiosProps }: MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     method: 'GET',
@@ -35,7 +38,10 @@ export const fetchTasks = ({ ...axiosProps }) =>
     })
     .catch(handleError);
 
-export const createColumn = ({ data, ...axiosProps }) =>
+export const createColumn = ({
+  data,
+  ...axiosProps
+}: { data: RequestColumn } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     data,
@@ -58,7 +64,10 @@ export const updateColumn = ({
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-export const deleteColumn = ({ columnId, ...axiosProps }) =>
+export const deleteColumn = ({
+  columnId,
+  ...axiosProps
+}: { columnId: RequestDeleteColumn } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     method: 'DELETE',
@@ -94,7 +103,10 @@ export const updateTask = ({
     .catch(handleError);
 };
 
-export const deleteTask = ({ taskId, ...axiosProps }) =>
+export const deleteTask = ({
+  taskId,
+  ...axiosProps
+}: { taskId: RequestDeleteTask } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     method: 'DELETE',

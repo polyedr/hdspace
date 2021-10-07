@@ -2,8 +2,8 @@ import TYPES from '@Redux/actionTypes';
 import {
   FromServerMember,
   ToServerFetchMembers,
-  ToServerMember,
-  ToServerRemoveMember,
+  RequestMember,
+  RequestRemoveMember,
 } from '@Src/types/pmtools/actions';
 
 // fetch memberss
@@ -18,34 +18,34 @@ export const successFetchMembers = (payload: Array<FromServerMember>) => ({
 });
 
 // edit member
-export const requestEditMember = (payload: ToServerMember) => ({
+export const requestEditMember = (payload: RequestMember) => ({
   type: TYPES.EDIT_MEMBER,
   payload,
 });
 
-export const successEditMembers = (payload: ToServerMember) => ({
+export const successEditMembers = (payload: RequestMember) => ({
   type: TYPES.EDIT_MEMBER_SUCCESS,
   payload,
 });
 
 // add member
-export const requestAddMember = (payload: ToServerMember) => ({
+export const requestAddMember = (payload: RequestMember) => ({
   type: TYPES.ADD_MEMBER,
   payload,
 });
 
-export const successAddMember = (payload: ToServerMember) => ({
+export const successAddMember = (payload: RequestMember) => ({
   type: TYPES.ADD_MEMBER_SUCCESS,
   payload,
 });
 
 // remove member
-export const requestRemoveMember = (payload: ToServerRemoveMember) => ({
+export const requestRemoveMember = (payload: RequestRemoveMember) => ({
   type: TYPES.REMOVE_MEMBER,
   payload,
 });
 
-export const successRemoveMember = (payload: ToServerRemoveMember['id']) => ({
+export const successRemoveMember = (payload: RequestRemoveMember['id']) => ({
   type: TYPES.REMOVE_MEMBER_SUCCESS,
   payload,
 });

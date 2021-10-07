@@ -6,6 +6,7 @@ import {
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import { reqWrapper } from '@Redux/project/sagas/shared';
+import { RequestAction } from '@Src/types/pmtools/actions';
 import { ActionSagaGenerator } from '@Src/types/pmtools/generators';
 import { ServerProject } from '@Src/types/types';
 import { put, call, takeLatest } from 'redux-saga/effects';
@@ -34,16 +35,16 @@ function* getActionSaga({ payload }: ReturnType<typeof requestGetAction>) {
 }
 
 function* clearHistorySaga({
-  payload,
+  payload: project,
 }: ReturnType<typeof clearHistoryAction>): ActionSagaGenerator {
   try {
     const data: ServerProject = yield call(reqWrapper, apiGetActions, {
-      project: payload,
+      project,
     });
     data.project_data_text = '';
     yield call(reqWrapper, apiClearHistory, {
       data,
-      project: payload,
+      project,
     });
     yield put(successClearHistoryAction());
   } catch (e) {
@@ -51,7 +52,10 @@ function* clearHistorySaga({
   }
 }
 
-export function* addActionSaga({ project, action }: any): ActionSagaGenerator {
+export function* addActionSaga({
+  project,
+  action,
+}: RequestAction): ActionSagaGenerator {
   try {
     const data: ServerProject = yield call(reqWrapper, apiGetActions, {
       project,

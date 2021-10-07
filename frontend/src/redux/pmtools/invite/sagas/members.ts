@@ -4,7 +4,7 @@ import { addActionSaga } from '@Redux/pmtools/activity/sagas';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import {
   ToServerFetchMembers,
-  ToServerMember,
+  RequestMember,
 } from '@Src/types/pmtools/actions';
 import { put, call, fork } from 'redux-saga/effects';
 import sidePanelError from '../actions/error';
@@ -20,18 +20,16 @@ import {
   deletePermissions,
 } from './permissions';
 
-function* fetchMemberList(payload: ToServerFetchMembers) {
+function* fetchMemberList(projectId: ToServerFetchMembers) {
   try {
-    const members = yield call(reqWrapper, Invite.fetchMembers, {
-      projectId: payload,
-    });
+    const members = yield call(reqWrapper, Invite.fetchMembers, projectId);
     yield put(actionsMembers.successFetchMembers(members));
   } catch (e) {
     yield put(sidePanelError(e));
   }
 }
 
-function* addMember(payload: ToServerMember) {
+function* addMember(payload: RequestMember) {
   try {
     const data = yield call(reqWrapper, Invite.addMember, { data: payload });
     yield put(actionsMembers.successAddMember(data));
@@ -40,7 +38,7 @@ function* addMember(payload: ToServerMember) {
   }
 }
 
-function* editMember(payload: ToServerMember) {
+function* editMember(payload: RequestMember) {
   try {
     yield call(reqWrapper, Invite.editMembers, { data: payload });
     yield put(actionsMembers.successEditMembers(payload));

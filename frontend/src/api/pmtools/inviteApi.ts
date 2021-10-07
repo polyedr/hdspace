@@ -2,22 +2,28 @@ import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import {
   ToServerFetchMembers,
-  ToServerMember,
+  RequestMember,
   ToServerPermissions,
+  RequestRemoveMember,
 } from '@Src/types/pmtools/actions';
 import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
-const fetchMembers = ({ projectId, ...axiosProps }) => {
+const fetchMembers = ({
+  projectId,
+  ...axiosProps
+}: {
+  projectId: RequestMember['project'];
+} & MyAxiosProps) => {
   return myAxios({
     ...axiosProps,
     method: 'GET',
-    url: `/projects/members-for-project/${projectId.projectId}`,
+    url: `/projects/members-for-project/${projectId}`,
   })
     .then((results: AxiosResponse) => results.data.projectmember)
     .catch(handleError);
 };
-const addMember = ({ data, ...axiosProps }: ToServerMember & MyAxiosProps) =>
+const addMember = ({ data, ...axiosProps }: RequestMember & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     data,
@@ -27,7 +33,10 @@ const addMember = ({ data, ...axiosProps }: ToServerMember & MyAxiosProps) =>
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-const removeMember = ({ id, ...axiosProps }) =>
+const removeMember = ({
+  id,
+  ...axiosProps
+}: { id: RequestRemoveMember } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     method: 'DELETE',
@@ -36,7 +45,7 @@ const removeMember = ({ id, ...axiosProps }) =>
     .then(() => id)
     .catch(handleError);
 
-const editMembers = ({ data, ...axiosProps }: ToServerMember & MyAxiosProps) =>
+const editMembers = ({ data, ...axiosProps }: RequestMember & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     data,

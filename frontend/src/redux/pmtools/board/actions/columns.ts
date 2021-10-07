@@ -1,13 +1,9 @@
 import TYPES from '@Redux/actionTypes';
-import {
-  RequestColumn,
-  RequestDeleteColumn,
-  RequestFetchColumns,
-} from '@Src/types/pmtools/actions';
+import { RequestColumn, RequestDeleteColumn } from '@Src/types/pmtools/actions';
 import { ColumnData } from '@Src/types/pmtools/types';
 
 // requestFetchBoard
-export const requestFetchBoard = (payload: RequestFetchColumns) => ({
+export const requestFetchBoard = (payload: RequestColumn['project']) => ({
   type: TYPES.REQUEST_FETCH_BOARD,
   payload,
 });

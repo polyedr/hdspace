@@ -11,7 +11,7 @@ import { call, fork, put } from 'redux-saga/effects';
 import * as actions from '../actions/columns';
 import { tasksFetch } from './tasks';
 
-export function* columnsFetch({ project }) {
+export function* columnsFetch(project: RequestColumn['project']) {
   try {
     const columns = yield call(reqWrapper, Board.fetchColumns, { project });
     yield put(actions.successFetchColumn(columns));

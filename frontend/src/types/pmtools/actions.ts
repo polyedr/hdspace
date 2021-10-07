@@ -1,5 +1,4 @@
 import { ServerUserData } from '../types';
-import { ToServerTask } from './generators';
 import { Permission } from './types';
 
 export type ToServerPermissions = {
@@ -8,20 +7,13 @@ export type ToServerPermissions = {
   username: string;
 };
 
-export interface FromServerTask extends ToServerTask {
-  id: number;
-}
-
-interface AuthLoginBase {
+export interface AuthParams {
+  apiKey?: string;
   realm?: string;
   username?: string;
 }
 
-export interface AuthParams extends AuthLoginBase {
-  apiKey?: string;
-}
-
-export type ToServerRemoveMember = {
+export type RequestRemoveMember = {
   id: number; // member id
   project: number;
   action: string;
@@ -29,7 +21,7 @@ export type ToServerRemoveMember = {
   username: string;
 };
 
-export type ToServerMember = {
+export type RequestMember = {
   id?: number;
   project: number; // projectId
   role: string;
@@ -64,17 +56,15 @@ export type ToServerSearchMember = {
   search: string;
 };
 
-export interface RequestFetchColumns {
+export interface RequestDeleteColumn {
+  columnId: number;
+  action: string;
   project: number;
 }
 
-export interface RequestDeleteColumn extends RequestFetchColumns {
-  columnId: number;
-  action: string;
-}
-
-export interface RequestColumn extends RequestFetchColumns {
+export interface RequestColumn {
   id?: number;
+  project: number;
   action: string;
   description: string;
   title: string;

@@ -1,11 +1,19 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
-import { MyAxiosProps } from '@Src/types/types';
+import { RequestAction } from '@Src/types/pmtools/actions';
+import { MyAxiosProps, ServerProject } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
-export const apiAddActions = (props) => {
-  const { data, project, ...axiosProps } = props;
-  return myAxios({
+type ToServerActionApi = { data: ServerProject } & MyAxiosProps & {
+    project: RequestAction['project'];
+  };
+
+export const apiAddActions = ({
+  data,
+  project,
+  ...axiosProps
+}: ToServerActionApi) =>
+  myAxios({
     ...axiosProps,
     data,
     method: 'PATCH',
@@ -13,27 +21,27 @@ export const apiAddActions = (props) => {
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
-};
 
-export const apiGetActions = (props: MyAxiosProps & { project: number }) => {
-  const { project, ...axiosProps } = props;
-  return myAxios({
+export const apiGetActions = ({
+  project,
+  ...axiosProps
+}: MyAxiosProps & { project: RequestAction['project'] }) =>
+  myAxios({
     ...axiosProps,
     method: 'GET',
     url: `/projects/projects/${project}/`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
-};
 
-export const apiClearHistory = (props) => {
-  const { project, data, ...axiosProps } = props;
-  return myAxios({
+export const apiClearHistory = ({
+  project,
+  ...axiosProps
+}: MyAxiosProps & { project: RequestAction['project'] }) =>
+  myAxios({
     ...axiosProps,
-    data,
     method: 'PATCH',
     url: `/projects/projects/${project}/`,
   })
     .then((results: AxiosResponse) => results)
     .catch(handleError);
-};

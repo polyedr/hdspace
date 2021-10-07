@@ -19,7 +19,7 @@ const TasksTab: FC = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(requestFetchBoard({ project }));
+    dispatch(requestFetchBoard(project));
   }, [dispatch, project]);
 
   const titleActions = [
