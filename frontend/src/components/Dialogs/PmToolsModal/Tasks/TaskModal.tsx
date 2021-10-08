@@ -8,6 +8,8 @@ import {
   Button,
   TextField,
   Typography,
+  Checkbox,
+  FormControlLabel,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import {
@@ -43,6 +45,7 @@ const TaskModal: React.FC<Props> = ({
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.title || '');
   const [disc, setDisc] = useState(task?.description || '');
+  const [isDone, setDone] = useState(task?.isCompleted || false);
 
   useEffect(() => {
     setMember(members[0]);
@@ -78,7 +81,7 @@ const TaskModal: React.FC<Props> = ({
           description: disc,
           creator: member?.status || '',
           owner: member?.user?.id || '',
-          status: task.isCompleted ? 'completed' : 'created',
+          status: isDone ? 'completed' : 'created',
           column: column?.id || 0,
           project,
           action: `Task "${task.title}" was edited on "${title}"`,
@@ -112,8 +115,15 @@ const TaskModal: React.FC<Props> = ({
             multiline
             required
             value={disc}
-            onChange={(e: any) => setDisc(e.target.value)}
+            onChange={(e) => setDisc(e.target.value)}
             placeholder="Discription"
+          />
+
+          <FormControlLabel
+            label="Completed"
+            control={
+              <Checkbox checked={isDone} onChange={() => setDone(!isDone)} />
+            }
           />
 
           {members.length ? (
