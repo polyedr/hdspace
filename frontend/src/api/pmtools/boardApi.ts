@@ -1,7 +1,6 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
 import {
-  FromServerTask,
   RequestColumn,
   RequestDeleteColumn,
   RequestDeleteTask,
@@ -29,7 +28,7 @@ export const fetchTasks = ({ ...axiosProps }: MyAxiosProps) =>
     url: `/projects/column-tasks/`,
   })
     .then((results: AxiosResponse) => {
-      return results.data.results.map((item: FromServerTask) => ({
+      return results.data.results.map((item: RequestTask) => ({
         ...item,
         category: 'Readers',
         isCompleted: item.status !== 'created',

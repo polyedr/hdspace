@@ -1,99 +1,34 @@
-import React, { useState } from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import {
   Avatar,
   ListItem,
   ListItemAvatar,
   ListItemText,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import { Permission } from '@Src/types/pmtools/types';
-import { StyledIconButton } from '@Components/styledComponents';
-import MembersModalContainer from '@Components/Dialogs/PmToolsModal/Member';
-import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
-import { ModalAction } from '@Src/types/types';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { requestRemoveMember } from '@Redux/pmtools/invite/actions/members';
 
 type PropsType = {
-  member: any;
+  project: number;
   userData: any;
-  projectData: any;
+  permissions: Array<string>;
 };
 
-const Member: React.FC<PropsType> = ({ member, projectData, userData }) => {
-  const dispatch = useDispatch();
-  const project = useSelector(selectCurrentProjectId);
-  const { id, role, user, permissions } = member;
-
-  const [editMember, setEditMember] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-
-  const rights = !!permissions?.find((p: Permission) => p === 'change_project');
-
-  const removeHandler = () => {
-    const action = `${user.username} has been removed`;
-    dispatch(
-      requestRemoveMember({
-        id,
-        action,
-        project,
-        permissions: [],
-        username: user.username,
-      }),
-    );
-  };
+const Member: React.FC<PropsType> = ({ userData, permissions }) => {
+  const { username, id, profile } = userData;
+  const rights = !!permissions.find((p: string) => p === 'change_project');
 
   return (
-    <>
-      <ListItem button key={id} style={{ padding: 0 }}>
-        <ListItemAvatar>
-          <Avatar src={user.profile.avatar || ''} />
-        </ListItemAvatar>
-        <ListItemText
-          primary={role}
-          secondary={user.username}
-          secondaryTypographyProps={{ style: { color: '#fff' } }}
-          primaryTypographyProps={{ style: { fontSize: '14px' } }}
-        />
-        {permissions && (
-          <p style={{ fontSize: 10 }}>{rights ? 'READ, WRITE' : 'READ'}</p>
-        )}
-        {projectData.user.id === userData.id && (
-          <>
-            <StyledIconButton
-              size="small"
-              title="Edit member"
-              onClick={() => setEditMember(true)}
-            >
-              <EditIcon />
-            </StyledIconButton>
-          </>
-        )}
-        <StyledIconButton
-          size="small"
-          title="Delete member"
-          onClick={() => setShowConfirmModal(true)}
-        >
-          <DeleteIcon />
-        </StyledIconButton>
-      </ListItem>
-
-      <MembersModalContainer
-        rights={rights}
-        member={member}
-        show={editMember}
-        hide={() => setEditMember(false)}
-        action={ModalAction.Edit}
+    <ListItem button key={id} style={{ padding: 0 }}>
+      <ListItemAvatar>
+        <Avatar src={profile.avatar || ''} />
+      </ListItemAvatar>
+      <ListItemText
+        primary={profile.role}
+        secondary={username}
+        secondaryTypographyProps={{ style: { color: '#fff' } }}
+        primaryTypographyProps={{ style: { fontSize: '14px' } }}
       />
-      <ConfirmModal
-        show={showConfirmModal}
-        elementText="member"
-        action={removeHandler}
-        hide={() => setShowConfirmModal(false)}
-      />
-    </>
+      <p style={{ fontSize: 10 }}>{rights ? 'READ, WRITE' : 'READ'}</p>
+    </ListItem>
   );
 };
 

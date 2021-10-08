@@ -2,7 +2,6 @@ import {
   ChatLoginData,
   ColumnData,
   MemberData,
-  PermissionsData,
   TaskData,
 } from '@Src/types/pmtools/types';
 import { ServerUserData } from '@Src/types/types';
@@ -13,7 +12,6 @@ import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
 import * as actionsSearch from './invite/actions/search';
 import * as actionsInvite from './invite/actions/members';
-import * as actionsPermissions from './invite/actions/permissions';
 import sidePanelError from './invite/actions/error';
 import { successLoginChatUser, successLogoutChatUser } from './chat/actions';
 
@@ -47,7 +45,6 @@ export type BoardState = {
 
 export type InviteState = {
   members: Array<MemberData>;
-  permissions: Array<PermissionsData>;
   searchResult: any;
   loaderSearch: boolean;
   msg: string;
@@ -90,8 +87,4 @@ export type memberAction = ReturnType<
   | typeof actionsSearch.clearSearch
   | typeof sidePanelError
   | typeof actionsSearch.searchLoader
-  | typeof actionsPermissions.permissionsAction
-  | typeof actionsPermissions.successUploadPermissions
-  | typeof actionsPermissions.successAddPermissions
-  | typeof actionsPermissions.successRemovePermissions
 >;

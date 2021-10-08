@@ -27,6 +27,7 @@ const MembersModalContainer: React.FC<Props> = ({
   rights,
 }) => {
   const dispatch = useDispatch();
+  const { username, id } = member;
   const projectId = useSelector(selectCurrentProjectId);
   const [role, setRole] = useState(member?.role || '');
   const [permissions, setPermissions] = useState(!!rights);
@@ -38,11 +39,11 @@ const MembersModalContainer: React.FC<Props> = ({
         requestAddMember({
           role,
           status: 'member',
-          user_id: member.id,
+          user_id: id,
           project: projectId,
           permissions: ['view_project'],
-          username: member.username,
-          action: `${member.username} (${role}) has been added`,
+          username,
+          action: `${username} (${role}) has been added`,
         }),
       );
     }
@@ -55,16 +56,16 @@ const MembersModalContainer: React.FC<Props> = ({
     if (member) {
       dispatch(
         requestEditMember({
-          id: member.id,
+          id,
           role,
           status: member?.status,
           project: projectId,
-          user_id: member.user_id,
+          user_id: id,
           permissions: permissions
             ? ['view_project', 'change_project']
             : ['view_project'],
-          username: member.user.username,
-          action: `${member.user.username} (${member.role}) was edited`,
+          username,
+          action: `${username} (${member.role}) was edited`,
         }),
       );
     }
@@ -84,10 +85,6 @@ const MembersModalContainer: React.FC<Props> = ({
       changePermissions={setPermissions}
     />
   );
-};
-
-MembersModalContainer.defaultProps = {
-  setSearch: null,
 };
 
 export default MembersModalContainer;

@@ -3,7 +3,6 @@ import { InviteState, memberAction } from '../types';
 
 const initialState: InviteState = {
   members: [],
-  permissions: [],
   searchResult: null,
   loaderSearch: false,
   msg: '',
@@ -18,35 +17,6 @@ const inviteReducer = (
       return { ...state, searchResult: null };
     case TYPES.SEARCH_LOADER:
       return { ...state, loaderSearch: action.payload };
-    case TYPES.SET_PERMISSIONS_DATA:
-      return {
-        ...state,
-        permissions: state.permissions.map((e: any) => {
-          if (e.username === action.payload.username) {
-            e.permissions = action.payload.permissions;
-          }
-          return e;
-        }),
-      };
-    case TYPES.DELETE_PERMISSIONS:
-      return {
-        ...state,
-        permissions: state.permissions.filter(
-          (e: any) => e.userdata.username !== action.payload.username,
-        ),
-      };
-    case TYPES.ADD_PERMISSIONS:
-      return {
-        ...state,
-        permissions: [...state.permissions, action.payload],
-      };
-    case TYPES.PERMISSIONS:
-      return {
-        ...state,
-        permissions: action.payload,
-      };
-    case TYPES.SEARCH_SUCCESS:
-      return { ...state, searchResult: action.payload };
     case TYPES.EDIT_MEMBER_SUCCESS:
       return {
         ...state,
