@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   },
   elementDropdown: {
     '& *:first-child': {
-      flex: '1 1',
+      // flex: '1 1',
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
       '& span': {
