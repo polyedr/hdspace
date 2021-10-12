@@ -33,9 +33,16 @@ export const apiGetElements = ({
     method: 'GET',
     url: '/projects/scenario-elements/',
   })
-    .then((res) => ({
-      result: parseResult(res),
-    }))
+    .then((res) => {
+      const result = parseResult(res);
+      const sharedFilteredElements = result[1].children.filter(
+        (element) => element.shared !== true,
+      );
+      result[1].children = sharedFilteredElements;
+      return {
+        result,
+      };
+    })
     .catch(handleError);
 
 export const apiGetCustomLibraryElements = (

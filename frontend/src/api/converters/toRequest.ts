@@ -27,6 +27,8 @@ export const convertCreatedElementToRequest = <
   parentID: string | null,
   elementName?: string | null,
   parameters?: any,
+  shared?: boolean,
+  styles?: any,
 ): ServerElement<T, ServerElement<Entity>[], K> => {
   const libraryElement = (LIBRARY_ELEMENTS[
     elementType
@@ -42,6 +44,8 @@ export const convertCreatedElementToRequest = <
       ...libraryElement.parameters,
       ...(parameters || {}),
     },
+    shared: shared || false,
+    styles: styles || {},
   };
 };
 

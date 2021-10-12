@@ -117,6 +117,28 @@ export const selectActiveElement = createSelector(
   (elements, id) => elements[id] || DEFAULT_ROOT,
 );
 
+export const selectParentOfActiveElement = createSelector(
+  selectAllElements,
+  selectActiveElementId,
+  (elements, id) => {
+    const parentId = elements[id]?.parent;
+    if (!parentId) return null;
+    return elements[parentId];
+  },
+);
+
+export const selectCurrentGeneratorElements = createSelector(
+  selectAllElements,
+  selectActiveElementId,
+  (elements, id) => {
+    const childrenContainerIds = elements[id]?.children;
+    const currentGeneratorElements = childrenContainerIds.map(
+      (id) => elements[id],
+    );
+    return currentGeneratorElements;
+  },
+);
+
 function makeActiveElementInfoSelector<
   T extends StateElement,
   K extends 'styles' | 'parameters'

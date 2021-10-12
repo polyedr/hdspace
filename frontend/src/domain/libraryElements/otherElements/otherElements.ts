@@ -233,7 +233,7 @@ export const makeNativeColumns = (): NativeColumnsServerElement => ({
 });
 
 export const makeDivBlock = (
-  { textContent, UID = 'master' } = { textContent: 'This is divBlock' },
+  { textContent, UID = 'master' } = { textContent: 'This is a divBlock' },
 ): DivBlockServerElement => {
   return {
     id: `divBlock-${UID}`,

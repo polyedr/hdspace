@@ -69,6 +69,7 @@ import {
   addChildrenToElementSaga,
   addChildToElementSaga,
   createChildElementsSaga,
+  createLibraryElementsSaga,
   redoWrapIntoContainerSaga,
   restoreElementChildrenSaga,
   restoreElementSaga,
@@ -433,6 +434,7 @@ export default function* projectSaga() {
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
   yield takeEvery(TYPES.CREATE_CHILD_ELEMENTS, createChildElementsSaga);
+  yield takeEvery(TYPES.CREATE_LIBRARY_ELEMENTS, createLibraryElementsSaga);
   yield takeEvery(TYPES.CREATE_GROUP_CHILDREN, createGroupChildrenSaga);
 
   yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
