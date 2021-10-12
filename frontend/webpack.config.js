@@ -185,6 +185,8 @@ module.exports = ({ MODE }) => {
         cacheGroups: {
           defaultVendors: {
             test: /[\\/]node_modules[\\/]/,
+            name: "vendor",
+            chunks: "all",
             priority: -10,
           },
           default: {
@@ -201,6 +203,7 @@ module.exports = ({ MODE }) => {
         DEBUG: false,
         SIDE_MODULE_HOST: 'https://adevi-sidebar-production.firebaseapp.com/',
       }),
+      new webpack.optimize.ModuleConcatenationPlugin(),
       new MiniCssExtractPlugin({
         filename: '[contenthash].css',
         disable: !isProduction,
