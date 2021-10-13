@@ -86,7 +86,7 @@ export const makeOcrtext = (): OcrtextServerElement => ({
       height: 300,
     },
     group: ElementGroup.TYPOGRAPHY,
-    textContent: 'This is paragraph',
+    textContent: 'This is a paragraph',
   },
   styles: {
     classNames: ['ocrtext'],
@@ -109,7 +109,7 @@ export const makeTextBlock = (): TextBlockServerElement => ({
       height: 27,
     },
     group: ElementGroup.TYPOGRAPHY,
-    textContent: 'This is text block',
+    textContent: 'This is a text block',
     isLink: false,
     link: '',
   },

@@ -65,7 +65,7 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.richTextEditor}`,
-    content: "Please change 'This is text block' as 'hyperlink'.",
+    content: "Please change 'This is a text block' as 'hyperlink'.",
   },
   {
     selector: `#${ELEMENT_IDS.link}`,

@@ -39,6 +39,7 @@ import {
   Action,
   ActivateScreen,
   AddChildToElement,
+  CreateLibraryElements,
   AddElementClassName,
   AddElements,
   CreateProject,
@@ -884,6 +885,15 @@ export const createGroupChildren = (
   meta: ElementHistoryMeta,
 ): CreateGroupChildren => ({
   type: TYPES.CREATE_GROUP_CHILDREN,
+  payload: { createdElements, parentId, index },
+  meta,
+});
+
+export const createLibraryElements = (
+  { createdElements, parentId, index }: CreateElementsData,
+  meta: ElementHistoryMeta,
+): CreateLibraryElements => ({
+  type: TYPES.CREATE_LIBRARY_ELEMENTS,
   payload: { createdElements, parentId, index },
   meta,
 });

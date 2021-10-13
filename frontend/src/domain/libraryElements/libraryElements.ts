@@ -69,6 +69,7 @@ import {
   makeLabel,
   makeRadiobutton,
 } from './formElements/formElements';
+import { makeButtonGenerator } from './generatorElements/generatorElements';
 import {
   makeTextBlock,
   makeOcrtext,
@@ -110,6 +111,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   smartForm: makeSmartForm,
   smartWebpage: makeSmartWebpage,
   button: makeButton,
+  buttonGenerator: makeButtonGenerator,
   textinput: makeTextinput,
   input: makeTextinput,
   checkbox: makeCheckbox,

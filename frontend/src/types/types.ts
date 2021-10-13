@@ -118,7 +118,7 @@ export type ServerElement<
 > = {
   id: number | string;
   name: string;
-  scenario?: number;
+  scenario?: number | undefined | null;
   struct_type: Type;
   func_type: string;
   buoyancy: number;
@@ -403,6 +403,12 @@ export type CardsSectionElement = LibraryElement<
 >;
 export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
+
+// Generator Elements
+export type buttonGeneratorElement = ServerElement<
+  'buttonGenerator',
+  ServerElement<Entity>[]
+>;
 
 export type TextinputElement = LibraryElement<
   'textinput',
@@ -871,6 +877,12 @@ export type CreatedElement = {
   type: Entity | string;
   name: string;
   custom: boolean;
+  shared?: boolean;
+  styles?: {
+    classNames: string[];
+    ownStyles: React.CSSProperties;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
+  };
   parameters?: any;
 };
 
@@ -1046,6 +1058,9 @@ export type ElementsHierarchy = {
     };
   };
   templates: {
+    [elementName in Entity]: ElementData;
+  };
+  generators: {
     [elementName in Entity]: ElementData;
   };
   library: {
@@ -1285,6 +1300,7 @@ export type ElementsToAdd = {
   smartForm: () => SmartFormServerElement;
   smartWebpage: () => SmartWebpageServerElement;
   button: () => ButtonServerElement;
+  buttonGenerator: () => buttonGeneratorElement;
   input: () => TextinputServerElement;
   textinput: () => TextinputServerElement;
   checkbox: () => CheckboxServerElement;

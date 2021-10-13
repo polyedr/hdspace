@@ -488,3 +488,54 @@ export function* createElements<T extends Entity>(
     }
   }
 }
+
+export function* createLibraryElements<T extends Entity>(
+  elementsToCreate: ElementsToCreate<T>[],
+  meta: ElementHistoryMeta,
+) {
+  try {
+    const { useHistory } = meta;
+
+    const allElementsToCreate = elementsToCreate
+      .map((elsToCreate) => elsToCreate.elements)
+      .reduce((allEls, parentEls) => [...allEls, ...parentEls], []);
+
+    const {
+      result: newElements,
+      error: createElementsError,
+    }: ReturnPromisedType<typeof apiCreateElements> = yield call(
+      reqWrapper,
+      apiCreateElements,
+      { data: allElementsToCreate },
+    );
+    if (!newElements) {
+      if (createElementsError) {
+        throw new Error(createElementsError);
+      } else if (allElementsToCreate.length) {
+        throw new Error('Failed to create new elements');
+      }
+      return;
+    }
+    if (!useHistory) {
+      yield put(
+        Actions.addUndoActions(
+          newElements.map((el: any) =>
+            Actions.deleteElement(el.id, { ...meta }),
+          ),
+        ),
+      );
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
+        },
+        e,
+      ),
+    );
+  }
+}

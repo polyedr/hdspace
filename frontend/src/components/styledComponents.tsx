@@ -18,8 +18,7 @@ import {
   makeStyles,
   darken,
 } from '@material-ui/core/styles';
-import { ToggleButtonProps } from '@material-ui/lab';
-import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 
 const SideBarTitleStyles = makeStyles(({ spacing }) => ({

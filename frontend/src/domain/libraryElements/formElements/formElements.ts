@@ -43,7 +43,7 @@ export const makeButton = ({
     ownStyles,
     pseudoClassStyles: {},
   },
-  name: 'button',
+  name: 'Generated background button',
   children: [],
 });
 
@@ -221,7 +221,7 @@ export const makeSelect = (): SelectServerElement => ({
 });
 
 export const makeLabel = ({
-  textContent = 'This is label',
+  textContent = 'This is a label',
   ownStyles = {},
   UID = 'master',
 } = {}): LabelServerElement => ({
