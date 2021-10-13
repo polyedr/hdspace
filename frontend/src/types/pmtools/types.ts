@@ -1,8 +1,10 @@
 import { ServerUserData } from '../types';
 
+export type ChatClient = any;
+
 export type PmToolsUserChat = {
   realm: string;
-  email: string;
+  username: string;
   password: string;
 };
 

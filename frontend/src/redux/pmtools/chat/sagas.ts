@@ -1,16 +1,23 @@
-/* eslint-disable import/prefer-default-export */
+import apiAuthUser from '@Api/pmtools/chatApi';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
-import { put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import { successLoginChatUser, successLogoutChatUser } from './actions';
 
-export function* authUser({
-  payload,
-}: ReturnType<typeof successLoginChatUser>) {
+export function* loginUser({ payload: { realm, username, password } }: any) {
   try {
-    const { realm, email, password } = payload;
-    yield put(successLoginChatUser({ realm, email, password }));
-    localStorage.setItem('login', JSON.stringify({ realm, email, password }));
+    const client = yield call(apiAuthUser, {
+      realm: `https://${realm}.zulipchat.com`,
+      username,
+      password,
+    });
+    if (client && client.config) {
+      yield put(successLoginChatUser(client));
+      localStorage.setItem(
+        'login',
+        JSON.stringify({ realm, username, password }),
+      );
+    }
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
@@ -26,6 +33,6 @@ export function* logoutUser() {
 }
 
 export default function* chatSaga() {
-  yield takeLatest(TYPES.LOGIN_PMTOOLS, authUser);
+  yield takeLatest(TYPES.LOGIN_PMTOOLS, loginUser);
   yield takeLatest(TYPES.LOGOUT_PMTOOLS, logoutUser);
 }

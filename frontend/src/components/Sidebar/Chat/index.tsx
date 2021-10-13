@@ -1,5 +1,5 @@
 import { Container } from '@material-ui/core';
-import { successLoginChatUser } from '@Redux/pmtools/chat/actions';
+import { requestLoginChatUser } from '@Redux/pmtools/chat/actions';
 import { chatUser } from '@Redux/pmtools/chat/selectors';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,7 +13,7 @@ const ChatTab: React.FC = () => {
   useEffect(() => {
     const login = JSON.parse(localStorage.getItem('login') || '{}');
     if (Object.entries(login).length > 0) {
-      dispatch(successLoginChatUser(login));
+      dispatch(requestLoginChatUser(login));
     }
   }, [dispatch]);
 

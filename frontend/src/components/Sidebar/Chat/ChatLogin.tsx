@@ -6,46 +6,50 @@ import { requestLoginChatUser } from '@Redux/pmtools/chat/actions';
 
 const ChatLogin: React.FC = () => {
   const dispatch = useDispatch();
-  const [password, setPasswordInput] = useState('');
-  const [realm, setRealmInput] = useState('');
-  const [email, setEmailInput] = useState('');
+  const [login, setLogin] = useState({
+    realm: '',
+    username: '',
+    password: '',
+  });
 
   const handleSignIn = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(requestLoginChatUser({ realm, email, password }));
+    dispatch(requestLoginChatUser(login));
   };
 
-  const handleRealmInput = (e: ChangeEvent<HTMLInputElement>) => {
-    const rlm = e.target.value;
-    setRealmInput(
-      rlm.replace(/^(https?)|(:)|(\.zulipchat)|(\.com)|(\/)|(@)/gi, ''),
-    );
+  const handleChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
+    const newValue =
+      name === 'realm'
+        ? value.replace(/^(https?)|(:)|(\.zulipchat)|(\.com)|(\/)|(@)/gi, '')
+        : value;
+    setLogin((prevState) => ({ ...prevState, [name]: newValue }));
   };
 
   return (
     <form onSubmit={handleSignIn}>
       <PanelTextField
         required
-        value={realm}
-        onChange={handleRealmInput}
+        name="realm"
+        value={login.realm}
+        onChange={handleChange}
         label="Zulip domain name"
       />
       <PanelTextField
         type="email"
+        name="username"
         required
-        value={email}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setEmailInput(e.target.value)
-        }
+        value={login.username}
+        onChange={handleChange}
         label="Email address"
       />
       <PanelTextField
         type="password"
+        name="password"
         required
-        value={password}
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          setPasswordInput(e.target.value)
-        }
+        value={login.password}
+        onChange={handleChange}
         label="Password"
       />
 
