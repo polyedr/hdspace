@@ -1,10 +1,7 @@
-import React, { ChangeEvent, FC, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 import { Tabs, Tab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { TabPanel } from '@Components/styledComponents';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { requestFetchMembers } from '@Redux/pmtools/invite/actions/members';
 import ChatTab from './Chat';
 import ActivityTab from './Activity';
 import TasksTab from './Board';
@@ -33,18 +30,12 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const Sidebar: FC = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const tabClasses = useTabStyles();
-  const projectId = useSelector(selectCurrentProjectId);
   const [tab, setTab] = useState(0);
 
   const handleSwitchTab = (e: ChangeEvent<{}>, newValue: number) => {
     setTab(newValue);
   };
-
-  useEffect(() => {
-    dispatch(requestFetchMembers({ projectId }));
-  }, [dispatch, projectId]);
 
   return (
     <div data-testid="sidebar-container" className={classes.root}>

@@ -2,6 +2,14 @@ import { ServerUserData } from '../types';
 
 export type ChatClient = any;
 
+export type PlatformActionData = 'PM-TOOLS' | 'MAIN-APP' | 'ALL';
+
+export interface ActionTypePM {
+  priority: 'high' | 'medium' | 'low';
+  platform: PlatformActionData;
+  action: string;
+}
+
 export type PmToolsUserChat = {
   realm: string;
   username: string;

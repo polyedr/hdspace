@@ -11,7 +11,7 @@ export const requestGetAction = (project: RequestAction['project']) => ({
   payload: project,
 });
 
-export const requestAction = (payload: RequestAction) => ({
+export const requestAddHistory = (payload: RequestAction) => ({
   type: TYPES.ADD_ACTION,
   payload,
 });
@@ -28,7 +28,7 @@ export const successGetAction = (
   payload,
 });
 
-export const successAction = (payload: RequestAction) => ({
+export const successAction = (payload: any) => ({
   type: TYPES.ADD_ACTION_SUCCESS,
   payload,
 });

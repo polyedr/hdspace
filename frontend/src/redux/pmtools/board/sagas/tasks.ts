@@ -54,6 +54,7 @@ export function* taskDelete({ taskId }: RequestDeleteTask) {
 }
 
 export function* taskAddSaga({ payload }: ReturnType<typeof requestAddTask>) {
+  console.log(payload);
   yield fork(taskAdd, payload);
   yield fork(addActionSaga, payload);
 }

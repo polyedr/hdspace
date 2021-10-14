@@ -1,4 +1,5 @@
 import {
+  ActionTypePM,
   ChatLoginData,
   ColumnData,
   MemberData,
@@ -6,11 +7,11 @@ import {
 } from '@Src/types/pmtools/types';
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
-import { AuthParams, RequestAction } from '@Src/types/pmtools/actions';
+import { AuthParams } from '@Src/types/pmtools/actions';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
-import * as actionsSearch from './invite/actions/search';
+import * as actionsSearch from './invite/actions';
 import * as actionsInvite from './invite/actions/members';
 import sidePanelError from './invite/actions/error';
 import { successLoginChatUser, successLogoutChatUser } from './chat/actions';
@@ -31,7 +32,7 @@ export interface ChatRootState extends DefaultRootState {
 }
 
 export type ActivityState = {
-  actions: Array<RequestAction['action']> | [];
+  actions: Array<ActionTypePM>;
 };
 
 export type ChatState = {

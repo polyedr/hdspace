@@ -1,11 +1,7 @@
-/* eslint-disable react/no-array-index-key */
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import HistoryIcon from '@material-ui/icons/History';
-import { Button } from '@material-ui/core';
-import { SideBarTitle } from '@Components/styledComponents';
-import { useDispatch } from 'react-redux';
-import { clearHistoryAction } from '@Redux/pmtools/activity/actions';
+import { Typography } from '@material-ui/core';
+import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
 
 const useStyles = makeStyles({
   action: {
@@ -15,30 +11,21 @@ const useStyles = makeStyles({
   },
 });
 
-const History: React.FC<{
-  id: number;
-  actions: Array<string>;
-}> = ({ id, actions }) => {
-  const dispatch = useDispatch();
+type Props = {
+  activity: ActionTypePM;
+  platform: PlatformActionData;
+};
+
+const History: React.FC<Props> = ({ activity, platform }) => {
   const classes = useStyles();
+  const color = activity.priority === 'low' ? 'initial' : 'error';
 
   return (
     <>
-      <SideBarTitle title="Project history" icon={HistoryIcon} />
-      <Button
-        onClick={() => dispatch(clearHistoryAction(id))}
-        fullWidth
-        variant="contained"
-        color="secondary"
-        disabled={!actions.length}
-      >
-        Clear History
-      </Button>
-      {actions.map((e, i) => (
-        <p key={i} className={classes.action}>
-          {e}
-        </p>
-      ))}
+      <Typography variant="subtitle1" color={color} className={classes.action}>
+        {platform === 'ALL' && activity.action}
+        {platform === activity.platform && activity.action}
+      </Typography>
     </>
   );
 };

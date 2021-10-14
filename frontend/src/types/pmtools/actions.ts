@@ -27,7 +27,6 @@ export type RequestMember = {
   role: string;
   status: string;
   user_id: number;
-  action?: string;
   username?: string;
   permissions?: Array<Permission>;
 };
@@ -35,6 +34,8 @@ export type RequestMember = {
 export type RequestAction = {
   project: number;
   action: string;
+  platform?: string;
+  priority?: string;
 };
 
 export type FromServerMember = {
@@ -65,7 +66,6 @@ export interface RequestDeleteColumn {
 export interface RequestColumn {
   id?: number;
   project: number;
-  action: string;
   description: string;
   title: string;
 }

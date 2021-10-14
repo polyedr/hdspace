@@ -37,6 +37,8 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
           project,
           description: desc || '',
           action: `Column "${title}" was added`,
+          platform: 'PM-TOOLS',
+          priority: 'high',
         }),
       );
       hide();
@@ -53,6 +55,8 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
           description: desc || '',
           project,
           action: `Column "${column.title}" was edited on "${title}"`,
+          platform: 'PM-TOOLS',
+          priority: 'high',
         }),
       );
       hide();

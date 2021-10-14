@@ -16,31 +16,31 @@ import {
   requestAddTask,
   requestEditTask,
 } from '@Redux/pmtools/board/actions/tasks';
-import { ModalAction } from '@Src/types/types';
+import { ModalAction, PermissionsUserData } from '@Src/types/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { ColumnData, MemberData, TaskData } from '@Src/types/pmtools/types';
+import { ColumnData, TaskData } from '@Src/types/pmtools/types';
 
 type Props = {
-  members: Array<MemberData>;
   show: boolean;
   task?: TaskData | null;
   hide: () => void;
   action: ModalAction;
   column: ColumnData;
   selectedTaskId?: number | null;
+  members: Array<PermissionsUserData & { id: string }>;
 };
 
 const TaskModal: React.FC<Props> = ({
-  members,
   show,
   hide,
   column,
   action,
   selectedTaskId,
   task,
+  members,
 }) => {
-  const [member, setMember] = useState<any>(members[0] || '');
+  const [member, setMember] = useState<any>(members[0]);
   const project = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.title || '');
@@ -62,9 +62,11 @@ const TaskModal: React.FC<Props> = ({
           status: 'created',
           column: column.id || 0,
           creator: member?.status || '',
-          owner: member?.user?.id || null,
+          owner: member?.userData?.id || null,
           project,
           action: `Task "${title}" was added`,
+          platform: 'PM-TOOLS',
+          priority: 'medium',
         }),
       );
     }
@@ -79,12 +81,14 @@ const TaskModal: React.FC<Props> = ({
           id: selectedTaskId || 0,
           title,
           description: disc,
-          creator: member?.status || '',
-          owner: member?.user?.id || '',
+          creator: member?.userData.status || '',
+          owner: member?.userData.id || '',
           status: isDone ? 'completed' : 'created',
           column: column?.id || 0,
           project,
           action: `Task "${task.title}" was edited on "${title}"`,
+          platform: 'PM-TOOLS',
+          priority: 'medium',
         }),
       );
     }
@@ -133,7 +137,7 @@ const TaskModal: React.FC<Props> = ({
                 setMember(newValue);
               }}
               getOptionLabel={(option) =>
-                typeof option === 'string' ? option : option.user.username
+                typeof option === 'string' ? option : option.userData.username
               }
               id="controllable-states-demo"
               options={members}

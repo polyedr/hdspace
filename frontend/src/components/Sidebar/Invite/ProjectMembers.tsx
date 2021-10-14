@@ -10,7 +10,7 @@ import Member from './Member';
 
 const ProjectMembers: React.FC = () => {
   const dispatch = useDispatch();
-  const members: any = useSelector(selectAllUsersPermissions);
+  const members = useSelector(selectAllUsersPermissions);
   const projectId = useSelector(selectCurrentProjectId);
   const [
     permissionsManagementProjectId,

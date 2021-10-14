@@ -18,7 +18,7 @@ const activityReducer = (
     case TYPES.ADD_ACTION_SUCCESS:
       return {
         ...state,
-        actions: [action.payload.action, ...state.actions],
+        // actions: [action.payload.action, ...state.actions],
       };
     case TYPES.CLEAR_HISTORY_SUCCESS:
       return {

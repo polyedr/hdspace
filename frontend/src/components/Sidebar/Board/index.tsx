@@ -8,7 +8,7 @@ import { selectColumnListWithTasks } from '@Redux/pmtools/board/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestFetchBoard } from '@Redux/pmtools/board/actions/columns';
 import { ModalAction } from '@Src/types/types';
-import ColumnModal from '@Components/Dialogs/PmToolsModal/Tasks/ColumnModal';
+import ColumnModal from '@Components/Dialogs/PmToolsModal/ColumnModal';
 import Columns from './Columns';
 
 const TasksTab: FC = () => {

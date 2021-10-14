@@ -1,6 +1,6 @@
 import TYPES from '@Redux/actionTypes';
 import { RequestColumn, RequestDeleteColumn } from '@Src/types/pmtools/actions';
-import { ColumnData } from '@Src/types/pmtools/types';
+import { ActionTypePM, ColumnData } from '@Src/types/pmtools/types';
 
 // requestFetchBoard
 export const requestFetchBoard = (payload: RequestColumn['project']) => ({
@@ -14,7 +14,7 @@ export const successFetchColumn = (payload: Array<ColumnData>) => ({
 });
 
 // requestAddColumn
-export const requestAddColumn = (payload: RequestColumn) => ({
+export const requestAddColumn = (payload: RequestColumn & ActionTypePM) => ({
   type: TYPES.ADD_COLUMN,
   payload,
 });
@@ -25,7 +25,7 @@ export const successAddColumn = (payload: ColumnData) => ({
 });
 
 // requestEditColumn
-export const requestEditColumn = (payload: RequestColumn) => ({
+export const requestEditColumn = (payload: RequestColumn & ActionTypePM) => ({
   type: TYPES.EDIT_COLUMN,
   payload,
 });
