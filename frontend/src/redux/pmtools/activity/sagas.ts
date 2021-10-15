@@ -70,7 +70,7 @@ export function* addActionSaga({
     projectDataActivity.push(actionCorrectly);
     data.project_data_activity_json = JSON.stringify(projectDataActivity);
     yield call(reqWrapper, apiAddActions, { data, project });
-    yield put(successAction({ project, action }));
+    yield put(successAction(actionCorrectly));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }

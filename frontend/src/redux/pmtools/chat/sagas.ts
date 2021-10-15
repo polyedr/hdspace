@@ -9,7 +9,6 @@ export function* loginUser({ payload: { password } }: any) {
   try {
     const realm = `https://adevi-testing.zulipchat.com`;
     const { email: username } = yield select(selectUserData);
-    console.log(username);
     const client = yield call(apiAuthUser, {
       realm,
       username,

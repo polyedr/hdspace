@@ -47,7 +47,7 @@ const Columns: FC<any> = ({ column }) => {
       <ConfirmModal
         show={confirmModal}
         hide={() => setConfirmModal(false)}
-        elementText="Column"
+        elementText="column"
         action={handleDeleteColumn}
       />
     </div>

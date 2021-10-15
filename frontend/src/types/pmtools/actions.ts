@@ -74,7 +74,7 @@ export interface RequestTask {
   id?: number;
   title: string;
   description: string;
-  owner: number;
+  owner: number | null;
   column?: number;
   project: number;
   creator: string;

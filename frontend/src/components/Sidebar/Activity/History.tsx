@@ -18,7 +18,12 @@ type Props = {
 
 const History: React.FC<Props> = ({ activity, platform }) => {
   const classes = useStyles();
-  const color = activity.priority === 'low' ? 'initial' : 'error';
+  const color =
+    activity.priority === 'low'
+      ? 'initial'
+      : activity.priority === 'high'
+      ? 'error'
+      : 'primary';
 
   return (
     <>
