@@ -1,13 +1,17 @@
 import apiAuthUser from '@Api/pmtools/chatApi';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { selectUserData } from '@Redux/user/selectors';
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { successLoginChatUser, successLogoutChatUser } from './actions';
 
-export function* loginUser({ payload: { realm, username, password } }: any) {
+export function* loginUser({ payload: { password } }: any) {
   try {
+    const realm = `https://adevi-testing.zulipchat.com`;
+    const { email: username } = yield select(selectUserData);
+    console.log(username);
     const client = yield call(apiAuthUser, {
-      realm: `https://${realm}.zulipchat.com`,
+      realm,
       username,
       password,
     });

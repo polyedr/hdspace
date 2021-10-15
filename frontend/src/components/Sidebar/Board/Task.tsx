@@ -11,6 +11,7 @@ import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
 import { ModalAction, PermissionsUserData } from '@Src/types/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { Avatar, ListItem, ListItemText } from '@material-ui/core';
+import { selectUserForCurrentTask } from '@Redux/permissions/selectors';
 
 type Props = {
   column: ColumnData;
@@ -45,8 +46,7 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
   const project = useSelector(selectCurrentProjectId);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
-
-  const currentMember = members.find((m: any) => m.userData.id === task.owner);
+  const currentMember = useSelector(selectUserForCurrentTask(task.owner));
 
   const handleDeleteTask = () => {
     const action = `Column "${task.title}" has been deleted`;

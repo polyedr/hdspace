@@ -102,6 +102,7 @@ export const Column: React.FC<Props> = ({
         </Typography>
       </div>
       {showTasks &&
+        members.length &&
         column.tasks.map((task: any) => (
           <Task members={members} column={column} task={task} key={task.id} />
         ))}

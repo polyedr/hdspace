@@ -11,8 +11,8 @@ export interface ActionTypePM {
 }
 
 export type PmToolsUserChat = {
-  realm: string;
-  username: string;
+  realm?: string;
+  username?: string;
   password: string;
 };
 

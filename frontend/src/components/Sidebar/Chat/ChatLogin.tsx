@@ -7,8 +7,6 @@ import { requestLoginChatUser } from '@Redux/pmtools/chat/actions';
 const ChatLogin: React.FC = () => {
   const dispatch = useDispatch();
   const [login, setLogin] = useState({
-    realm: '',
-    username: '',
     password: '',
   });
 
@@ -29,21 +27,6 @@ const ChatLogin: React.FC = () => {
 
   return (
     <form onSubmit={handleSignIn}>
-      <PanelTextField
-        required
-        name="realm"
-        value={login.realm}
-        onChange={handleChange}
-        label="Zulip domain name"
-      />
-      <PanelTextField
-        type="email"
-        name="username"
-        required
-        value={login.username}
-        onChange={handleChange}
-        label="Email address"
-      />
       <PanelTextField
         type="password"
         name="password"

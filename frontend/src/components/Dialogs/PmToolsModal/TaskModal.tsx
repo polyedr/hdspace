@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Dialog,
@@ -40,16 +40,12 @@ const TaskModal: React.FC<Props> = ({
   task,
   members,
 }) => {
-  const [member, setMember] = useState<any>(members[0]);
+  const [member, setMember] = useState(members[0] || '');
   const project = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.title || '');
   const [disc, setDisc] = useState(task?.description || '');
   const [isDone, setDone] = useState(task?.isCompleted || false);
-
-  useEffect(() => {
-    setMember(members[0]);
-  }, [members]);
 
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,8 +57,8 @@ const TaskModal: React.FC<Props> = ({
           description: disc,
           status: 'created',
           column: column.id || 0,
-          creator: member?.status || '',
-          owner: member?.userData?.id || null,
+          creator: '',
+          owner: member.userData.id,
           project,
           action: `Task "${title}" was added`,
           platform: 'PM-TOOLS',
@@ -81,8 +77,8 @@ const TaskModal: React.FC<Props> = ({
           id: selectedTaskId || 0,
           title,
           description: disc,
-          creator: member?.userData.status || '',
-          owner: member?.userData.id || '',
+          creator: '',
+          owner: member.userData.id,
           status: isDone ? 'completed' : 'created',
           column: column?.id || 0,
           project,
@@ -133,7 +129,7 @@ const TaskModal: React.FC<Props> = ({
           {members.length ? (
             <Autocomplete
               value={member}
-              onChange={(event, newValue) => {
+              onChange={(event, newValue: any) => {
                 setMember(newValue);
               }}
               getOptionLabel={(option) =>
