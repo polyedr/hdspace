@@ -6,28 +6,21 @@ import {
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import { reqWrapper } from '@Redux/project/sagas/shared';
-import { RequestAction } from '@Src/types/pmtools/actions';
 import { ActionSagaGenerator } from '@Src/types/pmtools/generators';
 import { ServerProject } from '@Src/types/types';
 import { put, call, takeLatest } from 'redux-saga/effects';
-import {
-  clearHistoryAction,
-  requestGetAction,
-  successAction,
-  successClearHistoryAction,
-  successGetAction,
-} from './actions';
+import * as actions from './actions';
 
-function* getActionSaga({ payload }: ReturnType<typeof requestGetAction>) {
+function* getActionSaga({
+  payload,
+}: ReturnType<typeof actions.requestGetAction>) {
   try {
     const { project_data_activity_json: actions } = yield call(
       reqWrapper,
       apiGetActions,
-      {
-        project: payload,
-      },
+      { project: payload },
     );
-    yield put(successGetAction(JSON.parse(actions)));
+    yield put(actions.successGetAction(JSON.parse(actions).reverse()));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
@@ -35,7 +28,7 @@ function* getActionSaga({ payload }: ReturnType<typeof requestGetAction>) {
 
 function* clearHistorySaga({
   payload: project,
-}: ReturnType<typeof clearHistoryAction>): ActionSagaGenerator {
+}: ReturnType<typeof actions.clearHistoryAction>): ActionSagaGenerator {
   try {
     const data: ServerProject = yield call(reqWrapper, apiGetActions, {
       project,
@@ -45,16 +38,15 @@ function* clearHistorySaga({
       data,
       project,
     });
-    yield put(successClearHistoryAction());
+    yield put(actions.successClearHistoryAction());
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
 export function* addActionSaga({
-  project,
-  action,
-}: RequestAction): ActionSagaGenerator {
+  payload: { project, action },
+}: any): ActionSagaGenerator {
   try {
     const data: ServerProject = yield call(reqWrapper, apiGetActions, {
       project,
@@ -70,7 +62,7 @@ export function* addActionSaga({
     projectDataActivity.push(actionCorrectly);
     data.project_data_activity_json = JSON.stringify(projectDataActivity);
     yield call(reqWrapper, apiAddActions, { data, project });
-    yield put(successAction(actionCorrectly));
+    yield put(actions.successAction(actionCorrectly));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
@@ -79,4 +71,5 @@ export function* addActionSaga({
 export default function* activitySaga() {
   yield takeLatest(TYPES.GET_ACTION, getActionSaga);
   yield takeLatest(TYPES.CLEAR_HISTORY, clearHistorySaga);
+  yield takeLatest(TYPES.ADD_ACTION, addActionSaga);
 }

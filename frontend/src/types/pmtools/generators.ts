@@ -1,5 +1,6 @@
-import { CallEffect, PutEffect } from 'redux-saga/effects';
+import { CallEffect, PutEffect, SelectEffect } from 'redux-saga/effects';
 import { ServerProject } from '../types';
+import { ActionTypePM } from './types';
 
 export interface ToServerColumn {
   id: number;
@@ -36,9 +37,9 @@ export type ColumnSagaGenerator = Generator<
 >;
 
 export type ColumnDeletSagaGenerator = Generator<
-  CallEffect | PutEffect,
+  CallEffect | PutEffect | SelectEffect,
   void,
-  ToServerColumn
+  ToServerColumn['project'] & ActionTypePM
 >;
 
 export type ActionSagaGenerator = Generator<

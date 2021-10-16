@@ -1,78 +1,63 @@
 import * as Board from '@Api/pmtools/boardApi';
 import { panelErrorMsg } from '@Redux/actions';
-import { addActionSaga } from '@Redux/pmtools/activity/sagas';
+import { requestAddHistory } from '@Redux/pmtools/activity/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
-import { RequestColumn } from '@Src/types/pmtools/actions';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
 } from '@Src/types/pmtools/generators';
-import { call, fork, put } from 'redux-saga/effects';
+import { call, put, select } from 'redux-saga/effects';
 import * as actions from '../actions/columns';
-import { tasksFetch } from './tasks';
+import { successFetchTask } from '../actions/tasks';
 
-export function* columnsFetch(project: RequestColumn['project']) {
+export function* columnsFetchSaga() {
   try {
+    const project = yield select(selectCurrentProjectId);
     const columns = yield call(reqWrapper, Board.fetchColumns, { project });
+    const tasks = yield call(reqWrapper, Board.fetchTasks);
+    yield put(successFetchTask(tasks));
     yield put(actions.successFetchColumn(columns));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
-export function* columnAdd(payload: RequestColumn): ColumnSagaGenerator {
+export function* columnAddSaga({
+  payload: { project, title, description, action },
+}: ReturnType<typeof actions.requestAddColumn>): ColumnSagaGenerator {
   try {
     const column = yield call(reqWrapper, Board.createColumn, {
-      data: payload,
+      data: { title, description, project },
     });
     yield put(actions.successAddColumn(column));
+    yield put(requestAddHistory({ project, ...action }));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
-}
-
-export function* columnEdit(payload): ColumnSagaGenerator {
-  try {
-    const data = yield call(reqWrapper, Board.updateColumn, { data: payload });
-    yield put(actions.successEditColumn(data));
-  } catch (e) {
-    yield put(panelErrorMsg(e));
-  }
-}
-
-export function* columnDelete({ columnId }): ColumnDeletSagaGenerator {
-  try {
-    yield call(reqWrapper, Board.deleteColumn, { columnId });
-    yield put(actions.successDeleteColumn(columnId));
-  } catch (e) {
-    yield put(panelErrorMsg(e));
-  }
-}
-
-export function* columnsFetchSaga({
-  payload,
-}: ReturnType<typeof actions.requestFetchBoard>) {
-  yield fork(columnsFetch, payload);
-  yield fork(tasksFetch);
-}
-
-export function* columnDeleteSaga({
-  payload,
-}: ReturnType<typeof actions.requestDeleteColumn>) {
-  yield fork(columnDelete, payload);
-  yield fork(addActionSaga, payload);
-}
-
-export function* columnAddSaga({
-  payload,
-}: ReturnType<typeof actions.requestAddColumn>) {
-  yield fork(columnAdd, payload);
-  yield fork(addActionSaga, payload);
 }
 
 export function* columnEditSaga({
-  payload,
-}: ReturnType<typeof actions.requestEditColumn>) {
-  yield fork(columnEdit, payload);
-  yield fork(addActionSaga, payload);
+  payload: { action, project, ...payload },
+}: ReturnType<typeof actions.requestEditColumn>): ColumnSagaGenerator {
+  try {
+    const data = yield call(reqWrapper, Board.updateColumn, { data: payload });
+    yield put(actions.successEditColumn(data));
+    yield put(requestAddHistory({ project, ...action }));
+  } catch (e) {
+    yield put(panelErrorMsg(e));
+  }
+}
+
+export function* columnDeleteSaga({
+  payload: { columnId, action },
+}: ReturnType<typeof actions.requestDeleteColumn>): ColumnDeletSagaGenerator {
+  try {
+    const project: number = yield select(selectCurrentProjectId);
+    yield call(reqWrapper, Board.deleteColumn, { columnId });
+    yield put(actions.successDeleteColumn(columnId));
+    yield put(requestAddHistory({ project, ...action }));
+  } catch (e) {
+    yield put(panelErrorMsg(e));
+  }
 }

@@ -57,12 +57,6 @@ export type ToServerSearchMember = {
   search: string;
 };
 
-export interface RequestDeleteColumn {
-  columnId: number;
-  action: string;
-  project: number;
-}
-
 export interface RequestColumn {
   id?: number;
   project: number;
@@ -79,7 +73,6 @@ export interface RequestTask {
   project: number;
   creator: string;
   status: string;
-  action: string;
 }
 
 export interface RequestPermissions {
@@ -91,10 +84,4 @@ export interface RequestPermissions {
   user_id: string;
   project: number;
   status: string;
-}
-
-export interface RequestDeleteTask {
-  taskId: number;
-  project: number;
-  action: string;
 }

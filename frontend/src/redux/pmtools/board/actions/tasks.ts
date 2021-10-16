@@ -1,18 +1,24 @@
 import TYPES from '@Redux/actionTypes';
-import { RequestDeleteTask, RequestTask } from '@Src/types/pmtools/actions';
+import { RequestTask } from '@Src/types/pmtools/actions';
 import { ActionTypePM } from '@Src/types/pmtools/types';
 
-export const requestAddTask = (payload: RequestTask & ActionTypePM) => ({
+export const requestAddTask = (
+  payload: RequestTask & { action: ActionTypePM },
+) => ({
   type: TYPES.ADD_TASK,
   payload,
 });
 
-export const requestEditTask = (payload: RequestTask & ActionTypePM) => ({
+export const requestEditTask = (
+  payload: RequestTask & { action: ActionTypePM },
+) => ({
   type: TYPES.EDIT_TASK,
   payload,
 });
 
-export const requestDeleteTask = (payload: RequestDeleteTask) => ({
+export const requestDeleteTask = (
+  payload: { taskId: number } & { action: ActionTypePM },
+) => ({
   type: TYPES.DELETE_TASK,
   payload,
 });

@@ -1,11 +1,6 @@
 import { handleError } from '@Api/helper';
 import { myAxios } from '@Src/config/settings';
-import {
-  RequestColumn,
-  RequestDeleteColumn,
-  RequestDeleteTask,
-  RequestTask,
-} from '@Src/types/pmtools/actions';
+import { RequestColumn, RequestTask } from '@Src/types/pmtools/actions';
 import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
@@ -66,7 +61,7 @@ export const updateColumn = ({
 export const deleteColumn = ({
   columnId,
   ...axiosProps
-}: { columnId: RequestDeleteColumn } & MyAxiosProps) =>
+}: { columnId: number } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     method: 'DELETE',
@@ -105,7 +100,7 @@ export const updateTask = ({
 export const deleteTask = ({
   taskId,
   ...axiosProps
-}: { taskId: RequestDeleteTask } & MyAxiosProps) =>
+}: { taskId: number } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     method: 'DELETE',

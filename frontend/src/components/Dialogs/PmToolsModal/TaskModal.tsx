@@ -58,11 +58,13 @@ const TaskModal: React.FC<Props> = ({
           status: 'created',
           column: column.id || 0,
           creator: '',
-          owner: member.userData.id || null,
+          owner: member?.userData?.id || null,
           project,
-          action: `Task "${title}" was added`,
-          platform: 'PM-TOOLS',
-          priority: 'medium',
+          action: {
+            action: `Task "${title}" was added`,
+            platform: 'PM-TOOLS',
+            priority: 'medium',
+          },
         }),
       );
     }
@@ -82,9 +84,11 @@ const TaskModal: React.FC<Props> = ({
           status: isDone ? 'completed' : 'created',
           column: column?.id || 0,
           project,
-          action: `Task "${task.title}" was edited on "${title}"`,
-          platform: 'PM-TOOLS',
-          priority: 'medium',
+          action: {
+            action: `Task "${task.title}" was edited on "${title}"`,
+            platform: 'PM-TOOLS',
+            priority: 'medium',
+          },
         }),
       );
     }

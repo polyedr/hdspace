@@ -4,7 +4,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { ColumnData, TaskData } from '@Src/types/pmtools/types';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
 import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
@@ -43,14 +42,22 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 const Task: React.FC<Props> = ({ column, task, members }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const project = useSelector(selectCurrentProjectId);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const currentMember = useSelector(selectUserForCurrentTask(task.owner));
 
   const handleDeleteTask = () => {
     const action = `Column "${task.title}" has been deleted`;
-    dispatch(requestDeleteTask({ action, taskId: task.id, project }));
+    dispatch(
+      requestDeleteTask({
+        action: {
+          action,
+          platform: 'PM-TOOLS',
+          priority: 'medium',
+        },
+        taskId: task.id,
+      }),
+    );
   };
 
   return (

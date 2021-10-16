@@ -1,7 +1,6 @@
 import React, { FC, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { useDispatch } from 'react-redux';
 import { requestDeleteColumn } from '@Redux/pmtools/board/actions/columns';
 import { ModalAction } from '@Src/types/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/ColumnModal';
@@ -19,14 +18,18 @@ const useStyles = makeStyles(({ spacing, shadows, shape }) => ({
 const Columns: FC<any> = ({ column }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const project = useSelector(selectCurrentProjectId);
   const [columnModal, setColumnModal] = useState(false);
   const [confirmModal, setConfirmModal] = useState(false);
   const [tasksModal, setTasksModal] = useState(false);
 
   const handleDeleteColumn = () => {
     const action = `Column "${column.title}" has been deleted`;
-    dispatch(requestDeleteColumn({ columnId: column.id, project, action }));
+    dispatch(
+      requestDeleteColumn({
+        columnId: column.id,
+        action: { action, priority: 'medium', platform: 'PM-TOOLS' },
+      }),
+    );
   };
 
   return (

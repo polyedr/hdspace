@@ -1,5 +1,5 @@
 import TYPES from '@Redux/actionTypes';
-import { RequestColumn, RequestDeleteColumn } from '@Src/types/pmtools/actions';
+import { RequestColumn } from '@Src/types/pmtools/actions';
 import { ActionTypePM, ColumnData } from '@Src/types/pmtools/types';
 
 // requestFetchBoard
@@ -14,7 +14,9 @@ export const successFetchColumn = (payload: Array<ColumnData>) => ({
 });
 
 // requestAddColumn
-export const requestAddColumn = (payload: RequestColumn & ActionTypePM) => ({
+export const requestAddColumn = (
+  payload: RequestColumn & { action: ActionTypePM },
+) => ({
   type: TYPES.ADD_COLUMN,
   payload,
 });
@@ -25,7 +27,9 @@ export const successAddColumn = (payload: ColumnData) => ({
 });
 
 // requestEditColumn
-export const requestEditColumn = (payload: RequestColumn & ActionTypePM) => ({
+export const requestEditColumn = (
+  payload: RequestColumn & { action: ActionTypePM },
+) => ({
   type: TYPES.EDIT_COLUMN,
   payload,
 });
@@ -36,14 +40,14 @@ export const successEditColumn = (payload: ColumnData) => ({
 });
 
 // requestDeleteColumn
-export const requestDeleteColumn = (payload: RequestDeleteColumn) => ({
+export const requestDeleteColumn = (
+  payload: { columnId: number } & { action: ActionTypePM },
+) => ({
   type: TYPES.DELETE_COLUMN,
   payload,
 });
 
-export const successDeleteColumn = (
-  payload: RequestDeleteColumn['columnId'],
-) => ({
+export const successDeleteColumn = (payload: number) => ({
   type: TYPES.DELETE_COLUMN_SUCCESS,
   payload,
 });
