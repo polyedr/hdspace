@@ -15,12 +15,16 @@ function* getActionSaga({
   payload,
 }: ReturnType<typeof actions.requestGetAction>) {
   try {
-    const { project_data_activity_json: actions } = yield call(
+    const { project_data_activity_json } = yield call(
       reqWrapper,
       apiGetActions,
       { project: payload },
     );
-    yield put(actions.successGetAction(JSON.parse(actions).reverse()));
+    yield put(
+      actions.successGetAction(
+        JSON.parse(project_data_activity_json).reverse(),
+      ),
+    );
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
@@ -45,7 +49,7 @@ function* clearHistorySaga({
 }
 
 export function* addActionSaga({
-  payload: { project, action },
+  payload: { project, action, platform, priority },
 }: any): ActionSagaGenerator {
   try {
     const data: ServerProject = yield call(reqWrapper, apiGetActions, {
@@ -56,8 +60,8 @@ export function* addActionSaga({
     );
     const actionCorrectly = {
       action,
-      platform: 'PM-TOOLS',
-      priority: 'high',
+      platform: platform || 'PM-TOOLS',
+      priority: priority || 'low',
     };
     projectDataActivity.push(actionCorrectly);
     data.project_data_activity_json = JSON.stringify(projectDataActivity);

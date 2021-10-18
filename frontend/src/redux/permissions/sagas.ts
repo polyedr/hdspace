@@ -10,6 +10,7 @@ import {
   apiSetUserPermissionsForProject,
 } from '@Api/permissions';
 import { selectUserData } from '@Redux/user/selectors';
+import { requestAddHistory } from '@Redux/pmtools/activity/actions';
 import {
   selectUserFromAllUsers,
   selectUserFromProjectUsers,
@@ -142,6 +143,12 @@ export function* updateUserPermissionsForProjectSaga(
       return;
     }
     if (permissions && permissions.length) {
+      const actionData = {
+        action: `${user.firstName}'s rights have been changed`,
+        platform: 'MAIN-APP',
+        primary: 'high',
+      };
+      yield put(requestAddHistory({ project: projectId, ...actionData }));
       yield put(Actions.setStateUserPermissions(user, permissions));
     } else {
       yield put(Actions.clearStateUserPermissions(user.id.toString()));
