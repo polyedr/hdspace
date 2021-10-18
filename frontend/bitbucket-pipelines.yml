@@ -6,7 +6,7 @@ pipelines:
     - step:
         script:
             - npm install
-            - npm run lint
+            - npm run lint:fix
             - npm run test
             - npm run build:staging
   branches:
