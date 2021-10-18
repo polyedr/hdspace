@@ -17,8 +17,8 @@ import {
   makeStyles,
   darken,
 } from '@material-ui/core/styles';
-import { ToggleButtonProps } from '@material-ui/lab';
-import ToggleButton from '@material-ui/lab/ToggleButton';
+
+import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
 
 const useAccordionStyles = makeStyles(({ palette }) => ({
   root: {
