@@ -27,6 +27,14 @@ export function* executeUndoActionsSaga() {
       });
     }
     yield put(Actions.moveHistoryBackward());
+    yield put(
+      enqueueSnackbar({
+        message: `Sucessfully undo.`,
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -67,6 +75,14 @@ export function* executeRedoActionsSaga() {
         },
       });
     }
+    yield put(
+      enqueueSnackbar({
+        message: `Sucessfully redo.`,
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
   } catch (e) {
     yield put(
       enqueueSnackbar(
