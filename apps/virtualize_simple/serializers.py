@@ -2024,12 +2024,13 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
         extra_kwargs = {"screenscenario": {"read_only": True}}
 
     def create(self, validated_data):
-        # Extract an appropriate flag value to recognize block as header, footer, form or layout
-        # Region dataset has some starting value
-        region_dataset = "webpages"
+        # Extract an appropriate block_type flag value to recognize block as header, footer, form or webpage
+        region_dataset = "webpages" # Region dataset has a default value
         if validated_data.get("screen_data_json"):
             region_dataset = validated_data["screen_data_json"]["block_type"]
-        print(region_dataset)
+
+        # Display the region_dataset value
+        print(region_dataset) #####console
 
         fdict = {}  # Output dictionary to write annotation
 
@@ -2101,20 +2102,23 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             if (width2 * height2) > (img_height * img_width) * 0.75:
                 rect_contours.remove(rect_contour)
 
-        # Save all detected regions into dictionary
-        result = {"text": text_contours, "rect": rect_contours}
         # Detect text contours and rectangles on image end
 
         # Create the opencv recognition end
 
-        # Create the recognized_elements array start
         if imgpath:
+            # Create the recognized_elements array start
+            # Loading the image and converting to the numpy array
             img = load_img(imgpath)
             img = img_to_array(img)
 
+            # Detect a size of the file uploaded
             fsize = str(os.path.getsize(imgpath))
+
+            # Write a merged string with fname and size
             fnamesize = fname + fsize
 
+            # Prepare a dictionary (AND- based) to store recognized shapes
             fdict[fnamesize] = {
                 "filename": fname,
                 "size": fsize,
@@ -2125,6 +2129,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             # Window name for printing
             window_name1 = "image_opencv_text"
 
+            # Detect elements for the case of "forms", "headers", "footers"
             if region_dataset in {"forms", "headers", "footers"}:
                 # Detect elements with Mask R CNN model start
 
@@ -2144,8 +2149,6 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                 # Printing text contours preparations start
                 for text_contour in text_contours:
                     x, y, w, h = text_contour
-                    # location = i.location  # y, x
-                    # size = i.size  # width, height
                     element = "ocrtext"
 
                     # Fill the attributes dictionary
@@ -2157,7 +2160,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                             "width": int(w),
                             "height": int(h),
                         },
-                        "region_attributes": {"HTML element": element},
+                        "region_attributes": {"HTML element": element, "Element source": "opencv"},
                     }
                     # Filter out small text contours with height > width
                     # Here is the filtering of the text blocks.
@@ -2345,11 +2348,12 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                             "width": int(w),
                             "height": int(h),
                         },
-                        "region_attributes": {"HTML element": element},
+                        "region_attributes": {"HTML element": element, "Element source": "opencv, maskrcnn"},
                     }
                     fdict[fnamesize]["regions"].append(attributes_dict)
                 # Printing rect contours with concatenation preparations end
 
+            # Detect elements for the case of "webpages"
             if region_dataset in {"webpages"}:
                 # Print all the contours to the file
                 # Format the file Via-like
@@ -2370,7 +2374,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                             "width": int(w),
                             "height": int(h),
                         },
-                        "region_attributes": {"HTML element": element},
+                        "region_attributes": {"HTML element": element, "Element source": "opencv"},
                     }
                     fdict[fnamesize]["regions"].append(attributes_dict)
                 # Printing text contours preparations end
@@ -2380,7 +2384,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                     x, y, w, h = rect_contour
                     # location = i.location  # y, x
                     # size = i.size  # width, height
-                    element = "div"
+                    element = "container"
                     # element = "image"
 
                     # Fill the attributes dictionary
@@ -2392,11 +2396,14 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
                             "width": int(w),
                             "height": int(h),
                         },
-                        "region_attributes": {"HTML element": element},
+                        "region_attributes": {"HTML element": element, "Element source": "opencv"},
                     }
                     fdict[fnamesize]["regions"].append(attributes_dict)
                     # Printing rect contours preparations end
 
+            # Create the recognized_elements array end
+
+        # Save the annotation dictionary with saved shapes to the json
         sdj = json.dumps(fdict, indent=4)
         node.screen_data_json = sdj
 
@@ -2657,13 +2664,17 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
         # Create the recognized_elements array start
         if imgpath:
-            # imgpath = fname
+            # Loading the image and converting to the numpy array
             img = load_img(imgpath)
             img = img_to_array(img)
 
+            # Detect a size of the file uploaded
             fsize = str(os.path.getsize(imgpath))
+
+            # Write a merged string with fname and size
             fnamesize = fname + fsize
 
+            # Prepare a dictionary (AND- based) to store recognized shapes
             fdict[fnamesize] = {
                 "filename": fname,
                 "size": fsize,
@@ -2671,6 +2682,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 "file_attributes": {},
             }
 
+            # Prepare a dictionary (OR- based) to store recognized shapes
             fordict[fnamesize] = {
                 "filename": fname,
                 "size": fsize,
@@ -2678,6 +2690,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                 "file_attributes": {},
             }
 
+            # Prepare a dictionary (CNN) to store recognized shapes
             cnndict[fnamesize] = {
                 "filename": fname,
                 "size": fsize,
@@ -2693,6 +2706,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             os.chmod(SAVE_DIR, 0o755)
             os.chdir(SAVE_DIR)
 
+            # Detect elements for the case of "forms", "headers", "footers"
             if region_dataset in {"forms", "headers", "footers"}:
                 # Detect elements with Mask R CNN model start
                 if region_dataset == "forms":
@@ -3088,6 +3102,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
                 # Printing contours with mask r cnn only end
 
+            # Detect elements for the case of "webpages"
             if region_dataset in {"webpages"}:
                 # Print all the contours to the file
                 # Format the file Via-like
@@ -3373,6 +3388,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         image_opencv_input = cv2.imread(imgpath)
         image_original = copy.deepcopy(image_opencv_input)
         image_uclusters = copy.deepcopy(image_opencv_input)
+        image_fdict_before = copy.deepcopy(image_opencv_input)
+        image_fdict_after = copy.deepcopy(image_opencv_input)
         # detect height and width of the image
         img_height, img_width, img_channels = image_opencv_input.shape
         # print("width:  ", img_width)
@@ -3468,7 +3485,40 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
 
             # Calculate the excluded indices to remove overlapped elements function calling
+            # Show the output before the indices exclusion
+            print("fdict_before", fdict)
+            for idx, region in enumerate(fdict[fnamesize]["regions"]):
+                x1 = int(region["shape_attributes"]["x"])
+                y1 = int(region["shape_attributes"]["y"])
+                x2 = int(x1 + region["shape_attributes"]["width"])
+                y2 = int(y1 + region["shape_attributes"]["height"])
+
+                if len(image_fdict_before):
+                    # Show VIA annotated regions on image
+                    cv2.rectangle(image_fdict_before, (x1, y1), (x2, y2), (255, 0, 0), 1)
+
+            # Printing image_fdict_before to file
+            if len(image_fdict_before):
+                imgpath = MEDIA_ROOT + "/uploads/" + "fdict_before_" + fname
+                cv2.imwrite(imgpath, image_fdict_before)
+
             calculate_excluded_indices(fdict, fnamesize)
+            # Show the output after the indices exclusion
+            print("fdict_after", fdict)
+            for idx, region in enumerate(fdict[fnamesize]["regions"]):
+                x1 = int(region["shape_attributes"]["x"])
+                y1 = int(region["shape_attributes"]["y"])
+                x2 = int(x1 + region["shape_attributes"]["width"])
+                y2 = int(y1 + region["shape_attributes"]["height"])
+
+                if len(image_fdict_after):
+                    # Show VIA annotated regions on image
+                    cv2.rectangle(image_fdict_after, (x1, y1), (x2, y2), (255, 0, 0), 1)
+
+            # Printing image_fdict_before to file
+            if len(image_fdict_after):
+                imgpath = MEDIA_ROOT + "/uploads/" + "fdict_after_" + fname
+                cv2.imwrite(imgpath, image_fdict_after)
 
             # Here should write uclusters detecting step
             # How to detect uclusters from fdict?
