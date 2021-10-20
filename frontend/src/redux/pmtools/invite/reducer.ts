@@ -3,6 +3,7 @@ import { InviteState, memberAction } from '../types';
 
 const initialState: InviteState = {
   members: [],
+  email: '',
   searchResult: null,
   loaderSearch: false,
   msg: '',
@@ -13,6 +14,11 @@ const inviteReducer = (
   action: memberAction,
 ) => {
   switch (action.type) {
+    case TYPES.SEND_EMAIL_PM_SUCCESS:
+      return {
+        ...state,
+        email: action.payload,
+      };
     case TYPES.ERROR:
       return {
         ...state,

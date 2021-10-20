@@ -11,10 +11,8 @@ import { AuthParams } from '@Src/types/pmtools/actions';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
-import * as actionsSearch from './invite/actions';
-import * as actionsInvite from './invite/actions/members';
-import sidePanelError from './invite/actions/error';
 import { successLoginChatUser, successLogoutChatUser } from './chat/actions';
+import { successSendEmail, sidePanelError } from './invite/actions';
 
 export interface InviteRootState extends DefaultRootState {
   invite: InviteState;
@@ -47,6 +45,7 @@ export type BoardState = {
 export type InviteState = {
   members: Array<MemberData>;
   searchResult: any;
+  email: string;
   loaderSearch: boolean;
   msg: string;
 };
@@ -80,12 +79,5 @@ export type ChatAction = ReturnType<
 >;
 
 export type memberAction = ReturnType<
-  | typeof actionsSearch.successSearchAction
-  | typeof actionsInvite.successFetchMembers
-  | typeof actionsInvite.successEditMembers
-  | typeof actionsInvite.successAddMember
-  | typeof actionsInvite.successRemoveMember
-  | typeof actionsSearch.clearSearch
-  | typeof sidePanelError
-  | typeof actionsSearch.searchLoader
+  typeof sidePanelError | typeof successSendEmail
 >;
