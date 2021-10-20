@@ -24,6 +24,10 @@ SQUARES_OVERLAP_THRESHOLD = 0.8
 # The constant to remove text rectangle when overlaps more than 5% with larger rectangle
 SQUARES_OVERLAP_THRESHOLD_TEXT = 0.05
 
+
+# The constant to remove a rectangle (contour) when overlaps more than 5% with larger rectangle
+SQUARES_OVERLAP_THRESHOLD_CONTOUR = 0.05
+
 # The constant to calculate horizontal overlap during the vertical groups detection
 # Forms
 VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD = 0.75
