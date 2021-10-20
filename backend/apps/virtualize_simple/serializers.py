@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 import lorem
 import numpy as np
-# import math
+import math
 import uuid
 from statistics import median
 
@@ -50,7 +50,7 @@ from apps.utils.fset1 import (
     closest_node,
     find_or_create_dir,
     calculateDistance,
-    SQUARES_OVERLAP_THRESHOLD_TEXT,
+    SQUARES_OVERLAP_THRESHOLD_CONTOUR,
     change_permissions_recursive,
     contains_rectangle,
 )
@@ -2048,52 +2048,18 @@ def detect_contours_filter_after(image_opencv_input, font_size_img, img_height, 
     return text_contours, rect_contours
 
 
-def create_recognized_elements(imgpath, rect_contours, text_contours, region_dataset, fname):
-    # Create the recognized_elements array start
 
-    fdict = {}  # Output dictionary to write annotation
-    
-    # Loading the image and converting to the numpy array
-    img = load_img(imgpath)
-    img = img_to_array(img)
-
-    # Detect a size of the file uploaded
-    fsize = str(os.path.getsize(imgpath))
-
-    # Write a merged string with fname and size
-    fnamesize = fname + fsize
-
-    # Prepare a dictionary (AND- based) to store recognized shapes
-    fdict[fnamesize] = {
-        "filename": fname,
-        "size": fsize,
-        "regions": [],
-        "file_attributes": {},
-    }
-
-    # Window name for printing
-    window_name1 = "image_opencv_text"
-
-    # Detect elements for the case of "forms", "headers", "footers"
-    if region_dataset in {"forms", "headers", "footers"}:
-        # Detect elements with Mask R CNN model start
-
-        if region_dataset == "forms":
-            results = model_forms.detect([img], verbose=1)
-
-        if region_dataset == "headers":
-            results = model_headers.detect([img], verbose=1)
-
-        if region_dataset == "footers":
-            results = model_footers.detect([img], verbose=1)
-
-        # Results of the Mask R CNN recognition
-        r = results[0]
-        # Detect elements with Mask R CNN model end
-
+def print_contours(text_contours, rect_contours, region_dataset, choice = "OpenCV", r=[]):
+    regions_list = []
+    # Print all the contours to the list
+    # Format the list Via-like
+    # result = {"text": text_contours, "rect": rect_contours}
+    if (choice == "OpenCV"):
         # Printing text contours preparations start
         for text_contour in text_contours:
             x, y, w, h = text_contour
+            # location = i.location  # y, x
+            # size = i.size  # width, height
             element = "ocrtext"
 
             # Fill the attributes dictionary
@@ -2107,15 +2073,83 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
                 },
                 "region_attributes": {"HTML element": element, "Element source": "opencv"},
             }
-            # Filter out small text contours with height > width
-            # Here is the filtering of the text blocks.
-            # The small text contours with height > width were often a junk contours,
-            # especially not for the whole webpages, but for some smaller blocks (forms, headers, footers).
-            # Probably a better filtering strategy will be found later here
-            if w > h:
-                fdict[fnamesize]["regions"].append(attributes_dict)
-            # cv2.rectangle(image_opencv_input, (x, y), (x + w, y + h), (255, 0, 0), 1)
+            # fdict[fnamesize]["regions"].append(attributes_dict)
+            regions_list.append(attributes_dict)
+        # Printing text contours preparations end
 
+        # Printing rect contours preparations start
+        for rect_contour in rect_contours:
+            x, y, w, h = rect_contour
+            # location = i.location  # y, x
+            # size = i.size  # width, height
+            element = "container"
+            # element = "image"
+
+            # Fill the attributes dictionary
+            attributes_dict = {
+                "shape_attributes": {
+                    "name": "rect",
+                    "x": int(x),
+                    "y": int(y),
+                    "width": int(w),
+                    "height": int(h),
+                },
+                "region_attributes": {"HTML element": element, "Element source": "opencv"},
+            }
+            # fdict[fnamesize]["regions"].append(attributes_dict)
+            regions_list.append(attributes_dict)
+            # Printing rect contours preparations end
+
+    if (choice == "MaskRCNN"):
+        # Printing contours with mask r cnn only start
+        for idx1, (rect1, class_id1) in enumerate(
+                zip(r["rois"], r["class_ids"])
+        ):
+            x3 = rect1[1]
+            y3 = rect1[0]
+            x4 = rect1[3]
+            y4 = rect1[2]
+
+            # The second rectangle square
+            width, height = x4 - x3, y4 - y3
+
+            element = write_elem_value(region_dataset, class_id1)
+
+            # Fill the attributes dictionary
+            attributes_dict = {
+                "shape_attributes": {
+                    "name": "rect",
+                    "x": int(x3),
+                    "y": int(y3),
+                    "width": int(width),
+                    "height": int(height),
+                },
+                "region_attributes": {"HTML element": element, "Element source": "maskrcnn"},
+            }
+            regions_list.append(attributes_dict)
+        # Printing contours with mask r cnn only end
+
+    if (choice == "AND"):
+        # Printing text contours preparations start
+        for text_contour in text_contours:
+            x, y, w, h = text_contour
+            # location = i.location  # y, x
+            # size = i.size  # width, height
+            element = "ocrtext"
+
+            # Fill the attributes dictionary
+            attributes_dict = {
+                "shape_attributes": {
+                    "name": "rect",
+                    "x": int(x),
+                    "y": int(y),
+                    "width": int(w),
+                    "height": int(h),
+                },
+                "region_attributes": {"HTML element": element, "Element source": "opencv"},
+            }
+            # fdict[fnamesize]["regions"].append(attributes_dict)
+            regions_list.append(attributes_dict)
         # Printing text contours preparations end
 
         # Printing rect contours with concatenation preparations start
@@ -2191,12 +2225,10 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
                         square = width * height
                         square1 = width1 * height1
                         square2 = width2 * height2
-                        # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT,
-                        # as this part of the script is not for the text blocks.
                         if (
-                                square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                square > square1 * SQUARES_OVERLAP_THRESHOLD_CONTOUR
                         ) or (
-                                square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                square > square2 * SQUARES_OVERLAP_THRESHOLD_CONTOUR
                         ):
                             if centers_distance < centers_distance_min:
                                 centers_distance_min = centers_distance
@@ -2231,7 +2263,6 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
                 # Image
                 if class_id_recognized == 7:
                     element = "image"
-
             # write the class value based on class id end
 
             # headers:
@@ -2261,7 +2292,6 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
                 # Form
                 if class_id_recognized == 8:
                     element = "form"
-
             # write the class value based on class id end
 
             # footers:
@@ -2295,14 +2325,16 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
                 },
                 "region_attributes": {"HTML element": element, "Element source": "opencv, maskrcnn"},
             }
-            fdict[fnamesize]["regions"].append(attributes_dict)
+            regions_list.append(attributes_dict)
         # Printing rect contours with concatenation preparations end
 
-    # Detect elements for the case of "webpages"
-    if region_dataset in {"webpages"}:
-        # Print all the contours to the file
-        # Format the file Via-like
-        # result = {"text": text_contours, "rect": rect_contours}
+
+    if (choice == "OR"):
+        # Here was applied a simplification
+        # OR comparison should be improved
+        # 1. save all the rect_contours from the AND
+        # 2. find all the unique Mask R CNN contours (both non-text and text) and save them
+        # 3. find all the unique OpenCV contours (both non-text and text) and save them
         # Printing text contours preparations start
         for text_contour in text_contours:
             x, y, w, h = text_contour
@@ -2321,7 +2353,8 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
                 },
                 "region_attributes": {"HTML element": element, "Element source": "opencv"},
             }
-            fdict[fnamesize]["regions"].append(attributes_dict)
+            # fdict[fnamesize]["regions"].append(attributes_dict)
+            regions_list.append(attributes_dict)
         # Printing text contours preparations end
 
         # Printing rect contours preparations start
@@ -2343,11 +2376,135 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
                 },
                 "region_attributes": {"HTML element": element, "Element source": "opencv"},
             }
-            fdict[fnamesize]["regions"].append(attributes_dict)
-            # Printing rect contours preparations end
+            # fdict[fnamesize]["regions"].append(attributes_dict)
+            regions_list.append(attributes_dict)
+        # Printing rect contours preparations end
+
+        # Printing contours with mask r cnn only start
+        for idx1, (rect1, class_id1) in enumerate(
+                zip(r["rois"], r["class_ids"])
+        ):
+            x3 = rect1[1]
+            y3 = rect1[0]
+            x4 = rect1[3]
+            y4 = rect1[2]
+
+            # The second rectangle square
+            width, height = x4 - x3, y4 - y3
+
+            element = write_elem_value(region_dataset, class_id1)
+
+            # Fill the attributes dictionary
+            attributes_dict = {
+                "shape_attributes": {
+                    "name": "rect",
+                    "x": int(x3),
+                    "y": int(y3),
+                    "width": int(width),
+                    "height": int(height),
+                },
+                "region_attributes": {"HTML element": element, "Element source": "maskrcnn"},
+            }
+            regions_list.append(attributes_dict)
+        # Printing contours with mask r cnn only end
+
+    return regions_list
+
+
+def create_recognized_elements(imgpath, rect_contours, text_contours, region_dataset, fname):
+    # Create the recognized_elements array start
+
+    fdict = {}  # Output dictionary to write annotation
+    fordict = {}  # Output dictionary to write annotation
+    cnndict = {}  # Output dictionary to write annotation
+    opencvdict = {}  # Output dictionary to write annotation
+
+    # Loading the image and converting to the numpy array
+    img = load_img(imgpath)
+    img = img_to_array(img)
+
+    # Detect a size of the file uploaded
+    fsize = str(os.path.getsize(imgpath))
+
+    # Write a merged string with fname and size
+    fnamesize = fname + fsize
+
+    # Prepare a dictionary (AND- based) to store recognized shapes
+    fdict[fnamesize] = {
+        "filename": fname,
+        "size": fsize,
+        "regions": [],
+        "file_attributes": {},
+    }
+
+    # Prepare a dictionary (OR- based) to store recognized shapes
+    fordict[fnamesize] = {
+        "filename": fname,
+        "size": fsize,
+        "regions": [],
+        "file_attributes": {},
+    }
+
+    # Prepare a dictionary (CNN) to store recognized shapes
+    cnndict[fnamesize] = {
+        "filename": fname,
+        "size": fsize,
+        "regions": [],
+        "file_attributes": {},
+    }
+
+    # Prepare a dictionary (OpenCV) to store recognized shapes
+    opencvdict[fnamesize] = {
+        "filename": fname,
+        "size": fsize,
+        "regions": [],
+        "file_attributes": {},
+    }
+
+    # Window name for printing
+    window_name1 = "image_opencv_text"
+
+    # Detect elements for the case of "forms", "headers", "footers"
+    if region_dataset in {"forms", "headers", "footers"}:
+
+        # Detect elements with Mask R CNN model start
+        if region_dataset == "forms":
+            results = model_forms.detect([img], verbose=1)
+
+        if region_dataset == "headers":
+            results = model_headers.detect([img], verbose=1)
+
+        if region_dataset == "footers":
+            results = model_footers.detect([img], verbose=1)
+
+        # Results of the Mask R CNN recognition
+        r = results[0]
+        # Detect elements with Mask R CNN model end
+
+        # Printing 4 dictionaries start
+        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "AND", r=r)
+        fdict[fnamesize]["regions"] = regions_list
+
+        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "OR", r=r)
+        fordict[fnamesize]["regions"] = regions_list
+
+        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "OpenCV", r=r)
+        opencvdict[fnamesize]["regions"] = regions_list
+
+        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "MaskRCNN", r=r)
+        cnndict[fnamesize]["regions"] = regions_list
+        # Printing 4 dictionaries end
+
+    # Detect elements for the case of "webpages"
+    if region_dataset in {"webpages"}:
+        regions_list = print_contours(text_contours, rect_contours, region_dataset, choice = "OpenCV", r=[])
+        fdict[fnamesize]["regions"] = regions_list
+
+        # At this case, fdict is equal to fordict and opencvdict. cnndict is empty
+        fordict = opencvdict = fdict
 
     # Create the recognized_elements array end
-    return fdict
+    return fdict, fordict, opencvdict, cnndict
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
@@ -2424,10 +2581,11 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
         # Create the recognized_elements array. The main part of the recognition
         if imgpath:
-            fdict = create_recognized_elements(imgpath, rect_contours, text_contours, region_dataset, fname)
+            fdict, fordict, opencvdict, cnndict  = create_recognized_elements(imgpath, rect_contours, text_contours, region_dataset, fname)
 
         # Save the annotation dictionary with saved shapes to the json
-        sdj = json.dumps(fdict, indent=4)
+        # sdj = json.dumps([fdict, fordict, opencvdict, cnndict], indent=4)
+        sdj = {"fdict": fdict, "fordict": fordict, "opencvdict": opencvdict, "cnndict": cnndict}
         node.screen_data_json = sdj
 
         return node
@@ -2851,13 +3009,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 square = width * height
                                 square1 = width1 * height1
                                 square2 = width2 * height2
-                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT,
-                                # as this part of the script is not for the text blocks.
-
                                 if (
-                                    square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                    square > square1 * SQUARES_OVERLAP_THRESHOLD_CONTOUR
                                 ) or (
-                                    square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                    square > square2 * SQUARES_OVERLAP_THRESHOLD_CONTOUR
                                 ):
                                     if centers_distance < centers_distance_min:
                                         centers_distance_min = centers_distance
@@ -3062,12 +3217,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                 square = width * height
                                 square1 = width1 * height1
                                 square2 = width2 * height2
-                                # Rename this constant SQUARES_OVERLAP_THRESHOLD_TEXT,
-                                # as this part of the script is not for the text blocks.
                                 if (
-                                    square > square1 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                    square > square1 * SQUARES_OVERLAP_THRESHOLD_CONTOUR
                                 ) or (
-                                    square > square2 * SQUARES_OVERLAP_THRESHOLD_TEXT
+                                    square > square2 * SQUARES_OVERLAP_THRESHOLD_CONTOUR
                                 ):
                                     if centers_distance < centers_distance_min:
                                         centers_distance_min = centers_distance
@@ -3122,7 +3275,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                         "region_attributes": {"HTML element": element},
                     }
                     cnndict[fnamesize]["regions"].append(attributes_dict)
-
                 # Printing contours with mask r cnn only end
 
             # Detect elements for the case of "webpages"
