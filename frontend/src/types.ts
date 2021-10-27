@@ -784,7 +784,7 @@ export type ServerProject = {
 };
 
 export type ServerScreen = ScreenBase & {
-  screen_data_json: string;
+  screen_data_json: any;
 };
 
 export type ProjectClass = {
@@ -981,7 +981,12 @@ export type ScreenMetaData = {
 
 export type ScreenData = {
   meta?: ScreenMetaData;
-  nnResult?: { [key: string]: VIAFile };
+  nnResult?: {
+    fdict: { [key: string]: VIAFile };
+    fordict: { [key: string]: VIAFile };
+    opencvdict: { [key: string]: VIAFile };
+    cnndict: { [key: string]: VIAFile };
+  };
   uiFramework: UIFramework;
   freeCanvas: boolean;
   editableScreenUser: Array<EditableScreenUser> | [];
@@ -1498,6 +1503,32 @@ export type VIAFile = {
   file_attributes: Record<string, any>;
 };
 
+export type VIAData = {
+  fdict: {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  };
+  fordict: {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  };
+  opencvdict: {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  };
+  cnndict: {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  };
+};
+
+export type VIARegions = {
+  fdict: Normalized<VIARegion>;
+  fordict: Normalized<VIARegion>;
+  opencvdict: Normalized<VIARegion>;
+  cnndict: Normalized<VIARegion>;
+};
+
 export type IFrameMessage = {
   type: string;
   payload: any;
@@ -1521,6 +1552,7 @@ export type ScreenMeta = {
 };
 
 export type FrameworkName = 'bootstrap' | 'material' | 'not_selected';
+export type NNModelName = 'fdict' | 'fordict' | 'opencvdict' | 'cnndict';
 
 export type FrameworkVersion = {
   name: string;
@@ -1547,6 +1579,11 @@ export type FrameworkSelection = {
   name: string;
   label: string;
   versions?: FrameworkVersion[];
+};
+
+export type NNModelSelection = {
+  name: string;
+  label: string;
 };
 
 export type ElementProps = {

@@ -89,6 +89,9 @@ export const selectElementByChildId = (id: string) => (
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
+export const selectActiveNNModel = ({ project }: AppReduxState) =>
+  project.edit.activeNNModel;
+
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
 

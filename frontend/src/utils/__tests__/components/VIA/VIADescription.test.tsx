@@ -12,7 +12,7 @@ import theme from '../../../../styles/Theme';
 describe('VIADescription', () => {
   let store: MockStoreEnhanced<AppReduxState>;
   let ui: RenderResult;
-  const region = Object.values(mockVIAState.regions)[0];
+  const region = Object.values(mockVIAState.regions.fdict)[0];
   const {
     region_attributes: { 'HTML element': type },
   } = region;

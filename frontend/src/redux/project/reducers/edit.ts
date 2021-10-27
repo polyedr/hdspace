@@ -130,9 +130,16 @@ const editReducer = produce(
         break;
       }
 
+      case TYPES.SET_ACTIVE_NN_MODEL: {
+        if (draft.activeNNModel === action.payload.model) {
+          return draft;
+        }
+        return { ...draft, activeNNModel: action.payload.model };
+      }
+
       case TYPES.UPDATE_VIA_REGION_SUCCESS: {
-        draft.VIAMode.regions[action.payload.id] = {
-          ...draft.VIAMode.regions[action.payload.id],
+        draft.VIAMode.regions[draft.activeNNModel][action.payload.id] = {
+          ...draft.VIAMode.regions[draft.activeNNModel][action.payload.id],
           ...action.payload.data,
         };
         break;
@@ -145,12 +152,12 @@ const editReducer = produce(
 
       case TYPES.CREATE_VIA_REGION_SUCCESS: {
         const { payload: newRegion } = action;
-        draft.VIAMode.regions[newRegion.id] = newRegion;
+        draft.VIAMode.regions[draft.activeNNModel][newRegion.id] = newRegion;
         break;
       }
 
       case TYPES.DELETE_VIA_REGION_SUCCESS: {
-        delete draft.VIAMode.regions[action.payload];
+        delete draft.VIAMode.regions[draft.activeNNModel][action.payload];
         break;
       }
 
@@ -161,23 +168,26 @@ const editReducer = produce(
 
       case TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS: {
         const { id, layer } = action.payload;
-        const arr = Object.values(current(draft.VIAMode.regions)).sort(
-          sortByLayer,
-        );
+        const arr = Object.values(
+          current(draft.VIAMode.regions[draft.activeNNModel]),
+        ).sort(sortByLayer);
 
-        const startIndex = draft.VIAMode.regions[id].layer;
+        const startIndex = draft.VIAMode.regions[draft.activeNNModel][id].layer;
 
         const [target] = arr.splice(startIndex, 1);
 
         arr.splice(layer, 0, target);
 
-        draft.VIAMode.regions = arr.reduce((acc, curr, i) => {
-          acc[curr.id] = {
-            ...curr,
-            layer: i,
-          };
-          return acc;
-        }, {} as Normalized<VIARegion>);
+        draft.VIAMode.regions[draft.activeNNModel] = arr.reduce(
+          (acc, curr, i) => {
+            acc[curr.id] = {
+              ...curr,
+              layer: i,
+            };
+            return acc;
+          },
+          {} as Normalized<VIARegion>,
+        );
 
         break;
       }
@@ -188,7 +198,10 @@ const editReducer = produce(
       }
 
       case TYPES.COPY_VIA_REGION: {
-        const copy = draft.VIAMode.regions[draft.VIAMode.activeRegionId];
+        const copy =
+          draft.VIAMode.regions[draft.activeNNModel][
+            draft.VIAMode.activeRegionId
+          ];
         if (copy) {
           draft.VIAMode.copiedRegion = {
             ...copy,
@@ -222,8 +235,20 @@ const editReducer = produce(
       }
 
       case TYPES.SET_VIA_DATA: {
-        draft.VIAMode.viaData = {
-          [action.payload.key]: action.payload.value,
+        draft.VIAMode.viaData.fdict = {
+          [action.payload.value.fdict.key]: action.payload.value.fdict.value,
+        };
+        draft.VIAMode.viaData.fordict = {
+          [action.payload.value.fordict.key]:
+            action.payload.value.fordict.value,
+        };
+        draft.VIAMode.viaData.opencvdict = {
+          [action.payload.value.opencvdict.key]:
+            action.payload.value.opencvdict.value,
+        };
+        draft.VIAMode.viaData.cnndict = {
+          [action.payload.value.cnndict.key]:
+            action.payload.value.cnndict.value,
         };
         break;
       }
