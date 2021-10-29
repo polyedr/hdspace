@@ -1734,9 +1734,9 @@ def extract_rectangle_coordinates(rect):
 
 
 # For some rectangle. Go through all the rectangles in (calculate this on the fly).
-# Find rectangles without parents, they are level rectangles. Create uclusters for them. Repeat the process
-def chain_uclusters(rectangles, ucluster, image_uclusters):
-    level_blocks = ucluster.level_blocks
+# Find rectangles without parents, they are level rectangles. Create firstclusters for them. Repeat the process
+def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
+    level_blocks = firstcluster.level_blocks
     print(level_blocks)
     for level_block in level_blocks:
         next_level_blocks = []
@@ -1770,28 +1770,28 @@ def chain_uclusters(rectangles, ucluster, image_uclusters):
                     # print("r1=", r1)
                     next_level_blocks.append(r1)
                     print(*r1_e)
-                    next_level_block_ucluster = ClusterClass(*r1_e)
-                    next_level_block_ucluster.types = "ucluster"
-                    next_level_block_ucluster.parent = ucluster
-                    next_level_block_ucluster.level_blocks = next_level_blocks
+                    next_level_block_firstcluster = ClusterClass(*r1_e)
+                    next_level_block_firstcluster.types = "firstcluster"
+                    next_level_block_firstcluster.parent = firstcluster
+                    next_level_block_firstcluster.level_blocks = next_level_blocks
                     (x1, y1, x2, y2) = r1_e
                     cv2.rectangle(
-                        image_uclusters,
+                        image_firstclusters,
                         (x1, y1),
                         (x2, y2),
                         (20, 90, 255),
                         1,
                     )
-                    chain_uclusters(rectangles, next_level_block_ucluster, image_uclusters)
+                    chain_firstclusters(rectangles, next_level_block_firstcluster, image_firstclusters)
                 elif (is_final is True):
                     # print("r1=", r1)
                     print(*r1_e)
-                    next_level_block_ucluster = ClusterClass(*r1_e)
-                    next_level_block_ucluster.types = "ucluster"
-                    next_level_block_ucluster.parent = ucluster
+                    next_level_block_firstcluster = ClusterClass(*r1_e)
+                    next_level_block_firstcluster.types = "firstcluster"
+                    next_level_block_firstcluster.parent = firstcluster
                     (x1, y1, x2, y2) = r1_e
                     cv2.rectangle(
-                        image_uclusters,
+                        image_firstclusters,
                         (x1, y1),
                         (x2, y2),
                         (100, 80, 155),
@@ -1801,9 +1801,9 @@ def chain_uclusters(rectangles, ucluster, image_uclusters):
     return True
 
 
-def calculate_uclusters(fdict, fname, fnamesize, image_uclusters, node):
-    img_height, img_width, img_channels = image_uclusters.shape
-    # print(image_uclusters.shape)
+def calculate_firstclusters(fdict, fname, fnamesize, image_firstclusters, node):
+    img_height, img_width, img_channels = image_firstclusters.shape
+    # print(image_firstclusters.shape)
     # Detect top level blocks
     top_level_blocks = []
     # top_level_block is a nested dictionary
@@ -1820,28 +1820,30 @@ def calculate_uclusters(fdict, fname, fnamesize, image_uclusters, node):
     # Create a set of rectangles
     rectangles = []
     for rect in fdict[fnamesize]["regions"]:
-        if (rect["region_attributes"]["HTML element"] in {"container", "list"}):
-            rectangles.append(rect)
+        # The commented if- statement is used for calculation of the menu
+        # if (rect["region_attributes"]["HTML element"] in {"container", "list"}):
+        # Now all the rectangles are processed. They should be prepared properly.
+        rectangles.append(rect)
 
-    # Create a top level ucluster based on whole image size
+    # Create a top level firstcluster based on whole image size
     # This top block should not be displayed at the final output
     # Top levels blocks should be included for this data structure
     top_level_block_e = extract_rectangle_coordinates(top_level_block)
-    root_ucluster = ClusterClass(*top_level_block_e)
-    root_ucluster.types = "ucluster"
-    root_ucluster.level_blocks = top_level_blocks
+    root_firstcluster = ClusterClass(*top_level_block_e)
+    root_firstcluster.types = "firstcluster"
+    root_firstcluster.level_blocks = top_level_blocks
 
     # For some rectangle. Go through all the rectangles in. Find rectangles without parents, they are level rectangles.
     # Save sets of rectangles placed for each level rectangle. Repeat the process.
-    chain_uclusters(rectangles, root_ucluster, image_uclusters)
+    chain_firstclusters(rectangles, root_firstcluster, image_firstclusters)
 
-    # Printing uclusters to file
-    if len(image_uclusters):
-        imgpath = MEDIA_ROOT + "/uploads/" + "uclusters_" + fname
-        cv2.imwrite(imgpath, image_uclusters)
-        node.parameters["image"] = "uclusters_" + fname
+    # Printing firstclusters to file
+    if len(image_firstclusters):
+        imgpath = MEDIA_ROOT + "/uploads/" + "firstclusters_" + fname
+        cv2.imwrite(imgpath, image_firstclusters)
+        node.parameters["image"] = "firstclusters_" + fname
 
-    return root_ucluster
+    return root_firstcluster
 
 
 def print_clusters_length(clusters):
@@ -3561,7 +3563,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         # Read an image with OpenCV start
         image_opencv_input = cv2.imread(imgpath)
         image_original = copy.deepcopy(image_opencv_input)
-        image_uclusters = copy.deepcopy(image_opencv_input)
+        image_firstclusters = copy.deepcopy(image_opencv_input)
         image_fdict_before = copy.deepcopy(image_opencv_input)
         image_fdict_after = copy.deepcopy(image_opencv_input)
         # detect height and width of the image
@@ -3593,39 +3595,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         domcolour_container = get_dominant_colour(image_opencv_input)[0]
         domcolour_container.append(1)
         bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
-        '''
-        # Detect text contours and rectangles on image start
-        text_contours = []
-        rect_contours = []
-        # Detect text regions
-        text_contours = run_text_detection(image_opencv_input, text=False)
 
-        # text_contours1 = run_text_detection(image_opencv_input, text=True)
-        #
-        # print(text_contours1)
-        # print("length", len(text_contours), len(text_contours1))
-        #
-        # input()
-        # Detect rect regions
-        rect_contours = get_rect_contours(image_opencv_input)
-
-        for text_contour in text_contours:
-            # Remove untypically wide text blocks
-            width2 = text_contour[3]
-            if width2 > (font_size_img * 3):
-                text_contours.remove(text_contour)
-
-        for rect_contour in rect_contours:
-            # Remove untypically large rect blocks
-            width2 = rect_contour[2]
-            height2 = rect_contour[3]
-            if (width2 * height2) > (img_height * img_width) * 0.75:
-                rect_contours.remove(rect_contour)
-
-        # Save all detected regions into dictionary
-        result = {"text": text_contours, "rect": rect_contours}
-        # Detect text contours and rectangles on image end
-        '''
         window_name1 = "image_opencv_text"
 
         # Create the opencv recognition end
@@ -3694,11 +3664,11 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 imgpath = MEDIA_ROOT + "/uploads/" + "fdict_after_" + fname
                 cv2.imwrite(imgpath, image_fdict_after)
 
-            # Here should write uclusters detecting step
-            # How to detect uclusters from fdict?
+            # Here should write firstclusters detecting step
+            # How to detect firstclusters from fdict?
             # Maybe use this function for the first time
             # calculate_ocvclusters(fdict, fnamesize)
-            root_ucluster = calculate_uclusters(fdict, fname, fnamesize, image_uclusters, serializer_node)
+            root_firstcluster = calculate_firstclusters(fdict, fname, fnamesize, image_firstclusters, serializer_node)
 
             # Calculate fclusters function calling
             clusters = calculate_fclusters(fdict, fnamesize, fname)
@@ -3706,36 +3676,36 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # Call the fclusters printing
             print_clusters_length(clusters)
 
-            # Remove fclusters which are contradictive with uclusters (overlap) start
+            # Remove fclusters which are contradictive with firstclusters (overlap) start
             for cluster in clusters:
                 if (len(cluster.elements) > 2):  # Fclusters should contain 2 and more elements
                     rectangle_fcluster = (cluster.x1, cluster.y1, cluster.x2, cluster.y2)
-                    for pre, fill, node in RenderTree(root_ucluster):
-                        rectangle_ucluster = (node.x1, node.y1, node.x2, node.y2)
-                        if node != root_ucluster:
-                            if(isRectangleOverlap(rectangle_fcluster, rectangle_ucluster)):
+                    for pre, fill, node in RenderTree(root_firstcluster):
+                        rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
+                        if node != root_firstcluster:
+                            if(isRectangleOverlap(rectangle_fcluster, rectangle_firstcluster)):
                                 clusters.remove(cluster)
-            # Remove fclusters which are contradictive with uclusters (overlap) end
+            # Remove fclusters which are contradictive with firstclusters (overlap) end
 
             if region_dataset in ["headers", "footers", "webpages"]:
                 # Calculate dbclusters function calling
                 dbclusters = calculate_dbclusters(region_dataset, clusters, fname)
 
-                # Remove dbclusters which are contradictive with uclusters (overlap, contains probably)
-                # Remove dbclusters which are contradictive with uclusters (overlap) start
+                # Remove dbclusters which are contradictive with firstclusters (overlap, contains probably)
+                # Remove dbclusters which are contradictive with firstclusters (overlap) start
                 for cluster in dbclusters:
                         rectangle_dbcluster = (cluster.x1, cluster.y1, cluster.x2, cluster.y2)
-                        for pre, fill, node in RenderTree(root_ucluster):
-                            rectangle_ucluster = (node.x1, node.y1, node.x2, node.y2)
-                            if node != root_ucluster:
-                                if (isRectangleOverlap(rectangle_dbcluster, rectangle_ucluster)):
+                        for pre, fill, node in RenderTree(root_firstcluster):
+                            rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
+                            if node != root_firstcluster:
+                                if (isRectangleOverlap(rectangle_dbcluster, rectangle_firstcluster)):
                                     dbclusters.remove(cluster)
-                # Remove dbclusters which are contradictive with uclusters (overlap) end
+                # Remove dbclusters which are contradictive with firstclusters (overlap) end
 
-                # DBclusters should be added to uclusters in an appropriate order
-                # First it is possible to remove dbclusters which were placed in uclusters
-                # In this case, dbclusters should be added to the root_ucluster as a final uclusters
-                # After that, cclusters should be calculated on the top uclusters, just after the root_ucluster
+                # DBclusters should be added to firstclusters in an appropriate order
+                # First it is possible to remove dbclusters which were placed in firstclusters
+                # In this case, dbclusters should be added to the root_firstcluster as a final firstclusters
+                # After that, cclusters should be calculated on the top firstclusters, just after the root_firstcluster
 
             try:
                 # Replace clusters for dbclusters if possible
@@ -3746,7 +3716,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             finally:
                 pass
 
-            # Do the containerization based on uclusters and dbclusters, they should be both merged to clusters
+            # Do the containerization based on firstclusters and dbclusters, they should be both merged to clusters
             root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
                                                 window_name1, fclusters)
 

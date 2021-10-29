@@ -208,7 +208,7 @@ class ClusterClass(NodeMixin):
     # Flex 0 vertical, 1 horizontal, 2 unseparable, -1 undefined
     direction = -1
     # Clusters types, containers, dbclusters, forms
-    # types = "ccluster", "dbcluster", "fcluster", "ocvluster", "ucluster", "undefined"
+    # types = "ccluster", "dbcluster", "fcluster", "ocvluster", "firstcluster", "undefined"
     types = "undefined"
     is_elements_only = False  # check if contains elements only, actual for fclusters
     is_final = False  # check if should not be splitted further
