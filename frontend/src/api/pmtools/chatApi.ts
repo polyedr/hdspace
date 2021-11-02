@@ -1,9 +1,12 @@
 import { ChatClient, PmToolsUserChat } from '@Src/types/pmtools/types';
-import zulip from 'zulip-js';
+import zulipInit from 'zulip-js';
+(window as any).global = window;
+// @ts-ignore
+window.Buffer = window.Buffer || require('buffer').Buffer;
 
-const apiAuthUser = async (login: PmToolsUserChat) => {
+export const apiAuthUser = async (login: PmToolsUserChat) => {
   try {
-    const z: ChatClient = await zulip(login);
+    const z: ChatClient = await zulipInit(login);
     if (z.config.username && z.config.apiKey) {
       return z;
     }
@@ -18,4 +21,17 @@ const apiAuthUser = async (login: PmToolsUserChat) => {
   }
 };
 
-export default apiAuthUser;
+export const apiRegisterUser = async (
+  login: PmToolsUserChat,
+  register: any,
+) => {
+  try {
+    const client: ChatClient = await zulipInit(login);
+
+    if (client.config.username && client.config.apiKey) {
+      return await client.users.create(register);
+    }
+  } catch (e) {
+    return e;
+  }
+};

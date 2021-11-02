@@ -1,45 +1,53 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React from 'react';
 import { Button } from '@material-ui/core';
-import { PanelTextField } from '@Components/styledComponents';
-import { useDispatch } from 'react-redux';
-import { requestLoginChatUser } from '@Redux/pmtools/chat/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  requestLoginChatUser,
+  requestRegisterZulip,
+} from '@Redux/pmtools/chat/actions';
+import { selectProfileData } from '@Redux/user/selectors';
 
 const ChatLogin: React.FC = () => {
   const dispatch = useDispatch();
-  const [login, setLogin] = useState({
-    password: '',
-  });
-
-  const handleSignIn = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(requestLoginChatUser(login));
+  const { parameters } = useSelector(selectProfileData);
+  const handleLogin = () => {
+    dispatch(requestLoginChatUser(parameters.passwordZulip));
   };
 
-  const handleChange = ({
-    target: { name, value },
-  }: ChangeEvent<HTMLInputElement>) => {
-    const newValue =
-      name === 'realm'
-        ? value.replace(/^(https?)|(:)|(\.zulipchat)|(\.com)|(\/)|(@)/gi, '')
-        : value;
-    setLogin((prevState) => ({ ...prevState, [name]: newValue }));
+  const handleRegister = () => {
+    dispatch(requestRegisterZulip());
   };
+
+  if (parameters.passwordZulip) {
+    return (
+      <>
+        <h4>Welcome to the chat!</h4>
+        <Button
+          onClick={handleLogin}
+          type="submit"
+          color="secondary"
+          variant="contained"
+          fullWidth
+        >
+          Login
+        </Button>
+      </>
+    );
+  }
 
   return (
-    <form onSubmit={handleSignIn}>
-      <PanelTextField
-        type="password"
-        name="password"
-        required
-        value={login.password}
-        onChange={handleChange}
-        label="Password"
-      />
-
-      <Button type="submit" color="secondary" variant="contained" fullWidth>
-        Login
+    <>
+      <h4>Register to the chat!</h4>
+      <Button
+        type="submit"
+        color="secondary"
+        onClick={handleRegister}
+        variant="contained"
+        fullWidth
+      >
+        Register
       </Button>
-    </form>
+    </>
   );
 };
 

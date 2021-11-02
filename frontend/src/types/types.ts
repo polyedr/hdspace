@@ -1136,6 +1136,7 @@ export type ProfileData = {
 
 export type ProfileDataParameters = {
   profileDataParameters: ProfileDataUIParameters;
+  passwordZulip: string;
 };
 export type ProfileDataUIParameters = {
   autoSwitchTabs: boolean;

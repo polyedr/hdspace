@@ -1,9 +1,13 @@
 import TYPES from '@Redux/actionTypes';
 import { PmToolsUserChat } from '@Src/types/pmtools/types';
 
-export const requestLoginChatUser = (payload: PmToolsUserChat) => ({
+export const requestLoginChatUser = (payload: string) => ({
   type: TYPES.LOGIN_PMTOOLS,
   payload,
+});
+
+export const requestRegisterZulip = () => ({
+  type: TYPES.REGISTER_PMTOOLS,
 });
 
 export const successLoginChatUser = (client: PmToolsUserChat) => ({

@@ -10,12 +10,12 @@ const ChatTab: React.FC = () => {
   const dispatch = useDispatch();
   const authenticated = useSelector(chatUser);
 
-  useEffect(() => {
-    const login = JSON.parse(localStorage.getItem('login') || '{}');
-    if (Object.entries(login).length > 0) {
-      dispatch(requestLoginChatUser(login));
-    }
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const login = JSON.parse(localStorage.getItem('login') || '{}');
+  //   if (Object.entries(login).length > 0) {
+  //       dispatch(requestLoginChatUser(login.password));
+  //   }
+  // }, [dispatch]);
 
   return <Container>{authenticated ? <Chat /> : <ChatLogin />}</Container>;
 };
