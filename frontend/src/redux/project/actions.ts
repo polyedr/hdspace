@@ -28,10 +28,12 @@ import {
   UserData,
   EditScreenData,
   ProfileDataUIParameters,
-  VIAFile,
+  VIAData,
   FileToUpload,
   UIFramework,
   ElementData,
+  NNModelName,
+  VIARegions,
 } from '@Src/types';
 import { XYCoord } from 'react-dnd';
 import {
@@ -982,6 +984,11 @@ export const setActiveElement = (id: string) => ({
   payload: id,
 });
 
+export const setActiveNNModel = (model: NNModelName) => ({
+  type: TYPES.SET_ACTIVE_NN_MODEL,
+  payload: { model },
+});
+
 export const setActiveElementId = (id: string) => ({
   type: TYPES.SET_ACTIVE_ELEMENT_ID,
   payload: id,
@@ -1493,9 +1500,7 @@ export const setVIAMode = (active: boolean): SetVIAMode => ({
   payload: active,
 });
 
-export const setVIARegions = (
-  regions: Normalized<VIARegion>,
-): SetVIARegions => ({
+export const setVIARegions = (regions: VIARegions): SetVIARegions => ({
   type: TYPES.SET_VIA_REGIONS,
   payload: regions,
 });
@@ -1606,13 +1611,9 @@ export const setAnnotatedImageFile = (
   payload: file,
 });
 
-export const setVIAData = (
-  key: string,
-  value: Omit<VIAFile, 'regions'>,
-): SetVIAData => ({
+export const setVIAData = (value: VIAData): SetVIAData => ({
   type: TYPES.SET_VIA_DATA,
   payload: {
-    key,
     value,
   },
 });

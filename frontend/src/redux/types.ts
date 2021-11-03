@@ -39,10 +39,13 @@ import {
   EditScreenData,
   ProfileDataUIParameters,
   VIAFile,
+  VIAData,
   FileToUpload,
   ChatCredentials,
   UIFramework,
   ElementData,
+  NNModelName,
+  VIARegions,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -102,16 +105,27 @@ export type ProjectEditState = {
   uploadedImageInfo?: UploadedImageInfo;
   selectedElementsIds: string[];
   masterScreenId: number | null;
+  activeNNModel: NNModelName;
   VIAMode: {
     enabled: boolean;
-    regions: Normalized<VIARegion>;
+    regions: {
+      fdict: Normalized<VIARegion>;
+      fordict: Normalized<VIARegion>;
+      opencvdict: Normalized<VIARegion>;
+      cnndict: Normalized<VIARegion>;
+    };
     activeRegionId: string;
     annotatedElementId: string;
     annotatedImageFile: FileToUpload | null;
     copiedRegion: VIARegion | null;
     resultId: string;
     blockType: NNBlockType;
-    viaData: Record<string, Omit<VIAFile, 'regions'>>;
+    viaData: {
+      fdict: Record<string, Omit<VIAFile, 'regions'>>;
+      fordict: Record<string, Omit<VIAFile, 'regions'>>;
+      opencvdict: Record<string, Omit<VIAFile, 'regions'>>;
+      cnndict: Record<string, Omit<VIAFile, 'regions'>>;
+    };
   };
   freeCanvas: {
     lastElements: {
@@ -1044,10 +1058,7 @@ export type SetMasterScreenId = IAction<
 
 export type SetVIAMode = IAction<typeof TYPES.SET_VIA_MODE, boolean>;
 
-export type SetViaRegions = IAction<
-  typeof TYPES.SET_VIA_REGIONS,
-  Normalized<VIARegion>
->;
+export type SetViaRegions = IAction<typeof TYPES.SET_VIA_REGIONS, VIARegions>;
 
 export type UpdateVIARegion = IAction<
   typeof TYPES.UPDATE_VIA_REGION,
@@ -1098,6 +1109,11 @@ export type UpdateVIARegionLayer = IAction<
   { id: string; layer: number }
 >;
 
+export type SetActiveNNModel = IAction<
+  typeof TYPES.SET_ACTIVE_NN_MODEL,
+  { model: string }
+>;
+
 export type UpdateVIARegionLayerSuccess = IAction<
   typeof TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
   { id: string; layer: number }
@@ -1111,8 +1127,7 @@ export type SetAnnotatedImageURL = IAction<
 export type SetVIAData = IAction<
   typeof TYPES.SET_VIA_DATA,
   {
-    key: string;
-    value: Omit<VIAFile, 'regions'>;
+    value: VIAData;
   }
 >;
 
@@ -1303,6 +1318,7 @@ export type Action =
   | AddUndoActions
   | AddRedoActions
   | SetVIAMode
+  | SetActiveNNModel
   | SetViaRegions
   | UpdateVIARegion
   | UpdateVIARegionSuccess

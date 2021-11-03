@@ -24,6 +24,8 @@ import {
   NNBlockType,
   FileToUpload,
   VIAFile,
+  VIAData,
+  VIARegions,
 } from '@Src/types';
 import { addId, addLayerProperty } from '@Utils/viaHelpers';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
@@ -69,25 +71,33 @@ const recognizeImageSaga = compose(
       if (!recognizeResult.screenData.nnResult) {
         throw new Error('No VIA data has been received');
       }
-
-      const [viaKey, viaFile] = Object.entries(
-        recognizeResult.screenData.nnResult,
-      )[0];
-
-      const s = omit(['regions'], viaFile);
-
-      yield put(Actions.setVIAData(viaKey, s));
-      yield put(Actions.setBlockType(blockType));
-
-      yield put(
-        Actions.setVIARegions(
-          arrayToMap(
-            addLayerProperty(
-              viaFile.regions.map((region) => addId(region) as VIARegion),
-            ),
-          ),
-        ),
+      const viaData = {} as VIAData;
+      const viaRegions = {} as VIARegions;
+      Object.keys(recognizeResult.screenData.nnResult).forEach(
+        (value: string) => {
+          if (!['fdict', 'fordict', 'opencvdict', 'cnndict'].includes(value))
+            return;
+          if (recognizeResult.screenData.nnResult) {
+            const [viaKey, viaFile]: any = Object.entries(
+              recognizeResult.screenData.nnResult[value],
+            )[0];
+            const s = omit(['regions'], viaFile);
+            viaData[value] = {
+              key: viaKey,
+              s,
+            };
+            viaRegions[value] = arrayToMap(
+              addLayerProperty(
+                viaFile.regions.map((region) => addId(region) as VIARegion),
+              ),
+            );
+          }
+        },
       );
+
+      yield put(Actions.setVIAData(viaData));
+      yield put(Actions.setBlockType(blockType));
+      yield put(Actions.setVIARegions(viaRegions));
       yield put(Actions.setAnnotatedElementId(parentId));
       yield put(Actions.setAnnotatedImageFile(file));
       yield put(Actions.setVIAMode(true));

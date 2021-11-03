@@ -15,7 +15,7 @@ Object.defineProperty(URL, 'createObjectURL', {
 describe('VIA Region', () => {
   let store: MockStoreEnhanced<AppReduxState>;
   let ui: RenderResult;
-  const { id } = Object.values(mockVIAState.regions)[0];
+  const { id } = Object.values(mockVIAState.regions.fdict)[0];
 
   beforeEach(() => {
     const mockStore = configureStore<AppReduxState>([]);
