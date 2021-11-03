@@ -1,4 +1,4 @@
-image: node:lts-alpine
+image: node:lts-alpine3.11
 
 pipelines:
   pull-requests:
@@ -14,8 +14,7 @@ pipelines:
       - step:
           name: Build
           script:
-            - npm install
-            - npm run build:staging
+            - npm install && npm run build:staging
           artifacts:
             - dist/**
       - step:
