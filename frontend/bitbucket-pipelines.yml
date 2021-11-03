@@ -14,7 +14,8 @@ pipelines:
       - step:
           name: Build
           script:
-            - npm install && npm run build:staging
+            - npm install
+            - npm run build:staging
           artifacts:
             - dist/**
       - step:
