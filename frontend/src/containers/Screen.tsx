@@ -143,7 +143,7 @@ const Screen: React.FC<Props> = ({ screenId }) => {
     return () => {
       dispatch(clearEditableScreen(screen));
     };
-  }, [dispatch, screen, screen.id]);
+  }, [dispatch, screen.id]);
 
   const userGuideActive = useSelector(selectUserGuideActive);
   const { shape } = useTheme();
