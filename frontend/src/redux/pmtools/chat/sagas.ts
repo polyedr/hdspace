@@ -6,22 +6,20 @@ import TYPES from '@Redux/actionTypes';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { setUserData } from '@Redux/user/actions';
 import { selectUserData } from '@Redux/user/selectors';
+import generator from 'generate-password';
 import { ServerUserData } from '@Src/types/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
+import config from '@Constants/configZulipChat';
 import { successLoginChatUser, successLogoutChatUser } from './actions';
-
-const config = {
-  realm: 'https://zulip.adevi.info/',
-  username: 'ivan@intelligentprofitsolutions.com',
-  apiKey: 'VBV7IeQogwWRjhJHyubg0Z1m3gGuzrS0',
-  password: 'E52$*&(W]*j<Q%Wu',
-};
 
 export function* loginUser({ payload: password }: any) {
   try {
     const { email: username } = yield select(selectUserData);
-    const realm = `https://zulip.adevi.info/`;
-    const client = yield call(apiAuthUser, { realm, username, password });
+    const client = yield call(apiAuthUser, {
+      realm: config.realm,
+      username,
+      password,
+    });
     if (client && client.config) {
       yield put(successLoginChatUser(client));
       localStorage.setItem('login', JSON.stringify({ password }));
@@ -34,8 +32,7 @@ export function* loginUser({ payload: password }: any) {
 export function* registerZulipUser() {
   try {
     const { id, email, username } = yield select(selectUserData);
-    const realm = `https://zulip.adevi.info/`;
-    const password = 'genty123HRT';
+    const password = generator.generate();
 
     const res = yield call(apiRegisterUser, config, {
       email,
@@ -43,6 +40,7 @@ export function* registerZulipUser() {
       full_name: `${username}-adevi-${id}`,
       short_name: `${username}-${id}`,
     });
+
     if (res.result === 'success') {
       yield call(apiChangeProfileData, {
         id,
@@ -61,7 +59,7 @@ export function* registerZulipUser() {
       );
 
       const client = yield call(apiAuthUser, {
-        realm,
+        realm: config.realm,
         username: email,
         password,
       });

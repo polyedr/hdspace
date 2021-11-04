@@ -31,6 +31,7 @@ module.exports = ({ MODE }) => {
     resolve: {
       fallback: {
         fs: false,
+        crypto: require.resolve('crypto-browserify'),
       },
       extensions: ['.js', '.ts', '.tsx'],
       // Fix webpack's default behavior to not load packages with jsnext:main module
@@ -188,8 +189,8 @@ module.exports = ({ MODE }) => {
         cacheGroups: {
           defaultVendors: {
             test: /[\\/]node_modules[\\/]/,
-            name: "vendor",
-            chunks: "all",
+            name: 'vendor',
+            chunks: 'all',
             priority: -10,
           },
           default: {
