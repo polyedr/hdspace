@@ -20,6 +20,11 @@ export function* loginUser({ payload: password }: any) {
       username,
       password,
     });
+    console.log({
+      realm: config.realm,
+      username,
+      password,
+    });
     if (client && client.config) {
       yield put(successLoginChatUser(client));
       localStorage.setItem('login', JSON.stringify({ password }));
@@ -29,7 +34,7 @@ export function* loginUser({ payload: password }: any) {
   }
 }
 
-export function* registerZulipUser() {
+export function* registerZulipUser(): any {
   try {
     const { id, email, username } = yield select(selectUserData);
     const password = generator.generate();

@@ -5,7 +5,7 @@ const initialState: ChatState = {
   client: null,
 };
 
-const chatReducer = (state: ChatState = initialState, action: ChatAction) => {
+const chatReducer = (state: ChatState = initialState, action: any) => {
   switch (action.type) {
     case TYPES.LOGIN_PMTOOLS_SUCCESS:
       return {
@@ -17,6 +17,9 @@ const chatReducer = (state: ChatState = initialState, action: ChatAction) => {
         ...state,
         client: null,
       };
+    case TYPES.LOGOUT: {
+      return { ...state, client: null };
+    }
     default:
       return state;
   }

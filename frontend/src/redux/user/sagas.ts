@@ -80,6 +80,9 @@ export function* logoutSaga() {
   try {
     yield put(sidebarLogout());
 
+    // logout chat Zulip
+    localStorage.removeItem('login');
+
     yield put(Actions.logout());
     openSignScreen('signin');
   } catch (e: any) {
