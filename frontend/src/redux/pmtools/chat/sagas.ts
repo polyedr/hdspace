@@ -1,8 +1,12 @@
+import { convertUserDataFromResponse } from '@Api/converters/fromResponse';
 import { apiAuthUser, apiRegisterUser } from '@Api/pmtools/chatApi';
-import { apiChangeProfileData } from '@Api/user';
+import { apiChangeProfileData, apiGetUser } from '@Api/user';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
+import { reqWrapper } from '@Redux/project/sagas/shared';
+import { setUserData } from '@Redux/user/actions';
 import { selectUserData } from '@Redux/user/selectors';
+import { ServerUserData } from '@Src/types/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { successLoginChatUser, successLogoutChatUser } from './actions';
 
@@ -17,7 +21,6 @@ export function* loginUser({ payload: password }: any) {
   try {
     const { email: username } = yield select(selectUserData);
     const realm = `https://zulip.adevi.info/`;
-    console.log({ realm, username, password });
     const client = yield call(apiAuthUser, { realm, username, password });
     if (client && client.config) {
       yield put(successLoginChatUser(client));
@@ -47,8 +50,21 @@ export function* registerZulipUser() {
           parameters: { passwordZulip: password },
         },
       });
+      const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
+        id,
+      });
 
-      const client = yield call(apiAuthUser, { realm, username: email, password });
+      yield put(
+        setUserData({
+          ...convertUserDataFromResponse(userData),
+        }),
+      );
+
+      const client = yield call(apiAuthUser, {
+        realm,
+        username: email,
+        password,
+      });
       if (client && client.config) {
         yield put(successLoginChatUser(client));
         localStorage.setItem('login', JSON.stringify({ password }));

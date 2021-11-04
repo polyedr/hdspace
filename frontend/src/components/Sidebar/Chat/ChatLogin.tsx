@@ -10,6 +10,7 @@ import { selectProfileData } from '@Redux/user/selectors';
 const ChatLogin: React.FC = () => {
   const dispatch = useDispatch();
   const { parameters } = useSelector(selectProfileData);
+
   const handleLogin = () => {
     dispatch(requestLoginChatUser(parameters.passwordZulip));
   };
