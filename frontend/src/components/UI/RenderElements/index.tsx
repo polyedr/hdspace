@@ -181,6 +181,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     material: OtherNavbarItem,
     not_selected: OtherNavbarItem,
   }),
+  hyperlink: Label,
 };
 
 export default RENDERERS;
