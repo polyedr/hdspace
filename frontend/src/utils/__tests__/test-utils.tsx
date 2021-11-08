@@ -131,32 +131,34 @@ export const mockUserData: UserData = {
   },
 };
 
-export const mockVIAState = {
+export const mockVIAState = ({
   blockType: NNBlockType.WEBPAGE,
   resultId: '-1',
   viaData: {},
   annotatedElementId: mockStateElement.id,
   enabled: true,
   regions: {
-    '7343f00c-4ec0-4e71-8a07-ec1f8820d489': {
-      shape_attributes: {
-        name: 'rect',
-        x: 99,
-        y: 52,
-        width: 187,
-        height: 37,
+    fdict: {
+      '7343f00c-4ec0-4e71-8a07-ec1f8820d489': {
+        shape_attributes: {
+          name: 'rect',
+          x: 99,
+          y: 52,
+          width: 187,
+          height: 37,
+        },
+        region_attributes: {
+          'HTML element': 'ocrtext',
+        },
+        id: '7343f00c-4ec0-4e71-8a07-ec1f8820d489',
+        layer: 1,
       },
-      region_attributes: {
-        'HTML element': 'ocrtext',
-      },
-      id: '7343f00c-4ec0-4e71-8a07-ec1f8820d489',
-      layer: 1,
     },
   },
   activeRegionId: '',
   annotatedImageFile: null,
   copiedRegion: null,
-} as ProjectEditState['VIAMode'];
+} as unknown) as ProjectEditState['VIAMode'];
 
 export const mockInitialState: AppReduxState = {
   user: initialUserState,

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { AppReduxState } from '@Redux/types';
-import { selectAllElements } from './element';
+import { selectAllElements, selectActiveNNModel } from './element';
 
 export const selectVIAModeEnabled = ({ project }: AppReduxState) =>
   project.edit.VIAMode.enabled;
@@ -10,7 +10,8 @@ export const selectVIARegions = ({ project }: AppReduxState) =>
 
 export const selectVIARegionsAsArray = createSelector(
   selectVIARegions,
-  (regions) => Object.values(regions),
+  selectActiveNNModel,
+  (regions, activeNNModel) => Object.values(regions[activeNNModel]),
 );
 
 export const selectActiveVIARegionId = ({ project }: AppReduxState) =>
@@ -52,4 +53,4 @@ export const selectBlockType = ({ project }: AppReduxState) =>
   project.edit.VIAMode.blockType;
 
 export const selectVIAData = ({ project }: AppReduxState) =>
-  project.edit.VIAMode.viaData;
+  project.edit.VIAMode.viaData[project.edit.activeNNModel];

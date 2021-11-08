@@ -1,4 +1,9 @@
-import { FrameworkSelection, FrameworkVersion, UIFramework } from '@Src/types';
+import {
+  FrameworkSelection,
+  FrameworkVersion,
+  UIFramework,
+  NNModelSelection,
+} from '@Src/types';
 
 export const BOOTSTRAP_VERSIONS: Array<FrameworkVersion> = [
   {
@@ -67,5 +72,24 @@ export const FRAMEWORKS_LIST: FrameworkSelection[] = [
     name: 'material',
     label: 'Material',
     versions: MATERIAL_VERSIONS,
+  },
+];
+
+export const NN_MODEL_LIST: NNModelSelection[] = [
+  {
+    name: 'fdict',
+    label: 'FDict',
+  },
+  {
+    name: 'fordict',
+    label: 'ForDict',
+  },
+  {
+    name: 'opencvdict',
+    label: 'OpencvDict',
+  },
+  {
+    name: 'cnndict',
+    label: 'CnnDict',
   },
 ];

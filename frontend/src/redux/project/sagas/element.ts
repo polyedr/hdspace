@@ -951,6 +951,12 @@ export const setActiveElementSaga = withRequiredPermissions(
   yield put(Actions.setSelectedElements([action.payload]));
 });
 
+export const setActiveNNModel = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(function* (action: ReturnType<typeof Actions.setActiveNNModel>) {
+  yield put(Actions.setActiveNNModel(action.payload.model));
+});
+
 export const toggleSelectedElementSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
 )(function* (action: ReturnType<typeof Actions.toggleSelectedElement>) {
