@@ -23,7 +23,7 @@ const Columns: FC<any> = ({ column }) => {
   const [tasksModal, setTasksModal] = useState(false);
 
   const handleDeleteColumn = () => {
-    const action = `Column "${column.title}" has been deleted`;
+    const action = `Column "${column.name}" has been deleted`;
     dispatch(
       requestDeleteColumn({
         columnId: column.id,

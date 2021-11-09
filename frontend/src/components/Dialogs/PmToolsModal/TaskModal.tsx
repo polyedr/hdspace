@@ -43,7 +43,7 @@ const TaskModal: React.FC<Props> = ({
   const [member, setMember] = useState(members[0] || '');
   const project = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
-  const [title, setTitle] = useState(task?.title || '');
+  const [title, setTitle] = useState(task?.name || '');
   const [disc, setDisc] = useState(task?.description || '');
   const [isDone, setDone] = useState(task?.isCompleted || false);
 
@@ -81,7 +81,7 @@ const TaskModal: React.FC<Props> = ({
           column: column?.id || 0,
           project,
           action: {
-            action: `Task "${task.title}" was edited on "${title}"`,
+            action: `Task "${task.name}" was edited on "${title}"`,
             platform: 'PM-TOOLS',
             priority: 'medium',
           },
@@ -113,7 +113,6 @@ const TaskModal: React.FC<Props> = ({
             name="discription"
             styledcolor="#000"
             multiline
-            required
             value={disc}
             onChange={(e) => setDisc(e.target.value)}
             placeholder="Discription"

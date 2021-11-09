@@ -47,7 +47,7 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
   const currentMember = useSelector(selectUserForCurrentTask(task.owner));
 
   const handleDeleteTask = () => {
-    const action = `Column "${task.title}" has been deleted`;
+    const action = `Column "${task.name}" has been deleted`;
     dispatch(
       requestDeleteTask({
         action: {

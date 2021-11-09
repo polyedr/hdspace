@@ -4,7 +4,7 @@ import { ActionTypePM } from './types';
 
 export interface ToServerColumn {
   id: number;
-  title: string;
+  name: string;
   description: string;
   project: number;
 }

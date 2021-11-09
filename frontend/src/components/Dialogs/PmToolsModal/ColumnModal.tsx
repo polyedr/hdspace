@@ -25,7 +25,7 @@ type Props = {
 const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
   const dispatch = useDispatch();
   const project = useSelector(selectCurrentProjectId);
-  const [title, setTitle] = useState(column?.title || '');
+  const [title, setTitle] = useState(column?.name || '');
   const [desc, setDesc] = useState(column?.description || '');
 
   const handleSave = (e: FormEvent<HTMLFormElement>) => {
@@ -33,7 +33,7 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
     if (title) {
       dispatch(
         requestAddColumn({
-          title,
+          name: title,
           project,
           description: desc || '',
           action: {
@@ -53,11 +53,11 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
       dispatch(
         requestEditColumn({
           id: column.id,
-          title,
+          name: title,
           description: desc || '',
           project,
           action: {
-            action: `Column "${column.title}" was edited on "${title}"`,
+            action: `Column "${column.name}" was edited on "${title}"`,
             platform: 'PM-TOOLS',
             priority: 'high',
           },
@@ -91,7 +91,6 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
             styledcolor="#000"
             value={desc}
             multiline
-            required
             onChange={(e: any) => setDesc(e.target.value)}
             placeholder="Description"
             inputProps={{ maxLength: 200 }}

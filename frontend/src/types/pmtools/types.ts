@@ -18,7 +18,7 @@ export type PmToolsUserChat = {
 
 export interface TaskData {
   id: number;
-  title: string;
+  name: string;
   description: string;
   owner: number;
   category: string;
@@ -29,7 +29,7 @@ export interface TaskData {
 
 export interface ColumnData {
   id: number;
-  title: string;
+  name: string;
   description: string;
   project: number;
   created?: string;

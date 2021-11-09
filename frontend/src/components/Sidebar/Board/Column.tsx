@@ -54,7 +54,7 @@ export const Column: React.FC<Props> = ({
 
   return (
     <div className={classes.root}>
-      <h3>{column.name}</h3>
+      <p>{column.name}</p>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <p>

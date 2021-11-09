@@ -1,4 +1,4 @@
-import * as Board from '@Api/pmtools/boardApi';
+import * as Board from '@Api/pmtools/board/tasksApi';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import { requestAddHistory } from '@Redux/pmtools/activity/actions';
@@ -33,7 +33,6 @@ export function* taskEditSaga({
   payload: { project, action, ...payload },
 }: ReturnType<typeof requestEditTask>): TasksEditSagaGenerator {
   try {
-    console.log(payload);
     const project = yield select(selectCurrentProjectId);
     const selectedTask = yield call(reqWrapper, Board.updateTask, {
       data: payload,

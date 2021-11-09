@@ -1,4 +1,5 @@
-import * as Board from '@Api/pmtools/boardApi';
+import * as Board from '@Api/pmtools/board/columnApi';
+import { fetchTasks } from '@Api/pmtools/board/tasksApi';
 import { panelErrorMsg } from '@Redux/actions';
 import { requestAddHistory } from '@Redux/pmtools/activity/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
@@ -15,7 +16,7 @@ export function* columnsFetchSaga() {
   try {
     const project = yield select(selectCurrentProjectId);
     const columns = yield call(reqWrapper, Board.fetchColumns, { project });
-    const tasks = yield call(reqWrapper, Board.fetchTasks);
+    const tasks = yield call(reqWrapper, fetchTasks);
     yield put(successFetchTask(tasks));
     yield put(actions.successFetchColumn(columns));
   } catch (e) {
@@ -24,12 +25,12 @@ export function* columnsFetchSaga() {
 }
 
 export function* columnAddSaga({
-  payload: { project, title, description, action },
+  payload: { project, name, description, action },
 }: ReturnType<typeof actions.requestAddColumn>): ColumnSagaGenerator {
   try {
     const { id } = yield call(reqWrapper, Board.getBoardData);
     const column = yield call(reqWrapper, Board.createColumn, {
-      data: { name: title, description, project, id },
+      data: { name, description, project, id },
     });
     yield put(actions.successAddColumn(column));
     yield put(requestAddHistory({ project, ...action }));

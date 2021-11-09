@@ -61,7 +61,7 @@ export interface RequestColumn {
   id?: number;
   project: number;
   description: string;
-  title: string;
+  name: string;
 }
 
 export interface RequestTask {
