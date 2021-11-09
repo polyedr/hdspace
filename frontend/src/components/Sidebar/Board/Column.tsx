@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import { Droppable } from 'react-beautiful-dnd';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
@@ -107,11 +108,26 @@ export const Column: React.FC<Props> = ({
           {column.description}
         </Typography>
       </div>
-      {showTasks &&
-        members.length &&
-        column.tasks.map((task: any) => (
-          <Task members={members} column={column} task={task} key={task.id} />
-        ))}
+      <Droppable droppableId={column.id} key={column.id}>
+        {(provided) => {
+          return (
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              {showTasks &&
+                members.length &&
+                column.tasks.map((task: any, i: number) => (
+                  <Task
+                    index={i}
+                    members={members}
+                    column={column}
+                    task={task}
+                    key={task.id}
+                  />
+                ))}
+              {provided.placeholder}
+            </div>
+          );
+        }}
+      </Droppable>
 
       <TaskModal
         show={tasksModal}

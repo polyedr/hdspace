@@ -2,8 +2,14 @@ import { CallEffect, PutEffect, SelectEffect } from 'redux-saga/effects';
 import { ServerProject } from '../types';
 import { ActionTypePM } from './types';
 
+export type MoveCardGenerator = Generator<
+  CallEffect | SelectEffect | PutEffect,
+  void | Error,
+  any
+>;
+
 export interface ToServerColumn {
-  id: number;
+  id: string;
   name: string;
   description: string;
   project: number;

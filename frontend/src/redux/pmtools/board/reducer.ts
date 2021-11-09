@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import TYPES from '@Redux/actionTypes';
 import { BoardState, InviteAction } from '../types';
 
@@ -49,6 +50,10 @@ const boardReducer = (
         ...state,
         taskList: state.taskList.filter((task) => task.id !== action.payload),
       };
+    case TYPES.UPDATE_CARD_INDEX_SUCCESS:
+      const { destList, removed, dest } = action.payload;
+      destList.cards.splice(dest, 0, removed);
+      return state;
 
     default:
       return state;

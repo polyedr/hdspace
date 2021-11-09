@@ -1,3 +1,4 @@
+import { DestinationType } from '@Src/types/pmtools/actions';
 import { ColumnData } from '@Src/types/pmtools/types';
 import { createSelector } from 'reselect';
 import { BoardRootState } from '../types';
@@ -6,11 +7,6 @@ export const selectColumnList = (state: BoardRootState) =>
   state.board.columnList;
 
 export const selectTaskList = (state: BoardRootState) => state.board.taskList;
-
-export const selectColumn = (id: ColumnData['id']) =>
-  createSelector(selectColumnList, (columnList) =>
-    columnList.find((item: ColumnData) => item.id === id),
-  );
 
 export const selectColumnListWithTasks = createSelector(
   selectColumnList,
@@ -22,3 +18,8 @@ export const selectColumnListWithTasks = createSelector(
     }));
   },
 );
+
+export const selectColumn = (value: DestinationType['droppableId']) =>
+  createSelector(selectColumnListWithTasks, (columnList) => {
+    return columnList.find((item: ColumnData) => item.id === value);
+  });

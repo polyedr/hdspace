@@ -68,6 +68,7 @@ export type InviteAction = ReturnType<
   | typeof actionsTasks.successAddTask
   | typeof actionsTasks.successEditTask
   | typeof actionsTasks.successDeleteTask
+  | typeof actionsTasks.successUpdateCardIndex
   | typeof actionsColumns.successFetchColumn
   | typeof actionsColumns.successAddColumn
   | typeof actionsColumns.successEditColumn

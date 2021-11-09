@@ -1,4 +1,6 @@
+import { DropResult } from 'react-beautiful-dnd';
 import { ServerUserData } from '../types';
+import { IListData, IServerCardData } from './trelloTypes';
 import { Permission } from './types';
 
 export type ToServerPermissions = {
@@ -57,8 +59,24 @@ export type ToServerSearchMember = {
   search: string;
 };
 
+export type DestinationType = {
+  index: number;
+  droppableId: string;
+};
+
+export type UpdateCardIndexType = {
+  destination: DestinationType;
+  source: DropResult['source'];
+};
+
+export type UpdateCardIndexTypeSuccess = {
+  dest: number;
+  removed: IServerCardData;
+  destList: IListData;
+};
+
 export interface RequestColumn {
-  id?: number;
+  id?: string | number;
   project: number;
   description: string;
   name: string;
@@ -69,7 +87,7 @@ export interface RequestTask {
   name?: string;
   description?: string;
   owner?: number | null;
-  column?: number;
+  column?: number | string;
   project: number;
   creator?: string;
   status?: string;

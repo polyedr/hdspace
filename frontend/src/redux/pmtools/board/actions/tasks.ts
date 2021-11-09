@@ -1,6 +1,27 @@
 import TYPES from '@Redux/actionTypes';
-import { RequestTask } from '@Src/types/pmtools/actions';
+import {
+  RequestTask,
+  UpdateCardIndexType,
+  UpdateCardIndexTypeSuccess,
+} from '@Src/types/pmtools/actions';
 import { ActionTypePM } from '@Src/types/pmtools/types';
+
+export const requestUpdateCardIndex = ({
+  destination,
+  source,
+}: UpdateCardIndexType) => ({
+  type: TYPES.UPDATE_CARD_INDEX,
+  payload: { destination, source },
+});
+
+export const successUpdateCardIndex = ({
+  dest,
+  removed,
+  destList,
+}: UpdateCardIndexTypeSuccess) => ({
+  type: TYPES.UPDATE_CARD_INDEX_SUCCESS,
+  payload: { dest, removed, destList },
+});
 
 export const requestAddTask = (
   payload: RequestTask & { action: ActionTypePM },
@@ -17,7 +38,7 @@ export const requestEditTask = (
 });
 
 export const requestDeleteTask = (
-  payload: { taskId: number } & { action: ActionTypePM },
+  payload: { taskId: string } & { action: ActionTypePM },
 ) => ({
   type: TYPES.DELETE_TASK,
   payload,

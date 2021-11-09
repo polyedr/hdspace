@@ -16,8 +16,14 @@ export type PmToolsUserChat = {
   password: string;
 };
 
+export type MoveCardToListType = {
+  cardId: number;
+  destination: string;
+  newPos: number;
+};
+
 export interface TaskData {
-  id: number;
+  id: string;
   name: string;
   description: string;
   owner: number;
@@ -28,7 +34,7 @@ export interface TaskData {
 }
 
 export interface ColumnData {
-  id: number;
+  id: string | number;
   name: string;
   description: string;
   project: number;
