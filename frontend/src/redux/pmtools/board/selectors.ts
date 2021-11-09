@@ -1,5 +1,4 @@
-import { ColumnData, TaskData } from '@Src/types/pmtools/types';
-import sortById from '@Utils/sortById';
+import { ColumnData } from '@Src/types/pmtools/types';
 import { createSelector } from 'reselect';
 import { BoardRootState } from '../types';
 
@@ -16,11 +15,10 @@ export const selectColumn = (id: ColumnData['id']) =>
 export const selectColumnListWithTasks = createSelector(
   selectColumnList,
   selectTaskList,
-  (columnList, taskList) =>
-    columnList.map((column: ColumnData) => ({
-      ...column,
-      tasks: sortById(
-        taskList.filter((item: TaskData) => item.column === column.id),
-      ),
-    })),
+  (columnList, taskList) => {
+    return columnList.map((l: any) => ({
+      ...l,
+      tasks: taskList.filter((card: any) => card.idList === l.id),
+    }));
+  },
 );

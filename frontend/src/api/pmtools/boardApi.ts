@@ -4,32 +4,42 @@ import { RequestColumn, RequestTask } from '@Src/types/pmtools/actions';
 import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
+const board = '1mRQPFar';
+const apiKey = 'e97882cd87cb5e93e9a78e875ab0379b';
+const token =
+  '453ed0540009ad48b587d296957a530b0cd2f25bc35ef29242a99f068e9c7091';
+
+export const getBoardData = async ({ ...axiosProps }: MyAxiosProps) =>
+  myAxios({
+    ...axiosProps,
+    baseURL: 'https://api.trello.com/1',
+    method: 'GET',
+    url: `/boards/${board}?key=${apiKey}&token=${token}`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
+
 export const fetchColumns = async ({
   project,
   ...axiosProps
 }: { project: RequestColumn['project'] } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
+    baseURL: 'https://api.trello.com/1',
     method: 'GET',
-    url: `/projects/project-columns/?project=${project}`,
+    url: `/boards/${board}/lists?key=${apiKey}&token=${token}`,
   })
-    .then((results: AxiosResponse) => results.data.results)
+    .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
 export const fetchTasks = ({ ...axiosProps }: MyAxiosProps) =>
   myAxios({
     ...axiosProps,
+    baseURL: 'https://api.trello.com/1',
     method: 'GET',
-    url: `/projects/column-tasks/`,
+    url: `/boards/${board}/cards?key=${apiKey}&token=${token}`,
   })
-    .then((results: AxiosResponse) => {
-      return results.data.results.map((item: RequestTask) => ({
-        ...item,
-        category: 'Readers',
-        isCompleted: item.status !== 'created',
-        status: undefined,
-      }));
-    })
+    .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
 export const createColumn = ({
@@ -38,9 +48,9 @@ export const createColumn = ({
 }: { data: RequestColumn } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
-    data,
+    baseURL: 'https://api.trello.com/1',
     method: 'POST',
-    url: `/projects/project-columns/`,
+    url: `/lists?name=${data.name}&idBoard=${data.id}&key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
@@ -51,9 +61,10 @@ export const updateColumn = ({
 }: RequestColumn & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
-    data,
-    method: 'PATCH',
-    url: `/projects/project-columns/${data.id}/`,
+    data: { name: data.title },
+    baseURL: 'https://api.trello.com/1',
+    method: 'PUT',
+    url: `/lists/${data.id}/?key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
@@ -64,8 +75,10 @@ export const deleteColumn = ({
 }: { columnId: number } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
-    method: 'DELETE',
-    url: `/projects/project-columns/${columnId}/`,
+    method: 'PUT',
+    data: { value: true },
+    baseURL: 'https://api.trello.com/1',
+    url: `/lists/${columnId}/closed?key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
@@ -76,9 +89,10 @@ export const createTask = ({
 }: RequestTask & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
-    data,
+    data: { name: data.name },
+    baseURL: 'https://api.trello.com/1',
     method: 'POST',
-    url: `/projects/column-tasks/`,
+    url: `/cards?idList=${data.column}&key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
@@ -86,16 +100,18 @@ export const createTask = ({
 export const updateTask = ({
   data,
   ...axiosProps
-}: RequestTask & MyAxiosProps) => {
-  return myAxios({
+}: RequestTask & MyAxiosProps) =>
+  myAxios({
     ...axiosProps,
-    data,
-    method: 'PATCH',
-    url: `/projects/column-tasks/${data.id}/`,
+    data: {
+      name: data.name,
+    },
+    baseURL: 'https://api.trello.com/1',
+    method: 'PUT',
+    url: `/cards/${data.id}?key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
-};
 
 export const deleteTask = ({
   taskId,
@@ -103,8 +119,9 @@ export const deleteTask = ({
 }: { taskId: number } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
+    baseURL: 'https://api.trello.com/1',
     method: 'DELETE',
-    url: `/projects/column-tasks/${taskId}/`,
+    url: `/cards/${taskId}?key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);

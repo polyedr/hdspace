@@ -3,7 +3,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { ColumnData, TaskData } from '@Src/types/pmtools/types';
+import { ColumnData } from '@Src/types/pmtools/types';
 import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
 import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
@@ -14,7 +14,7 @@ import { selectUserForCurrentTask } from '@Redux/permissions/selectors';
 
 type Props = {
   column: ColumnData;
-  task: TaskData;
+  task: any;
   members: Array<PermissionsUserData & { id: string }>;
 };
 
@@ -63,7 +63,7 @@ const Task: React.FC<Props> = ({ column, task, members }) => {
   return (
     <div className={classes.task}>
       <div>
-        <h4 className={classes.title}>{task.title}</h4>
+        <h4 className={classes.title}>{task.name}</h4>
         {currentMember && (
           <ListItem style={{ padding: 0 }}>
             <div style={{ marginRight: 5 }}>

@@ -66,13 +66,13 @@ export interface RequestColumn {
 
 export interface RequestTask {
   id?: number;
-  title: string;
-  description: string;
-  owner: number | null;
+  name?: string;
+  description?: string;
+  owner?: number | null;
   column?: number;
   project: number;
-  creator: string;
-  status: string;
+  creator?: string;
+  status?: string;
 }
 
 export interface RequestPermissions {

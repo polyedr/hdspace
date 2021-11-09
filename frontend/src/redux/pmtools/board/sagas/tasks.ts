@@ -33,6 +33,8 @@ export function* taskEditSaga({
   payload: { project, action, ...payload },
 }: ReturnType<typeof requestEditTask>): TasksEditSagaGenerator {
   try {
+    console.log(payload);
+    const project = yield select(selectCurrentProjectId);
     const selectedTask = yield call(reqWrapper, Board.updateTask, {
       data: payload,
     });

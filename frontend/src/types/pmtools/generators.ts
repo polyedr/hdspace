@@ -25,9 +25,9 @@ export type TasksAddSagaGenerator = Generator<
 >;
 
 export type TasksEditSagaGenerator = Generator<
-  CallEffect | PutEffect,
+  CallEffect | PutEffect | SelectEffect,
   void,
-  ToServerTask
+  ToServerTask & number
 >;
 
 export type ColumnSagaGenerator = Generator<

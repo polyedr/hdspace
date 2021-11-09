@@ -53,12 +53,8 @@ const TaskModal: React.FC<Props> = ({
     if (title) {
       dispatch(
         requestAddTask({
-          title,
-          description: disc,
-          status: 'created',
-          column: column.id || 0,
-          creator: '',
-          owner: member?.userData?.id || null,
+          name: title,
+          column: column.id,
           project,
           action: {
             action: `Task "${title}" was added`,
@@ -77,7 +73,7 @@ const TaskModal: React.FC<Props> = ({
       dispatch(
         requestEditTask({
           id: selectedTaskId || 0,
-          title,
+          name: title,
           description: disc,
           creator: '',
           owner: member?.userData?.id || null,

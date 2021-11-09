@@ -27,8 +27,9 @@ export function* columnAddSaga({
   payload: { project, title, description, action },
 }: ReturnType<typeof actions.requestAddColumn>): ColumnSagaGenerator {
   try {
+    const { id } = yield call(reqWrapper, Board.getBoardData);
     const column = yield call(reqWrapper, Board.createColumn, {
-      data: { title, description, project },
+      data: { name: title, description, project, id },
     });
     yield put(actions.successAddColumn(column));
     yield put(requestAddHistory({ project, ...action }));

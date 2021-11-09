@@ -48,8 +48,14 @@ export const Column: React.FC<Props> = ({
   const membersData = useSelector(selectAllUsersPermissions);
   const members = Object.values(membersData);
 
+  if (!column) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className={classes.root}>
+      <h3>{column.name}</h3>
+
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <p>
           {column.tasks.length

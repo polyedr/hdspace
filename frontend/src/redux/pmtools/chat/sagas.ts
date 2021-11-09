@@ -20,11 +20,6 @@ export function* loginUser({ payload: password }: any) {
       username,
       password,
     });
-    console.log({
-      realm: config.realm,
-      username,
-      password,
-    });
     if (client && client.config) {
       yield put(successLoginChatUser(client));
       localStorage.setItem('login', JSON.stringify({ password }));
