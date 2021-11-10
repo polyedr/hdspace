@@ -1319,6 +1319,7 @@ export type ElementsToAdd = {
   pagination: () => PaginationServerElement;
   carousel: () => CarouselServerElement;
   navbar: () => NavbarServerElement;
+  hyperlink: () => LabelServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
