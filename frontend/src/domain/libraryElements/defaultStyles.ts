@@ -1268,4 +1268,5 @@ export const DEFAULT_ELEMENTS_STYLES: {
   carouselItem: defaultListItemStyles,
   navbar: defaultNavbarStyles,
   navbarItem: defaultListItemStyles,
+  hyperlink: defaultLabelStyles,
 };

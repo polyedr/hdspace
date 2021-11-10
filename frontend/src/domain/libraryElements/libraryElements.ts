@@ -147,6 +147,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   carousel: makeCarousel,
   navbar: makeNavbar,
   navbarItem: makeNavbarItem,
+  hyperlink: makeLabel,
 };
 
 export const ICONS: Partial<

@@ -103,7 +103,6 @@ const InteractionsHandler = ({
         type={element.type}
         styles={styles}
         dropTargetParams={dropTargetParams}
-        preSelectedElementId={preSelectedElementId}
         enableDropTargetBordersMode={enableDropTargetBordersMode}
         isActiveBorder={[
           activeElementId,
