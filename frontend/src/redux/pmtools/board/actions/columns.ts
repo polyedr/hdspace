@@ -1,6 +1,7 @@
 import TYPES from '@Redux/actionTypes';
 import { RequestColumn } from '@Src/types/pmtools/actions';
-import { ActionTypePM, ColumnData } from '@Src/types/pmtools/types';
+import { IColumnData } from '@Src/types/pmtools/trelloTypes';
+import { ActionTypePM } from '@Src/types/pmtools/types';
 
 // requestFetchBoard
 export const requestFetchBoard = (payload: RequestColumn['project']) => ({
@@ -8,7 +9,7 @@ export const requestFetchBoard = (payload: RequestColumn['project']) => ({
   payload,
 });
 
-export const successFetchColumn = (payload: Array<ColumnData>) => ({
+export const successFetchColumn = (payload: Array<IColumnData>) => ({
   type: TYPES.FETCH_COLUMNS_SUCCESS,
   payload,
 });
@@ -21,7 +22,7 @@ export const requestAddColumn = (
   payload,
 });
 
-export const successAddColumn = (payload: ColumnData) => ({
+export const successAddColumn = (payload: IColumnData) => ({
   type: TYPES.ADD_COLUMN_SUCCESS,
   payload,
 });
@@ -34,7 +35,7 @@ export const requestEditColumn = (
   payload,
 });
 
-export const successEditColumn = (payload: ColumnData) => ({
+export const successEditColumn = (payload: IColumnData) => ({
   type: TYPES.EDIT_COLUMN_SUCCESS,
   payload,
 });

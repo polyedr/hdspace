@@ -8,8 +8,6 @@ import {
   Button,
   TextField,
   Typography,
-  Checkbox,
-  FormControlLabel,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import {
@@ -19,14 +17,14 @@ import {
 import { ModalAction, PermissionsUserData } from '@Src/types/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { ColumnData, TaskData } from '@Src/types/pmtools/types';
+import { IColumnData, IServerTaskData } from '@Src/types/pmtools/trelloTypes';
 
 type Props = {
   show: boolean;
-  task?: TaskData | null;
+  task?: IServerTaskData | null;
   hide: () => void;
   action: ModalAction;
-  column: ColumnData;
+  column: IColumnData;
   selectedTaskId?: number | null;
   members: Array<PermissionsUserData & { id: string }>;
 };
@@ -44,8 +42,6 @@ const TaskModal: React.FC<Props> = ({
   const project = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.name || '');
-  const [disc, setDisc] = useState(task?.description || '');
-  const [isDone, setDone] = useState(task?.isCompleted || false);
 
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -74,10 +70,8 @@ const TaskModal: React.FC<Props> = ({
         requestEditTask({
           id: selectedTaskId || 0,
           name: title,
-          description: disc,
           creator: '',
           owner: member?.userData?.id || null,
-          status: isDone ? 'completed' : 'created',
           column: column?.id || 0,
           project,
           action: {
@@ -108,21 +102,6 @@ const TaskModal: React.FC<Props> = ({
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
             inputProps={{ maxLength: 30 }}
-          />
-          <PanelTextField
-            name="discription"
-            styledcolor="#000"
-            multiline
-            value={disc}
-            onChange={(e) => setDisc(e.target.value)}
-            placeholder="Discription"
-          />
-
-          <FormControlLabel
-            label="Completed"
-            control={
-              <Checkbox checked={isDone} onChange={() => setDone(!isDone)} />
-            }
           />
 
           {members.length ? (

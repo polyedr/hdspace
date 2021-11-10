@@ -1,5 +1,5 @@
 import TYPES from '@Redux/actionTypes';
-import { ChatAction, ChatState } from '../types';
+import { ChatState } from '../types';
 
 const initialState: ChatState = {
   client: null,

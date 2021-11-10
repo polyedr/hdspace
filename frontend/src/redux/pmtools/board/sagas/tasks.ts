@@ -83,8 +83,7 @@ export function* moveCardToList({
     const start = destList.tasks[0];
     const end = destList.tasks[destList.tasks.length - 1];
     const pos = up && down && (up.pos + down.pos) / 2;
-    const count = removed.id === end.id ? end.pos * 2 : start / 2;
-
+    const count = removed.id === end.id ? end.pos * 2 : start.pos / 2;
     yield call(Board.apiMoveCardToList, {
       cardId: removed.id,
       destination: destination.droppableId,

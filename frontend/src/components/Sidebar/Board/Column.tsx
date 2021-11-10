@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React, { useState } from 'react';
 import { Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -7,12 +8,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { ColumnData } from '@Src/types/pmtools/types';
 import { StyledIconButton } from '@Components/styledComponents';
 import { ModalAction } from '@Src/types/types';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
 import { useSelector } from 'react-redux';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
+import { IColumnData } from '@Src/types/pmtools/trelloTypes';
 import Task from './Task';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -31,7 +32,7 @@ const useStyles = makeStyles(({ palette }) => ({
 
 type Props = {
   tasksModal: boolean;
-  column: ColumnData;
+  column: IColumnData;
   setTasksModal: (v: boolean) => void;
   setConfirmModal: (v: boolean) => void;
   setColumnModal: (v: boolean) => void;
@@ -58,11 +59,6 @@ export const Column: React.FC<Props> = ({
       <p>{column.name}</p>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <p>
-          {column.tasks.length
-            ? `You have ${column.tasks.length} tasks`
-            : 'Create first task'}
-        </p>
         <div>
           {column.tasks.length ? (
             <StyledIconButton
@@ -112,8 +108,9 @@ export const Column: React.FC<Props> = ({
         {(provided) => {
           return (
             <div {...provided.droppableProps} ref={provided.innerRef}>
+              <p>You have {column.tasks.length} tasks</p>
+
               {showTasks &&
-                members.length &&
                 column.tasks.map((task: any, i: number) => (
                   <Task
                     index={i}

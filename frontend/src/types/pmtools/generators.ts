@@ -1,5 +1,6 @@
 import { CallEffect, PutEffect, SelectEffect } from 'redux-saga/effects';
 import { ServerProject } from '../types';
+import { IColumnData } from './trelloTypes';
 import { ActionTypePM } from './types';
 
 export type MoveCardGenerator = Generator<
@@ -39,7 +40,7 @@ export type TasksEditSagaGenerator = Generator<
 export type ColumnSagaGenerator = Generator<
   CallEffect | PutEffect,
   void,
-  ToServerColumn
+  IColumnData
 >;
 
 export type ColumnDeletSagaGenerator = Generator<

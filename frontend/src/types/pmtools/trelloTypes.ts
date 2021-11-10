@@ -1,8 +1,6 @@
-export type BoardNameType = string;
-
 export interface IServerListData {
   closed: boolean;
-  id: string;
+  id: string | number;
   idBoard: string;
   name: string;
   pos: number;
@@ -10,11 +8,11 @@ export interface IServerListData {
   subscribed: boolean;
 }
 
-export interface IListData extends IServerListData {
-  cards: Array<IServerCardData>;
+export interface IColumnData extends IServerListData {
+  tasks: Array<IServerTaskData>;
 }
 
-export interface IServerCardData {
+export interface IServerTaskData {
   badges: BadgesTypes;
   cardRole: null;
   checkItemRole: null;

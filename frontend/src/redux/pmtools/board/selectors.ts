@@ -1,5 +1,4 @@
-import { DestinationType } from '@Src/types/pmtools/actions';
-import { ColumnData } from '@Src/types/pmtools/types';
+import { IColumnData, IServerTaskData } from '@Src/types/pmtools/trelloTypes';
 import { createSelector } from 'reselect';
 import { BoardRootState } from '../types';
 
@@ -12,14 +11,14 @@ export const selectColumnListWithTasks = createSelector(
   selectColumnList,
   selectTaskList,
   (columnList, taskList) => {
-    return columnList.map((l: any) => ({
+    return columnList.map((l: IColumnData) => ({
       ...l,
-      tasks: taskList.filter((card: any) => card.idList === l.id),
+      tasks: taskList.filter((card: IServerTaskData) => card.idList === l.id),
     }));
   },
 );
 
-export const selectColumn = (value: DestinationType['droppableId']) =>
+export const selectColumn = (value: string) =>
   createSelector(selectColumnListWithTasks, (columnList) => {
-    return columnList.find((item: ColumnData) => item.id === value);
+    return columnList.find((item: IColumnData) => item.id === value);
   });

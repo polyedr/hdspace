@@ -4,7 +4,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import { Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { ColumnData } from '@Src/types/pmtools/types';
 import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
 import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
@@ -12,9 +11,10 @@ import { ModalAction, PermissionsUserData } from '@Src/types/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { Avatar, ListItem, ListItemText } from '@material-ui/core';
 import { selectUserForCurrentTask } from '@Redux/permissions/selectors';
+import { IColumnData } from '@Src/types/pmtools/trelloTypes';
 
 type Props = {
-  column: ColumnData;
+  column: IColumnData;
   task: any;
   index: number;
   members: Array<PermissionsUserData & { id: string }>;

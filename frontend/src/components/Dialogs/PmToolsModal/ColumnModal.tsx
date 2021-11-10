@@ -13,20 +13,19 @@ import {
 } from '@Redux/pmtools/board/actions/columns';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { PanelTextField } from '@Components/styledComponents';
-import { ColumnData } from '@Src/types/pmtools/types';
+import { IColumnData } from '@Src/types/pmtools/trelloTypes';
 
 type Props = {
   show: boolean;
   hide: () => void;
   action: ModalAction;
-  column?: ColumnData | null;
+  column?: IColumnData | null;
 };
 
 const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
   const dispatch = useDispatch();
   const project = useSelector(selectCurrentProjectId);
   const [title, setTitle] = useState(column?.name || '');
-  const [desc, setDesc] = useState(column?.description || '');
 
   const handleSave = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,7 +34,6 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
         requestAddColumn({
           name: title,
           project,
-          description: desc || '',
           action: {
             action: `Column "${title}" was added`,
             platform: 'PM-TOOLS',
@@ -54,7 +52,6 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
         requestEditColumn({
           id: column.id,
           name: title,
-          description: desc || '',
           project,
           action: {
             action: `Column "${column.name}" was edited on "${title}"`,
@@ -85,15 +82,6 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
             onChange={(e: any) => setTitle(e.target.value)}
             placeholder="Title"
             inputProps={{ maxLength: 35 }}
-          />
-          <PanelTextField
-            name="description"
-            styledcolor="#000"
-            value={desc}
-            multiline
-            onChange={(e: any) => setDesc(e.target.value)}
-            placeholder="Description"
-            inputProps={{ maxLength: 200 }}
           />
           <DialogActions>
             <Button type="submit" color="secondary" variant="contained">

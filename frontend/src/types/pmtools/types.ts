@@ -22,26 +22,6 @@ export type MoveCardToListType = {
   newPos: number;
 };
 
-export interface TaskData {
-  id: string;
-  name: string;
-  description: string;
-  owner: number;
-  category: string;
-  column?: number;
-  isCompleted: boolean;
-  user?: ServerUserData;
-}
-
-export interface ColumnData {
-  id: string | number;
-  name: string;
-  description: string;
-  project: number;
-  created?: string;
-  modified?: string;
-}
-
 export type Permission = string;
 
 export type PermissionsData = {
