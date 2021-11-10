@@ -49,6 +49,15 @@ def isRectangleOverlap(R1, R2):
         return True
 
 
+def isRectangleOverlap_nonnested(R1, R2):
+    if (R1[0] >= R2[2]) or (R1[2] <= R2[0]) or (R1[3] <= R2[1]) or (R1[1] >= R2[3]):
+        return False
+    elif (R1[0] >= R2[2]) and (R1[2] <= R2[0]) and (R1[3] <= R2[1]) and (R1[1] >= R2[3]):
+        return True
+    else:
+        return True
+
+
 # https://stackoverflow.com/questions/25068538/intersection-and-difference-of-two-rectangles/25068722#25068722
 class Rectangle:
     def intersection(self, other):

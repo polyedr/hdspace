@@ -52,7 +52,7 @@ from apps.utils.fset1 import (
     calculateDistance,
     SQUARES_OVERLAP_THRESHOLD_CONTOUR,
     change_permissions_recursive,
-    contains_rectangle,
+    contains_rectangle, isRectangleOverlap_nonnested,
 )
 
 config_tesseract = "-l eng --oem 1 --psm 3"
@@ -979,7 +979,7 @@ def clusters_printing(root_block, fname, image_allclusters=[], image_cclusters=[
 
 
 def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input, window_name1, fclusters):
-    # Ternary assembling algorithm run after the clusters pro function start
+    # Ternary assembling algorithm runs after the clusters pro function start
     # Define the root block
     root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
     root_block.types = "ccluster"
@@ -2542,12 +2542,6 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
         imgpath = ""
 
         # Create the opencv recognition start
-
-        # image_dict = {}
-        # result_regions = {}
-        # text = False
-        # watch = True
-
         if validated_data.get("image"):
             image_recognize = validated_data.pop("image")
             node = ProjectScreen.objects.create(image=image_recognize, **validated_data)
@@ -3646,7 +3640,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 imgpath = MEDIA_ROOT + "/uploads/" + "fdict_before_" + fname
                 cv2.imwrite(imgpath, image_fdict_before)
 
-            calculate_excluded_indices(fdict, fnamesize)
+            # The indices exclusion should be added to the firstclusters calculation
+            # calculate_excluded_indices(fdict, fnamesize)
             # Show the output after the indices exclusion
             print("fdict_after", fdict)
             for idx, region in enumerate(fdict[fnamesize]["regions"]):
@@ -3683,7 +3678,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                     for pre, fill, node in RenderTree(root_firstcluster):
                         rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
                         if node != root_firstcluster:
-                            if(isRectangleOverlap(rectangle_fcluster, rectangle_firstcluster)):
+                            if(isRectangleOverlap_nonnested(rectangle_fcluster, rectangle_firstcluster)):
                                 clusters.remove(cluster)
             # Remove fclusters which are contradictive with firstclusters (overlap) end
 
@@ -3698,7 +3693,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                         for pre, fill, node in RenderTree(root_firstcluster):
                             rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
                             if node != root_firstcluster:
-                                if (isRectangleOverlap(rectangle_dbcluster, rectangle_firstcluster)):
+                                if (isRectangleOverlap_nonnested(rectangle_dbcluster, rectangle_firstcluster)):
                                     dbclusters.remove(cluster)
                 # Remove dbclusters which are contradictive with firstclusters (overlap) end
 
