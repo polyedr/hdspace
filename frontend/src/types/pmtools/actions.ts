@@ -1,6 +1,6 @@
 import { DropResult } from 'react-beautiful-dnd';
 import { ServerUserData } from '../types';
-import { IListData, IServerCardData } from './trelloTypes';
+import { IServerCardData } from './trelloTypes';
 import { Permission } from './types';
 
 export type ToServerPermissions = {
@@ -72,7 +72,9 @@ export type UpdateCardIndexType = {
 export type UpdateCardIndexTypeSuccess = {
   dest: number;
   removed: IServerCardData;
-  destList: IListData;
+  destList: any;
+  source: number;
+  sourceList: any;
 };
 
 export interface RequestColumn {

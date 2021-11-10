@@ -51,8 +51,9 @@ const boardReducer = (
         taskList: state.taskList.filter((task) => task.id !== action.payload),
       };
     case TYPES.UPDATE_CARD_INDEX_SUCCESS:
-      const { destList, removed, dest } = action.payload;
-      destList.cards.splice(dest, 0, removed);
+      const { destList, removed, dest, source, sourceList } = action.payload;
+      sourceList.tasks.splice(source, 1);
+      destList.tasks.splice(dest, 0, removed);
       return state;
 
     default:

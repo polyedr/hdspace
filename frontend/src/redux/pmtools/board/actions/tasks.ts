@@ -18,9 +18,11 @@ export const successUpdateCardIndex = ({
   dest,
   removed,
   destList,
+  source,
+  sourceList,
 }: UpdateCardIndexTypeSuccess) => ({
   type: TYPES.UPDATE_CARD_INDEX_SUCCESS,
-  payload: { dest, removed, destList },
+  payload: { dest, removed, destList, source, sourceList },
 });
 
 export const requestAddTask = (
