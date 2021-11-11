@@ -298,6 +298,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             "project_data_text",
             "project_data_json",
             "project_data_activity_json",
+            "project_data_trello_json",
             "tags",
         )
         extra_kwargs = {
@@ -371,6 +372,7 @@ class ProjectWithScreensSerializer(TaggitSerializer, serializers.ModelSerializer
             "project_data_text",
             "project_data_json",
             "project_data_activity_json",
+            "project_data_trello_json",
         )
         extra_kwargs = {
             "preview": {"read_only": True},
@@ -500,6 +502,7 @@ class ProjectWithColumnsSerializer(serializers.ModelSerializer):
             "project_data_text",
             "project_data_json",
             "project_data_activity_json",
+            "project_data_trello_json",
         )
         extra_kwargs = {
             "preview": {"read_only": True},
@@ -532,6 +535,7 @@ class ProjectWithMembersSerializer(serializers.ModelSerializer):
             "project_data_text",
             "project_data_json",
             "project_data_activity_json",
+            "project_data_trello_json",
         )
         extra_kwargs = {
             "preview": {"read_only": True},
