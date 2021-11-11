@@ -6,14 +6,13 @@ import { MoveCardToListType } from '@Src/types/pmtools/types';
 import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
-const { board, apiKey, token } = config;
+const { apiKey, token } = config;
 
-export const fetchTasks = ({ ...axiosProps }: MyAxiosProps) =>
+export const fetchTasks = (boardId) =>
   myAxios({
-    ...axiosProps,
     baseURL: 'https://api.trello.com/1',
     method: 'GET',
-    url: `/boards/${board}/cards?key=${apiKey}&token=${token}`,
+    url: `/boards/${boardId}/cards?key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);

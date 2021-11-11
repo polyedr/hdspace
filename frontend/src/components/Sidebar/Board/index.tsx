@@ -27,7 +27,7 @@ const TasksTab: FC = () => {
 
   useEffect(() => {
     dispatch(requestFetchBoard(project));
-  }, [dispatch, project, columnList]);
+  }, [dispatch, project]);
 
   const titleActions = [
     {

@@ -15,8 +15,9 @@ import { successFetchTask } from '../actions/tasks';
 export function* columnsFetchSaga() {
   try {
     const project = yield select(selectCurrentProjectId);
-    const columns = yield call(reqWrapper, Board.fetchColumns, { project });
-    const tasks = yield call(reqWrapper, fetchTasks);
+    const boardId = yield call(reqWrapper, Board.apiGetBoard, { project });
+    const columns = yield call(Board.fetchColumns, boardId);
+    const tasks = yield call(fetchTasks, boardId);
     yield put(successFetchTask(tasks));
     yield put(actions.successFetchColumn(columns));
   } catch (e) {
@@ -28,9 +29,9 @@ export function* columnAddSaga({
   payload: { project, name, action },
 }: ReturnType<typeof actions.requestAddColumn>): ColumnSagaGenerator {
   try {
-    const { id } = yield call(reqWrapper, Board.getBoardData);
+    const boardId = yield call(reqWrapper, Board.apiGetBoard, { project });
     const column = yield call(reqWrapper, Board.createColumn, {
-      data: { name, project, id },
+      data: { name, project, id: boardId },
     });
     yield put(actions.successAddColumn(column));
     yield put(requestAddHistory({ project, ...action }));

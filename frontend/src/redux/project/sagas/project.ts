@@ -28,6 +28,7 @@ import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
+import { createNewBoard } from '@Api/pmtools/board/columnApi';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -285,6 +286,17 @@ export function* createProjectSaga(
         projectId: createdProject.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
+
+      // Create a trello board for the project
+      const board = yield call(createNewBoard, { name: createdProject.name });
+      console.log(board);
+      yield call(reqWrapper, apiUpdateProject, {
+        data: {
+          id: createdProject.id,
+          project_data_trello_json: board.id,
+        },
+      });
+
       yield put(Actions.setAssetLists(null));
       yield put(Actions.setSelectedAssetListId(null));
       const projects: Project[] = yield select(selectProjectsAsArr);

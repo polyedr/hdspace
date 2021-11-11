@@ -1,31 +1,38 @@
 import { handleError } from '@Api/helper';
 import config from '@Constants/trelloApi';
 import { myAxios } from '@Src/config/settings';
-import { RequestColumn } from '@Src/types/pmtools/actions';
+import { RequestAction, RequestColumn } from '@Src/types/pmtools/actions';
 import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
-const { board, apiKey, token } = config;
+const { apiKey, token } = config;
 
-export const getBoardData = async ({ ...axiosProps }: MyAxiosProps) =>
+export const apiGetBoard = ({
+  project,
+  ...axiosProps
+}: MyAxiosProps & { project: RequestAction['project'] }) =>
   myAxios({
     ...axiosProps,
-    baseURL: 'https://api.trello.com/1',
     method: 'GET',
-    url: `/boards/${board}?key=${apiKey}&token=${token}`,
+    url: `/projects/projects/${project}/`,
+  })
+    .then((results: AxiosResponse) => results.data.project_data_trello_json)
+    .catch(handleError);
+
+export const createNewBoard = async ({ name }: { name: string }) =>
+  myAxios({
+    baseURL: 'https://api.trello.com/1',
+    method: 'POST',
+    url: `/boards/?name=${name}&key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
 
-export const fetchColumns = async ({
-  project,
-  ...axiosProps
-}: { project: RequestColumn['project'] } & MyAxiosProps) =>
+export const fetchColumns = async (boardId: string) =>
   myAxios({
-    ...axiosProps,
     baseURL: 'https://api.trello.com/1',
     method: 'GET',
-    url: `/boards/${board}/lists?key=${apiKey}&token=${token}`,
+    url: `/boards/${boardId}/lists?key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
@@ -44,18 +51,19 @@ export const createColumn = ({
     .catch(handleError);
 
 export const updateColumn = ({
-  data,
+  data: { id, name },
   ...axiosProps
-}: RequestColumn & MyAxiosProps) =>
-  myAxios({
+}: RequestColumn & MyAxiosProps) => {
+  return myAxios({
     ...axiosProps,
-    data: { name: data.title },
+    data: { name },
     baseURL: 'https://api.trello.com/1',
     method: 'PUT',
-    url: `/lists/${data.id}/?key=${apiKey}&token=${token}`,
+    url: `/lists/${id}/?key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
+};
 
 export const deleteColumn = ({
   columnId,

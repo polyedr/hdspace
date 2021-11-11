@@ -20,10 +20,12 @@ const boardReducer = (
       return {
         ...state,
         columnList: [
-          ...state.columnList.filter(
-            (column) => column.id !== action.payload.id,
-          ),
-          action.payload,
+          ...state.columnList.map((column) => {
+            if (column.id === action.payload.id) {
+              column.name = action.payload.name;
+            }
+            return column;
+          }),
         ],
       };
     case TYPES.DELETE_COLUMN_SUCCESS:
@@ -41,8 +43,12 @@ const boardReducer = (
       return {
         ...state,
         taskList: [
-          ...state.taskList.filter((task) => task.id !== action.payload.id),
-          action.payload,
+          ...state.taskList.map((task) => {
+            if (task.id === action.payload.id) {
+              task.name = action.payload.name;
+            }
+            return task;
+          }),
         ],
       };
     case TYPES.DELETE_TASK_SUCCESS:
