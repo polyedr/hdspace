@@ -86,6 +86,8 @@ class Project(TimeStampedModel):
     project_data_text = models.TextField(blank=True)
     project_data_json = JSONField(blank=True, default=[])
     project_data_activity_json = JSONField(blank=True, default=[])
+    project_data_zulip_json = JSONField(blank=True, default=[])
+    project_data_trello_json = JSONField(blank=True, default=[])
 
     @staticmethod
     def generate_preview_token():
