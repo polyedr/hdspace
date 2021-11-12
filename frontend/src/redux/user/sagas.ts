@@ -157,7 +157,7 @@ export const updateUISettingsParametersSaga = function* ({
       parameters: { profileDataParameters },
     } = yield select(selectProfileData);
     const newUIParameters = { ...profileDataParameters, ...payload };
-    const { result, error } = yield call(reqWrapper, apiChangeProfileData, {
+    const newProfileData = yield call(reqWrapper, apiChangeProfileData, {
       id,
       data: {
         parameters: {
@@ -165,11 +165,8 @@ export const updateUISettingsParametersSaga = function* ({
         },
       },
     });
-    if (error) {
-      throw new Error(error);
-    }
     yield put(
-      Actions.setProfileData(convertProfileDataFromResponse(result.data)),
+      Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
     );
   } catch (e) {
     yield put(
