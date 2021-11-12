@@ -2509,6 +2509,40 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
     return fdict, fordict, opencvdict, cnndict
 
 
+def pipeline_merge(imgpath, region_dataset, fname):
+    # Read an image with OpenCV start
+    image_opencv_input = cv2.imread(imgpath)
+
+    # print(fname, imgpath, image_opencv_input)
+    # image_original = copy.deepcopy(image_opencv_input)
+
+    # detect height and width of the image
+    img_height, img_width, img_channels = image_opencv_input.shape
+    # Read an image with OpenCV end
+
+    # Detect the font-size with tesseract for the whole image
+    font_size_img = detect_font_size(image_opencv_input)
+
+    # Get(take the whole image) the dominant colour for the parent container
+    '''
+    bcolour_container_value = "255,255,255,0"
+    domcolour_container = get_dominant_colour(image_opencv_input)[0]
+    domcolour_container.append(1)
+    bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
+    '''
+
+    # Detect text contours and rectangles on image and filtering them
+    text_contours, rect_contours = detect_contours_filter_after(image_opencv_input, font_size_img, img_height, img_width)
+    # Create the opencv recognition end
+
+    # Create the recognized_elements array. The main part of the recognition
+    fdict, fordict, opencvdict, cnndict  = create_recognized_elements(imgpath, rect_contours, text_contours, region_dataset, fname)
+    # Save the annotation dictionary with saved shapes to the json
+    sdj = {"fdict": fdict, "fordict": fordict, "opencvdict": opencvdict, "cnndict": cnndict}
+
+    return sdj
+
+
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
 
@@ -2536,10 +2570,10 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             region_dataset = validated_data["screen_data_json"]["block_type"]
 
         # Display the region_dataset value
-        print(region_dataset) #####console
-
-        fname = ""
-        imgpath = ""
+        # print(region_dataset) #####console
+        #
+        # fname = ""
+        # imgpath = ""
 
         # Create the opencv recognition start
         if validated_data.get("image"):
@@ -2550,38 +2584,10 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
         else:
             node = ProjectScreen.objects.create(**validated_data)
 
-        # Read an image with OpenCV start
-        image_opencv_input = cv2.imread(imgpath)
+        # Calculate a chain of functions for merging
+        # if imgpath:
+        sdj = pipeline_merge(imgpath, region_dataset, fname)
 
-        # print(fname, imgpath, image_opencv_input)
-        # image_original = copy.deepcopy(image_opencv_input)
-
-        # detect height and width of the image
-        img_height, img_width, img_channels = image_opencv_input.shape
-        # Read an image with OpenCV end
-
-        # Detect the font-size with tesseract for the whole image
-        font_size_img = detect_font_size(image_opencv_input)
-
-        # Get(take the whole image) the dominant colour for the parent container
-        '''
-        bcolour_container_value = "255,255,255,0"
-        domcolour_container = get_dominant_colour(image_opencv_input)[0]
-        domcolour_container.append(1)
-        bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
-        '''
-
-        # Detect text contours and rectangles on image and filtering them
-        text_contours, rect_contours = detect_contours_filter_after(image_opencv_input, font_size_img, img_height, img_width)
-        # Create the opencv recognition end
-
-        # Create the recognized_elements array. The main part of the recognition
-        if imgpath:
-            fdict, fordict, opencvdict, cnndict  = create_recognized_elements(imgpath, rect_contours, text_contours, region_dataset, fname)
-
-        # Save the annotation dictionary with saved shapes to the json
-        # sdj = json.dumps([fdict, fordict, opencvdict, cnndict], indent=4)
-        sdj = {"fdict": fdict, "fordict": fordict, "opencvdict": opencvdict, "cnndict": cnndict}
         node.screen_data_json = sdj
 
         return node
