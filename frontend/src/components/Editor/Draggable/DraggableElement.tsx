@@ -7,6 +7,7 @@ import {
   processDropElement,
   processDropTargetParams,
   setActiveElement,
+  setCurrentDropTargetParams,
   setHoveredElementId,
   setMasterSourceElementId,
   toggleSelectedElement,
@@ -83,6 +84,16 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       parent,
       type: ElementType.ELEMENT,
     } as SyntheticElement<StateElement>,
+    canDrag: () =>
+      !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
+      !!parent &&
+      !element.parameters.sourceElementId &&
+      canDragAndDrop,
+    end: (dragSource, monitor) => {
+      if (!monitor.didDrop()) {
+        dispatch(setCurrentDropTargetParams(null));
+      }
+    },
   });
 
   const [, drop] = useDrop({
@@ -110,7 +121,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           ),
         );
       }
-
       if (
         monitor.didDrop() ||
         (dragSource.type === ElementType.ELEMENT &&
@@ -145,8 +155,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   );
 
   const mouseEnterHandler = useCallback(() => {
-    dispatch(setHoveredElementId(element.id));
-    dispatch(toggleSelectedElement(element.id));
+    dispatch(setHoveredElementId(elementId));
   }, [dispatch, elementId]);
   const mouseLeaveHandler = useCallback(() => {
     dispatch(setHoveredElementId(element?.parent || null));
