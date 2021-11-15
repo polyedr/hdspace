@@ -766,6 +766,7 @@ export type CreatedServerProject = {
   status: string;
   projectscreen: number[];
   project_data_json: string;
+  project_data_trello_json: string;
 };
 
 export type ServerProjectWithScreens = {

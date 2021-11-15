@@ -1,7 +1,7 @@
 const config = {
   realm: 'https://zulip.adevi.info/',
   username: 'ivan@intelligentprofitsolutions.com',
-  apiKey: 'VBV7IeQogwWRjhJHyubg0Z1m3gGuzrS0',
+  apiKey: '8ilJLzl2XSvuKTR38MCWxwfX6NLzeItV',
   password: 'E52$*&(W]*j<Q%Wu',
 };
 

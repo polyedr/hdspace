@@ -271,7 +271,7 @@ export interface SideBarTitleAction {
 }
 
 type SideBarTitleProps = {
-  icon: IconType;
+  icon: any | IconType;
   title: string;
   actions?: SideBarTitleAction[];
 };

@@ -3,6 +3,7 @@ import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
 } from '@Api/converters/toRequest';
+import generator from 'generate-password';
 import {
   apiCreateProject,
   apiDeleteProject,
@@ -266,13 +267,15 @@ export function* createProjectSaga(
     payload: { name },
   } = action;
   try {
+    const nameBoard = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
+    const board = yield call(createNewBoard, { name: nameBoard });
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name),
+        data: convertCreatedProjectToRequest(name, board.id),
       },
     );
     if (createdProject?.created) {
@@ -285,16 +288,6 @@ export function* createProjectSaga(
       yield call(reqWrapper, apiCreateAssetList, {
         projectId: createdProject.id,
         name: DEFAULT_ASSET_LIST_NAME,
-      });
-
-      // Create a trello board for the project
-      const board = yield call(createNewBoard, { name: createdProject.name });
-      console.log(board);
-      yield call(reqWrapper, apiUpdateProject, {
-        data: {
-          id: createdProject.id,
-          project_data_trello_json: board.id,
-        },
       });
 
       yield put(Actions.setAssetLists(null));

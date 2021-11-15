@@ -123,6 +123,8 @@
     "@material-ui/styles": "^4.11.4",
     "@material/menu": "^11.0.0",
     "@material/select": "^11.0.0",
+    "@mui/icons-material": "^5.1.0",
+    "@mui/material": "^5.1.0",
     "@react-hook/resize-observer": "^1.1.0",
     "@types/classnames": "^2.2.10",
     "@types/ramda": "^0.26.44",
