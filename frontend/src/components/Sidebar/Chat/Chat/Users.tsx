@@ -2,14 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import zulipInit from 'zulip-js';
 import { IUser } from '@Src/types/pmtools/zulipTypes';
-import config from '@Constants/configZulipChat';
+import { configUser } from '@Constants/configZulipChat';
 import { IconButton, List } from '@material-ui/core';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { SideBarTitle } from '@Components/styledComponents';
 import { requestLogoutChatUser } from '@Redux/pmtools/chat/actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { lighten } from '@mui/material/styles';
+import { selectUserData } from '@Redux/user/selectors';
 import User from './User';
 import Messages from './Messages';
 
@@ -48,6 +49,8 @@ const Users: React.FC = () => {
   const [users, setUsers] = useState<Array<IUser['members']>>([]);
   const [messages, setMessages] = useState<null | number>(null);
   const [clientId, setClientId] = useState<null | number>(null);
+  const { email, profile } = useSelector(selectUserData);
+  const config = configUser(email, profile.parameters.passwordZulip);
 
   const handleFetchUser = async () => {
     const client = await zulipInit(config);

@@ -9,14 +9,14 @@ import { selectUserData } from '@Redux/user/selectors';
 import generator from 'generate-password';
 import { ServerUserData } from '@Src/types/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import config from '@Constants/configZulipChat';
+import { configAdmin } from '@Constants/configZulipChat';
 import { successLoginChatUser, successLogoutChatUser } from './actions';
 
 export function* loginUser({ payload: password }: any) {
   try {
     const { email: username } = yield select(selectUserData);
     const client = yield call(apiAuthUser, {
-      realm: config.realm,
+      realm: configAdmin.realm,
       username,
       password,
     });
@@ -34,7 +34,7 @@ export function* registerZulipUser(): any {
     const { id, email, username } = yield select(selectUserData);
     const password = generator.generate();
 
-    const res = yield call(apiRegisterUser, config, {
+    const res = yield call(apiRegisterUser, configAdmin, {
       email,
       password,
       full_name: `${username}-adevi-${id}`,
@@ -59,7 +59,7 @@ export function* registerZulipUser(): any {
       );
 
       const client = yield call(apiAuthUser, {
-        realm: config.realm,
+        realm: configAdmin.realm,
         username: email,
         password,
       });

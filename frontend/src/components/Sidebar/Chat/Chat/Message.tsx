@@ -1,10 +1,4 @@
-import {
-  Avatar,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  Typography,
-} from '@material-ui/core';
+import { Avatar, ListItemText, Typography } from '@material-ui/core';
 import { IMessageZulip } from '@Src/types/pmtools/zulipTypes';
 import React from 'react';
 
@@ -16,10 +10,11 @@ const Message: React.FC<{
     return <p>Messages not found</p>;
   }
   return (
-    <ListItem style={{ textAlign: side, padding: 0, margin: 0 }}>
-      <ListItemAvatar>
-        <Avatar src={message.avatar_url} />
-      </ListItemAvatar>
+    <div style={{ textAlign: side, padding: 0, margin: 0 }}>
+      <Avatar
+        style={{ float: side, margin: '0 5px' }}
+        src={message.avatar_url}
+      />
       <ListItemText
         primary={message.sender_full_name}
         secondary={
@@ -32,7 +27,7 @@ const Message: React.FC<{
           </Typography>
         }
       />
-    </ListItem>
+    </div>
   );
 };
 

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable import/no-cycle */
 import { PanelTextField } from '@Components/styledComponents';
-import config from '@Constants/configZulipChat';
+import { configAdmin } from '@Constants/configZulipChat';
 import { Button, IconButton } from '@material-ui/core';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -33,7 +33,7 @@ const Messages: React.FC<any> = ({ id, clientId }) => {
   const profile = useSelector(selectUserData);
 
   const configThisUser = {
-    realm: config.realm,
+    realm: configAdmin.realm,
     username: profile.email,
     password: profile.profile.parameters.passwordZulip,
   };
@@ -44,7 +44,7 @@ const Messages: React.FC<any> = ({ id, clientId }) => {
 
     const readParams = {
       anchor: 'newest',
-      num_before: 5,
+      num_before: 8,
       num_after: 0,
       narrow: [{ operator: 'pm-with', operand: [clientId, id] }],
     };
@@ -61,7 +61,7 @@ const Messages: React.FC<any> = ({ id, clientId }) => {
       type: 'private',
       content: message,
     };
-    await client.messages.send(params);
+    console.log(await client.messages.send(params));
     setMessage('');
   }, [message]);
 
