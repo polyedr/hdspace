@@ -266,12 +266,12 @@ export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
 
 export interface SideBarTitleAction {
   callback: () => void;
-  icon: IconType;
-  title: string;
+  icon: IconType | any;
+  title?: string;
 }
 
 type SideBarTitleProps = {
-  icon: any | IconType;
+  icon?: IconType;
   title: string;
   actions?: SideBarTitleAction[];
 };
@@ -287,16 +287,13 @@ export const SideBarTitle: React.FC<SideBarTitleProps> = (props) => {
       <div className={classes.titleRoot}>
         {Icon && <Icon />}
 
-        <h2 style={{ margin: '0 10px' }}>{title}</h2>
-
         <div className={classes.actionContainer}>
-          {actions.map((action) => {
+          {actions.map((action, i) => {
             const ActionIcon = action.icon;
 
             return (
               <IconButton
-                key={action.title}
-                color="secondary"
+                key={action.title || i}
                 title={action.title}
                 onClick={action.callback}
               >
@@ -305,6 +302,8 @@ export const SideBarTitle: React.FC<SideBarTitleProps> = (props) => {
             );
           })}
         </div>
+
+        <h2 style={{ margin: '0 10px' }}>{title}</h2>
       </div>
 
       <div data-testid="title-children">{children}</div>

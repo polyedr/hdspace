@@ -10,11 +10,11 @@ import React from 'react';
 
 const User: React.FC<{
   user: IUser;
-  setMessages: (v: null | number) => void;
-}> = ({ user, setMessages }) => {
+  setPartnerId: (v: number) => void;
+}> = ({ user, setPartnerId }) => {
   return (
     <ListItemButton
-      onClick={() => setMessages(user.user_id)}
+      onClick={() => setPartnerId(user.user_id)}
       alignItems="flex-start"
     >
       <ListItemAvatar>

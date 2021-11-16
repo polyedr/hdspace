@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable import/no-cycle */
 import { PanelTextField } from '@Components/styledComponents';
-import { configAdmin } from '@Constants/configZulipChat';
+import { configUser } from '@Constants/configZulipChat';
 import { Button, IconButton } from '@material-ui/core';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { lighten, makeStyles } from '@material-ui/core/styles';
 import { IMessageZulip } from '@Src/types/pmtools/zulipTypes';
 import React, { useCallback, useEffect, useState } from 'react';
 import zulipInit from 'zulip-js';
@@ -13,55 +12,34 @@ import { selectUserData } from '@Redux/user/selectors';
 import Message from './Message';
 import Users from './Users';
 
-const useStyles = makeStyles(({ palette }) => ({
-  iconButton: {
-    color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
-    },
-    '&.Mui-disabled': {
-      color: '#888',
-    },
-  },
-}));
-
-const Messages: React.FC<any> = ({ id, clientId }) => {
-  const classes = useStyles();
+const Messages: React.FC<any> = ({ userId, partnerId }) => {
   const [users, setUsers] = useState(false);
   const [messages, setMessages] = useState<Array<IMessageZulip> | null>(null);
   const [message, setMessage] = useState<IMessageZulip['content']>('');
-  const profile = useSelector(selectUserData);
+  const { email, profile } = useSelector(selectUserData);
+  const config = configUser(email, profile.parameters.passwordZulip);
 
-  const configThisUser = {
-    realm: configAdmin.realm,
-    username: profile.email,
-    password: profile.profile.parameters.passwordZulip,
-  };
-
-  // getting a list of active users
   const hadlerFetchMessages = useCallback(async () => {
-    const client = await zulipInit(configThisUser);
+    const client = await zulipInit(config);
 
     const readParams = {
       anchor: 'newest',
       num_before: 8,
       num_after: 0,
-      narrow: [{ operator: 'pm-with', operand: [clientId, id] }],
+      narrow: [{ operator: 'pm-with', operand: [userId, partnerId] }],
     };
-
     const data = await client.messages.retrieve(readParams);
     setMessages(data.messages);
-  }, [id]);
+  }, [partnerId]);
 
-  // sending a message
   const handleSend = useCallback(async () => {
-    const client = await zulipInit(configThisUser);
+    const client = await zulipInit(config);
     const params = {
-      to: [id],
+      to: [partnerId],
       type: 'private',
       content: message,
     };
-    console.log(await client.messages.send(params));
+    await client.messages.send(params);
     setMessage('');
   }, [message]);
 
@@ -74,40 +52,25 @@ const Messages: React.FC<any> = ({ id, clientId }) => {
   }
 
   if (!messages) {
-    return (
-      <>
-        <IconButton
-          color="primary"
-          className={classes.iconButton}
-          onClick={() => setUsers(true)}
-        >
-          <KeyboardBackspaceIcon />
-        </IconButton>
-        <p>Messages not found </p>
-      </>
-    );
+    return <p>Loading...</p>;
   }
 
   return (
     <div>
-      <IconButton
-        color="primary"
-        className={classes.iconButton}
-        onClick={() => setUsers(true)}
-      >
+      <IconButton color="primary" onClick={() => setUsers(true)}>
         <KeyboardBackspaceIcon />
       </IconButton>
-      {messages.map((m: IMessageZulip) => (
-        <Message
-          key={m.id}
-          message={m}
-          side={
-            m.display_recipient[1].full_name === m.sender_full_name
-              ? 'right'
-              : 'left'
-          }
-        />
-      ))}
+      {!messages.length ? (
+        <p>Not found</p>
+      ) : (
+        messages.map((m: IMessageZulip) => {
+          const side =
+            m.display_recipient[1].full_name !== m.sender_full_name
+              ? 'left'
+              : 'right';
+          return <Message key={m.id} message={m} side={side} />;
+        })
+      )}
       <div style={{ position: 'fixed', bottom: 10 }}>
         <PanelTextField
           value={message}
