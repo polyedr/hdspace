@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable import/no-cycle */
 import { PanelTextField } from '@Components/styledComponents';
 import { configUser } from '@Constants/configZulipChat';
@@ -19,7 +18,7 @@ const Messages: React.FC<any> = ({ userId, partnerId }) => {
   const { email, profile } = useSelector(selectUserData);
   const config = configUser(email, profile.parameters.passwordZulip);
 
-  const hadlerFetchMessages = useCallback(async () => {
+  const hadlerFetchMessages = async () => {
     const client = await zulipInit(config);
 
     const readParams = {
@@ -30,7 +29,7 @@ const Messages: React.FC<any> = ({ userId, partnerId }) => {
     };
     const data = await client.messages.retrieve(readParams);
     setMessages(data.messages);
-  }, [partnerId]);
+  };
 
   const handleSend = useCallback(async () => {
     const client = await zulipInit(config);
@@ -41,7 +40,7 @@ const Messages: React.FC<any> = ({ userId, partnerId }) => {
     };
     await client.messages.send(params);
     setMessage('');
-  }, [message]);
+  }, [config, message, partnerId]);
 
   useEffect(() => {
     hadlerFetchMessages();
