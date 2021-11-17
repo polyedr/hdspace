@@ -3,7 +3,7 @@ import { requestLoginChatUser } from '@Redux/pmtools/chat/actions';
 import { chatUser } from '@Redux/pmtools/chat/selectors';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Users from './Chat/Users';
+import Users from './Chat/Messages';
 import ChatLogin from './ChatLogin';
 
 const ChatTab: React.FC = () => {

@@ -1,64 +1,69 @@
-/* eslint-disable import/no-cycle */
-import { PanelTextField } from '@Components/styledComponents';
-import { configUser } from '@Constants/configZulipChat';
-import { Button, IconButton } from '@material-ui/core';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { IMessageZulip } from '@Src/types/pmtools/zulipTypes';
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import zulipInit from 'zulip-js';
-import { useSelector } from 'react-redux';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { IMessageZulip, IStream } from '@Src/types/pmtools/zulipTypes';
+import { configUser } from '@Constants/configZulipChat';
+import { requestLogoutChatUser } from '@Redux/pmtools/chat/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUserData } from '@Redux/user/selectors';
+import { PanelTextField, SideBarTitle } from '@Components/styledComponents';
+import { Button } from '@material-ui/core';
 import Message from './Message';
-import Users from './Users';
 
-const Messages: React.FC<any> = ({ userId, partnerId }) => {
-  const [users, setUsers] = useState(false);
-  const [messages, setMessages] = useState<Array<IMessageZulip> | null>(null);
+const Users: React.FC = () => {
+  const dispatch = useDispatch();
+  const [messages, setMessages] = useState<IStream>([]);
   const [message, setMessage] = useState<IMessageZulip['content']>('');
   const { email, profile } = useSelector(selectUserData);
   const config = configUser(email, profile.parameters.passwordZulip);
 
-  const hadlerFetchMessages = async () => {
+  const handleGetStream = useCallback(async () => {
     const client = await zulipInit(config);
-
     const readParams = {
       anchor: 'newest',
-      num_before: 8,
+      num_before: 5,
       num_after: 0,
-      narrow: [{ operator: 'pm-with', operand: [userId, partnerId] }],
+      narrow: [
+        { operator: 'sender', operand: config.username },
+        { operator: 'stream', operand: 'general' },
+      ],
     };
-    const data = await client.messages.retrieve(readParams);
-    setMessages(data.messages);
-  };
+    const { messages } = await client.messages.retrieve(readParams);
+    setMessages(messages);
+  }, [config]);
 
   const handleSend = useCallback(async () => {
     const client = await zulipInit(config);
-    const params = {
-      to: [partnerId],
-      type: 'private',
-      content: message,
-    };
-    await client.messages.send(params);
-    setMessage('');
-  }, [config, message, partnerId]);
+    if (messages) {
+      const params = {
+        to: messages[0].display_recipient,
+        type: 'stream',
+        topic: 'Castle',
+        content: message,
+      };
+      await client.messages.send(params);
+      setMessage('');
+    }
+  }, [messages]);
 
   useEffect(() => {
-    hadlerFetchMessages();
+    handleGetStream();
   }, [handleSend]);
 
-  if (users) {
-    return <Users />;
-  }
+  const handleLogout = () => {
+    dispatch(requestLogoutChatUser());
+  };
 
-  if (!messages) {
-    return <p>Loading...</p>;
+  if (!messages.length) {
+    return <p>Loading... </p>;
   }
 
   return (
-    <div>
-      <IconButton color="primary" onClick={() => setUsers(true)}>
-        <KeyboardBackspaceIcon />
-      </IconButton>
+    <SideBarTitle
+      title={messages[0].display_recipient}
+      actions={[{ icon: LogoutIcon, callback: handleLogout }]}
+    >
       {!messages.length ? (
         <p>Not found</p>
       ) : (
@@ -70,6 +75,7 @@ const Messages: React.FC<any> = ({ userId, partnerId }) => {
           return <Message key={m.id} message={m} side={side} />;
         })
       )}
+
       <div style={{ position: 'fixed', bottom: 10 }}>
         <PanelTextField
           value={message}
@@ -85,8 +91,8 @@ const Messages: React.FC<any> = ({ userId, partnerId }) => {
           Send
         </Button>
       </div>
-    </div>
+    </SideBarTitle>
   );
 };
 
-export default Messages;
+export default Users;
