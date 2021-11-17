@@ -89,6 +89,7 @@ import {
   SetScreenLoader,
   SetScreens,
   ToggleContainersBorders,
+  ToggleGrid,
   UnwrapFromContainer,
   UpdateElement,
   UpdateElementImage,
@@ -601,6 +602,11 @@ export const toggleContainersBorders = (
   enabled: boolean,
 ): ToggleContainersBorders => ({
   type: TYPES.TOGGLE_CONTAINERS_BORDERS,
+  payload: enabled,
+});
+
+export const toggleGrid = (enabled: boolean): ToggleGrid => ({
+  type: TYPES.TOGGLE_GRID,
   payload: enabled,
 });
 

@@ -7,10 +7,12 @@ import {
   convertFreeCanvas,
   setBordersEnabled,
   toggleContainersBorders,
+  toggleGrid,
 } from '@Redux/project/actions';
 import {
   selectBordersEnabled,
   selectShowingBorders,
+  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
@@ -71,6 +73,7 @@ const TopBar: React.FC = () => {
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
   const showBorders = useSelector(selectShowingBorders);
+  const showGrid = useSelector(selectShowingGrid);
   const bordersEnabled = useSelector(selectBordersEnabled);
 
   const createFlex = () => {
@@ -121,19 +124,36 @@ const TopBar: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="Show borders"
-                checked={showBorders}
-                disabled={!bordersEnabled && !isProtoMode}
-                onChange={() => dispatch(toggleContainersBorders(!showBorders))}
-              />
-            }
-            label={
-              <Typography className={classes.title}>Show blocks</Typography>
-            }
-          />
+          <>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="Show borders"
+                  checked={showBorders}
+                  disabled={!bordersEnabled && !isProtoMode}
+                  onChange={() =>
+                    dispatch(toggleContainersBorders(!showBorders))
+                  }
+                />
+              }
+              label={
+                <Typography className={classes.title}>Show blocks</Typography>
+              }
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="Show Grid"
+                  checked={showGrid}
+                  disabled={masterScreenEnabled}
+                  onChange={() => dispatch(toggleGrid(!showGrid))}
+                />
+              }
+              label={
+                <Typography className={classes.title}>Show Grid</Typography>
+              }
+            />
+          </>
         )}
       </div>
 

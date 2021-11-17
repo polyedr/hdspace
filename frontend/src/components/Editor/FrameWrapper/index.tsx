@@ -19,6 +19,7 @@ import {
   selectCurrentProjectClasses,
   selectCurrentUIFramework,
   selectImportLoader,
+  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
@@ -39,38 +40,77 @@ const useStyles = makeStyles({
 const CustomHead: FC = () => {
   const uiFramework = useSelector(selectCurrentUIFramework);
   const frameworkVersion = uiFramework?.version;
+  const showGrid = useSelector(selectShowingGrid);
+
   return (
     <>
       <meta charSet="utf-8" />
       <title>Previewer</title>
       <meta name="viewport" content="width=device-width,initial-scale=1" />
       <base target="_parent" />
-      <style key="body_style">
-        {`
-          body {
-            padding: 0;
-            margin: 0;
-            height: 100vh;
-          }
-          * {
-            box-sizing: border-box;
-          }
-          .frame-root, .frame-content {
-            height: 100%;
-          }
-          .frame-content {
-            display: flex;
-            flex-direction: column;
-          }
-          .removeNativeScrollbars::-webkit-scrollbar {
-            display: none;
-          }
-          .removeNativeScrollbars {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-          }
-        `}
-      </style>
+
+      {showGrid ? (
+        <style key="body_style">
+          {`
+                          body {
+                            padding: 0;
+                            margin: 0;
+                            height: 100vh;
+                          }
+                          * {
+                            box-sizing: border-box;
+                          }
+                          .frame-root, .frame-content {
+                            height: 100%;
+                          }
+                          .frame-content {
+                            display: flex;
+                            flex-direction: column;
+                          }
+                          .removeNativeScrollbars::-webkit-scrollbar {
+                            display: none;
+                            
+                          }
+                          .removeNativeScrollbars {
+                            -ms-overflow-style: none;  /* IE and Edge */
+                            scrollbar-width: none;  /* Firefox */
+                          }
+                          .root{
+                            height:100vh;
+                          }`}
+        </style>
+      ) : (
+        <style key="body_style">
+          {`
+                        body {
+                          padding: 0;
+                          margin: 0;
+                          height: 100vh;
+                        }
+                        * {
+                          box-sizing: border-box;
+                        }
+                        .frame-root, .frame-content {
+                          height: 100%;
+                        }
+                        .frame-content {
+                          display: flex;
+                          flex-direction: column;
+                        }
+                        .removeNativeScrollbars::-webkit-scrollbar {
+                          display: none;
+                          
+                        }
+                        .removeNativeScrollbars {
+                          -ms-overflow-style: none;  /* IE and Edge */
+                          scrollbar-width: none;  /* Firefox */
+                        }
+                        .root{
+                          height:100vh;
+                        }`}
+        </style>
+      )}
+
       {frameworkVersion && (
         <>
           {frameworkVersion.styleSheetsData.map(
