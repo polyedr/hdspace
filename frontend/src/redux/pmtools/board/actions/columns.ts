@@ -3,6 +3,11 @@ import { RequestColumn } from '@Src/types/pmtools/actions';
 import { IColumnData } from '@Src/types/pmtools/trelloTypes';
 import { ActionTypePM } from '@Src/types/pmtools/types';
 
+export const successBoardId = (name: string) => ({
+  type: TYPES.BOARD_ID_SUCCESS,
+  payload: name,
+});
+
 // requestFetchBoard
 export const requestFetchBoard = (payload: RequestColumn['project']) => ({
   type: TYPES.REQUEST_FETCH_BOARD,

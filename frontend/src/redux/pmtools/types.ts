@@ -37,6 +37,7 @@ export type ChatState = {
 };
 
 export type BoardState = {
+  boardName: string;
   columnList: Array<IColumnData>;
   taskList: Array<IServerTaskData>;
 };
@@ -72,6 +73,7 @@ export type InviteAction = ReturnType<
   | typeof actionsColumns.successAddColumn
   | typeof actionsColumns.successEditColumn
   | typeof actionsColumns.successDeleteColumn
+  | typeof actionsColumns.successBoardId
 >;
 
 export type ChatAction = ReturnType<

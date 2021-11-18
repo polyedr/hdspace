@@ -30,6 +30,8 @@ import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElemen
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
 import { createNewBoard } from '@Api/pmtools/board/columnApi';
+import { successBoardId } from '@Redux/pmtools/board/actions/columns';
+import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -271,11 +273,16 @@ export function* createProjectSaga(
     yield put(Actions.setProjectCreateLoader(true));
     const board = yield call(createNewBoard, { name: nameBoard });
 
+    if (nameBoard) {
+      yield put(successBoardId(nameBoard));
+      yield call(apiCreateNewStreams, nameBoard);
+    }
+
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name, board.id),
+        data: convertCreatedProjectToRequest(name, board.id, nameBoard),
       },
     );
     if (createdProject?.created) {

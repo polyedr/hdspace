@@ -3,6 +3,7 @@ import TYPES from '@Redux/actionTypes';
 import { BoardState, InviteAction } from '../types';
 
 const initialState: BoardState = {
+  boardName: '',
   columnList: [],
   taskList: [],
 };
@@ -28,6 +29,8 @@ const boardReducer = (
           }),
         ],
       };
+    case TYPES.BOARD_ID_SUCCESS:
+      return { ...state, boardName: action.payload };
     case TYPES.DELETE_COLUMN_SUCCESS:
       return {
         ...state,

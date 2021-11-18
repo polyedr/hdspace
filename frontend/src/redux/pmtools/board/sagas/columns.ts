@@ -16,10 +16,14 @@ export function* columnsFetchSaga() {
   try {
     const project = yield select(selectCurrentProjectId);
     const boardId = yield call(reqWrapper, Board.apiGetBoard, { project });
+    const boardName = yield call(reqWrapper, Board.apiGetBoardName, {
+      project,
+    });
     const columns = yield call(Board.fetchColumns, boardId);
     const tasks = yield call(fetchTasks, boardId);
     yield put(successFetchTask(tasks));
     yield put(actions.successFetchColumn(columns));
+    yield put(actions.successBoardId(boardName));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }

@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-useless-return */
 import React, { useCallback, useEffect, useState } from 'react';
 import zulipInit from 'zulip-js';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -9,35 +10,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUserData } from '@Redux/user/selectors';
 import { PanelTextField, SideBarTitle } from '@Components/styledComponents';
 import { Button } from '@material-ui/core';
+import { selectBoardName } from '@Redux/pmtools/board/selectors';
 import Message from './Message';
 
-const Users: React.FC = () => {
+const Messages: React.FC = () => {
   const dispatch = useDispatch();
   const [messages, setMessages] = useState<IStream>([]);
   const [message, setMessage] = useState<IMessageZulip['content']>('');
   const { email, profile } = useSelector(selectUserData);
+  const boardName = useSelector(selectBoardName);
   const config = configUser(email, profile.parameters.passwordZulip);
-
-  const handleGetStream = useCallback(async () => {
-    const client = await zulipInit(config);
-    const readParams = {
-      anchor: 'newest',
-      num_before: 5,
-      num_after: 0,
-      narrow: [
-        { operator: 'sender', operand: config.username },
-        { operator: 'stream', operand: 'general' },
-      ],
-    };
-    const { messages } = await client.messages.retrieve(readParams);
-    setMessages(messages);
-  }, [config]);
 
   const handleSend = useCallback(async () => {
     const client = await zulipInit(config);
-    if (messages) {
+    if (messages || boardName) {
       const params = {
-        to: messages[0].display_recipient,
+        to: boardName,
         type: 'stream',
         topic: 'Castle',
         content: message,
@@ -45,23 +33,45 @@ const Users: React.FC = () => {
       await client.messages.send(params);
       setMessage('');
     }
-  }, [messages]);
+  }, [messages, boardName]);
 
   useEffect(() => {
+    let cleanupFunction = false;
+    const handleGetStream = async () => {
+      if (boardName) {
+        const client = await zulipInit(config);
+        const readParams = {
+          anchor: 'newest',
+          num_before: 5,
+          num_after: 0,
+          narrow: [
+            { operator: 'sender', operand: config.username },
+            { operator: 'stream', operand: boardName },
+          ],
+        };
+        const { messages } = await client.messages.retrieve(readParams);
+        if (!cleanupFunction) setMessages(messages);
+      }
+    };
     handleGetStream();
-  }, [handleSend]);
+
+    return () => {
+      cleanupFunction = true;
+      return;
+    };
+  }, [handleSend, boardName]);
 
   const handleLogout = () => {
     dispatch(requestLogoutChatUser());
   };
 
-  if (!messages.length) {
+  if (!messages) {
     return <p>Loading... </p>;
   }
 
   return (
     <SideBarTitle
-      title={messages[0].display_recipient}
+      title="Chat"
       actions={[{ icon: LogoutIcon, callback: handleLogout }]}
     >
       {!messages.length ? (
@@ -95,4 +105,4 @@ const Users: React.FC = () => {
   );
 };
 
-export default Users;
+export default Messages;

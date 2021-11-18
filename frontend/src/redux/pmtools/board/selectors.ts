@@ -7,6 +7,8 @@ export const selectColumnList = (state: BoardRootState) =>
 
 export const selectTaskList = (state: BoardRootState) => state.board.taskList;
 
+export const selectBoardName = (state: BoardRootState) => state.board.boardName;
+
 export const selectColumnListWithTasks = createSelector(
   selectColumnList,
   selectTaskList,

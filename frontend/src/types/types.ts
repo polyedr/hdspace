@@ -764,6 +764,7 @@ export type ElementsGroupParameters = BaseElementParams & {
 export type CreatedServerProject = {
   name: string;
   status: string;
+  project_data_text: string;
   projectscreen: number[];
   project_data_json: string;
   project_data_trello_json: string;
