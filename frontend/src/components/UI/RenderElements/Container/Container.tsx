@@ -1,8 +1,8 @@
 import React from 'react';
 import cn from 'classnames';
-import GridLines from 'react-gridlines';
 import { useSelector } from 'react-redux';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
+import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
@@ -13,52 +13,32 @@ const Container = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled, children } = props;
     const [className, groupClass] = element.styles.classNames;
+    const { name: elementName } = element;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
     const showGrid = useSelector(selectShowingGrid);
-
+    const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
     return (
-      <>
-        {showGrid ? (
-          <GridLines
-            className="grid-area"
-            cellWidth={60}
-            strokeWidth={2}
-            cellWidth2={12}
-          >
-            <div
-              ref={ref}
-              id={element.id}
-              data-ls-id={element.id}
-              className={cn(
-                className,
-                groupClass,
-                classes.ownStyles,
-                !isDisabled && classes.ownPseudoStyles,
-              )}
-              style={{ background: 'transparent' }}
-              {...eventHandlers}
-            >
-              {children}
-            </div>
-          </GridLines>
-        ) : (
-          <div
-            ref={ref}
-            id={element.id}
-            data-ls-id={element.id}
-            className={cn(
-              className,
-              groupClass,
-              classes.ownStyles,
-              !isDisabled && classes.ownPseudoStyles,
-            )}
-            {...eventHandlers}
-          >
-            {children}
-          </div>
+      <div
+        ref={ref}
+        id={element.id}
+        data-ls-id={element.id}
+        className={cn(
+          className,
+          groupClass,
+          classes.ownStyles,
+          !isDisabled && classes.ownPseudoStyles,
         )}
-      </>
+        style={
+          (masterScreenEnabled && showGrid) ||
+          (showGrid && elementName === 'Root' && masterScreenEnabled === false)
+            ? { background: 'transparent' }
+            : {}
+        }
+        {...eventHandlers}
+      >
+        {children}
+      </div>
     );
   },
 );

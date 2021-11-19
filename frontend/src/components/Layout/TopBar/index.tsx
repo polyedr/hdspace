@@ -111,20 +111,19 @@ const TopBar: React.FC = () => {
           className={classes.switch}
           disabled={masterScreenEnabled}
         />
-
-        {freeCanvasMode ? (
-          <div className={classes.magic}>
-            <Button
-              onClick={createFlex}
-              color="secondary"
-              variant="outlined"
-              className={classes.magicButton}
-            >
-              Create Flex
-            </Button>
-          </div>
-        ) : (
-          <>
+        <>
+          {freeCanvasMode ? (
+            <div className={classes.magic}>
+              <Button
+                onClick={createFlex}
+                color="secondary"
+                variant="outlined"
+                className={classes.magicButton}
+              >
+                Create Flex
+              </Button>
+            </div>
+          ) : (
             <FormControlLabel
               control={
                 <Checkbox
@@ -140,21 +139,18 @@ const TopBar: React.FC = () => {
                 <Typography className={classes.title}>Show blocks</Typography>
               }
             />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="Show Grid"
-                  checked={showGrid}
-                  disabled={masterScreenEnabled}
-                  onChange={() => dispatch(toggleGrid(!showGrid))}
-                />
-              }
-              label={
-                <Typography className={classes.title}>Show Grid</Typography>
-              }
-            />
-          </>
-        )}
+          )}
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="Show Grid"
+                checked={showGrid}
+                onChange={() => dispatch(toggleGrid(!showGrid))}
+              />
+            }
+            label={<Typography className={classes.title}>Show Grid</Typography>}
+          />
+        </>
       </div>
 
       <Layouts />
