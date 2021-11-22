@@ -251,9 +251,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
         # Define the direction of the container start
         # Horizontal
         if node.direction == 1:
-            # styles["display"] = "flex"
-            styles["display"] = "block"
-            styles["float"] = "left"
+            styles["display"] = "flex"
 
             if not styles_on:
                 styles["background"] = "aliceblue"
