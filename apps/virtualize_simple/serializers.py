@@ -3080,7 +3080,10 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                             rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
                             if node != root_firstcluster:
                                 if (isRectangleOverlap_nonnested(rectangle_dbcluster, rectangle_firstcluster)):
-                                    dbclusters.remove(cluster)
+                                    try:
+                                        dbclusters.remove(cluster)
+                                    except Exception:
+                                        pass
                 # Remove dbclusters which are contradictive with firstclusters (overlap) end
 
                 # DBclusters should be added to firstclusters in an appropriate order
