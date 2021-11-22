@@ -55,7 +55,7 @@ from apps.utils.fset1 import (
     contains_rectangle, isRectangleOverlap_nonnested,
 )
 
-from apps.virtualize_simple.merge import pipeline_merge
+from apps.virtualize_simple.merge import pipeline_merge, write_elem_value
 
 config_tesseract = "-l eng --oem 1 --psm 3"
 
@@ -149,7 +149,35 @@ def unique(list1):
     return unique_list
 
 
+def calculate_margins(node):
+    # Calculate margins for vertically stacked items start
+    margin_bottom = 0
+    if (node.parent.direction == 0):
+        # Check if the node has the first order, the last order, or the node is internal, extract node.siblings
+        # previous_sibling_y1 is calculated for a parent node, if the node has the first order
+        # next_sibling_y2 is calculated for a parent node, if the node has the last order
 
+        # Extract siblings
+        siblings = node.siblings
+
+        array_siblings_y1 = min(siblings, key=lambda i: abs(i.y1 - node.y2))
+        array_siblings_y1_min = array_siblings_y1.y1 - node.y2
+
+        '''
+        print(node.parent.direction, " direction ", len(siblings), " siblings")
+        print("compare: ", node.y2, array_siblings_y1.y1)
+        for sibling in siblings:
+            print("y1, 2: ", sibling.y1, sibling.y2)
+
+        print("margin:", array_siblings_y1_min)
+        '''
+
+        # Filter out negative margins
+        if(array_siblings_y1_min > 0):
+            margin_bottom = array_siblings_y1_min
+
+    return margin_bottom
+    # Calculate margins for vertically stacked items end
 
 
 # Detect elements for the root block function
@@ -177,6 +205,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
         # Horizontal
         if node.direction == 1:
             styles["display"] = "flex"
+
             if not styles_on:
                 styles["background"] = "aliceblue"
             if region_dataset in ["headers", "footers"]:
@@ -184,6 +213,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
         # Vertical
         if node.direction == 0:
             styles["display"] = "block"
+
             if not styles_on:
                 styles["background"] = "lavenderblush"
         if node.direction == 2:
@@ -231,6 +261,10 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             # )
 
         else:
+            # Calculate margins for vertically stacked items
+            margin_bottom = calculate_margins(node)
+            styles["margin-bottom"] = str(margin_bottom) + "px"
+
             node.div = ET.SubElement(node.parent.div, "div")
 
             styles["border"] = ""
@@ -1909,7 +1943,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Extract an appropriate block_type flag value to recognize block as header, footer, form or webpage
-        region_dataset = "webpages" # Region dataset has a default value
+        region_dataset = "webpages"  # Region dataset has a default value
         if validated_data.get("screen_data_json"):
             region_dataset = validated_data["screen_data_json"]["block_type"]
 
@@ -2967,6 +3001,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
         if fdict:
             fdict = json.loads(fdict)
+            # fdict = fdict
             # print(type(fdict), fdict)
             # Assembling start
             # Supplementary parameters calculation and printing of the fdict function call
@@ -2992,6 +3027,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
             # The indices exclusion should be added to the firstclusters calculation
             # calculate_excluded_indices(fdict, fnamesize)
+
             # Show the output after the indices exclusion
             print("fdict_after", fdict)
             for idx, region in enumerate(fdict[fnamesize]["regions"]):
