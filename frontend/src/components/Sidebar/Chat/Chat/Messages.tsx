@@ -42,12 +42,9 @@ const Messages: React.FC = () => {
         const client = await zulipInit(config);
         const readParams = {
           anchor: 'newest',
-          num_before: 5,
+          num_before: 1000,
           num_after: 0,
-          narrow: [
-            { operator: 'sender', operand: config.username },
-            { operator: 'stream', operand: boardName },
-          ],
+          narrow: [{ operator: 'stream', operand: boardName }],
         };
         const { messages } = await client.messages.retrieve(readParams);
         if (!cleanupFunction) setMessages(messages);
