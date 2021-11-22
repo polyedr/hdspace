@@ -180,6 +180,36 @@ def calculate_margins(node):
     # Calculate margins for vertically stacked items end
 
 
+def extract_colour_palette(elem_image):
+    # Extract a color palette start
+    # Get the dominant colour for the element start
+    try:
+        domcolour_elem = get_dominant_colour(elem_image)[0]
+        domcolour_elem.append(1)
+        bcolour_elem_value = ",".join(
+            str(int(x)) for x in domcolour_elem
+        )
+    # Get the dominant colour for the element end
+    except Exception:
+        bcolour_elem_value = "255,255,255,0"
+    finally:
+        pass
+
+    # Get the font colour for the element start
+    try:
+        fcolour_elem = get_dominant_colour(elem_image)[1]
+        fcolour_elem.append(1)
+        fcolour_elem_value = ",".join(str(int(x)) for x in fcolour_elem)
+    except Exception:
+        fcolour_elem_value = "91,91,91,0"
+    finally:
+        pass
+    # Get the font colour for the element end
+    # Extract a color palette end
+
+    return bcolour_elem_value, fcolour_elem_value
+
+
 # Detect elements for the root block function
 def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                        image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0):
@@ -385,31 +415,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     parameters = {}
                     styles["text-transform"] = "none"
 
-                    # Extract a color palette start
-                    # Get the dominant colour for the element start
-                    try:
-                        domcolour_elem = get_dominant_colour(elem_image)[0]
-                        domcolour_elem.append(1)
-                        bcolour_elem_value = ",".join(
-                            str(int(x)) for x in domcolour_elem
-                        )
-                    # Get the dominant colour for the element end
-                    except Exception:
-                        bcolour_elem_value = "255,255,255,0"
-                    finally:
-                        pass
-
-                    # Get the font colour for the element start
-                    try:
-                        fcolour_elem = get_dominant_colour(elem_image)[1]
-                        fcolour_elem.append(1)
-                        fcolour_elem_value = ",".join(str(int(x)) for x in fcolour_elem)
-                    except Exception:
-                        fcolour_elem_value = "91,91,91,0"
-                    finally:
-                        pass
-                    # Get the font colour for the element end
-                    # Extract a color palette end
+                    bcolour_elem_value, fcolour_elem_value = extract_colour_palette(elem_image)
 
                     # display elem_image start
                     """
