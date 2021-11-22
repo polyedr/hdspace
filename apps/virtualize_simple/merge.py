@@ -127,7 +127,7 @@ def detect_font_size(image_opencv_input):
     return font_size_img
 
 
-def detect_contours_filter_after(image_opencv_input, font_size_img, img_height, img_width):
+def detect_contours_filter_after(image_opencv_input, img_height, img_width):
     # Detect text contours and rectangles on image start
     text_contours = run_text_detection(image_opencv_input, text=False)
     rect_contours = get_rect_contours(image_opencv_input)
@@ -137,8 +137,11 @@ def detect_contours_filter_after(image_opencv_input, font_size_img, img_height, 
     # At least this text blocks filtering is not reasonable for the webpages
     for text_contour in text_contours:
         # Remove untypically high text blocks
+        width2 = text_contour[2]
         height2 = text_contour[3]
-        if height2 > (font_size_img * 3):
+        # if height2 > (font_size_img * 3):
+        #     text_contours.remove(text_contour)
+        if height2 > width2:
             text_contours.remove(text_contour)
 
     # Filter the rect_contours
@@ -625,7 +628,8 @@ def pipeline_merge(imgpath, region_dataset, fname):
     # Read an image with OpenCV end
 
     # Detect the font-size with tesseract for the whole image
-    font_size_img = detect_font_size(image_opencv_input)
+    # Maybe apply the whole OCR here
+    # font_size_img = detect_font_size(image_opencv_input)
 
     # Get(take the whole image) the dominant colour for the parent container
     '''
@@ -636,7 +640,7 @@ def pipeline_merge(imgpath, region_dataset, fname):
     '''
 
     # Detect text contours and rectangles on image and filtering them
-    text_contours, rect_contours = detect_contours_filter_after(image_opencv_input, font_size_img, img_height, img_width)
+    text_contours, rect_contours = detect_contours_filter_after(image_opencv_input, img_height, img_width)
     # Create the opencv recognition end
 
     # Create the recognized_elements array. The main part of the recognition
