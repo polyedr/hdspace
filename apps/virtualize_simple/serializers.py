@@ -223,7 +223,6 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 styles["display"] = "flex"
                 if not styles_on:
                     styles["background"] = "lightblue"
-                styles["margin-bottom"] = "15px"
             else:
                 styles["display"] = "flex"
                 if not styles_on:
@@ -522,7 +521,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                         }
 
                     if elem["region_attributes"]["HTML element"] in {"text", "ocrtext"}:
-                        styles["font-color"] = fcolour_elem_value
+                        styles["color"] = fcolour_elem_value
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "div")
                         # displaying various kinds of elements end
@@ -653,6 +652,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                     elif elem["region_attributes"]["HTML element"] == "button":
                         styles["height"] = str(node_height) + "px"
+                        styles["color"] = fcolour_elem_value
 
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "button")
