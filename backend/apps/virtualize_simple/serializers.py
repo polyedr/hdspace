@@ -152,17 +152,19 @@ def unique(list1):
 def calculate_margins(node):
     # Calculate margins for vertically stacked items start
     margin_bottom = 0
+    margin_left = 0
+
+    # Extract siblings
+    siblings = node.siblings
+
+    # A vertical case
     if (node.parent.direction == 0):
         # Check if the node has the first order, the last order, or the node is internal, extract node.siblings
         # previous_sibling_y1 is calculated for a parent node, if the node has the first order
         # next_sibling_y2 is calculated for a parent node, if the node has the last order
 
-        # Extract siblings
-        siblings = node.siblings
-
         array_siblings_y1 = min(siblings, key=lambda i: abs(i.y1 - node.y2))
         array_siblings_y1_min = array_siblings_y1.y1 - node.y2
-
         '''
         print(node.parent.direction, " direction ", len(siblings), " siblings")
         print("compare: ", node.y2, array_siblings_y1.y1)
@@ -171,12 +173,27 @@ def calculate_margins(node):
 
         print("margin:", array_siblings_y1_min)
         '''
-
         # Filter out negative margins
         if(array_siblings_y1_min > 0):
             margin_bottom = array_siblings_y1_min
 
-    return margin_bottom
+    # A horizontal case
+    if (node.parent.direction == 1):
+        array_siblings_x1 = min(siblings, key=lambda i: abs(i.x1 - node.x2))
+        array_siblings_x1_min = array_siblings_x1.x1 - node.x2
+        '''
+        print(node.parent.direction, " direction ", len(siblings), " siblings")
+        print("compare: ", node.y2, array_siblings_y1.y1)
+        for sibling in siblings:
+            print("y1, 2: ", sibling.y1, sibling.y2)
+
+        print("margin:", array_siblings_y1_min)
+        '''
+        # Filter out negative margins
+        if(array_siblings_x1_min > 0):
+            margin_left = array_siblings_x1_min
+
+    return margin_bottom, margin_left
     # Calculate margins for vertically stacked items end
 
 
@@ -234,7 +251,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
         # Define the direction of the container start
         # Horizontal
         if node.direction == 1:
-            styles["display"] = "flex"
+            # styles["display"] = "flex"
+            styles["display"] = "block"
+            styles["float"] = "left"
 
             if not styles_on:
                 styles["background"] = "aliceblue"
@@ -290,8 +309,8 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             # )
 
         else:
-            # Calculate margins for vertically stacked items
-            margin_bottom = calculate_margins(node)
+            # Calculate margins for vertically and horizontally stacked items
+            margin_bottom, margin_left = calculate_margins(node)
             styles["margin-bottom"] = str(margin_bottom) + "px"
 
             node.div = ET.SubElement(node.parent.div, "div")
@@ -435,7 +454,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                         styles["padding"] = "3px 0"
                         styles["border-width"] = "1px"
                         styles["border-color"] = "rgba(244, 244, 244, 1)"
-
+                        styles["background-color"] = (
+                                "rgba(" + bcolour_elem_value + ")"
+                        )
                         # displaying various kinds of elements start
                         element = ET.SubElement(node.div, "input")
                         # displaying various kinds of elements end
