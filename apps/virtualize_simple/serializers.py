@@ -313,6 +313,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             # Calculate margins for vertically and horizontally stacked items
             margin_bottom, margin_left = calculate_margins(node)
             styles["margin-bottom"] = str(margin_bottom) + "px"
+            styles["margin-left"] = str(margin_left) + "px"
 
             node.div = ET.SubElement(node.parent.div, "div")
 
