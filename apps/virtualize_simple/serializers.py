@@ -179,8 +179,8 @@ def calculate_margins(node):
 
     # A horizontal case
     if (node.parent.direction == 1):
-        array_siblings_x1 = min(siblings, key=lambda i: abs(i.x1 - node.x2))
-        array_siblings_x1_min = array_siblings_x1.x1 - node.x2
+        array_siblings_x1 = min(siblings, key=lambda i: abs(node.x1 - i.x2))
+        array_siblings_x1_min = node.x1 - array_siblings_x1.x2
         '''
         print(node.parent.direction, " direction ", len(siblings), " siblings")
         print("compare: ", node.y2, array_siblings_y1.y1)
@@ -189,7 +189,8 @@ def calculate_margins(node):
 
         print("margin:", array_siblings_y1_min)
         '''
-        # Filter out negative margins
+
+        # Filter out positive margins
         if(array_siblings_x1_min > 0):
             margin_left = array_siblings_x1_min
 
@@ -251,7 +252,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
         # Define the direction of the container start
         # Horizontal
         if node.direction == 1:
-            styles["display"] = "flex"
+            # styles["display"] = "flex"
+            styles["display"] = "block"
+            styles["float"] = "left"
 
             if not styles_on:
                 styles["background"] = "aliceblue"
