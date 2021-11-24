@@ -97,4 +97,4 @@ serializers.py.bak
 apps/virtualize_simple/ScenarioElementAssemblingSerializer.py
 apps/virtualize_simple/ScenarioElementFreecanvasSerializer.py
 apps/virtualize_simple/ScenarioElementSerializer.py
-
+*.png

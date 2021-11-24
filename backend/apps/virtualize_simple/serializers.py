@@ -194,7 +194,7 @@ def calculate_margins(node):
         if(array_siblings_x1_min > 0):
             margin_left = array_siblings_x1_min
 
-    return margin_bottom, margin_left
+    return margin_bottom
     # Calculate margins for vertically stacked items end
 
 
@@ -252,9 +252,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
         # Define the direction of the container start
         # Horizontal
         if node.direction == 1:
-            # styles["display"] = "flex"
-            styles["display"] = "block"
-            styles["float"] = "left"
+            styles["display"] = "flex"
 
             if not styles_on:
                 styles["background"] = "aliceblue"
@@ -311,9 +309,8 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
         else:
             # Calculate margins for vertically and horizontally stacked items
-            margin_bottom, margin_left = calculate_margins(node)
+            margin_bottom = calculate_margins(node)
             styles["margin-bottom"] = str(margin_bottom) + "px"
-            styles["margin-left"] = str(margin_left) + "px"
 
             node.div = ET.SubElement(node.parent.div, "div")
 
@@ -849,7 +846,12 @@ def htmltree_initialize(fname, bcolour_container_value, img_width):
     return root, outer_div, styles, parameters
 
 
-def clusters_printing(root_block, fname, image_allclusters=[], image_cclusters=[], image_allcluelems=[]):
+def clusters_printing(root_block, fname, input_image=[]):
+    if len(input_image):
+        image_allclusters = copy.deepcopy(input_image)
+        image_cclusters = copy.deepcopy(input_image)
+        image_allcluelems = copy.deepcopy(input_image)
+
     # Go through all the blocks obtained after the ternary algorithm
     if len(image_cclusters):
         # Print all the cclusters
@@ -2104,9 +2106,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # image_maskrcnn_and = copy.deepcopy(image_opencv_input)
         image_fclusters = copy.deepcopy(image_opencv_input)
         image_dbclusters = copy.deepcopy(image_opencv_input)
-        image_cclusters = copy.deepcopy(image_opencv_input)
-        image_allclusters = copy.deepcopy(image_opencv_input)
-        image_allcluelems = copy.deepcopy(image_opencv_input)
         image_via = copy.deepcopy(image_opencv_input)
         # detect height and width of the image
         img_height, img_width, img_channels = image_opencv_input.shape
@@ -2813,8 +2812,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
                                                 clusters_cnn, image_opencv_input, window_name1, fclusters_cnn)
 
         # Printing clusters function calling
-        clusters_printing(root_block, fname, image_allclusters=image_allclusters, image_cclusters=image_cclusters,
-                          image_allcluelems=image_allcluelems)
+        clusters_printing(root_block, fname, input_image=[])
 
         # HTML tree initialize function call
         root, outer_div, styles, parameters = htmltree_initialize(fname, bcolour_container_value, img_width)
@@ -2977,6 +2975,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         image_firstclusters = copy.deepcopy(image_opencv_input)
         image_fdict_before = copy.deepcopy(image_opencv_input)
         image_fdict_after = copy.deepcopy(image_opencv_input)
+        image_dbclusters = copy.deepcopy(image_opencv_input)
+
         # detect height and width of the image
         img_height, img_width, img_channels = image_opencv_input.shape
         # print("width:  ", img_width)
@@ -3099,11 +3099,12 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                         if node != root_firstcluster:
                             if(isRectangleOverlap_nonnested(rectangle_fcluster, rectangle_firstcluster)):
                                 clusters.remove(cluster)
+                                break
             # Remove fclusters which are contradictive with firstclusters (overlap) end
 
             if region_dataset in ["headers", "footers", "webpages"]:
                 # Calculate dbclusters function calling
-                dbclusters = calculate_dbclusters(region_dataset, clusters, fname)
+                dbclusters = calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters)
 
                 # Remove dbclusters which are contradictive with firstclusters (overlap, contains probably)
                 # Remove dbclusters which are contradictive with firstclusters (overlap) start
@@ -3111,12 +3112,11 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                         rectangle_dbcluster = (cluster.x1, cluster.y1, cluster.x2, cluster.y2)
                         for pre, fill, node in RenderTree(root_firstcluster):
                             rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
-                            if node != root_firstcluster:
+                            if (node != root_firstcluster) and (not node.is_leaf):
                                 if (isRectangleOverlap_nonnested(rectangle_dbcluster, rectangle_firstcluster)):
-                                    try:
-                                        dbclusters.remove(cluster)
-                                    except Exception:
-                                        pass
+                                    # print(len(dbclusters), rectangle_dbcluster)
+                                    dbclusters.remove(cluster)
+                                    break
                 # Remove dbclusters which are contradictive with firstclusters (overlap) end
 
                 # DBclusters should be added to firstclusters in an appropriate order
@@ -3154,6 +3154,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 styles=styles,
                 buoyancy=0,
             )
+
+            # Printing clusters function calling
+            clusters_printing(root_block, fname, input_image=image_opencv_input)
 
             # Obtaining the absolute path for the parameters directly. Should change this later.
             o = urlparse(self.context["request"].build_absolute_uri())
