@@ -19,8 +19,9 @@ export const selectActiveVIARegionId = ({ project }: AppReduxState) =>
 
 export const selectActiveVIARegion = createSelector(
   selectVIARegions,
+  selectActiveNNModel,
   selectActiveVIARegionId,
-  (regions, activeId) => regions[activeId],
+  (regions, activeNNModel, activeId) => regions[activeNNModel][activeId],
 );
 
 export const selectIsRegionActive = (regionId: string) =>
