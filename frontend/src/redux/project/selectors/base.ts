@@ -79,6 +79,10 @@ export function selectShowingBorders(state: AppReduxState) {
   return selectProjectState(state).ui.showContainersBorders;
 }
 
+export function selectShowingGrid(state: AppReduxState) {
+  return selectProjectState(state).ui.showGrid;
+}
+
 export const selectBordersEnabled = (state: AppReduxState) => {
   return selectProjectState(state).ui.bordersEnabled;
 };

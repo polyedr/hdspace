@@ -21,6 +21,7 @@ import {
   SyntheticElement,
 } from '@Src/types';
 import { ElementType } from '@Constants/dragAndDrop';
+import { selectShowingGrid } from '@Redux/project/selectors/base';
 import { useElementClassNames } from './helpers';
 import FreeDraggable from './FreeDraggable';
 
@@ -132,6 +133,8 @@ const FreeCanvas = () => {
     drop(resizableElement);
   }, [drop]);
 
+  const showGrid = useSelector(selectShowingGrid);
+
   return (
     <Rnd
       ref={(c) => {
@@ -145,6 +148,7 @@ const FreeCanvas = () => {
         border: `1px solid ${
           activeElementId === root.id ? '#5A899D' : 'transparent'
         }`,
+        background: showGrid ? 'transparent' : '',
       }}
       onClick={() => dispatch(setActiveElement(root.id))}
       enableResizing={false}
