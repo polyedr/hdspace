@@ -40,7 +40,7 @@ export type TasksEditSagaGenerator = Generator<
 export type ColumnSagaGenerator = Generator<
   CallEffect | PutEffect,
   void,
-  IColumnData
+  IColumnData | any
 >;
 
 export type ColumnDeletSagaGenerator = Generator<

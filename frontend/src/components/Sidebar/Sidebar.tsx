@@ -74,7 +74,7 @@ const Sidebar: FC = () => {
       </TabPanel>
 
       <TabPanel value={tab} index={1}>
-        {/* <TasksTab /> */}
+        <TasksTab />
       </TabPanel>
 
       <TabPanel value={tab} index={2}>
