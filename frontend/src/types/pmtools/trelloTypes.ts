@@ -1,3 +1,5 @@
+export type IBoard = any;
+
 export interface IServerListData {
   closed: boolean;
   id: string | number;

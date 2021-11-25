@@ -181,9 +181,11 @@ export function convertProjectFromResponse({
   updated,
   user,
   project_data_json,
+  project_data_trello_json,
   tags,
 }: ServerProject): Project {
   const projectDataJSON = JSON.parse(JSON.stringify(project_data_json));
+  const projectTrelloJSON = JSON.parse(project_data_trello_json);
   return {
     id,
     name,
@@ -193,6 +195,7 @@ export function convertProjectFromResponse({
     created: new Date(created),
     updated: new Date(updated),
     tags,
+    projectTrelloJSON,
     user: convertUserDataFromResponse(user),
     projectData: {
       ...projectDataJSON,
@@ -276,10 +279,11 @@ export function convertProjectWithScreensFromResponse({
   updated,
   user,
   project_data_json,
+  project_data_trello_json,
   tags,
 }: ServerProjectWithScreens): ProjectWithScreens {
   const projectDataJSON = JSON.parse(project_data_json || '{}') as ProjectData;
-
+  const projectTrelloJSON = JSON.parse(project_data_trello_json);
   return {
     id,
     name,
@@ -290,6 +294,7 @@ export function convertProjectWithScreensFromResponse({
     updated: new Date(updated),
     user: convertUserDataFromResponse(user),
     tags,
+    projectTrelloJSON,
     projectData: {
       ...projectDataJSON,
       classes:

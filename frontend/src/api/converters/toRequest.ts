@@ -196,7 +196,15 @@ export const convertProjectToPatchRequest = (
   ServerProject,
   'created' | 'updated' | 'project_data_text' | 'user'
 > => {
-  const { id, name, status, projectscreen, projectData, tags } = project;
+  const {
+    id,
+    name,
+    status,
+    projectscreen,
+    projectData,
+    tags,
+    projectTrelloJSON,
+  } = project;
 
   return {
     id,
@@ -204,6 +212,7 @@ export const convertProjectToPatchRequest = (
     status,
     projectscreen,
     tags,
+    project_data_trello_json: projectTrelloJSON,
     project_data_json: JSON.stringify({
       ...projectData,
       classes: projectData.classes.map((cls: ProjectClass) => ({
