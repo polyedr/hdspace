@@ -29,7 +29,7 @@ import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
-import { createNewBoard } from '@Api/pmtools/board/columnApi';
+import { apiGetBoard, createNewBoard } from '@Api/pmtools/board/columnApi';
 import { successBoardId } from '@Redux/pmtools/board/actions/columns';
 import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -52,6 +52,7 @@ import {
 } from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
 import { createElements } from './common';
+import { deleteBoard } from '@Api/pmtools/board/boardApi';
 
 export function* setMasterScreenCoreElements(screen: Screen) {
   const rootElement = yield select(selectElementById, screen.element);
@@ -262,6 +263,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   }
 }
 
+// antares-create
 export function* createProjectSaga(
   action: ReturnType<typeof Actions.createProject>,
 ) {
@@ -269,20 +271,20 @@ export function* createProjectSaga(
     payload: { name },
   } = action;
   try {
-    const nameBoard = generator.generate();
+    const boardName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
-    const board = yield call(createNewBoard, { name: nameBoard });
+    const board = yield call(createNewBoard, { name: boardName });
 
-    if (nameBoard) {
-      yield put(successBoardId(nameBoard));
-      yield call(apiCreateNewStreams, nameBoard);
-    }
+    // ! FIX
+    yield put(successBoardId(boardName));
+    // TODO
+    yield call(apiCreateNewStreams, boardName);
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name, board.id, nameBoard),
+        data: convertCreatedProjectToRequest(name, board),
       },
     );
     if (createdProject?.created) {
@@ -375,6 +377,11 @@ export function* deleteProjectSaga({
   payload: { id },
 }: ReturnType<typeof Actions.deleteProject>) {
   try {
+    const board = yield call(reqWrapper, apiGetBoard, {
+      project: id,
+    });
+    yield call(deleteBoard, JSON.parse(board).id);
+
     const { result, error }: Result<boolean> = yield call(
       reqWrapper,
       apiDeleteProject,

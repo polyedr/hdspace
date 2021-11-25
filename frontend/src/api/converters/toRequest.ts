@@ -165,8 +165,7 @@ export const convertStateElementToPatchRequest = (
 
 export const convertCreatedProjectToRequest = (
   name: string,
-  boardId,
-  nameBoard: string,
+  board,
 ): CreatedServerProject => {
   const projectClasses: ProjectClass[] = Object.keys(
     DEFAULT_ELEMENTS_STYLES,
@@ -180,8 +179,8 @@ export const convertCreatedProjectToRequest = (
     name,
     status: 'pending',
     projectscreen: [],
-    project_data_text: nameBoard,
-    project_data_trello_json: boardId,
+    project_data_text: '',
+    project_data_trello_json: JSON.stringify(board),
     project_data_json: JSON.stringify({
       classes: projectClasses.map((cls: ProjectClass) => ({
         ...cls,
