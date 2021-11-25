@@ -32,7 +32,10 @@ import getTagsArr from '@Utils/getTagsArr';
 import { apiGetBoard, createNewBoard } from '@Api/pmtools/board/columnApi';
 import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
 import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
-import { deleteBoard } from '@Api/pmtools/board/boardApi';
+import {
+  createOrganization,
+  deleteOrganization,
+} from '@Api/pmtools/board/boardApi';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -273,16 +276,26 @@ export function* createProjectSaga(
   try {
     const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
+
+    const organization = yield call(
+      createOrganization,
+      `${generateName}-adevi-org`,
+    );
     const board = yield call(createNewBoard, generateName);
 
-    yield put(successSavedBoard(board));
+    const resultBoardData = {
+      organization,
+      ...board,
+    };
+
+    yield put(successSavedBoard(resultBoardData));
     yield call(apiCreateNewStreams, generateName);
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name, board),
+        data: convertCreatedProjectToRequest(name, resultBoardData),
       },
     );
     if (createdProject?.created) {
@@ -379,7 +392,7 @@ export function* deleteProjectSaga({
       project: id,
     });
 
-    yield call(deleteBoard, JSON.parse(board).id);
+    yield call(deleteOrganization, JSON.parse(board).organization.id);
     yield call(apiDeleteStream, JSON.parse(board).name);
 
     const { result, error }: Result<boolean> = yield call(

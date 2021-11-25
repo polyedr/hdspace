@@ -7,11 +7,20 @@ import { AxiosResponse } from 'axios';
 
 const { apiKey, token } = config;
 
-export const deleteBoard = async (id: string) =>
+export const deleteOrganization = async (id: string) =>
   myAxios({
     baseURL: 'https://api.trello.com/1',
     method: 'DELETE',
-    url: `boards/${id}?key=${apiKey}&token=${token}`,
+    url: `/organization/${id}?key=${apiKey}&token=${token}`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
+
+export const createOrganization = async (name: string) =>
+  myAxios({
+    baseURL: 'https://api.trello.com/1',
+    method: 'POST',
+    url: `/organizations?displayName=${name}&key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
