@@ -6,7 +6,11 @@ import {
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
 import { AuthParams } from '@Src/types/pmtools/actions';
-import { IColumnData, IServerTaskData } from '@Src/types/pmtools/trelloTypes';
+import {
+  IBoard,
+  IColumnData,
+  IServerTaskData,
+} from '@Src/types/pmtools/trelloTypes';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
@@ -37,7 +41,7 @@ export type ChatState = {
 };
 
 export type BoardState = {
-  boardName: string;
+  board: IBoard;
   columnList: Array<IColumnData>;
   taskList: Array<IServerTaskData>;
 };

@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUserData } from '@Redux/user/selectors';
 import { PanelTextField, SideBarTitle } from '@Components/styledComponents';
 import { Button } from '@material-ui/core';
-import { selectBoardName } from '@Redux/pmtools/board/selectors';
+import { selectBoardData } from '@Redux/pmtools/board/selectors';
 import Message from './Message';
 
 const Messages: React.FC = () => {
@@ -18,7 +18,7 @@ const Messages: React.FC = () => {
   const [messages, setMessages] = useState<IStream>([]);
   const [message, setMessage] = useState<IMessageZulip['content']>('');
   const { email, profile } = useSelector(selectUserData);
-  const boardName = useSelector(selectBoardName);
+  const { name: boardName } = useSelector(selectBoardData);
   const config = configUser(email, profile.parameters.passwordZulip);
 
   const handleSend = useCallback(async () => {
@@ -71,7 +71,7 @@ const Messages: React.FC = () => {
       title="Chat"
       actions={[{ icon: LogoutIcon, callback: handleLogout }]}
     >
-      {/* {!messages.length ? (
+      {!messages.length ? (
         <p>Not found</p>
       ) : (
         messages.map((m: IMessageZulip) => {
@@ -97,7 +97,7 @@ const Messages: React.FC = () => {
         >
           Send
         </Button>
-      </div> */}
+      </div>
     </SideBarTitle>
   );
 };

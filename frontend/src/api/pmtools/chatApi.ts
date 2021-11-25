@@ -49,3 +49,15 @@ export const apiRegisterUser = async (
     return e;
   }
 };
+
+export const apiDeleteStream = async (nameZulip: string) => {
+  try {
+    const clientAdmin = await zulipInit(configAdmin);
+    const meParams = {
+      subscriptions: JSON.stringify([nameZulip]),
+    };
+    return await clientAdmin.users.me.subscriptions.remove(meParams);
+  } catch (e) {
+    return e;
+  }
+};

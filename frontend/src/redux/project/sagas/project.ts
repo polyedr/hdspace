@@ -31,7 +31,7 @@ import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPer
 import getTagsArr from '@Utils/getTagsArr';
 import { apiGetBoard, createNewBoard } from '@Api/pmtools/board/columnApi';
 import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
-import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
+import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
 import { deleteBoard } from '@Api/pmtools/board/boardApi';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
@@ -213,9 +213,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         id,
       },
     );
-    console.log('result', result);
 
     if (result) {
+      yield put(successSavedBoard(result.projectTrelloJSON));
       yield put(PermissionsActions.getMyPermissionsForProject(result.id));
       yield put(
         Actions.setProject({
@@ -273,10 +273,10 @@ export function* createProjectSaga(
   try {
     const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
-    const board = yield call(createNewBoard, `${generateName}-adevi-board`);
+    const board = yield call(createNewBoard, generateName);
 
     yield put(successSavedBoard(board));
-    yield call(apiCreateNewStreams, `${generateName}-adevi-streams`);
+    yield call(apiCreateNewStreams, generateName);
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
@@ -378,7 +378,9 @@ export function* deleteProjectSaga({
     const board = yield call(reqWrapper, apiGetBoard, {
       project: id,
     });
+
     yield call(deleteBoard, JSON.parse(board).id);
+    yield call(apiDeleteStream, JSON.parse(board).name);
 
     const { result, error }: Result<boolean> = yield call(
       reqWrapper,
