@@ -39,7 +39,7 @@ const Sidebar: FC = () => {
 
   return (
     <div data-testid="sidebar-container" className={classes.root}>
-      {/* <Tabs value={tab} onChange={handleSwitchTab}>
+      <Tabs value={tab} onChange={handleSwitchTab}>
         <Tab
           data-testid="chat-tab"
           classes={tabClasses}
@@ -74,7 +74,7 @@ const Sidebar: FC = () => {
       </TabPanel>
 
       <TabPanel value={tab} index={1}>
-        <TasksTab />
+        {/* <TasksTab /> */}
       </TabPanel>
 
       <TabPanel value={tab} index={2}>
@@ -83,7 +83,7 @@ const Sidebar: FC = () => {
 
       <TabPanel value={tab} index={3}>
         <InviteTab />
-      </TabPanel> */}
+      </TabPanel>
     </div>
   );
 };

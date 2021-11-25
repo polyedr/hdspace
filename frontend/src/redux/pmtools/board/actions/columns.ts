@@ -3,8 +3,8 @@ import { RequestColumn } from '@Src/types/pmtools/actions';
 import { IColumnData } from '@Src/types/pmtools/trelloTypes';
 import { ActionTypePM } from '@Src/types/pmtools/types';
 
-export const successBoardId = (name: string) => ({
-  type: TYPES.BOARD_ID_SUCCESS,
+export const successSavedBoard = (name: string) => ({
+  type: TYPES.BOARD_SAVED_SUCCESS,
   payload: name,
 });
 

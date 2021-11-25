@@ -73,7 +73,7 @@ export type InviteAction = ReturnType<
   | typeof actionsColumns.successAddColumn
   | typeof actionsColumns.successEditColumn
   | typeof actionsColumns.successDeleteColumn
-  | typeof actionsColumns.successBoardId
+  | typeof actionsColumns.successSavedBoard
 >;
 
 export type ChatAction = ReturnType<

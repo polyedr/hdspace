@@ -29,7 +29,7 @@ const boardReducer = (
           }),
         ],
       };
-    case TYPES.BOARD_ID_SUCCESS:
+    case TYPES.BOARD_SAVED_SUCCESS:
       return { ...state, boardName: action.payload };
     case TYPES.DELETE_COLUMN_SUCCESS:
       return {

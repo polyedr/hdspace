@@ -71,7 +71,7 @@ const Messages: React.FC = () => {
       title="Chat"
       actions={[{ icon: LogoutIcon, callback: handleLogout }]}
     >
-      {!messages.length ? (
+      {/* {!messages.length ? (
         <p>Not found</p>
       ) : (
         messages.map((m: IMessageZulip) => {
@@ -97,7 +97,7 @@ const Messages: React.FC = () => {
         >
           Send
         </Button>
-      </div>
+      </div> */}
     </SideBarTitle>
   );
 };

@@ -30,8 +30,9 @@ import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElemen
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
 import { apiGetBoard, createNewBoard } from '@Api/pmtools/board/columnApi';
-import { successBoardId } from '@Redux/pmtools/board/actions/columns';
+import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
 import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
+import { deleteBoard } from '@Api/pmtools/board/boardApi';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -52,7 +53,6 @@ import {
 } from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
 import { createElements } from './common';
-import { deleteBoard } from '@Api/pmtools/board/boardApi';
 
 export function* setMasterScreenCoreElements(screen: Screen) {
   const rootElement = yield select(selectElementById, screen.element);
@@ -213,6 +213,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         id,
       },
     );
+    console.log('result', result);
 
     if (result) {
       yield put(PermissionsActions.getMyPermissionsForProject(result.id));
@@ -263,7 +264,6 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   }
 }
 
-// antares-create
 export function* createProjectSaga(
   action: ReturnType<typeof Actions.createProject>,
 ) {
@@ -271,14 +271,12 @@ export function* createProjectSaga(
     payload: { name },
   } = action;
   try {
-    const boardName = generator.generate();
+    const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
-    const board = yield call(createNewBoard, { name: boardName });
+    const board = yield call(createNewBoard, `${generateName}-adevi-board`);
 
-    // ! FIX
-    yield put(successBoardId(boardName));
-    // TODO
-    yield call(apiCreateNewStreams, boardName);
+    yield put(successSavedBoard(board));
+    yield call(apiCreateNewStreams, `${generateName}-adevi-streams`);
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,

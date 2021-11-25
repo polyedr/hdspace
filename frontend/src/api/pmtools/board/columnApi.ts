@@ -19,7 +19,7 @@ export const apiGetBoard = ({
     .then((results: AxiosResponse) => results.data.project_data_trello_json)
     .catch(handleError);
 
-export const apiGetBoardName = ({
+export const apiGetBoardInfo = ({
   project,
   ...axiosProps
 }: MyAxiosProps & { project: RequestAction['project'] }) =>
@@ -31,7 +31,7 @@ export const apiGetBoardName = ({
     .then((results: AxiosResponse) => results.data.project_data_text)
     .catch(handleError);
 
-export const createNewBoard = async ({ name }: { name: string }) =>
+export const createNewBoard = async (name: string) =>
   myAxios({
     baseURL: 'https://api.trello.com/1',
     method: 'POST',
