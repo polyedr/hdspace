@@ -347,6 +347,13 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 "buoyancy": buoyancy,
             }
 
+        # Correct the struct_type based on the element_assigned value
+        # The correction is actual for dbclusters
+        # ul li detection
+        if (node.element_assigned):
+            node.scenarioelement_kwargs["struct_type"] = node.element_assigned
+            print(node.element_assigned)
+
         if (serializing == "freecanvas"):
             # Attach elements for some fcluster
             if node.types == "fcluster":
@@ -1163,6 +1170,8 @@ def calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters=[]):
         dbcluster.processing = (
             "unsplitted"  # check if the ternary algorithm was applied
         )
+        # Assign an unordered HTML list to the dbcluster
+        dbcluster.element_assigned = "list"
         # Check the directiom with some function
         # dbcluster.direction = ?
         # Check is_solid parameter later
@@ -1184,6 +1193,10 @@ def calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters=[]):
             dbcluster.y1 = min(dbcluster.y1, cluster_source.y1)
             dbcluster.x2 = max(dbcluster.x2, cluster_source.x2)
             dbcluster.y2 = max(dbcluster.y2, cluster_source.y2)
+
+            # Assign a list element to the source cluster
+            cluster_source.element_assigned = "listItem"
+
         # clusters-based solution end
 
         dbclusters.append(dbcluster)
