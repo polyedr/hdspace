@@ -229,7 +229,10 @@ class ClusterClass(NodeMixin):
         True
     )  # if clusters contain one element only. Based on flusters making algorithm
 
+    # A group of elements assigned to the cluster as a parts
     elements = []
+    # Element assigned to the whole cluster
+    element_assigned = ""
 
     def __init__(self, x1, y1, x2, y2, parent=None, children=None, elements=None):
         self.name = uuid.uuid4().hex
