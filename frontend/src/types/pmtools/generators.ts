@@ -28,7 +28,7 @@ export interface ToServerTask {
 export type TasksAddSagaGenerator = Generator<
   CallEffect | PutEffect,
   void,
-  ToServerTask
+  any
 >;
 
 export type TasksEditSagaGenerator = Generator<

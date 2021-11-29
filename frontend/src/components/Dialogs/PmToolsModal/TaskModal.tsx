@@ -1,4 +1,5 @@
-import React, { FormEvent, useState } from 'react';
+/* eslint-disable react/no-array-index-key */
+import React, { FormEvent, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Dialog,
@@ -19,9 +20,10 @@ import {
   requestDeleteMemberTask,
   requestEditTask,
 } from '@Redux/pmtools/board/actions/tasks';
-import { ModalAction, PermissionsUserData } from '@Src/types/types';
+import { ModalAction } from '@Src/types/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectMembersData } from '@Redux/pmtools/board/selectors';
 
 type Props = {
   show: boolean;
@@ -30,7 +32,6 @@ type Props = {
   action: ModalAction;
   column: any;
   selectedTaskId?: number | null;
-  members: Array<PermissionsUserData & { id: string }>;
 };
 
 const TaskModal: React.FC<Props> = ({
@@ -40,16 +41,15 @@ const TaskModal: React.FC<Props> = ({
   action,
   selectedTaskId,
   task,
-  members,
 }) => {
   const dispatch = useDispatch();
-
-  const [member, setMember] = useState(members[0] || '');
   const project = useSelector(selectCurrentProjectId);
-  const [title, setTitle] = useState(task?.name || '');
+  const members = useSelector(selectMembersData);
+  const [selectedMember, updateSelectedMember] = useState<any>('');
   const [taskUpdateMembers, setTaskUpdateMembers] = useState(
     task?.members || [],
   );
+  const [title, setTitle] = useState(task?.name || '');
 
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,7 +59,7 @@ const TaskModal: React.FC<Props> = ({
         requestAddTask({
           name: title,
           column: column.id,
-          email: member?.userData?.email || '',
+          email: selectedMember?.id || '',
           project,
           action: {
             action: `Task "${title}" was added`,
@@ -69,6 +69,7 @@ const TaskModal: React.FC<Props> = ({
         }),
       );
     }
+    setTaskUpdateMembers((prev) => [...prev, selectedMember]);
     hide();
   };
 
@@ -79,7 +80,7 @@ const TaskModal: React.FC<Props> = ({
         requestEditTask({
           id: selectedTaskId || 0,
           name: title,
-          email: member?.userData?.email || '',
+          email: selectedMember?.id || '',
           column: column?.id || 0,
           project,
           action: {
@@ -89,6 +90,9 @@ const TaskModal: React.FC<Props> = ({
           },
         }),
       );
+    }
+    if (!taskUpdateMembers.find((t) => t.id === selectedMember.id)) {
+      setTaskUpdateMembers((prev) => [...prev, selectedMember]);
     }
     hide();
   };
@@ -117,12 +121,12 @@ const TaskModal: React.FC<Props> = ({
           />
           {members.length ? (
             <Autocomplete
-              value={member}
+              value={selectedMember}
               onChange={(event, newValue: any) => {
-                setMember(newValue);
+                updateSelectedMember(newValue);
               }}
               getOptionLabel={(option) =>
-                typeof option === 'string' ? option : option.userData.username
+                typeof option === 'string' ? option : option.username
               }
               id="controllable-states-demo"
               options={members}
@@ -137,8 +141,8 @@ const TaskModal: React.FC<Props> = ({
             </Typography>
           )}
           <List>
-            {taskUpdateMembers.map((member) => (
-              <ListItem key={member.id}>
+            {taskUpdateMembers.map((member, i) => (
+              <ListItem key={i}>
                 <ListItemText
                   primary={member.username}
                   secondary={member.fullName}

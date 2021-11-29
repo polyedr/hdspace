@@ -1,11 +1,32 @@
-/* eslint-disable import/prefer-default-export */
-
 import { handleError } from '@Api/helper';
 import config from '@Constants/configTrello';
 import { myAxios } from '@Src/config/settings';
+import { RequestAction } from '@Src/types/pmtools/actions';
+import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
 const { apiKey, token } = config;
+
+export const apiGetBoard = ({
+  project,
+  ...axiosProps
+}: MyAxiosProps & { project: RequestAction['project'] }) =>
+  myAxios({
+    ...axiosProps,
+    method: 'GET',
+    url: `/projects/projects/${project}/`,
+  })
+    .then((results: AxiosResponse) => results.data.project_data_trello_json)
+    .catch(handleError);
+
+export const createNewBoard = async (name: string) =>
+  myAxios({
+    baseURL: 'https://api.trello.com/1',
+    method: 'POST',
+    url: `/boards/?name=${name}&key=${apiKey}&token=${token}`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
 
 export const deleteOrganization = async (id: string) =>
   myAxios({

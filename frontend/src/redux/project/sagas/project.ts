@@ -29,10 +29,11 @@ import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
-import { apiGetBoard, createNewBoard } from '@Api/pmtools/board/columnApi';
 import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
 import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
 import {
+  apiGetBoard,
+  createNewBoard,
   createOrganization,
   deleteOrganization,
 } from '@Api/pmtools/board/boardApi';

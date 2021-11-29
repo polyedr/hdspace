@@ -11,8 +11,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { StyledIconButton } from '@Components/styledComponents';
 import { ModalAction } from '@Src/types/types';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
-import { useSelector } from 'react-redux';
-import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import { IColumnData } from '@Src/types/pmtools/trelloTypes';
 import Task from './Task';
 
@@ -47,8 +45,6 @@ export const Column: React.FC<Props> = ({
 }: any) => {
   const classes = useStyles();
   const [showTasks, setShowTasks] = useState(false);
-  const membersData = useSelector(selectAllUsersPermissions);
-  const members = Object.values(membersData);
 
   if (!column) {
     return <p>Loading...</p>;
@@ -112,13 +108,7 @@ export const Column: React.FC<Props> = ({
 
               {showTasks &&
                 column.tasks.map((task: any, i: number) => (
-                  <Task
-                    index={i}
-                    members={members}
-                    column={column}
-                    task={task}
-                    key={task.id}
-                  />
+                  <Task index={i} column={column} task={task} key={task.id} />
                 ))}
               {provided.placeholder}
             </div>
@@ -131,7 +121,6 @@ export const Column: React.FC<Props> = ({
         hide={() => setTasksModal(!tasksModal)}
         column={column}
         action={ModalAction.Create}
-        members={members}
       />
     </div>
   );

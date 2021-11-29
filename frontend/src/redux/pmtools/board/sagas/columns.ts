@@ -1,3 +1,4 @@
+import { apiGetBoard } from '@Api/pmtools/board/boardApi';
 import * as Board from '@Api/pmtools/board/columnApi';
 import { apiGetMembersOfBoard, fetchTasks } from '@Api/pmtools/board/tasksApi';
 import { panelErrorMsg } from '@Redux/actions';
@@ -31,7 +32,7 @@ export function* columnAddSaga({
   payload: { project, name, action },
 }: ReturnType<typeof actions.requestAddColumn>): ColumnSagaGenerator {
   try {
-    const board = yield call(reqWrapper, Board.apiGetBoard, { project });
+    const board = yield call(reqWrapper, apiGetBoard, { project });
     const boardId = JSON.parse(board).id;
     const column = yield call(reqWrapper, Board.createColumn, {
       data: { name, project, id: boardId },

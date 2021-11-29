@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
 import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
-import { ModalAction, PermissionsUserData } from '@Src/types/types';
+import { ModalAction } from '@Src/types/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { IColumnData } from '@Src/types/pmtools/trelloTypes';
 
@@ -15,7 +15,6 @@ type Props = {
   column: IColumnData;
   task: any;
   index: number;
-  members: Array<PermissionsUserData & { id: string }>;
 };
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
@@ -39,7 +38,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-const Task: React.FC<Props> = ({ column, task, members, index }) => {
+const Task: React.FC<Props> = ({ column, task, index }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -97,7 +96,6 @@ const Task: React.FC<Props> = ({ column, task, members, index }) => {
               column={column}
               selectedTaskId={task.id}
               action={ModalAction.Edit}
-              members={members}
             />
             <ConfirmModal
               show={showConfirmModal}

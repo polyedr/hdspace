@@ -17,12 +17,14 @@ import {
   apiAddSubscribeToStream,
   apiUnsubscribeToStream,
 } from '@Api/pmtools/chatApi';
-import { apiGetBoard } from '@Api/pmtools/board/columnApi';
 import {
+  apiGetBoard,
   getAddUserToBoard,
   getRemoveUserToBoard,
   getUserByEmail,
 } from '@Api/pmtools/board/boardApi';
+import { apiGetMembersOfBoard } from '@Api/pmtools/board/tasksApi';
+import { successFetchMembers } from '@Redux/pmtools/board/actions/tasks';
 import {
   selectUserFromAllUsers,
   selectUserFromProjectUsers,
@@ -173,11 +175,13 @@ export function* updateUserPermissionsForProjectSaga(
     const userTrello = yield call(getUserByEmail, user.email);
 
     if (!userTrello.error) {
-      const { id: boardId } = board;
       permissions.length
-        ? yield call(getAddUserToBoard, user.email, boardId)
-        : yield call(getRemoveUserToBoard, userTrello.id, boardId);
+        ? yield call(getAddUserToBoard, user.email, board.id)
+        : yield call(getRemoveUserToBoard, userTrello.id, board.id);
     }
+
+    const members = yield call(apiGetMembersOfBoard, board.id);
+    yield put(successFetchMembers(members));
 
     if (permissions && permissions.length) {
       const actionData = {
