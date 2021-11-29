@@ -1,4 +1,9 @@
+import { getUserByEmail } from '@Api/pmtools/board/boardApi';
 import * as Board from '@Api/pmtools/board/tasksApi';
+import {
+  addMemberToTasks,
+  deleteMemberToTasks,
+} from '@Api/pmtools/board/tasksApi';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import { requestAddHistory } from '@Redux/pmtools/activity/actions';
@@ -19,13 +24,30 @@ import {
 } from '../actions/tasks';
 import { selectColumn } from '../selectors';
 
+export function* taskDeleteMemberSaga({
+  payload: { cardId, userId },
+}: any): TasksAddSagaGenerator {
+  try {
+    const res = yield call(deleteMemberToTasks, cardId, userId);
+    console.log(res);
+  } catch (e) {
+    yield put(panelErrorMsg(e));
+  }
+}
+
 export function* taskAddSaga({
-  payload: { project, action, ...payload },
+  payload: { project, action, email, ...payload },
 }: ReturnType<typeof requestAddTask>): TasksAddSagaGenerator {
   try {
     const task = yield call(reqWrapper, Board.createTask, {
       data: payload,
     });
+    if (email) {
+      // @ts-ignore
+      const { id: userId } = yield call(getUserByEmail, email);
+      // @ts-ignore
+      yield call(addMemberToTasks, payload.id, userId);
+    }
     yield put({ type: TYPES.ADD_TASK_SUCCESS, payload: task });
     yield put(requestAddHistory({ project, ...action }));
   } catch (e) {
@@ -34,10 +56,15 @@ export function* taskAddSaga({
 }
 
 export function* taskEditSaga({
-  payload: { project, action, ...payload },
+  payload: { project, action, email, ...payload },
 }: ReturnType<typeof requestEditTask>): TasksEditSagaGenerator {
   try {
-    const project = yield select(selectCurrentProjectId);
+    const project: any = yield select(selectCurrentProjectId);
+    if (email) {
+      const { id: userId } = yield call(getUserByEmail, email);
+      // @ts-ignore
+      yield call(addMemberToTasks, payload.id, userId);
+    }
     const selectedTask = yield call(reqWrapper, Board.updateTask, {
       data: payload,
     });

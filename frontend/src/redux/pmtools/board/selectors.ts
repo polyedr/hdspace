@@ -1,26 +1,37 @@
 import { IColumnData, IServerTaskData } from '@Src/types/pmtools/trelloTypes';
 import { createSelector } from 'reselect';
-import { BoardRootState } from '../types';
+import { BoardState } from '../types';
 
-export const selectColumnList = (state: BoardRootState) =>
-  state.board.columnList;
+export const selectColumnList = ({ board }: BoardState) => board.columnList;
+export const selectTaskList = ({ board }: BoardState) => board.taskList;
+export const selectBoardData = ({ board }: BoardState) => board.board;
+export const selectMembersData = ({ board }: BoardState) => board.members;
 
-export const selectTaskList = (state: BoardRootState) => state.board.taskList;
-
-export const selectBoardData = (state: BoardRootState) => state.board.board;
+export const selectTaskWithMembers = createSelector(
+  selectTaskList,
+  selectMembersData,
+  (tasks, members) => {
+    return tasks.map((task) => ({
+      ...task,
+      members: task.idMembers.map((id) =>
+        members.find((m: any) => m?.id === id),
+      ),
+    }));
+  },
+);
 
 export const selectColumnListWithTasks = createSelector(
   selectColumnList,
-  selectTaskList,
-  (columnList, taskList) => {
-    return columnList.map((l: IColumnData) => ({
-      ...l,
-      tasks: taskList.filter((card: IServerTaskData) => card.idList === l.id),
+  selectTaskWithMembers,
+  (columns, tasks) => {
+    return columns.map((column) => ({
+      ...column,
+      tasks: tasks.filter((task: IServerTaskData) => task.idList === column.id),
     }));
   },
 );
 
 export const selectColumn = (value: string) =>
-  createSelector(selectColumnListWithTasks, (columnList) => {
-    return columnList.find((item: IColumnData) => item.id === value);
+  createSelector(selectColumnListWithTasks, (columns) => {
+    return columns.find((column: IColumnData) => column.id === value);
   });

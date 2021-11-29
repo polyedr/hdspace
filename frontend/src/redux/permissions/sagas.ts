@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { select, put, call } from 'redux-saga/effects';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as Actions from '@Redux/permissions/actions';
@@ -11,6 +12,17 @@ import {
 } from '@Api/permissions';
 import { selectUserData } from '@Redux/user/selectors';
 import { requestAddHistory } from '@Redux/pmtools/activity/actions';
+import { selectBoardData } from '@Redux/pmtools/board/selectors';
+import {
+  apiAddSubscribeToStream,
+  apiUnsubscribeToStream,
+} from '@Api/pmtools/chatApi';
+import { apiGetBoard } from '@Api/pmtools/board/columnApi';
+import {
+  getAddUserToBoard,
+  getRemoveUserToBoard,
+  getUserByEmail,
+} from '@Api/pmtools/board/boardApi';
 import {
   selectUserFromAllUsers,
   selectUserFromProjectUsers,
@@ -130,6 +142,7 @@ export function* updateUserPermissionsForProjectSaga(
   const { userId, projectId, permissions } = action.payload;
   try {
     let user = yield select(selectUserFromProjectUsers(userId));
+
     if (!user) {
       user = yield select(selectUserFromAllUsers(userId));
     }
@@ -142,6 +155,30 @@ export function* updateUserPermissionsForProjectSaga(
       );
       return;
     }
+
+    let board = yield select(selectBoardData);
+    if (!board) {
+      const boardData = yield call(reqWrapper, apiGetBoard, {
+        project: projectId,
+      });
+      board = JSON.parse(boardData);
+    }
+    if (user.profile.parameters.passwordZulip) {
+      const { name: streamName } = board;
+      permissions.length
+        ? yield call(apiAddSubscribeToStream, streamName, user.email)
+        : yield call(apiUnsubscribeToStream, streamName, user.email);
+    }
+
+    const userTrello = yield call(getUserByEmail, user.email);
+
+    if (!userTrello.error) {
+      const { id: boardId } = board;
+      permissions.length
+        ? yield call(getAddUserToBoard, user.email, boardId)
+        : yield call(getRemoveUserToBoard, userTrello.id, boardId);
+    }
+
     if (permissions && permissions.length) {
       const actionData = {
         action: `${user.firstName}'s rights have been changed`,

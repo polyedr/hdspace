@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { Draggable } from 'react-beautiful-dnd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
 import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
 import { ModalAction, PermissionsUserData } from '@Src/types/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
-import { Avatar, ListItem, ListItemText } from '@material-ui/core';
-import { selectUserForCurrentTask } from '@Redux/permissions/selectors';
 import { IColumnData } from '@Src/types/pmtools/trelloTypes';
 
 type Props = {
@@ -46,7 +44,6 @@ const Task: React.FC<Props> = ({ column, task, members, index }) => {
   const dispatch = useDispatch();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
-  const currentMember = useSelector(selectUserForCurrentTask(task.owner));
 
   const handleDeleteTask = () => {
     const action = `Column "${task.name}" has been deleted`;
@@ -75,22 +72,6 @@ const Task: React.FC<Props> = ({ column, task, members, index }) => {
           >
             <div>
               <h4 className={classes.title}>{task.name}</h4>
-              {currentMember && (
-                <ListItem style={{ padding: 0 }}>
-                  <div style={{ marginRight: 5 }}>
-                    <Avatar
-                      src={currentMember.userData.profile.avatar || ''}
-                      style={{ width: 30, height: 30 }}
-                    />
-                  </div>
-                  <ListItemText
-                    primary={currentMember.userData.username}
-                    secondary={currentMember.userData.profile.role}
-                    secondaryTypographyProps={{ style: { color: '#fff' } }}
-                    primaryTypographyProps={{ style: { fontSize: '14px' } }}
-                  />
-                </ListItem>
-              )}
             </div>
             <div>
               <StyledIconButton

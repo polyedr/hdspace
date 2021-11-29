@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -8,23 +7,28 @@ import {
   Button,
   TextField,
   Typography,
+  ListItem,
+  ListItemText,
+  List,
+  IconButton,
 } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Autocomplete } from '@material-ui/lab';
 import {
   requestAddTask,
+  requestDeleteMemberTask,
   requestEditTask,
 } from '@Redux/pmtools/board/actions/tasks';
 import { ModalAction, PermissionsUserData } from '@Src/types/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { IColumnData, IServerTaskData } from '@Src/types/pmtools/trelloTypes';
 
 type Props = {
   show: boolean;
-  task?: IServerTaskData | null;
+  task?: any | null;
   hide: () => void;
   action: ModalAction;
-  column: IColumnData;
+  column: any;
   selectedTaskId?: number | null;
   members: Array<PermissionsUserData & { id: string }>;
 };
@@ -38,10 +42,14 @@ const TaskModal: React.FC<Props> = ({
   task,
   members,
 }) => {
+  const dispatch = useDispatch();
+
   const [member, setMember] = useState(members[0] || '');
   const project = useSelector(selectCurrentProjectId);
-  const dispatch = useDispatch();
   const [title, setTitle] = useState(task?.name || '');
+  const [taskUpdateMembers, setTaskUpdateMembers] = useState(
+    task?.members || [],
+  );
 
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,6 +59,7 @@ const TaskModal: React.FC<Props> = ({
         requestAddTask({
           name: title,
           column: column.id,
+          email: member?.userData?.email || '',
           project,
           action: {
             action: `Task "${title}" was added`,
@@ -70,8 +79,7 @@ const TaskModal: React.FC<Props> = ({
         requestEditTask({
           id: selectedTaskId || 0,
           name: title,
-          creator: '',
-          owner: member?.userData?.id || null,
+          email: member?.userData?.email || '',
           column: column?.id || 0,
           project,
           action: {
@@ -82,8 +90,12 @@ const TaskModal: React.FC<Props> = ({
         }),
       );
     }
-
     hide();
+  };
+
+  const removeHandler = (id: string) => {
+    dispatch(requestDeleteMemberTask({ cardId: task.id, userId: id }));
+    setTaskUpdateMembers(taskUpdateMembers.filter((e) => e.id !== id));
   };
 
   return (
@@ -103,7 +115,6 @@ const TaskModal: React.FC<Props> = ({
             placeholder="Title"
             inputProps={{ maxLength: 30 }}
           />
-
           {members.length ? (
             <Autocomplete
               value={member}
@@ -125,6 +136,19 @@ const TaskModal: React.FC<Props> = ({
               Note: If you want to add a user, add team members
             </Typography>
           )}
+          <List>
+            {taskUpdateMembers.map((member) => (
+              <ListItem key={member.id}>
+                <ListItemText
+                  primary={member.username}
+                  secondary={member.fullName}
+                />
+                <IconButton onClick={() => removeHandler(member.id)}>
+                  <DeleteIcon />
+                </IconButton>
+              </ListItem>
+            ))}
+          </List>
 
           <DialogActions>
             <Button type="submit" color="secondary" variant="contained">

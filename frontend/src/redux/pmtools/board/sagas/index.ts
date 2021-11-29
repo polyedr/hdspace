@@ -11,5 +11,6 @@ export default function* boardSaga() {
   yield takeLatest(TYPES.DELETE_TASK, taskSaga.taskDeleteSaga);
   yield takeLatest(TYPES.EDIT_COLUMN, columnSaga.columnEditSaga);
   yield takeLatest(TYPES.ADD_COLUMN, columnSaga.columnAddSaga);
+  yield takeLatest(TYPES.DELETE_MEMBER_TASK, taskSaga.taskDeleteMemberSaga);
   yield takeLatest(TYPES.DELETE_COLUMN, columnSaga.columnDeleteSaga);
 }

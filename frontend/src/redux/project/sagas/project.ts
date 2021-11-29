@@ -282,6 +282,7 @@ export function* createProjectSaga(
       `${generateName}-adevi-org`,
     );
     const board = yield call(createNewBoard, generateName);
+    yield call(apiCreateNewStreams, generateName);
 
     const resultBoardData = {
       organization,
@@ -289,7 +290,6 @@ export function* createProjectSaga(
     };
 
     yield put(successSavedBoard(resultBoardData));
-    yield call(apiCreateNewStreams, generateName);
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
@@ -392,7 +392,7 @@ export function* deleteProjectSaga({
       project: id,
     });
 
-    yield call(deleteOrganization, JSON.parse(board).organization.id);
+    yield call(deleteOrganization, JSON.parse(board).organization?.id);
     yield call(apiDeleteStream, JSON.parse(board).name);
 
     const { result, error }: Result<boolean> = yield call(

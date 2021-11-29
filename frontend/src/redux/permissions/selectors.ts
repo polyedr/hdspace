@@ -1,5 +1,5 @@
 import { AppReduxState } from '@Redux/types';
-import { PermissionsUserData, UserProjectPermission } from '@Src/types/types';
+import { UserProjectPermission } from '@Src/types/types';
 
 export const selectAllUsers = ({ permissions }: AppReduxState) =>
   permissions.allUsersList.results;
@@ -27,14 +27,6 @@ export const selectUserFromAllUsers = (userId: string) => (
 ) => {
   const allUsers = selectAllUsers(state);
   return allUsers[userId];
-};
-
-export const selectUserForCurrentTask = (taskId: number) => ({
-  permissions,
-}: AppReduxState) => {
-  return Object.values(permissions.projectUsersPermissionsList.data).find(
-    (m: PermissionsUserData & { id: string }) => m.userData.id === taskId,
-  );
 };
 
 export const selectUserFromProjectUsers = (userId: string) => ({

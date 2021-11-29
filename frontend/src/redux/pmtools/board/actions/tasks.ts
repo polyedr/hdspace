@@ -26,15 +26,13 @@ export const successUpdateCardIndex = ({
 });
 
 export const requestAddTask = (
-  payload: RequestTask & { action: ActionTypePM },
+  payload: RequestTask & { action: ActionTypePM } & { email: string },
 ) => ({
   type: TYPES.ADD_TASK,
   payload,
 });
 
-export const requestEditTask = (
-  payload: RequestTask & { action: ActionTypePM },
-) => ({
+export const requestEditTask = (payload: any) => ({
   type: TYPES.EDIT_TASK,
   payload,
 });
@@ -46,9 +44,22 @@ export const requestDeleteTask = (
   payload,
 });
 
+export const requestDeleteMemberTask = (payload: {
+  cardId: string;
+  userId: string;
+}) => ({
+  type: TYPES.DELETE_MEMBER_TASK,
+  payload,
+});
+
 // SUCCESS
 export const successFetchTask = (payload: any) => ({
   type: TYPES.FETCH_TASKS_SUCCESS,
+  payload,
+});
+
+export const successFetchMembers = (payload: Array<any>) => ({
+  type: TYPES.MEMBERS_SAVED_SUCCESS,
   payload,
 });
 

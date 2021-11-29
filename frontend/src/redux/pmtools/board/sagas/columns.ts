@@ -1,5 +1,5 @@
 import * as Board from '@Api/pmtools/board/columnApi';
-import { fetchTasks } from '@Api/pmtools/board/tasksApi';
+import { apiGetMembersOfBoard, fetchTasks } from '@Api/pmtools/board/tasksApi';
 import { panelErrorMsg } from '@Redux/actions';
 import { requestAddHistory } from '@Redux/pmtools/activity/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
@@ -10,21 +10,18 @@ import {
 } from '@Src/types/pmtools/generators';
 import { call, put, select } from 'redux-saga/effects';
 import * as actions from '../actions/columns';
-import { successFetchTask } from '../actions/tasks';
+import { successFetchMembers, successFetchTask } from '../actions/tasks';
+import { selectBoardData } from '../selectors';
 
 export function* columnsFetchSaga() {
   try {
-    const project = yield select(selectCurrentProjectId);
-    const board = yield call(reqWrapper, Board.apiGetBoard, { project });
-    const boardId = JSON.parse(board).id;
-    const boardName = yield call(reqWrapper, Board.apiGetBoardInfo, {
-      project,
-    });
+    const { id: boardId } = yield select(selectBoardData);
     const columns = yield call(Board.fetchColumns, boardId);
     const tasks = yield call(fetchTasks, boardId);
+    const members = yield call(apiGetMembersOfBoard, boardId);
+    yield put(successFetchMembers(members));
     yield put(successFetchTask(tasks));
     yield put(actions.successFetchColumn(columns));
-    yield put(actions.successSavedBoard(boardName));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }

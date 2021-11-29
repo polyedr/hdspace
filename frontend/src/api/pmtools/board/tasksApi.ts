@@ -8,6 +8,26 @@ import { AxiosResponse } from 'axios';
 
 const { apiKey, token } = config;
 
+export const addMemberToTasks = (cardId: string, userId: string) => {
+  return myAxios({
+    baseURL: 'https://api.trello.com/1',
+    method: 'POST',
+    data: { value: userId },
+    url: `/cards/${cardId}/idMembers?key=${apiKey}&token=${token}`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
+};
+
+export const deleteMemberToTasks = (cardId: string, userId: string) => {
+  return myAxios({
+    baseURL: 'https://api.trello.com/1',
+    method: 'DELETE',
+    url: `/cards/${cardId}/idMembers/${userId}?key=${apiKey}&token=${token}`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
+};
 export const fetchTasks = (boardId) =>
   myAxios({
     baseURL: 'https://api.trello.com/1',
@@ -73,6 +93,15 @@ export const apiMoveCardToList = ({
       idList: destination,
       pos: newPos,
     },
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
+
+export const apiGetMembersOfBoard = (boardId) =>
+  myAxios({
+    baseURL: 'https://api.trello.com/1',
+    url: `/boards/${boardId}/members?key=${apiKey}&token=${token}`,
+    method: 'GET',
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);

@@ -6,6 +6,7 @@ const initialState: BoardState = {
   board: '',
   columnList: [],
   taskList: [],
+  members: [],
 };
 
 const boardReducer = (
@@ -13,6 +14,8 @@ const boardReducer = (
   action: InviteAction,
 ) => {
   switch (action.type) {
+    case TYPES.MEMBERS_SAVED_SUCCESS:
+      return { ...state, members: action.payload };
     case TYPES.FETCH_COLUMNS_SUCCESS:
       return { ...state, columnList: action.payload };
     case TYPES.ADD_COLUMN_SUCCESS:

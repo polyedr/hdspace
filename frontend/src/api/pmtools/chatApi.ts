@@ -30,9 +30,7 @@ export const apiCreateNewStreams = async (name: string) => {
     const meParams = {
       subscriptions: JSON.stringify([{ name }]),
     };
-    await client.users.me.subscriptions.add(meParams);
-
-    throw new Error('Create streams error');
+    return await client.users.me.subscriptions.add(meParams);
   } catch (e) {
     return e;
   }
@@ -52,11 +50,47 @@ export const apiRegisterUser = async (
 
 export const apiDeleteStream = async (nameZulip: string) => {
   try {
-    const clientAdmin = await zulipInit(configAdmin);
+    const client = await zulipInit(configAdmin);
     const meParams = {
       subscriptions: JSON.stringify([nameZulip]),
     };
-    return await clientAdmin.users.me.subscriptions.remove(meParams);
+    return await client.users.me.subscriptions.remove(meParams);
+  } catch (e) {
+    return e;
+  }
+};
+
+export const apiAddSubscribeToStream = async (
+  nameStream: string,
+  email: string,
+) => {
+  try {
+    const client = await zulipInit(configAdmin);
+    const { members } = await client.users.retrieve();
+    const user = members.find((m) => m.is_active && m.email === email);
+    const anotherUserParams = {
+      subscriptions: JSON.stringify([{ name: nameStream }]),
+      principals: JSON.stringify([user.user_id]),
+    };
+    return await client.users.me.subscriptions.add(anotherUserParams);
+  } catch (e) {
+    return e;
+  }
+};
+
+export const apiUnsubscribeToStream = async (
+  nameStream: string,
+  email: string,
+) => {
+  try {
+    const client = await zulipInit(configAdmin);
+    const { members } = await client.users.retrieve();
+    const user = members.find((m) => m.is_active && m.email === email);
+    const anotherUserParams = {
+      subscriptions: JSON.stringify([nameStream]),
+      principals: JSON.stringify([user.user_id]),
+    };
+    return await client.users.me.subscriptions.remove(anotherUserParams);
   } catch (e) {
     return e;
   }

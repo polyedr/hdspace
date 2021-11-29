@@ -6,11 +6,7 @@ import {
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
 import { AuthParams } from '@Src/types/pmtools/actions';
-import {
-  IBoard,
-  IColumnData,
-  IServerTaskData,
-} from '@Src/types/pmtools/trelloTypes';
+import { IBoard } from '@Src/types/pmtools/trelloTypes';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
@@ -42,8 +38,9 @@ export type ChatState = {
 
 export type BoardState = {
   board: IBoard;
-  columnList: Array<IColumnData>;
-  taskList: Array<IServerTaskData>;
+  columnList: Array<any>;
+  taskList: Array<any>;
+  members: Array<any>;
 };
 
 export type InviteState = {
@@ -78,6 +75,7 @@ export type InviteAction = ReturnType<
   | typeof actionsColumns.successEditColumn
   | typeof actionsColumns.successDeleteColumn
   | typeof actionsColumns.successSavedBoard
+  | typeof actionsTasks.successFetchMembers
 >;
 
 export type ChatAction = ReturnType<
