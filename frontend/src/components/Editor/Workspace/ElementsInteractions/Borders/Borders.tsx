@@ -5,6 +5,7 @@ import { Rnd } from 'react-rnd';
 import cn from 'classnames';
 import { selectIsElementActive } from '@Redux/project/selectors/element';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import { selectShowingGrid } from '@Redux/project/selectors/base';
 import DropPositionMarker from './DropPositionMarker';
 
 type Props = {
@@ -78,12 +79,14 @@ const Borders: React.FC<Props> = ({
 }) => {
   const isDropTarget = dropTargetParams?.id === elementId;
   const isActive = useSelector(selectIsElementActive(elementId));
+  const showGrid = useSelector(selectShowingGrid);
   const classes = useStyles({ isActive });
 
   if (!elementId || !styles) {
     return null;
   }
-  const { top, left, height, width } = styles;
+
+  const { top, left, height, width, right, bottom } = styles;
 
   // eslint-disable-next-line no-unused-vars
   const onResize = (e, direction, ref, delta, position) => {
@@ -133,6 +136,7 @@ const Borders: React.FC<Props> = ({
   return (
     <>
       {isActiveBorder &&
+        !showGrid &&
         !['root', 'calendar', 'clock', 'label'].includes(type) && (
           <div style={{ width }}>
             <div
@@ -157,6 +161,85 @@ const Borders: React.FC<Props> = ({
               }}
             >
               {`${width} px`}
+            </div>
+          </div>
+        )}
+
+      {isActiveBorder &&
+        showGrid &&
+        !['root', 'calendar', 'clock', 'label'].includes(type) && (
+          <div style={{ width }}>
+            <div
+              style={{
+                borderTop: '1px solid red',
+                top: top + height / 2,
+                left: 0,
+                width: left,
+                position: 'absolute',
+                textAlign: 'center',
+                color: 'red',
+                fontSize: 'x-small',
+                fontWeight: 'bold',
+              }}
+            >
+              {`${Math.round((Number(left) * 100) / 100)}px`}
+            </div>
+            <div
+              style={{
+                borderTop: '1px solid red',
+                left: 4 + left + width,
+                width: right,
+                top: top + height / 2,
+                position: 'absolute',
+                textAlign: 'center',
+                color: 'red',
+                fontSize: 'x-small',
+                fontWeight: 'bold',
+              }}
+            >
+              {`${Math.round((Number(right) * 100) / 100)}px`}
+            </div>
+
+            <div
+              style={{
+                borderLeft: '1px solid red',
+                height: top,
+                position: 'absolute',
+                left: width / 2 + left,
+              }}
+            >
+              <span
+                style={{
+                  color: 'red',
+                  fontSize: 'x-small',
+                  fontWeight: 'bold',
+                  top: '50%',
+                  position: 'absolute',
+                }}
+              >
+                {`${Math.round((Number(top) * 100) / 100)}px`}
+              </span>
+            </div>
+            <div
+              style={{
+                borderLeft: '1px solid red',
+                top: top + height,
+                height: bottom,
+                position: 'absolute',
+                left: width / 2 + left,
+              }}
+            >
+              <span
+                style={{
+                  color: 'red',
+                  fontSize: 'x-small',
+                  fontWeight: 'bold',
+                  top: '50%',
+                  position: 'absolute',
+                }}
+              >
+                {`${Math.round((Number(bottom) * 100) / 100)}px`}
+              </span>
             </div>
           </div>
         )}
