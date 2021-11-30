@@ -212,7 +212,7 @@ export const convertProjectToPatchRequest = (
     status,
     projectscreen,
     tags,
-    project_data_trello_json: projectTrelloJSON,
+    project_data_trello_json: JSON.stringify(projectTrelloJSON),
     project_data_json: JSON.stringify({
       ...projectData,
       classes: projectData.classes.map((cls: ProjectClass) => ({

@@ -17,7 +17,7 @@ const Messages: React.FC = () => {
   const dispatch = useDispatch();
   const [messages, setMessages] = useState<IStream>([]);
   const [message, setMessage] = useState<IMessageZulip['content']>('');
-  const { name: boardName } = useSelector(selectBoardData);
+  const { name: boardName } = useSelector(selectBoardData) || {};
 
   const { email, profile } = useSelector(selectUserData);
   const config = configUser(email, profile.parameters.passwordZulip);

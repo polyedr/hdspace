@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { FormEvent, useState, useEffect } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Dialog,

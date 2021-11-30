@@ -26,8 +26,7 @@ export function* taskDeleteMemberSaga({
   payload: { cardId, userId },
 }: any): TasksAddSagaGenerator {
   try {
-    const res = yield call(deleteMemberToTasks, cardId, userId);
-    console.log(res);
+    yield call(deleteMemberToTasks, cardId, userId);
   } catch (e) {
     yield put(panelErrorMsg(e));
   }

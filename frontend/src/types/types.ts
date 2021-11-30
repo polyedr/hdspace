@@ -4,7 +4,7 @@ import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
-import { IBoard } from './pmtools/trelloTypes';
+import { IBoardForUI } from './pmtools/trelloTypes';
 
 export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
 
@@ -819,14 +819,14 @@ export type ProjectData = {
 
 export type Project = ProjectBase & {
   projectscreen: number[];
-  projectTrelloJSON: IBoard;
+  projectTrelloJSON: IBoardForUI;
   projectData: ProjectData;
   user: UserData;
 };
 
 export type ProjectWithScreens = ProjectBase & {
   projectData: ProjectData;
-  projectTrelloJSON: string | IBoard;
+  projectTrelloJSON: IBoardForUI;
   projectscreen: Screen[];
   user: UserData;
 };

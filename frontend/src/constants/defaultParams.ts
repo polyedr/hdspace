@@ -61,7 +61,21 @@ export const DEFAULT_PROJECT: Project = {
   projectLoader: false,
   updated: new Date(),
   created: new Date(),
-  projectTrelloJSON: '',
+  projectTrelloJSON: {
+    closed: false,
+    desc: '',
+    descData: '',
+    id: '',
+    idEnterprise: null,
+    idOrganization: '',
+    labelNames: null,
+    limits: '',
+    name: '',
+    pinned: false,
+    prefs: null,
+    shortUrl: '',
+    url: '',
+  },
   tags: [],
   projectData: {
     classes: [

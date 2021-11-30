@@ -1,11 +1,11 @@
 import { IColumnData, IServerTaskData } from '@Src/types/pmtools/trelloTypes';
 import { createSelector } from 'reselect';
-import { BoardState } from '../types';
+import { BoardRootState } from '../types';
 
-export const selectColumnList = ({ board }: BoardState) => board.columnList;
-export const selectTaskList = ({ board }: BoardState) => board.taskList;
-export const selectBoardData = ({ board }: BoardState) => board.board;
-export const selectMembersData = ({ board }: BoardState) => board.members;
+export const selectColumnList = ({ board }: BoardRootState) => board.columns;
+export const selectTaskList = ({ board }: BoardRootState) => board.tasks;
+export const selectBoardData = ({ board }: BoardRootState) => board.board;
+export const selectMembersData = ({ board }: BoardRootState) => board.members;
 
 export const selectTaskWithMembers = createSelector(
   selectTaskList,

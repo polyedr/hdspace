@@ -15,10 +15,9 @@ import Columns from './Columns';
 
 const TasksTab: FC = () => {
   const dispatch = useDispatch();
-  const columnList = useSelector(selectColumnListWithTasks);
-  const project = useSelector(selectCurrentProjectId);
-
   const [open, setOpen] = useState(false);
+  const columns = useSelector(selectColumnListWithTasks);
+  const project = useSelector(selectCurrentProjectId);
 
   const onDragEnd = async ({ destination, source }: DropResult) => {
     if (!destination) return;
@@ -45,10 +44,10 @@ const TasksTab: FC = () => {
           icon={FormatListBulletedIcon}
           actions={titleActions}
         />
-        {!columnList.length ? (
+        {!columns.length ? (
           <p>Create you first column</p>
         ) : (
-          columnList.map((item) => <Columns key={item.id} column={item} />)
+          columns.map((item) => <Columns key={item.id} column={item} />)
         )}
         <ColumnModal
           show={open}

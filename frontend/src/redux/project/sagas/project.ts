@@ -37,6 +37,7 @@ import {
   createOrganization,
   deleteOrganization,
 } from '@Api/pmtools/board/boardApi';
+import { IBoardForUI, IOrganization } from '@Src/types/pmtools/trelloTypes';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -278,27 +279,27 @@ export function* createProjectSaga(
     const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
 
-    const organization = yield call(
+    const organization: IOrganization = yield call(
       createOrganization,
       `${generateName}-adevi-org`,
     );
-    const board = yield call(createNewBoard, generateName);
+    const board: IBoardForUI = yield call(createNewBoard, generateName);
     yield call(apiCreateNewStreams, generateName);
 
-    const resultBoardData = {
+    const boardForUI: IBoardForUI = {
       organization,
       ...board,
     };
-
-    yield put(successSavedBoard(resultBoardData));
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name, resultBoardData),
+        data: convertCreatedProjectToRequest(name, boardForUI),
       },
     );
+    yield put(successSavedBoard(boardForUI));
+
     if (createdProject?.created) {
       yield put(
         PermissionsActions.setStateCurrentUserPermissions([

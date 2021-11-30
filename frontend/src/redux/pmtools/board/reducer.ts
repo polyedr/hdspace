@@ -3,9 +3,9 @@ import TYPES from '@Redux/actionTypes';
 import { BoardState, InviteAction } from '../types';
 
 const initialState: BoardState = {
-  board: '',
-  columnList: [],
-  taskList: [],
+  board: null,
+  columns: [],
+  tasks: [],
   members: [],
 };
 
@@ -17,14 +17,14 @@ const boardReducer = (
     case TYPES.MEMBERS_SAVED_SUCCESS:
       return { ...state, members: action.payload };
     case TYPES.FETCH_COLUMNS_SUCCESS:
-      return { ...state, columnList: action.payload };
+      return { ...state, columns: action.payload };
     case TYPES.ADD_COLUMN_SUCCESS:
-      return { ...state, columnList: [...state.columnList, action.payload] };
+      return { ...state, columns: [...state.columns, action.payload] };
     case TYPES.EDIT_COLUMN_SUCCESS:
       return {
         ...state,
-        columnList: [
-          ...state.columnList.map((column) => {
+        columns: [
+          ...state.columns.map((column) => {
             if (column.id === action.payload.id) {
               column.name = action.payload.name;
             }
@@ -37,19 +37,19 @@ const boardReducer = (
     case TYPES.DELETE_COLUMN_SUCCESS:
       return {
         ...state,
-        columnList: state.columnList.filter(
+        columnList: state.columns.filter(
           (column) => column.id !== action.payload,
         ),
       };
     case TYPES.FETCH_TASKS_SUCCESS:
-      return { ...state, taskList: action.payload };
+      return { ...state, tasks: action.payload };
     case TYPES.ADD_TASK_SUCCESS:
-      return { ...state, taskList: [...state.taskList, action.payload] };
+      return { ...state, tasks: [...state.tasks, action.payload] };
     case TYPES.EDIT_TASK_SUCCESS:
       return {
         ...state,
-        taskList: [
-          ...state.taskList.map((task) => {
+        tasks: [
+          ...state.tasks.map((task) => {
             if (task.id === action.payload.id) {
               task.name = action.payload.name;
             }
@@ -60,7 +60,7 @@ const boardReducer = (
     case TYPES.DELETE_TASK_SUCCESS:
       return {
         ...state,
-        taskList: state.taskList.filter((task) => task.id !== action.payload),
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
       };
     case TYPES.UPDATE_CARD_INDEX_SUCCESS:
       const { destList, removed, dest, source, sourceList } = action.payload;

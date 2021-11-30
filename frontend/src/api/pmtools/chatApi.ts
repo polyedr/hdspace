@@ -13,12 +13,7 @@ export const apiAuthUser = async (login: PmToolsUserChat) => {
     if (config.config.username && config.config.apiKey) {
       return config;
     }
-    const message = await config.accounts.retrieve();
-
-    const err = new Error(message.msg);
-    err.name = 'AUTHENTICATION ERROR';
-
-    throw err;
+    return await config.accounts.retrieve();
   } catch (e) {
     return e;
   }

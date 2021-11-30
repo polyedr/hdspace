@@ -1,4 +1,52 @@
-export type IBoard = any;
+export type IOrganization = {
+  desc: string;
+  descData: unknown;
+  displayName: string;
+  id: string;
+  idMemberCreator: string;
+  limits: unknown;
+  logoUrl: unknown;
+  logoHash: unknown;
+  name: string;
+  powerUps: unknown;
+  products: unknown;
+  teamType: unknown;
+  url: string;
+  website: unknown;
+};
+
+export type IBoard = {
+  closed: boolean;
+  desc: unknown;
+  descData: unknown;
+  id: string;
+  idEnterprise: any;
+  idOrganization: string;
+  labelNames: { [key: string]: string };
+  limits: unknown;
+  name: string;
+  pinned: boolean;
+  prefs: { [key: string]: string };
+  shortUrl: string;
+  url: string;
+};
+
+export type IBoardForUI = {
+  closed: boolean;
+  desc: unknown;
+  descData: unknown;
+  id: string;
+  organization?: IOrganization | null;
+  idEnterprise: any;
+  idOrganization: string;
+  labelNames: { [key: string]: string } | null;
+  limits: unknown;
+  name: string;
+  pinned: boolean;
+  prefs: { [key: string]: string } | null;
+  shortUrl: string;
+  url: string;
+};
 
 export interface IServerListData {
   closed: boolean;
