@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BoundingStyles, DropTargetParams } from '@Src/types';
 import { Rnd } from 'react-rnd';
@@ -81,12 +81,13 @@ const Borders: React.FC<Props> = ({
   const isActive = useSelector(selectIsElementActive(elementId));
   const showGrid = useSelector(selectShowingGrid);
   const classes = useStyles({ isActive });
+  const rightGridScale = useRef<HTMLDivElement>(null);
 
   if (!elementId || !styles) {
     return null;
   }
 
-  const { top, left, height, width, right, bottom } = styles;
+  const { top, left, height, width } = styles;
 
   // eslint-disable-next-line no-unused-vars
   const onResize = (e, direction, ref, delta, position) => {
@@ -168,27 +169,12 @@ const Borders: React.FC<Props> = ({
       {isActiveBorder &&
         showGrid &&
         !['root', 'calendar', 'clock', 'label'].includes(type) && (
-          <div style={{ width }}>
-            <div
-              style={{
-                borderTop: '1px solid red',
-                top: top + height / 2,
-                left: 0,
-                width: left,
-                position: 'absolute',
-                textAlign: 'center',
-                color: 'red',
-                fontSize: 'x-small',
-                fontWeight: 'bold',
-              }}
-            >
-              {`${Math.round((Number(left) * 100) / 100)}px`}
-            </div>
+          <div>
             <div
               style={{
                 borderTop: '1px solid red',
                 left: 4 + left + width,
-                width: right,
+                width: `calc(100% - (${left}px + ${width}px))`,
                 top: top + height / 2,
                 position: 'absolute',
                 textAlign: 'center',
@@ -196,8 +182,13 @@ const Borders: React.FC<Props> = ({
                 fontSize: 'x-small',
                 fontWeight: 'bold',
               }}
+              ref={rightGridScale}
             >
-              {`${Math.round((Number(right) * 100) / 100)}px`}
+              {rightGridScale.current?.scrollWidth !== undefined
+                ? `${Math.round(
+                    (Number(rightGridScale.current?.scrollWidth) * 100) / 100,
+                  )}px`
+                : null}
             </div>
 
             <div
@@ -218,27 +209,6 @@ const Borders: React.FC<Props> = ({
                 }}
               >
                 {`${Math.round((Number(top) * 100) / 100)}px`}
-              </span>
-            </div>
-            <div
-              style={{
-                borderLeft: '1px solid red',
-                top: top + height,
-                height: bottom,
-                position: 'absolute',
-                left: width / 2 + left,
-              }}
-            >
-              <span
-                style={{
-                  color: 'red',
-                  fontSize: 'x-small',
-                  fontWeight: 'bold',
-                  top: '50%',
-                  position: 'absolute',
-                }}
-              >
-                {`${Math.round((Number(bottom) * 100) / 100)}px`}
               </span>
             </div>
           </div>
