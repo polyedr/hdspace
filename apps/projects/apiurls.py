@@ -37,7 +37,7 @@ from .apiviews import (
     IllustrationSetImageList, IllustrationSetImageDetail, ScenarioElementMultipleRecursiveViewSet,
     RemovePermissionsProject,
     AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject,
-    ProjectWithMembersViewSet)
+    ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail)
 
 app_name = "projects"
 
@@ -223,6 +223,19 @@ api_illustration_set_image_patterns = [
     ),
 ]
 
+api_illustration_set_image_palette_patterns = [
+    path(
+        "images_palette/",
+        IllustrationSetImagePaletteList.as_view(),
+        name="api_illustration_set_image_palette_list",
+    ),
+    path(
+        "images_palette/<int:pk>/",
+        IllustrationSetImagePaletteDetail.as_view(),
+        name="api_illustration_set_list_image_palette_detail",
+    ),
+]
+
 urlpatterns = [
     # path("", include(api_project_invitation_patterns)),
     # path("", include(api_screen_event_patterns)),
@@ -233,6 +246,7 @@ urlpatterns = [
     path("", include(api_column_task_patterns)),
     path("", include(api_illustration_set_patterns)),
     path("", include(api_illustration_set_image_patterns)),
+    path("", include(api_illustration_set_image_palette_patterns)),
     path("", include(api_project_screen_patterns)),
     path("", include(api_screen_scenario_patterns)),
     path("", include(api_scenario_element_patterns)),

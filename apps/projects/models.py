@@ -11,6 +11,7 @@ from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
+from rest_framework import serializers
 
 # from rest_framework import permissions  # Django-Gardian testing Custom Permission
 
@@ -303,6 +304,7 @@ class ProjectImage(TimeStampedModel):
     image = models.ImageField(
         upload_to="uploads/", blank=True, null=True, max_length=256
     )
+    palette = JSONField(blank=True)
     image_url = models.CharField(max_length=255, null=True, blank=True)
     illustration_set = models.ForeignKey(
         ProjectIllustrationSet, default=None, related_name="images", null=True, blank=True, on_delete=models.CASCADE

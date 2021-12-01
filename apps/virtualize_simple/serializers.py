@@ -853,11 +853,28 @@ def htmltree_initialize(fname, bcolour_container_value, img_width):
     return root, outer_div, styles, parameters
 
 
-def clusters_printing(root_block, fname, input_image=[]):
+def clusters_printing(root_block, root_firstcluster, fname, input_image=[]):
     if len(input_image):
         image_allclusters = copy.deepcopy(input_image)
         image_cclusters = copy.deepcopy(input_image)
+        image_firstclusters = copy.deepcopy(input_image)
         image_allcluelems = copy.deepcopy(input_image)
+
+    # Go through all the first clusters obtained after the annotation
+    if len(image_firstclusters):
+        # Print all the firstclusters
+        for pre, fill, node in RenderTree(root_firstcluster):
+            if node.types == "firstcluster":
+                cv2.rectangle(
+                    image_firstclusters,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (20, 50, 107),
+                    1,
+                )
+                print("firstcluster")
+        # Printing cclusters to file
+        cv2.imwrite("firstclusters_" + fname, image_firstclusters)
 
     # Go through all the blocks obtained after the ternary algorithm
     if len(image_cclusters):
@@ -1778,6 +1795,7 @@ def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
                     next_level_block_firstcluster.types = "firstcluster"
                     next_level_block_firstcluster.parent = firstcluster
                     next_level_block_firstcluster.level_blocks = next_level_blocks
+
                     (x1, y1, x2, y2) = r1_e
                     cv2.rectangle(
                         image_firstclusters,
@@ -1793,6 +1811,7 @@ def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
                     next_level_block_firstcluster = ClusterClass(*r1_e)
                     next_level_block_firstcluster.types = "firstcluster"
                     next_level_block_firstcluster.parent = firstcluster
+
                     (x1, y1, x2, y2) = r1_e
                     cv2.rectangle(
                         image_firstclusters,
@@ -3146,6 +3165,10 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             finally:
                 pass
 
+            # print("before: ")
+            # for pre, fill, node in RenderTree(root_firstcluster):
+            #     if node.types:
+            #         print(node.types)
             # Do the containerization based on firstclusters and dbclusters, they should be both merged to clusters
             root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
                                                 window_name1, fclusters)
@@ -3167,9 +3190,13 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 styles=styles,
                 buoyancy=0,
             )
+            # print("after: ")
+            # for pre, fill, node in RenderTree(root_block):
+            #     if node.types:
+            #         print(node.types)
 
             # Printing clusters function calling
-            clusters_printing(root_block, fname, input_image=image_opencv_input)
+            clusters_printing(root_block, root_firstcluster, fname, input_image=image_opencv_input)
 
             # Obtaining the absolute path for the parameters directly. Should change this later.
             o = urlparse(self.context["request"].build_absolute_uri())
