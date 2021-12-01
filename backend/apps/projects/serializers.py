@@ -1,6 +1,9 @@
 """Serializers for the projects"""
-
+import os
 from io import BytesIO
+import json
+
+import cv2
 from django.core.files.uploadedfile import UploadedFile
 import requests
 from urllib.parse import urlparse
@@ -13,6 +16,8 @@ from taggit_serializer.serializers import (TagListSerializerField,
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 from apps.accounts.models import User
 from apps.accounts.serializers import UserSerializer
+from apps.utils.fset1 import get_dominant_palette
+from project.settings import MEDIA_ROOT
 from .models import (
     Project,
     ProjectMember,
@@ -578,6 +583,43 @@ class ImageSerializer(serializers.ModelSerializer):
         fileupload = ProjectImage(id=None, **validated_data)
         fileupload.save()
         fileupload.image_url = str(fileupload.image)
+        fileupload.save()
+        return fileupload
+
+
+class ImagePaletteSerializer(serializers.ModelSerializer):
+    fileurl = serializers.URLField(allow_blank=True, allow_null=True, required=False)
+
+    class Meta:
+        model = ProjectImage
+        fields = ("id", "image", "image_url", "created", "modified", "illustration_set", "fileurl", "palette",)
+        extra_kwargs = {
+            "image_url": {"read_only": True},
+            "fileurl": {"write_only": True},
+        }
+
+    def create(self, validated_data):
+        url = validated_data.pop("fileurl", None)
+        if url:
+            response = requests.get(url)
+            # Set FileField to binary file
+            filename = urlparse(url).path.split("/")[-1]
+            validated_data["image"] = UploadedFile(
+                BytesIO(response.content), name=filename
+            )
+
+        fileupload = ProjectImage(id=None, **validated_data)
+        fileupload.save()
+        fileupload.image_url = str(fileupload.image)
+
+        image_uploaded_url = os.path.join(MEDIA_ROOT, fileupload.image_url)
+
+        image_cv = cv2.imread(image_uploaded_url)
+        # print(fileupload.image_url, image_uploaded_url, image_cv)
+        colours = get_dominant_palette(image_cv)
+        # print(colours)
+        fileupload.palette = json.dumps(colours)
+
         fileupload.save()
         return fileupload
 

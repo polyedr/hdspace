@@ -214,6 +214,52 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
     return dcolour, fcolour
 
 
+def get_dominant_palette(image, k=27, image_processing_size=None):
+    """
+    takes an image as input
+    returns the dominant color of the image as a list
+
+    dominant color is found by running k means on the
+    pixels & returning the centroid of the largest cluster
+
+    processing time is sped up by working with a smaller image;
+    this resizing can be done with the image_processing_size param
+    which takes a tuple of image dims as input
+
+    get_dominant_colour(my_image, k=4, image_processing_size = (25, 25))
+    [56.2423442, 34.0834233, 70.1234123]
+    """
+    # resize image if new dims provided
+    if image_processing_size is not None:
+        image = cv2.resize(image, image_processing_size, interpolation=cv2.INTER_AREA)
+
+    # reshape the image to be a list of pixels
+    image = image.reshape((image.shape[0] * image.shape[1], 3))
+
+    # cluster and assign labels to the pixels
+    clt = KMeans(n_clusters=k)
+    labels = clt.fit_predict(image)
+
+    # count labels to find most popular
+    label_counts = Counter(labels)
+
+    # subset out most popular centroid
+    # dominant_colour = clt.cluster_centers_[label_counts.most_common(2)[0][0]]
+
+    palette = []
+    for counter in range(1, len(label_counts)):
+        sdlabel = label_counts.most_common(counter)[(counter-1):]
+        colour = list(clt.cluster_centers_[sdlabel[0][0]])
+
+        # Convert to the rgb integer values from the float values
+        colour = [int(round(c)) for c in colour]
+        colour.reverse()
+
+        palette.append(colour)
+
+    return palette
+
+
 # Clustering for large containers and small clusters
 class ClusterClass(NodeMixin):
     # Flex 0 vertical, 1 horizontal, 2 unseparable, -1 undefined

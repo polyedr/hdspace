@@ -57,7 +57,7 @@ from .serializers import (
     ElementCommentSerializer,
     IllustrationSetSerializer,
     ImageSerializer,
-    ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer)
+    ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -462,6 +462,26 @@ class IllustrationSetImageDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ProjectImage.objects.all()
     serializer_class = ImageSerializer
+
+
+class IllustrationSetImagePaletteList(generics.ListCreateAPIView):
+    """
+    List all IllustrationSet images, or create a new IllustrationSet image.
+    """
+
+    queryset = ProjectImage.objects.all()
+    serializer_class = ImagePaletteSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['illustration_set']
+
+
+class IllustrationSetImagePaletteDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete IllustrationSet image
+    """
+
+    queryset = ProjectImage.objects.all()
+    serializer_class = ImagePaletteSerializer
 
 
 class ScreenCommentList(generics.ListCreateAPIView):
