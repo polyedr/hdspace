@@ -7,6 +7,7 @@ import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { ActionSagaGenerator } from '@Src/types/pmtools/generators';
+import { ActionTypePM } from '@Src/types/pmtools/types';
 import { ServerProject } from '@Src/types/types';
 import { put, call, takeLatest } from 'redux-saga/effects';
 import * as actions from './actions';
@@ -50,7 +51,7 @@ function* clearHistorySaga({
 
 export function* addActionSaga({
   payload: { project, action, platform, priority },
-}: any): ActionSagaGenerator {
+}: ReturnType<typeof actions.requestAddHistory>): ActionSagaGenerator {
   try {
     const data: ServerProject = yield call(reqWrapper, apiGetActions, {
       project,
@@ -58,7 +59,7 @@ export function* addActionSaga({
     const projectDataActivity = JSON.parse(
       data.project_data_activity_json || '{}',
     );
-    const actionCorrectly = {
+    const actionCorrectly: ActionTypePM = {
       action,
       platform: platform || 'PM-TOOLS',
       priority: priority || 'low',

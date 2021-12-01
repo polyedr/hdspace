@@ -1,6 +1,6 @@
-import { ServerUserData } from '../types';
-
-export type ChatClient = any;
+import { DropResult } from 'react-beautiful-dnd';
+import { ServerProject } from '../types';
+import { IServerTaskData } from './trelloTypes';
 
 export type PlatformActionData = 'PM-TOOLS' | 'MAIN-APP' | 'ALL';
 
@@ -10,10 +10,33 @@ export interface ActionTypePM {
   action: string;
 }
 
-export type PmToolsUserChat = {
-  realm?: string;
-  username?: string;
-  password: string;
+// Chat
+export interface AuthParams {
+  apiKey?: string;
+  realm: string;
+  username: string;
+  password?: string;
+}
+
+export type ChatClient = any;
+
+// React D&D
+export type DestinationType = {
+  index: number;
+  droppableId: string;
+};
+
+export type UpdateCardIndexType = {
+  destination: DestinationType;
+  source: DropResult['source'];
+};
+
+export type UpdateCardIndexTypeSuccess = {
+  dest: number;
+  removed: IServerTaskData;
+  destList: any;
+  source: number;
+  sourceList: any;
 };
 
 export type MoveCardToListType = {
@@ -22,26 +45,9 @@ export type MoveCardToListType = {
   newPos: number;
 };
 
-export type Permission = string;
-
-export type PermissionsData = {
-  permissions: Array<Permission>;
-  userdata: ServerUserData;
-};
-
-export interface MemberData {
-  id: number;
-  project: number;
-  role: string;
-  status: string;
-  user: ServerUserData;
-  user_id: number;
-  username?: string;
-  permissions: Array<Permission>;
-}
-
-export interface ChatLoginData {
-  realm: string;
-  username: string;
-  password: string;
+// Board
+export interface CreatorColumnType {
+  id?: string;
+  project: ServerProject['id'];
+  name: string;
 }

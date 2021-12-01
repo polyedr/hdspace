@@ -1,3 +1,17 @@
+// For client
+export interface IBoardForUI extends IBoard {
+  organization?: IOrganization | null;
+}
+
+export interface IColumnData extends IServerListData {
+  tasks: Array<IServerTaskData>;
+}
+
+export interface ITaskData extends IServerTaskData {
+  members: Array<any>;
+}
+
+// From Server
 export type IOrganization = {
   desc: string;
   descData: unknown;
@@ -15,28 +29,11 @@ export type IOrganization = {
   website: unknown;
 };
 
-export type IBoard = {
+export interface IBoard {
   closed: boolean;
   desc: unknown;
   descData: unknown;
   id: string;
-  idEnterprise: any;
-  idOrganization: string;
-  labelNames: { [key: string]: string };
-  limits: unknown;
-  name: string;
-  pinned: boolean;
-  prefs: { [key: string]: string };
-  shortUrl: string;
-  url: string;
-};
-
-export type IBoardForUI = {
-  closed: boolean;
-  desc: unknown;
-  descData: unknown;
-  id: string;
-  organization?: IOrganization | null;
   idEnterprise: any;
   idOrganization: string;
   labelNames: { [key: string]: string } | null;
@@ -46,20 +43,16 @@ export type IBoardForUI = {
   prefs: { [key: string]: string } | null;
   shortUrl: string;
   url: string;
-};
+}
 
 export interface IServerListData {
   closed: boolean;
-  id: string | number;
+  id: string;
   idBoard: string;
   name: string;
   pos: number;
   softLimit: null;
   subscribed: boolean;
-}
-
-export interface IColumnData extends IServerListData {
-  tasks: Array<IServerTaskData>;
 }
 
 export interface IServerTaskData {

@@ -1,7 +1,7 @@
 import { handleError } from '@Api/helper';
 import config from '@Constants/configTrello';
 import { myAxios } from '@Src/config/settings';
-import { RequestColumn } from '@Src/types/pmtools/actions';
+import { CreatorColumnType } from '@Src/types/pmtools/types';
 import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
@@ -19,7 +19,7 @@ export const fetchColumns = async (boardId: string) =>
 export const createColumn = ({
   data,
   ...axiosProps
-}: { data: RequestColumn } & MyAxiosProps) =>
+}: { data: CreatorColumnType } & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     baseURL: 'https://api.trello.com/1',
@@ -32,7 +32,7 @@ export const createColumn = ({
 export const updateColumn = ({
   data: { id, name },
   ...axiosProps
-}: RequestColumn & MyAxiosProps) => {
+}: CreatorColumnType & MyAxiosProps) => {
   return myAxios({
     ...axiosProps,
     data: { name },

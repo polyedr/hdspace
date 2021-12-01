@@ -1,13 +1,13 @@
 /* eslint-disable global-require */
 import { configAdmin } from '@Constants/configZulipChat';
-import { ChatClient, PmToolsUserChat } from '@Src/types/pmtools/types';
+import { AuthParams, ChatClient } from '@Src/types/pmtools/types';
 import zulipInit from 'zulip-js';
 
 (window as any).global = window;
 // @ts-ignore
 window.Buffer = window.Buffer || require('buffer').Buffer;
 
-export const apiAuthUser = async (login: PmToolsUserChat) => {
+export const apiAuthUser = async (login: AuthParams) => {
   try {
     const config: ChatClient = await zulipInit(login);
     if (config.config.username && config.config.apiKey) {
@@ -31,10 +31,7 @@ export const apiCreateNewStreams = async (name: string) => {
   }
 };
 
-export const apiRegisterUser = async (
-  login: PmToolsUserChat,
-  register: any,
-) => {
+export const apiRegisterUser = async (login: AuthParams, register: any) => {
   try {
     const client: ChatClient = await zulipInit(login);
     return await client.users.create(register);

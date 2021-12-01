@@ -1,17 +1,20 @@
 import TYPES from '@Redux/actionTypes';
-import { RequestAction } from '@Src/types/pmtools/actions';
+import { ActionTypePM } from '@Src/types/pmtools/types';
+import { ServerProject } from '@Src/types/types';
 
-export const clearHistoryAction = (project: RequestAction['project']) => ({
+export const clearHistoryAction = (project: ServerProject['id']) => ({
   type: TYPES.CLEAR_HISTORY,
   payload: project,
 });
 
-export const requestGetAction = (project: RequestAction['project']) => ({
+export const requestGetAction = (project: ServerProject['id']) => ({
   type: TYPES.GET_ACTION,
   payload: project,
 });
 
-export const requestAddHistory = (payload: RequestAction) => ({
+export const requestAddHistory = (
+  payload: ActionTypePM & { project: ServerProject['id'] },
+) => ({
   type: TYPES.ADD_ACTION,
   payload,
 });
@@ -22,13 +25,13 @@ export const successClearHistoryAction = () => ({
 });
 
 export const successGetAction = (
-  payload: Array<RequestAction['action']> | [],
+  payload: Array<ActionTypePM['action']> | [],
 ) => ({
   type: TYPES.GET_ACTION_SUCCESS,
   payload,
 });
 
-export const successAction = (payload: any) => ({
+export const successAction = (payload: ActionTypePM) => ({
   type: TYPES.ADD_ACTION_SUCCESS,
   payload,
 });

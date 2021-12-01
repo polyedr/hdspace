@@ -5,9 +5,10 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@material-ui/core';
+import { ServerProject } from '@Src/types/types';
 
 type PropsType = {
-  project: number;
+  project: ServerProject['id'];
   userData: any;
   permissions: Array<string>;
 };

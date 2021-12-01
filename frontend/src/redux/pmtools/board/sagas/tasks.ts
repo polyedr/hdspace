@@ -13,8 +13,11 @@ import {
   TasksAddSagaGenerator,
   TasksEditSagaGenerator,
 } from '@Src/types/pmtools/generators';
+import { ServerProject } from '@Src/types/types';
 import { call, put, select } from 'redux-saga/effects';
 import {
+  requestAddTask,
+  requestDeleteMemberTask,
   requestDeleteTask,
   requestEditTask,
   requestUpdateCardIndex,
@@ -24,7 +27,7 @@ import { selectColumn } from '../selectors';
 
 export function* taskDeleteMemberSaga({
   payload: { cardId, userId },
-}: any): TasksAddSagaGenerator {
+}: ReturnType<typeof requestDeleteMemberTask>): TasksAddSagaGenerator {
   try {
     yield call(deleteMemberToTasks, cardId, userId);
   } catch (e) {
@@ -34,12 +37,13 @@ export function* taskDeleteMemberSaga({
 
 export function* taskAddSaga({
   payload: { project, action, email, ...payload },
-}: any): TasksAddSagaGenerator {
+}: ReturnType<typeof requestAddTask>): TasksAddSagaGenerator {
   try {
     const task = yield call(reqWrapper, Board.createTask, {
       data: payload,
     });
     if (email) {
+      // @ts-ignore
       yield call(addMemberToTasks, payload.id, email);
     }
     yield put({ type: TYPES.ADD_TASK_SUCCESS, payload: task });
@@ -53,7 +57,7 @@ export function* taskEditSaga({
   payload: { project, action, email, ...payload },
 }: ReturnType<typeof requestEditTask>): TasksEditSagaGenerator {
   try {
-    const project: any = yield select(selectCurrentProjectId);
+    const project: ServerProject['id'] = yield select(selectCurrentProjectId);
     const selectedTask = yield call(reqWrapper, Board.updateTask, {
       data: payload,
     });
@@ -71,7 +75,7 @@ export function* taskDeleteSaga({
   payload: { taskId, action },
 }: ReturnType<typeof requestDeleteTask>) {
   try {
-    const project: number = yield select(selectCurrentProjectId);
+    const project: ServerProject['id'] = yield select(selectCurrentProjectId);
     yield call(reqWrapper, Board.deleteTask, { taskId });
     yield put({ type: TYPES.DELETE_TASK_SUCCESS, payload: taskId });
     yield put(requestAddHistory({ project, ...action }));

@@ -24,14 +24,15 @@ import { ModalAction } from '@Src/types/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectMembersData } from '@Redux/pmtools/board/selectors';
+import { IColumnData, ITaskData } from '@Src/types/pmtools/trelloTypes';
 
 type Props = {
   show: boolean;
-  task?: any | null;
+  task?: ITaskData;
   hide: () => void;
   action: ModalAction;
-  column: any;
-  selectedTaskId?: number | null;
+  column: IColumnData;
+  selectedTaskId?: string;
 };
 
 const TaskModal: React.FC<Props> = ({
@@ -54,34 +55,31 @@ const TaskModal: React.FC<Props> = ({
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (title) {
-      dispatch(
-        requestAddTask({
-          name: title,
-          column: column.id,
-          email: selectedMember?.id || '',
-          project,
-          action: {
-            action: `Task "${title}" was added`,
-            platform: 'PM-TOOLS',
-            priority: 'medium',
-          },
-        }),
-      );
-    }
+    dispatch(
+      requestAddTask({
+        name: title || '',
+        id: column.id,
+        email: selectedMember?.id || '',
+        project,
+        action: {
+          action: `Task "${title}" was added`,
+          platform: 'PM-TOOLS',
+          priority: 'medium',
+        },
+      }),
+    );
     setTaskUpdateMembers((prev) => [...prev, selectedMember]);
     hide();
   };
 
   const handleEdit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (title && task) {
+    if (task) {
       dispatch(
         requestEditTask({
-          id: selectedTaskId || 0,
+          id: selectedTaskId || '',
           name: title,
           email: selectedMember?.id || '',
-          column: column?.id || 0,
           project,
           action: {
             action: `Task "${task.name}" was edited on "${title}"`,
@@ -98,7 +96,7 @@ const TaskModal: React.FC<Props> = ({
   };
 
   const removeHandler = (id: string) => {
-    dispatch(requestDeleteMemberTask({ cardId: task.id, userId: id }));
+    dispatch(requestDeleteMemberTask({ cardId: task?.id || '', userId: id }));
     setTaskUpdateMembers(taskUpdateMembers.filter((e) => e.id !== id));
   };
 

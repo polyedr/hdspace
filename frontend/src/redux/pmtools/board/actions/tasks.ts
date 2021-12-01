@@ -1,10 +1,19 @@
 import TYPES from '@Redux/actionTypes';
+import { IServerTaskData, ITaskData } from '@Src/types/pmtools/trelloTypes';
 import {
-  RequestTask,
+  ActionTypePM,
   UpdateCardIndexType,
   UpdateCardIndexTypeSuccess,
-} from '@Src/types/pmtools/actions';
-import { ActionTypePM } from '@Src/types/pmtools/types';
+} from '@Src/types/pmtools/types';
+import { ServerProject } from '@Src/types/types';
+
+export type AddTaskType = {
+  id: IServerTaskData['id'];
+  project: ServerProject['id'];
+  email: string;
+  action: ActionTypePM;
+  name: IServerTaskData['name'];
+};
 
 export const requestUpdateCardIndex = ({
   destination,
@@ -14,31 +23,25 @@ export const requestUpdateCardIndex = ({
   payload: { destination, source },
 });
 
-export const successUpdateCardIndex = ({
-  dest,
-  removed,
-  destList,
-  source,
-  sourceList,
-}: UpdateCardIndexTypeSuccess) => ({
+export const successUpdateCardIndex = (
+  payload: UpdateCardIndexTypeSuccess,
+) => ({
   type: TYPES.UPDATE_CARD_INDEX_SUCCESS,
-  payload: { dest, removed, destList, source, sourceList },
+  payload,
 });
 
-export const requestAddTask = (
-  payload: RequestTask & { action: ActionTypePM } & { email: string },
-) => ({
+export const requestAddTask = (payload: AddTaskType) => ({
   type: TYPES.ADD_TASK,
   payload,
 });
 
-export const requestEditTask = (payload: any) => ({
+export const requestEditTask = (payload: AddTaskType) => ({
   type: TYPES.EDIT_TASK,
   payload,
 });
 
 export const requestDeleteTask = (
-  payload: { taskId: string } & { action: ActionTypePM },
+  payload: { taskId: ITaskData['id'] } & { action: ActionTypePM },
 ) => ({
   type: TYPES.DELETE_TASK,
   payload,

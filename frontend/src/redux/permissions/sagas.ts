@@ -25,6 +25,7 @@ import {
 } from '@Api/pmtools/board/boardApi';
 import { apiGetMembersOfBoard } from '@Api/pmtools/board/tasksApi';
 import { successFetchMembers } from '@Redux/pmtools/board/actions/tasks';
+import { ActionTypePM } from '@Src/types/pmtools/types';
 import {
   selectUserFromAllUsers,
   selectUserFromProjectUsers,
@@ -184,10 +185,10 @@ export function* updateUserPermissionsForProjectSaga(
     yield put(successFetchMembers(members));
 
     if (permissions && permissions.length) {
-      const actionData = {
+      const actionData: ActionTypePM = {
         action: `${user.firstName}'s rights have been changed`,
         platform: 'MAIN-APP',
-        primary: 'high',
+        priority: 'high',
       };
       yield put(requestAddHistory({ project: projectId, ...actionData }));
       yield put(Actions.setStateUserPermissions(user, permissions));

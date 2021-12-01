@@ -13,7 +13,7 @@ export interface ToServerColumn {
   id: string;
   name: string;
   description: string;
-  project: number;
+  project: ServerProject['id'];
 }
 
 export interface ToServerTask {

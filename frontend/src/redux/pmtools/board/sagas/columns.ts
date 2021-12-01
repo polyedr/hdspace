@@ -9,6 +9,7 @@ import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
 } from '@Src/types/pmtools/generators';
+import { ServerProject } from '@Src/types/types';
 import { call, put, select } from 'redux-saga/effects';
 import {
   requestAddColumn,
@@ -68,7 +69,7 @@ export function* columnDeleteSaga({
   payload: { columnId, action },
 }: ReturnType<typeof requestDeleteColumn>): ColumnDeletSagaGenerator {
   try {
-    const project: number = yield select(selectCurrentProjectId);
+    const project: ServerProject['id'] = yield select(selectCurrentProjectId);
     yield call(reqWrapper, Board.deleteColumn, { columnId });
     yield put(successDeleteColumn(columnId));
     yield put(requestAddHistory({ project, ...action }));

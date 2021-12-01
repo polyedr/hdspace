@@ -10,9 +10,15 @@ import generator from 'generate-password';
 import { ServerUserData } from '@Src/types/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { configAdmin } from '@Constants/configZulipChat';
+import { AuthParams } from '@Src/types/pmtools/types';
 import { successLoginChatUser, successLogoutChatUser } from './actions';
 
-export function* loginUser({ payload: password }: any) {
+export function* loginUser({
+  payload: password,
+}: {
+  payload: AuthParams['password'];
+  type: string;
+}) {
   try {
     const { email: username } = yield select(selectUserData);
     const client = yield call(apiAuthUser, {
@@ -31,7 +37,9 @@ export function* loginUser({ payload: password }: any) {
 
 export function* registerZulipUser(): any {
   try {
-    const { id, email, username } = yield select(selectUserData);
+    const { id, email, username }: ServerUserData = yield select(
+      selectUserData,
+    );
     const password = generator.generate();
 
     const res = yield call(apiRegisterUser, configAdmin, {

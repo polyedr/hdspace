@@ -1,7 +1,6 @@
 import TYPES from '@Redux/actionTypes';
-import { RequestColumn } from '@Src/types/pmtools/actions';
 import { IBoardForUI, IColumnData } from '@Src/types/pmtools/trelloTypes';
-import { ActionTypePM } from '@Src/types/pmtools/types';
+import { ActionTypePM, CreatorColumnType } from '@Src/types/pmtools/types';
 
 export const successSavedBoard = (name: IBoardForUI) => ({
   type: TYPES.BOARD_SAVED_SUCCESS,
@@ -9,7 +8,7 @@ export const successSavedBoard = (name: IBoardForUI) => ({
 });
 
 // requestFetchBoard
-export const requestFetchBoard = (payload: RequestColumn['project']) => ({
+export const requestFetchBoard = (payload: CreatorColumnType['project']) => ({
   type: TYPES.REQUEST_FETCH_BOARD,
   payload,
 });
@@ -21,7 +20,7 @@ export const successFetchColumn = (payload: Array<IColumnData>) => ({
 
 // requestAddColumn
 export const requestAddColumn = (
-  payload: RequestColumn & { action: ActionTypePM },
+  payload: CreatorColumnType & { action: ActionTypePM },
 ) => ({
   type: TYPES.ADD_COLUMN,
   payload,
@@ -34,7 +33,7 @@ export const successAddColumn = (payload: IColumnData) => ({
 
 // requestEditColumn
 export const requestEditColumn = (
-  payload: RequestColumn & { action: ActionTypePM },
+  payload: CreatorColumnType & { action: ActionTypePM },
 ) => ({
   type: TYPES.EDIT_COLUMN,
   payload,
@@ -47,13 +46,13 @@ export const successEditColumn = (payload: IColumnData) => ({
 
 // requestDeleteColumn
 export const requestDeleteColumn = (
-  payload: { columnId: number } & { action: ActionTypePM },
+  payload: { columnId: IColumnData['id'] } & { action: ActionTypePM },
 ) => ({
   type: TYPES.DELETE_COLUMN,
   payload,
 });
 
-export const successDeleteColumn = (payload: number) => ({
+export const successDeleteColumn = (payload: IColumnData['id']) => ({
   type: TYPES.DELETE_COLUMN_SUCCESS,
   payload,
 });

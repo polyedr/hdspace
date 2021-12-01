@@ -1,8 +1,7 @@
 import { handleError } from '@Api/helper';
 import config from '@Constants/configTrello';
 import { myAxios } from '@Src/config/settings';
-import { RequestAction } from '@Src/types/pmtools/actions';
-import { MyAxiosProps } from '@Src/types/types';
+import { MyAxiosProps, ServerProject } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
 
 const { apiKey, token } = config;
@@ -10,7 +9,7 @@ const { apiKey, token } = config;
 export const apiGetBoard = ({
   project,
   ...axiosProps
-}: MyAxiosProps & { project: RequestAction['project'] }) =>
+}: MyAxiosProps & { project: ServerProject['id'] }) =>
   myAxios({
     ...axiosProps,
     method: 'GET',

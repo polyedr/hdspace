@@ -1,11 +1,6 @@
-import {
-  ActionTypePM,
-  ChatLoginData,
-  MemberData,
-} from '@Src/types/pmtools/types';
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
-import { AuthParams } from '@Src/types/pmtools/actions';
+import { ActionTypePM, AuthParams, ChatClient } from '@Src/types/pmtools/types';
 import {
   IBoard,
   IColumnData,
@@ -37,7 +32,7 @@ export type ActivityState = {
 };
 
 export type ChatState = {
-  client: ChatLoginData | null;
+  client: ChatClient | null;
 };
 
 export type BoardState = {
@@ -48,7 +43,7 @@ export type BoardState = {
 };
 
 export type InviteState = {
-  members: Array<MemberData>;
+  members: Array<any>;
   searchResult: any;
   email: string;
   loaderSearch: boolean;

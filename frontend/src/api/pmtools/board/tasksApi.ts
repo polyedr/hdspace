@@ -1,7 +1,7 @@
 import { handleError } from '@Api/helper';
 import config from '@Constants/configTrello';
+import { AddTaskType } from '@Redux/pmtools/board/actions/tasks';
 import { myAxios } from '@Src/config/settings';
-import { RequestTask } from '@Src/types/pmtools/actions';
 import { MoveCardToListType } from '@Src/types/pmtools/types';
 import { MyAxiosProps } from '@Src/types/types';
 import { AxiosResponse } from 'axios';
@@ -38,15 +38,15 @@ export const fetchTasks = (boardId) =>
     .catch(handleError);
 
 export const createTask = ({
-  data,
+  data: { name, id },
   ...axiosProps
-}: RequestTask & MyAxiosProps) =>
+}: AddTaskType & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
-    data: { name: data.name },
+    data: { name },
     baseURL: 'https://api.trello.com/1',
     method: 'POST',
-    url: `/cards?idList=${data.column}&key=${apiKey}&token=${token}`,
+    url: `/cards?idList=${id}&key=${apiKey}&token=${token}`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
@@ -54,7 +54,7 @@ export const createTask = ({
 export const updateTask = ({
   data,
   ...axiosProps
-}: RequestTask & MyAxiosProps) =>
+}: AddTaskType & MyAxiosProps) =>
   myAxios({
     ...axiosProps,
     data: {
