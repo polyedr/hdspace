@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import React, { FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -24,7 +23,7 @@ import { ModalAction } from '@Src/types/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectMembersData } from '@Redux/pmtools/board/selectors';
-import { IColumnData, ITaskData } from '@Src/types/pmtools/trelloTypes';
+import { IColumnData, ITaskData } from '@Src/types/pmtools/board';
 
 type Props = {
   show: boolean;
@@ -51,8 +50,6 @@ const TaskModal: React.FC<Props> = ({
     task?.members || [],
   );
   const [title, setTitle] = useState(task?.name || '');
-
-  console.log(members);
 
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -141,8 +138,8 @@ const TaskModal: React.FC<Props> = ({
             </Typography>
           )}
           <List>
-            {taskUpdateMembers.map((member, i) => (
-              <ListItem key={i}>
+            {taskUpdateMembers.map((member) => (
+              <ListItem key={member.id}>
                 <ListItemText
                   primary={member.username}
                   secondary={member.fullName}

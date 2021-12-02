@@ -1,11 +1,11 @@
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
 import { StyledIconButton } from '@Components/styledComponents';
 import GroupIcon from '@material-ui/icons/Group';
 import * as Actions from '@Redux/permissions/actions';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Member from './Member';
 
 const ProjectMembers: React.FC = () => {

@@ -37,7 +37,7 @@ import {
   createOrganization,
   deleteOrganization,
 } from '@Api/pmtools/board/boardApi';
-import { IBoardForUI, IOrganization } from '@Src/types/pmtools/trelloTypes';
+import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';

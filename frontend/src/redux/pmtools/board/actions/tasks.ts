@@ -1,5 +1,5 @@
 import TYPES from '@Redux/actionTypes';
-import { IServerTaskData, ITaskData } from '@Src/types/pmtools/trelloTypes';
+import { IServerTaskData, ITaskData } from '@Src/types/pmtools/board';
 import {
   ActionTypePM,
   UpdateCardIndexType,

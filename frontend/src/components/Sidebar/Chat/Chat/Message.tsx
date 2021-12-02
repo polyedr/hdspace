@@ -1,5 +1,5 @@
 import { Avatar, ListItemText, Typography } from '@material-ui/core';
-import { IMessageZulip } from '@Src/types/pmtools/zulipTypes';
+import { IMessageZulip } from '@Src/types/pmtools/types';
 import React from 'react';
 
 const Message: React.FC<{

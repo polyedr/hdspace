@@ -4,7 +4,7 @@ import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
-import { IBoardForUI } from './pmtools/trelloTypes';
+import { IBoardForUI } from './pmtools/board';
 
 export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
 

@@ -1,6 +1,6 @@
 import { DropResult } from 'react-beautiful-dnd';
 import { ServerProject } from '../types';
-import { IServerTaskData } from './trelloTypes';
+import { IServerTaskData } from './board';
 
 export type PlatformActionData = 'PM-TOOLS' | 'MAIN-APP' | 'ALL';
 
@@ -17,6 +17,9 @@ export interface AuthParams {
   username: string;
   password?: string;
 }
+
+export type IStream = any;
+export type IMessageZulip = any;
 
 export type ChatClient = any;
 

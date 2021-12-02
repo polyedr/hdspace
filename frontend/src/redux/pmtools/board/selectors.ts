@@ -1,4 +1,4 @@
-import { IColumnData, IServerTaskData } from '@Src/types/pmtools/trelloTypes';
+import { IColumnData, IServerTaskData } from '@Src/types/pmtools/board';
 import { createSelector } from 'reselect';
 import { BoardRootState } from '../types';
 

@@ -1,11 +1,7 @@
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
 import { ActionTypePM, AuthParams, ChatClient } from '@Src/types/pmtools/types';
-import {
-  IBoard,
-  IColumnData,
-  IServerTaskData,
-} from '@Src/types/pmtools/trelloTypes';
+import { IBoard, IColumnData, IServerTaskData } from '@Src/types/pmtools/board';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';

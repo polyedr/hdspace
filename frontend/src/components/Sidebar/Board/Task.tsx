@@ -9,7 +9,7 @@ import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
 import { ModalAction } from '@Src/types/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
-import { IColumnData } from '@Src/types/pmtools/trelloTypes';
+import { IColumnData } from '@Src/types/pmtools/board';
 
 type Props = {
   column: IColumnData;

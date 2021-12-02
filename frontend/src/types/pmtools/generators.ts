@@ -1,6 +1,6 @@
 import { CallEffect, PutEffect, SelectEffect } from 'redux-saga/effects';
 import { ServerProject } from '../types';
-import { IColumnData } from './trelloTypes';
+import { IColumnData } from './board';
 import { ActionTypePM } from './types';
 
 export type MoveCardGenerator = Generator<

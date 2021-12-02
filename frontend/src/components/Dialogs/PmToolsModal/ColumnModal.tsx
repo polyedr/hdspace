@@ -13,7 +13,7 @@ import {
 } from '@Redux/pmtools/board/actions/columns';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { PanelTextField } from '@Components/styledComponents';
-import { IColumnData } from '@Src/types/pmtools/trelloTypes';
+import { IColumnData } from '@Src/types/pmtools/board';
 
 type Props = {
   show: boolean;

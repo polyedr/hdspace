@@ -11,7 +11,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { StyledIconButton } from '@Components/styledComponents';
 import { ModalAction } from '@Src/types/types';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
-import { IColumnData } from '@Src/types/pmtools/trelloTypes';
+import { IColumnData } from '@Src/types/pmtools/board';
 import Task from './Task';
 
 const useStyles = makeStyles(({ palette }) => ({

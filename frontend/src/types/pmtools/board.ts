@@ -12,7 +12,13 @@ export interface ITaskData extends IServerTaskData {
 }
 
 // From Server
-export type IOrganization = {
+export interface IMembers {
+  fullName: string;
+  id: string;
+  username: string;
+}
+
+export interface IOrganization {
   desc: string;
   descData: unknown;
   displayName: string;
@@ -27,7 +33,7 @@ export type IOrganization = {
   teamType: unknown;
   url: string;
   website: unknown;
-};
+}
 
 export interface IBoard {
   closed: boolean;

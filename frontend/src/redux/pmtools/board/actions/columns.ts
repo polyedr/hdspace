@@ -1,5 +1,5 @@
 import TYPES from '@Redux/actionTypes';
-import { IBoardForUI, IColumnData } from '@Src/types/pmtools/trelloTypes';
+import { IBoardForUI, IColumnData } from '@Src/types/pmtools/board';
 import { ActionTypePM, CreatorColumnType } from '@Src/types/pmtools/types';
 
 export const successSavedBoard = (name: IBoardForUI) => ({

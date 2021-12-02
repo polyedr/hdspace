@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-useless-return */
 import React, { useCallback, useEffect, useState } from 'react';
 import zulipInit from 'zulip-js';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { IMessageZulip, IStream } from '@Src/types/pmtools/zulipTypes';
 import { configUser } from '@Constants/pmtools/zulipChatLoginData';
 import { requestLogoutChatUser } from '@Redux/pmtools/chat/actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +10,7 @@ import { PanelTextField, SideBarTitle } from '@Components/styledComponents';
 import { Button } from '@material-ui/core';
 import { selectBoardData } from '@Redux/pmtools/board/selectors';
 import Message from './Message';
+import { IMessageZulip, IStream } from '@Src/types/pmtools/types';
 
 const Messages: React.FC = () => {
   const dispatch = useDispatch();
