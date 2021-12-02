@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-import { configAdmin } from '@Constants/configZulipChat';
+import { configAdmin } from '@Constants/pmtools/zulipChatLoginData';
 import { AuthParams, ChatClient } from '@Src/types/pmtools/types';
 import zulipInit from 'zulip-js';
 

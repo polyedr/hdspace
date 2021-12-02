@@ -9,7 +9,7 @@ import { selectUserData } from '@Redux/user/selectors';
 import generator from 'generate-password';
 import { ServerUserData } from '@Src/types/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { configAdmin } from '@Constants/configZulipChat';
+import { configAdmin } from '@Constants/pmtools/zulipChatLoginData';
 import { AuthParams } from '@Src/types/pmtools/types';
 import { successLoginChatUser, successLogoutChatUser } from './actions';
 

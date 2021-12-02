@@ -1,5 +1,5 @@
 import { handleError } from '@Api/helper';
-import config from '@Constants/configTrello';
+import config from '@Constants/pmtools/trelloConfigData';
 import { myAxios } from '@Src/config/settings';
 import { CreatorColumnType } from '@Src/types/pmtools/types';
 import { MyAxiosProps } from '@Src/types/types';

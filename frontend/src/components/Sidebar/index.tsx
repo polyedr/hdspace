@@ -3,14 +3,26 @@ import {
   selectCurrentProjectId,
   selectSidebarOpen,
 } from '@Redux/project/selectors/base';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
-import Sidebar from './Sidebar';
+import { Tabs, Tab } from '@material-ui/core';
+import { TabPanel } from '@Components/styledComponents';
+import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
 
-const host = process.env.SIDE_MODULE_HOST;
+const useTabStyles = makeStyles(({ palette }) => ({
+  root: {
+    minWidth: 72,
+    fontWeight: 'bold',
+    flex: 1,
+  },
+  selected: {
+    borderRadius: '2px 2px 0 0',
+    backgroundColor: palette.panel.light,
+  },
+}));
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ palette }) => ({
   wrapper: {
     background: '#fff',
     position: 'absolute',
@@ -31,19 +43,23 @@ const useStyles = makeStyles({
       outline: '1px solid slategrey',
     },
   },
+  root: {
+    color: palette.common.white,
+    backgroundColor: palette.panel.main,
+    minHeight: 655,
+    overflowY: 'auto',
+  },
   open: {
     width: 310,
   },
-  iframe: {
-    width: 310,
-    height: '100%',
-  },
-});
+}));
 
 const SideModule: FC = () => {
   const classes = useStyles();
+  const tabClasses = useTabStyles();
   const open = useSelector(selectSidebarOpen);
   const projectId = useSelector(selectCurrentProjectId);
+  const [selectedTabNumber, setSelectedTabNumber] = useState(0);
 
   if (projectId === -1) {
     return <p>Loading... </p>;
@@ -51,11 +67,30 @@ const SideModule: FC = () => {
 
   return (
     <div className={cn(classes.wrapper, open && classes.open)}>
-      {host ? (
-        <Sidebar />
-      ) : (
-        <div>Experiencing problems while loading sidebar</div>
-      )}
+      <div className={classes.root} data-testid="sidebar-container">
+        <Tabs
+          value={selectedTabNumber}
+          onChange={(e, v) => setSelectedTabNumber(v)}
+        >
+          {Object.values(TABS_PMTOOLS).map((tab) => (
+            <Tab
+              data-testid={`${tab}-tab`}
+              label={tab}
+              key={tab}
+              classes={tabClasses}
+              title={tab}
+            />
+          ))}
+        </Tabs>
+        {Object.values(TABS_PMTOOLS).map((tab, idx) => {
+          const Tab = components[tab];
+          return (
+            <TabPanel value={selectedTabNumber} key={tab} index={idx}>
+              <Tab />
+            </TabPanel>
+          );
+        })}
+      </div>
     </div>
   );
 };

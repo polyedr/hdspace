@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import zulipInit from 'zulip-js';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { IMessageZulip, IStream } from '@Src/types/pmtools/zulipTypes';
-import { configUser } from '@Constants/configZulipChat';
+import { configUser } from '@Constants/pmtools/zulipChatLoginData';
 import { requestLogoutChatUser } from '@Redux/pmtools/chat/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUserData } from '@Redux/user/selectors';

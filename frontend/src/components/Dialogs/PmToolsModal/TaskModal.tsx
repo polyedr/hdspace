@@ -52,6 +52,8 @@ const TaskModal: React.FC<Props> = ({
   );
   const [title, setTitle] = useState(task?.name || '');
 
+  console.log(members);
+
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 

@@ -1,5 +1,5 @@
 import { handleError } from '@Api/helper';
-import config from '@Constants/configTrello';
+import config from '@Constants/pmtools/trelloConfigData';
 import { AddTaskType } from '@Redux/pmtools/board/actions/tasks';
 import { myAxios } from '@Src/config/settings';
 import { MoveCardToListType } from '@Src/types/pmtools/types';
