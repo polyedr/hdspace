@@ -276,6 +276,7 @@ class ClusterClass(NodeMixin):
     )  # if clusters contain one element only. Based on flusters making algorithm
 
     # A group of elements assigned to the cluster as a parts
+    # Should be removed and transformed for child clusters which are elements
     elements = []
     # Element assigned to the whole cluster
     element_assigned = ""
@@ -514,7 +515,7 @@ def dbcluster_split(block, clusters):
                 dbcluster_split(node, clusters)
 
 
-def blocks_split(block, window_name1, image_opencv_input, overlay, clusters):
+def blocks_split(block, window_name1, image_opencv_input, overlay, root_firstcluster):
     # Ternary assembling algorithm builded with annotation only
     # Show the block
     # print("block", block)
@@ -526,15 +527,16 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, clusters):
     clusters_in = []
 
     # Go through regions placed in the block
-    for cluster in clusters:
-        if block.x1 <= cluster.x1 <= block.x2:
-            if block.x1 <= cluster.x2 <= block.x2:
-                if block.y1 <= cluster.y1 <= block.y2:
-                    if block.y1 <= cluster.y2 <= block.y2:
+    # for cluster in clusters:
+    for pre, fill, node in RenderTree(root_firstcluster):
+        if block.x1 <= node.x1 <= block.x2:
+            if block.x1 <= node.x2 <= block.x2:
+                if block.y1 <= node.y1 <= block.y2:
+                    if block.y1 <= node.y2 <= block.y2:
                         # Append layouts intervals for the block
-                        x_layout_intervals.append([cluster.x1, cluster.x2])
-                        y_layout_intervals.append([cluster.y1, cluster.y2])
-                        clusters_in.append(cluster)
+                        x_layout_intervals.append([node.x1, node.x2])
+                        y_layout_intervals.append([node.y1, node.y2])
+                        clusters_in.append(node)
 
     # print(x_layout_intervals)
     ob1_x = Partition()
@@ -632,7 +634,7 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, clusters):
         if node != block and node.types in {"ccluster"}:
             if node.direction != 2:
                 # Split each block
-                blocks_split(node, window_name1, image_opencv_input, overlay, clusters)
+                blocks_split(node, window_name1, image_opencv_input, overlay, root_firstcluster)
             # if node.direction == 2:
             #     for cluster in clusters_in:
             #         cluster.parent = node

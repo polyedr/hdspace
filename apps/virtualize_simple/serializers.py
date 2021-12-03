@@ -162,9 +162,12 @@ def calculate_margins(node):
         # Check if the node has the first order, the last order, or the node is internal, extract node.siblings
         # previous_sibling_y1 is calculated for a parent node, if the node has the first order
         # next_sibling_y2 is calculated for a parent node, if the node has the last order
-
-        array_siblings_y1 = min(siblings, key=lambda i: abs(i.y1 - node.y2))
-        array_siblings_y1_min = array_siblings_y1.y1 - node.y2
+        array_siblings_y1_min = 0
+        try:
+            array_siblings_y1 = min(siblings, key=lambda i: abs(i.y1 - node.y2))
+            array_siblings_y1_min = array_siblings_y1.y1 - node.y2
+        except Exception:
+            pass
         '''
         print(node.parent.direction, " direction ", len(siblings), " siblings")
         print("compare: ", node.y2, array_siblings_y1.y1)
@@ -993,19 +996,23 @@ def clusters_printing(root_block, root_firstcluster, fname, input_image=[]):
     return True
 
 
-def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input, window_name1, fclusters):
+def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input, window_name1):
     # Ternary assembling algorithm runs after the clusters pro function start
     # Define the root block
     root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
     root_block.types = "ccluster"
 
+    # Find horizontal and vertical intervals
     x_layout_intervals = []
     y_layout_intervals = []
-    for cluster in clusters:
-        x_average = int((cluster.x1 + cluster.x2) / 2)
-        y_average = int((cluster.y1 + cluster.y2) / 2)
-        x_layout_intervals.append([cluster.x1, cluster.x2])
-        y_layout_intervals.append([cluster.y1, cluster.y2])
+
+    # for cluster in clusters:
+    for pre, fill, node in RenderTree(root_firstcluster):
+        if node is not root_firstcluster:
+            x_average = int((node.x1 + node.x2) / 2)
+            y_average = int((node.y1 + node.y2) / 2)
+            x_layout_intervals.append([node.x1, node.x2])
+            y_layout_intervals.append([node.y1, node.y2])
 
     # print(x_layout_intervals)
     ob1_x = Partition()
@@ -1086,7 +1093,7 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_openc
     for pre, fill, node in RenderTree(root_block):
         if node != root_block:
             # print(node.name)
-            blocks_split(node, window_name1, image_opencv_input, overlay, clusters)
+            blocks_split(node, window_name1, image_opencv_input, overlay, root_firstcluster)
 
     # Go through all the blocks obtained after the ternary algorithm
     # Correct the direction of the fclusters
@@ -1101,20 +1108,28 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_openc
     for pre, fill, node in RenderTree(root_block):
         if node.types == "dbcluster":
             if len(node.children) > 1:
-                dbcluster_split(node, fclusters)
+                # dbcluster_split(node, fclusters)
+                pass
     # Ternary assembling algorithm run after the clusters pro function end
     return root_block
 
 
-def calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters=[]):
+def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclusters=[]):
     # Clear the array of dbclusters pro-function start
     dbclusters = []
     # DBSCAN clustering start
     # #############################################################################
     # Create numpy centers array clusters-based start
     centers_array = []
-    for cluster in clusters:
-        centers_array.append(cluster.center)
+    # DBclusters are calculated on fclusters and single leaves
+    # Second order (add later), parents of the final nodes
+    for pre, fill, node in RenderTree(root_firstcluster):
+        if (node.types == "fcluster") or (node.is_leaf is True):
+            # Find the center of cluster
+            center_x = (node.x1 + node.x2) / 2
+            center_y = (node.y1 + node.y2) / 2
+            node.center = center_x, center_y
+            centers_array.append(node.center)
 
     centers = np.array(centers_array)
     # print("centers=", centers)
@@ -1150,37 +1165,40 @@ def calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters=[]):
     # Number of dbclusters in labels, ignoring noise if present.
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 
-    # DBSCAN.labels are included to fclusters start
-    for cluster in clusters:
-        center = cluster.center
-        # DB clusters
-        # cv2.rectangle(
-        #     image_opencv_input,
-        #     (int(center[0]), int(center[1])),
-        #     (int(center[0]) + 10, int(center[1]) + 10),
-        #     (0, 0, 255),
-        #     1,
-        # )
+    # DBSCAN.labels are included to fclusters and single leaves start
+    for pre, fill, node in RenderTree(root_firstcluster):
+        if (node.types == "fcluster") or (node.is_leaf is True):
+            # Find the center of cluster
+            center = node.center
+            # DB clusters
+            # cv2.rectangle(
+            #     image_opencv_input,
+            #     (int(center[0]), int(center[1])),
+            #     (int(center[0]) + 10, int(center[1]) + 10),
+            #     (0, 0, 255),
+            #     1,
+            # )
 
-        for center_closest_node in centers_closest_nodes:
-            # Closest node comparison
-            if (center[0] == center_closest_node[1][0]) and (
-                    center[1] == center_closest_node[1][1]
-            ):
-                cluster.X = center_closest_node[2]
-                idx = cluster.idx = center_closest_node[0]
-                cluster.label = labels[idx]
+            for center_closest_node in centers_closest_nodes:
+                # Closest node comparison
+                if (center[0] == center_closest_node[1][0]) and (
+                        center[1] == center_closest_node[1][1]
+                ):
+                    node.X = center_closest_node[2]
+                    idx = node.idx = center_closest_node[0]
+                    node.label = labels[idx]
+
     #
     # cv2.imshow(window_name1, image_opencv_input)
     # cv2.waitKey(0)
     # DBSCAN.labels are included to fclusters end
 
     # Create dbcluster as a class object
-    # Assign elements to dbclusters based on centers information
+    # Assign children to dbclusters based on centers information
     for n_cluster in range(n_clusters_):
         # Collect all the elements related to some dbcluster to this array
         cluster_sources = []
-        dbcluster = ClusterClass(x1=9999, y1=9999, x2=0, y2=0, elements=[])
+        dbcluster = ClusterClass(x1=9999, y1=9999, x2=0, y2=0)
         # Set some flags to the dbcluster
         dbcluster.types = "dbcluster"
         dbcluster.is_elements_only = False
@@ -1194,13 +1212,22 @@ def calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters=[]):
         # Check is_solid parameter later
         # is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
         # clusters-based solution start
-        for cluster in clusters:
-            # Cluster number label
-            label = cluster.label
-            if label == n_cluster:
-                cluster_sources.append(cluster)
-                # Add flusters to dbclusters
-                cluster.parent = dbcluster
+        for pre, fill, node in RenderTree(root_firstcluster):
+            if (node.types == "fcluster")  or ((node.is_leaf is True) and (node.types != "dbcluster")):
+                # Why dbclusters are leaves now? This should be corrected
+                # Cluster number label
+                print("label:", node.label)
+                label = node.label
+                if label == n_cluster:
+                    cluster_sources.append(node)
+
+                    # Maybe should change this parent assignment later
+                    # Detect parents for dbclusters
+                    dbcluster.parent = node.parent
+
+                    # Add flusters to dbclusters
+                    # node.parent = dbcluster
+                    # dbcluster.children.extend(node)
 
         for cluster_source in cluster_sources:
             # Construct the dbcluster object
@@ -1236,22 +1263,20 @@ def calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters=[]):
     return dbclusters
 
 
-def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
+def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
     # find all the clusters based on cluster-making elements
     # (inputs, selects, buttons, free text blocks, maybe large images)
     # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
-    clusters = []
-    # Run the ternary assembling algorithm
-    # print(min_x1, min_y1, max_x2, max_y2)
-
+    # clusters = []
     # Cluster: x1, y1, x2, y2, elements[], type(input or select), direction start
     #
     #
     # Vertical clusters input-like with text labels detection
     # The first position is input or select, and the second position is text
-    # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
-    for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-        if recognized_element["region_attributes"]["HTML element"] in {
+
+    # for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
+    for pre, fill, node in RenderTree(root_firstcluster):
+        if node.element_assigned in {
             "input",
             "select",
             "button",
@@ -1261,7 +1286,7 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
             # at the distance 0.5 from its width
             # Horizontal group when input or select or text are placed horizontally
 
-            # Loop through all the elements recognized
+            # Loop through all the firstclusters with assigned elements
             # Find all the close-by elements if one of them input (1) or select (4),
             # and second one is the text (3)
             # Horizontal overlap 75% of the element with minimal width
@@ -1269,40 +1294,33 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
             # middle of the text element should be within this interval
 
             # First rectangle coordinates
-            x1 = int(recognized_element["shape_attributes"]["x"])
-            y1 = int(recognized_element["shape_attributes"]["y"])
-            x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-            y2 = int(y1 + recognized_element["shape_attributes"]["height"])
+            x1 = node.x1
+            y1 = node.y1
+            x2 = node.x2
+            y2 = node.y2
 
-            # First rectangle width
-            width_elem = recognized_element["shape_attributes"]["width"]
-            height_elem = recognized_element["shape_attributes"]["height"]
+            # First rectangle width and height
+            width_elem = x2 - x1
+            height_elem = y2-y1
 
-            # Add the initial element to the cluster
-            cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
-            # Set some flags for this novel cluster
-            cluster.types = "fcluster"
-            cluster.is_elements_only = True
-            for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
-                if recognized_element1["region_attributes"]["HTML element"] in {
+            # for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
+            for pre, fill, node1 in RenderTree(root_firstcluster):
+                if node1.element_assigned in {
                     "text",
                     "ocrtext",
                 }:
                     # Check if the elements were not assigned to the clusters before
-                    if (
-                            (recognized_element1 not in clr.elements)
-                            for clr in clusters
-                    ):
+                    # if (
+                    #         (recognized_element1 not in clr.elements)
+                    #         for clr in clusters
+                    # ):
+                    if (node1.parent.types != "fcluster"):
 
                         # Second rectangle coordinates
-                        x11 = int(recognized_element1["shape_attributes"]["x"])
-                        y11 = int(recognized_element1["shape_attributes"]["y"])
-                        x21 = int(
-                            x11 + recognized_element1["shape_attributes"]["width"]
-                        )
-                        y21 = int(
-                            y11 + recognized_element1["shape_attributes"]["height"]
-                        )
+                        x11 = node1.x1
+                        y11 = node1.y1
+                        x21 = node1.x2
+                        y21 = node1.y2
 
                         # Second rectangle width
                         width_elem1 = x21 - x11
@@ -1339,11 +1357,22 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
                                     > VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD
                                     * width_elem1
                             ):
+
+                                # Add the initial element to the cluster
+                                # Define some values to this novel cluster
+                                cluster = ClusterClass(x1, y1, x2, y2)
+                                cluster.types = "fcluster"
+                                cluster.is_elements_only = True
+
+                                # Not sure that this assignment is important
+                                cluster.parent = node.parent
                                 # Fill the cluster
                                 # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
                                 # max(y2, y21), elements = [recognized_element, recognized_element1])
-                                # Update the cluster with new text element
-                                cluster.elements.append(recognized_element1)
+
+                                # Update the cluster with new parent-child relations
+                                node.parent = cluster
+                                node1.parent = cluster
 
                                 # Set some flags for this vertical fcluster
                                 # The cluster contains more than one element
@@ -1358,12 +1387,12 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
                                 cluster.y2 = max(cluster.y2, y21)
 
                                 # Find the center of cluster
-                                center_x = (cluster.x1 + cluster.x2) / 2
-                                center_y = (cluster.y1 + cluster.y2) / 2
-                                cluster.center = center_x, center_y
+                                # center_x = (cluster.x1 + cluster.x2) / 2
+                                # center_y = (cluster.y1 + cluster.y2) / 2
+                                # cluster.center = center_x, center_y
 
                                 # Update the clusters list
-                                clusters.append(cluster)
+                                # clusters.append(cluster)
 
             if len(image_fclusters):
                 # Display input-based fclusters
@@ -1386,8 +1415,8 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
     # The first position is a checkbox or radiobutton or even the small image,
     # and the second position is text
     # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
-    for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-        if recognized_element["region_attributes"]["HTML element"] in {
+    for pre, fill, node in RenderTree(root_firstcluster):
+        if node.element_assigned in {
             "checkbox",
             "radiobutton",
             "image",
@@ -1403,40 +1432,28 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
             # start/end of the text element should be within this interval
 
             # First rectangle coordinates
-            x1 = int(recognized_element["shape_attributes"]["x"])
-            y1 = int(recognized_element["shape_attributes"]["y"])
-            x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-            y2 = int(y1 + recognized_element["shape_attributes"]["height"])
+            x1 = node.x1
+            y1 = node.y1
+            x2 = node.x2
+            y2 = node.y2
 
-            # First rectangle width
-            width_elem = recognized_element["shape_attributes"]["width"]
-            height_elem = recognized_element["shape_attributes"]["height"]
+            # First rectangle width and height
+            width_elem = x2 - x1
+            height_elem = y2-y1
 
-            # Add the initial element to a cluster
-            cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
-            # Set some flags for this novel cluster
-            cluster.types = "fcluster"
-            cluster.is_elements_only = True
-            for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
-                if recognized_element1["region_attributes"]["HTML element"] in {
+            for pre, fill, node1 in RenderTree(root_firstcluster):
+                if node1.element_assigned in {
                     "text",
                     "ocrtext",
                 }:
                     # Check if the elements were not assigned to the clusters before
-                    if (
-                            (recognized_element1 not in clr.elements)
-                            for clr in clusters
-                    ):
+                    if (node1.parent.types != "fcluster"):
 
                         # Second rectangle coordinates
-                        x11 = int(recognized_element1["shape_attributes"]["x"])
-                        y11 = int(recognized_element1["shape_attributes"]["y"])
-                        x21 = int(
-                            x11 + recognized_element1["shape_attributes"]["width"]
-                        )
-                        y21 = int(
-                            y11 + recognized_element1["shape_attributes"]["height"]
-                        )
+                        x11 = node1.x1
+                        y11 = node1.y1
+                        x21 = node1.x2
+                        y21 = node1.y2
 
                         # Second rectangle width
                         width_elem1 = x21 - x11
@@ -1474,11 +1491,21 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
                                     > HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD
                                     * height_elem1
                             ):
+                                # Add the initial element to the cluster
+                                # Define some values to this novel cluster
+                                cluster = ClusterClass(x1, y1, x2, y2)
+                                cluster.types = "fcluster"
+                                cluster.is_elements_only = True
+
+                                # Not sure that this assignment is important
+                                cluster.parent = node.parent
                                 # Fill the cluster
                                 # cluster = ClusterClass(min(x1, x11), min(y1, y11), max(x2, x21),
                                 # max(y2, y21), elements = [recognized_element, recognized_element1])
-                                # Update the cluster with new text element
-                                cluster.elements.append(recognized_element1)
+
+                                # Update the cluster with new parent-child relations
+                                node.parent = cluster
+                                node1.parent = cluster
 
                                 # Set some flags for this horizontal fcluster
                                 # The cluster contains more than one element
@@ -1498,7 +1525,7 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
                                 cluster.center = center_x, center_y
 
                                 # Update the clusters list
-                                clusters.append(cluster)
+                                # clusters.append(cluster)
 
             if len(image_fclusters):
                 # Display checkbox-based fclusters
@@ -1512,43 +1539,9 @@ def calculate_fclusters(fdict, fnamesize, fname, image_fclusters=[]):
     if len(image_fclusters):
         # Printing fclusters to file
         cv2.imwrite("fclusters_" + fname, image_fclusters)
-
     # Clusters checkboxes with text labels direction end
 
-    # Place all the free elements for the 1-element clusters
-    for idx, recognized_element in enumerate(fdict[fnamesize]["regions"]):
-        # First rectangle coordinates
-        x1 = int(recognized_element["shape_attributes"]["x"])
-        y1 = int(recognized_element["shape_attributes"]["y"])
-        x2 = int(x1 + recognized_element["shape_attributes"]["width"])
-        y2 = int(y1 + recognized_element["shape_attributes"]["height"])
-
-        element_unique = True
-        for cluster in clusters:
-            if recognized_element in cluster.elements:
-                element_unique = False
-        if element_unique is True:
-            # Add the element to the cluster
-            cluster = ClusterClass(x1, y1, x2, y2, elements=[recognized_element])
-
-            # Set some flags for this novel cluster
-            cluster.types = "fcluster"
-            cluster.is_elements_only = True
-            # The cluster contains only one element
-            cluster.is_solid = True
-            # The cluster direction is unseparable
-            cluster.direction = 2
-            cluster.origin_direction = 2
-
-            # Find the center of cluster
-            center_x = (cluster.x1 + cluster.x2) / 2
-            center_y = (cluster.y1 + cluster.y2) / 2
-            cluster.center = center_x, center_y
-
-            # Update the clusters list
-            clusters.append(cluster)
-
-    return clusters
+    return root_firstcluster
 
 
 def calculate_excluded_indices(fdict, fnamesize):
@@ -1755,8 +1748,9 @@ def extract_rectangle_coordinates(rect):
 
 
 # For some rectangle. Go through all the rectangles in (calculate this on the fly).
-# Find rectangles without parents, they are level rectangles. Create firstclusters for them. Repeat the process
-def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
+# Find rectangles without parents, they are level rectangles. Create firstclusters for them.
+# Repeat the process (the function is recursive)
+def chain_firstclusters(rectangles, firstcluster):
     level_blocks = firstcluster.level_blocks
     print(level_blocks)
     for level_block in level_blocks:
@@ -1794,38 +1788,40 @@ def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
                     next_level_block_firstcluster = ClusterClass(*r1_e)
                     next_level_block_firstcluster.types = "firstcluster"
                     next_level_block_firstcluster.parent = firstcluster
+                    next_level_block_firstcluster.element_assigned = r1["region_attributes"]["HTML element"]
                     next_level_block_firstcluster.level_blocks = next_level_blocks
 
-                    (x1, y1, x2, y2) = r1_e
-                    cv2.rectangle(
-                        image_firstclusters,
-                        (x1, y1),
-                        (x2, y2),
-                        (20, 90, 255),
-                        1,
-                    )
-                    chain_firstclusters(rectangles, next_level_block_firstcluster, image_firstclusters)
+                    # (x1, y1, x2, y2) = r1_e
+                    # cv2.rectangle(
+                    #     image_firstclusters,
+                    #     (x1, y1),
+                    #     (x2, y2),
+                    #     (20, 90, 255),
+                    #     1,
+                    # )
+                    chain_firstclusters(rectangles, next_level_block_firstcluster)
                 elif (is_final is True):
                     # print("r1=", r1)
                     print(*r1_e)
                     next_level_block_firstcluster = ClusterClass(*r1_e)
                     next_level_block_firstcluster.types = "firstcluster"
+                    next_level_block_firstcluster.element_assigned = r1["region_attributes"]["HTML element"]
                     next_level_block_firstcluster.parent = firstcluster
 
-                    (x1, y1, x2, y2) = r1_e
-                    cv2.rectangle(
-                        image_firstclusters,
-                        (x1, y1),
-                        (x2, y2),
-                        (100, 80, 155),
-                        1,
-                    )
+                    # (x1, y1, x2, y2) = r1_e
+                    # cv2.rectangle(
+                    #     image_firstclusters,
+                    #     (x1, y1),
+                    #     (x2, y2),
+                    #     (100, 80, 155),
+                    #     1,
+                    # )
 
     return True
 
 
-def calculate_firstclusters(fdict, fname, fnamesize, image_firstclusters, node):
-    img_height, img_width, img_channels = image_firstclusters.shape
+def calculate_firstclusters(fdict, fname, fnamesize, node, img_height, img_width):
+    # img_height, img_width, img_channels = image_firstclusters.shape
     # print(image_firstclusters.shape)
     # Detect top level blocks
     top_level_blocks = []
@@ -1858,23 +1854,21 @@ def calculate_firstclusters(fdict, fname, fnamesize, image_firstclusters, node):
 
     # For some rectangle. Go through all the rectangles in. Find rectangles without parents, they are level rectangles.
     # Save sets of rectangles placed for each level rectangle. Repeat the process.
-    chain_firstclusters(rectangles, root_firstcluster, image_firstclusters)
+    chain_firstclusters(rectangles, root_firstcluster)
 
     # Printing firstclusters to file
-    if len(image_firstclusters):
-        imgpath = MEDIA_ROOT + "/uploads/" + "firstclusters_" + fname
-        cv2.imwrite(imgpath, image_firstclusters)
-        node.parameters["image"] = "firstclusters_" + fname
+    # if len(image_firstclusters):
+    #     imgpath = MEDIA_ROOT + "/uploads/" + "firstclusters_" + fname
+    #     cv2.imwrite(imgpath, image_firstclusters)
+    #     node.parameters["image"] = "firstclusters_" + fname
 
     return root_firstcluster
 
 
-def print_clusters_length(clusters):
-    if(len(clusters)):
+def print_clusters_length(root_firstcluster):
+    for pre, fill, node in RenderTree(root_firstcluster):
         # Print clusters start
-        for cluster in clusters:
-            # print(cluster.type, cluster, len(cluster.elements))
-            print(cluster, len(cluster.elements))
+        print(node.types, node.element_assigned)
         # Print clusters end
         return True
     else:
@@ -2804,18 +2798,19 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             calculate_ocvclusters(fdict, fnamesize)
 
         # Calculate fclusters function calling
-        clusters = calculate_fclusters(fdict, fnamesize, fname, image_fclusters=image_fclusters)
+        root_firstcluster = calculate_fclusters(fdict, fname, image_fclusters=image_fclusters)
 
         # Calculate fclusters cnn function calling
-        clusters_cnn = calculate_fclusters(cnndict, fnamesize, fname)
+        clusters_cnn = calculate_fclusters(cnndict, fname)
 
         if region_dataset in ["headers", "footers", "webpages"]:
             # Calculate dbclusters function calling
-            dbclusters = calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters)
+            dbclusters = calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclusters)
             # Calculate dbclusters cnn function calling.
             # Should remove image_dbclusters here to display info properly
             dbclusters_cnn = calculate_dbclusters(region_dataset, clusters_cnn, fname, image_dbclusters)
 
+        '''
         try:
             # Replace clusters for dbclusters if possible
             fclusters = copy.copy(clusters)
@@ -2824,6 +2819,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             pass
         finally:
             pass
+        '''
 
         try:
             # Replace clusters cnn for dbclusters cnn if possible
@@ -2835,8 +2831,8 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             pass
 
         # Ternary assembling algorithm function calling
-        root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters,
-                                            image_opencv_input, window_name1, fclusters)
+        root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster,
+                                            image_opencv_input, window_name1)
 
         # Ternary assembling algorithm cnn function calling
         # Should remove image_opencv_input here to display info properly
@@ -3114,14 +3110,15 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # How to detect firstclusters from fdict?
             # Maybe use this function for the first time
             # calculate_ocvclusters(fdict, fnamesize)
-            root_firstcluster = calculate_firstclusters(fdict, fname, fnamesize, image_firstclusters, serializer_node)
+            root_firstcluster = calculate_firstclusters(fdict, fname, fnamesize, serializer_node, img_height, img_width)
 
             # Calculate fclusters function calling
-            clusters = calculate_fclusters(fdict, fnamesize, fname)
+            root_firstcluster = calculate_fclusters(root_firstcluster, fname)
 
             # Call the fclusters printing
-            print_clusters_length(clusters)
+            print_clusters_length(root_firstcluster)
 
+            '''
             # Remove fclusters which are contradictive with firstclusters (overlap) start
             for cluster in clusters:
                 if (len(cluster.elements) > 2):  # Fclusters should contain 2 and more elements
@@ -3133,11 +3130,13 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                                 clusters.remove(cluster)
                                 break
             # Remove fclusters which are contradictive with firstclusters (overlap) end
+            '''
 
             if region_dataset in ["headers", "footers", "webpages"]:
                 # Calculate dbclusters function calling
-                dbclusters = calculate_dbclusters(region_dataset, clusters, fname, image_dbclusters)
+                dbclusters = calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclusters)
 
+                '''
                 # Remove dbclusters which are contradictive with firstclusters (overlap, contains probably)
                 # Remove dbclusters which are contradictive with firstclusters (overlap) start
                 for cluster in dbclusters:
@@ -3150,12 +3149,14 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                                     dbclusters.remove(cluster)
                                     break
                 # Remove dbclusters which are contradictive with firstclusters (overlap) end
+                '''
 
                 # DBclusters should be added to firstclusters in an appropriate order
                 # First it is possible to remove dbclusters which were placed in firstclusters
                 # In this case, dbclusters should be added to the root_firstcluster as a final firstclusters
                 # After that, cclusters should be calculated on the top firstclusters, just after the root_firstcluster
 
+            '''
             try:
                 # Replace clusters for dbclusters if possible
                 fclusters = copy.copy(clusters)
@@ -3164,14 +3165,15 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 pass
             finally:
                 pass
+            '''
 
             # print("before: ")
             # for pre, fill, node in RenderTree(root_firstcluster):
             #     if node.types:
             #         print(node.types)
             # Do the containerization based on firstclusters and dbclusters, they should be both merged to clusters
-            root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, clusters, image_opencv_input,
-                                                window_name1, fclusters)
+            root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input,
+                                                window_name1)
 
             # Create a directory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
