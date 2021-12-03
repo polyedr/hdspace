@@ -9,8 +9,8 @@ import { selectUserData } from '@Redux/user/selectors';
 import { PanelTextField, SideBarTitle } from '@Components/styledComponents';
 import { Button } from '@material-ui/core';
 import { selectBoardData } from '@Redux/pmtools/board/selectors';
-import Message from './Message';
 import { IMessageZulip, IStream } from '@Src/types/pmtools/types';
+import Message from './Message';
 
 const Messages: React.FC = () => {
   const dispatch = useDispatch();
@@ -36,7 +36,6 @@ const Messages: React.FC = () => {
   }, [messages, boardName]);
 
   useEffect(() => {
-    let cleanupFunction = false;
     const handleGetStream = async () => {
       if (boardName) {
         const client = await zulipInit(config);
@@ -47,15 +46,10 @@ const Messages: React.FC = () => {
           narrow: [{ operator: 'stream', operand: boardName }],
         };
         const { messages } = await client.messages.retrieve(readParams);
-        if (!cleanupFunction) setMessages(messages);
+        setMessages(messages);
       }
     };
     handleGetStream();
-
-    return () => {
-      cleanupFunction = true;
-      return;
-    };
   }, [handleSend, boardName]);
 
   const handleLogout = () => {
