@@ -1,5 +1,10 @@
 import { convertUserDataFromResponse } from '@Api/converters/fromResponse';
-import { apiAuthUser, apiRegisterUser } from '@Api/pmtools/chatApi';
+import {
+  apiAuthUser,
+  apiGetMessages,
+  apiRegisterUser,
+  apiSendMessage,
+} from '@Api/pmtools/chatApi';
 import { apiChangeProfileData, apiGetUser } from '@Api/user';
 import { panelErrorMsg } from '@Redux/actions';
 import TYPES from '@Redux/actionTypes';
@@ -9,11 +14,35 @@ import { selectUserData } from '@Redux/user/selectors';
 import generator from 'generate-password';
 import { ServerUserData } from '@Src/types/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
-import { configAdmin } from '@Constants/pmtools/zulipChatLoginData';
+import { configAdmin, configUser } from '@Constants/pmtools/zulipChatLoginData';
 import { AuthParams } from '@Src/types/pmtools/types';
-import { successLoginChatUser, successLogoutChatUser } from './actions';
+import * as action from './actions';
+import { selectBoardData } from '../board/selectors';
 
-export function* loginUser({
+export function* projectStreamMessagesSaga(): any {
+  try {
+    const { name: stream } = yield select(selectBoardData);
+    const { email, profile } = yield select(selectUserData);
+    const config = configUser(email, profile.parameters.passwordZulip);
+    const { messages } = yield call(apiGetMessages, stream, config);
+    yield put(action.successProjectStreamMessages(messages));
+  } catch (e) {
+    yield put(panelErrorMsg(e));
+  }
+}
+
+export function* projectSendMessageSaga({ payload }: any): any {
+  try {
+    const { name: stream } = yield select(selectBoardData);
+    const { email, profile } = yield select(selectUserData);
+    const config = configUser(email, profile.parameters.passwordZulip);
+    yield call(apiSendMessage, stream, config, payload.message);
+  } catch (e) {
+    yield put(panelErrorMsg(e));
+  }
+}
+
+export function* loginUserSaga({
   payload: password,
 }: {
   payload: AuthParams['password'];
@@ -27,7 +56,7 @@ export function* loginUser({
       password,
     });
     if (client && client.config) {
-      yield put(successLoginChatUser(client));
+      yield put(action.successLoginChatUser(client));
       localStorage.setItem('login', JSON.stringify({ password }));
     }
   } catch (e) {
@@ -35,7 +64,7 @@ export function* loginUser({
   }
 }
 
-export function* registerZulipUser(): any {
+export function* registerZulipUserSaga(): any {
   try {
     const { id, email, username }: ServerUserData = yield select(
       selectUserData,
@@ -72,7 +101,7 @@ export function* registerZulipUser(): any {
         password,
       });
       if (client && client.config) {
-        yield put(successLoginChatUser(client));
+        yield put(action.successLoginChatUser(client));
         localStorage.setItem('login', JSON.stringify({ password }));
       }
     }
@@ -81,17 +110,19 @@ export function* registerZulipUser(): any {
   }
 }
 
-export function* logoutUser() {
+export function* logoutUserSaga() {
   try {
     localStorage.removeItem('login');
-    yield put(successLogoutChatUser());
+    yield put(action.successLogoutChatUser());
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
 export default function* chatSaga() {
-  yield takeLatest(TYPES.LOGIN_PMTOOLS, loginUser);
-  yield takeLatest(TYPES.LOGOUT_PMTOOLS, logoutUser);
-  yield takeLatest(TYPES.REGISTER_PMTOOLS, registerZulipUser);
+  yield takeLatest(TYPES.LOGIN_PMTOOLS, loginUserSaga);
+  yield takeLatest(TYPES.LOGOUT_PMTOOLS, logoutUserSaga);
+  yield takeLatest(TYPES.GET_STREAM_MESSAGES, projectStreamMessagesSaga);
+  yield takeLatest(TYPES.SEND_MESSAGE_ZULIP, projectSendMessageSaga);
+  yield takeLatest(TYPES.REGISTER_PMTOOLS, registerZulipUserSaga);
 }

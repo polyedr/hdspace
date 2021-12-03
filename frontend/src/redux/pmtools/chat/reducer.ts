@@ -3,6 +3,7 @@ import { ChatAction, ChatState } from '../types';
 
 const initialState: ChatState = {
   client: null,
+  messages: null,
 };
 
 const chatReducer = (state: ChatState = initialState, action: ChatAction) => {
@@ -16,6 +17,11 @@ const chatReducer = (state: ChatState = initialState, action: ChatAction) => {
       return {
         ...state,
         client: null,
+      };
+    case TYPES.GET_STREAM_MESSAGES_SUCCESS:
+      return {
+        ...state,
+        messages: action.payload,
       };
     default:
       return state;

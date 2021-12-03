@@ -1,30 +1,21 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  requestLoginChatUser,
-  requestRegisterZulip,
-} from '@Redux/pmtools/chat/actions';
+import * as action from '@Redux/pmtools/chat/actions';
 import { selectProfileData } from '@Redux/user/selectors';
 
 const ChatLogin: React.FC = () => {
   const dispatch = useDispatch();
   const { parameters } = useSelector(selectProfileData);
 
-  const handleLogin = () => {
-    dispatch(requestLoginChatUser(parameters.passwordZulip));
-  };
-
-  const handleRegister = () => {
-    dispatch(requestRegisterZulip());
-  };
-
   if (parameters.passwordZulip) {
     return (
       <>
         <h4>Welcome to the chat!</h4>
         <Button
-          onClick={handleLogin}
+          onClick={() =>
+            dispatch(action.requestLoginChatUser(parameters.passwordZulip))
+          }
           type="submit"
           color="secondary"
           variant="contained"
@@ -42,7 +33,7 @@ const ChatLogin: React.FC = () => {
       <Button
         type="submit"
         color="secondary"
-        onClick={handleRegister}
+        onClick={() => dispatch(action.requestRegisterZulip())}
         variant="contained"
         fullWidth
       >

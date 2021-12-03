@@ -1,4 +1,5 @@
 import { ChatRootState } from '../types';
 
-/* eslint-disable import/prefer-default-export */
-export const chatUser = (state: ChatRootState) => state.chat.client;
+export const selectChatUser = (state: ChatRootState) => state.chat.client;
+export const selectMessagesZulip = (state: ChatRootState) =>
+  state.chat.messages;

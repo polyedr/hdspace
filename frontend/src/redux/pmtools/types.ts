@@ -1,11 +1,20 @@
 import { ServerUserData } from '@Src/types/types';
 import { DefaultRootState } from 'react-redux';
-import { ActionTypePM, AuthParams, ChatClient } from '@Src/types/pmtools/types';
+import {
+  ActionTypePM,
+  AuthParams,
+  ChatClient,
+  IMessageZulip,
+} from '@Src/types/pmtools/types';
 import { IBoard, IColumnData, IServerTaskData } from '@Src/types/pmtools/board';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
-import { successLoginChatUser, successLogoutChatUser } from './chat/actions';
+import {
+  successLoginChatUser,
+  successLogoutChatUser,
+  successProjectStreamMessages,
+} from './chat/actions';
 import { successSendEmail, sidePanelError } from './invite/actions';
 
 export interface InviteRootState extends DefaultRootState {
@@ -29,6 +38,7 @@ export type ActivityState = {
 
 export type ChatState = {
   client: ChatClient | null;
+  messages: Array<IMessageZulip> | null;
 };
 
 export type BoardState = {
@@ -74,7 +84,9 @@ export type InviteAction = ReturnType<
 >;
 
 export type ChatAction = ReturnType<
-  typeof successLoginChatUser | typeof successLogoutChatUser
+  | typeof successLoginChatUser
+  | typeof successLogoutChatUser
+  | typeof successProjectStreamMessages
 >;
 
 export type memberAction = ReturnType<

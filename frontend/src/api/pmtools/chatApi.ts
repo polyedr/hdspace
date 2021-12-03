@@ -7,6 +7,36 @@ import zulipInit from 'zulip-js';
 // @ts-ignore
 window.Buffer = window.Buffer || require('buffer').Buffer;
 
+export const apiSendMessage = async (stream, config, message) => {
+  try {
+    const client = await zulipInit(config);
+    const params = {
+      to: stream,
+      type: 'stream',
+      topic: 'Castle',
+      content: message,
+    };
+    return await client.messages.send(params);
+  } catch (e) {
+    return e;
+  }
+};
+
+export const apiGetMessages = async (stream, config) => {
+  try {
+    const client = await zulipInit(config);
+    const readParams = {
+      anchor: 'newest',
+      num_before: 1000,
+      num_after: 0,
+      narrow: [{ operator: 'stream', operand: stream }],
+    };
+    return await client.messages.retrieve(readParams);
+  } catch (e) {
+    return e;
+  }
+};
+
 export const apiAuthUser = async (login: AuthParams) => {
   try {
     const config: ChatClient = await zulipInit(login);
