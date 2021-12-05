@@ -860,24 +860,25 @@ def clusters_printing(root_block, root_firstcluster, fname, input_image=[]):
     if len(input_image):
         image_allclusters = copy.deepcopy(input_image)
         image_cclusters = copy.deepcopy(input_image)
-        image_firstclusters = copy.deepcopy(input_image)
+        image_firstclusters1 = copy.deepcopy(input_image)
         image_allcluelems = copy.deepcopy(input_image)
 
     # Go through all the first clusters obtained after the annotation
-    if len(image_firstclusters):
+    if len(image_firstclusters1):
         # Print all the firstclusters
         for pre, fill, node in RenderTree(root_firstcluster):
             if node.types == "firstcluster":
+                print("firstclusterprinting")
                 cv2.rectangle(
-                    image_firstclusters,
+                    image_firstclusters1,
                     (node.x1, node.y1),
                     (node.x2, node.y2),
                     (20, 50, 107),
                     1,
                 )
-                print("firstcluster")
+                print("firstcluster1")
         # Printing cclusters to file
-        cv2.imwrite("firstclusters_" + fname, image_firstclusters)
+        cv2.imwrite("firstclusters1_" + fname, image_firstclusters1)
 
     # Go through all the blocks obtained after the ternary algorithm
     if len(image_cclusters):
@@ -1213,7 +1214,7 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
         # is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
         # clusters-based solution start
         for pre, fill, node in RenderTree(root_firstcluster):
-            if (node.types == "fcluster")  or ((node.is_leaf is True) and (node.types != "dbcluster")):
+            if (node.types == "fcluster") or ((node.is_leaf is True) and (node.types != "dbcluster")):
                 # Why dbclusters are leaves now? This should be corrected
                 # Cluster number label
                 print("label:", node.label)
@@ -1263,6 +1264,30 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
     return dbclusters
 
 
+# Processing simple elements chains at the level of the firstclusters
+def firstclusters_elements_chains_processing(root_firstcluster, fname):
+    for pre, fill, node in RenderTree(root_firstcluster):
+        if (node.height == 1) and node.element_assigned in {
+            "input",
+            "select",
+            "button",
+            "image",
+        }:
+            # Process only a singles labels
+            if(len(node.children)) == 1:
+                for child in node.children:
+                    if(child.element_assigned in {
+                        "ocrtext",
+
+                    }):
+
+                        node.placeholder = [child.x1, child.y1, child.x2, child.y2]
+                        # Child Node Detach
+                        child.parent = None
+
+    return root_firstcluster
+
+
 def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
     # find all the clusters based on cluster-making elements
     # (inputs, selects, buttons, free text blocks, maybe large images)
@@ -1301,7 +1326,7 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
 
             # First rectangle width and height
             width_elem = x2 - x1
-            height_elem = y2-y1
+            height_elem = y2 - y1
 
             # for idx1, recognized_element1 in enumerate(fdict[fnamesize]["regions"]):
             for pre, fill, node1 in RenderTree(root_firstcluster):
@@ -1417,6 +1442,9 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
     # for idx, recognized_element in enumerate(fdict[filenamesize]["regions"]):
     for pre, fill, node in RenderTree(root_firstcluster):
         if node.element_assigned in {
+            "input",
+            "select",
+            "button",
             "checkbox",
             "radiobutton",
             "image",
@@ -1439,7 +1467,7 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
 
             # First rectangle width and height
             width_elem = x2 - x1
-            height_elem = y2-y1
+            height_elem = y2 - y1
 
             for pre, fill, node1 in RenderTree(root_firstcluster):
                 if node1.element_assigned in {
@@ -1750,9 +1778,10 @@ def extract_rectangle_coordinates(rect):
 # For some rectangle. Go through all the rectangles in (calculate this on the fly).
 # Find rectangles without parents, they are level rectangles. Create firstclusters for them.
 # Repeat the process (the function is recursive)
-def chain_firstclusters(rectangles, firstcluster):
+def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
     level_blocks = firstcluster.level_blocks
-    print(level_blocks)
+    # print(level_blocks)
+    # input()
     for level_block in level_blocks:
         next_level_blocks = []
         for r1 in rectangles:
@@ -1771,12 +1800,22 @@ def chain_firstclusters(rectangles, firstcluster):
                     if (contains_rectangle(level_block_e, r2_e) is True) and (level_block_e != r2_e):
                         print("is_not_final")
                         # find rectangles without parents
-                        # Check if r1 in r2
+                        # Check if r2 in r1
                         # if contains_rectangle(r2_e, r1_e) is False:
-                        if (contains_rectangle(r2_e, r1_e) is False) and (r1_e != r2_e):
-                            print(level_block_e, r2_e, r1_e)
+                        if (contains_rectangle(r1_e, r2_e) is True) and (r1_e != r2_e):
+                            print(level_block_e, r1_e, r2_e)
                             print("is_parent")
                             is_parent = True
+                            is_final = False
+
+                        # Check if r1 is placed in r2
+                        if (contains_rectangle(r2_e, r1_e) is True) and (r1_e != r2_e):
+                            print(level_block_e, r1_e, r2_e)
+
+                            # Check if it is a parent for the level of interest
+                            # Double false means that the block of interest is from the next level
+                            print("is_parent")
+                            is_parent = False
                             is_final = False
 
                 print(is_parent, is_final)
@@ -1791,15 +1830,15 @@ def chain_firstclusters(rectangles, firstcluster):
                     next_level_block_firstcluster.element_assigned = r1["region_attributes"]["HTML element"]
                     next_level_block_firstcluster.level_blocks = next_level_blocks
 
-                    # (x1, y1, x2, y2) = r1_e
-                    # cv2.rectangle(
-                    #     image_firstclusters,
-                    #     (x1, y1),
-                    #     (x2, y2),
-                    #     (20, 90, 255),
-                    #     1,
-                    # )
-                    chain_firstclusters(rectangles, next_level_block_firstcluster)
+                    (x1, y1, x2, y2) = r1_e
+                    cv2.rectangle(
+                        image_firstclusters,
+                        (x1, y1),
+                        (x2, y2),
+                        (20, 90, 255),
+                        1,
+                    )
+                    chain_firstclusters(rectangles, next_level_block_firstcluster, image_firstclusters)
                 elif (is_final is True):
                     # print("r1=", r1)
                     print(*r1_e)
@@ -1808,19 +1847,22 @@ def chain_firstclusters(rectangles, firstcluster):
                     next_level_block_firstcluster.element_assigned = r1["region_attributes"]["HTML element"]
                     next_level_block_firstcluster.parent = firstcluster
 
-                    # (x1, y1, x2, y2) = r1_e
-                    # cv2.rectangle(
-                    #     image_firstclusters,
-                    #     (x1, y1),
-                    #     (x2, y2),
-                    #     (100, 80, 155),
-                    #     1,
-                    # )
+                    (x1, y1, x2, y2) = r1_e
+                    cv2.rectangle(
+                        image_firstclusters,
+                        (x1, y1),
+                        (x2, y2),
+                        (100, 80, 155),
+                        1,
+                    )
+                print(x1, y1, x2, y2)
+            # cv2.imshow("window_name1", image_firstclusters)
+            # cv2.waitKey(0)
 
     return True
 
 
-def calculate_firstclusters(fdict, fname, fnamesize, node, img_height, img_width):
+def calculate_firstclusters(fdict, fname, fnamesize, node, img_height, img_width, image_firstclusters):
     # img_height, img_width, img_channels = image_firstclusters.shape
     # print(image_firstclusters.shape)
     # Detect top level blocks
@@ -1834,7 +1876,6 @@ def calculate_firstclusters(fdict, fname, fnamesize, node, img_height, img_width
     top_level_block["shape_attributes"]["height"] = img_height
 
     top_level_blocks.append(top_level_block)
-    # print(top_level_blocks)
 
     # Create a set of rectangles
     rectangles = []
@@ -1854,7 +1895,7 @@ def calculate_firstclusters(fdict, fname, fnamesize, node, img_height, img_width
 
     # For some rectangle. Go through all the rectangles in. Find rectangles without parents, they are level rectangles.
     # Save sets of rectangles placed for each level rectangle. Repeat the process.
-    chain_firstclusters(rectangles, root_firstcluster)
+    chain_firstclusters(rectangles, root_firstcluster, image_firstclusters)
 
     # Printing firstclusters to file
     # if len(image_firstclusters):
@@ -2959,7 +3000,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             "styles": {},
         }
 
-        # Define styles variable switching on, this variable is plased at parameters with other serializers as a flag
+        # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
         styles_on = 1
         # Pre-Root element assignment
         element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
@@ -3005,29 +3046,16 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         image_fdict_after = copy.deepcopy(image_opencv_input)
         image_dbclusters = copy.deepcopy(image_opencv_input)
 
+        # Create a directory to save cluters for some image processed
+        SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
+        find_or_create_dir(SAVE_DIR)
+
+        os.chmod(SAVE_DIR, 0o755)
+        os.chdir(SAVE_DIR)
+
         # detect height and width of the image
         img_height, img_width, img_channels = image_opencv_input.shape
-        # print("width:  ", img_width)
-        # print("height: ", img_height)
-        # print("channel:", img_channels)
         # Read an image with OpenCV end
-
-        '''
-        # Detect the font-size with tesseract for the whole image start
-        whole_img = cv2.cvtColor(image_opencv_input, cv2.COLOR_BGR2GRAY)
-        result = pytesseract.image_to_boxes(whole_img)
-        lines = result.strip().split("\n")
-        font_size = []
-
-        for line in lines:
-            chars = line.split(" ")
-            try:
-                font_size.append(float(chars[4]) - float(chars[2]))
-            except Exception:
-                font_size.append(12.0)  # Default font-size value is 12px
-        font_size_img = int(median(font_size) * 1.7)  # Font-size value of the image
-        # Detect the font-size with tesseract for the whole image end
-        '''
 
         # Get(take the whole image) the dominant colour for the parent container
         bcolour_container_value = "255,255,255,0"
@@ -3036,17 +3064,13 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
 
         window_name1 = "image_opencv_text"
-
         # Create the opencv recognition end
 
         #
         #
         # Here is the divergency point between images and footers
-
         # Create the recognized_elements array start
         if imgpath:
-            # img = load_img(imgpath)
-            # img = img_to_array(img)
             # These calculations should be moved to the previous serializer later
             # Maybe write this to the parameters
             fsize = str(os.path.getsize(imgpath))
@@ -3110,10 +3134,38 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # How to detect firstclusters from fdict?
             # Maybe use this function for the first time
             # calculate_ocvclusters(fdict, fnamesize)
-            root_firstcluster = calculate_firstclusters(fdict, fname, fnamesize, serializer_node, img_height, img_width)
+            root_firstcluster = calculate_firstclusters(fdict, fname, fnamesize, serializer_node, img_height, img_width, image_firstclusters)
+
+            # Elements-based clusters printing
+            for pre, fill, node in RenderTree(root_firstcluster):
+                treestr = u"%s%s" % (pre, node.name)
+                print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
+                cv2.rectangle(image_firstclusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
+
+            # Printing firstclusters to file
+            if len(image_firstclusters):
+                imgpath = SAVE_DIR + "/firstclusters_" + fname
+                print(SAVE_DIR)
+                print(imgpath)
+
+                cv2.imwrite(imgpath, image_firstclusters)
+
+            root_firstcluster = firstclusters_elements_chains_processing(root_firstcluster, fname)
+
+            # Elements-based clusters printing
+            for pre, fill, node in RenderTree(root_firstcluster):
+                treestr = u"%s%s" % (pre, node.name)
+                print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
+                cv2.rectangle(image_firstclusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
 
             # Calculate fclusters function calling
             root_firstcluster = calculate_fclusters(root_firstcluster, fname)
+
+            # Elements-based clusters printing
+            for pre, fill, node in RenderTree(root_firstcluster):
+                treestr = u"%s%s" % (pre, node.name)
+                print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
+                cv2.rectangle(image_firstclusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
 
             # Call the fclusters printing
             print_clusters_length(root_firstcluster)
@@ -3174,6 +3226,12 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # Do the containerization based on firstclusters and dbclusters, they should be both merged to clusters
             root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input,
                                                 window_name1)
+
+            # Elements-based clusters printing
+            for pre, fill, node in RenderTree(root_block):
+                treestr = u"%s%s" % (pre, node.name)
+                print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
+
 
             # Create a directory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)

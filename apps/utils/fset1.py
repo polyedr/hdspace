@@ -248,7 +248,7 @@ def get_dominant_palette(image, k=27, image_processing_size=None):
 
     palette = []
     for counter in range(1, len(label_counts)):
-        sdlabel = label_counts.most_common(counter)[(counter-1):]
+        sdlabel = label_counts.most_common(counter)[(counter - 1):]
         colour = list(clt.cluster_centers_[sdlabel[0][0]])
 
         # Convert to the rgb integer values from the float values
@@ -280,6 +280,7 @@ class ClusterClass(NodeMixin):
     elements = []
     # Element assigned to the whole cluster
     element_assigned = ""
+    placeholder = []
 
     def __init__(self, x1, y1, x2, y2, parent=None, children=None, elements=None):
         self.name = uuid.uuid4().hex
