@@ -364,8 +364,10 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 pass
 
         elif (serializing in {"virtualize_simple", "assemble"}):
+            '''
             # Display elements for some fcluster
             if node.types == "fcluster":
+                
                 # Arrange the fcluster children based on their coordinates
                 if node.direction == 0:
                     array_elements = sorted(
@@ -377,399 +379,400 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     )
                 else:
                     array_elements = node.elements
-                # print(len(array_elements))
-                node.scenarioelement_inner_kwargs_list = []
-                for elem in array_elements:
-                    # Prepare an empty list to define scenario element structure for the further chain joining
-                    scenarioelement_inner_kwargs = {}
-                    # Define the element dimensions start
-                    elem_width = int(elem["shape_attributes"]["width"])
-                    elem_height = int(elem["shape_attributes"]["height"])
+            '''
+            # node.scenarioelement_inner_kwargs_list = []
+            # for elem in array_elements:
+            # Prepare an empty list to define scenario element structure for the further chain joining
+            scenarioelement_inner_kwargs = {}
+            # Define the element dimensions start
+            # Rectangle width and height
+            elem_width = node.x2 - node.x1
+            elem_height = node.y2 - node.y1
+            # Rectangle coordinates
+            x1 = node.x1
+            y1 = node.y1
+            # Define the element dimensions end
 
-                    x1 = int(elem["shape_attributes"]["x"])
-                    y1 = int(elem["shape_attributes"]["y"])
-                    # Define the element dimensions end
+            # Cropping to the border box start
+            elem_image = image_original[y1: y1 + elem_height, x1: x1 + elem_width]
+            elem_image_name = uuid.uuid4().hex + fname
+            # Cropping to the border box end
 
-                    # Cropping to the border box start
-                    elem_image = image_original[y1: y1 + elem_height, x1: x1 + elem_width]
-                    elem_image_name = uuid.uuid4().hex + fname
-                    # Cropping to the border box end
+            # Detect the font-size with tesseract for some elements
+            text_elem_tesseract = ""
+            if node.element_assigned in {
+                "textinput",
+                "input",
+                "select",
+                "text",
+                "ocrtext",
+                "textarea",
+                "form_heading",
+                "button",
+            }:
+                # Defiine a scenarioelement_inner dictionary
+                scenarioelement_inner_kwargs = {}
+                # Detect the font-size with tesseract for some element start
+                # Convert to the grey colour
+                elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
+                result = pytesseract.image_to_boxes(elem_image_gray)
+                # print(result)
 
-                    # Detect the font-size with tesseract for some elements
+                lines = result.strip().split("\n")
+                font_size = []
+
+                for line in lines:
+                    chars = line.split(" ")
+                    try:
+                        font_size.append(float(chars[4]) - float(chars[2]))
+                    except Exception:
+                        font_size.append(
+                            12.0
+                        )  # Default font-size value is 12px
+                font_size_value = int(median(font_size) * 1.7)
+
+                # Read the string with tesseract
+                text_elem_tesseract = pytesseract.image_to_string(
+                    elem_image_gray, config=config_tesseract
+                )
+                # if text_elem_tesseract:
+                #     print("text:", text_elem_tesseract, font_size_value, font_size_img)
+                # Show tesseract results only when font is larger than 12
+                if font_size_value < 12:
                     text_elem_tesseract = ""
-                    if elem["region_attributes"]["HTML element"] in {
-                        "textinput",
-                        "input",
-                        "select",
-                        "text",
-                        "ocrtext",
-                        "textarea",
-                        "form_heading",
-                        "button",
-                    }:
-                        # Defiine a scenarioelement_inner dictionary
-                        scenarioelement_inner_kwargs = {}
-                        # Detect the font-size with tesseract for some element start
-                        # Convert to the grey colour
-                        elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
-                        result = pytesseract.image_to_boxes(elem_image_gray)
-                        # print(result)
+                # Detect the font-size with tesseract for some element end
 
-                        lines = result.strip().split("\n")
-                        font_size = []
+            styles = {}
+            parameters = {}
+            styles["text-transform"] = "none"
 
-                        for line in lines:
-                            chars = line.split(" ")
-                            try:
-                                font_size.append(float(chars[4]) - float(chars[2]))
-                            except Exception:
-                                font_size.append(
-                                    12.0
-                                )  # Default font-size value is 12px
-                        font_size_value = int(median(font_size) * 1.7)
+            bcolour_elem_value, fcolour_elem_value = extract_colour_palette(elem_image)
 
-                        # Read the string with tesseract
-                        text_elem_tesseract = pytesseract.image_to_string(
-                            elem_image_gray, config=config_tesseract
-                        )
-                        # if text_elem_tesseract:
-                        #     print("text:", text_elem_tesseract, font_size_value, font_size_img)
-                        # Show tesseract results only when font is larger than 12
-                        if font_size_value < 12:
-                            text_elem_tesseract = ""
-                        # Detect the font-size with tesseract for some element end
+            # display elem_image start
+            """
+            cv2.imshow(window_name2, elem_image)
+            print(bcolour_elem_value)
+            cv2.waitKey(0)
+            """
+            # display elem_image end
 
-                    styles = {}
-                    parameters = {}
-                    styles["text-transform"] = "none"
+            if node.element_assigned in {
+                "textinput",
+                "input",
+            }:
+                styles["width"] = str(node_width) + "px"
+                styles["height"] = str(node_height) + "px"
+                styles["height"] = ""
+                styles["padding"] = "3px 0"
+                styles["border-width"] = "1px"
+                styles["border-color"] = "rgba(244, 244, 244, 1)"
+                styles["background-color"] = (
+                        "rgba(" + bcolour_elem_value + ")"
+                )
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "input")
+                # displaying various kinds of elements end
 
-                    bcolour_elem_value, fcolour_elem_value = extract_colour_palette(elem_image)
+                # Text assignment
+                if text_elem_tesseract:
+                    parameters["textContent"] = text_elem_tesseract
 
-                    # display elem_image start
-                    """
-                    cv2.imshow(window_name2, elem_image)
-                    print(bcolour_elem_value)
-                    cv2.waitKey(0)
-                    """
-                    # display elem_image end
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                    if elem["region_attributes"]["HTML element"] in {
-                        "textinput",
-                        "input",
-                    }:
-                        styles["width"] = str(node_width) + "px"
-                        styles["height"] = str(node_height) + "px"
-                        styles["height"] = ""
-                        styles["padding"] = "3px 0"
-                        styles["border-width"] = "1px"
-                        styles["border-color"] = "rgba(244, 244, 244, 1)"
-                        styles["background-color"] = (
-                                "rgba(" + bcolour_elem_value + ")"
-                        )
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "input")
-                        # displaying various kinds of elements end
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "textinput",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        # Text assignment
-                        if text_elem_tesseract:
-                            parameters["textContent"] = text_elem_tesseract
+            elif node.element_assigned in {"checkbox"}:
+                styles["width"] = str(min(node_width, node_height)) + "px"
+                styles["height"] = str(min(node_width, node_height)) + "px"
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "input")
+                # displaying various kinds of elements end
+                element.set("type", "checkbox")
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "textinput",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "checkbox",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                    elif elem["region_attributes"]["HTML element"] in {"checkbox"}:
-                        styles["width"] = str(min(node_width, node_height)) + "px"
-                        styles["height"] = str(min(node_width, node_height)) + "px"
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "input")
-                        # displaying various kinds of elements end
-                        element.set("type", "checkbox")
+            elif node.element_assigned in {"radiobutton"}:
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "input")
+                # displaying various kinds of elements end
+                element.set("type", "radio")
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "checkbox",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "radiobutton",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                    elif elem["region_attributes"]["HTML element"] in {"radiobutton"}:
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "input")
-                        # displaying various kinds of elements end
-                        element.set("type", "radio")
+            elif node.element_assigned == "select":
+                styles["width"] = str(node_width) + "px"
+                styles["height"] = str(node_height) + "px"
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "select")
+                # displaying various kinds of elements end
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "radiobutton",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                # Text assignment
+                if text_elem_tesseract:
+                    parameters["textContent"] = text_elem_tesseract
 
-                    elif elem["region_attributes"]["HTML element"] == "select":
-                        styles["width"] = str(node_width) + "px"
-                        styles["height"] = str(node_height) + "px"
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "select")
-                        # displaying various kinds of elements end
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "select",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        # Text assignment
-                        if text_elem_tesseract:
-                            parameters["textContent"] = text_elem_tesseract
+            if node.element_assigned in {"text", "ocrtext"}:
+                styles["color"] = styles["color"] = (
+                        "rgba(" + fcolour_elem_value + ")"
+                )
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "div")
+                # displaying various kinds of elements end
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                element.text = lorem.get_word(count=2)
+                parameters["textContent"] = element.text
+                # Text assignment
+                if text_elem_tesseract:
+                    parameters["textContent"] = text_elem_tesseract
+                    element.text = text_elem_tesseract
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "select",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                    if elem["region_attributes"]["HTML element"] in {"text", "ocrtext"}:
-                        styles["color"] = styles["color"] = (
-                                "rgba(" + fcolour_elem_value + ")"
-                        )
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "div")
-                        # displaying various kinds of elements end
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "ocrtext",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        element.text = lorem.get_word(count=2)
-                        parameters["textContent"] = element.text
-                        # Text assignment
-                        if text_elem_tesseract:
-                            parameters["textContent"] = text_elem_tesseract
-                            element.text = text_elem_tesseract
+            elif node.element_assigned in {"textarea"}:
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "textarea")
+                # displaying various kinds of elements end
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                element.set("placeholder", lorem.get_word(count=2))
+                # Text assignment
+                if text_elem_tesseract:
+                    parameters["placeholder"] = text_elem_tesseract
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "ocrtext",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                    elif elem["region_attributes"]["HTML element"] in {"textarea"}:
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "textarea")
-                        # displaying various kinds of elements end
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "textarea",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        element.set("placeholder", lorem.get_word(count=2))
-                        # Text assignment
-                        if text_elem_tesseract:
-                            parameters["placeholder"] = text_elem_tesseract
+            elif node.element_assigned in {"form_heading"}:
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "h3")
+                # displaying various kinds of elements end
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                element.text = lorem.get_word(count=2)
+                parameters["textContent"] = element.text
+                # Text assignment
+                if text_elem_tesseract:
+                    parameters["textContent"] = text_elem_tesseract
+                    element.text = text_elem_tesseract
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "textarea",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                    elif elem["region_attributes"]["HTML element"] in {"form_heading"}:
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "h3")
-                        # displaying various kinds of elements end
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "heading",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        element.text = lorem.get_word(count=2)
-                        parameters["textContent"] = element.text
-                        # Text assignment
-                        if text_elem_tesseract:
-                            parameters["textContent"] = text_elem_tesseract
-                            element.text = text_elem_tesseract
+            elif node.element_assigned in {"form"}:
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "form")
+                # displaying various kinds of elements end
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "heading",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "container",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                    elif elem["region_attributes"]["HTML element"] in {"form"}:
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "form")
-                        # displaying various kinds of elements end
+            elif node.element_assigned == "image":
+                styles["max-width"] = "100%"
+                styles["height"] = "auto"
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                # Saving an image
+                cv2.imwrite(elem_image_name, elem_image)
+                # Setting path to the image source
+                elem_image_sourcename = fname + "/" + elem_image_name
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "container",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                parameters["imageURL"] = (
+                        "https://" + o.netloc + MEDIA_URL + elem_image_sourcename
+                )
 
-                    elif elem["region_attributes"]["HTML element"] == "image":
-                        styles["max-width"] = "100%"
-                        styles["height"] = "auto"
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "img")
+                # displaying various kinds of elements end
 
-                        # Saving an image
-                        cv2.imwrite(elem_image_name, elem_image)
-                        # Setting path to the image source
-                        elem_image_sourcename = fname + "/" + elem_image_name
+                element.set("src", elem_image_name)
 
-                        parameters["imageURL"] = (
-                                "https://" + o.netloc + MEDIA_URL + elem_image_sourcename
-                        )
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "img")
-                        # displaying various kinds of elements end
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "image",
+                    "image": elem_image_sourcename,
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        element.set("src", elem_image_name)
+            elif node.element_assigned == "button":
+                styles["height"] = str(node_height) + "px"
+                styles["color"] = (
+                        "rgba(" + fcolour_elem_value + ")"
+                )
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "button")
+                # displaying various kinds of elements end
+                element.text = lorem.get_word(count=1)
+                parameters["textContent"] = element.text
+                # Text assignment
+                if text_elem_tesseract:
+                    parameters["textContent"] = text_elem_tesseract
+                    element.text = text_elem_tesseract
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "image",
-                            "image": elem_image_sourcename,
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                if styles_on:
+                    # Set the background colour for styles
+                    styles["background-color"] = (
+                            "rgba(" + bcolour_elem_value + ")"
+                    )
 
-                    elif elem["region_attributes"]["HTML element"] == "button":
-                        styles["height"] = str(node_height) + "px"
-                        styles["color"] = (
-                                "rgba(" + fcolour_elem_value + ")"
-                        )
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "button")
-                        # displaying various kinds of elements end
-                        element.text = lorem.get_word(count=1)
-                        parameters["textContent"] = element.text
-                        # Text assignment
-                        if text_elem_tesseract:
-                            parameters["textContent"] = text_elem_tesseract
-                            element.text = text_elem_tesseract
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "button",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        if styles_on:
-                            # Set the background colour for styles
-                            styles["background-color"] = (
-                                    "rgba(" + bcolour_elem_value + ")"
-                            )
+            elif node.element_assigned in {"menu"}:
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "ul")
+                # displaying various kinds of elements end
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "list",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "button",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+            elif node.element_assigned in {"li"}:
+                # displaying various kinds of elements start
+                element = ET.SubElement(node.div, "li")
+                # displaying various kinds of elements end
 
-                    elif elem["region_attributes"]["HTML element"] in {"menu"}:
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "ul")
-                        # displaying various kinds of elements end
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
+                element.text = lorem.get_word(count=1)
+                parameters["textContent"] = element.text
+                # Text assignment
+                if text_elem_tesseract:
+                    parameters["textContent"] = text_elem_tesseract
+                    element.text = text_elem_tesseract
 
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "list",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
+                str_styles = "; ".join(
+                    "{}:{}".format(key, val) for key, val in styles.items()
+                )
+                element.set("style", str_styles)
 
-                    elif elem["region_attributes"]["HTML element"] in {"li"}:
-                        # displaying various kinds of elements start
-                        element = ET.SubElement(node.div, "li")
-                        # displaying various kinds of elements end
+                # Create a new Scenario Element for the elements chain
+                # if(hasattr('node.parent', 'scenarioelement')):
+                scenarioelement_inner_kwargs = {
+                    "struct_type": "listItem",
+                    "parameters": parameters,
+                    "styles": styles,
+                    "buoyancy": 0,
+                }
 
-                        element.text = lorem.get_word(count=1)
-                        parameters["textContent"] = element.text
-                        # Text assignment
-                        if text_elem_tesseract:
-                            parameters["textContent"] = text_elem_tesseract
-                            element.text = text_elem_tesseract
-
-                        str_styles = "; ".join(
-                            "{}:{}".format(key, val) for key, val in styles.items()
-                        )
-                        element.set("style", str_styles)
-
-                        # Create a new Scenario Element for the elements chain
-                        # if(hasattr('node.parent', 'scenarioelement')):
-                        scenarioelement_inner_kwargs = {
-                            "struct_type": "listItem",
-                            "parameters": parameters,
-                            "styles": styles,
-                            "buoyancy": 0,
-                        }
-
-                    node.scenarioelement_inner_kwargs = scenarioelement_inner_kwargs
-                    node.scenarioelement_inner_kwargs_list.append(scenarioelement_inner_kwargs)
+            node.scenarioelement_kwargs = scenarioelement_inner_kwargs
+            # node.scenarioelement_inner_kwargs_list.append(scenarioelement_inner_kwargs)
 
     return True
 
@@ -822,7 +825,7 @@ def elements_rootblock_create(root_block, outer_div_node, serializing="virtualiz
                                             # print(child, child.struct_type, child.parent, child.parent_id)
                                             # input()
                                             child.move_to(node.scenarioelement)
-
+        '''
         elif (serializing in {"virtualize_simple", "assemble"}):
             # Create elements for some fcluster
             if node.types == "fcluster":
@@ -830,6 +833,7 @@ def elements_rootblock_create(root_block, outer_div_node, serializing="virtualiz
                     node.scenarioelement_inner = ScenarioElement.objects.create(
                         parent=node.scenarioelement, **inner_kwarg
                     )
+        '''
 
     return True
 
