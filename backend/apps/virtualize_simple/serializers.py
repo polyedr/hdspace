@@ -872,15 +872,14 @@ def clusters_printing(root_block, root_firstcluster, fname, input_image=[]):
         # Print all the firstclusters
         for pre, fill, node in RenderTree(root_firstcluster):
             if node.types == "firstcluster":
-                print("firstclusterprinting")
-                cv2.rectangle(
+                   cv2.rectangle(
                     image_firstclusters1,
                     (node.x1, node.y1),
                     (node.x2, node.y2),
                     (20, 50, 107),
                     1,
                 )
-                print("firstcluster1")
+
         # Printing cclusters to file
         cv2.imwrite("firstclusters1_" + fname, image_firstclusters1)
 
@@ -1093,6 +1092,7 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, im
                 )
                 ccluster.types = "ccluster"
 
+    # For the top level (children of the root_block) cclusters only
     # Go through all the top level cclusters obtained after the ternary algorithm
     # Check if there are non-elment firstclusters, fclusters, dbclusters in
     # Attach them to these cclusters
@@ -1116,8 +1116,8 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, im
     # Split each block
     for pre, fill, node in RenderTree(root_block):
         if node != root_block:
-            # print(node.name)
-            blocks_split(node, window_name1, image_opencv_input, overlay, root_firstcluster)
+            if node.types in {"ccluster"}:
+                blocks_split(node, window_name1, image_opencv_input, overlay, root_firstcluster)
 
     # Go through all the blocks obtained after the ternary algorithm
     # Correct the direction of the fclusters

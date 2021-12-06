@@ -163,7 +163,7 @@ def contains_rectangle(r1, r2):
 
 def nodesorted(items):
     # Filter nodes to prevent double calculations
-    return filter(lambda item: (not item.types in {"fcluster", "dbcluster", "firstcluster"}), items)
+    return filter(lambda item: (item.types not in {"fcluster", "dbcluster", "firstcluster"}), items)
 
 
 def get_dominant_colour(image, k=4, image_processing_size=None):
@@ -522,7 +522,7 @@ def dbcluster_split(block, clusters):
 
 
 def blocks_split(block, window_name1, image_opencv_input, overlay, root_firstcluster):
-    # Ternary assembling algorithm builded with annotation only
+    # Ternary assembling algorithm built with annotation only
     # Show the block
     # print("block", block)
 
@@ -607,6 +607,8 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, root_firstclu
             #     -1,
             # )
 
+    '''
+    # With elements in clusters, this block is not correct anymore
     # This block may contain dbclusters
     if block.direction == 2:
         for cluster in clusters_in:
@@ -614,30 +616,23 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, root_firstclu
                 if cluster != block:
                     # print(cluster.name, block.name)
                     cluster.parent = block
-        for interval_x in ob1_x_merged:
-            for interval_y in ob1_y_merged:
-                pass
-                # ClusterClass(
-                #     interval_x[0],
-                #     interval_y[0],
-                #     interval_x[1],
-                #     interval_y[1],
-                #     parent=root_block,
-                # )
-                # cv2.rectangle(
-                #     image_opencv_input,
-                #     (interval_x[0], interval_y[0]),
-                #     (interval_x[1], interval_y[1]),
-                #     (20, 150, 107),
-                #     -1,
-                # )
+    '''
 
-    # print("direction", block.direction)
+    # For the top level (children of the block) cclusters only
+    # Go through all the top level cclusters obtained after the ternary algorithm
+    # Check if there are non-elment firstclusters, fclusters, dbclusters in
+    # Attach them to these cclusters
+    # Special sorting is necessary to prevent a double iteration
+    for node in block.children:
+        for node1 in clusters_in:
+            if (node1.types not in {"ccluster"}):
+                node1.parent = node
 
     # Go through all the blocks obtained from the current one
     for pre, fill, node in RenderTree(block):
         # print("children", node)
-        if node != block and node.types in {"ccluster"}:
+        if ((node != block and node.types in {"ccluster, firstcluster"}) and not (node.element_assigned)) or \
+                (node.element_assigned in {"div", "container"}):
             if node.direction != 2:
                 # Split each block
                 blocks_split(node, window_name1, image_opencv_input, overlay, root_firstcluster)
