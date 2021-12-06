@@ -17,11 +17,10 @@ import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { configAdmin, configUser } from '@Constants/pmtools/zulipChatLoginData';
 import { AuthParams } from '@Src/types/pmtools/types';
 import * as action from './actions';
-import { selectBoardData } from '../board/selectors';
 
-export function* projectStreamMessagesSaga(): any {
+export function* projectStreamMessagesSaga({ payload }: any): any {
   try {
-    const { name: stream } = yield select(selectBoardData);
+    const { stream } = payload;
     const { email, profile } = yield select(selectUserData);
     const config = configUser(email, profile.parameters.passwordZulip);
     const { messages } = yield call(apiGetMessages, stream, config);
@@ -31,12 +30,13 @@ export function* projectStreamMessagesSaga(): any {
   }
 }
 
-export function* projectSendMessageSaga({ payload }: any): any {
+export function* projectSendMessageSaga({
+  payload: { message, stream },
+}: any): any {
   try {
-    const { name: stream } = yield select(selectBoardData);
     const { email, profile } = yield select(selectUserData);
     const config = configUser(email, profile.parameters.passwordZulip);
-    yield call(apiSendMessage, stream, config, payload.message);
+    yield call(apiSendMessage, stream, config, message);
   } catch (e) {
     yield put(panelErrorMsg(e));
   }

@@ -15,8 +15,9 @@ export const requestLogoutChatUser = () => ({
   type: TYPES.LOGOUT_PMTOOLS,
 });
 
-export const requestProjectStreamMessages = () => ({
+export const requestProjectStreamMessages = (payload) => ({
   type: TYPES.GET_STREAM_MESSAGES,
+  payload,
 });
 
 export const requestSendStreamMessage = (payload) => ({

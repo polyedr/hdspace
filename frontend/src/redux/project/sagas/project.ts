@@ -36,8 +36,11 @@ import {
   createNewBoard,
   createOrganization,
   deleteOrganization,
+  getAddUserToBoard,
+  getUserByEmail,
 } from '@Api/pmtools/board/boardApi';
 import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
+import { selectUserData } from '@Redux/user/selectors';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -290,6 +293,12 @@ export function* createProjectSaga(
       organization,
       ...board,
     };
+
+    const { email } = yield select(selectUserData);
+    const userTrello = yield call(getUserByEmail, email);
+    if (!userTrello.error) {
+      yield call(getAddUserToBoard, email, board.id);
+    }
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
