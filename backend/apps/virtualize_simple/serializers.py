@@ -52,7 +52,7 @@ from apps.utils.fset1 import (
     calculateDistance,
     SQUARES_OVERLAP_THRESHOLD_CONTOUR,
     change_permissions_recursive,
-    contains_rectangle, isRectangleOverlap_nonnested,
+    contains_rectangle, isRectangleOverlap_nonnested, nodesorted,
 )
 
 from apps.virtualize_simple.merge import pipeline_merge, write_elem_value
@@ -1092,6 +1092,25 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, im
                     parent=root_block,
                 )
                 ccluster.types = "ccluster"
+
+    # Go through all the top level cclusters obtained after the ternary algorithm
+    # Check if there are non-elment firstclusters, fclusters, dbclusters in
+    # Attach them to these cclusters
+    # Special sorting is necessary to prevent a double iteration
+    for pre, fill, node in RenderTree(root_block, childiter=nodesorted):
+        if node != root_block:
+            for pre1, fill1, node1 in RenderTree(root_firstcluster):
+                # Check if (node1 in node):
+                r1_e = (node.x1, node.y1, node.x2, node.y2)
+                r2_e = (node1.x1, node1.y1, node1.x2, node1.y2)
+                # print(r1_e, r2_e, node1.element_assigned)
+                if ((not (node1.element_assigned)) or (node1.element_assigned in {"div", "container"})) and (contains_rectangle(r1_e, r2_e)):
+                    # print(node.name, node1.name)
+                    # print(node.types, node1.types)
+                    # print(r1_e, r2_e)
+                    # print("node1.parent = node")
+                    # print(node.element_assigned, node1.element_assigned)
+                    node1.parent = node
 
     # Go through all the blocks obtained after the ternary algorithm
     # Split each block

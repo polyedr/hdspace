@@ -161,6 +161,11 @@ def contains_rectangle(r1, r2):
     return r1[1] <= r2[1] <= r2[3] <= r1[3] and r1[0] <= r2[0] <= r2[2] <= r1[2]
 
 
+def nodesorted(items):
+    # Filter nodes to prevent double calculations
+    return filter(lambda item: (not item.types in {"fcluster", "dbcluster", "firstcluster"}), items)
+
+
 def get_dominant_colour(image, k=4, image_processing_size=None):
     """
     takes an image as input
