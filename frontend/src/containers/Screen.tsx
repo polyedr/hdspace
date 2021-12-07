@@ -34,11 +34,11 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.rightPanel}`,
-    content: 'Create element using buttons on this panel.',
+    content: 'Create elements using buttons on this panel.',
   },
   {
     selector: `#${ELEMENT_IDS.textBlock}`,
-    content: "Please click the 'TextBlock.'",
+    content: "Please click the 'TextBlock'.",
   },
   {
     selector: `#${ELEMENT_IDS.canvas}`,
@@ -48,11 +48,11 @@ const tourSteps: ReactourStep[] = [
   {
     selector: `#${ELEMENT_IDS.canvas}`,
     content:
-      'If you click element, you can see icons to duplicate or delete the element. Please try duplicate or delete by clicking icon buttons.',
+      'If you click the element, you can see icons to duplicate or delete the element. Please try to duplicate or delete by clicking the icon buttons.',
   },
   {
     selector: `#${ELEMENT_IDS.textBlock}`,
-    content: "Let's add new 'TextBlock' again by clicking 'TextBlock.",
+    content: "Let's add a new 'TextBlock' again by clicking 'TextBlock.",
   },
   {
     selector: `#${ELEMENT_IDS.canvas}`,
@@ -60,7 +60,8 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.rightPanel}`,
-    content: 'You can change properties of element you added on this panel.',
+    content:
+      'In this panel, you can change the properties of elements you added.',
   },
   {
     selector: `#${ELEMENT_IDS.richTextEditor}`,
@@ -68,16 +69,16 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.link}`,
-    content: "Select the 'Make Link' to make hyperlink.",
+    content: "Select the 'Make Link' to make a hyperlink.",
   },
   {
     selector: `#${ELEMENT_IDS.itemUrl}`,
-    content: 'You can input link to make hyperlink.',
+    content: 'You can input a link to make a hyperlink.',
   },
   {
     selector: `#${ELEMENT_IDS.navigator}`,
     content:
-      'There all the elements of the current screen are displayed and you manage the element as well here.',
+      'All the elements of the current screen are displayed and you can manage the element as well here.',
   },
   {
     selector: `#${ELEMENT_IDS.navigator}`,
@@ -85,16 +86,16 @@ const tourSteps: ReactourStep[] = [
   },
   {
     selector: `#${ELEMENT_IDS.navigator}`,
-    content: "Click 'Copy",
+    content: "Click 'Copy'",
   },
   {
     selector: `#${ELEMENT_IDS.navigator}`,
     content:
-      "Click the mouse right button on the 'root' and click 'Paste'. You can paste element to container like 'root'.",
+      "Click the mouse right button on the 'root' and click 'Paste'. You can paste elements into containers like 'root'.",
   },
   {
     selector: `#${ELEMENT_IDS.layoutSelector}`,
-    content: 'Try different layouts using this selector.',
+    content: 'Please try different layouts using this selector.',
   },
   {
     selector: `#${ELEMENT_IDS.masterScreenListItem}`,
