@@ -48,6 +48,7 @@ import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Scrollbar from '../../UI/Scrollbar';
 import ControlSection from './helperComponents/ControlSection';
 import PseudoSelectorsSection from './PseudoSelectorsSection';
+import ElementType from './Controls/ElementType/ElementType';
 
 const useStyles = makeStyles({
   propertiesTab: {
@@ -60,8 +61,8 @@ const useStyles = makeStyles({
 const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const activeElement = useSelector(selectActiveElement);
   const parentOfActiveElement = useSelector(selectParentOfActiveElement);
+  const activeElement = useSelector(selectActiveElement);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
   const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
   const selectedElementsIds = useSelector(selectSelectedElementsIds);
@@ -440,6 +441,10 @@ const PropertiesTab: React.FC = () => {
 
                   <ControlSection title="Element name">
                     <RenameElement canEdit={canEdit} />
+                  </ControlSection>
+
+                  <ControlSection title="Replace this element">
+                    <ElementType />
                   </ControlSection>
                 </>
               )}
