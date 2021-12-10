@@ -1,7 +1,11 @@
 import React from 'react';
 import { StyledTextField } from '@Components/styledComponents';
 import { MenuItem } from '@material-ui/core';
-import { updateElement, updateElementParameters } from '@Redux/project/actions';
+import {
+  updateElement,
+  updateElementParameters,
+  setActiveElement,
+} from '@Redux/project/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -22,30 +26,27 @@ const ElementType: React.FC = () => {
           name: newElementType,
           styles: {
             classNames: [newElementType],
-            ownStyles: {
-              flexGrow: 0,
-              height: '50px',
-              width: '80px',
-            },
+            ownStyles: {},
             pseudoClassStyles: {},
           },
-          struct_type: newElementType === 'grid' ? 'root' : newElementType,
-          func_type: newElementType === 'grid' ? 'root' : newElementType,
           children: [],
         },
         active: true,
       }),
     );
 
-    dispatch(
-      updateElementParameters(
-        id,
-        {
-          textContent: newElementType,
-        },
-        { screenId: currentScreenId },
-      ),
-    );
+    setTimeout(() => {
+      dispatch(
+        updateElementParameters(
+          id,
+          {
+            textContent: newElementType,
+          },
+          { screenId: currentScreenId },
+        ),
+      );
+      dispatch(setActiveElement(id));
+    }, 1000);
   };
 
   return (
