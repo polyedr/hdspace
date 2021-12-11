@@ -1,4 +1,4 @@
-import { RecursiveElement } from '@Src/types/types';
+import { RecursiveElement } from '@Src/types';
 
 // eslint-disable-next-line import/prefer-default-export
 export const convertToRecursiveServerElement = (

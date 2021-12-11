@@ -12,7 +12,7 @@ import {
   Result,
   ServerProject,
   ServerProjectWithScreens,
-} from '../types/types';
+} from '../types';
 import { handleError, onError, parseCursor } from './helper';
 
 export const apiGetProjectList = (

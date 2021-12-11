@@ -2,7 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
-import { BoundingStyles, StateElement } from '@Src/types/types';
+import { BoundingStyles, StateElement } from '@Src/types';
 import {
   makeButtons,
   setTextContent,

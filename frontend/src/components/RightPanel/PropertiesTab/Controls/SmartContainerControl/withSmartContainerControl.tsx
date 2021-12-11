@@ -1,5 +1,5 @@
 import React from 'react';
-import { NNBlockType, StateElement } from '@Src/types/types';
+import { NNBlockType, StateElement } from '@Src/types';
 import SmartContainerControl from './SmartContainerControl';
 
 type SmartContainerProps = {

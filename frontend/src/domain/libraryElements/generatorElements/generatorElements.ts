@@ -5,7 +5,7 @@ import {
   ElementGroup,
   buttonGeneratorElement,
   ButtonServerElement,
-} from '@Src/types/types';
+} from '@Src/types';
 import FONTS from '@Constants/fonts';
 import { makeButton } from '../formElements/formElements';
 import { makeContainer } from '../otherElements/otherElements';

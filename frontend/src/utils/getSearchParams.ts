@@ -1,4 +1,4 @@
-import { DateRange, ProjectsSearchParameter } from '@Src/types/types';
+import { DateRange, ProjectsSearchParameter } from '@Src/types';
 
 const getSearchParams = ([key, value]: [
   ProjectsSearchParameter | 'tags__name',

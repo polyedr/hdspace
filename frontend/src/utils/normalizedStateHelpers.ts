@@ -8,7 +8,7 @@ import {
   ParentIds,
   StateElement,
   StateElementsToAdd,
-} from '../types/types';
+} from '@Src/types';
 
 export const arrayToMap = <T extends { id: any }>(arr: T[]): Normalized<T> => {
   const res = {};

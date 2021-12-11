@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch, FormControlLabel } from '@material-ui/core';
-import { ListElement, PropertiesChangeProps } from '@Src/types/types';
+import { ListElement, PropertiesChangeProps } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 

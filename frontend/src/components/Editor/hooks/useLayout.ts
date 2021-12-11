@@ -1,4 +1,4 @@
-import { Layout } from '@Src/types/types';
+import { Layout } from '@Src/types';
 import { useSelector } from 'react-redux';
 import { selectLayout } from '@Redux/project/selectors/base';
 

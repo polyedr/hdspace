@@ -11,7 +11,7 @@ import {
 
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
-import { UserProjectPermission } from '@Src/types/types';
+import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { WindowContext } from '../FrameWrapper/FrameContext';
 import MasterElement from './MasterElement';

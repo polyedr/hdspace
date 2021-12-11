@@ -8,11 +8,7 @@ import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import * as CSS from 'csstype';
 import { getPermissibleValue } from '@Utils/NumberHelper';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '@Src/types/types';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import FONTS from '@Constants/fonts';
 
 import {

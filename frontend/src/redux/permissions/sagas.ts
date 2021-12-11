@@ -2,7 +2,7 @@
 import { select, put, call } from 'redux-saga/effects';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as Actions from '@Redux/permissions/actions';
-import { PaginatedResponse, Result, UserData } from '@Src/types/types';
+import { PaginatedResponse, Result, UserData } from '@Src/types';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { apiGetUsers } from '@Api/user';
 import {

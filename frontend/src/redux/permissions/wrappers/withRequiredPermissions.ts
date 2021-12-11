@@ -1,6 +1,6 @@
 import { select, call, put } from 'redux-saga/effects';
 import { Action } from '@Redux/types';
-import { UserProjectPermission } from '@Src/types/types';
+import { UserProjectPermission } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { selectCurrentUserProjectPermissions } from '../selectors';
 

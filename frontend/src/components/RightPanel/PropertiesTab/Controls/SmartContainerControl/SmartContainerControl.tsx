@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import useImageUpload from '@Utils/nn/hooks/useImageUpload';
-import { NNBlockType, StateElement } from '@Src/types/types';
+import { NNBlockType, StateElement } from '@Src/types';
 import { selectActiveElementParamByName } from '@Redux/project/selectors/element';
 import { selectElementFileInput } from '@Redux/project/selectors/base';
 import { Button } from '@material-ui/core';

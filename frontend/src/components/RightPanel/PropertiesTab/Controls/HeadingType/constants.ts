@@ -1,4 +1,4 @@
-import { HeadingType } from '../../../../../types/types';
+import { HeadingType } from '../../../../../types';
 
 export const HEADING_TYPE: Array<{ label: string; value: HeadingType }> = [
   {

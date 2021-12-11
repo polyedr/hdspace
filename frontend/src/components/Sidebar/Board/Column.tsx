@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { StyledIconButton } from '@Components/styledComponents';
-import { ModalAction } from '@Src/types/types';
+import { ModalAction } from '@Src/types';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
 import { IColumnData } from '@Src/types/pmtools/board';
 import Task from './Task';

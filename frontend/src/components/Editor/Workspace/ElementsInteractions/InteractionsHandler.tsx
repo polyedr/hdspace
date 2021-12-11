@@ -9,7 +9,7 @@ import {
   DropTargetParams,
   Screen,
   StateElement,
-} from '@Src/types/types';
+} from '@Src/types';
 import { AppReduxState } from '@Redux/types';
 import getBoundingStyles from '@Utils/getBoundingStyles';
 import SaveElementAction from './Actions/SaveElement/SaveElementAction';

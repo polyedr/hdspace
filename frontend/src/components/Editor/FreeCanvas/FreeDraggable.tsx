@@ -7,7 +7,7 @@ import {
   updateElementStyles,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { Entity, StateElement } from '@Src/types/types';
+import { Entity, StateElement } from '@Src/types';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
   selectElementByIdWrapper,

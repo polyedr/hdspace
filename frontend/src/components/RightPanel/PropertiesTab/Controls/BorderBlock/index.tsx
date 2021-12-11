@@ -5,11 +5,7 @@ import {
   safeParseFloat,
   strToNumber,
 } from '@Utils/NumberHelper';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '@Src/types/types';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import {
   MAX_BORDER_WIDTH,

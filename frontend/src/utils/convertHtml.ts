@@ -1,4 +1,4 @@
-import { Entity, ServerElement } from '@Src/types/types';
+import { Entity, ServerElement } from '@Src/types';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import FONTS from '@Constants/fonts';
 

@@ -3,7 +3,7 @@ import config from '@Constants/pmtools/trelloConfigData';
 import { AddTaskType } from '@Redux/pmtools/board/actions/tasks';
 import { myAxios } from '@Src/config/settings';
 import { MoveCardToListType } from '@Src/types/pmtools/types';
-import { MyAxiosProps } from '@Src/types/types';
+import { MyAxiosProps } from '@Src/types';
 import { AxiosResponse } from 'axios';
 
 const { apiKey, token } = config;

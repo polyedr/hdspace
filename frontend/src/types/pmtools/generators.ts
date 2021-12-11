@@ -1,5 +1,5 @@
 import { CallEffect, PutEffect, SelectEffect } from 'redux-saga/effects';
-import { ServerProject } from '../types';
+import { ServerProject } from '..';
 import { IColumnData } from './board';
 import { ActionTypePM } from './types';
 

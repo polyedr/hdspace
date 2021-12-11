@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch } from 'react-redux';
 import { requestDeleteColumn } from '@Redux/pmtools/board/actions/columns';
-import { ModalAction } from '@Src/types/types';
+import { ModalAction } from '@Src/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/ColumnModal';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { Column } from './Column';

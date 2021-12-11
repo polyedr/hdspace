@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { StyledTextField } from '@Components/styledComponents';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { uploadElementAsset, uploadImageByUrl } from '@Redux/project/actions';
-import { ImageElement, PropertiesChangeProps } from '@Src/types/types';
+import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   selectAllAssetLists,

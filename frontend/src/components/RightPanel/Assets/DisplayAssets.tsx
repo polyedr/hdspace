@@ -17,7 +17,7 @@ import {
 import { uploadAsset, loadAssets } from '@Redux/project/actions';
 import Scrollbar from '@Components/UI/Scrollbar';
 
-import { Asset, UserProjectPermission } from '@Src/types/types';
+import { Asset, UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import AssetImage from './AssetImage';
 

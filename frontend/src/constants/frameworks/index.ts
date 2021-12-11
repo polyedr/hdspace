@@ -1,8 +1,4 @@
-import {
-  FrameworkSelection,
-  FrameworkVersion,
-  UIFramework,
-} from '@Src/types/types';
+import { FrameworkSelection, FrameworkVersion, UIFramework } from '@Src/types';
 
 export const BOOTSTRAP_VERSIONS: Array<FrameworkVersion> = [
   {

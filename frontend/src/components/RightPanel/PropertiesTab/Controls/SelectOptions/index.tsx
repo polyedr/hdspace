@@ -4,7 +4,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { addChildToElement } from '@Redux/project/actions';
 import generateUniqueName from '@Utils/generateUniqueName';
-import { PropertiesChangeProps, OptionElement } from '@Src/types/types';
+import { PropertiesChangeProps, OptionElement } from '@Src/types';
 import {
   selectActiveItemChildren,
   // selectElementsByIds,

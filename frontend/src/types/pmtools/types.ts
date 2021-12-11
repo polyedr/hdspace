@@ -1,5 +1,5 @@
 import { DropResult } from 'react-beautiful-dnd';
-import { ServerProject } from '../types';
+import { ServerProject } from '..';
 import { IServerTaskData } from './board';
 
 export type PlatformActionData = 'PM-TOOLS' | 'MAIN-APP' | 'ALL';

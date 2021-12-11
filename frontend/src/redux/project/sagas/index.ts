@@ -16,7 +16,7 @@ import {
   Normalized,
   StateElement,
   UserProjectPermission,
-} from '@Src/types/types';
+} from '@Src/types';
 import {
   activateScreenSaga,
   createScreenSaga,

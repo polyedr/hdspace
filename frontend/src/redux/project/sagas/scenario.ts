@@ -42,7 +42,7 @@ import {
   StateElement,
   UpdateDataActionType,
   UserProjectPermission,
-} from '@Src/types/types';
+} from '@Src/types';
 import {
   Action,
   ElementHistoryMeta,

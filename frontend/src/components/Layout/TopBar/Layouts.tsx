@@ -11,7 +11,7 @@ import {
   additionalLayoutDesktop,
   additionalLayoutTablet,
   Layout,
-} from '@Src/types/types';
+} from '@Src/types';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { FormControl, NativeSelect } from '@material-ui/core';

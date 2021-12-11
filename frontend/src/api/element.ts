@@ -16,7 +16,7 @@ import {
   Result,
   Screen,
   ServerElement,
-} from '../types/types';
+} from '../types';
 import { handleError, onError, parseResult } from './helper';
 
 export const apiGetElements = ({

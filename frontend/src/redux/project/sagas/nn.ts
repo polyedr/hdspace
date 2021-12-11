@@ -24,7 +24,7 @@ import {
   NNBlockType,
   FileToUpload,
   VIAFile,
-} from '@Src/types/types';
+} from '@Src/types';
 import { addId, addLayerProperty } from '@Utils/viaHelpers';
 import { arrayToMap } from '@Utils/normalizedStateHelpers';
 import TYPES from '@Redux/actionTypes';

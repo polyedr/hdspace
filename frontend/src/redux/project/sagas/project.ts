@@ -24,7 +24,7 @@ import {
   Result,
   Screen,
   UserProjectPermission,
-} from '@Src/types/types';
+} from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
@@ -222,8 +222,11 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       },
     );
 
-    if (result) {
+    if (result?.projectTrelloJSON) {
       yield put(successSavedBoard(result.projectTrelloJSON));
+    }
+
+    if (result) {
       yield put(PermissionsActions.getMyPermissionsForProject(result.id));
       yield put(
         Actions.setProject({

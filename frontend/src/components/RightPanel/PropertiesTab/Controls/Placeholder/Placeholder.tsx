@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
-import { PropertiesChangeProps, TextinputElement } from '@Src/types/types';
+import { PropertiesChangeProps, TextinputElement } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 

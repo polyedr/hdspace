@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { useDebouncedCallback } from 'use-debounce';
-import {
-  Entity,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '@Src/types/types';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
 import RemoveStyles from '../../helperComponents/RemoveStyles';

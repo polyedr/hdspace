@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import { AppReduxState } from '@Redux/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { HTMLLibraryElement, PropertiesChangeProps } from '@Src/types/types';
+import { HTMLLibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 import { makeStyles } from '@material-ui/core/styles';
 

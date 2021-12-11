@@ -6,7 +6,7 @@ import {
   DialogActions,
   DialogContent,
 } from '@material-ui/core';
-import { ModalAction } from '@Src/types/types';
+import { ModalAction } from '@Src/types';
 import {
   requestAddColumn,
   requestEditColumn,

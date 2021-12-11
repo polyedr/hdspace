@@ -1,10 +1,4 @@
-/* eslint-disable react/no-array-index-key */
-import {
-  Button,
-  Container,
-  FormControl,
-  NativeSelect,
-} from '@material-ui/core';
+import { Container, FormControl, MenuItem } from '@material-ui/core';
 import {
   clearHistoryAction,
   requestGetAction,
@@ -14,7 +8,11 @@ import HistoryIcon from '@material-ui/icons/History';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { SideBarTitle } from '@Components/styledComponents';
+import {
+  StyledAccordionSummary,
+  StyledIconButton,
+  StyledTextField,
+} from '@Components/styledComponents';
 import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
 import History from './History';
 
@@ -34,28 +32,37 @@ const ActivityTab = () => {
 
   return (
     <Container>
-      <SideBarTitle title="Project history" icon={HistoryIcon} />
-      <FormControl fullWidth>
-        <NativeSelect
+      <StyledAccordionSummary
+        expandIcon={
+          <StyledIconButton
+            size="small"
+            title="Project history"
+            disabled={!actions.length}
+            onClick={() => dispatch(clearHistoryAction(project))}
+          >
+            <HistoryIcon fontSize="small" />
+          </StyledIconButton>
+        }
+      >
+        History
+      </StyledAccordionSummary>
+
+      <FormControl fullWidth style={{ margin: 0 }}>
+        <StyledTextField
+          fullWidth
+          margin="dense"
+          label="Platform"
+          select
           value={platform}
           onChange={(e: any) => setPlatform(e.target.value)}
         >
-          <option value="PM-TOOLS">PM TOOLS</option>
-          <option value="MAIN-APP">MAIN APP</option>
-          <option value="ALL">ALL</option>
-        </NativeSelect>
+          <MenuItem value="PM-TOOLS">panel</MenuItem>
+          <MenuItem value="MAIN-APP">adevi</MenuItem>
+          <MenuItem value="ALL">all</MenuItem>
+        </StyledTextField>
       </FormControl>
-      <Button
-        onClick={() => dispatch(clearHistoryAction(project))}
-        fullWidth
-        variant="contained"
-        color="secondary"
-        disabled={!actions.length}
-        style={{ marginTop: 20 }}
-      >
-        Clear History
-      </Button>
       {actions.map((action, i) => (
+        // eslint-disable-next-line react/no-array-index-key
         <History key={i} activity={action} platform={platform} />
       ))}
     </Container>

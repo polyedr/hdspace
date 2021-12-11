@@ -1,9 +1,8 @@
 /* eslint-disable import/no-cycle */
 import React, { useCallback, useEffect, useState } from 'react';
-import LogoutIcon from '@mui/icons-material/Logout';
 import * as actions from '@Redux/pmtools/chat/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { PanelTextField, SideBarTitle } from '@Components/styledComponents';
+import { PanelTextField } from '@Components/styledComponents';
 import { Button } from '@material-ui/core';
 import { selectMessagesZulip } from '@Redux/pmtools/chat/selectors';
 import { IMessageZulip } from '@Src/types/pmtools/types';
@@ -35,39 +34,29 @@ const Support: React.FC = () => {
 
   return (
     <div style={{ height: 500, overflowY: 'auto' }}>
-      <SideBarTitle
-        title="Chat"
-        actions={[
-          {
-            icon: LogoutIcon,
-            callback: () => dispatch(actions.requestLogoutChatUser()),
-          },
-        ]}
-      >
-        {!messages.length ? (
-          <p>Not found</p>
-        ) : (
-          messages.map((m: IMessageZulip) => <Message key={m.id} message={m} />)
-        )}
-        <div style={{ position: 'fixed', bottom: 10 }}>
-          <PanelTextField
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Enter message"
-          />
-          <Button variant="contained" color="secondary" onClick={handleSend}>
-            Send
-          </Button>
-          <Button
-            onClick={() => setSupportChat(!supportChat)}
-            style={{ margin: 10 }}
-            variant="contained"
-            color="primary"
-          >
-            Support
-          </Button>
-        </div>
-      </SideBarTitle>
+      {!messages.length ? (
+        <p>Not found</p>
+      ) : (
+        messages.map((m: IMessageZulip) => <Message key={m.id} message={m} />)
+      )}
+      <div style={{ position: 'fixed', bottom: 10 }}>
+        <PanelTextField
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Enter message"
+        />
+        <Button variant="contained" color="secondary" onClick={handleSend}>
+          Send
+        </Button>
+        <Button
+          onClick={() => setSupportChat(!supportChat)}
+          style={{ margin: 10 }}
+          variant="contained"
+          color="primary"
+        >
+          Support
+        </Button>
+      </div>
     </div>
   );
 };

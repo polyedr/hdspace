@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { StateElement } from '@Src/types/types';
+import { StateElement } from '@Src/types';
 
 export type RendererProps = {
   style?: Array<string>;

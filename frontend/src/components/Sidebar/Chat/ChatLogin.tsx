@@ -10,36 +10,32 @@ const ChatLogin: React.FC = () => {
 
   if (parameters.passwordZulip) {
     return (
-      <>
-        <h4>Welcome to the chat!</h4>
-        <Button
-          onClick={() =>
-            dispatch(action.requestLoginChatUser(parameters.passwordZulip))
-          }
-          type="submit"
-          color="secondary"
-          variant="contained"
-          fullWidth
-        >
-          Login
-        </Button>
-      </>
+      <Button
+        onClick={() =>
+          dispatch(action.requestLoginChatUser(parameters.passwordZulip))
+        }
+        style={{ margin: '10px 0' }}
+        type="submit"
+        color="secondary"
+        variant="contained"
+        fullWidth
+      >
+        Login
+      </Button>
     );
   }
 
   return (
-    <>
-      <h4>Register to the chat!</h4>
-      <Button
-        type="submit"
-        color="secondary"
-        onClick={() => dispatch(action.requestRegisterZulip())}
-        variant="contained"
-        fullWidth
-      >
-        Register
-      </Button>
-    </>
+    <Button
+      type="submit"
+      color="secondary"
+      style={{ margin: '10px 0' }}
+      onClick={() => dispatch(action.requestRegisterZulip())}
+      variant="contained"
+      fullWidth
+    >
+      Register
+    </Button>
   );
 };
 

@@ -1,6 +1,6 @@
 import TYPES from '@Redux/actionTypes';
 import { ActionTypePM } from '@Src/types/pmtools/types';
-import { ServerProject } from '@Src/types/types';
+import { ServerProject } from '@Src/types';
 
 export const clearHistoryAction = (project: ServerProject['id']) => ({
   type: TYPES.CLEAR_HISTORY,

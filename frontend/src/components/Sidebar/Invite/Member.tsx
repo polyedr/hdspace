@@ -5,7 +5,8 @@ import {
   ListItemAvatar,
   ListItemText,
 } from '@material-ui/core';
-import { ServerProject } from '@Src/types/types';
+import { ServerProject } from '@Src/types';
+import IMAGES from '@Constants/images';
 
 type PropsType = {
   project: ServerProject['id'];
@@ -20,7 +21,7 @@ const Member: React.FC<PropsType> = ({ userData, permissions }) => {
   return (
     <ListItem button key={id} style={{ padding: 0 }}>
       <ListItemAvatar>
-        <Avatar src={profile.avatar || ''} />
+        <Avatar src={profile.avatar ?? IMAGES.prof} alt="profile" />
       </ListItemAvatar>
       <ListItemText
         primary={profile.role}

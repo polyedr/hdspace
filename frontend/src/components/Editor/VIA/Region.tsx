@@ -6,7 +6,7 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
-import { VIARegion } from '../../../types/types';
+import { VIARegion } from '../../../types';
 import VIABorders from './VIABorders';
 
 const useStyles = makeStyles<Theme, { isActive: boolean; layer: number }>({

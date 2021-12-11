@@ -4,7 +4,7 @@ import {
   StyledIconButton,
   StyledTextField,
 } from '@Components/styledComponents';
-import { ElementEvent, EventType, StateElement } from '@Src/types/types';
+import { ElementEvent, EventType, StateElement } from '@Src/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,

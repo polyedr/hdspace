@@ -8,7 +8,7 @@ import { createElements } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { ElementType } from '@Constants/dragAndDrop';
-import { ElementData } from '@Src/types/types';
+import { ElementData } from '@Src/types';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ElementButtonIcon from './ElementButtonIcon';

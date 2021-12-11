@@ -1,7 +1,7 @@
 import { handleError } from '@Api/helper';
 import config from '@Constants/pmtools/trelloConfigData';
 import { myAxios } from '@Src/config/settings';
-import { MyAxiosProps, ServerProject } from '@Src/types/types';
+import { MyAxiosProps, ServerProject } from '@Src/types';
 import { AxiosResponse } from 'axios';
 
 const { apiKey, token } = config;

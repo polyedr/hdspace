@@ -5,7 +5,7 @@ import {
   UpdateCardIndexType,
   UpdateCardIndexTypeSuccess,
 } from '@Src/types/pmtools/types';
-import { ServerProject } from '@Src/types/types';
+import { ServerProject } from '@Src/types';
 
 export type AddTaskType = {
   id: IServerTaskData['id'];

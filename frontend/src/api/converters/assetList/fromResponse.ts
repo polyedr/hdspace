@@ -1,4 +1,4 @@
-import { AssetsList, PaginatedArray } from '@Src/types/types';
+import { AssetsList, PaginatedArray } from '@Src/types';
 import { AxiosResponse } from 'axios';
 import { ServerAsset } from '../asset/fromResponse';
 

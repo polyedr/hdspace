@@ -1,4 +1,4 @@
-import { ServerUserData } from '@Src/types/types';
+import { ServerUserData } from '@Src/types';
 import { DefaultRootState } from 'react-redux';
 import {
   ActionTypePM,

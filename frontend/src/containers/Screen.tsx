@@ -23,7 +23,7 @@ import {
   setUserExperience,
   changeProfileData,
 } from '@Redux/user/actions';
-import { Experience } from '@Src/types/types';
+import { Experience } from '@Src/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import Workspace from '../components/Editor/Workspace/Workspace';
 import RightPanel from '../components/RightPanel';

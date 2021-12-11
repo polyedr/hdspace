@@ -21,19 +21,6 @@ import {
 import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 
-const SideBarTitleStyles = makeStyles(({ spacing }) => ({
-  container: {
-    padding: spacing(1, 0),
-  },
-  titleRoot: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  actionContainer: {
-    display: 'flex',
-  },
-}));
-
 const useAccordionStyles = makeStyles(({ palette }) => ({
   root: {
     color: palette.common.white,
@@ -269,44 +256,3 @@ export interface SideBarTitleAction {
   icon: IconType | any;
   title?: string;
 }
-
-type SideBarTitleProps = {
-  icon?: IconType;
-  title: string;
-  actions?: SideBarTitleAction[];
-};
-
-export const SideBarTitle: React.FC<SideBarTitleProps> = (props) => {
-  const classes = SideBarTitleStyles();
-  const { icon, title, actions = [], children } = props;
-
-  const Icon = icon;
-
-  return (
-    <div className={classes.container}>
-      <div className={classes.titleRoot}>
-        {Icon && <Icon />}
-
-        <div className={classes.actionContainer}>
-          {actions.map((action, i) => {
-            const ActionIcon = action.icon;
-
-            return (
-              <IconButton
-                key={action.title || i}
-                title={action.title}
-                onClick={action.callback}
-              >
-                <ActionIcon />
-              </IconButton>
-            );
-          })}
-        </div>
-
-        <h2 style={{ margin: '0 10px' }}>{title}</h2>
-      </div>
-
-      <div data-testid="title-children">{children}</div>
-    </div>
-  );
-};

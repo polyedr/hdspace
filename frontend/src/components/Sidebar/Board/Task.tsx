@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { requestDeleteTask } from '@Redux/pmtools/board/actions/tasks';
 import { StyledIconButton } from '@Components/styledComponents';
 import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
-import { ModalAction } from '@Src/types/types';
+import { ModalAction } from '@Src/types';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import { IColumnData } from '@Src/types/pmtools/board';
 

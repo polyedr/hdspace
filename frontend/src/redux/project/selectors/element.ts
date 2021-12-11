@@ -15,7 +15,7 @@ import {
   PaginatedArray,
   Project,
   StateElement,
-} from '@Src/types/types';
+} from '@Src/types';
 import {
   selectCurrentProject,
   selectEditableStyles,
@@ -321,8 +321,8 @@ export const selectActiveLabelInputs = (state: AppReduxState) => {
   const elements = selectElementsForCurrentScreen(state);
 
   const inputsIDs = Object.values(elements)
-    .filter((element) => LABELED_INPUT_TYPES.includes(element.type))
-    .map((element) => element.id);
+    .filter((element: any) => LABELED_INPUT_TYPES.includes(element.type))
+    .map((element: any) => element.id);
 
   return {
     inputsIDs,

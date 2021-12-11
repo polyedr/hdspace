@@ -19,7 +19,7 @@ import {
   requestDeleteMemberTask,
   requestEditTask,
 } from '@Redux/pmtools/board/actions/tasks';
-import { ModalAction } from '@Src/types/types';
+import { ModalAction } from '@Src/types';
 import { PanelTextField } from '@Components/styledComponents';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectMembersData } from '@Redux/pmtools/board/selectors';

@@ -9,7 +9,7 @@ import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
 } from '@Src/types/pmtools/generators';
-import { ServerProject } from '@Src/types/types';
+import { ServerProject } from '@Src/types';
 import { call, put, select } from 'redux-saga/effects';
 import {
   requestAddColumn,

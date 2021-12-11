@@ -2,7 +2,7 @@ import {
   StyledIconButton,
   StyledTextField,
 } from '@Components/styledComponents';
-import { Entity, VIARegion } from '@Src/types/types';
+import { Entity, VIARegion } from '@Src/types';
 import React, { ChangeEvent, FC } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FileCopyIcon from '@material-ui/icons/FileCopy';

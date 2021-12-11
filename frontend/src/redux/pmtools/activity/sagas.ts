@@ -8,7 +8,7 @@ import TYPES from '@Redux/actionTypes';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { ActionSagaGenerator } from '@Src/types/pmtools/generators';
 import { ActionTypePM } from '@Src/types/pmtools/types';
-import { ServerProject } from '@Src/types/types';
+import { ServerProject } from '@Src/types';
 import { put, call, takeLatest } from 'redux-saga/effects';
 import * as actions from './actions';
 

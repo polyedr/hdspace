@@ -12,7 +12,7 @@ import { reqWrapper } from '@Redux/project/sagas/shared';
 import { setUserData } from '@Redux/user/actions';
 import { selectUserData } from '@Redux/user/selectors';
 import generator from 'generate-password';
-import { ServerUserData } from '@Src/types/types';
+import { ServerUserData } from '@Src/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { configAdmin, configUser } from '@Constants/pmtools/zulipChatLoginData';
 import { AuthParams } from '@Src/types/pmtools/types';

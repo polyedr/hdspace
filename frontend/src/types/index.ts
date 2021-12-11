@@ -819,14 +819,14 @@ export type ProjectData = {
 
 export type Project = ProjectBase & {
   projectscreen: number[];
-  projectTrelloJSON: IBoardForUI;
+  projectTrelloJSON: IBoardForUI | null;
   projectData: ProjectData;
   user: UserData;
 };
 
 export type ProjectWithScreens = ProjectBase & {
   projectData: ProjectData;
-  projectTrelloJSON: IBoardForUI;
+  projectTrelloJSON: IBoardForUI | null;
   projectscreen: Screen[];
   user: UserData;
 };

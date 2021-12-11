@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import React, { FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { LibraryElement, PropertiesChangeProps } from '@Src/types/types';
+import { LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { addChildrenToElement, deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';

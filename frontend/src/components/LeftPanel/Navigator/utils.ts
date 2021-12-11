@@ -1,5 +1,5 @@
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
-import { Normalized, StateElement, Node } from '../../../types/types';
+import { Normalized, StateElement, Node } from '../../../types';
 
 const hiddenChildrenElements = ['dropdown', 'select', 'radiobuttonGroup'];
 

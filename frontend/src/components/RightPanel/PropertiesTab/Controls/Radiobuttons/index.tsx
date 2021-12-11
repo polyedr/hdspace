@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropertiesChangeProps, RadiobuttonElement } from '@Src/types/types';
+import { PropertiesChangeProps, RadiobuttonElement } from '@Src/types';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectActiveElementChildren } from '@Redux/project/selectors/element';
 import { addChildToElement } from '@Redux/project/actions';
