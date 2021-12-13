@@ -55,6 +55,30 @@ const TYPE: Array<{ label: string; value: string }> = [
     label: 'Navbar',
     value: 'navbar',
   },
+  {
+    label: 'SmartHeader',
+    value: 'smartHeader',
+  },
+  {
+    label: 'SmartFooter',
+    value: 'smartFooter',
+  },
+  {
+    label: 'SmartForm',
+    value: 'smartForm',
+  },
+  {
+    label: 'SmartWebpage',
+    value: 'smartWebpage',
+  },
+  {
+    label: 'Heading',
+    value: 'heading',
+  },
+  {
+    label: 'Paragraph',
+    value: 'paragraph',
+  },
 ];
 
 export default TYPE;
