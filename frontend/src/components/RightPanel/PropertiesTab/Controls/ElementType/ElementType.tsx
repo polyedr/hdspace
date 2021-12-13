@@ -36,14 +36,47 @@ const ElementType: React.FC = () => {
     );
 
     setTimeout(() => {
+      const param: any = {};
+
+      if (newElementType === 'container' || newElementType === 'section') {
+        param.group = 'containers';
+      } else if (
+        newElementType === 'textinput' ||
+        newElementType === 'textarea'
+      ) {
+        param.group = 'form';
+        param.placeholder = 'Placeholder';
+      } else if (newElementType === 'button' || newElementType === 'checkbox') {
+        param.group = 'form';
+        param.textContent = newElementType;
+      } else if (newElementType === 'textBlock' || newElementType === 'label') {
+        param.group = 'typography';
+        param.textContent =
+          newElementType === 'textBlock'
+            ? 'This is a text block'
+            : 'This is a label';
+      } else if (newElementType === 'select') {
+        param.group = 'form';
+      } else if (newElementType === 'grid') {
+        param.group = 'other';
+      } else if (newElementType === 'calendar') {
+        param.group = 'widget';
+      } else if (newElementType === 'image') {
+        param.group = 'image';
+        param.imageURL = '/a1b7d632cc3b0a2993e8c1be2da723bb.svg';
+        param.keepAspectRatio = false;
+        param.title = '';
+        param.freeCanvas = {
+          height: 100,
+          left: 20,
+          top: 20,
+          width: 300,
+          zIndex: 0,
+        };
+      }
+
       dispatch(
-        updateElementParameters(
-          id,
-          {
-            textContent: newElementType,
-          },
-          { screenId: currentScreenId },
-        ),
+        updateElementParameters(id, param, { screenId: currentScreenId }),
       );
       dispatch(setActiveElement(id));
     }, 1000);

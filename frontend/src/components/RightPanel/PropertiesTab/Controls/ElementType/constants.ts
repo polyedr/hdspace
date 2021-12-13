@@ -12,6 +12,10 @@ const TYPE: Array<{ label: string; value: string }> = [
     value: 'container',
   },
   {
+    label: 'Section',
+    value: 'section',
+  },
+  {
     label: 'Select',
     value: 'select',
   },
@@ -24,8 +28,8 @@ const TYPE: Array<{ label: string; value: string }> = [
     value: 'image',
   },
   {
-    label: 'Input',
-    value: 'input',
+    label: 'TextBlock',
+    value: 'textBlock',
   },
   {
     label: 'Textinput',
@@ -46,14 +50,6 @@ const TYPE: Array<{ label: string; value: string }> = [
   {
     label: 'Clock',
     value: 'clock',
-  },
-  {
-    label: 'Pagination',
-    value: 'pagination',
-  },
-  {
-    label: 'Navbar',
-    value: 'navbar',
   },
   {
     label: 'SmartHeader',
