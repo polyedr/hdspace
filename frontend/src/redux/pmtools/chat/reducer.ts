@@ -3,7 +3,7 @@ import { ChatAction, ChatState } from '../types';
 
 const initialState: ChatState = {
   client: null,
-  messages: null,
+  messages: [],
 };
 
 const chatReducer = (state: ChatState = initialState, action: ChatAction) => {
@@ -23,6 +23,9 @@ const chatReducer = (state: ChatState = initialState, action: ChatAction) => {
         ...state,
         messages: action.payload,
       };
+    case TYPES.SEND_MESSAGE_ZULIP_SUCCESS:
+      console.log([...state.messages, action.payload]);
+      return { ...state, messages: [...state.messages, action.payload] };
     default:
       return state;
   }

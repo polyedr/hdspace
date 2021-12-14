@@ -17,6 +17,8 @@ import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { configAdmin, configUser } from '@Constants/pmtools/zulipChatLoginData';
 import { AuthParams } from '@Src/types/pmtools/types';
 import * as action from './actions';
+import { selectChatUser } from './selectors';
+import { successSendStreamMessage } from './actions';
 
 export function* projectStreamMessagesSaga({ payload }: any): any {
   try {
@@ -24,7 +26,17 @@ export function* projectStreamMessagesSaga({ payload }: any): any {
     const { email, profile } = yield select(selectUserData);
     const config = configUser(email, profile.parameters.passwordZulip);
     const { messages } = yield call(apiGetMessages, stream, config);
-    yield put(action.successProjectStreamMessages(messages));
+    console.log(messages);
+    const shortMessagesArray: Array<any> = messages.map(
+      ({ content, avatar_url, sender_full_name }) => ({
+        sender_full_name,
+        avatar_url,
+        content,
+      }),
+    );
+    if (shortMessagesArray.length) {
+      yield put(action.successProjectStreamMessages(shortMessagesArray));
+    }
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
@@ -34,15 +46,24 @@ export function* projectSendMessageSaga({
   payload: { message, stream },
 }: any): any {
   try {
+    const user = yield select(selectChatUser);
+
     const { email, profile } = yield select(selectUserData);
     const config = configUser(email, profile.parameters.passwordZulip);
     yield call(apiSendMessage, stream, config, message);
+    yield put(
+      successSendStreamMessage({
+        sender_full_name: user.full_name,
+        content: message,
+        avatar_url: user.avatar_url,
+      }),
+    );
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
-export function* loginUserSaga({
+function* loginUserSaga({
   payload: password,
 }: {
   payload: AuthParams['password'];
@@ -55,7 +76,7 @@ export function* loginUserSaga({
       username,
       password,
     });
-    if (client && client.config) {
+    if (client.result === 'success') {
       yield put(action.successLoginChatUser(client));
       localStorage.setItem('login', JSON.stringify({ password }));
     }

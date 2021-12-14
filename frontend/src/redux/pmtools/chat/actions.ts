@@ -39,3 +39,8 @@ export const successProjectStreamMessages = (payload: Array<any>) => ({
   type: TYPES.GET_STREAM_MESSAGES_SUCCESS,
   payload,
 });
+
+export const successSendStreamMessage = (payload) => ({
+  type: TYPES.SEND_MESSAGE_ZULIP_SUCCESS,
+  payload,
+});

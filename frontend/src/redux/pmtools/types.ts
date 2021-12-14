@@ -14,6 +14,7 @@ import {
   successLoginChatUser,
   successLogoutChatUser,
   successProjectStreamMessages,
+  successSendStreamMessage,
 } from './chat/actions';
 import { successSendEmail, sidePanelError } from './invite/actions';
 
@@ -38,7 +39,7 @@ export type ActivityState = {
 
 export type ChatState = {
   client: ChatClient | null;
-  messages: Array<IMessageZulip> | null;
+  messages: Array<IMessageZulip> | [];
 };
 
 export type BoardState = {
@@ -87,6 +88,7 @@ export type ChatAction = ReturnType<
   | typeof successLoginChatUser
   | typeof successLogoutChatUser
   | typeof successProjectStreamMessages
+  | typeof successSendStreamMessage
 >;
 
 export type memberAction = ReturnType<

@@ -41,9 +41,9 @@ export const apiAuthUser = async (login: AuthParams) => {
   try {
     const config: ChatClient = await zulipInit(login);
     if (config.config.username && config.config.apiKey) {
-      return config;
+      return await config.users.me.getProfile();
     }
-    return await config.accounts.retrieve();
+    return await config.users.me.getProfile();
   } catch (e) {
     return e;
   }

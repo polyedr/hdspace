@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable import/no-cycle */
 import React, { useCallback, useEffect, useState } from 'react';
 import LogoutIcon from '@mui/icons-material/Logout';
 import * as actions from '@Redux/pmtools/chat/actions';
@@ -11,17 +9,15 @@ import {
 } from '@Components/styledComponents';
 import { Button } from '@material-ui/core';
 import { IMessageZulip } from '@Src/types/pmtools/types';
-import { selectMessagesZulip } from '@Redux/pmtools/chat/selectors';
 import { selectBoardData } from '@Redux/pmtools/board/selectors';
+import { selectMessagesZulip } from '@Redux/pmtools/chat/selectors';
 import Message from './Message';
-import Support from './Support';
 
 const Messages: React.FC = () => {
   const dispatch = useDispatch();
   const board = useSelector(selectBoardData);
-  const messages = useSelector(selectMessagesZulip);
   const [message, setMessage] = useState('');
-  const [supportChat, setSupportChat] = useState(false);
+  const messages: Array<IMessageZulip> = useSelector(selectMessagesZulip);
 
   const handleSend = useCallback(async () => {
     if (board) {
@@ -30,17 +26,13 @@ const Messages: React.FC = () => {
       );
       setMessage('');
     }
-  }, [dispatch, message]);
+  }, [board, dispatch, message]);
 
   useEffect(() => {
     if (board) {
       dispatch(actions.requestProjectStreamMessages({ stream: board.name }));
     }
-  }, [board, dispatch, handleSend]);
-
-  if (supportChat) {
-    return <Support />;
-  }
+  }, [board, dispatch]);
 
   if (!messages) {
     return <p>Loading... </p>;
@@ -76,14 +68,6 @@ const Messages: React.FC = () => {
         />
         <Button variant="contained" color="secondary" onClick={handleSend}>
           Send
-        </Button>
-        <Button
-          onClick={() => setSupportChat(!supportChat)}
-          style={{ margin: 10 }}
-          variant="contained"
-          color="primary"
-        >
-          Support
         </Button>
       </div>
     </div>
