@@ -98,6 +98,7 @@ const ElementType: React.FC = () => {
       label="New element type"
       onChange={handleDropdownChange}
       select
+      value=""
     >
       {TYPE.map(({ label, value }) => (
         <MenuItem value={value} key={value} dense>
