@@ -28,7 +28,8 @@ import PaymentIcon from '@material-ui/icons/Payment';
 import Crop75Icon from '@material-ui/icons/Crop75';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
-import { Entity, LibraryElements } from '@Src/types';
+import { Entity, LibraryElements, ServerElement } from '@Src/types';
+import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import {
   makeRoot,
   makeImage,
@@ -91,6 +92,19 @@ import {
   makeEmptyPageTemplate,
   makeSection,
 } from './blocksTemplates/blocksTemplates';
+
+const PREVIEW_LIBRARY_ELEMENTS = [
+  makeSubscribeForm(),
+  makeCardsSection(),
+  makeFeatureSection(),
+];
+
+export const CORE_PREVIEW_LIBRARY_ELEMENTS = PREVIEW_LIBRARY_ELEMENTS.map(
+  (el: ServerElement<Entity>) => ({
+    ...convertElementFromResponse(el),
+    name: el.name,
+  }),
+);
 
 // WARN: every time you add or remove some LibraryElements in prod, you must write migration in db
 export const LIBRARY_ELEMENTS: LibraryElements = {

@@ -989,6 +989,11 @@ export const setActiveNNModel = (model: NNModelName) => ({
   payload: { model },
 });
 
+export const isLibraryTab = (isLibraryTab: Boolean) => ({
+  type: TYPES.IS_LIBRARY_TAB,
+  payload: { isLibraryTab },
+});
+
 export const setActiveElementId = (id: string) => ({
   type: TYPES.SET_ACTIVE_ELEMENT_ID,
   payload: id,

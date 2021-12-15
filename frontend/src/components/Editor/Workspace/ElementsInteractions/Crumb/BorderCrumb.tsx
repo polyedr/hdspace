@@ -104,34 +104,6 @@ const BorderCrumb: React.FC<Props> = (props) => {
 
   const generatorRandom = () => {
     if (element.name === 'generator') {
-      dispatch(
-        softDeleteMultipleElements(
-          [
-            '7813',
-            '7826',
-            '7827',
-            '7828',
-            '7835',
-            '7836',
-            '7837',
-            '7838',
-            '7839',
-            '7840',
-            '7841',
-            '7842',
-            '7843',
-            '7848',
-            '7849',
-            '7850',
-            '7851',
-            '7852',
-            '7853',
-          ],
-          {
-            screenId: currentScreenId,
-          },
-        ),
-      );
       if (currentGeneratorElements && currentGeneratorElements.length > 2) {
         const keys = Object.keys(
           currentGeneratorElements[0].styles.ownStyles,

@@ -26,6 +26,7 @@ import {
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
+import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -53,6 +54,7 @@ export function* setMasterScreenCoreElements(screen: Screen) {
   const rootElement = yield select(selectElementById, screen.element);
   yield put(Actions.setMasterElementsIds(...rootElement.children));
   const masterCoreId = rootElement.children[0];
+  CORE_MASTER_ELEMENTS.push(...CORE_PREVIEW_LIBRARY_ELEMENTS);
   yield put(
     Actions.addStateElements(
       [

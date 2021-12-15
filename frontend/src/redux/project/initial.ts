@@ -72,6 +72,7 @@ export const initialEdit: ProjectEditState = {
   selectedAssetListId: null,
   selectedElementsIds: [],
   activeNNModel: 'fdict',
+  isLibraryTab: false,
   VIAMode: {
     enabled: false,
     regions: {
