@@ -363,10 +363,17 @@ export type LibraryElement<
 
 export type LibraryElementPatch<Type extends Entity> = {
   name?: string;
+  type?: Type;
   scenario?: number;
   struct_type?: Type;
   func_type?: string;
   shared?: boolean;
+  styles?: {
+    classNames: string[];
+    ownStyles: React.CSSProperties;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
+  };
+  children?: string[];
 };
 
 export type UpdateElementData<T extends Entity> = {
