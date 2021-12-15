@@ -107,6 +107,7 @@ export type ProjectEditState = {
   selectedElementsIds: string[];
   masterScreenId: number | null;
   activeNNModel: NNModelName;
+  isLibraryTab: Boolean;
   VIAMode: {
     enabled: boolean;
     regions: {
@@ -1116,6 +1117,11 @@ export type SetActiveNNModel = IAction<
   { model: string }
 >;
 
+export type IsLibraryTab = IAction<
+  typeof TYPES.IS_LIBRARY_TAB,
+  { isLibraryTab: Boolean }
+>;
+
 export type UpdateVIARegionLayerSuccess = IAction<
   typeof TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
   { id: string; layer: number }
@@ -1322,6 +1328,7 @@ export type Action =
   | AddRedoActions
   | SetVIAMode
   | SetActiveNNModel
+  | IsLibraryTab
   | SetViaRegions
   | UpdateVIARegion
   | UpdateVIARegionSuccess

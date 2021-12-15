@@ -137,6 +137,13 @@ const editReducer = produce(
         return { ...draft, activeNNModel: action.payload.model };
       }
 
+      case TYPES.IS_LIBRARY_TAB: {
+        if (draft.isLibraryTab === action.payload.isLibraryTab) {
+          return draft;
+        }
+        return { ...draft, isLibraryTab: action.payload.isLibraryTab };
+      }
+
       case TYPES.UPDATE_VIA_REGION_SUCCESS: {
         draft.VIAMode.regions[draft.activeNNModel][action.payload.id] = {
           ...draft.VIAMode.regions[draft.activeNNModel][action.payload.id],

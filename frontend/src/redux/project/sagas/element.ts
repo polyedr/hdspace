@@ -926,6 +926,7 @@ export function* loadCustomElementsSaga(
     );
     if (result) {
       yield put(Actions.addCustomElementsPage(result, action.payload.initial));
+      yield put(Actions.addElements(result.results));
     }
     if (error) throw new Error(error);
   } catch (e) {
