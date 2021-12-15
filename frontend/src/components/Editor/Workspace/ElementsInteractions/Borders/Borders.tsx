@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { BoundingStyles, DropTargetParams } from '@Src/types';
 import { Rnd } from 'react-rnd';
 import cn from 'classnames';
 import { selectIsElementActive } from '@Redux/project/selectors/element';
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import { selectShowingGrid } from '@Redux/project/selectors/base';
 import DropPositionMarker from './DropPositionMarker';
 
 type Props = {
@@ -78,11 +79,14 @@ const Borders: React.FC<Props> = ({
 }) => {
   const isDropTarget = dropTargetParams?.id === elementId;
   const isActive = useSelector(selectIsElementActive(elementId));
+  const showGrid = useSelector(selectShowingGrid);
   const classes = useStyles({ isActive });
+  const rightGridScale = useRef<HTMLDivElement>(null);
 
   if (!elementId || !styles) {
     return null;
   }
+
   const { top, left, height, width } = styles;
 
   // eslint-disable-next-line no-unused-vars
@@ -133,6 +137,7 @@ const Borders: React.FC<Props> = ({
   return (
     <>
       {isActiveBorder &&
+        !showGrid &&
         !['root', 'calendar', 'clock', 'label'].includes(type) && (
           <div style={{ width }}>
             <div
@@ -157,6 +162,54 @@ const Borders: React.FC<Props> = ({
               }}
             >
               {`${width} px`}
+            </div>
+          </div>
+        )}
+
+      {isActiveBorder &&
+        showGrid &&
+        !['root', 'calendar', 'clock', 'label'].includes(type) && (
+          <div>
+            <div
+              style={{
+                borderTop: '1px solid red',
+                left: 4 + left + width,
+                width: `calc(100% - (${left}px + ${width}px))`,
+                top: top + height / 2,
+                position: 'absolute',
+                textAlign: 'center',
+                color: 'red',
+                fontSize: 'x-small',
+                fontWeight: 'bold',
+              }}
+              ref={rightGridScale}
+            >
+              {rightGridScale.current?.scrollWidth !== undefined
+                ? `${Math.round(
+                    (Number(rightGridScale.current?.scrollWidth) * 100) / 100,
+                  )}px`
+                : null}
+            </div>
+
+            <div
+              style={{
+                borderLeft: '1px solid red',
+                height: top,
+                position: 'absolute',
+                left: width / 2 + left,
+              }}
+            >
+              <span
+                style={{
+                  color: 'red',
+                  fontSize: 'x-small',
+                  fontWeight: 'bold',
+                  top: '50%',
+                  position: 'absolute',
+                }}
+              >
+                {`${Math.round((Number(top) * 100) / 100)}px`}
+              </span>
             </div>
           </div>
         )}

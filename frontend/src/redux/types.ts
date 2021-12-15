@@ -76,6 +76,7 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
+  showGrid: boolean;
   currentDropTargetParams: DropTargetParams | null;
   bordersEnabled: boolean;
   canCreateGroup: boolean;
@@ -429,6 +430,7 @@ export type ToggleContainersBorders = IAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS,
   boolean
 >;
+export type ToggleGrid = IAction<typeof TYPES.TOGGLE_GRID, boolean>;
 export type SetBordersEnabled = IAction<
   typeof TYPES.SET_BORDERS_ENABLED,
   boolean
@@ -1220,6 +1222,7 @@ export type Action =
   | SetMasterGroupsElementId
   | SetMasterElementsIds
   | ToggleContainersBorders
+  | ToggleGrid
   | SetBordersEnabled
   | SetElementToCopy
   | CopyActiveElement
