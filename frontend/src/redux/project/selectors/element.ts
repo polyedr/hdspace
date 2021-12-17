@@ -89,6 +89,9 @@ export const selectElementByChildId = (id: string) => (
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
+export const checkIsLibraryTab = ({ project }: AppReduxState) =>
+  project.edit.isLibraryTab;
+
 export const selectActiveNNModel = ({ project }: AppReduxState) =>
   project.edit.activeNNModel;
 

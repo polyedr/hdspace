@@ -1,7 +1,8 @@
 import React, { memo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { isLibraryTab } from '@Redux/project/actions';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
@@ -59,6 +60,7 @@ const useToggleButtonStyles = makeStyles(({ palette }) => ({
 
 const ElementsTab = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const toggleButtonGroupClasses = useToggleButtonGroupStyles();
   const toggleButtonClasses = useToggleButtonStyles();
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
@@ -78,6 +80,11 @@ const ElementsTab = () => {
   ) => {
     if (newSection) {
       setSection(newSection);
+      if (newSection === 'library') {
+        dispatch(isLibraryTab(true));
+      } else {
+        dispatch(isLibraryTab(false));
+      }
     }
   };
 
