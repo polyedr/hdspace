@@ -7,8 +7,6 @@ import JSZip from 'jszip';
 import theme from '@Src/styles/Theme';
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
-import { selectCurrentRootId } from '@Redux/project/selectors/element';
-import { ProjectClass, ScreenMetaData } from '@Src/types';
 import {
   selectCurrentProjectClasses,
   selectCurrentUIFramework,
@@ -25,21 +23,14 @@ import {
 
 const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
-type ExportedStyleSheets = {
-  css: string;
-  entityClasses: ProjectClass[];
-  sharedClasses: ProjectClass[];
-};
-
-const createArchive = (
-  screenName: string,
-  html: string,
-  css: string,
+const createArchive = async (
+  allScreensData: any,
+  allScreensHtml: any,
+  allScreensCss: any,
   state: AppReduxState,
-  metadata?: ScreenMetaData,
+  projectName: string,
 ) => {
   const projectClasses = selectCurrentProjectClasses(state);
-
   const entityClasses = projectClasses.filter((classInstance) =>
     entityClassNames.includes(classInstance.className),
   );
@@ -52,56 +43,80 @@ const createArchive = (
     .filter((id) => elements[id].type === 'map')
     .map((id: string) => elements[id]);
   const zip = new JSZip();
-  const cssFolder = zip.folder('css');
-  const jsFolder = zip.folder('js');
-  const assetsFolder = zip.folder('assets');
 
-  Promise.all([
-    processHTML(html, assetsFolder),
-    processCSS(html, cssFolder, entityClasses, sharedClasses),
-    processJS(html, jsFolder),
-    processIco(metadata?.faviconUrl || null, zip),
-  ]).then(([htmlResponse]) => {
-    zip.file(
-      'index.html',
-      getHtmlFromTemplate(
-        screenName,
-        htmlResponse,
-        mapComponents,
-        currentUIFramework,
-        metadata,
+  const zipData = allScreensData.map((data) => {
+    const screenFolder = zip.folder(`${data.name}`);
+    const cssFolder: any = screenFolder?.folder(`css`);
+    const jsFolder: any = screenFolder?.folder(`js`);
+    const assetsFolder: any = screenFolder?.folder(`assets`);
+
+    return Promise.all([
+      processHTML(allScreensHtml[data.name], assetsFolder),
+      processCSS(
+        allScreensHtml[data.name],
+        cssFolder,
+        entityClasses,
+        sharedClasses,
       ),
-    );
-    cssFolder?.file('style.css', css);
+      processJS(allScreensHtml[data.name], jsFolder),
+      processIco(allScreensHtml.screenData?.faviconUrl || null, zip),
+    ]).then(([htmlResponse]) => {
+      screenFolder?.file(
+        'index.html',
+        getHtmlFromTemplate(
+          data.name,
+          htmlResponse,
+          mapComponents,
+          currentUIFramework,
+          data.screenData,
+        ),
+      );
+
+      cssFolder?.file('style.css', allScreensCss[data.name]);
+      return true;
+    });
+  });
+
+  Promise.all(zipData).then(() => {
     zip.generateAsync({ type: 'blob' }).then((content: Blob) => {
       const a = document.createElement('a');
       a.href = URL.createObjectURL(content);
-      a.download = `${screenName}.zip`;
+      a.download = `${projectName}.zip`;
       a.click();
     });
   });
 };
 
-const exportHTML = (screenName: string, metadata?: ScreenMetaData) => {
-  const sheets = new ServerStyleSheets();
-
+const exportHTML = (allScreensData, projectName) => {
   const state = store.getState() as AppReduxState;
+  const allScreensHtmlData: any[] = [];
+  const allScreensStyleData: any[] = [];
 
-  const rootId = selectCurrentRootId(state);
+  allScreensData.forEach((data, index) => {
+    const sheets = new ServerStyleSheets();
+    const html = ReactDOMServer.renderToStaticMarkup(
+      sheets.collect(
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            <BrowserRouter>
+              <ExportedElement elementId={data.element} state={state} />
+            </BrowserRouter>
+          </ThemeProvider>
+        </Provider>,
+      ),
+    );
 
-  const html = ReactDOMServer.renderToStaticMarkup(
-    sheets.collect(
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <BrowserRouter>
-            <ExportedElement elementId={rootId} state={state} />
-          </BrowserRouter>
-        </ThemeProvider>
-      </Provider>,
-    ),
+    allScreensHtmlData[allScreensData[index].name] = html;
+    allScreensStyleData[allScreensData[index].name] = sheets.toString();
+  });
+
+  createArchive(
+    allScreensData,
+    allScreensHtmlData,
+    allScreensStyleData,
+    state,
+    projectName,
   );
-
-  createArchive(screenName, html, sheets.toString(), state, metadata);
 };
 
 export default exportHTML;
