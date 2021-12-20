@@ -45,7 +45,7 @@ const createArchive = async (
 
   const zip = new JSZip();
 
-  const zipData = Object.values(allScreensData).map((data) => {
+  const zipData = allScreensData.map((data) => {
     const screenFolder = zip.folder(`${data.name}`);
     const cssFolder = zip.folder(`${data.name}/css`);
     const jsFolder = zip.folder(`${data.name}/js`);
@@ -60,7 +60,7 @@ const createArchive = async (
         sharedClasses,
       ),
       processJS(allScreensHtml[data.name], jsFolder),
-      processIco(data.screenData.faviconUrl || null, zip),
+      processIco(data.screenData.meta.faviconUrl || null, zip),
     ]).then(([htmlResponse]) => {
       screenFolder?.file(
         'index.html',
