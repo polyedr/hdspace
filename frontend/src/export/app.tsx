@@ -24,9 +24,9 @@ import {
 const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
 const createArchive = async (
-  allScreensData: any,
-  allScreensHtml: any,
-  allScreensCss: any,
+  allScreensData: Array<any>,
+  allScreensHtml: Array<any>,
+  allScreensCss: Array<any>,
   state: AppReduxState,
   projectName: string,
 ) => {
@@ -42,13 +42,14 @@ const createArchive = async (
   const mapComponents = Object.keys(elements)
     .filter((id) => elements[id].type === 'map')
     .map((id: string) => elements[id]);
+
   const zip = new JSZip();
 
-  const zipData = allScreensData.map((data) => {
+  const zipData = Object.values(allScreensData).map((data) => {
     const screenFolder = zip.folder(`${data.name}`);
-    const cssFolder: any = screenFolder?.folder(`css`);
-    const jsFolder: any = screenFolder?.folder(`js`);
-    const assetsFolder: any = screenFolder?.folder(`assets`);
+    const cssFolder = zip.folder(`${data.name}/css`);
+    const jsFolder = zip.folder(`${data.name}/js`);
+    const assetsFolder = zip.folder(`${data.name}/assets`);
 
     return Promise.all([
       processHTML(allScreensHtml[data.name], assetsFolder),
@@ -59,7 +60,7 @@ const createArchive = async (
         sharedClasses,
       ),
       processJS(allScreensHtml[data.name], jsFolder),
-      processIco(allScreensHtml.screenData?.faviconUrl || null, zip),
+      processIco(data.screenData.faviconUrl || null, zip),
     ]).then(([htmlResponse]) => {
       screenFolder?.file(
         'index.html',
@@ -89,8 +90,8 @@ const createArchive = async (
 
 const exportHTML = (allScreensData, projectName) => {
   const state = store.getState() as AppReduxState;
-  const allScreensHtmlData: any[] = [];
-  const allScreensStyleData: any[] = [];
+  const allScreensHtmlData: Array<any> = [];
+  const allScreensStyleData: Array<any> = [];
 
   allScreensData.forEach((data, index) => {
     const sheets = new ServerStyleSheets();
@@ -105,7 +106,6 @@ const exportHTML = (allScreensData, projectName) => {
         </Provider>,
       ),
     );
-
     allScreensHtmlData[allScreensData[index].name] = html;
     allScreensStyleData[allScreensData[index].name] = sheets.toString();
   });
