@@ -60,6 +60,17 @@ def isRectangleOverlap_nonnested(R1, R2):
         return True
 
 
+def isRectangleOverlap_nonnested_notequalborder(R1, R2):
+    if (R1[0] >= R2[2]) or (R1[2] <= R2[0]) or (R1[3] <= R2[1]) or (R1[1] >= R2[3]):
+        return False
+    elif (R1[0] < R2[0]) and (R2[2] < R1[2]) and (R1[1] < R2[1]) and (R2[3] < R1[3]):
+        return True
+    elif (R2[0] < R1[0]) and (R1[2] < R2[2]) and (R2[1] < R1[1]) and (R1[3] < R2[3]):
+        return True
+    else:
+        return True
+
+
 # https://stackoverflow.com/questions/25068538/intersection-and-difference-of-two-rectangles/25068722#25068722
 class Rectangle:
     def intersection(self, other):
@@ -176,7 +187,7 @@ def get_dominant_colour(image, k=4, image_processing_size=None):
 
     processing time is sped up by working with a smaller image;
     this resizing can be done with the image_processing_size param
-    which takes a tuple of image dims as input
+    which takes a tuple of image dims as inputrect
 
     get_dominant_colour(my_image, k=4, image_processing_size = (25, 25))
     [56.2423442, 34.0834233, 70.1234123]
@@ -267,25 +278,22 @@ def get_dominant_palette(image, k=27, image_processing_size=None):
 
 # Clustering for large containers and small clusters
 class ClusterClass(NodeMixin):
-    # Flex 0 vertical, 1 horizontal, 2 unseparable, -1 undefined
+    # Flex 0 vertical, 1 horizontal, 2 inseparable, -1 undefined
     direction = -1
     # Clusters types, containers, dbclusters, forms
     # types = "ccluster", "dbcluster", "fcluster", "ocvluster", "firstcluster", "undefined"
     types = "undefined"
-    is_elements_only = False  # check if contains elements only, actual for fclusters
+    # is_elements_only = False  # check if contains elements only, actual for fclusters
     is_final = False  # check if should not be splitted further
     # processing = "splitted", "unsplitted"  # check if the ternary algorithm was applied
     processing = "unsplitted"  # check if the ternary algorithm was applied
-    is_solid = (
-        True
-    )  # if clusters contain one element only. Based on flusters making algorithm
-
     # A group of elements assigned to the cluster as a parts
     # Should be removed and transformed for child clusters which are elements
     elements = []
     # Element assigned to the whole cluster
     element_assigned = ""
     placeholder = []
+    styles = []
 
     def __init__(self, x1, y1, x2, y2, parent=None, children=None, elements=None):
         self.name = uuid.uuid4().hex
@@ -351,9 +359,9 @@ class Solution:
 class Partition(object):
     def merge(self, intervals):
         """
-      :type intervals: List[Interval]
-      :rtype: List[Interval]
-      """
+        :type intervals: List[Interval]
+        :rtype: List[Interval]
+        """
         if len(intervals) == 0:
             return []
         self.quicksort(intervals, 0, len(intervals) - 1)
@@ -521,28 +529,22 @@ def dbcluster_split(block, clusters):
                 dbcluster_split(node, clusters)
 
 
-def blocks_split(block, window_name1, image_opencv_input, overlay, root_firstcluster):
+def blocks_split(block, image_opencv_input, overlay, root_firstcluster):
     # Ternary assembling algorithm built with annotation only
-    # Show the block
+    # Show the block. The block is a node for splitting.
     # print("block", block)
 
     x_layout_intervals = []
     y_layout_intervals = []
 
-    # Array of clusters placed in block
-    clusters_in = []
+    # Array of the previous set of the block children
+    clusters_in = block.children
 
     # Go through regions placed in the block
-    # for cluster in clusters:
-    for pre, fill, node in RenderTree(root_firstcluster):
-        if block.x1 <= node.x1 <= block.x2:
-            if block.x1 <= node.x2 <= block.x2:
-                if block.y1 <= node.y1 <= block.y2:
-                    if block.y1 <= node.y2 <= block.y2:
-                        # Append layouts intervals for the block
-                        x_layout_intervals.append([node.x1, node.x2])
-                        y_layout_intervals.append([node.y1, node.y2])
-                        clusters_in.append(node)
+    for node in block.children:
+        # Append layouts intervals for the block
+        x_layout_intervals.append([node.x1, node.x2])
+        y_layout_intervals.append([node.y1, node.y2])
 
     # print(x_layout_intervals)
     ob1_x = Partition()
@@ -585,6 +587,7 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, root_firstclu
                 block.x1, interval[0], block.x2, interval[1], parent=block
             )
             ccluster.types = "ccluster"
+            # clusters_in.append(ccluster)
             # cv2.rectangle(
             #     image_opencv_input,
             #     (block.x1, interval[0]),
@@ -599,6 +602,7 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, root_firstclu
                 interval[0], block.y1, interval[1], block.y2, parent=block
             )
             ccluster.types = "ccluster"
+            # clusters_in.append(ccluster)
             # cv2.rectangle(
             #     image_opencv_input,
             #     (interval[0], block.y1),
@@ -607,38 +611,33 @@ def blocks_split(block, window_name1, image_opencv_input, overlay, root_firstclu
             #     -1,
             # )
 
-    '''
-    # With elements in clusters, this block is not correct anymore
-    # This block may contain dbclusters
-    if block.direction == 2:
-        for cluster in clusters_in:
-            if cluster not in block.ancestors:
-                if cluster != block:
-                    # print(cluster.name, block.name)
-                    cluster.parent = block
-    '''
-
     # For the top level (children of the block) cclusters only
     # Go through all the top level cclusters obtained after the ternary algorithm
     # Check if there are non-elment firstclusters, fclusters, dbclusters in
     # Attach them to these cclusters
     # Special sorting is necessary to prevent a double iteration
-    for node in block.children:
-        for node1 in clusters_in:
-            if (node1.types not in {"ccluster"}):
-                node1.parent = node
+    for node in block.children:  # the novel set of the block children, cclusters
+        for node1 in clusters_in:  # the previous set of the block children
+            if (node != node1):
+                # Check if (node1 in node):
+                r1_e = (node.x1, node.y1, node.x2, node.y2)
+                r2_e = (node1.x1, node1.y1, node1.x2, node1.y2)
+                if contains_rectangle(r1_e, r2_e):
+                    node1.parent = node
 
     # Go through all the blocks obtained from the current one
-    for pre, fill, node in RenderTree(block):
-        # print("children", node)
-        if ((node != block and node.types in {"ccluster, firstcluster"}) and not (node.element_assigned)) or \
-                (node.element_assigned in {"div", "container"}):
-            if node.direction != 2:
-                # Split each block
-                blocks_split(node, window_name1, image_opencv_input, overlay, root_firstcluster)
-            # if node.direction == 2:
-            #     for cluster in clusters_in:
-            #         cluster.parent = node
+    # Split that blocks which were unsplitted yet
+    # These blocks should be between grandparents of the block of interest
+    # Blocks that should not be splitted are blocks with direction 2, leaves and fclusters
+    # maxlevel 3 means limit the rendering of the descendants level 3
+    for pre, fill, node in RenderTree(block, maxlevel=3):
+        # Filter grandparents only based on node height difference
+        if (block.height - node.height) == 2:
+            # print("children", node)
+            if node != block and ((not node.is_leaf) or (node.types in {"fcluster"})):
+                if node.direction != 2:
+                    # Split each block
+                    blocks_split(node, image_opencv_input, overlay, root_firstcluster)
 
 
 # Finding the closest point to a list of points
