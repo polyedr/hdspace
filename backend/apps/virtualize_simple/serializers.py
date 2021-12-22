@@ -1,3 +1,4 @@
+import itertools
 import json
 import os, sys
 import copy
@@ -39,20 +40,17 @@ from apps.utils.object_detection import (
     show_rois,
 )
 from apps.utils.fset1 import (
-    recognize_with_tesseract,
     get_dominant_colour,
     isRectangleOverlap,
     Rectangle,
     ClusterClass,
     Partition,
-    dbcluster_split,
     blocks_split,
     closest_node,
     find_or_create_dir,
     calculateDistance,
     SQUARES_OVERLAP_THRESHOLD_CONTOUR,
-    change_permissions_recursive,
-    contains_rectangle, isRectangleOverlap_nonnested, nodesorted,
+    contains_rectangle,
 )
 
 from apps.virtualize_simple.merge import pipeline_merge, write_elem_value
@@ -256,26 +254,26 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
         # Horizontal
         if node.direction == 1:
             styles["display"] = "flex"
-
             if not styles_on:
                 styles["background"] = "aliceblue"
             if region_dataset in ["headers", "footers"]:
                 styles["justify-content"] = "space-between"
         # Vertical
-        if node.direction == 0:
+        elif node.direction == 0:
             styles["display"] = "block"
-
             if not styles_on:
                 styles["background"] = "lavenderblush"
-        if node.direction == 2:
+        # Inseparable
+        elif node.direction == 2:
+            styles["display"] = "flex"
             if (node.types == "ccluster") or (
                     region_dataset in ["headers", "webpages"]
             ):
-                styles["display"] = "flex"
+
                 if not styles_on:
                     styles["background"] = "lightblue"
             else:
-                styles["display"] = "flex"
+
                 if not styles_on:
                     styles["background"] = "lightgreen"
                 # Sometimes node_width and height are 0, should check this.
@@ -327,6 +325,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             )
             node.div.set("style", str_styles)
 
+            # To display for the debug
+            node.styles = str_styles
+
             # Buoyancy detection start
             # Horizontal
             if node.parent.direction == 1:
@@ -357,17 +358,10 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             node.scenarioelement_kwargs["struct_type"] = node.element_assigned
             print(node.element_assigned)
 
-        if (serializing == "freecanvas"):
-            # Attach elements for some fcluster
-            if node.types == "fcluster":
-                # Arrange the fcluster children based on their coordinates
-                pass
-
-        elif (serializing in {"virtualize_simple", "assemble"}):
+        if (serializing in {"virtualize_simple", "assemble"}):
             '''
             # Display elements for some fcluster
             if node.types == "fcluster":
-                
                 # Arrange the fcluster children based on their coordinates
                 if node.direction == 0:
                     array_elements = sorted(
@@ -380,7 +374,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 else:
                     array_elements = node.elements
             '''
-            # node.scenarioelement_inner_kwargs_list = []
+
             # for elem in array_elements:
             # Prepare an empty list to define scenario element structure for the further chain joining
             scenarioelement_inner_kwargs = {}
@@ -470,7 +464,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                         "rgba(" + bcolour_elem_value + ")"
                 )
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "input")
+                element = ET.SubElement(node.parent.div, "input")
                 # displaying various kinds of elements end
 
                 # Text assignment
@@ -495,7 +489,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 styles["width"] = str(min(node_width, node_height)) + "px"
                 styles["height"] = str(min(node_width, node_height)) + "px"
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "input")
+                element = ET.SubElement(node.parent.div, "input")
                 # displaying various kinds of elements end
                 element.set("type", "checkbox")
 
@@ -515,7 +509,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
             elif node.element_assigned in {"radiobutton"}:
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "input")
+                element = ET.SubElement(node.parent.div, "input")
                 # displaying various kinds of elements end
                 element.set("type", "radio")
 
@@ -538,7 +532,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 styles["height"] = str(node_height) + "px"
 
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "select")
+                element = ET.SubElement(node.parent.div, "select")
                 # displaying various kinds of elements end
 
                 # Text assignment
@@ -564,7 +558,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                         "rgba(" + fcolour_elem_value + ")"
                 )
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "div")
+                element = ET.SubElement(node.parent.div, "div")
                 # displaying various kinds of elements end
 
                 element.text = lorem.get_word(count=2)
@@ -590,7 +584,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
             elif node.element_assigned in {"textarea"}:
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "textarea")
+                element = ET.SubElement(node.parent.div, "textarea")
                 # displaying various kinds of elements end
 
                 element.set("placeholder", lorem.get_word(count=2))
@@ -614,7 +608,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
             elif node.element_assigned in {"form_heading"}:
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "h3")
+                element = ET.SubElement(node.parent.div, "h3")
                 # displaying various kinds of elements end
 
                 element.text = lorem.get_word(count=2)
@@ -640,7 +634,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
             elif node.element_assigned in {"form"}:
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "form")
+                element = ET.SubElement(node.parent.div, "form")
                 # displaying various kinds of elements end
 
                 str_styles = "; ".join(
@@ -671,7 +665,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 )
 
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "img")
+                element = ET.SubElement(node.parent.div, "img")
                 # displaying various kinds of elements end
 
                 element.set("src", elem_image_name)
@@ -698,7 +692,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 )
 
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "button")
+                element = ET.SubElement(node.parent.div, "button")
                 # displaying various kinds of elements end
                 element.text = lorem.get_word(count=1)
                 parameters["textContent"] = element.text
@@ -729,7 +723,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
             elif node.element_assigned in {"menu"}:
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "ul")
+                element = ET.SubElement(node.parent.div, "ul")
                 # displaying various kinds of elements end
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
@@ -747,7 +741,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
             elif node.element_assigned in {"li"}:
                 # displaying various kinds of elements start
-                element = ET.SubElement(node.div, "li")
+                element = ET.SubElement(node.parent.div, "li")
                 # displaying various kinds of elements end
 
                 element.text = lorem.get_word(count=1)
@@ -771,8 +765,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "buoyancy": 0,
                 }
 
-            node.scenarioelement_kwargs = scenarioelement_inner_kwargs
-            # node.scenarioelement_inner_kwargs_list.append(scenarioelement_inner_kwargs)
+            node.scenarioelement_kwargs.update(scenarioelement_inner_kwargs)
 
     return True
 
@@ -825,15 +818,6 @@ def elements_rootblock_create(root_block, outer_div_node, serializing="virtualiz
                                             # print(child, child.struct_type, child.parent, child.parent_id)
                                             # input()
                                             child.move_to(node.scenarioelement)
-        '''
-        elif (serializing in {"virtualize_simple", "assemble"}):
-            # Create elements for some fcluster
-            if node.types == "fcluster":
-                for inner_kwarg in node.scenarioelement_inner_kwargs_list:
-                    node.scenarioelement_inner = ScenarioElement.objects.create(
-                        parent=node.scenarioelement, **inner_kwarg
-                    )
-        '''
 
     return True
 
@@ -870,15 +854,29 @@ def clusters_printing(root_block, root_firstcluster, fname, input_image=[]):
     # Go through all the first clusters obtained after the annotation
     if len(image_firstclusters1):
         # Print all the firstclusters
-        for pre, fill, node in RenderTree(root_firstcluster):
+        for pre, fill, node in RenderTree(root_block):
             if node.types == "firstcluster":
-                   cv2.rectangle(
-                    image_firstclusters1,
-                    (node.x1, node.y1),
-                    (node.x2, node.y2),
-                    (20, 50, 107),
-                    1,
+                cv2.rectangle(
+                 image_firstclusters1,
+                 (node.x1, node.y1),
+                 (node.x2, node.y2),
+                 (20, 50, 107),
+                 1,
                 )
+
+            # Put the class id as a label.
+            label_element = str(node.element_assigned)
+            # Keep in mind, that this label will be different for the specific block types
+            # if (label_element == "list"):
+            cv2.putText(
+                image_firstclusters1,
+                label_element,
+                (node.x1, node.y2),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (36, 255, 12),
+                2,
+            )
 
         # Printing cclusters to file
         cv2.imwrite("firstclusters1_" + fname, image_firstclusters1)
@@ -963,36 +961,28 @@ def clusters_printing(root_block, root_firstcluster, fname, input_image=[]):
                     1,
                 )
 
-            if node.elements:
-                for elem in node.elements:
-                    # Define the element dimensions start
-                    elem_width = int(elem["shape_attributes"]["width"])
-                    elem_height = int(elem["shape_attributes"]["height"])
+            if node.types == "firstcluster":
+                cv2.rectangle(
+                    image_allcluelems,
+                    (node.x1, node.y1),
+                    (node.x2, node.y2),
+                    (255, 0, 255),
+                    1,
+                )
 
-                    x1 = int(elem["shape_attributes"]["x"])
-                    y1 = int(elem["shape_attributes"]["y"])
-                    # Define the element dimensions end
-                    cv2.rectangle(
-                        image_allcluelems,
-                        (x1, y1),
-                        (x1 + elem_width, y1 + elem_height),
-                        (255, 0, 255),
-                        1,
-                    )
-
-                    label_element = str(elem["region_attributes"]["HTML element"])
-
-                    # Put the class id as a label.
-                    # Keep in mind, that this label will be different for the specific block types
-                    cv2.putText(
-                        image_allcluelems,
-                        label_element,
-                        (x1, y1 + elem_height),
-                        cv2.FONT_HERSHEY_SIMPLEX,
-                        0.5,
-                        (36, 255, 12),
-                        2,
-                    )
+            # Put the class id as a label.
+            label_element = str(node.element_assigned)
+            # Keep in mind, that this label will be different for the specific block types
+            if (label_element == "list"):
+                cv2.putText(
+                    image_allcluelems,
+                    label_element,
+                    (node.x1, node.y2),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (36, 255, 12),
+                    2,
+                )
 
         # Printing all clusters with elements to file
         cv2.imwrite("allclusters_with_elements_" + fname, image_allcluelems)
@@ -1000,7 +990,7 @@ def clusters_printing(root_block, root_firstcluster, fname, input_image=[]):
     return True
 
 
-def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input, window_name1):
+def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input):
     # Ternary assembling algorithm runs after the clusters pro function start
     # Define the root block
     root_block = ClusterClass(min_x1, min_y1, max_x2, max_y2)
@@ -1011,14 +1001,12 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, im
     y_layout_intervals = []
 
     # for cluster in clusters:
-    for pre, fill, node in RenderTree(root_firstcluster):
-        if node is not root_firstcluster:
-            x_average = int((node.x1 + node.x2) / 2)
-            y_average = int((node.y1 + node.y2) / 2)
-            x_layout_intervals.append([node.x1, node.x2])
-            y_layout_intervals.append([node.y1, node.y2])
+    # An interval is a uniaxial projection of a rectangle
+    for node in root_firstcluster.children:
+        x_layout_intervals.append([node.x1, node.x2])
+        y_layout_intervals.append([node.y1, node.y2])
 
-    # print(x_layout_intervals)
+    # Suppose we have a collection of intervals, we have to merge all overlapping intervals.
     ob1_x = Partition()
     ob1_x_merged = ob1_x.merge(x_layout_intervals)
     # print("ob1_x_merged", ob1_x_merged, type(ob1_x_merged), len(ob1_x_merged))
@@ -1094,46 +1082,27 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, im
 
     # For the top level (children of the root_block) cclusters only
     # Go through all the top level cclusters obtained after the ternary algorithm
-    # Check if there are non-elment firstclusters, fclusters, dbclusters in
+    # Check if there are largest possible non-element firstclusters, fclusters, dbclusters in
     # Attach them to these cclusters
-    # Special sorting is necessary to prevent a double iteration
-    for pre, fill, node in RenderTree(root_block, childiter=nodesorted):
-        if node != root_block:
-            for pre1, fill1, node1 in RenderTree(root_firstcluster):
-                # Check if (node1 in node):
-                r1_e = (node.x1, node.y1, node.x2, node.y2)
-                r2_e = (node1.x1, node1.y1, node1.x2, node1.y2)
-                # print(r1_e, r2_e, node1.element_assigned)
-                if ((not (node1.element_assigned)) or (node1.element_assigned in {"div", "container"})) and (contains_rectangle(r1_e, r2_e)):
-                    # print(node.name, node1.name)
-                    # print(node.types, node1.types)
-                    # print(r1_e, r2_e)
-                    # print("node1.parent = node")
-                    # print(node.element_assigned, node1.element_assigned)
-                    node1.parent = node
+    for node in root_block.children:
+        for node1 in root_firstcluster.children:
+            # Check if (node1 in node):
+            r1_e = (node.x1, node.y1, node.x2, node.y2)
+            r2_e = (node1.x1, node1.y1, node1.x2, node1.y2)
+            # print("r1_e, r2_e", r1_e, r2_e, node1.element_assigned)
+            if contains_rectangle(r1_e, r2_e):
+                node1.parent = node
 
     # Go through all the blocks obtained after the ternary algorithm
     # Split each block
     for pre, fill, node in RenderTree(root_block):
         if node != root_block:
             if node.types in {"ccluster"}:
-                blocks_split(node, window_name1, image_opencv_input, overlay, root_firstcluster)
+                blocks_split(node, image_opencv_input, overlay, root_firstcluster)
+                # pass
 
-    # Go through all the blocks obtained after the ternary algorithm
-    # Correct the direction of the fclusters
-    for pre, fill, node in RenderTree(root_block):
-        if node.types == "fcluster":
-            if len(node.elements) > 1:
-                node.direction = node.origin_direction
+    # It seems possible to split complex dbclusters and re-arrange their child nodes to descendants
 
-    # Go through all the blocks obtained after the ternary algorithm
-    # Correct the dbclusters splitting
-    # This part of code should split complex dbclusters and re-arrange their child nodes to descendants
-    for pre, fill, node in RenderTree(root_block):
-        if node.types == "dbcluster":
-            if len(node.children) > 1:
-                # dbcluster_split(node, fclusters)
-                pass
     # Ternary assembling algorithm run after the clusters pro function end
     return root_block
 
@@ -1196,7 +1165,7 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
             center = node.center
             # DB clusters
             # cv2.rectangle(
-            #     image_opencv_input,
+            #     image_dbclusters,
             #     (int(center[0]), int(center[1])),
             #     (int(center[0]) + 10, int(center[1]) + 10),
             #     (0, 0, 255),
@@ -1212,8 +1181,7 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
                     idx = node.idx = center_closest_node[0]
                     node.label = labels[idx]
 
-    #
-    # cv2.imshow(window_name1, image_opencv_input)
+    # cv2.imshow("dbc", image_dbclusters)
     # cv2.waitKey(0)
     # DBSCAN.labels are included to fclusters end
 
@@ -1225,7 +1193,6 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
         dbcluster = ClusterClass(x1=9999, y1=9999, x2=0, y2=0)
         # Set some flags to the dbcluster
         dbcluster.types = "dbcluster"
-        dbcluster.is_elements_only = False
         dbcluster.processing = (
             "unsplitted"  # check if the ternary algorithm was applied
         )
@@ -1233,43 +1200,100 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
         dbcluster.element_assigned = "list"
         # Check the directiom with some function
         # dbcluster.direction = ?
-        # Check is_solid parameter later
-        # is_solid = True  # if clusters contain one element only. Based on flusters making algorithm
+        # Check later if cluster contains one element only maybe
         # clusters-based solution start
         for pre, fill, node in RenderTree(root_firstcluster):
             if (node.types == "fcluster") or ((node.is_leaf is True) and (node.types != "dbcluster")):
                 # Why dbclusters are leaves now? This should be corrected
                 # Cluster number label
-                print("label:", node.label)
+                # print("label:", node.label)
                 label = node.label
                 if label == n_cluster:
                     cluster_sources.append(node)
 
-                    # Maybe should change this parent assignment later
-                    # Detect parents for dbclusters
-                    dbcluster.parent = node.parent
+        if( len(cluster_sources) > 2):  # Filter out too small dbclusters
+            for cluster_source in cluster_sources:
+                # Construct the dbcluster object
+                # Find min max x1 y1 x2 y2
+                # dbcluster.elements.append(cluster_source)
+                dbcluster.x1 = min(dbcluster.x1, cluster_source.x1)
+                dbcluster.y1 = min(dbcluster.y1, cluster_source.y1)
+                dbcluster.x2 = max(dbcluster.x2, cluster_source.x2)
+                dbcluster.y2 = max(dbcluster.y2, cluster_source.y2)
 
-                    # Add flusters to dbclusters
-                    # node.parent = dbcluster
-                    # dbcluster.children.extend(node)
+            # clusters-based solution end
+            dbclusters.append(dbcluster)
 
-        for cluster_source in cluster_sources:
-            # Construct the dbcluster object
-            # Find min max x1 y1 x2 y2
-            # dbcluster.elements.append(cluster_source)
-            dbcluster.x1 = min(dbcluster.x1, cluster_source.x1)
-            dbcluster.y1 = min(dbcluster.y1, cluster_source.y1)
-            dbcluster.x2 = max(dbcluster.x2, cluster_source.x2)
-            dbcluster.y2 = max(dbcluster.y2, cluster_source.y2)
+    # Filtering the dbclusters
+    # If dbclusters are overlapped, remove one of them
+    # Comparison over 2 elements in list with itertools
+    for dbcluster, dbcluster1 in itertools.combinations(dbclusters, 2):
+        rect = (dbcluster.x1, dbcluster.y1, dbcluster.x2, dbcluster.y2)
+        rect1 = (dbcluster1.x1, dbcluster1.y1, dbcluster1.x2, dbcluster1.y2)
+        if (isRectangleOverlap(rect, rect1)):
+            dbclusters.remove(dbcluster1)
 
-            # Assign a list element to the source cluster
-            cluster_source.element_assigned = "listItem"
+    # Remove dbclusters which are contradictive with firstclusters (overlap, contains probably)
+    # Remove dbclusters which are contradictive with firstclusters (overlap) start
+    dbclusters_removed_indices = set()
+    for cluster in dbclusters:
+        rectangle_dbcluster = (cluster.x1, cluster.y1, cluster.x2, cluster.y2)
+        for pre, fill, node in RenderTree(root_firstcluster):
+            rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
+            if ((node != root_firstcluster) and (not node.is_leaf)):
+                if (isRectangleOverlap(rectangle_dbcluster, rectangle_firstcluster)):
+                    # print(len(dbclusters), rectangle_dbcluster)
+                    dbclusters_removed_indices.add(dbclusters.index(cluster))
 
-        # clusters-based solution end
+    # print( dbclusters_removed_indices)
+    for item in sorted(dbclusters_removed_indices, reverse=True):
+        del dbclusters[item]
+    # Remove dbclusters which are contradictive with firstclusters (overlap) end
 
-        dbclusters.append(dbcluster)
+    # Place dbclusters to the tree of the root_firstcluster
+    for cluster in dbclusters:
+        parent_rectangle = root_firstcluster
+        rectangle_dbcluster = (cluster.x1, cluster.y1, cluster.x2, cluster.y2)
+        larger_rectangles = []
+        smaller_rectangles = []
+        for pre, fill, node in RenderTree(root_firstcluster):
+            rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
+            # Find the array of larger rectangles
+            if node != root_firstcluster:
+                if contains_rectangle(rectangle_firstcluster, rectangle_dbcluster):
+                    larger_rectangles.append(node)
 
-        if len(image_dbclusters):
+        # Find the closest larger rectangle (clr) (1)
+        square_rectangle_min = 9999999  # Choose a large initial number for the minimal square
+        for rectangle in larger_rectangles:
+            # First rectangle width and height
+            width_rectangle = rectangle.x2 -rectangle.x1
+            height_rectangle = rectangle.y2 - rectangle.y1
+            square_rectangle = width_rectangle * height_rectangle
+            if (square_rectangle < square_rectangle_min):
+                parent_rectangle = rectangle
+                square_rectangle_min = square_rectangle
+                print(square_rectangle)
+
+        # Get all the children of the clr.
+        # Find that children of the clr, which are in the dbcluster.
+        # Now they are children of the dbcluster.
+        clr_children = parent_rectangle.children
+        # Find the array of smaller rectangles
+        for clr_child in clr_children:
+            rectangle_clr_child = (clr_child.x1, clr_child.y1, clr_child.x2, clr_child.y2)
+            if contains_rectangle(rectangle_dbcluster, rectangle_clr_child):
+                smaller_rectangles.append(clr_child)
+
+        # Now the dbcluster is a child of (1) and parent of (2)
+        cluster.parent = parent_rectangle
+        for child in smaller_rectangles:
+            child.parent = cluster
+            # Assign a list element to the children of the dbcluster
+            child.element_assigned = "listItem"
+
+    if len(image_dbclusters):
+        for dbcluster in dbclusters:
             # Display dbclusters
             cv2.rectangle(
                 image_dbclusters,
@@ -1279,34 +1303,67 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
                 1,
             )
 
-    if len(image_dbclusters):
         # Printing dbclusters to file
         cv2.imwrite("dbclusters_" + fname, image_dbclusters)
         # Clear the array of dbclusters pro-function end
 
-    return dbclusters
+    return root_firstcluster
 
 
 # Processing simple elements chains at the level of the firstclusters
 def firstclusters_elements_chains_processing(root_firstcluster, fname):
     for pre, fill, node in RenderTree(root_firstcluster):
+        # Processing text labels
         if (node.height == 1) and node.element_assigned in {
             "input",
             "select",
             "button",
             "image",
         }:
-            # Process only a singles labels
-            if(len(node.children)) == 1:
-                for child in node.children:
-                    if(child.element_assigned in {
-                        "ocrtext",
+            # Process only one label, others will be ignored
+            for child in node.children:
+                if(child.element_assigned in {
+                    "ocrtext",
 
-                    }):
+                }):
 
-                        node.placeholder = [child.x1, child.y1, child.x2, child.y2]
-                        # Child Node Detach
-                        child.parent = None
+                    node.placeholder = [child.x1, child.y1, child.x2, child.y2]
+                    # Child Node Detach
+                    child.parent = None
+
+        # Processing a small images in the text
+        if (node.height == 1) and node.element_assigned in {
+            "label",
+            "ocrtext",
+        }:
+
+            for child in node.children:
+                if(child.element_assigned in {
+                    "image",
+
+                }):
+                    node.element_assigned = "container"
+                    # Add a processing of this novel container with OCR further
+
+        # Processing a small images in the larger images
+        if node.element_assigned in {
+            "image",
+        }:
+            # Remove inner images
+            for child in node.children:
+                if(child.element_assigned in {
+                    "image",
+
+                }):
+
+                    # Child Node Detach
+                    child.parent = None
+
+        # text -> text
+        # Remove a small nested text nodes
+        if node.element_assigned in {"label", "ocrtext",}:
+            if node.parent.element_assigned in {"label", "ocrtext",}:
+                node.parent = None
 
     return root_firstcluster
 
@@ -1410,8 +1467,6 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
                                 # Define some values to this novel cluster
                                 cluster = ClusterClass(x1, y1, x2, y2)
                                 cluster.types = "fcluster"
-                                cluster.is_elements_only = True
-
                                 # Not sure that this assignment is important
                                 cluster.parent = node.parent
                                 # Fill the cluster
@@ -1424,10 +1479,9 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
 
                                 # Set some flags for this vertical fcluster
                                 # The cluster contains more than one element
-                                cluster.is_solid = False
+
                                 # The cluster direction is vertical
                                 cluster.direction = 0
-                                cluster.origin_direction = 0
 
                                 cluster.x1 = min(cluster.x1, x11)
                                 cluster.y1 = min(cluster.y1, y11)
@@ -1546,8 +1600,6 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
                                 # Define some values to this novel cluster
                                 cluster = ClusterClass(x1, y1, x2, y2)
                                 cluster.types = "fcluster"
-                                cluster.is_elements_only = True
-
                                 # Not sure that this assignment is important
                                 cluster.parent = node.parent
                                 # Fill the cluster
@@ -1560,10 +1612,8 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
 
                                 # Set some flags for this horizontal fcluster
                                 # The cluster contains more than one element
-                                cluster.is_solid = False
                                 # The cluster direction is horizontal
                                 cluster.direction = 1
-                                cluster.origin_direction = 1
 
                                 cluster.x1 = min(cluster.x1, x11)
                                 cluster.y1 = min(cluster.y1, y11)
@@ -3159,11 +3209,26 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             # calculate_ocvclusters(fdict, fnamesize)
             root_firstcluster = calculate_firstclusters(fdict, fname, fnamesize, serializer_node, img_height, img_width, image_firstclusters)
 
+            root_firstcluster = firstclusters_elements_chains_processing(root_firstcluster, fname)
+
+            '''
             # Elements-based clusters printing
             for pre, fill, node in RenderTree(root_firstcluster):
                 treestr = u"%s%s" % (pre, node.name)
                 print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
                 cv2.rectangle(image_firstclusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
+                label_element = str(node.element_assigned)
+                # Keep in mind, that this label will be different for the specific block types
+                # if (label_element == "list"):
+                cv2.putText(
+                    image_firstclusters,
+                    label_element,
+                    (node.x1, node.y2),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (36, 255, 12),
+                    2,
+                )
 
             # Printing firstclusters to file
             if len(image_firstclusters):
@@ -3172,29 +3237,25 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 print(imgpath)
 
                 cv2.imwrite(imgpath, image_firstclusters)
-
-            root_firstcluster = firstclusters_elements_chains_processing(root_firstcluster, fname)
-
-            # Elements-based clusters printing
-            for pre, fill, node in RenderTree(root_firstcluster):
-                treestr = u"%s%s" % (pre, node.name)
-                print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
-                cv2.rectangle(image_firstclusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
+            '''
 
             # Calculate fclusters function calling
             root_firstcluster = calculate_fclusters(root_firstcluster, fname)
 
+            '''
             # Elements-based clusters printing
             for pre, fill, node in RenderTree(root_firstcluster):
                 treestr = u"%s%s" % (pre, node.name)
                 print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
                 cv2.rectangle(image_firstclusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
+            '''
 
             # Call the fclusters printing
             print_clusters_length(root_firstcluster)
 
             '''
             # Remove fclusters which are contradictive with firstclusters (overlap) start
+            # Maybe do this at the fclusters calculations function
             for cluster in clusters:
                 if (len(cluster.elements) > 2):  # Fclusters should contain 2 and more elements
                     rectangle_fcluster = (cluster.x1, cluster.y1, cluster.x2, cluster.y2)
@@ -3209,52 +3270,43 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
             if region_dataset in ["headers", "footers", "webpages"]:
                 # Calculate dbclusters function calling
-                dbclusters = calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclusters)
+                # DBclusters are adding to firstclusters in an appropriate order
+                root_firstcluster = calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclusters)
 
-                '''
-                # Remove dbclusters which are contradictive with firstclusters (overlap, contains probably)
-                # Remove dbclusters which are contradictive with firstclusters (overlap) start
-                for cluster in dbclusters:
-                        rectangle_dbcluster = (cluster.x1, cluster.y1, cluster.x2, cluster.y2)
-                        for pre, fill, node in RenderTree(root_firstcluster):
-                            rectangle_firstcluster = (node.x1, node.y1, node.x2, node.y2)
-                            if (node != root_firstcluster) and (not node.is_leaf):
-                                if (isRectangleOverlap_nonnested(rectangle_dbcluster, rectangle_firstcluster)):
-                                    # print(len(dbclusters), rectangle_dbcluster)
-                                    dbclusters.remove(cluster)
-                                    break
-                # Remove dbclusters which are contradictive with firstclusters (overlap) end
-                '''
-
-                # DBclusters should be added to firstclusters in an appropriate order
-                # First it is possible to remove dbclusters which were placed in firstclusters
-                # In this case, dbclusters should be added to the root_firstcluster as a final firstclusters
-                # After that, cclusters should be calculated on the top firstclusters, just after the root_firstcluster
-
-            '''
-            try:
-                # Replace clusters for dbclusters if possible
-                fclusters = copy.copy(clusters)
-                clusters = dbclusters
-            except Exception:
-                pass
-            finally:
-                pass
-            '''
-
-            # print("before: ")
-            # for pre, fill, node in RenderTree(root_firstcluster):
-            #     if node.types:
-            #         print(node.types)
-            # Do the containerization based on firstclusters and dbclusters, they should be both merged to clusters
-            root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input,
-                                                window_name1)
-
+            # Print all the clusters after the current step
             # Elements-based clusters printing
-            for pre, fill, node in RenderTree(root_block):
+            for pre, fill, node in RenderTree(root_firstcluster):
                 treestr = u"%s%s" % (pre, node.name)
                 print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
+                cv2.rectangle(image_firstclusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
+                label_element = str(node.element_assigned)
+                # Keep in mind, that this label will be different for the specific block types
+                # if (label_element == "list"):
+                cv2.putText(
+                    image_firstclusters,
+                    label_element,
+                    (node.x1, node.y2),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5,
+                    (36, 255, 12),
+                    2,
+                )
 
+            # Printing firstclusters to file
+            if len(image_firstclusters):
+                imgpath = SAVE_DIR + "/firstclusters_" + fname
+                print(SAVE_DIR)
+                print(imgpath)
+
+                cv2.imwrite(imgpath, image_firstclusters)
+
+            # Do the containerization based on firstclusters and dbclusters, they should be both merged to clusters
+            root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input)
+
+            # Elements-based clusters printing
+            for pre, fill, node in RenderTree(root_firstcluster):
+                treestr = u"%s%s" % (pre, node.name)
+                print(treestr.ljust(8), node.element_assigned, node.types, node.direction, (node.x1, node.y1), (node.x2, node.y2))
 
             # Create a directory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
@@ -3273,21 +3325,46 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 styles=styles,
                 buoyancy=0,
             )
-            # print("after: ")
-            # for pre, fill, node in RenderTree(root_block):
-            #     if node.types:
-            #         print(node.types)
-
-            # Printing clusters function calling
-            clusters_printing(root_block, root_firstcluster, fname, input_image=image_opencv_input)
 
             # Obtaining the absolute path for the parameters directly. Should change this later.
             o = urlparse(self.context["request"].build_absolute_uri())
             # Detect elements for the root block
             elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                                image_original, fname, o, serializing="assemble")
+
             # Serializer only
             elements_rootblock_create(root_block, outer_div_node, serializing="assemble")
+
+            # Printing clusters function calling
+            clusters_printing(root_block, root_firstcluster, fname, input_image=image_opencv_input)
+
+            # Generating HTML for printing
+            html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
+            # print("html=", html)
+
+            # Print html code
+            with open(fname + ".html", "w") as html_file:
+                print(html, file=html_file)
+
+            # Print tree to file
+            with open(VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w") as tree_file:
+                for pre, fill, node in RenderTree(root_block):
+                    treestr = u"%s%s" % (pre, node.name)
+                    print(
+                        treestr.ljust(8),
+                        node.x1,
+                        node.y1,
+                        node.x2,
+                        node.y2,
+                        "direction:",
+                        node.direction,
+                        node.types,
+                        node.element_assigned,
+                        node.styles,
+                        "processing:",
+                        node.processing,
+                        file=tree_file,
+                    )
 
         return serializer_node
 
