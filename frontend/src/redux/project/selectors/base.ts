@@ -83,6 +83,10 @@ export function selectShowingGrid(state: AppReduxState) {
   return selectProjectState(state).ui.showGrid;
 }
 
+export function selectExportScreenFlag(state: AppReduxState) {
+  return selectProjectState(state).ui.exportScreenFlag;
+}
+
 export const selectBordersEnabled = (state: AppReduxState) => {
   return selectProjectState(state).ui.bordersEnabled;
 };
