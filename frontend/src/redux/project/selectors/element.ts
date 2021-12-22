@@ -38,6 +38,11 @@ export const selectScreenRootElement = (screenId: number) => ({
   return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
 };
 
+export const selectScreen = (screenId: number) => ({
+  project,
+}: AppReduxState) => {
+  return project.data.screens[screenId]?.screenData;
+};
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
