@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import AddIcon from '@material-ui/icons/Add';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { addChildToElement } from '@Redux/project/actions';
-import { BreadcrumbItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton } from '@material-ui/core';
+import {
+  selectCurrentScreenId,
+  selectScreensWithoutMaster,
+} from '@Redux/project/selectors/screen';
+import {
+  IconButton,
+  Checkbox,
+  MenuItem,
+  FormControlLabel,
+} from '@material-ui/core';
 import { useDebouncedCallback } from 'use-debounce';
 import {
   StyledTextField,
@@ -37,22 +44,24 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     '&:hover': {
       backgroundColor: lighten(palette.panel.main, 0.1),
     },
-    details: {
-      padding: spacing(0.5),
-      display: 'flex',
-      flexDirection: 'column',
-    },
+  },
+  details: {
+    padding: spacing(0.5),
+    display: 'flex',
+    flexDirection: 'column',
   },
 }));
 
-const NavbarItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
-  updateParams,
-  element,
-  canEdit,
-}) => {
+type Props = {
+  updateParams: any;
+  element: any;
+  canEdit: boolean;
+};
+
+const NavbarItems: React.FC<Props> = ({ updateParams, element, canEdit }) => {
   const {
     id,
-    parameters: { titleName, titleLink },
+    parameters: { titleName, titleLink, isLink, screenName, screenLink },
   } = element;
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -77,6 +86,51 @@ const NavbarItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
   const debouncedTitleLink = useDebouncedCallback((value) => {
     updateParams({ titleLink: value }, id);
   }, 500);
+
+  const [selectedScreen, selectScreen] = useState(screenName);
+  const screens = useSelector(selectScreensWithoutMaster);
+
+  const debouncedLinkedScreen = useDebouncedCallback((value, screenName) => {
+    updateParams(
+      {
+        isLink: false,
+        titleLink: '',
+        screenLink: value,
+        screenName,
+      },
+      id,
+    );
+  }, 500);
+
+  const setElementScreen = (ev) => {
+    const { value } = ev.target;
+    if (value === 'noScreen') {
+      selectScreen('noScreen');
+      debouncedLinkedScreen.callback('', '');
+    } else {
+      const data = value.toString().split('-');
+      selectScreen(`${data[0]}-${data[1]}`);
+      debouncedLinkedScreen.callback(data[0], data[1]);
+    }
+  };
+
+  useEffect(() => {
+    if (screenName && screenLink) {
+      const selectdScreen = `${screenLink}-${screenName}`;
+      selectScreen(selectdScreen);
+    } else {
+      selectScreen('noScreen');
+    }
+  }, [screenName, screenLink]);
+
+  const handleCheckboxChange = (
+    textId: string,
+    { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    updateParams({ isLink: checked, screenLink: '', screenName: '' }, textId);
+    selectScreen('noScreen');
+  };
+
   return (
     <div>
       <StyledAccordion>
@@ -84,7 +138,7 @@ const NavbarItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
           <div className={classes.wrapper}>Title navbar</div>
         </StyledAccordionSummary>
 
-        <StyledAccordionDetails>
+        <StyledAccordionDetails className={classes.details}>
           <StyledTextField
             variant="outlined"
             defaultValue={titleName}
@@ -95,16 +149,54 @@ const NavbarItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
             multiline
             disabled={!canEdit}
           />
-          <StyledTextField
-            variant="outlined"
-            defaultValue={titleLink}
-            onChange={(ev) => debouncedTitleLink.callback(ev.target.value)}
-            label="Link"
-            margin="dense"
-            fullWidth
-            multiline
-            disabled={!canEdit}
+          <FormControlLabel
+            id={id}
+            control={
+              <Checkbox
+                value="make link"
+                name="make link"
+                checked={isLink || false}
+                onChange={(event) => handleCheckboxChange(id, event)}
+                disabled={!canEdit}
+              />
+            }
+            label="Make Link"
           />
+          {isLink && (
+            <StyledTextField
+              variant="outlined"
+              defaultValue={titleLink}
+              onChange={(ev) => debouncedTitleLink.callback(ev.target.value)}
+              label="Link"
+              margin="dense"
+              fullWidth
+              multiline
+              disabled={!canEdit}
+            />
+          )}
+          {!isLink && (
+            <StyledTextField
+              margin="dense"
+              fullWidth
+              label="Link with screen"
+              onChange={setElementScreen}
+              select
+              value={selectedScreen || 'noScreen'}
+            >
+              <MenuItem value="noScreen" dense>
+                Select Screen
+              </MenuItem>
+              {screens.map((data) => (
+                <MenuItem
+                  value={`${data?.project}/${data?.id}-${data?.name}`}
+                  key={data?.id}
+                  dense
+                >
+                  {data?.name}
+                </MenuItem>
+              ))}
+            </StyledTextField>
+          )}
         </StyledAccordionDetails>
       </StyledAccordion>
       {navbarItem.map(({ id, parameters }) => (

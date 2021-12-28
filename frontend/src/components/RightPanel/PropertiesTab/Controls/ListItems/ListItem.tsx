@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { Checkbox, IconButton, FormControlLabel } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import {
+  Checkbox,
+  IconButton,
+  FormControlLabel,
+  MenuItem,
+} from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import {
+  selectCurrentScreenId,
+  selectScreensWithoutMaster,
+} from '@Redux/project/selectors/screen';
 import {
   StyledAccordion,
   StyledAccordionDetails,
@@ -50,7 +58,7 @@ type Props = {
 
 const ListItem: React.FC<Props> = ({
   id,
-  parameters: { textContent, isLink, link },
+  parameters: { textContent, isLink, link, screenName, screenLink },
   updateParams,
   isLast,
   canEdit,
@@ -59,13 +67,35 @@ const ListItem: React.FC<Props> = ({
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
 
+  const [selectedScreen, selectScreen] = useState(screenName);
+  const screens = useSelector(selectScreensWithoutMaster);
+
   const debouncedText = useDebouncedCallback((value) => {
     updateParams({ textContent: value.toString('html') }, id);
   }, 500);
 
   const debouncedLink = useDebouncedCallback((value) => {
-    updateParams({ link: value }, id);
+    updateParams({ link: value, screenLink: '', screenName: '' }, id);
   }, 500);
+
+  const debouncedLinkedScreen = useDebouncedCallback((value, screenName) => {
+    updateParams(
+      { isLink: false, link: '', screenLink: value, screenName },
+      id,
+    );
+  }, 500);
+
+  const setElementScreen = (ev) => {
+    const { value } = ev.target;
+    if (value === 'noScreen') {
+      selectScreen('noScreen');
+      debouncedLinkedScreen.callback('', '');
+    } else {
+      const data = value.toString().split('-');
+      selectScreen(`${data[0]}-${data[1]}`);
+      debouncedLinkedScreen.callback(data[0], data[1]);
+    }
+  };
 
   const handleDeleteButtonClick = () => {
     dispatch(deleteElement(id, { screenId: currentScreenId }));
@@ -75,12 +105,25 @@ const ListItem: React.FC<Props> = ({
     listItemID: string,
     { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    updateParams({ isLink: checked }, listItemID);
+    updateParams(
+      { isLink: checked, screenLink: '', screenName: '' },
+      listItemID,
+    );
+    selectScreen('noScreen');
   };
 
   const [state, setState] = useState(
     RichTextEditor.createValueFromString(textContent, 'html'),
   );
+
+  useEffect(() => {
+    if (screenName && screenLink) {
+      const selectdScreen = `${screenLink}-${screenName}`;
+      selectScreen(selectdScreen);
+    } else {
+      selectScreen('noScreen');
+    }
+  }, [screenName, screenLink]);
 
   const handleChange = (value) => {
     setState(value);
@@ -119,7 +162,7 @@ const ListItem: React.FC<Props> = ({
             <Checkbox
               value="make link"
               name="make link"
-              checked={isLink}
+              checked={isLink || false}
               onChange={(event) => handleCheckboxChange(id, event)}
               disabled={!canEdit}
             />
@@ -137,6 +180,30 @@ const ListItem: React.FC<Props> = ({
             multiline
             disabled={!canEdit}
           />
+        )}
+
+        {!isLink && (
+          <StyledTextField
+            margin="dense"
+            fullWidth
+            label="Link with screen"
+            onChange={setElementScreen}
+            select
+            value={selectedScreen || 'noScreen'}
+          >
+            <MenuItem value="noScreen" dense>
+              Select Screen
+            </MenuItem>
+            {screens.map((data) => (
+              <MenuItem
+                value={`${data?.project}/${data?.id}-${data?.name}`}
+                key={data?.id}
+                dense
+              >
+                {data?.name}
+              </MenuItem>
+            ))}
+          </StyledTextField>
         )}
       </StyledAccordionDetails>
     </StyledAccordion>
