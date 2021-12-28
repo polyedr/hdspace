@@ -16,6 +16,7 @@ import {
   Normalized,
   StateElement,
   UserProjectPermission,
+  ScreenData,
 } from '@Src/types';
 import {
   activateScreenSaga,
@@ -107,6 +108,7 @@ import {
   selectElementAsTree,
   selectItemToCopyInfo,
   selectScreenRootElement,
+  selectScreen,
 } from '../selectors/element';
 import { selectCurrentScreen } from '../selectors/screen';
 import {
@@ -247,6 +249,7 @@ const duplicateScreenSaga = withRequiredPermissions(
       selectScreenRootElement(screenID),
     );
 
+    const screenData: ScreenData = yield select(selectScreen(screenID));
     const sourceCurrentScreen: ReturnType<
       typeof selectCurrentScreen
     > = yield select(selectCurrentScreen);
@@ -268,6 +271,7 @@ const duplicateScreenSaga = withRequiredPermissions(
         projectID,
         name,
         buoyancy: screensNumber,
+        freeCanvas: screenData.freeCanvas,
       }),
     );
 
