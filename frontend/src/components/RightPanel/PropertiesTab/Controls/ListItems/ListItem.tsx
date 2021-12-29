@@ -105,10 +105,17 @@ const ListItem: React.FC<Props> = ({
     listItemID: string,
     { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    updateParams(
-      { isLink: checked, screenLink: '', screenName: '' },
-      listItemID,
-    );
+    if (checked) {
+      updateParams(
+        { isLink: checked, screenLink: '', screenName: '' },
+        listItemID,
+      );
+    } else {
+      updateParams(
+        { isLink: checked, link: '', screenLink: '', screenName: '' },
+        listItemID,
+      );
+    }
     selectScreen('noScreen');
   };
 

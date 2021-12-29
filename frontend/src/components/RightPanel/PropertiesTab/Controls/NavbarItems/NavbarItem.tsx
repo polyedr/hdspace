@@ -111,7 +111,14 @@ const NavbarItem: React.FC<Props> = ({
     textId: string,
     { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    updateParams({ isLink: checked, screenLink: '', screenName: '' }, textId);
+    if (checked) {
+      updateParams({ isLink: checked, screenLink: '', screenName: '' }, textId);
+    } else {
+      updateParams(
+        { isLink: checked, link: '', screenLink: '', screenName: '' },
+        textId,
+      );
+    }
     selectScreen('noScreen');
   };
 
