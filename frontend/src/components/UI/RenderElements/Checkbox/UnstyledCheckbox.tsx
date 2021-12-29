@@ -23,20 +23,25 @@ const UnstyledCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
     const classes = useStyles(props);
 
     return (
-      <input
-        type="checkbox"
+      <div
         ref={ref}
         id={id}
-        data-ls-id={id}
-        className={cn(
-          className,
-          groupClass,
-          classes.ownStyles,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
-        )}
-        checked={!isDisabled && isChecked}
         {...eventHandlers}
-      />
+        data-ls-id={id} >
+        <input
+          type="checkbox"
+          name="Checkbox"
+          className={cn(
+            className,
+            groupClass,
+            classes.ownStyles,
+            isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          )}
+          checked={!isDisabled && isChecked}
+        />
+        <label>{element.parameters.value}</label>
+
+      </div>
     );
   },
 );
