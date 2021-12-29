@@ -134,6 +134,7 @@ const Borders: React.FC<Props> = ({
     delete resizeHandle.left;
     delete resizeHandle.right;
   }
+
   return (
     <>
       {isActiveBorder &&
@@ -150,7 +151,7 @@ const Borders: React.FC<Props> = ({
                 fontWeight: 'bold',
               }}
             >
-              {`${height} px`}
+              {`${Math.trunc(height)} px`}
             </div>
             <div
               style={{
@@ -161,7 +162,7 @@ const Borders: React.FC<Props> = ({
                 fontWeight: 'bold',
               }}
             >
-              {`${width} px`}
+              {`${Math.trunc(width)} px`}
             </div>
           </div>
         )}
