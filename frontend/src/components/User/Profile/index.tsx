@@ -15,6 +15,7 @@ import {
   setUserExperience,
   logoutStart,
 } from '@Redux/user/actions';
+import { Link } from 'react-router-dom';
 import IMAGES from '@Constants/images';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
@@ -32,6 +33,7 @@ import {
   FormHelperText,
 } from '@material-ui/core';
 import { updateUISettingsParameters } from '@Redux/project/actions';
+import PATH_NAMES from '@Constants/pathNames';
 import SubmitError from '../SubmitError';
 import Button from '../../UI/Button';
 
@@ -109,6 +111,12 @@ const useStyles = makeStyles((theme) =>
     error: {
       margin: theme.spacing(1),
     },
+    link: {
+      '&, &:active, &:visited, &:focus': {
+        color: theme.palette.primary.light,
+      },
+      textDecoration: 'none',
+    },
   }),
 );
 
@@ -182,9 +190,14 @@ const Profile: React.FC = () => {
           Profile settings
         </Typography>
 
-        <Button styleType="link" onClick={handleLogout}>
-          Log out
-        </Button>
+        <div>
+          <Link className={classes.link} to={PATH_NAMES.projects}>
+            My projects
+          </Link>
+          <Button styleType="link" onClick={handleLogout}>
+            Log out
+          </Button>
+        </div>
       </div>
 
       <Box padding={2}>
@@ -417,7 +430,7 @@ const Profile: React.FC = () => {
           </div>
 
           <div className={classes.subheader}>
-            User guide wathched
+            User guide watched
             <Switch
               checked={userGuideWatched}
               onChange={handleChangeUserGuideWatched}
