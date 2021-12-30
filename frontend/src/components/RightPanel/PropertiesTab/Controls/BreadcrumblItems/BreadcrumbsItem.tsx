@@ -48,7 +48,7 @@ type Props = {
 
 const BreadcrumbsItem: React.FC<Props> = ({
   id,
-  parameters: { textContent, isLink },
+  parameters: { textContent, isLink, link },
   updateParams,
   isLast,
   canEdit,
@@ -59,6 +59,10 @@ const BreadcrumbsItem: React.FC<Props> = ({
 
   const debouncedText = useDebouncedCallback((value) => {
     updateParams({ textContent: value }, id);
+  }, 500);
+
+  const debouncedLink = useDebouncedCallback((value) => {
+    updateParams({ link: value }, id);
   }, 500);
 
   const handleDeleteButtonClick = () => {
@@ -115,6 +119,17 @@ const BreadcrumbsItem: React.FC<Props> = ({
           }
           label="Make Link"
         />
+        {isLink && (
+          <StyledTextField
+            defaultValue={link}
+            onChange={(ev) => debouncedLink.callback(ev.target.value)}
+            label="Item URL"
+            margin="dense"
+            fullWidth
+            multiline
+            disabled={!canEdit}
+          />
+        )}
       </StyledAccordionDetails>
     </StyledAccordion>
   );
