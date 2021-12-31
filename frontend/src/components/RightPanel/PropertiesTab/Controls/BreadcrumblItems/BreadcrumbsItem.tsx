@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Checkbox,
-  IconButton,
-  FormControlLabel,
-  MenuItem,
-} from '@material-ui/core';
+import {Checkbox,IconButton,FormControlLabel,MenuItem} from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
-import {
-  selectCurrentScreenId,
-  selectScreensWithoutMaster,
-} from '@Redux/project/selectors/screen';
+import { selectCurrentScreenId,selectScreensWithoutMaster } from '@Redux/project/selectors/screen';
 import {
   StyledAccordion,
   StyledAccordionDetails,
@@ -56,7 +48,7 @@ type Props = {
 
 const BreadcrumbsItem: React.FC<Props> = ({
   id,
-  parameters: { textContent, isLink, link, screenName, screenLink },
+  parameters: { textContent,isLink,link,screenName,screenLink },
   updateParams,
   isLast,
   canEdit,
@@ -104,15 +96,15 @@ const BreadcrumbsItem: React.FC<Props> = ({
     { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
   ) => {
     if (checked) {
-      updateParams(
-        { isLink: checked, screenLink: '', screenName: '' },
-        listItemID,
-      );
+        updateParams(
+          { isLink: checked, screenLink: '', screenName: '' },
+          listItemID,
+        );
     } else {
-      updateParams(
-        { isLink: checked, link: '', screenLink: '', screenName: '' },
-        listItemID,
-      );
+        updateParams(
+          { isLink: checked, link: '', screenLink: '', screenName: '' },
+          listItemID,
+        );
     }
     selectScreen('noScreen');
   };
