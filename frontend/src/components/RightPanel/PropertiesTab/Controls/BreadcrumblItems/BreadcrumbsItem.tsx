@@ -61,6 +61,10 @@ const BreadcrumbsItem: React.FC<Props> = ({
     updateParams({ textContent: value }, id);
   }, 500);
 
+  const debouncedLink = useDebouncedCallback((value) => {
+    updateParams({ link: value }, id);
+  }, 500);
+
   const handleDeleteButtonClick = () => {
     dispatch(deleteElement(id, { screenId: currentScreenId }));
   };
