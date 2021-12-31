@@ -206,10 +206,24 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
         topLeft: cn(classes.resizeHande, activeHandle('topLeft')),
         topRight: cn(classes.resizeHande, activeHandle('topRight')),
       }}
+      disableDragging={disableInteractions}
+      enableResizing={{
+        bottom: !disableInteractions,
+        bottomLeft: !disableInteractions,
+        bottomRight: !disableInteractions,
+        left: !disableInteractions,
+        top: !disableInteractions,
+        right: !disableInteractions,
+        topLeft: !disableInteractions,
+        topRight: !disableInteractions,
+      }}
     >
       {renderElement()}
 
-      <Borders element={element} hover={hover} isActive={isActive} />
+      {!disableInteractions ? (
+        <Borders element={element} hover={hover} isActive={isActive} />
+      ) : null}
+
     </Rnd>
   );
 };
