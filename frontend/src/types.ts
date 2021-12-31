@@ -1614,3 +1614,4 @@ export type ChatCredentials = {
 };
 
 export const CONTROLS_NOT_ALLOW_LINK = ['html'] as const;
+export const CONTROLS_NOT_ALLOW_RICHTEXTBOX = ['checkbox'] as const;
