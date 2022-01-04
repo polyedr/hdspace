@@ -581,6 +581,7 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
         : oldScreen.name,
       screenData: {
         ...(data || {}),
+        freeCanvas : oldScreen.screenData.freeCanvas,
         editableScreenUser: [...oldScreen.screenData.editableScreenUser],
         meta: {
           ...(oldScreen.meta || {}),
