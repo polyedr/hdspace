@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
@@ -34,6 +34,7 @@ import {
 } from '@material-ui/core';
 import { updateUISettingsParameters } from '@Redux/project/actions';
 import PATH_NAMES from '@Constants/pathNames';
+import ImageCropper from '@Components/CropImage';
 import SubmitError from '../SubmitError';
 import Button from '../../UI/Button';
 
@@ -124,6 +125,9 @@ const Profile: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const [imageToCrop, setImageToCrop] = useState<any>(undefined);
+  const [croppedImage, setCroppedImage] = useState<any>(undefined);
+
   const userData = useSelector(selectUserData);
   const { firstName, lastName, email, profile } = userData;
   const {
@@ -153,7 +157,19 @@ const Profile: React.FC = () => {
     const formData = new FormData();
     formData.append('avatar', file, file.name);
 
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      const image = reader.result;
+      setImageToCrop(image);
+    });
+
+    reader.readAsDataURL(e.target.files[0]);
     dispatch(changeProfileData((formData as any) as ProfileData));
+  };
+
+  const handleSaved = () => {
+    localStorage.setItem('ava', croppedImage);
+    setImageToCrop(undefined);
   };
 
   const handleChangeBordersMode = () => {
@@ -369,7 +385,25 @@ const Profile: React.FC = () => {
               >
                 <div className={classes.imageInputLabel}>Your photo</div>
 
-                <img src={avatar ?? IMAGES.prof} alt="profile" />
+                <img
+                  alt="profile"
+                  src={localStorage.getItem('ava') ?? IMAGES.prof}
+                />
+
+                {imageToCrop && (
+                  <>
+                    <ImageCropper
+                      imageToCrop={imageToCrop}
+                      onImageCropped={(croppedImage) =>
+                        setCroppedImage(croppedImage)
+                      }
+                    />
+
+                    <button type="button" onClick={handleSaved}>
+                      Saved
+                    </button>
+                  </>
+                )}
 
                 <div className={classes.profileImageActions}>
                   <label className={classes.imageActionButton}>
