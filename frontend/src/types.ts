@@ -1133,6 +1133,7 @@ export type ProfileData = {
 };
 
 export type ProfileDataParameters = {
+  avatarCrop: string;
   profileDataParameters: ProfileDataUIParameters;
 };
 export type ProfileDataUIParameters = {

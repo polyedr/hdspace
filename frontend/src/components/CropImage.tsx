@@ -3,7 +3,7 @@ import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 
 function ImageCropper(props) {
-  const { imageToCrop, onImageCropped } = props;
+  const { imageToCrop, onImageCropped, setResult } = props;
 
   const [cropConfig, setCropConfig] = useState({
     unit: '%',
@@ -33,6 +33,9 @@ function ImageCropper(props) {
       cropConfig.height,
     );
 
+    const base64Image = canvas.toDataURL('image/jpeg', 1);
+
+    setResult(base64Image);
     return new Promise((resolve, reject) => {
       canvas.toBlob((blob: any) => {
         if (!blob) {

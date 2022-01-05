@@ -132,9 +132,8 @@ export function* changeProfileDataSaga({
     const newProfileData: ServerProfileData = yield call(
       reqWrapper,
       apiChangeProfileData,
-      { id, data: payload },
+      { id, data: { parameters: { avatarCrop: payload } } },
     );
-
     yield put(
       Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
     );

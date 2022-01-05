@@ -135,7 +135,10 @@ const Profile: React.FC = () => {
       profileDataParameters: { autoSwitchTabs, dropTargetBordersMode },
     },
   } = profile;
-  const { avatar, role } = useSelector(selectProfileData);
+  const {
+    role,
+    parameters: { avatarCrop },
+  } = useSelector(selectProfileData);
   const userGuideWatched = useSelector(selectUserGuideWatched);
   const handleLogout = () => {
     dispatch(logoutStart());
@@ -164,11 +167,10 @@ const Profile: React.FC = () => {
     });
 
     reader.readAsDataURL(e.target.files[0]);
-    dispatch(changeProfileData((formData as any) as ProfileData));
   };
 
   const handleSaved = () => {
-    localStorage.setItem('ava', croppedImage);
+    dispatch(changeProfileData((croppedImage as any) as ProfileData));
     setImageToCrop(undefined);
   };
 
@@ -385,18 +387,13 @@ const Profile: React.FC = () => {
               >
                 <div className={classes.imageInputLabel}>Your photo</div>
 
-                <img
-                  alt="profile"
-                  src={localStorage.getItem('ava') ?? IMAGES.prof}
-                />
+                <img alt="profile" src={avatarCrop ?? IMAGES.prof} />
 
                 {imageToCrop && (
                   <>
                     <ImageCropper
                       imageToCrop={imageToCrop}
-                      onImageCropped={(croppedImage) =>
-                        setCroppedImage(croppedImage)
-                      }
+                      setResult={setCroppedImage}
                     />
 
                     <button type="button" onClick={handleSaved}>
