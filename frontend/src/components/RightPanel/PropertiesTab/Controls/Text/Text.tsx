@@ -3,7 +3,7 @@ import { ParagraphElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedInputChange } from '@Utils/debounceHooks';
 
-const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
+const Text: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   element,
   updateParams,
   canEdit,
@@ -32,4 +32,4 @@ const TextContent: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   );
 };
 
-export default TextContent;
+export default Text;
