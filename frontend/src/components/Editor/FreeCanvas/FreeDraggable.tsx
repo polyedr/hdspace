@@ -162,7 +162,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
     resizeDir === dir && classes.activeResizeHandle;
 
   const renderElement = () => (
-    <Renderer element={element} isDisabled={disableInteractions}>
+    <Renderer element={element} isDisabled={!disableInteractions}>
       {element.children.map((childId) => (
         <FreeDraggable key={childId} elementId={childId} />
       ))}

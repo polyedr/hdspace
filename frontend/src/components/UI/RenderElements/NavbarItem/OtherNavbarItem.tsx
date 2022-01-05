@@ -11,6 +11,7 @@ import { RendererProps } from '../types';
 const useStyles = makeComponentStyles('breadcrumb', {
   urlClick: {
     cursor: 'pointer',
+    textDecoration: 'none'
   },
 });
 
