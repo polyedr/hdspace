@@ -6,7 +6,10 @@ import { useDebouncedCallback } from 'use-debounce';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectScreensWithoutMaster } from '@Redux/project/selectors/screen';
 import { useSelector } from 'react-redux';
-import { CONTROLS_NOT_ALLOW_LINK,CONTROLS_NOT_ALLOW_RICHTEXTBOX } from '@Src/types';
+import {
+  CONTROLS_NOT_ALLOW_LINK,
+  CONTROLS_NOT_ALLOW_RICHTEXTBOX,
+} from '@Src/types';
 import RichTextContent from '../../helperComponents/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
@@ -90,14 +93,13 @@ const TextContent = ({ element, updateParams, canEdit }) => {
 
   return (
     <>
-      {
-      CONTROLS_NOT_ALLOW_RICHTEXTBOX.includes(element.type) ? null : (
+      {CONTROLS_NOT_ALLOW_RICHTEXTBOX.includes(element.type) ? null : (
         <RichTextContent
           canEdit={canEdit}
           state={state}
           handleChange={handleChange}
-        />)
-      }
+        />
+      )}
 
       {CONTROLS_NOT_ALLOW_LINK.includes(element.type) ? null : (
         <>

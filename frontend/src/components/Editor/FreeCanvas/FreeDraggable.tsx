@@ -223,7 +223,6 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
       {!disableInteractions ? (
         <Borders element={element} hover={hover} isActive={isActive} />
       ) : null}
-
     </Rnd>
   );
 };
