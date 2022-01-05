@@ -90,6 +90,7 @@ import {
   SetScreens,
   ToggleContainersBorders,
   ToggleGrid,
+  ExportScreenFlag,
   UnwrapFromContainer,
   UpdateElement,
   UpdateElementImage,
@@ -607,6 +608,11 @@ export const toggleContainersBorders = (
 
 export const toggleGrid = (enabled: boolean): ToggleGrid => ({
   type: TYPES.TOGGLE_GRID,
+  payload: enabled,
+});
+
+export const exportScreenFlag = (enabled: boolean): ExportScreenFlag => ({
+  type: TYPES.EXPORT_SCREEN_FLAG,
   payload: enabled,
 });
 

@@ -26,6 +26,10 @@ function uiReducer(
       return { ...state, showGrid: action.payload };
     }
 
+    case TYPES.EXPORT_SCREEN_FLAG: {
+      return { ...state, exportScreenFlag: action.payload };
+    }
+
     case TYPES.SET_BORDERS_ENABLED: {
       return { ...state, bordersEnabled: action.payload };
     }

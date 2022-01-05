@@ -18,7 +18,7 @@ import {
   selectFreeCanvasMode,
   selectScreensWithoutMaster,
 } from '@Redux/project/selectors/screen';
-import { updateScreenImage } from '@Redux/project/actions';
+import { updateScreenImage, exportScreenFlag } from '@Redux/project/actions';
 
 import exportHTML from '@Src/export/app';
 import History from '@Components/Layout/History';
@@ -55,7 +55,9 @@ const Actions: React.FC = () => {
 
   const handleExportScreen = () => {
     if (screens.length > 0) {
+      dispatch(exportScreenFlag(true));
       exportHTML(screens, projectName);
+      dispatch(exportScreenFlag(false));
     } else {
       dispatch(
         enqueueSnackbar({

@@ -42,6 +42,7 @@ export const initialUi: ProjectUiState = {
   savedElementsValues: {},
   showContainersBorders: false,
   showGrid: false,
+  exportScreenFlag: false,
   bordersEnabled: true,
   currentDropTargetParams: null,
   canCreateGroup: false,
