@@ -1613,3 +1613,6 @@ export type ChatCredentials = {
   username: string;
   apiKey: string;
 };
+
+export const CONTROLS_NOT_ALLOW_LINK = ['html'] as const;
+export const CONTROLS_NOT_ALLOW_RICHTEXTBOX = ['checkbox'] as const;

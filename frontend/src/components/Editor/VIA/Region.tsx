@@ -3,7 +3,7 @@ import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import prevent from '@Utils/preventEvent';
 import cn from 'classnames';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import { VIARegion } from '../../../types';
@@ -121,6 +121,33 @@ const Region: FC<Props> = ({ region }) => {
       }),
     );
   };
+
+  useEffect(() => {
+    const keyPressHandler = (e) => {
+      if (isActive) {
+        let newX = x;
+        let newY = y;
+        if (e.key === 'ArrowLeft') newX--;
+        else if (e.key === 'ArrowUp') newY--;
+        else if (e.key === 'ArrowRight') newX++;
+        else if (e.key === 'ArrowDown') newY++;
+        dispatch(
+          updateVIARegion(region.id, {
+            ...region,
+            shape_attributes: {
+              ...region.shape_attributes,
+              x: newX,
+              y: newY,
+            },
+          }),
+        );
+      }
+    };
+    document.addEventListener('keydown', keyPressHandler);
+    return () => {
+      document.removeEventListener('keydown', keyPressHandler);
+    };
+  }, [x, y, isActive]);
 
   return (
     <Rnd

@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
-import { RendererProps } from '../types';
+import { useSelector } from 'react-redux';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { selectExportScreenFlag } from '@Redux/project/selectors/base';
+import { useHistory } from 'react-router';
 import { makeComponentStyles } from '../styles';
+import { RendererProps } from '../types';
 
-const useStyles = makeComponentStyles('checkbox', {});
+const useStyles = makeComponentStyles('checkbox', {
+  row: {
+    display: 'flex !important',
+    alignItems: 'center !important',
+  },
+  column: {
+    paddingRight: '0 !important',
+  },
+});
 
 const MaterialCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
@@ -15,6 +27,13 @@ const MaterialCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
 
     const [isChecked, setIsChecked] = useState<boolean>(false);
     const classes = useStyles(props);
+    const { isLink, link, screenLink, screenName } = element.parameters;
+    const history = useHistory();
+    const isProtoMode = useSelector(selectIsPrototypeMode);
+    const exportScreenFlag = useSelector(selectExportScreenFlag);
+    const changeScreen = () => {
+      history.push(`/project/${screenLink}`);
+    };
 
     return (
       <div
@@ -25,11 +44,12 @@ const MaterialCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
           className,
           groupClass,
           classes.ownStyles,
+          classes.row,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
         {...eventHandlers}
       >
-        <div className="mdc-checkbox mdc-checkbox--touch">
+        <div className={cn('mdc-checkbox mdc-checkbox--touch', classes.column)}>
           <input
             type="checkbox"
             className="mdc-checkbox__native-control"
@@ -51,6 +71,54 @@ const MaterialCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
             <div className="mdc-checkbox__mixedmark" />
           </div>
           <div className="mdc-checkbox__ripple" />
+        </div>
+        <div>
+          {isLink && (isProtoMode || exportScreenFlag) ? (
+            <a
+              aria-label={`Link-${element.id}`}
+              target={exportScreenFlag ? '_self' : '_blank'}
+              href={link}
+              style={{ textDecoration: 'none', cursor: 'pointer' }}
+              rel="noreferrer"
+              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
+            />
+          ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
+            <label
+              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              id={id}
+              role="presentation"
+              onClick={() =>
+                isProtoMode && !exportScreenFlag ? changeScreen() : ''
+              }
+              style={{ cursor: 'pointer' }}
+              data-ls-id={id}
+              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
+            />
+          ) : screenLink && screenName && (isProtoMode || exportScreenFlag) ? (
+            <a
+              aria-label={`Link-${element.id}`}
+              target="_self"
+              href={
+                isProtoMode
+                  ? exportScreenFlag
+                    ? `../${screenName}/index.html`
+                    : '#'
+                  : exportScreenFlag
+                  ? `../${screenName}/index.html`
+                  : ''
+              }
+              style={{ textDecoration: 'none', cursor: 'pointer' }}
+              rel="noreferrer"
+              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
+            />
+          ) : (
+            <label
+              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              id={id}
+              data-ls-id={id}
+              dangerouslySetInnerHTML={{ __html: element.parameters.value }}
+            />
+          )}
         </div>
       </div>
     );

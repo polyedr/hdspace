@@ -77,6 +77,7 @@ export type ProjectUiState = {
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
   showGrid: boolean;
+  exportScreenFlag: boolean;
   currentDropTargetParams: DropTargetParams | null;
   bordersEnabled: boolean;
   canCreateGroup: boolean;
@@ -431,6 +432,10 @@ export type ToggleContainersBorders = IAction<
   boolean
 >;
 export type ToggleGrid = IAction<typeof TYPES.TOGGLE_GRID, boolean>;
+export type ExportScreenFlag = IAction<
+  typeof TYPES.EXPORT_SCREEN_FLAG,
+  boolean
+>;
 export type SetBordersEnabled = IAction<
   typeof TYPES.SET_BORDERS_ENABLED,
   boolean
@@ -1223,6 +1228,7 @@ export type Action =
   | SetMasterElementsIds
   | ToggleContainersBorders
   | ToggleGrid
+  | ExportScreenFlag
   | SetBordersEnabled
   | SetElementToCopy
   | CopyActiveElement
