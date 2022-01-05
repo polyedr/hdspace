@@ -130,16 +130,6 @@ const ImageRecognizeForm: FC<Props> = ({ onClose }) => {
         >
           <MenuItem
             onClick={() => {
-              handleNNProcessing(true);
-              handleClose();
-              onClose();
-            }}
-          >
-            Auto
-          </MenuItem>
-
-          <MenuItem
-            onClick={() => {
               handleNNProcessing(false);
               handleClose();
               onClose();
