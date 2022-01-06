@@ -9,15 +9,12 @@ import ImageRecognizeForm from '@Components/Dialogs/NewScreenModal/ImageRecogniz
 
 Object.defineProperty(URL, 'createObjectURL', {
   writable: true,
-
   value: jest.fn(),
 });
 
 describe('ImageRecognizeForm', () => {
   let store: MockStoreEnhanced<AppReduxState>;
-
   let ui: RenderResult;
-
   const closeCallback = jest.fn();
 
   const file = new File(['(⌐□_□)'], 'chucknorris.png', {
@@ -26,7 +23,6 @@ describe('ImageRecognizeForm', () => {
 
   beforeEach(() => {
     const mockStore = configureStore<AppReduxState>([]);
-
     store = mockStore(mockState);
 
     ui = render(
@@ -42,7 +38,6 @@ describe('ImageRecognizeForm', () => {
 
   it('should close form on button click', () => {
     const closeButton = ui.getByText('Cancel');
-
     fireEvent.click(closeButton);
 
     expect(closeCallback).toHaveBeenCalled();
@@ -50,39 +45,30 @@ describe('ImageRecognizeForm', () => {
 
   it('should upload an image on input click', () => {
     const input = ui.getByLabelText('Upload');
-
     fireEvent.change(input, {
       target: {
         files: [file],
       },
     });
-
     const img = ui.getByAltText('uploaded');
-
     expect(img).toBeInTheDocument();
   });
 
   it('should have disabled confirm button if no file selected', () => {
     const button = ui.getByText('Create').parentElement;
-
     expect(button).toBeDisabled();
   });
 
   it('should dispatch recognizeImage action of confirm', () => {
     const button = ui.getByText('Create').parentElement;
-
     if (!button) throw new Error('Can not find button');
-
     const input = ui.getByLabelText('Upload');
-
     fireEvent.change(input, {
       target: {
         files: [file],
       },
     });
-
     expect(button).not.toBeDisabled();
-
     fireEvent.click(button);
 
     const menuOption = ui.getByText('Semi Auto');
