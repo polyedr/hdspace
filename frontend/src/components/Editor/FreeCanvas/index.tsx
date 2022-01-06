@@ -107,16 +107,19 @@ const FreeCanvas = () => {
       } = dragSource.original as ElementData;
       const rect = (resizableElement.current as HTMLElement).getBoundingClientRect();
 
-      let elementParameter = {
+      let elementParameter: any = {
         top: offset.y - rect.y,
         left: offset.x - rect.x,
       };
 
       if (name === 'Image asset' && parameters?.imageURL) {
-        elementParameter['imageURL'] = parameters?.imageURL;
+        elementParameter = {
+          ...elementParameter,
+          imageURL: parameters?.imageURL,
+        };
       }
-      
 
+      console.log('elementParameter', elementParameter);
       dispatch(
         createElements(
           {
