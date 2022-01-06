@@ -15,7 +15,6 @@ import {
   setUserExperience,
   logoutStart,
 } from '@Redux/user/actions';
-import { Link } from 'react-router-dom';
 import IMAGES from '@Constants/images';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
@@ -209,9 +208,9 @@ const Profile: React.FC = () => {
         </Typography>
 
         <div>
-          <Link className={classes.link} to={PATH_NAMES.projects}>
+          <a className={classes.link} href={PATH_NAMES.projects}>
             My projects
-          </Link>
+          </a>
           <Button styleType="link" onClick={handleLogout}>
             Log out
           </Button>

@@ -1,0 +1,403 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Profile should render profile page 1`] = `
+<div>
+  <main>
+    <div
+      class="makeStyles-headerContainer-1"
+    >
+      <h4
+        class="MuiTypography-root makeStyles-header-2 MuiTypography-h4"
+      >
+        Profile settings
+      </h4>
+      <div>
+        <a
+          class="makeStyles-link-15"
+          href="/projects"
+        >
+          My projects
+        </a>
+        <button
+          class=""
+          type="button"
+        >
+          <span>
+            Log out
+          </span>
+        </button>
+      </div>
+    </div>
+    <div
+      class="MuiBox-root MuiBox-root-16"
+    >
+      <div
+        class="makeStyles-formsContainer-3"
+      >
+        <div
+          class="makeStyles-textFieldsContainer-4"
+        >
+          <div
+            class="makeStyles-error-14"
+          />
+          <form
+            class="makeStyles-profileForm-5"
+          >
+            <div
+              class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+                data-shrink="true"
+                for="first_name_input"
+              >
+                First Name
+              </label>
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                  id="first_name_input"
+                  name="first_name"
+                  placeholder="First Name"
+                  type="text"
+                  value="John"
+                />
+                <fieldset
+                  aria-hidden="true"
+                  class="PrivateNotchedOutline-root-17 MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="PrivateNotchedOutline-legendLabelled-19 PrivateNotchedOutline-legendNotched-20"
+                  >
+                    <span>
+                      First Name
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+            </div>
+            <div
+              class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiInputLabel-outlined MuiFormLabel-filled"
+                data-shrink="true"
+              >
+                Last Name
+              </label>
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                  name="last_name"
+                  placeholder="Last Name"
+                  type="text"
+                  value="Doe"
+                />
+                <fieldset
+                  aria-hidden="true"
+                  class="PrivateNotchedOutline-root-17 MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="PrivateNotchedOutline-legendLabelled-19 PrivateNotchedOutline-legendNotched-20"
+                  >
+                    <span>
+                      Last Name
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+            </div>
+          </form>
+          <div
+            class="makeStyles-error-14"
+          />
+          <form
+            class="makeStyles-profileForm-5"
+          >
+            <div
+              class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense MuiInputLabel-outlined"
+                data-shrink="false"
+              >
+                Company Name
+              </label>
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense"
+                  placeholder="Company Name"
+                  type="text"
+                  value=""
+                />
+                <fieldset
+                  aria-hidden="true"
+                  class="PrivateNotchedOutline-root-17 MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="PrivateNotchedOutline-legendLabelled-19"
+                  >
+                    <span>
+                      Company Name
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+            </div>
+            <div
+              class="MuiFormControl-root MuiFormControl-fullWidth"
+            >
+              <label
+                class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-outlined Mui-disabled Mui-disabled MuiFormLabel-filled"
+                data-shrink="true"
+              >
+                Role
+              </label>
+              <div
+                class="MuiInputBase-root MuiOutlinedInput-root Mui-disabled Mui-disabled MuiInputBase-formControl MuiInputBase-marginDense MuiOutlinedInput-marginDense"
+              >
+                <div
+                  aria-disabled="true"
+                  aria-haspopup="listbox"
+                  aria-labelledby="mui-component-select-role"
+                  class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input Mui-disabled Mui-disabled MuiInputBase-inputMarginDense MuiOutlinedInput-inputMarginDense Mui-disabled"
+                  id="mui-component-select-role"
+                  role="button"
+                >
+                  STAFF
+                </div>
+                <input
+                  aria-hidden="true"
+                  class="MuiSelect-nativeInput"
+                  name="role"
+                  tabindex="-1"
+                  value="STAFF"
+                />
+                <svg
+                  aria-hidden="true"
+                  class="MuiSvgIcon-root MuiSelect-icon MuiSelect-iconOutlined Mui-disabled"
+                  focusable="false"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 10l5 5 5-5z"
+                  />
+                </svg>
+                <fieldset
+                  aria-hidden="true"
+                  class="PrivateNotchedOutline-root-17 MuiOutlinedInput-notchedOutline"
+                >
+                  <legend
+                    class="PrivateNotchedOutline-legendLabelled-19 PrivateNotchedOutline-legendNotched-20"
+                  >
+                    <span>
+                      Role
+                    </span>
+                  </legend>
+                </fieldset>
+              </div>
+              <p
+                class="MuiFormHelperText-root MuiFormHelperText-contained Mui-disabled MuiFormHelperText-filled"
+              />
+            </div>
+          </form>
+        </div>
+        <form
+          class="makeStyles-profileImageWrapper-6"
+        >
+          <div
+            class="makeStyles-imageInputLabel-7"
+          >
+            Your photo
+          </div>
+          <img
+            alt="profile"
+            src=""
+          />
+          <div
+            class="makeStyles-profileImageActions-8"
+          >
+            <label
+              class="makeStyles-imageActionButton-9"
+            >
+              Upload
+              <input
+                class="makeStyles-hidden-10"
+                name="avatar"
+                type="file"
+                value=""
+              />
+            </label>
+            <button
+              class="makeStyles-imageActionButton-9"
+              type="button"
+            >
+              Remove
+            </button>
+          </div>
+        </form>
+      </div>
+      <div
+        class="makeStyles-settingsPart-11"
+      >
+        <div
+          class="makeStyles-subheader-12 makeStyles-strong-13"
+        >
+          Email address
+        </div>
+        <div
+          class="makeStyles-subheader-12"
+        >
+          Your email address is 
+          <span
+            class="makeStyles-strong-13"
+          >
+            test@mail.test
+          </span>
+        </div>
+        <button
+          class=""
+          type="button"
+        >
+          <span>
+            Change
+          </span>
+        </button>
+      </div>
+      <div
+        class="makeStyles-settingsPart-11"
+      >
+        <div
+          class="makeStyles-subheader-12"
+        >
+          Password
+        </div>
+        <button
+          class=""
+          type="button"
+        >
+          <span>
+            Change
+          </span>
+        </button>
+      </div>
+      <div
+        class="makeStyles-settingsPart-11"
+      >
+        <div
+          class="makeStyles-subheader-12 makeStyles-strong-13"
+        >
+          UI settings
+        </div>
+        <div
+          class="makeStyles-subheader-12"
+        >
+          Always display drop target element borders
+          <span
+            class="MuiSwitch-root"
+          >
+            <span
+              aria-disabled="false"
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-21 MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-checked-22 Mui-checked"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <input
+                  checked=""
+                  class="PrivateSwitchBase-input-24 MuiSwitch-input"
+                  type="checkbox"
+                  value=""
+                />
+                <span
+                  class="MuiSwitch-thumb"
+                />
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </span>
+            <span
+              class="MuiSwitch-track"
+            />
+          </span>
+        </div>
+        <div
+          class="makeStyles-subheader-12"
+        >
+          User guide watched
+          <span
+            class="MuiSwitch-root"
+          >
+            <span
+              aria-disabled="false"
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-21 MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-checked-22 Mui-checked"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <input
+                  checked=""
+                  class="PrivateSwitchBase-input-24 MuiSwitch-input"
+                  type="checkbox"
+                  value=""
+                />
+                <span
+                  class="MuiSwitch-thumb"
+                />
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </span>
+            <span
+              class="MuiSwitch-track"
+            />
+          </span>
+        </div>
+        <div
+          class="makeStyles-subheader-12"
+        >
+          Enable Tabs Auto Switch
+          <span
+            class="MuiSwitch-root"
+          >
+            <span
+              aria-disabled="false"
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-21 MuiSwitch-switchBase MuiSwitch-colorSecondary"
+            >
+              <span
+                class="MuiIconButton-label"
+              >
+                <input
+                  class="PrivateSwitchBase-input-24 MuiSwitch-input"
+                  type="checkbox"
+                  value=""
+                />
+                <span
+                  class="MuiSwitch-thumb"
+                />
+              </span>
+              <span
+                class="MuiTouchRipple-root"
+              />
+            </span>
+            <span
+              class="MuiSwitch-track"
+            />
+          </span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+`;
