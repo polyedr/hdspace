@@ -15,6 +15,7 @@ import {
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { capitalize } from '@material-ui/core/utils';
 import { splitWords } from '@Utils/stringHelper';
+import isValidAnnotationElement from '@Utils/validators/isValidAnnotationElement';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -86,11 +87,14 @@ const VIADescription: FC<Props> = ({ region }) => {
           margin="dense"
           fullWidth
         >
-          {Object.keys(LIBRARY_ELEMENTS).map((key) => (
-            <MenuItem value={key} key={key} dense>
-              {capitalize(splitWords(key))}
-            </MenuItem>
-          ))}
+          {Object.keys(LIBRARY_ELEMENTS)
+            .filter((key) => isValidAnnotationElement(key))
+            .sort()
+            .map((key) => (
+              <MenuItem value={key} key={key} dense>
+                {capitalize(splitWords(key))}
+              </MenuItem>
+            ))}
         </StyledTextField>
 
         <StyledIconButton title="Copy region" onClick={handleCopyRegion}>
