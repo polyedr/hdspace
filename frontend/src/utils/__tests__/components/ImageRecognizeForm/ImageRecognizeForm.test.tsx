@@ -14,9 +14,9 @@ Object.defineProperty(URL, 'createObjectURL', {
 
 describe('ImageRecognizeForm', () => {
   let store: MockStoreEnhanced<AppReduxState>;
+
   let ui: RenderResult;
   const closeCallback = jest.fn();
-
   const file = new File(['(⌐□_□)'], 'chucknorris.png', {
     type: 'image/png',
   });
@@ -31,7 +31,6 @@ describe('ImageRecognizeForm', () => {
       </Provider>,
     );
   });
-
   it('should render properly', () => {
     expect(ui.container).toMatchSnapshot();
   });

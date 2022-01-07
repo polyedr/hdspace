@@ -9,7 +9,6 @@ import { AppReduxState } from '../../../../redux/types';
 
 describe('Profile', () => {
   let store: MockStoreEnhanced<AppReduxState>;
-
   let ui: RenderResult;
 
   beforeEach(() => {
@@ -29,17 +28,14 @@ describe('Profile', () => {
 
   it('should have title', () => {
     const title = ui.getByText('Profile settings');
-
     expect(title).toBeInTheDocument();
   });
 
   it('should log out on proper button click', () => {
     const button = ui.getByText('Log out');
-
     fireEvent.click(button);
 
     const actions = store.getActions();
-
     expect(actions[actions.length - 1].type).toBe(TYPES.LOGOUT_START);
   });
 });

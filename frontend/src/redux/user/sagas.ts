@@ -134,6 +134,7 @@ export function* changeProfileDataSaga({
       apiChangeProfileData,
       { id, data: { parameters: { avatarCrop: payload } } },
     );
+
     yield put(
       Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
     );
