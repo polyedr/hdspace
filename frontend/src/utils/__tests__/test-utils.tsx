@@ -123,6 +123,7 @@ export const mockUserData: UserData = {
     id: 888,
     experienced: Experience.EXPERIENCED,
     parameters: {
+      avatarCrop: '',
       profileDataParameters: {
         autoSwitchTabs: false,
         dropTargetBordersMode: true,

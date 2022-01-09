@@ -37,7 +37,9 @@ const Avatar: React.FC = () => {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
 
   const { username } = useSelector(selectUserData);
-  const { avatar } = useSelector(selectProfileData);
+  const {
+    parameters: { avatarCrop: avatar },
+  } = useSelector(selectProfileData);
 
   const handleAvatarClick = (ev: React.MouseEvent<HTMLButtonElement>) =>
     setMenuAnchorEl(ev.currentTarget);
