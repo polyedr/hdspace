@@ -8,6 +8,8 @@
 
 import math
 import os
+import shutil
+
 import cv2
 import uuid
 from statistics import median
@@ -280,6 +282,8 @@ def get_dominant_palette(image, k=27, image_processing_size=None):
 class ClusterClass(NodeMixin):
     # Flex 0 vertical, 1 horizontal, 2 inseparable, -1 undefined
     direction = -1
+    # y axis 0 direction vertical, x axis 1 direction horizontal
+    buoyancy = 0
     # Clusters types, containers, dbclusters, forms
     # types = "ccluster", "dbcluster", "fcluster", "ocvluster", "firstcluster", "undefined"
     types = "undefined"
@@ -295,17 +299,16 @@ class ClusterClass(NodeMixin):
     placeholder = []
     styles = []
 
-    def __init__(self, x1, y1, x2, y2, parent=None, children=None, elements=None):
+    def __init__(self, x1, y1, x2, y2, parent=None, children=None):
         self.name = uuid.uuid4().hex
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
         self.parent = parent
+        self.buoyancy = 0
         if children:
             self.children = children
-        if elements:
-            self.elements = elements
 
     def __repr__(self):
         return {
@@ -315,7 +318,7 @@ class ClusterClass(NodeMixin):
             "x2": self.x2,
             "y2": self.y2,
             "direction": self.direction,
-            "elements": self.elements,
+            "buoyancy": self.buoyancy,
         }
 
     def __str__(self):
@@ -657,6 +660,24 @@ def find_or_create_dir(directory, show=False):
             os.mkdir(directory)
         except Exception as ex:
             pass
+            # print("could not create dir, because\t{}".format(ex))
+    if show:
+        pass
+        # print(directory)
+    return directory
+
+
+def update_or_create_dir(directory, show=False):
+    """Find or (if not found) create a specific dir."""
+    parent_dir = os.path.abspath(os.path.join(directory, ".."))
+    this_dir = directory.split("/")[-1]
+    if this_dir not in os.listdir(parent_dir):
+        # print("no such dir, create one")
+        try:
+            os.mkdir(directory)
+        except Exception as ex:
+            shutil.rmtree(directory)
+            os.mkdir(directory)
             # print("could not create dir, because\t{}".format(ex))
     if show:
         pass
