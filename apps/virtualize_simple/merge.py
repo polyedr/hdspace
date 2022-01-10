@@ -615,7 +615,6 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
     return fdict, fordict, opencvdict, cnndict
 
 
-
 def pipeline_merge(imgpath, region_dataset, fname):
     # Read an image with OpenCV start
     image_opencv_input = cv2.imread(imgpath)

@@ -12,6 +12,7 @@ from scrapy_splash import SplashRequest
 import urllib.robotparser
 
 from project.settings import MEDIA_ROOT, MEDIA_URL
+from apps.utils.fset1 import update_or_create_dir
 
 
 class FileSerializer(serializers.ModelSerializer):
@@ -199,7 +200,8 @@ class WpgSavedSerializer(serializers.ModelSerializer, scrapy.Spider):
 
         fname = urlparse(url).netloc
         SAVE_DIR = os.path.join(wpath, fname)
-
+        update_or_create_dir(SAVE_DIR)
+        os.chmod(SAVE_DIR, 0o755)
         # Clear content at the SAVE_DIR
         os.chdir(SAVE_DIR)
         subprocess.run(["rm", "-rf", "*"])

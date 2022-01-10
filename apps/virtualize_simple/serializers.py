@@ -3,7 +3,7 @@ import json
 import os, sys
 import copy
 import shutil
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 import lorem
 import numpy as np
@@ -231,7 +231,9 @@ def extract_colour_palette(elem_image):
 
 # Detect elements for the root block function
 def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
-                       image_original, fname, o, serializing="virtualize_simple", node_width=0, node_height=0):
+                       image_opencv_input, fname, o, serializing="virtualize_simple", node_width=0, node_height=0):
+
+    image_original = copy.deepcopy(image_opencv_input)
     # Function elements creation, loop through the root_block
     for pre, fill, node in RenderTree(root_block):
         styles = {}
@@ -331,13 +333,13 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             # Buoyancy detection start
             # Horizontal
             if node.parent.direction == 1:
-                buoyancy = int(node.x1)
+                node.buoyancy = int(node.x1)
             # Vertical
             elif node.parent.direction == 0:
-                buoyancy = int(node.y1)
+                node.buoyancy = int(node.y1)
             # Other cases
             else:
-                buoyancy = int(node.x1)
+                node.buoyancy = int(node.x1)
             # Buoyancy detection end
 
             # Create a new Scenario Element for the elements chain
@@ -348,7 +350,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 "struct_type": "container",
                 "parameters": parameters,
                 "styles": styles,
-                "buoyancy": buoyancy,
+                "buoyancy": node.buoyancy,
             }
 
         # Correct the struct_type based on the element_assigned value
@@ -356,25 +358,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
         # ul li detection
         if (node.element_assigned):
             node.scenarioelement_kwargs["struct_type"] = node.element_assigned
-            print(node.element_assigned)
+            # print(node.element_assigned)
 
         if (serializing in {"virtualize_simple", "assemble"}):
-            '''
-            # Display elements for some fcluster
-            if node.types == "fcluster":
-                # Arrange the fcluster children based on their coordinates
-                if node.direction == 0:
-                    array_elements = sorted(
-                        node.elements, key=lambda i: i["shape_attributes"]["y"]
-                    )
-                elif node.direction == 1:
-                    array_elements = sorted(
-                        node.elements, key=lambda i: i["shape_attributes"]["x"]
-                    )
-                else:
-                    array_elements = node.elements
-            '''
-
             # for elem in array_elements:
             # Prepare an empty list to define scenario element structure for the further chain joining
             scenarioelement_inner_kwargs = {}
@@ -475,6 +461,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -482,7 +469,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "textinput",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned in {"checkbox"}:
@@ -497,6 +484,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -504,7 +492,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "checkbox",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned in {"radiobutton"}:
@@ -517,6 +505,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -524,7 +513,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "radiobutton",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned == "select":
@@ -543,6 +532,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -550,7 +540,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "select",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             if node.element_assigned in {"text", "ocrtext"}:
@@ -572,6 +562,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -579,7 +570,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "ocrtext",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned in {"textarea"}:
@@ -596,6 +587,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -603,7 +595,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "textarea",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned in {"form_heading"}:
@@ -622,6 +614,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -629,7 +622,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "heading",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned in {"form"}:
@@ -641,6 +634,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -648,7 +642,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "container",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned == "image":
@@ -674,6 +668,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -682,7 +677,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "image": elem_image_sourcename,
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned == "button":
@@ -711,6 +706,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -718,7 +714,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "button",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned in {"menu"}:
@@ -729,6 +725,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -736,7 +733,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "list",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             elif node.element_assigned in {"li"}:
@@ -755,6 +752,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
+                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -762,12 +760,16 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                     "struct_type": "listItem",
                     "parameters": parameters,
                     "styles": styles,
-                    "buoyancy": 0,
+                    "buoyancy": node.buoyancy,
                 }
 
             node.scenarioelement_kwargs.update(scenarioelement_inner_kwargs)
 
     return True
+
+#  Sorting XML in python etree
+def sortchildrenby(parent, buoyancy):
+    parent[:] = sorted(parent, key=lambda child: child.buoyancy)
 
 
 # Create elements for the root block function serializer
@@ -785,6 +787,9 @@ def elements_rootblock_create(root_block, outer_div_node, serializing="virtualiz
                 parent=node.parent.scenarioelement,
                 **node.scenarioelement_kwargs
             )
+
+        # Maybe write a new function for the freecanvas only
+        """
         if (serializing == "freecanvas"):
             # Attach elements for some fcluster
             if node.types == "fcluster":
@@ -818,6 +823,7 @@ def elements_rootblock_create(root_block, outer_div_node, serializing="virtualiz
                                             # print(child, child.struct_type, child.parent, child.parent_id)
                                             # input()
                                             child.move_to(node.scenarioelement)
+        """
 
     return True
 
@@ -844,7 +850,7 @@ def htmltree_initialize(fname, bcolour_container_value, img_width):
     return root, outer_div, styles, parameters
 
 
-def clusters_printing(root_block, root_firstcluster, fname, input_image=[]):
+def clusters_printing(root_block, fname, input_image=[]):
     if len(input_image):
         image_allclusters = copy.deepcopy(input_image)
         image_cclusters = copy.deepcopy(input_image)
@@ -1107,7 +1113,8 @@ def ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, im
     return root_block
 
 
-def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclusters=[]):
+# , fname, image_dbclusters=[]
+def calculate_dbclusters(region_dataset, root_firstcluster):
     # Clear the array of dbclusters pro-function start
     dbclusters = []
     # DBSCAN clustering start
@@ -1211,7 +1218,7 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
                 if label == n_cluster:
                     cluster_sources.append(node)
 
-        if( len(cluster_sources) > 2):  # Filter out too small dbclusters
+        if len(cluster_sources) > 2:  # Filter out too small dbclusters
             for cluster_source in cluster_sources:
                 # Construct the dbcluster object
                 # Find min max x1 y1 x2 y2
@@ -1291,7 +1298,7 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
             child.parent = cluster
             # Assign a list element to the children of the dbcluster
             child.element_assigned = "listItem"
-
+    '''
     if len(image_dbclusters):
         for dbcluster in dbclusters:
             # Display dbclusters
@@ -1306,6 +1313,7 @@ def calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclust
         # Printing dbclusters to file
         cv2.imwrite("dbclusters_" + fname, image_dbclusters)
         # Clear the array of dbclusters pro-function end
+    '''
 
     return root_firstcluster
 
@@ -1368,7 +1376,7 @@ def firstclusters_elements_chains_processing(root_firstcluster, fname):
     return root_firstcluster
 
 
-def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
+def calculate_fclusters(root_firstcluster):
     # find all the clusters based on cluster-making elements
     # (inputs, selects, buttons, free text blocks, maybe large images)
     # root_cluster = ClusterClass(min_x1, min_y1, max_x2, max_y2, elements=[])
@@ -1496,15 +1504,15 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
                                 # Update the clusters list
                                 # clusters.append(cluster)
 
-            if len(image_fclusters):
+            # if len(image_fclusters):
                 # Display input-based fclusters
-                cv2.rectangle(
-                    image_fclusters,
-                    (cluster.x1, cluster.y1),
-                    (cluster.x2, cluster.y2),
-                    (0, 0, 255),
-                    1,
-                )
+                # cv2.rectangle(
+                #     image_fclusters,
+                #     (cluster.x1, cluster.y1),
+                #     (cluster.x2, cluster.y2),
+                #     (0, 0, 255),
+                #     1,
+                # )
                 # cv2.imshow(window_name1, image_opencv_input)
                 # cv2.waitKey(0)
 
@@ -1628,18 +1636,18 @@ def calculate_fclusters(root_firstcluster, fname, image_fclusters=[]):
                                 # Update the clusters list
                                 # clusters.append(cluster)
 
-            if len(image_fclusters):
+            # if len(image_fclusters):
                 # Display checkbox-based fclusters
-                cv2.rectangle(
-                    image_fclusters,
-                    (cluster.x1, cluster.y1),
-                    (cluster.x2, cluster.y2),
-                    (144, 12, 2),
-                    1,
-                )
-    if len(image_fclusters):
+                # cv2.rectangle(
+                #     image_fclusters,
+                #     (cluster.x1, cluster.y1),
+                #     (cluster.x2, cluster.y2),
+                #     (144, 12, 2),
+                #     1,
+                # )
+    # if len(image_fclusters):
         # Printing fclusters to file
-        cv2.imwrite("fclusters_" + fname, image_fclusters)
+        # cv2.imwrite("fclusters_" + fname, image_fclusters)
     # Clusters checkboxes with text labels direction end
 
     return root_firstcluster
@@ -1851,7 +1859,7 @@ def extract_rectangle_coordinates(rect):
 # For some rectangle. Go through all the rectangles in (calculate this on the fly).
 # Find rectangles without parents, they are level rectangles. Create firstclusters for them.
 # Repeat the process (the function is recursive)
-def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
+def recursive_firstclusters(rectangles, firstcluster):
     level_blocks = firstcluster.level_blocks
     # print(level_blocks)
     # input()
@@ -1861,9 +1869,9 @@ def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
             # Check if r1 in level_block
             r1_e = extract_rectangle_coordinates(r1)
             level_block_e = extract_rectangle_coordinates(level_block)
-            print(r1_e, level_block_e)
+            # print(r1_e, level_block_e)
             if (contains_rectangle(level_block_e, r1_e) is True) and (level_block_e != r1_e):
-                print("contains_rectangle")
+                # print("contains_rectangle")
                 is_parent = False
                 is_final = True
                 for r2 in rectangles:
@@ -1871,32 +1879,32 @@ def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
                     r2_e = extract_rectangle_coordinates(r2)
                     # print(level_block_e, r2_e)
                     if (contains_rectangle(level_block_e, r2_e) is True) and (level_block_e != r2_e):
-                        print("is_not_final")
+                        # print("is_not_final")
                         # find rectangles without parents
                         # Check if r2 in r1
                         # if contains_rectangle(r2_e, r1_e) is False:
                         if (contains_rectangle(r1_e, r2_e) is True) and (r1_e != r2_e):
-                            print(level_block_e, r1_e, r2_e)
-                            print("is_parent")
+                            # print(level_block_e, r1_e, r2_e)
+                            # print("is_parent")
                             is_parent = True
                             is_final = False
 
                         # Check if r1 is placed in r2
                         if (contains_rectangle(r2_e, r1_e) is True) and (r1_e != r2_e):
-                            print(level_block_e, r1_e, r2_e)
+                            # print(level_block_e, r1_e, r2_e)
 
                             # Check if it is a parent for the level of interest
                             # Double false means that the block of interest is from the next level
-                            print("is_parent")
+                            # print("is_parent")
                             is_parent = False
                             is_final = False
 
                 print(is_parent, is_final)
                 # Extend the set of the next level blocks
-                if (is_parent is True):
+                if is_parent is True:
                     # print("r1=", r1)
                     next_level_blocks.append(r1)
-                    print(*r1_e)
+                    # print(*r1_e)
                     next_level_block_firstcluster = ClusterClass(*r1_e)
                     next_level_block_firstcluster.types = "firstcluster"
                     next_level_block_firstcluster.parent = firstcluster
@@ -1904,15 +1912,15 @@ def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
                     next_level_block_firstcluster.level_blocks = next_level_blocks
 
                     (x1, y1, x2, y2) = r1_e
-                    cv2.rectangle(
-                        image_firstclusters,
-                        (x1, y1),
-                        (x2, y2),
-                        (20, 90, 255),
-                        1,
-                    )
-                    chain_firstclusters(rectangles, next_level_block_firstcluster, image_firstclusters)
-                elif (is_final is True):
+                    # cv2.rectangle(
+                    #     image_firstclusters,
+                    #     (x1, y1),
+                    #     (x2, y2),
+                    #     (20, 90, 255),
+                    #     1,
+                    # )
+                    recursive_firstclusters(rectangles, next_level_block_firstcluster)
+                elif is_final is True:
                     # print("r1=", r1)
                     print(*r1_e)
                     next_level_block_firstcluster = ClusterClass(*r1_e)
@@ -1921,21 +1929,21 @@ def chain_firstclusters(rectangles, firstcluster, image_firstclusters):
                     next_level_block_firstcluster.parent = firstcluster
 
                     (x1, y1, x2, y2) = r1_e
-                    cv2.rectangle(
-                        image_firstclusters,
-                        (x1, y1),
-                        (x2, y2),
-                        (100, 80, 155),
-                        1,
-                    )
-                print(x1, y1, x2, y2)
+                #     cv2.rectangle(
+                #         image_firstclusters,
+                #         (x1, y1),
+                #         (x2, y2),
+                #         (100, 80, 155),
+                #         1,
+                #     )
+                # print(x1, y1, x2, y2)
             # cv2.imshow("window_name1", image_firstclusters)
             # cv2.waitKey(0)
 
     return True
 
 
-def calculate_firstclusters(fdict, fname, fnamesize, node, img_height, img_width, image_firstclusters):
+def calculate_firstclusters(fdict, fname, fnamesize, node, img_height, img_width):
     # img_height, img_width, img_channels = image_firstclusters.shape
     # print(image_firstclusters.shape)
     # Detect top level blocks
@@ -1968,7 +1976,8 @@ def calculate_firstclusters(fdict, fname, fnamesize, node, img_height, img_width
 
     # For some rectangle. Go through all the rectangles in. Find rectangles without parents, they are level rectangles.
     # Save sets of rectangles placed for each level rectangle. Repeat the process.
-    chain_firstclusters(rectangles, root_firstcluster, image_firstclusters)
+
+    recursive_firstclusters(rectangles, root_firstcluster)
 
     # Printing firstclusters to file
     # if len(image_firstclusters):
@@ -1989,29 +1998,8 @@ def print_clusters_length(root_firstcluster):
         return False
 
 
-def supplement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height, image_via=[]):
+def supplement_fdict_calc_printing(fdict, fnamesize, img_width, img_height):
     # Supplementary parameters calculation and printing of the fdict start
-    # for filenamesize in fdict:
-    # os.chdir(VIA_ANNOTATION_DIR)
-    # print("Current Working Directory ", os.getcwd())
-
-    # detect the size of the whole image
-    # fsize = os.path.getsize(fname)
-
-    for idx, region in enumerate(fdict[fnamesize]["regions"]):
-        x1 = int(region["shape_attributes"]["x"])
-        y1 = int(region["shape_attributes"]["y"])
-        x2 = int(x1 + region["shape_attributes"]["width"])
-        y2 = int(y1 + region["shape_attributes"]["height"])
-
-        if len(image_via):
-            # Show VIA annotated regions on image
-            cv2.rectangle(image_via, (x1, y1), (x2, y2), (255, 0, 0), 1)
-
-    if len(image_via):
-        # Write VIA annotated regions to file
-        cv2.imwrite("via_" + fname, image_via)
-
     # Detect the size of the visible elements region
     # detect the size of the visible elements
     # first do this based on annotated regions
@@ -2094,6 +2082,52 @@ def print_maskrcnn_output(region_dataset, image_maskrcnn_notext, fname, fnamesiz
             )
 
     cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
+
+
+def print_fdict_before(image_opencv_input, fname, fdict, fnamesize, imgpath):
+    print("fdict_before", fdict, imgpath)
+    image_fdict_before = copy.deepcopy(image_opencv_input)
+    for idx, region in enumerate(fdict[fnamesize]["regions"]):
+        x1 = int(region["shape_attributes"]["x"])
+        y1 = int(region["shape_attributes"]["y"])
+        x2 = int(x1 + region["shape_attributes"]["width"])
+        y2 = int(y1 + region["shape_attributes"]["height"])
+
+        if len(image_fdict_before):
+            # Show VIA annotated regions on image
+            cv2.rectangle(image_fdict_before, (x1, y1), (x2, y2), (255, 0, 0), 1)
+
+    # Printing image_fdict_before to file
+    if len(image_fdict_before):
+        imgpath = MEDIA_ROOT + "/uploads/" + "fdict_before_" + fname
+        cv2.imwrite(imgpath, image_fdict_before)
+
+
+def print_clusters(clusters_name, image_opencv_input, root_firstcluster, SAVE_DIR, fname):
+    image_clusters = copy.deepcopy(image_opencv_input)
+    for pre, fill, node in RenderTree(root_firstcluster):
+        treestr = u"%s%s" % (pre, node.name)
+        print(treestr.ljust(8), node.element_assigned, node.types, node.direction, (node.x1, node.y1), (node.x2, node.y2))
+        cv2.rectangle(image_clusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
+        label_element = str(node.element_assigned)
+        # Keep in mind, that this label will be different for the specific block types
+        cv2.putText(
+            image_clusters,
+            label_element,
+            (node.x1, node.y2),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (36, 255, 12),
+            2,
+        )
+
+    # Printing the image of the clusters to file
+    if len(image_clusters):
+        imgpath = SAVE_DIR + "/" + clusters_name + fname
+        print(SAVE_DIR)
+        print(imgpath)
+
+        cv2.imwrite(imgpath, image_clusters)
 
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
@@ -2912,17 +2946,16 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
             calculate_ocvclusters(fdict, fnamesize)
 
         # Calculate fclusters function calling
-        root_firstcluster = calculate_fclusters(fdict, fname, image_fclusters=image_fclusters)
+        root_firstcluster = calculate_fclusters(fdict)
 
         # Calculate fclusters cnn function calling
-        clusters_cnn = calculate_fclusters(cnndict, fname)
+        clusters_cnn = calculate_fclusters(cnndict)
 
         if region_dataset in ["headers", "footers", "webpages"]:
             # Calculate dbclusters function calling
-            dbclusters = calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclusters)
+            root_firstcluster = calculate_dbclusters(region_dataset, root_firstcluster)
             # Calculate dbclusters cnn function calling.
-            # Should remove image_dbclusters here to display info properly
-            dbclusters_cnn = calculate_dbclusters(region_dataset, clusters_cnn, fname, image_dbclusters)
+            root_firstcluster_cnn = calculate_dbclusters(region_dataset, clusters_cnn)
 
         '''
         try:
@@ -2938,7 +2971,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         try:
             # Replace clusters cnn for dbclusters cnn if possible
             fclusters_cnn = copy.copy(clusters_cnn)
-            clusters_cnn = dbclusters_cnn
+            clusters_cnn = root_firstcluster_cnn
         except Exception:
             pass
         finally:
@@ -3073,10 +3106,18 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             "styles": {},
         }
 
-        # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
-        styles_on = 1
         # Pre-Root element assignment
+        # Serializer only
         element_root_pre = ScenarioElement.objects.get(id=validated_data["parent_id"])
+
+        # Read the region annotation from parameters
+        # Serializer only
+        fdict = None
+        if validated_data.get("parameters"):
+            try:
+                fdict = validated_data["parameters"]["annotation"]
+            except Exception:
+                pass
 
         # Extract an appropriate flag value to recognize block as header, footer, form or layout
         # Region dataset has some starting value
@@ -3103,28 +3144,27 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 parent=element_root_pre, **root_element_data
             )
         # Create the root element mptt end
+        # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
+        styles_on = 1
 
         # Create the opencv recognition start
-        image_dict = {}
-        result_regions = {}
-
-        text = False
-        watch = True
-
         # Read an image with OpenCV start
         image_opencv_input = cv2.imread(imgpath)
-        image_original = copy.deepcopy(image_opencv_input)
-        image_firstclusters = copy.deepcopy(image_opencv_input)
-        image_fdict_before = copy.deepcopy(image_opencv_input)
-        image_fdict_after = copy.deepcopy(image_opencv_input)
-        image_dbclusters = copy.deepcopy(image_opencv_input)
 
-        # Create a directory to save cluters for some image processed
+        # Create a directory to save clusters for some image processed
         SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
         find_or_create_dir(SAVE_DIR)
 
         os.chmod(SAVE_DIR, 0o755)
         os.chdir(SAVE_DIR)
+
+        # Obtaining the absolute path for the parameters directly. Should change this later.
+        o = urlparse(self.context["request"].build_absolute_uri())
+        localparams = parse_qs(o.query)
+        # print(localparams)
+        if (o.netloc == '127.0.0.1:8000'):
+            localparams['page'] = 1
+        # localparams['page'] = 2
 
         # detect height and width of the image
         img_height, img_width, img_channels = image_opencv_input.shape
@@ -3135,12 +3175,8 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
         domcolour_container = get_dominant_colour(image_opencv_input)[0]
         domcolour_container.append(1)
         bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
-
-        window_name1 = "image_opencv_text"
         # Create the opencv recognition end
 
-        #
-        #
         # Here is the divergency point between images and footers
         # Create the recognized_elements array start
         if imgpath:
@@ -3149,66 +3185,31 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             fsize = str(os.path.getsize(imgpath))
             fnamesize = fname + fsize
 
-        # Read the region annotation from parameters
-        fdict = None
-        if validated_data.get("parameters"):
-            try:
-                fdict = validated_data["parameters"]["annotation"]
-            except Exception:
-                pass
-
         if fdict:
             fdict = json.loads(fdict)
             # fdict = fdict
             # print(type(fdict), fdict)
             # Assembling start
             # Supplementary parameters calculation and printing of the fdict function call
-            min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(fdict, fname, fnamesize, img_width, img_height)
+            min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(fdict, fnamesize, img_width, img_height)
 
-            # Calculate the excluded indices to remove overlapped elements function calling
-            # Show the output before the indices exclusion
-            print("fdict_before", fdict)
-            for idx, region in enumerate(fdict[fnamesize]["regions"]):
-                x1 = int(region["shape_attributes"]["x"])
-                y1 = int(region["shape_attributes"]["y"])
-                x2 = int(x1 + region["shape_attributes"]["width"])
-                y2 = int(y1 + region["shape_attributes"]["height"])
+            # Show the regions before the indices exclusion
+            # Localhost only
+            if (localparams['page'] == 1):
+                print_fdict_before(image_opencv_input, fname, fdict, fnamesize, imgpath)
 
-                if len(image_fdict_before):
-                    # Show VIA annotated regions on image
-                    cv2.rectangle(image_fdict_before, (x1, y1), (x2, y2), (255, 0, 0), 1)
-
-            # Printing image_fdict_before to file
-            if len(image_fdict_before):
-                imgpath = MEDIA_ROOT + "/uploads/" + "fdict_before_" + fname
-                cv2.imwrite(imgpath, image_fdict_before)
-
-            # The indices exclusion should be added to the firstclusters calculation
+            # The indices exclusion should be added to the firstclusters calculation maybe
             # calculate_excluded_indices(fdict, fnamesize)
 
-            # Show the output after the indices exclusion
-            print("fdict_after", fdict)
-            for idx, region in enumerate(fdict[fnamesize]["regions"]):
-                x1 = int(region["shape_attributes"]["x"])
-                y1 = int(region["shape_attributes"]["y"])
-                x2 = int(x1 + region["shape_attributes"]["width"])
-                y2 = int(y1 + region["shape_attributes"]["height"])
-
-                if len(image_fdict_after):
-                    # Show VIA annotated regions on image
-                    cv2.rectangle(image_fdict_after, (x1, y1), (x2, y2), (255, 0, 0), 1)
-
-            # Printing image_fdict_before to file
-            if len(image_fdict_after):
-                imgpath = MEDIA_ROOT + "/uploads/" + "fdict_after_" + fname
-                cv2.imwrite(imgpath, image_fdict_after)
-
-            # Here should write firstclusters detecting step
-            # How to detect firstclusters from fdict?
-            # Maybe use this function for the first time
+            # A firstclusters detecting step
             # calculate_ocvclusters(fdict, fnamesize)
-            root_firstcluster = calculate_firstclusters(fdict, fname, fnamesize, serializer_node, img_height, img_width, image_firstclusters)
+            root_firstcluster = calculate_firstclusters(fdict, fname, fnamesize, serializer_node, img_height, img_width)
 
+            # Print firstclusters just after appearance. They should be equal to the regions.
+            # Localhost only
+            # image_firstclusters = copy.deepcopy(image_opencv_input)
+
+            # Processing simple elements chains on the firstclusters
             root_firstcluster = firstclusters_elements_chains_processing(root_firstcluster, fname)
 
             '''
@@ -3240,7 +3241,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             '''
 
             # Calculate fclusters function calling
-            root_firstcluster = calculate_fclusters(root_firstcluster, fname)
+            root_firstcluster = calculate_fclusters(root_firstcluster)
 
             '''
             # Elements-based clusters printing
@@ -3251,7 +3252,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             '''
 
             # Call the fclusters printing
-            print_clusters_length(root_firstcluster)
+            # Localhost only
+            if (localparams['page'] == 1):
+                print_clusters_length(root_firstcluster)
 
             '''
             # Remove fclusters which are contradictive with firstclusters (overlap) start
@@ -3271,53 +3274,78 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             if region_dataset in ["headers", "footers", "webpages"]:
                 # Calculate dbclusters function calling
                 # DBclusters are adding to firstclusters in an appropriate order
-                root_firstcluster = calculate_dbclusters(region_dataset, root_firstcluster, fname, image_dbclusters)
+                root_firstcluster = calculate_dbclusters(region_dataset, root_firstcluster)
 
-            # Print all the clusters after the current step
-            # Elements-based clusters printing
-            for pre, fill, node in RenderTree(root_firstcluster):
-                treestr = u"%s%s" % (pre, node.name)
-                print(treestr.ljust(8), node.element_assigned,node.types, (node.x1, node.y1), (node.x2, node.y2))
-                cv2.rectangle(image_firstclusters, (node.x1, node.y1), (node.x2, node.y2), (20, 50, 107), 1)
-                label_element = str(node.element_assigned)
-                # Keep in mind, that this label will be different for the specific block types
-                # if (label_element == "list"):
-                cv2.putText(
-                    image_firstclusters,
-                    label_element,
-                    (node.x1, node.y2),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    0.5,
-                    (36, 255, 12),
-                    2,
-                )
-
-            # Printing firstclusters to file
-            if len(image_firstclusters):
-                imgpath = SAVE_DIR + "/firstclusters_" + fname
-                print(SAVE_DIR)
-                print(imgpath)
-
-                cv2.imwrite(imgpath, image_firstclusters)
+            # Print all the clusters after the dbclusters step
+            # Localhost only
+            if (localparams['page'] == 1):
+                clusters_name = "after_dbclusters_"
+                print_clusters(clusters_name, image_opencv_input, root_firstcluster, SAVE_DIR, fname)
 
             # Do the containerization based on firstclusters and dbclusters, they should be both merged to clusters
             root_block = ternary_assembling_run(min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input)
 
-            # Elements-based clusters printing
-            for pre, fill, node in RenderTree(root_firstcluster):
-                treestr = u"%s%s" % (pre, node.name)
-                print(treestr.ljust(8), node.element_assigned, node.types, node.direction, (node.x1, node.y1), (node.x2, node.y2))
+            # Print all the clusters after the cclusters step
+            # Localhost only
+            if (localparams['page'] == 1):
+                clusters_name = "after_cclusters_"
+                print_clusters(clusters_name, image_opencv_input, root_firstcluster, SAVE_DIR, fname)
 
-            # Create a directory to save HTML for some image processed
-            SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
-            find_or_create_dir(SAVE_DIR)
-
-            os.chdir(SAVE_DIR)
+                # Elements-based clusters printing
+                for pre, fill, node in RenderTree(root_firstcluster):
+                    treestr = u"%s%s" % (pre, node.name)
+                    print(treestr.ljust(8), node.element_assigned, node.types, node.direction, (node.x1, node.y1), (node.x2, node.y2))
 
             # HTML tree initialize function call
             root, outer_div, styles, parameters = htmltree_initialize(fname, bcolour_container_value, img_width)
 
+            # Detect elements for the root block
+            elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
+                               image_opencv_input, fname, o, serializing="assemble")
+
+            # Printing clusters function calling
+            # Localhost only
+            if (localparams['page'] == 1):
+                clusters_printing(root_block, fname, input_image=image_opencv_input)
+
+            # Localhost only
+            if (localparams['page'] == 1):
+                '''
+                sortchildrenby(root, 'buoyancy')
+                for child in root:
+                    print(child.)
+                    sortchildrenby(child, 'buoyancy')
+                '''
+                # Generating HTML for printing
+                html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
+                # print("html=", html)
+
+                # Print html code
+                with open(fname + ".html", "w") as html_file:
+                    print(html, file=html_file)
+
+                # Print tree to file
+                with open(VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w") as tree_file:
+                    for pre, fill, node in RenderTree(root_block):
+                        treestr = u"%s%s" % (pre, node.name)
+                        print(
+                            treestr.ljust(8),
+                            node.x1,
+                            node.y1,
+                            node.x2,
+                            node.y2,
+                            "direction:",
+                            node.direction,
+                            node.types,
+                            node.element_assigned,
+                            node.styles,
+                            "processing:",
+                            node.processing,
+                            file=tree_file,
+                        )
+
             # Define the export node
+            # Serializer only
             outer_div_node = ScenarioElement.objects.create(
                 parent=serializer_node,
                 struct_type="container",
@@ -3326,45 +3354,9 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
                 buoyancy=0,
             )
 
-            # Obtaining the absolute path for the parameters directly. Should change this later.
-            o = urlparse(self.context["request"].build_absolute_uri())
-            # Detect elements for the root block
-            elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
-                               image_original, fname, o, serializing="assemble")
-
+            # HTML elements and components creation
             # Serializer only
             elements_rootblock_create(root_block, outer_div_node, serializing="assemble")
-
-            # Printing clusters function calling
-            clusters_printing(root_block, root_firstcluster, fname, input_image=image_opencv_input)
-
-            # Generating HTML for printing
-            html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
-            # print("html=", html)
-
-            # Print html code
-            with open(fname + ".html", "w") as html_file:
-                print(html, file=html_file)
-
-            # Print tree to file
-            with open(VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w") as tree_file:
-                for pre, fill, node in RenderTree(root_block):
-                    treestr = u"%s%s" % (pre, node.name)
-                    print(
-                        treestr.ljust(8),
-                        node.x1,
-                        node.y1,
-                        node.x2,
-                        node.y2,
-                        "direction:",
-                        node.direction,
-                        node.types,
-                        node.element_assigned,
-                        node.styles,
-                        "processing:",
-                        node.processing,
-                        file=tree_file,
-                    )
 
         return serializer_node
 
@@ -3550,7 +3542,6 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
         # This initialises an RGB-image that is just black (with two instances)
         image_opencv_input = np.zeros((img_height, img_width, 3), np.uint8)
         image_original = np.zeros((img_height, img_width, 3), np.uint8)
-        image_allclusters = np.zeros((img_height, img_width, 3), np.uint8)
 
         # Go through all the input elements
         # Construct fdict.
