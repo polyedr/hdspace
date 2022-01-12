@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
@@ -32,6 +32,8 @@ import {
   FormHelperText,
 } from '@material-ui/core';
 import { updateUISettingsParameters } from '@Redux/project/actions';
+import PATH_NAMES from '@Constants/pathNames';
+import ImageCropper from '@Components/CropImage';
 import SubmitError from '../SubmitError';
 import Button from '../../UI/Button';
 
@@ -109,12 +111,21 @@ const useStyles = makeStyles((theme) =>
     error: {
       margin: theme.spacing(1),
     },
+    link: {
+      '&, &:active, &:visited, &:focus': {
+        color: theme.palette.primary.light,
+      },
+      textDecoration: 'none',
+    },
   }),
 );
 
 const Profile: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+
+  const [imageToCrop, setImageToCrop] = useState<any>(undefined);
+  const [croppedImage, setCroppedImage] = useState<any>(undefined);
 
   const userData = useSelector(selectUserData);
   const { firstName, lastName, email, profile } = userData;
@@ -123,7 +134,10 @@ const Profile: React.FC = () => {
       profileDataParameters: { autoSwitchTabs, dropTargetBordersMode },
     },
   } = profile;
-  const { avatar, role } = useSelector(selectProfileData);
+  const {
+    role,
+    parameters: { avatarCrop },
+  } = useSelector(selectProfileData);
   const userGuideWatched = useSelector(selectUserGuideWatched);
   const handleLogout = () => {
     dispatch(logoutStart());
@@ -145,7 +159,18 @@ const Profile: React.FC = () => {
     const formData = new FormData();
     formData.append('avatar', file, file.name);
 
-    dispatch(changeProfileData((formData as any) as ProfileData));
+    const reader = new FileReader();
+    reader.addEventListener('load', () => {
+      const image = reader.result;
+      setImageToCrop(image);
+    });
+
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
+  const handleSaved = () => {
+    dispatch(changeProfileData((croppedImage as any) as ProfileData));
+    setImageToCrop(undefined);
   };
 
   const handleChangeBordersMode = () => {
@@ -182,9 +207,14 @@ const Profile: React.FC = () => {
           Profile settings
         </Typography>
 
-        <Button styleType="link" onClick={handleLogout}>
-          Log out
-        </Button>
+        <div>
+          <a className={classes.link} href={PATH_NAMES.projects}>
+            My projects
+          </a>
+          <Button styleType="link" onClick={handleLogout}>
+            Log out
+          </Button>
+        </div>
       </div>
 
       <Box padding={2}>
@@ -356,7 +386,20 @@ const Profile: React.FC = () => {
               >
                 <div className={classes.imageInputLabel}>Your photo</div>
 
-                <img src={avatar ?? IMAGES.prof} alt="profile" />
+                <img alt="profile" src={avatarCrop ?? IMAGES.prof} />
+
+                {imageToCrop && (
+                  <>
+                    <ImageCropper
+                      imageToCrop={imageToCrop}
+                      setResult={setCroppedImage}
+                    />
+
+                    <button type="button" onClick={handleSaved}>
+                      Saved
+                    </button>
+                  </>
+                )}
 
                 <div className={classes.profileImageActions}>
                   <label className={classes.imageActionButton}>
@@ -417,7 +460,7 @@ const Profile: React.FC = () => {
           </div>
 
           <div className={classes.subheader}>
-            User guide wathched
+            User guide watched
             <Switch
               checked={userGuideWatched}
               onChange={handleChangeUserGuideWatched}

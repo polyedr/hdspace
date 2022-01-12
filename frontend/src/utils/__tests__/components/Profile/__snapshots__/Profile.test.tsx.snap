@@ -11,17 +11,25 @@ exports[`Profile should render profile page 1`] = `
       >
         Profile settings
       </h4>
-      <button
-        class=""
-        type="button"
-      >
-        <span>
-          Log out
-        </span>
-      </button>
+      <div>
+        <a
+          class="makeStyles-link-15"
+          href="/projects"
+        >
+          My projects
+        </a>
+        <button
+          class=""
+          type="button"
+        >
+          <span>
+            Log out
+          </span>
+        </button>
+      </div>
     </div>
     <div
-      class="MuiBox-root MuiBox-root-15"
+      class="MuiBox-root MuiBox-root-16"
     >
       <div
         class="makeStyles-formsContainer-3"
@@ -59,10 +67,10 @@ exports[`Profile should render profile page 1`] = `
                 />
                 <fieldset
                   aria-hidden="true"
-                  class="PrivateNotchedOutline-root-16 MuiOutlinedInput-notchedOutline"
+                  class="PrivateNotchedOutline-root-17 MuiOutlinedInput-notchedOutline"
                 >
                   <legend
-                    class="PrivateNotchedOutline-legendLabelled-18 PrivateNotchedOutline-legendNotched-19"
+                    class="PrivateNotchedOutline-legendLabelled-19 PrivateNotchedOutline-legendNotched-20"
                   >
                     <span>
                       First Name
@@ -93,10 +101,10 @@ exports[`Profile should render profile page 1`] = `
                 />
                 <fieldset
                   aria-hidden="true"
-                  class="PrivateNotchedOutline-root-16 MuiOutlinedInput-notchedOutline"
+                  class="PrivateNotchedOutline-root-17 MuiOutlinedInput-notchedOutline"
                 >
                   <legend
-                    class="PrivateNotchedOutline-legendLabelled-18 PrivateNotchedOutline-legendNotched-19"
+                    class="PrivateNotchedOutline-legendLabelled-19 PrivateNotchedOutline-legendNotched-20"
                   >
                     <span>
                       Last Name
@@ -133,10 +141,10 @@ exports[`Profile should render profile page 1`] = `
                 />
                 <fieldset
                   aria-hidden="true"
-                  class="PrivateNotchedOutline-root-16 MuiOutlinedInput-notchedOutline"
+                  class="PrivateNotchedOutline-root-17 MuiOutlinedInput-notchedOutline"
                 >
                   <legend
-                    class="PrivateNotchedOutline-legendLabelled-18"
+                    class="PrivateNotchedOutline-legendLabelled-19"
                   >
                     <span>
                       Company Name
@@ -186,10 +194,10 @@ exports[`Profile should render profile page 1`] = `
                 </svg>
                 <fieldset
                   aria-hidden="true"
-                  class="PrivateNotchedOutline-root-16 MuiOutlinedInput-notchedOutline"
+                  class="PrivateNotchedOutline-root-17 MuiOutlinedInput-notchedOutline"
                 >
                   <legend
-                    class="PrivateNotchedOutline-legendLabelled-18 PrivateNotchedOutline-legendNotched-19"
+                    class="PrivateNotchedOutline-legendLabelled-19 PrivateNotchedOutline-legendNotched-20"
                   >
                     <span>
                       Role
@@ -213,7 +221,7 @@ exports[`Profile should render profile page 1`] = `
           </div>
           <img
             alt="profile"
-            src="test-file-stub"
+            src=""
           />
           <div
             class="makeStyles-profileImageActions-8"
@@ -299,14 +307,14 @@ exports[`Profile should render profile page 1`] = `
           >
             <span
               aria-disabled="false"
-              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-20 MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-checked-21 Mui-checked"
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-21 MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-checked-22 Mui-checked"
             >
               <span
                 class="MuiIconButton-label"
               >
                 <input
                   checked=""
-                  class="PrivateSwitchBase-input-23 MuiSwitch-input"
+                  class="PrivateSwitchBase-input-24 MuiSwitch-input"
                   type="checkbox"
                   value=""
                 />
@@ -326,20 +334,20 @@ exports[`Profile should render profile page 1`] = `
         <div
           class="makeStyles-subheader-12"
         >
-          User guide wathched
+          User guide watched
           <span
             class="MuiSwitch-root"
           >
             <span
               aria-disabled="false"
-              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-20 MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-checked-21 Mui-checked"
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-21 MuiSwitch-switchBase MuiSwitch-colorSecondary PrivateSwitchBase-checked-22 Mui-checked"
             >
               <span
                 class="MuiIconButton-label"
               >
                 <input
                   checked=""
-                  class="PrivateSwitchBase-input-23 MuiSwitch-input"
+                  class="PrivateSwitchBase-input-24 MuiSwitch-input"
                   type="checkbox"
                   value=""
                 />
@@ -365,13 +373,13 @@ exports[`Profile should render profile page 1`] = `
           >
             <span
               aria-disabled="false"
-              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-20 MuiSwitch-switchBase MuiSwitch-colorSecondary"
+              class="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-21 MuiSwitch-switchBase MuiSwitch-colorSecondary"
             >
               <span
                 class="MuiIconButton-label"
               >
                 <input
-                  class="PrivateSwitchBase-input-23 MuiSwitch-input"
+                  class="PrivateSwitchBase-input-24 MuiSwitch-input"
                   type="checkbox"
                   value=""
                 />
