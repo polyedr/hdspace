@@ -7,12 +7,10 @@ import {
   convertFreeCanvas,
   setBordersEnabled,
   toggleContainersBorders,
-  toggleGrid,
 } from '@Redux/project/actions';
 import {
   selectBordersEnabled,
   selectShowingBorders,
-  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
@@ -31,6 +29,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { HELP_LINK } from '../../../config/settings';
 import Layouts from './Layouts';
 import Actions from './actions';
+import ShowGrid from './ShowGrid';
 
 const useStyles = makeStyles(({ typography, spacing }) => ({
   root: {
@@ -73,7 +72,6 @@ const TopBar: React.FC = () => {
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
   const showBorders = useSelector(selectShowingBorders);
-  const showGrid = useSelector(selectShowingGrid);
   const bordersEnabled = useSelector(selectBordersEnabled);
 
   const createFlex = () => {
@@ -140,19 +138,9 @@ const TopBar: React.FC = () => {
               }
             />
           )}
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="Show Grid"
-                checked={showGrid}
-                onChange={() => dispatch(toggleGrid(!showGrid))}
-              />
-            }
-            label={<Typography className={classes.title}>Show Grid</Typography>}
-          />
+          <ShowGrid />
         </>
       </div>
-
       <Layouts />
     </div>
   ) : (
