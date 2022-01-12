@@ -356,6 +356,8 @@ white_list = [
 DOMAIN = ('adevi.info')
 # Djoser settings
 DJOSER = {
+    'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
     "USERNAME_RESET_CONFIRM_URL": "username/reset/confirm/{uid}/{token}",
     "DOMAIN": "adevi.info",
