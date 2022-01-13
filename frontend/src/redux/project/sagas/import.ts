@@ -69,7 +69,9 @@ export const importHtmlSaga = withRequiredPermissions(
     // @ts-ignore
     const data = convertHtml(doc, cssRules);
 
-    const listOfUnsupportedElement = data?.listOfUnsupportedElement ? data?.listOfUnsupportedElement : '';
+    const listOfUnsupportedElement = data?.listOfUnsupportedElement
+      ? data?.listOfUnsupportedElement
+      : '';
 
     if (data?.listOfUnsupportedElement) {
       delete data?.listOfUnsupportedElement;
@@ -146,7 +148,9 @@ export const importHtmlSaga = withRequiredPermissions(
     if (listOfUnsupportedElement !== '') {
       yield put(
         enqueueSnackbar({
-          message: `List of not supported html tag is ${listOfUnsupportedElement.toString().toLowerCase()}.`,
+          message: `List of not supported html tag is ${listOfUnsupportedElement
+            .toString()
+            .toLowerCase()}.`,
           options: { variant: 'error' },
         }),
       );
