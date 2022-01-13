@@ -17,7 +17,7 @@ const containerElements = {
 } as const;
 const unsupportedElement = {
   AREA: null,
-  svg:null,
+  svg: null,
   AUDIO: null,
   BR: null,
   CANVAS: null,
@@ -173,13 +173,20 @@ const extractStyles = (
   return cssRules.reduce(reducer, {});
 };
 
+const unsupportedElementList: string[] = [];
+
 const htmlElementToAdeviElement = (
   element: HTMLElement,
   cssRules: CSSStyleRule[],
   doc: Document,
 ): ServerElement<any> | null => {
   const type = tagMap[element.tagName];
-  if (!type) return null;
+  if (!type) {
+    if (unsupportedElementList.indexOf(element.tagName) === -1) {
+      unsupportedElementList.push(element.tagName);
+    }
+    return null;
+  }
 
   const { style: inlineStyle } = element;
 
@@ -222,6 +229,7 @@ const htmlElementToAdeviElement = (
       ...adeviElement.styles,
       ownStyles,
     },
+    listOfUnsupportedElement: unsupportedElementList,
   };
 };
 

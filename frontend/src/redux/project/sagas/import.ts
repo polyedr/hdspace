@@ -69,6 +69,12 @@ export const importHtmlSaga = withRequiredPermissions(
     // @ts-ignore
     const data = convertHtml(doc, cssRules);
 
+    const listOfUnsupportedElement = data?.listOfUnsupportedElement ? data?.listOfUnsupportedElement : '';
+
+    if (data?.listOfUnsupportedElement) {
+      delete data?.listOfUnsupportedElement;
+    }
+
     const { result: element, error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiCreateElement,
@@ -129,7 +135,22 @@ export const importHtmlSaga = withRequiredPermissions(
       if (error) throw new Error(error);
     }
     if (error) throw new Error(error);
+    yield put(
+      enqueueSnackbar({
+        message: 'Successfully site is import.',
+        options: { variant: 'success' },
+      }),
+    );
     yield put(Actions.toggleContainersBorders(true));
+
+    if (listOfUnsupportedElement !== '') {
+      yield put(
+        enqueueSnackbar({
+          message: `List of not supported html tag is ${listOfUnsupportedElement.toString()}.`,
+          options: { variant: 'error' },
+        }),
+      );
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar(
