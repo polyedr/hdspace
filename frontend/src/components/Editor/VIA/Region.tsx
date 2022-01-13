@@ -178,6 +178,47 @@ const Region: FC<Props> = ({ region }) => {
       }}
       data-testid={id}
     >
+      {isActive && (
+        <div>
+          <div
+            style={{
+              borderTop: '1px solid red',
+              left: -x - 7,
+              width: x,
+              top: height / 2,
+              position: 'absolute',
+              textAlign: 'center',
+              color: 'red',
+              fontSize: 'x-small',
+              fontWeight: 'bold',
+            }}
+          >
+            {`${Math.round((Number(x) * 100) / 100)}px`}
+          </div>
+
+          <div
+            style={{
+              borderLeft: '1px solid red',
+              height: y,
+              position: 'absolute',
+              left: width / 2,
+              top: -y - 7,
+            }}
+          >
+            <span
+              style={{
+                color: 'red',
+                fontSize: 'x-small',
+                fontWeight: 'bold',
+                top: '50%',
+                position: 'absolute',
+              }}
+            >
+              {`${Math.round((Number(y) * 100) / 100)}px`}
+            </span>
+          </div>
+        </div>
+      )}
       <VIABorders />
     </Rnd>
   );
