@@ -146,7 +146,7 @@ export const importHtmlSaga = withRequiredPermissions(
     if (listOfUnsupportedElement !== '') {
       yield put(
         enqueueSnackbar({
-          message: `List of not supported html tag is ${listOfUnsupportedElement.toString()}.`,
+          message: `List of not supported html tag is ${listOfUnsupportedElement.toString().toLowerCase()}.`,
           options: { variant: 'error' },
         }),
       );
@@ -163,6 +163,7 @@ export const importHtmlSaga = withRequiredPermissions(
     );
   } finally {
     yield put(Actions.setValueImportLoader(false));
+    yield put(Actions.setValueCheckRobots(false));
   }
 });
 
