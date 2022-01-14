@@ -411,7 +411,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                         )  # Default font-size value is 12px
                 font_size_value = int(median(font_size) * 1.7)
 
-                # Read the string with tesseract
+                # Read a string with tesseract
                 text_elem_tesseract = pytesseract.image_to_string(
                     elem_image_gray, config=config_tesseract
                 )
@@ -3160,8 +3160,10 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
         # Obtaining the absolute path for the parameters directly. Should change this later.
         o = urlparse(self.context["request"].build_absolute_uri())
+        # Set the local parameters to be changed from localhost to staging
         localparams = parse_qs(o.query)
         # print(localparams)
+        localparams['page'] = 0
         if (o.netloc == '127.0.0.1:8000'):
             localparams['page'] = 1
         # localparams['page'] = 2
