@@ -363,6 +363,7 @@ export type LibraryElement<
 
 export type LibraryElementPatch<Type extends Entity> = {
   name?: string;
+  size?: string;
   type?: Type;
   scenario?: number;
   struct_type?: Type;
@@ -819,6 +820,7 @@ export type ProjectWithScreens = ProjectBase & {
 
 export type StateElement = {
   id: string;
+  size?: string;
   name: string;
   type: Entity | 'none';
   buoyancy: number;

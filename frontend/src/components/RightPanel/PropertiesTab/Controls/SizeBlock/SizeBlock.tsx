@@ -8,12 +8,15 @@ import React, {
 import { useDebouncedCallback } from 'use-debounce';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { useSelector } from 'react-redux';
+import { selectActiveElement } from '@Redux/project/selectors/element';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateElement } from '@Redux/project/actions';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
-import { MenuItem } from '@material-ui/core';
+import { Button, ButtonGroup, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { capitalize } from '@material-ui/core/utils';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
+// import { useDebouncedValueChange } from '@Utils/debounceHooks';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -32,6 +35,7 @@ const useStyles = makeStyles({
 
 const sameSizeElements: (Entity | 'none')[] = ['checkbox', 'radiobutton'];
 const percentSizeElements: (Entity | 'none')[] = ['carousel'];
+// const calendarSize: (Entity | 'none')[] = ['calendar'];
 const disableWidthElements: (Entity | 'none')[] = [
   'navbar',
   'calendar',
@@ -62,6 +66,10 @@ type ControlProps = {
   sizeName: SizeName;
   disabled: boolean;
 };
+// type CalendarProps = {
+//   handleSizeChange: () => void;
+//   calendarSize: string;
+// };
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
@@ -201,6 +209,40 @@ const SizeBlock: React.FC<Props> = ({
     [updateStyles, width, height, type],
   );
 
+  const ClendarSizeControl: React.FC = () => {
+    const dispatch = useDispatch();
+    const { id } = useSelector(selectActiveElement);
+    const handleSizeChange = (e) => {
+      dispatch(
+        updateElement({
+          elementID: id,
+          data: { size: e.currentTarget.value },
+          active: true,
+        }),
+      );
+    };
+
+    return (
+      <ButtonGroup>
+        <Button
+          variant="contained"
+          color="primary"
+          value="small"
+          onClick={handleSizeChange}
+        >
+          small
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          value="large"
+          onClick={handleSizeChange}
+        >
+          large
+        </Button>
+      </ButtonGroup>
+    );
+  };
   const SizeControl: React.FC<ControlProps> = ({ sizeName, disabled }) => {
     const size = String((sizeName === 'width' ? width : height) || 'auto');
     const parsedSize = Number.isNaN(parseFloat(size))
@@ -215,7 +257,6 @@ const SizeBlock: React.FC<Props> = ({
     const debounced = useDebouncedCallback((name, value) => {
       handleInputChange(name, value);
     }, 500);
-
     return (
       <div className={classes.sizeControl}>
         <StyledTextField
@@ -268,14 +309,20 @@ const SizeBlock: React.FC<Props> = ({
       )}
 
       <div className={classes.wrapper}>
-        <SizeControl
-          sizeName="height"
-          disabled={disableHeightElements.includes(type)}
-        />
-        <SizeControl
-          sizeName="width"
-          disabled={disableWidthElements.includes(type)}
-        />
+        {type === 'calendar' ? (
+          <ClendarSizeControl />
+        ) : (
+          <>
+            <SizeControl
+              sizeName="height"
+              disabled={disableHeightElements.includes(type)}
+            />
+            <SizeControl
+              sizeName="width"
+              disabled={disableWidthElements.includes(type)}
+            />
+          </>
+        )}
       </div>
     </section>
   );
