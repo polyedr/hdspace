@@ -144,8 +144,7 @@ export const importHtmlSaga = withRequiredPermissions(
       }),
     );
     yield put(Actions.toggleContainersBorders(true));
-
-    if (listOfUnsupportedElement !== '') {
+    if (listOfUnsupportedElement.length !== 0) {
       yield put(
         enqueueSnackbar({
           message: `List of not supported html tag is ${listOfUnsupportedElement
