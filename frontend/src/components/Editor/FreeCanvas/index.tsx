@@ -119,7 +119,6 @@ const FreeCanvas = () => {
         };
       }
 
-      console.log('elementParameter', elementParameter);
       dispatch(
         createElements(
           {
