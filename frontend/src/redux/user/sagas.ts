@@ -230,6 +230,7 @@ function* sendResetPasswordMailSaga(
     yield put(
       Actions.setConfirmMessage('Please, check your mail and set new password'),
     );
+    openSignScreen('signin');
   } catch (e) {
     yield put(Actions.setUserError(e));
   } finally {
