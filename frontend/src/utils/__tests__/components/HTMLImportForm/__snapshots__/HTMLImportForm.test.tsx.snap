@@ -89,7 +89,7 @@ exports[`HTMLImportForm should render properly 1`] = `
         <span
           class="MuiButton-label"
         >
-          Create
+          Check Import Site Status
         </span>
       </button>
     </div>

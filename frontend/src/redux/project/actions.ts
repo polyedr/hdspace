@@ -178,6 +178,7 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
+  setImportValue,
   EditScreenNameAndData,
   CreateVIARegion,
   DeleteVIARegion,
@@ -1223,17 +1224,30 @@ export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
 
-export const importHtml = (files: File[], url?: string) => ({
+export const importHtml = (
+  imageFiles: File[],
+  imageElements: StateElement[],
+  element: LibraryElement<any, any[], any, {}> | undefined,
+) => ({
   type: TYPES.IMPORT_HTML,
   payload: {
-    files,
-    url,
+    imageFiles,
+    imageElements,
+    element,
   },
 });
 
 export const uploadImportUrl = (url: string) => ({
   type: TYPES.UPLOAD_IMPORT_URL,
   payload: url,
+});
+
+export const checkImportHTML = (files: File[], url?: string) => ({
+  type: TYPES.IMPORT_HTML_CHECK,
+  payload: {
+    files,
+    url,
+  },
 });
 
 export const uploadUrlForCheckRobots = (url: string) => ({
@@ -1248,6 +1262,11 @@ export const setValueCheckRobots = (value: boolean) => ({
 
 export const setValueImportLoader = (value: boolean): SetValueImportLoader => ({
   type: TYPES.SET_VALUE_IMPORT_LOADER,
+  payload: value,
+});
+
+export const setValueImport = (value: any): setImportValue => ({
+  type: TYPES.SET_IMPORT_VALUE,
   payload: value,
 });
 

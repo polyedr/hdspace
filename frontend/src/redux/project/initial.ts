@@ -111,6 +111,11 @@ export const initialCommunication: ProjectCommunicationState = {
   analyzerLoader: false,
   assetsListsLoader: false,
   importLoader: false,
+  importValue: {
+    notSupportedTag: null,
+    canvasData: {},
+    importSuccessRawData: {},
+  },
 };
 
 export const initialControl: ProjectControlState = {

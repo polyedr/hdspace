@@ -51,7 +51,7 @@ describe('HTMLImportForm', () => {
     expect(textInput.value).toBeFalsy();
     expect(fileInput.value).toBeFalsy();
 
-    const submitButton = ui.getByText('Create').parentElement;
+    const submitButton = ui.getByText('Check Import Site Status').parentElement;
     expect(submitButton).toBeDisabled();
 
     fireEvent.change(textInput, { target: { value: '123' } });

@@ -126,6 +126,7 @@ import {
   checkRobotsFileFromUrlSaga,
   importHtmlSaga,
   uploadImportUrlSaga,
+  importHtmlCheck,
 } from './import';
 import {
   executeRedoActionsSaga,
@@ -454,6 +455,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
+  yield takeEvery(TYPES.IMPORT_HTML_CHECK, importHtmlCheck);
   yield takeEvery(TYPES.UPLOAD_IMPORT_URL, uploadImportUrlSaga);
   yield takeEvery(TYPES.UPLOAD_URL_CHECK_ROBOTS, checkRobotsFileFromUrlSaga);
 

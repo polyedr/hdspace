@@ -75,6 +75,18 @@ const communicationReducer = (
         importLoader: action.payload,
       };
     }
+
+    case TYPES.SET_IMPORT_VALUE: {
+      return {
+        ...state,
+        importValue: {
+          notSupportedTag: action?.payload['notSupportedTag'],
+          canvasData: action?.payload['canvasData'],
+          importSuccessRawData: action?.payload['importSuccessRawData'],
+        },
+      };
+    }
+
     default:
       return state;
   }

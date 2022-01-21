@@ -152,6 +152,11 @@ export type ProjectCommunicationState = {
   analyzerLoader: boolean;
   assetsListsLoader: boolean;
   importLoader: boolean;
+  importValue: {
+    notSupportedTag: string | null;
+    canvasData: object;
+    importSuccessRawData: object;
+  };
 };
 
 export type ProjectControlState = {
@@ -1354,6 +1359,7 @@ export type Action =
   | SetSidebarIframe
   | SetSidebarHost
   | SetValueImportLoader
+  | setImportValue
   | SetVIAResultId
   | UpdateVIARegionLayerSuccess
   | UpdateUISettingsParameters
@@ -1365,6 +1371,8 @@ export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,
   boolean
 >;
+
+export type setImportValue = IAction<typeof TYPES.SET_IMPORT_VALUE, object>;
 
 export type SetValueCheckRobots = IAction<
   typeof TYPES.SET_VALUE_CHECK_ROBOTS,

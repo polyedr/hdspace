@@ -183,6 +183,10 @@ export function selectImportLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.importLoader;
 }
 
+export function selectImportValue(state: AppReduxState): object {
+  return selectProjectState(state).communication.importValue;
+}
+
 export const selectCurrentUIFramework = createSelector(
   selectCurrentProject,
   selectCurrentScreen,
