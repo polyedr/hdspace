@@ -9,7 +9,7 @@ import lorem
 import numpy as np
 import math
 import uuid
-from statistics import median
+from statistics import median, median_low
 
 from anytree import RenderTree
 from rest_framework_recursive.fields import RecursiveField
@@ -229,6 +229,120 @@ def extract_colour_palette(elem_image):
     return bcolour_elem_value, fcolour_elem_value
 
 
+def ocr_recognition(elem_image, ocr_engine = "tesseract"):
+    font_size_value = 14
+    text_elem_ocr = ""
+
+    # Detect the font-size with tesseract for some element start
+    if(ocr_engine == "tesseract"):
+        # Convert to the grey colour
+        elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
+        elem_image_gray = cv2.resize(elem_image_gray,None, fx=4, fy=4)
+        result = pytesseract.image_to_boxes(elem_image_gray)
+
+        lines = result.strip().split("\n")
+        font_size = []
+
+        # Calculate the number of letters recognized in lines:
+        length_lines = len(lines)
+        if (length_lines > 7):
+            # Calculate the average x-size for the long lines
+            for line in lines:
+                chars = line.split(" ")
+                try:
+                    font_size.append(float(chars[4]) - float(chars[2]))
+                except Exception:
+                    pass
+
+        # Calculate the average x-size for the short lines
+        else:
+            for line in lines:
+                chars = line.split(" ")
+                xsize_chars = {"v", "w", "z", "a", "c", "e", "m", "n", "o", "r", "s", "u"}
+                if chars[0] in xsize_chars:
+                    # print(chars[0])
+                    try:
+                        font_size.append(float(chars[4]) - float(chars[2]))
+                    except Exception:
+                        pass
+
+        try:
+            # Filter out errors of recognition with median_low.
+            # Probably should switch to quantiles with next statistics Python versions
+            font_size_value = median_low(font_size)[0] * 1.9 / 4.0
+        except Exception:
+            font_size_value = 14.0
+        finally:
+            pass
+
+        font_size_value = int(font_size_value)
+
+        # Read a string with tesseract
+        text_elem_tesseract = pytesseract.image_to_string(
+            elem_image_gray, config=config_tesseract
+        )
+        # Show tesseract results only when font is larger than 14
+        if font_size_value < 14:
+            text_elem_tesseract = ""
+
+        text_elem_ocr = text_elem_tesseract
+    # Detect the font-size with tesseract for some element end
+
+    # Detect the font-size with tesseract for some element start, with lorem text
+    if(ocr_engine == "lorem"):
+        # Convert to the grey colour
+        elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
+        elem_image_gray = cv2.resize(elem_image_gray,None, fx=4, fy=4)
+        result = pytesseract.image_to_boxes(elem_image_gray)
+
+        lines = result.strip().split("\n")
+        font_size = []
+
+        # Calculate the number of letters recognized in lines:
+        length_lines = len(lines)
+        if (length_lines > 7):
+            # Calculate the average x-size for the long lines
+            for line in lines:
+                chars = line.split(" ")
+                try:
+                    font_size.append(float(chars[4]) - float(chars[2]))
+                except Exception:
+                    pass
+
+        # Calculate the average x-size for the short lines
+        else:
+            for line in lines:
+                chars = line.split(" ")
+                xsize_chars = {"v", "w", "z", "a", "c", "e", "m", "n", "o", "r", "s", "u"}
+                if chars[0] in xsize_chars:
+                    # print(chars[0])
+                    try:
+                        font_size.append(float(chars[4]) - float(chars[2]))
+                    except Exception:
+                        pass
+
+        try:
+            # Filter out errors of recognition with median_low.
+            # Probably should switch to quantiles with next statistics Python versions
+            font_size_value = median_low(font_size)[0] * 1.9 / 4.0
+        except Exception:
+            font_size_value = 14.0
+        finally:
+            pass
+
+        font_size_value = int(font_size_value)
+
+        # Read a string with tesseract
+        text_elem_lorem = lorem.get_word(count=2)
+        # Show tesseract results only when font is larger than 14
+        # if font_size_value < 14:
+        #     text_elem_tesseract = ""
+
+        text_elem_ocr = text_elem_lorem
+        # Detect the font-size with tesseract for some element end, with lorem text
+
+    return font_size_value, text_elem_ocr
+
 # Detect elements for the root block function
 def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                        image_opencv_input, fname, o, serializing="virtualize_simple", node_width=0, node_height=0):
@@ -379,7 +493,7 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             # Cropping to the border box end
 
             # Detect the font-size with tesseract for some elements
-            text_elem_tesseract = ""
+            font_size_value = 14.0
             if node.element_assigned in {
                 "textinput",
                 "input",
@@ -392,39 +506,13 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
             }:
                 # Defiine a scenarioelement_inner dictionary
                 scenarioelement_inner_kwargs = {}
-                # Detect the font-size with tesseract for some element start
-                # Convert to the grey colour
-                elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
-                result = pytesseract.image_to_boxes(elem_image_gray)
-                # print(result)
-
-                lines = result.strip().split("\n")
-                font_size = []
-
-                for line in lines:
-                    chars = line.split(" ")
-                    try:
-                        font_size.append(float(chars[4]) - float(chars[2]))
-                    except Exception:
-                        font_size.append(
-                            12.0
-                        )  # Default font-size value is 12px
-                font_size_value = int(median(font_size) * 1.7)
-
-                # Read a string with tesseract
-                text_elem_tesseract = pytesseract.image_to_string(
-                    elem_image_gray, config=config_tesseract
-                )
-                # if text_elem_tesseract:
-                #     print("text:", text_elem_tesseract, font_size_value, font_size_img)
-                # Show tesseract results only when font is larger than 12
-                if font_size_value < 12:
-                    text_elem_tesseract = ""
-                # Detect the font-size with tesseract for some element end
+                # A choice for ocr_engine is {"tesseract", "lorem", "googlecloud"}
+                font_size_value, text_elem_ocr = ocr_recognition(elem_image, ocr_engine = "tesseract")
 
             styles = {}
             parameters = {}
             styles["text-transform"] = "none"
+            styles["font-size"] = font_size_value
 
             bcolour_elem_value, fcolour_elem_value = extract_colour_palette(elem_image)
 
@@ -454,14 +542,13 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 # displaying various kinds of elements end
 
                 # Text assignment
-                if text_elem_tesseract:
-                    parameters["textContent"] = text_elem_tesseract
+                if text_elem_ocr:
+                    parameters["textContent"] = text_elem_ocr
 
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
                 element.set("style", str_styles)
-                
 
                 # Create a new Scenario Element for the elements chain
                 # if(hasattr('node.parent', 'scenarioelement')):
@@ -525,8 +612,8 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 # displaying various kinds of elements end
 
                 # Text assignment
-                if text_elem_tesseract:
-                    parameters["textContent"] = text_elem_tesseract
+                if text_elem_ocr:
+                    parameters["textContent"] = text_elem_ocr
 
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
@@ -554,9 +641,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 element.text = lorem.get_word(count=2)
                 parameters["textContent"] = element.text
                 # Text assignment
-                if text_elem_tesseract:
-                    parameters["textContent"] = text_elem_tesseract
-                    element.text = text_elem_tesseract
+                if text_elem_ocr:
+                    parameters["textContent"] = text_elem_ocr
+                    element.text = text_elem_ocr
 
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
@@ -580,8 +667,8 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
 
                 element.set("placeholder", lorem.get_word(count=2))
                 # Text assignment
-                if text_elem_tesseract:
-                    parameters["placeholder"] = text_elem_tesseract
+                if text_elem_ocr:
+                    parameters["placeholder"] = text_elem_ocr
 
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
@@ -606,9 +693,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 element.text = lorem.get_word(count=2)
                 parameters["textContent"] = element.text
                 # Text assignment
-                if text_elem_tesseract:
-                    parameters["textContent"] = text_elem_tesseract
-                    element.text = text_elem_tesseract
+                if text_elem_ocr:
+                    parameters["textContent"] = text_elem_ocr
+                    element.text = text_elem_ocr
 
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
@@ -692,9 +779,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 element.text = lorem.get_word(count=1)
                 parameters["textContent"] = element.text
                 # Text assignment
-                if text_elem_tesseract:
-                    parameters["textContent"] = text_elem_tesseract
-                    element.text = text_elem_tesseract
+                if text_elem_ocr:
+                    parameters["textContent"] = text_elem_ocr
+                    element.text = text_elem_ocr
 
                 if styles_on:
                     # Set the background colour for styles
@@ -744,9 +831,9 @@ def elements_rootblock(root_block, styles_on, region_dataset, img_width, img_hei
                 element.text = lorem.get_word(count=1)
                 parameters["textContent"] = element.text
                 # Text assignment
-                if text_elem_tesseract:
-                    parameters["textContent"] = text_elem_tesseract
-                    element.text = text_elem_tesseract
+                if text_elem_ocr:
+                    parameters["textContent"] = text_elem_ocr
+                    element.text = text_elem_ocr
 
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
