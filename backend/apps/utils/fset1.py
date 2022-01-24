@@ -136,6 +136,7 @@ def pairwise(iterable):
     return zip(a, b)
 
 
+# If this function is used, it should be updated
 def recognize_with_tesseract(roi_our):
     text = ""
     font_size_value = 12.0
