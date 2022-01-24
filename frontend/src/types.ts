@@ -123,6 +123,7 @@ export type ServerElement<
   };
   children: Children;
   shared?: boolean;
+  listOfUnsupportedElement?: string[];
 };
 
 export type NNServerElement<

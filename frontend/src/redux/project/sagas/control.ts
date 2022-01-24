@@ -27,6 +27,11 @@ export function* executeUndoActionsSaga() {
       });
     }
     yield put(Actions.moveHistoryBackward());
+    if (
+      currentHistoryRecord.action.type.valueOf() === 'via/ASSEMBLE_VIA_REGIONS'
+    ) {
+      yield put(Actions.setVIAMode(true));
+    }
     yield put(
       enqueueSnackbar({
         message: `Sucessfully undo.`,

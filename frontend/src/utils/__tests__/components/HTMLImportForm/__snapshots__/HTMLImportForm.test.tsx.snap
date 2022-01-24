@@ -38,7 +38,7 @@ exports[`HTMLImportForm should render properly 1`] = `
       </div>
     </div>
     <h3>
-      Or upload an HTML and CSS files
+      Or upload an HTML, IMAGE and CSS files
     </h3>
     <div>
       <form

@@ -17,6 +17,7 @@ const containerElements = {
 } as const;
 const unsupportedElement = {
   AREA: null,
+  svg: null,
   AUDIO: null,
   BR: null,
   CANVAS: null,
@@ -29,7 +30,6 @@ const unsupportedElement = {
   HEAD: null,
   HR: null,
   IFRAME: null,
-  LINK: null,
   MAP: null,
   META: null,
   METER: null,
@@ -65,6 +65,8 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
   ADDRESS: 'textBlock',
   ARTICLE: 'container',
   B: 'textBlock',
+  A: 'label',
+  LINK: 'label',
   BDI: 'textBlock',
   BDO: 'textBlock',
   BLOCKQUOTE: 'paragraph',
@@ -107,7 +109,7 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
   SECTION: 'section',
   SELECT: 'select',
   SMALL: 'textBlock',
-  SPAN: 'textBlock',
+  SPAN: 'label',
   STRIKE: 'textBlock',
   STRONG: 'textBlock',
   SUB: 'textBlock',
@@ -171,13 +173,20 @@ const extractStyles = (
   return cssRules.reduce(reducer, {});
 };
 
+const unsupportedElementList: string[] = [];
+
 const htmlElementToAdeviElement = (
   element: HTMLElement,
   cssRules: CSSStyleRule[],
   doc: Document,
 ): ServerElement<any> | null => {
   const type = tagMap[element.tagName];
-  if (!type) return null;
+  if (!type) {
+    if (unsupportedElementList.indexOf(element.tagName) === -1) {
+      unsupportedElementList.push(element.tagName);
+    }
+    return null;
+  }
 
   const { style: inlineStyle } = element;
 
@@ -220,6 +229,7 @@ const htmlElementToAdeviElement = (
       ...adeviElement.styles,
       ownStyles,
     },
+    listOfUnsupportedElement: unsupportedElementList,
   };
 };
 
