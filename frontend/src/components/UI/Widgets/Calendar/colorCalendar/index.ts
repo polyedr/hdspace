@@ -25,7 +25,7 @@ export default class Calendar {
 
   /* Options */
   id: string;
-  calendarSize: CalendarSize;
+  calendarSize?: string; // CalendarSize;
   layoutModifiers: LayoutModifier[];
   theme: string;
   primaryColor?: string;
@@ -146,7 +146,7 @@ export default class Calendar {
   constructor(options: CalendarOptions = {}) {
     /* Initialize Options */
     this.id = options.id ?? '#color-calendar';
-    this.calendarSize = (options.calendarSize ?? 'large') as CalendarSize;
+    this.calendarSize = options?.calendarSize as CalendarSize; // ?? 'large'
     this.layoutModifiers = options.layoutModifiers ?? [];
     this.theme = options.theme ?? 'basic';
     this.primaryColor = options.primaryColor;
