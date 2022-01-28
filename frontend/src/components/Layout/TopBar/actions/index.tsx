@@ -30,6 +30,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
+    justifyContent: 'space-around',
   },
   iconButton: {
     color: palette.common.white,
