@@ -108,7 +108,10 @@ class RobotsSerializer(serializers.ModelSerializer):
                 result_data_set["Allowed"].append(
                     line.split(': ')[1].split(' ')[0])  # to neglect the comments or other junk info
             elif line.startswith('Disallow'):  # this is for disallowed url
-                result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])
+                try:
+                    result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])
+                except Exception:
+                    pass
         print(result_data_set)
         # Printing result data set end
 
