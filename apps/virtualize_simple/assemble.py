@@ -2020,12 +2020,12 @@ HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD = 0.25
 VIA_ANNOTATION_ASSEMBLING_FILE = "elements_websites_assembling.txt"
 
 
-def pipeline_assemble(imgpath, region_dataset, fname, fdict, o, localparams):
+def pipeline_assemble(region_dataset, fname, fdict, o, localparams):
     # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
     styles_on = 1
-
     # Create the opencv recognition start
     # Read an image with OpenCV start
+    imgpath = MEDIA_ROOT + "/uploads/" + fname
     image_opencv_input = cv2.imread(imgpath)
 
     # Create a directory to save clusters for some image processed
