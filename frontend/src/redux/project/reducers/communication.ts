@@ -80,9 +80,10 @@ const communicationReducer = (
       return {
         ...state,
         importValue: {
-          notSupportedTag: action?.payload['notSupportedTag'],
-          canvasData: action?.payload['canvasData'],
-          importSuccessRawData: action?.payload['importSuccessRawData'],
+          notSupportedTag: action?.payload?.notSupportedTag,
+          canvasData: action?.payload?.canvasData,
+          importSuccessRawData: action?.payload?.importSuccessRawData,
+          error: action.payload?.error,
         },
       };
     }

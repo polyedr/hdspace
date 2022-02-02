@@ -22,11 +22,11 @@ exports[`HTMLImportForm should render properly 1`] = `
           />
           <fieldset
             aria-hidden="true"
-            class="PrivateNotchedOutline-root-9 MuiOutlinedInput-notchedOutline"
+            class="PrivateNotchedOutline-root-10 MuiOutlinedInput-notchedOutline"
             style="padding-left: 8px;"
           >
             <legend
-              class="PrivateNotchedOutline-legend-10"
+              class="PrivateNotchedOutline-legend-11"
               style="width: 0.01px;"
             >
               <span>
@@ -45,11 +45,11 @@ exports[`HTMLImportForm should render properly 1`] = `
         class="makeStyles-form-1"
       >
         <label
-          class="makeStyles-label-2 makeStyles-label-8"
+          class="makeStyles-label-2 makeStyles-label-9"
           for="html-input"
         >
           <div
-            class="makeStyles-placeholder-7"
+            class="makeStyles-placeholder-8"
           >
             Click or drop file here to upload
           </div>
@@ -64,7 +64,7 @@ exports[`HTMLImportForm should render properly 1`] = `
       </form>
     </div>
     <div
-      class="makeStyles-formActions-6"
+      class="makeStyles-formActions-7"
     >
       <button
         class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
@@ -89,7 +89,7 @@ exports[`HTMLImportForm should render properly 1`] = `
         <span
           class="MuiButton-label"
         >
-          Check Import Site Status
+          Check Import Site
         </span>
       </button>
     </div>

@@ -115,6 +115,7 @@ export const initialCommunication: ProjectCommunicationState = {
     notSupportedTag: null,
     canvasData: {},
     importSuccessRawData: {},
+    error: false,
   },
 };
 

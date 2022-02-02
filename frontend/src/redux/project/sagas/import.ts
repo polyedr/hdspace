@@ -41,14 +41,12 @@ export const importHtmlSaga = withRequiredPermissions(
 )(function* (action: ReturnType<typeof importHtml>) {
   yield put(Actions.setValueImportLoader(true));
   try {
-    // start upload image to canvase and set html code in canvase
     const { imageFiles, imageElements, element } = action.payload;
     if (element) {
-      if (imageFiles && imageElements) {
-        const { id, element: rootId }: Screen = yield select(
-          selectCurrentScreen,
-        );
+      const { id, element: rootId }: Screen = yield select(selectCurrentScreen);
 
+      // start upload image to canvase and set html code in canvase
+      if (imageFiles && imageElements) {
         yield put(
           Actions.addStateElements(
             [{ elements: [element], parentId: rootId }],
@@ -59,53 +57,53 @@ export const importHtmlSaga = withRequiredPermissions(
           ),
         );
 
-        const elements: StateElement[] = yield select(
-          selectElementsForScreen(id),
-        );
-        console.log('7 elements', elements);
-
-        console.log('imageFiles', imageFiles);
-        console.log('imageElements', imageElements);
-
-        for (let i = 0; i < imageElements.length; i++) {
-          const element = imageElements[i];
-          const image = imageFiles.find((img) =>
-            element.parameters.imageURL.includes(img.name),
-          );
-          console.log('-------------image-----', image);
-          if (image) {
-            console.log('----1');
-            yield call(updateElementImage, element.id, image, {
-              screenId: id,
-              useHistory: true,
-            });
-          } else {
-            console.log('----2');
-            yield call(
-              updateOrReplaceElementParameters,
-              updateElementParameters(
-                element.id,
-                {
-                  imageURL: IMAGES.imageIcon || element.parameters.imageURL,
-                },
-                {
-                  screenId: id,
-                  useHistory: true,
-                },
-              ),
-              UpdateDataActionType.UPDATE,
+        try {
+          for (let i = 0; i < imageElements.length; i++) {
+            const element = imageElements[i];
+            const image = imageFiles.find((img) =>
+              element.parameters.imageURL.includes(img.name),
             );
+            if (image) {
+              yield call(updateElementImage, element.id, image, {
+                screenId: id,
+                useHistory: true,
+              });
+            } else {
+              yield call(
+                updateOrReplaceElementParameters,
+                updateElementParameters(
+                  element.id,
+                  {
+                    imageURL: IMAGES.imageIcon || element.parameters.imageURL,
+                  },
+                  {
+                    screenId: id,
+                    useHistory: true,
+                  },
+                ),
+                UpdateDataActionType.UPDATE,
+              );
+            }
           }
+        } catch (e) {
+          yield put(
+            enqueueSnackbar(
+              {
+                message: e.message,
+                options: { variant: 'error' },
+              },
+              e,
+            ),
+          );
         }
-        console.log('deleter start');
-        // yield put(Actions.deleteElement(element.id.toString(),{ screenId: currentScreenId}));
-
-        const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
-          data: { children: [element.id] },
-          id: rootId,
-        });
-        if (error) throw new Error(error);
       }
+      // end here
+      const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
+        data: { children: [element.id] },
+        id: rootId,
+      });
+      if (error) throw new Error(error);
+
       yield put(
         enqueueSnackbar({
           message: 'Successfully site is import.',
@@ -116,7 +114,6 @@ export const importHtmlSaga = withRequiredPermissions(
     } else {
       throw new Error('Something went wrong');
     }
-    // end here
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -300,7 +297,9 @@ type importData = {
   notSupportedTag: string | null;
   canvasData: object;
   importSuccessRawData: object;
+  error: boolean;
 };
+
 export const importHtmlCheck = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
@@ -321,6 +320,14 @@ export const importHtmlCheck = withRequiredPermissions(
         );
 
         if (error) {
+          yield put(
+            Actions.setValueImport({
+              notSupportedTag: null,
+              canvasData: {},
+              importSuccessRawData: {},
+              error: true,
+            }),
+          );
           throw new Error(
             error === 'Request failed with status code 400'
               ? 'Enter a valid URL'
@@ -328,6 +335,14 @@ export const importHtmlCheck = withRequiredPermissions(
           );
         }
         if (!result) {
+          yield put(
+            Actions.setValueImport({
+              notSupportedTag: null,
+              canvasData: {},
+              importSuccessRawData: {},
+              error: true,
+            }),
+          );
           throw new Error('Something went wrong');
         }
 
@@ -350,20 +365,17 @@ export const importHtmlCheck = withRequiredPermissions(
               return file;
             }),
         );
-
-        // yield put(importHtml(Object.values(files),url));
-        // yield put(Actions.toggleContainersBorders(true));
       } catch (e) {
         yield put(Actions.setValueImportLoader(false));
         yield put(
-          enqueueSnackbar(
-            {
-              message: e.message,
-              options: { variant: 'error' },
-            },
-            e,
-          ),
+          Actions.setValueImport({
+            notSupportedTag: null,
+            canvasData: {},
+            importSuccessRawData: {},
+            error: true,
+          }),
         );
+        throw new Error(e.message);
       }
     }
     // end here
@@ -383,6 +395,14 @@ export const importHtmlCheck = withRequiredPermissions(
       : htmlFiles[0]?.text();
 
     if (!html) {
+      yield put(
+        Actions.setValueImport({
+          notSupportedTag: null,
+          canvasData: {},
+          importSuccessRawData: {},
+          error: true,
+        }),
+      );
       throw new Error('At least one HTML file required');
     }
 
@@ -402,7 +422,7 @@ export const importHtmlCheck = withRequiredPermissions(
     const data = convertHtml(doc, cssRules);
 
     const listOfUnsupportedElement = data?.listOfUnsupportedElement
-      ? data?.listOfUnsupportedElement
+      ? data?.listOfUnsupportedElement.join(', ')
       : '';
 
     if (data?.listOfUnsupportedElement) {
@@ -454,16 +474,39 @@ export const importHtmlCheck = withRequiredPermissions(
         data: { children: [element.id] },
         id: rootId,
       });
-      if (error) throw new Error(error);
+      if (error) {
+        yield put(
+          Actions.setValueImport({
+            notSupportedTag: null,
+            canvasData: {},
+            importSuccessRawData: {},
+            error: true,
+          }),
+        );
+        throw new Error(error);
+      }
     }
-    if (error) throw new Error(error);
+
+    if (error) {
+      yield put(
+        Actions.setValueImport({
+          notSupportedTag: null,
+          canvasData: {},
+          importSuccessRawData: {},
+          error: true,
+        }),
+      );
+      throw new Error(error);
+    }
     // end here
 
     const importSiteData: importData = {
       notSupportedTag: null,
       canvasData: {},
       importSuccessRawData: {},
+      error: false,
     };
+    const currentScreenId = yield select(selectCurrentScreenId);
 
     importSiteData.notSupportedTag = '';
     importSiteData.canvasData = {
@@ -471,6 +514,7 @@ export const importHtmlCheck = withRequiredPermissions(
       imageFiles,
       element,
     };
+
     if (listOfUnsupportedElement.length !== 0) {
       importSiteData.notSupportedTag = listOfUnsupportedElement
         .toString()
@@ -478,21 +522,23 @@ export const importHtmlCheck = withRequiredPermissions(
     }
 
     const totalAvailbleTag = 70;
-    const totalNotAvailbleTag = listOfUnsupportedElement.length;
+    const totalNotAvailbleTag = listOfUnsupportedElement.split(', ').length;
 
     importSiteData.importSuccessRawData = {
       successPercentage: (totalNotAvailbleTag * totalAvailbleTag) / 100,
-      totalImageFileUpload: imageFiles?.length ? imageFiles?.length : 0,
+      totalImageFileUpload: imageFiles?.length
+        ? uploadImage + notUploadImage
+        : notUploadImage,
       totalUploadImage: uploadImage,
       totalNotUploadImage: notUploadImage,
       totalCssFiles: cssFiles?.length ? cssFiles?.length : 0,
     };
 
-    console.log('successPerstange', importSiteData.importSuccessRawData);
+    importSiteData.error = false;
+
     if (element) {
-      const currentScreenId = yield select(selectCurrentScreenId);
       yield put(
-        Actions.deleteElement(element.id.toString(), {
+        Actions.deleteElement(element?.id, {
           screenId: currentScreenId,
         }),
       );
@@ -500,6 +546,14 @@ export const importHtmlCheck = withRequiredPermissions(
 
     yield put(Actions.setValueImport(importSiteData));
   } catch (e) {
+    yield put(
+      Actions.setValueImport({
+        notSupportedTag: null,
+        canvasData: {},
+        importSuccessRawData: {},
+        error: true,
+      }),
+    );
     yield put(
       enqueueSnackbar(
         {

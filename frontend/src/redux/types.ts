@@ -156,6 +156,7 @@ export type ProjectCommunicationState = {
     notSupportedTag: string | null;
     canvasData: object;
     importSuccessRawData: object;
+    error: boolean;
   };
 };
 
@@ -1372,7 +1373,16 @@ export type SetValueImportLoader = IAction<
   boolean
 >;
 
-export type setImportValue = IAction<typeof TYPES.SET_IMPORT_VALUE, object>;
+type importSiteStatus = {
+  notSupportedTag: string | null;
+  canvasData: object;
+  importSuccessRawData: object;
+  error: boolean;
+};
+export type setImportValue = IAction<
+  typeof TYPES.SET_IMPORT_VALUE,
+  importSiteStatus
+>;
 
 export type SetValueCheckRobots = IAction<
   typeof TYPES.SET_VALUE_CHECK_ROBOTS,

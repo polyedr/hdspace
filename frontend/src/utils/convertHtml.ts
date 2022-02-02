@@ -180,12 +180,12 @@ const htmlElementToAdeviElement = (
   cssRules: CSSStyleRule[],
   doc: Document,
 ): ServerElement<any> | null => {
-  const type = tagMap[element.tagName];
+  let type = tagMap[element.tagName];
   if (!type) {
     if (unsupportedElementList.indexOf(element.tagName) === -1) {
       unsupportedElementList.push(element.tagName);
     }
-    return null;
+    type = 'divBlock';
   }
 
   const { style: inlineStyle } = element;

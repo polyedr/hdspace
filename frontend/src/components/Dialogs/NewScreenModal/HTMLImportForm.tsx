@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   Button,
@@ -53,6 +53,11 @@ const useStyles = makeStyles(({ palette, shape, spacing }) =>
       },
       padding: spacing(1),
     },
+    summaryLabel: {
+      display: 'flex',
+      padding: '1px',
+      justifyContent: 'left',
+    },
     card: {
       margin: spacing(0, 1),
       maxWidth: 200,
@@ -99,6 +104,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   const canvasConvertedData = calculationImportData?.canvasData;
   const canvasNotSupportedTag = calculationImportData?.notSupportedTag;
   const importSuccessRawData = calculationImportData?.importSuccessRawData;
+  const importSiteUrlErrorStatus = calculationImportData?.error;
   const [over, setOver] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const classes = useStyles({ over, file: files });
@@ -110,10 +116,25 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
       dispatch(checkImportHTML([], url));
     }
   };
+
   const handleUrlChangeDebounced = useDebouncedCallback((value) => {
     setUrl(value);
     dispatch(uploadUrlForCheckRobots(value));
   }, 500);
+
+  const backButton = () => {
+    setFiles([]);
+    setUrl('');
+    dispatch(
+      setValueImport({
+        notSupportedTag: null,
+        canvasData: {},
+        importSuccessRawData: {},
+        error: false,
+      }),
+    );
+    setOpenPopup((o) => !o);
+  };
 
   const handleFormSubmit = () => {
     const htmlCount = files.reduce((acc, curr) => {
@@ -122,6 +143,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     }, 0);
 
     if (htmlCount !== 1) {
+      backButton();
       dispatch(
         enqueueSnackbar({
           message: htmlCount
@@ -161,27 +183,12 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
         notSupportedTag: null,
         canvasData: {},
         importSuccessRawData: {},
+        error: false,
       }),
     );
     onClose();
   };
 
-  const backButton = () => {
-    setOpenPopup((o) => !o);
-    setFiles([]);
-    setUrl('');
-    console.log(
-      'canvasConvertedData.element.id',
-      canvasConvertedData.element.id,
-    );
-    dispatch(
-      setValueImport({
-        notSupportedTag: null,
-        canvasData: {},
-        importSuccessRawData: {},
-      }),
-    );
-  };
   const handleDrop = (ev: React.DragEvent<HTMLFormElement>) => {
     prevent(ev);
     const { files } = ev.dataTransfer;
@@ -217,39 +224,67 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     }
   };
 
+  useEffect(() => {
+    if (importSiteUrlErrorStatus === true) {
+      setOpenPopup(true);
+      backButton();
+    }
+  }, [importSiteUrlErrorStatus]);
+
+  useEffect(() => {
+    dispatch(
+      setValueImport({
+        notSupportedTag: null,
+        canvasData: {},
+        importSuccessRawData: {},
+        error: false,
+      }),
+    );
+  }, []);
+
   return (
     <div>
-      {openPopup && calculationImportData && (
+      {openPopup && importSiteUrlErrorStatus === false && (
         <div>
-          <h3>Import Site Status</h3>
-          {Object.keys(importSuccessRawData).length !== 0 ? (
-            <>
-              <span>
+          <h3>Import Site Summary</h3>
+          {Object.keys(importSuccessRawData).length !== 0 &&
+          calculationImportData?.error === false ? (
+            <div>
+              <label className={classes.summaryLabel}>
                 {canvasNotSupportedTag
                   ? `Not supported HTML tag : ${canvasNotSupportedTag}`
                   : canvasNotSupportedTag !== null
                   ? 'All HTML tag is supported'
                   : null}
-              </span>
+              </label>
               <br />
-              <span>
+              <label className={classes.summaryLabel}>
                 {`Total CSS files : ${importSuccessRawData?.totalCssFiles}`}
-              </span>
+              </label>
               <br />
-              <span>
+              <label className={classes.summaryLabel}>
                 {`Total image files : ${importSuccessRawData?.totalImageFileUpload}`}
-              </span>
+              </label>
               <br />
+              {importSuccessRawData?.totalUploadImage !== 0 ||
+              importSuccessRawData?.totalNotUploadImage !== 0 ? (
+                <div>
+                  <label className={classes.summaryLabel}>
+                    Total sucessfully upload image files :
+                    {importSuccessRawData?.totalUploadImage}
+                  </label>
+                  <br />
+
+                  <label className={classes.summaryLabel}>
+                    Total unsucessfully upload image files :
+                    {importSuccessRawData?.totalNotUploadImage}
+                  </label>
+                  <br />
+                </div>
+              ) : null}
+
               <span>
-                {`Total sucessfully upload image files : ${importSuccessRawData?.totalUploadImage}`}
-              </span>
-              <br />
-              <span>
-                {`Total unsucessfully upload image files : ${importSuccessRawData?.totalNotUploadImage}`}
-              </span>
-              <br />
-              <span>
-                {`Total sucessfully import site : ${importSuccessRawData?.successPercentage}`}
+                {`Total sucessfully import site : ${importSuccessRawData?.successPercentage}%`}
               </span>
 
               <div className={classes.formActions}>
@@ -268,7 +303,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
                   Back
                 </Button>
               </div>
-            </>
+            </div>
           ) : (
             <>
               <Skeleton count={6} />
@@ -376,7 +411,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
               onClick={importHTMLCheck}
               disabled={!files.length && !isCanImportSite}
             >
-              Check Import Site Status
+              Check Import Site
             </Button>
           </div>
         </>
