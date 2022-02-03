@@ -122,9 +122,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     dispatch(uploadUrlForCheckRobots(value));
   }, 500);
 
-  const backButton = () => {
-    setFiles([]);
-    setUrl('');
+  const removeImportValue = () => {
     dispatch(
       setValueImport({
         notSupportedTag: null,
@@ -133,6 +131,12 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
         error: false,
       }),
     );
+  };
+
+  const backButton = () => {
+    setFiles([]);
+    setUrl('');
+    removeImportValue();
     setOpenPopup((o) => !o);
   };
 
@@ -178,14 +182,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     );
     setFiles([]);
     setUrl('');
-    dispatch(
-      setValueImport({
-        notSupportedTag: null,
-        canvasData: {},
-        importSuccessRawData: {},
-        error: false,
-      }),
-    );
+    removeImportValue();
     onClose();
   };
 
@@ -232,14 +229,10 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   }, [importSiteUrlErrorStatus]);
 
   useEffect(() => {
-    dispatch(
-      setValueImport({
-        notSupportedTag: null,
-        canvasData: {},
-        importSuccessRawData: {},
-        error: false,
-      }),
-    );
+    removeImportValue();
+    return () => {
+      removeImportValue();
+    };
   }, []);
 
   return (

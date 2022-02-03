@@ -525,7 +525,8 @@ export const importHtmlCheck = withRequiredPermissions(
     const totalNotAvailbleTag = listOfUnsupportedElement.split(', ').length;
 
     importSiteData.importSuccessRawData = {
-      successPercentage: (totalNotAvailbleTag * totalAvailbleTag) / 100,
+      successPercentage:
+        (totalNotAvailbleTag * (totalNotAvailbleTag + totalAvailbleTag)) / 100,
       totalImageFileUpload: imageFiles?.length
         ? uploadImage + notUploadImage
         : notUploadImage,
