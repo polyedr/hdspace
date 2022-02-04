@@ -2020,41 +2020,51 @@ HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD = 0.25
 VIA_ANNOTATION_ASSEMBLING_FILE = "elements_websites_assembling.txt"
 
 
-def pipeline_assemble(region_dataset, fname, fdict, o, localparams):
+def pipeline_assemble(region_dataset, fdict, o, localparams):
     # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
     styles_on = 1
-    # Create the opencv recognition start
-    # Read an image with OpenCV start
-    imgpath = MEDIA_ROOT + "/uploads/" + fname
-    image_opencv_input = cv2.imread(imgpath)
-
-    # Create a directory to save clusters for some image processed
-    SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
-    find_or_create_dir(SAVE_DIR)
-
-    os.chmod(SAVE_DIR, 0o755)
-    os.chdir(SAVE_DIR)
-
-    # detect height and width of the image
-    img_height, img_width, img_channels = image_opencv_input.shape
-    # Read an image with OpenCV end
-
-    # Get(take the whole image) the dominant colour for the parent container
-    bcolour_container_value = "255,255,255,0"
-    domcolour_container = get_dominant_colour(image_opencv_input)[0]
-    domcolour_container.append(1)
-    bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
-    # Create the opencv recognition end
 
     # Create the recognized_elements array start
+    """
     if imgpath:
         # These calculations should be moved to the previous serializer later
         # Maybe write this to the parameters
         fsize = str(os.path.getsize(imgpath))
         fnamesize = fname + fsize
+    """
 
     if fdict:
         fdict = json.loads(fdict)
+
+        # Now the fnamesize is a given value
+        # The solution is temporary based on unique data struct_type
+        fnamesize = list(fdict)[0]
+        # Removing the trailing characters of the string
+        fname = fnamesize.rstrip("0123456789")
+
+        # Create the opencv recognition start
+        # Read an image with OpenCV start
+        imgpath = MEDIA_ROOT + "/uploads/" + fname
+        image_opencv_input = cv2.imread(imgpath)
+
+        # Create a directory to save clusters for some image processed
+        SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
+        find_or_create_dir(SAVE_DIR)
+
+        os.chmod(SAVE_DIR, 0o755)
+        os.chdir(SAVE_DIR)
+
+        # detect height and width of the image
+        img_height, img_width, img_channels = image_opencv_input.shape
+        # Read an image with OpenCV end
+
+        # Get(take the whole image) the dominant colour for the parent container
+        bcolour_container_value = "255,255,255,0"
+        domcolour_container = get_dominant_colour(image_opencv_input)[0]
+        domcolour_container.append(1)
+        bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
+        # Create the opencv recognition end
+
         # fdict = fdict
         # print(type(fdict), fdict)
         # Assembling start

@@ -1374,21 +1374,10 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
             region_dataset = validated_data["parameters"]["block_type"]
 
         # Create the root element mptt start
-        # print(validated_data)
-        # input()
-        # print(root_element_data)
-        fname = ""
-        if validated_data.get("image"):
-            serializer_node = ScenarioElement.objects.create(
-                parent=element_root_pre,
-                image=validated_data["image"],
-                **root_element_data
-            )
-            fname = str(validated_data["image"])
-        else:
-            serializer_node = ScenarioElement.objects.create(
-                parent=element_root_pre, **root_element_data
-            )
+        # Without image
+        serializer_node = ScenarioElement.objects.create(
+            parent=element_root_pre, **root_element_data
+        )
         # Create the root element mptt end
 
         # Obtaining the absolute path for the parameters directly. Should change this later.
@@ -1403,7 +1392,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
         # Calculate a chain of functions to assemble
         parameters, styles, root_block = pipeline_assemble(
-            region_dataset, fname, fdict, o, localparams
+            region_dataset, fdict, o, localparams
         )
 
         # Define the export node
