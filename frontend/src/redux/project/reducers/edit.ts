@@ -153,7 +153,23 @@ const editReducer = produce(
       }
 
       case TYPES.SET_ACTIVE_VIA_REGION: {
-        draft.VIAMode.activeRegionId = action.payload;
+        draft.VIAMode.activeRegionId = action.payload.id;
+        if (action.payload.isUpdatingLayer) {
+          draft.VIAMode.regions[draft.activeNNModel][
+            action.payload.id
+          ].layer = 0;
+          Object.keys(draft.VIAMode.regions[draft.activeNNModel]).forEach(
+            (regionId, index) => {
+              if (
+                draft.VIAMode.regions[draft.activeNNModel][
+                  regionId
+                ].id.toString() !== action.payload.id
+              )
+                draft.VIAMode.regions[draft.activeNNModel][regionId].layer =
+                  index + 1;
+            },
+          );
+        }
         break;
       }
 
