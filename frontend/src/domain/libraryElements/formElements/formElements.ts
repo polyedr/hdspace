@@ -91,7 +91,7 @@ export const makeCheckbox = (): CheckboxServerElement => ({
     },
     group: ElementGroup.FORM,
     value: 'Checkbox',
-    defaultChecked: false,
+    defaultChecked: true,
     name: '',
     showRipple: true,
   },
