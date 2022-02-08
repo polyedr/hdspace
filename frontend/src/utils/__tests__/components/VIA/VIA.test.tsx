@@ -56,6 +56,6 @@ describe('VIA Region', () => {
     const actions = store.getActions();
 
     expect(actions[actions.length - 1].type).toBe(TYPES.SET_ACTIVE_VIA_REGION);
-    expect(actions[actions.length - 1].payload).toBe('');
+    expect(actions[actions.length - 1].payload.id).toBe('');
   });
 });
