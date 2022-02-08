@@ -259,22 +259,17 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
                 {`Total image files : ${importSuccessRawData?.totalImageFileUpload}`}
               </label>
               <br />
-              {importSuccessRawData?.totalUploadImage !== 0 ||
-              importSuccessRawData?.totalNotUploadImage !== 0 ? (
-                <div>
-                  <label className={classes.summaryLabel}>
-                    Total sucessfully upload image files :
-                    {importSuccessRawData?.totalUploadImage}
-                  </label>
-                  <br />
+              <label className={classes.summaryLabel}>
+                Total sucessfully upload image files :
+                {importSuccessRawData?.totalUploadImage}
+              </label>
+              <br />
 
-                  <label className={classes.summaryLabel}>
-                    Total unsucessfully upload image files :
-                    {importSuccessRawData?.totalNotUploadImage}
-                  </label>
-                  <br />
-                </div>
-              ) : null}
+              <label className={classes.summaryLabel}>
+                Total unsucessfully upload image files :
+                {importSuccessRawData?.totalNotUploadImage}
+              </label>
+              <br />
 
               <span>
                 {`Total sucessfully import site : ${importSuccessRawData?.successPercentage}%`}

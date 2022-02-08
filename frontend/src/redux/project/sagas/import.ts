@@ -305,6 +305,8 @@ export const importHtmlCheck = withRequiredPermissions(
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof checkImportHTML>) {
   yield put(Actions.setValueImportLoader(true));
+  const currentScreenId = yield select(selectCurrentScreenId);
+  let canvasElement;
   try {
     const { url } = action.payload;
     let { files } = action.payload;
@@ -442,6 +444,7 @@ export const importHtmlCheck = withRequiredPermissions(
     let imageFiles: File[] = [];
     let imageElements: StateElement[] = [];
     if (element) {
+      canvasElement = element;
       const { id, element: rootId }: Screen = yield select(selectCurrentScreen);
 
       yield put(
@@ -506,7 +509,6 @@ export const importHtmlCheck = withRequiredPermissions(
       importSuccessRawData: {},
       error: false,
     };
-    const currentScreenId = yield select(selectCurrentScreenId);
 
     importSiteData.notSupportedTag = '';
     importSiteData.canvasData = {
@@ -537,14 +539,6 @@ export const importHtmlCheck = withRequiredPermissions(
 
     importSiteData.error = false;
 
-    if (element) {
-      yield put(
-        Actions.deleteElement(element?.id, {
-          screenId: currentScreenId,
-        }),
-      );
-    }
-
     yield put(Actions.setValueImport(importSiteData));
   } catch (e) {
     yield put(
@@ -565,6 +559,13 @@ export const importHtmlCheck = withRequiredPermissions(
       ),
     );
   } finally {
+    if (canvasElement) {
+      yield put(
+        Actions.deleteElement(canvasElement?.id, {
+          screenId: currentScreenId,
+        }),
+      );
+    }
     yield put(Actions.setValueImportLoader(false));
     yield put(Actions.setValueCheckRobots(false));
   }
