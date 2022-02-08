@@ -46,7 +46,7 @@ describe('VIA Region', () => {
     fireEvent.click(region);
     const actions = store.getActions();
     expect(actions[actions.length - 1].type).toBe(TYPES.SET_ACTIVE_VIA_REGION);
-    expect(actions[actions.length - 1].payload).toBe(id);
+    expect(actions[actions.length - 1].payload.id).toBe(id);
   });
 
   it('should set no active region on root click', () => {
