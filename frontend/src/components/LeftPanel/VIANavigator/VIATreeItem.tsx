@@ -32,7 +32,7 @@ const VIATreeItem: FC<Props> = ({ item, provided }) => {
   const isActive = useSelector(selectIsRegionActive(item.id.toString()));
 
   const handleClick = () => {
-    dispatch(setActiveVIARegion(item.id.toString()));
+    dispatch(setActiveVIARegion(item.id.toString(), false));
   };
 
   return (

@@ -93,6 +93,7 @@ const TopBar: React.FC = () => {
 
   return currentScreenId !== -1 ? (
     <div className={classes.root}>
+      <div style={{ visibility: 'hidden' }} />
       <a
         className={classes.helpTextStyle}
         target="_blank"
