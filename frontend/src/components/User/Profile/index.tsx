@@ -14,6 +14,7 @@ import {
   changeProfileData,
   setUserExperience,
   logoutStart,
+  sendResetPasswordMail,
 } from '@Redux/user/actions';
 import IMAGES from '@Constants/images';
 import { promiseListener } from '@Redux/store';
@@ -200,6 +201,19 @@ const Profile: React.FC = () => {
   };
   const removeProfileImage = () => handleChangeProfileData({ avatar: null });
 
+  const fieldValidate = (value) => {
+    const isValid = /^[a-zA-Z]+$/.test(value);
+    let result: string | undefined;
+    if (!isValid) {
+      result = 'Symbols and Numbers are not allowed!';
+    }
+    return result;
+  };
+
+  const handlePwdChange = () => {
+    dispatch(sendResetPasswordMail(email));
+  };
+
   return (
     <main>
       <div className={classes.headerContainer}>
@@ -244,7 +258,11 @@ const Profile: React.FC = () => {
                         onSubmit={handleSubmit}
                         className={classes.profileForm}
                       >
-                        <Field name="first_name" defaultValue={firstName}>
+                        <Field
+                          name="first_name"
+                          defaultValue={firstName}
+                          validate={fieldValidate}
+                        >
                           {({ input, meta }) => (
                             <TextField
                               {...input}
@@ -273,7 +291,11 @@ const Profile: React.FC = () => {
                           )}
                         </Field>
 
-                        <Field name="last_name" defaultValue={lastName}>
+                        <Field
+                          name="last_name"
+                          defaultValue={lastName}
+                          validate={fieldValidate}
+                        >
                           {({ input, meta }) => (
                             <TextField
                               {...input}
@@ -326,14 +348,28 @@ const Profile: React.FC = () => {
                         onSubmit={handleSubmit}
                         className={classes.profileForm}
                       >
-                        <TextField
-                          type="text"
-                          fullWidth
-                          label="Company Name"
-                          placeholder="Company Name"
-                          variant="outlined"
-                          size="small"
-                        />
+                        <Field name="company_name" validate={fieldValidate}>
+                          {({ input, meta }) => (
+                            <TextField
+                              {...input}
+                              onBlur={handleSubmit}
+                              placeholder="Company Name"
+                              type="text"
+                              fullWidth
+                              label="Company Name"
+                              variant="outlined"
+                              size="small"
+                              error={
+                                (meta.error || meta.submitError) && meta.touched
+                              }
+                              helperText={
+                                (meta.error || meta.submitError) && meta.touched
+                                  ? meta.error || meta.submitError
+                                  : null
+                              }
+                            />
+                          )}
+                        </Field>
 
                         <Field name="role" defaultValue={role}>
                           {({ input, meta }) => (
@@ -411,6 +447,7 @@ const Profile: React.FC = () => {
                           <input
                             {...input}
                             type="file"
+                            accept=".png, .jpg, .jpeg"
                             onChange={handleImageUpload}
                             className={classes.hidden}
                           />
@@ -439,12 +476,14 @@ const Profile: React.FC = () => {
             {'Your email address is '}
             <span className={classes.strong}>{email}</span>
           </div>
-          <Button styleType="link">Change</Button>
+          {/* <Button styleType="link">Change</Button> */}
         </div>
 
         <div className={classes.settingsPart}>
           <div className={classes.subheader}>Password</div>
-          <Button styleType="link">Change</Button>
+          <Button styleType="link" onClick={handlePwdChange}>
+            Change
+          </Button>
         </div>
 
         <div className={classes.settingsPart}>
