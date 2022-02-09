@@ -3,18 +3,21 @@ import { setActiveVIARegion, updateVIARegion } from '@Redux/project/actions';
 import { selectIsRegionActive } from '@Redux/project/selectors/via';
 import prevent from '@Utils/preventEvent';
 import cn from 'classnames';
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Rnd, RndDragCallback, RndResizeCallback } from 'react-rnd';
 import { VIARegion } from '../../../types';
 import VIABorders from './VIABorders';
 
-const useStyles = makeStyles<Theme, { isActive: boolean; layer: number }>({
+const useStyles = makeStyles<
+  Theme,
+  { isActive: boolean; layer: number; select: boolean }
+>({
   region: {
     backgroundColor: ({ isActive }) =>
       isActive ? 'rgba(0, 0, 0, 0.1)' : 'transparent',
     border: '1px solid black',
-    zIndex: ({ layer, isActive }) => (isActive ? 999 : layer),
+    zIndex: ({ select, isActive }) => (select && isActive ? 999 : 0),
     position: 'relative',
   },
   resizeHandle: {
@@ -68,19 +71,27 @@ type Props = {
 
 const Region: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();
+  const [select, setSelect] = useState(true);
   const { id, shape_attributes, layer = 0 } = region;
   const isActive = useSelector(selectIsRegionActive(region.id));
-  const classes = useStyles({ isActive, layer });
+  const classes = useStyles({ isActive, layer, select });
   const { height, width, x, y } = shape_attributes;
 
   const selectRegion = (ev) => {
     prevent(ev);
-    dispatch(setActiveVIARegion(id));
+    setSelect(false);
+    dispatch(setActiveVIARegion(id, false));
   };
 
+  const onClickRegion = (ev) => {
+    prevent(ev);
+    setSelect(true);
+    dispatch(setActiveVIARegion(id, true));
+  };
   const onDragStop: RndDragCallback = (e, d) => {
     if (d.x === x && d.y === y) return;
-
+    setSelect(true);
+    dispatch(setActiveVIARegion(id, false));
     dispatch(
       updateVIARegion(region.id, {
         ...region,
@@ -108,7 +119,8 @@ const Region: FC<Props> = ({ region }) => {
     ) {
       return;
     }
-
+    setSelect(true);
+    dispatch(setActiveVIARegion(id, false));
     dispatch(
       updateVIARegion(region.id, {
         ...region,
@@ -147,7 +159,7 @@ const Region: FC<Props> = ({ region }) => {
     return () => {
       document.removeEventListener('keydown', keyPressHandler);
     };
-  }, [x, y, isActive]);
+  }, [x, y, isActive, region, dispatch]);
 
   return (
     <Rnd
@@ -165,7 +177,7 @@ const Region: FC<Props> = ({ region }) => {
       onResizeStop={onResizeStop}
       onDragStart={selectRegion}
       onResizeStart={selectRegion}
-      onClick={selectRegion}
+      onClick={onClickRegion}
       resizeHandleClasses={{
         top: cn(classes.resizeHandle, classes.topHandle),
         topRight: cn(classes.resizeHandle, classes.topRightHandle),
