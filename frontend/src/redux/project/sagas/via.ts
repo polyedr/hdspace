@@ -103,7 +103,7 @@ const createVIARegionSaga = withActionsHistory(function* (
     }
 
     yield put(createVIARegionSuccess(newRegion));
-    yield put(setActiveVIARegion(newRegion.id));
+    yield put(setActiveVIARegion(newRegion.id, false));
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -174,7 +174,7 @@ const pasteVIARegionSaga = withActionsHistory(function* ({
     }
 
     yield put(createVIARegionSuccess(newRegion));
-    yield put(setActiveVIARegion(newRegion.id));
+    yield put(setActiveVIARegion(newRegion.id, false));
   } catch (e) {
     yield put(
       enqueueSnackbar(
