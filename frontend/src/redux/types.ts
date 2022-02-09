@@ -1086,7 +1086,7 @@ export type UpdateVIARegionSuccess = IAction<
 
 export type SetActiveVIARegion = IAction<
   typeof TYPES.SET_ACTIVE_VIA_REGION,
-  string
+  { id: string; isUpdatingLayer: boolean }
 >;
 
 export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
