@@ -60,9 +60,16 @@ export const importHtmlSaga = withRequiredPermissions(
         try {
           for (let i = 0; i < imageElements.length; i++) {
             const element = imageElements[i];
-            const image = imageFiles.find((img) =>
-              element.parameters.imageURL.includes(img.name),
-            );
+
+            let image: File | undefined;
+            try {
+              image = imageFiles.find((img) =>
+                element.parameters.imageURL.includes(img.name),
+              );
+            } catch (e) {
+              image = undefined;
+            }
+
             if (image) {
               yield call(updateElementImage, element.id, image, {
                 screenId: id,
@@ -463,9 +470,16 @@ export const importHtmlCheck = withRequiredPermissions(
       imageFiles = files.filter((file) => file.type.includes('image/'));
       for (let i = 0; i < imageElements.length; i++) {
         const element = imageElements[i];
-        const image = imageFiles.find((img) =>
-          element.parameters.imageURL.includes(img.name),
-        );
+        let image: File | undefined;
+
+        try {
+          image = imageFiles.find((img) =>
+            element.parameters.imageURL.includes(img.name),
+          );
+        } catch (e) {
+          image = undefined;
+        }
+
         if (image) {
           uploadImage++;
         } else {
