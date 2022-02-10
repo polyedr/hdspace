@@ -1,7 +1,6 @@
 import { put, call, select, takeEvery } from 'redux-saga/effects';
 import {
   selectAnnotatedElementId,
-  selectAnnotatedImageFile,
   selectBlockType,
   selectVIAData,
   selectVIARegionsAsArray,
@@ -22,7 +21,6 @@ import {
   VIARegion,
   UserProjectPermission,
   NNBlockType,
-  FileToUpload,
   VIAFile,
   VIAData,
   VIARegions,
@@ -128,7 +126,6 @@ const assembleImageSaga = compose(
 )(function* () {
   try {
     const parentId: string = yield select(selectAnnotatedElementId);
-    const image: FileToUpload = yield select(selectAnnotatedImageFile);
     const screenId: number = yield select(selectCurrentScreenId);
     const blockType: NNBlockType = yield select(selectBlockType);
     const viaData: Record<string, VIAFile> = yield select(selectVIAData);
@@ -140,7 +137,6 @@ const assembleImageSaga = compose(
     const [viaKey, viaFile] = Object.entries(viaData)[0];
 
     const assembleFormData = new FormData();
-    assembleFormData.append('image', image.file, image.name);
     assembleFormData.append('name', 'image');
     assembleFormData.append('parent_id', parentId);
     assembleFormData.append('styles', '{}');
