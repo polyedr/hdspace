@@ -1237,11 +1237,6 @@ export const importHtml = (
   },
 });
 
-export const uploadImportUrl = (url: string) => ({
-  type: TYPES.UPLOAD_IMPORT_URL,
-  payload: url,
-});
-
 export const checkImportHTML = (files: File[], url?: string) => ({
   type: TYPES.IMPORT_HTML_CHECK,
   payload: {

@@ -176,7 +176,7 @@ const getTypeFromName = (name: string) => {
 export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
+)(function* ({ payload: url }) {
   try {
     const updateUrl = (url: string) => {
       let newEditUrl: string = url;
@@ -235,68 +235,6 @@ export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
         ),
       );
     }
-  }
-});
-
-export const uploadImportUrlSaga = withRequiredPermissions(
-  UserProjectPermission.VIEW_PROJECT,
-  UserProjectPermission.CHANGE_PROJECT,
-)(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
-  try {
-    yield put(Actions.setValueImportLoader(true));
-
-    const { result, error }: Result<PostUrlResponse> = yield call(
-      reqWrapper,
-      apiPostURL,
-      {
-        wpname: url,
-      },
-    );
-
-    if (error) {
-      throw new Error(
-        error === 'Request failed with status code 400'
-          ? 'Enter a valid URL'
-          : error,
-      );
-    }
-    if (!result) {
-      throw new Error('Something went wrong');
-    }
-
-    const archive = yield call(reqWrapper, apiGetWebPage, {
-      wpname: result.wpname,
-    });
-    const zip = new JSZip();
-    const unzipped = yield zip.loadAsync(archive); // unzip received file
-    const zipObjects: JSZip.JSZipObject[] = Object.values(unzipped.files);
-
-    const files = yield Promise.all(
-      zipObjects
-        .filter((zipObj) => !zipObj.dir) // filter out directories
-        .map(async (zipObj) => {
-          const blob = await zipObj.async('blob'); // convert zipObject to blob
-          const file = new File([blob], zipObj.name, {
-            lastModified: zipObj.date.getTime(),
-            type: getTypeFromName(zipObj.name),
-          }); // create File from blob
-          return file;
-        }),
-    );
-
-    yield put(checkImportHTML(Object.values(files), url));
-    yield put(Actions.toggleContainersBorders(true));
-  } catch (e) {
-    yield put(Actions.setValueImportLoader(false));
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
   }
 });
 
