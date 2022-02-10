@@ -47,11 +47,12 @@ const UnstyledCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
         )}
       >
         <label>
-          <input
-            type="checkbox"
-            name="Checkbox"
-            checked={!isDisabled && isChecked}
-          />
+          {!isDisabled && isChecked ? (
+            <input type="checkbox" name="Checkbox" checked />
+          ) : (
+            <input type="checkbox" name="Checkbox" disabled={isDisabled} />
+          )}
+
           {isLink && (isProtoMode || exportScreenFlag) ? (
             <a
               aria-label={`Link-${element.id}`}
