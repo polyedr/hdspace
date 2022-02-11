@@ -6,8 +6,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { executeUndoActions, executeRedoActions } from '@Redux/project/actions';
 import { StyledIconButton } from '@Components/styledComponents';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  root: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+});
 
 const History: FC = () => {
+  const classes = useStyles();
   const dispatch = useDispatch();
 
   const canUndo = useSelector(selectCanUndo);
@@ -17,7 +26,7 @@ const History: FC = () => {
   const onHistoryForward = () => dispatch(executeRedoActions());
 
   return (
-    <div>
+    <div className={classes.root}>
       <StyledIconButton
         onClick={onHistoryBack}
         disabled={!canUndo}
