@@ -202,14 +202,16 @@ const Screens = () => {
                     innerRef={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {screens.map((screen, i) => (
-                      <ScreenListItem
-                        key={screen.id}
-                        screen={screen}
-                        index={i}
-                        active={screen.id === currentScreenId}
-                      />
-                    ))}
+                    {screens
+                      .filter((screen) => screen.id !== -1)
+                      .map((screen, i) => (
+                        <ScreenListItem
+                          key={screen.id}
+                          screen={screen}
+                          index={i}
+                          active={screen.id === currentScreenId}
+                        />
+                      ))}
                     {provided.placeholder}
                   </List>
                 </Scrollbar>
