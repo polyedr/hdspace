@@ -18,6 +18,7 @@ const useStyles = makeStyles({
     bottom: 0,
     transition: 'width .3s ease',
     overflow: 'hidden',
+    zIndex: 10,
   },
   open: {
     width: 310,
