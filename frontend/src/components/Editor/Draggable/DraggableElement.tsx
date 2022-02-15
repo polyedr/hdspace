@@ -196,9 +196,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string) => (
+      {element.children.map((childId: string, index: number) => (
         <DraggableElement
-          key={`element-${childId}`}
+          key={`element-${
+            element.children.indexOf(childId) === index
+              ? childId
+              : childId + Math.random()
+          }`}
           elementId={childId}
           parentIds={parentsIdsForChildren}
           scrollRef={scrollRef}

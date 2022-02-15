@@ -1546,9 +1546,15 @@ export const updateVIARegionSuccess = (
   },
 });
 
-export const setActiveVIARegion = (id: string): SetActiveVIARegion => ({
+export const setActiveVIARegion = (
+  id: string,
+  isUpdatingLayer: boolean,
+): SetActiveVIARegion => ({
   type: TYPES.SET_ACTIVE_VIA_REGION,
-  payload: id,
+  payload: {
+    id,
+    isUpdatingLayer,
+  },
 });
 
 export const createVIARegion = (meta?: HistoryMeta): CreateVIARegion => ({
