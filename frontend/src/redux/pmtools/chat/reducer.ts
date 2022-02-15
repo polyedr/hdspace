@@ -24,7 +24,6 @@ const chatReducer = (state: ChatState = initialState, action: ChatAction) => {
         messages: action.payload,
       };
     case TYPES.SEND_MESSAGE_ZULIP_SUCCESS:
-      console.log([...state.messages, action.payload]);
       return { ...state, messages: [...state.messages, action.payload] };
     default:
       return state;

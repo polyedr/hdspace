@@ -26,7 +26,6 @@ export function* projectStreamMessagesSaga({ payload }: any): any {
     const { email, profile } = yield select(selectUserData);
     const config = configUser(email, profile.parameters.passwordZulip);
     const { messages } = yield call(apiGetMessages, stream, config);
-    console.log(messages);
     const shortMessagesArray: Array<any> = messages.map(
       ({ content, avatar_url, sender_full_name }) => ({
         sender_full_name,
