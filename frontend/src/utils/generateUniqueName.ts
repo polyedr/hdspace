@@ -3,13 +3,12 @@ function generateUniqueName(newName: string, names: string[]): string {
     return newName;
   }
 
-  const nameWithoutNumber = newName.replace(/\s+\d+$/, '');
-  const nameNumberRegExp = newName.match(/\s+\d+$/);
+  const nameNumberRegExp = newName.split('-')[newName.split('-').length - 1];
   const nameNumber = nameNumberRegExp ? parseInt(nameNumberRegExp[0]) : 0;
 
   const newNumber = nameNumber + 1;
   const numberedName = newNumber
-    ? `${nameWithoutNumber} ${newNumber}`
+    ? `${newName.replace(nameNumberRegExp, newNumber.toString())}`
     : `${newName}`;
 
   return generateUniqueName(numberedName, names);

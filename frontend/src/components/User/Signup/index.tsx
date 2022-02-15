@@ -1,68 +1,33 @@
-import React from 'react';
+/* eslint-disable import/no-unresolved */
+import React, { useState } from 'react';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { Field, Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import PATH_NAMES from '@Constants/pathNames';
-// import registerWithGoogle from '@Redux/user/actions';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
-import { Typography, TextField, Button, Container } from '@material-ui/core';
-import { Info } from '../Info';
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    root: {
-      display: 'flex',
-      height: '100vh',
-    },
-    formContainer: {
-      flex: 1,
-      backgroundColor: theme.palette.secondary.main,
-      color: '#000',
-      justifyContent: 'center',
-      padding: '4em',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'stretch',
-    },
-    form: {
-      display: 'flex',
-      flexFlow: 'column nowrap',
-      alignItems: 'center',
-    },
-    header: {
-      fontSize: '1.6em',
-      margin: '1em',
-    },
-    googleLogin: {
-      width: '100%',
-      marginBottom: 20,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    error: {
-      marginTop: '1em',
-      minHeight: '5em',
-    },
-    field: {
-      margin: '1em',
-    },
-    login: {
-      fontSize: '1.1em',
-    },
-    link: {
-      '&, &:active, &:visited, &:focus': {
-        color: theme.palette.primary.main,
-      },
-    },
-  }),
-);
+import {
+  Typography,
+  TextField,
+  Button,
+  Container,
+  Grid,
+  InputAdornment,
+} from '@material-ui/core';
+import { composeValidators, isPassword, isLongLength } from '@Utils/validators';
+import useStyles from '../LoginRegistration/LoginRegistrationStyles';
+import logo from '../../../assets/images/logo.png';
+import card from '../../../assets/images/id-card.png';
+import mail from '../../../assets/images/mail.png';
+import user from '../../../assets/images/user.png';
+import padlock from '../../../assets/images/padlock.png';
+import Info from '../Info';
+import bigimg from '../../../assets/images/bigimg.png';
 
 const Signup: React.FC = () => {
   const classes = useStyles();
+  const [formErrors, setFormErrors] = useState<string[] | null>([]);
 
   // TODO add google button and this method, when the backend will register new users using google token
   /* const responseGoogle = (response: any) => {
@@ -73,9 +38,17 @@ const Signup: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <Info />
-
-      <div className={classes.formContainer}>
+      <Info
+        title="AI Assistant for App Development that is excellent for"
+        list={[
+          'Non-technical people to build a full-length web or mobile application',
+          'Developers to quickly generate the most complete front-end code',
+          'Collaborate on your app project with the whole team in a better way',
+        ]}
+        img={bigimg}
+      />
+      <Grid item xs={12} sm={5} className={classes.containerCenter}>
+        <img className={classes.resizableImg} src={logo} alt="Logo" />
         {/* <GoogleLogin
             className={classes.googleLogin}
             clientId="97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com"
@@ -94,135 +67,128 @@ const Signup: React.FC = () => {
           {(onSubmit) => (
             <Form
               onSubmit={onSubmit}
-              render={({ handleSubmit, submitError, submitting }) => (
+              render={({
+                handleSubmit,
+                submitError,
+                submitErrors,
+                submitting,
+                errors,
+              }) => (
                 <Container maxWidth="xs">
-                  <form onSubmit={handleSubmit} className={classes.form}>
-                    <Typography className={classes.header}>
-                      Register your account
+                  <form
+                    onSubmit={(e) => {
+                      setFormErrors(Object.values(errors));
+                      handleSubmit();
+                      e.preventDefault();
+                    }}
+                    className={classes.containerCenter}
+                  >
+                    <Typography className={classes.underLogoText}>
+                      Register Your Account
                     </Typography>
 
-                    <Field name="username">
-                      {({ input, meta }) => (
-                        <TextField
-                          {...input}
-                          className={classes.field}
-                          type="text"
-                          label="Username"
-                          placeholder="Username"
-                          required
-                          variant="filled"
-                          autoFocus
-                          size="small"
-                          fullWidth
-                          error={
-                            (meta.error || meta.submitError) && meta.touched
-                          }
-                          helperText={
-                            (meta.error || meta.submitError) && meta.touched
-                              ? meta.error || meta.submitError
-                              : null
-                          }
-                        />
-                      )}
-                    </Field>
-
                     <Field name="firstName">
-                      {({ input, meta }) => (
+                      {({ input }) => (
                         <TextField
                           {...input}
-                          className={classes.field}
+                          className={classes.input}
                           type="text"
-                          label="First Name"
                           placeholder="First Name"
                           required
-                          variant="filled"
                           autoFocus
-                          size="small"
-                          fullWidth
-                          error={
-                            (meta.error || meta.submitError) && meta.touched
-                          }
-                          helperText={
-                            (meta.error || meta.submitError) && meta.touched
-                              ? meta.error || meta.submitError
-                              : null
-                          }
+                          InputProps={{
+                            disableUnderline: true,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <img src={card} alt="card" />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       )}
                     </Field>
-
                     <Field name="lastName">
-                      {({ input, meta }) => (
+                      {({ input }) => (
                         <TextField
                           {...input}
-                          className={classes.field}
+                          className={classes.input}
                           type="text"
-                          label="Last Name"
                           placeholder="Last Name"
                           required
-                          variant="filled"
                           autoFocus
-                          size="small"
-                          fullWidth
-                          error={
-                            (meta.error || meta.submitError) && meta.touched
-                          }
-                          helperText={
-                            (meta.error || meta.submitError) && meta.touched
-                              ? meta.error || meta.submitError
-                              : null
-                          }
+                          InputProps={{
+                            disableUnderline: true,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <img src={card} alt="card" />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      )}
+                    </Field>
+                    <Field name="username">
+                      {({ input }) => (
+                        <TextField
+                          {...input}
+                          className={classes.input}
+                          type="text"
+                          placeholder="User Name"
+                          autoFocus
+                          required
+                          InputProps={{
+                            disableUnderline: true,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <img src={user} alt="user" />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       )}
                     </Field>
 
                     <Field name="email">
-                      {({ input, meta }) => (
+                      {({ input }) => (
                         <TextField
                           {...input}
-                          className={classes.field}
+                          className={classes.input}
                           type="email"
-                          label="Email"
                           placeholder="Email"
                           required
-                          variant="filled"
                           autoFocus
-                          size="small"
-                          fullWidth
-                          error={
-                            (meta.error || meta.submitError) && meta.touched
-                          }
-                          helperText={
-                            (meta.error || meta.submitError) && meta.touched
-                              ? meta.error || meta.submitError
-                              : null
-                          }
+                          InputProps={{
+                            disableUnderline: true,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <img src={mail} alt="mail" />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       )}
                     </Field>
 
-                    <Field name="password">
-                      {({ input, meta }) => (
+                    <Field
+                      name="password"
+                      validate={composeValidators(isPassword, isLongLength)}
+                    >
+                      {({ input }) => (
                         <TextField
                           {...input}
-                          className={classes.field}
+                          className={classes.input}
                           type="password"
-                          label="Password"
                           placeholder="Password"
                           required
-                          variant="filled"
                           autoFocus
-                          size="small"
-                          autoComplete="new-password"
-                          fullWidth
-                          error={
-                            (meta.error || meta.submitError) && meta.touched
-                          }
-                          helperText={
-                            (meta.error || meta.submitError) && meta.touched
-                              ? meta.error || meta.submitError
-                              : null
-                          }
+                          InputProps={{
+                            disableUnderline: true,
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <img src={padlock} alt="padlock" />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
                       )}
                     </Field>
@@ -231,37 +197,62 @@ const Signup: React.FC = () => {
                       type="submit"
                       disabled={submitting}
                       variant="contained"
-                      color="primary"
-                      fullWidth
+                      color="secondary"
+                      className={classes.button}
                     >
                       Sign Up
                     </Button>
-
                     <div className={classes.error}>
-                      {submitError && (
+                      {(submitError || submitErrors) && (
                         <Alert severity="error" variant="filled">
-                          {submitError}
+                          {submitError ||
+                            Object.keys(submitErrors).map((obj) => (
+                              <p className={classes.alertText}>
+                                {submitErrors[obj]}
+                              </p>
+                            ))}
+                        </Alert>
+                      )}
+                      {formErrors?.length !== 0 && (
+                        <Alert severity="error" variant="filled">
+                          {formErrors?.map((err) => (
+                            <span>{err}</span>
+                          ))}
                         </Alert>
                       )}
                     </div>
 
-                    <p className={classes.login}>
-                      {'Already have an account? '}
-
+                    <Typography
+                      className={classes.underFormText}
+                      variant="body2"
+                    >
+                      Already have an account?
                       <Link
                         className={classes.link}
                         to={PATH_NAMES.user.signin}
                       >
-                        Log in.
+                        Click here
                       </Link>
-                    </p>
+                    </Typography>
+                    <Typography
+                      className={classes.underFormText}
+                      variant="body1"
+                    >
+                      Forgot your Login or Password?
+                      <Link
+                        to={PATH_NAMES.user.password}
+                        className={classes.link}
+                      >
+                        Click here
+                      </Link>
+                    </Typography>
                   </form>
                 </Container>
               )}
             />
           )}
         </MakeAsyncFunction>
-      </div>
+      </Grid>
     </div>
   );
 };

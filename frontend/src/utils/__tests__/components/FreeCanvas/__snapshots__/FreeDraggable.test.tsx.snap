@@ -6,35 +6,35 @@ exports[`Free Draggable should render free draggable component 1`] = `
     class="makeStyles-rnd-1 makeStyles-rnd-4 react-draggable"
     style="position: absolute; user-select: auto; width: 300px; height: 100px; display: inline-block; top: 0px; left: 0px; cursor: move; transform: translate(0px,0px); max-width: 9007199254740991px; max-height: 9007199254740991px; box-sizing: border-box; flex-shrink: 0;"
   >
-    <p
-      class="paragraph paragraph-ownStyles-5 paragraph-ownStyles-8 paragraph-ownPseudoStyles-6 paragraph-ownPseudoStyles-9"
-      contenteditable="true"
+    <div
+      class="paragraph paragraph-ownStyles-5 paragraph-ownStyles-9"
+      contenteditable="false"
       data-gramm_editor="false"
       data-ls-id="2"
       id="2"
     >
       Lorem ipsum dolor sit amet consectetur adipisicing elit. Id labore error ipsum laboriosam necessitatibus aperiam facere aut quo quibusdam, possimus quia odit placeat nostrum, similique pariatur corporis nobis sint rerum laborum architecto natus! Aut illum a minus cumque iste, quibusdam corporis atque odit magnam impedit esse possimus perspiciatis culpa non id tempore fugiat molestiae eos dolorem, labore maiores ratione? Sequi tenetur porro enim reprehenderit amet accusamus eos itaque saepe quidem quod, sit vero ab recusandae vitae, facere nobis cumque minima libero aut quos nihil labore eius. Soluta doloremque mollitia nihil voluptatibus, nostrum commodi eaque similique ipsam ad libero at tenetur.
-    </p>
+    </div>
     <div
       data-role="borders"
       hidden=""
     >
       <div
-        class="makeStyles-crumb-10"
+        class="makeStyles-crumb-11"
       >
         <div
-          class="makeStyles-general-11 makeStyles-general-20"
+          class="makeStyles-general-12 makeStyles-general-21"
         >
           <span
-            class="makeStyles-name-12"
+            class="makeStyles-name-13"
           >
             paragraph
           </span>
           <hr
-            class="MuiDivider-root makeStyles-divider-14 MuiDivider-vertical"
+            class="MuiDivider-root makeStyles-divider-15 MuiDivider-vertical"
           />
           <button
-            class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-13"
+            class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-14"
             tabindex="0"
             title="Settings"
             type="button"
@@ -63,10 +63,10 @@ exports[`Free Draggable should render free draggable component 1`] = `
           role="menu"
         >
           <div
-            class="makeStyles-general-11 makeStyles-general-20"
+            class="makeStyles-general-12 makeStyles-general-21"
           >
             <span
-              class="makeStyles-name-12"
+              class="makeStyles-name-13"
             >
               Z-index:
               <b>
@@ -74,10 +74,10 @@ exports[`Free Draggable should render free draggable component 1`] = `
               </b>
             </span>
             <hr
-              class="MuiDivider-root makeStyles-divider-14 MuiDivider-vertical"
+              class="MuiDivider-root makeStyles-divider-15 MuiDivider-vertical"
             />
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-13"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-14"
               tabindex="0"
               title="Move element up"
               type="button"
@@ -101,7 +101,7 @@ exports[`Free Draggable should render free draggable component 1`] = `
               />
             </button>
             <button
-              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-13 Mui-disabled Mui-disabled"
+              class="MuiButtonBase-root MuiIconButton-root makeStyles-iconButton-14 Mui-disabled Mui-disabled"
               disabled=""
               tabindex="-1"
               title="Move element down"
@@ -126,19 +126,35 @@ exports[`Free Draggable should render free draggable component 1`] = `
         </div>
       </div>
       <div
-        class="makeStyles-border-15 makeStyles-border-21 makeStyles-topBorder-16"
+        class="makeStyles-border-16 makeStyles-border-22 makeStyles-topBorder-17"
       />
       <div
-        class="makeStyles-border-15 makeStyles-border-21 makeStyles-rightBorder-17"
+        class="makeStyles-border-16 makeStyles-border-22 makeStyles-rightBorder-18"
       />
       <div
-        class="makeStyles-border-15 makeStyles-border-21 makeStyles-bottomBorder-18"
+        class="makeStyles-border-16 makeStyles-border-22 makeStyles-bottomBorder-19"
       />
       <div
-        class="makeStyles-border-15 makeStyles-border-21 makeStyles-leftBorder-19"
+        class="makeStyles-border-16 makeStyles-border-22 makeStyles-leftBorder-20"
       />
     </div>
     <div>
+      <div
+        class="makeStyles-resizeHande-2"
+        style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
+      />
+      <div
+        class="makeStyles-resizeHande-2"
+        style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; bottom: -10px; cursor: sw-resize;"
+      />
+      <div
+        class="makeStyles-resizeHande-2"
+        style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; bottom: -10px; cursor: se-resize;"
+      />
+      <div
+        class="makeStyles-resizeHande-2"
+        style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; left: -5px; cursor: col-resize;"
+      />
       <div
         class="makeStyles-resizeHande-2"
         style="position: absolute; user-select: none; width: 100%; height: 10px; top: -5px; left: 0px; cursor: row-resize;"
@@ -149,27 +165,11 @@ exports[`Free Draggable should render free draggable component 1`] = `
       />
       <div
         class="makeStyles-resizeHande-2"
-        style="position: absolute; user-select: none; width: 100%; height: 10px; bottom: -5px; left: 0px; cursor: row-resize;"
-      />
-      <div
-        class="makeStyles-resizeHande-2"
-        style="position: absolute; user-select: none; width: 10px; height: 100%; top: 0px; left: -5px; cursor: col-resize;"
+        style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
       />
       <div
         class="makeStyles-resizeHande-2"
         style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; top: -10px; cursor: ne-resize;"
-      />
-      <div
-        class="makeStyles-resizeHande-2"
-        style="position: absolute; user-select: none; width: 20px; height: 20px; right: -10px; bottom: -10px; cursor: se-resize;"
-      />
-      <div
-        class="makeStyles-resizeHande-2"
-        style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; bottom: -10px; cursor: sw-resize;"
-      />
-      <div
-        class="makeStyles-resizeHande-2"
-        style="position: absolute; user-select: none; width: 20px; height: 20px; left: -10px; top: -10px; cursor: nw-resize;"
       />
     </div>
   </div>

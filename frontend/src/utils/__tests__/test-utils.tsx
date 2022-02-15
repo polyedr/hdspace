@@ -34,7 +34,7 @@ export const mockProject: Project = {
   created: new Date(0),
   updated: new Date(0),
   projectscreen: [],
-  projectTrelloJSON: {},
+  projectTrelloJSON: null,
   projectLoader: false,
   tags: [],
   projectData: {
@@ -125,6 +125,7 @@ export const mockUserData: UserData = {
     experienced: Experience.EXPERIENCED,
     parameters: {
       passwordZulip: '',
+      avatarCrop: '',
       profileDataParameters: {
         autoSwitchTabs: false,
         dropTargetBordersMode: true,
@@ -133,32 +134,34 @@ export const mockUserData: UserData = {
   },
 };
 
-export const mockVIAState = {
+export const mockVIAState = ({
   blockType: NNBlockType.WEBPAGE,
   resultId: '-1',
   viaData: {},
   annotatedElementId: mockStateElement.id,
   enabled: true,
   regions: {
-    '7343f00c-4ec0-4e71-8a07-ec1f8820d489': {
-      shape_attributes: {
-        name: 'rect',
-        x: 99,
-        y: 52,
-        width: 187,
-        height: 37,
+    fdict: {
+      '7343f00c-4ec0-4e71-8a07-ec1f8820d489': {
+        shape_attributes: {
+          name: 'rect',
+          x: 99,
+          y: 52,
+          width: 187,
+          height: 37,
+        },
+        region_attributes: {
+          'HTML element': 'ocrtext',
+        },
+        id: '7343f00c-4ec0-4e71-8a07-ec1f8820d489',
+        layer: 1,
       },
-      region_attributes: {
-        'HTML element': 'ocrtext',
-      },
-      id: '7343f00c-4ec0-4e71-8a07-ec1f8820d489',
-      layer: 1,
     },
   },
   activeRegionId: '',
   annotatedImageFile: null,
   copiedRegion: null,
-} as ProjectEditState['VIAMode'];
+} as unknown) as ProjectEditState['VIAMode'];
 
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
@@ -224,7 +227,7 @@ export const createMockProject = (): Project => ({
   name: 'test project',
   status: 'pending',
   projectscreen: [],
-  projectTrelloJSON: {},
+  projectTrelloJSON: null,
   projectLoader: true,
   created: new Date(),
   updated: new Date(),
@@ -285,7 +288,7 @@ export const createProjectWithScreensMock = (
   created: new Date(),
   id: projectId,
   name: 'test name',
-  projectTrelloJSON: {},
+  projectTrelloJSON: null,
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,

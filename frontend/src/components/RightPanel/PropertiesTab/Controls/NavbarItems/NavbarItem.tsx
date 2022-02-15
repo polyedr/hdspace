@@ -1,11 +1,19 @@
-import React from 'react';
-import { IconButton } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
+import {
+  IconButton,
+  Checkbox,
+  MenuItem,
+  FormControlLabel,
+} from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import {
+  selectCurrentScreenId,
+  selectScreensWithoutMaster,
+} from '@Redux/project/selectors/screen';
 import {
   StyledAccordion,
   StyledAccordionDetails,
@@ -48,7 +56,7 @@ type Props = {
 
 const NavbarItem: React.FC<Props> = ({
   id,
-  parameters: { itemName, link },
+  parameters: { itemName, link, screenName, screenLink, isLink },
   updateParams,
   isLast,
   canEdit,
@@ -56,6 +64,8 @@ const NavbarItem: React.FC<Props> = ({
   const classes = useStyles();
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const [selectedScreen, selectScreen] = useState(screenName);
+  const screens = useSelector(selectScreensWithoutMaster);
 
   const debouncedItemName = useDebouncedCallback((value) => {
     updateParams({ itemName: value }, id);
@@ -67,6 +77,49 @@ const NavbarItem: React.FC<Props> = ({
 
   const handleDeleteButtonClick = () => {
     dispatch(deleteElement(id, { screenId: currentScreenId }));
+  };
+
+  const debouncedLinkedScreen = useDebouncedCallback((value, screenName) => {
+    updateParams(
+      { isLink: false, link: '', screenLink: value, screenName },
+      id,
+    );
+  }, 500);
+
+  const setElementScreen = (ev) => {
+    const { value } = ev.target;
+    if (value === 'noScreen') {
+      selectScreen('noScreen');
+      debouncedLinkedScreen.callback('', '');
+    } else {
+      const data = value.toString().split('-');
+      selectScreen(`${data[0]}-${data[1]}`);
+      debouncedLinkedScreen.callback(data[0], data[1]);
+    }
+  };
+
+  useEffect(() => {
+    if (screenName && screenLink) {
+      const selectdScreen = `${screenLink}-${screenName}`;
+      selectScreen(selectdScreen);
+    } else {
+      selectScreen('noScreen');
+    }
+  }, [screenName, screenLink]);
+
+  const handleCheckboxChange = (
+    textId: string,
+    { target: { checked } }: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (checked) {
+      updateParams({ isLink: checked, screenLink: '', screenName: '' }, textId);
+    } else {
+      updateParams(
+        { isLink: checked, link: '', screenLink: '', screenName: '' },
+        textId,
+      );
+    }
+    selectScreen('noScreen');
   };
 
   return (
@@ -100,16 +153,54 @@ const NavbarItem: React.FC<Props> = ({
           multiline
           disabled={!canEdit}
         />
-        <StyledTextField
-          variant="outlined"
-          defaultValue={link}
-          onChange={(ev) => debouncedLink.callback(ev.target.value)}
-          label="Link"
-          margin="dense"
-          fullWidth
-          multiline
-          disabled={!canEdit}
+        <FormControlLabel
+          id={id}
+          control={
+            <Checkbox
+              value="make link"
+              name="make link"
+              checked={isLink || false}
+              onChange={(event) => handleCheckboxChange(id, event)}
+              disabled={!canEdit}
+            />
+          }
+          label="Make Link"
         />
+        {isLink && (
+          <StyledTextField
+            variant="outlined"
+            defaultValue={link}
+            onChange={(ev) => debouncedLink.callback(ev.target.value)}
+            label="Link"
+            margin="dense"
+            fullWidth
+            multiline
+            disabled={!canEdit}
+          />
+        )}
+        {!isLink && (
+          <StyledTextField
+            margin="dense"
+            fullWidth
+            label="Link with screen"
+            onChange={setElementScreen}
+            select
+            value={selectedScreen || 'noScreen'}
+          >
+            <MenuItem value="noScreen" dense>
+              Select Screen
+            </MenuItem>
+            {screens.map((data) => (
+              <MenuItem
+                value={`${data?.project}/${data?.id}-${data?.name}`}
+                key={data?.id}
+                dense
+              >
+                {data?.name}
+              </MenuItem>
+            ))}
+          </StyledTextField>
+        )}
       </StyledAccordionDetails>
     </StyledAccordion>
   );

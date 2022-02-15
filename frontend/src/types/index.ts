@@ -135,6 +135,7 @@ export type ServerElement<
   };
   children: Children;
   shared?: boolean;
+  listOfUnsupportedElement?: string[];
 };
 
 export type NNServerElement<
@@ -375,10 +376,18 @@ export type LibraryElement<
 
 export type LibraryElementPatch<Type extends Entity> = {
   name?: string;
+  size?: string;
+  type?: Type;
   scenario?: number;
   struct_type?: Type;
   func_type?: string;
   shared?: boolean;
+  styles?: {
+    classNames: string[];
+    ownStyles: React.CSSProperties;
+    pseudoClassStyles: { [className: string]: React.CSSProperties };
+  };
+  children?: string[];
 };
 
 export type UpdateElementData<T extends Entity> = {
@@ -803,7 +812,7 @@ export type ServerProject = {
 };
 
 export type ServerScreen = ScreenBase & {
-  screen_data_json: string;
+  screen_data_json: any;
 };
 
 export type ProjectClass = {
@@ -833,6 +842,7 @@ export type ProjectWithScreens = ProjectBase & {
 
 export type StateElement = {
   id: string;
+  size?: string;
   name: string;
   type: Entity | 'none';
   buoyancy: number;
@@ -1002,7 +1012,12 @@ export type ScreenMetaData = {
 
 export type ScreenData = {
   meta?: ScreenMetaData;
-  nnResult?: { [key: string]: VIAFile };
+  nnResult?: {
+    fdict: { [key: string]: VIAFile };
+    fordict: { [key: string]: VIAFile };
+    opencvdict: { [key: string]: VIAFile };
+    cnndict: { [key: string]: VIAFile };
+  };
   uiFramework: UIFramework;
   freeCanvas: boolean;
   editableScreenUser: Array<EditableScreenUser> | [];
@@ -1142,6 +1157,7 @@ export type ProfileData = {
 };
 
 export type ProfileDataParameters = {
+  avatarCrop: string;
   profileDataParameters: ProfileDataUIParameters;
   passwordZulip: string;
 };
@@ -1336,6 +1352,7 @@ export type ElementsToAdd = {
   pagination: () => PaginationServerElement;
   carousel: () => CarouselServerElement;
   navbar: () => NavbarServerElement;
+  hyperlink: () => LabelServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -1520,6 +1537,32 @@ export type VIAFile = {
   file_attributes: Record<string, any>;
 };
 
+export type VIAData = {
+  fdict: {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  };
+  fordict: {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  };
+  opencvdict: {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  };
+  cnndict: {
+    key: string;
+    value: Omit<VIAFile, 'regions'>;
+  };
+};
+
+export type VIARegions = {
+  fdict: Normalized<VIARegion>;
+  fordict: Normalized<VIARegion>;
+  opencvdict: Normalized<VIARegion>;
+  cnndict: Normalized<VIARegion>;
+};
+
 export type IFrameMessage = {
   type: string;
   payload: any;
@@ -1543,6 +1586,7 @@ export type ScreenMeta = {
 };
 
 export type FrameworkName = 'bootstrap' | 'material' | 'not_selected';
+export type NNModelName = 'fdict' | 'fordict' | 'opencvdict' | 'cnndict';
 
 export type FrameworkVersion = {
   name: string;
@@ -1571,6 +1615,11 @@ export type FrameworkSelection = {
   versions?: FrameworkVersion[];
 };
 
+export type NNModelSelection = {
+  name: string;
+  label: string;
+};
+
 export type ElementProps = {
   uiFramework: UIFramework;
 };
@@ -1589,3 +1638,6 @@ export type ChatCredentials = {
   username: string;
   apiKey: string;
 };
+
+export const CONTROLS_NOT_ALLOW_LINK = ['html'] as const;
+export const CONTROLS_NOT_ALLOW_RICHTEXTBOX = ['checkbox'] as const;

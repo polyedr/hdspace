@@ -27,6 +27,19 @@ export function* executeUndoActionsSaga() {
       });
     }
     yield put(Actions.moveHistoryBackward());
+    if (
+      currentHistoryRecord.action.type.valueOf() === 'via/ASSEMBLE_VIA_REGIONS'
+    ) {
+      yield put(Actions.setVIAMode(true));
+    }
+    yield put(
+      enqueueSnackbar({
+        message: `Sucessfully undo.`,
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
   } catch (e) {
     if (e instanceof Error) {
       yield put(
@@ -69,6 +82,14 @@ export function* executeRedoActionsSaga() {
         },
       });
     }
+    yield put(
+      enqueueSnackbar({
+        message: `Sucessfully redo.`,
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
   } catch (e) {
     if (e instanceof Error) {
       yield put(

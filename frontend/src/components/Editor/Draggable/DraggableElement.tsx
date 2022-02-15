@@ -96,12 +96,31 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     },
   });
 
-  const [{ isOver }, drop] = useDrop({
+  const [, drop] = useDrop({
     accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],
     drop: (
       dragSource: SyntheticElement<StateElement | ElementData>,
       monitor: DropTargetMonitor,
     ) => {
+      const clientOffset = monitor.getClientOffset();
+      const rect = ref.current.getBoundingClientRect();
+      const display = !parent
+        ? null
+        : parent.styles.ownStyles.display || parentElementClass?.rules.display;
+      const flexDirection = !parent
+        ? null
+        : parent.styles.ownStyles.flexDirection ||
+          parentElementClass?.rules.flexDirection;
+      if (clientOffset) {
+        dispatch(
+          processDropTargetParams(
+            elementId,
+            rect,
+            display === 'flex' && flexDirection === 'row',
+            clientOffset,
+          ),
+        );
+      }
       if (
         monitor.didDrop() ||
         (dragSource.type === ElementType.ELEMENT &&
@@ -110,55 +129,6 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         return;
       }
       dispatch(processDropElement(dragSource.original, dragSource.type));
-    },
-    canDrop: (dragSource: SyntheticElement<StateElement | ElementData>) => {
-      const allowDropElement =
-        dragSource.type === ElementType.ELEMENT &&
-        dragSource.original.id &&
-        !parentIds.includes(dragSource.original.id);
-      const allowDropConstructor = dragSource.type === ElementType.CONSTRUCTOR;
-      return (
-        isOver && (allowDropElement || allowDropConstructor) && canDragAndDrop
-      );
-    },
-    collect: (monitor: DropTargetMonitor) => {
-      return {
-        isOver: monitor.isOver({ shallow: true }),
-      };
-    },
-    hover: (
-      dragSource: SyntheticElement<StateElement | ElementData>,
-      monitor: DropTargetMonitor,
-    ) => {
-      if (dragSource.original.id === elementId) {
-        dispatch(setCurrentDropTargetParams(null));
-      }
-      if (
-        isOver &&
-        monitor.canDrop() &&
-        dragSource.original.id !== element.id
-      ) {
-        const clientOffset = monitor.getClientOffset();
-        const rect = ref.current.getBoundingClientRect();
-        const display = !parent
-          ? null
-          : parent.styles.ownStyles.display ||
-            parentElementClass?.rules.display;
-        const flexDirection = !parent
-          ? null
-          : parent.styles.ownStyles.flexDirection ||
-            parentElementClass?.rules.flexDirection;
-        if (clientOffset) {
-          dispatch(
-            processDropTargetParams(
-              elementId,
-              rect,
-              display === 'flex' && flexDirection === 'row',
-              clientOffset,
-            ),
-          );
-        }
-      }
     },
   });
 
@@ -226,9 +196,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string) => (
+      {element.children.map((childId: string, index: number) => (
         <DraggableElement
-          key={`element-${childId}`}
+          key={`element-${
+            element.children.indexOf(childId) === index
+              ? childId
+              : childId + Math.random()
+          }`}
           elementId={childId}
           parentIds={parentsIdsForChildren}
           scrollRef={scrollRef}

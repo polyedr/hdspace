@@ -33,6 +33,7 @@ export const DEFAULT_USER_PROFILE: ProfileData = {
   id: -1,
   experienced: Experience.BEGINNER,
   parameters: {
+    avatarCrop: '',
     profileDataParameters: {
       autoSwitchTabs: false,
       dropTargetBordersMode: true,

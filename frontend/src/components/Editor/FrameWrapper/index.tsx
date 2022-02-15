@@ -19,10 +19,13 @@ import {
   selectCurrentProjectClasses,
   selectCurrentUIFramework,
   selectImportLoader,
+  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
 
+import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
+import GridLines from 'react-gridlines';
 import { WindowProvider } from './FrameContext';
 import useProjectHeaderStyles from '../hooks/useProjectHeaderStyles';
 
@@ -39,6 +42,7 @@ const useStyles = makeStyles({
 const CustomHead: FC = () => {
   const uiFramework = useSelector(selectCurrentUIFramework);
   const frameworkVersion = uiFramework?.version;
+
   return (
     <>
       <meta charSet="utf-8" />
@@ -47,30 +51,34 @@ const CustomHead: FC = () => {
       <base target="_parent" />
       <style key="body_style">
         {`
-          body {
-            padding: 0;
-            margin: 0;
-            height: 100vh;
-          }
-          * {
-            box-sizing: border-box;
-          }
-          .frame-root, .frame-content {
-            height: 100%;
-          }
-          .frame-content {
-            display: flex;
-            flex-direction: column;
-          }
-          .removeNativeScrollbars::-webkit-scrollbar {
-            display: none;
-          }
-          .removeNativeScrollbars {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-          }
-        `}
+                        body {
+                          padding: 0;
+                          margin: 0;
+                          height: 100vh;
+                        }
+                        * {
+                          box-sizing: border-box;
+                        }
+                        .frame-root, .frame-content {
+                          height: 100%;
+                        }
+                        .frame-content {
+                          display: flex;
+                          flex-direction: column;
+                        }
+                        .removeNativeScrollbars::-webkit-scrollbar {
+                          display: none;
+                          
+                        }
+                        .removeNativeScrollbars {
+                          -ms-overflow-style: none;  /* IE and Edge */
+                          scrollbar-width: none;  /* Firefox */
+                        }
+                        .root{
+                          height:100vh;
+                        }`}
       </style>
+
       {frameworkVersion && (
         <>
           {frameworkVersion.styleSheetsData.map(
@@ -169,7 +177,8 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
 
   const entityStylesEl = useProjectHeaderStyles(entityClasses);
   const sharedStylesEl = useProjectHeaderStyles(sharedClasses);
-
+  const showGrid = useSelector(selectShowingGrid);
+  const freeCanvasMode = useSelector(selectFreeCanvasMode);
   return (
     <Frame
       ref={ref}
@@ -192,13 +201,48 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
           frameDocument.head.append(sharedStylesEl);
 
           return (
-            <DndFrame>
-              <WindowProvider value={frameWindow}>
-                <StylesProvider jss={jss}>
-                  <ThemeProvider theme={theme}>{children}</ThemeProvider>
-                </StylesProvider>
-              </WindowProvider>
-            </DndFrame>
+            <>
+              {showGrid ? (
+                freeCanvasMode ? (
+                  <GridLines className="grid-area" cellWidth={100}>
+                    <DndFrame>
+                      <WindowProvider value={frameWindow}>
+                        <StylesProvider jss={jss}>
+                          <ThemeProvider theme={theme}>
+                            {children}
+                          </ThemeProvider>
+                        </StylesProvider>
+                      </WindowProvider>
+                    </DndFrame>
+                  </GridLines>
+                ) : (
+                  <GridLines
+                    className="grid-area"
+                    cellWidth={60}
+                    strokeWidth={2}
+                    cellWidth2={12}
+                  >
+                    <DndFrame>
+                      <WindowProvider value={frameWindow}>
+                        <StylesProvider jss={jss}>
+                          <ThemeProvider theme={theme}>
+                            {children}
+                          </ThemeProvider>
+                        </StylesProvider>
+                      </WindowProvider>
+                    </DndFrame>
+                  </GridLines>
+                )
+              ) : (
+                <DndFrame>
+                  <WindowProvider value={frameWindow}>
+                    <StylesProvider jss={jss}>
+                      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+                    </StylesProvider>
+                  </WindowProvider>
+                </DndFrame>
+              )}
+            </>
           );
         }}
       </FrameContextConsumer>

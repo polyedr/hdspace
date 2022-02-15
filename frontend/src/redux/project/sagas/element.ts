@@ -926,6 +926,7 @@ export function* loadCustomElementsSaga(
     );
     if (result) {
       yield put(Actions.addCustomElementsPage(result, action.payload.initial));
+      yield put(Actions.addElements(result.results));
     }
     if (error) throw new Error(error);
   } catch (e) {
@@ -951,6 +952,12 @@ export const setActiveElementSaga = withRequiredPermissions(
   yield put(Actions.setSelectedElements([action.payload]));
 });
 
+export const setActiveNNModel = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(function* (action: ReturnType<typeof Actions.setActiveNNModel>) {
+  yield put(Actions.setActiveNNModel(action.payload.model));
+});
+
 export const toggleSelectedElementSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
 )(function* (action: ReturnType<typeof Actions.toggleSelectedElement>) {
@@ -961,21 +968,24 @@ export const toggleSelectedElementSaga = withRequiredPermissions(
     const selectedElements = yield select(
       selectElementsByIds(selectedElementsIds),
     );
-
-    const buoyancies = [element, ...selectedElements].map((el) => el.buoyancy);
-    const minBuoyancy = Math.min(...buoyancies);
-    const maxBuoyancy = Math.max(...buoyancies);
-    const canCreateGroup =
-      !!selectedElements.length &&
-      selectedElements.every((el) => el.parent === element.parent) &&
-      maxBuoyancy - minBuoyancy === selectedElements.length &&
-      !selectedElements.filter(
-        (groupEl) =>
-          !!groupEl.parameters.groupElements ||
-          !!groupEl.parameters.sourceElementId,
-      ).length;
-    yield put(Actions.setCanCreateGroup(canCreateGroup));
-    yield put(Actions.addSelectedElement(action.payload.id));
+    if (selectedElements[0].type === element.type) {
+      const buoyancies = [element, ...selectedElements].map(
+        (el) => el.buoyancy,
+      );
+      const minBuoyancy = Math.min(...buoyancies);
+      const maxBuoyancy = Math.max(...buoyancies);
+      const canCreateGroup =
+        !!selectedElements.length &&
+        selectedElements.every((el) => el.parent === element.parent) &&
+        maxBuoyancy - minBuoyancy === selectedElements.length &&
+        !selectedElements.filter(
+          (groupEl) =>
+            !!groupEl.parameters.groupElements ||
+            !!groupEl.parameters.sourceElementId,
+        ).length;
+      yield put(Actions.setCanCreateGroup(canCreateGroup));
+      yield put(Actions.addSelectedElement(action.payload.id));
+    }
   } else {
     yield put(Actions.removeSelectedElement(action.payload.id));
   }

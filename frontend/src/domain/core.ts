@@ -46,6 +46,7 @@ export const ENTITIES: {
   pagination: 'pagination',
   carousel: 'carousel',
   navbar: 'navbar',
+  hyperlink: 'hyperlink',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -428,7 +429,13 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   textarea: ['text', 'placeholder', ...textareaStyleControls, 'layouts'],
-  checkbox: ['value', 'name', ...checkboxStyleControls, 'layouts'],
+  checkbox: [
+    'value',
+    'name',
+    ...checkboxStyleControls,
+    'layouts',
+    'textContent',
+  ],
   radiobutton: ['value', ...radiobuttonStyleControls, 'layouts'],
   radiobuttonGroup: [
     'radiobuttons',
@@ -518,6 +525,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   carouselItem: [...paginationItemStyleControls, 'layouts'],
   navbar: ['navbar', ...navbarStyleControls, 'layouts'],
   navbarItem: [...navbarItemStyleControls, 'layouts'],
+  hyperlink: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
@@ -730,6 +738,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   navbarItem: {},
+  hyperlink: {},
 };
 
 export const defaultFreeCanvasParams: Partial<FreeCanvasElementParams> = {

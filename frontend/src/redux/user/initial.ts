@@ -26,6 +26,7 @@ export const initialUserState: UserState = {
       role: '',
       experienced: Experience.BEGINNER,
       parameters: {
+        avatarCrop: '',
         profileDataParameters: {
           autoSwitchTabs: false,
           dropTargetBordersMode: true,

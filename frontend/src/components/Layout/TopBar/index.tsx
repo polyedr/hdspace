@@ -26,15 +26,16 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { HELP_LINK } from '../../../config/settings';
+import { HELP_LINK } from '@Src/config/settings';
 import Layouts from './Layouts';
 import Actions from './actions';
+import ShowGrid from './ShowGrid';
 
 const useStyles = makeStyles(({ typography, spacing }) => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    minWidth: '890px',
   },
   switch: {
     padding: '0 1em',
@@ -49,6 +50,8 @@ const useStyles = makeStyles(({ typography, spacing }) => ({
   },
   magic: {
     paddingRight: spacing(1),
+    marginTop: 'auto',
+    marginBottom: 'auto',
   },
   magicButton: {
     height: 40,
@@ -59,6 +62,7 @@ const useStyles = makeStyles(({ typography, spacing }) => ({
     '&:hover': {
       cursor: 'pointer',
     },
+    margin: 'auto',
   },
 }));
 
@@ -89,6 +93,7 @@ const TopBar: React.FC = () => {
 
   return currentScreenId !== -1 ? (
     <div className={classes.root}>
+      <div style={{ visibility: 'hidden' }} />
       <a
         className={classes.helpTextStyle}
         target="_blank"
@@ -108,35 +113,38 @@ const TopBar: React.FC = () => {
           className={classes.switch}
           disabled={masterScreenEnabled}
         />
-
-        {freeCanvasMode ? (
-          <div className={classes.magic}>
-            <Button
-              onClick={createFlex}
-              color="secondary"
-              variant="outlined"
-              className={classes.magicButton}
-            >
-              Create Flex
-            </Button>
-          </div>
-        ) : (
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="Show borders"
-                checked={showBorders}
-                disabled={!bordersEnabled && !isProtoMode}
-                onChange={() => dispatch(toggleContainersBorders(!showBorders))}
-              />
-            }
-            label={
-              <Typography className={classes.title}>Show blocks</Typography>
-            }
-          />
-        )}
+        <>
+          {freeCanvasMode ? (
+            <div className={classes.magic}>
+              <Button
+                onClick={createFlex}
+                color="secondary"
+                variant="outlined"
+                className={classes.magicButton}
+              >
+                Create Flex
+              </Button>
+            </div>
+          ) : (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="Show borders"
+                  checked={showBorders}
+                  disabled={!bordersEnabled && !isProtoMode}
+                  onChange={() =>
+                    dispatch(toggleContainersBorders(!showBorders))
+                  }
+                />
+              }
+              label={
+                <Typography className={classes.title}>Show blocks</Typography>
+              }
+            />
+          )}
+          <ShowGrid />
+        </>
       </div>
-
       <Layouts />
     </div>
   ) : (

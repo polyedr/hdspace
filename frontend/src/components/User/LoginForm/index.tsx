@@ -1,71 +1,33 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Field, Form } from 'react-final-form';
 import { Link } from 'react-router-dom';
 import Alert from '@material-ui/lab/Alert';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import PATH_NAMES from '@Constants/pathNames';
-import { sendResetPasswordMail } from '@Redux/user/actions';
 import { promiseListener } from '@Redux/store';
 import TYPES from '@Redux/actionTypes';
 import {
   Typography,
   TextField,
   Button,
-  Link as MuiLink,
   Container,
+  InputAdornment,
 } from '@material-ui/core';
-import Dialog from '../../Dialogs/Dialog';
+import {
+  composeValidators,
+  isLongLength,
+  isPassword,
+  isUsername,
+} from '@Utils/validators';
 import SubmitError from '../SubmitError';
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    form: {
-      display: 'flex',
-      flexFlow: 'column nowrap',
-      alignItems: 'center',
-    },
-    header: {
-      fontSize: '1.6em',
-      margin: '1em',
-    },
-    field: {
-      margin: '1em',
-    },
-    error: {
-      marginTop: '1em',
-      minHeight: '5em',
-    },
-    signup: {
-      fontSize: '1.1em',
-    },
-    link: {
-      '&, &:active, &:visited, &:focus': {
-        color: theme.palette.primary.main,
-      },
-    },
-  }),
-);
+import useStyles from '../LoginRegistration/LoginRegistrationStyles';
+import user from '../../../assets/images/user.png';
+import padlock from '../../../assets/images/padlock.png';
+import logo from '../../../assets/images/logo.png';
 
 const LoginForm: React.FC = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-
-  const [open, setOpen] = useState<boolean>(false);
-
-  const closeModal = () => {
-    setOpen(false);
-  };
-
-  const handleRestoreClick = () => {
-    setOpen(true);
-  };
-
-  const confirmRestore = (values: { email: string }) => {
-    dispatch(sendResetPasswordMail(values.email));
-    closeModal();
-  };
+  const [formErrors, setFormErrors] = useState<string[] | null>([]);
 
   // TODO add google button and this method, when the backend will register new users using google token
   /* const responseGoogle = (response: any) => {
@@ -83,13 +45,20 @@ const LoginForm: React.FC = () => {
       {(onSubmit) => (
         <Form
           onSubmit={onSubmit}
-          render={({ handleSubmit, submitting, submitError }) => (
+          render={({ handleSubmit, submitting, submitError, errors }) => (
             <Container maxWidth="xs">
-              <form onSubmit={handleSubmit} className={classes.form}>
-                <Typography className={classes.header}>
-                  Login to your account
+              <form
+                onSubmit={(e) => {
+                  setFormErrors(Object.values(errors));
+                  handleSubmit();
+                  e.preventDefault();
+                }}
+                className={classes.containerCenter}
+              >
+                <img src={logo} alt="Logo" />
+                <Typography className={classes.underLogoText}>
+                  Login to Your ADEVI Account
                 </Typography>
-
                 {/* <GoogleLogin
               className={styles.googleLogin}
               clientId="97708805893-kqh3efrnsd7i8nbu30p0mhlvhub029he.apps.googleusercontent.com"
@@ -99,61 +68,61 @@ const LoginForm: React.FC = () => {
               cookiePolicy="single_host_origin"
             /> */}
 
-                <Field name="username">
+                <Field name="username" validate={isUsername}>
                   {({ input, meta }) => (
                     <TextField
                       {...input}
-                      className={classes.field}
+                      className={classes.input}
                       type="text"
-                      label="Username"
-                      placeholder="Username"
+                      placeholder="User Name"
                       required
-                      variant="filled"
                       autoFocus
-                      size="small"
-                      fullWidth
                       error={(meta.error || meta.submitError) && meta.touched}
-                      helperText={
-                        (meta.error || meta.submitError) && meta.touched
-                          ? meta.error || meta.submitError
-                          : null
-                      }
+                      InputProps={{
+                        disableUnderline: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <img src={user} alt="user" />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   )}
                 </Field>
 
-                <Field name="password">
+                <Field
+                  name="password"
+                  validate={composeValidators(isPassword, isLongLength)}
+                >
                   {({ input, meta }) => (
                     <TextField
                       {...input}
-                      className={classes.field}
+                      className={classes.input}
                       type="password"
-                      label="Password"
                       placeholder="Password"
                       required
-                      variant="filled"
-                      size="small"
-                      fullWidth
                       error={(meta.error || meta.submitError) && meta.touched}
-                      helperText={
-                        (meta.error || meta.submitError) && meta.touched
-                          ? meta.error || meta.submitError
-                          : null
-                      }
+                      InputProps={{
+                        disableUnderline: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <img src={padlock} alt="padlock" />
+                          </InputAdornment>
+                        ),
+                      }}
                     />
                   )}
                 </Field>
 
                 <Button
                   type="submit"
-                  fullWidth
-                  color="primary"
+                  color="secondary"
                   variant="contained"
                   disabled={submitting}
+                  className={classes.button}
                 >
                   Login
                 </Button>
-
                 <div className={classes.error}>
                   <SubmitError name="detail" />
 
@@ -162,32 +131,28 @@ const LoginForm: React.FC = () => {
                       {submitError}
                     </Alert>
                   )}
+                  {formErrors?.length !== 0 && (
+                    <Alert severity="error" variant="filled">
+                      {formErrors?.map((err) => (
+                        <span>{err}</span>
+                      ))}
+                    </Alert>
+                  )}
                 </div>
 
-                <MuiLink
-                  component="button"
-                  type="button"
-                  onClick={handleRestoreClick}
-                >
-                  Forgot password?
-                </MuiLink>
-
-                <p className={classes.signup}>
-                  {'Create an account '}
-                  <Link to={PATH_NAMES.user.signup} className={classes.link}>
-                    for free
+                <Typography className={classes.underFormText} variant="body2">
+                  Forgot your login or password?
+                  <Link to={PATH_NAMES.user.password} className={classes.link}>
+                    Click here
                   </Link>
-                </p>
+                </Typography>
 
-                <Dialog
-                  open={open}
-                  title="Restore password"
-                  onSubmit={confirmRestore}
-                  onClose={closeModal}
-                  description="Please, enter your email address."
-                  fieldName="email"
-                  type="email"
-                />
+                <Typography className={classes.underFormText} variant="body1">
+                  New User? Create an Account for free.
+                  <Link to={PATH_NAMES.user.signup} className={classes.link}>
+                    Click here
+                  </Link>
+                </Typography>
               </form>
             </Container>
           )}

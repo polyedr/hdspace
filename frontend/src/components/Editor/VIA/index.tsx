@@ -63,7 +63,7 @@ const VIA: FC = () => {
   useShortcut('ctrl+shift+z, command+shift+z', handleRedo);
   useShortcut('delete, command+backspace', handleDelete);
 
-  const handleClick = () => dispatch(setActiveVIARegion(''));
+  const handleClick = () => dispatch(setActiveVIARegion('', false));
 
   return (
     <div className={classes.viaRoot}>

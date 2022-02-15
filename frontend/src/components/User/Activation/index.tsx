@@ -1,42 +1,16 @@
+/* eslint-disable import/no-unresolved */
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
 import * as Actions from '@Redux/user/actions';
 import { AppReduxState } from '@Redux/types';
 import Alert from '@material-ui/lab/Alert';
 import { selectConfirmMessage } from '@Redux/user/selectors';
 import LoginForm from '../LoginForm';
 import Spinner from '../../UI/Spinner';
-import { Info } from '../Info';
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    activation: {
-      display: 'flex',
-      height: '100vh',
-    },
-    formContainer: {
-      flex: 1,
-      backgroundColor: theme.palette.secondary.main,
-      color: '#000',
-      justifyContent: 'center',
-      padding: '4em',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'stretch',
-    },
-    info: {
-      minHeight: '5em',
-      margin: '1em 0',
-    },
-    title: {
-      fontSize: 24,
-      textAlign: 'center',
-      fontWeight: 600,
-    },
-  }),
-);
+import Info from '../Info';
+import bigimg from '../../../assets/images/bigimg3.png';
+import useStyles from '../LoginRegistration/LoginRegistrationStyles';
 
 const mapState = ({ user: { isLoading, error } }: AppReduxState) => ({
   isLoading,
@@ -66,8 +40,15 @@ const Activation: React.FC<IProps> = ({ activateUser, isSignLoader }) => {
   }, [activateUser, token, uid]);
 
   return (
-    <div className={classes.activation}>
-      <Info />
+    <div className={classes.root}>
+      <Info
+        title="Did you know?"
+        list={[
+          'Our AI system recognizes Graphical User Interfaces (GUIs) including separate elements with color and layout patterns.',
+          'You can add ready-made templates or draw your own drawing: our AI system will recognize and include it  in your project.',
+        ]}
+        img={bigimg}
+      />
 
       <div className={classes.formContainer}>
         <div className={classes.info}>

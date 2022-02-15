@@ -263,7 +263,7 @@ export function convertNNScreenFromResponse({
     element,
     screenData: {
       uiFramework: NOT_SELECTED_FRAMEWORK,
-      nnResult: JSON.parse(screen_data_json),
+      nnResult: screen_data_json,
       freeCanvas: false,
       editableScreenUser: [],
     },

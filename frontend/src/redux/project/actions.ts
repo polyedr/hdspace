@@ -28,10 +28,12 @@ import {
   UserData,
   EditScreenData,
   ProfileDataUIParameters,
-  VIAFile,
+  VIAData,
   FileToUpload,
   UIFramework,
   ElementData,
+  NNModelName,
+  VIARegions,
 } from '@Src/types';
 import { XYCoord } from 'react-dnd';
 import {
@@ -87,6 +89,8 @@ import {
   SetScreenLoader,
   SetScreens,
   ToggleContainersBorders,
+  ToggleGrid,
+  ExportScreenFlag,
   UnwrapFromContainer,
   UpdateElement,
   UpdateElementImage,
@@ -602,6 +606,16 @@ export const toggleContainersBorders = (
   payload: enabled,
 });
 
+export const toggleGrid = (enabled: boolean): ToggleGrid => ({
+  type: TYPES.TOGGLE_GRID,
+  payload: enabled,
+});
+
+export const exportScreenFlag = (enabled: boolean): ExportScreenFlag => ({
+  type: TYPES.EXPORT_SCREEN_FLAG,
+  payload: enabled,
+});
+
 export const setBordersEnabled = (enabled: boolean): SetBordersEnabled => ({
   type: TYPES.SET_BORDERS_ENABLED,
   payload: enabled,
@@ -980,6 +994,16 @@ export const wrapMultipleElementsIntoContainer = (
 export const setActiveElement = (id: string) => ({
   type: TYPES.SET_ACTIVE_ELEMENT_SAGA,
   payload: id,
+});
+
+export const setActiveNNModel = (model: NNModelName) => ({
+  type: TYPES.SET_ACTIVE_NN_MODEL,
+  payload: { model },
+});
+
+export const isLibraryTab = (isLibraryTab: Boolean) => ({
+  type: TYPES.IS_LIBRARY_TAB,
+  payload: { isLibraryTab },
 });
 
 export const setActiveElementId = (id: string) => ({
@@ -1493,9 +1517,7 @@ export const setVIAMode = (active: boolean): SetVIAMode => ({
   payload: active,
 });
 
-export const setVIARegions = (
-  regions: Normalized<VIARegion>,
-): SetVIARegions => ({
+export const setVIARegions = (regions: VIARegions): SetVIARegions => ({
   type: TYPES.SET_VIA_REGIONS,
   payload: regions,
 });
@@ -1524,9 +1546,15 @@ export const updateVIARegionSuccess = (
   },
 });
 
-export const setActiveVIARegion = (id: string): SetActiveVIARegion => ({
+export const setActiveVIARegion = (
+  id: string,
+  isUpdatingLayer: boolean,
+): SetActiveVIARegion => ({
   type: TYPES.SET_ACTIVE_VIA_REGION,
-  payload: id,
+  payload: {
+    id,
+    isUpdatingLayer,
+  },
 });
 
 export const createVIARegion = (meta?: HistoryMeta): CreateVIARegion => ({
@@ -1606,13 +1634,9 @@ export const setAnnotatedImageFile = (
   payload: file,
 });
 
-export const setVIAData = (
-  key: string,
-  value: Omit<VIAFile, 'regions'>,
-): SetVIAData => ({
+export const setVIAData = (value: VIAData): SetVIAData => ({
   type: TYPES.SET_VIA_DATA,
   payload: {
-    key,
     value,
   },
 });

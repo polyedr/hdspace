@@ -30,6 +30,7 @@ const Calendar = React.forwardRef<HTMLDivElement, RendererProps>(
       >
         <CalendarWidget
           id={element.id}
+          calendarSize={element.size}
           ownStyles={element.styles.ownStyles}
           disabled={isDisabled}
         />

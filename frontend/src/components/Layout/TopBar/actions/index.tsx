@@ -9,15 +9,20 @@ import {
   Typography,
 } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import { selectUpdateScreenImageLoader } from '@Redux/project/selectors/base';
+import {
+  selectUpdateScreenImageLoader,
+  selectCurrentProject,
+} from '@Redux/project/selectors/base';
 import {
   selectCurrentScreen,
   selectFreeCanvasMode,
+  selectScreensWithoutMaster,
 } from '@Redux/project/selectors/screen';
-import { updateScreenImage } from '@Redux/project/actions';
+import { updateScreenImage, exportScreenFlag } from '@Redux/project/actions';
 
 import exportHTML from '@Src/export/app';
 import History from '@Components/Layout/History';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import Share from './Share';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -25,6 +30,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
+    justifyContent: 'space-around',
   },
   iconButton: {
     color: palette.common.white,
@@ -40,14 +46,29 @@ const useStyles = makeStyles(({ palette }) => ({
 const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { id, name, screenData } = useSelector(selectCurrentScreen);
+  const { id } = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
+  const screens = useSelector(selectScreensWithoutMaster);
+  const { name: projectName } = useSelector(selectCurrentProject);
 
   const handleSaveScreen = () => dispatch(updateScreenImage(id));
 
   const handleExportScreen = () => {
-    exportHTML(name, screenData.meta);
+    if (screens.length > 0) {
+      dispatch(exportScreenFlag(true));
+      exportHTML(screens, projectName);
+      dispatch(exportScreenFlag(false));
+    } else {
+      dispatch(
+        enqueueSnackbar({
+          message: `Must be expert at least one screen.`,
+          options: {
+            variant: 'error',
+          },
+        }),
+      );
+    }
   };
 
   return (

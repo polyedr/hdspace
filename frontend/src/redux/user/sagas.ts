@@ -133,7 +133,7 @@ export function* changeProfileDataSaga({
     const newProfileData: ServerProfileData = yield call(
       reqWrapper,
       apiChangeProfileData,
-      { id, data: payload },
+      { id, data: { parameters: { avatarCrop: payload } } },
     );
 
     yield put(
@@ -158,7 +158,7 @@ export const updateUISettingsParametersSaga = function* ({
       parameters: { profileDataParameters },
     } = yield select(selectProfileData);
     const newUIParameters = { ...profileDataParameters, ...payload };
-    const { result, error } = yield call(reqWrapper, apiChangeProfileData, {
+    const newProfileData = yield call(reqWrapper, apiChangeProfileData, {
       id,
       data: {
         parameters: {
@@ -166,11 +166,8 @@ export const updateUISettingsParametersSaga = function* ({
         },
       },
     });
-    if (error) {
-      throw new Error(error);
-    }
     yield put(
-      Actions.setProfileData(convertProfileDataFromResponse(result.data)),
+      Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
     );
   } catch (e: any) {
     yield put(
@@ -234,7 +231,8 @@ function* sendResetPasswordMailSaga(
     yield put(
       Actions.setConfirmMessage('Please, check your mail and set new password'),
     );
-  } catch (e: any) {
+    openSignScreen('signin');
+  } catch (e) {
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));

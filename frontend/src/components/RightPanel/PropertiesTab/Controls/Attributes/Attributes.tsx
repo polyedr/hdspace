@@ -58,6 +58,11 @@ const Attributes: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
       ),
     500,
   );
+
+  if (attributes === undefined || attributes === null) {
+    return null;
+  }
+
   return (
     <>
       <div>

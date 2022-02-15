@@ -38,6 +38,11 @@ export const selectScreenRootElement = (screenId: number) => ({
   return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
 };
 
+export const selectScreen = (screenId: number) => ({
+  project,
+}: AppReduxState) => {
+  return project.data.screens[screenId]?.screenData;
+};
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
@@ -88,6 +93,12 @@ export const selectElementByChildId = (id: string) => (
 
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
+
+export const checkIsLibraryTab = ({ project }: AppReduxState) =>
+  project.edit.isLibraryTab;
+
+export const selectActiveNNModel = ({ project }: AppReduxState) =>
+  project.edit.activeNNModel;
 
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;

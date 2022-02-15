@@ -39,10 +39,13 @@ import {
   EditScreenData,
   ProfileDataUIParameters,
   VIAFile,
+  VIAData,
   FileToUpload,
   ChatCredentials,
   UIFramework,
   ElementData,
+  NNModelName,
+  VIARegions,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -73,6 +76,8 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
+  showGrid: boolean;
+  exportScreenFlag: boolean;
   currentDropTargetParams: DropTargetParams | null;
   bordersEnabled: boolean;
   canCreateGroup: boolean;
@@ -102,16 +107,28 @@ export type ProjectEditState = {
   uploadedImageInfo?: UploadedImageInfo;
   selectedElementsIds: string[];
   masterScreenId: number | null;
+  activeNNModel: NNModelName;
+  isLibraryTab: Boolean;
   VIAMode: {
     enabled: boolean;
-    regions: Normalized<VIARegion>;
+    regions: {
+      fdict: Normalized<VIARegion>;
+      fordict: Normalized<VIARegion>;
+      opencvdict: Normalized<VIARegion>;
+      cnndict: Normalized<VIARegion>;
+    };
     activeRegionId: string;
     annotatedElementId: string;
     annotatedImageFile: FileToUpload | null;
     copiedRegion: VIARegion | null;
     resultId: string;
     blockType: NNBlockType;
-    viaData: Record<string, Omit<VIAFile, 'regions'>>;
+    viaData: {
+      fdict: Record<string, Omit<VIAFile, 'regions'>>;
+      fordict: Record<string, Omit<VIAFile, 'regions'>>;
+      opencvdict: Record<string, Omit<VIAFile, 'regions'>>;
+      cnndict: Record<string, Omit<VIAFile, 'regions'>>;
+    };
   };
   freeCanvas: {
     lastElements: {
@@ -412,6 +429,11 @@ export type UpdateElement = IAction<
 >;
 export type ToggleContainersBorders = IAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS,
+  boolean
+>;
+export type ToggleGrid = IAction<typeof TYPES.TOGGLE_GRID, boolean>;
+export type ExportScreenFlag = IAction<
+  typeof TYPES.EXPORT_SCREEN_FLAG,
   boolean
 >;
 export type SetBordersEnabled = IAction<
@@ -1044,10 +1066,7 @@ export type SetMasterScreenId = IAction<
 
 export type SetVIAMode = IAction<typeof TYPES.SET_VIA_MODE, boolean>;
 
-export type SetViaRegions = IAction<
-  typeof TYPES.SET_VIA_REGIONS,
-  Normalized<VIARegion>
->;
+export type SetViaRegions = IAction<typeof TYPES.SET_VIA_REGIONS, VIARegions>;
 
 export type UpdateVIARegion = IAction<
   typeof TYPES.UPDATE_VIA_REGION,
@@ -1061,7 +1080,7 @@ export type UpdateVIARegionSuccess = IAction<
 
 export type SetActiveVIARegion = IAction<
   typeof TYPES.SET_ACTIVE_VIA_REGION,
-  string
+  { id: string; isUpdatingLayer: boolean }
 >;
 
 export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
@@ -1098,6 +1117,16 @@ export type UpdateVIARegionLayer = IAction<
   { id: string; layer: number }
 >;
 
+export type SetActiveNNModel = IAction<
+  typeof TYPES.SET_ACTIVE_NN_MODEL,
+  { model: string }
+>;
+
+export type IsLibraryTab = IAction<
+  typeof TYPES.IS_LIBRARY_TAB,
+  { isLibraryTab: Boolean }
+>;
+
 export type UpdateVIARegionLayerSuccess = IAction<
   typeof TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
   { id: string; layer: number }
@@ -1111,8 +1140,7 @@ export type SetAnnotatedImageURL = IAction<
 export type SetVIAData = IAction<
   typeof TYPES.SET_VIA_DATA,
   {
-    key: string;
-    value: Omit<VIAFile, 'regions'>;
+    value: VIAData;
   }
 >;
 
@@ -1199,6 +1227,8 @@ export type Action =
   | SetMasterGroupsElementId
   | SetMasterElementsIds
   | ToggleContainersBorders
+  | ToggleGrid
+  | ExportScreenFlag
   | SetBordersEnabled
   | SetElementToCopy
   | CopyActiveElement
@@ -1303,6 +1333,8 @@ export type Action =
   | AddUndoActions
   | AddRedoActions
   | SetVIAMode
+  | SetActiveNNModel
+  | IsLibraryTab
   | SetViaRegions
   | UpdateVIARegion
   | UpdateVIARegionSuccess

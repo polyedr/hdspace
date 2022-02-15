@@ -184,7 +184,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
         />
       </div>
 
-      <h3>Or upload an HTML and CSS files</h3>
+      <h3>Or upload an HTML, IMAGE and CSS files</h3>
 
       <div>
         <form
