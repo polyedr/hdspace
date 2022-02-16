@@ -37,10 +37,13 @@ export function* refreshTokensSaga() {
 
     return accessResult;
   } catch (e) {
-    yield put(setUserError(e));
+    if (e instanceof Error) {
+      yield put(setUserError(e));
+    }
   }
 }
 
+// eslint-disable-next-line consistent-return
 export function* reqWrapper(
   requestAction: (props: any) => Promise<any>,
   props: any = {},
@@ -92,8 +95,10 @@ export function* reqWrapper(
 
     return result;
   } catch (e) {
-    yield put(setUserError(e));
-    return { error: e.message };
+    if (e instanceof Error) {
+      yield put(setUserError(e));
+      return { error: e.message };
+    }
   }
 }
 
@@ -117,17 +122,19 @@ export function* projectUpdateHelperSaga(newProject: Project) {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 }
 

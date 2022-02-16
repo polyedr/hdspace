@@ -4,6 +4,18 @@ import { SvgIconTypeMap } from '@material-ui/core';
 import { DropTargetMonitor } from 'react-dnd';
 import { AxiosRequestConfig } from 'axios';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
+import { IBoardForUI } from './pmtools/board';
+
+export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
+
+export enum ModalAction {
+  Create = 'Create',
+  Edit = 'Edit',
+}
+
+export type ConfigType = {
+  headers: { Authorization: string };
+};
 
 export enum Alignments {
   Horizontal = 'row',
@@ -762,8 +774,10 @@ export type ElementsGroupParameters = BaseElementParams & {
 export type CreatedServerProject = {
   name: string;
   status: string;
+  project_data_text: string;
   projectscreen: number[];
   project_data_json: string;
+  project_data_trello_json: string;
 };
 
 export type ServerProjectWithScreens = {
@@ -774,6 +788,7 @@ export type ServerProjectWithScreens = {
   created: string;
   updated: string;
   user: ServerUserData;
+  project_data_trello_json: string;
   project_data_json: string;
   project_data_text: string;
   tags: Array<string>;
@@ -781,12 +796,16 @@ export type ServerProjectWithScreens = {
 
 export type ServerProject = {
   id: number;
+  favicon?: null | string;
+  preview?: string;
   name: string;
   status: string;
   projectscreen: number[];
   created: string;
   updated: string;
   user: ServerUserData;
+  project_data_trello_json: string;
+  project_data_activity_json?: string;
   project_data_json: string;
   project_data_text: string;
   tags: Array<string>;
@@ -809,12 +828,14 @@ export type ProjectData = {
 
 export type Project = ProjectBase & {
   projectscreen: number[];
+  projectTrelloJSON: IBoardForUI | null;
   projectData: ProjectData;
   user: UserData;
 };
 
 export type ProjectWithScreens = ProjectBase & {
   projectData: ProjectData;
+  projectTrelloJSON: IBoardForUI | null;
   projectscreen: Screen[];
   user: UserData;
 };
@@ -1138,6 +1159,7 @@ export type ProfileData = {
 export type ProfileDataParameters = {
   avatarCrop: string;
   profileDataParameters: ProfileDataUIParameters;
+  passwordZulip: string;
 };
 export type ProfileDataUIParameters = {
   autoSwitchTabs: boolean;
