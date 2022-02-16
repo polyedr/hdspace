@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { select, put, call } from 'redux-saga/effects';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import * as Actions from '@Redux/permissions/actions';
@@ -10,6 +11,21 @@ import {
   apiSetUserPermissionsForProject,
 } from '@Api/permissions';
 import { selectUserData } from '@Redux/user/selectors';
+import { requestAddHistory } from '@Redux/pmtools/activity/actions';
+import { selectBoardData } from '@Redux/pmtools/board/selectors';
+import {
+  apiAddSubscribeToStream,
+  apiUnsubscribeToStream,
+} from '@Api/pmtools/chatApi';
+import {
+  apiGetBoard,
+  getAddUserToBoard,
+  getRemoveUserToBoard,
+  getUserByEmail,
+} from '@Api/pmtools/board/boardApi';
+import { apiGetMembersOfBoard } from '@Api/pmtools/board/tasksApi';
+import { successFetchMembers } from '@Redux/pmtools/board/actions/tasks';
+import { ActionTypePM } from '@Src/types/pmtools/types';
 import {
   selectUserFromAllUsers,
   selectUserFromProjectUsers,
@@ -43,17 +59,19 @@ export function* getUsersSaga(action: ReturnType<typeof Actions.getUsersList>) {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -74,15 +92,17 @@ export function* getAllUsersProjectPermissionsSaga(
     }
     yield put(Actions.setStateAllUsersPermissions(projectId, permUsersData));
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -105,15 +125,17 @@ export function* getMyPermissionsForProjectSaga(
     }
     yield put(Actions.setStateCurrentUserPermissions(permissions));
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -123,6 +145,7 @@ export function* updateUserPermissionsForProjectSaga(
   const { userId, projectId, permissions } = action.payload;
   try {
     let user = yield select(selectUserFromProjectUsers(userId));
+
     if (!user) {
       user = yield select(selectUserFromAllUsers(userId));
     }
@@ -135,7 +158,39 @@ export function* updateUserPermissionsForProjectSaga(
       );
       return;
     }
+
+    let board = yield select(selectBoardData);
+    if (!board) {
+      const boardData = yield call(reqWrapper, apiGetBoard, {
+        project: projectId,
+      });
+      board = JSON.parse(boardData);
+    }
+    if (user.profile.parameters.passwordZulip) {
+      const { name: streamName } = board;
+      permissions.length
+        ? yield call(apiAddSubscribeToStream, streamName, user.email)
+        : yield call(apiUnsubscribeToStream, streamName, user.email);
+    }
+
+    const userTrello = yield call(getUserByEmail, user.email);
+
+    if (!userTrello.error) {
+      permissions.length
+        ? yield call(getAddUserToBoard, user.email, board.id)
+        : yield call(getRemoveUserToBoard, userTrello.id, board.id);
+    }
+
+    const members = yield call(apiGetMembersOfBoard, board.id);
+    yield put(successFetchMembers(members));
+
     if (permissions && permissions.length) {
+      const actionData: ActionTypePM = {
+        action: `${user.firstName}'s rights have been changed`,
+        platform: 'MAIN-APP',
+        priority: 'high',
+      };
+      yield put(requestAddHistory({ project: projectId, ...actionData }));
       yield put(Actions.setStateUserPermissions(user, permissions));
     } else {
       yield put(Actions.clearStateUserPermissions(user.id.toString()));
@@ -149,14 +204,16 @@ export function* updateUserPermissionsForProjectSaga(
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }

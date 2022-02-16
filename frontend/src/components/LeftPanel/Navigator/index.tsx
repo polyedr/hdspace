@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-param-reassign,no-return-assign,no-unused-vars,no-shadow */
 import React, { useEffect, useState, useCallback } from 'react';
 import { mutateTree, TreeData } from '@atlaskit/tree';

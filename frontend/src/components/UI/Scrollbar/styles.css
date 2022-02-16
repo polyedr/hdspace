@@ -1,7 +1,16 @@
 .removeNativeScrollbars::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 .removeNativeScrollbars {
--ms-overflow-style: none;
-scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.element::-webkit-scrollbar {
+  width: 0;
+}
+
+/*Убрать полосу прокрутки для всей страницы*/
+::-webkit-scrollbar {
+  width: 0;
 }
