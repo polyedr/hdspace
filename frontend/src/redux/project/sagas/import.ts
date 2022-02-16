@@ -81,7 +81,7 @@ export const importHtmlSaga = withRequiredPermissions(
                 updateElementParameters(
                   element.id,
                   {
-                    imageURL: IMAGES.imageIcon || element.parameters.imageURL,
+                    imageURL: element.parameters.imageURL || IMAGES.imageIcon ,
                   },
                   {
                     screenId: id,
