@@ -31,6 +31,7 @@ export const initialUserState: UserState = {
           autoSwitchTabs: false,
           dropTargetBordersMode: true,
         },
+        passwordZulip: '',
       },
     },
   },

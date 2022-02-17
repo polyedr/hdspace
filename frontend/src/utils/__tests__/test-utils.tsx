@@ -25,7 +25,7 @@ import {
   ProjectsSearchParameter,
   DateRange,
   NNBlockType,
-} from '../../types';
+} from '@Src/types';
 
 export const mockProject: Project = {
   id: 1,
@@ -34,6 +34,7 @@ export const mockProject: Project = {
   created: new Date(0),
   updated: new Date(0),
   projectscreen: [],
+  projectTrelloJSON: null,
   projectLoader: false,
   tags: [],
   projectData: {
@@ -123,6 +124,7 @@ export const mockUserData: UserData = {
     id: 888,
     experienced: Experience.EXPERIENCED,
     parameters: {
+      passwordZulip: '',
       avatarCrop: '',
       profileDataParameters: {
         autoSwitchTabs: false,
@@ -225,6 +227,7 @@ export const createMockProject = (): Project => ({
   name: 'test project',
   status: 'pending',
   projectscreen: [],
+  projectTrelloJSON: null,
   projectLoader: true,
   created: new Date(),
   updated: new Date(),
@@ -285,6 +288,7 @@ export const createProjectWithScreensMock = (
   created: new Date(),
   id: projectId,
   name: 'test name',
+  projectTrelloJSON: null,
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,

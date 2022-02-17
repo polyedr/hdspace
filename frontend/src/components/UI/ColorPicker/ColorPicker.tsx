@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useCallback, useState, memo } from 'react';
 import { SketchPicker, ColorResult } from 'react-color';
 import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';

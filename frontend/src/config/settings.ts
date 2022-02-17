@@ -34,7 +34,7 @@ export const myAxios = (props: MyAxiosProps) => {
   return axios({
     ...props,
     method: props.method,
-    baseURL: `${api.host}/api/v${api.version}`,
+    baseURL: props.baseURL || `${api.host}/api/v${api.version}`,
     url: props.url,
     headers: {
       'Content-Type': props.contentType

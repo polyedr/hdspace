@@ -5,7 +5,7 @@ import {
   Button,
   CircularProgress,
   ImageList,
-  GridListTile,
+  ImageListItem,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import {
@@ -147,7 +147,7 @@ const DisplayAssets = () => {
         <ImageList className={classes.gridList} rowHeight={80} cols={3} gap={5}>
           {assets.map((asset: Asset, index: number) => {
             return (
-              <GridListTile key={`asset-${asset.id}`}>
+              <ImageListItem key={`asset-${asset.id}`}>
                 <AssetImage
                   asset={asset}
                   ref={
@@ -160,7 +160,7 @@ const DisplayAssets = () => {
                       : undefined
                   }
                 />
-              </GridListTile>
+              </ImageListItem>
             );
           })}
         </ImageList>

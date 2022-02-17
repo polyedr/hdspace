@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, memo, useMemo } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useSelector } from 'react-redux';

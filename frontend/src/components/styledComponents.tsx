@@ -10,6 +10,7 @@ import {
   AccordionDetails as MuiAccordionDetails,
   TextField,
   IconButton,
+  SvgIconTypeMap,
 } from '@material-ui/core';
 import {
   createStyles,
@@ -17,8 +18,8 @@ import {
   makeStyles,
   darken,
 } from '@material-ui/core/styles';
-
 import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
+import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 
 const useAccordionStyles = makeStyles(({ palette }) => ({
   root: {
@@ -198,6 +199,25 @@ export const StyledTextField: React.FC<TextFieldProps> = (props) => {
   );
 };
 
+export const PanelTextField: React.FC<
+  TextFieldProps & { styledcolor?: string }
+> = (props) => {
+  const classes = useTextFieldStyles();
+  const { styledcolor } = props;
+
+  return (
+    <TextField
+      classes={classes}
+      margin="dense"
+      fullWidth
+      InputProps={{
+        style: { color: styledcolor || '#fff' },
+      }}
+      {...props}
+    />
+  );
+};
+
 export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => {
   const classes = useToggleButtonStyles();
   return <ToggleButton classes={classes} {...props} />;
@@ -214,3 +234,25 @@ export const StyledIconButton: React.FC<IconButtonProps> = ({
     </IconButton>
   );
 };
+
+export const TabPanel: React.FC<{
+  index: number;
+  value: number;
+}> = ({ children, value, index }) => (
+  <div
+    role="tabpanel"
+    hidden={value !== index}
+    id={`simple-tabpanel-${index}`}
+    aria-labelledby={`simple-tab-${index}`}
+  >
+    {children}
+  </div>
+);
+
+export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
+
+export interface SideBarTitleAction {
+  callback: () => void;
+  icon: IconType | any;
+  title?: string;
+}
