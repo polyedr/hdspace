@@ -11,7 +11,7 @@ import {
   CONTROLS_NOT_ALLOW_RICHTEXTBOX,
 } from '@Src/types';
 import TextEditor from '@Components/Editor/TextEditor';
-import { convertToRaw } from 'draft-js';
+import { convertToHTML } from 'draft-convert';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
   const {
@@ -57,7 +57,7 @@ const TextContent = ({ element, updateParams, canEdit }) => {
     textContent,
     (value) => {
       updateParams({
-        textContent: convertToRaw(value.getCurrentContent()).blocks[0].text,
+        textContent: convertToHTML(value.getCurrentContent()),
       });
     },
   );

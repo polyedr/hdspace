@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { createEditorStateWithText } from '@draft-js-plugins/editor';
 import { EditorState } from 'draft-js';
+import { convertFromHTML } from 'draft-convert';
 
 export const useDebouncedRichInputChange = (
   richContent: any,
@@ -9,7 +9,7 @@ export const useDebouncedRichInputChange = (
   delay: number = 500,
 ) => {
   const [state, setState] = useState<any>(
-    createEditorStateWithText(richContent),
+    EditorState.createWithContent(convertFromHTML(richContent)),
   );
   const [check, checkOn] = useState();
 
@@ -17,7 +17,12 @@ export const useDebouncedRichInputChange = (
     if (check) {
       return;
     }
-    setState(createEditorStateWithText(richContent));
+    console.log(
+      `useEffect ${typeof richContent} + ${EditorState.createWithContent(
+        convertFromHTML(richContent),
+      )}`,
+    );
+    setState(EditorState.createWithContent(convertFromHTML(richContent)));
   }, [check, richContent]);
 
   const debounced = useDebouncedCallback(cb, delay);
