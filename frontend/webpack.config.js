@@ -185,8 +185,8 @@ module.exports = ({ MODE }) => {
         cacheGroups: {
           defaultVendors: {
             test: /[\\/]node_modules[\\/]/,
-            name: "vendor",
-            chunks: "all",
+            name: 'vendor',
+            chunks: 'all',
             priority: -10,
           },
           default: {

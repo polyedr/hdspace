@@ -17,11 +17,6 @@ export const useDebouncedRichInputChange = (
     if (check) {
       return;
     }
-    console.log(
-      `useEffect ${typeof richContent} + ${EditorState.createWithContent(
-        convertFromHTML(richContent),
-      )}`,
-    );
     setState(EditorState.createWithContent(convertFromHTML(richContent)));
   }, [check, richContent]);
 
