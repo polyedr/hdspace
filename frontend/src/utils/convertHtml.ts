@@ -195,10 +195,13 @@ const htmlElementToAdeviElement = (
     ...extractCSSStyleDeclaration(inlineStyle),
   };
 
+  const isURL = !!element.getAttribute('href');
+
   const adeviElement = convertCreatedElementToRequest(type, null, type, {
     textContent: element.textContent?.trim(),
     ...(type === 'heading' && { headingType: element.tagName.toLowerCase() }),
     ...(type === 'image' && { imageURL: element.getAttribute('src') }),
+    ...(isURL && { isLink: true, link: element.getAttribute('href') }),
   });
 
   return {
