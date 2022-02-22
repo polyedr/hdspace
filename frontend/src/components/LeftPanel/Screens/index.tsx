@@ -93,7 +93,7 @@ const Screens = () => {
     dispatch(
       createScreen({
         projectID: currentProjectId,
-        name: 'Screen 1',
+        name: 'Screen-1',
         buoyancy: screens.length + 1, // + 1 because masterScreen should always have buoyancy 0
         freeCanvas: isFreeCanvas,
       }),

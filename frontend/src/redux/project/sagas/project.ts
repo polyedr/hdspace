@@ -355,7 +355,7 @@ export function* createProjectSaga(
       const initialScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
-          { projectID: createdProject.id, name: 'Screen 1', buoyancy: 1 },
+          { projectID: createdProject.id, name: 'Screen-1', buoyancy: 1 },
           {
             useHistory: true,
           },
