@@ -226,6 +226,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
       setOpenPopup(true);
       backButton();
     }
+    // eslint-disable-next-line
   }, [importSiteUrlErrorStatus]);
 
   useEffect(() => {
@@ -233,6 +234,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     return () => {
       removeImportValue();
     };
+    // eslint-disable-next-line
   }, []);
 
   return (

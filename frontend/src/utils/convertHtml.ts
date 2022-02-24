@@ -6,12 +6,12 @@ const containerElements = {
   ASIDE: 'container',
   BODY: 'container',
   DETAILS: 'container',
-  DIV: 'container',
-  FIELDSET: 'container',
+  DIV: 'divBlock',
+  FIELDSET: 'html',
   FIGURE: 'container',
-  FOOTER: 'container',
-  FORM: 'container',
-  HEADER: 'container',
+  FOOTER: 'divBlock',
+  FORM: 'divBlock',
+  HEADER: 'divBlock',
   MAIN: 'container',
   NAV: 'container',
 } as const;
@@ -181,6 +181,16 @@ const htmlElementToAdeviElement = (
   doc: Document,
 ): ServerElement<any> | null => {
   let type = tagMap[element.tagName];
+  const htmlElementType = element.getAttribute('type');
+
+  // in import time we skip input type if it's hidden tag use
+  if (htmlElementType === 'hidden' && type === 'textinput') {
+    return null;
+  }
+
+  const isURL = !!element.getAttribute('href');
+  const { style: inlineStyle } = element;
+
   if (!type) {
     if (unsupportedElementList.indexOf(element.tagName) === -1) {
       unsupportedElementList.push(element.tagName);
@@ -188,20 +198,27 @@ const htmlElementToAdeviElement = (
     type = 'divBlock';
   }
 
-  const { style: inlineStyle } = element;
-
   const ownStyles = {
     ...extractStyles(element, cssRules, doc),
     ...extractCSSStyleDeclaration(inlineStyle),
   };
 
-  const isURL = !!element.getAttribute('href');
-
   const adeviElement = convertCreatedElementToRequest(type, null, type, {
     textContent: element.textContent?.trim(),
     ...(type === 'heading' && { headingType: element.tagName.toLowerCase() }),
     ...(type === 'image' && { imageURL: element.getAttribute('src') }),
+    ...(type === 'video' && {
+      videoSettings: { link: element.getElementsByTagName('source')[0].src },
+    }),
     ...(isURL && { isLink: true, link: element.getAttribute('href') }),
+    ...(htmlElementType === 'password' &&
+      type === 'textinput' && { type: 'password' }),
+    ...(htmlElementType === 'number' &&
+      type === 'textinput' && { type: 'number' }),
+    ...(htmlElementType === 'phone' &&
+      type === 'textinput' && { type: 'phone' }),
+    ...(htmlElementType === 'email' &&
+      type === 'textinput' && { type: 'email' }),
   });
 
   return {
