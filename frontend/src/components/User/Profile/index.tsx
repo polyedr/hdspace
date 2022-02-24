@@ -42,6 +42,7 @@ import PATH_NAMES from '@Constants/pathNames';
 import ImageCropper from '@Components/CropImage';
 import SubmitError from '../SubmitError';
 import CustomButton from '../../UI/Button';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -129,6 +130,7 @@ const useStyles = makeStyles((theme) =>
 const Profile: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [imageToCrop, setImageToCrop] = useState<any>(undefined);
   const [croppedImage, setCroppedImage] = useState<any>(undefined);
@@ -194,7 +196,11 @@ const Profile: React.FC = () => {
   };
 
   const handleSaved = () => {
-    dispatch(changeProfileData((croppedImage as any) as ProfileData));
+    dispatch(changeProfileData({
+      parameters: {
+        avatarCrop: croppedImage as string
+      }
+    } as ProfileData));
     setImageToCrop(undefined);
   };
 
@@ -221,12 +227,6 @@ const Profile: React.FC = () => {
   };
 
   const handleUpdate = () => {
-    dispatch(
-      updateUISettingsParameters({
-        dropTargetBordersMode: dropTargetBorders,
-        autoSwitchTabs: autoSwitch,
-      }),
-    );
 
     const newEx = userGuide ? Experience.EXPERIENCED : Experience.BEGINNER;
 
@@ -235,7 +235,13 @@ const Profile: React.FC = () => {
     dispatch(
       changeProfileData({
         experienced: newEx,
-      }),
+        parameters: {
+          profileDataParameters: {
+            dropTargetBordersMode: dropTargetBorders,
+            autoSwitchTabs: autoSwitch,
+          }
+        }
+      } as ProfileData),
     );
 
     if (formData) {
@@ -249,10 +255,7 @@ const Profile: React.FC = () => {
   };
 
   const handleCancel = () => {
-    setDropTargetBorders(dropTargetBordersMode);
-    setAutoSwitch(autoSwitchTabs);
-    setUserGuide(userGuideWatched);
-    handleClose();
+    history.go(0);
   };
 
   return (
