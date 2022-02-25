@@ -246,10 +246,7 @@ const Profile: React.FC = () => {
 
     if (formData) {
       dispatch(
-        changeUserData({
-          firstName: formData.first_name,
-          lastName: formData.last_name,
-        }),
+        changeUserData(formData),
       );
     }
   };
@@ -282,6 +279,7 @@ const Profile: React.FC = () => {
               initialValues={{
                 first_name: firstName,
                 last_name: lastName,
+                role
               }}
               onSubmit={handleFormSubmit}
               render={({ handleSubmit, submitError }) => (
