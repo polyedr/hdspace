@@ -42,6 +42,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   fontStyle?: React.CSSProperties['fontStyle'];
   textAlign?: React.CSSProperties['textAlign'];
   color: React.CSSProperties['color'];
+  isLeftSide?: boolean;
 };
 
 const TypographyBlock: React.FC<Props> = ({
@@ -57,6 +58,7 @@ const TypographyBlock: React.FC<Props> = ({
   color = 'transparent',
   canEdit,
   editableStyles,
+  isLeftSide = false,
 }) => {
   const classes = useStyles();
 
@@ -145,7 +147,10 @@ const TypographyBlock: React.FC<Props> = ({
           ))}
         </StyledTextField>
 
-        <div className={classes.wrapper}>
+        <div
+          className={classes.wrapper}
+          style={isLeftSide ? { justifyContent: 'flex-start' } : {}}
+        >
           <StyledTextField
             className={classes.text}
             label="Size"
@@ -157,43 +162,56 @@ const TypographyBlock: React.FC<Props> = ({
               debounced.callback(ev.target.value);
             }}
             disabled={!canEdit}
+            style={isLeftSide ? { marginRight: '10%' } : {}}
           />
 
-          <ToggleButtonGroup
-            value={[
-              fontStyle,
-              fontWeight === 700 || fontWeight === 'bold' ? 'bold' : 'normal',
-            ]}
-            onChange={handleFormatChange}
-            size="small"
+          <div
+            style={
+              isLeftSide ? { display: 'flex', flexDirection: 'column' } : {}
+            }
           >
-            <StyledToggleButton value="italic" disabled={!canEdit}>
-              <FormatItalicIcon fontSize="small" />
-            </StyledToggleButton>
+            <ToggleButtonGroup
+              value={[
+                fontStyle,
+                fontWeight === 700 || fontWeight === 'bold' ? 'bold' : 'normal',
+              ]}
+              onChange={handleFormatChange}
+              size="small"
+              style={
+                isLeftSide
+                  ? { width: '20px', height: '20px', marginBottom: '10px' }
+                  : { marginRight: '10px' }
+              }
+            >
+              <StyledToggleButton value="italic" disabled={!canEdit}>
+                <FormatItalicIcon fontSize="small" />
+              </StyledToggleButton>
 
-            <StyledToggleButton value="bold" disabled={!canEdit}>
-              <FormatBoldIcon fontSize="small" />
-            </StyledToggleButton>
-          </ToggleButtonGroup>
+              <StyledToggleButton value="bold" disabled={!canEdit}>
+                <FormatBoldIcon fontSize="small" />
+              </StyledToggleButton>
+            </ToggleButtonGroup>
 
-          <ToggleButtonGroup
-            value={textAlign}
-            onChange={handleAlignmentChange}
-            exclusive
-            size="small"
-          >
-            <StyledToggleButton value="left" disabled={!canEdit}>
-              <FormatAlignLeftIcon fontSize="small" />
-            </StyledToggleButton>
+            <ToggleButtonGroup
+              value={textAlign}
+              onChange={handleAlignmentChange}
+              exclusive
+              size="small"
+              style={isLeftSide ? { width: '20px', height: '20px' } : {}}
+            >
+              <StyledToggleButton value="left" disabled={!canEdit}>
+                <FormatAlignLeftIcon fontSize="small" />
+              </StyledToggleButton>
 
-            <StyledToggleButton value="center" disabled={!canEdit}>
-              <FormatAlignCenterIcon fontSize="small" />
-            </StyledToggleButton>
+              <StyledToggleButton value="center" disabled={!canEdit}>
+                <FormatAlignCenterIcon fontSize="small" />
+              </StyledToggleButton>
 
-            <StyledToggleButton value="right" disabled={!canEdit}>
-              <FormatAlignRightIcon fontSize="small" />
-            </StyledToggleButton>
-          </ToggleButtonGroup>
+              <StyledToggleButton value="right" disabled={!canEdit}>
+                <FormatAlignRightIcon fontSize="small" />
+              </StyledToggleButton>
+            </ToggleButtonGroup>
+          </div>
         </div>
 
         <div>
