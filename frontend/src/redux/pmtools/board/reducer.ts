@@ -37,7 +37,7 @@ const boardReducer = (
     case TYPES.DELETE_COLUMN_SUCCESS:
       return {
         ...state,
-        columnList: state.columns.filter(
+        columns: state.columns.filter(
           (column) => column.id !== action.payload,
         ),
       };
@@ -63,10 +63,17 @@ const boardReducer = (
         tasks: state.tasks.filter((task) => task.id !== action.payload),
       };
     case TYPES.UPDATE_CARD_INDEX_SUCCESS:
+      const { tasks } = state;
       const { destList, removed, dest, source, sourceList } = action.payload;
+      let taskList = [...tasks];
       sourceList.tasks.splice(source, 1);
       destList.tasks.splice(dest, 0, removed);
-      return state;
+      const removeIndex = taskList.findIndex(item => item.id === removed.id);
+      taskList[removeIndex].idList = destList.id;
+      return {
+        ...state,
+        tasks: taskList
+      };
 
     default:
       return state;
