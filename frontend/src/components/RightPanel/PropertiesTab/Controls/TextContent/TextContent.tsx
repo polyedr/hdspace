@@ -10,8 +10,8 @@ import {
   CONTROLS_NOT_ALLOW_LINK,
   CONTROLS_NOT_ALLOW_RICHTEXTBOX,
 } from '@Src/types';
-import TextEditor from '@Components/Editor/TextEditor';
 import { convertToHTML } from 'draft-convert';
+import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
   const {
@@ -102,7 +102,7 @@ const TextContent = ({ element, updateParams, canEdit }) => {
         //   state={state}
         //   handleChange={handleChange}
         // />
-        <TextEditor handleChange={handleChange} textState={state} />
+        <RichTextContent handleChange={handleChange} textState={state} />
       )}
 
       {CONTROLS_NOT_ALLOW_LINK.includes(element.type) ? null : (
