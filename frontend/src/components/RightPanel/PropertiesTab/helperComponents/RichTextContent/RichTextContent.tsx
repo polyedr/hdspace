@@ -19,10 +19,11 @@ const { Toolbar } = staticToolbarPlugin;
 const plugins = [staticToolbarPlugin];
 
 const RichTextContent = ({ textState, handleChange }) => {
-  const editor = React.useRef(null);
+  const editor = React.useRef<Editor | null>(null);
   const focusEditor = () => {
-    // @ts-ignore
-    editor.current.focus();
+    if (editor.current !== null) {
+      editor.current.focus();
+    }
   };
 
   return (
