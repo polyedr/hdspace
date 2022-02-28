@@ -1,4 +1,5 @@
 cd /home/auser/adeviio/adeviio-frontend
+sudo chmod -R 777 /home/auser/adeviio/adeviio-frontend
 
 npm i
 npm run build:staging
