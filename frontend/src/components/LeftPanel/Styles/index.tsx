@@ -43,6 +43,7 @@ import {
 } from '@Redux/project/selectors/screen';
 import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
 import StyleGenerator from '@Components/LeftPanel/Styles/components/StyleGenerator';
+import ColorScheme from '@Components/LeftPanel/Styles/components/ColorScheme';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   name: {
@@ -401,6 +402,9 @@ const Styles = () => {
               </ControlSection>
             );
           })}
+          <ControlSection title={sectionTitleEnum.COLOR_SCHEME}>
+            <ColorScheme />
+          </ControlSection>
         </StyledAccordionDetails>
       </StyledAccordion>
     </>
