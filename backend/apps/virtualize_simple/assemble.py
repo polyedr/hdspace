@@ -10,7 +10,7 @@ import uuid
 from statistics import median, median_low
 
 from anytree import RenderTree
-
+from anytree.exporter import DictExporter
 
 from project.settings import (
     MEDIA_ROOT,
@@ -61,7 +61,7 @@ VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD = 0.75
 # An empirical value derived from observations
 HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD = 0.25
 
-VIA_ANNOTATION_ASSEMBLING_FILE = "elements_websites_assembling.txt"
+VIA_ANNOTATION_ASSEMBLING_FILE = "assembling_"
 
 
 def clusters_printing(root_block, fname, input_image=[]):
@@ -806,7 +806,7 @@ def calculate_fclusters(root_firstcluster):
                                 * height_elem1
                             ):
                                 # Add the initial element to the cluster
-                                # Define some values to this novel cluster
+                                # Define some values to this novzel cluster
                                 cluster = ClusterClass(x1, y1, x2, y2)
                                 cluster.types = "fcluster"
                                 # Not sure that this assignment is important
@@ -2000,26 +2000,6 @@ def elements_rootblock(
     return True
 
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath(
-    BASE_DIR + "/gkeys/creativesmarthub-e941d155283d.json"
-)
-
-config_tesseract = "-l eng --oem 1 --psm 3"
-
-# The constant to remove rectangle when overlaps more than 90% with larger rectangle
-SQUARES_OVERLAP_THRESHOLD = 0.9
-
-# The constant to calculate horizontal overlap during the vertical groups detection
-# An empirical value derived from observations
-VERICAL_GROUPS_HORIZONTAL_OVERLAP_THRESHOLD = 0.75
-
-# The constant to calculate vertical overlap during the horizontal groups detection
-# An empirical value derived from observations
-HORIZONTAL_GROUPS_VERTICAL_OVERLAP_THRESHOLD = 0.25
-
-VIA_ANNOTATION_ASSEMBLING_FILE = "elements_websites_assembling.txt"
-
-
 def pipeline_assemble(region_dataset, fdict, o, localparams):
     # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
     styles_on = 1
@@ -2223,6 +2203,11 @@ def pipeline_assemble(region_dataset, fdict, o, localparams):
                 VIA_ANNOTATION_ASSEMBLING_FILE + fname + ".txt", "w"
             ) as tree_file:
                 for pre, fill, node in RenderTree(root_block):
+                    # Process the tree to remove a node.div if exists to obtain JSON
+                    try:
+                        del node.div
+                    except Exception:
+                        pass
                     treestr = u"%s%s" % (pre, node.name)
                     print(
                         treestr.ljust(8),
@@ -2239,5 +2224,8 @@ def pipeline_assemble(region_dataset, fdict, o, localparams):
                         node.processing,
                         file=tree_file,
                     )
+
+            exporter = DictExporter()
+            parameters = exporter.export(root_block)
 
     return parameters, styles, root_block
