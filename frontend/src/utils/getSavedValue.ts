@@ -1,4 +1,4 @@
-import { LibraryElementUnion, StateElement } from '../types';
+import { LibraryElementUnion, StateElement } from '@Src/types';
 
 const getSavedValue = (element: LibraryElementUnion | StateElement) => {
   switch (element.type) {

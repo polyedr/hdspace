@@ -3,6 +3,7 @@ import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
 } from '@Api/converters/toRequest';
+import generator from 'generate-password';
 import {
   apiCreateProject,
   apiDeleteProject,
@@ -29,6 +30,18 @@ import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElemen
 import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
+import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
+import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
+import {
+  apiGetBoard,
+  createNewBoard,
+  createOrganization,
+  deleteOrganization,
+  getAddUserToBoard,
+  getUserByEmail,
+} from '@Api/pmtools/board/boardApi';
+import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
+import { selectUserData } from '@Redux/user/selectors';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -129,17 +142,19 @@ export function* searchProjectsSaga() {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   } finally {
     yield put(Actions.setProjectListLoader(false));
   }
@@ -177,17 +192,19 @@ export function* getProjectListSaga() {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   } finally {
     yield put(Actions.setProjectListLoader(false));
   }
@@ -206,6 +223,10 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
         id,
       },
     );
+
+    if (result?.projectTrelloJSON) {
+      yield put(successSavedBoard(result.projectTrelloJSON));
+    }
 
     if (result) {
       yield put(PermissionsActions.getMyPermissionsForProject(result.id));
@@ -238,17 +259,19 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   } finally {
     yield put(Actions.setProjectLoader(false));
   }
@@ -261,15 +284,36 @@ export function* createProjectSaga(
     payload: { name },
   } = action;
   try {
+    const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
+
+    const organization: IOrganization = yield call(
+      createOrganization,
+      `${generateName}-adevi-org`,
+    );
+    const board: IBoardForUI = yield call(createNewBoard, generateName);
+    yield call(apiCreateNewStreams, generateName);
+
+    const boardForUI: IBoardForUI = {
+      organization,
+      ...board,
+    };
+
+    const { email } = yield select(selectUserData);
+    const userTrello = yield call(getUserByEmail, email);
+    if (!userTrello.error) {
+      yield call(getAddUserToBoard, email, board.id);
+    }
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name),
+        data: convertCreatedProjectToRequest(name, boardForUI),
       },
     );
+    yield put(successSavedBoard(boardForUI));
+
     if (createdProject?.created) {
       yield put(
         PermissionsActions.setStateCurrentUserPermissions([
@@ -281,6 +325,7 @@ export function* createProjectSaga(
         projectId: createdProject.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
+
       yield put(Actions.setAssetLists(null));
       yield put(Actions.setSelectedAssetListId(null));
       const projects: Project[] = yield select(selectProjectsAsArr);
@@ -310,7 +355,7 @@ export function* createProjectSaga(
       const initialScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
-          { projectID: createdProject.id, name: 'Screen 1', buoyancy: 1 },
+          { projectID: createdProject.id, name: 'Screen-1', buoyancy: 1 },
           {
             useHistory: true,
           },
@@ -337,17 +382,19 @@ export function* createProjectSaga(
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   } finally {
     yield put(Actions.setProjectCreateLoader(false));
   }
@@ -357,6 +404,13 @@ export function* deleteProjectSaga({
   payload: { id },
 }: ReturnType<typeof Actions.deleteProject>) {
   try {
+    const board = yield call(reqWrapper, apiGetBoard, {
+      project: id,
+    });
+
+    yield call(deleteOrganization, JSON.parse(board).organization?.id);
+    yield call(apiDeleteStream, JSON.parse(board).name);
+
     const { result, error }: Result<boolean> = yield call(
       reqWrapper,
       apiDeleteProject,
@@ -383,17 +437,19 @@ export function* deleteProjectSaga({
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -422,17 +478,19 @@ export const updateNameAndTagsProjectSaga = function* ({
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 };
 
@@ -467,17 +525,19 @@ export function* updateProjectSaga(
       throw new Error(`Failed to update project ${project.name}`);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 }
 

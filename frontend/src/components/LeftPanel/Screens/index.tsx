@@ -93,7 +93,7 @@ const Screens = () => {
     dispatch(
       createScreen({
         projectID: currentProjectId,
-        name: 'Screen 1',
+        name: 'Screen-1',
         buoyancy: screens.length + 1, // + 1 because masterScreen should always have buoyancy 0
         freeCanvas: isFreeCanvas,
       }),
@@ -202,14 +202,16 @@ const Screens = () => {
                     innerRef={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {screens.map((screen, i) => (
-                      <ScreenListItem
-                        key={screen.id}
-                        screen={screen}
-                        index={i}
-                        active={screen.id === currentScreenId}
-                      />
-                    ))}
+                    {screens
+                      .filter((screen) => screen.id !== -1)
+                      .map((screen, i) => (
+                        <ScreenListItem
+                          key={screen.id}
+                          screen={screen}
+                          index={i}
+                          active={screen.id === currentScreenId}
+                        />
+                      ))}
                     {provided.placeholder}
                   </List>
                 </Scrollbar>

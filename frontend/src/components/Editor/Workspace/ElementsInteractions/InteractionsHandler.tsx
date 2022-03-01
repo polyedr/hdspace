@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
@@ -112,26 +113,28 @@ const InteractionsHandler = ({
         ].includes(element.id)}
         updateStyles={updateStyles}
       />
-      <BorderCrumb
-        element={element}
-        styles={styles}
-        rootId={screen.element}
-        currentProjectId={currentProjectId}
-        masterScreenId={masterScreenId}
-        show={showBorders || element.id === activeElementId}
-      >
-        {screen.id !== masterScreenId && (
-          <>
-            <SaveElementAction element={element} />
-            <CreateGroupAction
-              element={element}
-              canCreateGroup={canCreateGroup}
-              selectedElementsIds={selectedElementsIds}
-              screenId={screen.id}
-            />
-          </>
-        )}
-      </BorderCrumb>
+      {screen.id !== -1 && (
+        <BorderCrumb
+          element={element}
+          styles={styles}
+          rootId={screen.element}
+          currentProjectId={currentProjectId}
+          masterScreenId={masterScreenId}
+          show={showBorders || element.id === activeElementId}
+        >
+          {screen.id !== masterScreenId && (
+            <>
+              <SaveElementAction element={element} />
+              <CreateGroupAction
+                element={element}
+                canCreateGroup={canCreateGroup}
+                selectedElementsIds={selectedElementsIds}
+                screenId={screen.id}
+              />
+            </>
+          )}
+        </BorderCrumb>
+      )}
     </React.Fragment>
   );
 };

@@ -95,7 +95,6 @@ import {
   resetCurrentUIFrameworkVariablesSaga,
   updateProjectSaga,
 } from './project';
-import { setUpSidebarSaga } from './sidebar';
 import TYPES from '../../actionTypes';
 import { projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -232,9 +231,14 @@ const copyActiveElementSaga = withRequiredPermissions(
       }),
     );
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 
@@ -301,9 +305,14 @@ const duplicateScreenSaga = withRequiredPermissions(
 
     yield put(Actions.setScreenLoader(false));
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 
@@ -360,9 +369,14 @@ const pasteCopiedElementSaga = compose(
       }
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 
@@ -495,8 +509,6 @@ export default function* projectSaga() {
     TYPES.UPDATE_USER_PERMISSIONS_FOR_PROJECT,
     updateUserPermissionsForProjectSaga,
   );
-
-  yield takeEvery(TYPES.SET_UP_SIDEBAR, setUpSidebarSaga);
 
   yield fork(viaSaga);
   yield fork(nnSaga);
