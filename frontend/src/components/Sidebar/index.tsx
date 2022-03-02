@@ -39,6 +39,7 @@ const useStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.panel.main,
     minHeight: 655,
     overflowY: 'auto',
+    maxHeight: '100%'
   },
   open: {
     width: 310,
