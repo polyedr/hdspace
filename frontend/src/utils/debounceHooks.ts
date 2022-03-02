@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import RichTextEditor from 'react-rte';
+import { EditorState } from 'draft-js';
+import { convertFromHTML } from 'draft-convert';
 
 export const useDebouncedRichInputChange = (
   richContent: any,
@@ -8,19 +9,21 @@ export const useDebouncedRichInputChange = (
   delay: number = 500,
 ) => {
   const [state, setState] = useState<any>(
-    RichTextEditor.createValueFromString(richContent, 'html'),
+    EditorState.createWithContent(convertFromHTML(richContent)),
   );
   const [check, checkOn] = useState();
+
   useEffect(() => {
     if (check) {
       return;
     }
-    setState(RichTextEditor.createValueFromString(richContent, 'html'));
+    setState(EditorState.createWithContent(convertFromHTML(richContent)));
   }, [check, richContent]);
 
   const debounced = useDebouncedCallback(cb, delay);
 
-  const handleChange = (value) => {
+  const handleChange = (value: EditorState) => {
+    // @ts-ignore
     checkOn(value);
     setState(value);
     if (debounced.pending()) {
