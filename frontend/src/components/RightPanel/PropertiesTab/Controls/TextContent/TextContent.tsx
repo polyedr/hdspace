@@ -97,11 +97,6 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   return (
     <>
       {CONTROLS_NOT_ALLOW_RICHTEXTBOX.includes(element.type) ? null : (
-        // <RichTextContent
-        //   canEdit={canEdit}
-        //   state={state}
-        //   handleChange={handleChange}
-        // />
         <RichTextContent handleChange={handleChange} textState={state} />
       )}
 
