@@ -21,7 +21,7 @@ import {
   StyledTextField,
 } from '@Components/styledComponents';
 import RichTextEditor from 'react-rte';
-import RichTextContent from '../../helperComponents/RichTextContent';
+import RichTextContent from '../../helperComponents/RichTextContent/RichTextContent';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   title: {
@@ -158,11 +158,7 @@ const ListItem: React.FC<Props> = ({
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={classes.details}>
-        <RichTextContent
-          canEdit={canEdit}
-          state={state}
-          handleChange={handleChange}
-        />
+        <RichTextContent textState={state} handleChange={handleChange} />
 
         <FormControlLabel
           control={
