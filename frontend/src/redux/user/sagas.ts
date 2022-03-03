@@ -134,9 +134,9 @@ export function* changeProfileDataSaga({
     const newProfileData: ServerProfileData = yield call(
       reqWrapper,
       apiChangeProfileData,
-      { 
-        id, 
-        data: _.merge(rest, payload)
+      {
+        id,
+        data: _.merge(rest, payload),
       },
     );
 

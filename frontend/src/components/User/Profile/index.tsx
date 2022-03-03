@@ -37,12 +37,11 @@ import {
   FormHelperText,
   Grid,
 } from '@material-ui/core';
-import { updateUISettingsParameters } from '@Redux/project/actions';
 import PATH_NAMES from '@Constants/pathNames';
 import ImageCropper from '@Components/CropImage';
+import { useHistory } from 'react-router';
 import SubmitError from '../SubmitError';
 import CustomButton from '../../UI/Button';
-import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -196,11 +195,13 @@ const Profile: React.FC = () => {
   };
 
   const handleSaved = () => {
-    dispatch(changeProfileData({
-      parameters: {
-        avatarCrop: croppedImage as string
-      }
-    } as ProfileData));
+    dispatch(
+      changeProfileData({
+        parameters: {
+          avatarCrop: croppedImage as string,
+        },
+      } as ProfileData),
+    );
     setImageToCrop(undefined);
   };
 
@@ -227,7 +228,6 @@ const Profile: React.FC = () => {
   };
 
   const handleUpdate = () => {
-
     const newEx = userGuide ? Experience.EXPERIENCED : Experience.BEGINNER;
 
     dispatch(setUserExperience(newEx));
@@ -239,15 +239,13 @@ const Profile: React.FC = () => {
           profileDataParameters: {
             dropTargetBordersMode: dropTargetBorders,
             autoSwitchTabs: autoSwitch,
-          }
-        }
+          },
+        },
       } as ProfileData),
     );
 
     if (formData) {
-      dispatch(
-        changeUserData(formData),
-      );
+      dispatch(changeUserData(formData));
     }
   };
 
@@ -279,7 +277,7 @@ const Profile: React.FC = () => {
               initialValues={{
                 first_name: firstName,
                 last_name: lastName,
-                role
+                role,
               }}
               onSubmit={handleFormSubmit}
               render={({ handleSubmit, submitError }) => (
