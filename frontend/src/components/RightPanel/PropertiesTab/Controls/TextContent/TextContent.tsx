@@ -10,7 +10,8 @@ import {
   CONTROLS_NOT_ALLOW_LINK,
   CONTROLS_NOT_ALLOW_RICHTEXTBOX,
 } from '@Src/types';
-import RichTextContent from '../../helperComponents/RichTextContent';
+import { convertToHTML } from 'draft-convert';
+import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
   const {
@@ -55,7 +56,9 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   const [state, handleChange] = useDebouncedRichInputChange(
     textContent,
     (value) => {
-      updateParams({ textContent: value.toString('html') });
+      updateParams({
+        textContent: convertToHTML(value.getCurrentContent()),
+      });
     },
   );
 
@@ -94,11 +97,7 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   return (
     <>
       {CONTROLS_NOT_ALLOW_RICHTEXTBOX.includes(element.type) ? null : (
-        <RichTextContent
-          canEdit={canEdit}
-          state={state}
-          handleChange={handleChange}
-        />
+        <RichTextContent handleChange={handleChange} textState={state} />
       )}
 
       {CONTROLS_NOT_ALLOW_LINK.includes(element.type) ? null : (
