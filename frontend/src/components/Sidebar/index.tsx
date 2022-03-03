@@ -52,7 +52,7 @@ const useStyles = makeStyles(({ palette }) => ({
     flex: 1,
     overflowY: 'auto',
     marginBottom: 90,
-  }
+  },
 }));
 
 const SideModule: FC = () => {
@@ -64,11 +64,11 @@ const SideModule: FC = () => {
   const [selectedTabNumber, setSelectedTabNumber] = useState(0);
 
   useEffect(() => {
-    let tabEl = document.getElementById('simple-tabpanel-0');
-    if(tabEl) {
+    const tabEl = document.getElementById('simple-tabpanel-0');
+    if (tabEl) {
       tabEl.scrollTo({
-        top: tabEl.scrollHeight, 
-        behavior: 'smooth'
+        top: tabEl.scrollHeight,
+        behavior: 'smooth',
       });
     }
   }, [messages]);
@@ -97,7 +97,12 @@ const SideModule: FC = () => {
         {Object.values(TABS_PMTOOLS).map((tab, idx) => {
           const Tab = components[tab];
           return (
-            <TabPanel value={selectedTabNumber} panelClass={classes.panel} key={tab} index={idx}>
+            <TabPanel
+              value={selectedTabNumber}
+              panelClass={classes.panel}
+              key={tab}
+              index={idx}
+            >
               <Tab />
             </TabPanel>
           );

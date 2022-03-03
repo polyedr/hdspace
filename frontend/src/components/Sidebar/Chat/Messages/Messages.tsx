@@ -57,7 +57,7 @@ const Messages: React.FC = () => {
       {!messages.length ? (
         <p>Not found</p>
       ) : (
-        messages.map((m: IMessageZulip, index) => <Message key={index} message={m} />)
+        messages.map((m: IMessageZulip) => <Message key={m.id} message={m} />)
       )}
 
       <div style={{ position: 'fixed', bottom: 10 }}>
@@ -66,7 +66,12 @@ const Messages: React.FC = () => {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Enter message"
         />
-        <Button variant="contained" color="secondary" disabled={!message} onClick={handleSend}>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={!message}
+          onClick={handleSend}
+        >
           Send
         </Button>
       </div>
