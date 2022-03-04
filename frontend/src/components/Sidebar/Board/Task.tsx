@@ -100,6 +100,7 @@ const Task: React.FC<Props> = ({ column, task, index }) => {
             <ConfirmModal
               show={showConfirmModal}
               elementText="task"
+              actionText="delete"
               action={handleDeleteTask}
               hide={() => setShowConfirmModal(false)}
             />

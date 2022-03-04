@@ -238,12 +238,14 @@ export const StyledIconButton: React.FC<IconButtonProps> = ({
 export const TabPanel: React.FC<{
   index: number;
   value: number;
-}> = ({ children, value, index }) => (
+  panelClass?: string;
+}> = ({ children, value, index, panelClass }) => (
   <div
     role="tabpanel"
     hidden={value !== index}
     id={`simple-tabpanel-${index}`}
     aria-labelledby={`simple-tab-${index}`}
+    className={panelClass}
   >
     {children}
   </div>
