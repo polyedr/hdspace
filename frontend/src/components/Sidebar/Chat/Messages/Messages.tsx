@@ -39,7 +39,7 @@ const Messages: React.FC = () => {
   }
 
   return (
-    <div style={{ height: 500, overflowY: 'auto' }}>
+    <div style={{ overflowY: 'auto' }}>
       <StyledAccordionSummary
         expandIcon={
           <StyledIconButton
@@ -66,7 +66,12 @@ const Messages: React.FC = () => {
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Enter message"
         />
-        <Button variant="contained" color="secondary" onClick={handleSend}>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={!message}
+          onClick={handleSend}
+        >
           Send
         </Button>
       </div>
