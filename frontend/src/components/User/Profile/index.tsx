@@ -489,7 +489,6 @@ const Profile: React.FC = () => {
             {'Your email address is '}
             <span className={classes.strong}>{email}</span>
           </div>
-          {/* <Button styleType="link">Change</Button> */}
         </div>
 
         <div className={classes.settingsPart}>
