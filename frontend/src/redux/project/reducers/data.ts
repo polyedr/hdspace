@@ -11,9 +11,9 @@ import {
   insertMapElementWrapper,
   removeMapElementWrapper,
 } from '@Utils/normalizedStateHelpers';
+import { Project, Screen } from '@Src/types';
 import { initialData } from '../initial';
 import TYPES from '../../actionTypes';
-import { Project, Screen } from '../../../types';
 import { Action, ProjectDataState } from '../../types';
 
 const dataReducer = produce(

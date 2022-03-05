@@ -8,6 +8,7 @@ import {
 } from 'redux-saga/effects';
 import {
   removeProjectStyles,
+  updateDefaultStyles,
   updateProjectClasses,
 } from '@Utils/ProjectClassesHelper';
 import {
@@ -174,6 +175,43 @@ const removeSharedStylesSaga = compose(
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 
+const updateDefaultStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateDefaultStyles>) {
+  const { classNames, styles } = action.payload;
+  if (!action.meta) {
+    console.error(
+      `You have to provide meta information for action ${action.type}`,
+    );
+  }
+
+  const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
+    selectCurrentProject,
+  );
+
+  const newProject = updateDefaultStyles(currentProject, classNames, styles);
+
+  yield call(projectUpdateHelperSaga, newProject);
+
+  // @ts-ignore
+  if (!action.meta.useHistory) {
+    yield put(
+      Actions.addUndoActions(
+        Actions.updateProject(currentProject, { ...action.meta }),
+      ),
+    );
+  }
+
+  const state: Normalized<StateElement> = yield select(selectAllElements);
+
+  // @ts-ignore
+  yield put(Actions.updateElementsTree(state, { ...action.meta }));
+});
+
 const updateSharedStylesSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
@@ -185,7 +223,7 @@ const updateSharedStylesSaga = compose(
 
   if (!action.meta) {
     console.error(
-      `You have to provide metainformation for action ${action.type}`,
+      `You have to provide meta information for action ${action.type}`,
     );
     return;
   }
@@ -403,6 +441,7 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.EDIT_SCREEN_NAME_AND_DATA, editScreenNameAndDataSaga);
   yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);
 
+  yield takeLatest(TYPES.UPDATE_DEFAULT_STYLES, updateDefaultStylesSaga);
   yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);
   yield takeLatest(TYPES.UPDATE_SHARED_STYLES, updateSharedStylesSaga);
   yield takeLatest(TYPES.REMOVE_ELEMENT_STYLES, removeElementStylesSaga);

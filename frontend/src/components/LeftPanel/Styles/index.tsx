@@ -31,6 +31,7 @@ import {
   removeMultipleElementsStyles,
   removeSharedStyles,
   replaceMultipleElementsStyles,
+  updateDefaultStyles,
   updateElementParameters,
   updateMultipleElementsParameters,
   updateMultipleElementsStyles,
@@ -44,6 +45,7 @@ import {
 import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
 import StyleGenerator from '@Components/LeftPanel/Styles/components/StyleGenerator';
 import ColorScheme from '@Components/LeftPanel/Styles/components/ColorScheme';
+import { ENTITIES } from '@Domain/core';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   name: {
@@ -129,7 +131,7 @@ const Styles = () => {
 
   const updateStyles = useCallback(
     (styles: React.CSSProperties) => {
-      console.log('updateStyles');
+      console.log(`updateStyles ${JSON.stringify(styles)}`);
       if (!selectedElementsIds.length) {
         dispatch(
           enqueueSnackbar({
@@ -139,10 +141,12 @@ const Styles = () => {
         );
       } else if (selectedElementsIds.length > 1) {
         dispatch(
-          updateMultipleElementsStyles(
-            selectedElementsIds,
-            { [ALL_ELEMENTS_INDEX]: styles },
-            { screenId: currentScreenId },
+          updateDefaultStyles(
+            [ENTITIES.heading, ENTITIES.label, ENTITIES.paragraph],
+            styles,
+            {
+              screenId: currentScreenId,
+            },
           ),
         );
       } else if (masterScreenEnabled) {
@@ -157,57 +161,7 @@ const Styles = () => {
               { screenId: currentScreenId },
             ),
           );
-        } else {
-          dispatch(
-            updateSharedStyles(
-              (masterScreenEnabled
-                ? activeElement.type
-                : editableStyles) as Entity,
-              styles,
-              {
-                screenId: currentScreenId,
-              },
-            ),
-          );
         }
-      } else if (isGroupElement) {
-        handleOpenRemovalConfirmModal(styles);
-      } else if (editableStyles === 'ownStyles') {
-        dispatch(
-          updateMultipleElementsStyles(
-            [activeElement.id],
-            {
-              [ALL_ELEMENTS_INDEX]: styles,
-            },
-            { screenId: currentScreenId },
-          ),
-        );
-        if (
-          parentOfActiveElement &&
-          parentOfActiveElement.name === 'generator'
-        ) {
-          dispatch(
-            updateMultipleElementsStyles(
-              [...parentOfActiveElement.children],
-              {
-                [ALL_ELEMENTS_INDEX]: styles,
-              },
-              { screenId: currentScreenId },
-            ),
-          );
-        }
-      } else {
-        dispatch(
-          updateSharedStyles(
-            (masterScreenEnabled
-              ? activeElement.type
-              : editableStyles) as Entity,
-            styles,
-            {
-              screenId: currentScreenId,
-            },
-          ),
-        );
       }
     },
     [

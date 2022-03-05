@@ -1,16 +1,9 @@
 import React from 'react';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
+import ColorSettingsEnum from '@Components/LeftPanel/Styles/Enums/colorSettingsEnum';
 
 const ColorScheme = () => {
-  const colorSettingLabels = [
-    'Font Color',
-    'Font Color - overlay',
-    'Background Color',
-    'Border Color',
-    'Fill inside Color',
-    'Accent Color',
-  ];
   const color: string = 'transparent';
   const [colorValue, handleColorValueChange] = useDebouncedValueChange(
     color,
@@ -21,13 +14,15 @@ const ColorScheme = () => {
   return (
     <div>
       <div>
-        {colorSettingLabels.map((value, index) => {
+        {(Object.keys(ColorSettingsEnum) as Array<
+          keyof typeof ColorSettingsEnum
+        >).map((key, index) => {
           return (
             <ColorSettings
               currentColor={(colorValue as string) || 'transparent'}
-              activeElementId={value}
+              activeElementId={ColorSettingsEnum[key]}
               onChange={handleColorValueChange as (color: string) => void}
-              labelTextStyle={value}
+              labelTextStyle={ColorSettingsEnum[key]}
               key={index.toString()}
             />
           );

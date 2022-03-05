@@ -4,13 +4,13 @@ import { apiRefreshToken } from '@Api/user';
 import getSavedValue from '@Utils/getSavedValue';
 import { path } from 'ramda';
 import { call, put, select, take } from 'redux-saga/effects';
-import { MAX_TOKEN_TRIALS } from '../../../config/settings';
+import { MAX_TOKEN_TRIALS } from '@Src/config/settings';
 import {
   LibraryElementUnion,
   Project,
   Result,
   SavedElementsValues,
-} from '../../../types';
+} from '@Src/types';
 import TYPES from '../../actionTypes';
 import { openSignScreen } from '../../history';
 import { enqueueSnackbar } from '../../notification/actions';

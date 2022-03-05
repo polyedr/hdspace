@@ -196,6 +196,7 @@ import {
   LoadAssetLists,
   LoadAssets,
   ImageData,
+  UpdateDefaultStyles,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -619,6 +620,16 @@ export const exportScreenFlag = (enabled: boolean): ExportScreenFlag => ({
 export const setBordersEnabled = (enabled: boolean): SetBordersEnabled => ({
   type: TYPES.SET_BORDERS_ENABLED,
   payload: enabled,
+});
+
+export const updateDefaultStyles = (
+  classNames: Entity[],
+  styles: React.CSSProperties,
+  meta: ElementHistoryMeta,
+): UpdateDefaultStyles => ({
+  type: TYPES.UPDATE_DEFAULT_STYLES,
+  payload: { classNames, styles },
+  meta,
 });
 
 export const updateSharedStyles = (

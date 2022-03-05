@@ -468,6 +468,13 @@ export type RemoveElementClassName = IAction<
   { elementID: string; className: string },
   ElementHistoryMeta
 >;
+
+export type UpdateDefaultStyles = IAction<
+  typeof TYPES.UPDATE_DEFAULT_STYLES,
+  { classNames: Entity[]; styles: React.CSSProperties },
+  ElementHistoryMeta
+>;
+
 export type UpdateSharedStyles = IAction<
   typeof TYPES.UPDATE_SHARED_STYLES,
   { className: Entity; styles: React.CSSProperties },
