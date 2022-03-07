@@ -329,8 +329,8 @@ def ternary_assembling_run(
     return root_block
 
 
-# , fname, image_dbclusters=[]
 def calculate_dbclusters(region_dataset, root_firstcluster):
+    # Lists recognized after the manual container annotations are seemed to be filtered automatically
     # Clear the array of dbclusters pro-function start
     dbclusters = []
     # DBSCAN clustering start
@@ -583,6 +583,12 @@ def firstclusters_elements_chains_processing(root_firstcluster, fname):
         if node.element_assigned in {"label", "ocrtext"}:
             if node.parent.element_assigned in {"label", "ocrtext"}:
                 node.parent = None
+
+        # Processing lists
+        # Making all the children nodes as listItems
+        if node.element_assigned in {"list"}:
+            for child in node.children:
+                child.element_assigned = "listItem"
 
     return root_firstcluster
 
@@ -1653,7 +1659,7 @@ def elements_rootblock(
             # Define the element dimensions end
 
             # Cropping to the border box start
-            elem_image = image_original[y1 : y1 + elem_height, x1 : x1 + elem_width]
+            elem_image = image_original[y1: y1 + elem_height, x1: x1 + elem_width]
             elem_image_name = uuid.uuid4().hex + fname
             # Cropping to the border box end
 
