@@ -197,9 +197,10 @@ export const createElementsSaga = compose(
 )(function* (action: ReturnType<typeof Actions.createElements>) {
   try {
     const { createdElements, parentId, index } = action.payload;
+
     if (!action.meta) {
       console.error(
-        `You have to provide metainformation for action ${action.type}`,
+        `You have to provide meta information for action ${action.type}`,
       );
       return;
     }
@@ -276,7 +277,7 @@ export const createChildElementsSaga = withActionsHistory(function* (
     const customLibraryElements = yield select(selectCustomLibraryElements);
 
     const elementGroups = yield select(selectElementTreeGroups);
-
+    console.log(`created elements: ${JSON.stringify(createdElements)}`);
     const convertedCreatedElements = createdElements.map((dEl) => {
       if (dEl.custom) {
         return convertElementToRequest(

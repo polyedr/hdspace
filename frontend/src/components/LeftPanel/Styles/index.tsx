@@ -34,7 +34,6 @@ import {
   updateDefaultStyles,
   updateElementParameters,
   updateMultipleElementsParameters,
-  updateMultipleElementsStyles,
   updateSharedStyles,
 } from '@Redux/project/actions';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
@@ -45,7 +44,7 @@ import {
 import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
 import StyleGenerator from '@Components/LeftPanel/Styles/components/StyleGenerator';
 import ColorScheme from '@Components/LeftPanel/Styles/components/ColorScheme';
-import { ENTITIES } from '@Domain/core';
+import { AVAILABLE_CONTROLS, ENTITIES } from '@Domain/core';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   name: {
@@ -107,7 +106,6 @@ const Styles = () => {
 
   const updateParams = useCallback(
     (params: Params<any>, itemID?: string) => {
-      console.log('updateParams');
       if (parentOfActiveElement && parentOfActiveElement.name === 'generator') {
         dispatch(
           updateMultipleElementsParameters(
@@ -128,54 +126,41 @@ const Styles = () => {
     },
     [dispatch, activeElement.id, currentScreenId, parentOfActiveElement],
   );
+  const CONTROLS_CLASSES = {
+    indents: [],
+    typography: [
+      ENTITIES.heading,
+      ENTITIES.label,
+      ENTITIES.paragraph,
+      ENTITIES.textBlock,
+      ENTITIES.list,
+      ENTITIES.checkbox,
+      ENTITIES.textarea,
+      ENTITIES.textinput,
+      ENTITIES.select,
+      ENTITIES.buttonGenerator,
+      ENTITIES.radiobuttonGroup,
+      AVAILABLE_CONTROLS.navbarItem,
+      AVAILABLE_CONTROLS.breadcrumbItem,
+      AVAILABLE_CONTROLS.listItem,
+    ],
+    headingType: [],
+  };
 
   const updateStyles = useCallback(
-    (styles: React.CSSProperties) => {
+    (styles: React.CSSProperties, controlName: string) => {
       console.log(`updateStyles ${JSON.stringify(styles)}`);
-      if (!selectedElementsIds.length) {
-        dispatch(
-          enqueueSnackbar({
-            message: 'No elements were selected',
-            options: { variant: 'error' },
-          }),
-        );
-      } else if (selectedElementsIds.length > 1) {
-        dispatch(
-          updateDefaultStyles(
-            [ENTITIES.heading, ENTITIES.label, ENTITIES.paragraph],
-            styles,
-            {
-              screenId: currentScreenId,
-            },
-          ),
-        );
-      } else if (masterScreenEnabled) {
-        if (isGroupSource) {
-          const groupElementsIds = activeElement.parameters.groupElements;
-          dispatch(
-            updateMultipleElementsStyles(
-              [activeElement.id, ...groupElementsIds],
-              {
-                [ALL_ELEMENTS_INDEX]: styles,
-              },
-              { screenId: currentScreenId },
-            ),
-          );
-        }
-      }
+      dispatch(
+        updateDefaultStyles(CONTROLS_CLASSES[controlName], styles, {
+          screenId: currentScreenId,
+        }),
+      );
     },
     [
-      selectedElementsIds,
-      masterScreenEnabled,
-      isGroupElement,
-      editableStyles,
       dispatch,
       currentScreenId,
-      isGroupSource,
-      activeElement.parameters.groupElements,
-      activeElement.id,
-      activeElement.type,
       handleOpenRemovalConfirmModal,
+      CONTROLS_CLASSES,
     ],
   );
 
@@ -329,7 +314,7 @@ const Styles = () => {
                     activeElementId={activeElement.id}
                     element={activeElement}
                     removeStyles={!masterScreenEnabled && removeStyles}
-                    updateStyles={updateStyles}
+                    updateStyles={(styles) => updateStyles(styles, controlName)}
                     replaceStyles={replaceStyles}
                     updateParams={!masterScreenEnabled && updateParams}
                     masterScreenEnabled={masterScreenEnabled}
