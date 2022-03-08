@@ -22,14 +22,17 @@ const Messages: React.FC = () => {
   const handleSend = useCallback(async () => {
     if (board) {
       dispatch(
-        actions.requestSendStreamMessage({ stream: board.name, message }),
+        actions.requestSendStreamMessage({
+          stream: board.name,
+          message: message.trim(),
+        }),
       );
       setMessage('');
     }
   }, [board, dispatch, message]);
 
   const handleKeypress = (e: any) => {
-    if (e.key === 'Enter' && message) {
+    if (e.key === 'Enter' && message.trim()) {
       handleSend();
       e.preventDefault();
     }
@@ -77,7 +80,7 @@ const Messages: React.FC = () => {
         <Button
           variant="contained"
           color="secondary"
-          disabled={!message}
+          disabled={!message.trim()}
           onClick={handleSend}
         >
           Send
