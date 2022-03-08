@@ -28,6 +28,13 @@ const Messages: React.FC = () => {
     }
   }, [board, dispatch, message]);
 
+  const handleKeypress = (e: any) => {
+    if (e.key === 'Enter' && message) {
+      handleSend();
+      e.preventDefault();
+    }
+  };
+
   useEffect(() => {
     if (board) {
       dispatch(actions.requestProjectStreamMessages({ stream: board.name }));
@@ -65,6 +72,7 @@ const Messages: React.FC = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Enter message"
+          onKeyPress={handleKeypress}
         />
         <Button
           variant="contained"
