@@ -22,11 +22,21 @@ const Messages: React.FC = () => {
   const handleSend = useCallback(async () => {
     if (board) {
       dispatch(
-        actions.requestSendStreamMessage({ stream: board.name, message }),
+        actions.requestSendStreamMessage({
+          stream: board.name,
+          message: message.trim(),
+        }),
       );
       setMessage('');
     }
   }, [board, dispatch, message]);
+
+  const handleKeypress = (e: any) => {
+    if (e.key === 'Enter' && message.trim()) {
+      handleSend();
+      e.preventDefault();
+    }
+  };
 
   useEffect(() => {
     if (board) {
@@ -39,7 +49,7 @@ const Messages: React.FC = () => {
   }
 
   return (
-    <div style={{ height: 500, overflowY: 'auto' }}>
+    <div style={{ overflowY: 'auto' }}>
       <StyledAccordionSummary
         expandIcon={
           <StyledIconButton
@@ -65,8 +75,14 @@ const Messages: React.FC = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="Enter message"
+          onKeyPress={handleKeypress}
         />
-        <Button variant="contained" color="secondary" onClick={handleSend}>
+        <Button
+          variant="contained"
+          color="secondary"
+          disabled={!message.trim()}
+          onClick={handleSend}
+        >
           Send
         </Button>
       </div>

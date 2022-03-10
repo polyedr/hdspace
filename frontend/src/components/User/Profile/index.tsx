@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useState } from 'react';
-import MakeAsyncFunction from 'react-redux-promise-listener';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import cn from 'classnames';
@@ -14,15 +13,21 @@ import {
   changeProfileData,
   setUserExperience,
   logoutStart,
+  sendResetPasswordMail,
+  changeUserData,
 } from '@Redux/user/actions';
 import IMAGES from '@Constants/images';
-import { promiseListener } from '@Redux/store';
-import TYPES from '@Redux/actionTypes';
 import { ROLES } from '@Constants/defaultParams';
 import { Experience, ProfileData } from '@Src/types';
 import {
   Typography,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
   Switch,
   TextField,
   FormControl,
@@ -30,12 +35,13 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  Grid,
 } from '@material-ui/core';
-import { updateUISettingsParameters } from '@Redux/project/actions';
 import PATH_NAMES from '@Constants/pathNames';
 import ImageCropper from '@Components/CropImage';
+import { useHistory } from 'react-router';
 import SubmitError from '../SubmitError';
-import Button from '../../UI/Button';
+import CustomButton from '../../UI/Button';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -123,9 +129,21 @@ const useStyles = makeStyles((theme) =>
 const Profile: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [imageToCrop, setImageToCrop] = useState<any>(undefined);
   const [croppedImage, setCroppedImage] = useState<any>(undefined);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = React.useState(false);
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+    setCancelDialogOpen(false);
+  };
 
   const userData = useSelector(selectUserData);
   const { firstName, lastName, email, profile } = userData;
@@ -139,6 +157,14 @@ const Profile: React.FC = () => {
     parameters: { avatarCrop },
   } = useSelector(selectProfileData);
   const userGuideWatched = useSelector(selectUserGuideWatched);
+
+  const [formData, setFormData] = useState<any>();
+  const [autoSwitch, setAutoSwitch] = useState<boolean>(autoSwitchTabs);
+  const [dropTargetBorders, setDropTargetBorders] = useState<boolean>(
+    dropTargetBordersMode,
+  );
+  const [userGuide, setUserGuide] = useState<boolean>(userGuideWatched);
+
   const handleLogout = () => {
     dispatch(logoutStart());
   };
@@ -169,36 +195,63 @@ const Profile: React.FC = () => {
   };
 
   const handleSaved = () => {
-    dispatch(changeProfileData((croppedImage as any) as ProfileData));
+    dispatch(
+      changeProfileData({
+        parameters: {
+          avatarCrop: croppedImage as string,
+        },
+      } as ProfileData),
+    );
     setImageToCrop(undefined);
   };
 
-  const handleChangeBordersMode = () => {
-    dispatch(
-      updateUISettingsParameters({
-        dropTargetBordersMode: !dropTargetBordersMode,
-      }),
-    );
+  const removeProfileImage = () => {
+    handleClose();
+    handleChangeProfileData({ avatar: null });
   };
 
-  const handleChangeUserGuideWatched = (ev: ChangeEvent<HTMLInputElement>) => {
-    const newEx = ev.target.checked
-      ? Experience.EXPERIENCED
-      : Experience.BEGINNER;
+  const fieldValidate = (value) => {
+    const isValid = /^[a-zA-Z]+$/.test(value);
+    let result: string | undefined;
+    if (!isValid) {
+      result = 'Symbols and Numbers are not allowed!';
+    }
+    return result;
+  };
+
+  const handlePwdChange = () => {
+    dispatch(sendResetPasswordMail(email));
+  };
+
+  const handleFormSubmit = (values) => {
+    setFormData(values);
+  };
+
+  const handleUpdate = () => {
+    const newEx = userGuide ? Experience.EXPERIENCED : Experience.BEGINNER;
 
     dispatch(setUserExperience(newEx));
 
     dispatch(
       changeProfileData({
         experienced: newEx,
-      }),
+        parameters: {
+          profileDataParameters: {
+            dropTargetBordersMode: dropTargetBorders,
+            autoSwitchTabs: autoSwitch,
+          },
+        },
+      } as ProfileData),
     );
+
+    if (formData) {
+      dispatch(changeUserData(formData));
+    }
   };
 
-  const handleTabsAutoSwitch = () => {
-    dispatch(updateUISettingsParameters({ autoSwitchTabs: !autoSwitchTabs }));
+  const handleCancel = () => {
+    history.go(0);
   };
-  const removeProfileImage = () => handleChangeProfileData({ avatar: null });
 
   return (
     <main>
@@ -211,170 +264,165 @@ const Profile: React.FC = () => {
           <a className={classes.link} href={PATH_NAMES.projects}>
             My projects
           </a>
-          <Button styleType="link" onClick={handleLogout}>
+          <CustomButton styleType="link" onClick={handleLogout}>
             Log out
-          </Button>
+          </CustomButton>
         </div>
       </div>
 
       <Box padding={2}>
         <div className={classes.formsContainer}>
           <div className={classes.textFieldsContainer}>
-            <MakeAsyncFunction
-              listener={promiseListener}
-              start={TYPES.CHANGE_USER_DATA}
-              resolve={TYPES.CHANGE_USER_DATA_COMPLETE}
-              reject={TYPES.CHANGE_USER_DATA_FAILURE}
-            >
-              {(onSubmit) => (
-                <Form
-                  onSubmit={onSubmit}
-                  render={({ handleSubmit, submitError }) => (
-                    <>
-                      <div className={classes.error}>
-                        <SubmitError name="detail" />
+            <Form
+              initialValues={{
+                first_name: firstName,
+                last_name: lastName,
+                role,
+              }}
+              onSubmit={handleFormSubmit}
+              render={({ handleSubmit, submitError }) => (
+                <>
+                  <div className={classes.error}>
+                    <SubmitError name="detail" />
 
-                        {submitError && (
-                          <Alert severity="error" variant="filled">
-                            {submitError}
-                          </Alert>
-                        )}
-                      </div>
-                      <form
-                        onSubmit={handleSubmit}
-                        className={classes.profileForm}
-                      >
-                        <Field name="first_name" defaultValue={firstName}>
-                          {({ input, meta }) => (
-                            <TextField
-                              {...input}
-                              onBlur={handleSubmit}
-                              InputLabelProps={{
-                                htmlFor: 'first_name_input',
-                              }}
-                              InputProps={{
-                                id: 'first_name_input',
-                              }}
-                              type="text"
-                              fullWidth
-                              label="First Name"
-                              placeholder="First Name"
-                              variant="outlined"
-                              size="small"
-                              error={
-                                (meta.error || meta.submitError) && meta.touched
-                              }
-                              helperText={
-                                (meta.error || meta.submitError) && meta.touched
-                                  ? meta.error || meta.submitError
-                                  : null
-                              }
-                            />
-                          )}
-                        </Field>
-
-                        <Field name="last_name" defaultValue={lastName}>
-                          {({ input, meta }) => (
-                            <TextField
-                              {...input}
-                              onBlur={handleSubmit}
-                              placeholder="Last Name"
-                              type="text"
-                              fullWidth
-                              label="Last Name"
-                              variant="outlined"
-                              size="small"
-                              error={
-                                (meta.error || meta.submitError) && meta.touched
-                              }
-                              helperText={
-                                (meta.error || meta.submitError) && meta.touched
-                                  ? meta.error || meta.submitError
-                                  : null
-                              }
-                            />
-                          )}
-                        </Field>
-                      </form>
-                    </>
-                  )}
-                />
-              )}
-            </MakeAsyncFunction>
-
-            <MakeAsyncFunction
-              listener={promiseListener}
-              start={TYPES.CHANGE_PROFILE_DATA}
-              resolve={TYPES.CHANGE_PROFILE_DATA_COMPLETE}
-              reject={TYPES.CHANGE_PROFILE_DATA_FAILURE}
-            >
-              {(onSubmit) => (
-                <Form
-                  onSubmit={onSubmit}
-                  render={({ handleSubmit, submitError }) => (
-                    <>
-                      <div className={classes.error}>
-                        <SubmitError name="detail" />
-
-                        {submitError && (
-                          <Alert severity="error" variant="filled">
-                            {submitError}
-                          </Alert>
-                        )}
-                      </div>
-                      <form
-                        onSubmit={handleSubmit}
-                        className={classes.profileForm}
-                      >
-                        <TextField
-                          type="text"
-                          fullWidth
-                          label="Company Name"
-                          placeholder="Company Name"
-                          variant="outlined"
-                          size="small"
-                        />
-
-                        <Field name="role" defaultValue={role}>
-                          {({ input, meta }) => (
-                            <FormControl
-                              fullWidth
-                              error={
-                                (meta.error || meta.submitError) && meta.touched
-                              }
-                              variant="outlined"
-                              disabled
-                            >
-                              <InputLabel>Role</InputLabel>
-
-                              <Select
+                    {submitError && (
+                      <Alert severity="error" variant="filled">
+                        {submitError}
+                      </Alert>
+                    )}
+                  </div>
+                  <form onSubmit={handleSubmit}>
+                    <Grid container spacing={2}>
+                      <Grid container item spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                          <Field name="first_name" validate={fieldValidate}>
+                            {({ input, meta }) => (
+                              <TextField
                                 {...input}
-                                margin="dense"
-                                label="Role"
                                 onBlur={handleSubmit}
+                                InputLabelProps={{
+                                  htmlFor: 'first_name_input',
+                                }}
+                                InputProps={{
+                                  id: 'first_name_input',
+                                }}
+                                type="text"
+                                fullWidth
+                                label="First Name"
+                                placeholder="First Name"
+                                variant="outlined"
+                                size="small"
+                                error={
+                                  (meta.error || meta.submitError) &&
+                                  meta.touched
+                                }
+                                helperText={
+                                  (meta.error || meta.submitError) &&
+                                  meta.touched
+                                    ? meta.error || meta.submitError
+                                    : null
+                                }
+                              />
+                            )}
+                          </Field>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Field name="last_name" validate={fieldValidate}>
+                            {({ input, meta }) => (
+                              <TextField
+                                {...input}
+                                onBlur={handleSubmit}
+                                placeholder="Last Name"
+                                type="text"
+                                fullWidth
+                                label="Last Name"
+                                variant="outlined"
+                                size="small"
+                                error={
+                                  (meta.error || meta.submitError) &&
+                                  meta.touched
+                                }
+                                helperText={
+                                  (meta.error || meta.submitError) &&
+                                  meta.touched
+                                    ? meta.error || meta.submitError
+                                    : null
+                                }
+                              />
+                            )}
+                          </Field>
+                        </Grid>
+                      </Grid>
+                      <Grid container item spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                          <Field name="company_name" validate={fieldValidate}>
+                            {({ input, meta }) => (
+                              <TextField
+                                {...input}
+                                onBlur={handleSubmit}
+                                placeholder="Company Name"
+                                type="text"
+                                fullWidth
+                                label="Company Name"
+                                variant="outlined"
+                                size="small"
+                                error={
+                                  (meta.error || meta.submitError) &&
+                                  meta.touched
+                                }
+                                helperText={
+                                  (meta.error || meta.submitError) &&
+                                  meta.touched
+                                    ? meta.error || meta.submitError
+                                    : null
+                                }
+                              />
+                            )}
+                          </Field>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Field name="role" defaultValue={role}>
+                            {({ input, meta }) => (
+                              <FormControl
+                                fullWidth
+                                error={
+                                  (meta.error || meta.submitError) &&
+                                  meta.touched
+                                }
+                                variant="outlined"
+                                disabled
                               >
-                                {ROLES.map((role) => (
-                                  <MenuItem key={role} value={role} dense>
-                                    {role}
-                                  </MenuItem>
-                                ))}
-                              </Select>
+                                <InputLabel>Role</InputLabel>
 
-                              <FormHelperText>
-                                {(meta.error || meta.submitError) &&
-                                meta.touched
-                                  ? meta.error || meta.submitError
-                                  : null}
-                              </FormHelperText>
-                            </FormControl>
-                          )}
-                        </Field>
-                      </form>
-                    </>
-                  )}
-                />
+                                <Select
+                                  {...input}
+                                  margin="dense"
+                                  label="Role"
+                                  onBlur={handleSubmit}
+                                >
+                                  {ROLES.map((role) => (
+                                    <MenuItem key={role} value={role} dense>
+                                      {role}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+
+                                <FormHelperText>
+                                  {(meta.error || meta.submitError) &&
+                                  meta.touched
+                                    ? meta.error || meta.submitError
+                                    : null}
+                                </FormHelperText>
+                              </FormControl>
+                            )}
+                          </Field>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </form>
+                </>
               )}
-            </MakeAsyncFunction>
+            />
           </div>
 
           <Form
@@ -411,6 +459,7 @@ const Profile: React.FC = () => {
                           <input
                             {...input}
                             type="file"
+                            accept=".png, .jpg, .jpeg"
                             onChange={handleImageUpload}
                             className={classes.hidden}
                           />
@@ -421,7 +470,8 @@ const Profile: React.FC = () => {
                   <button
                     className={classes.imageActionButton}
                     type="button"
-                    onClick={removeProfileImage}
+                    onClick={handleDialogOpen}
+                    disabled={!avatarCrop}
                   >
                     Remove
                   </button>
@@ -439,12 +489,13 @@ const Profile: React.FC = () => {
             {'Your email address is '}
             <span className={classes.strong}>{email}</span>
           </div>
-          <Button styleType="link">Change</Button>
         </div>
 
         <div className={classes.settingsPart}>
           <div className={classes.subheader}>Password</div>
-          <Button styleType="link">Change</Button>
+          <CustomButton styleType="link" onClick={handlePwdChange}>
+            Change
+          </CustomButton>
         </div>
 
         <div className={classes.settingsPart}>
@@ -454,25 +505,74 @@ const Profile: React.FC = () => {
           <div className={classes.subheader}>
             Always display drop target element borders
             <Switch
-              checked={dropTargetBordersMode}
-              onChange={handleChangeBordersMode}
+              checked={dropTargetBorders}
+              onChange={() => setDropTargetBorders(!dropTargetBorders)}
             />
           </div>
 
           <div className={classes.subheader}>
             User guide watched
             <Switch
-              checked={userGuideWatched}
-              onChange={handleChangeUserGuideWatched}
+              checked={userGuide}
+              onChange={() => setUserGuide(!userGuide)}
             />
           </div>
 
           <div className={classes.subheader}>
             Enable Tabs Auto Switch
-            <Switch checked={autoSwitchTabs} onChange={handleTabsAutoSwitch} />
+            <Switch
+              checked={autoSwitch}
+              onChange={() => setAutoSwitch(!autoSwitch)}
+            />
           </div>
         </div>
+        <Button color="primary" onClick={handleUpdate}>
+          Update
+        </Button>
+
+        <Button color="primary" onClick={() => setCancelDialogOpen(true)}>
+          Cancel
+        </Button>
       </Box>
+      <Dialog
+        open={dialogOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Do you want to remove avatar?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={removeProfileImage} color="secondary">
+            Yes
+          </Button>
+          <Button onClick={handleClose}>No</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={cancelDialogOpen}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Are you sure?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Do you want to cancel changes?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} color="secondary">
+            Yes
+          </Button>
+          <Button onClick={handleClose}>No</Button>
+        </DialogActions>
+      </Dialog>
     </main>
   );
 };

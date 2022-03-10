@@ -164,6 +164,7 @@
     "is-color-stop": "^1.1.0",
     "jss": "^10.7.1",
     "jszip": "^3.6.0",
+    "lodash": "^4.17.21",
     "lorem-ipsum": "^2.0.3",
     "mat-ripple": "^1.0.3",
     "material-ui-popup-state": "^1.6.1",
