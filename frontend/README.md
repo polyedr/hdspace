@@ -30,7 +30,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified.<br />
 Your app is ready to be deployed!
 
-#Code commit relted notes : 
+# Code commit relted notes : 
 
 Now when you commit your code run this 2 command so PR create time build not failed.
 
