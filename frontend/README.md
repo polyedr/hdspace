@@ -18,26 +18,19 @@ Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
 Now 2 build we create which is staging & production.
 
+##### `npm run build:staging`
+##### `npm run build:production`
 
-##### `npm run build`
 
-npm run build:staging
-npm run build:production
-
-Builds the app for production to the `dist` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified.<br />
-Your app is ready to be deployed!
+Build saved in `dist` directory.<br /> Now your app is ready to be deployed!
 
 # Code commit relted notes : 
 
-Now when you commit your code run this 2 command so PR create time build not failed.
-
+Now before commit your code run this 2 command so PR create time build not failed in bitbucket.
 ##### `npm run test`
 Launches the test runner. <br />
 
-##### `npm run lint`
+##### `npm run lint:fix`
 Launches the linter with `--fix` flag, so it will try to resolve all issues.
 
 
@@ -46,7 +39,7 @@ Also it will launch TS compiler to check all project files before a commit.<br /
 Your commit will be rejected if some of these tasks fail.<br />
 If you want to commit files without pre-commit check use `--no-verify` flag while committing..
 
-# pm-tools
+# PM-Tools
 
 Sidebar where you can:
 
@@ -55,14 +48,14 @@ Sidebar where you can:
 - Assign tasks (Trello)
 - Manage a team
 
-# development
+# Development
 
 [src/components/Sidebar] - UI for Pm-Tools
 [src/api/pmtools] - api
 [src/redux/pmtools] - redux part
 [src/types/pmtools] - types
 
-# features
+# Features
 
 - Redux-Saga
 - TypeScript
@@ -71,7 +64,7 @@ Sidebar where you can:
 - Http - fetch
 
 Every time we log in to zalip chat, we send a request for access =>
-**The configuration file will help you to enter the chat - [src/constants/pmtools/zulipChatLoginData.ts]**
+**The configuration file will help you to enter the chat - [src/constants/pmtools/zulipChatLoginData.ts]** <br>
 **And zulip - [src/constants/pmtools/trelloConfigData.ts]**
 
 **To add a new tab, see the directory -[src/constants/pmtools/tabsNamesSidebar.ts]**
