@@ -1674,6 +1674,8 @@ def elements_rootblock(
                 "textarea",
                 "form_heading",
                 "button",
+                "li",
+                "listItem",
             }:
                 # Defiine a scenarioelement_inner dictionary
                 scenarioelement_inner_kwargs = {}
@@ -1975,13 +1977,14 @@ def elements_rootblock(
                     "buoyancy": node.buoyancy,
                 }
 
-            elif node.element_assigned in {"li"}:
+            elif node.element_assigned in {"li", "listItem"}:
                 # displaying various kinds of elements start
                 element = ET.SubElement(node.parent.div, "li")
                 # displaying various kinds of elements end
 
                 element.text = lorem.get_word(count=1)
                 parameters["textContent"] = element.text
+
                 # Text assignment
                 if text_elem_ocr:
                     parameters["textContent"] = text_elem_ocr
