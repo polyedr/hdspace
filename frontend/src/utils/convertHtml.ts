@@ -207,9 +207,6 @@ const htmlElementToAdeviElement = (
     textContent: element.textContent?.trim(),
     ...(type === 'heading' && { headingType: element.tagName.toLowerCase() }),
     ...(type === 'image' && { imageURL: element.getAttribute('src') }),
-    ...(type === 'video' && {
-      videoSettings: { link: element.getElementsByTagName('source')[0].src },
-    }),
     ...(isURL && { isLink: true, link: element.getAttribute('href') }),
     ...(htmlElementType === 'password' &&
       type === 'textinput' && { type: 'password' }),
