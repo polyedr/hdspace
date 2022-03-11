@@ -144,12 +144,14 @@ const Styles = () => {
       AVAILABLE_CONTROLS.breadcrumbItem,
       AVAILABLE_CONTROLS.listItem,
     ],
-    headingType: [],
+    headingType: [ENTITIES.heading],
   };
 
   const updateStyles = useCallback(
     (styles: React.CSSProperties, controlName: string) => {
-      console.log(`updateStyles ${JSON.stringify(styles)}`);
+      console.log(
+        `updateStyles ${JSON.stringify(styles)}, controlName: ${controlName}`,
+      );
       dispatch(
         updateDefaultStyles(CONTROLS_CLASSES[controlName], styles, {
           screenId: currentScreenId,
@@ -332,7 +334,7 @@ const Styles = () => {
                   activeElementId={activeElement.id}
                   element={activeElement}
                   removeStyles={!masterScreenEnabled && removeStyles}
-                  updateStyles={updateStyles}
+                  updateStyles={(styles) => updateStyles(styles, controlName)}
                   replaceStyles={replaceStyles}
                   updateParams={!masterScreenEnabled && updateParams}
                   masterScreenEnabled={masterScreenEnabled}
