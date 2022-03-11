@@ -20,7 +20,7 @@ const BootstrapBreadcrumb = React.forwardRef<HTMLElement, RendererProps>(
         className={cn(
           classes.ownStyles,
           groupClass,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          classes.ownPseudoStyles,
         )}
         id={element.id}
         data-ls-id={element.id}

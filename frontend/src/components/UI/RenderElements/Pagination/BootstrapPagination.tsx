@@ -22,7 +22,7 @@ const BootstrapPagination = React.forwardRef<HTMLElement, RendererProps>(
         className={cn(
           classes.ownStyles,
           groupClass,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          classes.ownPseudoStyles,
         )}
         {...eventHandlers}
       >

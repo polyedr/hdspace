@@ -25,7 +25,7 @@ const OtherBreadcrumb = React.forwardRef<HTMLElement, RendererProps>(
         className={cn(
           classes.ownStyles,
           classes.breadcrumb,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          classes.ownPseudoStyles,
           groupClass,
         )}
         id={element.id}
