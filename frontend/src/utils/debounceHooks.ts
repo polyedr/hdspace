@@ -8,8 +8,9 @@ export const useDebouncedRichInputChange = (
   cb: (...args: any) => void,
   delay: number = 500,
 ) => {
+  const content = richContent || '';
   const [state, setState] = useState<any>(
-    EditorState.createWithContent(convertFromHTML(richContent)),
+    EditorState.createWithContent(convertFromHTML(content)),
   );
   const [check, checkOn] = useState();
 
@@ -17,8 +18,8 @@ export const useDebouncedRichInputChange = (
     if (check) {
       return;
     }
-    setState(EditorState.createWithContent(convertFromHTML(richContent)));
-  }, [check, richContent]);
+    setState(EditorState.createWithContent(convertFromHTML(content)));
+  }, [check, content]);
 
   const debounced = useDebouncedCallback(cb, delay);
 
