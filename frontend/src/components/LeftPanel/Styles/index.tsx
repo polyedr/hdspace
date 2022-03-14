@@ -127,7 +127,25 @@ const Styles = () => {
     [dispatch, activeElement.id, currentScreenId, parentOfActiveElement],
   );
   const CONTROLS_CLASSES = {
-    indents: [],
+    indents: [
+      ENTITIES.heading,
+      ENTITIES.label,
+      ENTITIES.paragraph,
+      ENTITIES.textBlock,
+      ENTITIES.list,
+      ENTITIES.checkbox,
+      ENTITIES.textarea,
+      ENTITIES.textinput,
+      ENTITIES.select,
+      ENTITIES.buttonGenerator,
+      ENTITIES.radiobuttonGroup,
+      ENTITIES.divBlock,
+      ENTITIES.button,
+      ENTITIES.dropdown,
+      ENTITIES.calendar,
+      ENTITIES.clock,
+      ENTITIES.video,
+    ],
     typography: [
       ENTITIES.heading,
       ENTITIES.label,
