@@ -20,7 +20,8 @@ import {
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
-import RichTextEditor from 'react-rte';
+import { EditorState } from 'draft-js';
+import { convertFromHTML, convertToHTML } from 'draft-convert';
 import RichTextContent from '../../helperComponents/RichTextContent/RichTextContent';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
@@ -71,7 +72,7 @@ const ListItem: React.FC<Props> = ({
   const screens = useSelector(selectScreensWithoutMaster);
 
   const debouncedText = useDebouncedCallback((value) => {
-    updateParams({ textContent: value.toString('html') }, id);
+    updateParams({ textContent: convertToHTML(value.getCurrentContent()) }, id);
   }, 500);
 
   const debouncedLink = useDebouncedCallback((value) => {
@@ -120,7 +121,7 @@ const ListItem: React.FC<Props> = ({
   };
 
   const [state, setState] = useState(
-    RichTextEditor.createValueFromString(textContent, 'html'),
+    EditorState.createWithContent(convertFromHTML(textContent)),
   );
 
   useEffect(() => {
