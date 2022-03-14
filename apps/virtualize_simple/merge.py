@@ -8,6 +8,8 @@ from keras_preprocessing.image import img_to_array
 
 from statistics import median
 
+import numpy as np
+
 from apps.utils.object_detection import (
     run_text_detection,
     get_rect_contours,
@@ -24,6 +26,7 @@ from project.settings import (
     model_headers,
     model_footers,
 )
+
 
 # Writing the element text value based on its id
 def write_elem_value(region_dataset, class_id_recognized):
@@ -156,6 +159,25 @@ def detect_contours_filter_after(image_opencv_input, img_height, img_width):
     return text_contours, rect_contours
 
 
+'''
+# Detecting checkboxes
+# https://www.fuzzylabs.ai/blog-post/checkbox-detection-with-opencv
+# https://github.com/fuzzylabs/jupyter-delicacies/blob/master/vision/object-detection.ipynb
+def is_contour_square(contour, contour_tolerance=0.0015, square_side=25, area_tolerance=200):
+    expected_area = square_side * square_side
+    area = cv2.contourArea(contour)
+    template = np.array([[[0, 0]], [[0, 1]], [[1, 1]], [[1, 0]]], dtype=np.int32)
+    return cv2.matchShapes(template, contour, 3, 0.0) <= contour_tolerance and abs(area - expected_area) <= area_tolerance
+'''
+
+
+# Detecting checkboxes
+def is_checkbox(contour, square_side=18, area_tolerance=200):
+    expected_area = square_side * square_side
+    area = contour[2] * contour[3]
+
+    return abs(area - expected_area) <= area_tolerance
+
 
 def print_contours(text_contours, rect_contours, region_dataset, choice = "OpenCV", r=[]):
     regions_list = []
@@ -192,6 +214,9 @@ def print_contours(text_contours, rect_contours, region_dataset, choice = "OpenC
             # size = i.size  # width, height
             element = "container"
             # element = "image"
+            # Detect checkboxes
+            if (is_checkbox(rect_contour)):
+                element = "checkbox"
 
             # Fill the attributes dictionary
             attributes_dict = {
@@ -436,8 +461,7 @@ def print_contours(text_contours, rect_contours, region_dataset, choice = "OpenC
             regions_list.append(attributes_dict)
         # Printing rect contours with concatenation preparations end
 
-
-    if (choice == "OR"):
+    if choice == "OR":
         # Here was applied a simplification
         # OR comparison should be improved
         # 1. save all the rect_contours from the AND
@@ -643,7 +667,7 @@ def pipeline_merge(imgpath, region_dataset, fname):
     # Create the opencv recognition end
 
     # Create the recognized_elements array. The main part of the recognition
-    fdict, fordict, opencvdict, cnndict  = create_recognized_elements(imgpath, rect_contours, text_contours, region_dataset, fname)
+    fdict, fordict, opencvdict, cnndict = create_recognized_elements(imgpath, rect_contours, text_contours, region_dataset, fname)
     # Save the annotation dictionary with saved shapes to the json
     sdj = {"fdict": fdict, "fordict": fordict, "opencvdict": opencvdict, "cnndict": cnndict}
 
