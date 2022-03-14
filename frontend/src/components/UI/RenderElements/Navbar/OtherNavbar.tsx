@@ -122,7 +122,7 @@ const OtherNavbar = React.forwardRef<HTMLElement, RendererProps>(
           classes.nav,
           classes.ownStyles,
           groupClass,
-          classes.ownPseudoStyles,
+          !isDisabled && classes.ownPseudoStyles,
         )}
         {...eventHandlers}
       >

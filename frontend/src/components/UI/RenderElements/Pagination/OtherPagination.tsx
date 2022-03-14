@@ -38,7 +38,7 @@ const OtherPagination = React.forwardRef<HTMLElement, RendererProps>(
         data-ls-id={element.id}
         className={cn(
           classes.ownStyles,
-          classes.ownPseudoStyles,
+          !isDisabled && classes.ownPseudoStyles,
           groupClass,
           classes.pagination,
         )}
