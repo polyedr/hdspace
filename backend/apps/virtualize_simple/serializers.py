@@ -1626,7 +1626,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             window_name1 = "image_opencv_text"
             # Supplementary parameters calculation and printing of the fdict function call
             min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(
-                fdict, fname, fnamesize, img_width, img_height
+                fdict, fnamesize, img_width, img_height
             )
             """
             # Supplementary parameters calculation and printing of the fdict start
