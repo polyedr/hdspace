@@ -34,6 +34,7 @@ import {
   ElementData,
   NNModelName,
   VIARegions,
+  canvasData,
 } from '@Src/types';
 import { XYCoord } from 'react-dnd';
 import {
@@ -1224,16 +1225,10 @@ export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
 
-export const importHtml = (
-  imageFiles: File[],
-  imageElements: StateElement[],
-  element: LibraryElement<any, any[], any, {}> | undefined,
-) => ({
+export const importHtml = (importHtmlData: canvasData) => ({
   type: TYPES.IMPORT_HTML,
   payload: {
-    imageFiles,
-    imageElements,
-    element,
+    importHtmlData,
   },
 });
 

@@ -21,7 +21,6 @@ import {
 import prettyBytes from 'pretty-bytes';
 import prevent from '@Utils/preventEvent';
 import { useDebouncedCallback } from 'use-debounce';
-
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { selectCanImportSite } from '@Redux/project/selectors/screen';
 import { selectImportValue } from '@Redux/project/selectors/base';
@@ -100,7 +99,7 @@ const allowedMimeTypes = [
 const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   const dispatch = useDispatch();
   const isCanImportSite = useSelector(selectCanImportSite);
-  const calculationImportData: any = useSelector(selectImportValue);
+  const calculationImportData = useSelector(selectImportValue);
   const canvasConvertedData = calculationImportData?.canvasData;
   const canvasNotSupportedTag = calculationImportData?.notSupportedTag;
   const importSuccessRawData = calculationImportData?.importSuccessRawData;
@@ -137,7 +136,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     setFiles([]);
     setUrl('');
     removeImportValue();
-    setOpenPopup((o) => !o);
+    setOpenPopup((isPopupOpen) => !isPopupOpen);
   };
 
   const handleFormSubmit = () => {
@@ -164,7 +163,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   };
 
   const importHTMLCheck = () => {
-    setOpenPopup((o) => !o);
+    setOpenPopup((isPopupOpen) => !isPopupOpen);
     if (isCanImportSite) {
       handleUrlSubmit();
     } else {
@@ -173,13 +172,12 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   };
 
   const importStart = async () => {
-    dispatch(
-      importHtml(
-        canvasConvertedData.imageFiles,
-        canvasConvertedData.imageElements,
-        canvasConvertedData.element,
-      ),
-    );
+    const importHtmlData = {
+      imageFiles: canvasConvertedData.imageFiles,
+      imageElements: canvasConvertedData.imageElements,
+      element: canvasConvertedData.element,
+    };
+    dispatch(importHtml(importHtmlData));
     setFiles([]);
     setUrl('');
     removeImportValue();

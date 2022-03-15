@@ -10,6 +10,7 @@ import {
   StateElement,
   UpdateDataActionType,
   UserProjectPermission,
+  importData,
 } from '@Src/types';
 import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
@@ -41,7 +42,12 @@ export const importHtmlSaga = withRequiredPermissions(
 )(function* (action: ReturnType<typeof importHtml>) {
   yield put(Actions.setValueImportLoader(true));
   try {
-    const { imageFiles, imageElements, element } = action.payload;
+    const {
+      imageFiles,
+      imageElements,
+      element,
+    } = action.payload.importHtmlData;
+
     if (element) {
       const { id, element: rootId }: Screen = yield select(selectCurrentScreen);
 
@@ -58,9 +64,9 @@ export const importHtmlSaga = withRequiredPermissions(
         );
 
         try {
-          for (let i = 0; i < imageElements.length; i++) {
-            const element = imageElements[i];
-
+          let imageIndex = 0;
+          while (imageElements.length > 0) {
+            const element = imageElements[imageIndex];
             let image: File | undefined;
             try {
               image = imageFiles.find((img) =>
@@ -69,7 +75,6 @@ export const importHtmlSaga = withRequiredPermissions(
             } catch (e) {
               image = undefined;
             }
-
             if (image) {
               yield call(updateElementImage, element.id, image, {
                 screenId: id,
@@ -91,6 +96,7 @@ export const importHtmlSaga = withRequiredPermissions(
                 UpdateDataActionType.UPDATE,
               );
             }
+            imageIndex++;
           }
         } catch (e) {
           yield put(
@@ -237,13 +243,6 @@ export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
     }
   }
 });
-
-type importData = {
-  notSupportedTag: string | null;
-  canvasData: object;
-  importSuccessRawData: object;
-  error: boolean;
-};
 
 export const importHtmlCheck = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
@@ -406,8 +405,8 @@ export const importHtmlCheck = withRequiredPermissions(
         (element) => element.type === 'image',
       );
       imageFiles = files.filter((file) => file.type.includes('image/'));
-      for (let i = 0; i < imageElements.length; i++) {
-        const element = imageElements[i];
+
+      imageElements.forEach((element) => {
         let image: File | undefined;
 
         try {
@@ -423,7 +422,7 @@ export const importHtmlCheck = withRequiredPermissions(
         } else {
           notUploadImage++;
         }
-      }
+      });
 
       const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
         data: { children: [element.id] },
