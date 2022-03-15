@@ -46,6 +46,7 @@ import {
   ElementData,
   NNModelName,
   VIARegions,
+  importData,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -152,6 +153,7 @@ export type ProjectCommunicationState = {
   analyzerLoader: boolean;
   assetsListsLoader: boolean;
   importLoader: boolean;
+  importValue: importData;
 };
 
 export type ProjectControlState = {
@@ -1354,6 +1356,7 @@ export type Action =
   | SetSidebarIframe
   | SetSidebarHost
   | SetValueImportLoader
+  | setImportValue
   | SetVIAResultId
   | UpdateVIARegionLayerSuccess
   | UpdateUISettingsParameters
@@ -1365,6 +1368,8 @@ export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,
   boolean
 >;
+
+export type setImportValue = IAction<typeof TYPES.SET_IMPORT_VALUE, importData>;
 
 export type SetValueCheckRobots = IAction<
   typeof TYPES.SET_VALUE_CHECK_ROBOTS,
