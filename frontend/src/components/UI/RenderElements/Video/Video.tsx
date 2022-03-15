@@ -28,7 +28,7 @@ const Video = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
   const styles = useStyles(props);
   const eventHandlers = useEventHandlers(props);
 
-  return playerLink || videoSettings?.link ? (
+  return playerLink ? (
     <div
       id={element.id}
       data-ls-id={element.id}
@@ -46,9 +46,9 @@ const Video = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
           title="Embedded video"
           width="100%"
           height="100%"
-          src={playerLink || videoSettings?.link}
+          src={playerLink}
           style={{
-            position: playerLink ? 'absolute' : 'fixed',
+            position: 'absolute',
             top: '0',
             left: '0',
           }}

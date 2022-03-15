@@ -46,6 +46,7 @@ import {
   ElementData,
   NNModelName,
   VIARegions,
+  importData,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -152,12 +153,7 @@ export type ProjectCommunicationState = {
   analyzerLoader: boolean;
   assetsListsLoader: boolean;
   importLoader: boolean;
-  importValue: {
-    notSupportedTag: string | null;
-    canvasData: object;
-    importSuccessRawData: object;
-    error: boolean;
-  };
+  importValue: importData;
 };
 
 export type ProjectControlState = {
@@ -1373,16 +1369,7 @@ export type SetValueImportLoader = IAction<
   boolean
 >;
 
-type importSiteStatus = {
-  notSupportedTag: string | null;
-  canvasData: object;
-  importSuccessRawData: object;
-  error: boolean;
-};
-export type setImportValue = IAction<
-  typeof TYPES.SET_IMPORT_VALUE,
-  importSiteStatus
->;
+export type setImportValue = IAction<typeof TYPES.SET_IMPORT_VALUE, importData>;
 
 export type SetValueCheckRobots = IAction<
   typeof TYPES.SET_VALUE_CHECK_ROBOTS,

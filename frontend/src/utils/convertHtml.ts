@@ -183,7 +183,6 @@ const htmlElementToAdeviElement = (
   let type = tagMap[element.tagName];
   const htmlElementType = element.getAttribute('type');
 
-  // in import time we skip input type if it's hidden tag use
   if (htmlElementType === 'hidden' && type === 'textinput') {
     return null;
   }
