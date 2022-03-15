@@ -1959,10 +1959,16 @@ def elements_rootblock(
                     "buoyancy": node.buoyancy,
                 }
 
-            elif node.element_assigned in {"menu"}:
+            elif node.element_assigned in {"menu", "list"}:
                 # displaying various kinds of elements start
                 element = ET.SubElement(node.parent.div, "ul")
                 # displaying various kinds of elements end
+
+                if styles_on:
+                    # Hide the bullets
+                    styles["list-style"] = "none"
+                    # styles["margin-left"] = "0"
+
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
                 )
