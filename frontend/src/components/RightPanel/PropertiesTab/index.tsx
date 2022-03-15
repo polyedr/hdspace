@@ -444,6 +444,8 @@ const PropertiesTab: React.FC = () => {
                     <RenameElement canEdit={canEdit} />
                   </ControlSection>
 
+                  <div style={{ display: 'none' }}>test</div>
+
                   {!isFreeCanvasMode && (
                     <ControlSection title="Replace this element">
                       <ElementType />
