@@ -1641,3 +1641,22 @@ export type ChatCredentials = {
 
 export const CONTROLS_NOT_ALLOW_LINK = ['html'] as const;
 export const CONTROLS_NOT_ALLOW_RICHTEXTBOX = ['checkbox'] as const;
+
+export type canvasData = {
+  imageElements?: StateElement[];
+  imageFiles?: File[];
+  element?: LibraryElement<any, any[], any, {}> | undefined;
+};
+
+export type importData = {
+  notSupportedTag: string | null | undefined;
+  canvasData: canvasData;
+  importSuccessRawData: {
+    successPercentage?: number | null | undefined;
+    totalImageFileUpload?: number | null | undefined;
+    totalUploadImage?: number | null | undefined;
+    totalNotUploadImage?: number | null | undefined;
+    totalCssFiles?: number | null | undefined;
+  };
+  error: boolean;
+};

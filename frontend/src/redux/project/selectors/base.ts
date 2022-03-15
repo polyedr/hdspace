@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
-import { FreeCanvasOffset, UIFramework } from '@Src/types';
+import { FreeCanvasOffset, UIFramework, importData } from '@Src/types';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import { makeFeatureStateSelector } from '../../../shared/redux';
 import { AppReduxState } from '../../types';
@@ -181,6 +181,10 @@ export const selectSidebarHost = ({ project }: AppReduxState) =>
 
 export function selectImportLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.importLoader;
+}
+
+export function selectImportValue(state: AppReduxState): importData {
+  return selectProjectState(state).communication.importValue;
 }
 
 export const selectCurrentUIFramework = createSelector(
