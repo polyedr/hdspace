@@ -244,7 +244,7 @@ export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
   }
 });
 
-export const importHtmlCheck = withRequiredPermissions(
+export const importHtmlCheckSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof checkImportHTML>) {
