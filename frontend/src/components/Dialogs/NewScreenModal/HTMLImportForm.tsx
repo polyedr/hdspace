@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TextField,
   Button,
@@ -13,15 +13,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   importHtml,
-  uploadImportUrl,
   uploadUrlForCheckRobots,
+  checkImportHTML,
+  setValueImport,
 } from '@Redux/project/actions';
+
 import prettyBytes from 'pretty-bytes';
 import prevent from '@Utils/preventEvent';
 import { useDebouncedCallback } from 'use-debounce';
-
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { selectCanImportSite } from '@Redux/project/selectors/screen';
+import { selectImportValue } from '@Redux/project/selectors/base';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const useStyles = makeStyles(({ palette, shape, spacing }) =>
   createStyles({
@@ -47,6 +51,11 @@ const useStyles = makeStyles(({ palette, shape, spacing }) =>
         opacity: 1,
       },
       padding: spacing(1),
+    },
+    summaryLabel: {
+      display: 'flex',
+      padding: '1px',
+      justifyContent: 'left',
     },
     card: {
       margin: spacing(0, 1),
@@ -90,19 +99,45 @@ const allowedMimeTypes = [
 const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
   const dispatch = useDispatch();
   const isCanImportSite = useSelector(selectCanImportSite);
+  const calculationImportData = useSelector(selectImportValue);
+  const canvasConvertedData = calculationImportData?.canvasData;
+  const canvasNotSupportedTag = calculationImportData?.notSupportedTag;
+  const importSuccessRawData = calculationImportData?.importSuccessRawData;
+  const importSiteUrlErrorStatus = calculationImportData?.error;
   const [over, setOver] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const classes = useStyles({ over, file: files });
   const [url, setUrl] = useState('');
+  const [openPopup, setOpenPopup] = useState(false);
 
   const handleUrlSubmit = () => {
-    dispatch(uploadImportUrl(url));
-    setUrl('');
+    if (!openPopup) {
+      dispatch(checkImportHTML([], url));
+    }
   };
+
   const handleUrlChangeDebounced = useDebouncedCallback((value) => {
     setUrl(value);
     dispatch(uploadUrlForCheckRobots(value));
   }, 500);
+
+  const removeImportValue = () => {
+    dispatch(
+      setValueImport({
+        notSupportedTag: null,
+        canvasData: {},
+        importSuccessRawData: {},
+        error: false,
+      }),
+    );
+  };
+
+  const backButton = () => {
+    setFiles([]);
+    setUrl('');
+    removeImportValue();
+    setOpenPopup((isPopupOpen) => !isPopupOpen);
+  };
 
   const handleFormSubmit = () => {
     const htmlCount = files.reduce((acc, curr) => {
@@ -111,6 +146,7 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     }, 0);
 
     if (htmlCount !== 1) {
+      backButton();
       dispatch(
         enqueueSnackbar({
           message: htmlCount
@@ -121,16 +157,30 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
       );
       return;
     }
-    dispatch(importHtml(files));
-    setFiles([]);
+    if (!openPopup) {
+      dispatch(checkImportHTML(files, ''));
+    }
   };
 
-  const handleConfirm = () => {
+  const importHTMLCheck = () => {
+    setOpenPopup((isPopupOpen) => !isPopupOpen);
     if (isCanImportSite) {
       handleUrlSubmit();
     } else {
       handleFormSubmit();
     }
+  };
+
+  const importStart = async () => {
+    const importHtmlData = {
+      imageFiles: canvasConvertedData.imageFiles,
+      imageElements: canvasConvertedData.imageElements,
+      element: canvasConvertedData.element,
+    };
+    dispatch(importHtml(importHtmlData));
+    setFiles([]);
+    setUrl('');
+    removeImportValue();
     onClose();
   };
 
@@ -169,95 +219,191 @@ const HtmlImportForm: React.FC<Props> = ({ onClose }) => {
     }
   };
 
+  useEffect(() => {
+    if (importSiteUrlErrorStatus === true) {
+      setOpenPopup(true);
+      backButton();
+    }
+    // eslint-disable-next-line
+  }, [importSiteUrlErrorStatus]);
+
+  useEffect(() => {
+    removeImportValue();
+    return () => {
+      removeImportValue();
+    };
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <div>
-      <h3>Provide a URL</h3>
+      {openPopup && importSiteUrlErrorStatus === false && (
+        <div>
+          <h3>Import Site Summary</h3>
+          {Object.keys(importSuccessRawData).length !== 0 &&
+          calculationImportData?.error === false ? (
+            <div>
+              <label className={classes.summaryLabel}>
+                {canvasNotSupportedTag
+                  ? `Not supported HTML tag : ${canvasNotSupportedTag}`
+                  : canvasNotSupportedTag !== null
+                  ? 'All HTML tag is supported'
+                  : null}
+              </label>
+              <br />
+              <label className={classes.summaryLabel}>
+                {`Total CSS files : ${importSuccessRawData?.totalCssFiles}`}
+              </label>
+              <br />
+              <label className={classes.summaryLabel}>
+                {`Total image files : ${importSuccessRawData?.totalImageFileUpload}`}
+              </label>
+              <br />
+              <label className={classes.summaryLabel}>
+                Total sucessfully upload image files :
+                {importSuccessRawData?.totalUploadImage}
+              </label>
+              <br />
 
-      <div>
-        <TextField
-          type="text"
-          onChange={(ev) => handleUrlChangeDebounced.callback(ev.target.value)}
-          variant="outlined"
-          fullWidth
-          margin="dense"
-          placeholder="URL"
-        />
-      </div>
+              <label className={classes.summaryLabel}>
+                Total unsucessfully upload image files :
+                {importSuccessRawData?.totalNotUploadImage}
+              </label>
+              <br />
 
-      <h3>Or upload an HTML, IMAGE and CSS files</h3>
+              <span>
+                {`Total sucessfully import site : ${importSuccessRawData?.successPercentage}%`}
+              </span>
 
-      <div>
-        <form
-          onDrop={handleDrop}
-          onDragEnter={handleDragEnter}
-          onDragLeave={handleDragLeave}
-          className={classes.form}
-        >
-          <label htmlFor="html-input" className={classes.label}>
-            {files.length ? (
-              files.map((file) => (
-                <Card
-                  onClick={prevent}
-                  className={classes.card}
-                  key={file.name}
+              <div className={classes.formActions}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={importStart}
                 >
-                  <CardContent>
-                    <Typography className={classes.field} variant="subtitle1">
-                      {file.name}
-                    </Typography>
-
-                    <Typography className={classes.field} variant="caption">
-                      {`${prettyBytes(file.size)}`}
-                    </Typography>
-                  </CardContent>
-
-                  <CardActions className={classes.actions}>
-                    <IconButton
-                      size="small"
-                      onClick={() =>
-                        setFiles((prevState) =>
-                          prevState.filter((prev) => prev.name !== file.name),
-                        )
-                      }
-                      title="Remove"
-                    >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  </CardActions>
-                </Card>
-              ))
-            ) : (
-              <div className={classes.placeholder}>
-                Click or drop file here to upload
+                  Import Site
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={backButton}
+                >
+                  Back
+                </Button>
               </div>
-            )}
-
-            <input
-              hidden
-              id="html-input"
-              accept={allowedMimeTypes.join(',')}
-              type="file"
-              onChange={handleChange}
-              multiple
+            </div>
+          ) : (
+            <>
+              <Skeleton count={6} />
+              <div className={classes.formActions}>
+                <Button variant="contained" color="secondary" disabled>
+                  Import Site
+                </Button>
+                <Button variant="contained" color="primary" disabled>
+                  Back
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      {!openPopup && (
+        <>
+          <h3>Provide a URL</h3>
+          <div>
+            <TextField
+              type="text"
+              onChange={(ev) =>
+                handleUrlChangeDebounced.callback(ev.target.value)
+              }
+              variant="outlined"
+              fullWidth
+              margin="dense"
+              placeholder="URL"
             />
-          </label>
-        </form>
-      </div>
+          </div>
 
-      <div className={classes.formActions}>
-        <Button variant="contained" color="primary" onClick={onClose}>
-          Cancel
-        </Button>
+          <h3>Or upload an HTML, IMAGE and CSS files</h3>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleConfirm}
-          disabled={!files.length && !isCanImportSite}
-        >
-          Create
-        </Button>
-      </div>
+          <div>
+            <form
+              onDrop={handleDrop}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              className={classes.form}
+            >
+              <label htmlFor="html-input" className={classes.label}>
+                {files.length ? (
+                  files.map((file) => (
+                    <Card
+                      onClick={prevent}
+                      className={classes.card}
+                      key={file.name}
+                    >
+                      <CardContent>
+                        <Typography
+                          className={classes.field}
+                          variant="subtitle1"
+                        >
+                          {file.name}
+                        </Typography>
+
+                        <Typography className={classes.field} variant="caption">
+                          {`${prettyBytes(file.size)}`}
+                        </Typography>
+                      </CardContent>
+
+                      <CardActions className={classes.actions}>
+                        <IconButton
+                          size="small"
+                          onClick={() =>
+                            setFiles((prevState) =>
+                              prevState.filter(
+                                (prev) => prev.name !== file.name,
+                              ),
+                            )
+                          }
+                          title="Remove"
+                        >
+                          <CloseIcon fontSize="small" />
+                        </IconButton>
+                      </CardActions>
+                    </Card>
+                  ))
+                ) : (
+                  <div className={classes.placeholder}>
+                    Click or drop file here to upload
+                  </div>
+                )}
+
+                <input
+                  hidden
+                  id="html-input"
+                  accept={allowedMimeTypes.join(',')}
+                  type="file"
+                  onChange={handleChange}
+                  multiple
+                />
+              </label>
+            </form>
+          </div>
+
+          <div className={classes.formActions}>
+            <Button variant="contained" color="primary" onClick={onClose}>
+              Cancel
+            </Button>
+
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={importHTMLCheck}
+              disabled={!files.length && !isCanImportSite}
+            >
+              Check Import Site
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
