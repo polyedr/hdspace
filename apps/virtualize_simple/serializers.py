@@ -1392,7 +1392,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
         # Calculate a chain of functions to assemble
         parameters, styles, root_block = pipeline_assemble(
-            region_dataset, fdict, o, localparams
+            region_dataset, fdict, o, localparams, serializing="assemble"
         )
 
         # Define the export node
@@ -1448,7 +1448,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             "parameters": {},
             "styles": {},
         }
-        # Nested elements should be detected at the free canvas
+        # Nested elements should be detected at the free canvas later
 
         # Define styles variable switching on, this variable is plased at parameters with other serializers as a flag
         styles_on = 1
@@ -1460,109 +1460,15 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
         region_dataset = "footers"
 
         # Create the root element mptt for the containers generated start
-        # print(validated_data)
-        # input()
-        # print(root_element_data)
-        fname = ""
-        imgpath = ""
-        if validated_data.get("image"):
-            serializer_node = ScenarioElement.objects.create(
-                parent=element_root_pre,
-                image=validated_data["image"],
-                **root_element_data
-            )
-            fname = str(validated_data["image"])
-            imgpath = MEDIA_ROOT + "/uploads/" + fname
-        else:
-            serializer_node = ScenarioElement.objects.create(
-                parent=element_root_pre, **root_element_data
-            )
-        # Create the root element mptt end
-        """
-        # Create the opencv recognition start
-        image_dict = {}
-        result_regions = {}
-
-        text = False
-        watch = True
-
-
-        # Read an image with OpenCV start
-        image_opencv_input = cv2.imread(imgpath)
-        image_original = copy.deepcopy(image_opencv_input)
-        # detect height and width of the image
-        img_height, img_width, img_channels = image_opencv_input.shape
-        # print("width:  ", img_width)
-        # print("height: ", img_height)
-        # print("channel:", img_channels)
-        # Read an image with OpenCV end
-
-        # Detect the font-size with tesseract for the whole image start
-        whole_img = cv2.cvtColor(image_opencv_input, cv2.COLOR_BGR2GRAY)
-        result = pytesseract.image_to_boxes(whole_img)
-        lines = result.strip().split("\n")
-        font_size = []
-
-        for line in lines:
-            chars = line.split(" ")
-            try:
-                font_size.append(float(chars[4]) - float(chars[2]))
-            except Exception:
-                font_size.append(12.0)  # Default font-size value is 12px
-        font_size_img = int(median(font_size) * 1.7)  # Font-size value of the image
-        # Detect the font-size with tesseract for the whole image end
-
-        # Get(take the whole image) the dominant colour for the parent container
-        bcolour_container_value = "255,255,255,0"
-        domcolour_container = get_dominant_colour(image_opencv_input)
-        domcolour_container.append(1)
-        bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
-
-        # Detect text contours and rectangles on image start
-        text_contours = []
-        rect_contours = []
-        # Detect text regions
-        text_contours = run_text_detection(image_opencv_input, text=False)
-
-        # text_contours1 = run_text_detection(image_opencv_input, text=True)
-        #
-        # print(text_contours1)
-        # print("length", len(text_contours), len(text_contours1))
-        #
-        # input()
-        # Detect rect regions
-        rect_contours = get_rect_contours(image_opencv_input)
-
-        for text_contour in text_contours:
-            # Remove untypically wide text blocks
-            width2 = text_contour[3]
-            if width2 > (font_size_img * 3):
-                text_contours.remove(text_contour)
-
-        for rect_contour in rect_contours:
-            # Remove untypically large rect blocks
-            width2 = rect_contour[2]
-            height2 = rect_contour[3]
-            if (width2 * height2) > (img_height * img_width) * 0.75:
-                rect_contours.remove(rect_contour)
-
-        # Save all detected regions into dictionary
-        result = {"text": text_contours, "rect": rect_contours}
-        # Detect text contours and rectangles on image end
-
-        window_name1 = "image_opencv_text"
-
-        # Create the opencv recognition end
-        """
-
-        #
-        #
-        # Here is the divergency point between images and footers
+        serializer_node = ScenarioElement.objects.create(
+            parent=element_root_pre, **root_element_data
+        )
+        # Create the root element mptt for the containers generated end
 
         # Read the region annotation from parameters
         fdict = {}
 
-        fname = element_root_pre.name
+        fname = element_root_pre.name + '.png'
         fsize = "0"
         fnamesize = fname + fsize
 
@@ -1573,6 +1479,8 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             "file_attributes": {},
         }
 
+        '''
+        # Old freecanvas images sizes syntax
         # Define root canvas width and height, based on layout parameter
         # Mobile devices
         if element_root_pre.parameters["layouts"] == "mobile":
@@ -1589,10 +1497,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
         # Other devices
         else:
             img_height, img_width = 800, 1280
-
-        # This initialises an RGB-image that is just black (with two instances)
-        image_opencv_input = np.zeros((img_height, img_width, 3), np.uint8)
-        image_original = np.zeros((img_height, img_width, 3), np.uint8)
+        '''
 
         # Go through all the input elements
         # Construct fdict.
@@ -1620,94 +1525,25 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
                 fdict[fnamesize]["regions"].append(attributes_dict)
 
+        # Obtaining the absolute path for the parameters directly. Should change this later.
+        o = urlparse(self.context["request"].build_absolute_uri())
+        # Set the local parameters to be changed from localhost to staging
+        localparams = parse_qs(o.query)
+        # print(localparams)
+        localparams["page"] = 0
+        if o.netloc == "127.0.0.1:8000":
+            localparams["page"] = 1
+            # localparams['page'] = 2
+
         if fdict:
-            # Assembling start
+            '''
+            # Assembling for the freecanvas from the previous version start
             # Show text contours on image start
             window_name1 = "image_opencv_text"
             # Supplementary parameters calculation and printing of the fdict function call
             min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(
                 fdict, fnamesize, img_width, img_height
             )
-            """
-            # Supplementary parameters calculation and printing of the fdict start
-            # for filenamesize in fdict:
-            # os.chdir(VIA_ANNOTATION_DIR)
-            # print("Current Working Directory ", os.getcwd())
-
-            # detect the size of the whole image
-            # fsize = os.path.getsize(fname)
-
-            for idx, region in enumerate(fdict[fnamesize]["regions"]):
-                x1 = int(region["shape_attributes"]["x"])
-                y1 = int(region["shape_attributes"]["y"])
-                x2 = int(x1 + region["shape_attributes"]["width"])
-                y2 = int(y1 + region["shape_attributes"]["height"])
-
-                # cv2.rectangle(image_opencv_input, (x1, y1), (x2, y2), (255, 0, 0), 1)
-            # Display raw regions input before clustering
-            # cv2.imshow(window_name1, image_opencv_input)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-            # Detect the size of the visible elements region
-            # detect the size of the visible elements
-            # first do this based on annotated regions
-            # go through all the regions
-            # find xmin, xmax, ymin, ymax
-            # compare this rectangle of visible elements with whole image
-            # crop if the distance is more than 20px
-            # extend borders if the distance is less than 20px
-            # Cropping the image is essential for further OCR applying.
-            min_x1 = img_width
-            min_y1 = img_height
-            max_x2 = 0
-            max_y2 = 0
-            # for idx, region in enumerate(fdict[filenamesize]["regions"]):
-            for idx, region in enumerate(fdict[fnamesize]["regions"]):
-                x1 = int(region["shape_attributes"]["x"])
-                y1 = int(region["shape_attributes"]["y"])
-                x2 = int(x1 + region["shape_attributes"]["width"])
-                y2 = int(y1 + region["shape_attributes"]["height"])
-
-                if min_x1 > x1:
-                    min_x1 = x1
-
-                if min_y1 > y1:
-                    min_y1 = y1
-
-                if max_x2 < x2:
-                    max_x2 = x2
-
-                if max_y2 < y2:
-                    max_y2 = y2
-
-            # cv2.rectangle(
-            #     image_opencv_input, (min_x1, min_y1), (max_x2, max_y2), (255, 255, 0), 1
-            # )
-            # # Displaying an outer border
-            # cv2.imshow(window_name1, image_opencv_input)
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
-
-
-            # Find the centers of the elements
-            # for idx, region in enumerate(fdict[filenamesize]["regions"]):
-            for idx, region in enumerate(fdict[fnamesize]["regions"]):
-                x1 = int(region["shape_attributes"]["x"])
-                y1 = int(region["shape_attributes"]["y"])
-                x2 = int(x1 + region["shape_attributes"]["width"])
-                y2 = int(y1 + region["shape_attributes"]["height"])
-
-                # Extend shape_attributes with average values for centers
-                x_average = int((x1 + x2) / 2)
-                y_average = int((y1 + y2) / 2)
-                region["shape_attributes"]["x_average"] = x_average
-                region["shape_attributes"]["y_average"] = y_average
-
-            # cv2.imshow(window_name1, image_opencv_input)
-            # cv2.waitKey(0)
-            # Supplementary parameters calculation and printing of the fdict end
-            """
 
             # Calculate the excluded indices to remove overlapped elements function calling
             calculate_excluded_indices(fdict, fnamesize)
@@ -1742,11 +1578,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             # Create a directory to save HTML for some image processed
             SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
             find_or_create_dir(SAVE_DIR)
-
             os.chdir(SAVE_DIR)
-
-            # Printing clusters function calling
-            # clusters_printing(root_block, fname, image_allclusters=image_allclusters)
 
             # Define bcolour_container_value for the free canvas
             bcolour_container_value = "255,255,255,0"
@@ -1755,17 +1587,6 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 fname, bcolour_container_value, img_width
             )
 
-            # Define the export node
-            outer_div_node = ScenarioElement.objects.create(
-                parent=serializer_node,
-                struct_type="container",
-                parameters=parameters,
-                styles=styles,
-                buoyancy=0,
-            )
-
-            # Obtaining the absolute path for the parameters directly. Should change this later.
-            o = urlparse(self.context["request"].build_absolute_uri())
             # Detect elements for the root block
             elements_rootblock(
                 root_block,
@@ -1779,6 +1600,23 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
                 o,
                 serializing="freecanvas",
             )
+            # Assembling for the freecanvas from the previous version end
+            '''
+
+            # Calculate a chain of functions to assemble
+            parameters, styles, root_block = pipeline_assemble(
+                region_dataset, fdict, o, localparams, serializing="freecanvas"
+            )
+
+            # Define the export node
+            outer_div_node = ScenarioElement.objects.create(
+                parent=serializer_node,
+                struct_type="container",
+                parameters=parameters,
+                styles=styles,
+                buoyancy=0,
+            )
+
             # Serializer only
             elements_rootblock_create(
                 root_block, outer_div_node, serializing="freecanvas", children=children
