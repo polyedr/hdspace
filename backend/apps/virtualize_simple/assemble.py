@@ -1111,8 +1111,8 @@ def print_maskrcnn_output(
     cv2.imwrite("maskrcnn_notext_" + fname, image_maskrcnn_notext)
 
 
-def print_fdict_before(image_opencv_input, fname, fdict, fnamesize, imgpath):
-    print("fdict_before", fdict, imgpath)
+def print_fdict_before(image_opencv_input, fname, fdict, fnamesize):
+    print("fdict_before", fdict)
     image_fdict_before = copy.deepcopy(image_opencv_input)
     for idx, region in enumerate(fdict[fnamesize]["regions"]):
         x1 = int(region["shape_attributes"]["x"])
@@ -2014,8 +2014,8 @@ def elements_rootblock(
 
     return True
 
-
-def pipeline_assemble(region_dataset, fdict, o, localparams):
+# Serializing: assemble, freecanvas
+def pipeline_assemble(region_dataset, fdict, o, localparams, serializing="assemble"):
     # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
     styles_on = 1
 
@@ -2029,7 +2029,11 @@ def pipeline_assemble(region_dataset, fdict, o, localparams):
     """
 
     if fdict:
-        fdict = json.loads(fdict)
+        # Loading the fdict
+        if(serializing in {"assemble"}):
+            fdict = json.loads(fdict)
+        if(serializing in {"freecanvas"}):
+            fdict = fdict
 
         # Now the fnamesize is a given value
         # The solution is temporary based on unique data struct_type
@@ -2037,10 +2041,18 @@ def pipeline_assemble(region_dataset, fdict, o, localparams):
         # Removing the trailing characters of the string
         fname = fnamesize.rstrip("0123456789")
 
-        # Create the opencv recognition start
-        # Read an image with OpenCV start
-        imgpath = MEDIA_ROOT + "/uploads/" + fname
-        image_opencv_input = cv2.imread(imgpath)
+        # Define the image to be processed
+        if(serializing in {"assemble"}):
+            # Create the opencv recognition start
+            # Read an image with OpenCV start
+            imgpath = MEDIA_ROOT + "/uploads/" + fname
+            image_opencv_input = cv2.imread(imgpath)
+        if(serializing in {"freecanvas"}):
+            # Define root canvas width and height, based on layout parameter
+            # Other devices
+            img_height, img_width = 800, 1280
+            # This initialises an RGB-image that is just black (with two instances)
+            image_opencv_input = np.zeros((img_height, img_width, 3), np.uint8)
 
         # Create a directory to save clusters for some image processed
         SAVE_DIR = os.path.join(MEDIA_ROOT, fname)
@@ -2054,10 +2066,12 @@ def pipeline_assemble(region_dataset, fdict, o, localparams):
         # Read an image with OpenCV end
 
         # Get(take the whole image) the dominant colour for the parent container
+        # The default value is valid for the freecanvas
         bcolour_container_value = "255,255,255,0"
-        domcolour_container = get_dominant_colour(image_opencv_input)[0]
-        domcolour_container.append(1)
-        bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
+        if(serializing in {"assemble"}):
+            domcolour_container = get_dominant_colour(image_opencv_input)[0]
+            domcolour_container.append(1)
+            bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
         # Create the opencv recognition end
 
         # fdict = fdict
@@ -2071,7 +2085,7 @@ def pipeline_assemble(region_dataset, fdict, o, localparams):
         # Show the regions before the indices exclusion
         # Localhost only
         if localparams["page"] == 1:
-            print_fdict_before(image_opencv_input, fname, fdict, fnamesize, imgpath)
+            print_fdict_before(image_opencv_input, fname, fdict, fnamesize)
 
         # The indices exclusion should be added to the firstclusters calculation maybe
         # calculate_excluded_indices(fdict, fnamesize)
