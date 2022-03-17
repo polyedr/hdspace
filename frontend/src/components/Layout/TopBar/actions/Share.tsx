@@ -58,15 +58,23 @@ const Share: FC<Props> = ({ className = '' }) => {
           user.id
         }&project=${projectId}&screen=${screenId}${
           activeElementId && includeElement ? `&element=${activeElementId}` : ''
-        }&token=${access}&refresh=${refresh}`,
+        }`,
       );
 
       handleClose();
-      dispatch(
-        enqueueSnackbar({
-          message: 'Project link was successfully copied to the clipboard',
-        }),
-      );
+      if (includeElement) {
+        dispatch(
+          enqueueSnackbar({
+            message: 'Element link was successfully copied to the clipboard',
+          }),
+        );
+      } else {
+        dispatch(
+          enqueueSnackbar({
+            message: 'Screen link was successfully copied to the clipboard',
+          }),
+        );
+      }
     },
     [access, activeElementId, dispatch, projectId, refresh, screenId, user.id],
   );
