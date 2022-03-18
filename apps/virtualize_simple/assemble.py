@@ -2015,7 +2015,7 @@ def elements_rootblock(
     return True
 
 # Serializing: assemble, freecanvas
-def pipeline_assemble(region_dataset, fdict, o, localparams, serializing="assemble"):
+def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0,0), serializing="assemble"):
     # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
     styles_on = 1
 
@@ -2047,10 +2047,13 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, serializing="assemb
             # Read an image with OpenCV start
             imgpath = MEDIA_ROOT + "/uploads/" + fname
             image_opencv_input = cv2.imread(imgpath)
+            # detect height and width of the image
+            img_height, img_width, img_channels = image_opencv_input.shape
+            # Read an image with OpenCV end
         if(serializing in {"freecanvas"}):
             # Define root canvas width and height, based on layout parameter
             # Other devices
-            img_height, img_width = 800, 1280
+            img_height, img_width = freecanvasimg_hw
             # This initialises an RGB-image that is just black (with two instances)
             image_opencv_input = np.zeros((img_height, img_width, 3), np.uint8)
 
@@ -2060,10 +2063,6 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, serializing="assemb
 
         os.chmod(SAVE_DIR, 0o755)
         os.chdir(SAVE_DIR)
-
-        # detect height and width of the image
-        img_height, img_width, img_channels = image_opencv_input.shape
-        # Read an image with OpenCV end
 
         # Get(take the whole image) the dominant colour for the parent container
         # The default value is valid for the freecanvas
