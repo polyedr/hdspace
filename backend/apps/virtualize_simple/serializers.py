@@ -1479,25 +1479,23 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
             "file_attributes": {},
         }
 
-        '''
-        # Old freecanvas images sizes syntax
+        # Freecanvas images sizes syntax
         # Define root canvas width and height, based on layout parameter
         # Mobile devices
         if element_root_pre.parameters["layouts"] == "mobile":
-            img_height, img_width = 320, 736
+            freecanvasimg_hw = 320, 736
 
         # Tablet devices
         elif element_root_pre.parameters["layouts"] == "tablet":
-            img_height, img_width = 768, 1024
+            freecanvasimg_hw = 768, 1024
 
         # Desktop devices
         elif element_root_pre.parameters["layouts"] == "desktop":
-            img_height, img_width = 800, 1280
+            freecanvasimg_hw = 800, 1280
 
         # Other devices
         else:
-            img_height, img_width = 800, 1280
-        '''
+            freecanvasimg_hw = 800, 1280
 
         # Go through all the input elements
         # Construct fdict.
@@ -1605,7 +1603,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
             # Calculate a chain of functions to assemble
             parameters, styles, root_block = pipeline_assemble(
-                region_dataset, fdict, o, localparams, serializing="freecanvas"
+                region_dataset, fdict, o, localparams, freecanvasimg_hw=freecanvasimg_hw, serializing="freecanvas"
             )
 
             # Define the export node
