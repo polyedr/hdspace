@@ -3,6 +3,7 @@ enum SectionTitleEnum {
   TYPOGRAPHY = 'Typography',
   HEADING = 'Heading',
   COLOR_SCHEME = 'Color Scheme',
+  BORDER = 'Border',
 }
 
 export default SectionTitleEnum;

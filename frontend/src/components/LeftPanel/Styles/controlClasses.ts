@@ -94,6 +94,14 @@ const CONTROLS_CLASSES = {
     'navbarItem',
     'listItem',
   ],
+  border: [
+    ENTITIES.image,
+    ENTITIES.textBlock,
+    ENTITIES.video,
+    ENTITIES.carousel,
+    'navbarItem',
+    ENTITIES.buttonGenerator,
+  ],
 };
 
 export default CONTROLS_CLASSES;

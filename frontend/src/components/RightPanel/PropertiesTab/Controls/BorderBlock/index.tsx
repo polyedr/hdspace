@@ -48,6 +48,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   borderColor?: React.CSSProperties['borderColor'];
   borderWidth?: React.CSSProperties['borderWidth'];
   borderRadius?: React.CSSProperties['borderRadius'];
+  isLeftSide?: boolean;
 };
 
 const BorderBlock: React.FC<Props> = ({
@@ -60,6 +61,7 @@ const BorderBlock: React.FC<Props> = ({
   canEdit,
   element,
   editableStyles,
+  isLeftSide = false,
 }) => {
   const classes = useStyles();
   const borderRadiusUnits = useMemo(
@@ -138,15 +140,17 @@ const BorderBlock: React.FC<Props> = ({
       )}
 
       <div className={classes.wrapper}>
-        <StyledTextField
-          label="Width"
-          type="number"
-          value={width ? parseFloat(width as string) : ''}
-          onChange={handleWidthChange}
-          margin="dense"
-          className={classes.text}
-          disabled={!canEdit}
-        />
+        {!isLeftSide && (
+          <StyledTextField
+            label="Width"
+            type="number"
+            value={width ? parseFloat(width as string) : ''}
+            onChange={handleWidthChange}
+            margin="dense"
+            className={classes.text}
+            disabled={!canEdit}
+          />
+        )}
 
         <div className={classes.control}>
           <StyledTextField
@@ -176,12 +180,14 @@ const BorderBlock: React.FC<Props> = ({
         </div>
       </div>
 
-      <ColorSettings
-        currentColor={borderColorValue as string}
-        activeElementId={element.id}
-        onChange={handleBorderColorChange as (newBorderColor: string) => void}
-        disabled={!canEdit}
-      />
+      {!isLeftSide && (
+        <ColorSettings
+          currentColor={borderColorValue as string}
+          activeElementId={element.id}
+          onChange={handleBorderColorChange as (newBorderColor: string) => void}
+          disabled={!canEdit}
+        />
+      )}
     </div>
   );
 };

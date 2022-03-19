@@ -74,7 +74,7 @@ const useStyles = makeStyles(({ palette, typography }) => ({
 const Styles = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const SECTION_CONTROLS = ['indents', 'typography', 'headingType'];
+  const SECTION_CONTROLS = ['indents', 'typography', 'headingType', 'border'];
 
   const activeElement = useSelector(selectActiveElement);
   const parentOfActiveElement = useSelector(selectParentOfActiveElement);
@@ -284,7 +284,10 @@ const Styles = () => {
             const controlInfo = CONTROLS[controlName];
             const { Control } = controlInfo;
 
-            if (controlName === sectionTitleEnum.TYPOGRAPHY.toLowerCase()) {
+            if (
+              controlName === sectionTitleEnum.TYPOGRAPHY.toLowerCase() ||
+              controlName === sectionTitleEnum.BORDER.toLowerCase()
+            ) {
               return (
                 <ControlSection title={controlName} key={controlName}>
                   <Control
