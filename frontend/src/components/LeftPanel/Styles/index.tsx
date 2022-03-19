@@ -44,7 +44,7 @@ import {
 import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
 import StyleGenerator from '@Components/LeftPanel/Styles/components/StyleGenerator';
 import ColorScheme from '@Components/LeftPanel/Styles/components/ColorScheme';
-import { AVAILABLE_CONTROLS, ENTITIES } from '@Domain/core';
+import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   name: {
@@ -126,49 +126,13 @@ const Styles = () => {
     },
     [dispatch, activeElement.id, currentScreenId, parentOfActiveElement],
   );
-  const CONTROLS_CLASSES = {
-    indents: [
-      ENTITIES.heading,
-      ENTITIES.label,
-      ENTITIES.paragraph,
-      ENTITIES.textBlock,
-      ENTITIES.list,
-      ENTITIES.checkbox,
-      ENTITIES.textarea,
-      ENTITIES.textinput,
-      ENTITIES.select,
-      ENTITIES.buttonGenerator,
-      ENTITIES.radiobuttonGroup,
-      ENTITIES.divBlock,
-      ENTITIES.button,
-      ENTITIES.dropdown,
-      ENTITIES.calendar,
-      ENTITIES.clock,
-      ENTITIES.video,
-    ],
-    typography: [
-      ENTITIES.heading,
-      ENTITIES.label,
-      ENTITIES.paragraph,
-      ENTITIES.textBlock,
-      ENTITIES.list,
-      ENTITIES.checkbox,
-      ENTITIES.textarea,
-      ENTITIES.textinput,
-      ENTITIES.select,
-      ENTITIES.buttonGenerator,
-      ENTITIES.radiobuttonGroup,
-      AVAILABLE_CONTROLS.navbarItem,
-      AVAILABLE_CONTROLS.breadcrumbItem,
-      AVAILABLE_CONTROLS.listItem,
-    ],
-    headingType: [ENTITIES.heading],
-  };
 
   const updateStyles = useCallback(
     (styles: React.CSSProperties, controlName: string) => {
       console.log(
-        `updateStyles ${JSON.stringify(styles)}, controlName: ${controlName}`,
+        `updateStyles ${JSON.stringify(
+          styles,
+        )}, controlName: ${controlName}, typeOf styles: ${typeof styles}`,
       );
       dispatch(
         updateDefaultStyles(CONTROLS_CLASSES[controlName], styles, {
@@ -176,12 +140,7 @@ const Styles = () => {
         }),
       );
     },
-    [
-      dispatch,
-      currentScreenId,
-      handleOpenRemovalConfirmModal,
-      CONTROLS_CLASSES,
-    ],
+    [dispatch, currentScreenId],
   );
 
   const removeStyles = useCallback(
@@ -325,7 +284,7 @@ const Styles = () => {
             const controlInfo = CONTROLS[controlName];
             const { Control } = controlInfo;
 
-            if (controlName === 'typography') {
+            if (controlName === sectionTitleEnum.TYPOGRAPHY.toLowerCase()) {
               return (
                 <ControlSection title={controlName} key={controlName}>
                   <Control

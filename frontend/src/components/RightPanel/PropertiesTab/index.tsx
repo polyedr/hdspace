@@ -306,6 +306,7 @@ const PropertiesTab: React.FC = () => {
       } else if (isGroupElement) {
         handleOpenRemovalConfirmModal(styles);
       } else if (editableStyles === 'ownStyles') {
+        console.log(activeElement);
         dispatch(
           updateMultipleElementsStyles(
             [activeElement.id],

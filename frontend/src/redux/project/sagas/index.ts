@@ -231,6 +231,7 @@ const updateSharedStylesSaga = compose(
   const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
     selectCurrentProject,
   );
+
   const newProject = updateProjectClasses(currentProject, className, styles);
 
   yield call(projectUpdateHelperSaga, newProject);

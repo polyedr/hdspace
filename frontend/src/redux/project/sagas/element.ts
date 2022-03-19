@@ -496,6 +496,8 @@ export function* updateOrReplaceMultipleElementsStyles(
   try {
     const { ids, styles } = action.payload;
 
+    console.log(ids);
+
     const stateElements = yield select(selectElementsByIds(ids));
 
     if (!action.meta.useHistory) {
