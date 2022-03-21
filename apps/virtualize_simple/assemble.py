@@ -2073,8 +2073,6 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
             bcolour_container_value = ",".join(str(int(x)) for x in domcolour_container)
         # Create the opencv recognition end
 
-        # fdict = fdict
-        # print(type(fdict), fdict)
         # Assembling start
         # Supplementary parameters calculation and printing of the fdict function call
         min_x1, min_y1, max_x2, max_y2 = supplement_fdict_calc_printing(
@@ -2085,6 +2083,7 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
         # Localhost only
         if localparams["page"] == 1:
             print_fdict_before(image_opencv_input, fname, fdict, fnamesize)
+            # input()
 
         # The indices exclusion should be added to the firstclusters calculation maybe
         # calculate_excluded_indices(fdict, fnamesize)
@@ -2104,7 +2103,8 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
             root_firstcluster, fname
         )
 
-        """
+        '''
+        image_firstclusters = copy.deepcopy(image_opencv_input)
         # Elements-based clusters printing
         for pre, fill, node in RenderTree(root_firstcluster):
             treestr = u"%s%s" % (pre, node.name)
@@ -2130,7 +2130,7 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
             print(imgpath)
 
             cv2.imwrite(imgpath, image_firstclusters)
-        """
+        '''
 
         # Calculate fclusters function calling
         root_firstcluster = calculate_fclusters(root_firstcluster)
@@ -2148,6 +2148,8 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
         if localparams["page"] == 1:
             print_clusters_length(root_firstcluster)
 
+        # print(region_dataset)
+        # input()
         if region_dataset in ["headers", "footers", "webpages"]:
             # Calculate dbclusters function calling
             # DBclusters are adding to firstclusters in an appropriate order

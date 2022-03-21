@@ -1457,7 +1457,7 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
         # Extract an appropriate flag value to recognize block as header, footer, form or layout
         # Region dataset has some starting value
-        region_dataset = "footers"
+        region_dataset = "forms"
 
         # Create the root element mptt for the containers generated start
         serializer_node = ScenarioElement.objects.create(
