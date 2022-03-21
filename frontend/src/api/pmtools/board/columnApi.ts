@@ -24,7 +24,7 @@ export const createColumn = ({
     ...axiosProps,
     baseURL: 'https://api.trello.com/1',
     method: 'POST',
-    url: `/lists?name=${data.name}&idBoard=${data.id}&key=${apiKey}&token=${token}`,
+    url: `/lists?name=${data.name}&idBoard=${data.id}&key=${apiKey}&token=${token}&pos=bottom`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
