@@ -2167,7 +2167,6 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
         root_block = ternary_assembling_run(
             min_x1, min_y1, max_x2, max_y2, root_firstcluster, image_opencv_input
         )
-
         # Print all the clusters after the cclusters step
         # Localhost only
         if localparams["page"] == 1:
@@ -2204,7 +2203,7 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
             image_opencv_input,
             fname,
             o,
-            serializing="assemble",
+            serializing=serializing,
         )
 
         # Printing clusters function calling
