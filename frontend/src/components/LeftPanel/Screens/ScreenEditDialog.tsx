@@ -264,16 +264,19 @@ const ScreenEditDialog: React.FC<Props> = ({
                   </Field>
                 </>
               )}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={onClose} color="primary" variant="contained">
-                Cancel
-              </Button>
 
-              <Button type="submit" color="secondary" variant="contained">
-                Confirm
-              </Button>
-            </DialogActions>
+              <DialogActions>
+                <Button onClick={onClose} color="primary" variant="contained">
+                  Cancel
+                </Button>
+
+                <Button type="submit" color="secondary" variant="contained">
+                  Confirm
+                </Button>
+              </DialogActions>
+              
+            </DialogContent>
+           
           </form>
         )}
       />

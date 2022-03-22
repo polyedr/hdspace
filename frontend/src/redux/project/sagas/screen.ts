@@ -570,10 +570,20 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
     const screens: ReturnType<typeof selectSortedScreens> = yield select(
       selectSortedScreens,
     );
-
+    
+    let allowUniqueName =  true;
+    screens.forEach((screen)=>{
+      if(name ===  screen.name && screenID !== screen.id){
+        allowUniqueName =true;
+          throw new Error(`Screen '${name}' already exists.`);
+      }
+      if(name ===  screen.name && screenID === screen.id){
+        allowUniqueName = false;
+      }
+    })
     const newScreen: Screen = {
       ...oldScreen,
-      name: name
+      name: name && allowUniqueName
         ? generateUniqueName(
             name.trim(),
             screens.map((screen) => screen.name),
