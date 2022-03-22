@@ -1,4 +1,5 @@
 /* eslint-disable import/no-unresolved */
+// @ts-nocheck
 import React, { useState } from 'react';
 import MakeAsyncFunction from 'react-redux-promise-listener';
 import { Field, Form } from 'react-final-form';

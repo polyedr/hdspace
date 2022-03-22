@@ -1,3 +1,4 @@
+// @ts-nocheck
 import validateCSS from 'simple-css-validator';
 import { ValidationError, Validator } from './validator';
 
