@@ -67,7 +67,9 @@ const TaskModal: React.FC<Props> = ({
         },
       }),
     );
-    setTaskUpdateMembers((prev) => [...prev, selectedMember]);
+    if (selectedMember) {
+      setTaskUpdateMembers((prev) => [...prev, selectedMember]);
+    }
     hide();
   };
 
