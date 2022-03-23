@@ -345,6 +345,7 @@ export const updateScreenImageSaga = withRequiredPermissions(
     );
 
     if (result) {
+      result.element = rootId;
       yield put(updateScreen(result));
       yield put(
         enqueueSnackbar({
