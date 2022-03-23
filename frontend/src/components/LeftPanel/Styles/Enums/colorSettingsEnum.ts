@@ -7,13 +7,22 @@ enum ColorSettingsEnum {
   ACCENT_COLOR = 'Accent Color',
 }
 
-export enum ColorStyle {
+export enum ColorStyleEnum {
   FONT_COLOR = 'colors',
-  FONT_COLOR_OVERLAY = 'Font Color - overlay',
+  FONT_COLOR_OVERLAY = 'Font Color - overlay', // TODO:: Ask about this style
   BACKGROUND_COLOR = 'screenBackgroundColor',
   BORDER_COLOR = 'borderColor',
   FILL_INSIDE_COLOR = 'elementsBackgroundColor',
   ACCENT_COLOR = 'accentColor',
+}
+
+export enum ColorStylePropertiesEnum {
+  FONT_COLOR = 'color',
+  BORDER_COLOR = 'border-color',
+  FILL_INSIDE_COLOR = 'background-color',
+  BACKGROUND_COLOR = 'background',
+  FONT_COLOR_OVERLAY = 'color',
+  ACCENT_COLOR = 'accent-color',
 }
 
 export default ColorSettingsEnum;
