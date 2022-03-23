@@ -9,7 +9,7 @@ function generateUniqueName(newName: string, names: string[]): string {
   const newNumber = nameNumber + 1;
   const numberedName = nameNumber
     ? `${newName.replace(nameNumber.toString(), newNumber.toString())}`
-    : `${newName}-${newNumber.toString()}`;
+    : `${newName}-${newNumber}`;
 
   return generateUniqueName(numberedName, names);
 }
