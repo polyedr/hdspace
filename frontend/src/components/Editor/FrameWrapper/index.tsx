@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { FC, useEffect, useRef, useContext, useMemo } from 'react';
 import { create } from 'jss';
 import {
