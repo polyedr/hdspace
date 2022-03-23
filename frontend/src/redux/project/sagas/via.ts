@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { takeEvery, put, select } from 'redux-saga/effects/';
 import TYPES from '@Redux/actionTypes';
 import { Normalized, VIARegion } from '@Src/types';

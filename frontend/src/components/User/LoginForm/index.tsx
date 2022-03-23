@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { Link } from 'react-router-dom';

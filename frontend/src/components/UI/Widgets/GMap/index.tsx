@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React from 'react';
 import GoogleMapReact from 'google-map-react';
 import { IMapProps } from '@Src/types';
