@@ -66,12 +66,18 @@ const Share: FC<Props> = ({ className = '' }) => {
         dispatch(
           enqueueSnackbar({
             message: 'Element link was successfully copied to the clipboard',
+            options: {
+              variant: 'success',
+            },
           }),
         );
       } else {
         dispatch(
           enqueueSnackbar({
             message: 'Screen link was successfully copied to the clipboard',
+            options: {
+              variant: 'success',
+            },
           }),
         );
       }
