@@ -2,14 +2,14 @@ function generateUniqueName(newName: string, names: string[]): string {
   if (!names.includes(newName)) {
     return newName;
   }
-
-  const nameNumberRegExp = newName.split('-')[newName.split('-').length - 1];
+  const nameReplaced = newName.replace(/.-/gi, ' ');
+  const nameNumberRegExp = nameReplaced.match(/\s+\d+$/);
   const nameNumber = nameNumberRegExp ? parseInt(nameNumberRegExp[0]) : 0;
 
   const newNumber = nameNumber + 1;
-  const numberedName = newNumber
-    ? `${newName.replace(nameNumberRegExp, newNumber.toString())}`
-    : `${newName}`;
+  const numberedName = nameNumber
+    ? `${newName.replace(nameNumber.toString(), newNumber.toString())}`
+    : `${newName}-${newNumber.toString()}`;
 
   return generateUniqueName(numberedName, names);
 }
