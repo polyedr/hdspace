@@ -570,34 +570,42 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
     const screens: ReturnType<typeof selectSortedScreens> = yield select(
       selectSortedScreens,
     );
-    
-    let allowUniqueName =  true;
-    screens.forEach((screen)=>{
-      if(name ===  screen.name && screenID !== screen.id){
-        allowUniqueName =true;
-          throw new Error(`Screen '${name}' already exists.`);
+
+    let allowUniqueName = true;
+    screens.forEach((screen) => {
+      if (name === screen.name && screenID !== screen.id) {
+        allowUniqueName = true;
+        throw new Error(`Screen '${name}' already exists.`);
       }
-      if(name ===  screen.name && screenID === screen.id){
+      if (name === screen.name && screenID === screen.id) {
         allowUniqueName = false;
       }
-    })
+    });
+
+    const metaNew = data?.meta ? data?.meta : oldScreen.screenData.meta;
+    const metabname = metaNew || {};
     const newScreen: Screen = {
       ...oldScreen,
-      name: name && allowUniqueName
-        ? generateUniqueName(
-            name.trim(),
-            screens.map((screen) => screen.name),
-          )
-        : oldScreen.name,
+      name:
+        name && allowUniqueName
+          ? generateUniqueName(
+              name.trim(),
+              screens.map((screen) => screen.name),
+            )
+          : oldScreen.name,
       screenData: {
-        ...(data || {}),
         freeCanvas: oldScreen.screenData.freeCanvas,
         editableScreenUser: [...oldScreen.screenData.editableScreenUser],
         meta: {
-          ...(oldScreen.meta || {}),
-          ...(data?.meta || {}),
+          ...metabname,
+          faviconUrl:
+            data?.meta?.faviconUrl === undefined
+              ? null
+              : data?.meta?.faviconUrl
+              ? data?.meta?.faviconUrl
+              : oldScreen?.screenData?.meta?.faviconUrl,
         },
-        uiFramework: data?.uiFramework || oldScreen.uiFramework,
+        uiFramework: data?.uiFramework || oldScreen.screenData.uiFramework,
       },
     };
     yield put(Actions.updateScreen(newScreen));
