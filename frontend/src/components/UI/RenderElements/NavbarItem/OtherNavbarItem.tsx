@@ -19,13 +19,8 @@ const OtherNavbarItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
     const { element } = props;
     const [groupClass] = element.styles.classNames;
-    const {
-      itemName,
-      link,
-      isLink,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { itemName, link, isLink, screenLink, screenName } =
+      element.parameters;
     const classes = useStyles(props);
 
     const history = useHistory();
@@ -39,6 +34,7 @@ const OtherNavbarItem = React.forwardRef<HTMLElement, RendererProps>(
     return (
       <>
         {isLink && (isProtoMode || exportScreenFlag) ? (
+          // eslint-disable-next-line react/jsx-no-target-blank
           <a
             href={link}
             className={cn(
