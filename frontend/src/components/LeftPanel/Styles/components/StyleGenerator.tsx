@@ -1,10 +1,10 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, MenuItem } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { StyledTextField } from '@Components/styledComponents';
-import FONTS from '@Constants/fonts';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
+import AssetLists from '@Components/RightPanel/Assets/AssetLists';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   title: {
@@ -38,12 +38,19 @@ const StyleGenerator = () => {
   // TODO:: Replace this string
   const color: string = 'transparent';
   const classes = useStyles();
-  const [colorValue, handleColorValueChange] = useDebouncedValueChange(
-    color,
-    (newColor: string) => {
-      console.log({ color: newColor });
-    },
-  );
+  const [
+    firstСolorValue,
+    handleFirstColorValueChange,
+  ] = useDebouncedValueChange(color, (newColor: string) => {
+    console.log({ color: newColor });
+  });
+  const [
+    secondСolorValue,
+    handleSecondColorValueChange,
+  ] = useDebouncedValueChange(color, (newColor: string) => {
+    console.log({ color: newColor });
+  });
+
   return (
     <div>
       <div className={classes.title}>Upload Styles</div>
@@ -61,20 +68,7 @@ const StyleGenerator = () => {
       </div>
       <div className={classes.title}>Upload image to asset list</div>
       <div className={classes.chooseSection}>
-        <StyledTextField
-          fullWidth
-          margin="dense"
-          label="Project assets"
-          value={FONTS[0].value}
-          onChange={() => console.log('Upload from project assets')}
-          select
-        >
-          {FONTS.map(({ label, value }) => (
-            <MenuItem value={value} key={value} dense>
-              {label}
-            </MenuItem>
-          ))}
-        </StyledTextField>
+        <AssetLists isLeftSide />
         <Button size="large" className={classes.chooseButton}>
           <div className={classes.chooseButtonText}>Generate color scheme</div>
         </Button>
@@ -83,15 +77,15 @@ const StyleGenerator = () => {
       <div className={classes.title}>Choose main colors</div>
       <div>
         <ColorSettings
-          currentColor={(colorValue as string) || 'transparent'}
+          currentColor={(firstСolorValue as string) || 'transparent'}
           activeElementId="test"
-          onChange={handleColorValueChange as (color: string) => void}
+          onChange={handleFirstColorValueChange as (color: string) => void}
           labelTextStyle="Color 1"
         />
         <ColorSettings
-          currentColor={(colorValue as string) || 'transparent'}
-          activeElementId="test"
-          onChange={handleColorValueChange as (color: string) => void}
+          currentColor={(secondСolorValue as string) || 'transparent'}
+          activeElementId="test 1"
+          onChange={handleSecondColorValueChange as (color: string) => void}
           labelTextStyle="Color 2"
         />
       </div>
