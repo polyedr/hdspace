@@ -584,8 +584,8 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
       }
     });
 
-    const metaNew = data?.meta ? data?.meta : oldScreen.screenData.meta;
-    const metabname = metaNew || {};
+    const metaData = data?.meta ?? oldScreen.screenData.meta;
+    const newMetaData = metaData || {};
     const newScreen: Screen = {
       ...oldScreen,
       name:
@@ -599,7 +599,7 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
         freeCanvas: oldScreen.screenData.freeCanvas,
         editableScreenUser: [...oldScreen.screenData.editableScreenUser],
         meta: {
-          ...metabname,
+          ...newMetaData,
           faviconUrl:
             data?.meta?.faviconUrl === undefined
               ? null
