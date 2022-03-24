@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { call, put, select } from 'redux-saga/effects';
 import { apiChangeRecursiveElement, apiCreateElement } from '@Api/element';
 import DOMPurify from 'dompurify';

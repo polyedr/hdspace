@@ -370,13 +370,13 @@ export type LibraryElement<
     group?: string;
     titleName?: string;
     titleLink?: string;
+    size?: string;
   } & Params;
   shared?: boolean;
 };
 
-export type LibraryElementPatch<Type extends Entity> = {
+export type LibraryElementPatch<Type extends Entity, Params = any> = {
   name?: string;
-  size?: string;
   type?: Type;
   scenario?: number;
   struct_type?: Type;
@@ -387,6 +387,12 @@ export type LibraryElementPatch<Type extends Entity> = {
     ownStyles: React.CSSProperties;
     pseudoClassStyles: { [className: string]: React.CSSProperties };
   };
+  parameters?: {
+    group?: string;
+    titleName?: string;
+    titleLink?: string;
+    size?: string;
+  } & Params;
   children?: string[];
 };
 
@@ -842,7 +848,6 @@ export type ProjectWithScreens = ProjectBase & {
 
 export type StateElement = {
   id: string;
-  size?: string;
   name: string;
   type: Entity | 'none';
   buoyancy: number;

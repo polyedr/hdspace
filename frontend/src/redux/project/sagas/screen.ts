@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { all, call, fork, put, select } from 'redux-saga/effects';
 import { omit, head, assoc, prepend } from 'ramda';
 import { push } from 'connected-react-router';
@@ -348,6 +349,7 @@ export const updateScreenImageSaga = withRequiredPermissions(
     );
 
     if (result) {
+      result.element = rootId;
       yield put(updateScreen(result));
       yield put(
         enqueueSnackbar({

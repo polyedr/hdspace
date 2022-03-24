@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { memo, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';

@@ -39,6 +39,7 @@ const OtherNavbarItem = React.forwardRef<HTMLElement, RendererProps>(
     return (
       <>
         {isLink && (isProtoMode || exportScreenFlag) ? (
+          // eslint-disable-next-line react/jsx-no-target-blank
           <a
             href={link}
             className={cn(

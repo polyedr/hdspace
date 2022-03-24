@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, call, select, takeEvery } from 'redux-saga/effects';
 import {
   selectAnnotatedElementId,
