@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import cn from 'classnames';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';

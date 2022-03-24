@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { useCallback, useRef, useState } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
