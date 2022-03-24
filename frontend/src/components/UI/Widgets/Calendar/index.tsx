@@ -28,15 +28,12 @@ const CalendarWidget: React.FC<Props> = (props) => {
   const editorDocument = useSelector(selectEditorDocument);
 
   useEffect(() => {
-    if (
-      !calendar?.calendarSize || 
-      calendarSize !== undefined
-    ) {
+    if (!calendar?.calendarSize || calendarSize) {
       setCalendar(
         new Calendar({
           id: `.widget-${id}`,
           theme: 'basic',
-          calendarSize:calendarSize,
+          calendarSize,
           fontFamilyHeader: ownStyles?.fontFamily || '"Roboto", sans-serif',
           document: editorDocument,
         }),

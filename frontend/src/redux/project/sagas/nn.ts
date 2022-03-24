@@ -58,11 +58,13 @@ const recognizeImageSaga = compose(
       JSON.stringify({ block_type: blockType }),
     );
 
-    const { result: recognizeResult, error: recognizeError }: Result<Screen> =
-      yield call(reqWrapper, recognizeImgUsingNN, {
-        data: recognizeFormData,
-        contentType: 'multipart/form-data',
-      });
+    const {
+      result: recognizeResult,
+      error: recognizeError,
+    }: Result<Screen> = yield call(reqWrapper, recognizeImgUsingNN, {
+      data: recognizeFormData,
+      contentType: 'multipart/form-data',
+    });
 
     if (recognizeResult) {
       if (!recognizeResult.screenData.nnResult) {
@@ -169,11 +171,14 @@ const assembleImageSaga = compose(
       },
     );
     if (assembleResult) {
-      const convertedElements = getElementsArray(assembleResult).map(
-        (element) => convertElementToPatchRequest(element),
-      );
+      const convertedElements = getElementsArray(
+        assembleResult,
+      ).map((element) => convertElementToPatchRequest(element));
 
-      const { result, error }: Result<ServerElement<any>> = yield call(
+      const {
+        result,
+        error,
+      }: Result<ServerElement<any>> = yield call(
         reqWrapper,
         apiUpdateElements,
         { data: convertedElements },
@@ -264,17 +269,22 @@ const autoAnalyzeImageSaga = compose(
     );
     formData.append('styles', '{}');
 
-    const { result: nnContainer, error: nnError }: Result<LibraryElement<any>> =
-      yield call(reqWrapper, parseImgUsingNN, {
-        data: formData,
-        contentType: 'multipart/form-data',
-      });
+    const {
+      result: nnContainer,
+      error: nnError,
+    }: Result<LibraryElement<any>> = yield call(reqWrapper, parseImgUsingNN, {
+      data: formData,
+      contentType: 'multipart/form-data',
+    });
     if (nnContainer) {
       const convertedElements = getElementsArray(nnContainer).map((element) =>
         convertElementToPatchRequest(element),
       );
 
-      const { result, error }: Result<ServerElement<any>> = yield call(
+      const {
+        result,
+        error,
+      }: Result<ServerElement<any>> = yield call(
         reqWrapper,
         apiUpdateElements,
         { data: convertedElements },
