@@ -29,6 +29,8 @@ const notDraggableElements: Entity[] = [
   'listItem',
   'dropdownItem',
   'dropdownMenu',
+  'paginationItem',
+  'breadcrumbItem',
 ];
 
 const useStyles = makeStyles({

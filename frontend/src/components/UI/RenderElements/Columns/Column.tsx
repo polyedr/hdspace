@@ -4,7 +4,11 @@ import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import cn from 'classnames';
 
-const useStyles = makeComponentStyles('column');
+const useStyles = makeComponentStyles('columns', {
+  columnsResizeable: {
+    flexBasis: 'auto',
+  },
+});
 
 const Column = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
   const { element, children, isDisabled } = props;
@@ -22,6 +26,7 @@ const Column = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
         className,
         groupClass,
         classes.ownStyles,
+        classes.columnsResizeable,
         !isDisabled && classes.ownPseudoStyles,
       )}
       {...eventHandlers}

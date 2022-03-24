@@ -129,8 +129,13 @@ const BorderCrumb: React.FC<Props> = (props) => {
           keys.length ===
           Object.keys(newButtons[0].styles.ownStyles).length - 1
         ) {
-          const { id, type, name, parameters, styles } =
-            currentGeneratorElements[0];
+          const {
+            id,
+            type,
+            name,
+            parameters,
+            styles,
+          } = currentGeneratorElements[0];
           const createdElementsData = {
             createdElements: [
               {

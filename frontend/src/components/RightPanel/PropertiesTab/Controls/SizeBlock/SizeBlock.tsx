@@ -16,7 +16,6 @@ import { Button, ButtonGroup, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { capitalize } from '@material-ui/core/utils';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
-// import { useDebouncedValueChange } from '@Utils/debounceHooks';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -35,7 +34,6 @@ const useStyles = makeStyles({
 
 const sameSizeElements: (Entity | 'none')[] = ['checkbox', 'radiobutton'];
 const percentSizeElements: (Entity | 'none')[] = ['carousel'];
-// const calendarSize: (Entity | 'none')[] = ['calendar'];
 const disableWidthElements: (Entity | 'none')[] = [
   'navbar',
   'calendar',
@@ -66,10 +64,6 @@ type ControlProps = {
   sizeName: SizeName;
   disabled: boolean;
 };
-// type CalendarProps = {
-//   handleSizeChange: () => void;
-//   calendarSize: string;
-// };
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
@@ -211,12 +205,12 @@ const SizeBlock: React.FC<Props> = ({
 
   const ClendarSizeControl: React.FC = () => {
     const dispatch = useDispatch();
-    const { id } = useSelector(selectActiveElement);
+    const { id, parameters } = useSelector(selectActiveElement);
     const handleSizeChange = (e) => {
       dispatch(
         updateElement({
           elementID: id,
-          data: { size: e.currentTarget.value },
+          data: { parameters: { ...parameters, size: e.currentTarget.value } },
           active: true,
         }),
       );
