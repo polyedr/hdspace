@@ -34,7 +34,7 @@ const BootstrapNavbar = React.forwardRef<HTMLElement, RendererProps>(
           'navbar-expand-sm navbar-light bg-light',
           classes.ownStyles,
           groupClass,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          !isDisabled && classes.ownPseudoStyles,
         )}
         aria-label="navbar"
         id={element.id}
