@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, call, select, putResolve } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,

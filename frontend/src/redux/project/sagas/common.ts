@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, call, select } from 'redux-saga/effects';
 import {
   selectElementParameters,
