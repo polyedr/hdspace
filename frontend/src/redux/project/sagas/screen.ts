@@ -568,23 +568,41 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
       selectSortedScreens,
     );
 
+    let allowUniqueName = true;
+    screens.forEach((screen) => {
+      if (name === screen.name && screenID !== screen.id) {
+        allowUniqueName = true;
+        throw new Error(`Screen '${name}' already exists.`);
+      }
+      if (name === screen.name && screenID === screen.id) {
+        allowUniqueName = false;
+      }
+    });
+
+    const metaData = data?.meta ?? oldScreen.screenData.meta;
+    const newMetaData = metaData || {};
     const newScreen: Screen = {
       ...oldScreen,
-      name: name
-        ? generateUniqueName(
-            name.trim(),
-            screens.map((screen) => screen.name),
-          )
-        : oldScreen.name,
+      name:
+        name && allowUniqueName
+          ? generateUniqueName(
+              name.trim(),
+              screens.map((screen) => screen.name),
+            )
+          : oldScreen.name,
       screenData: {
-        ...(data || {}),
         freeCanvas: oldScreen.screenData.freeCanvas,
         editableScreenUser: [...oldScreen.screenData.editableScreenUser],
         meta: {
-          ...(oldScreen.meta || {}),
-          ...(data?.meta || {}),
+          ...newMetaData,
+          faviconUrl:
+            data?.meta?.faviconUrl === undefined
+              ? null
+              : data?.meta?.faviconUrl
+              ? data?.meta?.faviconUrl
+              : oldScreen?.screenData?.meta?.faviconUrl,
         },
-        uiFramework: data?.uiFramework || oldScreen.uiFramework,
+        uiFramework: data?.uiFramework || oldScreen.screenData.uiFramework,
       },
     };
     yield put(Actions.updateScreen(newScreen));
