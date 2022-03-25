@@ -134,22 +134,23 @@ export const createScreenSaga = compose(
       screens.map((screen) => screen.name),
     );
 
-    const { result: createdScreen, error: createScreenError }: Result<Screen> =
-      yield call(reqWrapper, apiCreateScreen, {
-        data: {
-          project: projectID,
-          name: numberedName,
-          status: 'in_progress',
-          buoyancy,
-          image: null,
-          screen_data_json: JSON.stringify({
-            viewport:
-              'width=device-width, initial-scale=1.0, minimum-scale=1.0', // default viewport value
-            freeCanvas,
-          }),
-          styles_root: {},
-        },
-      });
+    const {
+      result: createdScreen,
+      error: createScreenError,
+    }: Result<Screen> = yield call(reqWrapper, apiCreateScreen, {
+      data: {
+        project: projectID,
+        name: numberedName,
+        status: 'in_progress',
+        buoyancy,
+        image: null,
+        screen_data_json: JSON.stringify({
+          viewport: 'width=device-width, initial-scale=1.0, minimum-scale=1.0', // default viewport value
+          freeCanvas,
+        }),
+        styles_root: {},
+      },
+    });
 
     if (createdScreen) {
       if (!useHistory) {
@@ -197,8 +198,9 @@ export const createScreenSaga = compose(
           data: [rootScenarioWithRootElement],
         });
 
-        const currentProject: ReturnType<typeof selectCurrentProject> =
-          yield select(selectCurrentProject);
+        const currentProject: ReturnType<
+          typeof selectCurrentProject
+        > = yield select(selectCurrentProject);
 
         const updateProject: Project = assoc(
           'projectscreen',
@@ -206,14 +208,16 @@ export const createScreenSaga = compose(
           currentProject,
         );
 
-        const { result: savedScreen, error: savedScreenError }: Result<Screen> =
-          yield call(reqWrapper, apiUpdateScreen, {
-            id: newScreen.id,
-            data: omit(
-              ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
-              newScreen,
-            ),
-          });
+        const {
+          result: savedScreen,
+          error: savedScreenError,
+        }: Result<Screen> = yield call(reqWrapper, apiUpdateScreen, {
+          id: newScreen.id,
+          data: omit(
+            ['screenLoader', 'image', 'screen_data_json', 'buoyancy'],
+            newScreen,
+          ),
+        });
 
         if (savedScreen) {
           const updatedScreen = {
@@ -398,8 +402,9 @@ export const deleteScreenSaga = compose(
       yield put(setCurrentScreenId(-1));
     }
 
-    const currentProject: ReturnType<typeof selectCurrentProject> =
-      yield select(selectCurrentProject);
+    const currentProject: ReturnType<
+      typeof selectCurrentProject
+    > = yield select(selectCurrentProject);
     const screenList = currentProject.projectscreen;
 
     if (screenList.length <= 2) {
@@ -568,23 +573,41 @@ export const editScreenNameAndDataSaga = withRequiredPermissions(
       selectSortedScreens,
     );
 
+    let allowUniqueName = true;
+    screens.forEach((screen) => {
+      if (name === screen.name && screenID !== screen.id) {
+        allowUniqueName = true;
+        throw new Error(`Screen '${name}' already exists.`);
+      }
+      if (name === screen.name && screenID === screen.id) {
+        allowUniqueName = false;
+      }
+    });
+
+    const metaData = data?.meta ?? oldScreen.screenData.meta;
+    const newMetaData = metaData || {};
     const newScreen: Screen = {
       ...oldScreen,
-      name: name
-        ? generateUniqueName(
-            name.trim(),
-            screens.map((screen) => screen.name),
-          )
-        : oldScreen.name,
+      name:
+        name && allowUniqueName
+          ? generateUniqueName(
+              name.trim(),
+              screens.map((screen) => screen.name),
+            )
+          : oldScreen.name,
       screenData: {
-        ...(data || {}),
         freeCanvas: oldScreen.screenData.freeCanvas,
         editableScreenUser: [...oldScreen.screenData.editableScreenUser],
         meta: {
-          ...(oldScreen.meta || {}),
-          ...(data?.meta || {}),
+          ...newMetaData,
+          faviconUrl:
+            data?.meta?.faviconUrl === undefined
+              ? null
+              : data?.meta?.faviconUrl
+              ? data?.meta?.faviconUrl
+              : oldScreen?.screenData?.meta?.faviconUrl,
         },
-        uiFramework: data?.uiFramework || oldScreen.uiFramework,
+        uiFramework: data?.uiFramework || oldScreen.screenData.uiFramework,
       },
     };
     yield put(Actions.updateScreen(newScreen));
@@ -698,10 +721,16 @@ export const clearEditableScreenSaga = withRequiredPermissions(
 
 export function* getScreensSaga(screens: Screen[]) {
   try {
-    const { result: elements, error }: Result<ServerElement<'root'>[]> =
-      yield call(reqWrapper, apiGetElements, {
+    const {
+      result: elements,
+      error,
+    }: Result<ServerElement<'root'>[]> = yield call(
+      reqWrapper,
+      apiGetElements,
+      {
         scenariosIDs: [screens.map((screen) => screen.screenscenario)],
-      });
+      },
+    );
     if (elements) {
       yield put(
         setScreens(
