@@ -15,14 +15,8 @@ const Heading = React.forwardRef<HTMLHeadingElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const {
-      headingType,
-      textContent,
-      isLink,
-      link,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { headingType, textContent, isLink, link, screenLink, screenName } =
+      element.parameters;
     const HeadingTag = headingType || 'h3';
 
     const contentEditableSettings = useContentEditable(element.id, textContent);

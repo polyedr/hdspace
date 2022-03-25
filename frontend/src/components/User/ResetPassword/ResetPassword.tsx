@@ -57,7 +57,7 @@ const ResetPassword: React.FC<IProps> = ({
     '/password/reset/confirm/:uid/:token',
   );
 
-  const { uid, token } = (match?.params as unknown) as {
+  const { uid, token } = match?.params as unknown as {
     uid: string;
     token: string;
   };

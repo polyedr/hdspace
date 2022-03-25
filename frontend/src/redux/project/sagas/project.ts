@@ -507,9 +507,8 @@ export function* updateProjectSaga(
       return;
     }
 
-    const currentProject: ReturnType<
-      typeof selectCurrentProject
-    > = yield select(selectCurrentProject);
+    const currentProject: ReturnType<typeof selectCurrentProject> =
+      yield select(selectCurrentProject);
 
     const success: boolean = yield call(projectUpdateHelperSaga, project);
 
