@@ -9,6 +9,7 @@ import {
   DialogActions,
   Button,
   TextField,
+  Tooltip,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
@@ -128,16 +129,20 @@ const ScreenEditDialog: React.FC<Props> = ({
                       id="contained-button-file"
                       onChange={handleChangeFileInput}
                     />
-                    <IconButton aria-label="delete" onClick={deleteFavicon}>
-                      <DeleteIcon fontSize="large" />
-                    </IconButton>
-                    <IconButton
-                      aria-label="upload"
-                      component="span"
-                      style={{ marginRight: '10px' }}
-                    >
-                      <CloudUploadIcon fontSize="large" />
-                    </IconButton>
+                    <Tooltip title="Delete" arrow>
+                      <IconButton aria-label="delete" onClick={deleteFavicon}>
+                        <DeleteIcon fontSize="large" />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Upload" arrow>
+                      <IconButton
+                        aria-label="upload"
+                        component="span"
+                        style={{ marginRight: '10px' }}
+                      >
+                        <CloudUploadIcon fontSize="large" />
+                      </IconButton>
+                    </Tooltip>
                     {faviconUrl ? (
                       <img
                         src={faviconUrl}
@@ -264,16 +269,17 @@ const ScreenEditDialog: React.FC<Props> = ({
                   </Field>
                 </>
               )}
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={onClose} color="primary" variant="contained">
-                Cancel
-              </Button>
 
-              <Button type="submit" color="secondary" variant="contained">
-                Confirm
-              </Button>
-            </DialogActions>
+              <DialogActions>
+                <Button onClick={onClose} color="primary" variant="contained">
+                  Cancel
+                </Button>
+
+                <Button type="submit" color="secondary" variant="contained">
+                  Confirm
+                </Button>
+              </DialogActions>
+            </DialogContent>
           </form>
         )}
       />
