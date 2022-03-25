@@ -19,7 +19,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 
-const lockedAspectRatioElements: Entity[] = ['checkbox', 'radiobutton'];
+const lockedAspectRatioElements: Entity[] = ['radiobutton'];
 const notDraggableElements: Entity[] = [
   'option',
   'listItem',
