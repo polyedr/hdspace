@@ -19,13 +19,8 @@ const Paragraph = React.forwardRef<HTMLParagraphElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const {
-      textContent,
-      isLink,
-      link,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { textContent, isLink, link, screenLink, screenName } =
+      element.parameters;
     const classes = useStyles(props);
     const contentEditableSettings = useContentEditable(element.id, textContent);
     const eventHandlers = useEventHandlers(

@@ -15,13 +15,8 @@ const BootstrapBreadcrumbItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
-    const {
-      textContent,
-      link,
-      isLink,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { textContent, link, isLink, screenLink, screenName } =
+      element.parameters;
     const classes = useStyles(props);
 
     const contentEditableSettings = useContentEditable(element.id, textContent);
