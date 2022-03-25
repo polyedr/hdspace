@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+// @ts-nocheck
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';

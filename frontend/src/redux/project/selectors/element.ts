@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { createSelector } from 'reselect';
 import { DEFAULT_ROOT, LABELED_INPUT_TYPES } from '@Constants/defaultParams';
