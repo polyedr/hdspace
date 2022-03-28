@@ -46,6 +46,7 @@ import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { makeStyles } from '@material-ui/core/styles';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -98,6 +99,8 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     item: null,
   };
 
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
+
   const [state, setState] = useState<State>(initialState);
 
   const coreElementSelected = useMemo(() => {
@@ -117,12 +120,14 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   ) => {
     ev.preventDefault();
 
-    setState({
-      mouseX: ev.clientX - 2,
-      mouseY: ev.clientY - 4,
-      item,
-    });
-    dispatch(setActiveElement(String(item.id)));
+    if (!isPrototypeMode) {
+      setState({
+        mouseX: ev.clientX - 2,
+        mouseY: ev.clientY - 4,
+        item,
+      });
+      dispatch(setActiveElement(String(item.id)));
+    }
   };
 
   const handleClose = () => setState(initialState);
@@ -232,8 +237,9 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         }
 
         if (
-          e.keyCode === 46 ||
-          (e.keyCode === 8 && e.metaKey && !coreElementSelected && canEdit)
+          !isPrototypeMode &&
+          (e.keyCode === 46 ||
+            (e.keyCode === 8 && e.metaKey && !coreElementSelected && canEdit))
         ) {
           // Delete or Cmd + Backspace
           const prevItemId = findPrevNodeId(tree, selectedItemId);
@@ -265,6 +271,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       select,
       selectedItemId,
       tree,
+      isPrototypeMode,
     ],
   );
 
