@@ -19,11 +19,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 
-const lockedAspectRatioElements: Entity[] = [
-  'image',
-  'checkbox',
-  'radiobutton',
-];
+const lockedAspectRatioElements: Entity[] = ['radiobutton'];
 const notDraggableElements: Entity[] = [
   'option',
   'listItem',
@@ -35,7 +31,9 @@ const notDraggableElements: Entity[] = [
 
 const useStyles = makeStyles({
   rnd: {
-    position: 'absolute',
+    position: 'fixed',
+    width: 'auto !important',
+    height: 'auto !important',
     zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
       isActive || includesActiveElement ? 1000 : zIndex,
   },

@@ -5,11 +5,11 @@ import PATH_NAMES from '@Constants/pathNames';
 import Layout from '../components/Layout';
 import { selectIsLoggedIn } from '../redux/user/selectors';
 
-const Profile = lazy(() => import('../components//User/Profile'));
-const Signin = lazy(() => import('../components//User/Signin'));
-const Signup = lazy(() => import('../components//User/Signup'));
-const Activation = lazy(() => import('../components/User/Activation/'));
-const Success = lazy(() => import('../components/User/Success/'));
+const Profile = lazy(() => import('../components/User/Profile'));
+const Signin = lazy(() => import('../components/User/Signin'));
+const Signup = lazy(() => import('../components/User/Signup'));
+const Activation = lazy(() => import('../components/User/Activation'));
+const Success = lazy(() => import('../components/User/Success'));
 const ResetPasswordEmail = lazy(
   () => import('../components/User/ResetPassword/ResetPasswordEmail'),
 );

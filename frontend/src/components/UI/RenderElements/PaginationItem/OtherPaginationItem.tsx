@@ -18,14 +18,8 @@ const OtherPaginationItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
-    const {
-      textContent,
-      link,
-      isActiveLink,
-      isLink,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { textContent, link, isActiveLink, isLink, screenLink, screenName } =
+      element.parameters;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers<HTMLElement>(props, {
       onClick: (event: React.SyntheticEvent<HTMLElement>) => {

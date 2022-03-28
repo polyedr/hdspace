@@ -19,13 +19,8 @@ const BootstrapNavbarItem = React.forwardRef<HTMLElement, RendererProps>(
   (props, ref) => {
     const { element } = props;
     const [groupClass] = element.styles.classNames;
-    const {
-      itemName,
-      link,
-      isLink,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { itemName, link, isLink, screenLink, screenName } =
+      element.parameters;
     const classes = useStyles(props);
 
     const history = useHistory();
