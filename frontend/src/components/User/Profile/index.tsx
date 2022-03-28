@@ -34,6 +34,7 @@ import {
   DialogContentText,
   Switch,
   Tab,
+  Tabs,
   TextField,
   FormControl,
   InputLabel,
@@ -42,7 +43,6 @@ import {
   FormHelperText,
   Grid,
 } from '@material-ui/core';
-import { TabContext, TabList, TabPanel } from '@material-ui/lab';
 import ImageCropper from '@Components/CropImage';
 import { useHistory } from 'react-router';
 import SubmitError from '../SubmitError';
@@ -134,6 +134,22 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
+const TabPanel = (props) => {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && children}
+    </div>
+  );
+};
+
 const TabStyle = styled(Tab)(({ theme }) => ({
   minWidth: 'unset',
   padding: theme.spacing(1),
@@ -144,6 +160,13 @@ const TabPanelStyle = styled(TabPanel)(({ theme }) => ({
   padding: `${theme.spacing(3)}px 0`,
 }));
 
+const a11yProps = (index) => {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+};
+
 const Profile: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -153,9 +176,10 @@ const Profile: React.FC = () => {
   const [croppedImage, setCroppedImage] = useState<any>(undefined);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-  const [value, setValue] = useState('profile');
+  const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
+    console.log(newValue);
     setValue(newValue);
   };
 
@@ -275,305 +299,301 @@ const Profile: React.FC = () => {
   return (
     <main>
       <Container>
-        <TabContext value={value}>
-          <div className={classes.headerContainer}>
-            <Typography variant="h4" className={classes.header}>
-              Profile settings
-            </Typography>
-            <TabList
-              className={classes.tabList}
-              onChange={handleChange}
-              aria-label="lab API tabs example"
-            >
-              <TabStyle label="Profile" value="profile" />
-              <TabStyle label="Security" value="security" />
-              <TabStyle label="UI settings" value="ui-settings" />
-            </TabList>
-          </div>
-          <TabPanelStyle value="profile">
-            <div className={classes.formsContainer}>
-              <Form
-                onSubmit={handleChangeProfileData}
-                render={({ handleSubmit }) => (
-                  <form
-                    onSubmit={handleSubmit}
-                    className={classes.profileImageWrapper}
-                  >
-                    <div className={classes.imageInputLabel}>Your photo</div>
+        <div className={classes.headerContainer}>
+          <Typography variant="h4" className={classes.header}>
+            Profile settings
+          </Typography>
+          <Tabs
+            value={value}
+            className={classes.tabList}
+            onChange={handleChange}
+            aria-label="lab API tabs example"
+          >
+            <TabStyle label="Profile" {...a11yProps(0)} />
+            <TabStyle label="Security" {...a11yProps(1)} />
+            <TabStyle label="UI settings" {...a11yProps(2)} />
+          </Tabs>
+        </div>
+        <TabPanelStyle value={value} index={0}>
+          <div className={classes.formsContainer}>
+            <Form
+              onSubmit={handleChangeProfileData}
+              render={({ handleSubmit }) => (
+                <form
+                  onSubmit={handleSubmit}
+                  className={classes.profileImageWrapper}
+                >
+                  <div className={classes.imageInputLabel}>Your photo</div>
 
-                    <img alt="profile" src={avatarCrop ?? IMAGES.prof} />
+                  <img alt="profile" src={avatarCrop ?? IMAGES.prof} />
 
-                    {imageToCrop && (
-                      <>
-                        <ImageCropper
-                          imageToCrop={imageToCrop}
-                          setResult={setCroppedImage}
-                        />
-
-                        <button type="button" onClick={handleSaved}>
-                          Saved
-                        </button>
-                      </>
-                    )}
-
-                    <div className={classes.profileImageActions}>
-                      <label className={classes.imageActionButton}>
-                        Upload
-                        <Field
-                          name="avatar"
-                          render={({ input }) => {
-                            return (
-                              <input
-                                {...input}
-                                type="file"
-                                accept=".png, .jpeg"
-                                onChange={handleImageUpload}
-                                className={classes.hidden}
-                              />
-                            );
-                          }}
-                        />
-                      </label>
-                      <button
-                        className={classes.imageActionButton}
-                        type="button"
-                        onClick={handleDialogOpen}
-                        disabled={!avatarCrop}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </form>
-                )}
-              />
-              <div className={classes.textFieldsContainer}>
-                <Form
-                  initialValues={{
-                    first_name: firstName,
-                    last_name: lastName,
-                    role,
-                    email,
-                  }}
-                  onSubmit={handleFormSubmit}
-                  render={({ handleSubmit, submitError }) => (
+                  {imageToCrop && (
                     <>
-                      <div className={classes.error}>
-                        <SubmitError name="detail" />
+                      <ImageCropper
+                        imageToCrop={imageToCrop}
+                        setResult={setCroppedImage}
+                      />
 
-                        {submitError && (
-                          <Alert severity="error" variant="filled">
-                            {submitError}
-                          </Alert>
-                        )}
-                      </div>
-                      <form onSubmit={handleSubmit}>
-                        <Grid container spacing={4}>
-                          <Grid container item spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                              <Field name="first_name" validate={fieldValidate}>
-                                {({ input, meta }) => (
-                                  <TextField
-                                    {...input}
-                                    onBlur={handleSubmit}
-                                    InputLabelProps={{
-                                      htmlFor: 'first_name_input',
-                                    }}
-                                    InputProps={{
-                                      id: 'first_name_input',
-                                    }}
-                                    type="text"
-                                    fullWidth
-                                    label="First Name"
-                                    placeholder="First Name"
-                                    variant="outlined"
-                                    size="small"
-                                    error={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                    }
-                                    helperText={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                        ? meta.error || meta.submitError
-                                        : null
-                                    }
-                                  />
-                                )}
-                              </Field>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                              <Field name="last_name" validate={fieldValidate}>
-                                {({ input, meta }) => (
-                                  <TextField
-                                    {...input}
-                                    onBlur={handleSubmit}
-                                    placeholder="Last Name"
-                                    type="text"
-                                    fullWidth
-                                    label="Last Name"
-                                    variant="outlined"
-                                    size="small"
-                                    error={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                    }
-                                    helperText={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                        ? meta.error || meta.submitError
-                                        : null
-                                    }
-                                  />
-                                )}
-                              </Field>
-                            </Grid>
-                          </Grid>
-                          <Grid container item spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                              <Field
-                                name="company_name"
-                                validate={fieldValidate}
-                              >
-                                {({ input, meta }) => (
-                                  <TextField
-                                    {...input}
-                                    onBlur={handleSubmit}
-                                    placeholder="Company Name"
-                                    type="text"
-                                    fullWidth
-                                    label="Company Name"
-                                    variant="outlined"
-                                    size="small"
-                                    error={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                    }
-                                    helperText={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                        ? meta.error || meta.submitError
-                                        : null
-                                    }
-                                  />
-                                )}
-                              </Field>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                              <Field name="role" defaultValue={role}>
-                                {({ input, meta }) => (
-                                  <FormControl
-                                    fullWidth
-                                    error={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                    }
-                                    variant="outlined"
-                                    disabled
-                                  >
-                                    <InputLabel>Role</InputLabel>
-
-                                    <Select
-                                      {...input}
-                                      margin="dense"
-                                      label="Role"
-                                      onBlur={handleSubmit}
-                                    >
-                                      {ROLES.map((role) => (
-                                        <MenuItem key={role} value={role} dense>
-                                          {role}
-                                        </MenuItem>
-                                      ))}
-                                    </Select>
-
-                                    <FormHelperText>
-                                      {(meta.error || meta.submitError) &&
-                                      meta.touched
-                                        ? meta.error || meta.submitError
-                                        : null}
-                                    </FormHelperText>
-                                  </FormControl>
-                                )}
-                              </Field>
-                            </Grid>
-                          </Grid>
-                          <Grid container item spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                              <Field name="email">
-                                {({ input, meta }) => (
-                                  <TextField
-                                    {...input}
-                                    onBlur={handleSubmit}
-                                    placeholder="Email"
-                                    type="text"
-                                    fullWidth
-                                    label="Email"
-                                    variant="outlined"
-                                    size="small"
-                                    error={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                    }
-                                    helperText={
-                                      (meta.error || meta.submitError) &&
-                                      meta.touched
-                                        ? meta.error || meta.submitError
-                                        : null
-                                    }
-                                    disabled
-                                  />
-                                )}
-                              </Field>
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                      </form>
+                      <button type="button" onClick={handleSaved}>
+                        Saved
+                      </button>
                     </>
                   )}
-                />
-              </div>
-            </div>
-          </TabPanelStyle>
-          <TabPanelStyle value="security" style={{ paddingBottom: 0 }}>
-            <div className={classes.settingsPart}>
-              <div className={classes.subheader}>Password</div>
-              <Button
-                color="secondary"
-                variant="contained"
-                onClick={handlePwdChange}
-              >
-                Change
-              </Button>
-            </div>
-          </TabPanelStyle>
-          <TabPanelStyle value="ui-settings" style={{ paddingBottom: 0 }}>
-            <div className={classes.settingsPart}>
-              <div className={classes.subheader}>
-                Always display drop target element borders
-                <Switch
-                  checked={dropTargetBorders}
-                  onChange={() => setDropTargetBorders(!dropTargetBorders)}
-                />
-              </div>
 
-              <div className={classes.subheader}>
-                User guide watched
-                <Switch
-                  checked={userGuide}
-                  onChange={() => setUserGuide(!userGuide)}
-                />
-              </div>
+                  <div className={classes.profileImageActions}>
+                    <label className={classes.imageActionButton}>
+                      Upload
+                      <Field
+                        name="avatar"
+                        render={({ input }) => {
+                          return (
+                            <input
+                              {...input}
+                              type="file"
+                              accept=".png, .jpeg"
+                              onChange={handleImageUpload}
+                              className={classes.hidden}
+                            />
+                          );
+                        }}
+                      />
+                    </label>
+                    <button
+                      className={classes.imageActionButton}
+                      type="button"
+                      onClick={handleDialogOpen}
+                      disabled={!avatarCrop}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </form>
+              )}
+            />
+            <div className={classes.textFieldsContainer}>
+              <Form
+                initialValues={{
+                  first_name: firstName,
+                  last_name: lastName,
+                  role,
+                  email,
+                }}
+                onSubmit={handleFormSubmit}
+                render={({ handleSubmit, submitError }) => (
+                  <>
+                    <div className={classes.error}>
+                      <SubmitError name="detail" />
 
-              <div className={classes.subheader}>
-                Enable Tabs Auto Switch
-                <Switch
-                  checked={autoSwitch}
-                  onChange={() => setAutoSwitch(!autoSwitch)}
-                />
-              </div>
+                      {submitError && (
+                        <Alert severity="error" variant="filled">
+                          {submitError}
+                        </Alert>
+                      )}
+                    </div>
+                    <form onSubmit={handleSubmit}>
+                      <Grid container spacing={4}>
+                        <Grid container item spacing={2}>
+                          <Grid item xs={12} sm={6}>
+                            <Field name="first_name" validate={fieldValidate}>
+                              {({ input, meta }) => (
+                                <TextField
+                                  {...input}
+                                  onBlur={handleSubmit}
+                                  InputLabelProps={{
+                                    htmlFor: 'first_name_input',
+                                  }}
+                                  InputProps={{
+                                    id: 'first_name_input',
+                                  }}
+                                  type="text"
+                                  fullWidth
+                                  label="First Name"
+                                  placeholder="First Name"
+                                  variant="outlined"
+                                  size="small"
+                                  error={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                  }
+                                  helperText={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                      ? meta.error || meta.submitError
+                                      : null
+                                  }
+                                />
+                              )}
+                            </Field>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Field name="last_name" validate={fieldValidate}>
+                              {({ input, meta }) => (
+                                <TextField
+                                  {...input}
+                                  onBlur={handleSubmit}
+                                  placeholder="Last Name"
+                                  type="text"
+                                  fullWidth
+                                  label="Last Name"
+                                  variant="outlined"
+                                  size="small"
+                                  error={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                  }
+                                  helperText={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                      ? meta.error || meta.submitError
+                                      : null
+                                  }
+                                />
+                              )}
+                            </Field>
+                          </Grid>
+                        </Grid>
+                        <Grid container item spacing={2}>
+                          <Grid item xs={12} sm={6}>
+                            <Field name="company_name" validate={fieldValidate}>
+                              {({ input, meta }) => (
+                                <TextField
+                                  {...input}
+                                  onBlur={handleSubmit}
+                                  placeholder="Company Name"
+                                  type="text"
+                                  fullWidth
+                                  label="Company Name"
+                                  variant="outlined"
+                                  size="small"
+                                  error={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                  }
+                                  helperText={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                      ? meta.error || meta.submitError
+                                      : null
+                                  }
+                                />
+                              )}
+                            </Field>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Field name="role" defaultValue={role}>
+                              {({ input, meta }) => (
+                                <FormControl
+                                  fullWidth
+                                  error={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                  }
+                                  variant="outlined"
+                                  disabled
+                                >
+                                  <InputLabel>Role</InputLabel>
+
+                                  <Select
+                                    {...input}
+                                    margin="dense"
+                                    label="Role"
+                                    onBlur={handleSubmit}
+                                  >
+                                    {ROLES.map((role) => (
+                                      <MenuItem key={role} value={role} dense>
+                                        {role}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+
+                                  <FormHelperText>
+                                    {(meta.error || meta.submitError) &&
+                                    meta.touched
+                                      ? meta.error || meta.submitError
+                                      : null}
+                                  </FormHelperText>
+                                </FormControl>
+                              )}
+                            </Field>
+                          </Grid>
+                        </Grid>
+                        <Grid container item spacing={2}>
+                          <Grid item xs={12} sm={6}>
+                            <Field name="email">
+                              {({ input, meta }) => (
+                                <TextField
+                                  {...input}
+                                  onBlur={handleSubmit}
+                                  placeholder="Email"
+                                  type="text"
+                                  fullWidth
+                                  label="Email"
+                                  variant="outlined"
+                                  size="small"
+                                  error={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                  }
+                                  helperText={
+                                    (meta.error || meta.submitError) &&
+                                    meta.touched
+                                      ? meta.error || meta.submitError
+                                      : null
+                                  }
+                                  disabled
+                                />
+                              )}
+                            </Field>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </form>
+                  </>
+                )}
+              />
             </div>
-          </TabPanelStyle>
-        </TabContext>
-        {value !== 'security' && (
+          </div>
+        </TabPanelStyle>
+        <TabPanelStyle value={value} index={1} style={{ paddingBottom: 0 }}>
+          <div className={classes.settingsPart}>
+            <div className={classes.subheader}>Password</div>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={handlePwdChange}
+            >
+              Change
+            </Button>
+          </div>
+        </TabPanelStyle>
+        <TabPanelStyle value={value} index={2} style={{ paddingBottom: 0 }}>
+          <div className={classes.settingsPart}>
+            <div className={classes.subheader}>
+              Always display drop target element borders
+              <Switch
+                checked={dropTargetBorders}
+                onChange={() => setDropTargetBorders(!dropTargetBorders)}
+              />
+            </div>
+
+            <div className={classes.subheader}>
+              User guide watched
+              <Switch
+                checked={userGuide}
+                onChange={() => setUserGuide(!userGuide)}
+              />
+            </div>
+
+            <div className={classes.subheader}>
+              Enable Tabs Auto Switch
+              <Switch
+                checked={autoSwitch}
+                onChange={() => setAutoSwitch(!autoSwitch)}
+              />
+            </div>
+          </div>
+        </TabPanelStyle>
+        {value !== 1 && (
           <Box padding="8px 0" className={classes.buttonsWrapper}>
             <Button
               color="secondary"
