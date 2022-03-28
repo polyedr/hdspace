@@ -31,7 +31,12 @@ const notDraggableElements: Entity[] = [
 
 const useStyles = makeStyles({
   rnd: {
-    position: 'fixed',
+    position: 'absolute',
+    zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
+      isActive || includesActiveElement ? 1000 : zIndex,
+  },
+  imageView: {
+    position: 'absolute',
     width: 'auto !important',
     height: 'auto !important',
     zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
@@ -174,7 +179,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   ) : (
     <Rnd
       onClick={handleInteractionStart}
-      className={classes.rnd}
+      className={element.type === 'image' ? classes.imageView : classes.rnd}
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}
       position={{
