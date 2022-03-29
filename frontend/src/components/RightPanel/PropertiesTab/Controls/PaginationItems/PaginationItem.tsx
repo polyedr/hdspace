@@ -4,6 +4,7 @@ import {
   IconButton,
   FormControlLabel,
   MenuItem,
+  FormLabel,
 } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -77,13 +78,22 @@ const PaginationItem: React.FC<Props> = ({
 
   const [selectedScreen, selectScreen] = useState(screenName);
   const screens = useSelector(selectScreensWithoutMaster);
-
+  const [isValidURL, setValidURL] = useState(true);
   const debouncedText = useDebouncedCallback((value) => {
     updateParams({ textContent: value }, id);
   }, 500);
 
   const debouncedLink = useDebouncedCallback((value) => {
-    updateParams({ link: value, screenLink: '', screenName: '' }, id);
+    if (value) {
+      const isValidURL =
+        value.startsWith('https://') || value.startsWith('http://');
+      setValidURL(isValidURL);
+      if (isValidURL) {
+        updateParams({ link: value, screenLink: '', screenName: '' }, id);
+      }
+    } else {
+      setValidURL(true);
+    }
   }, 500);
 
   const debouncedLinkedScreen = useDebouncedCallback((value, screenName) => {
@@ -206,10 +216,16 @@ const PaginationItem: React.FC<Props> = ({
             onChange={(ev) => debouncedLink.callback(ev.target.value)}
             label="Item URL"
             margin="dense"
+            placeholder="https://www.google.com"
             fullWidth
             multiline
             disabled={!canEdit}
           />
+        )}
+        {isLink && !isValidURL && (
+          <FormLabel id="error" component="label" error>
+            Your link should be start with http:// or https://.
+          </FormLabel>
         )}
 
         {!isLink && (
