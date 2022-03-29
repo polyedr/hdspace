@@ -32,7 +32,12 @@ import {
 import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Normalized, StateElement, UserProjectPermission } from '@Src/types';
+import {
+  Normalized,
+  StateElement,
+  UserProjectPermission,
+  KeyCode,
+} from '@Src/types';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   selectActiveElementId,
@@ -180,44 +185,36 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (selectedItemId && !isDragging) {
-        if (e.keyCode === 38) {
-          // ArrowUp
-          // TODO: add throttling
+        if (e.keyCode === KeyCode.UpArrow) {
           e.preventDefault();
           const prevNodeId = findPrevNodeId(tree, selectedItemId);
           select(prevNodeId);
           focusTreeItem(prevNodeId);
         }
 
-        if (e.keyCode === 40) {
-          // ArrowDown
-
-          // TODO: add throttling
+        if (e.keyCode === KeyCode.DownArrow) {
           e.preventDefault();
           const nextNodeId = findNextNodeId(tree, selectedItemId);
           focusTreeItem(nextNodeId);
         }
 
-        if (e.keyCode === 39) {
-          // ArrowRight
+        if (e.keyCode === KeyCode.RightArrow) {
           expand(selectedItemId);
           select(selectedItemId);
         }
 
-        if (e.keyCode === 37) {
-          // ArrowLeft
-
+        if (e.keyCode === KeyCode.LeftArrow) {
           collapse(selectedItemId);
 
           select(selectedItemId);
         }
-        if (e.keyCode === 32 && !coreElementSelected && canEdit) {
-          // Space
+
+        if (e.keyCode === KeyCode.Space && !coreElementSelected && canEdit) {
           setIsDragging((state) => !state);
         }
 
         if (
-          e.keyCode === 67 &&
+          e.keyCode === KeyCode.C &&
           (e.ctrlKey || e.metaKey) &&
           !coreElementSelected &&
           canEdit
@@ -227,7 +224,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         }
 
         if (
-          e.keyCode === 86 &&
+          e.keyCode === KeyCode.V &&
           (e.ctrlKey || e.metaKey) &&
           !coreElementSelected &&
           canEdit
@@ -238,8 +235,11 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
 
         if (
           !isPrototypeMode &&
-          (e.keyCode === 46 ||
-            (e.keyCode === 8 && e.metaKey && !coreElementSelected && canEdit))
+          (e.keyCode === KeyCode.DeleteKey ||
+            (e.keyCode === KeyCode.BackSpace &&
+              e.metaKey &&
+              !coreElementSelected &&
+              canEdit))
         ) {
           // Delete or Cmd + Backspace
           const prevItemId = findPrevNodeId(tree, selectedItemId);
@@ -249,12 +249,16 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           focusTreeItem(prevItemId);
         }
 
-        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+        if (
+          e.keyCode === KeyCode.Z &&
+          (e.ctrlKey || e.metaKey) &&
+          !e.shiftKey
+        ) {
           // Ctrl/Cmd + Z
           dispatch(executeUndoActions());
         }
 
-        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+        if (e.keyCode === KeyCode.Z && (e.ctrlKey || e.metaKey) && e.shiftKey) {
           // Ctrl/Cmd + Shift + Z
           dispatch(executeRedoActions());
         }
