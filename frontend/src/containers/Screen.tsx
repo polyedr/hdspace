@@ -9,11 +9,7 @@ import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { selectScreenByIdWrapper } from '@Redux/project/selectors/screen';
 import VIA from '@Components/Editor/VIA';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
-import {
-  activateScreen,
-  // clearEditableScreen,
-  // setEditableScreen,
-} from '@Redux/project/actions';
+import { activateScreen } from '@Redux/project/actions';
 import ELEMENT_IDS from '@Constants/elementIds';
 import Tour, { ReactourStep } from 'reactour';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
@@ -139,11 +135,6 @@ const Screen: React.FC<Props> = ({ screenId }) => {
       history.push(`/project/${currentProjectId}`);
     }
   }, [history, dispatch, screen, currentProjectId]);
-
-  // useEffect(() => {
-  //   dispatch(setEditableScreen(screen.id));
-  //   dispatch(clearEditableScreen(screen));
-  // }, [dispatch, screen.id]);
 
   const userGuideActive = useSelector(selectUserGuideActive);
   const { shape } = useTheme();
