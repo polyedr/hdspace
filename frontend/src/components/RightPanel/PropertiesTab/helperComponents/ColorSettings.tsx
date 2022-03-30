@@ -44,7 +44,7 @@ const ColorSettings: React.FC<Props> = ({
   const [currentColorObject, setCurrentColorObject] = useState<ColorResult>(
     toState(currentColor),
   );
-  const [checked, setChecked] = React.useState(
+  const [checked, setChecked] = useState(
     currentBackgroundColor.value.includes('rgba'),
   );
 

@@ -197,6 +197,9 @@ import {
   LoadAssets,
   ImageData,
   UpdateDefaultStyles,
+  GenerateImagePalette,
+  SetImagePalette,
+  ImagePalette,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -1760,4 +1763,18 @@ export const setStatePseudoClass = (
 ): SetStatePseudoClass => ({
   type: TYPES.SET_STATE_PSEUDO_CLASS,
   payload: pseudoClass,
+});
+
+export const generateImagePalette = (
+  imageUrl: string,
+): GenerateImagePalette => ({
+  type: TYPES.GENERATE_IMAGE_PALETTE,
+  payload: imageUrl,
+});
+
+export const setImagePalette = (
+  imagePalette: ImagePalette,
+): SetImagePalette => ({
+  type: TYPES.SET_IMAGE_PALETTE,
+  payload: imagePalette,
 });

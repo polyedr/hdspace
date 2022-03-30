@@ -69,6 +69,18 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
+  imagePalette: ImagePalette | null;
+};
+
+export type ImagePalette = {
+  id: number;
+  image: string;
+  imageUrl: string;
+  created: string;
+  modified: string;
+  illustrationSet: number | null;
+  fileUrl: string | null;
+  palette: string;
 };
 
 export type ProjectUiState = {
@@ -1186,6 +1198,16 @@ export type SetStatePseudoClass = IAction<
   string | null
 >;
 
+export type GenerateImagePalette = IAction<
+  typeof TYPES.GENERATE_IMAGE_PALETTE,
+  string
+>;
+
+export type SetImagePalette = IAction<
+  typeof TYPES.SET_IMAGE_PALETTE,
+  ImagePalette
+>;
+
 export type Action =
   | LoadProjects
   | SetUsersSearchValue
@@ -1366,7 +1388,9 @@ export type Action =
   | UpdateUISettingsParameters
   | SetEnabledPseudoClass
   | SetStatePseudoClass
-  | SetValueCheckRobots;
+  | SetValueCheckRobots
+  | GenerateImagePalette
+  | SetImagePalette;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

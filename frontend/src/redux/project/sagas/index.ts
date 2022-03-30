@@ -121,6 +121,7 @@ import {
   removeAssetSaga,
   restoreAssetSaga,
   editIcoScreenSaga,
+  generateImagePaletteSaga,
 } from './asset';
 import {
   checkRobotsFileFromUrlSaga,
@@ -585,4 +586,6 @@ export default function* projectSaga() {
   yield takeEvery(TYPES.PROCESS_DROP_ELEMENT, processDropElementSaga);
 
   yield takeEvery(TYPES.SET_ENABLED_PSEUDO_CLASS, setEnabledPseudoClassSaga);
+
+  yield takeLatest(TYPES.GENERATE_IMAGE_PALETTE, generateImagePaletteSaga);
 }

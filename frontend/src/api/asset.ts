@@ -88,3 +88,20 @@ export const apiGetAssets = (
     )
     .catch(handleError);
 };
+
+export const apiGenerateImagePalette = (
+  props: MyAxiosProps & { imageUrl: string },
+): Promise<any> => {
+  const { imageUrl, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    url: `/projects/images_palette/`,
+    method: 'POST',
+    data: { fileurl: imageUrl },
+  })
+    .then((response: AxiosResponse<ServerAsset>) => {
+      console.log(response.data);
+      return response.data;
+    })
+    .catch(handleError);
+};

@@ -182,6 +182,9 @@ export const selectSidebarHost = ({ project }: AppReduxState) =>
 export function selectImportLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.importLoader;
 }
+export function selectImagePalette(state: AppReduxState): string | undefined {
+  return selectProjectState(state).data.imagePalette?.palette;
+}
 
 export const selectCurrentUIFramework = createSelector(
   selectCurrentProject,

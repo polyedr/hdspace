@@ -192,11 +192,11 @@ const Styles = () => {
         );
       }
     },
+    // eslint-disable-next-line
     [
       selectedElementsIds,
       editableStyles,
       masterScreenEnabled,
-      dispatch,
       currentScreenId,
       isGroupSource,
       activeElement.parameters.groupElements,
@@ -257,11 +257,11 @@ const Styles = () => {
         );
       }
     },
+    // eslint-disable-next-line
     [
       masterScreenEnabled,
       isGroupElement,
       editableStyles,
-      dispatch,
       currentScreenId,
       isGroupSource,
       activeElement.parameters.groupElements,

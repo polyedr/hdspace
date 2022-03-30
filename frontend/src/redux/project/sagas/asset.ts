@@ -2,6 +2,7 @@ import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
   apiDeleteAsset,
+  apiGenerateImagePalette,
   apiGetAssets,
   apiUpdateAsset,
 } from '@Api/asset';
@@ -72,6 +73,29 @@ export function* uploadAssetHelper(
       yield put(Actions.addAssetToState(listId, asset, meta));
       return asset;
     }
+  } catch (error) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
+    );
+  }
+}
+
+export function* generateImagePaletteSaga(
+  action: ReturnType<typeof Actions.generateImagePalette>,
+) {
+  const imageUrl = action.payload;
+
+  try {
+    const imagePalette = yield call(reqWrapper, apiGenerateImagePalette, {
+      imageUrl,
+    });
+    yield put(Actions.setImagePalette(imagePalette));
   } catch (error) {
     yield put(
       enqueueSnackbar(

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { StyledTextField } from '@Components/styledComponents';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import AssetLists from '@Components/RightPanel/Assets/AssetLists';
+import { useDispatch } from 'react-redux';
+import { generateImagePalette } from '@Redux/project/actions';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   title: {
@@ -38,6 +40,7 @@ const StyleGenerator = () => {
   // TODO:: Replace this string
   const color: string = 'transparent';
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [
     firstСolorValue,
     handleFirstColorValueChange,
@@ -51,6 +54,12 @@ const StyleGenerator = () => {
     console.log({ color: newColor });
   });
 
+  const [url, setUrl] = useState<string>('');
+
+  const onUploadClick = () => {
+    dispatch(generateImagePalette(url));
+  };
+
   return (
     <div>
       <div className={classes.title}>Upload Styles</div>
@@ -60,8 +69,17 @@ const StyleGenerator = () => {
         </Button>
         <div className={classes.orBlock}>or</div>
         <div className={classes.inputUrlContainer}>
-          <StyledTextField placeholder="Upload image URL" size="small" />
-          <Button size="small" className={classes.chooseButton}>
+          <StyledTextField
+            placeholder="Upload image URL"
+            size="small"
+            value={url}
+            onChange={(event) => setUrl(event.target.value)}
+          />
+          <Button
+            size="small"
+            className={classes.chooseButton}
+            onClick={onUploadClick}
+          >
             <div className={classes.chooseButtonText}>upload</div>
           </Button>
         </div>
