@@ -4,6 +4,7 @@ import {
   IconButton,
   FormControlLabel,
   MenuItem,
+  FormLabel,
 } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -75,9 +76,19 @@ const BreadcrumbsItem: React.FC<Props> = ({
 
   const [selectedScreen, selectScreen] = useState(screenName);
   const screens = useSelector(selectScreensWithoutMaster);
+  const [isValidURL, setValidURL] = useState(true);
 
   const debouncedLink = useDebouncedCallback((value) => {
-    updateParams({ link: value, screenLink: '', screenName: '' }, id);
+    if (value) {
+      const isValidURL =
+        value.startsWith('https://') || value.startsWith('http://');
+      setValidURL(isValidURL);
+      if (isValidURL) {
+        updateParams({ link: value, screenLink: '', screenName: '' }, id);
+      }
+    } else {
+      setValidURL(true);
+    }
   }, 500);
 
   const debouncedLinkedScreen = useDebouncedCallback((value, screenName) => {
@@ -176,9 +187,15 @@ const BreadcrumbsItem: React.FC<Props> = ({
             label="Item URL"
             margin="dense"
             fullWidth
+            placeholder="https://www.google.com"
             multiline
             disabled={!canEdit}
           />
+        )}
+        {isLink && !isValidURL && (
+          <FormLabel id="error" component="label" error>
+            Your link should be start with http:// or https://.
+          </FormLabel>
         )}
 
         {!isLink && (
