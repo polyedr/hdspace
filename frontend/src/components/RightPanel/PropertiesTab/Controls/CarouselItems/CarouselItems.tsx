@@ -38,8 +38,7 @@ const CarouselItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
         'carouselItem',
         element.id,
         {
-          link:
-            'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+          link: 'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
           alt: 'new image',
         },
         { screenId: currentScreenId },

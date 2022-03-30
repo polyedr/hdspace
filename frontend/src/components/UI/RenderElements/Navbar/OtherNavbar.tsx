@@ -59,9 +59,10 @@ const useStyles = makeComponentStyles('navbar', {
           width: '50px',
           height: '50px',
           padding: '13px',
-          [`&:hover,.nav #nav-check-${props.element.id}:checked~ .nav-btn> label`]: {
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          },
+          [`&:hover,.nav #nav-check-${props.element.id}:checked~ .nav-btn> label`]:
+            {
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            },
           '&> span': {
             display: 'block',
             width: '25px',
@@ -122,7 +123,7 @@ const OtherNavbar = React.forwardRef<HTMLElement, RendererProps>(
           classes.nav,
           classes.ownStyles,
           groupClass,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
+          !isDisabled && classes.ownPseudoStyles,
         )}
         {...eventHandlers}
       >

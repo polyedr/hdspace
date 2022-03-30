@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
@@ -425,7 +426,7 @@ export const editIcoScreenSaga = withRequiredPermissions(
           name: screenInfo.name,
           data: {
             meta: {
-              ...screenInfo.meta,
+              ...screenInfo.screenData.meta,
               faviconUrl: undefined,
             },
           },
@@ -443,7 +444,7 @@ export const editIcoScreenSaga = withRequiredPermissions(
           name: screenInfo.name,
           data: {
             meta: {
-              ...screenInfo.meta,
+              ...screenInfo.screenData.meta,
               faviconUrl: assetInstance.image,
             },
           },

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { FC, useEffect, useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import {
@@ -141,9 +142,9 @@ const EventsTab: FC = () => {
             margin="dense"
             select
           >
-            {(Object.keys(EventType).map(
-              (k) => EventType[k],
-            ) as EventType[]).map((eventType) => (
+            {(
+              Object.keys(EventType).map((k) => EventType[k]) as EventType[]
+            ).map((eventType) => (
               <MenuItem value={eventType} dense key={eventType}>
                 {eventType}
               </MenuItem>

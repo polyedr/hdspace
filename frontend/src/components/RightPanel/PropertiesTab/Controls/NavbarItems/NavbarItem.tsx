@@ -4,6 +4,7 @@ import {
   Checkbox,
   MenuItem,
   FormControlLabel,
+  FormLabel,
 } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -65,6 +66,7 @@ const NavbarItem: React.FC<Props> = ({
   const dispatch = useDispatch();
   const currentScreenId = useSelector(selectCurrentScreenId);
   const [selectedScreen, selectScreen] = useState(screenName);
+  const [isValidURL, setValidURL] = useState(true);
   const screens = useSelector(selectScreensWithoutMaster);
 
   const debouncedItemName = useDebouncedCallback((value) => {
@@ -72,7 +74,16 @@ const NavbarItem: React.FC<Props> = ({
   }, 500);
 
   const debouncedLink = useDebouncedCallback((value) => {
-    updateParams({ link: value }, id);
+    if (value) {
+      const isValidURL =
+        value.startsWith('https://') || value.startsWith('http://');
+      setValidURL(isValidURL);
+      if (isValidURL) {
+        updateParams({ link: value }, id);
+      }
+    } else {
+      setValidURL(true);
+    }
   }, 500);
 
   const handleDeleteButtonClick = () => {
@@ -166,6 +177,7 @@ const NavbarItem: React.FC<Props> = ({
           }
           label="Make Link"
         />
+
         {isLink && (
           <StyledTextField
             variant="outlined"
@@ -173,11 +185,18 @@ const NavbarItem: React.FC<Props> = ({
             onChange={(ev) => debouncedLink.callback(ev.target.value)}
             label="Link"
             margin="dense"
+            placeholder="https://www.google.com"
             fullWidth
             multiline
             disabled={!canEdit}
           />
         )}
+        {isLink && !isValidURL && (
+          <FormLabel id="error" component="label" error>
+            Your link should be start with http:// or https://.
+          </FormLabel>
+        )}
+
         {!isLink && (
           <StyledTextField
             margin="dense"

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
-import { Checkbox, FormControlLabel, MenuItem } from '@material-ui/core';
+import {
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+  FormLabel,
+} from '@material-ui/core';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedCallback } from 'use-debounce';
 import ELEMENT_IDS from '@Constants/elementIds';
@@ -14,18 +19,27 @@ import { convertToHTML } from 'draft-convert';
 import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
-  const {
-    link,
-    isLink,
-    textContent,
-    screenName,
-    screenLink,
-  } = element.parameters;
+  const { link, isLink, textContent, screenName, screenLink } =
+    element.parameters;
   const [input, setInput] = useState(link);
   const [selectedScreen, selectScreen] = useState(screenName);
   const screens = useSelector(selectScreensWithoutMaster);
+  const [isValidURL, setValidURL] = useState(true);
+
   const debouncedLink = useDebouncedCallback((value) => {
-    updateParams({ link: value, screenLink: '', screenName: '' }, element.id);
+    if (value) {
+      const isValidURL =
+        value.startsWith('https://') || value.startsWith('http://');
+      setValidURL(isValidURL);
+      if (isValidURL) {
+        updateParams(
+          { link: value, screenLink: '', screenName: '' },
+          element.id,
+        );
+      }
+    } else {
+      setValidURL(true);
+    }
   }, 500);
 
   const debouncedLinkedScreen = useDebouncedCallback((value, screenName) => {
@@ -123,10 +137,16 @@ const TextContent = ({ element, updateParams, canEdit }) => {
               onChange={changeHandler}
               label="Item URL"
               margin="dense"
+              placeholder="https://www.google.com"
               fullWidth
               multiline
               disabled={!canEdit}
             />
+          )}
+          {isLink && !isValidURL && (
+            <FormLabel id="error" component="label" error>
+              Your link should be start with http:// or https://.
+            </FormLabel>
           )}
 
           {!isLink && (

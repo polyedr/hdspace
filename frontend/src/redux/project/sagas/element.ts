@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, call, select, putResolve } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
@@ -382,9 +383,8 @@ export const copyElementStylesSaga = compose(
       return;
     }
 
-    const currentProject: ReturnType<
-      typeof selectCurrentProject
-    > = yield select(selectCurrentProject);
+    const currentProject: ReturnType<typeof selectCurrentProject> =
+      yield select(selectCurrentProject);
 
     const sharedClassNames = currentProject.projectData.classes.map(
       (cssClass) => cssClass.className,
@@ -911,19 +911,13 @@ export function* loadCustomElementsSaga(
   try {
     const pagination = yield select(selectCustomElementsPagination);
     yield put(Actions.updateElementsLoading(true));
-    const {
-      result,
-      error,
-    }: Result<PaginatedResponse<LibraryElement<Entity>>> = yield call(
-      reqWrapper,
-      apiGetCustomLibraryElements,
-      {
+    const { result, error }: Result<PaginatedResponse<LibraryElement<Entity>>> =
+      yield call(reqWrapper, apiGetCustomLibraryElements, {
         params: {
           cursor: pagination.next,
           page_size: pagination.pageSize,
         },
-      },
-    );
+      });
     if (result) {
       yield put(Actions.addCustomElementsPage(result, action.payload.initial));
       yield put(Actions.addElements(result.results));

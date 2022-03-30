@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, call, select } from 'redux-saga/effects';
 import {
   selectElementParameters,
@@ -369,16 +370,10 @@ export function* createElements<T extends Entity>(
       },
     );
 
-    const {
-      result,
-      error: updateRecursiveError,
-    }: Result<RecursiveElement> = yield call(
-      reqWrapper,
-      apiChangeRecursiveMultipleElements,
-      {
+    const { result, error: updateRecursiveError }: Result<RecursiveElement> =
+      yield call(reqWrapper, apiChangeRecursiveMultipleElements, {
         elements: recursiveElements,
-      },
-    );
+      });
     if (updateRecursiveError) {
       throw new Error(updateRecursiveError);
     }
