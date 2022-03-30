@@ -30,14 +30,20 @@ const TagName: React.FC<PropertiesChangeProps<HTMLLibraryElement>> = ({
     tagName || '',
     (value) => {
       const newTagName = value.length ? value.trim() : 'div';
-      if (!BLACKLIST_TAGS.includes(newTagName)) {
+      if (
+        !BLACKLIST_TAGS.includes(newTagName) &&
+        /^\D[a-zA-Z0-9]+$/.test(newTagName)
+      ) {
         updateParams({ tag: newTagName });
       }
     },
   );
 
   useEffect(() => {
-    setIsBlacklisted(!!state && BLACKLIST_TAGS.includes(state.trim()));
+    setIsBlacklisted(
+      (!!state && BLACKLIST_TAGS.includes(state.trim())) ||
+        !/^\D[a-zA-Z0-9]+$/.test(state.trim()),
+    );
   }, [state]);
 
   return (
