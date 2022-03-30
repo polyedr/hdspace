@@ -1667,3 +1667,22 @@ export type importData = {
   };
   error: boolean;
 };
+
+export type FreeDraggableStylesProps = {
+  isActive: boolean;
+  zIndex: number;
+  includesActiveElement: boolean;
+};
+
+export enum KeyCode {
+  BackSpace = 8,
+  Space = 32,
+  LeftArrow = 37,
+  UpArrow = 38,
+  RightArrow = 39,
+  DownArrow = 40,
+  DeleteKey = 46,
+  C = 67,
+  V = 86,
+  Z = 90,
+}
