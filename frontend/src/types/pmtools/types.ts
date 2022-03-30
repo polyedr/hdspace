@@ -54,3 +54,13 @@ export interface CreatorColumnType {
   project: ServerProject['id'];
   name: string;
 }
+
+export type UpdateColumnIndexTypeSuccess = {
+  dest: number;
+  source: number;
+};
+
+export type UpdateListType = {
+  listId: number;
+  newPos: number;
+};

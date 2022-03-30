@@ -6,6 +6,7 @@ import * as taskSaga from './tasks';
 export default function* boardSaga() {
   yield takeLatest(TYPES.UPDATE_CARD_INDEX, taskSaga.moveCardToList);
   yield takeLatest(TYPES.REQUEST_FETCH_BOARD, columnSaga.columnsFetchSaga);
+  yield takeLatest(TYPES.UPDATE_COLUMN_INDEX, columnSaga.moveColumnToList);
   yield takeLatest(TYPES.EDIT_TASK, taskSaga.taskEditSaga);
   yield takeLatest(TYPES.ADD_TASK, taskSaga.taskAddSaga);
   yield takeLatest(TYPES.DELETE_TASK, taskSaga.taskDeleteSaga);
