@@ -4,6 +4,7 @@ enum SectionTitleEnum {
   HEADING = 'Heading',
   COLOR_SCHEME = 'Color Scheme',
   BORDER = 'Border',
+  INDENTS = 'Indents',
 }
 
 export default SectionTitleEnum;

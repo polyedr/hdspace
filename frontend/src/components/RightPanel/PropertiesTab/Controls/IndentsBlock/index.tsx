@@ -4,6 +4,8 @@ import { useDebouncedCallback } from 'use-debounce';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -80,6 +82,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   paddingBottom?: React.CSSProperties['paddingBottom'];
   paddingLeft?: React.CSSProperties['paddingLeft'];
   paddingRight?: React.CSSProperties['paddingRight'];
+  isLeftSide?: boolean;
 };
 
 const IndentsBlock: React.FC<Props> = ({
@@ -97,28 +100,48 @@ const IndentsBlock: React.FC<Props> = ({
   paddingLeft,
   paddingRight,
   canEdit,
+  isLeftSide = false,
 }) => {
+  const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
   const [state, setState] = useState({
-    marginTop: marginTop || 0,
-    marginLeft: marginLeft || 0,
-    marginBottom: marginBottom || 0,
-    marginRight: marginRight || 0,
-    paddingTop: paddingTop || 0,
-    paddingLeft: paddingLeft || 0,
-    paddingBottom: paddingBottom || 0,
-    paddingRight: paddingRight || 0,
+    marginTop:
+      (isLeftSide && defaultStyles.indents.marginTop) || marginTop || 0,
+    marginLeft:
+      (isLeftSide && defaultStyles.indents.marginLeft) || marginLeft || 0,
+    marginBottom:
+      (isLeftSide && defaultStyles.indents.marginBottom) || marginBottom || 0,
+    marginRight:
+      (isLeftSide && defaultStyles.indents.marginRight) || marginRight || 0,
+    paddingTop:
+      (isLeftSide && defaultStyles.indents.paddingTop) || paddingTop || 0,
+    paddingLeft:
+      (isLeftSide && defaultStyles.indents.paddingLeft) || paddingLeft || 0,
+    paddingBottom:
+      (isLeftSide && defaultStyles.indents.paddingBottom) || paddingBottom || 0,
+    paddingRight:
+      (isLeftSide && defaultStyles.indents.paddingRight) || paddingRight || 0,
   });
   useEffect(() => {
     setState({
-      marginTop: marginTop || 0,
-      marginLeft: marginLeft || 0,
-      marginBottom: marginBottom || 0,
-      marginRight: marginRight || 0,
-      paddingTop: paddingTop || 0,
-      paddingLeft: paddingLeft || 0,
-      paddingBottom: paddingBottom || 0,
-      paddingRight: paddingRight || 0,
+      marginTop:
+        (isLeftSide && defaultStyles.indents.marginTop) || marginTop || 0,
+      marginLeft:
+        (isLeftSide && defaultStyles.indents.marginLeft) || marginLeft || 0,
+      marginBottom:
+        (isLeftSide && defaultStyles.indents.marginBottom) || marginBottom || 0,
+      marginRight:
+        (isLeftSide && defaultStyles.indents.marginRight) || marginRight || 0,
+      paddingTop:
+        (isLeftSide && defaultStyles.indents.paddingTop) || paddingTop || 0,
+      paddingLeft:
+        (isLeftSide && defaultStyles.indents.paddingLeft) || paddingLeft || 0,
+      paddingBottom:
+        (isLeftSide && defaultStyles.indents.paddingBottom) ||
+        paddingBottom ||
+        0,
+      paddingRight:
+        (isLeftSide && defaultStyles.indents.paddingRight) || paddingRight || 0,
     });
   }, [
     marginTop,
@@ -129,6 +152,7 @@ const IndentsBlock: React.FC<Props> = ({
     paddingLeft,
     paddingBottom,
     paddingRight,
+    defaultStyles.indents,
   ]);
 
   const debounced = useDebouncedCallback((name, value) => {

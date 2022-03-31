@@ -288,7 +288,8 @@ const Styles = () => {
 
             if (
               controlName === sectionTitleEnum.TYPOGRAPHY.toLowerCase() ||
-              controlName === sectionTitleEnum.BORDER.toLowerCase()
+              controlName === sectionTitleEnum.BORDER.toLowerCase() ||
+              controlName === sectionTitleEnum.INDENTS.toLowerCase()
             ) {
               return (
                 <ControlSection title={controlName} key={controlName}>
