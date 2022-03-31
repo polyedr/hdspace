@@ -41,17 +41,15 @@ const FreeCanvas = () => {
   const { ownStyles } = useElementClassNames(root);
 
   const rootSize = useMemo(() => {
-    const { width: rootWidh = 0, height: rootHeight = 0 } =
-      root.parameters.freeCanvas;
+    const {
+      width: rootWidh = 0,
+      height: rootHeight = 0,
+    } = root.parameters.freeCanvas;
 
     return Object.values(directChildren).reduce(
       (acc, curr) => {
-        const {
-          left = 0,
-          top = 0,
-          width = 0,
-          height = 0,
-        } = curr.parameters.freeCanvas || {};
+        const { left = 0, top = 0, width = 0, height = 0 } =
+          curr.parameters.freeCanvas || {};
         const newWidth = left + parseInt(width.toString());
         const newHeight = top + parseInt(height.toString());
         return {
@@ -100,11 +98,14 @@ const FreeCanvas = () => {
         return;
       }
       const { resizableElement } = ref.current;
-      const { id, type, name, custom, parameters } =
-        dragSource.original as ElementData;
-      const rect = (
-        resizableElement.current as HTMLElement
-      ).getBoundingClientRect();
+      const {
+        id,
+        type,
+        name,
+        custom,
+        parameters,
+      } = dragSource.original as ElementData;
+      const rect = (resizableElement.current as HTMLElement).getBoundingClientRect();
 
       let elementParameter: any = {
         top: offset.y - rect.y,

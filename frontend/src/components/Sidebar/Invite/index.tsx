@@ -19,8 +19,10 @@ const ProjectMembers: React.FC = () => {
   const [email, setEmail] = useState('');
   const members = useSelector(selectAllUsersPermissions);
   const projectId = useSelector(selectCurrentProjectId);
-  const [permissionsManagementProjectId, setPermissionsManagementProjectId] =
-    useState<number | null>(null);
+  const [
+    permissionsManagementProjectId,
+    setPermissionsManagementProjectId,
+  ] = useState<number | null>(null);
 
   const handleEmail = (e: FormEvent) => {
     e.preventDefault();

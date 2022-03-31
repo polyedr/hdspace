@@ -19,8 +19,13 @@ import { convertToHTML } from 'draft-convert';
 import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
-  const { link, isLink, textContent, screenName, screenLink } =
-    element.parameters;
+  const {
+    link,
+    isLink,
+    textContent,
+    screenName,
+    screenLink,
+  } = element.parameters;
   const [input, setInput] = useState(link);
   const [selectedScreen, selectScreen] = useState(screenName);
   const screens = useSelector(selectScreensWithoutMaster);

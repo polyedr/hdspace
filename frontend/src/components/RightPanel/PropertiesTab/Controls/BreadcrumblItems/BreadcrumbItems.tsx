@@ -22,54 +22,55 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const BreadcrumbItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> =
-  ({ updateParams, element, canEdit }) => {
-    const dispatch = useDispatch();
-    const classes = useStyles();
-    const breadcrumbItems = useSelector(
-      selectActiveItemChildren('breadcrumbItem'),
-    );
-    const currentScreenId = useSelector(selectCurrentScreenId);
-    const handleAddButtonClick = () => {
-      dispatch(
-        addChildToElement(
-          'breadcrumbItem',
-          element.id,
-          {
-            textContent: 'breadcrumb',
-            isLink: false,
-          },
-          { screenId: currentScreenId },
-        ),
-      );
-    };
-
-    return (
-      <div>
-        {breadcrumbItems.map(({ id, parameters }) => (
-          <BreadcrumbsItem
-            key={id}
-            id={id}
-            parameters={parameters}
-            updateParams={updateParams}
-            isLast={breadcrumbItems.length <= 1}
-            canEdit={canEdit}
-          />
-        ))}
-
-        {canEdit && (
-          <div className={classes.row}>
-            <IconButton
-              onClick={handleAddButtonClick}
-              title="Add new item"
-              className={classes.iconButton}
-            >
-              <AddIcon />
-            </IconButton>
-          </div>
-        )}
-      </div>
+const BreadcrumbItems: React.FC<
+  PropertiesChangeProps<BreadcrumbItemElement>
+> = ({ updateParams, element, canEdit }) => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const breadcrumbItems = useSelector(
+    selectActiveItemChildren('breadcrumbItem'),
+  );
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const handleAddButtonClick = () => {
+    dispatch(
+      addChildToElement(
+        'breadcrumbItem',
+        element.id,
+        {
+          textContent: 'breadcrumb',
+          isLink: false,
+        },
+        { screenId: currentScreenId },
+      ),
     );
   };
+
+  return (
+    <div>
+      {breadcrumbItems.map(({ id, parameters }) => (
+        <BreadcrumbsItem
+          key={id}
+          id={id}
+          parameters={parameters}
+          updateParams={updateParams}
+          isLast={breadcrumbItems.length <= 1}
+          canEdit={canEdit}
+        />
+      ))}
+
+      {canEdit && (
+        <div className={classes.row}>
+          <IconButton
+            onClick={handleAddButtonClick}
+            title="Add new item"
+            className={classes.iconButton}
+          >
+            <AddIcon />
+          </IconButton>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default BreadcrumbItems;

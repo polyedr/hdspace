@@ -1,10 +1,10 @@
 import React, { LegacyRef } from 'react';
 import cn from 'classnames';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
-import { RendererProps } from '../types';
-import { makeComponentStyles } from '../styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { useSelector } from 'react-redux';
+import { RendererProps } from '../types';
+import { makeComponentStyles } from '../styles';
 
 const useStyles = makeComponentStyles('pagination', {
   pagination: {

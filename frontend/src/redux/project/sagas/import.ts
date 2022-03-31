@@ -43,8 +43,11 @@ export const importHtmlSaga = withRequiredPermissions(
 )(function* (action: ReturnType<typeof importHtml>) {
   yield put(Actions.setValueImportLoader(true));
   try {
-    const { imageFiles, imageElements, element } =
-      action.payload.importHtmlData;
+    const {
+      imageFiles,
+      imageElements,
+      element,
+    } = action.payload.importHtmlData;
 
     if (element) {
       const { id, element: rootId }: Screen = yield select(selectCurrentScreen);

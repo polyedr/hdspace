@@ -27,8 +27,9 @@ const useHotkeys = (
   const shortcuts = parseShortcutString(shortcutString);
 
   const handlers = shortcuts.map((shortcut) => {
-    const { keys: requiredKeys, modifiers: requiredModifiers } =
-      parseShortcut(shortcut);
+    const { keys: requiredKeys, modifiers: requiredModifiers } = parseShortcut(
+      shortcut,
+    );
     const pressedKeys: Set<string> = new Set();
 
     const callback = (ev: KeyboardEvent) => {
