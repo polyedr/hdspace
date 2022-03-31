@@ -16,7 +16,7 @@ import {
 } from '@Redux/project/selectors/via';
 import DehazeIcon from '@material-ui/icons/Dehaze';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, IconButton } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
 import { StyledIconButton } from '@Components/styledComponents';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
@@ -26,6 +26,7 @@ import TopBar from './TopBar';
 import Avatar from './Avatar';
 import History from './History';
 import RenameProjectBar from './TopBar/RenameProjectBar';
+import Logo from '../UI/Logo';
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
@@ -102,7 +103,7 @@ const TopPanel = () => {
   return (
     <AppBar position="fixed">
       <Toolbar variant="dense" className={classes.toolbar}>
-        <Avatar />
+        <Logo />
 
         {projectName && (
           <RenameProjectBar
@@ -124,15 +125,18 @@ const TopPanel = () => {
           </StyledIconButton>
         )}
 
-        {projectName && (
-          <IconButton
-            className={classes.sidebarButton}
-            onClick={handleSidebarToggle}
-            title="Toggle Sidebar"
-          >
-            <DehazeIcon />
-          </IconButton>
-        )}
+        <Box style={{ display: 'flex' }}>
+          {projectName && (
+            <IconButton
+              className={classes.sidebarButton}
+              onClick={handleSidebarToggle}
+              title="Toggle Sidebar"
+            >
+              <DehazeIcon />
+            </IconButton>
+          )}
+          <Avatar />
+        </Box>
       </Toolbar>
 
       <Dialog
