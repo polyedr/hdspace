@@ -13,6 +13,7 @@ import {
   Checkbox,
   MenuItem,
   FormControlLabel,
+  FormLabel,
 } from '@material-ui/core';
 import { useDebouncedCallback } from 'use-debounce';
 import {
@@ -67,6 +68,8 @@ const NavbarItems: React.FC<Props> = ({ updateParams, element, canEdit }) => {
   const classes = useStyles();
   const navbarItem = useSelector(selectActiveItemChildren('navbarItem'));
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const [isValidURL, setValidURL] = useState(true);
+
   const handleAddButtonClick = () => {
     dispatch(
       addChildToElement(
@@ -84,7 +87,16 @@ const NavbarItems: React.FC<Props> = ({ updateParams, element, canEdit }) => {
     updateParams({ titleName: value }, id);
   }, 500);
   const debouncedTitleLink = useDebouncedCallback((value) => {
-    updateParams({ titleLink: value }, id);
+    if (value) {
+      const isValidURL =
+        value.startsWith('https://') || value.startsWith('http://');
+      setValidURL(isValidURL);
+      if (isValidURL) {
+        updateParams({ titleLink: value }, id);
+      }
+    } else {
+      setValidURL(true);
+    }
   }, 500);
 
   const [selectedScreen, selectScreen] = useState(screenName);
@@ -169,6 +181,7 @@ const NavbarItems: React.FC<Props> = ({ updateParams, element, canEdit }) => {
             }
             label="Make Link"
           />
+
           {isLink && (
             <StyledTextField
               variant="outlined"
@@ -176,11 +189,18 @@ const NavbarItems: React.FC<Props> = ({ updateParams, element, canEdit }) => {
               onChange={(ev) => debouncedTitleLink.callback(ev.target.value)}
               label="Link"
               margin="dense"
+              placeholder="https://www.google.com"
               fullWidth
               multiline
               disabled={!canEdit}
             />
           )}
+          {isLink && !isValidURL && (
+            <FormLabel id="error" component="label" error>
+              Your link should be start with http:// or https://.
+            </FormLabel>
+          )}
+
           {!isLink && (
             <StyledTextField
               margin="dense"

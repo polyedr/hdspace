@@ -7,7 +7,7 @@ import {
   updateElementStyles,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { Entity, StateElement } from '@Src/types';
+import { Entity, StateElement, FreeDraggableStylesProps } from '@Src/types';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
   selectElementByIdWrapper,
@@ -27,14 +27,28 @@ const notDraggableElements: Entity[] = [
   'dropdownMenu',
   'paginationItem',
   'breadcrumbItem',
+  'navbarItem',
 ];
 
 const useStyles = makeStyles({
   rnd: {
-    position: 'fixed',
+    position: 'absolute',
+    zIndex: ({
+      isActive,
+      zIndex,
+      includesActiveElement,
+    }: FreeDraggableStylesProps) =>
+      isActive || includesActiveElement ? 1000 : zIndex,
+  },
+  imageView: {
+    position: 'absolute',
     width: 'auto !important',
     height: 'auto !important',
-    zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
+    zIndex: ({
+      isActive,
+      zIndex,
+      includesActiveElement,
+    }: FreeDraggableStylesProps) =>
       isActive || includesActiveElement ? 1000 : zIndex,
   },
   resizeHande: {
@@ -174,7 +188,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   ) : (
     <Rnd
       onClick={handleInteractionStart}
-      className={classes.rnd}
+      className={element.type === 'image' ? classes.imageView : classes.rnd}
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}
       position={{
