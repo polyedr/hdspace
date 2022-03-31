@@ -8,6 +8,12 @@ import ColumnModal from '@Components/Dialogs/PmToolsModal/ColumnModal';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import Classnames from 'classnames';
 import { Column } from './Column';
+import { IColumnData } from '@Src/types/pmtools/board';
+
+type ColumnsProps = {
+  column: IColumnData,
+  index: number,
+} 
 
 const useStyles = makeStyles(({ spacing, shadows, shape, palette }) => ({
   card: {
@@ -20,7 +26,7 @@ const useStyles = makeStyles(({ spacing, shadows, shape, palette }) => ({
   },
 }));
 
-const Columns: FC<any> = ({ column, index }) => {
+const Columns: FC<ColumnsProps> = ({ column, index }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [columnModal, setColumnModal] = useState(false);
