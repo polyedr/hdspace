@@ -174,7 +174,7 @@ export const mockInitialState: AppReduxState = {
   },
   router: {
     action: 'POP',
-    location: {
+    location: { 
       hash: '',
       key: '',
       pathname: '',
