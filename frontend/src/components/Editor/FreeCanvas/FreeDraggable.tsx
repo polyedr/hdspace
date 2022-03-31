@@ -180,7 +180,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
         <FreeDraggable key={childId} elementId={childId} />
       ))}
     </Renderer>
-  );
+  ); 
 
   return notDraggableElements.includes(type as Entity) ? (
     renderElement()
