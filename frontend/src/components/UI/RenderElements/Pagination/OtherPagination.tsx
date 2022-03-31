@@ -46,9 +46,27 @@ const OtherPagination = React.forwardRef<HTMLElement, RendererProps>(
         )}
         {...eventHandlers}
       >
-        <a href={isPrototypeMode ? '!#' : 'javascript:void()'}  >&laquo;</a>
+        <a
+          href="!#"
+          onClick={(e) => {
+            if (!isPrototypeMode) {
+              e.preventDefault();
+            }
+          }}
+        >
+          &laquo;
+        </a>
         {children}
-        <a href={isPrototypeMode ? '!#' : 'javascript:void()'} >&raquo;</a>
+        <a
+          href="!#"
+          onClick={(e) => {
+            if (!isPrototypeMode) {
+              e.preventDefault();
+            }
+          }}
+        >
+          &raquo;
+        </a>
       </div>
     );
   },
