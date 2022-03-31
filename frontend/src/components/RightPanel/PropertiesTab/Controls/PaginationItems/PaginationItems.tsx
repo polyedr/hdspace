@@ -22,56 +22,57 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const PaginationItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> =
-  ({ updateParams, element, canEdit }) => {
-    const dispatch = useDispatch();
-    const classes = useStyles();
-    const paginationItem = useSelector(
-      selectActiveItemChildren('paginationItem'),
-    );
-    const currentScreenId = useSelector(selectCurrentScreenId);
-    const handleAddButtonClick = () => {
-      const lastNumber =
-        paginationItem[paginationItem.length - 1].parameters.textContent;
-      dispatch(
-        addChildToElement(
-          'paginationItem',
-          element.id,
-          {
-            textContent: `${Number(lastNumber) + 1}`,
-            isActiveLink: false,
-          },
-          { screenId: currentScreenId },
-        ),
-      );
-    };
-
-    return (
-      <div>
-        {paginationItem.map(({ id, parameters }) => (
-          <PaginationItem
-            key={id}
-            id={id}
-            parameters={parameters}
-            updateParams={updateParams}
-            isLast={paginationItem.length <= 1}
-            canEdit={canEdit}
-          />
-        ))}
-
-        {canEdit && (
-          <div className={classes.row}>
-            <IconButton
-              onClick={handleAddButtonClick}
-              title="Add new item"
-              className={classes.iconButton}
-            >
-              <AddIcon />
-            </IconButton>
-          </div>
-        )}
-      </div>
+const PaginationItems: React.FC<
+  PropertiesChangeProps<BreadcrumbItemElement>
+> = ({ updateParams, element, canEdit }) => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
+  const paginationItem = useSelector(
+    selectActiveItemChildren('paginationItem'),
+  );
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const handleAddButtonClick = () => {
+    const lastNumber =
+      paginationItem[paginationItem.length - 1].parameters.textContent;
+    dispatch(
+      addChildToElement(
+        'paginationItem',
+        element.id,
+        {
+          textContent: `${Number(lastNumber) + 1}`,
+          isActiveLink: false,
+        },
+        { screenId: currentScreenId },
+      ),
     );
   };
+
+  return (
+    <div>
+      {paginationItem.map(({ id, parameters }) => (
+        <PaginationItem
+          key={id}
+          id={id}
+          parameters={parameters}
+          updateParams={updateParams}
+          isLast={paginationItem.length <= 1}
+          canEdit={canEdit}
+        />
+      ))}
+
+      {canEdit && (
+        <div className={classes.row}>
+          <IconButton
+            onClick={handleAddButtonClick}
+            title="Add new item"
+            className={classes.iconButton}
+          >
+            <AddIcon />
+          </IconButton>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default PaginationItems;

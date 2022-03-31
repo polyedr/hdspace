@@ -67,8 +67,9 @@ const ElementsTab = () => {
 
   const [section, setSection] = useState(sections[0]);
 
-  const { elements, templates, generators, library } =
-    createElementsHierarchy(LIBRARY_ELEMENTS);
+  const { elements, templates, generators, library } = createElementsHierarchy(
+    LIBRARY_ELEMENTS,
+  );
   const libraryWithCustomUI = {
     ...library,
   };
