@@ -101,8 +101,7 @@ const OtherNavbar = React.forwardRef<HTMLElement, RendererProps>(
     const {
       parameters: { titleName, titleLink, isLink, screenLink, screenName },
     } = element;
-    const [groupClass] = element.styles.classNames;
-
+    const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -123,6 +122,7 @@ const OtherNavbar = React.forwardRef<HTMLElement, RendererProps>(
           classes.nav,
           classes.ownStyles,
           groupClass,
+          className,
           !isDisabled && classes.ownPseudoStyles,
         )}
         {...eventHandlers}

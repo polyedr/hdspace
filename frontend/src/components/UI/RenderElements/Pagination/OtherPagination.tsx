@@ -3,6 +3,8 @@ import cn from 'classnames';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeComponentStyles('pagination', {
   pagination: {
@@ -29,7 +31,7 @@ const OtherPagination = React.forwardRef<HTMLElement, RendererProps>(
     const { children, element, isDisabled } = props;
     const [groupClass] = element.styles.classNames;
     const classes = useStyles(props);
-
+    const isPrototypeMode = useSelector(selectIsPrototypeMode);
     const eventHandlers = useEventHandlers(props);
     return (
       <div
@@ -44,9 +46,9 @@ const OtherPagination = React.forwardRef<HTMLElement, RendererProps>(
         )}
         {...eventHandlers}
       >
-        <a href="!#">&laquo;</a>
+        <a href={isPrototypeMode ? '!#' : 'javascript:void()'}  >&laquo;</a>
         {children}
-        <a href="!#">&raquo;</a>
+        <a href={isPrototypeMode ? '!#' : 'javascript:void()'} >&raquo;</a>
       </div>
     );
   },
