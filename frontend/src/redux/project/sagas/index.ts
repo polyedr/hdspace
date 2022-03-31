@@ -183,7 +183,8 @@ const updateDefaultStylesSaga = compose(
   ),
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.updateDefaultStyles>) {
-  const { classNames, styles } = action.payload;
+  const { classNames, styles, controlKey } = action.payload;
+  console.log(`controlKey ${controlKey}`);
   if (!action.meta) {
     console.error(
       `You have to provide meta information for action ${action.type}`,
@@ -194,7 +195,12 @@ const updateDefaultStylesSaga = compose(
     selectCurrentProject,
   );
 
-  const newProject = updateDefaultStyles(currentProject, classNames, styles);
+  const newProject = updateDefaultStyles(
+    currentProject,
+    classNames,
+    styles,
+    controlKey,
+  );
 
   yield call(projectUpdateHelperSaga, newProject);
 

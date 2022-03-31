@@ -628,10 +628,11 @@ export const setBordersEnabled = (enabled: boolean): SetBordersEnabled => ({
 export const updateDefaultStyles = (
   classNames: Entity[],
   styles: React.CSSProperties,
+  controlKey: string,
   meta: ElementHistoryMeta,
 ): UpdateDefaultStyles => ({
   type: TYPES.UPDATE_DEFAULT_STYLES,
-  payload: { classNames, styles },
+  payload: { classNames, styles, controlKey },
   meta,
 });
 

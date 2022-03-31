@@ -483,7 +483,7 @@ export type RemoveElementClassName = IAction<
 
 export type UpdateDefaultStyles = IAction<
   typeof TYPES.UPDATE_DEFAULT_STYLES,
-  { classNames: Entity[]; styles: React.CSSProperties },
+  { classNames: Entity[]; styles: React.CSSProperties; controlKey: string },
   ElementHistoryMeta
 >;
 

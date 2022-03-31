@@ -79,6 +79,18 @@ export const DEFAULT_PROJECT: Project = {
   },
   tags: [],
   projectData: {
+    defaultStyles: {
+      indents: {},
+      typography: {},
+      headingType: {},
+      colors: {},
+      accentColor: {},
+      screenBackgroundColor: {},
+      fontColorOverlay: {},
+      elementsBackgroundColor: {},
+      borderColor: {},
+      border: {},
+    },
     classes: [
       {
         className: 'root',

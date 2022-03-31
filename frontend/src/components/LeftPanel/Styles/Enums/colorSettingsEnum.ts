@@ -9,7 +9,7 @@ enum ColorSettingsEnum {
 
 export enum ColorStyleEnum {
   FONT_COLOR = 'colors',
-  FONT_COLOR_OVERLAY = 'fontColorOverlay', // TODO:: Ask about this style
+  FONT_COLOR_OVERLAY = 'fontColorOverlay',
   BACKGROUND_COLOR = 'screenBackgroundColor',
   BORDER_COLOR = 'borderColor',
   FILL_INSIDE_COLOR = 'elementsBackgroundColor',

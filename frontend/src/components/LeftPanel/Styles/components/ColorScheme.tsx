@@ -9,25 +9,62 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
 import { ColorsValue } from '@Components/LeftPanel/Styles/types/colorsValue';
-import { selectImagePalette } from '@Redux/project/selectors/base';
+import {
+  selectCurrentProjectDefaultStyles,
+  selectImagePalette,
+} from '@Redux/project/selectors/base';
+
+const colorScheme: ColorsValue = {
+  FONT_COLOR: 'transparent',
+  FONT_COLOR_OVERLAY: 'transparent',
+  BACKGROUND_COLOR: 'transparent',
+  BORDER_COLOR: 'transparent',
+  FILL_INSIDE_COLOR: 'transparent',
+  ACCENT_COLOR: 'transparent',
+};
 
 const ColorScheme = () => {
   const imagePalette = useSelector(selectImagePalette);
   const parsedImagePalette = imagePalette ? JSON.parse(imagePalette) : null;
-  // TODO:: Remove it to separated file
-  const colorScheme: ColorsValue = {
-    FONT_COLOR: 'rgba(244, 244, 244, 1)',
-    FONT_COLOR_OVERLAY: 'rgba(244, 244, 244, 1)',
-    BACKGROUND_COLOR: 'rgba(244, 244, 244, 1)',
-    BORDER_COLOR: 'rgba(244, 244, 244, 1)',
-    FILL_INSIDE_COLOR: 'rgba(244, 244, 244, 1)',
-    ACCENT_COLOR: 'rgba(244, 244, 244, 1)',
-  };
+
+  const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
+
   const [colorValue, handleColorValueChange] = useState<ColorsValue>(
     colorScheme,
   );
+
+  useEffect(() => {
+    if (defaultStyles) {
+      handleColorValueChange({
+        FONT_COLOR:
+          defaultStyles[ColorStyleEnum.FONT_COLOR][
+            ColorStylePropertiesEnum.FONT_COLOR
+          ] || 'transparent',
+        FONT_COLOR_OVERLAY:
+          defaultStyles[ColorStyleEnum.FONT_COLOR_OVERLAY][
+            ColorStylePropertiesEnum.FONT_COLOR_OVERLAY
+          ] || 'transparent',
+        BACKGROUND_COLOR:
+          defaultStyles[ColorStyleEnum.BACKGROUND_COLOR][
+            ColorStylePropertiesEnum.BACKGROUND_COLOR
+          ] || 'transparent',
+        BORDER_COLOR:
+          defaultStyles[ColorStyleEnum.BORDER_COLOR][
+            ColorStylePropertiesEnum.BORDER_COLOR
+          ] || 'transparent',
+        FILL_INSIDE_COLOR:
+          defaultStyles[ColorStyleEnum.FILL_INSIDE_COLOR][
+            ColorStylePropertiesEnum.FILL_INSIDE_COLOR
+          ] || 'transparent',
+        ACCENT_COLOR:
+          defaultStyles[ColorStyleEnum.ACCENT_COLOR][
+            ColorStylePropertiesEnum.ACCENT_COLOR
+          ] || 'transparent',
+      });
+    }
+  }, [defaultStyles]);
 
   const updateColor = useCallback(
     (color: string, controlName: string) => {
@@ -36,6 +73,7 @@ const ColorScheme = () => {
         updateDefaultStyles(
           CONTROLS_CLASSES[ColorStyleEnum[controlName]],
           styles,
+          ColorStyleEnum[controlName],
           {
             screenId: currentScreenId,
           },
@@ -63,9 +101,7 @@ const ColorScheme = () => {
           `rgba(${parsedImagePalette[index][0]}, ${parsedImagePalette[index][1]}, ${parsedImagePalette[index][2]}, 1)`,
           key,
         );
-        console.log('forEach in useEffect');
       });
-      console.log('useEffect');
     }
     // eslint-disable-next-line
   }, [imagePalette]);

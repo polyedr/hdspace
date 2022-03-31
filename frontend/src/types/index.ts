@@ -823,6 +823,7 @@ export type ProjectClass = {
 
 export type ProjectData = {
   classes: ProjectClass[];
+  defaultStyles: any;
   uiFramework: UIFramework;
 };
 

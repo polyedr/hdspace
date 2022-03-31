@@ -40,6 +40,7 @@ export const mockProject: Project = {
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {},
   },
   user: DEFAULT_USER,
 };
@@ -235,6 +236,7 @@ export const createMockProject = (): Project => ({
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {},
   },
   user: DEFAULT_USER,
 });
@@ -292,6 +294,7 @@ export const createProjectWithScreensMock = (
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {},
   },
   projectLoader: false,
   tags: [],

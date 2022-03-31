@@ -23,6 +23,7 @@ export const updateDefaultStyles = (
   project: Project,
   classNames: string[],
   styles: CSSProperties,
+  controlKey: string,
 ): Project => {
   console.log(
     `styles in updateDefaultStyles: ${JSON.stringify(
@@ -33,6 +34,13 @@ export const updateDefaultStyles = (
     ...project,
     projectData: {
       ...project.projectData,
+      defaultStyles: {
+        ...project.projectData.defaultStyles,
+        [controlKey]: {
+          ...project.projectData.defaultStyles[controlKey],
+          ...styles,
+        },
+      },
       classes: project.projectData.classes.map((cssClass) => {
         return classNames.find(
           (className) => className === cssClass.className,

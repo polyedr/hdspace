@@ -86,12 +86,14 @@ const Styles = () => {
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
+
+  // eslint-disable-next-line
   const [editedStyles, setEditedStyles] = useState<React.CSSProperties | null>(
     null,
   );
-  const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
 
-  console.log(editedStyles, showRemoveGroupDialog);
+  // eslint-disable-next-line
+  const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
 
   const isGroupElement = !!activeElement.parameters.sourceElementId;
   const isGroupSource = !!activeElement.parameters.groupElements;
@@ -129,15 +131,15 @@ const Styles = () => {
 
   const updateStyles = useCallback(
     (styles: React.CSSProperties, controlName: string) => {
-      console.log(
-        `updateStyles ${JSON.stringify(
-          styles,
-        )}, controlName: ${controlName}, typeOf styles: ${typeof styles}`,
-      );
       dispatch(
-        updateDefaultStyles(CONTROLS_CLASSES[controlName], styles, {
-          screenId: currentScreenId,
-        }),
+        updateDefaultStyles(
+          CONTROLS_CLASSES[controlName],
+          styles,
+          controlName,
+          {
+            screenId: currentScreenId,
+          },
+        ),
       );
     },
     [dispatch, currentScreenId],
