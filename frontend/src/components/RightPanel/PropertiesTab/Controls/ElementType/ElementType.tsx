@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import TYPE from './constants';
+import IMAGES from '@Constants/images';
 
 const ElementType: React.FC = () => {
   const dispatch = useDispatch();
@@ -73,7 +74,7 @@ const ElementType: React.FC = () => {
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
       } else if (newElementType === 'image') {
         param.group = 'image';
-        param.imageURL = '/a1b7d632cc3b0a2993e8c1be2da723bb.svg';
+        param.imageURL = IMAGES.imageIcon;
         param.keepAspectRatio = false;
         param.title = '';
         param.freeCanvas = {
