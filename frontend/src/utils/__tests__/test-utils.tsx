@@ -134,7 +134,7 @@ export const mockUserData: UserData = {
   },
 };
 
-export const mockVIAState = {
+export const mockVIAState = ({
   blockType: NNBlockType.WEBPAGE,
   resultId: '-1',
   viaData: {},
@@ -161,7 +161,7 @@ export const mockVIAState = {
   activeRegionId: '',
   annotatedImageFile: null,
   copiedRegion: null,
-} as unknown as ProjectEditState['VIAMode'];
+} as unknown) as ProjectEditState['VIAMode'];
 
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
@@ -174,13 +174,12 @@ export const mockInitialState: AppReduxState = {
   },
   router: {
     action: 'POP',
-    location: {
+    location: { 
       hash: '',
       key: '',
       pathname: '',
       search: '',
       state: '',
-      query: {},
     },
   },
   notification: {
