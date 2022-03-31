@@ -3,7 +3,7 @@ import { Box, BoxProps, Link } from '@material-ui/core';
 
 import logo from '../../../assets/images/logo.png';
 
-const Logo = ({ width, height, ...other }: BoxProps) => {
+const Logo = ({ width, height, ...rest }: BoxProps) => {
   return (
     <Link href="/">
       <Box
@@ -12,7 +12,7 @@ const Logo = ({ width, height, ...other }: BoxProps) => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          ...other,
+          ...rest,
         }}
       >
         <img src={logo} alt="logo" width="100%" />

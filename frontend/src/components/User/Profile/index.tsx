@@ -134,16 +134,14 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props;
-
+const TabPanel = ({ children, value, index, ...rest }) => {
   return (
     <div
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
-      {...other}
+      {...rest}
     >
       {value === index && children}
     </div>
@@ -176,11 +174,10 @@ const Profile: React.FC = () => {
   const [croppedImage, setCroppedImage] = useState<any>(undefined);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
-  const [value, setValue] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
 
   const handleChange = (event, newValue) => {
-    console.log(newValue);
-    setValue(newValue);
+    setActiveTab(newValue);
   };
 
   const handleDialogOpen = () => {
@@ -304,7 +301,7 @@ const Profile: React.FC = () => {
             Profile settings
           </Typography>
           <Tabs
-            value={value}
+            value={activeTab}
             className={classes.tabList}
             onChange={handleChange}
             aria-label="lab API tabs example"
@@ -314,7 +311,7 @@ const Profile: React.FC = () => {
             <TabStyle label="UI settings" {...a11yProps(2)} />
           </Tabs>
         </div>
-        <TabPanelStyle value={value} index={0}>
+        <TabPanelStyle value={activeTab} index={0}>
           <div className={classes.formsContainer}>
             <Form
               onSubmit={handleChangeProfileData}
@@ -554,7 +551,7 @@ const Profile: React.FC = () => {
             </div>
           </div>
         </TabPanelStyle>
-        <TabPanelStyle value={value} index={1} style={{ paddingBottom: 0 }}>
+        <TabPanelStyle value={activeTab} index={1} style={{ paddingBottom: 0 }}>
           <div className={classes.settingsPart}>
             <div className={classes.subheader}>Password</div>
             <Button
@@ -566,7 +563,7 @@ const Profile: React.FC = () => {
             </Button>
           </div>
         </TabPanelStyle>
-        <TabPanelStyle value={value} index={2} style={{ paddingBottom: 0 }}>
+        <TabPanelStyle value={activeTab} index={2} style={{ paddingBottom: 0 }}>
           <div className={classes.settingsPart}>
             <div className={classes.subheader}>
               Always display drop target element borders
@@ -593,7 +590,7 @@ const Profile: React.FC = () => {
             </div>
           </div>
         </TabPanelStyle>
-        {value !== 1 && (
+        {activeTab !== 1 && (
           <Box padding="8px 0" className={classes.buttonsWrapper}>
             <Button
               color="secondary"
