@@ -15,6 +15,11 @@ type ColumnsProps = {
   index: number,
 } 
 
+type ColumnsProps = {
+  column: any,
+  index: number,
+} 
+
 const useStyles = makeStyles(({ spacing, shadows, shape, palette }) => ({
   card: {
     borderRadius: shape.borderRadius,
