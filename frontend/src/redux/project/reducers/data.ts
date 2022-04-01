@@ -30,7 +30,6 @@ const dataReducer = produce(
 
       case TYPES.SET_IMAGE_PALETTE: {
         draft.imagePalette = action.payload;
-        console.log(draft.imagePalette);
         break;
       }
 

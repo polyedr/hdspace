@@ -34,7 +34,6 @@ export const convertCreatedElementToRequest = <
     elementType
   ]() as unknown) as ServerElement<T, ServerElement<Entity>[], K>;
   const { name } = libraryElement;
-  console.log(`convertCreatedElementToRequest, styles: ${styles}`);
   return {
     ...libraryElement,
     id: -1,

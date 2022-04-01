@@ -100,7 +100,6 @@ export const apiGenerateImagePalette = (
     data: { fileurl: imageUrl },
   })
     .then((response: AxiosResponse<ServerAsset>) => {
-      console.log(response.data);
       return response.data;
     })
     .catch(handleError);

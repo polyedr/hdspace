@@ -147,7 +147,6 @@ const Styles = () => {
 
   const removeStyles = useCallback(
     (ruleNames: PropertyName[]) => {
-      console.log('removeStyles');
       if (!selectedElementsIds.length) {
         dispatch(
           enqueueSnackbar({

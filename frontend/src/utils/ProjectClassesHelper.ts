@@ -25,11 +25,6 @@ export const updateDefaultStyles = (
   styles: CSSProperties,
   controlKey: string,
 ): Project => {
-  console.log(
-    `styles in updateDefaultStyles: ${JSON.stringify(
-      styles,
-    )}, classNames: ${classNames}`,
-  );
   return {
     ...project,
     projectData: {
@@ -98,7 +93,6 @@ export const addProjectStyles = (
   elementType: Entity,
   styles: Required<React.CSSProperties>,
 ): Project => {
-  console.log(project);
   return {
     ...project,
     projectData: {

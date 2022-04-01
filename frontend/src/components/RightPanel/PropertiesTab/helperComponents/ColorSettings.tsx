@@ -25,7 +25,6 @@ type Props = {
   onChange(color: string): any | void;
   disabled?: boolean;
   labelTextStyle?: string;
-  key?: string;
 };
 
 const ColorSettings: React.FC<Props> = ({
@@ -34,7 +33,6 @@ const ColorSettings: React.FC<Props> = ({
   onChange,
   disabled,
   labelTextStyle = 'Color',
-  key,
 }) => {
   const classes = useStyles();
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
@@ -121,7 +119,7 @@ const ColorSettings: React.FC<Props> = ({
   );
 
   return (
-    <div key={key}>
+    <div>
       <div className={classes.root}>
         <StyledTextField
           label={labelTextStyle}
