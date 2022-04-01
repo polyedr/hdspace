@@ -48,8 +48,6 @@ const ColorSettings: React.FC<Props> = ({
     currentBackgroundColor.value.includes('rgba'),
   );
 
-  console.log(`currentColor: ${currentColor} ${currentColor.includes('rgba')}`);
-
   const formatTextColor = useCallback(
     (isValueCheckBox: boolean) => {
       if (isValueCheckBox) {

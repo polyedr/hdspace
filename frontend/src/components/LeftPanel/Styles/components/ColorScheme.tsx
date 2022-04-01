@@ -28,7 +28,6 @@ const ColorScheme = () => {
   const parsedImagePalette = imagePalette ? JSON.parse(imagePalette) : null;
 
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
-  console.log(defaultStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
 
@@ -115,10 +114,15 @@ const ColorScheme = () => {
         >).map((key, index) => {
           return (
             <ColorSettings
-              currentColor={colorValue[key] || (colorScheme[key] as string)}
+              currentColor={
+                defaultStyles[ColorStyleEnum[key]][
+                  ColorStylePropertiesEnum[key]
+                ] ||
+                (colorValue && colorValue[key]) ||
+                (colorScheme[key] as string)
+              }
               activeElementId={ColorSettingsEnum[key]}
               onChange={(color) => {
-                console.log(colorValue);
                 handleColorValueChange({
                   ...colorValue,
                   [key]: color,

@@ -286,29 +286,6 @@ const Styles = () => {
             const controlInfo = CONTROLS[controlName];
             const { Control } = controlInfo;
 
-            if (
-              controlName === sectionTitleEnum.TYPOGRAPHY.toLowerCase() ||
-              controlName === sectionTitleEnum.BORDER.toLowerCase() ||
-              controlName === sectionTitleEnum.INDENTS.toLowerCase()
-            ) {
-              return (
-                <ControlSection title={controlName} key={controlName}>
-                  <Control
-                    {...getControlStyles(controlName, currentEditableStyles)}
-                    canEdit={canEdit}
-                    activeElementId={activeElement.id}
-                    element={activeElement}
-                    removeStyles={!masterScreenEnabled && removeStyles}
-                    updateStyles={(styles) => updateStyles(styles, controlName)}
-                    replaceStyles={replaceStyles}
-                    updateParams={!masterScreenEnabled && updateParams}
-                    masterScreenEnabled={masterScreenEnabled}
-                    editableStyles={editableStyles}
-                    isLeftSide
-                  />
-                </ControlSection>
-              );
-            }
             return (
               <ControlSection title={controlName} key={controlName}>
                 <Control
@@ -322,6 +299,7 @@ const Styles = () => {
                   updateParams={!masterScreenEnabled && updateParams}
                   masterScreenEnabled={masterScreenEnabled}
                   editableStyles={editableStyles}
+                  isLeftSide
                 />
               </ControlSection>
             );
