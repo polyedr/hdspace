@@ -14,7 +14,7 @@ import TaskModal from '@Components/Dialogs/PmToolsModal/TaskModal';
 import { IColumnData } from '@Src/types/pmtools/board';
 import Task from './Task';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ palette, spacing }) => ({
   root: {
     display: 'grid',
     padding: 10,
@@ -25,6 +25,12 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   icon: {
     color: palette.common.white,
+  },
+  column: {
+    padding: spacing(1),
+    margin: spacing(0.2),
+    borderRadius: 3,
+    backgroundColor: palette.primary.light,
   },
 }));
 
@@ -100,7 +106,7 @@ export const Column: React.FC<Props> = ({
           {column.description}
         </Typography>
       </div>
-      <Droppable droppableId={column.id} key={column.id}>
+      <Droppable droppableId={column.id} type="tasks">
         {(provided) => {
           return (
             <div {...provided.droppableProps} ref={provided.innerRef}>
