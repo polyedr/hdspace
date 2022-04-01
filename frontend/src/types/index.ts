@@ -370,13 +370,13 @@ export type LibraryElement<
     group?: string;
     titleName?: string;
     titleLink?: string;
+    size?: string;
   } & Params;
   shared?: boolean;
 };
 
-export type LibraryElementPatch<Type extends Entity> = {
+export type LibraryElementPatch<Type extends Entity, Params = any> = {
   name?: string;
-  size?: string;
   type?: Type;
   scenario?: number;
   struct_type?: Type;
@@ -387,6 +387,12 @@ export type LibraryElementPatch<Type extends Entity> = {
     ownStyles: React.CSSProperties;
     pseudoClassStyles: { [className: string]: React.CSSProperties };
   };
+  parameters?: {
+    group?: string;
+    titleName?: string;
+    titleLink?: string;
+    size?: string;
+  } & Params;
   children?: string[];
 };
 
@@ -843,7 +849,6 @@ export type ProjectWithScreens = ProjectBase & {
 
 export type StateElement = {
   id: string;
-  size?: string;
   name: string;
   type: Entity | 'none';
   buoyancy: number;
@@ -1642,3 +1647,59 @@ export type ChatCredentials = {
 
 export const CONTROLS_NOT_ALLOW_LINK = ['html'] as const;
 export const CONTROLS_NOT_ALLOW_RICHTEXTBOX = ['checkbox'] as const;
+
+export type canvasData = {
+  imageElements?: StateElement[];
+  imageFiles?: File[];
+  element?: LibraryElement<any, any[], any, {}> | undefined;
+};
+
+export type importData = {
+  notSupportedTag: string | null | undefined;
+  canvasData: canvasData;
+  importSuccessRawData: {
+    successPercentage?: number | null | undefined;
+    totalImageFileUpload?: number | null | undefined;
+    totalUploadImage?: number | null | undefined;
+    totalNotUploadImage?: number | null | undefined;
+    totalCssFiles?: number | null | undefined;
+  };
+  error: boolean;
+};
+
+export type FreeDraggableStylesProps = {
+  isActive: boolean;
+  zIndex: number;
+  includesActiveElement: boolean;
+};
+
+export enum KeyCode {
+  BackSpace = 8,
+  Space = 32,
+  LeftArrow = 37,
+  UpArrow = 38,
+  RightArrow = 39,
+  DownArrow = 40,
+  DeleteKey = 46,
+  C = 67,
+  V = 86,
+  Z = 90,
+}
+
+export enum ConvertibleElementType {
+  CONTAINER = 'container',
+  SECTION = 'section',
+  TEXTINPUT = 'textinput',
+  TEXTAREA = 'textarea',
+  PLACEHOLDER = 'Placeholder',
+  BUTTON = 'button',
+  CHECKBOX = 'checkbox',
+  TEXTBLOCK = 'textBlock',
+  LABEL = 'label',
+  HEADING = 'heading',
+  SELECT = 'select',
+  GRID = 'grid',
+  CALENDAR = 'calendar',
+  PAEAGRAPH = 'paragraph',
+  IMAGE = 'image',
+}

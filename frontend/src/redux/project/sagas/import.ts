@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { call, put, select } from 'redux-saga/effects';
 import { apiChangeRecursiveElement, apiCreateElement } from '@Api/element';
 import DOMPurify from 'dompurify';
@@ -10,6 +11,7 @@ import {
   StateElement,
   UpdateDataActionType,
   UserProjectPermission,
+  importData,
 } from '@Src/types';
 import convertHtml from '@Utils/convertHtml';
 import CSSOM from 'cssom';
@@ -17,13 +19,21 @@ import { extractStyles } from '@Utils/stringHelper';
 import IMAGES from '@Constants/images';
 import { apiGetWebPage, apiPostURL, apiPostURLCheckRobots } from '@Api/import';
 import * as Actions from '@Redux/project/actions';
-import { importHtml, updateElementParameters } from '@Redux/project/actions';
+import {
+  importHtml,
+  updateElementParameters,
+  checkImportHTML,
+} from '@Redux/project/actions';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { selectElementsForScreen } from '@Redux/project/selectors/element';
 import JSZip from 'jszip';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
-import { selectCurrentScreen } from '../selectors/screen';
+import {
+  selectCurrentScreenId,
+  selectCurrentScreen,
+} from '@Redux/project/selectors/screen';
+
 import { updateElementImage } from './element';
 import { updateOrReplaceElementParameters } from './common';
 
@@ -31,128 +41,92 @@ export const importHtmlSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof importHtml>) {
+  yield put(Actions.setValueImportLoader(true));
   try {
-    const { files, url } = action.payload;
+    const {
+      imageFiles,
+      imageElements,
+      element,
+    } = action.payload.importHtmlData;
 
-    let indexPathname: string;
-
-    if (url) {
-      const { pathname } = new URL(url);
-      indexPathname = pathname;
-    }
-
-    const htmlFiles = files.filter((file) => file.type === 'text/html');
-
-    const html: string = yield url
-      ? htmlFiles
-          .find((file) => file.name.includes(indexPathname.slice(1))) // remove slash at the beginning
-          ?.text()
-      : htmlFiles[0]?.text();
-
-    if (!html) {
-      throw new Error('At least one HTML file required');
-    }
-
-    const cssFiles = files.filter((file) => file.type === 'text/css');
-
-    const externalStyles: string = yield Promise.all(
-      cssFiles.map((file) => file.text()),
-    ).then((result) => result.reduce((acc, curr) => acc + curr, ''));
-    const htmlStyles = extractStyles(html);
-    const css = externalStyles + htmlStyles;
-
-    const clearHtml = DOMPurify.sanitize(html);
-
-    const doc = new DOMParser().parseFromString(clearHtml, 'text/html');
-
-    const { cssRules } = CSSOM.parse(css); // the actual type of cssRules is CSSStyleRule[] while the declared one is CSSOM.CSSRule[]
-    // @ts-ignore
-    const data = convertHtml(doc, cssRules);
-
-    const listOfUnsupportedElement = data?.listOfUnsupportedElement
-      ? data?.listOfUnsupportedElement
-      : '';
-
-    if (data?.listOfUnsupportedElement) {
-      delete data?.listOfUnsupportedElement;
-    }
-
-    const { result: element, error }: Result<LibraryElement<any>> = yield call(
-      reqWrapper,
-      apiCreateElement,
-      {
-        data,
-      },
-    );
     if (element) {
       const { id, element: rootId }: Screen = yield select(selectCurrentScreen);
 
-      yield put(
-        Actions.addStateElements([{ elements: [element], parentId: rootId }], {
-          screenId: id,
-          useHistory: true,
-        }),
-      );
-
-      const elements: StateElement[] = yield select(
-        selectElementsForScreen(id),
-      );
-      const imageElements = Object.values(elements).filter(
-        (element) => element.type === 'image',
-      );
-      const imageFiles = files.filter((file) => file.type.includes('image/'));
-
-      for (let i = 0; i < imageElements.length; i++) {
-        const element = imageElements[i];
-        const image = imageFiles.find((img) =>
-          element.parameters.imageURL.includes(img.name),
+      // start upload image to canvase and set html code in canvase
+      if (imageFiles && imageElements) {
+        yield put(
+          Actions.addStateElements(
+            [{ elements: [element], parentId: rootId }],
+            {
+              screenId: id,
+              useHistory: true,
+            },
+          ),
         );
-        if (image) {
-          yield call(updateElementImage, element.id, image, {
-            screenId: id,
-            useHistory: true,
-          });
-        } else {
-          yield call(
-            updateOrReplaceElementParameters,
-            updateElementParameters(
-              element.id,
-              {
-                imageURL: element.parameters.imageURL || IMAGES.imageIcon,
-              },
-              {
+
+        try {
+          let imageIndex = 0;
+          while (imageElements.length > 0) {
+            const element = imageElements[imageIndex];
+            let image: File | undefined;
+            try {
+              image = imageFiles.find((img) =>
+                element.parameters.imageURL.includes(img.name),
+              );
+            } catch (e) {
+              image = undefined;
+            }
+            if (image) {
+              yield call(updateElementImage, element.id, image, {
                 screenId: id,
                 useHistory: true,
+              });
+            } else {
+              yield call(
+                updateOrReplaceElementParameters,
+                updateElementParameters(
+                  element.id,
+                  {
+                    imageURL: element.parameters.imageURL || IMAGES.imageIcon,
+                  },
+                  {
+                    screenId: id,
+                    useHistory: true,
+                  },
+                ),
+                UpdateDataActionType.UPDATE,
+              );
+            }
+            imageIndex++;
+          }
+        } catch (e) {
+          yield put(
+            enqueueSnackbar(
+              {
+                message: e.message,
+                options: { variant: 'error' },
               },
+              e,
             ),
-            UpdateDataActionType.UPDATE,
           );
         }
       }
-
+      // end here
       const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
         data: { children: [element.id] },
         id: rootId,
       });
       if (error) throw new Error(error);
-    }
-    if (error) throw new Error(error);
-    yield put(
-      enqueueSnackbar({
-        message: 'Successfully site is import.',
-        options: { variant: 'success' },
-      }),
-    );
-    yield put(Actions.toggleContainersBorders(true));
-    if (listOfUnsupportedElement.length !== 0) {
+
       yield put(
         enqueueSnackbar({
-          message: `List of not supported html tag is ${listOfUnsupportedElement
-            .toString()
-            .toLowerCase()}.`,
-          options: { variant: 'error' },
+          message: 'Successfully site is import.',
+          options: { variant: 'success' },
         }),
       );
+      yield put(Actions.toggleContainersBorders(true));
+    } else {
+      throw new Error('Something went wrong');
     }
   } catch (e) {
     yield put(
@@ -209,7 +183,7 @@ const getTypeFromName = (name: string) => {
 export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
+)(function* ({ payload: url }) {
   try {
     const updateUrl = (url: string) => {
       let newEditUrl: string = url;
@@ -271,56 +245,262 @@ export const checkRobotsFileFromUrlSaga = withRequiredPermissions(
   }
 });
 
-export const uploadImportUrlSaga = withRequiredPermissions(
+export const importHtmlCheckSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
-)(function* ({ payload: url }: ReturnType<typeof Actions.uploadImportUrl>) {
+)(function* (action: ReturnType<typeof checkImportHTML>) {
+  yield put(Actions.setValueImportLoader(true));
+  const currentScreenId = yield select(selectCurrentScreenId);
+  let canvasElement;
   try {
-    yield put(Actions.setValueImportLoader(true));
+    const { url } = action.payload;
+    let { files } = action.payload;
+    // start only url convert & import
+    if (files.length === 0 && url !== '') {
+      try {
+        const { result, error }: Result<PostUrlResponse> = yield call(
+          reqWrapper,
+          apiPostURL,
+          {
+            wpname: url,
+          },
+        );
 
-    const { result, error }: Result<PostUrlResponse> = yield call(
+        if (error) {
+          yield put(
+            Actions.setValueImport({
+              notSupportedTag: null,
+              canvasData: {},
+              importSuccessRawData: {},
+              error: true,
+            }),
+          );
+          throw new Error(
+            error === 'Request failed with status code 400'
+              ? 'Enter a valid URL'
+              : error,
+          );
+        }
+        if (!result) {
+          yield put(
+            Actions.setValueImport({
+              notSupportedTag: null,
+              canvasData: {},
+              importSuccessRawData: {},
+              error: true,
+            }),
+          );
+          throw new Error('Something went wrong');
+        }
+
+        const archive = yield call(reqWrapper, apiGetWebPage, {
+          wpname: result.wpname,
+        });
+        const zip = new JSZip();
+        const unzipped = yield zip.loadAsync(archive); // unzip received file
+        const zipObjects: JSZip.JSZipObject[] = Object.values(unzipped.files);
+
+        files = yield Promise.all(
+          zipObjects
+            .filter((zipObj) => !zipObj.dir) // filter out directories
+            .map(async (zipObj) => {
+              const blob = await zipObj.async('blob'); // convert zipObject to blob
+              const file = new File([blob], zipObj.name, {
+                lastModified: zipObj.date.getTime(),
+                type: getTypeFromName(zipObj.name),
+              }); // create File from blob
+              return file;
+            }),
+        );
+      } catch (e) {
+        yield put(Actions.setValueImportLoader(false));
+        yield put(
+          Actions.setValueImport({
+            notSupportedTag: null,
+            canvasData: {},
+            importSuccessRawData: {},
+            error: true,
+          }),
+        );
+        throw new Error(e.message);
+      }
+    }
+    // end here
+    let indexPathname: string;
+
+    if (url) {
+      const { pathname } = new URL(url);
+      indexPathname = pathname;
+    }
+
+    const htmlFiles = files.filter((file) => file.type === 'text/html');
+
+    const html: string = yield url
+      ? htmlFiles
+          .find((file) => file.name.includes(indexPathname.slice(1))) // remove slash at the beginning
+          ?.text()
+      : htmlFiles[0]?.text();
+
+    if (!html) {
+      yield put(
+        Actions.setValueImport({
+          notSupportedTag: null,
+          canvasData: {},
+          importSuccessRawData: {},
+          error: true,
+        }),
+      );
+      throw new Error('At least one HTML file required');
+    }
+
+    const cssFiles = files.filter((file) => file.type === 'text/css');
+
+    const externalStyles: string = yield Promise.all(
+      cssFiles.map((file) => file.text()),
+    ).then((result) => result.reduce((acc, curr) => acc + curr, ''));
+
+    const htmlStyles = extractStyles(html);
+    const css = externalStyles + htmlStyles;
+    const clearHtml = DOMPurify.sanitize(html);
+    const doc = new DOMParser().parseFromString(clearHtml, 'text/html');
+
+    const { cssRules } = CSSOM.parse(css); // the actual type of cssRules is CSSStyleRule[] while the declared one is CSSOM.CSSRule[]
+    // @ts-ignore
+    const data = convertHtml(doc, cssRules);
+
+    const listOfUnsupportedElement = data?.listOfUnsupportedElement
+      ? data?.listOfUnsupportedElement.join(', ')
+      : '';
+
+    if (data?.listOfUnsupportedElement) {
+      delete data?.listOfUnsupportedElement;
+    }
+
+    // image check start here
+    const { result: element, error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
-      apiPostURL,
+      apiCreateElement,
       {
-        wpname: url,
+        data,
       },
     );
+    let uploadImage: number = 0;
+    let notUploadImage: number = 0;
+    let imageFiles: File[] = [];
+    let imageElements: StateElement[] = [];
+    if (element) {
+      canvasElement = element;
+      const { id, element: rootId }: Screen = yield select(selectCurrentScreen);
+
+      yield put(
+        Actions.addStateElements([{ elements: [element], parentId: rootId }], {
+          screenId: id,
+          useHistory: true,
+        }),
+      );
+
+      const elements: StateElement[] = yield select(
+        selectElementsForScreen(id),
+      );
+      imageElements = Object.values(elements).filter(
+        (element) => element.type === 'image',
+      );
+      imageFiles = files.filter((file) => file.type.includes('image/'));
+
+      imageElements.forEach((element) => {
+        let image: File | undefined;
+
+        try {
+          image = imageFiles.find((img) =>
+            element.parameters.imageURL.includes(img.name),
+          );
+        } catch (e) {
+          image = undefined;
+        }
+
+        if (image) {
+          uploadImage++;
+        } else {
+          notUploadImage++;
+        }
+      });
+
+      const { error } = yield call(reqWrapper, apiChangeRecursiveElement, {
+        data: { children: [element.id] },
+        id: rootId,
+      });
+      if (error) {
+        yield put(
+          Actions.setValueImport({
+            notSupportedTag: null,
+            canvasData: {},
+            importSuccessRawData: {},
+            error: true,
+          }),
+        );
+        throw new Error(error);
+      }
+    }
 
     if (error) {
-      throw new Error(
-        error === 'Request failed with status code 400'
-          ? 'Enter a valid URL'
-          : error,
-      );
-    }
-    if (!result) {
-      throw new Error('Something went wrong');
-    }
-
-    const archive = yield call(reqWrapper, apiGetWebPage, {
-      wpname: result.wpname,
-    });
-    const zip = new JSZip();
-    const unzipped = yield zip.loadAsync(archive); // unzip received file
-    const zipObjects: JSZip.JSZipObject[] = Object.values(unzipped.files);
-
-    const files = yield Promise.all(
-      zipObjects
-        .filter((zipObj) => !zipObj.dir) // filter out directories
-        .map(async (zipObj) => {
-          const blob = await zipObj.async('blob'); // convert zipObject to blob
-          const file = new File([blob], zipObj.name, {
-            lastModified: zipObj.date.getTime(),
-            type: getTypeFromName(zipObj.name),
-          }); // create File from blob
-          return file;
+      yield put(
+        Actions.setValueImport({
+          notSupportedTag: null,
+          canvasData: {},
+          importSuccessRawData: {},
+          error: true,
         }),
-    );
+      );
+      throw new Error(error);
+    }
+    // end here
 
-    yield put(importHtml(Object.values(files), url));
-    yield put(Actions.toggleContainersBorders(true));
+    const importSiteData: importData = {
+      notSupportedTag: null,
+      canvasData: {},
+      importSuccessRawData: {},
+      error: false,
+    };
+
+    importSiteData.notSupportedTag = '';
+    importSiteData.canvasData = {
+      imageElements,
+      imageFiles,
+      element,
+    };
+
+    if (listOfUnsupportedElement.length !== 0) {
+      importSiteData.notSupportedTag = listOfUnsupportedElement
+        .toString()
+        .toLowerCase();
+    }
+
+    const totalAvailbleTag = 70;
+    const totalNotAvailbleTag = listOfUnsupportedElement.split(', ').length;
+
+    importSiteData.importSuccessRawData = {
+      successPercentage:
+        (totalNotAvailbleTag * (totalNotAvailbleTag + totalAvailbleTag)) / 100,
+      totalImageFileUpload: imageFiles?.length
+        ? uploadImage + notUploadImage
+        : notUploadImage,
+      totalUploadImage: uploadImage,
+      totalNotUploadImage: notUploadImage,
+      totalCssFiles: cssFiles?.length ? cssFiles?.length : 0,
+    };
+
+    importSiteData.error = false;
+
+    yield put(Actions.setValueImport(importSiteData));
   } catch (e) {
-    yield put(Actions.setValueImportLoader(false));
+    yield put(
+      Actions.setValueImport({
+        notSupportedTag: null,
+        canvasData: {},
+        importSuccessRawData: {},
+        error: true,
+      }),
+    );
     yield put(
       enqueueSnackbar(
         {
@@ -330,5 +510,15 @@ export const uploadImportUrlSaga = withRequiredPermissions(
         e,
       ),
     );
+  } finally {
+    if (canvasElement) {
+      yield put(
+        Actions.deleteElement(canvasElement?.id, {
+          screenId: currentScreenId,
+        }),
+      );
+    }
+    yield put(Actions.setValueImportLoader(false));
+    yield put(Actions.setValueCheckRobots(false));
   }
 });

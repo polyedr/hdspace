@@ -34,6 +34,7 @@ import {
   ElementData,
   NNModelName,
   VIARegions,
+  canvasData,
 } from '@Src/types';
 import { XYCoord } from 'react-dnd';
 import {
@@ -178,6 +179,7 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
+  setImportValue,
   EditScreenNameAndData,
   CreateVIARegion,
   DeleteVIARegion,
@@ -1238,17 +1240,19 @@ export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
 
-export const importHtml = (files: File[], url?: string) => ({
+export const importHtml = (importHtmlData: canvasData) => ({
   type: TYPES.IMPORT_HTML,
+  payload: {
+    importHtmlData,
+  },
+});
+
+export const checkImportHTML = (files: File[], url?: string) => ({
+  type: TYPES.IMPORT_HTML_CHECK,
   payload: {
     files,
     url,
   },
-});
-
-export const uploadImportUrl = (url: string) => ({
-  type: TYPES.UPLOAD_IMPORT_URL,
-  payload: url,
 });
 
 export const uploadUrlForCheckRobots = (url: string) => ({
@@ -1263,6 +1267,11 @@ export const setValueCheckRobots = (value: boolean) => ({
 
 export const setValueImportLoader = (value: boolean): SetValueImportLoader => ({
   type: TYPES.SET_VALUE_IMPORT_LOADER,
+  payload: value,
+});
+
+export const setValueImport = (value: any): setImportValue => ({
+  type: TYPES.SET_IMPORT_VALUE,
   payload: value,
 });
 

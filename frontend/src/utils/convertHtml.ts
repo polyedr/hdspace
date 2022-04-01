@@ -6,12 +6,12 @@ const containerElements = {
   ASIDE: 'container',
   BODY: 'container',
   DETAILS: 'container',
-  DIV: 'container',
-  FIELDSET: 'container',
+  DIV: 'divBlock',
+  FIELDSET: 'html',
   FIGURE: 'container',
-  FOOTER: 'container',
-  FORM: 'container',
-  HEADER: 'container',
+  FOOTER: 'divBlock',
+  FORM: 'divBlock',
+  HEADER: 'divBlock',
   MAIN: 'container',
   NAV: 'container',
 } as const;
@@ -180,15 +180,22 @@ const htmlElementToAdeviElement = (
   cssRules: CSSStyleRule[],
   doc: Document,
 ): ServerElement<any> | null => {
-  const type = tagMap[element.tagName];
+  let type = tagMap[element.tagName];
+  const htmlElementType = element.getAttribute('type');
+
+  if (htmlElementType === 'hidden' && type === 'textinput') {
+    return null;
+  }
+
+  const isURL = !!element.getAttribute('href');
+  const { style: inlineStyle } = element;
+
   if (!type) {
     if (unsupportedElementList.indexOf(element.tagName) === -1) {
       unsupportedElementList.push(element.tagName);
     }
-    return null;
+    type = 'divBlock';
   }
-
-  const { style: inlineStyle } = element;
 
   const ownStyles = {
     ...extractStyles(element, cssRules, doc),
@@ -199,6 +206,15 @@ const htmlElementToAdeviElement = (
     textContent: element.textContent?.trim(),
     ...(type === 'heading' && { headingType: element.tagName.toLowerCase() }),
     ...(type === 'image' && { imageURL: element.getAttribute('src') }),
+    ...(isURL && { isLink: true, link: element.getAttribute('href') }),
+    ...(htmlElementType === 'password' &&
+      type === 'textinput' && { type: 'password' }),
+    ...(htmlElementType === 'number' &&
+      type === 'textinput' && { type: 'number' }),
+    ...(htmlElementType === 'phone' &&
+      type === 'textinput' && { type: 'phone' }),
+    ...(htmlElementType === 'email' &&
+      type === 'textinput' && { type: 'email' }),
   });
 
   return {

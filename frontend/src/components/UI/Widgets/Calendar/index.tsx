@@ -1,16 +1,10 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
-import {
-  selectActiveElement,
-  selectActiveElementId,
-  selectCurrentRoot,
-} from '@Redux/project/selectors/element';
-
 import Calendar from './colorCalendar';
-
 import './colorCalendar/styles/theme-basic.css';
 
 type Props = {
@@ -32,42 +26,25 @@ const CalendarWidget: React.FC<Props> = (props) => {
   const [dom] = useState<HTMLElement | null>(null);
   const [calendar, setCalendar] = useState<Calendar | null>(null);
   const editorDocument = useSelector(selectEditorDocument);
-  const selectedElement = useSelector(selectActiveElement);
-  const rootId = useSelector(selectCurrentRoot).id;
-  const selectedElementId = useSelector(selectActiveElementId);
 
-  // const size = selectedElementId === id ? selectedElement.size : calendarSize ?? 'large';
-
-  const widgetId =
-    selectedElementId === 'none' || selectedElementId === rootId
-      ? id
-      : selectedElementId;
   useEffect(() => {
-    if (
-      !calendar?.calendarSize ||
-      selectedElementId === id ||
-      calendar?.calendarSize === selectedElement.size ||
-      (selectedElement.size !== undefined && calendarSize !== undefined)
-    ) {
+    if (!calendar?.calendarSize || calendarSize) {
       setCalendar(
         new Calendar({
-          id: `.widget-${widgetId}`,
+          id: `.widget-${id}`,
           theme: 'basic',
-          calendarSize: selectedElement.size,
+          calendarSize,
           fontFamilyHeader: ownStyles?.fontFamily || '"Roboto", sans-serif',
           document: editorDocument,
         }),
       );
     }
   }, [
-    selectedElement,
     dom,
     ownStyles,
     calendar?.calendarSize,
-    selectedElementId,
     id,
     calendarSize,
-    widgetId,
     editorDocument,
   ]);
 

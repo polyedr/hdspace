@@ -90,11 +90,11 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'prettier', 'import', 'react-hooks'],
   rules: {
     'prettier/prettier': 'error', // use prettier to enforce code style
-    "no-restricted-imports": [
-      "error",
+    'no-restricted-imports': [
+      'error',
       {
-        "patterns": ["@mui/*/*/*", "!@mui/material/test-utils/*"]
-      }
+        patterns: ['@mui/*/*/*', '!@mui/material/test-utils/*'],
+      },
     ],
     'import/extensions': [
       'error',

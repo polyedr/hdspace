@@ -3,12 +3,14 @@ import {
   selectCurrentProjectId,
   selectSidebarOpen,
 } from '@Redux/project/selectors/base';
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import { Tabs, Tab } from '@material-ui/core';
 import { TabPanel } from '@Components/styledComponents';
 import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
+import { IMessageZulip } from '@Src/types/pmtools/types';
+import { selectMessagesZulip } from '@Redux/pmtools/chat/selectors';
 
 const useTabStyles = makeStyles(({ palette }) => ({
   root: {
@@ -37,20 +39,39 @@ const useStyles = makeStyles(({ palette }) => ({
   root: {
     color: palette.common.white,
     backgroundColor: palette.panel.main,
-    minHeight: 655,
+    minHeight: '100%',
     overflowY: 'auto',
+    maxHeight: '100%',
+    display: 'flex',
+    flexDirection: 'column',
   },
   open: {
     width: 310,
   },
+  panel: {
+    flex: 1,
+    overflowY: 'auto',
+    marginBottom: 90,
+  },
 }));
 
 const SideModule: FC = () => {
+  const messages: Array<IMessageZulip> = useSelector(selectMessagesZulip);
   const classes = useStyles();
   const tabClasses = useTabStyles();
   const open = useSelector(selectSidebarOpen);
   const projectId = useSelector(selectCurrentProjectId);
   const [selectedTabNumber, setSelectedTabNumber] = useState(0);
+
+  useEffect(() => {
+    const tabEl = document.getElementById('simple-tabpanel-0');
+    if (tabEl) {
+      tabEl.scrollTo({
+        top: tabEl.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [messages]);
 
   if (projectId === -1) {
     return <p>Loading... </p>;
@@ -76,7 +97,12 @@ const SideModule: FC = () => {
         {Object.values(TABS_PMTOOLS).map((tab, idx) => {
           const Tab = components[tab];
           return (
-            <TabPanel value={selectedTabNumber} key={tab} index={idx}>
+            <TabPanel
+              value={selectedTabNumber}
+              panelClass={classes.panel}
+              key={tab}
+              index={idx}
+            >
               <Tab />
             </TabPanel>
           );

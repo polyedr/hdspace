@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
-import { FreeCanvasOffset, UIFramework } from '@Src/types';
+import { FreeCanvasOffset, UIFramework, importData } from '@Src/types';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import { makeFeatureStateSelector } from '../../../shared/redux';
 import { AppReduxState } from '../../types';
@@ -155,7 +155,10 @@ export const selectFreeCanvasOffsetList = (ids: string[]) => (
 ): FreeCanvasOffset => {
   return ids.reduce(
     (ids, id) =>
-      ({ ...ids, [id]: selectFreeCanvasOffset(id)(state) } as FreeCanvasOffset),
+      ({
+        ...ids,
+        [id]: selectFreeCanvasOffset(id)(state),
+      } as FreeCanvasOffset),
     {},
   );
 };
@@ -189,6 +192,10 @@ export function selectImportLoader(state: AppReduxState): boolean {
 }
 export function selectImagePalette(state: AppReduxState): string | undefined {
   return selectProjectState(state).data.imagePalette?.palette;
+}
+
+export function selectImportValue(state: AppReduxState): importData {
+  return selectProjectState(state).communication.importValue;
 }
 
 export const selectCurrentUIFramework = createSelector(

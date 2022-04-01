@@ -45,10 +45,17 @@ const useViewportHotkeys = () => {
   }, [coreElementsIds, id, masterCoreElementId, masterGroupsElementId]);
 
   const deleteHandler = useCallback(() => {
-    if (!coreElementSelected && canEdit) {
+    if (!coreElementSelected && canEdit && !isPrototypeMode) {
       dispatch(deleteElement(id, { screenId: currentScreenId }));
     }
-  }, [canEdit, coreElementSelected, id, dispatch, currentScreenId]);
+  }, [
+    canEdit,
+    coreElementSelected,
+    id,
+    dispatch,
+    currentScreenId,
+    isPrototypeMode,
+  ]);
 
   const wrapHandler = useCallback(() => {
     if (!coreElementSelected && canEdit) {

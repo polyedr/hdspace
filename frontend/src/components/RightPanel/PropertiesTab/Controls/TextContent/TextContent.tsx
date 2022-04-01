@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
-import { Checkbox, FormControlLabel, MenuItem } from '@material-ui/core';
+import {
+  Checkbox,
+  FormControlLabel,
+  MenuItem,
+  FormLabel,
+} from '@material-ui/core';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedCallback } from 'use-debounce';
 import ELEMENT_IDS from '@Constants/elementIds';
@@ -10,7 +15,8 @@ import {
   CONTROLS_NOT_ALLOW_LINK,
   CONTROLS_NOT_ALLOW_RICHTEXTBOX,
 } from '@Src/types';
-import RichTextContent from '../../helperComponents/RichTextContent';
+import { convertToHTML } from 'draft-convert';
+import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
   const {
@@ -23,8 +29,22 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   const [input, setInput] = useState(link);
   const [selectedScreen, selectScreen] = useState(screenName);
   const screens = useSelector(selectScreensWithoutMaster);
+  const [isValidURL, setValidURL] = useState(true);
+
   const debouncedLink = useDebouncedCallback((value) => {
-    updateParams({ link: value, screenLink: '', screenName: '' }, element.id);
+    if (value) {
+      const isValidURL =
+        value.startsWith('https://') || value.startsWith('http://');
+      setValidURL(isValidURL);
+      if (isValidURL) {
+        updateParams(
+          { link: value, screenLink: '', screenName: '' },
+          element.id,
+        );
+      }
+    } else {
+      setValidURL(true);
+    }
   }, 500);
 
   const debouncedLinkedScreen = useDebouncedCallback((value, screenName) => {
@@ -55,7 +75,9 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   const [state, handleChange] = useDebouncedRichInputChange(
     textContent,
     (value) => {
-      updateParams({ textContent: value.toString('html') });
+      updateParams({
+        textContent: convertToHTML(value.getCurrentContent()),
+      });
     },
   );
 
@@ -94,11 +116,7 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   return (
     <>
       {CONTROLS_NOT_ALLOW_RICHTEXTBOX.includes(element.type) ? null : (
-        <RichTextContent
-          canEdit={canEdit}
-          state={state}
-          handleChange={handleChange}
-        />
+        <RichTextContent handleChange={handleChange} textState={state} />
       )}
 
       {CONTROLS_NOT_ALLOW_LINK.includes(element.type) ? null : (
@@ -124,10 +142,16 @@ const TextContent = ({ element, updateParams, canEdit }) => {
               onChange={changeHandler}
               label="Item URL"
               margin="dense"
+              placeholder="https://www.google.com"
               fullWidth
               multiline
               disabled={!canEdit}
             />
+          )}
+          {isLink && !isValidURL && (
+            <FormLabel id="error" component="label" error>
+              Your link should be start with http:// or https://.
+            </FormLabel>
           )}
 
           {!isLink && (

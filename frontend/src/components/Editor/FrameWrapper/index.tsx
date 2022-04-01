@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { FC, useEffect, useRef, useContext, useMemo } from 'react';
 import { create } from 'jss';
 import {
@@ -34,6 +35,14 @@ const useStyles = makeStyles({
     width: '100%',
     height: '100%',
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loader: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -179,7 +188,14 @@ export const FrameWrapper: FC<any> = ({ children, ...props }) => {
   const sharedStylesEl = useProjectHeaderStyles(sharedClasses);
   const showGrid = useSelector(selectShowingGrid);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
-  return (
+  const isImportLoader = useSelector(selectImportLoader);
+  const styles = useStyles();
+
+  return isImportLoader ? (
+    <div className={styles.loader}>
+      <CircularProgress size={80} />
+    </div>
+  ) : (
     <Frame
       ref={ref}
       {...props}

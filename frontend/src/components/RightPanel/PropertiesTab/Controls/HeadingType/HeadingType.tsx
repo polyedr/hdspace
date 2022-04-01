@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectActiveElementParams } from '@Redux/project/selectors/element';

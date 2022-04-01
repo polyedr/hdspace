@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+// @ts-nocheck
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
@@ -306,7 +307,6 @@ const PropertiesTab: React.FC = () => {
       } else if (isGroupElement) {
         handleOpenRemovalConfirmModal(styles);
       } else if (editableStyles === 'ownStyles') {
-        console.log(activeElement);
         dispatch(
           updateMultipleElementsStyles(
             [activeElement.id],
@@ -444,6 +444,8 @@ const PropertiesTab: React.FC = () => {
                   <ControlSection title="Element name">
                     <RenameElement canEdit={canEdit} />
                   </ControlSection>
+
+                  <div style={{ display: 'none' }}>test</div>
 
                   {!isFreeCanvasMode && (
                     <ControlSection title="Replace this element">

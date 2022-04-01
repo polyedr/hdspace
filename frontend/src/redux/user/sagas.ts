@@ -22,6 +22,7 @@ import {
   sidebarLogout,
   updateUISettingsParameters,
 } from '@Redux/project/actions';
+import _ from 'lodash';
 
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
@@ -128,12 +129,15 @@ export function* changeProfileDataSaga({
   payload,
 }: ReturnType<typeof Actions.changeProfileData>) {
   try {
-    const { id } = yield select(selectProfileData);
+    const { id, ...rest } = yield select(selectProfileData);
 
     const newProfileData: ServerProfileData = yield call(
       reqWrapper,
       apiChangeProfileData,
-      { id, data: { parameters: { avatarCrop: payload } } },
+      {
+        id,
+        data: _.merge(rest, payload),
+      },
     );
 
     yield put(
@@ -233,6 +237,7 @@ function* sendResetPasswordMailSaga(
     );
     openSignScreen('signin');
   } catch (e) {
+    // @ts-ignore
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));

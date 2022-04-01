@@ -4,6 +4,7 @@ import {
   IconButton,
   FormControlLabel,
   MenuItem,
+  FormLabel,
 } from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -20,8 +21,9 @@ import {
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
-import RichTextEditor from 'react-rte';
-import RichTextContent from '../../helperComponents/RichTextContent';
+import { EditorState } from 'draft-js';
+import { convertFromHTML, convertToHTML } from 'draft-convert';
+import RichTextContent from '../../helperComponents/RichTextContent/RichTextContent';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   title: {
@@ -69,13 +71,23 @@ const ListItem: React.FC<Props> = ({
 
   const [selectedScreen, selectScreen] = useState(screenName);
   const screens = useSelector(selectScreensWithoutMaster);
+  const [isValidURL, setValidURL] = useState(true);
 
   const debouncedText = useDebouncedCallback((value) => {
-    updateParams({ textContent: value.toString('html') }, id);
+    updateParams({ textContent: convertToHTML(value.getCurrentContent()) }, id);
   }, 500);
 
   const debouncedLink = useDebouncedCallback((value) => {
-    updateParams({ link: value, screenLink: '', screenName: '' }, id);
+    if (value) {
+      const isValidURL =
+        value.startsWith('https://') || value.startsWith('http://');
+      setValidURL(isValidURL);
+      if (isValidURL) {
+        updateParams({ link: value, screenLink: '', screenName: '' }, id);
+      }
+    } else {
+      setValidURL(true);
+    }
   }, 500);
 
   const debouncedLinkedScreen = useDebouncedCallback((value, screenName) => {
@@ -120,7 +132,7 @@ const ListItem: React.FC<Props> = ({
   };
 
   const [state, setState] = useState(
-    RichTextEditor.createValueFromString(textContent, 'html'),
+    EditorState.createWithContent(convertFromHTML(textContent)),
   );
 
   useEffect(() => {
@@ -158,11 +170,7 @@ const ListItem: React.FC<Props> = ({
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={classes.details}>
-        <RichTextContent
-          canEdit={canEdit}
-          state={state}
-          handleChange={handleChange}
-        />
+        <RichTextContent textState={state} handleChange={handleChange} />
 
         <FormControlLabel
           control={
@@ -185,8 +193,14 @@ const ListItem: React.FC<Props> = ({
             margin="dense"
             fullWidth
             multiline
+            placeholder="https://www.google.com"
             disabled={!canEdit}
           />
+        )}
+        {isLink && !isValidURL && (
+          <FormLabel id="error" component="label" error>
+            Your link should be start with http:// or https://.
+          </FormLabel>
         )}
 
         {!isLink && (

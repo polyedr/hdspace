@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { omit } from 'ramda';
 import { call, put, select } from 'redux-saga/effects';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
