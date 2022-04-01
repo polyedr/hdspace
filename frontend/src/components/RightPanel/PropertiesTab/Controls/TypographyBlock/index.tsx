@@ -18,6 +18,8 @@ import {
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -60,6 +62,7 @@ const TypographyBlock: React.FC<Props> = ({
   editableStyles,
   isLeftSide = false,
 }) => {
+  const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
 
   const handleFontFamilyChange = (ev) => {
@@ -79,8 +82,8 @@ const TypographyBlock: React.FC<Props> = ({
     fontSize || '14px',
   );
   useEffect(() => {
-    setState(fontSize);
-  }, [fontSize]);
+    setState((isLeftSide && defaultStyles.typography.fontSize) || fontSize);
+  }, [fontSize, defaultStyles.typography.fontSize]);
   const debounced = useDebouncedCallback((value) => {
     handleChangeFontSize(value);
   }, 500);
@@ -135,7 +138,11 @@ const TypographyBlock: React.FC<Props> = ({
           fullWidth
           margin="dense"
           label="Font Family"
-          value={fontFamily || FONTS[0].value}
+          value={
+            (isLeftSide && defaultStyles.typography.fontFamily) ||
+            fontFamily ||
+            FONTS[0].value
+          }
           onChange={handleFontFamilyChange}
           select
           disabled={!canEdit}
@@ -193,7 +200,9 @@ const TypographyBlock: React.FC<Props> = ({
             </ToggleButtonGroup>
 
             <ToggleButtonGroup
-              value={textAlign}
+              value={
+                (isLeftSide && defaultStyles.typography.textAlign) || textAlign
+              }
               onChange={handleAlignmentChange}
               exclusive
               size="small"
@@ -216,7 +225,11 @@ const TypographyBlock: React.FC<Props> = ({
 
         <div>
           <ColorSettings
-            currentColor={(colorValue as string) || 'transparent'}
+            currentColor={
+              (isLeftSide && defaultStyles.colors.color) ||
+              (colorValue as string) ||
+              'transparent'
+            }
             activeElementId={element.id}
             onChange={handleColorValueChange as (color: string) => void}
             disabled={!canEdit}

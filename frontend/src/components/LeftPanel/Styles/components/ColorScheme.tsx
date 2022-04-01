@@ -28,6 +28,7 @@ const ColorScheme = () => {
   const parsedImagePalette = imagePalette ? JSON.parse(imagePalette) : null;
 
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
+  console.log(defaultStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
 

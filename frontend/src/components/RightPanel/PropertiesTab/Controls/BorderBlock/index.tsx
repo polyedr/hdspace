@@ -20,6 +20,8 @@ import {
 } from '@Utils/debounceHooks';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -64,6 +66,8 @@ const BorderBlock: React.FC<Props> = ({
   isLeftSide = false,
 }) => {
   const classes = useStyles();
+  const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
+
   const borderRadiusUnits = useMemo(
     () => accessBorderRadius(String(borderRadius)),
     [borderRadius],
@@ -103,7 +107,7 @@ const BorderBlock: React.FC<Props> = ({
   );
 
   const [radius, handleRadiusChange] = useDebouncedInputChange(
-    borderRadius,
+    (isLeftSide && defaultStyles.border.borderRadius) || borderRadius,
     (value) => {
       updateStyles({
         borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,
