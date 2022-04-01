@@ -1,6 +1,11 @@
 import TYPES from '@Redux/actionTypes';
 import { IBoardForUI, IColumnData } from '@Src/types/pmtools/board';
-import { ActionTypePM, CreatorColumnType } from '@Src/types/pmtools/types';
+import {
+  ActionTypePM,
+  CreatorColumnType,
+  UpdateCardIndexType,
+  UpdateColumnIndexTypeSuccess,
+} from '@Src/types/pmtools/types';
 
 export const successSavedBoard = (name: IBoardForUI) => ({
   type: TYPES.BOARD_SAVED_SUCCESS,
@@ -28,6 +33,28 @@ export const requestAddColumn = (
 
 export const successAddColumn = (payload: IColumnData) => ({
   type: TYPES.ADD_COLUMN_SUCCESS,
+  payload,
+});
+
+export const requestUpdateColumnIndex = ({
+  destination,
+  source,
+}: UpdateCardIndexType) => ({
+  type: TYPES.UPDATE_COLUMN_INDEX,
+  payload: { destination, source },
+});
+
+export const successUpdateColumnIndex = (
+  payload: UpdateColumnIndexTypeSuccess,
+) => ({
+  type: TYPES.UPDATE_COLUMN_INDEX_SUCCESS,
+  payload,
+});
+
+export const successUpdateCardIndex = (
+  payload: UpdateColumnIndexTypeSuccess,
+) => ({
+  type: TYPES.UPDATE_COLUMN_INDEX_SUCCESS,
   payload,
 });
 
