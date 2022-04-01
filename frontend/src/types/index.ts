@@ -1684,3 +1684,21 @@ export enum KeyCode {
   V = 86,
   Z = 90,
 }
+
+export enum ConvertibleElementType {
+  CONTAINER = 'container',
+  SECTION = 'section',
+  TEXTINPUT = 'textinput',
+  TEXTAREA = 'textarea',
+  PLACEHOLDER = 'Placeholder',
+  BUTTON = 'button',
+  CHECKBOX = 'checkbox',
+  TEXTBLOCK = 'textBlock',
+  LABEL = 'label',
+  HEADING = 'heading',
+  SELECT = 'select',
+  GRID = 'grid',
+  CALENDAR = 'calendar',
+  PAEAGRAPH = 'paragraph',
+  IMAGE = 'image',
+}

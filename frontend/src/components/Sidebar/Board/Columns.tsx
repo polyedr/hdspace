@@ -7,13 +7,13 @@ import { ModalAction } from '@Src/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/ColumnModal';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import Classnames from 'classnames';
-import { Column } from './Column';
 import { IColumnData } from '@Src/types/pmtools/board';
+import { Column } from './Column';
 
 type ColumnsProps = {
-  column: IColumnData,
-  index: number,
-} 
+  column: IColumnData;
+  index: number;
+};
 
 const useStyles = makeStyles(({ spacing, shadows, shape, palette }) => ({
   card: {

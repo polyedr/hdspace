@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveElement } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import IMAGES from '@Constants/images';
-import { ElementGroup } from '@Src/types';
+import { ElementGroup, ConvertibleElementType } from '@Src/types';
 import TYPE from './constants';
 
 const ElementType: React.FC = () => {
@@ -47,43 +47,46 @@ const ElementType: React.FC = () => {
       param.title = '';
       param.freeCanvas = {};
 
-      if (newElementType === 'container' || newElementType === 'section') {
+      if (
+        newElementType === ConvertibleElementType.CONTAINER ||
+        newElementType === ConvertibleElementType.SECTION
+      ) {
         param.group = ElementGroup.CONTAINERS;
       } else if (
-        newElementType === 'textinput' ||
-        newElementType === 'textarea'
+        newElementType === ConvertibleElementType.TEXTINPUT ||
+        newElementType === ConvertibleElementType.TEXTAREA
       ) {
         param.group = ElementGroup.FORM;
         param.placeholder = 'Placeholder';
-      } else if (newElementType === 'button') {
+      } else if (newElementType === ConvertibleElementType.BUTTON) {
         param.group = ElementGroup.FORM;
         param.textContent = newElementType;
-      } else if (newElementType === 'checkbox') {
+      } else if (newElementType === ConvertibleElementType.CHECKBOX) {
         param.group = ElementGroup.FORM;
         param.value = newElementType;
       } else if (
-        newElementType === 'textBlock' ||
-        newElementType === 'label' ||
-        newElementType === 'heading'
+        newElementType === ConvertibleElementType.TEXTBLOCK ||
+        newElementType === ConvertibleElementType.LABEL ||
+        newElementType === ConvertibleElementType.HEADING
       ) {
         param.group = ElementGroup.TYPOGRAPHY;
         param.textContent =
-          newElementType === 'textBlock'
+          newElementType === ConvertibleElementType.TEXTBLOCK
             ? 'This is a text block'
-            : newElementType === 'heading'
+            : newElementType === ConvertibleElementType.HEADING
             ? 'Header'
             : 'This is a label';
-      } else if (newElementType === 'select') {
+      } else if (newElementType === ConvertibleElementType.SELECT) {
         param.group = ElementGroup.FORM;
-      } else if (newElementType === 'grid') {
+      } else if (newElementType === ConvertibleElementType.GRID) {
         param.group = ElementGroup.OTHER;
-      } else if (newElementType === 'calendar') {
+      } else if (newElementType === ConvertibleElementType.CALENDAR) {
         param.group = ElementGroup.WIDGET;
-      } else if (newElementType === 'paragraph') {
+      } else if (newElementType === ConvertibleElementType.PAEAGRAPH) {
         param.group = ElementGroup.TYPOGRAPHY;
         param.textContent =
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
-      } else if (newElementType === 'image') {
+      } else if (newElementType === ConvertibleElementType.IMAGE) {
         param.group = ElementGroup.IMAGE;
         param.imageURL = IMAGES.imageIcon;
         param.keepAspectRatio = false;
@@ -101,7 +104,7 @@ const ElementType: React.FC = () => {
         updateElementParameters(id, param, { screenId: currentScreenId }),
       );
 
-      if (newElementType === 'select') {
+      if (newElementType === ConvertibleElementType.SELECT) {
         dispatch(
           addChildToElement(
             'option',
