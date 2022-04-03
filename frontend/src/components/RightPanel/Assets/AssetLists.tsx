@@ -46,10 +46,10 @@ const useStyles = makeStyles({
 });
 
 interface Props {
-  isLeftSide?: boolean;
+  isDefaultStyles?: boolean;
 }
 
-const AssetLists: FC<Props> = ({ isLeftSide = false }) => {
+const AssetLists: FC<Props> = ({ isDefaultStyles = false }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const currentProjectId = useSelector(selectCurrentProjectId);
@@ -104,7 +104,7 @@ const AssetLists: FC<Props> = ({ isLeftSide = false }) => {
           onChange={(event) => setNewAssetName(event.target.value)}
           focused
           InputProps={{
-            className: isLeftSide
+            className: isDefaultStyles
               ? classes.leftSideColor
               : classes.rightSideColor,
             endAdornment: (
@@ -118,7 +118,7 @@ const AssetLists: FC<Props> = ({ isLeftSide = false }) => {
                 className={classes.newAssetListCloseBtn}
                 disabled={!canEditProject}
               >
-                <CloseIcon color={isLeftSide ? 'primary' : 'inherit'} />
+                <CloseIcon color={isDefaultStyles ? 'primary' : 'inherit'} />
               </IconButton>
             ),
           }}
@@ -132,7 +132,7 @@ const AssetLists: FC<Props> = ({ isLeftSide = false }) => {
             handleListChange((event.target.value as string) || null)
           }
           inputProps={{
-            className: isLeftSide
+            className: isDefaultStyles
               ? classes.leftSideColor
               : classes.rightSideColor,
           }}
@@ -153,7 +153,7 @@ const AssetLists: FC<Props> = ({ isLeftSide = false }) => {
           setAddInProgress(true);
         }}
       >
-        <AddIcon color={isLeftSide ? 'primary' : 'inherit'} />
+        <AddIcon color={isDefaultStyles ? 'primary' : 'inherit'} />
       </IconButton>
     </div>
   );

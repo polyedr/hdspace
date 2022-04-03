@@ -86,7 +86,7 @@ const StyleGenerator = () => {
       </div>
       <div className={classes.title}>Upload image to asset list</div>
       <div className={classes.chooseSection}>
-        <AssetLists isLeftSide />
+        <AssetLists isDefaultStyles />
         <Button size="large" className={classes.chooseButton}>
           <div className={classes.chooseButtonText}>Generate color scheme</div>
         </Button>

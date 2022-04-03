@@ -1,4 +1,4 @@
-export interface ColorsValue {
+export interface ColorsScheme {
   FONT_COLOR?: string;
   FONT_COLOR_OVERLAY?: string;
   BACKGROUND_COLOR?: string;

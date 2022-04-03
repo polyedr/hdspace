@@ -44,7 +44,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   fontStyle?: React.CSSProperties['fontStyle'];
   textAlign?: React.CSSProperties['textAlign'];
   color: React.CSSProperties['color'];
-  isLeftSide?: boolean;
+  isDefaultStyles?: boolean;
 };
 
 const TypographyBlock: React.FC<Props> = ({
@@ -60,7 +60,7 @@ const TypographyBlock: React.FC<Props> = ({
   color = 'transparent',
   canEdit,
   editableStyles,
-  isLeftSide = false,
+  isDefaultStyles = false,
 }) => {
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
@@ -82,7 +82,9 @@ const TypographyBlock: React.FC<Props> = ({
     fontSize || '14px',
   );
   useEffect(() => {
-    setState((isLeftSide && defaultStyles.typography.fontSize) || fontSize);
+    setState(
+      (isDefaultStyles && defaultStyles.typography.fontSize) || fontSize,
+    );
   }, [fontSize, defaultStyles.typography.fontSize]);
   const debounced = useDebouncedCallback((value) => {
     handleChangeFontSize(value);
@@ -139,7 +141,7 @@ const TypographyBlock: React.FC<Props> = ({
           margin="dense"
           label="Font Family"
           value={
-            (isLeftSide && defaultStyles.typography.fontFamily) ||
+            (isDefaultStyles && defaultStyles.typography.fontFamily) ||
             fontFamily ||
             FONTS[0].value
           }
@@ -156,7 +158,7 @@ const TypographyBlock: React.FC<Props> = ({
 
         <div
           className={classes.wrapper}
-          style={isLeftSide ? { justifyContent: 'flex-start' } : {}}
+          style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}
         >
           <StyledTextField
             className={classes.text}
@@ -169,12 +171,14 @@ const TypographyBlock: React.FC<Props> = ({
               debounced.callback(ev.target.value);
             }}
             disabled={!canEdit}
-            style={isLeftSide ? { marginRight: '10%' } : {}}
+            style={isDefaultStyles ? { marginRight: '10%' } : {}}
           />
 
           <div
             style={
-              isLeftSide ? { display: 'flex', flexDirection: 'column' } : {}
+              isDefaultStyles
+                ? { display: 'flex', flexDirection: 'column' }
+                : {}
             }
           >
             <ToggleButtonGroup
@@ -185,7 +189,7 @@ const TypographyBlock: React.FC<Props> = ({
               onChange={handleFormatChange}
               size="small"
               style={
-                isLeftSide
+                isDefaultStyles
                   ? { width: '20px', height: '20px', marginBottom: '10px' }
                   : { marginRight: '10px' }
               }
@@ -201,12 +205,13 @@ const TypographyBlock: React.FC<Props> = ({
 
             <ToggleButtonGroup
               value={
-                (isLeftSide && defaultStyles.typography.textAlign) || textAlign
+                (isDefaultStyles && defaultStyles.typography.textAlign) ||
+                textAlign
               }
               onChange={handleAlignmentChange}
               exclusive
               size="small"
-              style={isLeftSide ? { width: '20px', height: '20px' } : {}}
+              style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
             >
               <StyledToggleButton value="left" disabled={!canEdit}>
                 <FormatAlignLeftIcon fontSize="small" />
@@ -226,7 +231,7 @@ const TypographyBlock: React.FC<Props> = ({
         <div>
           <ColorSettings
             currentColor={
-              (isLeftSide && defaultStyles.colors.color) ||
+              (isDefaultStyles && defaultStyles.colors.color) ||
               (colorValue as string) ||
               'transparent'
             }

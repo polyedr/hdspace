@@ -50,7 +50,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   borderColor?: React.CSSProperties['borderColor'];
   borderWidth?: React.CSSProperties['borderWidth'];
   borderRadius?: React.CSSProperties['borderRadius'];
-  isLeftSide?: boolean;
+  isDefaultStyles?: boolean;
 };
 
 const BorderBlock: React.FC<Props> = ({
@@ -63,7 +63,7 @@ const BorderBlock: React.FC<Props> = ({
   canEdit,
   element,
   editableStyles,
-  isLeftSide = false,
+  isDefaultStyles = false,
 }) => {
   const classes = useStyles();
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
@@ -107,7 +107,7 @@ const BorderBlock: React.FC<Props> = ({
   );
 
   const [radius, handleRadiusChange] = useDebouncedInputChange(
-    (isLeftSide && defaultStyles.border.borderRadius) || borderRadius,
+    (isDefaultStyles && defaultStyles.border.borderRadius) || borderRadius,
     (value) => {
       updateStyles({
         borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,
@@ -144,7 +144,7 @@ const BorderBlock: React.FC<Props> = ({
       )}
 
       <div className={classes.wrapper}>
-        {!isLeftSide && (
+        {!isDefaultStyles && (
           <StyledTextField
             label="Width"
             type="number"
@@ -184,7 +184,7 @@ const BorderBlock: React.FC<Props> = ({
         </div>
       </div>
 
-      {!isLeftSide && (
+      {!isDefaultStyles && (
         <ColorSettings
           currentColor={borderColorValue as string}
           activeElementId={element.id}

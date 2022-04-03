@@ -298,7 +298,7 @@ const Styles = () => {
                   updateParams={!masterScreenEnabled && updateParams}
                   masterScreenEnabled={masterScreenEnabled}
                   editableStyles={editableStyles}
-                  isLeftSide
+                  isDefaultStyles
                 />
               </ControlSection>
             );

@@ -278,7 +278,6 @@ export const createChildElementsSaga = withActionsHistory(function* (
     const customLibraryElements = yield select(selectCustomLibraryElements);
 
     const elementGroups = yield select(selectElementTreeGroups);
-    console.log(`created elements: ${JSON.stringify(createdElements)}`);
     const convertedCreatedElements = createdElements.map((dEl) => {
       if (dEl.custom) {
         return convertElementToRequest(
