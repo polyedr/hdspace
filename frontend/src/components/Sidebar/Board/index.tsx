@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { Container } from '@material-ui/core';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import {
   StyledAccordionSummary,
   StyledIconButton,
@@ -9,7 +9,10 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { selectColumnListWithTasks } from '@Redux/pmtools/board/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { requestFetchBoard } from '@Redux/pmtools/board/actions/columns';
+import {
+  requestFetchBoard,
+  requestUpdateColumnIndex,
+} from '@Redux/pmtools/board/actions/columns';
 import { ModalAction } from '@Src/types';
 import ColumnModal from '@Components/Dialogs/PmToolsModal/ColumnModal';
 import { requestUpdateCardIndex } from '@Redux/pmtools/board/actions/tasks';
@@ -21,9 +24,13 @@ const TasksTab: FC = () => {
   const columns = useSelector(selectColumnListWithTasks);
   const project = useSelector(selectCurrentProjectId);
 
-  const onDragEnd = async ({ destination, source }: DropResult) => {
+  const onDragEnd = async ({ destination, source, type }: DropResult) => {
     if (!destination) return;
-    dispatch(requestUpdateCardIndex({ destination, source }));
+    if (type === 'boards') {
+      dispatch(requestUpdateColumnIndex({ destination, source }));
+    } else {
+      dispatch(requestUpdateCardIndex({ destination, source }));
+    }
   };
 
   useEffect(() => {
@@ -46,10 +53,21 @@ const TasksTab: FC = () => {
         >
           Board
         </StyledAccordionSummary>
+
         {!columns.length ? (
           <p>Create you first column</p>
         ) : (
-          columns.map((item) => <Columns key={item.id} column={item} />)
+          <Droppable droppableId="board-droppable" type="boards">
+            {(provided) => {
+              return (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {columns.map((item, index: number) => (
+                    <Columns key={item.id} column={item} index={index} />
+                  ))}
+                </div>
+              );
+            }}
+          </Droppable>
         )}
         <ColumnModal
           show={open}

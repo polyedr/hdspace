@@ -1,7 +1,7 @@
 import { handleError } from '@Api/helper';
 import config from '@Constants/pmtools/trelloConfigData';
 import { myAxios } from '@Src/config/settings';
-import { CreatorColumnType } from '@Src/types/pmtools/types';
+import { CreatorColumnType, UpdateListType } from '@Src/types/pmtools/types';
 import { MyAxiosProps } from '@Src/types';
 import { AxiosResponse } from 'axios';
 
@@ -24,7 +24,7 @@ export const createColumn = ({
     ...axiosProps,
     baseURL: 'https://api.trello.com/1',
     method: 'POST',
-    url: `/lists?name=${data.name}&idBoard=${data.id}&key=${apiKey}&token=${token}`,
+    url: `/lists?name=${data.name}&idBoard=${data.id}&key=${apiKey}&token=${token}&pos=bottom`,
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
@@ -54,6 +54,18 @@ export const deleteColumn = ({
     data: { value: true },
     baseURL: 'https://api.trello.com/1',
     url: `/lists/${columnId}/closed?key=${apiKey}&token=${token}`,
+  })
+    .then((results: AxiosResponse) => results.data)
+    .catch(handleError);
+
+export const apiUpdateColumnPos = ({ listId, newPos }: UpdateListType) =>
+  myAxios({
+    baseURL: 'https://api.trello.com/1',
+    url: `/list/${listId}?key=${apiKey}&token=${token}`,
+    method: 'PUT',
+    data: {
+      pos: newPos,
+    },
   })
     .then((results: AxiosResponse) => results.data)
     .catch(handleError);
