@@ -52,6 +52,7 @@ import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import logger from 'loglevel';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -309,7 +310,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     const parentElement = elements[newParent.id];
 
     if (!parentElement) {
-      console.error(`No element ${newParent.id}`);
+      logger.error(`No element ${newParent.id}`);
       setIsDragging(false);
       return;
     }

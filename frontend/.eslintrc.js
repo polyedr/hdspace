@@ -90,12 +90,6 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'prettier', 'import', 'react-hooks'],
   rules: {
     'prettier/prettier': 'error', // use prettier to enforce code style
-    'no-restricted-imports': [
-      'error',
-      {
-        patterns: ['@mui/*/*/*', '!@mui/material/test-utils/*'],
-      },
-    ],
     'import/extensions': [
       'error',
       'ignorePackages',
@@ -124,6 +118,7 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 'off',
     'no-shadow': 'off',
     'no-plusplus': 'off',
+    'react-hooks/exhaustive-deps': 'off',
     'no-underscore-dangle': ['error', { allowAfterThis: true }],
     'no-param-reassign': [
       'error',
@@ -133,10 +128,11 @@ module.exports = {
     'lines-between-class-members': 'off',
     'func-names': ['error', 'as-needed', { generators: 'never' }],
     camelcase: 'off',
-    'no-console': 'off',
+    'no-console': 'error',
     'no-restricted-imports': [
       'error',
       {
+        patterns: ['@mui/*/*/*', '!@mui/material/test-utils/*'],
         paths: [
           {
             name: '@material-ui/core',

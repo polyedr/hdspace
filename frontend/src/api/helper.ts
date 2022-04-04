@@ -1,4 +1,5 @@
 import { AxiosError, AxiosResponse } from 'axios';
+import logger from 'loglevel';
 
 export const onError = ({ response: r }: AxiosError) => {
   const response = r as any;
@@ -35,7 +36,7 @@ export const onError = ({ response: r }: AxiosError) => {
   } else {
     const errorMsg =
       'Request is not present in axios error, look at onError handler!';
-    console.error(errorMsg);
+    logger.error(errorMsg);
     return {
       msg: 'Request is not present in axios error, look at onError handler!',
       response,
@@ -44,7 +45,7 @@ export const onError = ({ response: r }: AxiosError) => {
 };
 
 export const handleError = (error) => {
-  console.error(error);
+  logger.error(error);
   return {
     error: error.response?.data?.detail || error.message,
   };

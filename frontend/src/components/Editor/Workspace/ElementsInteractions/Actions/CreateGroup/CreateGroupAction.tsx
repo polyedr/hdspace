@@ -5,6 +5,7 @@ import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 import { Popover, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { createElementsGroup } from '@Redux/project/actions';
+import logger from 'loglevel';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { StateElement } from '@Src/types';
@@ -41,7 +42,7 @@ const CreateGroupAction: React.FC<Props> = ({
 
   const createGroup = useCallback(() => {
     if (!inputRef.current) {
-      console.error('Group name input is not defined');
+      logger.error('Group name input is not defined');
       return;
     }
     const name = inputRef.current.value;
