@@ -13,6 +13,7 @@ import {
   selectCurrentProjectDefaultStyles,
   selectImagePalette,
 } from '@Redux/project/selectors/base';
+import { ParsedImagePalette } from '@Src/types';
 
 const colorScheme: ColorsScheme = {
   FONT_COLOR: 'transparent',
@@ -24,15 +25,14 @@ const colorScheme: ColorsScheme = {
 };
 
 const formatImagePaletteColor = (
-  parsedImagePalette: Array<Array<number>>,
+  parsedImagePalette: ParsedImagePalette,
   index: number,
 ) => {
   return `rgba(${parsedImagePalette[index][0]}, ${parsedImagePalette[index][1]}, ${parsedImagePalette[index][2]}, 1)`;
 };
 
 const ColorScheme = () => {
-  const imagePalette = useSelector(selectImagePalette);
-  const parsedImagePalette = imagePalette ? JSON.parse(imagePalette) : null;
+  const parsedImagePalette = useSelector(selectImagePalette);
 
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
@@ -92,7 +92,7 @@ const ColorScheme = () => {
   );
 
   useEffect(() => {
-    if (imagePalette && parsedImagePalette) {
+    if (parsedImagePalette) {
       handleColorValueChange({
         FONT_COLOR: formatImagePaletteColor(parsedImagePalette, 0),
         FONT_COLOR_OVERLAY: formatImagePaletteColor(parsedImagePalette, 1),
@@ -108,7 +108,7 @@ const ColorScheme = () => {
       });
     }
     // eslint-disable-next-line
-  }, [imagePalette]);
+  }, [parsedImagePalette]);
 
   return (
     <div>

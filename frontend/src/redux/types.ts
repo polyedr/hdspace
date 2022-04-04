@@ -47,6 +47,7 @@ import {
   NNModelName,
   VIARegions,
   importData,
+  ParsedImagePalette,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -70,18 +71,7 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
-  imagePalette: ImagePalette | null;
-};
-
-export type ImagePalette = {
-  id: number;
-  image: string;
-  imageUrl: string;
-  created: string;
-  modified: string;
-  illustrationSet: number | null;
-  fileUrl: string | null;
-  palette: string;
+  imagePalette: ParsedImagePalette | null;
 };
 
 export type ProjectUiState = {
@@ -1207,7 +1197,7 @@ export type GenerateImagePalette = IAction<
 
 export type SetImagePalette = IAction<
   typeof TYPES.SET_IMAGE_PALETTE,
-  ImagePalette
+  ParsedImagePalette
 >;
 
 export type Action =

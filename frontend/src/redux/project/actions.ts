@@ -35,6 +35,7 @@ import {
   NNModelName,
   VIARegions,
   canvasData,
+  ParsedImagePalette,
 } from '@Src/types';
 import { XYCoord } from 'react-dnd';
 import {
@@ -201,7 +202,6 @@ import {
   UpdateDefaultStyles,
   GenerateImagePalette,
   SetImagePalette,
-  ImagePalette,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -1783,7 +1783,7 @@ export const generateImagePalette = (
 });
 
 export const setImagePalette = (
-  imagePalette: ImagePalette,
+  imagePalette: ParsedImagePalette,
 ): SetImagePalette => ({
   type: TYPES.SET_IMAGE_PALETTE,
   payload: imagePalette,

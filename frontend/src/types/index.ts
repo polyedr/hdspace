@@ -1673,6 +1673,10 @@ export type FreeDraggableStylesProps = {
   includesActiveElement: boolean;
 };
 
+export type ParsedImagePalette = {
+  parsedImagePalette: Array<Array<number>>;
+};
+
 export enum KeyCode {
   BackSpace = 8,
   Space = 32,

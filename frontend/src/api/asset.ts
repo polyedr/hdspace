@@ -1,11 +1,19 @@
 import { myAxios } from '@Src/config/settings';
-import { Asset, MyAxiosProps, PaginatedArray, Result } from '@Src/types';
+import {
+  Asset,
+  MyAxiosProps,
+  PaginatedArray,
+  ParsedImagePalette,
+  Result,
+} from '@Src/types';
 import { AxiosResponse } from 'axios';
 import {
   convertResponseToAsset,
+  convertResponseToImagePalette,
   convertResponseToPaginatedAssets,
   convertToServerAsset,
   ServerAsset,
+  ServerImagePalette,
 } from './converters/asset/fromResponse';
 import { handleError } from './helper';
 
@@ -91,7 +99,7 @@ export const apiGetAssets = (
 
 export const apiGenerateImagePalette = (
   props: MyAxiosProps & { imageUrl: string },
-): Promise<any> => {
+): Promise<ParsedImagePalette | { error: any }> => {
   const { imageUrl, ...axiosProps } = props;
   return myAxios({
     ...axiosProps,
@@ -99,8 +107,8 @@ export const apiGenerateImagePalette = (
     method: 'POST',
     data: { fileurl: imageUrl },
   })
-    .then((response: AxiosResponse<ServerAsset>) => {
-      return response.data;
+    .then((response: AxiosResponse<ServerImagePalette>) => {
+      return convertResponseToImagePalette(response);
     })
     .catch(handleError);
 };
