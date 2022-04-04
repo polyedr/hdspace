@@ -53,7 +53,14 @@ const Share: FC<Props> = ({ className = '' }) => {
   const handleCopyLink = useCallback(
     (includeElement = false) => {
       const { origin } = window.location;
-
+      
+      // navigator.clipboard.writeText(
+      //   `${origin}/share/?user=${
+      //     user.id
+      //   }&project=${projectId}&screen=${screenId}${
+      //     activeElementId && includeElement ? `&element=${activeElementId}` : ''
+      //   }&token=${access}&refresh=${refresh}`,
+      // );
       const url = `${origin}/share/?user=${
         user.id
       }&project=${projectId}&screen=${screenId}${
