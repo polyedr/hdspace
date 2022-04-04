@@ -13,6 +13,7 @@ import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
 import { generateRandomInteger } from '@Utils/NumberHelper';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
+import logger from 'loglevel';
 import {
   Project,
   StateElement,
@@ -316,7 +317,7 @@ export const projectScreensMock = [
 
 export const beforeSagaTest = () => {
   // eslint-disable-next-line no-console
-  console.error = jest.fn();
+  logger.error = jest.fn();
   // stub current date and random value generator to pass enqueueSnackbar equality
   MockDate.set('2000-11-22');
   jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);
