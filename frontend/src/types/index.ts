@@ -829,8 +829,69 @@ export type ProjectClass = {
 
 export type ProjectData = {
   classes: ProjectClass[];
-  defaultStyles: any;
+  defaultStyles: DefaultStyles;
   uiFramework: UIFramework;
+};
+
+export type DefaultStyles = {
+  accentColor: AccentColor;
+  border: BorderRadius;
+  borderColor: BorderColor;
+  colors: ColorStyle;
+  elementsBackgroundColor: ElementsBackgroundColor;
+  fontColorOverlay: FontColorOverlay;
+  headingType: ColorStyle;
+  indents: Indents;
+  screenBackgroundColor: ScreenBackgroundColor;
+  typography: Typography;
+};
+
+export type ColorStyle = {
+  color?: string;
+};
+
+export type ElementsBackgroundColor = {
+  'background-color'?: string;
+};
+
+export type ScreenBackgroundColor = {
+  background?: string;
+};
+
+export type AccentColor = {
+  'accent-color'?: string;
+};
+
+export type BorderColor = {
+  'border-color'?: string;
+};
+
+export type BorderRadius = {
+  borderRadius?: string;
+};
+
+export type FontColorOverlay = {
+  fontSize?: string;
+};
+
+export type Typography = {
+  color?: string;
+  fontFamily?: string;
+  fontSize?: string;
+  fontStyle?: string;
+  fontWeight?: number;
+  textAlign?: string;
+};
+
+export type Indents = {
+  marginTop?: string | number;
+  marginLeft?: string | number;
+  marginBottom?: string | number;
+  marginRight?: string | number;
+  paddingTop?: string | number;
+  paddingLeft?: string | number;
+  paddingBottom?: string | number;
+  paddingRight?: string | number;
 };
 
 export type Project = ProjectBase & {

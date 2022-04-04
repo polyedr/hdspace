@@ -36,29 +36,27 @@ const useStyles = makeStyles(({ palette, typography }) => ({
   },
 }));
 
+const color: string = 'transparent';
+
 const StyleGenerator = () => {
-  // TODO:: Replace this string
-  const color: string = 'transparent';
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [
-    firstСolorValue,
-    handleFirstColorValueChange,
-  ] = useDebouncedValueChange(color, (newColor: string) => {
-    console.log({ color: newColor });
-  });
-  const [
-    secondСolorValue,
-    handleSecondColorValueChange,
-  ] = useDebouncedValueChange(color, (newColor: string) => {
-    console.log({ color: newColor });
-  });
+  const [firstСolorValue, setFirstColorValue] = useDebouncedValueChange(
+    color,
+    (newColor: string) => {
+      return newColor;
+    },
+  );
+  const [secondСolorValue, setSecondColorValue] = useDebouncedValueChange(
+    color,
+    (newColor: string) => {
+      return newColor;
+    },
+  );
 
   const [url, setUrl] = useState<string>('');
 
-  const onUploadClick = () => {
-    dispatch(generateImagePalette(url));
-  };
+  const onUploadClick = () => dispatch(generateImagePalette(url));
 
   return (
     <div>
@@ -97,13 +95,13 @@ const StyleGenerator = () => {
         <ColorSettings
           currentColor={(firstСolorValue as string) || 'transparent'}
           activeElementId="test"
-          onChange={handleFirstColorValueChange as (color: string) => void}
+          onChange={setFirstColorValue as (color: string) => void}
           labelTextStyle="Color 1"
         />
         <ColorSettings
           currentColor={(secondСolorValue as string) || 'transparent'}
           activeElementId="test 1"
-          onChange={handleSecondColorValueChange as (color: string) => void}
+          onChange={setSecondColorValue as (color: string) => void}
           labelTextStyle="Color 2"
         />
       </div>

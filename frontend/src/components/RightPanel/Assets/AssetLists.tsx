@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, FC } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectAllAssetLists,
@@ -45,11 +45,11 @@ const useStyles = makeStyles({
   rightSideColor: {},
 });
 
-interface Props {
+type Props = {
   isDefaultStyles?: boolean;
-}
+};
 
-const AssetLists: FC<Props> = ({ isDefaultStyles = false }) => {
+const AssetLists: React.FC<Props> = ({ isDefaultStyles = false }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const currentProjectId = useSelector(selectCurrentProjectId);

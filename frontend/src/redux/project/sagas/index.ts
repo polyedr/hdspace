@@ -184,7 +184,6 @@ const updateDefaultStylesSaga = compose(
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.updateDefaultStyles>) {
   const { classNames, styles, controlKey } = action.payload;
-  console.log(`controlKey ${controlKey}`);
   if (!action.meta) {
     console.error(
       `You have to provide meta information for action ${action.type}`,

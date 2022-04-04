@@ -4,44 +4,26 @@ import {
   StyledAccordionSummary,
 } from '@Components/styledComponents';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import ControlSection from '@Components/RightPanel/PropertiesTab/helperComponents/ControlSection';
-import sectionTitleEnum from '@Components/LeftPanel/Styles/Enums/sectionTitleEnum';
+import sectionTitleEnum from '@Components/LeftPanel/Styles/Enums/sectionTitle';
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectActiveElement,
   selectCurrentEditableStyles,
-  selectParentOfActiveElement,
-  selectSelectedElementsIds,
 } from '@Redux/project/selectors/element';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import {
-  Entity,
-  Params,
-  PropertyName,
-  UserProjectPermission,
-} from '@Src/types';
-import { enqueueSnackbar } from '@Redux/notification/actions';
-import {
-  removeElementStyles,
-  removeMultipleElementsStyles,
-  removeSharedStyles,
-  replaceMultipleElementsStyles,
-  updateDefaultStyles,
-  updateElementParameters,
-  updateMultipleElementsParameters,
-  updateSharedStyles,
-} from '@Redux/project/actions';
+import { UserProjectPermission } from '@Src/types';
+import { updateDefaultStyles } from '@Redux/project/actions';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
-import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
 import StyleGenerator from '@Components/LeftPanel/Styles/components/StyleGenerator';
 import ColorScheme from '@Components/LeftPanel/Styles/components/ColorScheme';
 import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
@@ -71,62 +53,19 @@ const useStyles = makeStyles(({ palette, typography }) => ({
   },
 }));
 
+const SECTION_CONTROLS = ['indents', 'typography', 'headingType', 'border'];
+
 const Styles = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const SECTION_CONTROLS = ['indents', 'typography', 'headingType', 'border'];
 
   const activeElement = useSelector(selectActiveElement);
-  const parentOfActiveElement = useSelector(selectParentOfActiveElement);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
   const currentEditableStyles = useSelector(selectCurrentEditableStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const editableStyles = useSelector(selectEditableStyles);
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
-  );
-
-  // eslint-disable-next-line
-  const [editedStyles, setEditedStyles] = useState<React.CSSProperties | null>(
-    null,
-  );
-
-  // eslint-disable-next-line
-  const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
-
-  const isGroupElement = !!activeElement.parameters.sourceElementId;
-  const isGroupSource = !!activeElement.parameters.groupElements;
-
-  const handleOpenRemovalConfirmModal = useCallback(
-    (styles: React.CSSProperties) => {
-      setEditedStyles(styles);
-      setShowRemoveGroupDialog(true);
-    },
-    [],
-  );
-
-  const updateParams = useCallback(
-    (params: Params<any>, itemID?: string) => {
-      if (parentOfActiveElement && parentOfActiveElement.name === 'generator') {
-        dispatch(
-          updateMultipleElementsParameters(
-            [...parentOfActiveElement.children],
-            { [ALL_ELEMENTS_INDEX]: params },
-            {
-              screenId: currentScreenId,
-            },
-          ),
-        );
-      } else {
-        dispatch(
-          updateElementParameters(itemID || activeElement.id, params, {
-            screenId: currentScreenId,
-          }),
-        );
-      }
-    },
-    [dispatch, activeElement.id, currentScreenId, parentOfActiveElement],
   );
 
   const updateStyles = useCallback(
@@ -145,132 +84,6 @@ const Styles = () => {
     [dispatch, currentScreenId],
   );
 
-  const removeStyles = useCallback(
-    (ruleNames: PropertyName[]) => {
-      if (!selectedElementsIds.length) {
-        dispatch(
-          enqueueSnackbar({
-            message: 'No elements were selected',
-            options: { variant: 'error' },
-          }),
-        );
-      } else if (selectedElementsIds.length > 1) {
-        dispatch(
-          removeMultipleElementsStyles(selectedElementsIds, ruleNames, {
-            screenId: currentScreenId,
-          }),
-        );
-      } else if (masterScreenEnabled) {
-        if (isGroupSource) {
-          const groupElementsIds = activeElement.parameters.groupElements;
-          dispatch(
-            removeMultipleElementsStyles(
-              [activeElement.id, ...groupElementsIds],
-              ruleNames,
-              {
-                screenId: currentScreenId,
-              },
-            ),
-          );
-        } else {
-          dispatch(
-            removeSharedStyles(editableStyles as Entity, ruleNames, {
-              screenId: currentScreenId,
-            }),
-          );
-        }
-      } else if (editableStyles === 'ownStyles') {
-        dispatch(
-          removeElementStyles(activeElement.id, ruleNames, {
-            screenId: currentScreenId,
-          }),
-        );
-      } else {
-        dispatch(
-          removeSharedStyles(editableStyles as Entity, ruleNames, {
-            screenId: currentScreenId,
-          }),
-        );
-      }
-    },
-    // eslint-disable-next-line
-    [
-      selectedElementsIds,
-      editableStyles,
-      masterScreenEnabled,
-      currentScreenId,
-      isGroupSource,
-      activeElement.parameters.groupElements,
-      activeElement.id,
-    ],
-  );
-
-  const replaceStyles = useCallback(
-    (styles: React.CSSProperties) => {
-      if (masterScreenEnabled) {
-        if (isGroupSource) {
-          const groupElementsIds = activeElement.parameters.groupElements;
-          dispatch(
-            replaceMultipleElementsStyles(
-              [activeElement.id, ...groupElementsIds],
-              {
-                [ALL_ELEMENTS_INDEX]: styles,
-              },
-              { screenId: currentScreenId },
-            ),
-          );
-        } else {
-          dispatch(
-            updateSharedStyles(
-              (masterScreenEnabled
-                ? activeElement.type
-                : editableStyles) as Entity,
-              styles,
-              {
-                screenId: currentScreenId,
-              },
-            ),
-          );
-        }
-      } else if (isGroupElement) {
-        handleOpenRemovalConfirmModal(styles);
-      } else if (editableStyles === 'ownStyles') {
-        dispatch(
-          replaceMultipleElementsStyles(
-            [activeElement.id],
-            {
-              [ALL_ELEMENTS_INDEX]: styles,
-            },
-            { screenId: currentScreenId },
-          ),
-        );
-      } else {
-        dispatch(
-          updateSharedStyles(
-            (masterScreenEnabled
-              ? activeElement.type
-              : editableStyles) as Entity,
-            styles,
-            {
-              screenId: currentScreenId,
-            },
-          ),
-        );
-      }
-    },
-    // eslint-disable-next-line
-    [
-      masterScreenEnabled,
-      isGroupElement,
-      editableStyles,
-      currentScreenId,
-      isGroupSource,
-      activeElement.parameters.groupElements,
-      activeElement.id,
-      activeElement.type,
-      handleOpenRemovalConfirmModal,
-    ],
-  );
   return (
     <>
       <StyledAccordion defaultExpanded id={ELEMENT_IDS.styles}>
@@ -292,10 +105,7 @@ const Styles = () => {
                   canEdit={canEdit}
                   activeElementId={activeElement.id}
                   element={activeElement}
-                  removeStyles={!masterScreenEnabled && removeStyles}
                   updateStyles={(styles) => updateStyles(styles, controlName)}
-                  replaceStyles={replaceStyles}
-                  updateParams={!masterScreenEnabled && updateParams}
                   masterScreenEnabled={masterScreenEnabled}
                   editableStyles={editableStyles}
                   isDefaultStyles

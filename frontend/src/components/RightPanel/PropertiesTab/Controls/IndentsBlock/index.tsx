@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { useDebouncedCallback } from 'use-debounce';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import {
+  Entity,
+  Indents,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
@@ -85,17 +90,6 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   isDefaultStyles?: boolean;
 };
 
-type IndentsState = {
-  marginTop: string | number;
-  marginLeft: string | number;
-  marginBottom: string | number;
-  marginRight: string | number;
-  paddingTop: string | number;
-  paddingLeft: string | number;
-  paddingBottom: string | number;
-  paddingRight: string | number;
-};
-
 const IndentsBlock: React.FC<Props> = ({
   element,
   updateStyles,
@@ -115,41 +109,20 @@ const IndentsBlock: React.FC<Props> = ({
 }) => {
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
-  // TODO:: Add type for state
-  const [state, setState] = useState<IndentsState | null>(null);
+  const [state, setState] = useState<Indents | null>(null);
   useEffect(() => {
-    setState({
-      marginTop:
-        (isDefaultStyles && defaultStyles.indents.marginTop) || marginTop || 0,
-      marginLeft:
-        (isDefaultStyles && defaultStyles.indents.marginLeft) ||
-        marginLeft ||
-        0,
-      marginBottom:
-        (isDefaultStyles && defaultStyles.indents.marginBottom) ||
-        marginBottom ||
-        0,
-      marginRight:
-        (isDefaultStyles && defaultStyles.indents.marginRight) ||
-        marginRight ||
-        0,
-      paddingTop:
-        (isDefaultStyles && defaultStyles.indents.paddingTop) ||
-        paddingTop ||
-        0,
-      paddingLeft:
-        (isDefaultStyles && defaultStyles.indents.paddingLeft) ||
-        paddingLeft ||
-        0,
-      paddingBottom:
-        (isDefaultStyles && defaultStyles.indents.paddingBottom) ||
-        paddingBottom ||
-        0,
-      paddingRight:
-        (isDefaultStyles && defaultStyles.indents.paddingRight) ||
-        paddingRight ||
-        0,
-    });
+    const styles = isDefaultStyles
+      ? defaultStyles.indents
+      : {
+          marginTop,
+          marginLeft,
+          marginBottom,
+          marginRight,
+          paddingTop,
+          paddingLeft,
+          paddingRight,
+        };
+    setState(styles as Indents);
   }, [
     marginTop,
     marginLeft,
@@ -160,6 +133,7 @@ const IndentsBlock: React.FC<Props> = ({
     paddingBottom,
     paddingRight,
     defaultStyles.indents,
+    isDefaultStyles,
   ]);
 
   const debounced = useDebouncedCallback((name, value) => {
@@ -167,13 +141,13 @@ const IndentsBlock: React.FC<Props> = ({
   }, 500);
 
   const handleChange = ({ target: { value, name } }) => {
-    setState({ ...state, [name]: value } as IndentsState);
+    setState({ ...state, [name]: value } as Indents);
     debounced.callback(name, `${value}px`);
   };
 
   return (
     <div>
-      {!masterScreenEnabled && canEdit && (
+      {!isDefaultStyles && !masterScreenEnabled && canEdit && (
         <RemoveStyles
           onClick={removeStyles}
           propsToRemove={[

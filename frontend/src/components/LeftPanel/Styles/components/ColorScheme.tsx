@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState, memo } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
 import ColorSettingsTypes, {
-  ColorStyleTypes,
   ColorStylePropertiesTypes,
+  ColorStyleTypes,
 } from '@Components/LeftPanel/Styles/Enums/colorSettings';
 import { updateDefaultStyles } from '@Redux/project/actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,6 +24,8 @@ const colorScheme: ColorsScheme = {
   ACCENT_COLOR: 'transparent',
 };
 
+const COLOR_FALLBACK = 'transparent';
+
 const formatImagePaletteColor = (
   parsedImagePalette: ParsedImagePalette,
   index: number,
@@ -38,40 +40,27 @@ const ColorScheme = () => {
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
 
-  const [colorValue, handleColorValueChange] = useState<ColorsScheme>(
-    colorScheme,
+  const [colorValue, setColorValue] = useState<ColorsScheme>(colorScheme);
+
+  const getColorByKey = useCallback(
+    (key) => {
+      return (
+        defaultStyles[ColorStyleTypes[key]][ColorStylePropertiesTypes[key]] ||
+        COLOR_FALLBACK
+      );
+    },
+    [defaultStyles],
   );
 
   useEffect(() => {
     if (defaultStyles) {
-      handleColorValueChange({
-        FONT_COLOR:
-          defaultStyles[ColorStyleTypes.FONT_COLOR][
-            ColorStylePropertiesTypes.FONT_COLOR
-          ] || 'transparent',
-        FONT_COLOR_OVERLAY:
-          defaultStyles[ColorStyleTypes.FONT_COLOR_OVERLAY][
-            ColorStylePropertiesTypes.FONT_COLOR_OVERLAY
-          ] || 'transparent',
-        BACKGROUND_COLOR:
-          defaultStyles[ColorStyleTypes.BACKGROUND_COLOR][
-            ColorStylePropertiesTypes.BACKGROUND_COLOR
-          ] || 'transparent',
-        BORDER_COLOR:
-          defaultStyles[ColorStyleTypes.BORDER_COLOR][
-            ColorStylePropertiesTypes.BORDER_COLOR
-          ] || 'transparent',
-        FILL_INSIDE_COLOR:
-          defaultStyles[ColorStyleTypes.FILL_INSIDE_COLOR][
-            ColorStylePropertiesTypes.FILL_INSIDE_COLOR
-          ] || 'transparent',
-        ACCENT_COLOR:
-          defaultStyles[ColorStyleTypes.ACCENT_COLOR][
-            ColorStylePropertiesTypes.ACCENT_COLOR
-          ] || 'transparent',
-      });
+      const colorValue = (Object.keys(ColorSettingsTypes) as Array<
+        keyof typeof ColorSettingsTypes
+      >).reduce((value, key) => ({ ...value, [key]: getColorByKey(key) }), {});
+
+      setColorValue(colorValue);
     }
-  }, [defaultStyles]);
+  }, [defaultStyles, getColorByKey]);
 
   const updateColor = useCallback(
     (color: string, controlName: string) => {
@@ -93,7 +82,7 @@ const ColorScheme = () => {
 
   useEffect(() => {
     if (parsedImagePalette) {
-      handleColorValueChange({
+      setColorValue({
         FONT_COLOR: formatImagePaletteColor(parsedImagePalette, 0),
         FONT_COLOR_OVERLAY: formatImagePaletteColor(parsedImagePalette, 1),
         BACKGROUND_COLOR: formatImagePaletteColor(parsedImagePalette, 2),
@@ -110,32 +99,39 @@ const ColorScheme = () => {
     // eslint-disable-next-line
   }, [parsedImagePalette]);
 
+  const onColorChange = (
+    color: string,
+    key: keyof typeof ColorSettingsTypes,
+  ) => {
+    setColorValue({
+      ...colorValue,
+      [key]: color,
+    });
+
+    updateColor(color, key);
+  };
+
+  const currentColor = (key: keyof typeof ColorSettingsTypes): string => {
+    return (
+      defaultStyles[ColorStyleTypes[key]][ColorStylePropertiesTypes[key]] ||
+      (colorValue && colorValue[key]) ||
+      (colorScheme[key] as string)
+    );
+  };
+
   return (
     <div>
       <div>
         {(Object.keys(ColorSettingsTypes) as Array<
           keyof typeof ColorSettingsTypes
-        >).map((key, index) => {
+        >).map((key) => {
           return (
             <ColorSettings
-              currentColor={
-                defaultStyles[ColorStyleTypes[key]][
-                  ColorStylePropertiesTypes[key]
-                ] ||
-                (colorValue && colorValue[key]) ||
-                (colorScheme[key] as string)
-              }
+              currentColor={currentColor(key)}
               activeElementId={ColorSettingsTypes[key]}
-              onChange={(color) => {
-                handleColorValueChange({
-                  ...colorValue,
-                  [key]: color,
-                });
-
-                updateColor(color, key);
-              }}
+              onChange={(color) => onColorChange(color, key)}
               labelTextStyle={ColorSettingsTypes[key]}
-              key={index.toString()}
+              key={key}
             />
           );
         })}

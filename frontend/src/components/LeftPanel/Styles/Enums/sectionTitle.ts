@@ -1,4 +1,4 @@
-enum SectionTitleEnum {
+enum SectionTitle {
   STYLE_GENERATOR = 'Style Generator',
   TYPOGRAPHY = 'Typography',
   HEADING = 'Heading',
@@ -7,4 +7,4 @@ enum SectionTitleEnum {
   INDENTS = 'Indents',
 }
 
-export default SectionTitleEnum;
+export default SectionTitle;

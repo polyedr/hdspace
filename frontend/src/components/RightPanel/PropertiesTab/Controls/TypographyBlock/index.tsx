@@ -83,9 +83,9 @@ const TypographyBlock: React.FC<Props> = ({
   );
   useEffect(() => {
     setState(
-      (isDefaultStyles && defaultStyles.typography.fontSize) || fontSize,
+      (isDefaultStyles && defaultStyles.typography?.fontSize) || fontSize,
     );
-  }, [fontSize, defaultStyles.typography.fontSize]);
+  }, [fontSize, defaultStyles.typography?.fontSize, isDefaultStyles]);
   const debounced = useDebouncedCallback((value) => {
     handleChangeFontSize(value);
   }, 500);
@@ -119,7 +119,7 @@ const TypographyBlock: React.FC<Props> = ({
 
   return (
     <div>
-      {!masterScreenEnabled && canEdit && (
+      {!isDefaultStyles && !masterScreenEnabled && canEdit && (
         <RemoveStyles
           type={element.type}
           onClick={removeStyles}
@@ -141,7 +141,7 @@ const TypographyBlock: React.FC<Props> = ({
           margin="dense"
           label="Font Family"
           value={
-            (isDefaultStyles && defaultStyles.typography.fontFamily) ||
+            (isDefaultStyles && defaultStyles.typography?.fontFamily) ||
             fontFamily ||
             FONTS[0].value
           }
@@ -205,7 +205,7 @@ const TypographyBlock: React.FC<Props> = ({
 
             <ToggleButtonGroup
               value={
-                (isDefaultStyles && defaultStyles.typography.textAlign) ||
+                (isDefaultStyles && defaultStyles.typography?.textAlign) ||
                 textAlign
               }
               onChange={handleAlignmentChange}
@@ -231,7 +231,7 @@ const TypographyBlock: React.FC<Props> = ({
         <div>
           <ColorSettings
             currentColor={
-              (isDefaultStyles && defaultStyles.colors.color) ||
+              (isDefaultStyles && defaultStyles.colors?.color) ||
               (colorValue as string) ||
               'transparent'
             }
