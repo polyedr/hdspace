@@ -316,7 +316,6 @@ export const projectScreensMock = [
 ];
 
 export const beforeSagaTest = () => {
-  // eslint-disable-next-line no-console
   logger.error = jest.fn();
   // stub current date and random value generator to pass enqueueSnackbar equality
   MockDate.set('2000-11-22');
