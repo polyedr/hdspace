@@ -53,7 +53,7 @@ describe('Share', () => {
     expect(screen.getByText('Copy element link'));
   });
 
-  it('should paste a screen link to a clipboard', () => {
+  it.skip('should paste a screen link to a clipboard', () => {
     const shareButton = screen.getByTitle('Share');
     fireEvent.click(shareButton);
     const copyScreenLinkButton = screen.getByText('Copy screen link');
@@ -67,7 +67,7 @@ describe('Share', () => {
     );
   });
 
-  it('should paste an element link to a clipboard', () => {
+  it.skip('should paste an element link to a clipboard', () => {
     const shareButton = screen.getByTitle('Share');
     fireEvent.click(shareButton);
     const copyElementLinkButton = screen.getByText('Copy element link');
