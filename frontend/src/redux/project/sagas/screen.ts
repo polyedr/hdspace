@@ -17,6 +17,7 @@ import {
   apiPostFreeCanvas,
   apiUpdateScreen,
 } from '@Api/screen';
+import logger from 'loglevel';
 import {
   EditableScreenUser,
   LibraryElement,
@@ -390,7 +391,7 @@ export const deleteScreenSaga = compose(
 }: ReturnType<typeof deleteScreen>) {
   try {
     if (!meta) {
-      console.error(`You have to provide metainformation for action ${type}`);
+      logger.error(`You have to provide metainformation for action ${type}`);
       return;
     }
     const { useHistory } = meta;
@@ -488,7 +489,7 @@ export const restoreScreenSaga = withActionsHistory(function* ({
 }: ReturnType<typeof restoreScreen>) {
   try {
     if (!meta) {
-      console.error(`You have to provide metainformation for action ${type}`);
+      logger.error(`You have to provide metainformation for action ${type}`);
       return;
     }
     yield put(Actions.setScreenCreateLoader(true));

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 // @ts-nocheck
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -45,6 +44,7 @@ import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { makeStyles } from '@material-ui/core/styles';
 
+import logger from 'loglevel';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Scrollbar from '../../UI/Scrollbar';
@@ -97,7 +97,7 @@ const PropertiesTab: React.FC = () => {
 
   const handleConfirmSourceUnbinding = () => {
     if (!editedStyles) {
-      console.error('Edited styles is null!');
+      logger.error('Edited styles is null!');
       return;
     }
     dispatch(
