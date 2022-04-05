@@ -92,7 +92,7 @@ export const DEFAULT_PROJECT: Project = {
       },
       typography: {
         color: '#323232',
-        fontFamily: 'Roboto Mono',
+        fontFamily: `"Arial", sans-serif`,
         fontSize: '14px',
         fontWeight: 100,
         textAlign: 'center',
