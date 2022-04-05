@@ -440,7 +440,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   radiobuttonGroup: [
     'radiobuttons',
     'alignment',
-    'selectValue',
     ...radiobuttonGroupStyleControls,
     'layouts',
   ],
