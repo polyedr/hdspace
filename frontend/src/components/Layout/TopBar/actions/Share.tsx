@@ -16,6 +16,7 @@ import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import { shorten_url_api_key } from '@Constants/defaultParams';
 
 const useStyles = makeStyles({
   popup: {
@@ -53,14 +54,7 @@ const Share: FC<Props> = ({ className = '' }) => {
   const handleCopyLink = useCallback(
     (includeElement = false) => {
       const { origin } = window.location;
-      
-      // navigator.clipboard.writeText(
-      //   `${origin}/share/?user=${
-      //     user.id
-      //   }&project=${projectId}&screen=${screenId}${
-      //     activeElementId && includeElement ? `&element=${activeElementId}` : ''
-      //   }&token=${access}&refresh=${refresh}`,
-      // );
+
       const url = `${origin}/share/?user=${
         user.id
       }&project=${projectId}&screen=${screenId}${
@@ -68,7 +62,7 @@ const Share: FC<Props> = ({ className = '' }) => {
       }&token=${access}&refresh=${refresh}`;
 
       const headers = {
-        apikey: 'vhDRD2O8a2G7NDk2LLej7vUxiDzDIYBp',
+        apikey: shorten_url_api_key,
       };
 
       axios
