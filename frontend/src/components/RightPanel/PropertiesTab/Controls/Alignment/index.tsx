@@ -18,7 +18,12 @@ const Alignment: React.FC<
     updateStyles({ flexDirection: ev.target.value });
 
     if (ev.target.value === Alignments.Horizontal) {
-      updateStyles({ flexWrap: 'wrap', width: 'auto', height: 'auto' });
+      updateStyles({
+        display: 'flex',
+        flexWrap: 'wrap',
+        width: 'auto',
+        height: 'auto',
+      });
     }
   };
 
