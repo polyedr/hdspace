@@ -36,6 +36,7 @@ import {
   StateElement,
   UpdateDataActionType,
 } from '@Src/types';
+import logger from 'loglevel';
 import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -139,7 +140,7 @@ export function* updateOrReplaceElementStyles(
     const { id, styles } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -206,7 +207,7 @@ export function* updateOrReplaceElementParameters(
   try {
     const { elementId, parameters } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;

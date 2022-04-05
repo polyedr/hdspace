@@ -8,6 +8,7 @@ import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import {
   ColumnDeletSagaGenerator,
   ColumnSagaGenerator,
+  MoveCardGenerator,
 } from '@Src/types/pmtools/generators';
 import { ServerProject } from '@Src/types';
 import { call, put, select } from 'redux-saga/effects';
@@ -19,9 +20,11 @@ import {
   successDeleteColumn,
   successEditColumn,
   successFetchColumn,
+  requestUpdateColumnIndex,
+  successUpdateColumnIndex,
 } from '../actions/columns';
 import { successFetchMembers, successFetchTask } from '../actions/tasks';
-import { selectBoardData } from '../selectors';
+import { selectBoardData, selectColumnList } from '../selectors';
 
 export function* columnsFetchSaga() {
   try {
@@ -73,6 +76,36 @@ export function* columnDeleteSaga({
     yield call(reqWrapper, Board.deleteColumn, { columnId });
     yield put(successDeleteColumn(columnId));
     yield put(requestAddHistory({ project, ...action }));
+  } catch (e) {
+    yield put(panelErrorMsg(e));
+  }
+}
+
+export function* moveColumnToList({
+  payload: { destination, source },
+}: ReturnType<typeof requestUpdateColumnIndex>): MoveCardGenerator {
+  const columns = yield select(selectColumnList);
+  const removed = columns[source.index];
+  try {
+    yield put(
+      successUpdateColumnIndex({
+        dest: destination.index,
+        source: source.index,
+      }),
+    );
+    const up = columns[destination.index - 1];
+    const down = columns[destination.index + 1];
+    const start = columns[0];
+    const end = columns[columns.length - 1];
+    const pos = up && down && (up.pos + down.pos) / 2;
+    const count =
+      destination.index === columns.length - 1 ? end.pos * 2 : start.pos / 2;
+    yield call(Board.apiUpdateColumnPos, {
+      listId: removed.id,
+      newPos: pos || count,
+    });
+    const res = yield call(Board.fetchColumns, removed.idBoard);
+    yield put(successFetchColumn(res));
   } catch (e) {
     yield put(panelErrorMsg(e));
   }

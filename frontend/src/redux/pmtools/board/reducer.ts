@@ -72,6 +72,19 @@ const boardReducer = (
         ...state,
         tasks: taskList,
       };
+    case TYPES.UPDATE_COLUMN_INDEX_SUCCESS:
+      const { columns } = state;
+      const {
+        dest: destColumnIndex,
+        source: sourceColumnIndex,
+      } = action.payload;
+      const columnsList = [...columns];
+      const removedColumn = columnsList.splice(sourceColumnIndex, 1);
+      columnsList.splice(destColumnIndex, 0, removedColumn[0]);
+      return {
+        ...state,
+        columns: columnsList,
+      };
 
     default:
       return state;

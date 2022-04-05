@@ -40,6 +40,7 @@ import {
   getAddUserToBoard,
   getUserByEmail,
 } from '@Api/pmtools/board/boardApi';
+import logger from 'loglevel';
 import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
 import { selectUserData } from '@Redux/user/selectors';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -501,7 +502,7 @@ export function* updateProjectSaga(
     const { project } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;

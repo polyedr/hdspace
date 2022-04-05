@@ -38,6 +38,7 @@ import {
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { compose } from 'redux';
+import logger from 'loglevel';
 import nnSaga from './nn';
 import { updateUISettingsParametersSaga } from '../../user/sagas';
 import {
@@ -144,7 +145,7 @@ const removeSharedStylesSaga = compose(
   const { className, cssPropertiesNames } = action.payload;
 
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -184,7 +185,7 @@ const updateSharedStylesSaga = compose(
   const { className, styles } = action.payload;
 
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -325,7 +326,7 @@ const pasteCopiedElementSaga = compose(
 )(function* ({ type, meta }: ReturnType<typeof Actions.pasteCopiedElement>) {
   try {
     if (!meta) {
-      console.error(`You have to provide metainformation for action ${type}`);
+      logger.error(`You have to provide metainformation for action ${type}`);
       return;
     }
     const { screenId, useHistory } = meta;

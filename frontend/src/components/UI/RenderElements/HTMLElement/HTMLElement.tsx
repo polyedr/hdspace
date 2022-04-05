@@ -1,6 +1,7 @@
 import React from 'react';
 import cn from 'classnames';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
+import logger from 'loglevel';
 import { RendererProps } from '../types';
 import Undefined from '../Undefined/Undefined';
 import { makeComponentStyles } from '../styles';
@@ -34,7 +35,7 @@ const HTMLElement: React.FC<RendererProps> = React.forwardRef((props, ref) => {
       ),
     });
   } catch (e) {
-    console.error(`Undefined tag: ${tag}`);
+    logger.error(`Undefined tag: ${tag}`);
   }
   return <Undefined ref={ref} {...props} {...attributes} />;
 });
