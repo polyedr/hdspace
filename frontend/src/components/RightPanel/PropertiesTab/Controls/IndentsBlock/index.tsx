@@ -112,7 +112,7 @@ const IndentsBlock: React.FC<Props> = ({
   const [state, setState] = useState<Indents | null>(null);
   useEffect(() => {
     const styles = isDefaultStyles
-      ? defaultStyles.indents
+      ? defaultStyles?.indents
       : {
           marginTop,
           marginLeft,
@@ -132,7 +132,7 @@ const IndentsBlock: React.FC<Props> = ({
     paddingLeft,
     paddingBottom,
     paddingRight,
-    defaultStyles.indents,
+    defaultStyles,
     isDefaultStyles,
   ]);
 

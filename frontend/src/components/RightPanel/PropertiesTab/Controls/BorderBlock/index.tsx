@@ -107,7 +107,7 @@ const BorderBlock: React.FC<Props> = ({
   );
 
   const [radius, handleRadiusChange] = useDebouncedInputChange(
-    (isDefaultStyles && defaultStyles.border?.borderRadius) || borderRadius,
+    (isDefaultStyles && defaultStyles?.border?.borderRadius) || borderRadius,
     (value) => {
       updateStyles({
         borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,

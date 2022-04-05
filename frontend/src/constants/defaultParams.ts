@@ -80,16 +80,47 @@ export const DEFAULT_PROJECT: Project = {
   tags: [],
   projectData: {
     defaultStyles: {
-      indents: {},
-      typography: {},
-      headingType: {},
-      colors: {},
-      accentColor: {},
-      screenBackgroundColor: {},
-      fontColorOverlay: {},
-      elementsBackgroundColor: {},
-      borderColor: {},
-      border: {},
+      indents: {
+        marginTop: 0,
+        marginLeft: 0,
+        marginBottom: 0,
+        marginRight: 0,
+        paddingTop: 0,
+        paddingLeft: 0,
+        paddingBottom: 0,
+        paddingRight: 0,
+      },
+      typography: {
+        color: '#323232',
+        fontFamily: 'Roboto Mono',
+        fontSize: '14px',
+        fontWeight: 100,
+        textAlign: 'center',
+      },
+      headingType: {
+        fontSize: '40px',
+      },
+      colors: {
+        color: '#323232',
+      },
+      accentColor: {
+        'accent-color': 'transparent',
+      },
+      screenBackgroundColor: {
+        background: 'transparent',
+      },
+      fontColorOverlay: {
+        color: '#323232',
+      },
+      elementsBackgroundColor: {
+        'background-color': 'transparent',
+      },
+      borderColor: {
+        'border-color': 'transparent',
+      },
+      border: {
+        borderRadius: '0%',
+      },
     },
     classes: [
       {

@@ -113,7 +113,7 @@ const ColorScheme = () => {
 
   const currentColor = (key: keyof typeof ColorSettingsTypes): string => {
     return (
-      defaultStyles[ColorStyleTypes[key]][ColorStylePropertiesTypes[key]] ||
+      defaultStyles?.[ColorStyleTypes[key]][ColorStylePropertiesTypes[key]] ||
       (colorValue && colorValue[key]) ||
       (colorScheme[key] as string)
     );

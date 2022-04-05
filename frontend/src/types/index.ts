@@ -839,8 +839,8 @@ export type DefaultStyles = {
   borderColor: BorderColor;
   colors: ColorStyle;
   elementsBackgroundColor: ElementsBackgroundColor;
-  fontColorOverlay: FontColorOverlay;
-  headingType: ColorStyle;
+  fontColorOverlay: ColorStyle;
+  headingType: HeadingSize;
   indents: Indents;
   screenBackgroundColor: ScreenBackgroundColor;
   typography: Typography;
@@ -870,7 +870,7 @@ export type BorderRadius = {
   borderRadius?: string;
 };
 
-export type FontColorOverlay = {
+export type HeadingSize = {
   fontSize?: string;
 };
 
