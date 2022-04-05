@@ -17,8 +17,11 @@ import {
   selectCurrentEditableStyles,
 } from '@Redux/project/selectors/element';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { UserProjectPermission } from '@Src/types';
-import { updateDefaultStyles } from '@Redux/project/actions';
+import { Params, UserProjectPermission } from '@Src/types';
+import {
+  updateDefaultStyles,
+  updateElementParameters,
+} from '@Redux/project/actions';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
@@ -68,6 +71,17 @@ const Styles = () => {
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
 
+  const updateParams = useCallback(
+    (params: Params<any>, itemId?: string) => {
+      dispatch(
+        updateElementParameters(itemId || activeElement.id, params, {
+          screenId: currentScreenId,
+        }),
+      );
+    },
+    [activeElement.id, currentScreenId],
+  );
+
   const updateStyles = useCallback(
     (styles: React.CSSProperties, controlName: string) => {
       dispatch(
@@ -108,6 +122,7 @@ const Styles = () => {
                   updateStyles={(styles) => updateStyles(styles, controlName)}
                   masterScreenEnabled={masterScreenEnabled}
                   editableStyles={editableStyles}
+                  updateParams={updateParams}
                   isDefaultStyles
                 />
               </ControlSection>

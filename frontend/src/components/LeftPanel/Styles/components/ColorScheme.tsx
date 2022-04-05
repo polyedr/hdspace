@@ -30,7 +30,9 @@ const formatImagePaletteColor = (
   parsedImagePalette: ParsedImagePalette,
   index: number,
 ) => {
-  return `rgba(${parsedImagePalette[index][0]}, ${parsedImagePalette[index][1]}, ${parsedImagePalette[index][2]}, 1)`;
+  return parsedImagePalette?.[index]?.[0]
+    ? `rgba(${parsedImagePalette?.[index]?.[0]}, ${parsedImagePalette?.[index]?.[1]}, ${parsedImagePalette?.[index]?.[2]}, 1)`
+    : undefined;
 };
 
 const ColorScheme = () => {
@@ -81,7 +83,7 @@ const ColorScheme = () => {
   );
 
   useEffect(() => {
-    if (parsedImagePalette) {
+    if (parsedImagePalette && formatImagePaletteColor(parsedImagePalette, 0)) {
       setColorValue({
         FONT_COLOR: formatImagePaletteColor(parsedImagePalette, 0),
         FONT_COLOR_OVERLAY: formatImagePaletteColor(parsedImagePalette, 1),
@@ -93,7 +95,10 @@ const ColorScheme = () => {
       (Object.keys(ColorSettingsTypes) as Array<
         keyof typeof ColorSettingsTypes
       >).forEach((key, index) => {
-        updateColor(formatImagePaletteColor(parsedImagePalette, index), key);
+        updateColor(
+          formatImagePaletteColor(parsedImagePalette, index) as string,
+          key,
+        );
       });
     }
     // eslint-disable-next-line
