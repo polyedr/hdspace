@@ -16,6 +16,10 @@ const Alignment: React.FC<
 > = ({ updateStyles, canEdit, flexDirection }) => {
   const handleChange = (ev) => {
     updateStyles({ flexDirection: ev.target.value });
+
+    if (ev.target.value === Alignments.Horizontal) {
+      updateStyles({ flexWrap: 'wrap', width: 'auto', height: 'auto' });
+    }
   };
 
   return (

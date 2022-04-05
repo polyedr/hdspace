@@ -13,6 +13,7 @@ import { updateSharedStyles } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { CONTROLS_AFFECT_ON_PARAMS, Entity } from '@Src/types';
+import logger from 'loglevel';
 
 const useStyles = makeStyles({
   root: {
@@ -66,9 +67,9 @@ const MasterPanel = () => {
               <Control
                 {...sharedStyles}
                 activeElementId={id}
-                removeStyles={() => console.log('puff')}
+                removeStyles={() => logger.debug('removeStyles call')}
                 updateStyles={updateStyles}
-                updateParams={() => console.log('puff')}
+                updateParams={() => logger.debug('updateParams call')}
               />
             </ControlSection>
           );

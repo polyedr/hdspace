@@ -24,6 +24,7 @@ import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import logger from 'loglevel';
 import {
   selectAllAssetLists,
   selectCurrentAssetListId,
@@ -358,7 +359,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof Actions.uploadElementAsset>) {
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;

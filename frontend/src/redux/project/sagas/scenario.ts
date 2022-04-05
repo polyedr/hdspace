@@ -27,7 +27,7 @@ import {
   restoreMapElement,
   restoreMapElementChildren,
 } from '@Utils/normalizedStateHelpers';
-
+import logger from 'loglevel';
 import { DEFAULT_INDENTS } from '@Domain/libraryElements/defaultStyles';
 import {
   ElementsToCreate,
@@ -200,8 +200,8 @@ export const createElementsSaga = compose(
     const { createdElements, parentId, index } = action.payload;
 
     if (!action.meta) {
-      console.error(
-        `You have to provide meta information for action ${action.type}`,
+      logger.error(
+        `You have to provide metainformation for action ${action.type}`,
       );
       return;
     }
@@ -262,7 +262,7 @@ export const createChildElementsSaga = withActionsHistory(function* (
 ) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -335,7 +335,7 @@ export const createLibraryElementsSaga = withActionsHistory(function* (
 ) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -393,7 +393,7 @@ export const createGroupChildrenSaga = compose(
 )(function* (action: ReturnType<typeof Actions.createGroupChildren>) {
   const { createdElements, parentId, index } = action.payload;
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -543,7 +543,7 @@ export const addChildrenToElementSaga = compose(
   try {
     const { children, elementId } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -595,7 +595,7 @@ export const addChildToElementSaga = compose(
   try {
     const { childType, elementId, parameters } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -644,7 +644,7 @@ export const deleteElementSaga = withRequiredPermissions(
   try {
     const { id } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -700,7 +700,7 @@ export const softDeleteSaga = compose(
   try {
     const { id } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -815,7 +815,7 @@ export const softDeleteMultipleSaga = compose(
     const { ids } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       yield put(
@@ -832,7 +832,7 @@ export const softDeleteMultipleSaga = compose(
       (el) => !el.parent && !el.parameters.isGroup,
     );
     if (elementsWithoutParent.length) {
-      console.error(
+      logger.error(
         `Can not remove elements without parent: ${JSON.stringify(
           elementsWithoutParent,
         )}`,
@@ -1068,7 +1068,7 @@ export function* restoreElementSaga(
   try {
     const elementId = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -1156,7 +1156,7 @@ export function* wrapIntoContainer(
     const elements = yield select(selectElementsByIds(ids));
     const activeElement = yield select(selectActiveElement);
     if (elements.find((el) => el.parent !== activeElement.parent)) {
-      console.error('Can wrap only elements with same parent');
+      logger.error('Can wrap only elements with same parent');
       yield put(
         enqueueSnackbar({
           message: 'Can not add this element!',
@@ -1278,7 +1278,7 @@ export const wrapIntoContainerSaga = compose(
   try {
     const { id } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -1331,7 +1331,7 @@ export const unwrapFromContainerSaga = compose(
   try {
     const { meta } = action;
     if (!meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -1448,7 +1448,7 @@ export const redoWrapIntoContainerSaga = compose(
 )(function* (action: ReturnType<typeof Actions.redoWrapIntoContainer>) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;

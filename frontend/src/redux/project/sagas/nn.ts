@@ -36,6 +36,7 @@ import withActionsHistory from '@Redux/project/wrappers/withActionsHistory';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { omit } from 'ramda';
+import logger from 'loglevel';
 import { selectCurrentScreenId } from '../selectors/screen';
 
 const recognizeImageSaga = compose(
@@ -103,9 +104,9 @@ const recognizeImageSaga = compose(
     }
     if (recognizeError) throw new Error(recognizeError);
   } catch (e) {
-    console.error('Could not upload image for NN. Error: ', e.message);
+    logger.error('Could not upload image for NN. Error: ', e.message);
     if (process.env.NODE_ENV === 'development') {
-      console.trace(e);
+      logger.trace(e);
     }
     yield put(
       enqueueSnackbar({
@@ -245,7 +246,7 @@ const autoAnalyzeImageSaga = compose(
 }: ReturnType<typeof Actions.autoAnalyzeImage>) {
   try {
     if (!meta) {
-      console.error(`You have to provide metainformation for action ${type}`);
+      logger.error(`You have to provide metainformation for action ${type}`);
       return;
     }
     yield put(Actions.setAnalyzerLoader(true));
@@ -325,9 +326,9 @@ const autoAnalyzeImageSaga = compose(
     }
     if (nnError) throw new Error(nnError);
   } catch (e) {
-    console.error('Could not upload image for NN. Error: ', e.message);
+    logger.error('Could not upload image for NN. Error: ', e.message);
     if (process.env.NODE_ENV === 'development') {
-      console.trace(e);
+      logger.trace(e);
     }
     yield put(
       enqueueSnackbar({
