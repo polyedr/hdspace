@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     backgroundColor: theme.palette.background.paper,
-    // height: '550px',
   },
 
   accordion: {

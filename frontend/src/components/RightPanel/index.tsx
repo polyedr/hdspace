@@ -235,7 +235,6 @@ const RightPanel: React.FC = () => {
     enableBordersDebounce.callback();
   };
   return (
-    // <div className={classes.root} id={ELEMENT_IDS.rightPanel}>
     <div
       className={
         minimized && isPrototypeMode
@@ -279,26 +278,6 @@ const RightPanel: React.FC = () => {
           <VerticalAlignTopIcon />
         </IconButton>
       </div>
-
-      {/* <Tabs
-        value={activeTabIndex}
-        onChange={handleChange}
-        classes={tabsClasses}
-        variant="fullWidth"
-      >
-        {tabs.map((tab) => (
-          <Tab key={tab} classes={tabClasses} label={tab} />
-        ))}
-      </Tabs>
-
-      {tabs.map((tab, i) => {
-        return (
-          <TabPanel index={i} value={activeTabIndex} key={tab}>
-            {tabContent[tab]}
-          </TabPanel>
-        );
-      })}
-      <AssetsSection /> */}
     </div>
   );
 };
