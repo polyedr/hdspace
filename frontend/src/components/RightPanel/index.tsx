@@ -1,9 +1,8 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Tabs, Tab, IconButton } from '@material-ui/core';
 import {
   selectIsPrototypeMode,
-  selectIsRightPanelMinimized,
   selectUserProfileDataParameters,
 } from '@Redux/user/selectors';
 import {
@@ -35,10 +34,7 @@ import {
   selectCurrentScreenId,
   selectMasterScreenId,
 } from '@Redux/project/selectors/screen';
-import { changeMinRPanel } from '@Redux/user/actions';
 import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
-import { setBordersEnabled } from '@Redux/project/actions';
-import { useDebouncedCallback } from 'use-debounce';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import VariablesTab from './VariablesTab';
@@ -81,13 +77,13 @@ const useTabStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.panel.light,
   },
 }));
-const useRightPanelStyles = makeStyles<Theme, { minimized: boolean }>(
+const useRightPanelStyles = makeStyles<Theme, { togglRightPanel: boolean }>(
   ({ palette }) =>
     createStyles({
       root: {
         maxHeight: '100%',
-        width: ({ minimized }) =>
-          minimized ? RIGHT_PANEL_WIDTH_MIN : RIGHT_PANEL_WIDTH,
+        width: ({ togglRightPanel }) =>
+          togglRightPanel ? RIGHT_PANEL_WIDTH_MIN : RIGHT_PANEL_WIDTH,
         backgroundColor: palette.panel.main,
         transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
       },
@@ -99,13 +95,15 @@ const useRightPanelStyles = makeStyles<Theme, { minimized: boolean }>(
         justifyContent: 'space-between',
       },
       toggleButton: {
+        top: ({ togglRightPanel }) => (togglRightPanel ? '94%' : '0%'),
         alignSelf: 'flex-start',
         color: palette.common.white,
         '&:hover': {
           backgroundColor: lighten(palette.panel.main, 0.1),
         },
         '& svg': {
-          transform: ({ minimized }) => `rotate(${minimized ? -90 : 90}deg)`,
+          transform: ({ togglRightPanel }) =>
+            `rotate(${togglRightPanel ? -90 : 90}deg)`,
           transition: 'transform 0.25s ease',
         },
       },
@@ -137,9 +135,8 @@ const tabContent: Record<RPTab, any> = {
 };
 
 const RightPanel: React.FC = () => {
-  const dispatch = useDispatch();
-  const minimized = useSelector(selectIsRightPanelMinimized);
-  const classesRightButton = useRightPanelStyles({ minimized });
+  const [togglRightPanel, setTogglRightPanel] = useState(false);
+  const classesRightButton = useRightPanelStyles({ togglRightPanel });
 
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
@@ -225,28 +222,20 @@ const RightPanel: React.FC = () => {
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {
     setActiveTabIndex(index);
   };
-  const enableBordersDebounce = useDebouncedCallback(() => {
-    dispatch(setBordersEnabled(true));
-  }, PANEL_TRANSITION_DURATION + 120);
 
-  const togglRightPanel = () => {
-    dispatch(setBordersEnabled(false));
-    dispatch(changeMinRPanel());
-    enableBordersDebounce.callback();
-  };
   return (
     <div
       className={
-        minimized && isPrototypeMode
+        togglRightPanel && isPrototypeMode
           ? classes.root
-          : !minimized
+          : !togglRightPanel
           ? classes.root
           : classesRightButton.root
       }
       id={ELEMENT_IDS.rightPanel}
     >
       <div className={classesRightButton.content}>
-        {!minimized && (
+        {!togglRightPanel && (
           <>
             <Tabs
               value={activeTabIndex}
@@ -271,9 +260,8 @@ const RightPanel: React.FC = () => {
         )}
         <IconButton
           className={classesRightButton.toggleButton}
-          onClick={togglRightPanel}
-          title={`${minimized ? 'Open' : 'Hide'} panel`}
-          style={{ top: minimized ? '94%' : '0%' }}
+          onClick={() => setTogglRightPanel(!togglRightPanel)}
+          title={`${togglRightPanel ? 'Open' : 'Hide'} panel`}
         >
           <VerticalAlignTopIcon />
         </IconButton>

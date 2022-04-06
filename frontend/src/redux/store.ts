@@ -30,7 +30,6 @@ const userPersistConfig: PersistConfig = {
   key: 'user',
   whitelist: [
     'isLPanelMinimized',
-    'isRPanelMinimized',
     'isPrototypeMode',
     'tokenPair',
     'userData',

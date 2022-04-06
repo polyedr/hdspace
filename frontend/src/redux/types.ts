@@ -171,7 +171,6 @@ export type ProjectState = {
 
 export type UserState = {
   isLPanelMinimized: boolean;
-  isRPanelMinimized: boolean;
   isPrototypeMode: boolean;
   dropTargetBordersMode: boolean;
   freeCanvasMode: {
