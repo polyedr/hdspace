@@ -132,7 +132,7 @@ const useStyles = makeStyles((theme) =>
       },
     },
     avatar: {
-      fontSize: '30px',
+      fontSize: '34px',
     },
   }),
 );
@@ -325,22 +325,15 @@ const Profile: React.FC = () => {
                 >
                   <div className={classes.imageInputLabel}>Your photo</div>
 
-                  {avatarCrop ? (
-                    <Avatar
-                      alt={username}
-                      src={avatarCrop}
-                      sx={{ bgcolor: '#344AF0', width: 100, height: 100 }}
-                    />
-                  ) : (
-                    <Avatar
-                      alt={username}
-                      sx={{ bgcolor: '#344AF0', width: 100, height: 100 }}
-                    >
-                      <div className={classes.avatar}>
-                        {username[0].toUpperCase()}
-                      </div>
-                    </Avatar>
-                  )}
+                  <Avatar
+                    sx={{ bgcolor: '#344AF0', width: 100, height: 100 }}
+                    alt={username}
+                    src={avatarCrop}
+                  >
+                    <div className={classes.avatar}>
+                      {username[0].toUpperCase()}
+                    </div>
+                  </Avatar>
 
                   {imageToCrop && (
                     <>
