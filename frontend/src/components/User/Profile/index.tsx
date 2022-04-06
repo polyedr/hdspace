@@ -19,7 +19,6 @@ import {
   sendResetPasswordMail,
   changeUserData,
 } from '@Redux/user/actions';
-import IMAGES from '@Constants/images';
 import { ROLES } from '@Constants/defaultParams';
 import { Experience, ProfileData } from '@Src/types';
 import {
@@ -45,6 +44,7 @@ import {
 } from '@material-ui/core';
 import ImageCropper from '@Components/CropImage';
 import { useHistory } from 'react-router';
+import { Avatar } from '@mui/material';
 import SubmitError from '../SubmitError';
 
 const useStyles = makeStyles((theme) =>
@@ -131,6 +131,9 @@ const useStyles = makeStyles((theme) =>
         marginLeft: theme.spacing(4),
       },
     },
+    avatar: {
+      fontSize: '30px',
+    },
   }),
 );
 
@@ -190,7 +193,7 @@ const Profile: React.FC = () => {
   };
 
   const userData = useSelector(selectUserData);
-  const { firstName, lastName, email, profile } = userData;
+  const { firstName, lastName, email, profile, username } = userData;
   const {
     parameters: {
       profileDataParameters: { autoSwitchTabs, dropTargetBordersMode },
@@ -322,7 +325,22 @@ const Profile: React.FC = () => {
                 >
                   <div className={classes.imageInputLabel}>Your photo</div>
 
-                  <img alt="profile" src={avatarCrop ?? IMAGES.prof} />
+                  {avatarCrop ? (
+                    <Avatar
+                      alt={username}
+                      src={avatarCrop}
+                      sx={{ bgcolor: '#344AF0', width: 100, height: 100 }}
+                    />
+                  ) : (
+                    <Avatar
+                      alt={username}
+                      sx={{ bgcolor: '#344AF0', width: 100, height: 100 }}
+                    >
+                      <div className={classes.avatar}>
+                        {username[0].toUpperCase()}
+                      </div>
+                    </Avatar>
+                  )}
 
                   {imageToCrop && (
                     <>
