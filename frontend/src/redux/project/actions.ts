@@ -35,6 +35,7 @@ import {
   NNModelName,
   VIARegions,
   canvasData,
+  ParsedImagePalette,
 } from '@Src/types';
 import { XYCoord } from 'react-dnd';
 import {
@@ -198,6 +199,9 @@ import {
   LoadAssetLists,
   LoadAssets,
   ImageData,
+  UpdateDefaultStyles,
+  GenerateImagePalette,
+  SetImagePalette,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -621,6 +625,17 @@ export const exportScreenFlag = (enabled: boolean): ExportScreenFlag => ({
 export const setBordersEnabled = (enabled: boolean): SetBordersEnabled => ({
   type: TYPES.SET_BORDERS_ENABLED,
   payload: enabled,
+});
+
+export const updateDefaultStyles = (
+  classNames: Entity[],
+  styles: React.CSSProperties,
+  controlKey: string,
+  meta: ElementHistoryMeta,
+): UpdateDefaultStyles => ({
+  type: TYPES.UPDATE_DEFAULT_STYLES,
+  payload: { classNames, styles, controlKey },
+  meta,
 });
 
 export const updateSharedStyles = (
@@ -1758,4 +1773,18 @@ export const setStatePseudoClass = (
 ): SetStatePseudoClass => ({
   type: TYPES.SET_STATE_PSEUDO_CLASS,
   payload: pseudoClass,
+});
+
+export const generateImagePalette = (
+  imageUrl: string,
+): GenerateImagePalette => ({
+  type: TYPES.GENERATE_IMAGE_PALETTE,
+  payload: imageUrl,
+});
+
+export const setImagePalette = (
+  imagePalette: ParsedImagePalette,
+): SetImagePalette => ({
+  type: TYPES.SET_IMAGE_PALETTE,
+  payload: imagePalette,
 });
