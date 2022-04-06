@@ -34,7 +34,6 @@ export const convertCreatedElementToRequest = <
     elementType
   ]() as unknown) as ServerElement<T, ServerElement<Entity>[], K>;
   const { name } = libraryElement;
-
   return {
     ...libraryElement,
     id: -1,
@@ -182,6 +181,49 @@ export const convertCreatedProjectToRequest = (
     project_data_text: '',
     project_data_trello_json: JSON.stringify(board),
     project_data_json: JSON.stringify({
+      defaultStyles: {
+        indents: {
+          marginTop: 0,
+          marginLeft: 0,
+          marginBottom: 0,
+          marginRight: 0,
+          paddingTop: 0,
+          paddingLeft: 0,
+          paddingBottom: 0,
+          paddingRight: 0,
+        },
+        typography: {
+          color: '#323232',
+          fontFamily: `"Arial", sans-serif`,
+          fontSize: '14px',
+          fontWeight: 100,
+          textAlign: 'center',
+        },
+        headingType: {
+          fontSize: '40px',
+        },
+        colors: {
+          color: '#323232',
+        },
+        accentColor: {
+          'accent-color': 'transparent',
+        },
+        screenBackgroundColor: {
+          background: 'transparent',
+        },
+        fontColorOverlay: {
+          color: '#323232',
+        },
+        elementsBackgroundColor: {
+          'background-color': 'transparent',
+        },
+        borderColor: {
+          'border-color': 'transparent',
+        },
+        border: {
+          borderRadius: '0%',
+        },
+      },
       classes: projectClasses.map((cls: ProjectClass) => ({
         ...cls,
         // rules: cssDecamelize(cls.rules),

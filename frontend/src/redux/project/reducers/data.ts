@@ -5,15 +5,15 @@ import {
   extractMapElement,
   flattenElements,
   insertMapElement,
+  insertMapElementWrapper,
   moveMapElement,
   removeMapElement,
-  updateMapElement,
-  insertMapElementWrapper,
   removeMapElementWrapper,
+  updateMapElement,
 } from '@Utils/normalizedStateHelpers';
+import { Project, Screen } from '@Src/types';
 import { initialData } from '../initial';
 import TYPES from '../../actionTypes';
-import { Project, Screen } from '../../../types';
 import { Action, ProjectDataState } from '../../types';
 
 const dataReducer = produce(
@@ -25,6 +25,11 @@ const dataReducer = produce(
           ...draft.elements,
           ...action.payload,
         };
+        break;
+      }
+
+      case TYPES.SET_IMAGE_PALETTE: {
+        draft.imagePalette = action.payload;
         break;
       }
 
