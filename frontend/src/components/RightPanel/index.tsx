@@ -77,13 +77,13 @@ const useTabStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.panel.light,
   },
 }));
-const useRightPanelStyles = makeStyles<Theme, { togglRightPanel: boolean }>(
+const useRightPanelStyles = makeStyles<Theme, { rightPanelOpen: boolean }>(
   ({ palette }) =>
     createStyles({
       root: {
         maxHeight: '100%',
-        width: ({ togglRightPanel }) =>
-          togglRightPanel ? RIGHT_PANEL_WIDTH_MIN : RIGHT_PANEL_WIDTH,
+        width: ({ rightPanelOpen }) =>
+          rightPanelOpen ? RIGHT_PANEL_WIDTH_MIN : RIGHT_PANEL_WIDTH,
         backgroundColor: palette.panel.main,
         transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
       },
@@ -95,15 +95,15 @@ const useRightPanelStyles = makeStyles<Theme, { togglRightPanel: boolean }>(
         justifyContent: 'space-between',
       },
       toggleButton: {
-        top: ({ togglRightPanel }) => (togglRightPanel ? '94%' : '0%'),
+        top: ({ rightPanelOpen }) => (rightPanelOpen ? '94%' : '0%'),
         alignSelf: 'flex-start',
         color: palette.common.white,
         '&:hover': {
           backgroundColor: lighten(palette.panel.main, 0.1),
         },
         '& svg': {
-          transform: ({ togglRightPanel }) =>
-            `rotate(${togglRightPanel ? -90 : 90}deg)`,
+          transform: ({ rightPanelOpen }) =>
+            `rotate(${rightPanelOpen ? -90 : 90}deg)`,
           transition: 'transform 0.25s ease',
         },
       },
@@ -135,8 +135,8 @@ const tabContent: Record<RPTab, any> = {
 };
 
 const RightPanel: React.FC = () => {
-  const [togglRightPanel, setTogglRightPanel] = useState(false);
-  const classesRightButton = useRightPanelStyles({ togglRightPanel });
+  const [rightPanelOpen, setRightPanelOpen] = useState(false);
+  const classesRightButton = useRightPanelStyles({ rightPanelOpen });
 
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
@@ -226,16 +226,16 @@ const RightPanel: React.FC = () => {
   return (
     <div
       className={
-        togglRightPanel && isPrototypeMode
+        rightPanelOpen && isPrototypeMode
           ? classes.root
-          : !togglRightPanel
+          : !rightPanelOpen
           ? classes.root
           : classesRightButton.root
       }
       id={ELEMENT_IDS.rightPanel}
     >
       <div className={classesRightButton.content}>
-        {!togglRightPanel && (
+        {!rightPanelOpen && (
           <>
             <Tabs
               value={activeTabIndex}
@@ -260,8 +260,8 @@ const RightPanel: React.FC = () => {
         )}
         <IconButton
           className={classesRightButton.toggleButton}
-          onClick={() => setTogglRightPanel(!togglRightPanel)}
-          title={`${togglRightPanel ? 'Open' : 'Hide'} panel`}
+          onClick={() => setRightPanelOpen(!rightPanelOpen)}
+          title={`${rightPanelOpen ? 'Open' : 'Hide'} panel`}
         >
           <VerticalAlignTopIcon />
         </IconButton>
