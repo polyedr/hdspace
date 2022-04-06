@@ -4,6 +4,7 @@ import { Experience } from '@Src/types';
 // eslint-disable-next-line import/prefer-default-export
 export const initialUserState: UserState = {
   isLPanelMinimized: false,
+  isRPanelMinimized: false,
   isPrototypeMode: false,
   freeCanvasMode: {
     enabled: false,

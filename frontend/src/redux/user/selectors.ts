@@ -12,6 +12,9 @@ export const selectProfileData = ({ user }: AppReduxState) =>
 export const selectIsLeftPanelMinimized = ({ user }: AppReduxState) =>
   user.isLPanelMinimized;
 
+export const selectIsRightPanelMinimized = ({ user }: AppReduxState) =>
+  user.isRPanelMinimized;
+
 export const selectIsPrototypeMode = ({ user }: AppReduxState) =>
   user.isPrototypeMode;
 

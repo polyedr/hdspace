@@ -12,6 +12,8 @@ import TYPES from '@Redux/actionTypes';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
 
+export const changeMinRPanel = () => ({ type: TYPES.CHANGE_R_PANEL });
+
 export const toggleUserLoading = (isLoading: boolean) => ({
   type: TYPES.TOGGLE_USER_LOADING,
   isLoading,

@@ -16,6 +16,12 @@ const changeMinLPanel: ActionHandler<
   isLPanelMinimized: !state.isLPanelMinimized,
 });
 
+const changeMinRPanel: ActionHandler<
+  ReturnType<typeof Actions.changeMinRPanel>
+> = (state) => ({
+  ...state,
+  isRPanelMinimized: !state.isRPanelMinimized,
+});
 const changeSignLoader: ActionHandler<typeof Actions.toggleUserLoading> = (
   state,
   { isLoading },
@@ -164,6 +170,7 @@ const logout: ActionHandler<typeof Actions.logout> = () => ({
 // TODO: type Action in Handlers
 const handlers: Handlers<UserState> = {
   [TYPES.CHANGE_L_PANEL]: changeMinLPanel,
+  [TYPES.CHANGE_R_PANEL]: changeMinRPanel,
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
