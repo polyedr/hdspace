@@ -250,7 +250,12 @@ const Profile: React.FC = () => {
 
   const removeProfileImage = () => {
     handleClose();
-    handleChangeProfileData({ avatar: null });
+    handleChangeProfileData({
+      avatar: null,
+      parameters: {
+        avatarCrop: null,
+      },
+    });
   };
 
   const fieldValidate = (value) => {
@@ -341,10 +346,11 @@ const Profile: React.FC = () => {
                         imageToCrop={imageToCrop}
                         setResult={setCroppedImage}
                       />
-
-                      <button type="button" onClick={handleSaved}>
-                        Saved
-                      </button>
+                      <div>
+                        <button type="button" onClick={handleSaved}>
+                          Saved
+                        </button>
+                      </div>
                     </>
                   )}
 
