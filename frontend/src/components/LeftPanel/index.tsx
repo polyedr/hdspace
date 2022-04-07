@@ -21,14 +21,15 @@ import {
   selectCurrentScreen,
   selectInfoUser,
 } from '@Redux/project/selectors/screen';
-import Navigator from './Navigator';
-import Screens from './Screens';
-import Scrollbar from '../UI/Scrollbar';
 import {
   LEFT_PANEL_WIDTH,
   LEFT_PANEL_WIDTH_MIN,
   PANEL_TRANSITION_DURATION,
-} from '../../styles/Theme';
+} from '@Src/styles/Theme';
+import Styles from '@Components/LeftPanel/Styles';
+import Navigator from './Navigator';
+import Screens from './Screens';
+import Scrollbar from '../UI/Scrollbar';
 import VIANavigator from './VIANavigator';
 import ScreenEdits from './Screens/ScreenEdits';
 
@@ -155,6 +156,7 @@ const LeftPanel: React.FC = () => {
               )}
               <FrameworkSection />
               {viaMode ? <VIANavigator /> : <Navigator />}
+              <Styles />
             </div>
           )}
 

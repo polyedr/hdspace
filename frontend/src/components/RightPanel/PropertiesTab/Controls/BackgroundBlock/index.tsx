@@ -20,7 +20,11 @@ const BackgroundBlock: React.FC<Props> = ({
   const [color, handleColorChange] = useDebouncedValueChange(
     backgroundColor,
     (updatedColorValue: string) => {
-      updateStyles({ backgroundColor: updatedColorValue });
+      updateStyles({
+        backgroundColor: updatedColorValue,
+        width: 'auto',
+        height: 'auto',
+      });
     },
   );
 

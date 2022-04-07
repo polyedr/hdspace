@@ -1,3 +1,4 @@
+import logger from 'loglevel';
 import { Day, StartWeekday } from '../../CalendarOptions';
 
 export function setDate(date: Date) {
@@ -301,7 +302,7 @@ export function rerenderSelectedDay(
       previousElement.nextSibling,
     );
   } else {
-    console.log('Previous element does not have parent');
+    logger.debug('Previous element does not have parent');
   }
 
   // Store this element for later reference

@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { useDebouncedCallback } from 'use-debounce';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import {
+  Entity,
+  Indents,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -80,6 +87,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   paddingBottom?: React.CSSProperties['paddingBottom'];
   paddingLeft?: React.CSSProperties['paddingLeft'];
   paddingRight?: React.CSSProperties['paddingRight'];
+  isDefaultStyles?: boolean;
 };
 
 const IndentsBlock: React.FC<Props> = ({
@@ -97,29 +105,24 @@ const IndentsBlock: React.FC<Props> = ({
   paddingLeft,
   paddingRight,
   canEdit,
+  isDefaultStyles = false,
 }) => {
+  const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
-  const [state, setState] = useState({
-    marginTop: marginTop || 0,
-    marginLeft: marginLeft || 0,
-    marginBottom: marginBottom || 0,
-    marginRight: marginRight || 0,
-    paddingTop: paddingTop || 0,
-    paddingLeft: paddingLeft || 0,
-    paddingBottom: paddingBottom || 0,
-    paddingRight: paddingRight || 0,
-  });
+  const [state, setState] = useState<Indents | null>(null);
   useEffect(() => {
-    setState({
-      marginTop: marginTop || 0,
-      marginLeft: marginLeft || 0,
-      marginBottom: marginBottom || 0,
-      marginRight: marginRight || 0,
-      paddingTop: paddingTop || 0,
-      paddingLeft: paddingLeft || 0,
-      paddingBottom: paddingBottom || 0,
-      paddingRight: paddingRight || 0,
-    });
+    const styles = isDefaultStyles
+      ? defaultStyles?.indents
+      : {
+          marginTop,
+          marginLeft,
+          marginBottom,
+          marginRight,
+          paddingTop,
+          paddingLeft,
+          paddingRight,
+        };
+    setState(styles as Indents);
   }, [
     marginTop,
     marginLeft,
@@ -129,6 +132,8 @@ const IndentsBlock: React.FC<Props> = ({
     paddingLeft,
     paddingBottom,
     paddingRight,
+    defaultStyles,
+    isDefaultStyles,
   ]);
 
   const debounced = useDebouncedCallback((name, value) => {
@@ -136,13 +141,13 @@ const IndentsBlock: React.FC<Props> = ({
   }, 500);
 
   const handleChange = ({ target: { value, name } }) => {
-    setState({ ...state, [name]: value });
+    setState({ ...state, [name]: value } as Indents);
     debounced.callback(name, `${value}px`);
   };
 
   return (
     <div>
-      {!masterScreenEnabled && canEdit && (
+      {!isDefaultStyles && !masterScreenEnabled && canEdit && (
         <RemoveStyles
           onClick={removeStyles}
           propsToRemove={[
@@ -170,7 +175,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginTop)}
-          value={parseInt(state.marginTop as string) || 0}
+          value={(state && parseInt(state.marginTop as string)) || 0}
           onChange={handleChange}
           disabled={!canEdit}
         />
@@ -182,7 +187,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginRight)}
-          value={parseInt(state.marginRight as string) || 0}
+          value={(state && parseInt(state.marginRight as string)) || 0}
           onChange={handleChange}
           disabled={!canEdit}
         />
@@ -194,7 +199,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginBottom)}
-          value={parseInt(state.marginBottom as string) || 0}
+          value={(state && parseInt(state.marginBottom as string)) || 0}
           onChange={handleChange}
           disabled={!canEdit}
         />
@@ -206,7 +211,7 @@ const IndentsBlock: React.FC<Props> = ({
           margin="none"
           variant="outlined"
           className={cn(classes.input, classes.marginLeft)}
-          value={parseInt(state.marginLeft as string) || 0}
+          value={(state && parseInt(state.marginLeft as string)) || 0}
           onChange={handleChange}
           disabled={!canEdit}
         />
@@ -221,7 +226,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingTop)}
-            value={parseInt(state.paddingTop as string) || 0}
+            value={(state && parseInt(state.paddingTop as string)) || 0}
             onChange={handleChange}
             disabled={!canEdit}
           />
@@ -233,7 +238,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingRight)}
-            value={parseInt(state.paddingRight as string) || 0}
+            value={(state && parseInt(state.paddingRight as string)) || 0}
             onChange={handleChange}
             disabled={!canEdit}
           />
@@ -245,7 +250,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingBottom)}
-            value={parseInt(state.paddingBottom as string) || 0}
+            value={(state && parseInt(state.paddingBottom as string)) || 0}
             onChange={handleChange}
             disabled={!canEdit}
           />
@@ -257,7 +262,7 @@ const IndentsBlock: React.FC<Props> = ({
             margin="none"
             variant="outlined"
             className={cn(classes.input, classes.paddingLeft)}
-            value={parseInt(state.paddingLeft as string) || 0}
+            value={(state && parseInt(state.paddingLeft as string)) || 0}
             onChange={handleChange}
             disabled={!canEdit}
           />

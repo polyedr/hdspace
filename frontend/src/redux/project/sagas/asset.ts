@@ -3,6 +3,7 @@ import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
   apiDeleteAsset,
+  apiGenerateImagePalette,
   apiGetAssets,
   apiUpdateAsset,
 } from '@Api/asset';
@@ -23,6 +24,7 @@ import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import logger from 'loglevel';
 import {
   selectAllAssetLists,
   selectCurrentAssetListId,
@@ -73,6 +75,29 @@ export function* uploadAssetHelper(
       yield put(Actions.addAssetToState(listId, asset, meta));
       return asset;
     }
+  } catch (error) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
+    );
+  }
+}
+
+export function* generateImagePaletteSaga(
+  action: ReturnType<typeof Actions.generateImagePalette>,
+) {
+  const imageUrl = action.payload;
+
+  try {
+    const imagePalette = yield call(reqWrapper, apiGenerateImagePalette, {
+      imageUrl,
+    });
+    yield put(Actions.setImagePalette(imagePalette));
   } catch (error) {
     yield put(
       enqueueSnackbar(
@@ -334,7 +359,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof Actions.uploadElementAsset>) {
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;

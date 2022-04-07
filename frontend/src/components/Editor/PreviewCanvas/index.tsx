@@ -31,19 +31,21 @@ const PreviewCanvas: React.FC<Props> = ({ scrollRef, id }) => {
   const projectClasses = useSelector(selectCurrentProjectClasses);
   if (id) {
     const previewElement = allElements[id];
-    return (
-      <DraggableElement
-        screenId={screenId}
-        elementId={previewElement.id}
-        allElements={allElements}
-        scrollRef={scrollRef}
-        isDisabled={!disableInteractions}
-        preSelectedElementId={preSelectedElementId}
-        masterSourceElementId={masterSourceElementId}
-        canDragAndDrop={canDragAndDrop}
-        projectClasses={projectClasses}
-      />
-    );
+    if (previewElement) {
+      return (
+        <DraggableElement
+          screenId={screenId}
+          elementId={previewElement.id}
+          allElements={allElements}
+          scrollRef={scrollRef}
+          isDisabled={!disableInteractions}
+          preSelectedElementId={preSelectedElementId}
+          masterSourceElementId={masterSourceElementId}
+          canDragAndDrop={canDragAndDrop}
+          projectClasses={projectClasses}
+        />
+      );
+    }
   }
   return <></>;
 };

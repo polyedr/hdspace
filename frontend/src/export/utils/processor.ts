@@ -5,6 +5,7 @@ import decamelize from 'decamelize';
 import cssbeautify from 'cssbeautify';
 import { toClassName } from '@Utils/stringHelper';
 import { ProjectClass, ScreenMetaData, StateElement } from '@Src/types';
+import logger from 'loglevel';
 import { getFontsLink } from './fonts';
 
 const assetAttributes = ['src', 'href'];
@@ -73,7 +74,7 @@ export const processHTML = async (html: string, assetsFolder: JSZip | null) => {
                 }
               })
               .catch((error: AxiosError) => {
-                console.error(error);
+                logger.error(error);
                 return Promise.resolve();
               });
             break;
@@ -97,7 +98,7 @@ export const processCSS = async (
     .then((responses: AxiosResponse[]) => {
       responses.forEach((response: AxiosResponse) => {
         if (!response.request) {
-          console.error('Request is not defined!', response);
+          logger.error('Request is not defined!', response);
           return;
         }
         const { responseURL } = response.request;
@@ -143,7 +144,7 @@ export const processJS = async (html: string, jsFolder: JSZip | null) => {
   ).then((responses: AxiosResponse[]) => {
     responses.forEach((response: AxiosResponse) => {
       if (!response.request) {
-        console.error('Request is not defined!', response);
+        logger.error('Request is not defined!', response);
         return;
       }
       const { responseURL } = response.request;
@@ -189,7 +190,7 @@ export const processIco = async (
       });
     })
     .catch((error: AxiosError) => {
-      console.error(error);
+      logger.error(error);
       return Promise.resolve();
     });
 };

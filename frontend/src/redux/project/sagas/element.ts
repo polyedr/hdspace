@@ -52,6 +52,7 @@ import { apiGetFile } from '@Api/import';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { DropPosition, ElementType } from '@Constants/dragAndDrop';
+import logger from 'loglevel';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -129,7 +130,7 @@ export const moveElementSaga = compose(
     const { newIndex, oldIndex } = indices;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -220,7 +221,7 @@ function* updateElementClassNames(
 ) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -300,7 +301,7 @@ function* removeElementStyles(
 ) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -377,7 +378,7 @@ export const copyElementStylesSaga = compose(
     const { elementType, elementID, styles } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -489,7 +490,7 @@ export function* updateOrReplaceMultipleElementsStyles(
   type: 'replace' | 'update',
 ) {
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -498,6 +499,7 @@ export function* updateOrReplaceMultipleElementsStyles(
     const { ids, styles } = action.payload;
 
     const stateElements = yield select(selectElementsByIds(ids));
+
     if (!action.meta.useHistory) {
       const stylesState = stateElements.reduce((acc, element) => {
         return {
@@ -616,20 +618,20 @@ export const removeMultipleElementsStylesSaga = compose(
   const { ids, cssPropertiesNames } = action.payload;
 
   if (!ids || !ids.length) {
-    console.error(
+    logger.error(
       `You have to provide list of elements' IDs for action ${action.type}`,
     );
     return;
   }
 
   if (!cssPropertiesNames || !cssPropertiesNames.length) {
-    console.error(
+    logger.error(
       `You have to provide list of CSS properties for action ${action.type}`,
     );
   }
 
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -732,7 +734,7 @@ export const removeElementStylesSaga = compose(
     const { id, cssPropertiesNames } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -830,7 +832,7 @@ export const updateElementImageSaga = compose(
 )(function* (action: ReturnType<typeof Actions.updateElementImage>) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
