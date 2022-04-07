@@ -1,6 +1,11 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
-import { FreeCanvasOffset, UIFramework, importData } from '@Src/types';
+import {
+  FreeCanvasOffset,
+  UIFramework,
+  importData,
+  ParsedImagePalette,
+} from '@Src/types';
 import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import { makeFeatureStateSelector } from '../../../shared/redux';
 import { AppReduxState } from '../../types';
@@ -54,6 +59,11 @@ export const selectCurrentProject = createSelector(
 export const selectCurrentProjectClasses = createSelector(
   selectCurrentProject,
   (currentProject) => currentProject.projectData.classes,
+);
+
+export const selectCurrentProjectDefaultStyles = createSelector(
+  selectCurrentProject,
+  (currentProject) => currentProject.projectData.defaultStyles,
 );
 
 export function selectUploadedImageInfo(state: AppReduxState) {
@@ -184,6 +194,11 @@ export const selectSidebarHost = ({ project }: AppReduxState) =>
 
 export function selectImportLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.importLoader;
+}
+export function selectImagePalette(
+  state: AppReduxState,
+): ParsedImagePalette | null {
+  return selectProjectState(state).data.imagePalette;
 }
 
 export function selectImportValue(state: AppReduxState): importData {

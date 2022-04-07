@@ -20,6 +20,8 @@ import {
 } from '@Utils/debounceHooks';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -48,6 +50,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   borderColor?: React.CSSProperties['borderColor'];
   borderWidth?: React.CSSProperties['borderWidth'];
   borderRadius?: React.CSSProperties['borderRadius'];
+  isDefaultStyles?: boolean;
 };
 
 const BorderBlock: React.FC<Props> = ({
@@ -60,8 +63,11 @@ const BorderBlock: React.FC<Props> = ({
   canEdit,
   element,
   editableStyles,
+  isDefaultStyles = false,
 }) => {
   const classes = useStyles();
+  const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
+
   const borderRadiusUnits = useMemo(
     () => accessBorderRadius(String(borderRadius)),
     [borderRadius],
@@ -101,7 +107,7 @@ const BorderBlock: React.FC<Props> = ({
   );
 
   const [radius, handleRadiusChange] = useDebouncedInputChange(
-    borderRadius,
+    (isDefaultStyles && defaultStyles?.border?.borderRadius) || borderRadius,
     (value) => {
       updateStyles({
         borderRadius: `${value}${accessBorderRadius(String(borderRadius))}`,
@@ -128,7 +134,7 @@ const BorderBlock: React.FC<Props> = ({
 
   return (
     <div>
-      {!masterScreenEnabled && canEdit && (
+      {!isDefaultStyles && !masterScreenEnabled && canEdit && (
         <RemoveStyles
           onClick={removeStyles}
           propsToRemove={['borderColor', 'borderWidth', 'borderRadius']}
@@ -138,15 +144,17 @@ const BorderBlock: React.FC<Props> = ({
       )}
 
       <div className={classes.wrapper}>
-        <StyledTextField
-          label="Width"
-          type="number"
-          value={width ? parseFloat(width as string) : ''}
-          onChange={handleWidthChange}
-          margin="dense"
-          className={classes.text}
-          disabled={!canEdit}
-        />
+        {!isDefaultStyles && (
+          <StyledTextField
+            label="Width"
+            type="number"
+            value={width ? parseFloat(width as string) : ''}
+            onChange={handleWidthChange}
+            margin="dense"
+            className={classes.text}
+            disabled={!canEdit}
+          />
+        )}
 
         <div className={classes.control}>
           <StyledTextField
@@ -176,12 +184,14 @@ const BorderBlock: React.FC<Props> = ({
         </div>
       </div>
 
-      <ColorSettings
-        currentColor={borderColorValue as string}
-        activeElementId={element.id}
-        onChange={handleBorderColorChange as (newBorderColor: string) => void}
-        disabled={!canEdit}
-      />
+      {!isDefaultStyles && (
+        <ColorSettings
+          currentColor={borderColorValue as string}
+          activeElementId={element.id}
+          onChange={handleBorderColorChange as (newBorderColor: string) => void}
+          disabled={!canEdit}
+        />
+      )}
     </div>
   );
 };

@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
-import IMAGES from '@Constants/images';
 import { logoutStart } from '@Redux/user/actions';
 import { selectProfileData, selectUserData } from '@Redux/user/selectors';
 import {
-  Avatar as MuiAvatar,
   Tooltip,
   IconButton,
   Menu,
   MenuItem,
   Divider,
-} from '@material-ui/core';
-
+  Avatar as MuiAvatar,
+} from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -54,7 +52,9 @@ const Avatar: React.FC = () => {
     <div>
       <Tooltip title={username} arrow enterDelay={500}>
         <IconButton size="small" onClick={handleAvatarClick}>
-          <MuiAvatar alt={username} src={avatar || IMAGES.prof} />
+          <MuiAvatar alt={username} src={avatar} sx={{ bgcolor: '#344AF0' }}>
+            {username[0].toUpperCase()}
+          </MuiAvatar>
         </IconButton>
       </Tooltip>
 

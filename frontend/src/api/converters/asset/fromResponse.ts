@@ -1,4 +1,4 @@
-import { Asset, PaginatedArray } from '@Src/types';
+import { Asset, PaginatedArray, ParsedImagePalette } from '@Src/types';
 import { AxiosResponse } from 'axios';
 
 export type ServerAsset = {
@@ -7,6 +7,17 @@ export type ServerAsset = {
   created: string;
   modified: string;
   illustration_set: string | null;
+};
+
+export type ServerImagePalette = {
+  id: number;
+  image: string;
+  image_url: string;
+  created: string;
+  modified: string;
+  illustration_set: number | null;
+  fileurl: string | null;
+  palette: string;
 };
 
 export const convertFromServerAsset = (serverAsset: ServerAsset): Asset => {
@@ -23,6 +34,12 @@ export const convertFromServerAsset = (serverAsset: ServerAsset): Asset => {
 export const convertResponseToAsset = (
   response: AxiosResponse<ServerAsset>,
 ): Asset => convertFromServerAsset(response.data);
+
+export const convertResponseToImagePalette = (
+  response: AxiosResponse<ServerImagePalette>,
+): ParsedImagePalette => {
+  return JSON.parse(response.data.palette);
+};
 
 export const convertResponseToPaginatedAssets = (
   response: AxiosResponse<PaginatedArray<ServerAsset>>,
