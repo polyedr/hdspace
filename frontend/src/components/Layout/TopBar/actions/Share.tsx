@@ -69,8 +69,7 @@ const Share: FC<Props> = ({ className = '' }) => {
         .post('https://api.apilayer.com/short_url/hash', url, { headers })
         .then((response) =>
           navigator.clipboard.writeText(response.data.short_url),
-        )
-        .catch((error) => console.log('error', error));
+        );
 
       handleClose();
       if (includeElement) {
