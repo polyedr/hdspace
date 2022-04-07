@@ -131,7 +131,7 @@ const ColorSettings: React.FC<Props> = ({
 
         <div className={classes.wrapper}>
           <ColorPicker
-            color={currentColor}
+            color={currentBackgroundColor.value}
             onChangeComplete={handleColorChange}
             disabled={disabled}
           />

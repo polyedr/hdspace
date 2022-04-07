@@ -1,11 +1,13 @@
 import React, { memo } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
+import { Property } from 'csstype';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   backgroundColor?: React.CSSProperties['backgroundColor'];
+  controlName?: string;
 };
 
 const BackgroundBlock: React.FC<Props> = ({
@@ -15,6 +17,7 @@ const BackgroundBlock: React.FC<Props> = ({
   backgroundColor = 'transparent',
   masterScreenEnabled,
   canEdit,
+  controlName,
   editableStyles,
 }) => {
   const [color, handleColorChange] = useDebouncedValueChange(
@@ -28,6 +31,17 @@ const BackgroundBlock: React.FC<Props> = ({
     },
   );
 
+  let selectedColor:
+    | Property.BackgroundColor
+    | ((value: Property.BackgroundColor) => void) = color;
+
+  if (
+    element?.styles?.ownStyles?.backgroundColor &&
+    controlName === 'background'
+  ) {
+    selectedColor = element.styles.ownStyles.backgroundColor;
+  }
+
   return (
     <div>
       {!masterScreenEnabled && canEdit && (
@@ -40,7 +54,7 @@ const BackgroundBlock: React.FC<Props> = ({
       )}
 
       <ColorSettings
-        currentColor={color as string}
+        currentColor={selectedColor as string}
         activeElementId={element.id}
         onChange={handleColorChange as (color: string) => any}
         disabled={!canEdit}
