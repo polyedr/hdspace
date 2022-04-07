@@ -53,7 +53,7 @@ const TaskModal: React.FC<Props> = ({
 
   const clear = () => {
     setTitle('');
-    updateSelectedMember([]);
+    updateSelectedMember('');
   };
 
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
