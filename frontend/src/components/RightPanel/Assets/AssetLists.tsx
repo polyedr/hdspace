@@ -23,7 +23,7 @@ import {
 
 const useStyles = makeStyles({
   root: {
-    width: '300px',
+    width: '100%',
     padding: '0.7em 0.7em 0',
     display: 'flex',
     flexDirection: 'row',
@@ -36,15 +36,20 @@ const useStyles = makeStyles({
   newAssetListInput: {
     width: '100%',
   },
-  imageInput: {
-    display: 'none',
-  },
   newAssetListCloseBtn: {
     padding: 0,
   },
+  leftSideColor: {
+    color: '#fff',
+  },
+  rightSideColor: {},
 });
 
-const AssetLists = () => {
+type Props = {
+  isDefaultStyles?: boolean;
+};
+
+const AssetLists: React.FC<Props> = ({ isDefaultStyles = false }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const currentProjectId = useSelector(selectCurrentProjectId);
@@ -99,6 +104,9 @@ const AssetLists = () => {
           onChange={(event) => setNewAssetName(event.target.value)}
           focused
           InputProps={{
+            className: isDefaultStyles
+              ? classes.leftSideColor
+              : classes.rightSideColor,
             endAdornment: (
               <IconButton
                 aria-label="Confirm"
@@ -110,7 +118,7 @@ const AssetLists = () => {
                 className={classes.newAssetListCloseBtn}
                 disabled={!canEditProject}
               >
-                <CloseIcon />
+                <CloseIcon color={isDefaultStyles ? 'primary' : 'inherit'} />
               </IconButton>
             ),
           }}
@@ -123,6 +131,11 @@ const AssetLists = () => {
           onChange={(event) =>
             handleListChange((event.target.value as string) || null)
           }
+          inputProps={{
+            className: isDefaultStyles
+              ? classes.leftSideColor
+              : classes.rightSideColor,
+          }}
         >
           {assetLists.map((list) => (
             <MenuItem key={`list-${list.id}`} value={list.id}>
@@ -140,7 +153,7 @@ const AssetLists = () => {
           setAddInProgress(true);
         }}
       >
-        <AddIcon />
+        <AddIcon color={isDefaultStyles ? 'primary' : 'inherit'} />
       </IconButton>
     </div>
   );

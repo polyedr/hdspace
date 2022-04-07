@@ -184,7 +184,7 @@ export function convertProjectFromResponse({
   project_data_trello_json,
   tags,
 }: ServerProject): Project {
-  const projectDataJSON = JSON.parse(JSON.stringify(project_data_json));
+  const projectDataJSON = JSON.parse(project_data_json);
   const projectTrelloJSON = JSON.parse(project_data_trello_json);
   return {
     id,

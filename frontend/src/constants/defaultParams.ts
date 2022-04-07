@@ -79,6 +79,49 @@ export const DEFAULT_PROJECT: Project = {
   },
   tags: [],
   projectData: {
+    defaultStyles: {
+      indents: {
+        marginTop: 0,
+        marginLeft: 0,
+        marginBottom: 0,
+        marginRight: 0,
+        paddingTop: 0,
+        paddingLeft: 0,
+        paddingBottom: 0,
+        paddingRight: 0,
+      },
+      typography: {
+        color: '#323232',
+        fontFamily: `"Arial", sans-serif`,
+        fontSize: '14px',
+        fontWeight: 100,
+        textAlign: 'center',
+      },
+      headingType: {
+        fontSize: '40px',
+      },
+      colors: {
+        color: '#323232',
+      },
+      accentColor: {
+        'accent-color': 'transparent',
+      },
+      screenBackgroundColor: {
+        background: 'transparent',
+      },
+      fontColorOverlay: {
+        color: '#323232',
+      },
+      elementsBackgroundColor: {
+        'background-color': 'transparent',
+      },
+      borderColor: {
+        'border-color': 'transparent',
+      },
+      border: {
+        borderRadius: '0%',
+      },
+    },
     classes: [
       {
         className: 'root',
@@ -202,3 +245,5 @@ export const PERMISSION_LABELS = {
 };
 
 export const URL_REGEX = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+
+export const shorten_url_api_key = 'vhDRD2O8a2G7NDk2LLej7vUxiDzDIYBp';
