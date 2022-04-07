@@ -49,6 +49,7 @@ import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
 type ControlInfo = {
   Control: React.ComponentType<any>;
   styles?: Array<keyof React.CSSProperties>;
+  isDefaultStyles?: boolean;
 };
 
 const CONTROLS: Record<Control, ControlInfo> = {

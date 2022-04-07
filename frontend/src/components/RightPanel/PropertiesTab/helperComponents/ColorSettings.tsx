@@ -24,6 +24,7 @@ type Props = {
   activeElementId: string;
   onChange(color: string): any | void;
   disabled?: boolean;
+  labelTextStyle?: string;
 };
 
 const ColorSettings: React.FC<Props> = ({
@@ -31,6 +32,7 @@ const ColorSettings: React.FC<Props> = ({
   activeElementId,
   onChange,
   disabled,
+  labelTextStyle = 'Color',
 }) => {
   const classes = useStyles();
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
@@ -40,7 +42,7 @@ const ColorSettings: React.FC<Props> = ({
   const [currentColorObject, setCurrentColorObject] = useState<ColorResult>(
     toState(currentColor),
   );
-  const [checked, setChecked] = React.useState(
+  const [checked, setChecked] = useState(
     currentBackgroundColor.value.includes('rgba'),
   );
 
@@ -117,10 +119,10 @@ const ColorSettings: React.FC<Props> = ({
   );
 
   return (
-    <>
+    <div>
       <div className={classes.root}>
         <StyledTextField
-          label="Color"
+          label={labelTextStyle}
           fullWidth
           value={currentBackgroundColor.value}
           onBlur={({ target: { value } }) => handleColorInputBlur(value)}
@@ -148,7 +150,7 @@ const ColorSettings: React.FC<Props> = ({
         }
         label="Format color RGBA"
       />
-    </>
+    </div>
   );
 };
 

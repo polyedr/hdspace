@@ -47,6 +47,7 @@ import {
   NNModelName,
   VIARegions,
   importData,
+  ParsedImagePalette,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -70,6 +71,7 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
+  imagePalette: ParsedImagePalette | null;
 };
 
 export type ProjectUiState = {
@@ -470,6 +472,13 @@ export type RemoveElementClassName = IAction<
   { elementID: string; className: string },
   ElementHistoryMeta
 >;
+
+export type UpdateDefaultStyles = IAction<
+  typeof TYPES.UPDATE_DEFAULT_STYLES,
+  { classNames: Entity[]; styles: React.CSSProperties; controlKey: string },
+  ElementHistoryMeta
+>;
+
 export type UpdateSharedStyles = IAction<
   typeof TYPES.UPDATE_SHARED_STYLES,
   { className: Entity; styles: React.CSSProperties },
@@ -1181,6 +1190,16 @@ export type SetStatePseudoClass = IAction<
   string | null
 >;
 
+export type GenerateImagePalette = IAction<
+  typeof TYPES.GENERATE_IMAGE_PALETTE,
+  string
+>;
+
+export type SetImagePalette = IAction<
+  typeof TYPES.SET_IMAGE_PALETTE,
+  ParsedImagePalette
+>;
+
 export type Action =
   | LoadProjects
   | SetUsersSearchValue
@@ -1362,7 +1381,9 @@ export type Action =
   | UpdateUISettingsParameters
   | SetEnabledPseudoClass
   | SetStatePseudoClass
-  | SetValueCheckRobots;
+  | SetValueCheckRobots
+  | GenerateImagePalette
+  | SetImagePalette;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

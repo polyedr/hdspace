@@ -41,6 +41,18 @@ export const mockProject: Project = {
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {
+      accentColor: {},
+      border: {},
+      borderColor: {},
+      colors: {},
+      elementsBackgroundColor: {},
+      fontColorOverlay: {},
+      headingType: {},
+      indents: {},
+      screenBackgroundColor: {},
+      typography: {},
+    },
   },
   user: DEFAULT_USER,
 };
@@ -236,6 +248,18 @@ export const createMockProject = (): Project => ({
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {
+      accentColor: {},
+      border: {},
+      borderColor: {},
+      colors: {},
+      elementsBackgroundColor: {},
+      fontColorOverlay: {},
+      headingType: {},
+      indents: {},
+      screenBackgroundColor: {},
+      typography: {},
+    },
   },
   user: DEFAULT_USER,
 });
@@ -293,6 +317,18 @@ export const createProjectWithScreensMock = (
   projectData: {
     classes: [],
     uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {
+      accentColor: {},
+      border: {},
+      borderColor: {},
+      colors: {},
+      elementsBackgroundColor: {},
+      fontColorOverlay: {},
+      headingType: {},
+      indents: {},
+      screenBackgroundColor: {},
+      typography: {},
+    },
   },
   projectLoader: false,
   tags: [],

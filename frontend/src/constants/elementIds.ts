@@ -1,4 +1,5 @@
 const ELEMENT_IDS = {
+  styles: 'styles-id',
   screenList: 'screen-list-id',
   navigator: 'navigator-id',
   masterScreenListItem: 'master-screen-list-item-id',
