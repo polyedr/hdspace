@@ -53,7 +53,7 @@ const Avatar: React.FC = () => {
       <Tooltip title={username} arrow enterDelay={500}>
         <IconButton size="small" onClick={handleAvatarClick}>
           <MuiAvatar alt={username} src={avatar} sx={{ bgcolor: '#344AF0' }}>
-            {username[0].toUpperCase()}
+            {username[0]?.toUpperCase()}
           </MuiAvatar>
         </IconButton>
       </Tooltip>
