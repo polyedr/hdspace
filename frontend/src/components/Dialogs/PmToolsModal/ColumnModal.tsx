@@ -64,8 +64,13 @@ const ColumnModal: React.FC<Props> = ({ show, hide, action, column }) => {
     }
   };
 
+  const handleClose = () => {
+    hide?.();
+    setTitle(column?.name || '');
+  };
+
   return (
-    <Dialog open={show} onClose={hide}>
+    <Dialog open={show} onClose={handleClose}>
       <DialogContent>
         <h2>
           {action === ModalAction.Create ? 'Create column' : 'Edit column'}
