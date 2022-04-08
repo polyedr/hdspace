@@ -40,11 +40,9 @@ const BackgroundBlock: React.FC<Props> = ({
     | Property.BackgroundColor
     | ((value: Property.BackgroundColor) => void) = color;
 
-  if (
-    element?.styles?.ownStyles?.backgroundColor &&
-    controlName === PropertyControlType.BACKGROUND
-  ) {
-    selectedColor = element.styles.ownStyles.backgroundColor;
+  if (controlName === PropertyControlType.BACKGROUND) {
+    selectedColor =
+      element?.styles?.ownStyles?.backgroundColor ?? 'transparent';
   }
 
   return (
