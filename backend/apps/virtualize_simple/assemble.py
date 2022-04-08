@@ -1135,6 +1135,10 @@ def print_clusters(
 ):
     image_clusters = copy.deepcopy(image_opencv_input)
     for pre, fill, node in RenderTree(root_firstcluster):
+        node.x1 = int(node.x1)
+        node.x2 = int(node.x2)
+        node.y1 = int(node.y1)
+        node.y2 = int(node.y2)
         treestr = u"%s%s" % (pre, node.name)
         print(
             treestr.ljust(8),
