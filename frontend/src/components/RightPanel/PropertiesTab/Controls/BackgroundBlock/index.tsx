@@ -1,5 +1,10 @@
 import React, { memo } from 'react';
-import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
+import {
+  Entity,
+  LibraryElement,
+  PropertiesChangeProps,
+  PropertyControlType,
+} from '@Src/types';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { Property } from 'csstype';
 import ColorSettings from '../../helperComponents/ColorSettings';
@@ -37,7 +42,7 @@ const BackgroundBlock: React.FC<Props> = ({
 
   if (
     element?.styles?.ownStyles?.backgroundColor &&
-    controlName === 'background'
+    controlName === PropertyControlType.BACKGROUND
   ) {
     selectedColor = element.styles.ownStyles.backgroundColor;
   }

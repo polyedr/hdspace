@@ -1768,3 +1768,7 @@ export enum ConvertibleElementType {
   PAEAGRAPH = 'paragraph',
   IMAGE = 'image',
 }
+
+export enum PropertyControlType {
+  BACKGROUND = 'background',
+}
