@@ -116,11 +116,20 @@ def elements_rootblock_create(
                 )
         # Second, display all the text regions
         for pre, fill, node in RenderTree(root_block):
-            if node.element_assigned in {"label", "ocrtext"}:
+            if node.element_assigned in {
+                "label",
+                "text",
+                "ocrtext",
+                "textarea",
+                "form_heading",
+                "li",
+                "listItem",
+            }:
                 # Create a new Scenario Element for the elements chain
                 node.scenarioelement = ScenarioElement.objects.create(
                     parent=outer_div_node, **node.scenarioelement_kwargs
                 )
+                node.scenarioelement.buoyancy = 10000
 
     if (serializing == "freecanvas"):
         for pre, fill, node in RenderTree(root_block):
