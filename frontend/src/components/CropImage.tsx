@@ -59,7 +59,7 @@ function ImageCropper(props) {
         'croppedImage.jpeg',
       );
 
-      if (onImageCropped) onImageCropped(croppedImage);
+      onImageCropped?.(croppedImage);
     }
   }
 
