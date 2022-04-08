@@ -95,16 +95,44 @@ def elements_rootblock_create(
     root_block, outer_div_node, serializing="virtualize_simple", children=[]
 ):
     # Function elements creation, loop through the root_block
-    for pre, fill, node in RenderTree(root_block):
-        if node == root_block:
-            # Create a new Scenario Element for the elements chain
-            node.scenarioelement = ScenarioElement.objects.create(
-                parent=outer_div_node, **node.scenarioelement_kwargs
-            )
-        else:
-            node.scenarioelement = ScenarioElement.objects.create(
-                parent=node.parent.scenarioelement, **node.scenarioelement_kwargs
-            )
+    if (serializing == "assemble"):
+        for pre, fill, node in RenderTree(root_block):
+            if node == root_block:
+                # Create a new Scenario Element for the elements chain
+                node.scenarioelement = ScenarioElement.objects.create(
+                    parent=outer_div_node, **node.scenarioelement_kwargs
+                )
+            else:
+                node.scenarioelement = ScenarioElement.objects.create(
+                    parent=node.parent.scenarioelement, **node.scenarioelement_kwargs
+                )
+
+        # First, display all the non-text regions
+        for pre, fill, node in RenderTree(root_block):
+            if node.element_assigned in {"input", "select", "button", "image"}:
+                # Create a new Scenario Element for the elements chain
+                node.scenarioelement = ScenarioElement.objects.create(
+                    parent=outer_div_node, **node.scenarioelement_kwargs
+                )
+        # Second, display all the text regions
+        for pre, fill, node in RenderTree(root_block):
+            if node.element_assigned in {"input", "label", "ocrtext"}:
+                # Create a new Scenario Element for the elements chain
+                node.scenarioelement = ScenarioElement.objects.create(
+                    parent=outer_div_node, **node.scenarioelement_kwargs
+                )
+
+    if (serializing == "freecanvas"):
+        for pre, fill, node in RenderTree(root_block):
+            if node == root_block:
+                # Create a new Scenario Element for the elements chain
+                node.scenarioelement = ScenarioElement.objects.create(
+                    parent=outer_div_node, **node.scenarioelement_kwargs
+                )
+            else:
+                node.scenarioelement = ScenarioElement.objects.create(
+                    parent=node.parent.scenarioelement, **node.scenarioelement_kwargs
+                )
 
         # Maybe write a new function for the freecanvas only
         """
