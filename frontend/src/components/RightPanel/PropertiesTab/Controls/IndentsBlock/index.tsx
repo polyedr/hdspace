@@ -121,6 +121,7 @@ const IndentsBlock: React.FC<Props> = ({
           paddingTop,
           paddingLeft,
           paddingRight,
+          paddingBottom,
         };
     setState(styles as Indents);
   }, [
@@ -141,10 +142,24 @@ const IndentsBlock: React.FC<Props> = ({
   }, 500);
 
   const handleChange = ({ target: { value, name } }) => {
-    setState({ ...state, [name]: value } as Indents);
-    debounced.callback(name, `${value}px`);
+    let val;
+    if (
+      name === 'paddingTop' ||
+      name === 'paddingBottom' ||
+      name === 'paddingRight' ||
+      name === 'paddingLeft'
+    ) {
+      if (value < 0) {
+        val = 0;
+      } else {
+        val = value;
+      }
+    } else {
+      val = value;
+    }
+    setState({ ...state, [name]: val } as Indents);
+    debounced.callback(name, `${val}px`);
   };
-
   return (
     <div>
       {!isDefaultStyles && !masterScreenEnabled && canEdit && (
