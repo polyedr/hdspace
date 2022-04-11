@@ -82,7 +82,7 @@ export const buttonStyleControls = [
   'display',
 ] as const;
 
-export const buttonParamsControls = ['textContent'] as const;
+export const buttonParamsControls = ['text'] as const;
 
 export const textinputStyleControls = [
   'indents',
