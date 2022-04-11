@@ -418,6 +418,7 @@ const PropertiesTab: React.FC = () => {
                   <Control
                     {...getControlStyles(controlName, currentEditableStyles)}
                     canEdit={canEdit}
+                    controlName={controlName}
                     activeElementId={activeElement.id}
                     element={activeElement}
                     removeStyles={!masterScreenEnabled && removeStyles}
