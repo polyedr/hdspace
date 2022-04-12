@@ -443,7 +443,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     ...radiobuttonGroupStyleControls,
     'layouts',
   ],
-  label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
+  label: ['text', 'labelFor', ...labelStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
   paragraph: ['textContent', ...paragraphStyleControls, 'layouts'],
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
