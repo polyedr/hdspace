@@ -25,7 +25,6 @@ const useStyles = makeComponentStyles('navbar', {
         display: 'inline-block',
         padding: '13px 10px 13px 10px',
         textDecoration: 'none',
-        color: 'rgb(79 79 79)',
         '&:hover': {
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
         },
@@ -38,7 +37,6 @@ const useStyles = makeComponentStyles('navbar', {
         fontSize: '22px',
         padding: '10px 10px 10px 10px',
         '&> a': {
-          color: 'rgb(79 79 79)',
           textDecoration: 'none',
         },
       },
