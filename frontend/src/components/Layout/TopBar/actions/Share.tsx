@@ -45,8 +45,8 @@ const Share: FC<Props> = ({ className = '' }) => {
   const activeElementId = useSelector(selectActiveElementId);
 
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
-  const [isUserWarnigOpen, setisUserWarnigOpen] = useState(false);
-  const [isElement, setisElement] = useState(false);
+  const [isUserWarnigOpen, setIsUserWarnigOpen] = useState(false);
+  const [isElement, setIsElement] = useState(false);
   const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
     setAnchor(ev.currentTarget);
   };
@@ -78,7 +78,7 @@ const Share: FC<Props> = ({ className = '' }) => {
         );
 
       handleClose();
-      setisUserWarnigOpen(false);
+      setIsUserWarnigOpen(false);
       if (includeElement) {
         dispatch(
           enqueueSnackbar({
@@ -102,8 +102,8 @@ const Share: FC<Props> = ({ className = '' }) => {
     [access, activeElementId, dispatch, projectId, refresh, screenId, user.id],
   );
   const openModel = (element) => {
-    setisElement(element);
-    setisUserWarnigOpen(true);
+    setIsElement(element);
+    setIsUserWarnigOpen(true);
   };
   return (
     <>
@@ -148,7 +148,7 @@ const Share: FC<Props> = ({ className = '' }) => {
       </Popover>
       <Dialog
         open={isUserWarnigOpen}
-        onClose={() => setisUserWarnigOpen(false)}
+        onClose={() => setIsUserWarnigOpen(false)}
       >
         <DialogTitle>Warning</DialogTitle>
 
@@ -160,7 +160,7 @@ const Share: FC<Props> = ({ className = '' }) => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setisUserWarnigOpen(false)}>Disagree</Button>
+          <Button onClick={() => setIsUserWarnigOpen(false)}>Disagree</Button>
 
           <Button
             onClick={() =>
