@@ -139,7 +139,7 @@ const Borders: React.FC<Props> = ({
     <>
       {isActiveBorder &&
         !showGrid &&
-        !['root', 'calendar', 'clock', 'label'].includes(type) && (
+        !['root', 'calendar', 'clock'].includes(type) && (
           <div style={{ width }}>
             <div
               style={{
@@ -169,7 +169,7 @@ const Borders: React.FC<Props> = ({
 
       {isActiveBorder &&
         showGrid &&
-        !['root', 'calendar', 'clock', 'label'].includes(type) && (
+        !['root', 'calendar', 'clock'].includes(type) && (
           <div>
             <div
               style={{
@@ -214,7 +214,7 @@ const Borders: React.FC<Props> = ({
             </div>
           </div>
         )}
-      {!['root', 'calendar', 'clock', 'label'].includes(type) && (
+      {!['root', 'calendar', 'clock'].includes(type) && (
         <Rnd
           position={{ x: left, y: top }}
           size={{ width, height }}
