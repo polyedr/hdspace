@@ -1772,3 +1772,7 @@ export enum ConvertibleElementType {
 export enum PropertyControlType {
   BACKGROUND = 'background',
 }
+
+export enum ElementTypeName {
+  Root = 'Root',
+}
