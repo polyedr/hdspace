@@ -4,6 +4,7 @@ import {
   LibraryElement,
   PropertiesChangeProps,
   PropertyControlType,
+  ElementTypeName,
 } from '@Src/types';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { Property } from 'csstype';
@@ -28,11 +29,17 @@ const BackgroundBlock: React.FC<Props> = ({
   const [color, handleColorChange] = useDebouncedValueChange(
     backgroundColor,
     (updatedColorValue: string) => {
-      updateStyles({
-        backgroundColor: updatedColorValue,
-        width: 'auto',
-        height: 'auto',
-      });
+      updateStyles(
+        element.name === ElementTypeName.ROOT
+          ? {
+              backgroundColor: updatedColorValue,
+              width: 'auto',
+              height: 'auto',
+            }
+          : {
+              backgroundColor: updatedColorValue,
+            },
+      );
     },
   );
 
