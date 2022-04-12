@@ -13,6 +13,7 @@ import {
   OrderedListButton,
   BlockquoteButton,
 } from '@draft-js-plugins/buttons';
+import { RichUtils, KeyBindingUtil } from 'draft-js';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
@@ -26,6 +27,15 @@ const RichTextContent = ({ textState, handleChange }) => {
     }
   };
 
+  const handleReturn = (event) => {
+    if (KeyBindingUtil.isSoftNewlineEvent(event)) {
+      handleChange(RichUtils.insertSoftNewline(textState));
+      return 'handled';
+    }
+
+    return 'not-handled';
+  };
+
   return (
     <div className="editor" onClick={focusEditor}>
       <Editor
@@ -33,6 +43,7 @@ const RichTextContent = ({ textState, handleChange }) => {
         editorState={textState}
         onChange={handleChange}
         plugins={plugins}
+        handleReturn={(event) => handleReturn(event)}
       />
       <Toolbar>
         {(externalProps) => (
