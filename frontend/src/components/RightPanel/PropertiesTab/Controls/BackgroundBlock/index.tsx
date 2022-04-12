@@ -30,7 +30,7 @@ const BackgroundBlock: React.FC<Props> = ({
     backgroundColor,
     (updatedColorValue: string) => {
       updateStyles(
-        element.name === ElementTypeName.Root
+        element.name === ElementTypeName.ROOT
           ? {
               backgroundColor: updatedColorValue,
               width: 'auto',

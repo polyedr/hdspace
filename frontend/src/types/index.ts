@@ -1774,5 +1774,5 @@ export enum PropertyControlType {
 }
 
 export enum ElementTypeName {
-  Root = 'Root',
+  ROOT = 'Root',
 }
