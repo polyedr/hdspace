@@ -139,7 +139,9 @@ export function* changeProfileDataSaga({
         data: _.merge(rest, payload),
       },
     );
-
+    if (payload.avatar === null) {
+      newProfileData.parameters.avatarCrop = '';
+    }
     yield put(
       Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
     );
