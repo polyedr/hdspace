@@ -7,6 +7,11 @@ import {
   Container,
   Box,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
@@ -40,7 +45,8 @@ const Share: FC<Props> = ({ className = '' }) => {
   const activeElementId = useSelector(selectActiveElementId);
 
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
-
+  const [isUserWarnigOpen, setIsUserWarnigOpen] = useState(false);
+  const [isElement, setIsElement] = useState(false);
   const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
     setAnchor(ev.currentTarget);
   };
@@ -72,6 +78,7 @@ const Share: FC<Props> = ({ className = '' }) => {
         );
 
       handleClose();
+      setIsUserWarnigOpen(false);
       if (includeElement) {
         dispatch(
           enqueueSnackbar({
@@ -94,9 +101,12 @@ const Share: FC<Props> = ({ className = '' }) => {
     },
     [access, activeElementId, dispatch, projectId, refresh, screenId, user.id],
   );
-
+  const openModel = (element) => {
+    setIsElement(element);
+    setIsUserWarnigOpen(true);
+  };
   return (
-    <div>
+    <>
       <IconButton title="Share" className={className} onClick={handleClick}>
         <Box component="div">
           <ShareIcon />
@@ -122,21 +132,46 @@ const Share: FC<Props> = ({ className = '' }) => {
             style={{ marginBottom: '1em' }}
             variant="contained"
             color="primary"
-            onClick={() => handleCopyLink()}
+            onClick={() => openModel(false)}
           >
             Copy screen link
           </Button>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleCopyLink(true)}
+            onClick={() => openModel(true)}
             disabled={!activeElementId || parseInt(activeElementId) <= 0}
           >
             Copy element link
           </Button>
         </Container>
       </Popover>
-    </div>
+      <Dialog
+        open={isUserWarnigOpen}
+        onClose={() => setIsUserWarnigOpen(false)}
+      >
+        <DialogTitle>Warning</DialogTitle>
+
+        <DialogContent>
+          <DialogContentText>
+            Users with a link will have all the rights and accesses. Make sure
+            it will be sent to trusted users only
+          </DialogContentText>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={() => setIsUserWarnigOpen(false)}>Disagree</Button>
+
+          <Button
+            onClick={() =>
+              isElement ? handleCopyLink(isElement) : handleCopyLink()
+            }
+          >
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 

@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  memo,
-  useEffect,
-  useState,
-  KeyboardEvent,
-} from 'react';
+import React, { useCallback, memo, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
@@ -243,14 +237,12 @@ const SizeBlock: React.FC<Props> = ({
       ? ''
       : String(parseFloat(size));
     const inputValue = !size || size === 'auto' ? 'auto' : parsedSize;
-    const [state, setState] = useState(inputValue || 0);
-    const [name, setName] = useState('');
-    useEffect(() => {
-      setState(inputValue);
-    }, [inputValue]);
+    const [sizeState, setSizeState] = useState(inputValue || 0);
+
     const debounced = useDebouncedCallback((name, value) => {
       handleInputChange(name, value);
     }, 500);
+
     return (
       <div className={classes.sizeControl}>
         <StyledTextField
@@ -258,15 +250,10 @@ const SizeBlock: React.FC<Props> = ({
           label={capitalize(sizeName)}
           type="text"
           name={sizeName}
-          value={state}
+          value={sizeState}
           onChange={({ target: { name, value } }) => {
-            setState(value);
-            setName(name);
-          }}
-          onKeyDown={(event: KeyboardEvent<HTMLImageElement>) => {
-            if (event.keyCode === 13) {
-              debounced.callback(name, state);
-            }
+            setSizeState(value);
+            debounced.callback(name, value);
           }}
           disabled={inputValue === 'auto' || !canEdit || disabled}
           margin="dense"
