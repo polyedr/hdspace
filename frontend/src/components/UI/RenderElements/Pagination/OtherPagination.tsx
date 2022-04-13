@@ -15,9 +15,6 @@ const useStyles = makeComponentStyles('pagination', {
       padding: '8px 16px',
       textDecoration: 'none',
       cursor: 'pointer',
-      '&:hover': {
-        backgroundColor: '#ddd',
-      },
     },
   },
   active: {
