@@ -52,7 +52,11 @@ const PseudoSelectorsSection = () => {
         }}
       >
         {PSEUDO_CLASS_VALUES.map((value) => {
-          return <MenuItem value={value}>{value}</MenuItem>;
+          return (
+            <MenuItem value={value} key={value}>
+              {value}
+            </MenuItem>
+          );
         })}
       </StyledTextField>
     </FormControl>
