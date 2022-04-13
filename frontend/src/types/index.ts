@@ -1749,6 +1749,7 @@ export enum KeyCode {
   C = 67,
   V = 86,
   Z = 90,
+  Enter = 13,
 }
 
 export enum ConvertibleElementType {
