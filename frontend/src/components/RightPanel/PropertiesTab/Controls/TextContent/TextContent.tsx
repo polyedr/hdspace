@@ -74,14 +74,14 @@ const TextContent = ({ element, updateParams, canEdit }) => {
     }
   };
 
-  const [state, handleChange] = useDebouncedRichInputChange(
-    textContent,
-    (value) => {
-      updateParams({
-        textContent: convertToHTML(value.getCurrentContent()),
-      });
-    },
-  );
+  const [
+    textContentValue,
+    handleTextContentValueChange,
+  ] = useDebouncedRichInputChange(textContent, (value) => {
+    updateParams({
+      textContent: convertToHTML(value.getCurrentContent()),
+    });
+  });
 
   const handleCheckboxChange = (
     textId: string,
@@ -118,7 +118,10 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   return (
     <>
       {CONTROLS_NOT_ALLOW_RICHTEXTBOX.includes(element.type) ? null : (
-        <RichTextContent handleChange={handleChange} textState={state} />
+        <RichTextContent
+          handleChange={handleTextContentValueChange}
+          textState={textContentValue}
+        />
       )}
 
       {CONTROLS_NOT_ALLOW_LINK.includes(element.type) ? null : (
