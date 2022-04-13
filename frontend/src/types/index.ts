@@ -371,6 +371,10 @@ export type LibraryElement<
     titleName?: string;
     titleLink?: string;
     size?: string;
+    isLink?: boolean;
+    link?: string;
+    screenName?: string;
+    screenLink?: string;
   } & Params;
   shared?: boolean;
 };
