@@ -111,6 +111,7 @@ const InteractionsHandler = ({
           dropTargetParams?.id,
           preSelectedElementId,
         ].includes(element.id)}
+        keepAspectRatio={element?.parameters?.keepAspectRatio}
         updateStyles={updateStyles}
       />
       {screen.id !== -1 && (

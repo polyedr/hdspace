@@ -16,6 +16,7 @@ type Props = {
   dropTargetParams: DropTargetParams | null;
   enableDropTargetBordersMode: boolean;
   updateStyles(payload: React.CSSProperties): void;
+  keepAspectRatio: boolean | undefined;
 };
 
 const useStyles = makeStyles<Theme, { isActive: boolean }>({
@@ -76,6 +77,7 @@ const Borders: React.FC<Props> = ({
   dropTargetParams,
   enableDropTargetBordersMode,
   updateStyles,
+  keepAspectRatio,
 }) => {
   const isDropTarget = dropTargetParams?.id === elementId;
   const isActive = useSelector(selectIsElementActive(elementId));
@@ -225,14 +227,14 @@ const Borders: React.FC<Props> = ({
           resizeHandleClasses={resizeHandle}
           lockAspectRatio={type === 'carousel'}
           enableResizing={{
-            bottom: true,
+            bottom: !keepAspectRatio,
             bottomLeft: false,
-            bottomRight: true,
+            bottomRight: !keepAspectRatio,
             left: false,
-            right: true,
+            right: !keepAspectRatio,
             top: false,
             topLeft: false,
-            topRight: true,
+            topRight: !keepAspectRatio,
           }}
         >
           {enableDropTargetBordersMode && isDropTarget && (
