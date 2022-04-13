@@ -110,8 +110,10 @@ const PaginationItem: React.FC<Props> = ({
       debouncedLinkedScreen.callback('', '');
     } else {
       const data = value.toString().split('-');
-      selectScreen(`${data[0]}-${data[1]}`);
-      debouncedLinkedScreen.callback(data[0], data[1]);
+      const screenIds = data.shift();
+      const screenName = data.join('-');
+      selectScreen(`${screenIds}-${screenName}`);
+      debouncedLinkedScreen.callback(screenIds, screenName);
     }
   };
 
