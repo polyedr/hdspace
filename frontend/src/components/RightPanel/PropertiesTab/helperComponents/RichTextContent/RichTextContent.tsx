@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Editor from '@draft-js-plugins/editor';
 import 'draft-js/dist/Draft.css';
 import createToolbarPlugin from '@draft-js-plugins/static-toolbar';
@@ -13,6 +13,12 @@ import {
   OrderedListButton,
   BlockquoteButton,
 } from '@draft-js-plugins/buttons';
+import { RichUtils, DraftHandleValue } from 'draft-js';
+import { getSelectedBlocksType } from 'draftjs-utils';
+import {
+  Commands,
+  SelectedBlocks,
+} from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/constants';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
@@ -26,6 +32,24 @@ const RichTextContent = ({ textState, handleChange }) => {
     }
   };
 
+  const [selectedBlock, setSelectedBlock] = useState<string>('');
+
+  useEffect(() => {
+    setSelectedBlock(getSelectedBlocksType(textState));
+  }, [textState]);
+
+  const handleKeyCommand = (command: string): DraftHandleValue => {
+    if (
+      command === Commands.SPLIT_BLOCK &&
+      selectedBlock !== SelectedBlocks.ORDERED_LIST_ITEM &&
+      selectedBlock !== SelectedBlocks.UNORDERED_LIST_ITEM
+    ) {
+      handleChange(RichUtils.insertSoftNewline(textState));
+      return 'handled';
+    }
+    return 'not-handled';
+  };
+
   return (
     <div className="editor" onClick={focusEditor}>
       <Editor
@@ -33,6 +57,7 @@ const RichTextContent = ({ textState, handleChange }) => {
         editorState={textState}
         onChange={handleChange}
         plugins={plugins}
+        handleKeyCommand={handleKeyCommand}
       />
       <Toolbar>
         {(externalProps) => (
