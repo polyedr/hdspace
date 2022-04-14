@@ -137,6 +137,12 @@ const Borders: React.FC<Props> = ({
     delete resizeHandle.right;
   }
 
+  const lockedAspectRatioElements: [string] = ['carousel'];
+  const selectedElementType: string = type;
+  if (keepAspectRatio) {
+    lockedAspectRatioElements.push(selectedElementType);
+  }
+
   return (
     <>
       {isActiveBorder &&
@@ -225,16 +231,16 @@ const Borders: React.FC<Props> = ({
           onResizeStop={onResize}
           disableDragging
           resizeHandleClasses={resizeHandle}
-          lockAspectRatio={type === 'carousel'}
+          lockAspectRatio={lockedAspectRatioElements.includes(type)}
           enableResizing={{
-            bottom: !keepAspectRatio,
+            bottom: true,
             bottomLeft: false,
-            bottomRight: !keepAspectRatio,
+            bottomRight: true,
             left: false,
-            right: !keepAspectRatio,
+            right: true,
             top: false,
             topLeft: false,
-            topRight: !keepAspectRatio,
+            topRight: true,
           }}
         >
           {enableDropTargetBordersMode && isDropTarget && (
