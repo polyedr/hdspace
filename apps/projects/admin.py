@@ -2,16 +2,19 @@ from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
 from mptt.admin import MPTTModelAdmin
 
+
 from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment, ProjectIllustrationSet, \
     ProjectImage, ProjectColumn
 from .models import *  # noqa
 
+class ScenarioElementAdmin(MPTTModelAdmin):
+    exclude = ('parent',)
 
 admin.site.register(Project, GuardedModelAdmin)
 # admin.site.register(ScreenEvent)
 admin.site.register(ProjectScreen)
 admin.site.register(ScreenScenario)
-admin.site.register(ScenarioElement, MPTTModelAdmin)
+admin.site.register(ScenarioElement, ScenarioElementAdmin)
 admin.site.register(ProjectMember)
 # admin.site.register(ScreenAssignee)
 # admin.site.register(ProjectInvitation)
