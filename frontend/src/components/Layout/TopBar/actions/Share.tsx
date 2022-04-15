@@ -20,9 +20,10 @@ import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { makeStyles } from '@material-ui/core/styles';
+import {selectProjectViewTokenPair} from '@Redux/user/selectors'
+import { setProjectViewStart } from '@Redux/user/actions'
 import axios from 'axios';
 import { shorten_url_api_key } from '@Constants/defaultParams';
-
 const useStyles = makeStyles({
   popup: {
     padding: '1em',
@@ -43,10 +44,10 @@ const Share: FC<Props> = ({ className = '' }) => {
   const projectId = useSelector(selectCurrentProjectId);
   const screenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
-
+  const viewToken = useSelector(selectProjectViewTokenPair);
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const [isUserWarnigOpen, setIsUserWarnigOpen] = useState(false);
-  const [isElement, setIsElement] = useState(false);
+  const [isElement, setIsElement] = useState(false); 
   const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
     setAnchor(ev.currentTarget);
   };
@@ -60,7 +61,8 @@ const Share: FC<Props> = ({ className = '' }) => {
   const handleCopyLink = useCallback(
     (includeElement = false) => {
       const { origin } = window.location;
-
+      dispatch(setProjectViewStart())
+      // console.log("viewToken",viewToken)
       const url = `${origin}/share/?user=${
         user.id
       }&project=${projectId}&screen=${screenId}${

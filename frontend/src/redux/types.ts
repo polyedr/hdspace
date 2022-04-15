@@ -187,6 +187,7 @@ export type UserState = {
   restoreUserId?: number;
   isLoading: boolean;
   confirmMessage: string;
+  viewTokenPair?:TokenPair | null;
   userGuide: {
     active: boolean;
   };

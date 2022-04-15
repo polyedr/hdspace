@@ -46,7 +46,26 @@ export function* getTokenPairSaga(username: string, password: string) {
     }
   }
 }
+export function* getTokenPairSagaProjectView() {
+  try {
+    let username = "projectviewer";
+    let password = "].?h^QC<FV4SdsmF"
+    const tokens: TokenPair = yield call(apiGetToken, { username, password });
 
+    yield put(Actions.setProjectViewEnd(tokens));
+    return tokens;
+  } catch (e: any) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+}
 export function* loginSaga({
   payload: { username, password },
 }: ReturnType<typeof Actions.login>) {
@@ -339,4 +358,5 @@ export default function* userSaga() {
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
   yield takeEvery(TYPES.LOAD_USER_DATA, loadUserDataSaga);
+  yield takeEvery(TYPES.PROJECT_VIEW_START,getTokenPairSagaProjectView);
 }
