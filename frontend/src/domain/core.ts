@@ -82,7 +82,7 @@ export const buttonStyleControls = [
   'display',
 ] as const;
 
-export const buttonParamsControls = ['textContent'] as const;
+export const buttonParamsControls = ['text'] as const;
 
 export const textinputStyleControls = [
   'indents',
@@ -443,7 +443,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     ...radiobuttonGroupStyleControls,
     'layouts',
   ],
-  label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
+  label: ['text', 'labelFor', ...labelStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
   paragraph: ['textContent', ...paragraphStyleControls, 'layouts'],
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],

@@ -67,19 +67,21 @@ const TextContent = ({ element, updateParams, canEdit }) => {
       debouncedLinkedScreen.callback('', '');
     } else {
       const data = value.toString().split('-');
-      selectScreen(`${data[0]}-${data[1]}`);
-      debouncedLinkedScreen.callback(data[0], data[1]);
+      const screenIds = data.shift();
+      const screenName = data.join('-');
+      selectScreen(`${screenIds}-${screenName}`);
+      debouncedLinkedScreen.callback(screenIds, screenName);
     }
   };
 
-  const [state, handleChange] = useDebouncedRichInputChange(
-    textContent,
-    (value) => {
-      updateParams({
-        textContent: convertToHTML(value.getCurrentContent()),
-      });
-    },
-  );
+  const [
+    textContentValue,
+    handleTextContentValueChange,
+  ] = useDebouncedRichInputChange(textContent, (value) => {
+    updateParams({
+      textContent: convertToHTML(value.getCurrentContent()),
+    });
+  });
 
   const handleCheckboxChange = (
     textId: string,
@@ -116,7 +118,10 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   return (
     <>
       {CONTROLS_NOT_ALLOW_RICHTEXTBOX.includes(element.type) ? null : (
-        <RichTextContent handleChange={handleChange} textState={state} />
+        <RichTextContent
+          handleChange={handleTextContentValueChange}
+          textState={textContentValue}
+        />
       )}
 
       {CONTROLS_NOT_ALLOW_LINK.includes(element.type) ? null : (

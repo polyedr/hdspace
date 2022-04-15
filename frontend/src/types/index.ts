@@ -371,6 +371,10 @@ export type LibraryElement<
     titleName?: string;
     titleLink?: string;
     size?: string;
+    isLink?: boolean;
+    link?: string;
+    screenName?: string;
+    screenLink?: string;
   } & Params;
   shared?: boolean;
 };
@@ -1749,6 +1753,7 @@ export enum KeyCode {
   C = 67,
   V = 86,
   Z = 90,
+  Enter = 13,
 }
 
 export enum ConvertibleElementType {
@@ -1767,4 +1772,12 @@ export enum ConvertibleElementType {
   CALENDAR = 'calendar',
   PAEAGRAPH = 'paragraph',
   IMAGE = 'image',
+}
+
+export enum PropertyControlType {
+  BACKGROUND = 'background',
+}
+
+export enum ElementTypeName {
+  ROOT = 'Root',
 }

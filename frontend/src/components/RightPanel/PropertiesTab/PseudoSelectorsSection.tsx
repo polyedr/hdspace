@@ -13,6 +13,16 @@ const useStyles = makeStyles({
   },
 });
 
+const PSEUDO_CLASS_VALUES = [
+  'not selected',
+  'focus',
+  'hover',
+  'active',
+  'target',
+  'visited',
+  'focus-within',
+];
+
 const PseudoSelectorsSection = () => {
   const dispatch = useDispatch();
   const enabledPseudoClass = useSelector(selectEnabledPseudoClass);
@@ -41,16 +51,13 @@ const PseudoSelectorsSection = () => {
           );
         }}
       >
-        <MenuItem value="not selected">
-          <em>Not selected</em>
-        </MenuItem>
-        <MenuItem value="focus">focus</MenuItem>
-        <MenuItem value="hover">hover</MenuItem>
-        <MenuItem value="active">active</MenuItem>
-        <MenuItem value="target">target</MenuItem>
-        <MenuItem value="visited">visited</MenuItem>
-        <MenuItem value="hover-visible">hover-visible</MenuItem>
-        <MenuItem value="focus-within">focus-within</MenuItem>
+        {PSEUDO_CLASS_VALUES.map((value) => {
+          return (
+            <MenuItem value={value} key={value}>
+              {value}
+            </MenuItem>
+          );
+        })}
       </StyledTextField>
     </FormControl>
   );

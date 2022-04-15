@@ -19,7 +19,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 
-const lockedAspectRatioElements: Entity[] = ['radiobutton'];
 const notDraggableElements: Entity[] = [
   'option',
   'listItem',
@@ -83,9 +82,16 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
     id,
     parameters: {
       freeCanvas: { left = 0, top = 0, width = 0, height = 0, zIndex = 0 } = {},
+      keepAspectRatio,
     },
     type,
   } = element;
+
+  const lockedAspectRatioElements: [string] = ['radiobutton'];
+  const selectedElementType: string = type;
+  if (keepAspectRatio) {
+    lockedAspectRatioElements.push(selectedElementType);
+  }
 
   const [resizeDir, setResizeDir] = useState<any>(false);
   const classes = useStyles({
