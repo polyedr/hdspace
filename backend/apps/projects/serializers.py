@@ -119,7 +119,6 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Remove nested objects to handle separately
         children = validated_data.pop("children", [])
         node = super().update(instance, validated_data)
-        node.save()
         for child_data in children:
             # child_data['scenario'] = child_data['scenario'].pk
             s = ScenarioElementSerializer(data=child_data, context={"parent": node})
