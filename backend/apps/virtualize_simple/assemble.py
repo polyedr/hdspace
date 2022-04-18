@@ -1714,6 +1714,7 @@ def elements_rootblock(
 
             # Detect the font-size with tesseract for some elements
             font_size_value = 14.0
+            text_width = 0
             if node.element_assigned in {
                 "textinput",
                 "input",
@@ -1749,10 +1750,17 @@ def elements_rootblock(
             # display elem_image end
 
             if node.element_assigned in {"textinput", "input"}:
-                styles["width"] = str(node_width) + "px"
-                styles["height"] = str(node_height) + "px"
-                styles["height"] = ""
-                styles["padding"] = "3px 0"
+                styles["min-width"] = str(node_width) + "px"
+                styles["min-height"] = str(node_height) + "px"
+
+                # Paddings calculations block
+                padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                padding_left = padding_right = int((node_width - text_width) / 2.0)
+                styles["padding-top"] = str(padding_top) + "px"
+                styles["padding-bottom"] = str(padding_bottom) + "px"
+                styles["padding-left"] = "3px"
+                styles["padding-right"] = "3px"
+
                 styles["border-width"] = "1px"
                 styles["border-color"] = "rgba(244, 244, 244, 1)"
                 styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
