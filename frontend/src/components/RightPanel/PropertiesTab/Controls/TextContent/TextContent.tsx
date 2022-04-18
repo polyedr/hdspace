@@ -77,11 +77,20 @@ const TextContent = ({ element, updateParams, canEdit }) => {
   const [
     textContentValue,
     handleTextContentValueChange,
-  ] = useDebouncedRichInputChange(textContent, (value) => {
-    updateParams({
-      textContent: convertToHTML(value.getCurrentContent()),
-    });
-  });
+  ] = useDebouncedRichInputChange(
+    textContent,
+    element.id,
+    (value, oldElementId) => {
+      if (oldElementId === element.id) {
+        updateParams(
+          {
+            textContent: convertToHTML(value.getCurrentContent()),
+          },
+          element?.id,
+        );
+      }
+    },
+  );
 
   const handleCheckboxChange = (
     textId: string,
