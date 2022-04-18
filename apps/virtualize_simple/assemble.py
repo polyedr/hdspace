@@ -1478,8 +1478,10 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
                         max_bottom = bottom
 
                     # Detect width and height for the complete sentence or paragraph
-                    alltext_width = max_right - left_min
-                    alltext_height = max_bottom - top_min
+                    # 4 is the correction number, because the image was scaled before for this number
+                    alltext_width = int((max_right - left_min)/4.0)
+                    print("alltext_width=", alltext_width)
+                    alltext_height = int((max_bottom - top_min)/4.0)
 
                     # cv2.rectangle(elem_image_gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
                     '''
