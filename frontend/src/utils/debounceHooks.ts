@@ -5,6 +5,7 @@ import { convertFromHTML } from 'draft-convert';
 
 export const useDebouncedRichInputChange = (
   richContent: any,
+  id: number,
   cb: (...args: any) => void,
   delay: number = 500,
 ) => {
@@ -12,25 +13,20 @@ export const useDebouncedRichInputChange = (
   const [state, setState] = useState<any>(
     EditorState.createWithContent(convertFromHTML(content)),
   );
-  const [check, checkOn] = useState();
 
   useEffect(() => {
-    if (check) {
-      return;
-    }
     setState(EditorState.createWithContent(convertFromHTML(content)));
-  }, [check, content]);
+  }, [content]);
 
   const debounced = useDebouncedCallback(cb, delay);
 
   const handleChange = (value: EditorState) => {
     // @ts-ignore
-    checkOn(value);
     setState(value);
     if (debounced.pending()) {
       debounced.cancel();
     }
-    debounced.callback(value);
+    debounced.callback(value, id);
   };
 
   return [state, handleChange];
