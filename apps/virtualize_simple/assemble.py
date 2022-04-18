@@ -27,6 +27,7 @@ from sklearn import cluster as clustermethod
 import xml.etree.ElementTree as ET
 import cv2
 import pytesseract
+from pytesseract import Output
 
 from apps.utils.fset1 import (
     get_dominant_colour,
@@ -1301,6 +1302,7 @@ def detect_text_gcv(path):
 
 def ocr_recognition(elem_image, ocr_engine="tesseract"):
     font_size_value = 14
+    alltext_width = 0
     text_elem_ocr = ""
 
     # Detect the font-size with tesseract for some element start
@@ -1443,6 +1445,49 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
         elem_image_gray = cv2.cvtColor(elem_image, cv2.COLOR_BGR2GRAY)
         elem_image_gray = cv2.resize(elem_image_gray, None, fx=4, fy=4)
         result = pytesseract.image_to_boxes(elem_image_gray)
+        d = pytesseract.image_to_data(elem_image_gray, output_type=Output.DICT)
+
+        n_boxes = len(d['level'])
+        # print(n_boxes, d)
+
+        if n_boxes > 1:
+            for i in range(n_boxes):
+                if (d['text'][i]):  # Choose only the text detected rows
+                    # Initialization from the first array object containing the text
+                    (left_min, top_min, width, height) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
+                    max_right = left_min + width
+                    max_bottom = top_min + height
+
+            for i in range(n_boxes):
+                if (d['text'][i]):  # Choose only the text detected rows
+                    # print("i=", i)
+                    (x, y, w, h) = (d['left'][i], d['top'][i], d['width'][i], d['height'][i])
+                    right = x + w
+                    bottom = y + h
+
+                    if x < left_min:
+                        left_min = x
+
+                    if y < top_min:
+                        top_min = y
+
+                    if right > max_right:
+                        max_right = right
+
+                    if bottom > max_bottom:
+                        max_bottom = bottom
+
+                    # Detect width and height for the complete sentence or paragraph
+                    alltext_width = max_right - left_min
+                    alltext_height = max_bottom - top_min
+
+                    # cv2.rectangle(elem_image_gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    '''
+                    # print(left_min, top_min, max_right, max_bottom, d['text'][i])
+                    cv2.rectangle(elem_image_gray, (left_min, top_min), (max_right, max_bottom), (0, 255, 0), 2)
+                    cv2.imshow('img', elem_image_gray)
+                    cv2.waitKey(0)
+                    '''
 
         lines = result.strip().split("\n")
         font_size = []
@@ -1503,7 +1548,7 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
         text_elem_ocr = text_elem_gcv
         # Detect the font-size with tesseract for some element, with gcv text end
 
-    return font_size_value, text_elem_ocr
+    return font_size_value, text_elem_ocr, alltext_width
 
 
 # Detect elements for the root block function
@@ -1684,7 +1729,7 @@ def elements_rootblock(
                 # Defiine a scenarioelement_inner dictionary
                 scenarioelement_inner_kwargs = {}
                 # A choice for ocr_engine is {"tesseract", "lorem", "googlecloud"}
-                font_size_value, text_elem_ocr = ocr_recognition(
+                font_size_value, text_elem_ocr, text_width = ocr_recognition(
                     elem_image, ocr_engine="googlecloud"
                 )
 
@@ -1932,7 +1977,16 @@ def elements_rootblock(
                 }
 
             elif node.element_assigned == "button":
-                styles["height"] = str(node_height) + "px"
+
+                # Paddings calculations block
+                padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                padding_left = padding_right = int((node_width - text_width) / 2.0)
+                styles["padding-top"] = str(padding_top) + "px"
+                styles["padding-bottom"] = str(padding_bottom) + "px"
+                styles["padding-left"] = str(padding_left) + "px"
+                styles["padding-right"] = str(padding_right) + "px"
+
+                styles["min-height"] = str(node_height) + "px"
                 styles["color"] = "rgba(" + fcolour_elem_value + ")"
 
                 # displaying various kinds of elements start
@@ -2018,8 +2072,9 @@ def elements_rootblock(
 
     return True
 
+
 # Serializing: assemble, freecanvas
-def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0,0), serializing="assemble"):
+def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0, 0), serializing="assemble"):
     # Define styles variable switching on, this variable is placed at parameters with other serializers as a flag
     styles_on = 1
 
