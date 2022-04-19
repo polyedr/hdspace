@@ -1303,6 +1303,8 @@ def detect_text_gcv(path):
 def ocr_recognition(elem_image, ocr_engine="tesseract"):
     font_size_value = 14
     alltext_width = 0
+    leftmin = 0
+    maxright = 0
     text_elem_ocr = ""
 
     # Detect the font-size with tesseract for some element start
@@ -1480,8 +1482,10 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
                     # Detect width and height for the complete sentence or paragraph
                     # 4 is the correction number, because the image was scaled before for this number
                     alltext_width = int((max_right - left_min)/4.0)
-                    print("alltext_width=", alltext_width)
+                    # print("alltext_width=", alltext_width)
                     alltext_height = int((max_bottom - top_min)/4.0)
+                    leftmin = int((left_min)/4.0)
+                    maxright = int((max_right)/4.0)
 
                     # cv2.rectangle(elem_image_gray, (x, y), (x + w, y + h), (0, 255, 0), 2)
                     '''
@@ -1550,7 +1554,7 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
         text_elem_ocr = text_elem_gcv
         # Detect the font-size with tesseract for some element, with gcv text end
 
-    return font_size_value, text_elem_ocr, alltext_width
+    return font_size_value, text_elem_ocr, alltext_width, leftmin, maxright
 
 
 # Detect elements for the root block function
@@ -1705,7 +1709,7 @@ def elements_rootblock(
             elem_width = node.x2 - node.x1
             elem_height = node.y2 - node.y1
             # Rectangle coordinates
-            x1 = node.x1
+            x1 = node.x1  # Left coordinate
             y1 = node.y1
             # Define the element dimensions end
 
@@ -1717,6 +1721,8 @@ def elements_rootblock(
             # Detect the font-size with tesseract for some elements
             font_size_value = 14.0
             text_width = 0
+            text_leftc = 0
+            text_rightc = 0
             if node.element_assigned in {
                 "textinput",
                 "input",
@@ -1732,7 +1738,7 @@ def elements_rootblock(
                 # Defiine a scenarioelement_inner dictionary
                 scenarioelement_inner_kwargs = {}
                 # A choice for ocr_engine is {"tesseract", "lorem", "googlecloud"}
-                font_size_value, text_elem_ocr, text_width = ocr_recognition(
+                font_size_value, text_elem_ocr, text_width, text_leftc, text_rightc = ocr_recognition(
                     elem_image, ocr_engine="googlecloud"
                 )
 
@@ -1757,11 +1763,11 @@ def elements_rootblock(
 
                 # Paddings calculations block
                 padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
-                padding_left = padding_right = int((node_width - text_width) / 2.0)
+                padding_left = padding_right = abs(int(text_leftc - node.x1))
                 styles["padding-top"] = str(padding_top) + "px"
                 styles["padding-bottom"] = str(padding_bottom) + "px"
-                styles["padding-left"] = "3px"
-                styles["padding-right"] = "3px"
+                styles["padding-left"] = str(padding_left) + "px"
+                styles["padding-right"] = str(padding_right) + "px"
 
                 styles["border-width"] = "1px"
                 styles["border-color"] = "rgba(244, 244, 244, 1)"
@@ -1833,6 +1839,14 @@ def elements_rootblock(
             elif node.element_assigned == "select":
                 styles["width"] = str(node_width) + "px"
                 styles["height"] = str(node_height) + "px"
+
+                # Paddings calculations block
+                padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                padding_left = padding_right = abs(int(text_leftc - node.x1))
+                styles["padding-top"] = str(padding_top) + "px"
+                styles["padding-bottom"] = str(padding_bottom) + "px"
+                styles["padding-left"] = str(padding_left) + "px"
+                styles["padding-right"] = str(padding_right) + "px"
 
                 # displaying various kinds of elements start
                 element = ET.SubElement(node.parent.div, "select")
