@@ -93,8 +93,12 @@ export function* moveColumnToList({
         source: source.index,
       }),
     );
-    const up = columns[destination.index - 1];
-    const down = columns[destination.index + 1];
+    const upIndex =
+      source.index > destination.index
+        ? destination.index - 1
+        : destination.index;
+    const up = columns[upIndex];
+    const down = columns[upIndex + 1];
     const start = columns[0];
     const end = columns[columns.length - 1];
     const pos = up && down && (up.pos + down.pos) / 2;
