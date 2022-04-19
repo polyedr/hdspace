@@ -1181,7 +1181,10 @@ export type TokenPair = {
   access: string;
   refresh: string;
 };
-
+export type ViewTokenPair = {
+  access: string;
+  refresh: string;
+};
 export type LoginFormData = {
   username: string;
   password: string;
@@ -1260,7 +1263,7 @@ export enum Experience {
 }
 
 export type UserData = {
-  id: number;
+  id: number|any;
   username: string;
   email: string;
   firstName: string;

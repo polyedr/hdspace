@@ -16,7 +16,7 @@ import {
   apiGetUser,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
-import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
+import { ServerProfileData, ServerUserData, TokenPair,ViewTokenPair } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   sidebarLogout,
@@ -50,7 +50,7 @@ export function* getTokenPairSagaProjectView() {
   try {
     let username = "projectviewer";
     let password = "].?h^QC<FV4SdsmF"
-    const tokens: TokenPair = yield call(apiGetToken, { username, password });
+    const tokens: ViewTokenPair = yield call(apiGetToken, { username, password });
 
     yield put(Actions.setProjectViewEnd(tokens));
     return tokens;
