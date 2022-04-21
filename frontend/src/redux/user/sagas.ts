@@ -16,7 +16,12 @@ import {
   apiGetUser,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
-import { ServerProfileData, ServerUserData, TokenPair,ViewTokenPair } from '@Src/types';
+import {
+  ServerProfileData,
+  ServerUserData,
+  TokenPair,
+  ViewTokenPair,
+} from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   sidebarLogout,
@@ -48,12 +53,14 @@ export function* getTokenPairSaga(username: string, password: string) {
 }
 export function* getTokenPairSagaProjectView() {
   try {
-    let username = "projectviewer";
-    let password = "].?h^QC<FV4SdsmF"
-    const tokens: ViewTokenPair = yield call(apiGetToken, { username, password });
+    const username = 'projectviewer';
+    const password = '].?h^QC<FV4SdsmF';
+    const tokens: ViewTokenPair = yield call(apiGetToken, {
+      username,
+      password,
+    });
 
     yield put(Actions.setProjectViewEnd(tokens));
-    return tokens;
   } catch (e: any) {
     yield put(
       enqueueSnackbar(
@@ -358,5 +365,5 @@ export default function* userSaga() {
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
   yield takeEvery(TYPES.LOAD_USER_DATA, loadUserDataSaga);
-  yield takeEvery(TYPES.PROJECT_VIEW_START,getTokenPairSagaProjectView);
+  yield takeEvery(TYPES.PROJECT_VIEW_START, getTokenPairSagaProjectView);
 }
