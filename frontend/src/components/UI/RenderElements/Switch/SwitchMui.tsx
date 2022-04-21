@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { selectExportScreenFlag } from '@Redux/project/selectors/base';
 import { useHistory } from 'react-router';
-import Switch from '@mui/material/Switch';
+import Switch from '@material-ui/core/Switch';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -41,7 +41,6 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
         ref={ref}
         data-ls-id={id}
         className={cn(
-          'mdc-touch-target-wrapper',
           className,
           groupClass,
           classes.ownStyles,
@@ -50,17 +49,14 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
         )}
         {...eventHandlers}
       >
-        <div className={cn(classes.column)}>
-          <Switch
-            color="primary"
-            onChange={() => {
-              if (!isDisabled) {
-                setIsChecked(!isChecked);
-              }
-            }}
-            checked={isChecked}
-          />
-        </div>
+        <Switch
+          color="primary"
+          onChange={() => {
+            if (!isDisabled) {
+              setIsChecked(!isChecked);
+            }
+          }}
+        />
         <div>
           {isLink && (isProtoMode || exportScreenFlag) ? (
             <a
