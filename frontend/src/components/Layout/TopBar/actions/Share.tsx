@@ -7,22 +7,24 @@ import {
   Container,
   Box,
   Typography,
-  
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
+import {
+  selectTokenPair,
+  selectUserData,
+  selectProjectViewTokenPair,
+} from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { makeStyles } from '@material-ui/core/styles';
-import { selectProjectViewTokenPair } from '@Redux/user/selectors'
-import { setProjectViewStart } from '@Redux/user/actions'
+
+import { setProjectViewStart } from '@Redux/user/actions';
 import axios from 'axios';
 import { shorten_url_api_key } from '@Constants/defaultParams';
 import * as Actions from '@Redux/permissions/actions';
 import { UserProjectPermission } from '@Src/types';
-import { selectUserPermissions } from '@Redux/permissions/selectors';
 
 const useStyles = makeStyles({
   popup: {
@@ -45,14 +47,14 @@ const Share: FC<Props> = ({ className = '' }) => {
   const screenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
   const viewToken = useSelector(selectProjectViewTokenPair);
-  const userId:string = "105";
+  const userId: string = '105';
 
-  const permissions = useSelector(selectUserPermissions(userId));
   localStorage.setItem('viewToken', JSON.stringify(viewToken));
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
     setAnchor(ev.currentTarget);
-    dispatch(setProjectViewStart())
+    dispatch(setProjectViewStart());
+    dispatch(Actions.getUsersList());
   };
 
   const handleClose = () => {
@@ -63,33 +65,33 @@ const Share: FC<Props> = ({ className = '' }) => {
   const handleCopyLink = useCallback(
     (includeElement = false) => {
       const { origin } = window.location;
-      const token = localStorage.getItem("viewToken")
+      const token = localStorage.getItem('viewToken');
       let jsonToken;
       if (typeof token === 'string') {
         jsonToken = JSON.parse(token);
       }
 
-      const url = `${origin}/share/?user=${user.id
-        }&project=${projectId}&screen=${screenId}${activeElementId && includeElement ? `&element=${activeElementId}` : ''
-        }&token=${jsonToken.access}&refresh=${jsonToken.refresh}`;
+      const url = `${origin}/share/?user=${userId}&project=${projectId}&screen=${screenId}${
+        activeElementId && includeElement ? `&element=${activeElementId}` : ''
+      }&token=${jsonToken.access}&refresh=${jsonToken.refresh}`;
       const headers = {
         apikey: shorten_url_api_key,
       };
 
       axios
-      .post('https://api.apilayer.com/short_url/hash', url, { headers })
-      .then((response) =>
-        navigator.clipboard.writeText(response.data.short_url),
-      );
-     
-      const updatedPermissions:UserProjectPermission[] = permissions;
-      
-        updatedPermissions.push(UserProjectPermission.VIEW_PROJECT);
+        .post('https://api.apilayer.com/short_url/hash', url, { headers })
+        .then((response) =>
+          navigator.clipboard.writeText(response.data.short_url),
+        );
+
+      const updatedPermissions: UserProjectPermission[] = [];
+
+      updatedPermissions.push(UserProjectPermission.VIEW_PROJECT);
       dispatch(
         Actions.updateUserPermissionsForProject(
           projectId,
           userId,
-          updatedPermissions
+          updatedPermissions,
         ),
       );
       handleClose();
@@ -157,7 +159,6 @@ const Share: FC<Props> = ({ className = '' }) => {
           </Button>
         </Container>
       </Popover>
-
     </>
   );
 };
