@@ -1,15 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import useResizeObserver from '@react-hook/resize-observer';
 import { equals } from 'ramda';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import {
-  BorderStyles,
+  BoundingStyles,
   DropTargetParams,
   Screen,
   StateElement,
 } from '@Src/types';
 import { AppReduxState } from '@Redux/types';
+import getBoundingStyles from '@Utils/getBoundingStyles';
 import SaveElementAction from './Actions/SaveElement/SaveElementAction';
 import Borders from './Borders/Borders';
 import BorderCrumb from './Crumb/BorderCrumb';
@@ -18,7 +20,7 @@ import CreateGroupAction from './Actions/CreateGroup/CreateGroupAction';
 type Props = {
   element: StateElement;
   elementDom: HTMLElement;
-  rootDom: HTMLElement;
+  frameWindow: Window;
   canCreateGroup: boolean;
   screen: Screen;
   selectedElementsIds: string[];
@@ -30,28 +32,13 @@ type Props = {
   preSelectedElementId: string | null;
   dropTargetParams: DropTargetParams | null;
   enableDropTargetBordersMode: boolean;
-};
-
-const getBorderStyles = (elDom: HTMLElement, rootElDom: HTMLElement) => {
-  const rect = elDom?.getBoundingClientRect();
-  const rootRect = rootElDom?.getBoundingClientRect();
-
-  return rect && rootRect
-    ? ({
-        top: rect.top - rootRect.top,
-        bottom: rootRect.bottom - rect.bottom,
-        right: rootRect.right - rect.right,
-        left: rect.left - rootRect.left,
-        width: rect.width,
-        height: rect.height,
-      } as BorderStyles)
-    : null;
+  updateStyles(payload: React.CSSProperties): void;
 };
 
 const InteractionsHandler = ({
   element,
   elementDom,
-  rootDom,
+  frameWindow,
   canCreateGroup,
   screen,
   selectedElementsIds,
@@ -63,6 +50,7 @@ const InteractionsHandler = ({
   preSelectedElementId,
   dropTargetParams,
   enableDropTargetBordersMode,
+  updateStyles,
 }: Props) => {
   const elementGroupStyles = useSelector((state: AppReduxState) => {
     return selectCurrentProject(state).projectData.classes.find((value) => {
@@ -70,21 +58,22 @@ const InteractionsHandler = ({
     })?.rules;
   });
 
-  const [styles, setStyles] = useState<BorderStyles | null>(
-    getBorderStyles(elementDom, rootDom),
+  const [styles, setStyles] = useState<BoundingStyles | null>(
+    getBoundingStyles(elementDom, frameWindow, screen.element),
   );
 
   const updateBorderStyles = useCallback(
     (entry: HTMLElement) => {
-      const updatedBorderStyles = getBorderStyles(
+      const updatedBorderStyles = getBoundingStyles(
         entry as HTMLElement,
-        rootDom,
+        frameWindow,
+        screen.element,
       );
       if (!equals(updatedBorderStyles, styles)) {
         setStyles(updatedBorderStyles);
       }
     },
-    [rootDom, styles],
+    [frameWindow, styles],
   );
 
   const elRef = useRef(elementDom);
@@ -95,8 +84,14 @@ const InteractionsHandler = ({
   });
 
   useEffect(() => {
-    setStyles(getBorderStyles(elementDom, rootDom));
-  }, [element.styles.ownStyles, elementDom, elementGroupStyles, rootDom]);
+    setStyles(getBoundingStyles(elementDom, frameWindow, screen.element));
+  }, [
+    element.styles.ownStyles,
+    elementDom,
+    elementGroupStyles,
+    frameWindow,
+    screen.element,
+  ]);
 
   if (!styles) {
     return null;
@@ -106,9 +101,9 @@ const InteractionsHandler = ({
     <React.Fragment key={`element-border-${element.id}`}>
       <Borders
         elementId={element.id}
+        type={element.type}
         styles={styles}
         dropTargetParams={dropTargetParams}
-        preSelectedElementId={preSelectedElementId}
         enableDropTargetBordersMode={enableDropTargetBordersMode}
         isActiveBorder={[
           activeElementId,
@@ -116,27 +111,31 @@ const InteractionsHandler = ({
           dropTargetParams?.id,
           preSelectedElementId,
         ].includes(element.id)}
+        keepAspectRatio={element?.parameters?.keepAspectRatio}
+        updateStyles={updateStyles}
       />
-      <BorderCrumb
-        element={element}
-        styles={styles}
-        rootId={screen.element}
-        currentProjectId={currentProjectId}
-        masterScreenId={masterScreenId}
-        show={showBorders || element.id === activeElementId}
-      >
-        {screen.id !== masterScreenId && (
-          <>
-            <SaveElementAction element={element} />
-            <CreateGroupAction
-              element={element}
-              canCreateGroup={canCreateGroup}
-              selectedElementsIds={selectedElementsIds}
-              screenId={screen.id}
-            />
-          </>
-        )}
-      </BorderCrumb>
+      {screen.id !== -1 && (
+        <BorderCrumb
+          element={element}
+          styles={styles}
+          rootId={screen.element}
+          currentProjectId={currentProjectId}
+          masterScreenId={masterScreenId}
+          show={showBorders || element.id === activeElementId}
+        >
+          {screen.id !== masterScreenId && (
+            <>
+              <SaveElementAction element={element} />
+              <CreateGroupAction
+                element={element}
+                canCreateGroup={canCreateGroup}
+                selectedElementsIds={selectedElementsIds}
+                screenId={screen.id}
+              />
+            </>
+          )}
+        </BorderCrumb>
+      )}
     </React.Fragment>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectElementFileInput } from '@Redux/project/selectors/base';
-import { selectElementById } from '@Redux/project/selectors/element';
+import { selectElementByIdWrapper } from '@Redux/project/selectors/element';
 import { addFileInput } from '@Redux/project/actions';
 
 const generateImageName = (url: string) =>
@@ -11,7 +11,7 @@ const useUrlImageToFile = (
   id: string,
   imgRef: React.RefObject<HTMLImageElement>,
 ) => {
-  const element = useSelector(selectElementById(id));
+  const element = useSelector(selectElementByIdWrapper(id));
   const fileFromImage = useSelector(selectElementFileInput(id));
 
   const dispatch = useDispatch();

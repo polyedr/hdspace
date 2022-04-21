@@ -14,8 +14,8 @@ Object.defineProperty(URL, 'createObjectURL', {
 
 describe('ImageRecognizeForm', () => {
   let store: MockStoreEnhanced<AppReduxState>;
-  let ui: RenderResult;
 
+  let ui: RenderResult;
   const closeCallback = jest.fn();
   const file = new File(['(⌐□_□)'], 'chucknorris.png', {
     type: 'image/png',
@@ -58,43 +58,6 @@ describe('ImageRecognizeForm', () => {
     expect(button).toBeDisabled();
   });
 
-  it('should show menu on button click', () => {
-    const button = ui.getByText('Create').parentElement;
-    if (!button) throw new Error('Can not find button');
-    const input = ui.getByLabelText('Upload');
-    fireEvent.change(input, {
-      target: {
-        files: [file],
-      },
-    });
-    expect(button).not.toBeDisabled();
-    fireEvent.click(button);
-
-    const menuOption = ui.getByText('Auto');
-    expect(menuOption).toBeInTheDocument();
-  });
-
-  it('should dispatch uploadFile action on confirm', () => {
-    const button = ui.getByText('Create').parentElement;
-    if (!button) throw new Error('Can not find button');
-    const input = ui.getByLabelText('Upload');
-    fireEvent.change(input, {
-      target: {
-        files: [file],
-      },
-    });
-    expect(button).not.toBeDisabled();
-    fireEvent.click(button);
-
-    const menuOption = ui.getByText('Auto');
-
-    fireEvent.click(menuOption);
-
-    const actions = store.getActions();
-
-    expect(actions[actions.length - 1].type).toBe(TYPES.AUTO_ANALYZE_IMAGE);
-  });
-
   it('should dispatch recognizeImage action of confirm', () => {
     const button = ui.getByText('Create').parentElement;
     if (!button) throw new Error('Can not find button');
@@ -113,6 +76,6 @@ describe('ImageRecognizeForm', () => {
 
     const actions = store.getActions();
 
-    expect(actions[actions.length - 1].type).toBe(TYPES.SEMIAUTO_ANALYZE_IMAGE);
+    expect(actions[actions.length - 1].type).toBe(TYPES.RECOGNIZE_IMAGE);
   });
 });

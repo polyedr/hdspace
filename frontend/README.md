@@ -1,3 +1,5 @@
+# Project Setup Guidline
+
 To start project on your local machine first clone the repo and go to the project directory.
 
 You have to use **nodejs v12.18.3** (lts at the moment).
@@ -8,31 +10,61 @@ Then run `npm rebuild node-sass` to download the binding for your current enviro
 
 Now you can start the project.
 
-Available scripts: 
+Available scripts:
 
 ##### `npm run start`
 Runs the app in the development mode.<br /> 
 Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
-##### `npm run start_win`
-Runs the app in the development mode on Windows.<br /> 
-Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
+Now 2 build we create which is staging & production.
 
-##### `npm run build`
-Builds the app for production to the `dist` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+##### `npm run build:staging`
+##### `npm run build:production`
 
-The build is minified.<br />
-Your app is ready to be deployed!
 
+Build saved in `dist` directory.<br /> Now your app is ready to be deployed!
+
+# Code commit relted notes : 
+
+Now before commit your code run this 2 command so PR create time build not failed in bitbucket.
 ##### `npm run test`
 Launches the test runner. <br />
 
-##### `npm run lint`
+##### `npm run lint:fix`
 Launches the linter with `--fix` flag, so it will try to resolve all issues.
+
 
 We are using pre-commit hooks that will launch `npm run lint` script for files added to commit.<br />
 Also it will launch TS compiler to check all project files before a commit.<br />
 Your commit will be rejected if some of these tasks fail.<br />
-If you want to commit files without pre-commit check use `--no-verify` flag while committing.
- 
+If you want to commit files without pre-commit check use `--no-verify` flag while committing..
+
+# PM-Tools
+
+Sidebar where you can:
+
+- Write messages (Zulip chat)
+- See the history of actions
+- Assign tasks (Trello)
+- Manage a team
+
+# Development
+
+[src/components/Sidebar] - UI for Pm-Tools
+[src/api/pmtools] - api
+[src/redux/pmtools] - redux part
+[src/types/pmtools] - types
+
+# Features
+
+- Redux-Saga
+- TypeScript
+- Redux
+- React
+- Http - fetch
+
+Every time we log in to zalip chat, we send a request for access =>
+**The configuration file will help you to enter the chat - [src/constants/pmtools/zulipChatLoginData.ts]** <br>
+**And zulip - [src/constants/pmtools/trelloConfigData.ts]**
+
+**To add a new tab, see the directory -[src/constants/pmtools/tabsNamesSidebar.ts]**

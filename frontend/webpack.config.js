@@ -29,6 +29,10 @@ module.exports = ({ MODE }) => {
     },
     target: 'web',
     resolve: {
+      fallback: {
+        fs: false,
+        crypto: require.resolve('crypto-browserify'),
+      },
       extensions: ['.js', '.ts', '.tsx'],
       // Fix webpack's default behavior to not load packages with jsnext:main module
       // (jsnext:main directs not usually distributable es6 format, but es6 sources)
@@ -185,6 +189,8 @@ module.exports = ({ MODE }) => {
         cacheGroups: {
           defaultVendors: {
             test: /[\\/]node_modules[\\/]/,
+            name: 'vendor',
+            chunks: 'all',
             priority: -10,
           },
           default: {
@@ -201,6 +207,7 @@ module.exports = ({ MODE }) => {
         DEBUG: false,
         SIDE_MODULE_HOST: 'https://adevi-sidebar-production.firebaseapp.com/',
       }),
+      new webpack.optimize.ModuleConcatenationPlugin(),
       new MiniCssExtractPlugin({
         filename: '[contenthash].css',
         disable: !isProduction,
@@ -232,21 +239,6 @@ module.exports = ({ MODE }) => {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: 'src/styles/export/material/mdc.checkbox.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from: 'src/styles/export/material/mdc.radio.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from: 'src/styles/export/material/mdc.select.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
             from: 'src/styles/export/clock.css',
             to: 'styles',
             toType: 'dir',
@@ -270,27 +262,6 @@ module.exports = ({ MODE }) => {
           {
             from: 'src/export/js/calendar.js',
             to: 'js/export',
-          },
-          {
-            from: 'node_modules/@material/form-field/dist/mdc.form-field.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from: 'node_modules/@material/list/dist/mdc.list.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from:
-              'node_modules/@material/menu-surface/dist/mdc.menu-surface.css',
-            to: 'styles/material',
-            toType: 'dir',
-          },
-          {
-            from: 'node_modules/@material/menu/dist/mdc.menu.css',
-            to: 'styles/material',
-            toType: 'dir',
           },
           {
             from: 'node_modules/css-ripple-effect/dist/ripple.css',

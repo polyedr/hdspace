@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, FormControlLabel } from '@material-ui/core';
 import { ListElement, PropertiesChangeProps } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
-import StylesHeader from '../../helperComponents/StylesHeader';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -21,6 +21,8 @@ const Bullets: React.FC<Props> = ({
   listStyleType = 'disc',
   masterScreenEnabled,
   canEdit,
+  element,
+  editableStyles,
 }) => {
   const classes = useStyles();
 
@@ -31,10 +33,11 @@ const Bullets: React.FC<Props> = ({
   return (
     <div>
       {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Bullets"
+        <RemoveStyles
           onClick={removeStyles}
-          cssPropertiesNames={['listStyleType']}
+          propsToRemove={['listStyleType']}
+          type={element.type}
+          editableStyles={editableStyles}
         />
       )}
 

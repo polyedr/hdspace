@@ -1,4 +1,4 @@
-import { ProjectsSearchParameter, Layout } from '@Src/types';
+import { ProjectsSearchParameter, Layout, NNBlockType } from '@Src/types';
 import {
   ProjectCommunicationState,
   ProjectControlState,
@@ -34,6 +34,7 @@ export const initialData: ProjectDataState = {
     pageSize: 40,
   },
   assetResults: {},
+  imagePalette: null,
 };
 
 export const initialUi: ProjectUiState = {
@@ -41,6 +42,8 @@ export const initialUi: ProjectUiState = {
   itemToCopyInfo: null,
   savedElementsValues: {},
   showContainersBorders: false,
+  showGrid: false,
+  exportScreenFlag: false,
   bordersEnabled: true,
   currentDropTargetParams: null,
   canCreateGroup: false,
@@ -50,12 +53,13 @@ export const initialUi: ProjectUiState = {
   },
   editorDocument: null,
   newScreenModalOpen: false,
+  pseudoClass: null,
   sidebar: {
     open: false,
     iframe: null,
     host: '',
   },
-  tabsAutoSwitch: false,
+  isCanImportSite: false,
 };
 
 export const initialEdit: ProjectEditState = {
@@ -70,16 +74,30 @@ export const initialEdit: ProjectEditState = {
   masterGroupsElementId: '-1',
   selectedAssetListId: null,
   selectedElementsIds: [],
+  activeNNModel: 'fdict',
+  isLibraryTab: false,
   VIAMode: {
     enabled: false,
-    regions: {},
+    regions: {
+      fdict: {},
+      fordict: {},
+      opencvdict: {},
+      cnndict: {},
+    },
     activeRegionId: '',
     annotatedElementId: '',
-    annotatedImageURL: '',
+    annotatedImageFile: null,
     copiedRegion: null,
+    resultId: '',
+    blockType: NNBlockType.WEBPAGE,
+    viaData: {
+      fdict: {},
+      fordict: {},
+      opencvdict: {},
+      cnndict: {},
+    },
   },
   freeCanvas: {
-    enabled: false,
     lastElements: {},
   },
 };
@@ -92,8 +110,14 @@ export const initialCommunication: ProjectCommunicationState = {
   projectLoader: false,
   projectCreateLoader: false,
   analyzerLoader: false,
-  assetsLoader: false,
+  assetsListsLoader: false,
   importLoader: false,
+  importValue: {
+    notSupportedTag: null,
+    canvasData: {},
+    importSuccessRawData: {},
+    error: false,
+  },
 };
 
 export const initialControl: ProjectControlState = {

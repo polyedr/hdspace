@@ -8,10 +8,12 @@ import {
   LibraryElement,
   ProfileData,
   Project,
+  Screen,
   ProjectClass,
   ServerElement,
   ServerProfileData,
   ServerProject,
+  ServerScreen,
   ServerUserData,
   StateElement,
   UserData,
@@ -25,12 +27,13 @@ export const convertCreatedElementToRequest = <
   parentID: string | null,
   elementName?: string | null,
   parameters?: any,
+  shared?: boolean,
+  styles?: any,
 ): ServerElement<T, ServerElement<Entity>[], K> => {
   const libraryElement = (LIBRARY_ELEMENTS[
     elementType
-  ] as unknown) as ServerElement<T, ServerElement<Entity>[], K>;
+  ]() as unknown) as ServerElement<T, ServerElement<Entity>[], K>;
   const { name } = libraryElement;
-
   return {
     ...libraryElement,
     id: -1,
@@ -40,6 +43,8 @@ export const convertCreatedElementToRequest = <
       ...libraryElement.parameters,
       ...(parameters || {}),
     },
+    shared: shared || false,
+    styles: styles || {},
   };
 };
 
@@ -64,7 +69,8 @@ export const convertElementToRequest = <
     parameters,
     styles,
   } = element;
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { pseudoClassViewStyles, ...serverStyles } = styles;
   const serverEl: ServerElement<T, ServerElement<K>[], P> = {
     id: Number(id),
     name,
@@ -80,8 +86,15 @@ export const convertElementToRequest = <
     image,
     parameters,
     styles: {
-      ...styles,
+      ...serverStyles,
       ownStyles: cssDecamelize(styles.ownStyles),
+      pseudoClassStyles: Object.keys(styles.pseudoClassStyles).reduce(
+        (pseudoStyles, className) => ({
+          ...pseudoStyles,
+          [className]: cssDecamelize(styles.pseudoClassStyles[className]),
+        }),
+        {},
+      ),
     },
   };
   return convertFn ? convertFn(element, serverEl) : serverEl;
@@ -96,6 +109,8 @@ export const convertElementToPatchRequest = <
 ): ServerElement<T, ServerElement<K>[], P> => {
   const { id, name, type, buoyancy, parameters, styles, shared } = element;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { pseudoClassViewStyles, ...serverStyles } = styles;
   return {
     id: Number(id),
     name,
@@ -105,8 +120,15 @@ export const convertElementToPatchRequest = <
     buoyancy,
     parameters,
     styles: {
-      ...styles,
+      ...serverStyles,
       ownStyles: cssDecamelize(styles.ownStyles),
+      pseudoClassStyles: Object.keys(styles.pseudoClassStyles).reduce(
+        (pseudoStyles, className) => ({
+          ...pseudoStyles,
+          [className]: cssDecamelize(styles.pseudoClassStyles[className]),
+        }),
+        {},
+      ),
     },
     shared,
   };
@@ -128,6 +150,13 @@ export const convertStateElementToPatchRequest = (
     styles: {
       ...styles,
       ownStyles: cssDecamelize(styles.ownStyles),
+      pseudoClassStyles: Object.keys(styles.pseudoClassStyles).reduce(
+        (pseudoStyles, className) => ({
+          ...pseudoStyles,
+          [className]: cssDecamelize(styles.pseudoClassStyles[className]),
+        }),
+        {},
+      ),
     },
     shared,
   } as ServerElement<Entity>;
@@ -135,6 +164,7 @@ export const convertStateElementToPatchRequest = (
 
 export const convertCreatedProjectToRequest = (
   name: string,
+  board,
 ): CreatedServerProject => {
   const projectClasses: ProjectClass[] = Object.keys(
     DEFAULT_ELEMENTS_STYLES,
@@ -148,7 +178,52 @@ export const convertCreatedProjectToRequest = (
     name,
     status: 'pending',
     projectscreen: [],
+    project_data_text: '',
+    project_data_trello_json: JSON.stringify(board),
     project_data_json: JSON.stringify({
+      defaultStyles: {
+        indents: {
+          marginTop: 0,
+          marginLeft: 0,
+          marginBottom: 0,
+          marginRight: 0,
+          paddingTop: 0,
+          paddingLeft: 0,
+          paddingBottom: 0,
+          paddingRight: 0,
+        },
+        typography: {
+          color: '#323232',
+          fontFamily: `"Arial", sans-serif`,
+          fontSize: '14px',
+          fontWeight: 100,
+          textAlign: 'center',
+        },
+        headingType: {
+          fontSize: '40px',
+        },
+        colors: {
+          color: '#323232',
+        },
+        accentColor: {
+          'accent-color': 'transparent',
+        },
+        screenBackgroundColor: {
+          background: 'transparent',
+        },
+        fontColorOverlay: {
+          color: '#323232',
+        },
+        elementsBackgroundColor: {
+          'background-color': 'transparent',
+        },
+        borderColor: {
+          'border-color': 'transparent',
+        },
+        border: {
+          borderRadius: '0%',
+        },
+      },
       classes: projectClasses.map((cls: ProjectClass) => ({
         ...cls,
         // rules: cssDecamelize(cls.rules),
@@ -163,19 +238,42 @@ export const convertProjectToPatchRequest = (
   ServerProject,
   'created' | 'updated' | 'project_data_text' | 'user'
 > => {
-  const { id, name, status, projectscreen, projectData } = project;
+  const {
+    id,
+    name,
+    status,
+    projectscreen,
+    projectData,
+    tags,
+    projectTrelloJSON,
+  } = project;
 
   return {
     id,
     name,
     status,
     projectscreen,
+    tags,
+    project_data_trello_json: JSON.stringify(projectTrelloJSON),
     project_data_json: JSON.stringify({
       ...projectData,
       classes: projectData.classes.map((cls: ProjectClass) => ({
         ...cls,
       })),
     }),
+  };
+};
+
+export const convertScreenToPatchRequest = (
+  screen: Screen,
+): Omit<ServerScreen, 'id' | 'project' | 'screenscenario' | 'element'> => {
+  const { name, status, image, buoyancy, screenData } = screen;
+  return {
+    name,
+    status,
+    image,
+    buoyancy,
+    screen_data_json: JSON.stringify(screenData),
   };
 };
 

@@ -1,8 +1,15 @@
-import React, { useCallback, MouseEvent } from 'react';
+import React, { useCallback, MouseEvent, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '@material-ui/icons/Add';
-import { Button, List, IconButton, CircularProgress } from '@material-ui/core';
+import {
+  Button,
+  List,
+  IconButton,
+  CircularProgress,
+  Menu,
+  MenuItem,
+} from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -21,6 +28,7 @@ import {
   selectMasterScreenEnabled,
   selectMasterScreenId,
   selectScreensWithoutMaster,
+  selectFreeCanvasMode,
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
 import ELEMENT_IDS from '@Constants/elementIds';
@@ -68,14 +76,26 @@ const Screens = () => {
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
   const masterScreenId = useSelector(selectMasterScreenId);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
+  const freeCanvas = useSelector(selectFreeCanvasMode);
 
-  const handleCreateScreen = (ev: MouseEvent<HTMLButtonElement>) => {
-    prevent(ev);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
+    prevent(event);
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleCreateScreen = (isFreeCanvas: boolean = false) => {
     dispatch(
       createScreen({
         projectID: currentProjectId,
-        name: 'Screen 1',
+        name: 'Screen-1',
         buoyancy: screens.length + 1, // + 1 because masterScreen should always have buoyancy 0
+        freeCanvas: isFreeCanvas,
       }),
     );
   };
@@ -109,25 +129,54 @@ const Screens = () => {
           <span>Screens</span>
 
           <div>
-            <IconButton
-              title="Create Screen"
-              size="small"
-              onClick={handleCreateScreen}
-              className={classes.button}
-              disabled={screenCreateLoader}
-            >
-              {!screenCreateLoader ? (
-                <AddIcon />
-              ) : (
-                <CircularProgress size={24} color="secondary" />
-              )}
-            </IconButton>
+            <>
+              <IconButton
+                title="Create Screen"
+                size="small"
+                onClick={handleMenuOpen}
+                className={classes.button}
+                disabled={screenCreateLoader}
+              >
+                {!screenCreateLoader ? (
+                  <AddIcon />
+                ) : (
+                  <CircularProgress size={24} color="secondary" />
+                )}
+              </IconButton>
 
+              <Menu
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem
+                  onClick={(ev) => {
+                    prevent(ev);
+                    handleCreateScreen(false);
+                    handleClose();
+                  }}
+                >
+                  Common mode
+                </MenuItem>
+
+                <MenuItem
+                  onClick={(ev) => {
+                    prevent(ev);
+                    handleCreateScreen(true);
+                    handleClose();
+                  }}
+                >
+                  Free canvas mode
+                </MenuItem>
+              </Menu>
+            </>
             <IconButton
               title="More options"
               size="small"
               className={classes.button}
               onClick={handleShowMoreOptions}
+              disabled={freeCanvas}
             >
               <MoreHorizIcon />
             </IconButton>
@@ -153,14 +202,16 @@ const Screens = () => {
                     innerRef={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {screens.map((screen, i) => (
-                      <ScreenListItem
-                        key={screen.id}
-                        screen={screen}
-                        index={i}
-                        active={screen.id === currentScreenId}
-                      />
-                    ))}
+                    {screens
+                      .filter((screen) => screen.id !== -1)
+                      .map((screen, i) => (
+                        <ScreenListItem
+                          key={screen.id}
+                          screen={screen}
+                          index={i}
+                          active={screen.id === currentScreenId}
+                        />
+                      ))}
                     {provided.placeholder}
                   </List>
                 </Scrollbar>

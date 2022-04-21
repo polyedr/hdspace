@@ -12,6 +12,8 @@ import { AppReduxState, ProjectEditState } from '@Redux/types';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST, DEFAULT_USER } from '@Constants/defaultParams';
 import { generateRandomInteger } from '@Utils/NumberHelper';
+import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
+import logger from 'loglevel';
 import {
   Project,
   StateElement,
@@ -23,7 +25,8 @@ import {
   ProjectWithScreens,
   ProjectsSearchParameter,
   DateRange,
-} from '../../types';
+  NNBlockType,
+} from '@Src/types';
 
 export const mockProject: Project = {
   id: 1,
@@ -32,9 +35,24 @@ export const mockProject: Project = {
   created: new Date(0),
   updated: new Date(0),
   projectscreen: [],
+  projectTrelloJSON: null,
   projectLoader: false,
+  tags: [],
   projectData: {
     classes: [],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {
+      accentColor: {},
+      border: {},
+      borderColor: {},
+      colors: {},
+      elementsBackgroundColor: {},
+      fontColorOverlay: {},
+      headingType: {},
+      indents: {},
+      screenBackgroundColor: {},
+      typography: {},
+    },
   },
   user: DEFAULT_USER,
 };
@@ -48,7 +66,11 @@ export const mockScreen: Screen = {
   status: 'in progress',
   screenscenario: [],
   element: '1',
-  screen_data_json: '{}',
+  screenData: {
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    freeCanvas: false,
+    editableScreenUser: [],
+  },
 };
 
 export const mockRootElement: StateElement = {
@@ -57,6 +79,7 @@ export const mockRootElement: StateElement = {
   styles: {
     classNames: ['root'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   parameters: {
     freeCanvas: {
@@ -80,6 +103,7 @@ export const mockStateElement: StateElement = {
   styles: {
     classNames: ['paragraph'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   parameters: {
     layouts: DEFAULT_LAYOUT_LIST,
@@ -112,32 +136,45 @@ export const mockUserData: UserData = {
     avatar: null,
     id: 888,
     experienced: Experience.EXPERIENCED,
+    parameters: {
+      passwordZulip: '',
+      avatarCrop: '',
+      profileDataParameters: {
+        autoSwitchTabs: false,
+        dropTargetBordersMode: true,
+      },
+    },
   },
 };
 
-export const mockVIAState = {
+export const mockVIAState = ({
+  blockType: NNBlockType.WEBPAGE,
+  resultId: '-1',
+  viaData: {},
   annotatedElementId: mockStateElement.id,
   enabled: true,
   regions: {
-    '7343f00c-4ec0-4e71-8a07-ec1f8820d489': {
-      shape_attributes: {
-        name: 'rect',
-        x: 99,
-        y: 52,
-        width: 187,
-        height: 37,
+    fdict: {
+      '7343f00c-4ec0-4e71-8a07-ec1f8820d489': {
+        shape_attributes: {
+          name: 'rect',
+          x: 99,
+          y: 52,
+          width: 187,
+          height: 37,
+        },
+        region_attributes: {
+          'HTML element': 'ocrtext',
+        },
+        id: '7343f00c-4ec0-4e71-8a07-ec1f8820d489',
+        layer: 1,
       },
-      region_attributes: {
-        'HTML element': 'ocrtext',
-      },
-      id: '7343f00c-4ec0-4e71-8a07-ec1f8820d489',
-      layer: 1,
     },
   },
   activeRegionId: '',
-  annotatedImageURL: '',
+  annotatedImageFile: null,
   copiedRegion: null,
-} as ProjectEditState['VIAMode'];
+} as unknown) as ProjectEditState['VIAMode'];
 
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
@@ -203,11 +240,26 @@ export const createMockProject = (): Project => ({
   name: 'test project',
   status: 'pending',
   projectscreen: [],
+  projectTrelloJSON: null,
   projectLoader: true,
   created: new Date(),
   updated: new Date(),
+  tags: [],
   projectData: {
     classes: [],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {
+      accentColor: {},
+      border: {},
+      borderColor: {},
+      colors: {},
+      elementsBackgroundColor: {},
+      fontColorOverlay: {},
+      headingType: {},
+      indents: {},
+      screenBackgroundColor: {},
+      typography: {},
+    },
   },
   user: DEFAULT_USER,
 });
@@ -215,7 +267,6 @@ export const createMockProject = (): Project => ({
 export const createAssetListMock = (): AssetsList => ({
   created: new Date(),
   id: '9999',
-  images: [],
   modified: new Date(),
   name: 'Project assets',
   projectId: '715',
@@ -228,7 +279,11 @@ export const createMasterScreenMock = (projectId: number): Screen => ({
   image: null,
   name: 'Master Screen',
   project: projectId,
-  screen_data_json: {},
+  screenData: {
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    freeCanvas: false,
+    editableScreenUser: [],
+  },
   screenscenario: [],
   status: 'pending',
 });
@@ -243,7 +298,11 @@ export const createScreenMock = (
   image: null,
   name: 'Screen 1',
   project: projectId,
-  screen_data_json: {},
+  screenData: {
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    freeCanvas: false,
+    editableScreenUser: [],
+  },
   screenscenario: [],
   status: 'pending',
 });
@@ -254,10 +313,25 @@ export const createProjectWithScreensMock = (
   created: new Date(),
   id: projectId,
   name: 'test name',
+  projectTrelloJSON: null,
   projectData: {
     classes: [],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {
+      accentColor: {},
+      border: {},
+      borderColor: {},
+      colors: {},
+      elementsBackgroundColor: {},
+      fontColorOverlay: {},
+      headingType: {},
+      indents: {},
+      screenBackgroundColor: {},
+      typography: {},
+    },
   },
   projectLoader: false,
+  tags: [],
   projectscreen: [
     createMasterScreenMock(projectId),
     createScreenMock(projectId),
@@ -278,7 +352,7 @@ export const projectScreensMock = [
 ];
 
 export const beforeSagaTest = () => {
-  console.error = jest.fn();
+  logger.error = jest.fn();
   // stub current date and random value generator to pass enqueueSnackbar equality
   MockDate.set('2000-11-22');
   jest.spyOn(global.Math, 'random').mockReturnValue(0.123456789);

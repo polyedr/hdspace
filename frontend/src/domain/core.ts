@@ -9,12 +9,12 @@ export const ENTITIES: {
   [K in Exclude<ElementEntity, 'ocrtext' | 'root' | 'container' | 'input'>]: K;
 } = {
   button: 'button',
+  buttonGenerator: 'buttonGenerator',
   textinput: 'textinput',
   textarea: 'textarea',
   checkbox: 'checkbox',
-  radiobutton: 'radiobutton',
+  radiobuttonGroup: 'radiobuttonGroup',
   label: 'label',
-  hyperlink: 'hyperlink',
   heading: 'heading',
   paragraph: 'paragraph',
   textBlock: 'textBlock',
@@ -26,14 +26,12 @@ export const ENTITIES: {
   clock: 'clock',
   dropdown: 'dropdown',
   video: 'video',
-  undefined: 'undefined',
   divBlock: 'divBlock',
   pageTemplate: 'pageTemplate',
   emptyPageTemplate: 'emptyPageTemplate',
   grid: 'grid',
   nativeColumns: 'nativeColumns',
   columns: 'columns',
-  // column: 'column',
   smartHeader: 'smartHeader',
   smartFooter: 'smartFooter',
   smartForm: 'smartForm',
@@ -44,6 +42,11 @@ export const ENTITIES: {
   section: 'section',
   group: 'group',
   html: 'html',
+  breadcrumb: 'breadcrumb',
+  pagination: 'pagination',
+  carousel: 'carousel',
+  navbar: 'navbar',
+  hyperlink: 'hyperlink',
 };
 
 export const rootStyleControls = ['background'] as const;
@@ -53,6 +56,7 @@ export const containerStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
   'display',
   'flexGrow',
@@ -63,6 +67,7 @@ export const divBlockStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
   'display',
 ] as const;
@@ -72,11 +77,12 @@ export const buttonStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
   'display',
 ] as const;
 
-export const buttonParamsControls = ['textContent', 'showRipple'] as const;
+export const buttonParamsControls = ['text'] as const;
 
 export const textinputStyleControls = [
   'indents',
@@ -102,16 +108,13 @@ export const radiobuttonStyleControls = [
   'background',
 ] as const;
 
-export const labelStyleControls = [
+export const radiobuttonGroupStyleControls = [
   'indents',
   'size',
-  'typography',
   'background',
-  'border',
-  'display',
 ] as const;
 
-export const hyperlinkStyleControls = [
+export const labelStyleControls = [
   'indents',
   'size',
   'typography',
@@ -161,14 +164,43 @@ export const listStyleControls = [
   'bullets',
 ] as const;
 
+export const paginationStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
 export const listItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'backgroundImage',
+  'border',
+] as const;
+export const breadcrumbItemStyleControls = [
   'indents',
   'size',
   'typography',
   'background',
   'border',
 ] as const;
-
+export const paginationItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
+export const navbarItemStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
 export const imageStyleControls = [
   'indents',
   'size',
@@ -279,6 +311,7 @@ export const gridItemStyleControls = [
   'indents',
   'typography',
   'background',
+  'backgroundImage',
   'border',
 ] as const;
 
@@ -306,6 +339,7 @@ export const columnsStyleControls = [
   'size',
   'typography',
   'background',
+  'backgroundImage',
   'border',
 ] as const;
 
@@ -347,6 +381,30 @@ export const featureSectionStyleControls = [
   'display',
 ] as const;
 
+export const breadcrumbStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
+export const carouselStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
+export const navbarStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'display',
+] as const;
+
 export const elementsGroupStyleControls = ['indents', 'background'] as const;
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
@@ -355,6 +413,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   container: [...containerStyleControls, 'layouts'],
   divBlock: [...divBlockStyleControls, 'layouts'],
   button: [...buttonStyleControls, ...buttonParamsControls, 'layouts'],
+  buttonGenerator: [...subscribeFormStyleControls, 'layouts'],
   input: [
     'textContent',
     'type',
@@ -363,44 +422,43 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   textinput: [
-    'textContent',
+    'text',
     'type',
     'placeholder',
     ...textinputStyleControls,
     'layouts',
   ],
-  textarea: ['textContent', 'placeholder', ...textareaStyleControls, 'layouts'],
+  textarea: ['text', 'placeholder', ...textareaStyleControls, 'layouts'],
   checkbox: [
     'value',
     'name',
     ...checkboxStyleControls,
-    'showRipple',
+    'layouts',
+    'textContent',
+  ],
+  radiobutton: ['value', ...radiobuttonStyleControls, 'layouts'],
+  radiobuttonGroup: [
+    'radiobuttons',
+    'alignment',
+    ...radiobuttonGroupStyleControls,
     'layouts',
   ],
-  radiobutton: [
-    'value',
-    'name',
-    ...radiobuttonStyleControls,
-    'showRipple',
-    'layouts',
-  ],
-  label: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
-  hyperlink: ['textContent', ...hyperlinkStyleControls, 'layouts'],
+  label: ['text', 'labelFor', ...labelStyleControls, 'layouts'],
   heading: ['textContent', 'headingType', ...headingStyleControls, 'layouts'],
   paragraph: ['textContent', ...paragraphStyleControls, 'layouts'],
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
   textBlock: ['textContent', ...textBlockStyleControls, 'layouts'],
   list: ['listItems', 'isOrdered', ...listStyleControls, 'layouts'],
   listItem: [...listItemStyleControls, 'layouts'],
-  image: ['image', ...imageStyleControls, 'alt', 'title', 'layouts'],
-  select: [
-    'selectValue',
-    'selectOptions',
-    ...selectStyleControls,
-    'isOpen',
+  image: [
+    'image',
+    ...imageStyleControls,
+    'alt',
+    'title',
+    'resizeOptions',
     'layouts',
   ],
-  selectMenu: [...selectMenuStyleControls, 'layouts'],
+  select: ['selectValue', 'selectOptions', ...selectStyleControls, 'layouts'],
   option: [...optionStyleControls, 'layouts'],
   map: ['mapProps', ...mapStyleControls, 'layouts'],
   calendar: [...calendarStyleControls, 'layouts'],
@@ -409,8 +467,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'textContent',
     'dropdownItems',
     ...dropdownStyleControls,
-    'isOpen',
-    'showRipple',
     'layouts',
   ],
   dropdownMenu: [...dropdownMenuStyleControls, 'layouts'],
@@ -448,7 +504,6 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'smartWebpage',
     'layouts',
   ],
-  undefined: [...undefinedControls, 'layouts'],
   cardsSection: [...cardsSectionStyleControls, 'layouts'],
   featureSection: [...featureSectionStyleControls, 'layouts'],
   section: [...containerStyleControls, 'layouts'],
@@ -461,6 +516,15 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'attributes',
     'layouts',
   ],
+  breadcrumb: ['breadcrumb', ...breadcrumbStyleControls, 'layouts'],
+  breadcrumbItem: [...breadcrumbItemStyleControls, 'layouts'],
+  pagination: ['pagination', ...paginationStyleControls, 'layouts'],
+  paginationItem: [...paginationItemStyleControls, 'layouts'],
+  carousel: ['carousel', ...carouselStyleControls, 'layouts'],
+  carouselItem: [...paginationItemStyleControls, 'layouts'],
+  navbar: ['navbar', ...navbarStyleControls, 'layouts'],
+  navbarItem: [...navbarItemStyleControls, 'layouts'],
+  hyperlink: ['textContent', 'labelFor', ...labelStyleControls, 'layouts'],
 } as const;
 
 export const AVAILABLE_CHILDREN: AvailableChildren = {
@@ -483,13 +547,24 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
     },
   },
   button: {},
+  buttonGenerator: {
+    all: {
+      min: 0,
+      max: Infinity,
+    },
+  },
   textinput: {},
   input: {},
   textarea: {},
   checkbox: {},
+  radiobuttonGroup: {
+    radiobutton: {
+      min: 2,
+      max: Infinity,
+    },
+  },
   radiobutton: {},
   label: {},
-  hyperlink: {},
   heading: {},
   paragraph: {},
   ocrtext: {},
@@ -510,12 +585,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   image: {},
   select: {
     option: {
-      min: 1,
-      max: Infinity,
-    },
-  },
-  selectMenu: {
-    selectItem: {
       min: 1,
       max: Infinity,
     },
@@ -610,7 +679,6 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
-  undefined: {},
   cardsSection: {
     all: {
       min: 0,
@@ -641,6 +709,35 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
       max: Infinity,
     },
   },
+  breadcrumb: {
+    breadcrumbItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  breadcrumbItem: {},
+  pagination: {
+    paginationItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  paginationItem: {},
+  carousel: {
+    carouselItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  carouselItem: {},
+  navbar: {
+    carouselItem: {
+      min: 1,
+      max: Infinity,
+    },
+  },
+  navbarItem: {},
+  hyperlink: {},
 };
 
 export const defaultFreeCanvasParams: Partial<FreeCanvasElementParams> = {

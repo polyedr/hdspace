@@ -1,6 +1,8 @@
 import React, { memo, useCallback, useState, useEffect } from 'react';
 import { toState } from 'react-color/lib/helpers';
 import { ColorResult } from 'react-color';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from '@material-ui/core/styles';
 import { ColorPicker, normalizeColor, useColor } from '../../../UI/ColorPicker';
 import { StyledTextField } from '../../../styledComponents';
@@ -22,6 +24,7 @@ type Props = {
   activeElementId: string;
   onChange(color: string): any | void;
   disabled?: boolean;
+  labelTextStyle?: string;
 };
 
 const ColorSettings: React.FC<Props> = ({
@@ -29,6 +32,7 @@ const ColorSettings: React.FC<Props> = ({
   activeElementId,
   onChange,
   disabled,
+  labelTextStyle = 'Color',
 }) => {
   const classes = useStyles();
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
@@ -38,15 +42,56 @@ const ColorSettings: React.FC<Props> = ({
   const [currentColorObject, setCurrentColorObject] = useState<ColorResult>(
     toState(currentColor),
   );
+  const [checked, setChecked] = useState(
+    currentBackgroundColor.value.includes('rgba'),
+  );
+
+  const formatTextColor = useCallback(
+    (isValueCheckBox: boolean) => {
+      if (isValueCheckBox) {
+        const { r, g, b, a } = currentColorObject.rgb;
+        const convertedColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+        const normalizedColor = normalizeColor(
+          convertedColor,
+          currentColorObject,
+        );
+        setCurrentBackgroundColor(normalizedColor);
+        onChange(convertedColor);
+        const reactColorObject = toState(convertedColor);
+        setCurrentColorObject(reactColorObject);
+
+        return currentBackgroundColor.value;
+      }
+      const normalizedColor = normalizeColor(
+        currentColorObject.hex,
+        currentColorObject,
+      );
+      setCurrentBackgroundColor(normalizedColor);
+      onChange(currentColorObject.hex);
+      return currentBackgroundColor.value;
+    },
+    [
+      currentBackgroundColor,
+      onChange,
+      currentColorObject,
+      setCurrentBackgroundColor,
+    ],
+  );
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+    formatTextColor(event.target.checked);
+  };
 
   useEffect(() => {
     setCurrentColorObject(toState(currentColor));
-  }, [currentColor]);
+    setChecked(currentBackgroundColor.value.includes('rgba'));
+  }, [currentColor, currentBackgroundColor.value]);
 
   const handleColorChange = useCallback(
     (color) => {
       if (typeof color === 'object') {
-        const normalizedColor = normalizeColor(color, currentColorObject, true);
+        const normalizedColor = normalizeColor(color, currentColorObject);
         onChange(normalizedColor.value);
         setCurrentBackgroundColor(normalizedColor);
         setCurrentColorObject(color);
@@ -60,7 +105,7 @@ const ColorSettings: React.FC<Props> = ({
 
   const handleColorInputBlur = useCallback(
     (color) => {
-      const normalizedColor = normalizeColor(color, currentColorObject, true);
+      const normalizedColor = normalizeColor(color, currentColorObject);
       const reactColorObject = toState(color);
 
       setCurrentBackgroundColor(normalizedColor);
@@ -74,24 +119,37 @@ const ColorSettings: React.FC<Props> = ({
   );
 
   return (
-    <div className={classes.root}>
-      <StyledTextField
-        label="Color"
-        fullWidth
-        value={currentBackgroundColor.value}
-        onBlur={({ target: { value } }) => handleColorInputBlur(value)}
-        onChange={({ target: { value } }) => handleColorChange(value)}
-        margin="none"
-        disabled={disabled}
-      />
-
-      <div className={classes.wrapper}>
-        <ColorPicker
-          color={currentColor}
-          onChangeComplete={handleColorChange}
+    <div>
+      <div className={classes.root}>
+        <StyledTextField
+          label={labelTextStyle}
+          fullWidth
+          value={currentBackgroundColor.value}
+          onBlur={({ target: { value } }) => handleColorInputBlur(value)}
+          onChange={({ target: { value } }) => handleColorChange(value)}
+          margin="none"
           disabled={disabled}
         />
+
+        <div className={classes.wrapper}>
+          <ColorPicker
+            color={currentBackgroundColor.value}
+            onChangeComplete={handleColorChange}
+            disabled={disabled}
+          />
+        </div>
       </div>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={checked}
+            onChange={handleChange}
+            name="checkedB"
+            color="primary"
+          />
+        }
+        label="Format color RGBA"
+      />
     </div>
   );
 };

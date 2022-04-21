@@ -1,17 +1,11 @@
-import React, {
-  useState,
-  useMemo,
-  useRef,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { useMemo, useRef, useEffect, useCallback, memo } from 'react';
 import { useDispatch } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { useDebouncedCallback } from 'use-debounce';
 import {
-  createElements,
-  moveElement,
+  processDropElement,
+  processDropTargetParams,
   setActiveElement,
   setCurrentDropTargetParams,
   setHoveredElementId,
@@ -19,26 +13,18 @@ import {
   toggleSelectedElement,
 } from '@Redux/project/actions';
 import {
-  DropTargetParams,
   ElementData,
   Normalized,
+  ProjectClass,
   StateElement,
   SyntheticElement,
 } from '@Src/types';
 
-import { DropPosition, ElementType } from '@Constants/dragAndDrop';
-import {
-  CONTAINER_GROUPS,
-  NOT_DRAGGABLE_COMPONENTS,
-} from '@Constants/defaultParams';
+import { ElementType } from '@Constants/dragAndDrop';
+import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
 import Scrollbars from 'react-custom-scrollbars';
 import { DOMHandler } from '../Workspace/DOMHandler';
-import {
-  getFlexRowDropPosition,
-  getBlockDropPosition,
-  getDropIndex,
-} from './helper';
 import RENDERERS from '../../UI/RenderElements';
 
 type DraggableElementProps = {
@@ -46,13 +32,10 @@ type DraggableElementProps = {
   elementId: string;
   allElements: Normalized<StateElement>;
   isDisabled: boolean;
-  dropTargetParams: DropTargetParams | null;
   preSelectedElementId: string | null;
   masterSourceElementId: string | null;
   canDragAndDrop: boolean;
-  frameWindow: Window | null;
-
-  parentDomStyles?: CSSStyleDeclaration | null;
+  projectClasses: ProjectClass[];
   parentIds?: Array<string>;
   scrollRef: React.RefObject<Scrollbars>;
 };
@@ -62,13 +45,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   elementId,
   allElements,
   isDisabled,
-  dropTargetParams,
   preSelectedElementId,
   masterSourceElementId,
   canDragAndDrop,
-  frameWindow,
-
-  parentDomStyles,
+  projectClasses,
   parentIds = [],
   scrollRef,
 }) => {
@@ -80,30 +60,23 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [allElements, element?.parent],
   );
 
+  const parentElementClass = useMemo(() => {
+    return !parent
+      ? null
+      : projectClasses.find(
+          (projectClass: ProjectClass) =>
+            projectClass.className === parent.type,
+        );
+  }, [parent, projectClasses]);
+
   const ref = useRef<HTMLElement>(null) as React.MutableRefObject<HTMLElement>;
-
-  const [
-    dropDomStyles,
-    setDropDomStyles,
-  ] = useState<CSSStyleDeclaration | null>(null);
-
-  const isContainer = useMemo(
-    () => !parent || CONTAINER_GROUPS.includes(element?.parameters.group),
-    [parent, element?.parameters.group],
-  );
 
   const isDisplayed = useLayout(element?.parameters.layouts);
 
-  const dropTarget = useMemo(() => {
-    if (
-      !!parent &&
-      dropTargetParams &&
-      dropTargetParams.position !== DropPosition.INSIDE
-    ) {
-      return parent;
-    }
-    return element;
-  }, [parent, dropTargetParams, element]);
+  const parentsIdsForChildren = useMemo(() => [...parentIds, elementId], [
+    elementId,
+    parentIds,
+  ]);
 
   const [, drag, preview] = useDrag({
     item: {
@@ -116,17 +89,38 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       !!parent &&
       !element.parameters.sourceElementId &&
       canDragAndDrop,
-    end: () => {
-      dispatch(setCurrentDropTargetParams(null));
+    end: (dragSource, monitor) => {
+      if (!monitor.didDrop()) {
+        dispatch(setCurrentDropTargetParams(null));
+      }
     },
   });
 
-  const [{ isOver, isOverArea }, drop] = useDrop({
+  const [, drop] = useDrop({
     accept: [ElementType.ELEMENT, ElementType.CONSTRUCTOR],
     drop: (
       dragSource: SyntheticElement<StateElement | ElementData>,
       monitor: DropTargetMonitor,
     ) => {
+      const clientOffset = monitor.getClientOffset();
+      const rect = ref.current.getBoundingClientRect();
+      const display = !parent
+        ? null
+        : parent.styles.ownStyles.display || parentElementClass?.rules.display;
+      const flexDirection = !parent
+        ? null
+        : parent.styles.ownStyles.flexDirection ||
+          parentElementClass?.rules.flexDirection;
+      if (clientOffset) {
+        dispatch(
+          processDropTargetParams(
+            elementId,
+            rect,
+            display === 'flex' && flexDirection === 'row',
+            clientOffset,
+          ),
+        );
+      }
       if (
         monitor.didDrop() ||
         (dragSource.type === ElementType.ELEMENT &&
@@ -134,128 +128,13 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       ) {
         return;
       }
-
-      const index =
-        dropTargetParams && dropTargetParams.position
-          ? getDropIndex(
-              dropTargetParams.position,
-              dragSource,
-              dropTarget,
-              element,
-              parent,
-            )
-          : 0;
-
-      if (dragSource.type === ElementType.ELEMENT) {
-        const dragSourceEl = dragSource.original as StateElement;
-        dispatch(
-          moveElement(
-            dragSourceEl.id,
-            {
-              oldIndex: dragSourceEl.buoyancy,
-              newIndex: index,
-            },
-            {
-              oldParentId: dragSource.parent?.id || '',
-              newParentId: dropTarget.id,
-            },
-            { screenId },
-          ),
-        );
-      } else {
-        const elementData = dragSource.original as ElementData;
-        const { id, type, name, custom, parameters } = elementData;
-        dispatch(
-          createElements(
-            {
-              createdElements: [{ id, type, name, custom, parameters }],
-              parentId: dropTarget.id,
-              index,
-            },
-            { screenId },
-          ),
-        );
-      }
-    },
-    canDrop: (
-      dragSource: SyntheticElement<StateElement | ElementData>,
-      monitor: DropTargetMonitor,
-    ) => {
-      const isOverCurrent = monitor.isOver({ shallow: true });
-      const allowDropElement =
-        dragSource.type === ElementType.ELEMENT &&
-        dragSource.original.id &&
-        !parentIds.includes(dragSource.original.id);
-      const allowDropConstructor = dragSource.type === ElementType.CONSTRUCTOR;
-      return (
-        isOverCurrent &&
-        (allowDropElement || allowDropConstructor) &&
-        canDragAndDrop
-      );
-    },
-    collect: (monitor: DropTargetMonitor) => {
-      return {
-        isOver: monitor.isOver({ shallow: true }),
-        isOverArea: monitor.isOver(),
-      };
-    },
-    hover: (
-      dragSource: SyntheticElement<StateElement | ElementData>,
-      monitor: DropTargetMonitor,
-    ) => {
-      if (
-        isOver &&
-        monitor.canDrop() &&
-        dragSource.original.id !== element.id
-      ) {
-        let dropPosition = DropPosition.INSIDE;
-        const clientOffset = monitor.getClientOffset();
-        const rect = ref.current.getBoundingClientRect();
-        if (parentDomStyles && clientOffset && !!parent) {
-          if (
-            parentDomStyles.display === 'flex' &&
-            parentDomStyles.flexDirection === 'row'
-          ) {
-            dropPosition = getFlexRowDropPosition(
-              clientOffset,
-              rect,
-              isContainer,
-            );
-          } else {
-            dropPosition = getBlockDropPosition(
-              clientOffset,
-              rect,
-              isContainer,
-            );
-          }
-        }
-        if (
-          dropTargetParams?.id !== elementId ||
-          dropTargetParams.position !== dropPosition
-        ) {
-          dispatch(setCurrentDropTargetParams(elementId, dropPosition));
-        }
-      }
+      dispatch(processDropElement(dragSource.original, dragSource.type));
     },
   });
 
   useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
-
-  useEffect(() => {
-    if (!dropDomStyles && isOverArea && frameWindow) {
-      setDropDomStyles(frameWindow.getComputedStyle(ref.current));
-    } else if (dropDomStyles && !isOverArea) {
-      setDropDomStyles(null);
-    }
-  }, [isOverArea, frameWindow, dropDomStyles]);
-
-  useEffect(() => {
-    if (!isOverArea && dropTargetParams && !parent) {
-      dispatch(setCurrentDropTargetParams(null));
-    }
-  }, [isOverArea, dropTargetParams, parent, dispatch]);
 
   useEffect(() => {
     return () => {
@@ -292,7 +171,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     }
   }, 0); // delay to allow all elements to render correctly first
 
-  if (!element || !isDisplayed) {
+  if (!element || (!isDisplayed && element?.name !== 'Root')) {
     return null;
   }
 
@@ -317,25 +196,27 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string) => (
+      {element.children.map((childId: string, index: number) => (
         <DraggableElement
-          key={`element-${childId}`}
+          key={`element-${
+            element.children.indexOf(childId) === index
+              ? childId
+              : childId + Math.random()
+          }`}
           elementId={childId}
-          parentDomStyles={dropDomStyles}
-          parentIds={[...parentIds, elementId]}
+          parentIds={parentsIdsForChildren}
           scrollRef={scrollRef}
           isDisabled={isDisabled}
           screenId={screenId}
           allElements={allElements}
-          dropTargetParams={dropTargetParams}
           preSelectedElementId={preSelectedElementId}
           masterSourceElementId={masterSourceElementId}
           canDragAndDrop={canDragAndDrop}
-          frameWindow={frameWindow}
+          projectClasses={projectClasses}
         />
       ))}
     </ElementRenderer>
   );
 };
 
-export default DraggableElement;
+export default memo(DraggableElement);

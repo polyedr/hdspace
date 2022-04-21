@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { ChangeEvent, FC } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
@@ -23,7 +24,7 @@ type Props = {
 
 const GridControl: FC<
   Props & PropertiesChangeProps<LibraryElement<Entity>>
-> = ({ gridTemplateColumns, updateStyles, activeElementId, canEdit }) => {
+> = ({ gridTemplateColumns, updateStyles, element, canEdit }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -52,7 +53,7 @@ const GridControl: FC<
             childType: 'gridItem',
             parameters: {},
           }),
-          activeElementId,
+          element.id,
           { screenId },
         ),
       );

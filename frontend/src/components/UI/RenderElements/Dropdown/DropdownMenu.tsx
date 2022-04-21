@@ -14,7 +14,7 @@ const DropdownMenu = React.forwardRef<HTMLUListElement, RendererProps>(
     const eventHandlers = useEventHandlers(props);
     const clickHandler = eventHandlers.onClick;
 
-    eventHandlers.onClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    eventHandlers.onClick = (event: React.SyntheticEvent<HTMLElement>) => {
       (event.target as HTMLElement).focus();
       if (clickHandler) {
         clickHandler(event);
@@ -30,7 +30,7 @@ const DropdownMenu = React.forwardRef<HTMLUListElement, RendererProps>(
           'mdc-list',
           className,
           groupClass,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
           classes.ownStyles,
         )}
         role="menu"

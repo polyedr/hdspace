@@ -1,5 +1,9 @@
 import React from 'react';
-import { ColumnsElement, PropertiesChangeProps } from '@Src/types';
+import {
+  ColumnsElement,
+  PropertiesChangeProps,
+  StateElement,
+} from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 import ColorSettings from '@Components/RightPanel/PropertiesTab/helperComponents/ColorSettings';
 import { FormControlLabel, MenuItem } from '@material-ui/core';
@@ -40,17 +44,17 @@ const ruleStyles = [
 const ruleWidths = ['thin', 'medium', 'thick'];
 
 type Props = {
+  element: StateElement;
+  canEdit: boolean;
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   ruleWidth: React.CSSProperties['columnRuleWidth'];
   ruleStyle: React.CSSProperties['columnRuleStyle'];
   ruleColor: React.CSSProperties['columnRuleColor'];
-  activeElementId: PropertiesChangeProps<ColumnsElement>['activeElementId'];
-  canEdit: boolean;
 };
 
 const ColumnRule: React.FC<Props> = ({
   updateStyles,
-  activeElementId,
+  element,
   ruleWidth,
   ruleStyle,
   ruleColor = 'transparent',
@@ -121,7 +125,7 @@ const ColumnRule: React.FC<Props> = ({
       />
       <ColorSettings
         currentColor={ruleColorValue as string}
-        activeElementId={activeElementId}
+        activeElementId={element.id}
         onChange={handleRuleColorChange as (color: string) => void}
         disabled={!canEdit}
       />

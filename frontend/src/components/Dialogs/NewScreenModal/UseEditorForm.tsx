@@ -6,6 +6,7 @@ import React, { FC, useState } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { makeStyles } from '@material-ui/core/styles';
+import { uniq } from 'ramda';
 
 const useStyles = makeStyles({
   root: {
@@ -64,11 +65,15 @@ const UseEditorForm: FC<Props> = ({ onClose }) => {
           {query &&
             renderElementButtons(
               Object.fromEntries(
-                Object.entries(LIBRARY_ELEMENTS)
-                  .filter(([key]) =>
-                    key.toLowerCase().includes(query.toLowerCase()),
+                uniq(Object.values(LIBRARY_ELEMENTS))
+                  .map((value) => value())
+                  .filter((value) =>
+                    value.func_type.toLowerCase().includes(query.toLowerCase()),
                   )
-                  .map(([key, value]) => [key, convertElementToData(value)]),
+                  .map((value) => [
+                    value.func_type,
+                    convertElementToData(value),
+                  ]),
               ),
             )}
         </DndProvider>

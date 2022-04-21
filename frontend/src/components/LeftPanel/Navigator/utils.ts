@@ -1,6 +1,8 @@
 import { mutateTree, TreeData, TreeItem } from '@atlaskit/tree';
 import { Normalized, StateElement, Node } from '../../../types';
 
+const hiddenChildrenElements = ['dropdown', 'select', 'radiobuttonGroup'];
+
 export const convertElements = (
   elements: Normalized<StateElement>,
   isExpanded: boolean = false,
@@ -11,10 +13,9 @@ export const convertElements = (
       {
         id: value.id,
         data: { title: value.name, type: value.type },
-        children:
-          value.type === 'dropdown' || value.type === 'select'
-            ? []
-            : value.children,
+        children: hiddenChildrenElements.includes(value.type)
+          ? []
+          : value.children,
         hasChildren: !!value.children.length,
         isExpanded: isExpanded || value.type === 'root',
         parent: value.type === 'root' ? 'root' : value.parent,

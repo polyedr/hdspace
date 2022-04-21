@@ -7,7 +7,7 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import { highlightBlock } from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import Scrollbar from '../Scrollbar';
@@ -183,7 +183,7 @@ const CodeEditorEditable = ({
 
   useEffect(() => {
     if (codeBlockRef.current) {
-      highlightBlock(codeBlockRef.current);
+      hljs.highlightBlock(codeBlockRef.current);
       const errors = validator.current.validate(value);
       if (errors.length) {
         handleErrors(errors);

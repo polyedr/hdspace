@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, memo, useMemo } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { useSelector } from 'react-redux';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
-import StylesHeader from '../../helperComponents/StylesHeader';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 enum Unit {
   px = 'px',
@@ -33,8 +34,9 @@ const BackgroundSize: React.FC<Props> = memo(
     removeStyles,
     canEdit,
     backgroundSize,
-    activeElementId,
     masterScreenEnabled,
+    element,
+    editableStyles,
   }) => {
     const editorDocument = useSelector(selectEditorDocument);
 
@@ -52,7 +54,7 @@ const BackgroundSize: React.FC<Props> = memo(
     const handleSelectChange = useCallback(
       ({ target: { value } }, sizeName: SizeName) => {
         if (editorDocument) {
-          const el = editorDocument.getElementById(activeElementId);
+          const el = editorDocument.getElementById(element.id);
 
           switch (value as UnitName) {
             case 'px': {
@@ -109,7 +111,7 @@ const BackgroundSize: React.FC<Props> = memo(
           }
         }
       },
-      [activeElementId, updateStyles, width, height, editorDocument],
+      [updateStyles, width, height, editorDocument],
     );
 
     const handleInputChange = useCallback(
@@ -166,10 +168,11 @@ const BackgroundSize: React.FC<Props> = memo(
     return (
       <div>
         {!masterScreenEnabled && canEdit && (
-          <StylesHeader
-            title="Background Size"
+          <RemoveStyles
             onClick={removeStyles}
-            cssPropertiesNames={['backgroundSize']}
+            propsToRemove={['backgroundSize']}
+            editableStyles={editableStyles}
+            type={element.type}
           />
         )}
 

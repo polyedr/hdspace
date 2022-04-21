@@ -1,4 +1,3 @@
-import { DEFAULT_COMPONENTS_BACKGROUND } from '@Src/styles/Theme';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import {
   ButtonServerElement,
@@ -7,12 +6,13 @@ import {
   LabelServerElement,
   RadiobuttonServerElement,
   OptionServerElement,
-  SelectMenuServerElement,
   SelectServerElement,
   TextareaServerElement,
   TextinputServerElement,
+  RadiobuttonGroupServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import { v4 } from 'uuid';
 
 export const makeButton = ({
   buoyancy = 0,
@@ -41,8 +41,9 @@ export const makeButton = ({
   styles: {
     classNames: ['button'],
     ownStyles,
+    pseudoClassStyles: {},
   },
-  name: 'button',
+  name: 'Generated background button',
   children: [],
 });
 
@@ -70,12 +71,13 @@ export const makeTextinput = ({
   styles: {
     classNames: ['textinput'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'textinput',
   children: [],
 });
 
-export const checkbox: CheckboxServerElement = {
+export const makeCheckbox = (): CheckboxServerElement => ({
   id: 'checkbox',
   buoyancy: 0,
   func_type: 'checkbox',
@@ -84,11 +86,11 @@ export const checkbox: CheckboxServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 13,
-      height: 13,
+      width: 24,
+      height: 24,
     },
     group: ElementGroup.FORM,
-    value: '',
+    value: 'Checkbox',
     defaultChecked: true,
     name: '',
     showRipple: true,
@@ -96,14 +98,21 @@ export const checkbox: CheckboxServerElement = {
   styles: {
     classNames: ['checkbox'],
     ownStyles: {
-      backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
+      display: 'block',
+      width: 24,
+      height: 24,
     },
+    pseudoClassStyles: {},
   },
   name: 'checkbox',
   children: [],
-};
+});
 
-export const radiobutton: RadiobuttonServerElement = {
+export const makeRadiobutton = (
+  value: string = 'radio',
+  label: string = 'Radio',
+  name: string = v4(),
+): RadiobuttonServerElement => ({
   id: 'radiobutton',
   buoyancy: 0,
   func_type: 'radiobutton',
@@ -112,27 +121,55 @@ export const radiobutton: RadiobuttonServerElement = {
     layouts: DEFAULT_LAYOUT_LIST,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 13,
-      height: 13,
+      width: 24,
+      height: 24,
     },
     group: ElementGroup.FORM,
-    value: '',
-    name: '',
+    value,
+    label,
+    name,
     showRipple: true,
   },
   styles: {
     classNames: ['radiobutton'],
     ownStyles: {
-      backgroundColor: DEFAULT_COMPONENTS_BACKGROUND,
+      display: 'block',
     },
+    pseudoClassStyles: {},
   },
   name: 'radiobutton',
   children: [],
+});
+
+export const makeRadiobuttonGroup = (): RadiobuttonGroupServerElement => {
+  const randomName = v4();
+  return {
+    id: 'radiobuttonGroup',
+    buoyancy: 0,
+    func_type: 'radiobuttonGroup',
+    struct_type: 'radiobuttonGroup',
+    parameters: {
+      layouts: DEFAULT_LAYOUT_LIST,
+      freeCanvas: defaultFreeCanvasParams,
+      group: ElementGroup.FORM,
+      value: 'first radio',
+    },
+    styles: {
+      classNames: ['radiobuttonGroup'],
+      ownStyles: {},
+      pseudoClassStyles: {},
+    },
+    name: 'radiobuttonGroup',
+    children: [
+      makeRadiobutton('first radio', 'First', randomName),
+      makeRadiobutton('second radio', 'Second', randomName),
+    ],
+  };
 };
 
 export const makeOption = (
-  name: string,
-  value: string,
+  name: string = '',
+  value: string = '',
 ): OptionServerElement => ({
   id: 'option',
   buoyancy: 0,
@@ -148,34 +185,13 @@ export const makeOption = (
   styles: {
     classNames: ['option'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'option',
   children: [],
 });
 
-export const selectMenu: SelectMenuServerElement = {
-  id: 'selectMenu',
-  buoyancy: 0,
-  func_type: 'selectMenu',
-  struct_type: 'selectMenu',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
-    group: ElementGroup.OTHER,
-  },
-  styles: {
-    classNames: ['selectMenu'],
-    ownStyles: {},
-  },
-  name: 'selectMenu',
-  children: [
-    makeOption('First option', 'first option'),
-    makeOption('Second option', 'second option'),
-    makeOption('Third option', 'third option'),
-  ],
-};
-
-export const select: SelectServerElement = {
+export const makeSelect = (): SelectServerElement => ({
   id: 'select',
   buoyancy: 0,
   func_type: 'select',
@@ -194,6 +210,7 @@ export const select: SelectServerElement = {
   styles: {
     classNames: ['select'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'select',
   children: [
@@ -201,10 +218,10 @@ export const select: SelectServerElement = {
     makeOption('Second option', 'second option'),
     makeOption('Third option', 'third option'),
   ],
-};
+});
 
 export const makeLabel = ({
-  textContent = 'This is label',
+  textContent = 'This is a label',
   ownStyles = {},
   UID = 'master',
 } = {}): LabelServerElement => ({
@@ -226,12 +243,13 @@ export const makeLabel = ({
   styles: {
     classNames: ['label'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'label',
   children: [],
 });
 
-export const textarea: TextareaServerElement = {
+export const makeTextarea = (): TextareaServerElement => ({
   id: 'textarea',
   buoyancy: 0,
   func_type: 'textarea',
@@ -250,7 +268,8 @@ export const textarea: TextareaServerElement = {
   styles: {
     classNames: ['textarea'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'textarea',
   children: [],
-};
+});

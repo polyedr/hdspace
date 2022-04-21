@@ -20,15 +20,22 @@ import {
   SmartFormServerElement,
   SmartHeaderServerElement,
   SmartWebpageServerElement,
-  UndefinedServerElement,
   HTMLServerElement,
   VideoServerElement,
+  PaginationItemServerElement,
+  PaginationServerElement,
+  BreadcrumbServerElement,
+  BreadcrumbItemServerElement,
+  CarouselServerElement,
+  CarouselItemServerElement,
+  NavbarServerElement,
+  NavbarItemServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { makeParagraph } from '../typographyElements/typographyElements';
 import { defaultFreeCanvasParams } from '../../core';
 
-export const root: RootServerElement = {
+export const makeRoot = (): RootServerElement => ({
   id: 'root',
   buoyancy: 0,
   func_type: 'root',
@@ -41,12 +48,13 @@ export const root: RootServerElement = {
   styles: {
     classNames: ['root'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'root',
   children: [],
-};
+});
 
-export const elementsGroup: ElementsGroupServerElement = {
+export const makeElementsGroup = (): ElementsGroupServerElement => ({
   id: 'elementsGroup',
   buoyancy: 0,
   func_type: 'group',
@@ -59,10 +67,11 @@ export const elementsGroup: ElementsGroupServerElement = {
   styles: {
     classNames: ['group'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'Group',
   children: [],
-};
+});
 
 export const makeContainer = ({
   children = [],
@@ -91,6 +100,7 @@ export const makeContainer = ({
   styles: {
     classNames: ['container'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name,
   children,
@@ -98,9 +108,10 @@ export const makeContainer = ({
 
 export const makeGridItem = ({
   UID = 'master',
+  buoyancy = 0,
 } = {}): GridItemServerElement => ({
   id: `gridItem-${UID}`,
-  buoyancy: 0,
+  buoyancy,
   name: 'gridItem',
   func_type: 'gridItem',
   struct_type: 'gridItem' as const,
@@ -114,16 +125,17 @@ export const makeGridItem = ({
   styles: {
     classNames: ['gridItem'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: [],
 });
 
 export const makeGrid = ({
   items = [
-    makeGridItem({ UID: '1' }),
-    makeGridItem({ UID: '2' }),
-    makeGridItem({ UID: '3' }),
-    makeGridItem({ UID: '4' }),
+    makeGridItem({ UID: '1', buoyancy: 0 }),
+    makeGridItem({ UID: '2', buoyancy: 0 }),
+    makeGridItem({ UID: '3', buoyancy: 0 }),
+    makeGridItem({ UID: '4', buoyancy: 0 }),
   ],
   UID = 'master',
 }: {
@@ -145,33 +157,17 @@ export const makeGrid = ({
   styles: {
     classNames: ['grid'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: items,
 });
 
-export const column: ColumnServerElement = {
-  id: 'column',
-  buoyancy: 0,
-  name: 'column',
-  func_type: 'column',
-  struct_type: 'column' as const,
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: {
-      ...defaultFreeCanvasParams,
-    },
-    group: ElementGroup.CONTAINERS,
-  },
-  styles: {
-    classNames: ['column'],
-    ownStyles: {},
-  },
-  children: [],
-};
-
-export const makeColumn = ({ UID = 'master' }): ColumnServerElement => ({
+export const makeColumn = ({
+  UID = 'master',
+  buoyancy = 0,
+} = {}): ColumnServerElement => ({
   id: `column-${UID}`,
-  buoyancy: 0,
+  buoyancy,
   name: 'column',
   func_type: 'column',
   struct_type: 'column' as const,
@@ -185,6 +181,7 @@ export const makeColumn = ({ UID = 'master' }): ColumnServerElement => ({
   styles: {
     classNames: ['column'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: [],
 });
@@ -207,13 +204,14 @@ export const makeColumns = (
   styles: {
     classNames: ['columns'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: Array.from(Array(columnsCount)).map((_undefined, index) => {
-    return makeColumn({ UID: `${index}` });
+    return makeColumn({ UID: `${index}`, buoyancy: index });
   }),
 });
 
-export const nativeColumns: NativeColumnsServerElement = {
+export const makeNativeColumns = (): NativeColumnsServerElement => ({
   id: 'nativeColumns',
   buoyancy: 0,
   name: 'nativeColumns',
@@ -229,14 +227,14 @@ export const nativeColumns: NativeColumnsServerElement = {
   styles: {
     classNames: ['nativeColumns'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   children: [],
-};
+});
 
-export const makeDivBlock = ({
-  textContent,
-  UID = 'master',
-}): DivBlockServerElement => {
+export const makeDivBlock = (
+  { textContent, UID = 'master' } = { textContent: 'This is a divBlock' },
+): DivBlockServerElement => {
   return {
     id: `divBlock-${UID}`,
     buoyancy: 0,
@@ -252,6 +250,7 @@ export const makeDivBlock = ({
     styles: {
       classNames: ['divBlock'],
       ownStyles: {},
+      pseudoClassStyles: {},
     },
     name: 'divBlock',
     children: [makeParagraph({ textContent, UID: 'divBlock-0' })],
@@ -277,20 +276,22 @@ export const makeImage = ({
       width: 300,
       height: 300,
     },
+    keepAspectRatio: false,
   },
   styles: {
     classNames: ['image'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'image',
   children: [],
 });
 
-export const makeSmartHeader = ({
-  name = 'smartHeader',
-  ownStyles = {},
-  UID = 'master',
-}): SmartHeaderServerElement => ({
+export const makeSmartHeader = (
+  { name = 'smartHeader', ownStyles = {}, UID = 'master' } = {
+    name: 'Smart Header',
+  },
+): SmartHeaderServerElement => ({
   id: `smart-header-${UID}`,
   buoyancy: 0,
   func_type: 'smartHeader',
@@ -306,16 +307,17 @@ export const makeSmartHeader = ({
   styles: {
     classNames: ['smartHeader'],
     ownStyles: { ...ownStyles },
+    pseudoClassStyles: {},
   },
   name,
   children: [],
 });
 
-export const makeSmartFooter = ({
-  name = 'smartFooter',
-  ownStyles = {},
-  UID = 'master',
-}): SmartFooterServerElement => ({
+export const makeSmartFooter = (
+  { name = 'smartFooter', ownStyles = {}, UID = 'master' } = {
+    name: 'Smart Footer',
+  },
+): SmartFooterServerElement => ({
   id: `smart-footer-${UID}`,
   buoyancy: 0,
   func_type: 'smartFooter',
@@ -331,16 +333,17 @@ export const makeSmartFooter = ({
   styles: {
     classNames: ['smartFooter'],
     ownStyles: { ...ownStyles },
+    pseudoClassStyles: {},
   },
   name,
   children: [],
 });
 
-export const makeSmartForm = ({
-  name = 'smartForm',
-  ownStyles = {},
-  UID = 'master',
-}): SmartFormServerElement => ({
+export const makeSmartForm = (
+  { name = 'smartForm', ownStyles = {}, UID = 'master' } = {
+    name: 'Smart Form',
+  },
+): SmartFormServerElement => ({
   id: `smart-form-${UID}`,
   buoyancy: 0,
   func_type: 'smartForm',
@@ -356,16 +359,17 @@ export const makeSmartForm = ({
   styles: {
     classNames: ['smartForm'],
     ownStyles: { ...ownStyles },
+    pseudoClassStyles: {},
   },
   name,
   children: [],
 });
 
-export const makeSmartWebpage = ({
-  name = 'smartWebpage',
-  ownStyles = {},
-  UID = 'master',
-}): SmartWebpageServerElement => ({
+export const makeSmartWebpage = (
+  { name = 'smartWebpage', ownStyles = {}, UID = 'master' } = {
+    name: 'Smart Webpage',
+  },
+): SmartWebpageServerElement => ({
   id: `smart-webpage-${UID}`,
   buoyancy: 0,
   func_type: 'smartWebpage',
@@ -381,17 +385,17 @@ export const makeSmartWebpage = ({
   styles: {
     classNames: ['smartWebpage'],
     ownStyles: { ...ownStyles },
+    pseudoClassStyles: {},
   },
   name,
   children: [],
 });
 
 export const makeDropdownItem = (
-  textContent: string,
-  UID = 'master',
+  { textContent, UID = 'master', buoyancy = 0 } = { textContent: '' },
 ): DropdownItemServerElement => ({
   id: `dropdown-item-${UID}`,
-  buoyancy: 0,
+  buoyancy,
   func_type: 'dropdownItem',
   struct_type: 'dropdownItem',
   parameters: {
@@ -403,12 +407,13 @@ export const makeDropdownItem = (
   styles: {
     classNames: ['dropdownItem'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'dropdownItem',
   children: [],
 });
 
-export const dropdownMenu: DropdownMenuServerElement = {
+export const makeDropdownMenu = (): DropdownMenuServerElement => ({
   id: 'dropdown-menu',
   buoyancy: 0,
   func_type: 'dropdownMenu',
@@ -421,16 +426,17 @@ export const dropdownMenu: DropdownMenuServerElement = {
   styles: {
     classNames: ['dropdownMenu'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'dropdownMenu',
   children: [
-    makeDropdownItem('First option'),
-    makeDropdownItem('Second option'),
-    makeDropdownItem('Third option'),
+    makeDropdownItem({ textContent: 'First option' }),
+    makeDropdownItem({ textContent: 'Second option' }),
+    makeDropdownItem({ textContent: 'Third option' }),
   ],
-};
+});
 
-export const dropdown: DropdownServerElement = {
+export const makeDropdown = (): DropdownServerElement => ({
   id: 'dropdown',
   buoyancy: 0,
   func_type: 'dropdown',
@@ -447,12 +453,13 @@ export const dropdown: DropdownServerElement = {
   styles: {
     classNames: ['dropdown'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'dropdown',
-  children: [dropdownMenu],
-};
+  children: [makeDropdownMenu()],
+});
 
-export const video: VideoServerElement = {
+export const makeVideo = (): VideoServerElement => ({
   id: 'video',
   buoyancy: 0,
   func_type: 'video',
@@ -477,34 +484,13 @@ export const video: VideoServerElement = {
   styles: {
     classNames: ['video'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'video',
   children: [],
-};
+});
 
-export const undefinedElement: UndefinedServerElement = {
-  id: 'undefined',
-  buoyancy: 0,
-  func_type: 'undefined',
-  struct_type: 'undefined',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    group: ElementGroup.UNDEFINED,
-    freeCanvas: {
-      ...defaultFreeCanvasParams,
-      width: 100,
-      height: 100,
-    },
-  },
-  styles: {
-    classNames: ['undefined'],
-    ownStyles: {},
-  },
-  name: 'undefined',
-  children: [],
-};
-
-export const htmlElement: HTMLServerElement = {
+export const makeHtmlElement = (): HTMLServerElement => ({
   id: 'html',
   buoyancy: 0,
   func_type: 'html',
@@ -525,7 +511,303 @@ export const htmlElement: HTMLServerElement = {
   styles: {
     classNames: [],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'HTML element',
   children: [],
-};
+});
+
+export const makeBreadcrumbItem = ({
+  textContent = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): BreadcrumbItemServerElement => ({
+  id: `breadcrumb-item-${UID}`,
+  buoyancy,
+  func_type: 'breadcrumbItem',
+  struct_type: 'breadcrumbItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    textContent,
+    isLink: false,
+  },
+  styles: {
+    classNames: ['breadcrumbItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'breadcrumbItem',
+  children: [],
+});
+
+export const makeBreadcrumb = (): BreadcrumbServerElement => ({
+  id: 'breadcrumb',
+  buoyancy: 0,
+  func_type: 'breadcrumb',
+  struct_type: 'breadcrumb',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    breadcrumbItems: [
+      // TODO research why we need items here
+      { textContent: 'breadcrumb item', isLink: false },
+      { textContent: 'Second breadcrumb', isLink: false },
+      { textContent: 'Third breadcrumb', isLink: false },
+    ],
+  },
+  styles: {
+    classNames: ['breadcrumb'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'breadcrumb',
+  children: [
+    makeBreadcrumbItem({
+      textContent: 'breadcrumb item',
+      UID: 'breadcrumb-1',
+      buoyancy: 0,
+    }),
+    makeBreadcrumbItem({
+      textContent: 'Second breadcrumb',
+      UID: 'breadcrumb-2',
+      buoyancy: 1,
+    }),
+    makeBreadcrumbItem({
+      textContent: 'Third breadcrumb',
+      UID: 'breadcrumb-3',
+      buoyancy: 2,
+    }),
+  ],
+});
+export const makePaginationItem = ({
+  textContent = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): PaginationItemServerElement => ({
+  id: `pagination-item-${UID}`,
+  buoyancy,
+  func_type: 'paginationItem',
+  struct_type: 'paginationItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    textContent,
+    isActiveLink: false,
+  },
+  styles: {
+    classNames: ['paginationItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'paginationItem',
+  children: [],
+});
+
+export const makePagination = (): PaginationServerElement => ({
+  id: 'pagination',
+  buoyancy: 0,
+  func_type: 'pagination',
+  struct_type: 'pagination',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    paginationItems: [
+      // TODO research why we need items here
+      { textContent: '1' },
+      { textContent: '2' },
+      { textContent: '3' },
+    ],
+  },
+  styles: {
+    classNames: ['pagination'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'pagination',
+  children: [
+    makePaginationItem({
+      textContent: '1',
+      UID: 'pagination-1',
+      buoyancy: 0,
+    }),
+    makePaginationItem({
+      textContent: '2',
+      UID: 'pagination-2',
+      buoyancy: 1,
+    }),
+    makePaginationItem({
+      textContent: '3',
+      UID: 'pagination-3',
+      buoyancy: 2,
+    }),
+  ],
+});
+
+export const makeCarouselItem = ({
+  link = '',
+  alt = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): CarouselItemServerElement => ({
+  id: `carousel-item-${UID}`,
+  buoyancy,
+  func_type: 'carouselItem',
+  struct_type: 'carouselItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    link,
+    alt,
+  },
+  styles: {
+    classNames: ['carouselItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'carouselItem',
+  children: [],
+});
+
+export const makeCarousel = (): CarouselServerElement => ({
+  id: 'carousel',
+  buoyancy: 0,
+  func_type: 'carousel',
+  struct_type: 'carousel',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    carouselItems: [
+      // TODO research why we need items here
+      {
+        link: 'https://www.yana.kiev.ua/img/countries/big/21/1917977906.jpg',
+        alt: 'text desc',
+      },
+      {
+        link: 'https://pbs.twimg.com/media/CekF6jHWAAAdb9q.jpg',
+        alt: 'text desc',
+      },
+      {
+        link: 'https://planetaperm.ru/wp-content/uploads/banner-minvody.jpg',
+        alt: 'text desc',
+      },
+    ],
+  },
+  styles: {
+    classNames: ['carousel'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'carousel',
+  children: [
+    makeCarouselItem({
+      link: 'https://www.yana.kiev.ua/img/countries/big/21/1917977906.jpg',
+      alt: 'text desc',
+      UID: 'carousel-1',
+      buoyancy: 0,
+    }),
+    makeCarouselItem({
+      link: 'https://pbs.twimg.com/media/CekF6jHWAAAdb9q.jpg',
+      alt: 'text desc',
+      UID: 'carousel-2',
+      buoyancy: 1,
+    }),
+    makeCarouselItem({
+      link: 'https://planetaperm.ru/wp-content/uploads/banner-minvody.jpg',
+      alt: 'text desc',
+      UID: 'carousel-3',
+      buoyancy: 2,
+    }),
+  ],
+});
+
+export const makeNavbarItem = ({
+  link = '',
+  itemName = '',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): NavbarItemServerElement => ({
+  id: `navbar-item-${UID}`,
+  buoyancy,
+  func_type: 'navbarItem',
+  struct_type: 'navbarItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    link,
+    itemName,
+  },
+  styles: {
+    classNames: ['navbarItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'navbarItem',
+  children: [],
+});
+
+export const makeNavbar = (): NavbarServerElement => ({
+  id: 'navbar',
+  buoyancy: 0,
+  func_type: 'navbar',
+  struct_type: 'navbar',
+  parameters: {
+    titleName: 'ADEVI',
+    titleLink: '',
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.TYPOGRAPHY,
+    navbarItems: [
+      // TODO research why we need items here
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        itemName: 'text desc',
+      },
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        itemName: 'text desc',
+      },
+      {
+        link:
+          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        itemName: 'text desc',
+      },
+    ],
+  },
+  styles: {
+    classNames: ['navbar'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'navbar',
+  children: [
+    makeNavbarItem({
+      link: 'https://i5.walmarti',
+      itemName: 'text desc',
+      UID: 'carousel-1',
+      buoyancy: 0,
+    }),
+    makeNavbarItem({
+      link: 'https://i5.walmarti',
+      itemName: 'text desc',
+      UID: 'navbar-2',
+      buoyancy: 1,
+    }),
+    makeNavbarItem({
+      link:
+        'https://i5.walmartimages.com/asr/79b030ef-9b0d9af79d4e8b836b8d5a1c476dfe46',
+      itemName: 'text desc',
+      UID: 'navbar-3',
+      buoyancy: 2,
+    }),
+  ],
+});

@@ -3,11 +3,11 @@ import { AppReduxState } from '../types';
 
 export const selectUserData = ({ user }: AppReduxState) => user.userData;
 
+export const selectUserProfileDataParameters = ({ user }: AppReduxState) =>
+  user.userData.profile.parameters.profileDataParameters;
+
 export const selectProfileData = ({ user }: AppReduxState) =>
   user.userData.profile;
-
-export const selectDropTargetBordersMode = ({ user }: AppReduxState) =>
-  user.dropTargetBordersMode;
 
 export const selectIsLeftPanelMinimized = ({ user }: AppReduxState) =>
   user.isLPanelMinimized;
@@ -35,8 +35,4 @@ export const selectUserGuideWatched = ({ user }: AppReduxState) =>
 export const selectUserGuideActive = ({ user }: AppReduxState) =>
   user.userGuide.active;
 
-export const selectToggleEnableTabsAutoSwitch = ({
-  project,
-}: AppReduxState) => {
-  return project.ui.tabsAutoSwitch;
-};
+export const selectChatCredentials = ({ user }: AppReduxState) => user.chat;

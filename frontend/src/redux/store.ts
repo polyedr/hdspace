@@ -20,6 +20,11 @@ import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
 import history from './history';
 import DevToolsOptions from './devtools';
+import activityReducer from './pmtools/activity/reducer';
+import chatReducer from './pmtools/chat/reducer';
+import boardReducer from './pmtools/board/reducer';
+import inviteReducer from './pmtools/invite/reducer';
+import pmToolsSaga from './pmtools/sagas';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
@@ -29,6 +34,7 @@ const userPersistConfig: PersistConfig = {
     'tokenPair',
     'userData',
     'isLoggedIn',
+    'chat',
   ],
   storage,
 };
@@ -50,6 +56,10 @@ export const rootReducer = combineReducers({
   router: connectRouter(history),
   notification: notificationReducer,
   permissions: permissionsReducer,
+  activity: activityReducer,
+  chat: chatReducer,
+  invite: inviteReducer,
+  board: boardReducer,
 });
 
 export const store = createStore(
@@ -68,6 +78,7 @@ export const promiseListener = reduxPromiseListener;
 export function configureStore(): { store: Store<any>; persistor: Persistor } {
   sagaMiddleware.run(userSaga);
   sagaMiddleware.run(projectSaga as any); // TODO: type action types!
+  sagaMiddleware.run(pmToolsSaga);
 
   const persistor = persistStore(store);
 

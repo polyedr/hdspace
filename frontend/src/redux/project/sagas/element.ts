@@ -1,4 +1,5 @@
-import { put, call, select } from 'redux-saga/effects';
+// @ts-nocheck
+import { put, call, select, putResolve } from 'redux-saga/effects';
 import {
   selectCustomElementsPagination,
   selectElementStyles,
@@ -11,8 +12,13 @@ import {
   selectTreeChildElementsIds,
   selectMasterGroupsElementId,
   selectActiveElement,
+  selectEnabledPseudoClass,
+  selectActiveElementId,
 } from '@Redux/project/selectors/element';
-import { selectCurrentProject } from '@Redux/project/selectors/base';
+import {
+  selectCurrentDropTargetParams,
+  selectCurrentProject,
+} from '@Redux/project/selectors/base';
 import {
   convertElementToPatchRequest,
   convertElementToRequest,
@@ -25,7 +31,7 @@ import {
 } from '@Api/element';
 import generateUniqueName from '@Utils/generateUniqueName';
 import { addProjectStyles } from '@Utils/ProjectClassesHelper';
-import { ALL_ELEMENTS_INDEX } from '@Constants/defaultParams';
+import { ALL_ELEMENTS_INDEX, CONTAINER_GROUPS } from '@Constants/defaultParams';
 import {
   Entity,
   DuplicateElementsData,
@@ -39,11 +45,14 @@ import {
   StateElement,
   UpdateDataActionType,
   UserProjectPermission,
+  ElementData,
 } from '@Src/types';
 import { ElementHistoryMeta } from '@Redux/types';
 import { apiGetFile } from '@Api/import';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
+import logger from 'loglevel';
 import { reqWrapper, projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -58,8 +67,9 @@ import {
 } from './common';
 import {
   selectAllAssetLists,
-  selectSelectedAssetListId,
+  selectCurrentAssetListId,
 } from '../selectors/asset';
+import { selectCurrentScreenId } from '../selectors/screen';
 
 // eslint-disable-next-line consistent-return
 export function* duplicateElements(
@@ -120,7 +130,7 @@ export const moveElementSaga = compose(
     const { newIndex, oldIndex } = indices;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -211,7 +221,7 @@ function* updateElementClassNames(
 ) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -241,21 +251,17 @@ function* updateElementClassNames(
     const state: Normalized<StateElement> = yield select(selectAllElements);
 
     yield put(
-      Actions.updateStateElement(
-        elementId,
-        {
-          styles: {
-            ...state[elementId].styles,
-            classNames:
-              type === 'add'
-                ? [state[elementId].styles.classNames[0], newClassName]
-                : state[elementId].styles.classNames.filter(
-                    (name) => name !== newClassName,
-                  ),
-          },
+      Actions.updateStateElement(elementId, {
+        styles: {
+          ...state[elementId].styles,
+          classNames:
+            type === 'add'
+              ? [state[elementId].styles.classNames[0], newClassName]
+              : state[elementId].styles.classNames.filter(
+                  (name) => name !== newClassName,
+                ),
         },
-        { ...action.meta },
-      ),
+      }),
     );
 
     const updatedElement: LibraryElement<any> = yield select(
@@ -295,28 +301,46 @@ function* removeElementStyles(
 ) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
     }
 
-    const state: Normalized<StateElement> = yield select(selectAllElements);
-    yield put(
-      Actions.updateStateElement(
-        id,
-        {
-          styles: {
-            ...state[id].styles,
-            ownStyles: Object.fromEntries(
-              Object.entries(state[id].styles.ownStyles).filter(([rule]) =>
-                cssPropertiesNames.every((name) => name !== rule),
-              ),
-            ),
-          },
-        },
-        { ...action.meta },
+    const element: StateElement = yield select(selectElementById, id);
+
+    const pseudoClass: string | null = yield select(selectEnabledPseudoClass);
+
+    const stylesToRemove = pseudoClass
+      ? element.styles.pseudoClassStyles[pseudoClass]
+      : element.styles.ownStyles;
+
+    const updatedStyles = Object.fromEntries(
+      Object.entries(stylesToRemove).filter(([rule]) =>
+        cssPropertiesNames.every((name) => name !== rule),
       ),
+    );
+
+    yield put(
+      Actions.updateStateElement(id, {
+        styles: {
+          ...element.styles,
+          ...(pseudoClass
+            ? {
+                pseudoClassStyles: {
+                  ...element.styles.pseudoClassStyles,
+                  [pseudoClass]: updatedStyles,
+                },
+                pseudoClassViewStyles: {
+                  ...element.styles.ownStyles,
+                  ...updatedStyles,
+                },
+              }
+            : {
+                ownStyles: updatedStyles,
+              }),
+        },
+      }),
     );
 
     const updatedElement: LibraryElement<any> = yield select(
@@ -354,7 +378,7 @@ export const copyElementStylesSaga = compose(
     const { elementType, elementID, styles } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -368,7 +392,7 @@ export const copyElementStylesSaga = compose(
       (cssClass) => cssClass.className,
     );
     const uniqueClassName = generateUniqueName(
-      `${elementType} group 1`,
+      `${elementType}-group-1`,
       sharedClassNames,
     );
 
@@ -458,24 +482,24 @@ export const updateElementStylesSaga = compose(
   }
 });
 
-export const updateMultipleElementsStylesSaga = compose(
-  withRequiredPermissions(
-    UserProjectPermission.VIEW_PROJECT,
-    UserProjectPermission.CHANGE_PROJECT,
-  ),
-  withActionsHistory,
-)(function* (action: ReturnType<typeof Actions.updateMultipleElementsStyles>) {
+export function* updateOrReplaceMultipleElementsStyles(
+  action: ReturnType<
+    | typeof Actions.updateMultipleElementsStyles
+    | typeof Actions.replaceMultipleElementsStyles
+  >,
+  type: 'replace' | 'update',
+) {
+  if (!action.meta) {
+    logger.error(
+      `You have to provide metainformation for action ${action.type}`,
+    );
+    return;
+  }
   try {
     const { ids, styles } = action.payload;
 
-    if (!action.meta) {
-      console.error(
-        `You have to provide metainformation for action ${action.type}`,
-      );
-      return;
-    }
-
     const stateElements = yield select(selectElementsByIds(ids));
+
     if (!action.meta.useHistory) {
       const stylesState = stateElements.reduce((acc, element) => {
         return {
@@ -485,24 +509,51 @@ export const updateMultipleElementsStylesSaga = compose(
       }, {});
       yield put(
         Actions.addUndoActions(
-          Actions.updateMultipleElementsStyles(ids, stylesState, {
+          Actions.replaceMultipleElementsStyles(ids, stylesState, {
             ...action.meta,
           }),
         ),
       );
     }
 
-    const elementsToUpdate = stateElements.map((element) => {
-      return {
+    const pseudoClass = yield select(selectEnabledPseudoClass);
+
+    const elementsToUpdate = stateElements.map((element: StateElement) => {
+      const stylesToUpdate = pseudoClass
+        ? element.styles.pseudoClassStyles[pseudoClass]
+        : element.styles.ownStyles;
+
+      const updatedStyles =
+        type === 'replace'
+          ? {
+              ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+            }
+          : {
+              ...stylesToUpdate,
+              ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+            };
+      const updatedElement = {
         ...element,
         styles: {
           ...element.styles,
-          ownStyles: {
-            ...element.styles.ownStyles,
-            ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
-          },
+          ...(pseudoClass
+            ? {
+                pseudoClassStyles: {
+                  ...element.styles.pseudoClassStyles,
+                  [pseudoClass]: updatedStyles,
+                },
+                pseudoClassViewStyles: {
+                  ...element.styles.ownStyles,
+                  ...updatedStyles,
+                },
+              }
+            : {
+                ownStyles: updatedStyles,
+                pseudoClassViewStyles: null,
+              }),
         },
       };
+      return updatedElement;
     });
 
     const elements = elementsToUpdate.reduce((acc, element) => {
@@ -535,6 +586,26 @@ export const updateMultipleElementsStylesSaga = compose(
       ),
     );
   }
+}
+
+export const updateMultipleElementsStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateMultipleElementsStyles>) {
+  yield call(updateOrReplaceMultipleElementsStyles, action, 'update');
+});
+
+export const replaceMultipleElementsStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.replaceMultipleElementsStyles>) {
+  yield call(updateOrReplaceMultipleElementsStyles, action, 'replace');
 });
 
 export const removeMultipleElementsStylesSaga = compose(
@@ -547,20 +618,20 @@ export const removeMultipleElementsStylesSaga = compose(
   const { ids, cssPropertiesNames } = action.payload;
 
   if (!ids || !ids.length) {
-    console.error(
+    logger.error(
       `You have to provide list of elements' IDs for action ${action.type}`,
     );
     return;
   }
 
   if (!cssPropertiesNames || !cssPropertiesNames.length) {
-    console.error(
+    logger.error(
       `You have to provide list of CSS properties for action ${action.type}`,
     );
   }
 
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -663,7 +734,7 @@ export const removeElementStylesSaga = compose(
     const { id, cssPropertiesNames } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -692,6 +763,66 @@ export const removeElementStylesSaga = compose(
   }
 });
 
+export function* updateElementImage(
+  elementId: string,
+  image: File,
+  meta: ElementHistoryMeta,
+) {
+  const parsedID = parseInt(elementId);
+  const formData = new FormData();
+  formData.append('image', new Blob([image]), image.name);
+
+  const {
+    result: changedElement,
+    error,
+  }: ReturnPromisedType<typeof apiUpdateElement> = yield call(
+    reqWrapper,
+    apiUpdateElement,
+    { data: formData, id: parsedID },
+  );
+  if (changedElement) {
+    yield call(
+      updateOrReplaceElementParameters,
+      Actions.updateElementParameters(
+        elementId,
+        {
+          ...changedElement.parameters,
+          imageURL: changedElement.image,
+          imageSize: {
+            width: 0,
+            height: 0,
+          },
+          width: 'auto',
+          height: 'auto',
+        },
+        { ...meta },
+      ),
+      UpdateDataActionType.UPDATE,
+    );
+    const selectedListId = yield select(selectCurrentAssetListId);
+    const assetLists = yield select(selectAllAssetLists);
+    const listId =
+      selectedListId || assetLists.length ? assetLists[0].id : null;
+    if (listId && changedElement.image) {
+      yield put(
+        Actions.uploadElementAsset(
+          changedElement.id,
+          {
+            imageURL: changedElement.image,
+          },
+          listId,
+          meta,
+        ),
+      );
+    } else {
+      throw new Error(
+        !listId ? 'Asset lists are not loaded' : 'Could not save image',
+      );
+    }
+  }
+  if (error) throw new Error(error);
+}
+
 export const updateElementImageSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
@@ -701,66 +832,13 @@ export const updateElementImageSaga = compose(
 )(function* (action: ReturnType<typeof Actions.updateElementImage>) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
     }
     const { itemID, image } = action.payload;
-
-    const parsedID = parseInt(itemID);
-    const formData = new FormData();
-    formData.append('image', new Blob([image]), image.name);
-
-    const {
-      result: changedElement,
-      error,
-    }: ReturnPromisedType<typeof apiUpdateElement> = yield call(
-      reqWrapper,
-      apiUpdateElement,
-      { data: formData, id: parsedID },
-    );
-    if (changedElement) {
-      yield call(
-        updateOrReplaceElementParameters,
-        Actions.updateElementParameters(
-          itemID,
-          {
-            ...changedElement.parameters,
-            imageURL: changedElement.image,
-            imageSize: {
-              width: 0,
-              height: 0,
-            },
-            width: 'auto',
-            height: 'auto',
-          },
-          { ...action.meta },
-        ),
-        UpdateDataActionType.UPDATE,
-      );
-      const selectedListId = yield select(selectSelectedAssetListId);
-      const assetLists = yield select(selectAllAssetLists);
-      const listId =
-        selectedListId || assetLists.length ? assetLists[0].id : null;
-      if (listId && changedElement.image) {
-        yield put(
-          Actions.uploadElementAsset(
-            changedElement.id,
-            {
-              imageURL: changedElement.image,
-            },
-            listId,
-            action.meta,
-          ),
-        );
-      } else {
-        throw new Error(
-          !listId ? 'Asset lists are not loaded' : 'Could not save image',
-        );
-      }
-    }
-    if (error) throw new Error(error);
+    yield call(updateElementImage, itemID, image, action.meta);
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -851,6 +929,7 @@ export function* loadCustomElementsSaga(
     );
     if (result) {
       yield put(Actions.addCustomElementsPage(result, action.payload.initial));
+      yield put(Actions.addElements(result.results));
     }
     if (error) throw new Error(error);
   } catch (e) {
@@ -869,10 +948,17 @@ export function* loadCustomElementsSaga(
 export const setActiveElementSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
 )(function* (action: ReturnType<typeof Actions.setActiveElement>) {
+  yield put(Actions.setEnabledPseudoClass(null));
   yield put(Actions.setEditableStyles('ownStyles'));
   yield put(Actions.setActiveElementId(action.payload));
   yield put(Actions.setCanCreateGroup(false));
   yield put(Actions.setSelectedElements([action.payload]));
+});
+
+export const setActiveNNModel = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(function* (action: ReturnType<typeof Actions.setActiveNNModel>) {
+  yield put(Actions.setActiveNNModel(action.payload.model));
 });
 
 export const toggleSelectedElementSaga = withRequiredPermissions(
@@ -880,26 +966,29 @@ export const toggleSelectedElementSaga = withRequiredPermissions(
 )(function* (action: ReturnType<typeof Actions.toggleSelectedElement>) {
   const isElementSelected = yield select(selectIsElementSelected);
   if (isElementSelected) {
-    const element = yield select(selectElementById(action.payload.id));
+    const element = yield select(selectElementById, action.payload.id);
     const selectedElementsIds = yield select(selectSelectedElementsIds);
     const selectedElements = yield select(
       selectElementsByIds(selectedElementsIds),
     );
-
-    const buoyancies = [element, ...selectedElements].map((el) => el.buoyancy);
-    const minBuoyancy = Math.min(...buoyancies);
-    const maxBuoyancy = Math.max(...buoyancies);
-    const canCreateGroup =
-      !!selectedElements.length &&
-      selectedElements.every((el) => el.parent === element.parent) &&
-      maxBuoyancy - minBuoyancy === selectedElements.length &&
-      !selectedElements.filter(
-        (groupEl) =>
-          !!groupEl.parameters.groupElements ||
-          !!groupEl.parameters.sourceElementId,
-      ).length;
-    yield put(Actions.setCanCreateGroup(canCreateGroup));
-    yield put(Actions.addSelectedElement(action.payload.id));
+    if (selectedElements[0].type === element.type) {
+      const buoyancies = [element, ...selectedElements].map(
+        (el) => el.buoyancy,
+      );
+      const minBuoyancy = Math.min(...buoyancies);
+      const maxBuoyancy = Math.max(...buoyancies);
+      const canCreateGroup =
+        !!selectedElements.length &&
+        selectedElements.every((el) => el.parent === element.parent) &&
+        maxBuoyancy - minBuoyancy === selectedElements.length &&
+        !selectedElements.filter(
+          (groupEl) =>
+            !!groupEl.parameters.groupElements ||
+            !!groupEl.parameters.sourceElementId,
+        ).length;
+      yield put(Actions.setCanCreateGroup(canCreateGroup));
+      yield put(Actions.addSelectedElement(action.payload.id));
+    }
   } else {
     yield put(Actions.removeSelectedElement(action.payload.id));
   }
@@ -1076,8 +1165,8 @@ export const uploadElementImageByUrlSaga = compose(
     return;
   }
 
-  const { elementId, url, listId } = action.payload;
-
+  const { elementId, imageData, listId } = action.payload;
+  const { url, useInBackground } = imageData;
   try {
     const assetName = url.slice(url.lastIndexOf('/') + 1);
     const { error: uploadError, filename: backendImageURL } = yield call(
@@ -1109,15 +1198,29 @@ export const uploadElementImageByUrlSaga = compose(
       { ...action.meta },
     );
 
-    yield call(
-      updateOrReplaceElementParameters,
-      Actions.updateElementParameters(
-        elementId,
-        { imageURL: backendImageURL },
-        { ...action.meta },
-      ),
-      UpdateDataActionType.UPDATE,
-    );
+    if (useInBackground) {
+      yield call(
+        updateOrReplaceElementStyles,
+        Actions.updateElementStyles(
+          elementId,
+          {
+            backgroundImage: `url(${backendImageURL})`,
+          },
+          { ...action.meta },
+        ),
+        UpdateDataActionType.UPDATE,
+      );
+    } else {
+      yield call(
+        updateOrReplaceElementParameters,
+        Actions.updateElementParameters(
+          elementId,
+          { imageURL: backendImageURL },
+          { ...action.meta },
+        ),
+        UpdateDataActionType.UPDATE,
+      );
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar(
@@ -1149,9 +1252,10 @@ export const unbindGroupElementStylesSaga = compose(
     return;
   }
   try {
-    const element = yield select(selectElementById(id));
+    const element = yield select(selectElementById, id);
     const sourceElement = yield select(
-      selectElementById(element.parameters.sourceElementId),
+      selectElementById,
+      element.parameters.sourceElementId,
     );
     const { groupElements } = sourceElement.parameters;
     const paramsToUpdate = {
@@ -1197,3 +1301,139 @@ export const unbindGroupElementStylesSaga = compose(
     );
   }
 });
+
+export function* processDropTargetParamsSaga(
+  action: ReturnType<typeof Actions.processDropTargetParams>,
+) {
+  const { elementId, rect, isHorizontal, offset } = action.payload;
+  const element = yield select(selectElementById, elementId);
+  const dropTargetParams = yield select(selectCurrentDropTargetParams);
+
+  const elementIsContainer =
+    !element.parent || CONTAINER_GROUPS.includes(element?.parameters.group);
+
+  let newDropPosition = DropPosition.INSIDE;
+
+  let offsetParam = offset.y;
+  let sizeParam = rect.height;
+  let posParam = rect.y;
+  if (isHorizontal) {
+    offsetParam = offset.x;
+    posParam = rect.x;
+    sizeParam = rect.width;
+  }
+
+  if (
+    offsetParam > posParam &&
+    offsetParam < posParam + (elementIsContainer ? 10 : sizeParam / 2)
+  ) {
+    newDropPosition = isHorizontal ? DropPosition.BEFORE : DropPosition.ABOVE;
+  } else if (elementIsContainer && offsetParam < posParam + sizeParam - 10) {
+    newDropPosition = DropPosition.INSIDE;
+  } else {
+    newDropPosition = isHorizontal ? DropPosition.AFTER : DropPosition.BELOW;
+  }
+
+  if (
+    dropTargetParams?.id !== elementId ||
+    dropTargetParams.position !== newDropPosition
+  ) {
+    yield putResolve(
+      Actions.setCurrentDropTargetParams(elementId, newDropPosition),
+    );
+  }
+}
+
+export function* processDropElementSaga(
+  action: ReturnType<typeof Actions.processDropElement>,
+) {
+  const { dragSource, dropType } = action.payload;
+  const dropTargetParams = yield select(selectCurrentDropTargetParams);
+  if (
+    dropType === ElementType.ELEMENT &&
+    dropTargetParams.id === dragSource.id
+  ) {
+    return;
+  }
+  const screenId = yield select(selectCurrentScreenId);
+  const dropTarget = yield select(selectElementById, dropTargetParams.id);
+  const elementIsContainer =
+    !dropTarget.parent ||
+    CONTAINER_GROUPS.includes(dropTarget.parameters.group);
+
+  let dropBuoyancy = dropTarget.buoyancy;
+  if (dropTargetParams.position === DropPosition.INSIDE) {
+    dropBuoyancy = dropTarget.children.length;
+  } else if (
+    [DropPosition.AFTER, DropPosition.BELOW].includes(dropTargetParams.position)
+  ) {
+    dropBuoyancy = dropTarget.buoyancy + 1;
+  }
+  const newParentId = elementIsContainer ? dropTarget.id : dropTarget.parent;
+  if (dropType === ElementType.ELEMENT) {
+    const dragSourceEl = dragSource as StateElement;
+    yield put(
+      Actions.moveElement(
+        dragSourceEl.id,
+        {
+          oldIndex: (dragSource as StateElement).buoyancy,
+          newIndex: dropBuoyancy,
+        },
+        {
+          oldParentId: (dragSource as StateElement).parent || '',
+          newParentId,
+        },
+        { screenId },
+      ),
+    );
+  } else {
+    const { id, type, name, custom, parameters } = dragSource as ElementData;
+    yield put(
+      Actions.createElements(
+        {
+          createdElements: [{ id, type, name, custom, parameters }],
+          parentId: newParentId,
+          index: dropBuoyancy,
+        },
+        { screenId },
+      ),
+    );
+  }
+  yield put(Actions.setCurrentDropTargetParams(null));
+}
+
+export const setEnabledPseudoClass = function* (
+  action: ReturnType<typeof Actions.setEnabledPseudoClass>,
+) {
+  const { pseudoClass, elementId } = action.payload;
+  const previousPseudoClass = yield select(selectEnabledPseudoClass);
+  if (pseudoClass === previousPseudoClass) {
+    return;
+  }
+  const activeElementId = yield select(selectActiveElementId);
+  const element = yield select(selectElementById, elementId || activeElementId);
+  if (element) {
+    const pseudoClassViewStyles = pseudoClass
+      ? {
+          ...element.styles.ownStyles,
+          ...(element.styles.pseudoClassStyles &&
+          element.styles.pseudoClassStyles[pseudoClass]
+            ? element.styles.pseudoClassStyles[pseudoClass]
+            : {}),
+        }
+      : null;
+    yield put(
+      Actions.updateStateElement(element.id, {
+        styles: {
+          ...element.styles,
+          pseudoClassViewStyles,
+        },
+      }),
+    );
+  }
+  yield put(Actions.setStatePseudoClass(pseudoClass));
+};
+
+export const setEnabledPseudoClassSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+)(setEnabledPseudoClass);

@@ -1,7 +1,8 @@
 import { RouterState } from 'connected-react-router';
 import React from 'react';
 import { OptionsObject, SnackbarKey } from 'notistack';
-import { DropPosition } from '@Constants/dragAndDrop';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
+import { XYCoord } from 'react-dnd';
 import {
   CreatedElement,
   DropTargetParams,
@@ -35,7 +36,18 @@ import {
   PaginatedResponse,
   UserProjectPermission,
   PermissionsUserData,
-  ScreenInfo,
+  EditScreenData,
+  ProfileDataUIParameters,
+  VIAFile,
+  VIAData,
+  FileToUpload,
+  ChatCredentials,
+  UIFramework,
+  ElementData,
+  NNModelName,
+  VIARegions,
+  importData,
+  ParsedImagePalette,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -59,6 +71,7 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
+  imagePalette: ParsedImagePalette | null;
 };
 
 export type ProjectUiState = {
@@ -66,6 +79,8 @@ export type ProjectUiState = {
   itemToCopyInfo: ItemToCopyInfo | null;
   savedElementsValues: SavedElementsValues;
   showContainersBorders: boolean;
+  showGrid: boolean;
+  exportScreenFlag: boolean;
   currentDropTargetParams: DropTargetParams | null;
   bordersEnabled: boolean;
   canCreateGroup: boolean;
@@ -75,12 +90,13 @@ export type ProjectUiState = {
   };
   editorDocument: Document | null;
   newScreenModalOpen: boolean;
+  pseudoClass: string | null;
   sidebar: {
     open: boolean;
     iframe: null | HTMLIFrameElement;
     host: string;
   };
-  tabsAutoSwitch: boolean;
+  isCanImportSite: boolean;
 };
 
 export type ProjectEditState = {
@@ -94,16 +110,30 @@ export type ProjectEditState = {
   uploadedImageInfo?: UploadedImageInfo;
   selectedElementsIds: string[];
   masterScreenId: number | null;
+  activeNNModel: NNModelName;
+  isLibraryTab: Boolean;
   VIAMode: {
     enabled: boolean;
-    regions: Normalized<VIARegion>;
+    regions: {
+      fdict: Normalized<VIARegion>;
+      fordict: Normalized<VIARegion>;
+      opencvdict: Normalized<VIARegion>;
+      cnndict: Normalized<VIARegion>;
+    };
     activeRegionId: string;
     annotatedElementId: string;
-    annotatedImageURL: string;
+    annotatedImageFile: FileToUpload | null;
     copiedRegion: VIARegion | null;
+    resultId: string;
+    blockType: NNBlockType;
+    viaData: {
+      fdict: Record<string, Omit<VIAFile, 'regions'>>;
+      fordict: Record<string, Omit<VIAFile, 'regions'>>;
+      opencvdict: Record<string, Omit<VIAFile, 'regions'>>;
+      cnndict: Record<string, Omit<VIAFile, 'regions'>>;
+    };
   };
   freeCanvas: {
-    enabled: boolean;
     lastElements: {
       [id: string]: {
         offset: number;
@@ -123,8 +153,9 @@ export type ProjectCommunicationState = {
   projectLoader: boolean;
   projectCreateLoader: boolean;
   analyzerLoader: boolean;
-  assetsLoader: boolean;
+  assetsListsLoader: boolean;
   importLoader: boolean;
+  importValue: importData;
 };
 
 export type ProjectControlState = {
@@ -159,6 +190,7 @@ export type UserState = {
   userGuide: {
     active: boolean;
   };
+  chat: ChatCredentials;
 };
 
 export type Notification = {
@@ -197,6 +229,7 @@ export type CreateScreenData = {
   name: string;
   buoyancy: number;
   rootName?: string;
+  freeCanvas?: boolean;
 };
 
 export type UploadAssetData = {
@@ -254,13 +287,28 @@ export type UpdateProject = IAction<
   typeof TYPES.UPDATE_PROJECT,
   { project: Project }
 >;
+export type UpdateCurrentUIFramework = IAction<
+  typeof TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+  {
+    uiFramework: UIFramework;
+  }
+>;
+export type UpdateCurrentUIFrameworkVariables = IAction<
+  typeof TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+  {
+    [name: string]: string;
+  }
+>;
+export type ResetCurrentUIFrameworkVariables = IPlainAction<
+  typeof TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES
+>;
 export type ChangeScreensOrder = IAction<
   typeof TYPES.CHANGE_SCREENS_ORDER,
   Indices
 >;
-export type RenameProject = IAction<
-  typeof TYPES.RENAME_PROJECT,
-  { projectID: number; name: string }
+export type UpdateNameAndTagsProject = IAction<
+  typeof TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
+  { projectID: number; name: string; tags: string }
 >;
 export type SetProjectListLoader = IAction<
   typeof TYPES.SET_PROJECT_LIST_LOADER,
@@ -298,8 +346,8 @@ export type SetAnalyzerLoader = IAction<
   typeof TYPES.SET_ANALYZER_LOADER,
   { active: boolean }
 >;
-export type SetAssetsLoader = IAction<
-  typeof TYPES.SET_ASSETS_LOADER,
+export type SetAssetsListsLoader = IAction<
+  typeof TYPES.SET_ASSETS_LISTS_LOADER,
   { active: boolean }
 >;
 export type DeleteScreen = IAction<
@@ -311,12 +359,12 @@ export type RestoreScreen = IAction<
   { projectId: number; screenId: number },
   HistoryMeta
 >;
-export type EditScreen = IAction<
-  typeof TYPES.EDIT_SCREEN,
+export type EditScreenNameAndData = IAction<
+  typeof TYPES.EDIT_SCREEN_NAME_AND_DATA,
   {
     projectID: number;
     screenID: number;
-    screenInfo: ScreenInfo;
+    editData: EditScreenData;
   }
 >;
 export type CreateScreen = IAction<
@@ -363,8 +411,7 @@ export type SetCurrentScreenId = IAction<
 >;
 export type SetSelectedAssetListId = IAction<
   typeof TYPES.SET_SELECTED_ASSET_LIST_ID,
-  { assetListId: string },
-  HistoryMeta
+  { assetListId: string | null }
 >;
 export type SetScreens = IAction<
   typeof TYPES.SET_SCREENS,
@@ -386,6 +433,11 @@ export type UpdateElement = IAction<
 >;
 export type ToggleContainersBorders = IAction<
   typeof TYPES.TOGGLE_CONTAINERS_BORDERS,
+  boolean
+>;
+export type ToggleGrid = IAction<typeof TYPES.TOGGLE_GRID, boolean>;
+export type ExportScreenFlag = IAction<
+  typeof TYPES.EXPORT_SCREEN_FLAG,
   boolean
 >;
 export type SetBordersEnabled = IAction<
@@ -420,6 +472,13 @@ export type RemoveElementClassName = IAction<
   { elementID: string; className: string },
   ElementHistoryMeta
 >;
+
+export type UpdateDefaultStyles = IAction<
+  typeof TYPES.UPDATE_DEFAULT_STYLES,
+  { classNames: Entity[]; styles: React.CSSProperties; controlKey: string },
+  ElementHistoryMeta
+>;
+
 export type UpdateSharedStyles = IAction<
   typeof TYPES.UPDATE_SHARED_STYLES,
   { className: Entity; styles: React.CSSProperties },
@@ -447,6 +506,14 @@ export type UpdateElementStyles = IAction<
 >;
 export type UpdateMultipleElementsStyles = IAction<
   typeof TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
+  {
+    ids: string[];
+    styles: { [id: string]: React.CSSProperties };
+  },
+  ElementHistoryMeta
+>;
+export type ReplaceMultipleElementsStyles = IAction<
+  typeof TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
   { ids: string[]; styles: { [id: string]: React.CSSProperties } },
   ElementHistoryMeta
 >;
@@ -457,7 +524,7 @@ export type RemoveMultipleElementsStyles = IAction<
 >;
 export type UpdateElementImage = IAction<
   typeof TYPES.UPDATE_ELEMENT_IMAGE,
-  { itemID: string; image: File; assetId?: string | null },
+  { itemID: string; image: File },
   ElementHistoryMeta
 >;
 export type UploadElementAsset = IAction<
@@ -473,7 +540,14 @@ export type UploadElementAsset = IAction<
 export type AssetData = {
   file?: any | null;
   imageURL?: string;
+  useInBackground?: boolean;
 };
+
+export type ImageData = {
+  url: string;
+  useInBackground?: boolean;
+};
+
 export type UpdateElementParameters = IAction<
   typeof TYPES.UPDATE_ELEMENT_PARAMETERS,
   {
@@ -548,6 +622,12 @@ export type CreateGroupChildren = IAction<
   ElementHistoryMeta
 >;
 
+export type CreateLibraryElements = IAction<
+  typeof TYPES.CREATE_LIBRARY_ELEMENTS,
+  { createdElements: CreatedElement[]; parentId?: string; index?: number },
+  ElementHistoryMeta
+>;
+
 export type CreateElementsGroup = IAction<
   typeof TYPES.CREATE_ELEMENTS_GROUP,
   { name: string; ids: string[] },
@@ -577,8 +657,8 @@ export type AutoAnalyzeImage = IAction<
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
-export type SemiautoAnalyzeImage = IAction<
-  typeof TYPES.SEMIAUTO_ANALYZE_IMAGE,
+export type RecognizeImage = IAction<
+  typeof TYPES.RECOGNIZE_IMAGE,
   { file: any; parentId: string; blockType: NNBlockType },
   ElementHistoryMeta
 >;
@@ -616,6 +696,23 @@ export type SetCurrentDropTargetParams = IAction<
   typeof TYPES.SET_CURRENT_DROP_TARGET_PARAMS,
   { id: string; position: DropPosition }
 >;
+export type ProcessDropTargetParams = IAction<
+  typeof TYPES.PROCESS_DROP_TARGET_PARAMS,
+  {
+    elementId: string;
+    rect: DOMRect;
+    offset: XYCoord;
+    isHorizontal: boolean;
+  }
+>;
+export type ProcessDropElement = IAction<
+  typeof TYPES.PROCESS_DROP_ELEMENT,
+  {
+    dragSource: StateElement | ElementData;
+    dropType: ElementType;
+  }
+>;
+
 export type SetEditableStyles = IAction<
   typeof TYPES.SET_EDITABLE_STYLES,
   { className: string }
@@ -665,22 +762,6 @@ export type UnbindGroupElementStyles = IAction<
   { id: string; styles: React.CSSProperties },
   ElementHistoryMeta
 >;
-
-/* export type UnbindGroupElement = IAction<
-  typeof TYPES.UNBIND_GROUP_ELEMENT,
-  { id: string },
-  ElementHistoryMeta
->;
-export type UnbindGroupInstance = IAction<
-  typeof TYPES.UNBIND_GROUP_INSTANCE,
-  { id: string },
-  ElementHistoryMeta
->;
-export type UnbindMasterGroupElement = IAction<
-  typeof TYPES.UNBIND_MASTER_ELEMENT,
-  { id: string },
-  ElementHistoryMeta
->; */
 export type UnbindMasterGroupInstance = IAction<
   typeof TYPES.UNBIND_MASTER_INSTANCE,
   { id: string },
@@ -749,6 +830,15 @@ export type RemoveFileInput = IAction<
   { id: string }
 >;
 
+export type LoadAssetLists = IAction<typeof TYPES.LOAD_ASSET_LISTS, string>;
+
+export type LoadAssets = IAction<
+  typeof TYPES.LOAD_ASSETS,
+  {
+    selectedListId: string;
+  }
+>;
+
 export type SetAssetLists = IAction<
   typeof TYPES.SET_ASSET_LISTS,
   PaginatedArray<AssetsList>
@@ -788,7 +878,7 @@ export type UploadImageByUrl = IAction<
   typeof TYPES.UPLOAD_IMAGE_BY_URL,
   {
     elementId: string;
-    url: string;
+    imageData: ImageData;
     listId: string;
   },
   ElementHistoryMeta
@@ -842,11 +932,6 @@ export type AddStateElements = IAction<
   typeof TYPES.ADD_STATE_ELEMENTS,
   { elements: StateElementsToAdd<Entity>[] },
   ElementHistoryMeta
->;
-
-export type ChangeFreeCanvasMode = IAction<
-  typeof TYPES.CHANGE_FREE_CANVAS_MODE,
-  boolean
 >;
 
 export type ChangeScreenFormat = IAction<typeof TYPES.CHANGE_LAYOUT, Layout>;
@@ -966,8 +1051,7 @@ export type SetSelectedElements = IAction<
 
 export type UpdateStateElement = IAction<
   typeof TYPES.UPDATE_STATE_ELEMENT,
-  { elementId: string; data: Partial<StateElement> },
-  ElementHistoryMeta
+  { elementId: string; data: Partial<StateElement> }
 >;
 
 export type UpdateMultipleStateElements = IAction<
@@ -993,26 +1077,43 @@ export type SetMasterScreenId = IAction<
 
 export type SetVIAMode = IAction<typeof TYPES.SET_VIA_MODE, boolean>;
 
-export type SetViaRegions = IAction<
-  typeof TYPES.SET_VIA_REGIONS,
-  Normalized<VIARegion>
->;
+export type SetViaRegions = IAction<typeof TYPES.SET_VIA_REGIONS, VIARegions>;
 
 export type UpdateVIARegion = IAction<
   typeof TYPES.UPDATE_VIA_REGION,
   { id: VIARegion['id']; data: Partial<VIARegion> }
 >;
 
+export type UpdateVIARegionSuccess = IAction<
+  typeof TYPES.UPDATE_VIA_REGION_SUCCESS,
+  { id: VIARegion['id']; data: Partial<VIARegion> }
+>;
+
 export type SetActiveVIARegion = IAction<
   typeof TYPES.SET_ACTIVE_VIA_REGION,
-  string
+  { id: string; isUpdatingLayer: boolean }
 >;
 
 export type CreateVIARegion = IPlainAction<typeof TYPES.CREATE_VIA_REGION>;
 
+export type CreateVIARegionSuccess = IAction<
+  typeof TYPES.CREATE_VIA_REGION_SUCCESS,
+  VIARegion
+>;
+
+export type RestoreVIARegion = IAction<
+  typeof TYPES.RESTORE_VIA_REGION,
+  VIARegion
+>;
+
 export type DeleteVIARegion = IAction<
   typeof TYPES.DELETE_VIA_REGION,
   string | undefined
+>;
+
+export type DeleteVIARegionSuccess = IAction<
+  typeof TYPES.DELETE_VIA_REGION_SUCCESS,
+  string
 >;
 
 export type SetAnnotatedElement = IAction<
@@ -1020,15 +1121,41 @@ export type SetAnnotatedElement = IAction<
   string
 >;
 
+export type SetVIAResultId = IAction<typeof TYPES.SET_VIA_RESULT_ID, string>;
+
 export type UpdateVIARegionLayer = IAction<
   typeof TYPES.UPDATE_VIA_REGION_LAYER,
-  { regionId: string; layer: number }
+  { id: string; layer: number }
+>;
+
+export type SetActiveNNModel = IAction<
+  typeof TYPES.SET_ACTIVE_NN_MODEL,
+  { model: string }
+>;
+
+export type IsLibraryTab = IAction<
+  typeof TYPES.IS_LIBRARY_TAB,
+  { isLibraryTab: Boolean }
+>;
+
+export type UpdateVIARegionLayerSuccess = IAction<
+  typeof TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
+  { id: string; layer: number }
 >;
 
 export type SetAnnotatedImageURL = IAction<
   typeof TYPES.SET_ANNOTATED_IMAGE_URL,
-  string
+  FileToUpload
 >;
+
+export type SetVIAData = IAction<
+  typeof TYPES.SET_VIA_DATA,
+  {
+    value: VIAData;
+  }
+>;
+
+export type SetBlockType = IAction<typeof TYPES.SET_BLOCK_TYPE, NNBlockType>;
 
 export type FinishAnnotaion = IPlainAction<typeof TYPES.FINISH_ANNOTATION>;
 
@@ -1050,6 +1177,29 @@ export type SetSidebarIframe = IAction<
 
 export type SetSidebarHost = IAction<typeof TYPES.SET_SIDEBAR_HOST, string>;
 
+export type SetEnabledPseudoClass = IAction<
+  typeof TYPES.SET_ENABLED_PSEUDO_CLASS,
+  {
+    pseudoClass: string | null;
+    elementId?: string | null;
+  }
+>;
+
+export type SetStatePseudoClass = IAction<
+  typeof TYPES.SET_STATE_PSEUDO_CLASS,
+  string | null
+>;
+
+export type GenerateImagePalette = IAction<
+  typeof TYPES.GENERATE_IMAGE_PALETTE,
+  string
+>;
+
+export type SetImagePalette = IAction<
+  typeof TYPES.SET_IMAGE_PALETTE,
+  ParsedImagePalette
+>;
+
 export type Action =
   | LoadProjects
   | SetUsersSearchValue
@@ -1062,7 +1212,7 @@ export type Action =
   | GetProject
   | SetCurrentProjectId
   | ChangeScreensOrder
-  | RenameProject
+  | UpdateNameAndTagsProject
   | SetProjectListLoader
   | SetProjectUsersLoader
   | SetUsersLoader
@@ -1072,9 +1222,9 @@ export type Action =
   | SetUpdateImageLoader
   | SetProjectCreateLoader
   | SetAnalyzerLoader
-  | SetAssetsLoader
+  | SetAssetsListsLoader
   | DeleteScreen
-  | EditScreen
+  | EditScreenNameAndData
   | CreateScreen
   | ActivateScreen
   | ClearAfterPrevScreen
@@ -1098,6 +1248,8 @@ export type Action =
   | SetMasterGroupsElementId
   | SetMasterElementsIds
   | ToggleContainersBorders
+  | ToggleGrid
+  | ExportScreenFlag
   | SetBordersEnabled
   | SetElementToCopy
   | CopyActiveElement
@@ -1121,6 +1273,11 @@ export type Action =
   | ReplaceElementStyles
   | RemoveElementClassName
   | UpdateProject
+  | UpdateCurrentUIFramework
+  | UpdateCurrentUIFrameworkVariables
+  | ResetCurrentUIFrameworkVariables
+  | SetVIAData
+  | SetBlockType
   | RemoveSharedStyles
   | UpdateSharedStyles
   | AddElementClassName
@@ -1143,12 +1300,13 @@ export type Action =
   | UnwrapStateElements
   | SetProjectsData
   | ExtractStateElement
-  | ChangeFreeCanvasMode
   | UpdateLastElements
   | ChangeScreenFormat
   | RotateScreenFormat
   | SetScreens
   | SetCurrentDropTargetParams
+  | ProcessDropTargetParams
+  | ProcessDropElement
   | UpdateElement
   | UpdateElementsLoading
   | SetCustomElements
@@ -1176,7 +1334,10 @@ export type Action =
   | RemoveSelectedElement
   | SetSelectedElements
   | UpdateMultipleElementsStyles
+  | ReplaceMultipleElementsStyles
   | RemoveMultipleElementsStyles
+  | LoadAssetLists
+  | LoadAssets
   | UploadAsset
   | UploadElementAsset
   | UploadImageByUrl
@@ -1193,11 +1354,16 @@ export type Action =
   | AddUndoActions
   | AddRedoActions
   | SetVIAMode
+  | SetActiveNNModel
+  | IsLibraryTab
   | SetViaRegions
   | UpdateVIARegion
+  | UpdateVIARegionSuccess
   | SetActiveVIARegion
-  | CreateVIARegion
+  | CreateVIARegionSuccess
+  | DeleteVIARegionSuccess
   | DeleteVIARegion
+  | RestoreVIARegion
   | SetAnnotatedElement
   | UpdateVIARegionLayer
   | FinishAnnotaion
@@ -1209,10 +1375,25 @@ export type Action =
   | SetSidebarIframe
   | SetSidebarHost
   | SetValueImportLoader
-  | ToggleEnableTabsAutoSwitch;
+  | setImportValue
+  | SetVIAResultId
+  | UpdateVIARegionLayerSuccess
+  | UpdateUISettingsParameters
+  | SetEnabledPseudoClass
+  | SetStatePseudoClass
+  | SetValueCheckRobots
+  | GenerateImagePalette
+  | SetImagePalette;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,
+  boolean
+>;
+
+export type setImportValue = IAction<typeof TYPES.SET_IMPORT_VALUE, importData>;
+
+export type SetValueCheckRobots = IAction<
+  typeof TYPES.SET_VALUE_CHECK_ROBOTS,
   boolean
 >;
 
@@ -1238,6 +1419,7 @@ export interface IPlainFailAction<T, E = string> extends IPlainAction<T> {
   error: E;
 }
 
-export type ToggleEnableTabsAutoSwitch = IPlainAction<
-  typeof TYPES.TOGGLE_TABS_AUTOSWITCH
+export type UpdateUISettingsParameters = IAction<
+  typeof TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+  Partial<ProfileDataUIParameters>
 >;

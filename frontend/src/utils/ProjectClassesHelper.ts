@@ -1,9 +1,10 @@
+import { CSSProperties } from 'react';
 import { Entity, Project, PropertyName } from '../types';
 
 export const updateProjectClasses = (
   project: Project,
   className: string,
-  styles: React.CSSProperties,
+  styles: CSSProperties,
 ): Project => {
   return {
     ...project,
@@ -14,6 +15,34 @@ export const updateProjectClasses = (
           ? { ...cssClass, rules: { ...cssClass.rules, ...styles } }
           : cssClass,
       ),
+    },
+  };
+};
+
+export const updateDefaultStyles = (
+  project: Project,
+  classNames: string[],
+  styles: CSSProperties,
+  controlKey: string,
+): Project => {
+  return {
+    ...project,
+    projectData: {
+      ...project.projectData,
+      defaultStyles: {
+        ...project.projectData.defaultStyles,
+        [controlKey]: {
+          ...project.projectData.defaultStyles[controlKey],
+          ...styles,
+        },
+      },
+      classes: project.projectData.classes.map((cssClass) => {
+        return classNames.find(
+          (className) => className === cssClass.className,
+        ) !== undefined
+          ? { ...cssClass, rules: { ...cssClass.rules, ...styles } }
+          : cssClass;
+      }),
     },
   };
 };

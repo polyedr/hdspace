@@ -1,6 +1,6 @@
 export interface CalendarOptions {
   id?: string;
-  calendarSize?: CalendarSize;
+  calendarSize?: string;
   layoutModifiers?: LayoutModifier[];
   theme?: string;
   primaryColor?: string;
@@ -29,7 +29,7 @@ export interface Day {
   selected?: boolean;
 }
 
-export type CalendarSize = 'small' | 'large';
+export type CalendarSize = string; // | 'small' | 'large';
 
 export type LayoutModifier = 'month-left-align';
 

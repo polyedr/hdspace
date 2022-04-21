@@ -1,4 +1,8 @@
-import { createMuiTheme, darken, lighten } from '@material-ui/core/styles';
+import {
+  createTheme as createMuiTheme,
+  darken,
+  lighten,
+} from '@material-ui/core/styles';
 
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
@@ -15,8 +19,8 @@ declare module '@material-ui/core/styles/createPalette' {
 export const LEFT_PANEL_WIDTH = 220;
 export const LEFT_PANEL_WIDTH_MIN = 64;
 export const RIGHT_PANEL_WIDTH = 310;
+export const RIGHT_PANEL_WIDTH_MIN = 50;
 export const PANEL_TRANSITION_DURATION = 250;
-export const DEFAULT_COMPONENTS_BACKGROUND = '#1890ff';
 
 const theme = createMuiTheme({
   palette: {
@@ -47,6 +51,9 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
     fontSize: 14,
+    body1: {
+      fontSize: 14,
+    },
   },
   transitions: {},
 });

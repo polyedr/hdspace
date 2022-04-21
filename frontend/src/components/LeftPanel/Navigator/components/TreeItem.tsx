@@ -4,6 +4,8 @@ import cn from 'classnames';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
+import { useDispatch } from 'react-redux';
+import { toggleSelectedElement } from '@Redux/project/actions';
 import ChevronDown from './Icons/chevron-down';
 import ChevronRight from './Icons/chevron-right';
 
@@ -132,6 +134,7 @@ const TreeItem: React.FC<Props> = (props) => {
     onContextMenu,
     isActive,
   } = props;
+  const dispatch = useDispatch();
 
   const classes = useStyles(props);
   const ElementIcon = ICONS[item.data.type];
@@ -143,14 +146,17 @@ const TreeItem: React.FC<Props> = (props) => {
     [item.id, item.isExpanded, onCollapse, onExpand],
   );
 
-  const handleClick = useCallback(() => {
-    select(item.id as string);
-  }, [item.id, select]);
-
-  const handleFocus = useCallback(() => select(item.id as string), [
-    item.id,
-    select,
-  ]);
+  const handleClick = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      if (event.ctrlKey || event.metaKey) {
+        dispatch(toggleSelectedElement(String(item.id)));
+      } else {
+        select(item.id as string);
+      }
+    },
+    [item.id, select, dispatch],
+  );
 
   return (
     <div
@@ -165,7 +171,6 @@ const TreeItem: React.FC<Props> = (props) => {
       onContextMenu={(ev) => onContextMenu(ev, item)}
       onDoubleClick={handleDoubleClick}
       onClick={handleClick}
-      onFocus={handleFocus}
       aria-selected={isActive}
       {...(isParent
         ? { role: 'group', 'aria-expanded': item.isExpanded }

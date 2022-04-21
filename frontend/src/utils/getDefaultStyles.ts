@@ -1,12 +1,13 @@
-import { Entity } from '../types';
-import { DEFAULT_ELEMENTS_STYLES } from '../domain/libraryElements/defaultStyles';
+import { Entity } from '@Src/types';
+import { DEFAULT_ELEMENTS_STYLES } from '@Domain/libraryElements/defaultStyles';
+import { CSSProperties } from 'react';
 
-const getDefaultStyles = (elementType: Entity): React.CSSProperties => {
+const getDefaultStyles = (elementType: Entity): CSSProperties => {
   return Object.values(
     DEFAULT_ELEMENTS_STYLES[elementType] as {
-      [key: string]: React.CSSProperties;
+      [key: string]: CSSProperties;
     },
-  ).reduce((acc, styles) => ({ ...acc, ...styles }), {} as React.CSSProperties);
+  ).reduce((acc, styles) => ({ ...acc, ...styles }), {} as CSSProperties);
 };
 
 export default getDefaultStyles;

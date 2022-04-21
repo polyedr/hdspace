@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { omit } from 'ramda';
 import { call, put, select } from 'redux-saga/effects';
 import { convertElementFromResponse } from '@Api/converters/fromResponse';
@@ -26,7 +27,7 @@ import {
   restoreMapElement,
   restoreMapElementChildren,
 } from '@Utils/normalizedStateHelpers';
-
+import logger from 'loglevel';
 import { DEFAULT_INDENTS } from '@Domain/libraryElements/defaultStyles';
 import {
   ElementsToCreate,
@@ -52,10 +53,7 @@ import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPer
 import { compose } from 'redux';
 import * as Actions from '../actions';
 import { enqueueSnackbar } from '../../notification/actions';
-import {
-  selectCurrentScreen,
-  selectCurrentScreenId,
-} from '../selectors/screen';
+import { selectCurrentScreen } from '../selectors/screen';
 import { reqWrapper } from './shared';
 import {
   selectActiveElement,
@@ -75,6 +73,7 @@ import {
 import withActionsHistory from '../wrappers/withActionsHistory';
 import {
   createElements,
+  createLibraryElements,
   updateOrReplaceMultipleElementsParameters,
 } from './common';
 
@@ -199,16 +198,28 @@ export const createElementsSaga = compose(
 )(function* (action: ReturnType<typeof Actions.createElements>) {
   try {
     const { createdElements, parentId, index } = action.payload;
+
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
     }
     const activeElement = yield select(selectActiveElement);
     const parentElement = yield select(
-      selectElementById(parentId || activeElement.id),
+      selectElementById,
+      parentId || activeElement.id,
     );
+    if (createdElements[0].shared) {
+      yield put(
+        Actions.createLibraryElements(
+          { createdElements, parentId: parentId || activeElement.id, index },
+          { ...action.meta },
+        ),
+      );
+      yield put(Actions.loadCustomElements(true));
+      return;
+    }
     if (!parentElement) {
       yield put(
         enqueueSnackbar({
@@ -251,7 +262,7 @@ export const createChildElementsSaga = withActionsHistory(function* (
 ) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -267,7 +278,6 @@ export const createChildElementsSaga = withActionsHistory(function* (
     const customLibraryElements = yield select(selectCustomLibraryElements);
 
     const elementGroups = yield select(selectElementTreeGroups);
-
     const convertedCreatedElements = createdElements.map((dEl) => {
       if (dEl.custom) {
         return convertElementToRequest(
@@ -292,7 +302,6 @@ export const createChildElementsSaga = withActionsHistory(function* (
         dEl.parameters,
       );
     });
-
     const elementsIds = yield call(
       createElements,
       [
@@ -321,6 +330,60 @@ export const createChildElementsSaga = withActionsHistory(function* (
   }
 });
 
+export const createLibraryElementsSaga = withActionsHistory(function* (
+  action: ReturnType<typeof Actions.createChildElements>,
+) {
+  try {
+    if (!action.meta) {
+      logger.error(
+        `You have to provide metainformation for action ${action.type}`,
+      );
+      return;
+    }
+
+    const { createdElements, parentId, index } = action.payload;
+
+    const activeElementId: string = yield select(selectActiveElementId);
+    const activeElementTree: LibraryElement<Entity> = yield select(
+      selectElementAsTree(parentId || activeElementId),
+    );
+
+    const convertedCreatedElements = createdElements.map((dEl) => {
+      return convertCreatedElementToRequest(
+        dEl.type as Entity,
+        dEl.name || null,
+        null,
+        dEl.parameters,
+        dEl.shared,
+        dEl.styles,
+      );
+    });
+    yield call(
+      createLibraryElements,
+      [
+        {
+          elements: convertedCreatedElements,
+          parent: activeElementTree,
+          index,
+        },
+      ],
+      {
+        ...action.meta,
+      },
+    );
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+});
+
 export const createGroupChildrenSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
@@ -330,7 +393,7 @@ export const createGroupChildrenSaga = compose(
 )(function* (action: ReturnType<typeof Actions.createGroupChildren>) {
   const { createdElements, parentId, index } = action.payload;
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -480,7 +543,7 @@ export const addChildrenToElementSaga = compose(
   try {
     const { children, elementId } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -532,7 +595,7 @@ export const addChildToElementSaga = compose(
   try {
     const { childType, elementId, parameters } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -578,22 +641,17 @@ export const deleteElementSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof Actions.deleteElement>) {
-  const { id } = action.payload;
   try {
+    const { id } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
-      );
-      yield put(
-        enqueueSnackbar({
-          message: 'You should provide meta information for this action',
-          options: { variant: 'error' },
-        }),
       );
       return;
     }
-    const element = yield select(selectElementById(id));
+    const element = yield select(selectElementById, id);
     const { groupElements, sourceElementId } = element.parameters;
+
     if (groupElements) {
       yield put(
         Actions.softDeleteMultipleElements([id, ...groupElements], action.meta),
@@ -601,7 +659,7 @@ export const deleteElementSaga = withRequiredPermissions(
     } else {
       yield put(Actions.softDeleteElement(id, action.meta));
       if (sourceElementId) {
-        const sourceElement = yield select(selectElementById(sourceElementId));
+        const sourceElement = yield select(selectElementById, sourceElementId);
         yield put(
           Actions.updateElementParameters(
             sourceElementId,
@@ -641,16 +699,15 @@ export const softDeleteSaga = compose(
 )(function* (action: ReturnType<typeof Actions.softDeleteElement>) {
   try {
     const { id } = action.payload;
-
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
     }
     const { screenId, useHistory } = action.meta;
 
-    const element: StateElement = yield select(selectElementById(id));
+    const element: StateElement = yield select(selectElementById, id);
 
     if (!element.parent) return;
 
@@ -758,7 +815,7 @@ export const softDeleteMultipleSaga = compose(
     const { ids } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       yield put(
@@ -775,7 +832,7 @@ export const softDeleteMultipleSaga = compose(
       (el) => !el.parent && !el.parameters.isGroup,
     );
     if (elementsWithoutParent.length) {
-      console.error(
+      logger.error(
         `Can not remove elements without parent: ${JSON.stringify(
           elementsWithoutParent,
         )}`,
@@ -875,7 +932,7 @@ export const restoreElementChildrenSaga = compose(
     }
     const { screenId, useHistory } = action.meta;
 
-    const element: StateElement = yield select(selectElementById(elementId));
+    const element: StateElement = yield select(selectElementById, elementId);
 
     if (!useHistory) {
       yield put(
@@ -1011,13 +1068,13 @@ export function* restoreElementSaga(
   try {
     const elementId = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
     }
     const { useHistory } = action.meta;
-    const element: StateElement = yield select(selectElementById(elementId));
+    const element: StateElement = yield select(selectElementById, elementId);
 
     if (!useHistory) {
       yield put(
@@ -1061,7 +1118,7 @@ export function* restoreElementSaga(
 
 export function* addElementToElement(elementId: string, parentId: string) {
   try {
-    const parent: StateElement = yield select(selectElementById(parentId));
+    const parent: StateElement = yield select(selectElementById, parentId);
 
     const parentData = {
       name: parent.name,
@@ -1099,7 +1156,7 @@ export function* wrapIntoContainer(
     const elements = yield select(selectElementsByIds(ids));
     const activeElement = yield select(selectActiveElement);
     if (elements.find((el) => el.parent !== activeElement.parent)) {
-      console.error('Can wrap only elements with same parent');
+      logger.error('Can wrap only elements with same parent');
       yield put(
         enqueueSnackbar({
           message: 'Can not add this element!',
@@ -1221,14 +1278,14 @@ export const wrapIntoContainerSaga = compose(
   try {
     const { id } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
     }
 
-    const element = yield select(selectElementById(id));
-    const parent = yield select(selectElementById(element.parent));
+    const element = yield select(selectElementById, id);
+    const parent = yield select(selectElementById, element.parent);
 
     const ids = yield call(
       wrapIntoContainer,
@@ -1274,7 +1331,7 @@ export const unwrapFromContainerSaga = compose(
   try {
     const { meta } = action;
     if (!meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -1330,19 +1387,9 @@ export const updateElementSaga = compose(
   withActionsHistory,
 )(function* (action: ReturnType<typeof Actions.updateElement>) {
   try {
-    const screenId = yield select(selectCurrentScreenId);
     const { elementID, data } = action.payload;
 
-    yield put(
-      Actions.updateStateElement(
-        elementID,
-        { ...data },
-        {
-          ...action.meta,
-          screenId,
-        },
-      ),
-    );
+    yield put(Actions.updateStateElement(elementID, { ...data }));
 
     const updatedElement: LibraryElement<any> = yield select(
       selectElementAsTree(elementID),
@@ -1401,7 +1448,7 @@ export const redoWrapIntoContainerSaga = compose(
 )(function* (action: ReturnType<typeof Actions.redoWrapIntoContainer>) {
   try {
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;

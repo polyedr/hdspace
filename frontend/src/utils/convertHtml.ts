@@ -6,17 +6,18 @@ const containerElements = {
   ASIDE: 'container',
   BODY: 'container',
   DETAILS: 'container',
-  DIV: 'container',
-  FIELDSET: 'container',
+  DIV: 'divBlock',
+  FIELDSET: 'html',
   FIGURE: 'container',
-  FOOTER: 'container',
-  FORM: 'container',
-  HEADER: 'container',
+  FOOTER: 'divBlock',
+  FORM: 'divBlock',
+  HEADER: 'divBlock',
   MAIN: 'container',
   NAV: 'container',
 } as const;
 const unsupportedElement = {
   AREA: null,
+  svg: null,
   AUDIO: null,
   BR: null,
   CANVAS: null,
@@ -29,7 +30,6 @@ const unsupportedElement = {
   HEAD: null,
   HR: null,
   IFRAME: null,
-  LINK: null,
   MAP: null,
   META: null,
   METER: null,
@@ -61,11 +61,12 @@ const unsupportedElement = {
 } as const;
 
 const tagMap: Record<Element['tagName'], Entity | null> = {
-  A: 'hyperlink',
   ABBR: 'textBlock',
   ADDRESS: 'textBlock',
   ARTICLE: 'container',
   B: 'textBlock',
+  A: 'label',
+  LINK: 'label',
   BDI: 'textBlock',
   BDO: 'textBlock',
   BLOCKQUOTE: 'paragraph',
@@ -108,7 +109,7 @@ const tagMap: Record<Element['tagName'], Entity | null> = {
   SECTION: 'section',
   SELECT: 'select',
   SMALL: 'textBlock',
-  SPAN: 'textBlock',
+  SPAN: 'label',
   STRIKE: 'textBlock',
   STRONG: 'textBlock',
   SUB: 'textBlock',
@@ -172,15 +173,29 @@ const extractStyles = (
   return cssRules.reduce(reducer, {});
 };
 
+const unsupportedElementList: string[] = [];
+
 const htmlElementToAdeviElement = (
   element: HTMLElement,
   cssRules: CSSStyleRule[],
   doc: Document,
 ): ServerElement<any> | null => {
-  const type = tagMap[element.tagName];
-  if (!type) return null;
+  let type = tagMap[element.tagName];
+  const htmlElementType = element.getAttribute('type');
 
+  if (htmlElementType === 'hidden' && type === 'textinput') {
+    return null;
+  }
+
+  const isURL = !!element.getAttribute('href');
   const { style: inlineStyle } = element;
+
+  if (!type) {
+    if (unsupportedElementList.indexOf(element.tagName) === -1) {
+      unsupportedElementList.push(element.tagName);
+    }
+    type = 'divBlock';
+  }
 
   const ownStyles = {
     ...extractStyles(element, cssRules, doc),
@@ -191,6 +206,15 @@ const htmlElementToAdeviElement = (
     textContent: element.textContent?.trim(),
     ...(type === 'heading' && { headingType: element.tagName.toLowerCase() }),
     ...(type === 'image' && { imageURL: element.getAttribute('src') }),
+    ...(isURL && { isLink: true, link: element.getAttribute('href') }),
+    ...(htmlElementType === 'password' &&
+      type === 'textinput' && { type: 'password' }),
+    ...(htmlElementType === 'number' &&
+      type === 'textinput' && { type: 'number' }),
+    ...(htmlElementType === 'phone' &&
+      type === 'textinput' && { type: 'phone' }),
+    ...(htmlElementType === 'email' &&
+      type === 'textinput' && { type: 'email' }),
   });
 
   return {
@@ -221,6 +245,7 @@ const htmlElementToAdeviElement = (
       ...adeviElement.styles,
       ownStyles,
     },
+    listOfUnsupportedElement: unsupportedElementList,
   };
 };
 

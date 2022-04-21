@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
@@ -8,11 +9,9 @@ import {
   selectMasterGroupsElementId,
   selectSelectedElements,
   selectSelectedElementsIds,
+  selectParentOfActiveElement,
 } from '@Redux/project/selectors/element';
-import {
-  selectEditableStyles,
-  selectFreeCanvasMode,
-} from '@Redux/project/selectors/base';
+import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import {
@@ -26,9 +25,10 @@ import {
   removeElementStyles,
   removeMultipleElementsStyles,
   removeSharedStyles,
+  replaceMultipleElementsStyles,
   unbindGroupElementStyles,
   updateElementParameters,
-  updateElementStyles,
+  updateMultipleElementsParameters,
   updateMultipleElementsStyles,
   updateSharedStyles,
 } from '@Redux/project/actions';
@@ -36,16 +36,21 @@ import { enqueueSnackbar } from '@Redux/notification/actions';
 import { ALL_ELEMENTS_INDEX, UNIQUE_CONTROLS } from '@Constants/defaultParams';
 import {
   selectCurrentScreenId,
+  selectFreeCanvasMode,
   selectMasterScreenEnabled,
 } from '@Redux/project/selectors/screen';
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { makeStyles } from '@material-ui/core/styles';
+
+import logger from 'loglevel';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Scrollbar from '../../UI/Scrollbar';
 import ControlSection from './helperComponents/ControlSection';
+import PseudoSelectorsSection from './PseudoSelectorsSection';
+import ElementType from './Controls/ElementType/ElementType';
 
 const useStyles = makeStyles({
   propertiesTab: {
@@ -58,6 +63,7 @@ const useStyles = makeStyles({
 const PropertiesTab: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const parentOfActiveElement = useSelector(selectParentOfActiveElement);
   const activeElement = useSelector(selectActiveElement);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
   const masterGroupsElementId = useSelector(selectMasterGroupsElementId);
@@ -91,7 +97,7 @@ const PropertiesTab: React.FC = () => {
 
   const handleConfirmSourceUnbinding = () => {
     if (!editedStyles) {
-      console.error('Edited styles is null!');
+      logger.error('Edited styles is null!');
       return;
     }
     dispatch(
@@ -190,7 +196,72 @@ const PropertiesTab: React.FC = () => {
       activeElement.id,
     ],
   );
-
+  const replaceStyles = useCallback(
+    (styles: React.CSSProperties) => {
+      if (masterScreenEnabled) {
+        if (isGroupSource) {
+          const groupElementsIds = activeElement.parameters.groupElements;
+          dispatch(
+            replaceMultipleElementsStyles(
+              [activeElement.id, ...groupElementsIds],
+              {
+                [ALL_ELEMENTS_INDEX]: styles,
+              },
+              { screenId: currentScreenId },
+            ),
+          );
+        } else {
+          dispatch(
+            updateSharedStyles(
+              (masterScreenEnabled
+                ? activeElement.type
+                : editableStyles) as Entity,
+              styles,
+              {
+                screenId: currentScreenId,
+              },
+            ),
+          );
+        }
+      } else if (isGroupElement) {
+        handleOpenRemovalConfirmModal(styles);
+      } else if (editableStyles === 'ownStyles') {
+        dispatch(
+          replaceMultipleElementsStyles(
+            [activeElement.id],
+            {
+              [ALL_ELEMENTS_INDEX]: styles,
+            },
+            { screenId: currentScreenId },
+          ),
+        );
+      } else {
+        dispatch(
+          updateSharedStyles(
+            (masterScreenEnabled
+              ? activeElement.type
+              : editableStyles) as Entity,
+            styles,
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+      }
+    },
+    [
+      masterScreenEnabled,
+      isGroupElement,
+      editableStyles,
+      dispatch,
+      currentScreenId,
+      isGroupSource,
+      activeElement.parameters.groupElements,
+      activeElement.id,
+      activeElement.type,
+      handleOpenRemovalConfirmModal,
+    ],
+  );
   const updateStyles = useCallback(
     (styles: React.CSSProperties) => {
       if (!selectedElementsIds.length) {
@@ -237,10 +308,28 @@ const PropertiesTab: React.FC = () => {
         handleOpenRemovalConfirmModal(styles);
       } else if (editableStyles === 'ownStyles') {
         dispatch(
-          updateElementStyles(activeElement.id, styles, {
-            screenId: currentScreenId,
-          }),
+          updateMultipleElementsStyles(
+            [activeElement.id],
+            {
+              [ALL_ELEMENTS_INDEX]: styles,
+            },
+            { screenId: currentScreenId },
+          ),
         );
+        if (
+          parentOfActiveElement &&
+          parentOfActiveElement.name === 'generator'
+        ) {
+          dispatch(
+            updateMultipleElementsStyles(
+              [...parentOfActiveElement.children],
+              {
+                [ALL_ELEMENTS_INDEX]: styles,
+              },
+              { screenId: currentScreenId },
+            ),
+          );
+        }
       } else {
         dispatch(
           updateSharedStyles(
@@ -272,16 +361,31 @@ const PropertiesTab: React.FC = () => {
 
   const updateParams = useCallback(
     (params: Params<any>, itemID?: string) => {
-      dispatch(
-        updateElementParameters(itemID || activeElement.id, params, {
-          screenId: currentScreenId,
-        }),
-      );
+      if (parentOfActiveElement && parentOfActiveElement.name === 'generator') {
+        dispatch(
+          updateMultipleElementsParameters(
+            [...parentOfActiveElement.children],
+            { [ALL_ELEMENTS_INDEX]: params },
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+      } else {
+        dispatch(
+          updateElementParameters(itemID || activeElement.id, params, {
+            screenId: currentScreenId,
+          }),
+        );
+      }
     },
     [dispatch, activeElement.id, currentScreenId],
   );
 
-  if ([masterCoreElementId, masterGroupsElementId].includes(activeElement.id)) {
+  if (
+    !activeElement ||
+    [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
+  ) {
     return null;
   }
 
@@ -295,6 +399,7 @@ const PropertiesTab: React.FC = () => {
       >
         {!isPrototypeMode && (
           <>
+            <PseudoSelectorsSection />
             {SELECTION_CONTROLS.map((controlName) => {
               if (
                 (isFreeCanvasMode && controlName === 'size') ||
@@ -313,11 +418,15 @@ const PropertiesTab: React.FC = () => {
                   <Control
                     {...getControlStyles(controlName, currentEditableStyles)}
                     canEdit={canEdit}
+                    controlName={controlName}
                     activeElementId={activeElement.id}
+                    element={activeElement}
                     removeStyles={!masterScreenEnabled && removeStyles}
                     updateStyles={updateStyles}
+                    replaceStyles={replaceStyles}
                     updateParams={!masterScreenEnabled && updateParams}
                     masterScreenEnabled={masterScreenEnabled}
+                    editableStyles={editableStyles}
                   />
                 </ControlSection>
               );
@@ -336,6 +445,14 @@ const PropertiesTab: React.FC = () => {
                   <ControlSection title="Element name">
                     <RenameElement canEdit={canEdit} />
                   </ControlSection>
+
+                  <div style={{ display: 'none' }}>test</div>
+
+                  {!isFreeCanvasMode && (
+                    <ControlSection title="Replace this element">
+                      <ElementType />
+                    </ControlSection>
+                  )}
                 </>
               )}
           </>

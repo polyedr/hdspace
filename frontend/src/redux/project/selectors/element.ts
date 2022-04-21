@@ -1,3 +1,5 @@
+// @ts-nocheck
+import React from 'react';
 import { createSelector } from 'reselect';
 import { DEFAULT_ROOT, LABELED_INPUT_TYPES } from '@Constants/defaultParams';
 import {
@@ -37,6 +39,11 @@ export const selectScreenRootElement = (screenId: number) => ({
   return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
 };
 
+export const selectScreen = (screenId: number) => ({
+  project,
+}: AppReduxState) => {
+  return project.data.screens[screenId]?.screenData;
+};
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
@@ -45,8 +52,14 @@ export const selectCurrentRootId = createSelector(
   (screen) => screen.element || '-1',
 );
 
-export const selectElementById = (id: string) => (state: AppReduxState) =>
+/* for use in sagas only */
+export const selectElementById = (state: AppReduxState, id: string) =>
   selectProjectState(state).data.elements[id];
+
+/* for use in components only */
+export const selectElementByIdWrapper = (id: string) => (
+  state: AppReduxState,
+) => selectProjectState(state).data.elements[id];
 
 export const selectElementsByIds = (ids: string[]) => (
   state: AppReduxState,
@@ -54,7 +67,7 @@ export const selectElementsByIds = (ids: string[]) => (
   if (!ids || !ids.length) {
     return [];
   }
-  return ids.map((id: string) => selectElementById(id)(state));
+  return ids.map((id: string) => selectElementById(state, id));
 };
 
 export const selectElementAsTree = (id: string) => ({
@@ -73,17 +86,26 @@ export const selectCurrentRootElement = (state: AppReduxState) => {
 export const selectElementByChildId = (id: string) => (
   state: AppReduxState,
 ) => {
-  const element = selectElementById(id)(state);
+  const element = selectElementById(state, id);
   return element && element.parent
-    ? selectElementById(element.parent)(state)
+    ? selectElementById(state, element.parent)
     : null;
 };
 
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
 
+export const checkIsLibraryTab = ({ project }: AppReduxState) =>
+  project.edit.isLibraryTab;
+
+export const selectActiveNNModel = ({ project }: AppReduxState) =>
+  project.edit.activeNNModel;
+
 export const selectHoveredElementId = ({ project }: AppReduxState) =>
   project.edit.hoveredElementId;
+
+export const selectEnabledPseudoClass = ({ project }: AppReduxState) =>
+  project.ui.pseudoClass;
 
 export const selectAllElements = ({ project }: AppReduxState) =>
   project.data.elements;
@@ -105,6 +127,28 @@ export const selectActiveElement = createSelector(
   selectAllElements,
   selectActiveElementId,
   (elements, id) => elements[id] || DEFAULT_ROOT,
+);
+
+export const selectParentOfActiveElement = createSelector(
+  selectAllElements,
+  selectActiveElementId,
+  (elements, id) => {
+    const parentId = elements[id]?.parent;
+    if (!parentId) return null;
+    return elements[parentId];
+  },
+);
+
+export const selectCurrentGeneratorElements = createSelector(
+  selectAllElements,
+  selectActiveElementId,
+  (elements, id) => {
+    const childrenContainerIds = elements[id]?.children;
+    const currentGeneratorElements = childrenContainerIds.map(
+      (id) => elements[id],
+    );
+    return currentGeneratorElements;
+  },
 );
 
 function makeActiveElementInfoSelector<
@@ -134,13 +178,21 @@ export const selectCurrentEditableStyles = createSelector<
   Project,
   StateElement['styles'],
   string,
+  string | null,
   React.CSSProperties
 >(
   selectActiveElement,
   selectCurrentProject,
   selectActiveElementStyles,
   selectEditableStyles,
-  (activeElement, currentProject, activeElementStyles, editableStyles) => {
+  selectEnabledPseudoClass,
+  (
+    activeElement,
+    currentProject,
+    activeElementStyles,
+    editableStyles,
+    pseudoClass,
+  ) => {
     const { type } = activeElement;
 
     const activeElementClassNames = activeElementStyles.classNames || '';
@@ -162,7 +214,10 @@ export const selectCurrentEditableStyles = createSelector<
 
     const getActiveItemStyles = (activeStyles: string): React.CSSProperties => {
       if (activeStyles === 'ownStyles' || activeStyles === '') {
-        return activeElementStyles.ownStyles as Required<React.CSSProperties>;
+        const { ownStyles, pseudoClassViewStyles } = activeElementStyles;
+        return (pseudoClass
+          ? pseudoClassViewStyles
+          : ownStyles) as Required<React.CSSProperties>;
       }
       if (activeStyles === type) {
         return activeEntityStyles;
@@ -183,6 +238,13 @@ export const selectCurrentEditableStyles = createSelector<
 export const selectCustomElementsHasNext = (state: AppReduxState) => {
   return !!selectProjectState(state).data.customElementsData.next;
 };
+
+export const selectActiveElementChildren = createSelector(
+  selectActiveElement,
+  selectAllElements,
+  (activeElement, elements) =>
+    activeElement.children.map((childId) => elements[childId]),
+);
 
 export const selectActiveItemChildren = (childType: ChildEntity) =>
   createSelector(
@@ -248,7 +310,7 @@ export const selectElementsForCurrentScreen = createSelector(
   selectCurrentScreenId,
   selectScreens,
   (elements, id, screens) => {
-    const screen = screens.find((screen) => screen.id === id);
+    const screen = screens[id];
     if (!screen) return {};
 
     const elementId = screen.element;
@@ -271,8 +333,8 @@ export const selectActiveLabelInputs = (state: AppReduxState) => {
   const elements = selectElementsForCurrentScreen(state);
 
   const inputsIDs = Object.values(elements)
-    .filter((element) => LABELED_INPUT_TYPES.includes(element.type))
-    .map((element) => element.id);
+    .filter((element: any) => LABELED_INPUT_TYPES.includes(element.type))
+    .map((element: any) => element.id);
 
   return {
     inputsIDs,
@@ -368,7 +430,7 @@ export const selectMasterGroupsElementId = (state: AppReduxState) =>
 
 export const selectMasterGroupsElement = (state: AppReduxState) => {
   const masterGroupsElId = selectMasterGroupsElementId(state);
-  return selectElementById(masterGroupsElId)(state);
+  return selectElementById(state, masterGroupsElId);
 };
 
 export const selectElementGroups = (state: AppReduxState) => {
@@ -419,7 +481,7 @@ export const selectMasterScreenRoot = (state: AppReduxState) => {
   if (!masterScreen) {
     return null;
   }
-  return selectElementById(masterScreen.element)(state);
+  return selectElementById(state, masterScreen.element);
 };
 
 export const selectElementsChildren = (ids: string[]) => (

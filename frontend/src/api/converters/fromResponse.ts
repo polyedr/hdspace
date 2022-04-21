@@ -15,12 +15,14 @@ import {
   ServerProject,
   ServerProjectWithScreens,
   ServerRecursiveElement,
+  ServerScreen,
   ServerUserData,
   UserData,
 } from '@Src/types';
 import { capitalize } from '@Utils/stringHelper';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 
 const defaultParameters = {
   freeCanvas: defaultFreeCanvasParams,
@@ -66,7 +68,17 @@ export const convertElementFromResponse = <
   },
   styles: {
     ...getDefaultStyles(struct_type),
+    ...styles,
     ownStyles: styles.ownStyles ? cssCamelize(styles.ownStyles) : {},
+    pseudoClassStyles: styles.pseudoClassStyles
+      ? Object.keys(styles.pseudoClassStyles).reduce(
+          (pseudoStyles, className) => ({
+            ...pseudoStyles,
+            [className]: cssCamelize(styles.pseudoClassStyles[className]),
+          }),
+          {},
+        )
+      : {},
   },
 });
 
@@ -100,10 +112,11 @@ export const convertNNElementFromResponse = <
   image,
   parameters: {
     ...defaultParameters,
-    ...parameters,
+    ...(parameters || {}),
   },
   styles: {
     ...getDefaultStyles(struct_type),
+    pseudoClassStyles: {},
     ownStyles: styles ? cssCamelize(styles) : {},
   },
 });
@@ -123,10 +136,25 @@ export const convertRecursiveElementFromResponse = (
 export const convertProfileDataFromResponse = ({
   hourly_rate,
   ...rest
-}: ServerProfileData): ProfileData => ({
-  hourlyRate: hourly_rate,
-  ...rest,
-});
+}: ServerProfileData): ProfileData => {
+  if (!rest.parameters.profileDataParameters) {
+    return {
+      ...rest,
+      hourlyRate: hourly_rate,
+      parameters: {
+        ...rest.parameters,
+        profileDataParameters: {
+          autoSwitchTabs: false,
+          dropTargetBordersMode: true,
+        },
+      },
+    };
+  }
+  return {
+    hourlyRate: hourly_rate,
+    ...rest,
+  };
+};
 
 export const convertUserDataFromResponse = ({
   first_name,
@@ -153,8 +181,11 @@ export function convertProjectFromResponse({
   updated,
   user,
   project_data_json,
+  project_data_trello_json,
+  tags,
 }: ServerProject): Project {
-  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
+  const projectDataJSON = JSON.parse(project_data_json);
+  const projectTrelloJSON = JSON.parse(project_data_trello_json);
   return {
     id,
     name,
@@ -163,6 +194,8 @@ export function convertProjectFromResponse({
     projectLoader: false,
     created: new Date(created),
     updated: new Date(updated),
+    tags,
+    projectTrelloJSON,
     user: convertUserDataFromResponse(user),
     projectData: {
       ...projectDataJSON,
@@ -173,17 +206,69 @@ export function convertProjectFromResponse({
             rules: cssCamelize(cls.rules) as React.CSSProperties,
           } as ProjectClass;
         }) || [],
+      uiFramework: projectDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
     },
   };
 }
 
-export const convertScreenFromResponse = (screen: Screen) => ({
-  ...screen,
-  screen_data_json:
-    typeof screen.screen_data_json === 'string'
-      ? JSON.parse(screen.screen_data_json)
-      : screen.screen_data_json,
-});
+export function convertScreenFromResponse({
+  id,
+  name,
+  status,
+  project,
+  image,
+  screenscenario,
+  buoyancy,
+  element,
+  screen_data_json,
+}: ServerScreen): Screen {
+  const screenDataJSON = JSON.parse(screen_data_json);
+  return {
+    id,
+    name,
+    status,
+    project,
+    image,
+    screenscenario,
+    buoyancy,
+    element,
+    screenData: {
+      meta: screenDataJSON.meta || {},
+      uiFramework: screenDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
+      freeCanvas: screenDataJSON.freeCanvas,
+      editableScreenUser: screenDataJSON.editableScreenUser || [],
+    },
+  };
+}
+
+export function convertNNScreenFromResponse({
+  id,
+  name,
+  status,
+  project,
+  image,
+  screenscenario,
+  buoyancy,
+  element,
+  screen_data_json,
+}: ServerScreen): Screen {
+  return {
+    id,
+    name,
+    status,
+    project,
+    image,
+    screenscenario,
+    buoyancy,
+    element,
+    screenData: {
+      uiFramework: NOT_SELECTED_FRAMEWORK,
+      nnResult: screen_data_json,
+      freeCanvas: false,
+      editableScreenUser: [],
+    },
+  };
+}
 
 export function convertProjectWithScreensFromResponse({
   id,
@@ -194,9 +279,11 @@ export function convertProjectWithScreensFromResponse({
   updated,
   user,
   project_data_json,
+  project_data_trello_json,
+  tags,
 }: ServerProjectWithScreens): ProjectWithScreens {
-  const projectDataJSON = JSON.parse(project_data_json) as ProjectData;
-
+  const projectDataJSON = JSON.parse(project_data_json || '{}') as ProjectData;
+  const projectTrelloJSON = JSON.parse(project_data_trello_json);
   return {
     id,
     name,
@@ -206,6 +293,8 @@ export function convertProjectWithScreensFromResponse({
     created: new Date(created),
     updated: new Date(updated),
     user: convertUserDataFromResponse(user),
+    tags,
+    projectTrelloJSON,
     projectData: {
       ...projectDataJSON,
       classes:

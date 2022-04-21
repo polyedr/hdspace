@@ -1,8 +1,15 @@
 import { createSelector } from 'reselect';
 import { DEFAULT_PROJECT } from '@Constants/defaultParams';
-import { FreeCanvasOffset } from '@Src/types';
+import {
+  FreeCanvasOffset,
+  UIFramework,
+  importData,
+  ParsedImagePalette,
+} from '@Src/types';
+import { NOT_SELECTED_FRAMEWORK } from '@Constants/frameworks';
 import { makeFeatureStateSelector } from '../../../shared/redux';
 import { AppReduxState } from '../../types';
+import { selectCurrentScreen, selectMasterScreenId } from './screen';
 
 export const selectProjectState = makeFeatureStateSelector('project');
 
@@ -54,6 +61,11 @@ export const selectCurrentProjectClasses = createSelector(
   (currentProject) => currentProject.projectData.classes,
 );
 
+export const selectCurrentProjectDefaultStyles = createSelector(
+  selectCurrentProject,
+  (currentProject) => currentProject.projectData.defaultStyles,
+);
+
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
 }
@@ -75,6 +87,14 @@ export function selectEditableStyles(state: AppReduxState) {
 
 export function selectShowingBorders(state: AppReduxState) {
   return selectProjectState(state).ui.showContainersBorders;
+}
+
+export function selectShowingGrid(state: AppReduxState) {
+  return selectProjectState(state).ui.showGrid;
+}
+
+export function selectExportScreenFlag(state: AppReduxState) {
+  return selectProjectState(state).ui.exportScreenFlag;
 }
 
 export const selectBordersEnabled = (state: AppReduxState) => {
@@ -114,9 +134,6 @@ export const selectElementFileInput = (id: string) => (
   return selectProjectState(state).data.elementInputs[id];
 };
 
-export const selectFreeCanvasMode = ({ project }: AppReduxState) =>
-  project.edit.freeCanvas.enabled;
-
 // think over how can we fix this one in a different way
 export const selectFreeCanvasOffset = (id: string) => (
   state: AppReduxState,
@@ -143,7 +160,10 @@ export const selectFreeCanvasOffsetList = (ids: string[]) => (
 ): FreeCanvasOffset => {
   return ids.reduce(
     (ids, id) =>
-      ({ ...ids, [id]: selectFreeCanvasOffset(id)(state) } as FreeCanvasOffset),
+      ({
+        ...ids,
+        [id]: selectFreeCanvasOffset(id)(state),
+      } as FreeCanvasOffset),
     {},
   );
 };
@@ -160,8 +180,8 @@ export const selectScreenCreateLoader = ({ project }: AppReduxState) =>
 export const selectEditorDocument = ({ project }: AppReduxState) =>
   project.ui.editorDocument;
 
-export const selectAssetsLoader = ({ project }: AppReduxState) =>
-  project.communication.assetsLoader;
+export const selectAssetsListsLoader = ({ project }: AppReduxState) =>
+  project.communication.assetsListsLoader;
 
 export const selectSidebarOpen = ({ project }: AppReduxState) =>
   project.ui.sidebar.open;
@@ -175,3 +195,31 @@ export const selectSidebarHost = ({ project }: AppReduxState) =>
 export function selectImportLoader(state: AppReduxState): boolean {
   return selectProjectState(state).communication.importLoader;
 }
+export function selectImagePalette(
+  state: AppReduxState,
+): ParsedImagePalette | null {
+  return selectProjectState(state).data.imagePalette;
+}
+
+export function selectImportValue(state: AppReduxState): importData {
+  return selectProjectState(state).communication.importValue;
+}
+
+export const selectCurrentUIFramework = createSelector(
+  selectCurrentProject,
+  selectCurrentScreen,
+  selectMasterScreenId,
+  (project, screen, masterScreenId) => {
+    const projectUIFramework = project.projectData.uiFramework;
+    const screenUIFramework = screen.screenData?.uiFramework;
+    const selectedFramework = {
+      ...NOT_SELECTED_FRAMEWORK,
+      ...(projectUIFramework || {}),
+      ...(screenUIFramework?.name !== projectUIFramework?.name &&
+      screen.id !== masterScreenId
+        ? screenUIFramework
+        : {}),
+    } as UIFramework;
+    return selectedFramework || NOT_SELECTED_FRAMEWORK;
+  },
+);
