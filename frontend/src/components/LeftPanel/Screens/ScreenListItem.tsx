@@ -4,13 +4,17 @@ import { lighten, makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
-import { editScreen } from '@Redux/project/actions';
+import {
+  editScreenNameAndData,
+  setActiveElement,
+} from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { ListItem, ListItemIcon } from '@material-ui/core';
 import { Screen } from '../../../types';
 import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';
+import ScreenLongName from './ScreenLongName';
 
 const useStyles = makeStyles(({ palette, typography }) => ({
   listItem: {
@@ -37,11 +41,17 @@ const useStyles = makeStyles(({ palette, typography }) => ({
   icon: {
     color: palette.common.white,
     minWidth: 0,
-    paddingRight: '.5em',
+    paddingRight: '.1em',
   },
   name: {
     fontFamily: typography.fontFamily,
     fontSize: typography.fontSize,
+  },
+  popover: {
+    pointerEvents: 'none',
+  },
+  paper: {
+    padding: '8px',
   },
 }));
 
@@ -53,7 +63,7 @@ type Props = {
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();
-  const { name, project, id, image, screen_data_json } = screen;
+  const { name, project, id, image, screenData, element } = screen;
   const classes = useStyles();
   const history = useHistory();
   const currentProjectId = useSelector(selectCurrentProjectId);
@@ -67,11 +77,22 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const closeEdit = () => setEdit(false);
 
   const handleSubmit = async (values) => {
-    dispatch(editScreen(project, id, values));
+    const { name: newScreenName, faviconUrl, ...metaValues } = values;
+    dispatch(
+      editScreenNameAndData(project, id, {
+        name: newScreenName,
+        data: {
+          meta: {
+            ...metaValues,
+            faviconUrl: faviconUrl || null,
+          },
+        },
+      }),
+    );
     closeEdit();
   };
-
   const handleClick = () => {
+    dispatch(setActiveElement(element));
     history.push(`/project/${currentProjectId}/${screen.id}`);
   };
 
@@ -94,10 +115,19 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
               <ListItemIcon className={classes.icon}>
                 <ScreenLogo image={image} />
               </ListItemIcon>
-
-              <span className={classes.name}>{name}</span>
+              {name.length > 10 ? (
+                <ScreenLongName
+                  name={name}
+                  styles={{
+                    name: classes.name,
+                    popover: classes.popover,
+                    paper: classes.paper,
+                  }}
+                />
+              ) : (
+                <span className={classes.name}>{name}</span>
+              )}
             </div>
-
             {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}
             <ScreenControls
               show={show}
@@ -110,10 +140,11 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
             open={edit}
             onSubmit={handleSubmit}
             onClose={closeEdit}
-            fieldName="name"
             titleDialog="Rename Screen"
             initialValueName={name}
-            initialValueTags={screen_data_json}
+            initialValueTags={screenData?.meta || {}}
+            currentScreenId={id}
+            project={project}
           />
         </div>
       )}

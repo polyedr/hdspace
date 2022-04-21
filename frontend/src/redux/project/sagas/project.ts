@@ -3,6 +3,7 @@ import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
 } from '@Api/converters/toRequest';
+import generator from 'generate-password';
 import {
   apiCreateProject,
   apiDeleteProject,
@@ -26,7 +27,22 @@ import {
 } from '@Src/types';
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
+import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import getTagsArr from '@Utils/getTagsArr';
+import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
+import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
+import {
+  apiGetBoard,
+  createNewBoard,
+  createOrganization,
+  deleteOrganization,
+  getAddUserToBoard,
+  getUserByEmail,
+} from '@Api/pmtools/board/boardApi';
+import logger from 'loglevel';
+import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
+import { selectUserData } from '@Redux/user/selectors';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -34,19 +50,25 @@ import * as PermissionsActions from '../../permissions/actions';
 import { createScreenSaga, getScreensSaga } from './screen';
 import {
   selectCurrentProject,
+  selectCurrentUIFramework,
   selectProjectById,
   selectProjectsAsArr,
   selectProjectsDataNext,
   selectProjectsSearchParameter,
 } from '../selectors/base';
-import { selectScreenById } from '../selectors/screen';
+import {
+  selectCurrentScreenId,
+  selectMasterScreenId,
+  selectScreenById,
+} from '../selectors/screen';
 import { selectElementAsTree, selectElementById } from '../selectors/element';
 import { createElements } from './common';
 
 export function* setMasterScreenCoreElements(screen: Screen) {
-  const rootElement = yield select(selectElementById(screen.element));
+  const rootElement = yield select(selectElementById, screen.element);
   yield put(Actions.setMasterElementsIds(...rootElement.children));
   const masterCoreId = rootElement.children[0];
+  CORE_MASTER_ELEMENTS.push(...CORE_PREVIEW_LIBRARY_ELEMENTS);
   yield put(
     Actions.addStateElements(
       [
@@ -96,10 +118,14 @@ export function* searchProjectsSaga() {
     );
     yield put(Actions.setProjectList([]));
 
-    const paramData: [
-      ProjectsSearchParameter,
+    let paramData: [
+      ProjectsSearchParameter | 'tags__name',
       string | DateRange,
     ] = yield select(selectProjectsSearchParameter);
+
+    if (paramData[0] === 'tags') {
+      paramData = ['tags__name', paramData[1]];
+    }
 
     const { result, error }: Result<PaginatedResponse<Project>> = yield call(
       reqWrapper,
@@ -117,17 +143,19 @@ export function* searchProjectsSaga() {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   } finally {
     yield put(Actions.setProjectListLoader(false));
   }
@@ -165,17 +193,19 @@ export function* getProjectListSaga() {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   } finally {
     yield put(Actions.setProjectListLoader(false));
   }
@@ -195,6 +225,10 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       },
     );
 
+    if (result?.projectTrelloJSON) {
+      yield put(successSavedBoard(result.projectTrelloJSON));
+    }
+
     if (result) {
       yield put(PermissionsActions.getMyPermissionsForProject(result.id));
       yield put(
@@ -208,6 +242,8 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       }
 
       yield put(Actions.setCurrentProjectId(result.id));
+      yield put(Actions.setAssetLists(null));
+      yield put(Actions.setSelectedAssetListId(null));
       const masterScreenId: number =
         result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
         -1;
@@ -224,17 +260,19 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   } finally {
     yield put(Actions.setProjectLoader(false));
   }
@@ -247,15 +285,36 @@ export function* createProjectSaga(
     payload: { name },
   } = action;
   try {
+    const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
+
+    const organization: IOrganization = yield call(
+      createOrganization,
+      `${generateName}-adevi-org`,
+    );
+    const board: IBoardForUI = yield call(createNewBoard, generateName);
+    yield call(apiCreateNewStreams, generateName);
+
+    const boardForUI: IBoardForUI = {
+      organization,
+      ...board,
+    };
+
+    const { email } = yield select(selectUserData);
+    const userTrello = yield call(getUserByEmail, email);
+    if (!userTrello.error) {
+      yield call(getAddUserToBoard, email, board.id);
+    }
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name),
+        data: convertCreatedProjectToRequest(name, boardForUI),
       },
     );
+    yield put(successSavedBoard(boardForUI));
+
     if (createdProject?.created) {
       yield put(
         PermissionsActions.setStateCurrentUserPermissions([
@@ -263,11 +322,13 @@ export function* createProjectSaga(
           UserProjectPermission.CHANGE_PROJECT,
         ]),
       );
-      const assetList = yield call(reqWrapper, apiCreateAssetList, {
+      yield call(reqWrapper, apiCreateAssetList, {
         projectId: createdProject.id,
         name: DEFAULT_ASSET_LIST_NAME,
       });
-      yield put(Actions.addAssetListToState(assetList, { useHistory: true }));
+
+      yield put(Actions.setAssetLists(null));
+      yield put(Actions.setSelectedAssetListId(null));
       const projects: Project[] = yield select(selectProjectsAsArr);
       yield put(Actions.setProjectList([...projects, createdProject]));
 
@@ -295,7 +356,7 @@ export function* createProjectSaga(
       const initialScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
-          { projectID: createdProject.id, name: 'Screen 1', buoyancy: 1 },
+          { projectID: createdProject.id, name: 'Screen-1', buoyancy: 1 },
           {
             useHistory: true,
           },
@@ -322,17 +383,19 @@ export function* createProjectSaga(
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   } finally {
     yield put(Actions.setProjectCreateLoader(false));
   }
@@ -342,6 +405,13 @@ export function* deleteProjectSaga({
   payload: { id },
 }: ReturnType<typeof Actions.deleteProject>) {
   try {
+    const board = yield call(reqWrapper, apiGetBoard, {
+      project: id,
+    });
+
+    yield call(deleteOrganization, JSON.parse(board).organization?.id);
+    yield call(apiDeleteStream, JSON.parse(board).name);
+
     const { result, error }: Result<boolean> = yield call(
       reqWrapper,
       apiDeleteProject,
@@ -368,31 +438,37 @@ export function* deleteProjectSaga({
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 }
 
-export const renameProjects = function* ({
-  payload: { projectID, name },
-}: ReturnType<typeof Actions.renameProject>) {
+export const updateNameAndTagsProjectSaga = function* ({
+  payload: { projectID, name, tags },
+}: ReturnType<typeof Actions.updateNameAndTagsProject>) {
   try {
     const project: Project = yield select(selectProjectById, projectID);
-
     const { result, error }: Result<Project> = yield call(
       reqWrapper,
       apiUpdateProject,
       {
-        data: { id: projectID, name, projectscreen: project.projectscreen },
+        data: {
+          id: projectID,
+          name,
+          tags: typeof tags !== 'object' ? getTagsArr(tags) : tags,
+          projectscreen: project.projectscreen,
+        },
       },
     );
 
@@ -403,24 +479,21 @@ export const renameProjects = function* ({
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 };
-
-export const renameProjectSaga = withRequiredPermissions(
-  UserProjectPermission.VIEW_PROJECT,
-  UserProjectPermission.CHANGE_PROJECT,
-)(renameProjects);
 
 export function* updateProjectSaga(
   action: ReturnType<typeof Actions.updateProject>,
@@ -429,7 +502,7 @@ export function* updateProjectSaga(
     const { project } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -453,16 +526,77 @@ export function* updateProjectSaga(
       throw new Error(`Failed to update project ${project.name}`);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 }
+
+export const updateCurrentUIFrameworkSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (action: ReturnType<typeof Actions.updateCurrentUIFramework>) {
+  const { uiFramework } = action.payload;
+  const project = yield select(selectCurrentProject);
+  const currentScreenId = yield select(selectCurrentScreenId);
+  const masterScreenId = yield select(selectMasterScreenId);
+  if (currentScreenId === masterScreenId) {
+    const newProject: Project = {
+      ...project,
+      projectData: {
+        ...project.projectData,
+        uiFramework,
+      },
+    };
+    yield put(Actions.updateProject(newProject));
+  } else {
+    yield put(
+      Actions.editScreenNameAndData(project.id, currentScreenId, {
+        data: {
+          uiFramework,
+        },
+      }),
+    );
+  }
+});
+
+export const updateCurrentUIFrameworkVariablesSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* (
+  action: ReturnType<typeof Actions.updateCurrentUIFrameworkVariables>,
+) {
+  const uiFramework = yield select(selectCurrentUIFramework);
+  yield put(
+    Actions.updateCurrentUIFramework({
+      ...uiFramework,
+      themeVariables: {
+        ...uiFramework.themeVariables,
+        ...action.payload,
+      },
+    }),
+  );
+});
+
+export const resetCurrentUIFrameworkVariablesSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* () {
+  const uiFramework = yield select(selectCurrentUIFramework);
+  yield put(
+    Actions.updateCurrentUIFramework({
+      ...uiFramework,
+      themeVariables: {},
+    }),
+  );
+});

@@ -1,13 +1,14 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Theme, Tabs, Tab } from '@material-ui/core';
+import { Tabs, Tab, IconButton } from '@material-ui/core';
 import {
   selectIsPrototypeMode,
-  selectToggleEnableTabsAutoSwitch,
+  selectUserProfileDataParameters,
 } from '@Redux/user/selectors';
 import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
+  RIGHT_PANEL_WIDTH_MIN,
 } from '@Src/styles/Theme';
 import { RPTab, UserProjectPermission } from '@Src/types';
 import {
@@ -16,18 +17,27 @@ import {
   selectMasterCoreElementId,
   selectMasterGroupsElementId,
 } from '@Redux/project/selectors/element';
-import {
-  INTERACTIVE_ELEMENTS,
-  KEEP_RP_TAB_ELEMENTS,
-} from '@Constants/defaultParams';
+import { KEEP_RP_TAB_ELEMENTS } from '@Constants/defaultParams';
 import { canElementHaveAllChildren } from '@Utils/AvailableChildrenHelper';
 import EventsTab from '@Components/RightPanel/EventsTab';
 import { CORE_MASTER_ELEMENTS_IDS } from '@Components/Editor/MasterScreen/coreElements';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  makeStyles,
+  Theme,
+  createStyles,
+  lighten,
+} from '@material-ui/core/styles';
+
+import {
+  selectCurrentScreenId,
+  selectMasterScreenId,
+} from '@Redux/project/selectors/screen';
+import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
+import VariablesTab from './VariablesTab';
 import AssetsSection from './Assets';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({
@@ -67,7 +77,38 @@ const useTabStyles = makeStyles(({ palette }) => ({
     backgroundColor: palette.panel.light,
   },
 }));
-
+const useRightPanelStyles = makeStyles<Theme, { isRightPanelOpen: boolean }>(
+  ({ palette }) =>
+    createStyles({
+      root: {
+        maxHeight: '100%',
+        width: ({ isRightPanelOpen }) =>
+          isRightPanelOpen ? RIGHT_PANEL_WIDTH_MIN : RIGHT_PANEL_WIDTH,
+        backgroundColor: palette.panel.main,
+        transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
+      },
+      content: {
+        overflowX: 'hidden', // Custom scrollbars bug
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+      },
+      toggleButton: {
+        top: ({ isRightPanelOpen }) => (isRightPanelOpen ? '94%' : '0%'),
+        alignSelf: 'flex-start',
+        color: palette.common.white,
+        '&:hover': {
+          backgroundColor: lighten(palette.panel.main, 0.1),
+        },
+        '& svg': {
+          transform: ({ isRightPanelOpen }) =>
+            `rotate(${isRightPanelOpen ? -90 : 90}deg)`,
+          transition: 'transform 0.25s ease',
+        },
+      },
+    }),
+);
 type TabPanelProps = {
   children?: React.ReactNode;
   index: number;
@@ -90,9 +131,13 @@ const tabContent: Record<RPTab, any> = {
   Elements: <ElementsTab />,
   Properties: <PropertiesTab />,
   Events: <EventsTab />,
+  Variables: <VariablesTab />,
 };
 
 const RightPanel: React.FC = () => {
+  const [isRightPanelOpen, setRightPanelOpen] = useState(false);
+  const classesRightButton = useRightPanelStyles({ isRightPanelOpen });
+
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const activeElement = useSelector(selectActiveElement);
   const activeElementId = useSelector(selectActiveElementId);
@@ -105,7 +150,13 @@ const RightPanel: React.FC = () => {
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
-  const tabsAutoswitchEnabled = useSelector(selectToggleEnableTabsAutoSwitch);
+  const masterScreenId = useSelector(selectMasterScreenId);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+
+  const { autoSwitchTabs: tabsAutoswitchEnabled } = useSelector(
+    selectUserProfileDataParameters,
+  );
+
   const [tabs, setTabs] = useState(defaultTabs);
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(
@@ -114,12 +165,13 @@ const RightPanel: React.FC = () => {
 
   useEffect(() => {
     setActiveTabIndex(0);
-    const isInteractive = INTERACTIVE_ELEMENTS.includes(activeElement.type);
     const isFertile = canElementHaveAllChildren(activeElement.type);
 
     let newTabs = defaultTabs;
-    if (!isInteractive || !canEditProject) {
-      newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
+    newTabs = newTabs.filter((tab) => tab !== RPTab.Events);
+
+    if (currentScreenId !== masterScreenId) {
+      newTabs = newTabs.filter((tab) => tab !== RPTab.Variables);
     }
     if (
       !isFertile ||
@@ -136,8 +188,10 @@ const RightPanel: React.FC = () => {
     activeElement.id,
     activeElement.type,
     canEditProject,
+    currentScreenId,
     masterCoreElId,
     masterGroupsElId,
+    masterScreenId,
   ]);
 
   useEffect(() => {
@@ -162,6 +216,7 @@ const RightPanel: React.FC = () => {
     masterCoreElId,
     masterGroupsElId,
     canEditProject,
+    tabsAutoswitchEnabled,
   ]);
 
   const handleChange = (ev: ChangeEvent<{}>, index: number) => {
@@ -169,28 +224,48 @@ const RightPanel: React.FC = () => {
   };
 
   return (
-    <div className={classes.root} id={ELEMENT_IDS.rightPanel}>
-      <>
-        <Tabs
-          value={activeTabIndex}
-          onChange={handleChange}
-          classes={tabsClasses}
-          variant="fullWidth"
-        >
-          {tabs.map((tab) => (
-            <Tab key={tab} classes={tabClasses} label={tab} />
-          ))}
-        </Tabs>
+    <div
+      className={
+        isRightPanelOpen && isPrototypeMode
+          ? classes.root
+          : !isRightPanelOpen
+          ? classes.root
+          : classesRightButton.root
+      }
+      id={ELEMENT_IDS.rightPanel}
+    >
+      <div className={classesRightButton.content}>
+        {!isRightPanelOpen && (
+          <>
+            <Tabs
+              value={activeTabIndex}
+              onChange={handleChange}
+              classes={tabsClasses}
+              variant="fullWidth"
+            >
+              {tabs.map((tab) => (
+                <Tab key={tab} classes={tabClasses} label={tab} />
+              ))}
+            </Tabs>
 
-        {tabs.map((tab, i) => {
-          return (
-            <TabPanel index={i} value={activeTabIndex} key={tab}>
-              {tabContent[tab]}
-            </TabPanel>
-          );
-        })}
-      </>
-      <AssetsSection />
+            {tabs.map((tab, i) => {
+              return (
+                <TabPanel index={i} value={activeTabIndex} key={tab}>
+                  {tabContent[tab]}
+                </TabPanel>
+              );
+            })}
+            <AssetsSection />
+          </>
+        )}
+        <IconButton
+          className={classesRightButton.toggleButton}
+          onClick={() => setRightPanelOpen(!isRightPanelOpen)}
+          title={`${isRightPanelOpen ? 'Open' : 'Hide'} panel`}
+        >
+          <VerticalAlignTopIcon />
+        </IconButton>
+      </div>
     </div>
   );
 };

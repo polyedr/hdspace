@@ -27,16 +27,31 @@ export function* executeUndoActionsSaga() {
       });
     }
     yield put(Actions.moveHistoryBackward());
-  } catch (e) {
+    if (
+      currentHistoryRecord.action.type.valueOf() === 'via/ASSEMBLE_VIA_REGIONS'
+    ) {
+      yield put(Actions.setVIAMode(true));
+    }
     yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
+      enqueueSnackbar({
+        message: `Sucessfully undo.`,
+        options: {
+          variant: 'success',
         },
-        e,
-      ),
+      }),
     );
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -67,16 +82,26 @@ export function* executeRedoActionsSaga() {
         },
       });
     }
-  } catch (e) {
     yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
+      enqueueSnackbar({
+        message: `Sucessfully redo.`,
+        options: {
+          variant: 'success',
         },
-        e,
-      ),
+      }),
     );
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 

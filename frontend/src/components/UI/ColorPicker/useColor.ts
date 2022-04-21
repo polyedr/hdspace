@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 
 type Color = {
@@ -14,7 +15,7 @@ const useColor = (
 
   useEffect(() => {
     setColor(defaultColor);
-  }, [activeItemID]);
+  }, [activeItemID, defaultColor]);
 
   const changeColor = (newColor: Color) => {
     setIsValid(newColor.isValid);

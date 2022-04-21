@@ -18,8 +18,10 @@ import {
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import StylesHeader from '../../helperComponents/StylesHeader';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 84;
@@ -42,13 +44,14 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   fontStyle?: React.CSSProperties['fontStyle'];
   textAlign?: React.CSSProperties['textAlign'];
   color: React.CSSProperties['color'];
+  isDefaultStyles?: boolean;
 };
 
 const TypographyBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
   masterScreenEnabled,
-  activeElementId,
+  element,
   fontFamily,
   fontSize,
   fontWeight,
@@ -56,15 +59,11 @@ const TypographyBlock: React.FC<Props> = ({
   textAlign,
   color = 'transparent',
   canEdit,
+  editableStyles,
+  isDefaultStyles = false,
 }) => {
+  const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
-
-  /* const handleColorSettingsChange = useCallback(
-    (newColor: string) => {
-      updateStyles({ color: newColor });
-    },
-    [updateStyles],
-  ); */
 
   const handleFontFamilyChange = (ev) => {
     updateStyles({ fontFamily: ev.target.value });
@@ -83,8 +82,10 @@ const TypographyBlock: React.FC<Props> = ({
     fontSize || '14px',
   );
   useEffect(() => {
-    setState(fontSize);
-  }, [fontSize]);
+    setState(
+      (isDefaultStyles && defaultStyles?.typography?.fontSize) || fontSize,
+    );
+  }, [fontSize, isDefaultStyles]);
   const debounced = useDebouncedCallback((value) => {
     handleChangeFontSize(value);
   }, 500);
@@ -118,11 +119,11 @@ const TypographyBlock: React.FC<Props> = ({
 
   return (
     <div>
-      {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Font"
+      {!isDefaultStyles && !masterScreenEnabled && canEdit && (
+        <RemoveStyles
+          type={element.type}
           onClick={removeStyles}
-          cssPropertiesNames={[
+          propsToRemove={[
             'fontFamily',
             'fontStyle',
             'fontWeight',
@@ -130,6 +131,7 @@ const TypographyBlock: React.FC<Props> = ({
             'textAlign',
             'color',
           ]}
+          editableStyles={editableStyles}
         />
       )}
 
@@ -138,7 +140,11 @@ const TypographyBlock: React.FC<Props> = ({
           fullWidth
           margin="dense"
           label="Font Family"
-          value={fontFamily || FONTS[0].value}
+          value={
+            (isDefaultStyles && defaultStyles?.typography?.fontFamily) ||
+            fontFamily ||
+            FONTS[0].value
+          }
           onChange={handleFontFamilyChange}
           select
           disabled={!canEdit}
@@ -150,7 +156,10 @@ const TypographyBlock: React.FC<Props> = ({
           ))}
         </StyledTextField>
 
-        <div className={classes.wrapper}>
+        <div
+          className={classes.wrapper}
+          style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}
+        >
           <StyledTextField
             className={classes.text}
             label="Size"
@@ -162,49 +171,71 @@ const TypographyBlock: React.FC<Props> = ({
               debounced.callback(ev.target.value);
             }}
             disabled={!canEdit}
+            style={isDefaultStyles ? { marginRight: '10%' } : {}}
           />
 
-          <ToggleButtonGroup
-            value={[
-              fontStyle,
-              fontWeight === 700 || fontWeight === 'bold' ? 'bold' : 'normal',
-            ]}
-            onChange={handleFormatChange}
-            size="small"
+          <div
+            style={
+              isDefaultStyles
+                ? { display: 'flex', flexDirection: 'column' }
+                : {}
+            }
           >
-            <StyledToggleButton value="italic" disabled={!canEdit}>
-              <FormatItalicIcon fontSize="small" />
-            </StyledToggleButton>
+            <ToggleButtonGroup
+              value={[
+                fontStyle,
+                fontWeight === 700 || fontWeight === 'bold' ? 'bold' : 'normal',
+              ]}
+              onChange={handleFormatChange}
+              size="small"
+              style={
+                isDefaultStyles
+                  ? { width: '20px', height: '20px', marginBottom: '10px' }
+                  : { marginRight: '10px' }
+              }
+            >
+              <StyledToggleButton value="italic" disabled={!canEdit}>
+                <FormatItalicIcon fontSize="small" />
+              </StyledToggleButton>
 
-            <StyledToggleButton value="bold" disabled={!canEdit}>
-              <FormatBoldIcon fontSize="small" />
-            </StyledToggleButton>
-          </ToggleButtonGroup>
+              <StyledToggleButton value="bold" disabled={!canEdit}>
+                <FormatBoldIcon fontSize="small" />
+              </StyledToggleButton>
+            </ToggleButtonGroup>
 
-          <ToggleButtonGroup
-            value={textAlign}
-            onChange={handleAlignmentChange}
-            exclusive
-            size="small"
-          >
-            <StyledToggleButton value="left" disabled={!canEdit}>
-              <FormatAlignLeftIcon fontSize="small" />
-            </StyledToggleButton>
+            <ToggleButtonGroup
+              value={
+                (isDefaultStyles && defaultStyles?.typography?.textAlign) ||
+                textAlign
+              }
+              onChange={handleAlignmentChange}
+              exclusive
+              size="small"
+              style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
+            >
+              <StyledToggleButton value="left" disabled={!canEdit}>
+                <FormatAlignLeftIcon fontSize="small" />
+              </StyledToggleButton>
 
-            <StyledToggleButton value="center" disabled={!canEdit}>
-              <FormatAlignCenterIcon fontSize="small" />
-            </StyledToggleButton>
+              <StyledToggleButton value="center" disabled={!canEdit}>
+                <FormatAlignCenterIcon fontSize="small" />
+              </StyledToggleButton>
 
-            <StyledToggleButton value="right" disabled={!canEdit}>
-              <FormatAlignRightIcon fontSize="small" />
-            </StyledToggleButton>
-          </ToggleButtonGroup>
+              <StyledToggleButton value="right" disabled={!canEdit}>
+                <FormatAlignRightIcon fontSize="small" />
+              </StyledToggleButton>
+            </ToggleButtonGroup>
+          </div>
         </div>
 
         <div>
           <ColorSettings
-            currentColor={(colorValue as string) || 'transparent'}
-            activeElementId={activeElementId}
+            currentColor={
+              (isDefaultStyles && defaultStyles?.colors?.color) ||
+              (colorValue as string) ||
+              'transparent'
+            }
+            activeElementId={element.id}
             onChange={handleColorValueChange as (color: string) => void}
             disabled={!canEdit}
           />

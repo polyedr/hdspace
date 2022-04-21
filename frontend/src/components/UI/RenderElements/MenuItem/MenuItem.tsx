@@ -11,7 +11,7 @@ const useStyles = makeComponentStyles('menu-item', {
   },
 });
 
-const MenuItem = React.forwardRef<HTMLDivElement, RendererProps>(
+const MenuItem = React.forwardRef<HTMLLIElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
@@ -29,7 +29,7 @@ const MenuItem = React.forwardRef<HTMLDivElement, RendererProps>(
           className,
           classes.menuItem,
           groupClass,
-          isDisabled && classes.disabled,
+          isDisabled ? classes.disabled : classes.ownPseudoStyles,
           classes.ownStyles,
         )}
         value={value}

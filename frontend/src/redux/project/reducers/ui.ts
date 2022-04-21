@@ -22,6 +22,14 @@ function uiReducer(
       return { ...state, showContainersBorders: action.payload };
     }
 
+    case TYPES.TOGGLE_GRID: {
+      return { ...state, showGrid: action.payload };
+    }
+
+    case TYPES.EXPORT_SCREEN_FLAG: {
+      return { ...state, exportScreenFlag: action.payload };
+    }
+
     case TYPES.SET_BORDERS_ENABLED: {
       return { ...state, bordersEnabled: action.payload };
     }
@@ -132,19 +140,25 @@ function uiReducer(
       };
     }
 
+    case TYPES.SET_STATE_PSEUDO_CLASS: {
+      return {
+        ...state,
+        pseudoClass: action.payload,
+      };
+    }
+
     case TYPES.LOGOUT: {
       return {
         ...initialUi,
       };
     }
 
-    case TYPES.TOGGLE_TABS_AUTOSWITCH: {
+    case TYPES.SET_VALUE_CHECK_ROBOTS: {
       return {
         ...state,
-        tabsAutoSwitch: !state.tabsAutoSwitch,
+        isCanImportSite: action.payload,
       };
     }
-
     default:
       return state;
   }

@@ -3,6 +3,8 @@ logs
 *.log
 npm-debug.log*
 
+**/.vscode/
+
 # Runtime data
 pids
 *.pid
@@ -60,3 +62,5 @@ dist
 
 .env
 .env.*
+
+package-lock.json

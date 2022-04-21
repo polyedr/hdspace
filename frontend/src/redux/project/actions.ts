@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropPosition } from '@Constants/dragAndDrop';
+import { DropPosition, ElementType } from '@Constants/dragAndDrop';
 import {
   ChildEntity,
   ChildrenElements,
@@ -26,13 +26,24 @@ import {
   StateElementsToAdd,
   VIARegion,
   UserData,
-  // IframeMessage,
-  ScreenInfo,
+  EditScreenData,
+  ProfileDataUIParameters,
+  VIAData,
+  FileToUpload,
+  UIFramework,
+  ElementData,
+  NNModelName,
+  VIARegions,
+  canvasData,
+  ParsedImagePalette,
 } from '@Src/types';
+import { XYCoord } from 'react-dnd';
 import {
+  UpdateUISettingsParameters,
   Action,
   ActivateScreen,
   AddChildToElement,
+  CreateLibraryElements,
   AddElementClassName,
   AddElements,
   CreateProject,
@@ -59,8 +70,7 @@ import {
   RemoveSharedStyles,
   RemoveAsset,
   RestoreAsset,
-  RenameProject,
-  EditScreen,
+  UpdateNameAndTagsProject,
   ReplaceElementStyles,
   ResetProjectState,
   RestoreElement,
@@ -81,6 +91,8 @@ import {
   SetScreenLoader,
   SetScreens,
   ToggleContainersBorders,
+  ToggleGrid,
+  ExportScreenFlag,
   UnwrapFromContainer,
   UpdateElement,
   UpdateElementImage,
@@ -98,7 +110,7 @@ import {
   SetScreenCreateLoader,
   SetBordersEnabled,
   SetEditorDocument,
-  SetAssetsLoader,
+  SetAssetsListsLoader,
   UploadElementAsset,
   RemoveAssetList,
   AddChildrenToElement,
@@ -124,7 +136,7 @@ import {
   InsertStateElement,
   UnwrapStateElements,
   StartHistoryRecord,
-  SemiautoAnalyzeImage,
+  RecognizeImage,
   FinishAnnotaion,
   //  CloseHistoryRecord,
   ExecuteUndoActions,
@@ -151,8 +163,8 @@ import {
   SetViaRegions as SetVIARegions,
   UpdateVIARegion,
   SetActiveVIARegion,
-  CreateVIARegion,
-  DeleteVIARegion,
+  CreateVIARegionSuccess,
+  DeleteVIARegionSuccess,
   SetAnnotatedElement,
   UpdateVIARegionLayer,
   SetNewScreenModal,
@@ -168,8 +180,30 @@ import {
   SetSidebarIframe,
   AssetData,
   SetValueImportLoader,
-  ToggleEnableTabsAutoSwitch,
+  setImportValue,
+  EditScreenNameAndData,
+  CreateVIARegion,
+  DeleteVIARegion,
+  RestoreVIARegion,
+  UpdateVIARegionSuccess,
+  UpdateVIARegionLayerSuccess,
+  SetVIAResultId,
+  SetVIAData,
+  SetBlockType,
+  UpdateCurrentUIFramework,
+  ProcessDropTargetParams,
+  ProcessDropElement,
+  SetEnabledPseudoClass,
+  ReplaceMultipleElementsStyles,
+  SetStatePseudoClass,
+  LoadAssetLists,
+  LoadAssets,
+  ImageData,
+  UpdateDefaultStyles,
+  GenerateImagePalette,
+  SetImagePalette,
 } from '../types';
+
 import TYPES from '../actionTypes';
 
 export const getProjectList = (): LoadProjects => ({
@@ -243,17 +277,36 @@ export const updateProject = (
   meta,
 });
 
+export const updateCurrentUIFramework = (
+  uiFramework: UIFramework,
+): UpdateCurrentUIFramework => ({
+  type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+  payload: { uiFramework },
+});
+
+export const updateCurrentUIFrameworkVariables = (variables: {
+  [name: string]: string;
+}) => ({
+  type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+  payload: variables,
+});
+
+export const resetCurrentUIFrameworkVariables = () => ({
+  type: TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
+});
+
 export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
   type: TYPES.CHANGE_SCREENS_ORDER,
   payload: indices,
 });
 
-export const renameProject = (
+export const updateNameAndTagsProject = (
   projectID: number,
   name: string,
-): RenameProject => ({
-  type: TYPES.RENAME_PROJECT,
-  payload: { projectID, name },
+  tags: string,
+): UpdateNameAndTagsProject => ({
+  type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
+  payload: { projectID, name, tags },
 });
 
 export const setProjectListLoader = (
@@ -299,8 +352,10 @@ export const setAnalyzerLoader = (active: boolean): SetAnalyzerLoader => ({
   payload: { active },
 });
 
-export const setAssetsLoader = (active: boolean): SetAssetsLoader => ({
-  type: TYPES.SET_ASSETS_LOADER,
+export const setAssetsListsLoader = (
+  active: boolean,
+): SetAssetsListsLoader => ({
+  type: TYPES.SET_ASSETS_LISTS_LOADER,
   payload: { active },
 });
 
@@ -327,25 +382,35 @@ export const restoreScreen = (
   meta,
 });
 
-export const editScreen = (
+export const editScreenNameAndData = (
   projectID: number,
   screenID: number,
-  screenInfo: ScreenInfo,
-): EditScreen => ({
-  type: TYPES.EDIT_SCREEN,
+  editData: EditScreenData,
+): EditScreenNameAndData => ({
+  type: TYPES.EDIT_SCREEN_NAME_AND_DATA,
   payload: {
     projectID,
     screenID,
-    screenInfo,
+    editData,
   },
 });
 
+export const setEditableScreen = (idScreen: number) => ({
+  type: TYPES.SET_EDITABLE_SCREEN,
+  payload: idScreen,
+});
+
+export const clearEditableScreen = (screen: Screen) => ({
+  type: TYPES.CLEAR_EDITABLE_SCREEN,
+  payload: screen,
+});
+
 export const createScreen = (
-  { projectID, name, buoyancy, rootName }: CreateScreenData,
+  { projectID, name, buoyancy, rootName, freeCanvas }: CreateScreenData,
   meta?: HistoryMeta,
 ): CreateScreen => ({
   type: TYPES.CREATE_SCREEN,
-  payload: { projectID, name, buoyancy, rootName },
+  payload: { projectID, name, buoyancy, rootName, freeCanvas },
   meta,
 });
 
@@ -421,14 +486,12 @@ export const moveStateElementsInside = (
 export const updateStateElement = (
   elementId: string,
   data: Partial<StateElement>,
-  meta: ElementHistoryMeta,
 ) => ({
   type: TYPES.UPDATE_STATE_ELEMENT,
   payload: {
     elementId,
     data,
   },
-  meta,
 });
 
 // add new elements to existing ones
@@ -549,9 +612,30 @@ export const toggleContainersBorders = (
   payload: enabled,
 });
 
+export const toggleGrid = (enabled: boolean): ToggleGrid => ({
+  type: TYPES.TOGGLE_GRID,
+  payload: enabled,
+});
+
+export const exportScreenFlag = (enabled: boolean): ExportScreenFlag => ({
+  type: TYPES.EXPORT_SCREEN_FLAG,
+  payload: enabled,
+});
+
 export const setBordersEnabled = (enabled: boolean): SetBordersEnabled => ({
   type: TYPES.SET_BORDERS_ENABLED,
   payload: enabled,
+});
+
+export const updateDefaultStyles = (
+  classNames: Entity[],
+  styles: React.CSSProperties,
+  controlKey: string,
+  meta: ElementHistoryMeta,
+): UpdateDefaultStyles => ({
+  type: TYPES.UPDATE_DEFAULT_STYLES,
+  payload: { classNames, styles, controlKey },
+  meta,
 });
 
 export const updateSharedStyles = (
@@ -644,6 +728,21 @@ export const updateMultipleElementsStyles = (
   meta,
 });
 
+export const replaceMultipleElementsStyles = (
+  ids: string[],
+  styles: {
+    [id: string]: React.CSSProperties;
+  },
+  meta: ElementHistoryMeta,
+): ReplaceMultipleElementsStyles => ({
+  type: TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
+  payload: {
+    ids,
+    styles,
+  },
+  meta,
+});
+
 export const removeMultipleElementsStyles = (
   ids: string[],
   cssPropertiesNames: string[],
@@ -676,7 +775,7 @@ export const updateElementImage = (
 
 export const uploadElementAsset = (
   elementId: string,
-  { file, imageURL }: AssetData,
+  { file, imageURL, useInBackground }: AssetData,
   listId: string,
   meta?: ElementHistoryMeta,
 ): UploadElementAsset => ({
@@ -686,6 +785,7 @@ export const uploadElementAsset = (
     asset: {
       file,
       imageURL,
+      useInBackground,
     },
     listId,
   },
@@ -820,6 +920,15 @@ export const createGroupChildren = (
   meta,
 });
 
+export const createLibraryElements = (
+  { createdElements, parentId, index }: CreateElementsData,
+  meta: ElementHistoryMeta,
+): CreateLibraryElements => ({
+  type: TYPES.CREATE_LIBRARY_ELEMENTS,
+  payload: { createdElements, parentId, index },
+  meta,
+});
+
 export const createElements = (
   { createdElements, parentId, index }: CreateElementsData,
   meta: ElementHistoryMeta,
@@ -832,7 +941,7 @@ export const createElements = (
 export const addChildrenToElement = (
   children: {
     childType: ChildEntity;
-    parameters: ChildrenElements[ChildEntity]['parameters'];
+    parameters: ReturnType<ChildrenElements[ChildEntity]>['parameters'];
   }[],
   elementId: string,
   meta: ElementHistoryMeta,
@@ -845,7 +954,7 @@ export const addChildrenToElement = (
 export const addChildToElement = (
   childType: ChildEntity,
   elementID: string,
-  parameters: Partial<ChildrenElements[ChildEntity]['parameters']>,
+  parameters: Partial<ReturnType<ChildrenElements[ChildEntity]>['parameters']>,
   meta: ElementHistoryMeta,
 ): AddChildToElement => ({
   type: TYPES.ADD_CHILD_TO_ELEMENT,
@@ -854,7 +963,7 @@ export const addChildToElement = (
 });
 
 export const autoAnalyzeImage = (
-  file: any,
+  file: FileToUpload,
   parentId: string,
   blockType: NNBlockType,
   meta: ElementHistoryMeta,
@@ -868,19 +977,17 @@ export const autoAnalyzeImage = (
   meta,
 });
 
-export const semiAutoAnalyzeImage = (
-  file: any,
+export const recognizeImage = (
+  file: FileToUpload,
   parentId: string,
   blockType: NNBlockType,
-  meta: ElementHistoryMeta,
-): SemiautoAnalyzeImage => ({
-  type: TYPES.SEMIAUTO_ANALYZE_IMAGE,
+): RecognizeImage => ({
+  type: TYPES.RECOGNIZE_IMAGE,
   payload: {
     file,
     parentId,
     blockType,
   },
-  meta,
 });
 
 export const wrapIntoContainer = (
@@ -904,6 +1011,16 @@ export const wrapMultipleElementsIntoContainer = (
 export const setActiveElement = (id: string) => ({
   type: TYPES.SET_ACTIVE_ELEMENT_SAGA,
   payload: id,
+});
+
+export const setActiveNNModel = (model: NNModelName) => ({
+  type: TYPES.SET_ACTIVE_NN_MODEL,
+  payload: { model },
+});
+
+export const isLibraryTab = (isLibraryTab: Boolean) => ({
+  type: TYPES.IS_LIBRARY_TAB,
+  payload: { isLibraryTab },
 });
 
 export const setActiveElementId = (id: string) => ({
@@ -1089,11 +1206,6 @@ export const addFileInput = (id: string, file: File) => ({
   payload: { id, file },
 });
 
-export const changeFreeCanvasMode = (enabled: boolean) => ({
-  type: TYPES.CHANGE_FREE_CANVAS_MODE,
-  payload: enabled,
-});
-
 export const updateLastElements = (
   parentId: string,
   ids: string[],
@@ -1128,21 +1240,38 @@ export const convertFreeCanvas = () => ({
   type: TYPES.CONVERT_FREE_CANVAS,
 });
 
-export const importHtml = (files: File[], url?: string) => ({
+export const importHtml = (importHtmlData: canvasData) => ({
   type: TYPES.IMPORT_HTML,
+  payload: {
+    importHtmlData,
+  },
+});
+
+export const checkImportHTML = (files: File[], url?: string) => ({
+  type: TYPES.IMPORT_HTML_CHECK,
   payload: {
     files,
     url,
   },
 });
 
-export const uploadImportUrl = (url: string) => ({
-  type: TYPES.UPLOAD_IMPORT_URL,
+export const uploadUrlForCheckRobots = (url: string) => ({
+  type: TYPES.UPLOAD_URL_CHECK_ROBOTS,
   payload: url,
+});
+
+export const setValueCheckRobots = (value: boolean) => ({
+  type: TYPES.SET_VALUE_CHECK_ROBOTS,
+  payload: value,
 });
 
 export const setValueImportLoader = (value: boolean): SetValueImportLoader => ({
   type: TYPES.SET_VALUE_IMPORT_LOADER,
+  payload: value,
+});
+
+export const setValueImport = (value: any): setImportValue => ({
+  type: TYPES.SET_IMPORT_VALUE,
   payload: value,
 });
 
@@ -1151,19 +1280,21 @@ export const setEditorDocument = (doc: Document): SetEditorDocument => ({
   payload: doc,
 });
 
-export const loadAssetLists = (projectId: string) => ({
+export const loadAssetLists = (projectId: string): LoadAssetLists => ({
   type: TYPES.LOAD_ASSET_LISTS,
   payload: projectId,
 });
 
-export const loadAssets = (selectedListId: string) => ({
+export const loadAssets = (selectedListId: string): LoadAssets => ({
   type: TYPES.LOAD_ASSETS,
   payload: {
     selectedListId,
   },
 });
 
-export const setAssetLists = (assetLists: PaginatedArray<AssetsList>) => ({
+export const setAssetLists = (
+  assetLists: PaginatedArray<AssetsList> | null,
+) => ({
   type: TYPES.SET_ASSET_LISTS,
   payload: assetLists,
 });
@@ -1242,6 +1373,15 @@ export const setAssets = (listId: string, assets: PaginatedArray<Asset>) => ({
   },
 });
 
+export const uploadIcoScreen = (file: any, project: number, id: number) => ({
+  type: TYPES.UPLOAD_ICO_SCREEN,
+  payload: {
+    file,
+    project,
+    id,
+  },
+});
+
 export const addAssetToState = (
   listId: string,
   asset: Asset,
@@ -1256,14 +1396,12 @@ export const addAssetToState = (
 });
 
 export const setSelectedAssetListId = (
-  listId: string,
-  meta?: HistoryMeta,
+  listId: string | null,
 ): SetSelectedAssetListId => ({
   type: TYPES.SET_SELECTED_ASSET_LIST_ID,
   payload: {
     assetListId: listId,
   },
-  meta: meta || {},
 });
 
 export const addSelectedElement = (id: string): AddSelectedElement => ({
@@ -1356,12 +1494,12 @@ export const moveHistoryBackward = (): MoveHistoryBackward => ({
 
 export const uploadImageByUrl = (
   elementId: string,
-  url: string,
+  imageData: ImageData,
   listId: string,
   meta: ElementHistoryMeta,
 ): UploadImageByUrl => ({
   type: TYPES.UPLOAD_IMAGE_BY_URL,
-  payload: { elementId, url, listId },
+  payload: { elementId, imageData, listId },
   meta,
 });
 
@@ -1403,9 +1541,7 @@ export const setVIAMode = (active: boolean): SetVIAMode => ({
   payload: active,
 });
 
-export const setVIARegions = (
-  regions: Normalized<VIARegion>,
-): SetVIARegions => ({
+export const setVIARegions = (regions: VIARegions): SetVIARegions => ({
   type: TYPES.SET_VIA_REGIONS,
   payload: regions,
 });
@@ -1413,25 +1549,70 @@ export const setVIARegions = (
 export const updateVIARegion = (
   regionId: string,
   data: Partial<VIARegion>,
+  meta?: HistoryMeta,
 ): UpdateVIARegion => ({
   type: TYPES.UPDATE_VIA_REGION,
   payload: {
     id: regionId,
     data,
   },
+  meta,
 });
 
-export const setActiveVIARegion = (id: string): SetActiveVIARegion => ({
+export const updateVIARegionSuccess = (
+  regionId: string,
+  data: Partial<VIARegion>,
+): UpdateVIARegionSuccess => ({
+  type: TYPES.UPDATE_VIA_REGION_SUCCESS,
+  payload: {
+    id: regionId,
+    data,
+  },
+});
+
+export const setActiveVIARegion = (
+  id: string,
+  isUpdatingLayer: boolean,
+): SetActiveVIARegion => ({
   type: TYPES.SET_ACTIVE_VIA_REGION,
-  payload: id,
+  payload: {
+    id,
+    isUpdatingLayer,
+  },
 });
 
-export const createVIARegion = (): CreateVIARegion => ({
+export const createVIARegion = (meta?: HistoryMeta): CreateVIARegion => ({
   type: TYPES.CREATE_VIA_REGION,
+  meta,
 });
 
-export const deleteVIARegion = (id?: string): DeleteVIARegion => ({
+export const createVIARegionSuccess = (
+  region: VIARegion,
+): CreateVIARegionSuccess => ({
+  type: TYPES.CREATE_VIA_REGION_SUCCESS,
+  payload: region,
+});
+
+export const restoreVIARegion = (
+  region: VIARegion,
+  meta?: HistoryMeta,
+): RestoreVIARegion => ({
+  type: TYPES.RESTORE_VIA_REGION,
+  payload: region,
+  meta,
+});
+
+export const deleteVIARegion = (
+  id?: string,
+  meta?: HistoryMeta,
+): DeleteVIARegion => ({
   type: TYPES.DELETE_VIA_REGION,
+  payload: id,
+  meta,
+});
+
+export const deleteVIARegionSuccess = (id: string): DeleteVIARegionSuccess => ({
+  type: TYPES.DELETE_VIA_REGION_SUCCESS,
   payload: id,
 });
 
@@ -1444,17 +1625,49 @@ export const setAnnotatedElementId = (id: string): SetAnnotatedElement => ({
   payload: id,
 });
 
-export const updateVIARegionLayer = (
-  regionId: string,
-  layer: number,
-): UpdateVIARegionLayer => ({
-  type: TYPES.UPDATE_VIA_REGION_LAYER,
-  payload: { regionId, layer },
+export const setVIAResultId = (id: string): SetVIAResultId => ({
+  type: TYPES.SET_VIA_RESULT_ID,
+  payload: id,
 });
 
-export const setAnnotatedImageURL = (url: string): SetAnnotatedImageURL => ({
+export const updateVIARegionLayer = (
+  id: string,
+  layer: number,
+  meta?: HistoryMeta,
+): UpdateVIARegionLayer => ({
+  type: TYPES.UPDATE_VIA_REGION_LAYER,
+  payload: { id, layer },
+  meta,
+});
+
+export const updateVIARegionLayerSuccess = (
+  id: string,
+  layer: number,
+): UpdateVIARegionLayerSuccess => ({
+  type: TYPES.UPDATE_VIA_REGION_LAYER_SUCCESS,
+  payload: {
+    id,
+    layer,
+  },
+});
+
+export const setAnnotatedImageFile = (
+  file: FileToUpload,
+): SetAnnotatedImageURL => ({
   type: TYPES.SET_ANNOTATED_IMAGE_URL,
-  payload: url,
+  payload: file,
+});
+
+export const setVIAData = (value: VIAData): SetVIAData => ({
+  type: TYPES.SET_VIA_DATA,
+  payload: {
+    value,
+  },
+});
+
+export const setBlockType = (blockType: NNBlockType): SetBlockType => ({
+  type: TYPES.SET_BLOCK_TYPE,
+  payload: blockType,
 });
 
 export const cancelRecognizing = () => ({
@@ -1511,6 +1724,67 @@ export const sidebarLogoutSuccess = () => ({
   type: TYPES.SIDEBAR_LOGOUT_SUCCESS,
 });
 
-export const toggleEnableTabsAutoSwitch = (): ToggleEnableTabsAutoSwitch => ({
-  type: TYPES.TOGGLE_TABS_AUTOSWITCH,
+export const updateUISettingsParameters = (
+  uiParameters: Partial<ProfileDataUIParameters>,
+): UpdateUISettingsParameters => ({
+  type: TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+  payload: uiParameters,
+});
+
+export const processDropTargetParams = (
+  elementId: string,
+  rect: DOMRect,
+  isHorizontal: boolean,
+  offset: XYCoord,
+): ProcessDropTargetParams => ({
+  type: TYPES.PROCESS_DROP_TARGET_PARAMS,
+  payload: {
+    elementId,
+    rect,
+    isHorizontal,
+    offset,
+  },
+});
+
+export const processDropElement = (
+  dragSource: StateElement | ElementData,
+  dropType: ElementType,
+): ProcessDropElement => ({
+  type: TYPES.PROCESS_DROP_ELEMENT,
+  payload: {
+    dragSource,
+    dropType,
+  },
+});
+
+export const setEnabledPseudoClass = (
+  pseudoClass: string | null,
+  elementId?: string | null,
+): SetEnabledPseudoClass => ({
+  type: TYPES.SET_ENABLED_PSEUDO_CLASS,
+  payload: {
+    pseudoClass,
+    elementId,
+  },
+});
+
+export const setStatePseudoClass = (
+  pseudoClass: string | null,
+): SetStatePseudoClass => ({
+  type: TYPES.SET_STATE_PSEUDO_CLASS,
+  payload: pseudoClass,
+});
+
+export const generateImagePalette = (
+  imageUrl: string,
+): GenerateImagePalette => ({
+  type: TYPES.GENERATE_IMAGE_PALETTE,
+  payload: imageUrl,
+});
+
+export const setImagePalette = (
+  imagePalette: ParsedImagePalette,
+): SetImagePalette => ({
+  type: TYPES.SET_IMAGE_PALETTE,
+  payload: imagePalette,
 });

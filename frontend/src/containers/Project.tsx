@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -13,7 +14,10 @@ import LeftPanel from '@Components/LeftPanel';
 import NewScreenModal from '@Components/Dialogs/NewScreenModal';
 import Sidebar from '@Components/Sidebar';
 import { makeStyles } from '@material-ui/core/styles';
-import Screen from './Screen';
+import { selectSortedScreens } from '@Redux/project/selectors/screen';
+import { Screen } from '@Src/types';
+import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
+import ScreenComponent from './Screen';
 
 const useStyles = makeStyles({
   project: {
@@ -46,6 +50,12 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const project = useSelector(selectProjectByIdWrapper(currentProjectId));
   const projectLoader = useSelector(selectProjectLoader);
+  const screens = useSelector(selectSortedScreens);
+
+  const getInitialScreenId = (screens: Screen[]) => {
+    const sorted = screens.sort((a, b) => a.buoyancy - b.buoyancy);
+    return sorted[1]?.id || sorted[0]?.id;
+  };
 
   useEffect(() => {
     if (currentProjectId !== projectId) {
@@ -56,18 +66,21 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
   useEffect(
     () => () => {
       dispatch(resetProjectState());
+      DOMHandler.INSTANCE.reset();
     },
     [dispatch],
   );
 
   useEffect(() => {
-    if (!screenId && currentProjectId !== -1) {
+    if (!screenId && currentProjectId !== -1 && screens.length) {
       const firstUserScreenId = project.projectscreen[1];
       if (firstUserScreenId) {
-        history.push(`/project/${currentProjectId}/${firstUserScreenId}`);
+        history.push(
+          `/project/${currentProjectId}/${getInitialScreenId(screens)}`,
+        );
       }
     }
-  }, [screenId, currentProjectId, project, history]);
+  }, [screenId, currentProjectId, project, history, screens]);
 
   return (
     <div className={classes.project}>
@@ -80,7 +93,7 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
       ) : (
         <>
           {currentProjectId !== -1 && !!screenId && (
-            <Screen screenId={screenId} />
+            <ScreenComponent screenId={screenId} />
           )}
           <NNProcessingModal />
         </>

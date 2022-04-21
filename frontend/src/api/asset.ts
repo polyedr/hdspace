@@ -1,11 +1,19 @@
 import { myAxios } from '@Src/config/settings';
-import { Asset, MyAxiosProps, PaginatedArray } from '@Src/types';
+import {
+  Asset,
+  MyAxiosProps,
+  PaginatedArray,
+  ParsedImagePalette,
+  Result,
+} from '@Src/types';
 import { AxiosResponse } from 'axios';
 import {
   convertResponseToAsset,
+  convertResponseToImagePalette,
   convertResponseToPaginatedAssets,
   convertToServerAsset,
   ServerAsset,
+  ServerImagePalette,
 } from './converters/asset/fromResponse';
 import { handleError } from './helper';
 
@@ -20,7 +28,7 @@ export const apiGetAsset = (props: MyAxiosProps & { id: string }) => {
 
 export const apiCreateAsset = (
   props: MyAxiosProps & { assetFormData: FormData },
-) => {
+): Promise<Result<Asset>> => {
   const { assetFormData, ...axiosProps } = props;
   return myAxios({
     ...axiosProps,
@@ -29,9 +37,9 @@ export const apiCreateAsset = (
     contentType: 'multipart/form-data',
     data: assetFormData,
   })
-    .then((response: AxiosResponse<ServerAsset>) =>
-      convertResponseToAsset(response),
-    )
+    .then((response: AxiosResponse<ServerAsset>) => ({
+      result: convertResponseToAsset(response),
+    }))
     .catch(handleError);
 };
 
@@ -71,12 +79,12 @@ export const apiUpdateAsset = (
 };
 
 export const apiGetAssets = (
-  props: MyAxiosProps & { assetListId?: string },
+  props: MyAxiosProps & { assetListId?: string; next: string },
 ) => {
-  const { assetListId, ...axiosProps } = props;
+  const { assetListId, next, ...axiosProps } = props;
   return myAxios({
     ...axiosProps,
-    url: `/projects/images/`,
+    url: next || `/projects/images/`,
     method: 'GET',
     params: {
       ...(axiosProps.params || {}),
@@ -86,5 +94,21 @@ export const apiGetAssets = (
     .then((response: AxiosResponse<PaginatedArray<ServerAsset>>) =>
       convertResponseToPaginatedAssets(response),
     )
+    .catch(handleError);
+};
+
+export const apiGenerateImagePalette = (
+  props: MyAxiosProps & { imageUrl: string },
+): Promise<ParsedImagePalette | { error: any }> => {
+  const { imageUrl, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    url: `/projects/images_palette/`,
+    method: 'POST',
+    data: { fileurl: imageUrl },
+  })
+    .then((response: AxiosResponse<ServerImagePalette>) => {
+      return convertResponseToImagePalette(response);
+    })
     .catch(handleError);
 };

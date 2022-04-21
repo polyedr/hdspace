@@ -3,24 +3,24 @@
 exports[`VIANavigator should render VIANavigator 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiAccordion-root makeStyles-root-2 Mui-expanded makeStyles-expanded-3 MuiAccordion-rounded MuiPaper-elevation1 MuiPaper-rounded"
+    class="MuiPaper-root MuiAccordion-root makeStyles-root-3 Mui-expanded makeStyles-expanded-4 MuiAccordion-rounded MuiPaper-elevation1 MuiPaper-rounded"
   >
     <div
       aria-disabled="false"
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-root-4 Mui-expanded makeStyles-expanded-6"
+      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-root-5 Mui-expanded makeStyles-expanded-7"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content makeStyles-content-5 Mui-expanded makeStyles-expanded-6"
+        class="MuiAccordionSummary-content makeStyles-content-6 Mui-expanded makeStyles-expanded-7"
       >
         Regions
       </div>
       <div
         aria-disabled="false"
         aria-hidden="true"
-        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-7 Mui-expanded makeStyles-expanded-6 MuiIconButton-edgeEnd"
+        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-8 Mui-expanded makeStyles-expanded-7 MuiIconButton-edgeEnd"
       >
         <span
           class="MuiIconButton-label"
@@ -42,7 +42,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
       </div>
     </div>
     <div
-      class="MuiCollapse-container MuiCollapse-entered"
+      class="MuiCollapse-root MuiCollapse-entered"
       style="min-height: 0px;"
     >
       <div
@@ -55,7 +55,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root makeStyles-root-8 makeStyles-root-1"
+              class="MuiAccordionDetails-root makeStyles-root-9 makeStyles-root-1"
             >
               <div
                 data-react-beautiful-dnd-droppable="0"
@@ -63,7 +63,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
               >
                 <div
                   aria-roledescription="Draggable item. Press space bar to lift"
-                  class="makeStyles-root-9"
+                  class="makeStyles-root-10"
                   data-react-beautiful-dnd-drag-handle="0"
                   data-react-beautiful-dnd-draggable="0"
                   draggable="false"
@@ -71,10 +71,109 @@ exports[`VIANavigator should render VIANavigator 1`] = `
                   tabindex="0"
                 >
                   <span
-                    class="makeStyles-title-11"
+                    class="makeStyles-title-12"
                   >
                     ocrtext
                   </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="MuiPaper-root MuiAccordion-root makeStyles-root-3 Mui-expanded makeStyles-expanded-4 MuiAccordion-rounded MuiPaper-elevation1 MuiPaper-rounded"
+  >
+    <div
+      aria-disabled="false"
+      aria-expanded="true"
+      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-root-5 Mui-expanded makeStyles-expanded-7"
+      role="button"
+      tabindex="0"
+    >
+      <div
+        class="MuiAccordionSummary-content makeStyles-content-6 Mui-expanded makeStyles-expanded-7"
+      >
+        Model
+      </div>
+      <div
+        aria-disabled="false"
+        aria-hidden="true"
+        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-8 Mui-expanded makeStyles-expanded-7 MuiIconButton-edgeEnd"
+      >
+        <span
+          class="MuiIconButton-label"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+            />
+          </svg>
+        </span>
+        <span
+          class="MuiTouchRipple-root"
+        />
+      </div>
+    </div>
+    <div
+      class="MuiCollapse-root MuiCollapse-entered"
+      style="min-height: 0px;"
+    >
+      <div
+        class="MuiCollapse-wrapper"
+      >
+        <div
+          class="MuiCollapse-wrapperInner"
+        >
+          <div
+            role="region"
+          >
+            <div
+              class="makeStyles-selectWrapper-2"
+            >
+              <div
+                class="MuiFormControl-root MuiTextField-root makeStyles-root-13 MuiFormControl-marginDense MuiFormControl-fullWidth"
+              >
+                <label
+                  class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiFormLabel-filled"
+                  data-shrink="true"
+                >
+                  Model
+                </label>
+                <div
+                  class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
+                >
+                  <div
+                    aria-haspopup="listbox"
+                    class="MuiSelect-root MuiSelect-select MuiSelect-selectMenu MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+                    role="button"
+                    tabindex="0"
+                  >
+                    FDict
+                  </div>
+                  <input
+                    aria-hidden="true"
+                    class="MuiSelect-nativeInput"
+                    tabindex="-1"
+                    value="fdict"
+                  />
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root MuiSelect-icon"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M7 10l5 5 5-5z"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>

@@ -4,13 +4,13 @@ import { apiRefreshToken } from '@Api/user';
 import getSavedValue from '@Utils/getSavedValue';
 import { path } from 'ramda';
 import { call, put, select, take } from 'redux-saga/effects';
-import { MAX_TOKEN_TRIALS } from '../../../config/settings';
+import { MAX_TOKEN_TRIALS } from '@Src/config/settings';
 import {
   LibraryElementUnion,
   Project,
   Result,
   SavedElementsValues,
-} from '../../../types';
+} from '@Src/types';
 import TYPES from '../../actionTypes';
 import { openSignScreen } from '../../history';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -37,10 +37,13 @@ export function* refreshTokensSaga() {
 
     return accessResult;
   } catch (e) {
-    yield put(setUserError(e));
+    if (e instanceof Error) {
+      yield put(setUserError(e));
+    }
   }
 }
 
+// eslint-disable-next-line consistent-return
 export function* reqWrapper(
   requestAction: (props: any) => Promise<any>,
   props: any = {},
@@ -92,8 +95,10 @@ export function* reqWrapper(
 
     return result;
   } catch (e) {
-    yield put(setUserError(e));
-    return { error: e.message };
+    if (e instanceof Error) {
+      yield put(setUserError(e));
+      return { error: e.message };
+    }
   }
 }
 
@@ -117,17 +122,19 @@ export function* projectUpdateHelperSaga(newProject: Project) {
       throw new Error(error);
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: {
-            variant: 'error',
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
           },
-        },
-        e,
-      ),
-    );
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -145,12 +152,12 @@ export function* updateSavedElementsValues(elements: LibraryElementUnion[]) {
     .reduce((acc, element) => {
       const savedValue = getSavedValue(element);
 
-      if (element.type === 'radiobutton') {
-        return {
-          ...acc,
-          [element.parameters.name || '']: { savedValue: '' },
-        };
-      }
+      // if (element.type === 'radiobutton') {
+      //   return {
+      //     ...acc,
+      //     [element.parameters.name || '']: { savedValue: '' },
+      //   };
+      // }
 
       return {
         ...acc,

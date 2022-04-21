@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { FC, useEffect, useState } from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import {

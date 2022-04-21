@@ -1,14 +1,15 @@
-import React, { useCallback, memo, useEffect, useState } from 'react';
+import React, { useCallback, memo, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { useSelector } from 'react-redux';
-import { selectEditorDocument } from '@Redux/project/selectors/base';
 import { selectActiveElement } from '@Redux/project/selectors/element';
-import { MenuItem } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateElement } from '@Redux/project/actions';
+import { selectEditorDocument } from '@Redux/project/selectors/base';
+import { Button, ButtonGroup, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { capitalize } from '@material-ui/core/utils';
-import StylesHeader from '../../helperComponents/StylesHeader';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -26,6 +27,17 @@ const useStyles = makeStyles({
 });
 
 const sameSizeElements: (Entity | 'none')[] = ['checkbox', 'radiobutton'];
+const percentSizeElements: (Entity | 'none')[] = ['carousel'];
+const disableWidthElements: (Entity | 'none')[] = [
+  'navbar',
+  'calendar',
+  'clock',
+];
+const disableHeightElements: (Entity | 'none')[] = [
+  'calendar',
+  'calendar',
+  'clock',
+];
 
 enum Unit {
   px = 'px',
@@ -44,15 +56,14 @@ type SizeName = keyof SelectedUnit;
 
 type ControlProps = {
   sizeName: SizeName;
+  disabled: boolean;
 };
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');
-
   if (unit in Unit) {
     return unit as UnitName;
   }
-  console.error('Incorrect unit', unit); // TODO validate users input value
   return Unit.px;
 };
 
@@ -65,7 +76,8 @@ const SizeBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
   masterScreenEnabled,
-  activeElementId,
+  editableStyles,
+  element,
   width,
   height,
   canEdit,
@@ -73,7 +85,7 @@ const SizeBlock: React.FC<Props> = ({
   const classes = useStyles();
 
   const editorDocument = useSelector(selectEditorDocument);
-  const { type } = useSelector(selectActiveElement);
+  const { type } = element;
 
   const handleSelectChange = useCallback(
     ({ target: { value } }, sizeName: SizeName) => {
@@ -89,7 +101,7 @@ const SizeBlock: React.FC<Props> = ({
       };
 
       if (editorDocument) {
-        const el = editorDocument.getElementById(activeElementId);
+        const el = editorDocument.getElementById(element.id);
 
         switch (value as UnitName) {
           case 'px': {
@@ -131,27 +143,51 @@ const SizeBlock: React.FC<Props> = ({
         }
       }
     },
-    [activeElementId, updateStyles, editorDocument, type],
+    [element, updateStyles, editorDocument, type],
   );
 
   const handleInputChange = useCallback(
     (name, value) => {
       const size = String(name === 'width' ? width : height) || 'auto';
+      const newWidth = width === undefined ? 1 : parseFloat(`${width}`);
+      const newHeight = height === undefined ? 1 : parseFloat(`${height}`);
 
       const unitValue = Unit[getUnitFromValue(size?.toString() || Unit.px)];
 
       const finalValue =
         unitValue === 'auto' ? 'auto' : `${value}${Unit[unitValue]}`;
-
-      const newSize = sameSizeElements.includes(type)
-        ? {
-            width: finalValue,
-            height: finalValue,
-          }
-        : {
-            [name]: finalValue,
-          };
-
+      let newSize;
+      if (sameSizeElements.includes(type)) {
+        newSize = {
+          width: finalValue,
+          height: finalValue,
+        };
+      } else if (percentSizeElements.includes(type)) {
+        newSize =
+          name === 'width'
+            ? {
+                width: finalValue,
+                height:
+                  unitValue === 'auto'
+                    ? 'auto'
+                    : `${Math.trunc((newHeight * value) / newWidth)}${
+                        Unit[unitValue]
+                      }`,
+              }
+            : {
+                width:
+                  unitValue === 'auto'
+                    ? 'auto'
+                    : `${Math.trunc((newWidth * value) / newHeight)}${
+                        Unit[unitValue]
+                      }`,
+                height: finalValue,
+              };
+      } else {
+        newSize = {
+          [name]: finalValue,
+        };
+      }
       updateStyles({
         ...newSize,
         ...(name === 'height' && { minHeight: 'auto' }),
@@ -161,16 +197,48 @@ const SizeBlock: React.FC<Props> = ({
     [updateStyles, width, height, type],
   );
 
-  const SizeControl: React.FC<ControlProps> = ({ sizeName }) => {
+  const ClendarSizeControl: React.FC = () => {
+    const dispatch = useDispatch();
+    const { id, parameters } = useSelector(selectActiveElement);
+    const handleSizeChange = (e) => {
+      dispatch(
+        updateElement({
+          elementID: id,
+          data: { parameters: { ...parameters, size: e.currentTarget.value } },
+          active: true,
+        }),
+      );
+    };
+
+    return (
+      <ButtonGroup>
+        <Button
+          variant="contained"
+          color="primary"
+          value="small"
+          onClick={handleSizeChange}
+        >
+          small
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          value="large"
+          onClick={handleSizeChange}
+        >
+          large
+        </Button>
+      </ButtonGroup>
+    );
+  };
+  const SizeControl: React.FC<ControlProps> = ({ sizeName, disabled }) => {
     const size = String((sizeName === 'width' ? width : height) || 'auto');
     const parsedSize = Number.isNaN(parseFloat(size))
       ? ''
       : String(parseFloat(size));
     const inputValue = !size || size === 'auto' ? 'auto' : parsedSize;
-    const [state, setState] = useState(inputValue || 0);
-    useEffect(() => {
-      setState(inputValue);
-    }, [inputValue]);
+    const [sizeState, setSizeState] = useState(inputValue || 0);
+
     const debounced = useDebouncedCallback((name, value) => {
       handleInputChange(name, value);
     }, 500);
@@ -182,12 +250,12 @@ const SizeBlock: React.FC<Props> = ({
           label={capitalize(sizeName)}
           type="text"
           name={sizeName}
-          value={state}
+          value={sizeState}
           onChange={({ target: { name, value } }) => {
-            setState(value);
+            setSizeState(value);
             debounced.callback(name, value);
           }}
-          disabled={inputValue === 'auto' || !canEdit}
+          disabled={inputValue === 'auto' || !canEdit || disabled}
           margin="dense"
         />
 
@@ -198,7 +266,7 @@ const SizeBlock: React.FC<Props> = ({
           value={Unit[getUnitFromValue(size)]}
           name={`${sizeName}_unit`}
           select
-          disabled={!canEdit}
+          disabled={!canEdit || disabled}
         >
           {Object.keys(Unit).map((unit) => (
             <MenuItem key={unit} value={unit} dense>
@@ -213,16 +281,29 @@ const SizeBlock: React.FC<Props> = ({
   return (
     <section>
       {!masterScreenEnabled && canEdit && (
-        <StylesHeader
-          title="Width & Height"
+        <RemoveStyles
           onClick={removeStyles}
-          cssPropertiesNames={['width', 'height']}
+          propsToRemove={['width', 'height']}
+          type={element.type}
+          editableStyles={editableStyles}
         />
       )}
 
       <div className={classes.wrapper}>
-        <SizeControl sizeName="height" />
-        <SizeControl sizeName="width" />
+        {type === 'calendar' ? (
+          <ClendarSizeControl />
+        ) : (
+          <>
+            <SizeControl
+              sizeName="height"
+              disabled={disableHeightElements.includes(type)}
+            />
+            <SizeControl
+              sizeName="width"
+              disabled={disableWidthElements.includes(type)}
+            />
+          </>
+        )}
       </div>
     </section>
   );

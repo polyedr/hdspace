@@ -3,7 +3,6 @@ import {
   ElementGroup,
   HeadingServerElement,
   HeadingType,
-  HyperlinkServerElement,
   ListItemServerElement,
   ListServerElement,
   OcrtextServerElement,
@@ -11,31 +10,8 @@ import {
   TextBlockServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
+import ELEMENT_IDS from '@Constants/elementIds';
 import { defaultFreeCanvasParams } from '../../core';
-
-export const hyperlink: HyperlinkServerElement = {
-  id: `hyperlink`,
-  buoyancy: 0,
-  func_type: 'hyperlink',
-  struct_type: 'hyperlink',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: {
-      ...defaultFreeCanvasParams,
-      height: 16,
-      width: 56,
-    },
-    group: ElementGroup.OTHER,
-    textContent: 'hyperlink',
-    events: [],
-  },
-  styles: {
-    classNames: ['hyperlink'],
-    ownStyles: {},
-  },
-  name: 'hyperlink',
-  children: [],
-};
 
 export const makeHeading = ({
   buoyancy = 0,
@@ -64,6 +40,7 @@ export const makeHeading = ({
       fontSize: HEADING_SETTINGS[headingType].fontSize,
       ...ownStyles,
     },
+    pseudoClassStyles: {},
   },
   name: 'heading',
   children: [],
@@ -91,12 +68,13 @@ export const makeParagraph = ({
   styles: {
     classNames: ['paragraph'],
     ownStyles,
+    pseudoClassStyles: {},
   },
   name: 'paragraph',
   children: [],
 });
 
-export const ocrtext: OcrtextServerElement = {
+export const makeOcrtext = (): OcrtextServerElement => ({
   id: 'ocrtext',
   buoyancy: 0,
   func_type: 'ocrtext',
@@ -108,18 +86,19 @@ export const ocrtext: OcrtextServerElement = {
       height: 300,
     },
     group: ElementGroup.TYPOGRAPHY,
-    textContent: 'This is paragraph',
+    textContent: 'This is a paragraph',
   },
   styles: {
     classNames: ['ocrtext'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'ocrtext',
   children: [],
-};
+});
 
-export const textBlock: TextBlockServerElement = {
-  id: 'textBlock',
+export const makeTextBlock = (): TextBlockServerElement => ({
+  id: ELEMENT_IDS.textBlock,
   buoyancy: 0,
   func_type: 'textBlock',
   struct_type: 'textBlock',
@@ -130,23 +109,52 @@ export const textBlock: TextBlockServerElement = {
       height: 27,
     },
     group: ElementGroup.TYPOGRAPHY,
-    textContent: 'This is text block',
+    textContent: 'This is a text block',
+    isLink: false,
+    link: '',
   },
   styles: {
     classNames: ['textBlock'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'textBlock',
   children: [],
-};
+});
+
+export const makeListItem = ({
+  textContent = 'New Item',
+  UID = 'master',
+  buoyancy = 0,
+} = {}): ListItemServerElement => ({
+  id: `list-item-${UID}`,
+  buoyancy,
+  func_type: 'listItem',
+  struct_type: 'listItem',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: defaultFreeCanvasParams,
+    group: ElementGroup.OTHER,
+    textContent,
+    isLink: false,
+    link: '',
+  },
+  styles: {
+    classNames: ['listItem'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'listItem',
+  children: [],
+});
 
 export const makeList = ({
-  items = [],
+  items = [makeListItem(), makeListItem(), makeListItem()],
   UID = 'master',
 }: {
   items?: ListItemServerElement[];
   UID?: string;
-}): ListServerElement => ({
+} = {}): ListServerElement => ({
   id: `list-${UID}`,
   buoyancy: 0,
   func_type: 'list',
@@ -172,60 +180,8 @@ export const makeList = ({
   styles: {
     classNames: ['list'],
     ownStyles: {},
+    pseudoClassStyles: {},
   },
   name: 'list',
   children: items,
 });
-
-export const makeListItem = ({
-  textContent = '',
-  UID = 'master',
-} = {}): ListItemServerElement => ({
-  id: `list-item-${UID}`,
-  buoyancy: 0,
-  func_type: 'listItem',
-  struct_type: 'listItem',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
-    group: ElementGroup.OTHER,
-    textContent,
-    isLink: false,
-    link: '',
-  },
-  styles: {
-    classNames: ['listItem'],
-    ownStyles: {},
-  },
-  name: 'listItem',
-  children: [],
-});
-
-export const list: ListServerElement = {
-  id: 'list',
-  buoyancy: 0,
-  func_type: 'list',
-  struct_type: 'list',
-  parameters: {
-    layouts: DEFAULT_LAYOUT_LIST,
-    freeCanvas: defaultFreeCanvasParams,
-    group: ElementGroup.TYPOGRAPHY,
-    listItems: [
-      // TODO research why we need items here
-      { textContent: 'First item', isLink: false, link: '' },
-      { textContent: 'Second item', isLink: false, link: '' },
-      { textContent: 'Third item', isLink: false, link: '' },
-    ],
-    isOrdered: false,
-  },
-  styles: {
-    classNames: ['list'],
-    ownStyles: {},
-  },
-  name: 'list',
-  children: [
-    makeListItem({ textContent: 'First item', UID: 'list-1' }),
-    makeListItem({ textContent: 'Second item', UID: 'list-2' }),
-    makeListItem({ textContent: 'Third item', UID: 'list-3' }),
-  ],
-};

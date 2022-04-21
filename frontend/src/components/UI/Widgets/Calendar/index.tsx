@@ -1,14 +1,15 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
 import Calendar from './colorCalendar';
-
 import './colorCalendar/styles/theme-basic.css';
 
 type Props = {
   id: string;
+  calendarSize?: string;
   ownStyles?: React.CSSProperties;
   disabled?: boolean;
 };
@@ -20,19 +21,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CalendarWidget: React.FC<Props> = (props) => {
-  const { id, ownStyles } = props;
+  const { id, ownStyles, calendarSize } = props;
   const classes = useStyles(props);
   const [dom] = useState<HTMLElement | null>(null);
   const [calendar, setCalendar] = useState<Calendar | null>(null);
   const editorDocument = useSelector(selectEditorDocument);
 
   useEffect(() => {
-    if (!calendar) {
+    if (!calendar?.calendarSize || calendarSize) {
       setCalendar(
         new Calendar({
           id: `.widget-${id}`,
           theme: 'basic',
-          calendarSize: 'small',
+          calendarSize,
           fontFamilyHeader: ownStyles?.fontFamily || '"Roboto", sans-serif',
           document: editorDocument,
         }),
@@ -40,11 +41,10 @@ const CalendarWidget: React.FC<Props> = (props) => {
     }
   }, [
     dom,
-    calendar,
-    id,
-    setCalendar,
-    ownStyles?.fontFamily,
     ownStyles,
+    calendar?.calendarSize,
+    id,
+    calendarSize,
     editorDocument,
   ]);
 

@@ -5,10 +5,14 @@ import PATH_NAMES from '@Constants/pathNames';
 import Layout from '../components/Layout';
 import { selectIsLoggedIn } from '../redux/user/selectors';
 
-const Profile = lazy(() => import('../components//User/Profile'));
-const Signin = lazy(() => import('../components//User/Signin'));
-const Signup = lazy(() => import('../components//User/Signup'));
-const Activation = lazy(() => import('../components/User/Activation/'));
+const Profile = lazy(() => import('../components/User/Profile'));
+const Signin = lazy(() => import('../components/User/Signin'));
+const Signup = lazy(() => import('../components/User/Signup'));
+const Activation = lazy(() => import('../components/User/Activation'));
+const Success = lazy(() => import('../components/User/Success'));
+const ResetPasswordEmail = lazy(
+  () => import('../components/User/ResetPassword/ResetPasswordEmail'),
+);
 const ResetPassword = lazy(
   () => import('../components/User/ResetPassword/ResetPassword'),
 );
@@ -35,7 +39,19 @@ const Routes: React.FC = () => {
 
         <Route path={PATH_NAMES.user.activate} component={Activation} />
 
-        <Route path={PATH_NAMES.user.password} component={ResetPassword} />
+        <Route
+          exact
+          path={PATH_NAMES.user.password}
+          component={ResetPasswordEmail}
+        />
+
+        <Route
+          exact
+          path={PATH_NAMES.user.passwordRestore}
+          component={ResetPassword}
+        />
+
+        <Route path={PATH_NAMES.user.success} component={Success} />
 
         <Route path="/share/" component={SharedWithLink} exact />
 

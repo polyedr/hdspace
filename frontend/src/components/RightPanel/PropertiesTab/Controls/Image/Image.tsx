@@ -7,14 +7,11 @@ import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   selectAllAssetLists,
-  selectSelectedAssetListId,
+  selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { Button, MenuItem } from '@material-ui/core';
-
 import { makeStyles } from '@material-ui/core/styles';
-
-const urlPattern = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+import { URL_REGEX } from '@Constants/defaultParams';
 
 const useStyles = makeStyles({
   wrapper: {
@@ -46,22 +43,25 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = PropertiesChangeProps<ImageElement>;
+const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
+  element,
+  canEdit,
+}) => {
+  const { id: activeElementId } = element;
 
-const Component: React.FC<Props> = ({ activeElementId, canEdit }) => {
   const classes = useStyles();
   const inputUrlRef = useRef<HTMLInputElement | null>(null);
 
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
   const assetLists = useSelector(selectAllAssetLists);
-  const selectedAssetListId = useSelector(selectSelectedAssetListId);
+  const currentAssetListId = useSelector(selectCurrentAssetListId);
 
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
   const listRef = useRef(
-    !selectedAssetListId || selectedAssetListId === ALL_ASSETS_LIST_ID
+    !currentAssetListId
       ? assetLists[assetLists.length - 1].id
-      : selectedAssetListId,
+      : currentAssetListId,
   );
 
   const handleUploadFromUrl = useCallback(() => {
@@ -78,7 +78,7 @@ const Component: React.FC<Props> = ({ activeElementId, canEdit }) => {
       );
       return;
     }
-    if (!imageUrl.match(urlPattern)) {
+    if (!imageUrl.match(URL_REGEX)) {
       dispatch(
         enqueueSnackbar({
           message: 'Image URL is incorrect',
@@ -88,7 +88,7 @@ const Component: React.FC<Props> = ({ activeElementId, canEdit }) => {
       return;
     }
     dispatch(
-      uploadImageByUrl(activeElementId, imageUrl, assetLists[0].id, {
+      uploadImageByUrl(activeElementId, { url: imageUrl }, assetLists[0].id, {
         screenId: currentScreenId,
       }),
     );

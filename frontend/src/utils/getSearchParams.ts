@@ -1,7 +1,7 @@
 import { DateRange, ProjectsSearchParameter } from '@Src/types';
 
 const getSearchParams = ([key, value]: [
-  ProjectsSearchParameter,
+  ProjectsSearchParameter | 'tags__name',
   string | DateRange,
 ]) => {
   const isDate =

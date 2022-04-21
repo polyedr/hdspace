@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import HtmlImportForm from '@Components/Dialogs/NewScreenModal/HTMLImportForm';
-import TYPES from '@Redux/actionTypes';
+// import TYPES from '@Redux/actionTypes';
 
 describe('HTMLImportForm', () => {
   let store: MockStoreEnhanced<AppReduxState>;
@@ -51,11 +51,11 @@ describe('HTMLImportForm', () => {
     expect(textInput.value).toBeFalsy();
     expect(fileInput.value).toBeFalsy();
 
-    const submitButton = ui.getByText('Create').parentElement;
+    const submitButton = ui.getByText('Check Import Site').parentElement;
     expect(submitButton).toBeDisabled();
 
     fireEvent.change(textInput, { target: { value: '123' } });
-    expect(submitButton).not.toBeDisabled();
+    expect(submitButton).toBeDisabled();
   });
 
   it('should trigger onClose callback when "Cancel" button is clicked', () => {
@@ -64,37 +64,59 @@ describe('HTMLImportForm', () => {
     fireEvent.click(closeButton);
     expect(closeCallback).toHaveBeenCalledTimes(1);
   });
-
-  it('should dispatch an action on submit', () => {
-    const testValue = 'https://example.org';
-
-    const textInput = ui.getByPlaceholderText('URL');
-    const submitButton = ui.getByText('Create');
-    fireEvent.change(textInput, { target: { value: testValue } });
-
-    fireEvent.click(submitButton);
-    const actions = store.getActions();
-    expect(actions[0].type).toBe(TYPES.UPLOAD_IMPORT_URL);
-    expect(actions[0].payload).toBe(testValue);
-  });
-
-  it('should start process a url in case of both inputs are filled', () => {
-    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
-      type: 'image/png',
-    });
-    const string = '42';
-    const textInput = ui.getByPlaceholderText('URL');
-    const fileInput = ui.getByLabelText('Click or drop file here to upload');
-    const submitButton = ui.getByText('Create');
-
-    fireEvent.change(textInput, { target: { value: string } });
-    fireEvent.change(fileInput, {
-      target: { files: [file] },
-    });
-
-    fireEvent.click(submitButton);
-    const actions = store.getActions();
-    expect(actions[0].type).toBe(TYPES.UPLOAD_IMPORT_URL);
-    expect(actions[0].payload).toBe(string);
-  });
 });
+
+// describe('test', () => {
+//   let store: MockStoreEnhanced<AppReduxState>;
+//   let ui: RenderResult;
+//   const closeCallback = jest.fn();
+
+//   beforeEach(() => {
+//     jest.useFakeTimers();
+//     const mockStore = configureStore<AppReduxState>([]);
+//     store = mockStore({
+//       ...mockState,
+//       project: {
+//         ...mockState.project,
+//         ui: { ...mockState.project.ui, isCanImportSite: true },
+//       },
+//     });
+
+//     ui = render(
+//       <Provider store={store}>
+//         <HtmlImportForm onClose={closeCallback} />
+//       </Provider>,
+//     );
+//   });
+
+//   it('should dispatch an action on submit', () => {
+//     const testValue = 'https://example.org';
+//     const textInput = ui.getByPlaceholderText('URL');
+//     fireEvent.change(textInput, { target: { value: testValue } });
+//     const submitButton = ui.getByText('Create');
+//     fireEvent.click(submitButton);
+//     const actions = store.getActions();
+//     expect(actions[0].type).toBe(TYPES.UPLOAD_IMPORT_URL);
+//     expect(actions[0].payload).toBe(testValue);
+//   });
+
+//   it('should start process a url in case of both inputs are filled', () => {
+//     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+//       type: 'image/png',
+//     });
+//     const string = '42';
+//     const textInput = ui.getByPlaceholderText('URL');
+//     const fileInput = ui.getByLabelText('Click or drop file here to upload');
+//     const submitButton = ui.getByText('Create');
+
+//     fireEvent.change(textInput, { target: { value: string } });
+//     fireEvent.change(fileInput, {
+//       target: { files: [file] },
+//     });
+
+//     fireEvent.click(submitButton);
+//     const actions = store.getActions();
+//     expect(actions[0].type).toBe(TYPES.ENQUEUE_SNACKBAR);
+//     expect(actions[0].payload).toBe(string);
+//   });
+// });

@@ -1,29 +1,29 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   selectAllAssetLists,
-  selectSelectedAssetListId,
+  selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import {
-  ALL_ASSET_LIST_NAME,
-  ALL_ASSETS_LIST_ID,
-} from '@Constants/defaultParams';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
-import { addAssetList } from '@Redux/project/actions';
+import {
+  addAssetList,
+  loadAssetLists,
+  setSelectedAssetListId,
+} from '@Redux/project/actions';
 import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { Select, MenuItem, IconButton, TextField } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
-
-type Props = {
-  onListChange: (listId: string | null) => void;
-};
+import {
+  selectAssetsListsLoader,
+  selectCurrentProjectId,
+} from '@Redux/project/selectors/base';
 
 const useStyles = makeStyles({
   root: {
-    width: '300px',
+    width: '100%',
     padding: '0.7em 0.7em 0',
     display: 'flex',
     flexDirection: 'row',
@@ -36,21 +36,28 @@ const useStyles = makeStyles({
   newAssetListInput: {
     width: '100%',
   },
-  imageInput: {
-    display: 'none',
-  },
   newAssetListCloseBtn: {
     padding: 0,
   },
+  leftSideColor: {
+    color: '#fff',
+  },
+  rightSideColor: {},
 });
 
-const AssetLists = ({ onListChange }: Props) => {
+type Props = {
+  isDefaultStyles?: boolean;
+};
+
+const AssetLists: React.FC<Props> = ({ isDefaultStyles = false }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const currentProjectId = useSelector(selectCurrentProjectId);
   const [addInProgress, setAddInProgress] = useState<boolean>(false);
   const [newAssetName, setNewAssetName] = useState<string>('');
   const assetLists = useSelector(selectAllAssetLists);
-  const selectedAssetListId = useSelector(selectSelectedAssetListId);
+  const assetListsLoading = useSelector(selectAssetsListsLoader);
+  const currentAssetListId = useSelector(selectCurrentAssetListId);
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -69,6 +76,23 @@ const AssetLists = ({ onListChange }: Props) => {
     [dispatch, newAssetName],
   );
 
+  const handleListChange = useCallback(
+    (listId) => {
+      dispatch(setSelectedAssetListId(listId));
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
+    if (!assetLists && !assetListsLoading) {
+      dispatch(loadAssetLists(String(currentProjectId)));
+    }
+  }, [assetLists, dispatch, currentProjectId, assetListsLoading]);
+
+  if (!assetLists || !currentAssetListId) {
+    return null;
+  }
+
   return (
     <div className={classes.root}>
       {addInProgress ? (
@@ -80,6 +104,9 @@ const AssetLists = ({ onListChange }: Props) => {
           onChange={(event) => setNewAssetName(event.target.value)}
           focused
           InputProps={{
+            className: isDefaultStyles
+              ? classes.leftSideColor
+              : classes.rightSideColor,
             endAdornment: (
               <IconButton
                 aria-label="Confirm"
@@ -91,7 +118,7 @@ const AssetLists = ({ onListChange }: Props) => {
                 className={classes.newAssetListCloseBtn}
                 disabled={!canEditProject}
               >
-                <CloseIcon />
+                <CloseIcon color={isDefaultStyles ? 'primary' : 'inherit'} />
               </IconButton>
             ),
           }}
@@ -99,13 +126,17 @@ const AssetLists = ({ onListChange }: Props) => {
       ) : (
         <Select
           label="Asset list"
-          value={selectedAssetListId || ALL_ASSETS_LIST_ID}
+          value={currentAssetListId}
           className={classes.assetsSelector}
           onChange={(event) =>
-            onListChange((event.target.value as string) || null)
+            handleListChange((event.target.value as string) || null)
           }
+          inputProps={{
+            className: isDefaultStyles
+              ? classes.leftSideColor
+              : classes.rightSideColor,
+          }}
         >
-          <MenuItem value={ALL_ASSETS_LIST_ID}>{ALL_ASSET_LIST_NAME}</MenuItem>
           {assetLists.map((list) => (
             <MenuItem key={`list-${list.id}`} value={list.id}>
               {list.name}
@@ -122,7 +153,7 @@ const AssetLists = ({ onListChange }: Props) => {
           setAddInProgress(true);
         }}
       >
-        <AddIcon />
+        <AddIcon color={isDefaultStyles ? 'primary' : 'inherit'} />
       </IconButton>
     </div>
   );

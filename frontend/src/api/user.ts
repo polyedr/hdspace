@@ -159,7 +159,9 @@ export const apiChangeProfileData = ({ id, ...props }) =>
     ...props,
     method: 'PATCH',
     url: `/accounts/profiles/${id}/`,
-  }).then(parseResult);
+  })
+    .then(parseResult)
+    .catch(handleError);
 
 export const apiIdentifyUser = (props) =>
   myAxios({

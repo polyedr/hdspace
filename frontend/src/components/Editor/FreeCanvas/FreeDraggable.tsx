@@ -7,10 +7,10 @@ import {
   updateElementStyles,
 } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { Entity, StateElement } from '@Src/types';
+import { Entity, StateElement, FreeDraggableStylesProps } from '@Src/types';
 import RENDERERS from '@Components/UI/RenderElements';
 import {
-  selectElementById,
+  selectElementByIdWrapper,
   selectIncludesActiveElement,
   selectIsElementActive,
 } from '@Redux/project/selectors/element';
@@ -19,23 +19,35 @@ import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import Borders from './Borders';
 
-const lockedAspectRatioElements: Entity[] = [
-  'image',
-  'checkbox',
-  'radiobutton',
-];
 const notDraggableElements: Entity[] = [
   'option',
-  'selectMenu',
   'listItem',
   'dropdownItem',
   'dropdownMenu',
+  'paginationItem',
+  'breadcrumbItem',
+  'navbarItem',
 ];
 
 const useStyles = makeStyles({
   rnd: {
     position: 'absolute',
-    zIndex: ({ isActive, zIndex, includesActiveElement }: any) =>
+    zIndex: ({
+      isActive,
+      zIndex,
+      includesActiveElement,
+    }: FreeDraggableStylesProps) =>
+      isActive || includesActiveElement ? 1000 : zIndex,
+  },
+  imageView: {
+    position: 'absolute',
+    width: 'auto !important',
+    height: 'auto !important',
+    zIndex: ({
+      isActive,
+      zIndex,
+      includesActiveElement,
+    }: FreeDraggableStylesProps) =>
       isActive || includesActiveElement ? 1000 : zIndex,
   },
   resizeHande: {
@@ -60,7 +72,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const dispatch = useDispatch();
   const disableInteractions = useSelector(selectIsPrototypeMode);
 
-  const element = useSelector(selectElementById(elementId));
+  const element = useSelector(selectElementByIdWrapper(elementId));
   const includesActiveElement = useSelector(
     selectIncludesActiveElement(elementId),
   );
@@ -70,9 +82,16 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
     id,
     parameters: {
       freeCanvas: { left = 0, top = 0, width = 0, height = 0, zIndex = 0 } = {},
+      keepAspectRatio,
     },
     type,
   } = element;
+
+  const lockedAspectRatioElements: [string] = ['radiobutton'];
+  const selectedElementType: string = type;
+  if (keepAspectRatio) {
+    lockedAspectRatioElements.push(selectedElementType);
+  }
 
   const [resizeDir, setResizeDir] = useState<any>(false);
   const classes = useStyles({
@@ -163,7 +182,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
     resizeDir === dir && classes.activeResizeHandle;
 
   const renderElement = () => (
-    <Renderer element={element} isDisabled={disableInteractions}>
+    <Renderer element={element} isDisabled={!disableInteractions}>
       {element.children.map((childId) => (
         <FreeDraggable key={childId} elementId={childId} />
       ))}
@@ -175,7 +194,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   ) : (
     <Rnd
       onClick={handleInteractionStart}
-      className={classes.rnd}
+      className={element.type === 'image' ? classes.imageView : classes.rnd}
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}
       position={{
@@ -207,10 +226,23 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
         topLeft: cn(classes.resizeHande, activeHandle('topLeft')),
         topRight: cn(classes.resizeHande, activeHandle('topRight')),
       }}
+      disableDragging={disableInteractions}
+      enableResizing={{
+        bottom: !disableInteractions,
+        bottomLeft: !disableInteractions,
+        bottomRight: !disableInteractions,
+        left: !disableInteractions,
+        top: !disableInteractions,
+        right: !disableInteractions,
+        topLeft: !disableInteractions,
+        topRight: !disableInteractions,
+      }}
     >
       {renderElement()}
 
-      <Borders element={element} hover={hover} isActive={isActive} />
+      {!disableInteractions ? (
+        <Borders element={element} hover={hover} isActive={isActive} />
+      ) : null}
     </Rnd>
   );
 };

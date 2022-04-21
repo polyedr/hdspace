@@ -36,10 +36,20 @@ import Title from '@Components/RightPanel/PropertiesTab/Controls/Title';
 import StyleSheets from '@Components/RightPanel/PropertiesTab/Controls/StyleSheets/StyleSheets';
 import Attributes from '@Components/RightPanel/PropertiesTab/Controls/Attributes/Attributes';
 import TagName from '@Components/RightPanel/PropertiesTab/Controls/TagName/TagName';
+import BreadcrumbItems from '@Components/RightPanel/PropertiesTab/Controls/BreadcrumblItems/BreadcrumbItems';
+import PaginationItems from '@Components/RightPanel/PropertiesTab/Controls/PaginationItems/PaginationItems';
+import CarouselItems from '@Components/RightPanel/PropertiesTab/Controls/CarouselItems/CarouselItems';
+import ResizeOptionsControl from '@Components/RightPanel/PropertiesTab/Controls/ResizeOptions';
+import NavbarItems from '@Components/RightPanel/PropertiesTab/Controls/NavbarItems/NavbarItems';
+import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobuttons';
+import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
+import BackgroundImage from '@Components/RightPanel/PropertiesTab/Controls/BackgroundImage';
+import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
   styles?: Array<keyof React.CSSProperties>;
+  isDefaultStyles?: boolean;
 };
 
 const CONTROLS: Record<Control, ControlInfo> = {
@@ -80,9 +90,11 @@ const CONTROLS: Record<Control, ControlInfo> = {
     styles: ['borderColor', 'borderWidth', 'borderRadius'],
   },
   background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
+  backgroundImage: { Control: BackgroundImage, styles: ['backgroundImage'] },
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
   textContent: { Control: TextContent, styles: [] },
+  text: { Control: Text, styles: [] },
   image: { Control: Image, styles: [] },
   alt: { Control: Alt },
   title: { Control: Title },
@@ -129,6 +141,18 @@ const CONTROLS: Record<Control, ControlInfo> = {
   styleSheets: { Control: StyleSheets },
   attributes: { Control: Attributes },
   tagName: { Control: TagName },
+  breadcrumb: { Control: BreadcrumbItems },
+  pagination: { Control: PaginationItems },
+  carousel: { Control: CarouselItems },
+  resizeOptions: { Control: ResizeOptionsControl },
+  navbar: { Control: NavbarItems },
+  radiobuttons: {
+    Control: Radiobuttons,
+  },
+  alignment: {
+    Control: Alignment,
+    styles: ['flexDirection'],
+  },
 };
 
 export default CONTROLS;

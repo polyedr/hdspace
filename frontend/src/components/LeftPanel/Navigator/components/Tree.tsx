@@ -32,12 +32,18 @@ import {
 import { canElementBeAdded } from '@Utils/normalizedStateHelpers';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { Normalized, StateElement, UserProjectPermission } from '@Src/types';
+import {
+  Normalized,
+  StateElement,
+  UserProjectPermission,
+  KeyCode,
+} from '@Src/types';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import {
   selectActiveElementId,
   selectMasterCoreElementId,
   selectMasterGroupsElementId,
+  selectSelectedElementsIds,
   selectTreeChildElementsIds,
 } from '@Redux/project/selectors/element';
 import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu';
@@ -45,6 +51,8 @@ import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { makeStyles } from '@material-ui/core/styles';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import logger from 'loglevel';
 import Scrollbar from '../../../UI/Scrollbar';
 
 const useStyles = makeStyles({
@@ -79,6 +87,7 @@ const OFFSET = 15;
 const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const selectedElementsIds = useSelector(selectSelectedElementsIds);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
   const masterCoreElementId = useSelector(selectMasterCoreElementId);
@@ -95,6 +104,8 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     mouseY: null,
     item: null,
   };
+
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
 
   const [state, setState] = useState<State>(initialState);
 
@@ -115,11 +126,14 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   ) => {
     ev.preventDefault();
 
-    setState({
-      mouseX: ev.clientX - 2,
-      mouseY: ev.clientY - 4,
-      item,
-    });
+    if (!isPrototypeMode) {
+      setState({
+        mouseX: ev.clientX - 2,
+        mouseY: ev.clientY - 4,
+        item,
+      });
+      dispatch(setActiveElement(String(item.id)));
+    }
   };
 
   const handleClose = () => setState(initialState);
@@ -173,42 +187,36 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (selectedItemId && !isDragging) {
-        if (e.keyCode === 38) {
-          // ArrowUp
-          // TODO: add throttling
+        if (e.keyCode === KeyCode.UpArrow) {
           e.preventDefault();
           const prevNodeId = findPrevNodeId(tree, selectedItemId);
           select(prevNodeId);
           focusTreeItem(prevNodeId);
         }
 
-        if (e.keyCode === 40) {
-          // ArrowDown
-          // TODO: add throttling
+        if (e.keyCode === KeyCode.DownArrow) {
           e.preventDefault();
           const nextNodeId = findNextNodeId(tree, selectedItemId);
           focusTreeItem(nextNodeId);
         }
 
-        if (e.keyCode === 39) {
-          // ArrowRight
+        if (e.keyCode === KeyCode.RightArrow) {
           expand(selectedItemId);
           select(selectedItemId);
         }
 
-        if (e.keyCode === 37) {
-          // ArrowLeft
+        if (e.keyCode === KeyCode.LeftArrow) {
           collapse(selectedItemId);
+
           select(selectedItemId);
         }
 
-        if (e.keyCode === 32 && !coreElementSelected && canEdit) {
-          // Space
+        if (e.keyCode === KeyCode.Space && !coreElementSelected && canEdit) {
           setIsDragging((state) => !state);
         }
 
         if (
-          e.keyCode === 67 &&
+          e.keyCode === KeyCode.C &&
           (e.ctrlKey || e.metaKey) &&
           !coreElementSelected &&
           canEdit
@@ -218,7 +226,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         }
 
         if (
-          e.keyCode === 86 &&
+          e.keyCode === KeyCode.V &&
           (e.ctrlKey || e.metaKey) &&
           !coreElementSelected &&
           canEdit
@@ -228,8 +236,12 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         }
 
         if (
-          e.keyCode === 46 ||
-          (e.keyCode === 8 && e.metaKey && !coreElementSelected && canEdit)
+          !isPrototypeMode &&
+          (e.keyCode === KeyCode.DeleteKey ||
+            (e.keyCode === KeyCode.BackSpace &&
+              e.metaKey &&
+              !coreElementSelected &&
+              canEdit))
         ) {
           // Delete or Cmd + Backspace
           const prevItemId = findPrevNodeId(tree, selectedItemId);
@@ -239,12 +251,16 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
           focusTreeItem(prevItemId);
         }
 
-        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && !e.shiftKey) {
+        if (
+          e.keyCode === KeyCode.Z &&
+          (e.ctrlKey || e.metaKey) &&
+          !e.shiftKey
+        ) {
           // Ctrl/Cmd + Z
           dispatch(executeUndoActions());
         }
 
-        if (e.keyCode === 90 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+        if (e.keyCode === KeyCode.Z && (e.ctrlKey || e.metaKey) && e.shiftKey) {
           // Ctrl/Cmd + Shift + Z
           dispatch(executeRedoActions());
         }
@@ -261,6 +277,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       select,
       selectedItemId,
       tree,
+      isPrototypeMode,
     ],
   );
 
@@ -293,7 +310,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     const parentElement = elements[newParent.id];
 
     if (!parentElement) {
-      console.error(`No element ${newParent.id}`);
+      logger.error(`No element ${newParent.id}`);
       setIsDragging(false);
       return;
     }
@@ -343,7 +360,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
         rulerHeight={getRulerHeight(props.item, expandedTree, height)}
         height={height}
         onContextMenu={handleMenuOpen}
-        isActive={activeElementId === props.item.id}
+        isActive={selectedElementsIds.includes(String(props.item.id))}
       />
     );
   };

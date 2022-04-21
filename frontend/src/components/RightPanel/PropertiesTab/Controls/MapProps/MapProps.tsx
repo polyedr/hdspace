@@ -131,6 +131,10 @@ const MapProps: React.FC<PropertiesChangeProps<MapElement>> = ({
     [mapProps, debounced],
   );
 
+  if (!mapProps) {
+    return null;
+  }
+
   return (
     <div>
       <div className={classes.wrapper}>

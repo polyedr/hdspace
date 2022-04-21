@@ -18,8 +18,12 @@ import {
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { sidebarLogout } from '@Redux/project/actions';
-import { sidebarLogoutSaga } from '@Redux/project/sagas/sidebar';
+import {
+  sidebarLogout,
+  updateUISettingsParameters,
+} from '@Redux/project/actions';
+import _ from 'lodash';
+
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
@@ -34,7 +38,7 @@ export function* getTokenPairSaga(username: string, password: string) {
 
     yield put(Actions.setTokenPair(tokens));
     return tokens;
-  } catch (e) {
+  } catch (e: any) {
     if (e.response?.data) {
       yield put(Actions.loginComplete(e.response.data));
     } else {
@@ -64,7 +68,7 @@ export function* loginSaga({
 
     yield put(loginComplete());
     yield call(openProjects);
-  } catch (e) {
+  } catch (e: any) {
     if (typeof e.response?.data === 'object') {
       yield put(Actions.loginComplete(e.response.data));
     } else {
@@ -76,11 +80,13 @@ export function* loginSaga({
 export function* logoutSaga() {
   try {
     yield put(sidebarLogout());
-    yield call(sidebarLogoutSaga);
+
+    // logout chat Zulip
+    localStorage.removeItem('login');
 
     yield put(Actions.logout());
     openSignScreen('signin');
-  } catch (e) {
+  } catch (e: any) {
     yield put(
       enqueueSnackbar(
         {
@@ -110,7 +116,7 @@ export function* changeUserDataSaga({
 
     yield put(Actions.setUserData(convertUserDataFromResponse(newUserData)));
     yield put(Actions.changeUserDataComplete());
-  } catch (e) {
+  } catch (e: any) {
     if (typeof e.response?.data === 'object') {
       yield put(Actions.changeUserDataComplete(e.response.data));
     } else {
@@ -123,19 +129,24 @@ export function* changeProfileDataSaga({
   payload,
 }: ReturnType<typeof Actions.changeProfileData>) {
   try {
-    const { id } = yield select(selectProfileData);
+    const { id, ...rest } = yield select(selectProfileData);
 
     const newProfileData: ServerProfileData = yield call(
       reqWrapper,
       apiChangeProfileData,
-      { id, data: payload },
+      {
+        id,
+        data: _.merge(rest, payload),
+      },
     );
-
+    if (payload.avatar === null) {
+      newProfileData.parameters.avatarCrop = '';
+    }
     yield put(
       Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
     );
     yield put(Actions.changeProfileDataComplete());
-  } catch (e) {
+  } catch (e: any) {
     if (typeof e.response?.data === 'object') {
       yield put(Actions.changeProfileDataComplete(e.response.data));
     } else {
@@ -143,6 +154,41 @@ export function* changeProfileDataSaga({
     }
   }
 }
+
+export const updateUISettingsParametersSaga = function* ({
+  payload,
+}: ReturnType<typeof updateUISettingsParameters>) {
+  try {
+    const {
+      id,
+      parameters: { profileDataParameters },
+    } = yield select(selectProfileData);
+    const newUIParameters = { ...profileDataParameters, ...payload };
+    const newProfileData = yield call(reqWrapper, apiChangeProfileData, {
+      id,
+      data: {
+        parameters: {
+          profileDataParameters: newUIParameters,
+        },
+      },
+    });
+    yield put(
+      Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
+    );
+  } catch (e: any) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: {
+            variant: 'error',
+          },
+        },
+        e,
+      ),
+    );
+  }
+};
 
 function* registerSaga({
   payload: { username, email, password, firstName, lastName },
@@ -161,14 +207,14 @@ function* registerSaga({
 
     yield put(
       Actions.setConfirmMessage(
-        'Please, check your mail and confirm registration',
+        'Please, check your mail and follow the activation link',
       ),
     );
 
     yield put(Actions.registerComplete());
 
     openSignScreen('signin');
-  } catch (e) {
+  } catch (e: any) {
     if (typeof e.response?.data === 'object') {
       yield put(Actions.registerComplete(e.response.data));
     } else {
@@ -191,7 +237,9 @@ function* sendResetPasswordMailSaga(
     yield put(
       Actions.setConfirmMessage('Please, check your mail and set new password'),
     );
+    openSignScreen('signin');
   } catch (e) {
+    // @ts-ignore
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
@@ -216,7 +264,7 @@ function* resetPasswordConfirmationSaga(
 
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
     openSignScreen('signin');
-  } catch (e) {
+  } catch (e: any) {
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
@@ -231,9 +279,14 @@ function* activateUserSaga(action: ReturnType<typeof Actions.activateUser>) {
     yield put(Actions.toggleUserLoading(true));
 
     yield call(apiActivateUser, { uid, token });
+    yield put(
+      Actions.setConfirmMessage(
+        'Your account has been activated successfully. You can now login',
+      ),
+    );
 
     yield put(Actions.setTokenPair({ access: token, refresh: '' }));
-  } catch (e) {
+  } catch (e: any) {
     yield put(Actions.setUserError(e));
   } finally {
     yield put(Actions.toggleUserLoading(false));
@@ -259,7 +312,7 @@ export function* loadUserDataSaga(action: ReturnType<typeof Actions.loadUser>) {
         ...convertUserDataFromResponse(userData),
       }),
     );
-  } catch (e) {
+  } catch (e: any) {
     yield put(
       enqueueSnackbar(
         {
@@ -273,7 +326,7 @@ export function* loadUserDataSaga(action: ReturnType<typeof Actions.loadUser>) {
 }
 
 export default function* userSaga() {
-  yield takeLatest(TYPES.LOGIN, loginSaga);
+  yield takeLatest(TYPES.LOGIN_CHAT_USER, loginSaga);
   yield takeEvery(TYPES.LOGOUT_START, logoutSaga);
   yield takeLatest(TYPES.REGISTER, registerSaga);
   yield takeLatest(TYPES.SEND_RESET_PASSWORD_MAIL, sendResetPasswordMailSaga);

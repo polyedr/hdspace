@@ -25,6 +25,14 @@ export const initialUserState: UserState = {
       id: 0,
       role: '',
       experienced: Experience.BEGINNER,
+      parameters: {
+        avatarCrop: '',
+        profileDataParameters: {
+          autoSwitchTabs: false,
+          dropTargetBordersMode: true,
+        },
+        passwordZulip: '',
+      },
     },
   },
   isLoggedIn: false,
@@ -38,5 +46,10 @@ export const initialUserState: UserState = {
   confirmMessage: '',
   userGuide: {
     active: false,
+  },
+  chat: {
+    apiKey: '',
+    realm: '',
+    username: '',
   },
 };

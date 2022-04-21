@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { put, call, select } from 'redux-saga/effects';
 import {
   selectElementParameters,
@@ -35,6 +36,7 @@ import {
   StateElement,
   UpdateDataActionType,
 } from '@Src/types';
+import logger from 'loglevel';
 import { reqWrapper } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
 import * as Actions from '../actions';
@@ -114,15 +116,17 @@ export function* updateOrReplaceMultipleElementsParameters(
 
     if (error) throw new Error(error);
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -136,7 +140,7 @@ export function* updateOrReplaceElementStyles(
     const { id, styles } = action.payload;
 
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -153,22 +157,18 @@ export function* updateOrReplaceElementStyles(
 
     const state: Normalized<StateElement> = yield select(selectAllElements);
     yield put(
-      Actions.updateStateElement(
-        id,
-        {
-          styles: {
-            ...state[id].styles,
-            ownStyles:
-              type === 'replace'
-                ? styles
-                : {
-                    ...state[id].styles.ownStyles,
-                    ...styles,
-                  },
-          },
+      Actions.updateStateElement(id, {
+        styles: {
+          ...state[id].styles,
+          ownStyles:
+            type === 'replace'
+              ? styles
+              : {
+                  ...state[id].styles.ownStyles,
+                  ...styles,
+                },
         },
-        { ...action.meta },
-      ),
+      }),
     );
 
     const updatedElement: LibraryElement<any> = yield select(
@@ -183,15 +183,17 @@ export function* updateOrReplaceElementStyles(
     );
     if (error) throw new Error(error);
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -205,7 +207,7 @@ export function* updateOrReplaceElementParameters(
   try {
     const { elementId, parameters } = action.payload;
     if (!action.meta) {
-      console.error(
+      logger.error(
         `You have to provide metainformation for action ${action.type}`,
       );
       return;
@@ -231,19 +233,14 @@ export function* updateOrReplaceElementParameters(
         : { ...state[elementId].parameters, ...parameters };
 
     yield put(
-      Actions.updateStateElement(
-        elementId,
-        {
-          parameters: parametersToUpdate,
-        },
-        {
-          ...action.meta,
-        },
-      ),
+      Actions.updateStateElement(elementId, {
+        parameters: parametersToUpdate,
+      }),
     );
 
     const updatedElement: StateElement = yield select(
-      selectElementById(elementId),
+      selectElementById,
+      elementId,
     );
 
     yield put(
@@ -268,15 +265,17 @@ export function* updateOrReplaceElementParameters(
     );
     if (error) throw new Error(error);
   } catch (e) {
-    yield put(
-      enqueueSnackbar(
-        {
-          message: e.message,
-          options: { variant: 'error' },
-        },
-        e,
-      ),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -475,6 +474,59 @@ export function* createElements<T extends Entity>(
       return createdElements.map((el) => String(el.id));
     }
     if (error) throw new Error(error);
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
+export function* createLibraryElements<T extends Entity>(
+  elementsToCreate: ElementsToCreate<T>[],
+  meta: ElementHistoryMeta,
+) {
+  try {
+    const { useHistory } = meta;
+
+    const allElementsToCreate = elementsToCreate
+      .map((elsToCreate) => elsToCreate.elements)
+      .reduce((allEls, parentEls) => [...allEls, ...parentEls], []);
+
+    const {
+      result: newElements,
+      error: createElementsError,
+    }: ReturnPromisedType<typeof apiCreateElements> = yield call(
+      reqWrapper,
+      apiCreateElements,
+      { data: allElementsToCreate },
+    );
+    if (!newElements) {
+      if (createElementsError) {
+        throw new Error(createElementsError);
+      } else if (allElementsToCreate.length) {
+        throw new Error('Failed to create new elements');
+      }
+      return;
+    }
+    if (!useHistory) {
+      yield put(
+        Actions.addUndoActions(
+          newElements.map((el: any) =>
+            Actions.deleteElement(el.id, { ...meta }),
+          ),
+        ),
+      );
+    }
   } catch (e) {
     yield put(
       enqueueSnackbar(

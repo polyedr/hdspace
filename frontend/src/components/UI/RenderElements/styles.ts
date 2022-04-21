@@ -1,8 +1,7 @@
 import React from 'react';
-import { Theme } from '@material-ui/core';
 import { Styles } from '@material-ui/core/styles/withStyles';
 import { omit } from 'ramda';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import { RendererProps } from './types';
 
 const getComputedStyle = (
@@ -26,15 +25,39 @@ export const makeComponentStyles: any = (
 ) =>
   makeStyles(
     (theme) => ({
-      ownStyles: (props: RendererProps) =>
-        getComputedStyle(props.element.styles.ownStyles, stylesToOmit),
-
+      ownStyles: (props: RendererProps) => {
+        const { element } = props;
+        const { styles } = element;
+        return {
+          ...getComputedStyle(
+            styles.pseudoClassViewStyles || styles.ownStyles,
+            stylesToOmit,
+          ),
+        };
+      },
+      ownPseudoStyles: ({ element }: RendererProps) => {
+        const { styles } = element;
+        return {
+          ...(styles.pseudoClassStyles
+            ? Object.keys(styles.pseudoClassStyles).reduce(
+                (pseudoStyles, pseudoClassName) => {
+                  const newPseudoStyles = { ...pseudoStyles };
+                  if (styles.pseudoClassStyles) {
+                    newPseudoStyles[`&:${pseudoClassName}`] =
+                      styles.pseudoClassStyles[pseudoClassName];
+                  }
+                  return newPseudoStyles;
+                },
+                {},
+              )
+            : {}),
+        };
+      },
       disabled: {
-        color: '#000',
         cursor: 'default',
         transition: 'none',
         '& > *': {
-          pointerEvents: 'none',
+          pointerEvents: 'none !important',
         },
       },
       ...(style instanceof Function ? style(theme) : style),

@@ -1,4 +1,5 @@
 import { SnackbarKey } from 'notistack';
+import logger from 'loglevel';
 import TYPES from '../actionTypes';
 import { Notification } from '../types';
 
@@ -7,7 +8,7 @@ export const enqueueSnackbar = (
   error?: Error,
 ) => {
   if (error) {
-    console.error(error);
+    logger.error(error);
   }
   return {
     type: TYPES.ENQUEUE_SNACKBAR,

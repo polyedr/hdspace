@@ -1,12 +1,14 @@
 import React, { memo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import { isLibraryTab } from '@Redux/project/actions';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
-import { selectFreeCanvasMode } from '@Redux/project/selectors/base';
-import CustomElementsBlock from '../CustomElementsLibrary/CustomElementsBlock';
+import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
+import CustomElementsBlocks from '../CustomElementsLibrary/CustomElementsBlocks';
+import GeneratedElementsBlocks from '../CustomElementsLibrary/GeneratedElementBlocks';
 import ElementsBlock from './ElementsBlock';
 import ElementGroups from '../ElementGroups';
 import Section from './Section';
@@ -58,16 +60,16 @@ const useToggleButtonStyles = makeStyles(({ palette }) => ({
 
 const ElementsTab = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const toggleButtonGroupClasses = useToggleButtonGroupStyles();
   const toggleButtonClasses = useToggleButtonStyles();
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
 
   const [section, setSection] = useState(sections[0]);
 
-  const { elements, templates, library } = createElementsHierarchy(
+  const { elements, templates, generators, library } = createElementsHierarchy(
     LIBRARY_ELEMENTS,
   );
-
   const libraryWithCustomUI = {
     ...library,
   };
@@ -78,6 +80,11 @@ const ElementsTab = () => {
   ) => {
     if (newSection) {
       setSection(newSection);
+      if (newSection === 'library') {
+        dispatch(isLibraryTab(true));
+      } else {
+        dispatch(isLibraryTab(false));
+      }
     }
   };
 
@@ -106,6 +113,9 @@ const ElementsTab = () => {
               <span className={classes.title}>Templates</span>
             </ToggleButton>
 
+            <ToggleButton classes={toggleButtonClasses} value="generators">
+              <span className={classes.title}>Generators</span>
+            </ToggleButton>
             <ToggleButton classes={toggleButtonClasses} value="library">
               <span className={classes.title}>Library</span>
             </ToggleButton>
@@ -131,6 +141,20 @@ const ElementsTab = () => {
             <ElementsBlock elements={templates} />
           </Section>
 
+          <Section
+            title="generators"
+            activeSection={section}
+            className={classes.section}
+          >
+            <ElementsBlock
+              key="generators"
+              title="generators"
+              elements={generators}
+              expandable
+            />
+            <GeneratedElementsBlocks />
+          </Section>
+
           <Section title="library" activeSection={section}>
             {Object.entries(libraryWithCustomUI).map(([key, value]) => (
               <ElementsBlock
@@ -141,7 +165,7 @@ const ElementsTab = () => {
               />
             ))}
 
-            <CustomElementsBlock />
+            <CustomElementsBlocks />
           </Section>
         </>
       )}

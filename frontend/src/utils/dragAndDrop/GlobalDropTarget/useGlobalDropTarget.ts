@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDrop, DropTargetMonitor } from 'react-dnd';
-import { SyntheticGlobalElement } from '../../../types';
+import { SyntheticGlobalElement } from '@Src/types';
 
 const useGlobalDropTarget = (
   itemTypes: string[],

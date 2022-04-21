@@ -12,9 +12,12 @@ type ExpandStyles = {
 
 const getExpandedStyles = (
   propName: keyof React.CSSProperties,
-  value: string,
+  value: string | number,
 ) => {
-  const expandedProps = expanders[propName](...value.split(' '));
+  const expandedProps =
+    typeof value === 'number'
+      ? expanders[propName](`${value}px`)
+      : expanders[propName](...value.split(' '));
   return expandedProps;
 };
 

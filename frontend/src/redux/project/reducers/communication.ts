@@ -56,10 +56,10 @@ const communicationReducer = (
       };
     }
 
-    case TYPES.SET_ASSETS_LOADER: {
+    case TYPES.SET_ASSETS_LISTS_LOADER: {
       return {
         ...state,
-        assetsLoader: action.payload.active,
+        assetsListsLoader: action.payload.active,
       };
     }
 
@@ -75,6 +75,19 @@ const communicationReducer = (
         importLoader: action.payload,
       };
     }
+
+    case TYPES.SET_IMPORT_VALUE: {
+      return {
+        ...state,
+        importValue: {
+          notSupportedTag: action?.payload?.notSupportedTag,
+          canvasData: action?.payload?.canvasData,
+          importSuccessRawData: action?.payload?.importSuccessRawData,
+          error: action.payload?.error,
+        },
+      };
+    }
+
     default:
       return state;
   }

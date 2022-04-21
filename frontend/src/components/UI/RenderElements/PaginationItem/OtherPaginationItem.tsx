@@ -1,0 +1,132 @@
+import React, { LegacyRef } from 'react';
+import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
+import cn from 'classnames';
+import { useSelector } from 'react-redux';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { selectExportScreenFlag } from '@Redux/project/selectors/base';
+import { useHistory } from 'react-router';
+import { makeComponentStyles } from '../styles';
+import { RendererProps } from '../types';
+
+const useStyles = makeComponentStyles('pagination', {
+  active: {
+    backgroundColor: '#ddd',
+  },
+});
+
+const OtherPaginationItem = React.forwardRef<HTMLElement, RendererProps>(
+  (props, ref) => {
+    const { element, isDisabled } = props;
+    const [groupClass] = element.styles.classNames;
+    const {
+      textContent,
+      link,
+      isActiveLink,
+      isLink,
+      screenLink,
+      screenName,
+    } = element.parameters;
+    const classes = useStyles(props);
+    const eventHandlers = useEventHandlers<HTMLElement>(props, {
+      onClick: (event: React.SyntheticEvent<HTMLElement>) => {
+        if (isDisabled) {
+          (event.target as HTMLElement).focus();
+        }
+      },
+    });
+    const history = useHistory();
+    const isProtoMode = useSelector(selectIsPrototypeMode);
+    const exportScreenFlag = useSelector(selectExportScreenFlag);
+
+    const changeScreen = () => {
+      history.push(`/project/${screenLink}`);
+    };
+
+    return (
+      <>
+        {isLink && (isProtoMode || exportScreenFlag) ? (
+          <a
+            href={link}
+            target={exportScreenFlag ? '_self' : '_blank'}
+            rel="noreferrer"
+            ref={ref as LegacyRef<HTMLAnchorElement>}
+            id={element.id}
+            className={cn(
+              classes.ownStyles,
+              groupClass,
+              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+              isActiveLink && classes.active,
+            )}
+            data-ls-id={element.id}
+            {...eventHandlers}
+            data-gramm_editor={false}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+          />
+        ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
+          <a
+            rel="noreferrer"
+            ref={ref as LegacyRef<HTMLAnchorElement>}
+            id={element.id}
+            onClick={() =>
+              isProtoMode && !exportScreenFlag ? changeScreen() : ''
+            }
+            className={cn(
+              classes.ownStyles,
+              groupClass,
+              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+              isActiveLink && classes.active,
+            )}
+            data-ls-id={element.id}
+            {...eventHandlers}
+            data-gramm_editor={false}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+          />
+        ) : screenLink && screenName && (isProtoMode || exportScreenFlag) ? (
+          <a
+            href={
+              isProtoMode
+                ? exportScreenFlag
+                  ? `../${screenName}/index.html`
+                  : '#'
+                : exportScreenFlag
+                ? `../${screenName}/index.html`
+                : ''
+            }
+            target="_self"
+            rel="noreferrer"
+            ref={ref as LegacyRef<HTMLAnchorElement>}
+            id={element.id}
+            className={cn(
+              classes.ownStyles,
+              groupClass,
+              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+              isActiveLink && classes.active,
+            )}
+            data-ls-id={element.id}
+            {...eventHandlers}
+            data-gramm_editor={false}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+          />
+        ) : (
+          <a
+            rel="noreferrer"
+            ref={ref as LegacyRef<HTMLAnchorElement>}
+            id={element.id}
+            className={cn(
+              classes.ownStyles,
+              groupClass,
+              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+              isActiveLink && classes.active,
+            )}
+            data-ls-id={element.id}
+            {...eventHandlers}
+            data-gramm_editor={false}
+            dangerouslySetInnerHTML={{ __html: textContent }}
+          />
+        )}
+      </>
+    );
+  },
+);
+
+export default OtherPaginationItem;

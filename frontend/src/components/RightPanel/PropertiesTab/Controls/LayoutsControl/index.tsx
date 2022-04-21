@@ -3,8 +3,11 @@ import { selectActiveElementParams } from '@Redux/project/selectors/element';
 import {
   Entity,
   Layout,
+  baseLayout,
+  additionalLayoutTablet,
   LibraryElement,
   PropertiesChangeProps,
+  additionalLayoutPhone,
 } from '@Src/types';
 import React, { ChangeEvent, FC } from 'react';
 import { useSelector } from 'react-redux';
@@ -50,17 +53,39 @@ const LayoutsControl: FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     layouts: Layout[];
   };
 
-  const list = Object.keys(Layout).map((k) => Layout[k] as Layout);
+  const list = Object.keys(baseLayout).map((k) => Layout[k] as Layout);
 
   const handleChange = (
     { target: { checked } }: ChangeEvent<HTMLInputElement>,
     layout: Layout,
   ) => {
     if (!checked && layouts.length === 1) return;
-    const newLayouts = checked
-      ? [...layouts, layout]
-      : layouts.filter((l) => l !== layout);
 
+    const checkedLayout = (layout) => {
+      switch (layout) {
+        case 'tablet':
+          return [...layouts, ...additionalLayoutTablet];
+        case 'mobile':
+          return [...layouts, ...additionalLayoutPhone];
+        default:
+          return [...layouts, layout];
+      }
+    };
+
+    const offLayout = (layout) => {
+      switch (layout) {
+        case 'tablet':
+          return layouts.filter(
+            (e) => additionalLayoutTablet.indexOf(e) === -1,
+          );
+        case 'mobile':
+          return layouts.filter((e) => additionalLayoutPhone.indexOf(e) === -1);
+        default:
+          return layouts.filter((l) => l !== layout);
+      }
+    };
+
+    const newLayouts = checked ? checkedLayout(layout) : offLayout(layout);
     updateParams({
       layouts: newLayouts,
     });

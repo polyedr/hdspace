@@ -1,14 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import cn from 'classnames';
 import {
   selectLayout,
   selectScreenRotated,
-  selectFreeCanvasMode,
 } from '@Redux/project/selectors/base';
-import useGlobalDropTarget from '@Utils/dragAndDrop/GlobalDropTarget/useGlobalDropTarget';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import { selectMasterScreenEnabled } from '@Redux/project/selectors/screen';
+import {
+  selectMasterScreenEnabled,
+  selectFreeCanvasMode,
+} from '@Redux/project/selectors/screen';
 import { FrameWrapper } from '@Components/Editor/FrameWrapper';
 import MasterScreen from '@Components/Editor/MasterScreen';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
@@ -19,6 +19,7 @@ import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
+import { DOMHandler } from './DOMHandler';
 
 const useStyles = makeStyles({
   workspace: {
@@ -53,6 +54,30 @@ const useStyles = makeStyles({
   mobile: {
     flexBasis: (rotated) => (rotated ? 568 : 320),
   },
+  motoG4: {
+    flexBasis: (rotated) => (rotated ? 640 : 360),
+  },
+  pixel2: {
+    flexBasis: (rotated) => (rotated ? 731 : 411),
+  },
+  iphone5: {
+    flexBasis: (rotated) => (rotated ? 568 : 320),
+  },
+  iphone678: {
+    flexBasis: (rotated) => (rotated ? 375 : 667),
+  },
+  iphone678Plus: {
+    flexBasis: (rotated) => (rotated ? 414 : 736),
+  },
+  iphoneX: {
+    flexBasis: (rotated) => (rotated ? 375 : 812),
+  },
+  ipad: {
+    flexBasis: (rotated) => (rotated ? 768 : 1024),
+  },
+  ipadPro: {
+    flexBasis: (rotated) => (rotated ? 1024 : 1366),
+  },
 });
 
 type Props = {
@@ -62,29 +87,31 @@ type Props = {
 const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
+
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
 
   const classes = useStyles(rotated);
   const ref = useRef<HTMLDivElement | null>(null);
-  const scrollRef = useRef<Scrollbars>(null);
+  const scrollRef = useRef<Scrollbars | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
-
-  useGlobalDropTarget(
-    ['smartHeader', 'smartFooter', 'smartForm', 'smartWebpage'],
-    ref,
-  );
 
   return (
     <div className={classes.workspace} ref={ref}>
       <div className={classes.wrapper}>
         <div className={classes.frameWrapper}>
-          <FrameWrapper className={cn(classes[format])}>
+          <FrameWrapper className={classes[format]}>
             <EditorViewport>
               <Scrollbar
-                ref={scrollRef}
+                ref={(scrollbars: any) => {
+                  if (!scrollbars) {
+                    return;
+                  }
+                  scrollRef.current = scrollbars;
+                  DOMHandler.INSTANCE.watch(scrollbars.view);
+                }}
                 autoHeightMin="100%"
                 onScroll={({ srcElement }) => {
                   setScrollLeft(srcElement.scrollLeft);

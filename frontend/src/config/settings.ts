@@ -6,19 +6,19 @@ export const env = process.env.NODE_ENV;
 const settings = {
   development: {
     api: {
-      host: 'https://www.timberworkinfo.ru',
+      host: 'https://www.api-staging.adevi.info',
       version: 1,
     },
   },
   staging: {
     api: {
-      host: 'https://www.timberworkinfo.ru',
+      host: 'https://www.api-staging.adevi.info',
       version: 1,
     },
   },
   production: {
     api: {
-      host: 'https://www.adevi.info',
+      host: 'https://www.api.adevi.info',
       version: 1,
     },
   },
@@ -34,7 +34,7 @@ export const myAxios = (props: MyAxiosProps) => {
   return axios({
     ...props,
     method: props.method,
-    baseURL: `${api.host}/api/v${api.version}`,
+    baseURL: props.baseURL || `${api.host}/api/v${api.version}`,
     url: props.url,
     headers: {
       'Content-Type': props.contentType
@@ -45,7 +45,11 @@ export const myAxios = (props: MyAxiosProps) => {
     },
     data: props.data || {},
     params: props.params,
+    timeout: 100000,
   });
 };
 
 export const MAX_TOKEN_TRIALS = 4;
+
+export const HELP_LINK =
+  'https://docs.google.com/document/d/e/2PACX-1vTwu72-tooZHmF5D5ExkAyFNRja1dnQVugPLBKmKYViYVj0xpvPJk6nZv9WFCWPNki1pQ4vq96H-sSB/pub#h.rvwljq5j4kb7';

@@ -5,14 +5,12 @@ import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
 import { Entity, NNBlockType } from '@Src/types';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
-import Link from './Link/Link';
 import TextBlock from './TextBlock/TextBlock';
 import List from './List/List';
 import Label from './Label/Label';
 import Dropdown from './Dropdown/Dropdown';
 import Video from './Video/Video';
 import ListItem from './ListItem/ListItem';
-import MUISelectMenu from './MUISelect/MUISelectMenu';
 import DropdownMenu from './Dropdown/DropdownMenu';
 import DropdownItem from './Dropdown/DropdownItem';
 import DivBlockRenderer from './DivBlock/DivBlock';
@@ -22,19 +20,48 @@ import Calendar from './Calendar/Calendar';
 import Container from './Container/Container';
 import Section from './Section/Section';
 import Clock from './Clock/Clock';
-import Undefined from './Undefined/Undefined';
 import withSmartContainer from './SmartContainer/withSmartContainer';
 import Columns from './Columns';
 import GridItem from './Grid/GridItem';
 import ElementsGroup from './ElementsGroup/ElementsGroup';
-import Button from './Button/Button';
-import Input from './Input/Input';
-import Textarea from './Textarea/Textarea';
-import Checkbox from './Checkbox/Checkbox';
-import Radiobutton from './Radiobutton/Radiobutton';
-import Select from './Select/Select';
-import Option from './Option/Option';
+import { BootstrapButton, MaterialButton, UnstyledButton } from './Button';
+import { BootstrapInput, MaterialInput, UnstyledInput } from './Input';
+import {
+  BootstrapTextarea,
+  MaterialTextarea,
+  UnstyledTextarea,
+} from './Textarea';
+import {
+  BootstrapCheckbox,
+  MaterialCheckbox,
+  UnstyledCheckbox,
+} from './Checkbox';
+import {
+  BootstrapRadiobutton,
+  MaterialRadiobutton,
+  UnstyledRadiobutton,
+} from './Radiobutton';
+import { BootstrapSelect, MaterialSelect, UnstyledSelect } from './Select';
+import { UnstyledOption, MaterialOption } from './Option';
 import HTMLElement from './HTMLElement/HTMLElement';
+import withUIFramework from './withUIFramework';
+import BootstrapBreadcrumbItem from './BreadcrumbItem/BootstrapBreadcrumbItem';
+import BootstrapBreadcrumb from './Breadcrumb/BootstrapBreadcrumb';
+import BootstrapPagination from './Pagination/BootstrapPagination';
+import BootstrapPaginationItem from './PaginationItem/BootstrapPaginationItem';
+import BootstrapCarousel from './Carousel/BootstrapCarousel';
+import BootstrapCarouselItem from './CarouselItem/BootstrapCarouselItem';
+import OtherPagination from './Pagination/OtherPagination';
+import OtherPaginationItem from './PaginationItem/OtherPaginationItem';
+import OtherBreadcrumb from './Breadcrumb/OtherBreadcrumb';
+import OtherBreadcrumbItem from './BreadcrumbItem/OtherBreadcrumbItem';
+import BootstrapNavbar from './Navbar/BootstrapNavbar';
+import BootstrapNavbarItem from './NavbarItem/BootstrapNavbarItem';
+import OtherNavbarItem from './NavbarItem/OtherNavbarItem';
+import OtherCarousel from './Carousel/OtherCarousel';
+import OtherNavbar from './Navbar/OtherNavbar';
+import OtherCarouselItem from './CarouselItem/OtherCarouselItem';
+import RadiobuttonGroup from './RadiobuttonGroup';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -47,28 +74,90 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   grid: Grid,
   columns: Columns,
   column: Column,
-  button: Button,
-  input: Input,
-  textinput: Input,
-  radiobutton: Radiobutton,
-  checkbox: Checkbox,
-  textarea: Textarea,
+  button: withUIFramework({
+    bootstrap: BootstrapButton,
+    material: MaterialButton,
+    not_selected: UnstyledButton,
+  }),
+  buttonGenerator: Container,
+  input: withUIFramework({
+    bootstrap: BootstrapInput,
+    material: MaterialInput,
+    not_selected: UnstyledInput,
+  }),
+  textinput: withUIFramework({
+    bootstrap: BootstrapInput,
+    material: MaterialInput,
+    not_selected: UnstyledInput,
+  }),
+  radiobuttonGroup: RadiobuttonGroup,
+  radiobutton: withUIFramework({
+    bootstrap: BootstrapRadiobutton,
+    material: MaterialRadiobutton,
+    not_selected: UnstyledRadiobutton,
+  }),
+  checkbox: withUIFramework({
+    bootstrap: BootstrapCheckbox,
+    material: MaterialCheckbox,
+    not_selected: UnstyledCheckbox,
+  }),
+  textarea: withUIFramework({
+    bootstrap: BootstrapTextarea,
+    material: MaterialTextarea,
+    not_selected: UnstyledTextarea,
+  }),
   heading: Heading,
   paragraph: Paragraph,
   ocrtext: Paragraph,
   textBlock: TextBlock,
   list: List,
   listItem: ListItem,
+  breadcrumb: withUIFramework({
+    bootstrap: BootstrapBreadcrumb,
+    material: OtherBreadcrumb,
+    not_selected: OtherBreadcrumb,
+  }),
+  breadcrumbItem: withUIFramework({
+    bootstrap: BootstrapBreadcrumbItem,
+    material: OtherBreadcrumbItem,
+    not_selected: OtherBreadcrumbItem,
+  }),
+  pagination: withUIFramework({
+    bootstrap: BootstrapPagination,
+    material: OtherPagination,
+    not_selected: OtherPagination,
+  }),
+  paginationItem: withUIFramework({
+    bootstrap: BootstrapPaginationItem,
+    material: OtherPaginationItem,
+    not_selected: OtherPaginationItem,
+  }),
+  carousel: withUIFramework({
+    bootstrap: BootstrapCarousel,
+    material: OtherCarousel,
+    not_selected: OtherCarousel,
+  }),
+  carouselItem: withUIFramework({
+    bootstrap: BootstrapCarouselItem,
+    material: OtherCarouselItem,
+    not_selected: OtherCarouselItem,
+  }),
   label: Label,
-  hyperlink: Link,
   image: Image,
   smartHeader: withSmartContainer(NNBlockType.HEADER),
   smartFooter: withSmartContainer(NNBlockType.FOOTER),
   smartForm: withSmartContainer(NNBlockType.FORM),
   smartWebpage: withSmartContainer(NNBlockType.WEBPAGE),
-  select: Select,
-  selectMenu: MUISelectMenu,
-  option: Option,
+  select: withUIFramework({
+    bootstrap: BootstrapSelect,
+    material: MaterialSelect,
+    not_selected: UnstyledSelect,
+  }),
+  option: withUIFramework({
+    bootstrap: UnstyledOption,
+    material: MaterialOption,
+    not_selected: UnstyledOption,
+  }),
   map: Map,
   calendar: Calendar,
   clock: Clock,
@@ -76,13 +165,23 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   dropdownMenu: DropdownMenu,
   dropdownItem: DropdownItem,
   video: Video,
-  undefined: Undefined,
   subscribeForm: Container,
   cardsSection: Container,
   featureSection: Container,
   section: Section,
   group: ElementsGroup,
   html: HTMLElement,
+  navbar: withUIFramework({
+    bootstrap: BootstrapNavbar,
+    material: OtherNavbar,
+    not_selected: OtherNavbar,
+  }),
+  navbarItem: withUIFramework({
+    bootstrap: BootstrapNavbarItem,
+    material: OtherNavbarItem,
+    not_selected: OtherNavbarItem,
+  }),
+  hyperlink: Label,
 };
 
 export default RENDERERS;

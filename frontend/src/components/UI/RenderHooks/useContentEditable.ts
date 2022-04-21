@@ -1,27 +1,29 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef } from 'react';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateElementParameters } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { useDebouncedCallback } from 'use-debounce';
-import { DefaultEventHandlers } from '../RenderElements/types';
+import { EventHandlers } from '../RenderElements/types';
 
 export type ContentEditableProps = {
   contentEditable: boolean;
   tabIndex?: number;
 };
 
-export type ContentEditableConfig = {
+export type ContentEditableConfig<T extends HTMLElement> = {
   props: ContentEditableProps;
-  events: DefaultEventHandlers;
+  events: EventHandlers<T>;
 };
 
-const useContentEditable = (
+const useContentEditable = <T extends HTMLElement>(
   elementId: string,
   textContent: string,
-): ContentEditableConfig => {
+): ContentEditableConfig<T> => {
   const dispatch = useDispatch();
   const screenId = useSelector(selectCurrentScreenId);
   const [contentEditable, setContentEditable] = useState<boolean>(false);
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
 
   const saveElementContent = useCallback(
     (newTextContent: string) => {
@@ -41,6 +43,7 @@ const useContentEditable = (
   );
 
   const debouncedCallback = useDebouncedCallback(saveElementContent, 500);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const config = useMemo(
     () => ({
@@ -49,8 +52,16 @@ const useContentEditable = (
       },
       events: {
         onClick: () => {
-          if (!contentEditable) {
-            setContentEditable(true);
+          if (!contentEditable && !isPrototypeMode) {
+            setContentEditable(false);
+            if (timer.current) {
+              clearTimeout(timer.current);
+              timer.current = null;
+            }
+            timer.current = setTimeout(() => {
+              setContentEditable(false);
+              timer.current = null;
+            }, 500);
           }
         },
         onKeyDown: (event: React.SyntheticEvent<HTMLElement>) => {
@@ -66,18 +77,22 @@ const useContentEditable = (
             setContentEditable(false);
           }
         },
-        onBlur: (event: React.SyntheticEvent) => {
-          if (contentEditable) {
-            setContentEditable(false);
-            debouncedCallback.cancel();
-            debouncedCallback.callback(
-              (event.target as HTMLElement).innerHTML.trim(),
-            );
+        onFocus: () => {
+          if (timer.current) {
+            clearTimeout(timer.current);
+            timer.current = null;
           }
+        },
+        onBlur: (event: React.SyntheticEvent) => {
+          setContentEditable(false);
+          debouncedCallback.cancel();
+          debouncedCallback.callback(
+            (event.target as HTMLElement).innerHTML.trim(),
+          );
         },
       },
     }),
-    [contentEditable, debouncedCallback, saveElementContent],
+    [contentEditable, debouncedCallback, saveElementContent, isPrototypeMode],
   );
 
   return config;

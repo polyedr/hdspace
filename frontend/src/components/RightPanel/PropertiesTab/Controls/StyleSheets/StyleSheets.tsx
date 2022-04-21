@@ -1,15 +1,12 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-
 import { useDebouncedCallback } from 'use-debounce';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { selectActiveElement } from '@Redux/project/selectors/element';
 import { makeStyles } from '@material-ui/core/styles';
 import CodeEditor from '@Components/UI/CodeEditor';
 import { cssCamelize, cssDecamelize } from '@Utils/CSSConverter';
-import StylesHeader from '../../helperComponents/StylesHeader';
 
 import 'highlight.js/styles/dracula.css';
+import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles((theme) => ({
   editorWrapper: {
@@ -31,11 +28,12 @@ const transformToEditorStyles = (styles: React.CSSProperties) => {
 
 const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
   removeStyles,
-  updateStyles,
+  replaceStyles,
   canEdit,
   masterScreenEnabled,
+  element,
+  editableStyles,
 }) => {
-  const element = useSelector(selectActiveElement);
   const classes = useStyles();
 
   const [editorStyles, setEditorStyles] = useState<string>(
@@ -44,7 +42,7 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
 
   const handleEditorChange = useDebouncedCallback(
     (stylesJson: React.CSSProperties) => {
-      updateStyles(stylesJson);
+      replaceStyles(stylesJson);
     },
     500,
   );
@@ -53,13 +51,14 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
     <>
       <div>
         {!masterScreenEnabled && canEdit && (
-          <StylesHeader
-            title="Edit styles"
+          <RemoveStyles
             onClick={(styleNames: string[]) => {
               setEditorStyles('');
               removeStyles(styleNames);
             }}
-            cssPropertiesNames={Object.keys(element.styles.ownStyles)}
+            propsToRemove={Object.keys(element.styles.ownStyles)}
+            editableStyles={editableStyles}
+            type={element.type}
           />
         )}
       </div>

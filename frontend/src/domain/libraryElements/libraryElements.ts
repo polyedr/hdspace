@@ -1,16 +1,18 @@
 import GridOnIcon from '@material-ui/icons/GridOn';
 import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import SlideshowIcon from '@material-ui/icons/Slideshow';
+import LooksOneIcon from '@material-ui/icons/LooksOne';
 import ListIcon from '@material-ui/icons/List';
 import Crop169Icon from '@material-ui/icons/Crop169';
+import CodeIcon from '@material-ui/icons/Code';
 import NotesIcon from '@material-ui/icons/Notes';
 import LineWeightIcon from '@material-ui/icons/LineWeight';
-import LinkIcon from '@material-ui/icons/Link';
 import ImageIcon from '@material-ui/icons/Image';
 import MovieIcon from '@material-ui/icons/Movie';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
-import HelpIcon from '@material-ui/icons/Help';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
+// import HelpIcon from '@material-ui/icons/Help';
+import CalendarViewDayIcon from '@material-ui/icons/CalendarViewDay';
 import ArrowDropDownCircleIcon from '@material-ui/icons/ArrowDropDownCircle';
 import MessageIcon from '@material-ui/icons/Message';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
@@ -22,109 +24,144 @@ import MapIcon from '@material-ui/icons/Map';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
+import PaymentIcon from '@material-ui/icons/Payment';
 import Crop75Icon from '@material-ui/icons/Crop75';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
-import { Entity, LibraryElements } from '@Src/types';
+import { Entity, LibraryElements, ServerElement } from '@Src/types';
+import { convertElementFromResponse } from '@Api/converters/fromResponse';
 import {
-  root,
+  makeRoot,
   makeImage,
   makeSmartHeader,
   makeSmartFooter,
   makeSmartForm,
   makeSmartWebpage,
-  video,
-  dropdown,
-  undefinedElement,
-  dropdownMenu,
+  makeVideo,
+  makeDropdown,
+  makeDropdownMenu,
   makeDropdownItem,
   makeDivBlock,
   makeContainer,
   makeGrid,
   makeColumns,
   makeGridItem,
-  column,
-  nativeColumns,
-  elementsGroup,
-  htmlElement,
+  makeColumn,
+  makeNativeColumns,
+  makeElementsGroup,
+  makeHtmlElement,
+  makePaginationItem,
+  makePagination,
+  makeBreadcrumb,
+  makeBreadcrumbItem,
+  makeCarousel,
+  makeCarouselItem,
+  makeNavbar,
+  makeNavbarItem,
 } from './otherElements/otherElements';
 import {
   makeButton,
-  textarea,
+  makeTextarea,
   makeTextinput,
-  checkbox,
-  radiobutton,
-  select,
-  selectMenu,
+  makeCheckbox,
+  makeRadiobuttonGroup,
+  makeSelect,
   makeOption,
   makeLabel,
+  makeRadiobutton,
 } from './formElements/formElements';
+import { makeButtonGenerator } from './generatorElements/generatorElements';
 import {
-  hyperlink,
-  list,
-  textBlock,
-  ocrtext,
+  makeTextBlock,
+  makeOcrtext,
   makeListItem,
   makeParagraph,
   makeHeading,
+  makeList,
 } from './typographyElements/typographyElements';
-import { map, calendar, clock } from './widgetElements/widgetElements';
 import {
-  subscribeForm,
-  cardsSection,
-  featureSection,
+  makeMap,
+  makeCalendar,
+  makeClock,
+} from './widgetElements/widgetElements';
+import {
+  makeSubscribeForm,
+  makeCardsSection,
+  makeFeatureSection,
   makePageTemplate,
-  section,
+  makeEmptyPageTemplate,
+  makeSection,
 } from './blocksTemplates/blocksTemplates';
+
+const PREVIEW_LIBRARY_ELEMENTS = [
+  makeSubscribeForm(),
+  makeCardsSection(),
+  makeFeatureSection(),
+];
+
+export const CORE_PREVIEW_LIBRARY_ELEMENTS = PREVIEW_LIBRARY_ELEMENTS.map(
+  (el: ServerElement<Entity>) => ({
+    ...convertElementFromResponse(el),
+    name: el.name,
+  }),
+);
 
 // WARN: every time you add or remove some LibraryElements in prod, you must write migration in db
 export const LIBRARY_ELEMENTS: LibraryElements = {
-  root,
-  container: makeContainer(),
-  divBlock: makeDivBlock({ textContent: 'This is divBlock' }),
-  pageTemplate: makePageTemplate(),
-  emptyPageTemplate: makePageTemplate(true),
-  gridItem: makeGridItem({}),
-  grid: makeGrid(),
-  nativeColumns,
-  columns: makeColumns(),
-  column,
-  subscribeForm,
-  image: makeImage(),
-  smartHeader: makeSmartHeader({ name: 'Smart Header' }),
-  smartFooter: makeSmartFooter({ name: 'Smart Footer' }),
-  smartForm: makeSmartForm({ name: 'Smart Form' }),
-  smartWebpage: makeSmartWebpage({ name: 'Smart Webpage' }),
-  button: makeButton(),
-  hyperlink,
-  textinput: makeTextinput(),
-  input: makeTextinput(),
-  checkbox,
-  radiobutton,
-  select,
-  selectMenu,
-  option: makeOption('', ''),
-  label: makeLabel(),
-  textarea,
-  heading: makeHeading(),
-  paragraph: makeParagraph(),
-  ocrtext,
-  textBlock,
-  list,
-  listItem: makeListItem(),
-  map,
-  calendar,
-  clock,
-  dropdown,
-  dropdownMenu,
-  dropdownItem: makeDropdownItem(''),
-  video,
-  undefined: undefinedElement,
-  cardsSection,
-  featureSection,
-  section,
-  group: elementsGroup,
-  html: htmlElement,
+  root: makeRoot,
+  container: makeContainer,
+  divBlock: makeDivBlock,
+  pageTemplate: makePageTemplate,
+  emptyPageTemplate: makeEmptyPageTemplate,
+  gridItem: makeGridItem,
+  grid: makeGrid,
+  nativeColumns: makeNativeColumns,
+  columns: makeColumns,
+  column: makeColumn,
+  subscribeForm: makeSubscribeForm,
+  image: makeImage,
+  smartHeader: makeSmartHeader,
+  smartFooter: makeSmartFooter,
+  smartForm: makeSmartForm,
+  smartWebpage: makeSmartWebpage,
+  button: makeButton,
+  buttonGenerator: makeButtonGenerator,
+  textinput: makeTextinput,
+  input: makeTextinput,
+  checkbox: makeCheckbox,
+  radiobutton: makeRadiobutton,
+  radiobuttonGroup: makeRadiobuttonGroup,
+  select: makeSelect,
+  option: makeOption,
+  label: makeLabel,
+  textarea: makeTextarea,
+  heading: makeHeading,
+  paragraph: makeParagraph,
+  ocrtext: makeOcrtext,
+  textBlock: makeTextBlock,
+  list: makeList,
+  listItem: makeListItem,
+  map: makeMap,
+  calendar: makeCalendar,
+  clock: makeClock,
+  dropdown: makeDropdown,
+  dropdownMenu: makeDropdownMenu,
+  dropdownItem: makeDropdownItem,
+  video: makeVideo,
+  cardsSection: makeCardsSection,
+  featureSection: makeFeatureSection,
+  section: makeSection,
+  group: makeElementsGroup,
+  html: makeHtmlElement,
+  breadcrumbItem: makeBreadcrumbItem,
+  breadcrumb: makeBreadcrumb,
+  paginationItem: makePaginationItem,
+  pagination: makePagination,
+  carouselItem: makeCarouselItem,
+  carousel: makeCarousel,
+  navbar: makeNavbar,
+  navbarItem: makeNavbarItem,
+  hyperlink: makeLabel,
 };
 
 export const ICONS: Partial<
@@ -139,16 +176,14 @@ export const ICONS: Partial<
   container: Crop169Icon,
   paragraph: NotesIcon,
   heading: LineWeightIcon,
-  hyperlink: LinkIcon,
   image: ImageIcon,
   video: MovieIcon,
   textBlock: TitleOutlinedIcon,
-  undefined: HelpOutlineIcon,
   dropdown: ArrowDropDownCircleIcon,
   textinput: MessageIcon,
   textarea: TextFieldsIcon,
   checkbox: CheckBoxIcon,
-  radiobutton: RadioButtonCheckedIcon,
+  radiobuttonGroup: RadioButtonCheckedIcon,
   label: LabelIcon,
   select: TocIcon,
   map: MapIcon,
@@ -159,5 +194,9 @@ export const ICONS: Partial<
   smartForm: CropOriginalIcon,
   smartWebpage: CropOriginalIcon,
   section: Crop75Icon,
-  html: HelpIcon,
+  html: CodeIcon,
+  breadcrumb: CalendarViewDayIcon,
+  pagination: LooksOneIcon,
+  carousel: PhotoLibraryIcon,
+  navbar: PaymentIcon,
 };

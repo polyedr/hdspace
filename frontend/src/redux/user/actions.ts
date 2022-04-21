@@ -6,14 +6,11 @@ import {
   UserData,
   SignupFormData,
   Experience,
+  ChatCredentials,
 } from '@Src/types';
 import TYPES from '@Redux/actionTypes';
 
 export const changeMinLPanel = () => ({ type: TYPES.CHANGE_L_PANEL });
-
-export const changeDropTargetBordersMode = () => ({
-  type: TYPES.CHANGE_DROP_TARGET_BORDERS_MODE,
-});
 
 export const toggleUserLoading = (isLoading: boolean) => ({
   type: TYPES.TOGGLE_USER_LOADING,
@@ -26,7 +23,7 @@ export const changePrototypeMode = (isPrototypeMode: boolean) => ({
 });
 
 export const login = (data: LoginFormData) => ({
-  type: TYPES.LOGIN,
+  type: TYPES.LOGIN_CHAT_USER,
   payload: data,
 });
 
@@ -194,4 +191,13 @@ export const setUserExperience = (experience: Experience) => ({
 export const setUserGuideActive = (active: boolean) => ({
   type: TYPES.SET_USER_GUIDE_ACTIVE,
   payload: active,
+});
+
+export const setChatCredentials = (data: ChatCredentials) => ({
+  type: TYPES.SET_CHAT_CREDENTIALS,
+  payload: data,
+});
+
+export const chatLogout = () => ({
+  type: TYPES.CHAT_LOGOUT,
 });

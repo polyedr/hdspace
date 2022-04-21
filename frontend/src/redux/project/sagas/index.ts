@@ -1,6 +1,14 @@
-import { takeLatest, takeEvery, put, call, select } from 'redux-saga/effects';
+import {
+  takeLatest,
+  takeEvery,
+  put,
+  call,
+  select,
+  fork,
+} from 'redux-saga/effects';
 import {
   removeProjectStyles,
+  updateDefaultStyles,
   updateProjectClasses,
 } from '@Utils/ProjectClassesHelper';
 import {
@@ -9,27 +17,31 @@ import {
   Normalized,
   StateElement,
   UserProjectPermission,
+  ScreenData,
 } from '@Src/types';
 import {
   activateScreenSaga,
   createScreenSaga,
   changeScreensOrderSaga,
   deleteScreenSaga,
-  editScreenSaga,
+  editScreenNameAndDataSaga,
   restoreScreenSaga,
   updateScreenImageSaga,
+  setEditableScreenSaga,
   convertFreeCanvasSaga,
+  clearEditableScreenSaga,
 } from '@Redux/project/sagas/screen';
 import {
-  // assignUserPermissionSaga,
   getAllUsersProjectPermissionsSaga,
   getMyPermissionsForProjectSaga,
   getUsersSaga,
-  // unassignUserPermissionSaga,
   updateUserPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { compose } from 'redux';
+import logger from 'loglevel';
+import nnSaga from './nn';
+import { updateUISettingsParametersSaga } from '../../user/sagas';
 import {
   moveElementSaga,
   removeElementStylesSaga,
@@ -51,11 +63,16 @@ import {
   uploadElementImageByUrlSaga,
   unbindGroupElementStylesSaga,
   replaceElementParametersSaga,
+  processDropTargetParamsSaga,
+  processDropElementSaga,
+  replaceMultipleElementsStylesSaga,
+  setEnabledPseudoClassSaga,
 } from './element';
 import {
   addChildrenToElementSaga,
   addChildToElementSaga,
   createChildElementsSaga,
+  createLibraryElementsSaga,
   redoWrapIntoContainerSaga,
   restoreElementChildrenSaga,
   restoreElementSaga,
@@ -73,11 +90,13 @@ import {
   deleteProjectSaga,
   getProjectListSaga,
   getProjectSaga,
-  renameProjectSaga,
+  updateNameAndTagsProjectSaga,
   searchProjectsSaga,
+  updateCurrentUIFrameworkSaga,
+  updateCurrentUIFrameworkVariablesSaga,
+  resetCurrentUIFrameworkVariablesSaga,
   updateProjectSaga,
 } from './project';
-import { setUpSidebarSaga } from './sidebar';
 import TYPES from '../../actionTypes';
 import { projectUpdateHelperSaga } from './shared';
 import { enqueueSnackbar } from '../../notification/actions';
@@ -90,6 +109,7 @@ import {
   selectElementAsTree,
   selectItemToCopyInfo,
   selectScreenRootElement,
+  selectScreen,
 } from '../selectors/element';
 import { selectCurrentScreen } from '../selectors/screen';
 import {
@@ -101,15 +121,21 @@ import {
   removeAssetListSaga,
   removeAssetSaga,
   restoreAssetSaga,
+  editIcoScreenSaga,
+  generateImagePaletteSaga,
 } from './asset';
-import { importHtmlSaga, uploadImportUrlSaga } from './import';
+import {
+  checkRobotsFileFromUrlSaga,
+  importHtmlSaga,
+  importHtmlCheckSaga,
+} from './import';
 import {
   executeRedoActionsSaga,
   executeUndoActionsSaga,
   addHistoryActionsSaga,
 } from './control';
 import withActionsHistory from '../wrappers/withActionsHistory';
-import { semiautoAnalyzeImageSaga, autoAnalyzeImageSaga } from './nn';
+import viaSaga from './via';
 
 const removeSharedStylesSaga = compose(
   withRequiredPermissions(
@@ -121,7 +147,7 @@ const removeSharedStylesSaga = compose(
   const { className, cssPropertiesNames } = action.payload;
 
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -151,6 +177,48 @@ const removeSharedStylesSaga = compose(
   yield put(Actions.updateElementsTree(state, { ...action.meta }));
 });
 
+const updateDefaultStylesSaga = compose(
+  withRequiredPermissions(
+    UserProjectPermission.VIEW_PROJECT,
+    UserProjectPermission.CHANGE_PROJECT,
+  ),
+  withActionsHistory,
+)(function* (action: ReturnType<typeof Actions.updateDefaultStyles>) {
+  const { classNames, styles, controlKey } = action.payload;
+  if (!action.meta) {
+    logger.error(
+      `You have to provide meta information for action ${action.type}`,
+    );
+  }
+
+  const currentProject: ReturnType<typeof selectCurrentProject> = yield select(
+    selectCurrentProject,
+  );
+
+  const newProject = updateDefaultStyles(
+    currentProject,
+    classNames,
+    styles,
+    controlKey,
+  );
+
+  yield call(projectUpdateHelperSaga, newProject);
+
+  // @ts-ignore
+  if (!action.meta.useHistory) {
+    yield put(
+      Actions.addUndoActions(
+        Actions.updateProject(currentProject, { ...action.meta }),
+      ),
+    );
+  }
+
+  const state: Normalized<StateElement> = yield select(selectAllElements);
+
+  // @ts-ignore
+  yield put(Actions.updateElementsTree(state, { ...action.meta }));
+});
+
 const updateSharedStylesSaga = compose(
   withRequiredPermissions(
     UserProjectPermission.VIEW_PROJECT,
@@ -161,7 +229,7 @@ const updateSharedStylesSaga = compose(
   const { className, styles } = action.payload;
 
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -208,9 +276,14 @@ const copyActiveElementSaga = withRequiredPermissions(
       }),
     );
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 
@@ -225,6 +298,7 @@ const duplicateScreenSaga = withRequiredPermissions(
       selectScreenRootElement(screenID),
     );
 
+    const screenData: ScreenData = yield select(selectScreen(screenID));
     const sourceCurrentScreen: ReturnType<
       typeof selectCurrentScreen
     > = yield select(selectCurrentScreen);
@@ -246,6 +320,7 @@ const duplicateScreenSaga = withRequiredPermissions(
         projectID,
         name,
         buoyancy: screensNumber,
+        freeCanvas: screenData.freeCanvas,
       }),
     );
 
@@ -275,9 +350,14 @@ const duplicateScreenSaga = withRequiredPermissions(
 
     yield put(Actions.setScreenLoader(false));
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 
@@ -290,7 +370,7 @@ const pasteCopiedElementSaga = compose(
 )(function* ({ type, meta }: ReturnType<typeof Actions.pasteCopiedElement>) {
   try {
     if (!meta) {
-      console.error(`You have to provide metainformation for action ${type}`);
+      logger.error(`You have to provide metainformation for action ${type}`);
       return;
     }
     const { screenId, useHistory } = meta;
@@ -334,9 +414,14 @@ const pasteCopiedElementSaga = compose(
       }
     }
   } catch (e) {
-    yield put(
-      enqueueSnackbar({ message: e.message, options: { variant: 'error' } }, e),
-    );
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          { message: e.message, options: { variant: 'error' } },
+          e,
+        ),
+      );
+    }
   }
 });
 
@@ -348,7 +433,10 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.UPDATE_PROJECT, updateProjectSaga);
   yield takeLatest(TYPES.GET_PROJECT, getProjectSaga);
   yield takeLatest(TYPES.CHANGE_SCREENS_ORDER, changeScreensOrderSaga);
-  yield takeLatest(TYPES.RENAME_PROJECT, renameProjectSaga);
+  yield takeLatest(
+    TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
+    updateNameAndTagsProjectSaga,
+  );
   yield takeLatest(TYPES.SEARCH_PROJECTS, searchProjectsSaga);
 
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
@@ -357,9 +445,10 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.UPDATE_SCREEN_IMAGE, updateScreenImageSaga);
   yield takeLatest(TYPES.DELETE_SCREEN, deleteScreenSaga);
   yield takeEvery(TYPES.RESTORE_SCREEN, restoreScreenSaga);
-  yield takeLatest(TYPES.EDIT_SCREEN, editScreenSaga);
+  yield takeLatest(TYPES.EDIT_SCREEN_NAME_AND_DATA, editScreenNameAndDataSaga);
   yield takeEvery(TYPES.MOVE_ELEMENT, moveElementSaga);
 
+  yield takeLatest(TYPES.UPDATE_DEFAULT_STYLES, updateDefaultStylesSaga);
   yield takeLatest(TYPES.REMOVE_SHARED_STYLES, removeSharedStylesSaga);
   yield takeLatest(TYPES.UPDATE_SHARED_STYLES, updateSharedStylesSaga);
   yield takeLatest(TYPES.REMOVE_ELEMENT_STYLES, removeElementStylesSaga);
@@ -371,6 +460,10 @@ export default function* projectSaga() {
   yield takeLatest(
     TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
     updateMultipleElementsStylesSaga,
+  );
+  yield takeLatest(
+    TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
+    replaceMultipleElementsStylesSaga,
   );
   yield takeLatest(TYPES.REPLACE_ELEMENT_STYLES, replaceElementStylesSaga);
   yield takeLatest(TYPES.COPY_ELEMENT_STYLES, copyElementStylesSaga);
@@ -391,6 +484,7 @@ export default function* projectSaga() {
 
   yield takeEvery(TYPES.CREATE_ELEMENTS, createElementsSaga);
   yield takeEvery(TYPES.CREATE_CHILD_ELEMENTS, createChildElementsSaga);
+  yield takeEvery(TYPES.CREATE_LIBRARY_ELEMENTS, createLibraryElementsSaga);
   yield takeEvery(TYPES.CREATE_GROUP_CHILDREN, createGroupChildrenSaga);
 
   yield takeEvery(TYPES.ADD_CHILD_TO_ELEMENT, addChildToElementSaga);
@@ -406,9 +500,6 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.COPY_ACTIVE_ELEMENT, copyActiveElementSaga);
   yield takeEvery(TYPES.PASTE_COPIED_ELEMENT, pasteCopiedElementSaga);
 
-  yield takeEvery(TYPES.SEMIAUTO_ANALYZE_IMAGE, semiautoAnalyzeImageSaga);
-
-  yield takeLatest(TYPES.AUTO_ANALYZE_IMAGE, autoAnalyzeImageSaga);
   yield takeEvery(TYPES.CONVERT_FREE_CANVAS, convertFreeCanvasSaga);
 
   // history actions
@@ -423,7 +514,8 @@ export default function* projectSaga() {
   yield takeLatest(TYPES.LOAD_CUSTOM_ELEMENTS, loadCustomElementsSaga);
 
   yield takeEvery(TYPES.IMPORT_HTML, importHtmlSaga);
-  yield takeEvery(TYPES.UPLOAD_IMPORT_URL, uploadImportUrlSaga);
+  yield takeEvery(TYPES.IMPORT_HTML_CHECK, importHtmlCheckSaga);
+  yield takeEvery(TYPES.UPLOAD_URL_CHECK_ROBOTS, checkRobotsFileFromUrlSaga);
 
   yield takeEvery(TYPES.LOAD_ASSET_LISTS, loadAssetListsSaga);
   yield takeEvery(TYPES.LOAD_ASSETS, loadAssetsSaga);
@@ -464,5 +556,41 @@ export default function* projectSaga() {
     updateUserPermissionsForProjectSaga,
   );
 
-  yield takeEvery(TYPES.SET_UP_SIDEBAR, setUpSidebarSaga);
+  yield fork(viaSaga);
+  yield fork(nnSaga);
+
+  yield takeEvery(
+    TYPES.UPDATE_UI_SETTINGS_PARAMETERS,
+    updateUISettingsParametersSaga,
+  );
+
+  yield takeEvery(TYPES.SET_EDITABLE_SCREEN, setEditableScreenSaga);
+  yield takeEvery(TYPES.CLEAR_EDITABLE_SCREEN, clearEditableScreenSaga);
+
+  yield takeEvery(TYPES.UPLOAD_ICO_SCREEN, editIcoScreenSaga);
+  yield takeEvery(
+    TYPES.UPDATE_CURRENT_UI_FRAMEWORK,
+    updateCurrentUIFrameworkSaga,
+  );
+
+  yield takeEvery(
+    TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
+    updateCurrentUIFrameworkVariablesSaga,
+  );
+
+  yield takeEvery(
+    TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
+    resetCurrentUIFrameworkVariablesSaga,
+  );
+
+  yield takeLatest(
+    TYPES.PROCESS_DROP_TARGET_PARAMS,
+    processDropTargetParamsSaga,
+  );
+
+  yield takeEvery(TYPES.PROCESS_DROP_ELEMENT, processDropElementSaga);
+
+  yield takeEvery(TYPES.SET_ENABLED_PSEUDO_CLASS, setEnabledPseudoClassSaga);
+
+  yield takeLatest(TYPES.GENERATE_IMAGE_PALETTE, generateImagePaletteSaga);
 }

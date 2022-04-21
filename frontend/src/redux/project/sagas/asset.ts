@@ -1,7 +1,9 @@
+// @ts-nocheck
 import { put, select, call } from 'redux-saga/effects';
 import {
   apiCreateAsset,
   apiDeleteAsset,
+  apiGenerateImagePalette,
   apiGetAssets,
   apiUpdateAsset,
 } from '@Api/asset';
@@ -15,21 +17,26 @@ import {
   Asset,
   AssetsList,
   PaginatedArray,
+  Result,
   UserProjectPermission,
 } from '@Src/types';
-import { ALL_ASSETS_LIST_ID } from '@Constants/defaultParams';
 import { convertToServerAsset } from '@Api/converters/asset/fromResponse';
 import { HistoryMeta, UploadAssetData } from '@Redux/types';
 import { compose } from 'redux';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
+import logger from 'loglevel';
+import {
+  selectAllAssetLists,
+  selectCurrentAssetListId,
+  selectAssetListById,
+  selectCurrentAssetList,
+  selectCurrentAssetsResults,
+} from '../selectors/asset';
+import { selectScreenByIdWrapper } from '../selectors/screen';
 import { selectCurrentProjectId } from '../selectors/base';
 import { reqWrapper } from './shared';
 import * as Actions from '../actions';
 import { selectElementById } from '../selectors/element';
-import {
-  selectSelectedAssetListId,
-  selectAssetListById,
-} from '../selectors/asset';
 import withActionsHistory from '../wrappers/withActionsHistory';
 
 // eslint-disable-next-line consistent-return
@@ -47,18 +54,50 @@ export function* uploadAssetHelper(
   assetFormData.append('name', fileName);
   assetFormData.append('illustration_set', listId);
   try {
-    const asset = yield call(reqWrapper, apiCreateAsset, {
-      assetFormData,
-    });
-    if (!meta?.useHistory) {
-      yield put(
-        Actions.addUndoActions([
-          Actions.removeAsset(asset.id, asset.listId, meta),
-        ]),
-      );
+    const { result: asset, error }: Result<Asset> = yield call(
+      reqWrapper,
+      apiCreateAsset,
+      {
+        assetFormData,
+      },
+    );
+
+    if (error) throw new Error(error);
+
+    if (asset) {
+      if (!meta?.useHistory) {
+        yield put(
+          Actions.addUndoActions([
+            Actions.removeAsset(asset.id, asset.listId as string, meta),
+          ]),
+        );
+      }
+      yield put(Actions.addAssetToState(listId, asset, meta));
+      return asset;
     }
-    yield put(Actions.addAssetToState(listId, asset, meta));
-    return asset;
+  } catch (error) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: error.message,
+          options: { variant: 'error' },
+        },
+        error,
+      ),
+    );
+  }
+}
+
+export function* generateImagePaletteSaga(
+  action: ReturnType<typeof Actions.generateImagePalette>,
+) {
+  const imageUrl = action.payload;
+
+  try {
+    const imagePalette = yield call(reqWrapper, apiGenerateImagePalette, {
+      imageUrl,
+    });
+    yield put(Actions.setImagePalette(imagePalette));
   } catch (error) {
     yield put(
       enqueueSnackbar(
@@ -74,18 +113,21 @@ export function* uploadAssetHelper(
 
 export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
   const { selectedListId } = action.payload;
-  if (selectedListId !== ALL_ASSETS_LIST_ID) {
+  if (selectedListId) {
     try {
+      const loadedAssetResults = yield select(selectCurrentAssetsResults);
       const assets: PaginatedArray<Asset> = yield call(
         reqWrapper,
         apiGetAssets,
         {
           projectId: action.payload,
-          ...(selectedListId ? { assetListId: selectedListId } : {}),
+          assetListId: selectedListId,
+          ...(loadedAssetResults?.next
+            ? { next: loadedAssetResults.next }
+            : {}),
         },
       );
       yield put(Actions.setAssets(selectedListId, assets));
-      yield put(Actions.setAssetsLoader(false));
     } catch (error) {
       yield put(
         enqueueSnackbar(
@@ -100,35 +142,20 @@ export function* loadAssetsSaga(action: ReturnType<typeof Actions.loadAssets>) {
   }
 }
 
-export function* loadAssetListsSaga() {
-  const projectId = yield select(selectCurrentProjectId);
+export function* loadAssetListsSaga(
+  action: ReturnType<typeof Actions.loadAssetLists>,
+) {
   try {
-    yield put(Actions.setAssetsLoader(true));
     const assetLists: PaginatedArray<AssetsList> = yield call(
       reqWrapper,
       apiGetAssetLists,
       {
-        projectId,
+        projectId: action.payload,
       },
     );
+    yield put(Actions.setSelectedAssetListId(assetLists.results[0].id));
     yield put(Actions.setAssetLists(assetLists));
-    // compute all lists from returned response, should be removed in the future
-    const allImages = assetLists.results.reduce(
-      (acc: Array<Asset>, assetList: AssetsList) => {
-        return [...acc, ...assetList.images];
-      },
-      [],
-    );
-    yield put(
-      Actions.setAssets(ALL_ASSETS_LIST_ID, {
-        next: null,
-        previous: null,
-        pageSize: 0,
-        loading: false,
-        results: allImages,
-      }),
-    );
-    yield put(Actions.setAssetsLoader(false));
+    yield put(Actions.setAssetsListsLoader(false));
   } catch (error) {
     yield put(
       enqueueSnackbar(
@@ -153,7 +180,7 @@ export const addNewAssetListSaga = compose(
   const projectId = yield select(selectCurrentProjectId);
   const useHistory = !!action.meta && action.meta.useHistory;
   try {
-    const selectedAssetId = yield select(selectSelectedAssetListId);
+    const currentAssetListId = yield select(selectCurrentAssetListId);
 
     const assetList: AssetsList = yield call(reqWrapper, apiCreateAssetList, {
       projectId,
@@ -162,16 +189,13 @@ export const addNewAssetListSaga = compose(
     if (!useHistory) {
       yield put(
         Actions.addUndoActions([
-          Actions.setSelectedAssetListId(
-            selectedAssetId || ALL_ASSETS_LIST_ID,
-            { ...action.meta },
-          ),
+          Actions.setSelectedAssetListId(currentAssetListId),
           Actions.removeAssetList(assetList.id, { ...action.meta }),
         ]),
       );
     }
     yield put(Actions.addAssetListToState(assetList));
-    yield put(Actions.setSelectedAssetListId(assetList.id, { ...action.meta }));
+    yield put(Actions.setSelectedAssetListId(assetList.id));
   } catch (error) {
     yield put(
       enqueueSnackbar(
@@ -298,7 +322,7 @@ export const uploadAssetSaga = compose(
 
   let assetListId = listId;
   if (!assetListId) {
-    assetListId = yield select(selectSelectedAssetListId);
+    assetListId = yield select(selectCurrentAssetListId);
   }
   if (!assetListId) {
     yield put(
@@ -309,6 +333,7 @@ export const uploadAssetSaga = compose(
     );
     return;
   }
+
   const fileName: string = assetFile.name;
   try {
     yield call(
@@ -334,7 +359,7 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   UserProjectPermission.CHANGE_PROJECT,
 )(function* (action: ReturnType<typeof Actions.uploadElementAsset>) {
   if (!action.meta) {
-    console.error(
+    logger.error(
       `You have to provide metainformation for action ${action.type}`,
     );
     return;
@@ -342,9 +367,11 @@ export const uploadElementAssetSaga = withRequiredPermissions(
   const { listId, elementId, asset } = action.payload;
   const { screenId } = action.meta;
 
-  const element = yield select(selectElementById(elementId));
+  const element = yield select(selectElementById, elementId);
   try {
-    if (asset.imageURL) {
+    const { imageURL, file, useInBackground } = asset;
+    let finalImageUrl = imageURL;
+    if (imageURL) {
       yield call(
         uploadAssetHelper,
         {
@@ -355,39 +382,34 @@ export const uploadElementAssetSaga = withRequiredPermissions(
         },
         action.meta,
       );
-      yield put(
-        Actions.updateElementParameters(
-          elementId,
-          {
-            ...element.parameters,
-            imageURL: asset.imageURL,
-            imageSize: {
-              width: 0,
-              height: 0,
-            },
-            width: 'auto',
-            height: 'auto',
-          },
-          { screenId },
-        ),
-      );
-    } else if (asset.file) {
+    } else if (file) {
       const assetInstance = yield call(
         uploadAssetHelper,
         {
-          assetFile: asset.file,
-          fileName: asset.file.name,
+          assetFile: file,
+          fileName: file.name,
           listId,
         },
         action.meta,
       );
 
+      finalImageUrl = assetInstance.image;
+    }
+    if (useInBackground) {
+      yield put(
+        Actions.updateElementStyles(
+          elementId,
+          { backgroundImage: `url(${finalImageUrl})` },
+          { screenId },
+        ),
+      );
+    } else {
       yield put(
         Actions.updateElementParameters(
           elementId,
           {
             ...element.parameters,
-            imageURL: assetInstance.image,
+            imageURL: finalImageUrl,
             imageSize: {
               width: 0,
               height: 0,
@@ -407,6 +429,61 @@ export const uploadElementAssetSaga = withRequiredPermissions(
           options: { variant: 'error' },
         },
         error,
+      ),
+    );
+  }
+});
+
+export const editIcoScreenSaga = withRequiredPermissions(
+  UserProjectPermission.VIEW_PROJECT,
+  UserProjectPermission.CHANGE_PROJECT,
+)(function* ({ payload }) {
+  try {
+    const { file, project, id } = payload;
+    const assetLists = yield select(selectAllAssetLists);
+    const selectedAssetList = yield select(selectCurrentAssetList);
+    const listId = selectedAssetList?.id || assetLists[0].id;
+    const screenInfo = yield select(selectScreenByIdWrapper(id));
+
+    if (file === null) {
+      yield put(
+        Actions.editScreenNameAndData(project, id, {
+          name: screenInfo.name,
+          data: {
+            meta: {
+              ...screenInfo.screenData.meta,
+              faviconUrl: undefined,
+            },
+          },
+        }),
+      );
+    } else {
+      const assetInstance = yield call(uploadAssetHelper, {
+        assetFile: file,
+        fileName: file.name,
+        listId,
+      });
+
+      yield put(
+        Actions.editScreenNameAndData(project, id, {
+          name: screenInfo.name,
+          data: {
+            meta: {
+              ...screenInfo.screenData.meta,
+              faviconUrl: assetInstance.image,
+            },
+          },
+        }),
+      );
+    }
+  } catch (e) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message || 'Failed to edit favicon screen',
+          options: { variant: 'error' },
+        },
+        e,
       ),
     );
   }

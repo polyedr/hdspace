@@ -1,5 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
+import { EditorState } from 'draft-js';
+import { convertFromHTML } from 'draft-convert';
+
+export const useDebouncedRichInputChange = (
+  richContent: any,
+  id: number,
+  cb: (...args: any) => void,
+  delay: number = 500,
+) => {
+  const content = richContent || '';
+  const [state, setState] = useState<any>(
+    EditorState.createWithContent(convertFromHTML(content)),
+  );
+
+  useEffect(() => {
+    setState(EditorState.createWithContent(convertFromHTML(content)));
+  }, [content]);
+
+  const debounced = useDebouncedCallback(cb, delay);
+
+  const handleChange = (value: EditorState) => {
+    // @ts-ignore
+    setState(value);
+    if (debounced.pending()) {
+      debounced.cancel();
+    }
+    debounced.callback(value, id);
+  };
+
+  return [state, handleChange];
+};
 
 export const useDebouncedInputChange = (
   value: any,

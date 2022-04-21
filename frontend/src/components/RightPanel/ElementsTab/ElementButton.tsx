@@ -1,16 +1,25 @@
-import React, { useEffect, useRef, MutableRefObject } from 'react';
+import React, { useEffect, useRef, MutableRefObject, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
+import ReactTooltip from 'react-tooltip';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { splitWords } from '@Utils/stringHelper';
 import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
 import { createElements } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { selectActiveElement } from '@Redux/project/selectors/element';
+import {
+  selectActiveElement,
+  checkIsLibraryTab,
+} from '@Redux/project/selectors/element';
 import { ElementType } from '@Constants/dragAndDrop';
 import { ElementData } from '@Src/types';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import Scrollbars from 'react-custom-scrollbars';
+import PreviewCanvas from '@Components/Editor/PreviewCanvas/index';
+import ElementButtonIcon from './ElementButtonIcon';
+
+const styles = require('./ElementButton.scss');
 
 type Props = {
   elementData: ElementData;
@@ -68,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
 const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
   (props: Props, outerRef) => {
     const { elementData } = props;
+    const scrollRef = useRef<Scrollbars | null>(null);
     const {
       id,
       type,
@@ -79,13 +89,14 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     const dispatch = useDispatch();
     const screenId = useSelector(selectCurrentScreenId);
     const activeElement = useSelector(selectActiveElement);
+    const isLibraryTab = useSelector(checkIsLibraryTab);
     const buttonClasses = useButtonStyles();
     const classes = useStyles(props);
     const ref = (outerRef === null
       ? React.createRef<HTMLButtonElement>()
       : outerRef) as MutableRefObject<HTMLButtonElement>;
     const imgRef = useRef<SVGSVGElement | null>(null);
-
+    const [over, setOver] = useState(false);
     const [, drag, preview] = useDrag({
       item: {
         type: ElementType.CONSTRUCTOR,
@@ -117,36 +128,59 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
       dispatch(createElements(createdElementsData, { screenId }));
     };
 
+    const handleMouseOver = () => {
+      setOver(true);
+    };
+
     useEffect(() => {
       if (!ref?.current) {
         return;
       }
       drag(ref);
     }, [drag, ref]);
-
     return (
-      <Button
-        disabled={!isAvailableChild(activeElement, type)}
-        classes={buttonClasses}
-        onClick={handleClick}
-        ref={
-          outerRef instanceof Function
-            ? (dom: HTMLButtonElement | null) => {
-                if (dom) {
-                  drag(dom);
+      <>
+        <Button
+          id={id}
+          data-tip
+          data-for={`tooltip-${name}`}
+          disabled={!isAvailableChild(activeElement, type)}
+          classes={buttonClasses}
+          onClick={handleClick}
+          onMouseOver={handleMouseOver}
+          ref={
+            outerRef instanceof Function
+              ? (dom: HTMLButtonElement | null) => {
+                  if (dom) {
+                    drag(dom);
+                  }
+                  outerRef(dom);
                 }
-                outerRef(dom);
-              }
-            : ref
-        }
-      >
-        <div className={classes.iconSection}>
-          {ElementIcon && <ElementIcon ref={imgRef} />}
-        </div>
-        <div className={classes.nameSection}>
-          <span className={classes.name}>{splitWords(name)}</span>
-        </div>
-      </Button>
+              : ref
+          }
+        >
+          <div className={classes.iconSection}>
+            {ElementIcon ? (
+              <ElementIcon ref={imgRef} />
+            ) : (
+              <ElementButtonIcon name={name} />
+            )}
+          </div>
+          <div className={classes.nameSection}>
+            <span className={classes.name}>{splitWords(name)}</span>
+          </div>
+        </Button>
+        {isLibraryTab && over && (
+          <ReactTooltip
+            id={`tooltip-${name}`}
+            place="top"
+            type="dark"
+            className={styles.tooltip}
+          >
+            <PreviewCanvas scrollRef={scrollRef} id={id} />
+          </ReactTooltip>
+        )}
+      </>
     );
   },
 );

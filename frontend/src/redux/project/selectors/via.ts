@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { AppReduxState } from '@Redux/types';
-import { selectAllElements } from './element';
+import { selectAllElements, selectActiveNNModel } from './element';
 
 export const selectVIAModeEnabled = ({ project }: AppReduxState) =>
   project.edit.VIAMode.enabled;
@@ -10,7 +10,8 @@ export const selectVIARegions = ({ project }: AppReduxState) =>
 
 export const selectVIARegionsAsArray = createSelector(
   selectVIARegions,
-  (regions) => Object.values(regions),
+  selectActiveNNModel,
+  (regions, activeNNModel) => Object.values(regions[activeNNModel]),
 );
 
 export const selectActiveVIARegionId = ({ project }: AppReduxState) =>
@@ -18,12 +19,15 @@ export const selectActiveVIARegionId = ({ project }: AppReduxState) =>
 
 export const selectActiveVIARegion = createSelector(
   selectVIARegions,
+  selectActiveNNModel,
   selectActiveVIARegionId,
-  (regions, activeId) => regions[activeId],
+  (regions, activeNNModel, activeId) => regions[activeNNModel][activeId],
 );
 
 export const selectIsRegionActive = (regionId: string) =>
-  createSelector(selectActiveVIARegionId, (activeId) => activeId === regionId);
+  createSelector(selectActiveVIARegionId, (activeId) => {
+    return activeId === regionId;
+  });
 
 export const selectAnnotatedElementId = ({ project }: AppReduxState) =>
   project.edit.VIAMode.annotatedElementId;
@@ -34,8 +38,22 @@ export const selectAnnotatedElement = createSelector(
   (elements, id) => elements[id],
 );
 
-export const selectAnnotatedImageURL = ({ project }: AppReduxState) =>
-  project.edit.VIAMode.annotatedImageURL;
+export const selectAnnotatedImageFile = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.annotatedImageFile;
 
 export const selectCopiedVIARegion = ({ project }: AppReduxState) =>
   project.edit.VIAMode.copiedRegion;
+
+export const selectVIARegionByIdInSaga = (
+  { project }: AppReduxState,
+  regionId: string,
+) => project.edit.VIAMode.regions[regionId];
+
+export const selectVIAResultId = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.resultId;
+
+export const selectBlockType = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.blockType;
+
+export const selectVIAData = ({ project }: AppReduxState) =>
+  project.edit.VIAMode.viaData[project.edit.activeNNModel];

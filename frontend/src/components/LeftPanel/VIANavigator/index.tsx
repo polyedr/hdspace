@@ -7,15 +7,19 @@ import AtlasTree, {
   TreeDestinationPosition,
   TreeSourcePosition,
 } from '@atlaskit/tree';
-import { VIARegion } from '@Src/types';
+import { MenuItem } from '@material-ui/core';
+import { NNModelName, VIARegion } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
+  StyledTextField,
 } from '@Components/styledComponents';
-import { updateVIARegionLayer } from '@Redux/project/actions';
+import { NN_MODEL_LIST } from '@Constants/frameworks/index';
+import { updateVIARegionLayer, setActiveNNModel } from '@Redux/project/actions';
+import { selectActiveNNModel } from '@Redux/project/selectors/element';
 import { sortByLayer } from '@Utils/viaHelpers';
 import VIATreeItem from './VIATreeItem';
 
@@ -58,13 +62,16 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     alignItem: 'stretch',
   },
+  selectWrapper: {
+    padding: '0 1em',
+  },
 });
 
 const VIANavigator: FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const viaRegions = useSelector(selectVIARegionsAsArray);
-
+  const activeNNModel = useSelector(selectActiveNNModel);
   const tree = convertVIAToTree(viaRegions);
 
   const dragEnd = (
@@ -83,22 +90,46 @@ const VIANavigator: FC = () => {
   };
 
   const renderItem = (data: RenderItemParams) => <VIATreeItem {...data} />;
-
   return (
-    <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-        Regions
-      </StyledAccordionSummary>
+    <>
+      <StyledAccordion defaultExpanded>
+        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+          Regions
+        </StyledAccordionSummary>
 
-      <StyledAccordionDetails className={classes.root}>
-        <AtlasTree
-          tree={tree}
-          renderItem={renderItem}
-          isDragEnabled
-          onDragEnd={dragEnd}
-        />
-      </StyledAccordionDetails>
-    </StyledAccordion>
+        <StyledAccordionDetails className={classes.root}>
+          <AtlasTree
+            tree={tree}
+            renderItem={renderItem}
+            isDragEnabled
+            onDragEnd={dragEnd}
+          />
+        </StyledAccordionDetails>
+      </StyledAccordion>
+      <StyledAccordion defaultExpanded>
+        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+          Model
+        </StyledAccordionSummary>
+        <div className={classes.selectWrapper}>
+          <StyledTextField
+            fullWidth
+            margin="dense"
+            label="Model"
+            select
+            value={activeNNModel}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              dispatch(setActiveNNModel(e.target.value as NNModelName));
+            }}
+          >
+            {NN_MODEL_LIST.map((model) => (
+              <MenuItem key={model.name} value={model.name}>
+                {model.label}
+              </MenuItem>
+            ))}
+          </StyledTextField>
+        </div>
+      </StyledAccordion>
+    </>
   );
 };
 

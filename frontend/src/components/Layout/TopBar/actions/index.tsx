@@ -1,24 +1,28 @@
 import React from 'react';
-import UndoIcon from '@material-ui/icons/Undo';
-import RedoIcon from '@material-ui/icons/Redo';
 import SaveIcon from '@material-ui/icons/Save';
 import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CircularProgress, IconButton } from '@material-ui/core';
+import {
+  CircularProgress,
+  IconButton,
+  Box,
+  Typography,
+} from '@material-ui/core';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import {
-  selectFreeCanvasMode,
   selectUpdateScreenImageLoader,
+  selectCurrentProject,
 } from '@Redux/project/selectors/base';
-import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
-import { selectCurrentScreen } from '@Redux/project/selectors/screen';
 import {
-  executeUndoActions,
-  updateScreenImage,
-  executeRedoActions,
-} from '@Redux/project/actions';
+  selectCurrentScreen,
+  selectFreeCanvasMode,
+  selectScreensWithoutMaster,
+} from '@Redux/project/selectors/screen';
+import { updateScreenImage, exportScreenFlag } from '@Redux/project/actions';
 
 import exportHTML from '@Src/export/app';
+import History from '@Components/Layout/History';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import Share from './Share';
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -26,6 +30,7 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
+    justifyContent: 'space-around',
   },
   iconButton: {
     color: palette.common.white,
@@ -41,41 +46,34 @@ const useStyles = makeStyles(({ palette }) => ({
 const Actions: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { id, name, screen_data_json } = useSelector(selectCurrentScreen);
+  const { id } = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
-
-  const canUndo = useSelector(selectCanUndo);
-  const canRedo = useSelector(selectCanRedo);
-  const onHistoryBack = () => dispatch(executeUndoActions());
-
-  const onHistoryForward = () => dispatch(executeRedoActions());
+  const screens = useSelector(selectScreensWithoutMaster);
+  const { name: projectName } = useSelector(selectCurrentProject);
 
   const handleSaveScreen = () => dispatch(updateScreenImage(id));
 
   const handleExportScreen = () => {
-    exportHTML(name, screen_data_json);
+    if (screens.length > 0) {
+      dispatch(exportScreenFlag(true));
+      exportHTML(screens, projectName);
+      dispatch(exportScreenFlag(false));
+    } else {
+      dispatch(
+        enqueueSnackbar({
+          message: `Must be expert at least one screen.`,
+          options: {
+            variant: 'error',
+          },
+        }),
+      );
+    }
   };
 
   return (
     <div className={classes.root}>
-      <IconButton
-        onClick={onHistoryBack}
-        disabled={!canUndo}
-        title="Undo"
-        className={classes.iconButton}
-      >
-        <UndoIcon />
-      </IconButton>
-
-      <IconButton
-        onClick={onHistoryForward}
-        disabled={!canRedo}
-        title="Redo"
-        className={classes.iconButton}
-      >
-        <RedoIcon />
-      </IconButton>
+      <History />
 
       <IconButton
         onClick={handleSaveScreen}
@@ -83,7 +81,10 @@ const Actions: React.FC = () => {
         disabled={imageLoader || canvasMode}
         className={classes.iconButton}
       >
-        {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
+        <Box component="div">
+          {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
+          <Typography variant="body1">Save screen</Typography>
+        </Box>
       </IconButton>
 
       <IconButton
@@ -91,7 +92,10 @@ const Actions: React.FC = () => {
         title="Export screen"
         className={classes.iconButton}
       >
-        <VerticalAlignBottomIcon />
+        <Box component="div">
+          <VerticalAlignBottomIcon />
+          <Typography variant="body1">Export screen</Typography>
+        </Box>
       </IconButton>
 
       <Share className={classes.iconButton} />
