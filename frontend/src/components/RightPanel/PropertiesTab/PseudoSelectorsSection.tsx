@@ -14,7 +14,7 @@ const useStyles = makeStyles({
 });
 
 const PSEUDO_CLASS_VALUES = [
-  'not selected',
+  'Not selected',
   'focus',
   'hover',
   'active',
@@ -40,13 +40,13 @@ const PseudoSelectorsSection = () => {
       <StyledTextField
         label="Pseudo-class"
         margin="dense"
-        value={enabledPseudoClass || 'not selected'}
+        value={enabledPseudoClass || 'Not selected'}
         select
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           const pseudoClass = e.target.value;
           dispatch(
             setEnabledPseudoClass(
-              pseudoClass === 'not selected' ? null : pseudoClass,
+              pseudoClass === 'Not selected' ? null : pseudoClass,
             ),
           );
         }}
