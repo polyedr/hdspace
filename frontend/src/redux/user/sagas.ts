@@ -29,13 +29,13 @@ import {
 } from '@Redux/project/actions';
 import _ from 'lodash';
 
+import { username_view, password_view } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
 import { loginComplete } from './actions';
 import { selectProfileData, selectUserData } from './selectors';
-
 // eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
   try {
@@ -53,8 +53,8 @@ export function* getTokenPairSaga(username: string, password: string) {
 }
 export function* getTokenPairSagaProjectView() {
   try {
-    const username = 'projectviewer';
-    const password = '].?h^QC<FV4SdsmF';
+    const username = username_view;
+    const password = password_view;
     const tokens: ViewTokenPair = yield call(apiGetToken, {
       username,
       password,

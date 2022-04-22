@@ -1263,7 +1263,7 @@ export enum Experience {
 }
 
 export type UserData = {
-  id: number | any;
+  id: number;
   username: string;
   email: string;
   firstName: string;
