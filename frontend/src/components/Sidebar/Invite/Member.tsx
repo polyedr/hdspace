@@ -21,7 +21,11 @@ const Member: React.FC<PropsType> = ({ userData, permissions }) => {
   return (
     <ListItem button key={id} style={{ padding: 0 }}>
       <ListItemAvatar>
-        <Avatar src={avatar} alt={username} sx={{ bgcolor: '#344AF0' }}>
+        <Avatar
+          src={profile.parameters.avatarCrop ? avatar : ''}
+          alt={username}
+          sx={{ bgcolor: '#344AF0' }}
+        >
           {username[0].toUpperCase()}
         </Avatar>
       </ListItemAvatar>
