@@ -175,7 +175,7 @@ const handlers: Handlers<UserState> = {
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
-  [TYPES.PROJECT_VIEW_END]:setProjectViewEnd,
+  [TYPES.PROJECT_VIEW_END]: setProjectViewEnd,
   [TYPES.SET_USER_DATA]: setUserData,
   [TYPES.RESET_USER_DATA]: resetUserData,
   [TYPES.SET_PROFILE_DATA]: setProfileData,

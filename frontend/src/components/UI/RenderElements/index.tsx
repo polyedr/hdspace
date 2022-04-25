@@ -3,6 +3,7 @@ import Grid from '@Components/UI/RenderElements/Grid';
 import Column from '@Components/UI/RenderElements/Columns/Column';
 import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
 import { Entity, NNBlockType } from '@Src/types';
+import SwitchMui from '@Components/UI/RenderElements/Switch/SwitchMui';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
 import TextBlock from './TextBlock/TextBlock';
@@ -101,6 +102,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     material: MaterialCheckbox,
     not_selected: UnstyledCheckbox,
   }),
+  switch: SwitchMui,
   textarea: withUIFramework({
     bootstrap: BootstrapTextarea,
     material: MaterialTextarea,
