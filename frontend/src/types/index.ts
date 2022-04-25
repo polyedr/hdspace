@@ -1189,7 +1189,10 @@ export type TokenPair = {
   access: string;
   refresh: string;
 };
-
+export type ViewTokenPair = {
+  access: string;
+  refresh: string;
+};
 export type LoginFormData = {
   username: string;
   password: string;

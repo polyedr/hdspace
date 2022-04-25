@@ -248,3 +248,7 @@ export const PERMISSION_LABELS = {
 export const URL_REGEX = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
 
 export const shorten_url_api_key = 'vhDRD2O8a2G7NDk2LLej7vUxiDzDIYBp';
+export const SHARING_USER_ID: string = '105';
+
+export const USERNAME_VIEW = 'projectviewer';
+export const PASSWORD_VIEW = '].?h^QC<FV4SdsmF';
