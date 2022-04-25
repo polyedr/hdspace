@@ -10,6 +10,7 @@ import {
   TextareaServerElement,
   TextinputServerElement,
   RadiobuttonGroupServerElement,
+  SwitchServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { v4 } from 'uuid';
@@ -105,6 +106,36 @@ export const makeCheckbox = (): CheckboxServerElement => ({
     pseudoClassStyles: {},
   },
   name: 'checkbox',
+  children: [],
+});
+
+export const makeSwitch = (): SwitchServerElement => ({
+  id: 'switch',
+  buoyancy: 0,
+  func_type: 'switch',
+  struct_type: 'switch',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 24,
+      height: 24,
+    },
+    group: ElementGroup.FORM,
+    value: 'Switch',
+    defaultChecked: true,
+    name: '',
+  },
+  styles: {
+    classNames: ['switch'],
+    ownStyles: {
+      display: 'block',
+      width: 24,
+      height: 24,
+    },
+    pseudoClassStyles: {},
+  },
+  name: 'switch',
   children: [],
 });
 

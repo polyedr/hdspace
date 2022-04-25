@@ -194,6 +194,7 @@ export const LABELED_INPUT_TYPES = [
   'select',
   'radiobutton',
   'checkbox',
+  'switch',
 ];
 
 export const CONTAINER_GROUPS = [ElementGroup.CONTAINERS, ElementGroup.CUSTOM];
