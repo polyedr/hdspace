@@ -4,7 +4,6 @@ import { useDebouncedCallback } from 'use-debounce';
 import { changePrototypeMode } from '@Redux/user/actions';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import {
-  convertFreeCanvas,
   setBordersEnabled,
   toggleContainersBorders,
 } from '@Redux/project/actions';
@@ -22,7 +21,6 @@ import {
   Switch,
   FormControlLabel,
   Typography,
-  Button,
   Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -77,10 +75,6 @@ const TopBar: React.FC = () => {
   const showBorders = useSelector(selectShowingBorders);
   const bordersEnabled = useSelector(selectBordersEnabled);
 
-  const createFlex = () => {
-    dispatch(convertFreeCanvas());
-  };
-
   const enableBordersDebounce = useDebouncedCallback(() => {
     dispatch(setBordersEnabled(true));
   }, PANEL_TRANSITION_DURATION + 120);
@@ -115,16 +109,7 @@ const TopBar: React.FC = () => {
         />
         <>
           {freeCanvasMode ? (
-            <div className={classes.magic}>
-              <Button
-                onClick={createFlex}
-                color="secondary"
-                variant="outlined"
-                className={classes.magicButton}
-              >
-                Create Flex
-              </Button>
-            </div>
+            <div className={classes.magic} />
           ) : (
             <FormControlLabel
               control={
