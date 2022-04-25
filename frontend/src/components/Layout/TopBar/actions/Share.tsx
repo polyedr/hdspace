@@ -7,21 +7,24 @@ import {
   Container,
   Box,
   Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  DialogContentText,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import { selectTokenPair, selectUserData } from '@Redux/user/selectors';
+import {
+  selectTokenPair,
+  selectUserData,
+  selectProjectViewTokenPair,
+} from '@Redux/user/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { selectActiveElementId } from '@Redux/project/selectors/element';
 import { makeStyles } from '@material-ui/core/styles';
+
+import { setProjectViewStart } from '@Redux/user/actions';
 import axios from 'axios';
-import { shorten_url_api_key } from '@Constants/defaultParams';
+import { shorten_url_api_key, SHARING_USER_ID } from '@Constants/defaultParams';
+import * as Actions from '@Redux/permissions/actions';
+import { UserProjectPermission } from '@Src/types';
 
 const useStyles = makeStyles({
   popup: {
@@ -43,30 +46,33 @@ const Share: FC<Props> = ({ className = '' }) => {
   const projectId = useSelector(selectCurrentProjectId);
   const screenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
+  const viewToken = useSelector(selectProjectViewTokenPair);
 
+  localStorage.setItem('viewToken', JSON.stringify(viewToken));
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
-  const [isUserWarnigOpen, setIsUserWarnigOpen] = useState(false);
-  const [isElement, setIsElement] = useState(false);
   const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
     setAnchor(ev.currentTarget);
+    dispatch(setProjectViewStart());
+    dispatch(Actions.getUsersList());
   };
 
   const handleClose = () => {
     setAnchor(null);
   };
-
   const open = Boolean(anchor);
 
   const handleCopyLink = useCallback(
     (includeElement = false) => {
       const { origin } = window.location;
+      const token = localStorage.getItem('viewToken');
+      let jsonToken;
+      if (typeof token === 'string') {
+        jsonToken = JSON.parse(token);
+      }
 
-      const url = `${origin}/share/?user=${
-        user.id
-      }&project=${projectId}&screen=${screenId}${
+      const url = `${origin}/share/?user=${SHARING_USER_ID}&project=${projectId}&screen=${screenId}${
         activeElementId && includeElement ? `&element=${activeElementId}` : ''
-      }&token=${access}&refresh=${refresh}`;
-
+      }&token=${jsonToken.access}&refresh=${jsonToken.refresh}`;
       const headers = {
         apikey: shorten_url_api_key,
       };
@@ -77,8 +83,17 @@ const Share: FC<Props> = ({ className = '' }) => {
           navigator.clipboard.writeText(response.data.short_url),
         );
 
+      const updatedPermissions: UserProjectPermission[] = [];
+
+      updatedPermissions.push(UserProjectPermission.VIEW_PROJECT);
+      dispatch(
+        Actions.updateUserPermissionsForProject(
+          projectId,
+          SHARING_USER_ID,
+          updatedPermissions,
+        ),
+      );
       handleClose();
-      setIsUserWarnigOpen(false);
       if (includeElement) {
         dispatch(
           enqueueSnackbar({
@@ -101,10 +116,7 @@ const Share: FC<Props> = ({ className = '' }) => {
     },
     [access, activeElementId, dispatch, projectId, refresh, screenId, user.id],
   );
-  const openModel = (element) => {
-    setIsElement(element);
-    setIsUserWarnigOpen(true);
-  };
+
   return (
     <>
       <IconButton title="Share" className={className} onClick={handleClick}>
@@ -132,45 +144,20 @@ const Share: FC<Props> = ({ className = '' }) => {
             style={{ marginBottom: '1em' }}
             variant="contained"
             color="primary"
-            onClick={() => openModel(false)}
+            onClick={() => handleCopyLink()}
           >
             Copy screen link
           </Button>
           <Button
             variant="contained"
             color="primary"
-            onClick={() => openModel(true)}
+            onClick={() => handleCopyLink(true)}
             disabled={!activeElementId || parseInt(activeElementId) <= 0}
           >
             Copy element link
           </Button>
         </Container>
       </Popover>
-      <Dialog
-        open={isUserWarnigOpen}
-        onClose={() => setIsUserWarnigOpen(false)}
-      >
-        <DialogTitle>Warning</DialogTitle>
-
-        <DialogContent>
-          <DialogContentText>
-            Users with a link will have all the rights and accesses. Make sure
-            it will be sent to trusted users only
-          </DialogContentText>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => setIsUserWarnigOpen(false)}>Disagree</Button>
-
-          <Button
-            onClick={() =>
-              isElement ? handleCopyLink(isElement) : handleCopyLink()
-            }
-          >
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

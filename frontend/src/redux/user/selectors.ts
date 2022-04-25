@@ -19,6 +19,9 @@ export const selectAuthError = ({ user }: AppReduxState) => user.error;
 
 export const selectTokenPair = ({ user }: AppReduxState) => user.tokenPair;
 
+export const selectProjectViewTokenPair = ({ user }: AppReduxState) =>
+  user?.viewTokenPair;
+
 export const selectIsUserLoading = ({ user }: AppReduxState) => user.isLoading;
 
 export const selectConfirmMessage = ({ user }: AppReduxState) =>

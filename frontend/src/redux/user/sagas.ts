@@ -16,7 +16,12 @@ import {
   apiGetUser,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
-import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
+import {
+  ServerProfileData,
+  ServerUserData,
+  TokenPair,
+  ViewTokenPair,
+} from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   sidebarLogout,
@@ -24,13 +29,13 @@ import {
 } from '@Redux/project/actions';
 import _ from 'lodash';
 
+import { USERNAME_VIEW, PASSWORD_VIEW } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
 import { loginComplete } from './actions';
 import { selectProfileData, selectUserData } from './selectors';
-
 // eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
   try {
@@ -46,7 +51,28 @@ export function* getTokenPairSaga(username: string, password: string) {
     }
   }
 }
+export function* getTokenPairSagaProjectView() {
+  try {
+    const username = USERNAME_VIEW;
+    const password = PASSWORD_VIEW;
+    const tokens: ViewTokenPair = yield call(apiGetToken, {
+      username,
+      password,
+    });
 
+    yield put(Actions.setProjectViewEnd(tokens));
+  } catch (e: any) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+}
 export function* loginSaga({
   payload: { username, password },
 }: ReturnType<typeof Actions.login>) {
@@ -339,4 +365,5 @@ export default function* userSaga() {
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
   yield takeEvery(TYPES.LOAD_USER_DATA, loadUserDataSaga);
+  yield takeEvery(TYPES.PROJECT_VIEW_START, getTokenPairSagaProjectView);
 }
