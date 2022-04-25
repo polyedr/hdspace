@@ -36,6 +36,23 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
       history.push(`/project/${screenLink}`);
     };
 
+    const isLinkInProtoOrExportedFlag =
+      isLink && (isProtoMode || exportScreenFlag);
+    const isScreenLinkInProtoMode =
+      screenLink && screenName && isProtoMode && !exportScreenFlag;
+    const isScreenLinkInProtoModeOrExportedFlag =
+      screenLink && screenName && (isProtoMode || exportScreenFlag);
+
+    const getHref = (screenName) => {
+      return isProtoMode
+        ? exportScreenFlag
+          ? `../${screenName}/index.html`
+          : '#'
+        : exportScreenFlag
+        ? `../${screenName}/index.html`
+        : '';
+    };
+
     return (
       <div
         ref={ref}
@@ -58,7 +75,7 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
           }}
         />
         <div>
-          {isLink && (isProtoMode || exportScreenFlag) ? (
+          {isLinkInProtoOrExportedFlag ? (
             <a
               aria-label={`Link-${element.id}`}
               target={exportScreenFlag ? '_self' : '_blank'}
@@ -67,31 +84,23 @@ const SwitchMui = React.forwardRef<HTMLDivElement, RendererProps>(
               rel="noreferrer"
               dangerouslySetInnerHTML={{ __html: element.parameters.value }}
             />
-          ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
+          ) : isScreenLinkInProtoMode ? (
             <label
               ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
               id={id}
               role="presentation"
               onClick={() =>
-                isProtoMode && !exportScreenFlag ? changeScreen() : ''
+                isProtoMode && !exportScreenFlag ? changeScreen() : undefined
               }
               style={{ cursor: 'pointer' }}
               data-ls-id={id}
               dangerouslySetInnerHTML={{ __html: element.parameters.value }}
             />
-          ) : screenLink && screenName && (isProtoMode || exportScreenFlag) ? (
+          ) : isScreenLinkInProtoModeOrExportedFlag ? (
             <a
               aria-label={`Link-${element.id}`}
               target="_self"
-              href={
-                isProtoMode
-                  ? exportScreenFlag
-                    ? `../${screenName}/index.html`
-                    : '#'
-                  : exportScreenFlag
-                  ? `../${screenName}/index.html`
-                  : ''
-              }
+              href={getHref(screenName)}
               style={{ textDecoration: 'none', cursor: 'pointer' }}
               rel="noreferrer"
               dangerouslySetInnerHTML={{ __html: element.parameters.value }}
