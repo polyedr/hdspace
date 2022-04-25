@@ -47,7 +47,6 @@ const Share: FC<Props> = ({ className = '' }) => {
   const screenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
   const viewToken = useSelector(selectProjectViewTokenPair);
-  // const userId: string = '105';
 
   localStorage.setItem('viewToken', JSON.stringify(viewToken));
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
