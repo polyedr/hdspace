@@ -22,7 +22,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { setProjectViewStart } from '@Redux/user/actions';
 import axios from 'axios';
-import { shorten_url_api_key } from '@Constants/defaultParams';
+import { shorten_url_api_key, SHARING_USER_ID } from '@Constants/defaultParams';
 import * as Actions from '@Redux/permissions/actions';
 import { UserProjectPermission } from '@Src/types';
 
@@ -47,7 +47,7 @@ const Share: FC<Props> = ({ className = '' }) => {
   const screenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
   const viewToken = useSelector(selectProjectViewTokenPair);
-  const userId: string = '105';
+  // const userId: string = '105';
 
   localStorage.setItem('viewToken', JSON.stringify(viewToken));
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
@@ -71,7 +71,7 @@ const Share: FC<Props> = ({ className = '' }) => {
         jsonToken = JSON.parse(token);
       }
 
-      const url = `${origin}/share/?user=${userId}&project=${projectId}&screen=${screenId}${
+      const url = `${origin}/share/?user=${SHARING_USER_ID}&project=${projectId}&screen=${screenId}${
         activeElementId && includeElement ? `&element=${activeElementId}` : ''
       }&token=${jsonToken.access}&refresh=${jsonToken.refresh}`;
       const headers = {
@@ -90,7 +90,7 @@ const Share: FC<Props> = ({ className = '' }) => {
       dispatch(
         Actions.updateUserPermissionsForProject(
           projectId,
-          userId,
+          SHARING_USER_ID,
           updatedPermissions,
         ),
       );

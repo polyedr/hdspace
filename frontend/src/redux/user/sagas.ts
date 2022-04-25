@@ -29,7 +29,7 @@ import {
 } from '@Redux/project/actions';
 import _ from 'lodash';
 
-import { username_view, password_view } from '@Constants/defaultParams';
+import { USERNAME_VIEW, PASSWORD_VIEW } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
@@ -53,8 +53,8 @@ export function* getTokenPairSaga(username: string, password: string) {
 }
 export function* getTokenPairSagaProjectView() {
   try {
-    const username = username_view;
-    const password = password_view;
+    const username = USERNAME_VIEW;
+    const password = PASSWORD_VIEW;
     const tokens: ViewTokenPair = yield call(apiGetToken, {
       username,
       password,
