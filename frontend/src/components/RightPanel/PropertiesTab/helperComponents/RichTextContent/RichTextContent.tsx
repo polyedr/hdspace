@@ -32,11 +32,15 @@ const RichTextContent = ({ textState, handleChange }) => {
     }
   };
 
-  const [editorState, handleEditorState] = useState(textState);
+  const [editorState, handleEditorState] = useState(textState.editor);
 
   useEffect(() => {
     handleChange(editorState);
   }, [editorState]);
+
+  useEffect(() => {
+    handleEditorState(textState.editor);
+  }, [textState.id]);
 
   const [selectedBlock, setSelectedBlock] = useState<string>('');
 
