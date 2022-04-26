@@ -205,6 +205,8 @@ export type CheckboxServerElement = ServerElement<
   [],
   CheckboxParameters
 >;
+export type SwitchServerElement = ServerElement<'switch', [], SwitchParameters>;
+
 export type RadiobuttonServerElement = ServerElement<
   'radiobutton',
   [],
@@ -616,6 +618,12 @@ export type CheckboxParameters = BaseElementParams & {
   value: string;
   name: string;
   showRipple: boolean;
+  defaultChecked: boolean;
+};
+
+export type SwitchParameters = BaseElementParams & {
+  value: string;
+  name: string;
   defaultChecked: boolean;
 };
 
@@ -1181,7 +1189,10 @@ export type TokenPair = {
   access: string;
   refresh: string;
 };
-
+export type ViewTokenPair = {
+  access: string;
+  refresh: string;
+};
 export type LoginFormData = {
   username: string;
   password: string;
@@ -1424,6 +1435,7 @@ export type ElementsToAdd = {
   carousel: () => CarouselServerElement;
   navbar: () => NavbarServerElement;
   hyperlink: () => LabelServerElement;
+  switch: () => SwitchServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;

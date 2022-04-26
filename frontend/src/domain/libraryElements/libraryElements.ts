@@ -11,7 +11,7 @@ import ImageIcon from '@material-ui/icons/Image';
 import MovieIcon from '@material-ui/icons/Movie';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
-// import HelpIcon from '@material-ui/icons/Help';
+import ToggleOffIcon from '@material-ui/icons/ToggleOff';
 import CalendarViewDayIcon from '@material-ui/icons/CalendarViewDay';
 import ArrowDropDownCircleIcon from '@material-ui/icons/ArrowDropDownCircle';
 import MessageIcon from '@material-ui/icons/Message';
@@ -69,6 +69,7 @@ import {
   makeOption,
   makeLabel,
   makeRadiobutton,
+  makeSwitch,
 } from './formElements/formElements';
 import { makeButtonGenerator } from './generatorElements/generatorElements';
 import {
@@ -129,6 +130,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   textinput: makeTextinput,
   input: makeTextinput,
   checkbox: makeCheckbox,
+  switch: makeSwitch,
   radiobutton: makeRadiobutton,
   radiobuttonGroup: makeRadiobuttonGroup,
   select: makeSelect,
@@ -183,6 +185,7 @@ export const ICONS: Partial<
   textinput: MessageIcon,
   textarea: TextFieldsIcon,
   checkbox: CheckBoxIcon,
+  switch: ToggleOffIcon,
   radiobuttonGroup: RadioButtonCheckedIcon,
   label: LabelIcon,
   select: TocIcon,

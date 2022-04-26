@@ -13,6 +13,7 @@ export const ENTITIES: {
   textinput: 'textinput',
   textarea: 'textarea',
   checkbox: 'checkbox',
+  switch: 'switch',
   radiobuttonGroup: 'radiobuttonGroup',
   label: 'label',
   heading: 'heading',
@@ -101,6 +102,8 @@ export const textareaStyleControls = [
 ] as const;
 
 export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
+
+export const switchStyleControls = ['indents', 'size', 'background'] as const;
 
 export const radiobuttonStyleControls = [
   'indents',
@@ -436,6 +439,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
     'textContent',
   ],
+  switch: ['value', 'name', ...switchStyleControls, 'layouts'],
   radiobutton: ['value', ...radiobuttonStyleControls, 'layouts'],
   radiobuttonGroup: [
     'radiobuttons',
@@ -557,6 +561,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   input: {},
   textarea: {},
   checkbox: {},
+  switch: {},
   radiobuttonGroup: {
     radiobutton: {
       min: 2,
