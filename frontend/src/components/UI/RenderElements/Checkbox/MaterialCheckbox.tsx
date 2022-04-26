@@ -47,6 +47,7 @@ const MaterialCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
           classes.row,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        style={{ width: 'fit-content' }}
         {...eventHandlers}
       >
         <div className={cn('mdc-checkbox mdc-checkbox--touch', classes.column)}>
