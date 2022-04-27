@@ -58,6 +58,7 @@ import {
   makeCarouselItem,
   makeNavbar,
   makeNavbarItem,
+  makeImagesList,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -121,6 +122,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   column: makeColumn,
   subscribeForm: makeSubscribeForm,
   image: makeImage,
+  imagesList: makeImagesList,
   smartHeader: makeSmartHeader,
   smartFooter: makeSmartFooter,
   smartForm: makeSmartForm,

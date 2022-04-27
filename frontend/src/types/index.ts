@@ -184,6 +184,7 @@ export type FeatureSectionServerElement = ServerElement<
   'featureSection',
   ServerElement<Entity>[]
 >;
+
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type SmartContainerServerElement<T extends Entity> = ServerElement<
   T,
@@ -206,6 +207,12 @@ export type CheckboxServerElement = ServerElement<
   CheckboxParameters
 >;
 export type SwitchServerElement = ServerElement<'switch', [], SwitchParameters>;
+
+export type ImagesListServerElement = ServerElement<
+  'imagesList',
+  [],
+  ImagesListParameters
+>;
 
 export type RadiobuttonServerElement = ServerElement<
   'radiobutton',
@@ -427,7 +434,7 @@ export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 
 // Generator Elements
-export type buttonGeneratorElement = ServerElement<
+export type ButtonGeneratorElement = ServerElement<
   'buttonGenerator',
   ServerElement<Entity>[]
 >;
@@ -586,6 +593,11 @@ export type ImageParameters = BaseElementParams & {
   alt: string;
   title: string;
   keepAspectRatio: boolean;
+};
+
+export type ImagesListParameters = BaseElementParams & {
+  // images: Asset[];
+  name: string;
 };
 
 export type LinkType = 'internal' | 'external';
@@ -1406,7 +1418,7 @@ export type ElementsToAdd = {
   smartForm: () => SmartFormServerElement;
   smartWebpage: () => SmartWebpageServerElement;
   button: () => ButtonServerElement;
-  buttonGenerator: () => buttonGeneratorElement;
+  buttonGenerator: () => ButtonGeneratorElement;
   input: () => TextinputServerElement;
   textinput: () => TextinputServerElement;
   checkbox: () => CheckboxServerElement;
@@ -1436,6 +1448,7 @@ export type ElementsToAdd = {
   navbar: () => NavbarServerElement;
   hyperlink: () => LabelServerElement;
   switch: () => SwitchServerElement;
+  imagesList: () => ImagesListServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;

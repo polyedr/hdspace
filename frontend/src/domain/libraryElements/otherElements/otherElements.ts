@@ -30,6 +30,7 @@ import {
   CarouselItemServerElement,
   NavbarServerElement,
   NavbarItemServerElement,
+  ImagesListServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { makeParagraph } from '../typographyElements/typographyElements';
@@ -284,6 +285,32 @@ export const makeImage = ({
     pseudoClassStyles: {},
   },
   name: 'image',
+  children: [],
+});
+
+export const makeImagesList = ({
+  UID = 'master',
+} = {}): ImagesListServerElement => ({
+  id: `images-list-${UID}`,
+  buoyancy: 0,
+  func_type: 'images-list',
+  struct_type: 'imagesList',
+  parameters: {
+    name: 'images list',
+    layouts: DEFAULT_LAYOUT_LIST,
+    group: ElementGroup.CONTAINERS,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 300,
+      height: 300,
+    },
+  },
+  styles: {
+    classNames: ['imagesList'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'images list',
   children: [],
 });
 

@@ -21,6 +21,7 @@ export const ENTITIES: {
   textBlock: 'textBlock',
   list: 'list',
   image: 'image',
+  imagesList: 'imagesList',
   select: 'select',
   map: 'map',
   calendar: 'calendar',
@@ -178,11 +179,19 @@ export const paginationStyleControls = [
 export const listItemStyleControls = [
   'indents',
   'size',
+  'background',
+  'border',
+] as const;
+
+export const listImagesItemStyleControls = [
+  'indents',
+  'size',
   'typography',
   'background',
   'backgroundImage',
   'border',
 ] as const;
+
 export const breadcrumbItemStyleControls = [
   'indents',
   'size',
@@ -462,6 +471,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'resizeOptions',
     'layouts',
   ],
+  imagesList: [...imageStyleControls, 'layouts'],
   select: ['selectValue', 'selectOptions', ...selectStyleControls, 'layouts'],
   option: [...optionStyleControls, 'layouts'],
   map: ['mapProps', ...mapStyleControls, 'layouts'],
@@ -588,6 +598,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   listItem: {},
   image: {},
+  imagesList: {},
   select: {
     option: {
       min: 1,
