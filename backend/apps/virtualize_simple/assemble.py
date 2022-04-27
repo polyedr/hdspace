@@ -422,7 +422,7 @@ def calculate_dbclusters(region_dataset, root_firstcluster):
         )
         # Assign an unordered HTML list to the dbcluster
         dbcluster.element_assigned = "list"
-        # Check the directiom with some function
+        # Check the direction with some function
         # dbcluster.direction = ?
         # Check later if cluster contains one element only maybe
         # clusters-based solution start
@@ -2046,10 +2046,8 @@ def elements_rootblock(
                 element = ET.SubElement(node.parent.div, "ul")
                 # displaying various kinds of elements end
 
-                if styles_on:
-                    # Hide the bullets
-                    styles["list-style"] = "none"
-                    # styles["margin-left"] = "0"
+                # Hide the bullets
+                styles["list-style-type"] = "none"
 
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
@@ -2077,6 +2075,33 @@ def elements_rootblock(
                 if text_elem_ocr:
                     parameters["textContent"] = text_elem_ocr
                     element.text = text_elem_ocr
+
+                # Paddings calculations block
+                # Vertical direction
+                if (node.parent.direction == 0):
+                    padding_top = padding_bottom = 5
+                    padding_left = padding_right = 10
+                    styles["padding-top"] = str(padding_top) + "px"
+                    styles["padding-bottom"] = str(padding_bottom) + "px"
+                    styles["padding-left"] = str(padding_left) + "px"
+                    styles["padding-right"] = str(padding_right) + "px"
+                # Horizontal direction
+                elif (node.parent.direction == 1):
+                    padding_top = padding_bottom = 5
+                    padding_left = padding_right = 5
+                    styles["padding-top"] = str(padding_top) + "px"
+                    styles["padding-bottom"] = str(padding_bottom) + "px"
+                    styles["padding-left"] = str(padding_left) + "px"
+                    styles["padding-right"] = str(padding_right) + "px"
+                # Other cases
+                else:
+                    padding_top = padding_bottom = 5
+                    padding_left = padding_right = 5
+                    styles["padding-top"] = str(padding_top) + "px"
+                    styles["padding-bottom"] = str(padding_bottom) + "px"
+                    styles["padding-left"] = str(padding_left) + "px"
+                    styles["padding-right"] = str(padding_right) + "px"
+
 
                 str_styles = "; ".join(
                     "{}:{}".format(key, val) for key, val in styles.items()
