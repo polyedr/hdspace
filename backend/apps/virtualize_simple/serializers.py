@@ -1,5 +1,3 @@
-import itertools
-import json
 import os, sys
 
 import copy
@@ -8,7 +6,6 @@ import shutil
 from urllib.parse import urlparse, parse_qs
 
 import lorem
-import numpy as np
 import math
 import uuid
 from statistics import median, median_low
@@ -26,9 +23,9 @@ from project.settings import (
 )
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ProjectScreen
-from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_blobs
-from sklearn import cluster as clustermethod
+# from sklearn.preprocessing import StandardScaler
+# from sklearn.datasets import make_blobs
+# from sklearn import cluster as clustermethod
 import xml.etree.ElementTree as ET
 import cv2
 import pytesseract
@@ -92,20 +89,22 @@ VIA_ANNOTATION_ASSEMBLING_FILE = "elements_websites_assembling.txt"
 
 # Create elements for the root block function serializer
 def elements_rootblock_create(
-    root_block, outer_div_node, serializing="virtualize_simple", children=[]
+    root_block, outer_div_node, o, serializing="virtualize_simple", children=[]
 ):
     # Function elements creation, loop through the root_block
     if (serializing == "assemble"):
-        for pre, fill, node in RenderTree(root_block):
-            if node == root_block:
-                # Create a new Scenario Element for the elements chain
-                node.scenarioelement = ScenarioElement.objects.create(
-                    parent=outer_div_node, **node.scenarioelement_kwargs
-                )
-            else:
-                node.scenarioelement = ScenarioElement.objects.create(
-                    parent=node.parent.scenarioelement, **node.scenarioelement_kwargs
-                )
+        # Display the region assembled. Hide this for the production.
+        if (o.netloc == "adevi.info"):
+            for pre, fill, node in RenderTree(root_block):
+                if node == root_block:
+                    # Create a new Scenario Element for the elements chain
+                    node.scenarioelement = ScenarioElement.objects.create(
+                        parent=outer_div_node, **node.scenarioelement_kwargs
+                    )
+                else:
+                    node.scenarioelement = ScenarioElement.objects.create(
+                        parent=node.parent.scenarioelement, **node.scenarioelement_kwargs
+                    )
 
         # First, display all the non-text regions
         for pre, fill, node in RenderTree(root_block):
@@ -1281,7 +1280,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         )
         # Serializer only
         elements_rootblock_create(
-            root_block, outer_div_node, serializing="virtualize_simple"
+            root_block, outer_div_node, o, serializing="virtualize_simple"
         )
 
         # Detect elements for the root block double cnn
@@ -1299,7 +1298,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         )
         # Serializer only cnn
         elements_rootblock_create(
-            root_block_cnn, outer_div_node, serializing="virtualize_simple"
+            root_block_cnn, outer_div_node, o, serializing="virtualize_simple"
         )
 
         """
@@ -1307,7 +1306,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         elements_rootblock(root_block, styles_on, region_dataset, img_width, img_height, outer_div,
                            image_original, fname, o, serializing="virtualize_simple")
         # Serializer only
-        elements_rootblock_create(root_block, outer_div_node, serializing="virtualize_simple")
+        elements_rootblock_create(root_block, outer_div_node, o, serializing="virtualize_simple")
         """
 
         # Generating HTML for printing
@@ -1444,7 +1443,7 @@ class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
 
         # HTML elements and components creation
         # Serializer only
-        elements_rootblock_create(root_block, outer_div_node, serializing="assemble")
+        elements_rootblock_create(root_block, outer_div_node, o, serializing="assemble")
 
         return serializer_node
 
@@ -1654,6 +1653,6 @@ class ScenarioElementFreecanvasSerializer(serializers.ModelSerializer):
 
             # Serializer only
             elements_rootblock_create(
-                root_block, outer_div_node, serializing="freecanvas", children=children
+                root_block, outer_div_node, o, serializing="freecanvas", children=children
             )
         return serializer_node
