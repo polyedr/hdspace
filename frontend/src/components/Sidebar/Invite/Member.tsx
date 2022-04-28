@@ -22,7 +22,7 @@ const Member: React.FC<PropsType> = ({ userData, permissions }) => {
     <ListItem button key={id} style={{ padding: 0 }}>
       <ListItemAvatar>
         <Avatar
-          src={profile.parameters.avatarCrop ? avatar : ''}
+          src={typeof profile.parameters.avatarCrop === 'string' ? avatar : ''}
           alt={username}
           sx={{ bgcolor: '#344AF0' }}
         >
