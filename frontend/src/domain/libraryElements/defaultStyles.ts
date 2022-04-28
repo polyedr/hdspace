@@ -403,6 +403,8 @@ export const defaultImagesListItemStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
+    width: '500px',
+    height: '450px',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -418,6 +420,7 @@ export const defaultImagesListItemStyles: {
   },
   other: {
     outline: 0,
+    alignItems: 'center',
   },
 };
 

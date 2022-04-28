@@ -56,24 +56,29 @@ const mockImage = [
   },
 ];
 
-const useStyles = makeComponentStyles('imagesList', {});
+const useStyles = makeComponentStyles('imagesList', {
+  imagesList: {
+    width: '500px',
+    height: '450px',
+  },
+});
 
-const ImagesList = React.forwardRef<HTMLOListElement, RendererProps>(
-  (props) => {
+const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
+  (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
     return (
       <div
+        ref={ref}
         className={cn(
           className,
-          classes.imagesList,
           groupClass,
           classes.ownStyles,
           !isDisabled && classes.ownPseudoStyles,
         )}
       >
-        <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+        <ImageList className={cn(classes.imagesList)} cols={3} rowHeight={164}>
           {mockImage.map((item) => (
             <ImageListItem key={item.img}>
               <img

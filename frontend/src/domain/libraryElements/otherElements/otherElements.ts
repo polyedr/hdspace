@@ -298,11 +298,9 @@ export const makeImagesList = ({
   parameters: {
     name: 'images list',
     layouts: DEFAULT_LAYOUT_LIST,
-    group: ElementGroup.CONTAINERS,
+    group: ElementGroup.IMAGE,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 300,
-      height: 300,
     },
   },
   styles: {
