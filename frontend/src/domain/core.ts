@@ -471,7 +471,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'resizeOptions',
     'layouts',
   ],
-  imagesList: [...imageStyleControls, 'layouts'],
+  imagesList: ['imagesList', ...imageStyleControls, 'layouts'],
   select: ['selectValue', 'selectOptions', ...selectStyleControls, 'layouts'],
   option: [...optionStyleControls, 'layouts'],
   map: ['mapProps', ...mapStyleControls, 'layouts'],
@@ -598,7 +598,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   listItem: {},
   image: {},
-  imagesList: {},
+  imagesList: {
+    image: {
+      min: 1,
+      max: Infinity,
+    },
+  },
   select: {
     option: {
       min: 1,

@@ -210,7 +210,7 @@ export type SwitchServerElement = ServerElement<'switch', [], SwitchParameters>;
 
 export type ImagesListServerElement = ServerElement<
   'imagesList',
-  [],
+  ImageServerElement[],
   ImagesListParameters
 >;
 
@@ -384,6 +384,7 @@ export type LibraryElement<
     link?: string;
     screenName?: string;
     screenLink?: string;
+    columns?: number;
   } & Params;
   shared?: boolean;
 };
@@ -596,8 +597,9 @@ export type ImageParameters = BaseElementParams & {
 };
 
 export type ImagesListParameters = BaseElementParams & {
-  // images: Asset[];
+  images: ImageElement[];
   name: string;
+  columns: number;
 };
 
 export type LinkType = 'internal' | 'external';
@@ -730,6 +732,9 @@ export type PaginationItemParameters = BaseElementParams & {
 };
 export type CarouselItemParameters = BaseElementParams & {
   link: string;
+  alt: string;
+};
+export type ImagesItemParameters = BaseElementParams & {
   alt: string;
 };
 export type NavbarItemParameters = BaseElementParams & {
@@ -1401,6 +1406,7 @@ export type ChildrenElements = {
   paginationItem: () => PaginationItemServerElement;
   carouselItem: () => CarouselItemServerElement;
   navbarItem: () => NavbarItemServerElement;
+  image: () => ImageServerElement;
 };
 
 export type ElementsToAdd = {
@@ -1562,6 +1568,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'carousel',
   'navbar',
   'radiobuttons',
+  'imagesList',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
