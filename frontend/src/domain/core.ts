@@ -453,7 +453,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
   textBlock: ['textContent', ...textBlockStyleControls, 'layouts'],
   list: ['listItems', 'isOrdered', ...listStyleControls, 'layouts'],
-  listItem: [...listItemStyleControls, 'layouts'],
+  listItem: [...listItemStyleControls, 'text', 'layouts'],
   image: [
     'image',
     ...imageStyleControls,
