@@ -51,11 +51,6 @@ const TaskModal: React.FC<Props> = ({
   );
   const [title, setTitle] = useState(task?.name || '');
 
-  const clear = () => {
-    setTitle('');
-    updateSelectedMember('');
-  };
-
   const handleCreate = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -72,10 +67,6 @@ const TaskModal: React.FC<Props> = ({
         },
       }),
     );
-    if (selectedMember) {
-      setTaskUpdateMembers((prev) => [...prev, selectedMember]);
-    }
-    clear();
     hide();
   };
 
@@ -96,10 +87,6 @@ const TaskModal: React.FC<Props> = ({
         }),
       );
     }
-    if (!taskUpdateMembers.find((t) => t.id === selectedMember.id)) {
-      setTaskUpdateMembers((prev) => [...prev, selectedMember]);
-    }
-    clear();
     hide();
   };
 
