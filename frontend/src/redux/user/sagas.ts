@@ -14,6 +14,7 @@ import {
   apiRestorePassword,
   registerUser,
   apiGetUser,
+  apiGetUsers,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import {
@@ -21,6 +22,9 @@ import {
   ServerUserData,
   TokenPair,
   ViewTokenPair,
+  PaginatedResponse,
+  Result,
+  UserData,
 } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
@@ -36,6 +40,7 @@ import { reqWrapper } from '../project/sagas/shared';
 import { openProjects, openSignScreen } from '../history';
 import { loginComplete } from './actions';
 import { selectProfileData, selectUserData } from './selectors';
+
 // eslint-disable-next-line consistent-return
 export function* getTokenPairSaga(username: string, password: string) {
   try {
@@ -257,12 +262,33 @@ function* sendResetPasswordMailSaga(
       payload: { email },
     } = action;
     yield put(Actions.toggleUserLoading(true));
-
-    yield call(apiRestorePassword, email);
-
-    yield put(
-      Actions.setConfirmMessage('Please, check your mail and set new password'),
+    const { result }: Result<PaginatedResponse<UserData>> = yield call(
+      reqWrapper,
+      apiGetUsers,
+      {
+        search: email || '',
+      },
     );
+    if (result) {
+      if (result?.results.length > 0) {
+        yield call(apiRestorePassword, email);
+        yield put(
+          Actions.setConfirmMessage(
+            'Please, check your mail and set new password',
+          ),
+        );
+      } else {
+        yield put(
+          enqueueSnackbar({
+            message: "This email doesn't exist in the system",
+            options: {
+              variant: 'error',
+            },
+          }),
+        );
+      }
+    }
+
     openSignScreen('signin');
   } catch (e) {
     // @ts-ignore
