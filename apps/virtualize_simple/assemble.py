@@ -1575,6 +1575,7 @@ def elements_rootblock(
 
     image_original = copy.deepcopy(image_opencv_input)
     # Function elements creation, loop through the root_block
+    # A simple tree rendering should be changed to more complex solutions to calculate margins
     for pre, fill, node in RenderTree(root_block):
         styles = {}
         parameters = {}
@@ -1592,38 +1593,76 @@ def elements_rootblock(
         node_height = int(node.y2 - node.y1)
         # Define the node dimensions end
 
-        # Define the direction of the container start
-        # Horizontal
-        if node.direction == 1:
-            styles["display"] = "flex"
-            if not styles_on:
-                styles["background"] = "aliceblue"
-            if region_dataset in ["headers", "footers"]:
-                styles["justify-content"] = "space-between"
-        # Vertical
-        elif node.direction == 0:
-            styles["display"] = "block"
-            if not styles_on:
-                styles["background"] = "lavenderblush"
-        # Inseparable
-        elif node.direction == 2:
-            styles["display"] = "flex"
-            if (node.types == "ccluster") or (
-                region_dataset in ["headers", "webpages"]
-            ):
+        # Choose the layout styling
+        # From the {"float", "flexbox", "grid"}
+        layout_styling = "float"
 
+        if layout_styling == "float" and (node != root_block):
+            # Define the direction of the container start
+            # Horizontal
+            if node.parent.direction == 1:
+                styles["display"] = "block"
+                styles["float"] = "left"
                 if not styles_on:
-                    styles["background"] = "lightblue"
-            else:
-
+                    styles["background"] = "aliceblue"
+                if region_dataset in ["headers", "footers"]:
+                    pass
+            # Vertical
+            elif node.parent.direction == 0:
+                styles["display"] = "block"
                 if not styles_on:
-                    styles["background"] = "lightgreen"
+                    styles["background"] = "lavenderblush"
+            # Inseparable
+            elif node.parent.direction == 2:
+                styles["display"] = "block"
                 # Sometimes node_width and height are 0, should check this.
                 if node_width:
-                    styles["width"] = str(node_width) + "px"
+                    styles["min-width"] = str(node_width) + "px"
                 if node_height:
-                    styles["height"] = str(node_height) + "px"
-        # Define the direction of the container end
+                    styles["min-height"] = str(node_height) + "px"
+            # Other cases (the direction was not defined)
+            else:
+                styles["display"] = "block"
+                # Sometimes node_width and height are 0, should check this.
+                if node_width:
+                    styles["min-width"] = str(node_width) + "px"
+                if node_height:
+                    styles["min-height"] = str(node_height) + "px"
+            # Define the direction of the container end
+
+        elif layout_styling == "flexbox":
+            # Define the direction of the container start
+            # Horizontal
+            if node.direction == 1:
+                styles["display"] = "flex"
+                if not styles_on:
+                    styles["background"] = "aliceblue"
+                if region_dataset in ["headers", "footers"]:
+                    styles["justify-content"] = "space-between"
+            # Vertical
+            elif node.direction == 0:
+                styles["display"] = "block"
+                if not styles_on:
+                    styles["background"] = "lavenderblush"
+            # Inseparable
+            elif node.direction == 2:
+                styles["display"] = "flex"
+                if (node.types == "ccluster") or (
+                    region_dataset in ["headers", "webpages"]
+                ):
+
+                    if not styles_on:
+                        styles["background"] = "lightblue"
+                else:
+
+                    if not styles_on:
+                        styles["background"] = "lightgreen"
+                    # Sometimes node_width and height are 0, should check this.
+                    if node_width:
+                        styles["width"] = str(node_width) + "px"
+                    if node_height:
+                        styles["height"] = str(node_height) + "px"
+            # Define the direction of the container end
 
         if node == root_block:
             margin_lr = int((img_width - node_width) / 2)
