@@ -88,15 +88,16 @@ const Task: React.FC<Props> = ({ column, task, index }) => {
                 <DeleteIcon fontSize="small" className={classes.icon} />
               </StyledIconButton>
             </div>
-
-            <TaskModal
-              show={showTaskModal}
-              hide={() => setShowTaskModal(false)}
-              task={task}
-              column={column}
-              selectedTaskId={task.id}
-              action={ModalAction.Edit}
-            />
+            {showTaskModal && (
+              <TaskModal
+                show={showTaskModal}
+                hide={() => setShowTaskModal(false)}
+                task={task}
+                column={column}
+                selectedTaskId={task.id}
+                action={ModalAction.Edit}
+              />
+            )}
             <ConfirmModal
               show={showConfirmModal}
               elementText="task"

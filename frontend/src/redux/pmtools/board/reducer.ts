@@ -50,6 +50,7 @@ const boardReducer = (
           ...state.tasks.map((task) => {
             if (task.id === action.payload.id) {
               task.name = action.payload.name;
+              task.idMembers = action.payload.idMembers;
             }
             return task;
           }),
