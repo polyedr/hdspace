@@ -147,7 +147,6 @@ export const createScreenSaga = compose(
           viewport: 'width=device-width, initial-scale=1.0, minimum-scale=1.0', // default viewport value
           freeCanvas,
         }),
-        styles,
         styles_root: {},
       },
     });
@@ -176,6 +175,9 @@ export const createScreenSaga = compose(
         payload.rootName || 'Root',
       );
 
+      if (styles !== undefined) {
+        rootElement.styles = styles;
+      }
       const {
         result: elements,
         error: elementsError,
