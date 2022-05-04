@@ -4,6 +4,7 @@ import Column from '@Components/UI/RenderElements/Columns/Column';
 import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
 import { Entity, NNBlockType } from '@Src/types';
 import SwitchMui from '@Components/UI/RenderElements/Switch/SwitchMui';
+import ImagesList from '@Components/UI/RenderElements/ImagesList/ImagesList';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
 import TextBlock from './TextBlock/TextBlock';
@@ -145,6 +146,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     not_selected: OtherCarouselItem,
   }),
   label: Label,
+  imagesList: ImagesList,
   image: Image,
   smartHeader: withSmartContainer(NNBlockType.HEADER),
   smartFooter: withSmartContainer(NNBlockType.FOOTER),
