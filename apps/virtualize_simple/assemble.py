@@ -1557,6 +1557,25 @@ def ocr_recognition(elem_image, ocr_engine="tesseract"):
     return font_size_value, text_elem_ocr, alltext_width, leftmin, maxright
 
 
+# Create the elements for the elements_rootblock function
+def process_children(node):
+    if node.children:
+        levelchildren = node.children
+        # calculate margins for the group of the blocks
+
+        # recursion
+        for child in levelchildren:
+            print(child.buoyancy, node.direction, child, node)
+            process_children(child)
+
+    else:
+        print(node.buoyancy, node.direction, node, "the leave")
+        # pass
+        # calculate margins for the single block
+
+    return True
+
+
 # Detect elements for the root block function
 def elements_rootblock(
     root_block,
@@ -1575,6 +1594,8 @@ def elements_rootblock(
 
     image_original = copy.deepcopy(image_opencv_input)
     # Function elements creation, loop through the root_block
+    process_children(root_block)
+
     # A simple tree rendering should be changed to more complex solutions to calculate margins
     for pre, fill, node in RenderTree(root_block):
         styles = {}
