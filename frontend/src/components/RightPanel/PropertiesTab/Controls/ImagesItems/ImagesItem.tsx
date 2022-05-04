@@ -12,6 +12,7 @@ import {
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
+import { Entity, LibraryElement, Params } from '@Src/types';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
   title: {
@@ -43,8 +44,8 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
 
 type Props = {
   id: string;
-  parameters: any;
-  updateParams: any;
+  parameters: Params<LibraryElement<Entity>>;
+  updateParams: (params: Params<LibraryElement<Entity>>, id) => void;
   isLast: boolean;
   canEdit: boolean;
 };
@@ -96,7 +97,7 @@ const ImagesItem: React.FC<Props> = ({
         <StyledTextField
           variant="outlined"
           defaultValue={title}
-          onChange={(ev) => debouncedTitle.callback(ev.target.value)}
+          onChange={(event) => debouncedTitle.callback(event.target.value)}
           label="Title edit"
           margin="dense"
           fullWidth
@@ -106,7 +107,7 @@ const ImagesItem: React.FC<Props> = ({
         <StyledTextField
           variant="outlined"
           defaultValue={alt}
-          onChange={(ev) => debouncedAlt.callback(ev.target.value)}
+          onChange={(event) => debouncedAlt.callback(event.target.value)}
           label="alt edit"
           margin="dense"
           fullWidth

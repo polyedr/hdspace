@@ -85,8 +85,8 @@ const ImagesItems: React.FC<PropertiesChangeProps<BreadcrumbItemElement>> = ({
         <StyledTextField
           value={element.parameters.columns}
           label="Columns"
-          onChange={(ev) =>
-            debouncedColumnsCountChange.callback(Number(ev.target.value))
+          onChange={(event) =>
+            debouncedColumnsCountChange.callback(Number(event.target.value))
           }
           InputProps={{ inputProps: { min: 1, max: 6 } }}
           type="number"
