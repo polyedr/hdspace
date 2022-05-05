@@ -273,9 +273,12 @@ function* sendResetPasswordMailSaga(
       if (result?.results.length > 0) {
         yield call(apiRestorePassword, email);
         yield put(
-          Actions.setConfirmMessage(
-            'Please, check your mail and set new password',
-          ),
+          enqueueSnackbar({
+            message: 'Please, check your mail and set new password',
+            options: {
+              variant: 'info',
+            },
+          }),
         );
       } else {
         yield put(
