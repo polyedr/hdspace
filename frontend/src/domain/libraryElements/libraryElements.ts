@@ -8,10 +8,11 @@ import CodeIcon from '@material-ui/icons/Code';
 import NotesIcon from '@material-ui/icons/Notes';
 import LineWeightIcon from '@material-ui/icons/LineWeight';
 import ImageIcon from '@material-ui/icons/Image';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import MovieIcon from '@material-ui/icons/Movie';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
-// import HelpIcon from '@material-ui/icons/Help';
+import ToggleOffIcon from '@material-ui/icons/ToggleOff';
 import CalendarViewDayIcon from '@material-ui/icons/CalendarViewDay';
 import ArrowDropDownCircleIcon from '@material-ui/icons/ArrowDropDownCircle';
 import MessageIcon from '@material-ui/icons/Message';
@@ -58,6 +59,7 @@ import {
   makeCarouselItem,
   makeNavbar,
   makeNavbarItem,
+  makeImagesList,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -69,6 +71,7 @@ import {
   makeOption,
   makeLabel,
   makeRadiobutton,
+  makeSwitch,
 } from './formElements/formElements';
 import { makeButtonGenerator } from './generatorElements/generatorElements';
 import {
@@ -120,6 +123,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   column: makeColumn,
   subscribeForm: makeSubscribeForm,
   image: makeImage,
+  imagesList: makeImagesList,
   smartHeader: makeSmartHeader,
   smartFooter: makeSmartFooter,
   smartForm: makeSmartForm,
@@ -129,6 +133,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   textinput: makeTextinput,
   input: makeTextinput,
   checkbox: makeCheckbox,
+  switch: makeSwitch,
   radiobutton: makeRadiobutton,
   radiobuttonGroup: makeRadiobuttonGroup,
   select: makeSelect,
@@ -183,6 +188,7 @@ export const ICONS: Partial<
   textinput: MessageIcon,
   textarea: TextFieldsIcon,
   checkbox: CheckBoxIcon,
+  switch: ToggleOffIcon,
   radiobuttonGroup: RadioButtonCheckedIcon,
   label: LabelIcon,
   select: TocIcon,
@@ -199,4 +205,5 @@ export const ICONS: Partial<
   pagination: LooksOneIcon,
   carousel: PhotoLibraryIcon,
   navbar: PaymentIcon,
+  imagesList: ViewModuleIcon,
 };

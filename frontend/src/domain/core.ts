@@ -13,6 +13,7 @@ export const ENTITIES: {
   textinput: 'textinput',
   textarea: 'textarea',
   checkbox: 'checkbox',
+  switch: 'switch',
   radiobuttonGroup: 'radiobuttonGroup',
   label: 'label',
   heading: 'heading',
@@ -20,6 +21,7 @@ export const ENTITIES: {
   textBlock: 'textBlock',
   list: 'list',
   image: 'image',
+  imagesList: 'imagesList',
   select: 'select',
   map: 'map',
   calendar: 'calendar',
@@ -102,6 +104,8 @@ export const textareaStyleControls = [
 
 export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
 
+export const switchStyleControls = ['indents', 'size', 'background'] as const;
+
 export const radiobuttonStyleControls = [
   'indents',
   'size',
@@ -175,11 +179,19 @@ export const paginationStyleControls = [
 export const listItemStyleControls = [
   'indents',
   'size',
+  'background',
+  'border',
+] as const;
+
+export const listImagesItemStyleControls = [
+  'indents',
+  'size',
   'typography',
   'background',
   'backgroundImage',
   'border',
 ] as const;
+
 export const breadcrumbItemStyleControls = [
   'indents',
   'size',
@@ -436,6 +448,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
     'textContent',
   ],
+  switch: ['value', 'name', ...switchStyleControls, 'layouts'],
   radiobutton: ['value', ...radiobuttonStyleControls, 'layouts'],
   radiobuttonGroup: [
     'radiobuttons',
@@ -449,7 +462,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
   textBlock: ['textContent', ...textBlockStyleControls, 'layouts'],
   list: ['listItems', 'isOrdered', ...listStyleControls, 'layouts'],
-  listItem: [...listItemStyleControls, 'layouts'],
+  listItem: [...listItemStyleControls, 'text', 'layouts'],
   image: [
     'image',
     ...imageStyleControls,
@@ -458,6 +471,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'resizeOptions',
     'layouts',
   ],
+  imagesList: ['imagesList', ...imageStyleControls, 'layouts'],
   select: ['selectValue', 'selectOptions', ...selectStyleControls, 'layouts'],
   option: [...optionStyleControls, 'layouts'],
   map: ['mapProps', ...mapStyleControls, 'layouts'],
@@ -557,6 +571,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   input: {},
   textarea: {},
   checkbox: {},
+  switch: {},
   radiobuttonGroup: {
     radiobutton: {
       min: 2,
@@ -583,6 +598,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   listItem: {},
   image: {},
+  imagesList: {
+    image: {
+      min: 1,
+      max: Infinity,
+    },
+  },
   select: {
     option: {
       min: 1,

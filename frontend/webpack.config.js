@@ -2,6 +2,8 @@ const webpack = require('webpack');
 const path = require('path');
 const safePostCssParser = require('postcss-safe-parser');
 
+// eslint-disable-next-line no-undef
+__webpack_base_uri__ = 'http://localhost:8080';
 // plugins
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');

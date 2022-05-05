@@ -37,11 +37,6 @@ describe('Searchbar', () => {
     expect(input).toBeInTheDocument();
   });
 
-  it('should have a submit button', () => {
-    const button = ui.getByTitle('Search');
-    expect(button).toBeInTheDocument();
-  });
-
   it('should change a parameter value on input change', () => {
     const testValue = 'test';
 
@@ -73,14 +68,5 @@ describe('Searchbar', () => {
       TYPES.SET_PROJECT_SEARCH_PARAMETER,
     );
     expect(actions[actions.length - 1].payload[0]).toBe(testValue);
-  });
-
-  it('should start project search on submit', () => {
-    const button = ui.getByTitle('Search');
-    fireEvent.click(button);
-
-    const actions = store.getActions();
-
-    expect(actions[actions.length - 1].type).toBe(TYPES.SEARCH_PROJECTS);
   });
 });

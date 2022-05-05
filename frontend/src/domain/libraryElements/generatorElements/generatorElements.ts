@@ -3,7 +3,7 @@ import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { defaultFreeCanvasParams } from '@Domain/core';
 import {
   ElementGroup,
-  buttonGeneratorElement,
+  ButtonGeneratorElement,
   ButtonServerElement,
 } from '@Src/types';
 import FONTS from '@Constants/fonts';
@@ -165,7 +165,7 @@ export const makeButtons = (keys = {}) => {
   }
   return buttons;
 };
-export const makeButtonGenerator = (): buttonGeneratorElement => ({
+export const makeButtonGenerator = (): ButtonGeneratorElement => ({
   id: 'button-generator',
   buoyancy: 1,
   func_type: 'buttonGenerator',

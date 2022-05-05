@@ -184,6 +184,7 @@ export type FeatureSectionServerElement = ServerElement<
   'featureSection',
   ServerElement<Entity>[]
 >;
+
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type SmartContainerServerElement<T extends Entity> = ServerElement<
   T,
@@ -205,6 +206,14 @@ export type CheckboxServerElement = ServerElement<
   [],
   CheckboxParameters
 >;
+export type SwitchServerElement = ServerElement<'switch', [], SwitchParameters>;
+
+export type ImagesListServerElement = ServerElement<
+  'imagesList',
+  ImageServerElement[],
+  ImagesListParameters
+>;
+
 export type RadiobuttonServerElement = ServerElement<
   'radiobutton',
   [],
@@ -375,6 +384,7 @@ export type LibraryElement<
     link?: string;
     screenName?: string;
     screenLink?: string;
+    columns?: number;
   } & Params;
   shared?: boolean;
 };
@@ -425,7 +435,7 @@ export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 
 // Generator Elements
-export type buttonGeneratorElement = ServerElement<
+export type ButtonGeneratorElement = ServerElement<
   'buttonGenerator',
   ServerElement<Entity>[]
 >;
@@ -586,6 +596,12 @@ export type ImageParameters = BaseElementParams & {
   keepAspectRatio: boolean;
 };
 
+export type ImagesListParameters = BaseElementParams & {
+  images: ImageElement[];
+  name: string;
+  columns: number;
+};
+
 export type LinkType = 'internal' | 'external';
 
 export type LinkParams = BaseElementParams & {
@@ -616,6 +632,12 @@ export type CheckboxParameters = BaseElementParams & {
   value: string;
   name: string;
   showRipple: boolean;
+  defaultChecked: boolean;
+};
+
+export type SwitchParameters = BaseElementParams & {
+  value: string;
+  name: string;
   defaultChecked: boolean;
 };
 
@@ -710,6 +732,9 @@ export type PaginationItemParameters = BaseElementParams & {
 };
 export type CarouselItemParameters = BaseElementParams & {
   link: string;
+  alt: string;
+};
+export type ImagesItemParameters = BaseElementParams & {
   alt: string;
 };
 export type NavbarItemParameters = BaseElementParams & {
@@ -1181,7 +1206,10 @@ export type TokenPair = {
   access: string;
   refresh: string;
 };
-
+export type ViewTokenPair = {
+  access: string;
+  refresh: string;
+};
 export type LoginFormData = {
   username: string;
   password: string;
@@ -1378,6 +1406,7 @@ export type ChildrenElements = {
   paginationItem: () => PaginationItemServerElement;
   carouselItem: () => CarouselItemServerElement;
   navbarItem: () => NavbarItemServerElement;
+  image: () => ImageServerElement;
 };
 
 export type ElementsToAdd = {
@@ -1395,7 +1424,7 @@ export type ElementsToAdd = {
   smartForm: () => SmartFormServerElement;
   smartWebpage: () => SmartWebpageServerElement;
   button: () => ButtonServerElement;
-  buttonGenerator: () => buttonGeneratorElement;
+  buttonGenerator: () => ButtonGeneratorElement;
   input: () => TextinputServerElement;
   textinput: () => TextinputServerElement;
   checkbox: () => CheckboxServerElement;
@@ -1424,6 +1453,8 @@ export type ElementsToAdd = {
   carousel: () => CarouselServerElement;
   navbar: () => NavbarServerElement;
   hyperlink: () => LabelServerElement;
+  switch: () => SwitchServerElement;
+  imagesList: () => ImagesListServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -1537,6 +1568,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'carousel',
   'navbar',
   'radiobuttons',
+  'imagesList',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

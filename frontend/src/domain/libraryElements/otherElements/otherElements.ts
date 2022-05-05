@@ -30,6 +30,7 @@ import {
   CarouselItemServerElement,
   NavbarServerElement,
   NavbarItemServerElement,
+  ImagesListServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { makeParagraph } from '../typographyElements/typographyElements';
@@ -266,8 +267,8 @@ export const makeImage = ({
   func_type: 'image',
   struct_type: 'image',
   parameters: {
-    alt: '',
-    title: '',
+    alt: 'Default alt',
+    title: 'Default title',
     layouts: DEFAULT_LAYOUT_LIST,
     group: ElementGroup.IMAGE,
     imageURL: IMAGES.imageIcon,
@@ -285,6 +286,36 @@ export const makeImage = ({
   },
   name: 'image',
   children: [],
+});
+
+export const makeImagesList = ({
+  UID = 'master',
+} = {}): ImagesListServerElement => ({
+  id: `images-list-${UID}`,
+  buoyancy: 0,
+  func_type: 'images-list',
+  struct_type: 'imagesList',
+  parameters: {
+    images: [],
+    name: 'images list',
+    columns: 3,
+    layouts: DEFAULT_LAYOUT_LIST,
+    group: ElementGroup.IMAGE,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+    },
+  },
+  styles: {
+    classNames: ['imagesList'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'images list',
+  children: [
+    makeImage({ ownStyles: { width: '150px', height: '150px' } }),
+    makeImage({ ownStyles: { width: '150px', height: '150px' } }),
+    makeImage({ ownStyles: { width: '150px', height: '150px' } }),
+  ],
 });
 
 export const makeSmartHeader = (

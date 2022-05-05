@@ -45,6 +45,7 @@ import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobut
 import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
 import BackgroundImage from '@Components/RightPanel/PropertiesTab/Controls/BackgroundImage';
 import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
+import ImagesItems from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItems';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -96,6 +97,10 @@ const CONTROLS: Record<Control, ControlInfo> = {
   textContent: { Control: TextContent, styles: [] },
   text: { Control: Text, styles: [] },
   image: { Control: Image, styles: [] },
+  imagesList: {
+    Control: ImagesItems,
+    styles: [],
+  },
   alt: { Control: Alt },
   title: { Control: Title },
   smartHeader: { Control: withSmartContainerControl(NNBlockType.HEADER) },
