@@ -856,9 +856,15 @@ export type ProjectClass = {
   rules: React.CSSProperties;
 };
 
+export type LayoutData = {
+  value: Layout;
+  rotated: boolean;
+};
+
 export type ProjectData = {
   classes: ProjectClass[];
   defaultStyles: DefaultStyles;
+  layout: LayoutData;
   uiFramework: UIFramework;
 };
 

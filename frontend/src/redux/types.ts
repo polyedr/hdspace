@@ -313,6 +313,10 @@ export type UpdateNameAndTagsProject = IAction<
   typeof TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   { projectID: number; name: string; tags: string }
 >;
+export type UpdateLayoutProjects = IAction<
+  typeof TYPES.UPDATE_LAYOUT_PROJECT,
+  { projectID: number; project_data_json: string }
+>;
 export type SetProjectListLoader = IAction<
   typeof TYPES.SET_PROJECT_LIST_LOADER,
   { active: boolean }
@@ -1216,6 +1220,7 @@ export type Action =
   | SetCurrentProjectId
   | ChangeScreensOrder
   | UpdateNameAndTagsProject
+  | UpdateLayoutProjects
   | SetProjectListLoader
   | SetProjectUsersLoader
   | SetUsersLoader

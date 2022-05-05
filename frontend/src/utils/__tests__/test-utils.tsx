@@ -26,6 +26,7 @@ import {
   ProjectsSearchParameter,
   DateRange,
   NNBlockType,
+  Layout,
 } from '@Src/types';
 
 export const mockProject: Project = {
@@ -52,6 +53,10 @@ export const mockProject: Project = {
       indents: {},
       screenBackgroundColor: {},
       typography: {},
+    },
+    layout: {
+      value: Layout.Desktop,
+      rotated: false,
     },
   },
   user: DEFAULT_USER,
@@ -260,6 +265,10 @@ export const createMockProject = (): Project => ({
       screenBackgroundColor: {},
       typography: {},
     },
+    layout: {
+      value: Layout.Desktop,
+      rotated: false,
+    },
   },
   user: DEFAULT_USER,
 });
@@ -328,6 +337,10 @@ export const createProjectWithScreensMock = (
       indents: {},
       screenBackgroundColor: {},
       typography: {},
+    },
+    layout: {
+      value: Layout.Desktop,
+      rotated: false,
     },
   },
   projectLoader: false,

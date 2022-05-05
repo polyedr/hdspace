@@ -230,6 +230,10 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
     }
 
     if (result) {
+      yield put(Actions.changeLayout(result?.projectData?.layout?.value));
+      yield put(
+        Actions.rotateScreenFormat(result?.projectData?.layout?.rotated),
+      );
       yield put(PermissionsActions.getMyPermissionsForProject(result.id));
       yield put(
         Actions.setProject({
@@ -467,6 +471,46 @@ export const updateNameAndTagsProjectSaga = function* ({
           id: projectID,
           name,
           tags: typeof tags !== 'object' ? getTagsArr(tags) : tags,
+          projectscreen: project.projectscreen,
+        },
+      },
+    );
+
+    if (result) {
+      yield put(Actions.setProject(result));
+    }
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
+          },
+          e,
+        ),
+      );
+    }
+  }
+};
+
+export const UpdateLayoutProjectSaga = function* ({
+  payload: { projectID, project_data_json },
+}: ReturnType<typeof Actions.UpdateLayoutProject>) {
+  try {
+    const project: Project = yield select(selectProjectById, projectID);
+    const { result, error }: Result<Project> = yield call(
+      reqWrapper,
+      apiUpdateProject,
+      {
+        data: {
+          id: projectID,
+          project_data_json,
           projectscreen: project.projectscreen,
         },
       },

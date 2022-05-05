@@ -202,6 +202,7 @@ import {
   UpdateDefaultStyles,
   GenerateImagePalette,
   SetImagePalette,
+  UpdateLayoutProjects,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -307,6 +308,14 @@ export const updateNameAndTagsProject = (
 ): UpdateNameAndTagsProject => ({
   type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   payload: { projectID, name, tags },
+});
+
+export const UpdateLayoutProject = (
+  projectID: number,
+  project_data_json: string,
+): UpdateLayoutProjects => ({
+  type: TYPES.UPDATE_LAYOUT_PROJECT,
+  payload: { projectID, project_data_json },
 });
 
 export const setProjectListLoader = (

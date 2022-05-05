@@ -4,14 +4,21 @@ import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
 import {
   selectLayout,
   selectScreenRotated,
+  selectCurrentProjectDataJson,
+  selectCurrentProject,
 } from '@Redux/project/selectors/base';
-import { changeLayout, rotateScreenFormat } from '@Redux/project/actions';
+import {
+  changeLayout,
+  rotateScreenFormat,
+  UpdateLayoutProject,
+} from '@Redux/project/actions';
 import {
   additionalLayoutPhone,
   additionalLayoutDesktop,
   additionalLayoutTablet,
   Layout,
 } from '@Src/types';
+
 import ELEMENT_IDS from '@Constants/elementIds';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { FormControl, NativeSelect } from '@material-ui/core';
@@ -41,17 +48,37 @@ const useStyles = makeStyles((theme) =>
 const Layouts: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-
+  const { id } = useSelector(selectCurrentProject);
   const layout = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
-
+  const projectDataJson = useSelector(selectCurrentProjectDataJson);
+  const layoutObject = {
+    value: layout,
+    rotated,
+  };
   const handleFormatChange = (ev) => {
     if (!ev.target.value) return;
-
+    layoutObject.value = ev.target.value;
+    dispatch(
+      UpdateLayoutProject(
+        id,
+        JSON.stringify({ ...projectDataJson, layout: layoutObject }),
+      ),
+    );
     dispatch(changeLayout(ev.target.value));
   };
 
-  const handleRotatedToggle = () => dispatch(rotateScreenFormat(!rotated));
+  const handleRotatedToggle = () => {
+    dispatch(rotateScreenFormat(!rotated));
+    layoutObject.rotated = !rotated;
+
+    dispatch(
+      UpdateLayoutProject(
+        id,
+        JSON.stringify({ ...projectDataJson, layout: layoutObject }),
+      ),
+    );
+  };
 
   const renderOption = (additionalLayout) => {
     return additionalLayout.map((key) => (
