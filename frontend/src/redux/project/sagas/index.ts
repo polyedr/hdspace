@@ -297,23 +297,19 @@ const duplicateScreenSaga = withRequiredPermissions(
     const sourceRoot: LibraryElement<'root'> = yield select(
       selectScreenRootElement(screenID),
     );
-
     const screenData: ScreenData = yield select(selectScreen(screenID));
     const sourceCurrentScreen: ReturnType<
       typeof selectCurrentScreen
     > = yield select(selectCurrentScreen);
-
     const duplicatedItems = sourceRoot.children.map((child) => ({
       id: child.id,
       screenID: sourceCurrentScreen.id,
     }));
-
     const currentProject: ReturnType<
       typeof selectCurrentProject
     > = yield select(selectCurrentProject);
     const projectID = currentProject.id;
     const screensNumber = currentProject.projectscreen.length;
-
     const screen = yield call(
       createScreenSaga,
       Actions.createScreen({
@@ -321,9 +317,9 @@ const duplicateScreenSaga = withRequiredPermissions(
         name,
         buoyancy: screensNumber,
         freeCanvas: screenData.freeCanvas,
+        styles: sourceRoot.styles,
       }),
     );
-
     if (!screen) {
       throw new Error('Failed to create screen');
     }
@@ -334,7 +330,7 @@ const duplicateScreenSaga = withRequiredPermissions(
       selectScreenRootElement(screen.id),
     );
     const targetRootID = targetRoot.id;
-
+    targetRoot.styles = sourceRoot.styles;
     yield put(Actions.setActiveElement(targetRootID));
 
     if (duplicatedItems.length) {

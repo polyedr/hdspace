@@ -42,6 +42,7 @@ import {
   paginationStyleControls,
   radiobuttonGroupStyleControls,
   switchStyleControls,
+  listImagesItemStyleControls,
 } from '../core';
 
 const columnsMinHeight = '100px';
@@ -181,6 +182,7 @@ type TextBlockControls = typeof textBlockStyleControls[number];
 type ListControls = typeof listStyleControls[number];
 type ListItemControls = typeof listItemStyleControls[number];
 type PaginationControls = typeof paginationStyleControls[number];
+type ImagesListControls = typeof listImagesItemStyleControls[number];
 
 export const defaultHeadingStyles: {
   [K in HeadingControls]: React.CSSProperties;
@@ -382,6 +384,28 @@ export const defaultListItemStyles: {
   size: {
     ...DEFAULT_SIZE,
   },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    outline: 0,
+  },
+};
+
+export const defaultImagesListItemStyles: {
+  [K in ImagesListControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '500px',
+    height: '450px',
+  },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
   },
@@ -396,6 +420,7 @@ export const defaultListItemStyles: {
   },
   other: {
     outline: 0,
+    alignItems: 'center',
   },
 };
 
@@ -1257,6 +1282,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   list: defaultListStyles,
   listItem: defaultListItemStyles,
   image: defaultImageStyles,
+  imagesList: defaultImagesListItemStyles,
   smartHeader: defaultSmartContainerStyles,
   smartFooter: defaultSmartContainerStyles,
   smartForm: defaultSmartContainerStyles,

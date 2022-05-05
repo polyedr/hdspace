@@ -8,6 +8,7 @@ import CodeIcon from '@material-ui/icons/Code';
 import NotesIcon from '@material-ui/icons/Notes';
 import LineWeightIcon from '@material-ui/icons/LineWeight';
 import ImageIcon from '@material-ui/icons/Image';
+import ViewModuleIcon from '@material-ui/icons/ViewModule';
 import MovieIcon from '@material-ui/icons/Movie';
 import TitleOutlinedIcon from '@material-ui/icons/TitleOutlined';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
@@ -58,6 +59,7 @@ import {
   makeCarouselItem,
   makeNavbar,
   makeNavbarItem,
+  makeImagesList,
 } from './otherElements/otherElements';
 import {
   makeButton,
@@ -121,6 +123,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   column: makeColumn,
   subscribeForm: makeSubscribeForm,
   image: makeImage,
+  imagesList: makeImagesList,
   smartHeader: makeSmartHeader,
   smartFooter: makeSmartFooter,
   smartForm: makeSmartForm,
@@ -202,4 +205,5 @@ export const ICONS: Partial<
   pagination: LooksOneIcon,
   carousel: PhotoLibraryIcon,
   navbar: PaymentIcon,
+  imagesList: ViewModuleIcon,
 };

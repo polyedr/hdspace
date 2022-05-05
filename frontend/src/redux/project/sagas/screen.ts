@@ -127,14 +127,12 @@ export const createScreenSaga = compose(
     yield put(Actions.setScreenCreateLoader(true));
 
     yield put(Actions.clearAfterPrevScreen());
-    const { projectID, name, buoyancy, freeCanvas } = payload;
-
+    const { projectID, name, buoyancy, freeCanvas, styles } = payload;
     const screens: Screen[] = yield select(selectSortedScreens);
     const numberedName = generateUniqueName(
       name,
       screens.map((screen) => screen.name),
     );
-
     const {
       result: createdScreen,
       error: createScreenError,
@@ -152,7 +150,6 @@ export const createScreenSaga = compose(
         styles_root: {},
       },
     });
-
     if (createdScreen) {
       if (!useHistory) {
         yield put(
@@ -178,6 +175,9 @@ export const createScreenSaga = compose(
         payload.rootName || 'Root',
       );
 
+      if (styles !== undefined) {
+        rootElement.styles = styles;
+      }
       const {
         result: elements,
         error: elementsError,
