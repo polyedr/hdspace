@@ -232,6 +232,7 @@ export type CreateScreenData = {
   buoyancy: number;
   rootName?: string;
   freeCanvas?: boolean;
+  styles?: any;
 };
 
 export type UploadAssetData = {

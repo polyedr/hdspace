@@ -406,11 +406,11 @@ export const clearEditableScreen = (screen: Screen) => ({
 });
 
 export const createScreen = (
-  { projectID, name, buoyancy, rootName, freeCanvas }: CreateScreenData,
+  { projectID, name, buoyancy, rootName, freeCanvas, styles }: CreateScreenData,
   meta?: HistoryMeta,
 ): CreateScreen => ({
   type: TYPES.CREATE_SCREEN,
-  payload: { projectID, name, buoyancy, rootName, freeCanvas },
+  payload: { projectID, name, buoyancy, rootName, freeCanvas, styles },
   meta,
 });
 
