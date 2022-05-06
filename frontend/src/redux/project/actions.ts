@@ -312,10 +312,10 @@ export const updateNameAndTagsProject = (
 
 export const updateLayoutProject = (
   projectID: number,
-  project_data_json: string,
+  projectDataJson: string,
 ): UpdateLayoutProjects => ({
   type: TYPES.UPDATE_LAYOUT_PROJECT,
-  payload: { projectID, project_data_json },
+  payload: { projectID, projectDataJson },
 });
 
 export const setProjectListLoader = (

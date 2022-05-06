@@ -500,7 +500,7 @@ export const updateNameAndTagsProjectSaga = function* ({
 };
 
 export const updateLayoutProjectSaga = function* ({
-  payload: { projectID, project_data_json },
+  payload: { projectID, projectDataJson },
 }: ReturnType<typeof Actions.updateLayoutProject>) {
   try {
     const project: Project = yield select(selectProjectById, projectID);
@@ -510,7 +510,7 @@ export const updateLayoutProjectSaga = function* ({
       {
         data: {
           id: projectID,
-          project_data_json,
+          project_data_json: projectDataJson,
           projectscreen: project.projectscreen,
         },
       },

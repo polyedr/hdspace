@@ -315,7 +315,7 @@ export type UpdateNameAndTagsProject = IAction<
 >;
 export type UpdateLayoutProjects = IAction<
   typeof TYPES.UPDATE_LAYOUT_PROJECT,
-  { projectID: number; project_data_json: string }
+  { projectID: number; projectDataJson: string }
 >;
 export type SetProjectListLoader = IAction<
   typeof TYPES.SET_PROJECT_LIST_LOADER,
