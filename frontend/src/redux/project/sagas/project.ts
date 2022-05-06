@@ -499,9 +499,9 @@ export const updateNameAndTagsProjectSaga = function* ({
   }
 };
 
-export const UpdateLayoutProjectSaga = function* ({
+export const updateLayoutProjectSaga = function* ({
   payload: { projectID, project_data_json },
-}: ReturnType<typeof Actions.UpdateLayoutProject>) {
+}: ReturnType<typeof Actions.updateLayoutProject>) {
   try {
     const project: Project = yield select(selectProjectById, projectID);
     const { result, error }: Result<Project> = yield call(

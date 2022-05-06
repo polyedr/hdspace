@@ -310,7 +310,7 @@ export const updateNameAndTagsProject = (
   payload: { projectID, name, tags },
 });
 
-export const UpdateLayoutProject = (
+export const updateLayoutProject = (
   projectID: number,
   project_data_json: string,
 ): UpdateLayoutProjects => ({

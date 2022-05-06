@@ -10,7 +10,7 @@ import {
 import {
   changeLayout,
   rotateScreenFormat,
-  UpdateLayoutProject,
+  updateLayoutProject,
 } from '@Redux/project/actions';
 import {
   additionalLayoutPhone,
@@ -56,16 +56,16 @@ const Layouts: React.FC = () => {
     value: layout,
     rotated,
   };
-  const handleFormatChange = (ev) => {
-    if (!ev.target.value) return;
-    layoutObject.value = ev.target.value;
+  const handleFormatChange = (e) => {
+    if (!e.target.value) return;
+    layoutObject.value = e.target.value;
     dispatch(
-      UpdateLayoutProject(
+      updateLayoutProject(
         id,
         JSON.stringify({ ...projectDataJson, layout: layoutObject }),
       ),
     );
-    dispatch(changeLayout(ev.target.value));
+    dispatch(changeLayout(e.target.value));
   };
 
   const handleRotatedToggle = () => {
@@ -73,7 +73,7 @@ const Layouts: React.FC = () => {
     layoutObject.rotated = !rotated;
 
     dispatch(
-      UpdateLayoutProject(
+      updateLayoutProject(
         id,
         JSON.stringify({ ...projectDataJson, layout: layoutObject }),
       ),

@@ -91,7 +91,7 @@ import {
   getProjectListSaga,
   getProjectSaga,
   updateNameAndTagsProjectSaga,
-  UpdateLayoutProjectSaga,
+  updateLayoutProjectSaga,
   searchProjectsSaga,
   updateCurrentUIFrameworkSaga,
   updateCurrentUIFrameworkVariablesSaga,
@@ -434,7 +434,7 @@ export default function* projectSaga() {
     TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
     updateNameAndTagsProjectSaga,
   );
-  yield takeLatest(TYPES.UPDATE_LAYOUT_PROJECT, UpdateLayoutProjectSaga);
+  yield takeLatest(TYPES.UPDATE_LAYOUT_PROJECT, updateLayoutProjectSaga);
   yield takeLatest(TYPES.SEARCH_PROJECTS, searchProjectsSaga);
 
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
