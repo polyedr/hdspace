@@ -130,6 +130,10 @@ export const DEFAULT_PROJECT: Project = {
       },
     ],
     uiFramework: NOT_SELECTED_FRAMEWORK,
+    layout: {
+      value: Layout.Desktop,
+      rotated: false,
+    },
   },
   user: DEFAULT_USER,
 };

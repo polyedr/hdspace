@@ -4,14 +4,21 @@ import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
 import {
   selectLayout,
   selectScreenRotated,
+  selectCurrentProjectDataJson,
+  selectCurrentProject,
 } from '@Redux/project/selectors/base';
-import { changeLayout, rotateScreenFormat } from '@Redux/project/actions';
+import {
+  changeLayout,
+  rotateScreenFormat,
+  updateLayoutProject,
+} from '@Redux/project/actions';
 import {
   additionalLayoutPhone,
   additionalLayoutDesktop,
   additionalLayoutTablet,
   Layout,
 } from '@Src/types';
+
 import ELEMENT_IDS from '@Constants/elementIds';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { FormControl, NativeSelect } from '@material-ui/core';
@@ -41,17 +48,37 @@ const useStyles = makeStyles((theme) =>
 const Layouts: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-
+  const { id } = useSelector(selectCurrentProject);
   const layout = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
-
-  const handleFormatChange = (ev) => {
-    if (!ev.target.value) return;
-
-    dispatch(changeLayout(ev.target.value));
+  const projectDataJson = useSelector(selectCurrentProjectDataJson);
+  const layoutObject = {
+    value: layout,
+    rotated,
+  };
+  const handleFormatChange = (e) => {
+    if (!e.target.value) return;
+    layoutObject.value = e.target.value;
+    dispatch(
+      updateLayoutProject(
+        id,
+        JSON.stringify({ ...projectDataJson, layout: layoutObject }),
+      ),
+    );
+    dispatch(changeLayout(e.target.value));
   };
 
-  const handleRotatedToggle = () => dispatch(rotateScreenFormat(!rotated));
+  const handleRotatedToggle = () => {
+    dispatch(rotateScreenFormat(!rotated));
+    layoutObject.rotated = !rotated;
+
+    dispatch(
+      updateLayoutProject(
+        id,
+        JSON.stringify({ ...projectDataJson, layout: layoutObject }),
+      ),
+    );
+  };
 
   const renderOption = (additionalLayout) => {
     return additionalLayout.map((key) => (

@@ -66,6 +66,11 @@ export const selectCurrentProjectDefaultStyles = createSelector(
   (currentProject) => currentProject.projectData.defaultStyles,
 );
 
+export const selectCurrentProjectDataJson = createSelector(
+  selectCurrentProject,
+  (currentProject) => currentProject.projectData,
+);
+
 export function selectUploadedImageInfo(state: AppReduxState) {
   return selectProjectState(state).edit.uploadedImageInfo;
 }
