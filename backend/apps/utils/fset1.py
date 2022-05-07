@@ -274,7 +274,7 @@ def get_dominant_palette(image, k=27, image_processing_size=None):
         colour = [int(round(c)) for c in colour]
         colour.reverse()
 
-        palette.append(colour)
+        palette.appendcss(colour)
 
     return palette
 

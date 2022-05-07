@@ -1593,7 +1593,7 @@ def elements_rootblock(
 ):
 
     image_original = copy.deepcopy(image_opencv_input)
-    # Function elements creation, loop through the root_block
+    # A function elements creation, loop through the root_block
     process_children(root_block)
 
     # A simple tree rendering should be changed to more complex solutions to calculate margins

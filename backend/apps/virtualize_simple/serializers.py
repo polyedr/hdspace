@@ -94,7 +94,7 @@ def elements_rootblock_create(
     # Function elements creation, loop through the root_block
     if (serializing == "assemble"):
         # Display the region assembled. Hide this for the production.
-        if (o.netloc == "adevi.info"):
+        if (o.netloc != "adevi.info"):
             for pre, fill, node in RenderTree(root_block):
                 if node == root_block:
                     # Create a new Scenario Element for the elements chain
