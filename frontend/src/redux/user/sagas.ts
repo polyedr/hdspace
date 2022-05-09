@@ -274,7 +274,7 @@ function* sendResetPasswordMailSaga(
         yield call(apiRestorePassword, email);
         yield put(
           enqueueSnackbar({
-            message: 'Please, check your mail and set new password',
+            message: 'Please check your mail and follow the instructions.',
             options: {
               variant: 'info',
             },
