@@ -67,15 +67,15 @@ export function getPlayerLink(
           value: end,
         },
         loop: {
-          attribute: 1,
+          attribute: loop,
           value: loop,
         },
         rel: {
-          attribute: 0,
+          attribute: rel,
           value: rel,
         },
         autoplay: {
-          attribute: 1,
+          attribute: autoplay && isPreviewMode,
           value: autoplay && isPreviewMode,
         },
       };
