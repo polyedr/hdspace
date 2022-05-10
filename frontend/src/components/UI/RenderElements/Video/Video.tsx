@@ -47,6 +47,7 @@ const Video = React.forwardRef<HTMLDivElement, RendererProps>((props, ref) => {
           width="100%"
           height="100%"
           src={playerLink}
+          allow="autoplay"
           style={{
             position: 'absolute',
             top: '0',
