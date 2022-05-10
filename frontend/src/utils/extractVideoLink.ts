@@ -40,7 +40,7 @@ export function getPlayerLink(
   const { link, autoplay, start, end, loop, rel } = params;
 
   const linkInfo = extractPlayerLinkInfo(link);
-
+  const playlist = linkInfo?.link.split('/').pop();
   switch (linkInfo.player) {
     case 'kickstarter': {
       return `${linkInfo.link}/widget/video.html`;
@@ -77,6 +77,10 @@ export function getPlayerLink(
         autoplay: {
           attribute: autoplay && isPreviewMode,
           value: autoplay && isPreviewMode,
+        },
+        playlist: {
+          attribute: loop === true ? playlist : '',
+          value: loop === true ? playlist : '',
         },
       };
 
