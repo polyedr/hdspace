@@ -228,6 +228,9 @@ export const convertCreatedProjectToRequest = (
         ...cls,
         // rules: cssDecamelize(cls.rules),
       })),
+      layout: {
+        value: 'desktop',
+      },
     }),
   };
 };
