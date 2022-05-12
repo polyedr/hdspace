@@ -19,6 +19,7 @@ const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    alignSelf: 'flex-end',
   },
   removeButton: {
     padding: '1px 5px !important',

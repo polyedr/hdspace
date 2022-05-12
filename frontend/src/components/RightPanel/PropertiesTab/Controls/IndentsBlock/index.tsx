@@ -18,9 +18,9 @@ const useStyles = makeStyles(({ palette }) => ({
     display: 'grid',
     gridTemplateAreas: `
         '.  .  mt .  . '
-        '.  pg pg pg . '
+        'ml pg pg pg . '
         'ml pg pg pg mr'
-        '.  pg pg pg . '
+        'ml pg pg pg . '
         '.  .  mb .  . '  
         `,
     border: `1px solid ${palette.grey.A200}`,
@@ -83,18 +83,22 @@ const useStyles = makeStyles(({ palette }) => ({
   topLeftAndRightBottomCorner: {
     borderTop: '24px solid red',
     borderLeft: '24px solid transparent',
+    width: 0,
   },
   topRightAndLeftBottomCorner: {
     borderTop: '24px solid red',
     borderRight: '24px solid transparent',
+    width: 0,
   },
   rightTopAndBottomLeftCorner: {
     borderBottom: '24px solid red',
     borderLeft: '24px solid transparent',
+    width: 0,
   },
   bottomRightAndLeftTopCorner: {
     borderBottom: '24px solid red',
     borderRight: '24px solid transparent',
+    width: 0,
   },
   intentsContainer: {
     backgroundColor: 'red',
@@ -203,7 +207,13 @@ const IndentsBlock: React.FC<Props> = ({
     debounced.callback(name, `${val}px`);
   };
   return (
-    <div>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+      }}
+    >
       {!isDefaultStyles && !masterScreenEnabled && canEdit && (
         <RemoveStyles
           onClick={removeStyles}
@@ -222,7 +232,7 @@ const IndentsBlock: React.FC<Props> = ({
         />
       )}
 
-      <div className={classes.marginGrid}>
+      <div style={{ width: '227px', height: '124px' }}>
         <div className={cn(classes.marginTop)}>
           <div className={cn(classes.topLeftAndRightBottomCorner)} />
           <div
@@ -246,7 +256,14 @@ const IndentsBlock: React.FC<Props> = ({
           <div className={cn(classes.topRightAndLeftBottomCorner)} />
         </div>
 
-        <div className={cn(classes.marginRight)}>
+        <div
+          style={{
+            position: 'relative',
+            left: '199px',
+            bottom: '22px',
+          }}
+          className={cn(classes.marginRight)}
+        >
           <div className={cn(classes.rightTopAndBottomLeftCorner)} />
           <div
             className={cn(
@@ -269,7 +286,13 @@ const IndentsBlock: React.FC<Props> = ({
           <div className={classes.topLeftAndRightBottomCorner} />
         </div>
 
-        <div className={cn(classes.marginBottom)}>
+        <div
+          className={cn(classes.marginBottom)}
+          style={{
+            position: 'relative',
+            bottom: '44px',
+          }}
+        >
           <div className={cn(classes.rightTopAndBottomLeftCorner)} />
           <div
             className={cn(
@@ -292,7 +315,13 @@ const IndentsBlock: React.FC<Props> = ({
           <div className={cn(classes.bottomRightAndLeftTopCorner)} />
         </div>
 
-        <div className={cn(classes.marginLeft)}>
+        <div
+          className={cn(classes.marginLeft)}
+          style={{
+            position: 'relative',
+            bottom: '168px',
+          }}
+        >
           <div className={cn(classes.bottomRightAndLeftTopCorner)} />
           <div
             className={cn(
@@ -315,98 +344,120 @@ const IndentsBlock: React.FC<Props> = ({
           <div className={cn(classes.topRightAndLeftBottomCorner)} />
         </div>
 
-        <div className={classes.paddingGrid}>
-          <div className={cn(classes.paddingTop)}>
-            <div className={cn(classes.topLeftAndRightBottomCorner)} />
-            <div
-              className={cn(
-                classes.intentsContainer,
-                classes.horizontalPaddingContainer,
-              )}
-            >
-              <StyledTextField
-                title="Padding top"
-                name="paddingTop"
-                type="number"
-                margin="none"
-                variant="outlined"
-                className={cn(classes.input)}
-                value={(state && parseInt(state.paddingTop as string)) || 0}
-                onChange={handleChange}
-                disabled={!canEdit}
-              />
-            </div>
-            <div className={cn(classes.topRightAndLeftBottomCorner)} />
+        <div
+          style={{
+            position: 'relative',
+            bottom: '267px',
+            left: '25px',
+          }}
+          className={cn(classes.paddingTop)}
+        >
+          <div className={cn(classes.topLeftAndRightBottomCorner)} />
+          <div
+            className={cn(
+              classes.intentsContainer,
+              classes.horizontalPaddingContainer,
+            )}
+          >
+            <StyledTextField
+              title="Padding top"
+              name="paddingTop"
+              type="number"
+              margin="none"
+              variant="outlined"
+              className={cn(classes.input)}
+              value={(state && parseInt(state.paddingTop as string)) || 0}
+              onChange={handleChange}
+              disabled={!canEdit}
+            />
           </div>
+          <div className={cn(classes.topRightAndLeftBottomCorner)} />
+        </div>
 
-          <div className={cn(classes.paddingRight)}>
-            <div className={cn(classes.rightTopAndBottomLeftCorner)} />
-            <div
-              className={cn(
-                classes.intentsContainer,
-                classes.verticalPaddingContainer,
-              )}
-            >
-              <StyledTextField
-                title="Padding right"
-                name="paddingRight"
-                type="number"
-                margin="none"
-                variant="outlined"
-                className={cn(classes.input)}
-                value={(state && parseInt(state.paddingRight as string)) || 0}
-                onChange={handleChange}
-                disabled={!canEdit}
-              />
-            </div>
-            <div className={classes.topLeftAndRightBottomCorner} />
+        <div
+          style={{
+            position: 'relative',
+            bottom: '289px',
+            left: '174px',
+          }}
+          className={cn(classes.paddingRight)}
+        >
+          <div className={cn(classes.rightTopAndBottomLeftCorner)} />
+          <div
+            className={cn(
+              classes.intentsContainer,
+              classes.verticalPaddingContainer,
+            )}
+          >
+            <StyledTextField
+              title="Padding right"
+              name="paddingRight"
+              type="number"
+              margin="none"
+              variant="outlined"
+              className={cn(classes.input)}
+              value={(state && parseInt(state.paddingRight as string)) || 0}
+              onChange={handleChange}
+              disabled={!canEdit}
+            />
           </div>
+          <div className={classes.topLeftAndRightBottomCorner} />
+        </div>
 
-          <div className={cn(classes.paddingBottom)}>
-            <div className={cn(classes.rightTopAndBottomLeftCorner)} />
-            <div
-              className={cn(
-                classes.intentsContainer,
-                classes.horizontalPaddingContainer,
-              )}
-            >
-              <StyledTextField
-                title="Padding bottom"
-                name="paddingBottom"
-                type="number"
-                margin="none"
-                variant="outlined"
-                className={cn(classes.input)}
-                value={(state && parseInt(state.paddingBottom as string)) || 0}
-                onChange={handleChange}
-                disabled={!canEdit}
-              />
-            </div>
-            <div className={cn(classes.bottomRightAndLeftTopCorner)} />
+        <div
+          style={{ position: 'relative', bottom: '311px', left: '25px' }}
+          className={cn(classes.paddingBottom)}
+        >
+          <div className={cn(classes.rightTopAndBottomLeftCorner)} />
+          <div
+            className={cn(
+              classes.intentsContainer,
+              classes.horizontalPaddingContainer,
+            )}
+          >
+            <StyledTextField
+              title="Padding bottom"
+              name="paddingBottom"
+              type="number"
+              margin="none"
+              variant="outlined"
+              className={cn(classes.input)}
+              value={(state && parseInt(state.paddingBottom as string)) || 0}
+              onChange={handleChange}
+              disabled={!canEdit}
+            />
           </div>
+          <div className={cn(classes.bottomRightAndLeftTopCorner)} />
+        </div>
 
-          <div className={cn(classes.paddingLeft)}>
-            <div className={cn(classes.bottomRightAndLeftTopCorner)} />
-            <div
-              className={cn(
-                classes.intentsContainer,
-                classes.verticalPaddingContainer,
-              )}
-            >
-              <StyledTextField
-                title="Padding left"
-                name="paddingLeft"
-                type="number"
-                margin="none"
-                variant="outlined"
-                className={cn(classes.input)}
-                value={(state && parseInt(state.paddingLeft as string)) || 0}
-                onChange={handleChange}
-                disabled={!canEdit}
-              />
-            </div>
-            <div className={classes.topRightAndLeftBottomCorner} />
+        <div
+          style={{
+            position: 'relative',
+            bottom: '385px',
+            left: '25px',
+          }}
+          className={cn(classes.paddingLeft)}
+        >
+          <div className={cn(classes.bottomRightAndLeftTopCorner)} />
+          <div
+            className={cn(
+              classes.intentsContainer,
+              classes.verticalPaddingContainer,
+            )}
+          >
+            <StyledTextField
+              title="Padding left"
+              name="paddingLeft"
+              type="number"
+              margin="none"
+              variant="outlined"
+              className={cn(classes.input)}
+              value={(state && parseInt(state.paddingLeft as string)) || 0}
+              onChange={handleChange}
+              disabled={!canEdit}
+            />
           </div>
+          <div className={classes.topRightAndLeftBottomCorner} />
         </div>
       </div>
     </div>
