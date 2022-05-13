@@ -58,7 +58,6 @@ const ChildrenButton = React.forwardRef<HTMLDivElement, RendererProps>(
               id={id}
               ref={ref as React.MutableRefObject<HTMLButtonElement | null>}
               data-ls-id={id}
-              style={{ width: '100%' }}
               className={cn(mainClasses, classes.ownStyles)}
               dangerouslySetInnerHTML={{ __html: textContent }}
               {...eventHandlers}
