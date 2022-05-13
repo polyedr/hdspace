@@ -280,6 +280,7 @@ function* sendResetPasswordMailSaga(
             },
           }),
         );
+        openSignScreen('signin');
       } else {
         yield put(
           enqueueSnackbar({
@@ -291,8 +292,6 @@ function* sendResetPasswordMailSaga(
         );
       }
     }
-
-    openSignScreen('signin');
   } catch (e) {
     // @ts-ignore
     yield put(Actions.setUserError(e));
