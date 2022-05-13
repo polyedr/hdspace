@@ -1202,6 +1202,7 @@ def calculate_margins(node):
 
     # Extract siblings
     siblings = node.siblings
+    print(node.parent.direction, "direction")
 
     # A vertical case
     if node.parent.direction == 0:
@@ -1211,7 +1212,7 @@ def calculate_margins(node):
         array_siblings_y1_min = 0
         try:
             array_siblings_y1 = min(siblings, key=lambda i: abs(i.y1 - node.y2))
-            array_siblings_y1_min = array_siblings_y1.y1 - node.y2
+            array_siblings_y1_min = min((array_siblings_y1.y1 - node.y2), (node.parent.y2 - node.y2))
         except Exception:
             pass
         """
@@ -1229,21 +1230,35 @@ def calculate_margins(node):
     # A horizontal case
     if node.parent.direction == 1:
         array_siblings_x1 = min(siblings, key=lambda i: abs(node.x1 - i.x2))
-        array_siblings_x1_min = node.x1 - array_siblings_x1.x2
-        """
-        print(node.parent.direction, " direction ", len(siblings), " siblings")
-        print("compare: ", node.y2, array_siblings_y1.y1)
-        for sibling in siblings:
-            print("y1, 2: ", sibling.y1, sibling.y2)
+        array_siblings_x1_min = min((node.x1 - array_siblings_x1.x2), (node.x1 - node.parent.x1))
 
-        print("margin:", array_siblings_y1_min)
-        """
+        '''
+        print(node.parent.direction, " direction ", len(siblings), " siblings")
+        print("compare: ", node.x1, array_siblings_x1.x2)
+        for sibling in siblings:
+            print("x1, 2: ", sibling.x1, sibling.x2)
+
+        print("margin:", array_siblings_x1_min)
+        '''
 
         # Filter out positive margins
         if array_siblings_x1_min > 0:
             margin_left = array_siblings_x1_min
 
-    return margin_bottom
+    # A final case
+    if node.parent.direction == 2:
+        array_siblings_y1_min = node.parent.y2 - node.y2
+        array_siblings_x1_min = node.x1 - node.parent.x1
+
+        # Filter out positive margins
+        if array_siblings_x1_min > 0:
+            margin_left = array_siblings_x1_min
+
+        # Filter out positive margins
+        if array_siblings_y1_min > 0:
+            margin_bottom = array_siblings_y1_min
+
+    return margin_bottom, margin_left
     # Calculate margins for vertically stacked items end
 
 
@@ -1594,25 +1609,31 @@ def elements_rootblock(
 
     image_original = copy.deepcopy(image_opencv_input)
     # A function elements creation, loop through the root_block
-    process_children(root_block)
+    # process_children(root_block)
 
     # A simple tree rendering should be changed to more complex solutions to calculate margins
     for pre, fill, node in RenderTree(root_block):
-        styles = {}
-        parameters = {}
+        node.styles = {}
+        node.parameters = {}
         if serializing == "freecanvas":
-            parameters["freeCanvas"] = {}
+            node.parameters["freeCanvas"] = {}
 
-            parameters["freeCanvas"]["zIndex"] = 0
-            parameters["freeCanvas"]["width"] = node_width
-            parameters["freeCanvas"]["height"] = node_height
-            parameters["freeCanvas"]["left"] = int(node.x1)
-            parameters["freeCanvas"]["top"] = int(node.y1)
+            node.parameters["freeCanvas"]["zIndex"] = 0
+            node.parameters["freeCanvas"]["width"] = node_width
+            node.parameters["freeCanvas"]["height"] = node_height
+            node.parameters["freeCanvas"]["left"] = int(node.x1)
+            node.parameters["freeCanvas"]["top"] = int(node.y1)
 
         # Define the node dimensions start
         node_width = int(node.x2 - node.x1)
         node_height = int(node.y2 - node.y1)
         # Define the node dimensions end
+
+        # Sometimes node_width and height are 0, should check this.
+        if node_width:
+            node.styles["width"] = str(node_width) + "px"
+        if node_height:
+            node.styles["height"] = str(node_height) + "px"
 
         # Choose the layout styling
         # From the {"float", "flexbox", "grid"}
@@ -1622,113 +1643,86 @@ def elements_rootblock(
             # Define the direction of the container start
             # Horizontal
             if node.parent.direction == 1:
-                styles["display"] = "block"
-                styles["float"] = "left"
-                if not styles_on:
-                    styles["background"] = "aliceblue"
-                if region_dataset in ["headers", "footers"]:
-                    pass
+                node.styles["display"] = "inline-block"
+                node.parent.styles["white-space"] = "nowrap"
+                # print(node.parent.styles)
+                # input()
+
             # Vertical
             elif node.parent.direction == 0:
-                styles["display"] = "block"
-                if not styles_on:
-                    styles["background"] = "lavenderblush"
+                node.styles["display"] = "block"
             # Inseparable
             elif node.parent.direction == 2:
-                styles["display"] = "block"
-                # Sometimes node_width and height are 0, should check this.
-                if node_width:
-                    styles["min-width"] = str(node_width) + "px"
-                if node_height:
-                    styles["min-height"] = str(node_height) + "px"
+                node.styles["display"] = "block"
             # Other cases (the direction was not defined)
             else:
-                styles["display"] = "block"
-                # Sometimes node_width and height are 0, should check this.
-                if node_width:
-                    styles["min-width"] = str(node_width) + "px"
-                if node_height:
-                    styles["min-height"] = str(node_height) + "px"
+                node.styles["display"] = "block"
             # Define the direction of the container end
 
         elif layout_styling == "flexbox":
             # Define the direction of the container start
             # Horizontal
             if node.direction == 1:
-                styles["display"] = "flex"
+                node.styles["display"] = "flex"
                 if not styles_on:
-                    styles["background"] = "aliceblue"
+                    node.styles["background"] = "aliceblue"
                 if region_dataset in ["headers", "footers"]:
-                    styles["justify-content"] = "space-between"
+                    node.styles["justify-content"] = "space-between"
             # Vertical
             elif node.direction == 0:
-                styles["display"] = "block"
+                node.styles["display"] = "block"
                 if not styles_on:
-                    styles["background"] = "lavenderblush"
+                    node.styles["background"] = "lavenderblush"
             # Inseparable
             elif node.direction == 2:
-                styles["display"] = "flex"
+                node.styles["display"] = "flex"
                 if (node.types == "ccluster") or (
                     region_dataset in ["headers", "webpages"]
                 ):
 
                     if not styles_on:
-                        styles["background"] = "lightblue"
+                        node.styles["background"] = "lightblue"
                 else:
 
                     if not styles_on:
-                        styles["background"] = "lightgreen"
+                        node.styles["background"] = "lightgreen"
                     # Sometimes node_width and height are 0, should check this.
                     if node_width:
-                        styles["width"] = str(node_width) + "px"
+                        node.styles["width"] = str(node_width) + "px"
                     if node_height:
-                        styles["height"] = str(node_height) + "px"
+                        node.styles["height"] = str(node_height) + "px"
             # Define the direction of the container end
 
         if node == root_block:
             margin_lr = int((img_width - node_width) / 2)
             margin_tp = int((img_height - node_height) / 2)
             node.div = ET.SubElement(outer_div, "div")
-            styles["border"] = "1px solid green"
-            styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
+            node.styles["border"] = "1px solid green"
+            node.styles["margin"] = str(margin_tp) + "px " + str(margin_lr) + "px"
+            node.buoyancy = 0
 
             str_styles = "; ".join(
-                "{}:{}".format(key, val) for key, val in styles.items()
+                "{}:{}".format(key, val) for key, val in node.styles.items()
             )
             node.div.set("style", str_styles)
-
-            node.scenarioelement_kwargs = {
-                "struct_type": "container",
-                "parameters": parameters,
-                "styles": styles,
-                "buoyancy": 0,
-            }
-
-            # # Create a new Scenario Element for the elements chain
-            # node.scenarioelement = ScenarioElement.objects.create(
-            #     parent=outer_div_node,
-            #     **node.scenarioelement_kwargs
-            # )
+            node.div.set("buoyancy", "0")
+            # node.parameters["textContent"] = ""
 
         else:
             # Calculate margins for vertically and horizontally stacked items
-            margin_bottom = calculate_margins(node)
-            styles["margin-bottom"] = str(margin_bottom) + "px"
+            margin_bottom, margin_left = calculate_margins(node)
+            print(node.element_assigned, node.types, margin_bottom, margin_left)
+            # input()
+            node.styles["margin-bottom"] = str(margin_bottom) + "px"
+            node.styles["margin-left"] = str(margin_left) + "px"
 
-            node.div = ET.SubElement(node.parent.div, "div")
 
-            styles["border"] = ""
-
-            if not styles_on:
-                styles["border"] = "1px solid green"
-
-            str_styles = "; ".join(
-                "{}:{}".format(key, val) for key, val in styles.items()
-            )
-            node.div.set("style", str_styles)
+            # str_styles = "; ".join(
+            #     "{}:{}".format(key, val) for key, val in node.styles.items()
+            # )
 
             # To display for the debug
-            node.styles = str_styles
+            # node.styles_fordebug = str_styles
 
             # Buoyancy detection start
             # Horizontal
@@ -1742,28 +1736,24 @@ def elements_rootblock(
                 node.buoyancy = int(node.x1)
             # Buoyancy detection end
 
-            # Create a new Scenario Element for the elements chain
-            # Before that, check that the node is not final and doesn't have element
-            # if(node.elements):
-            # if((len(node.children) > 0) or (len(node.elements) > 0)):
-            node.scenarioelement_kwargs = {
-                "struct_type": "container",
-                "parameters": parameters,
-                "styles": styles,
-                "buoyancy": node.buoyancy,
-            }
+            node.parameters["textContent"] = ""
 
+            if not node.element_assigned:
+                node.element_assigned = "div"
+                # node.div = ET.SubElement(node.parent.div, "div")
+                # node.div.set("style", str_styles)
+                # node.div.set("buoyancy", str(node.buoyancy))
+
+        '''
         # Correct the struct_type based on the element_assigned value
         # The correction is actual for dbclusters
         # ul li detection
         if node.element_assigned:
             node.scenarioelement_kwargs["struct_type"] = node.element_assigned
             # print(node.element_assigned)
+        '''
 
         if serializing in {"virtualize_simple", "assemble"}:
-            # for elem in array_elements:
-            # Prepare an empty list to define scenario element structure for the further chain joining
-            scenarioelement_inner_kwargs = {}
             # Define the element dimensions start
             # Rectangle width and height
             elem_width = node.x2 - node.x1
@@ -1802,382 +1792,240 @@ def elements_rootblock(
                     elem_image, ocr_engine="googlecloud"
                 )
 
-            styles = {}
-            parameters = {}
-            styles["text-transform"] = "none"
-            styles["font-size"] = font_size_value
+            node.styles["text-transform"] = "none"
+            node.styles["font-size"] = font_size_value
 
             bcolour_elem_value, fcolour_elem_value = extract_colour_palette(elem_image)
 
-            # display elem_image start
-            """
-            cv2.imshow(window_name2, elem_image)
-            print(bcolour_elem_value)
-            cv2.waitKey(0)
-            """
-            # display elem_image end
-
             if node.element_assigned in {"textinput", "input"}:
-                styles["min-width"] = str(node_width) + "px"
-                styles["min-height"] = str(node_height) + "px"
-
-                # Paddings calculations block
-                padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
-                padding_left = padding_right = abs(int(text_leftc - node.x1))
-                styles["padding-top"] = str(padding_top) + "px"
-                styles["padding-bottom"] = str(padding_bottom) + "px"
-                styles["padding-left"] = str(padding_left) + "px"
-                styles["padding-right"] = str(padding_right) + "px"
-
-                styles["border-width"] = "1px"
-                styles["border-color"] = "rgba(244, 244, 244, 1)"
-                styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "input")
-                # displaying various kinds of elements end
+                node.styles["max-width"] = str(node_width) + "px"
+                node.styles["min-height"] = str(node_height) + "px"
 
                 # Text assignment
                 if text_elem_ocr:
-                    parameters["textContent"] = text_elem_ocr
+                    node.parameters["textContent"] = text_elem_ocr
 
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
+                # Paddings calculations block
+                if text_elem_ocr:
+                    padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                else:
+                    padding_top = padding_bottom = 3 # A default value when the text is not at the input
 
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "textinput",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                if (text_leftc - node.x1) > 0:
+                    padding = int(text_leftc - node.x1)
+                else:
+                    padding = 3
+                padding_left = padding_right = padding
+                node.styles["padding-top"] = str(padding_top) + "px"
+                node.styles["padding-bottom"] = str(padding_bottom) + "px"
+                node.styles["padding-left"] = str(padding_left) + "px"
+                node.styles["padding-right"] = str(padding_right) + "px"
+
+                node.styles["border-width"] = "1px"
+                node.styles["border-color"] = "rgba(244, 244, 244, 1)"
+                node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
 
             elif node.element_assigned in {"checkbox"}:
-                styles["width"] = str(min(node_width, node_height)) + "px"
-                styles["height"] = str(min(node_width, node_height)) + "px"
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "input")
-                # displaying various kinds of elements end
-                element.set("type", "checkbox")
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "checkbox",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                node.styles["width"] = str(min(node_width, node_height)) + "px"
+                node.styles["height"] = str(min(node_width, node_height)) + "px"
 
             elif node.element_assigned in {"radiobutton"}:
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "input")
-                # displaying various kinds of elements end
-                element.set("type", "radio")
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "radiobutton",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                pass
 
             elif node.element_assigned == "select":
-                styles["width"] = str(node_width) + "px"
-                styles["height"] = str(node_height) + "px"
+                node.styles["max-width"] = str(node_width) + "px"
+                node.styles["height"] = str(node_height) + "px"
 
                 # Paddings calculations block
                 padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
                 padding_left = padding_right = abs(int(text_leftc - node.x1))
-                styles["padding-top"] = str(padding_top) + "px"
-                styles["padding-bottom"] = str(padding_bottom) + "px"
-                styles["padding-left"] = str(padding_left) + "px"
-                styles["padding-right"] = str(padding_right) + "px"
-
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "select")
-                # displaying various kinds of elements end
-
-                # Text assignment
-                if text_elem_ocr:
-                    parameters["textContent"] = text_elem_ocr
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "select",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                node.styles["padding-top"] = str(padding_top) + "px"
+                node.styles["padding-bottom"] = str(padding_bottom) + "px"
+                node.styles["padding-left"] = str(padding_left) + "px"
+                node.styles["padding-right"] = str(padding_right) + "px"
 
             if node.element_assigned in {"text", "ocrtext"}:
-                styles["color"] = styles["color"] = "rgba(" + fcolour_elem_value + ")"
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "div")
-                # displaying various kinds of elements end
+                node.styles["min-width"] = str(node_width) + "px"
+                node.styles["min-height"] = str(node_height) + "px"
 
-                element.text = lorem.get_word(count=2)
-                parameters["textContent"] = element.text
+                # Paddings calculations block
+                if text_elem_ocr:
+                    padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
+                else:
+                    padding_top = padding_bottom = 3 # A default value when the text is not at the input
+
+                if (text_leftc - node.x1) > 0:
+                    padding = int(text_leftc - node.x1)
+                else:
+                    padding = 3
+                padding_left = padding_right = padding
+                node.styles["padding-top"] = str(padding_top) + "px"
+                node.styles["padding-bottom"] = str(padding_bottom) + "px"
+                node.styles["padding-left"] = str(padding_left) + "px"
+                node.styles["padding-right"] = str(padding_right) + "px"
+
+                node.styles["color"] = "rgba(" + fcolour_elem_value + ")"
+                node.styles["box-sizing"] = "border-box"
+
                 # Text assignment
                 if text_elem_ocr:
-                    parameters["textContent"] = text_elem_ocr
-                    element.text = text_elem_ocr
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "ocrtext",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                    node.parameters["textContent"] = text_elem_ocr
+                else:
+                    node.parameters["textContent"] = lorem.get_word(count=2)
 
             elif node.element_assigned in {"textarea"}:
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "textarea")
-                # displaying various kinds of elements end
-
-                element.set("placeholder", lorem.get_word(count=2))
-                # Text assignment
                 if text_elem_ocr:
-                    parameters["placeholder"] = text_elem_ocr
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "textarea",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                    node.parameters["placeholder"] = text_elem_ocr
+                else:
+                    node.parameters["placeholder"] = lorem.get_word(count=2)
 
             elif node.element_assigned in {"form_heading"}:
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "h3")
-                # displaying various kinds of elements end
-
-                element.text = lorem.get_word(count=2)
-                parameters["textContent"] = element.text
-                # Text assignment
-                if text_elem_ocr:
-                    parameters["textContent"] = text_elem_ocr
-                    element.text = text_elem_ocr
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "heading",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                pass
 
             elif node.element_assigned in {"form"}:
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "form")
-                # displaying various kinds of elements end
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "container",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                pass
 
             elif node.element_assigned == "image":
-                styles["max-width"] = "100%"
-                styles["height"] = "auto"
+                node.styles["max-width"] = "100%"
+                node.styles["height"] = "auto"
 
                 # Saving an image
                 cv2.imwrite(elem_image_name, elem_image)
                 # Setting path to the image source
                 elem_image_sourcename = fname + "/" + elem_image_name
 
-                parameters["imageURL"] = (
+                node.parameters["imageURL"] = (
                     "https://" + o.netloc + MEDIA_URL + elem_image_sourcename
                 )
 
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "img")
-                # displaying various kinds of elements end
-
-                element.set("src", elem_image_name)
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "image",
-                    "image": elem_image_sourcename,
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
-
             elif node.element_assigned == "button":
-
+                node.styles["width"] = "auto"
+                node.styles["min-width"] = str(node_width) + "px"
                 # Paddings calculations block
-                padding_top = padding_bottom = int((node_height - font_size_value) / 2.0)
-                padding_left = padding_right = int((node_width - text_width) / 2.0)
-                styles["padding-top"] = str(padding_top) + "px"
-                styles["padding-bottom"] = str(padding_bottom) + "px"
-                styles["padding-left"] = str(padding_left) + "px"
-                styles["padding-right"] = str(padding_right) + "px"
+                padding_top = padding_bottom = int((node_height - font_size_value) / 2.0 / 2.0) # Empyrical constants are placed after the first 2.0 value placed
+                padding_left = padding_right = int((node_width - text_width) / 2.0 * 5.0 / 6.0)
+                # print(node_height, node_width, text_width)
+                # input()
+                node.styles["padding-top"] = str(padding_top) + "px"
+                node.styles["padding-bottom"] = str(padding_bottom) + "px"
+                node.styles["padding-left"] = str(padding_left) + "px"
+                node.styles["padding-right"] = str(padding_right) + "px"
 
-                styles["min-height"] = str(node_height) + "px"
-                styles["color"] = "rgba(" + fcolour_elem_value + ")"
+                # styles["max-height"] = str(node_height) + "px"
+                node.styles["color"] = "rgba(" + fcolour_elem_value + ")"
 
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "button")
-                # displaying various kinds of elements end
-                element.text = lorem.get_word(count=1)
-                parameters["textContent"] = element.text
                 # Text assignment
                 if text_elem_ocr:
-                    parameters["textContent"] = text_elem_ocr
-                    element.text = text_elem_ocr
+                    node.parameters["textContent"] = text_elem_ocr
+                else:
+                    node.parameters["textContent"] = lorem.get_word(count=1)
 
                 if styles_on:
                     # Set the background colour for styles
-                    styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "button",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                    node.styles["background-color"] = "rgba(" + bcolour_elem_value + ")"
 
             elif node.element_assigned in {"menu", "list"}:
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "ul")
-                # displaying various kinds of elements end
-
                 # Hide the bullets
-                styles["list-style-type"] = "none"
-
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
-
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "list",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+                node.styles["list-style-type"] = "none"
 
             elif node.element_assigned in {"li", "listItem"}:
-                # displaying various kinds of elements start
-                element = ET.SubElement(node.parent.div, "li")
-                # displaying various kinds of elements end
-
-                element.text = lorem.get_word(count=1)
-                parameters["textContent"] = element.text
-
                 # Text assignment
                 if text_elem_ocr:
-                    parameters["textContent"] = text_elem_ocr
-                    element.text = text_elem_ocr
+                    node.parameters["textContent"] = text_elem_ocr
+                else:
+                    node.parameters["textContent"] = lorem.get_word(count=1)
 
                 # Paddings calculations block
                 # Vertical direction
                 if (node.parent.direction == 0):
                     padding_top = padding_bottom = 5
                     padding_left = padding_right = 10
-                    styles["padding-top"] = str(padding_top) + "px"
-                    styles["padding-bottom"] = str(padding_bottom) + "px"
-                    styles["padding-left"] = str(padding_left) + "px"
-                    styles["padding-right"] = str(padding_right) + "px"
+                    node.styles["padding-top"] = str(padding_top) + "px"
+                    node.styles["padding-bottom"] = str(padding_bottom) + "px"
+                    node.styles["padding-left"] = str(padding_left) + "px"
+                    node.styles["padding-right"] = str(padding_right) + "px"
                 # Horizontal direction
                 elif (node.parent.direction == 1):
                     padding_top = padding_bottom = 5
                     padding_left = padding_right = 5
-                    styles["padding-top"] = str(padding_top) + "px"
-                    styles["padding-bottom"] = str(padding_bottom) + "px"
-                    styles["padding-left"] = str(padding_left) + "px"
-                    styles["padding-right"] = str(padding_right) + "px"
+                    node.styles["padding-top"] = str(padding_top) + "px"
+                    node.styles["padding-bottom"] = str(padding_bottom) + "px"
+                    node.styles["padding-left"] = str(padding_left) + "px"
+                    node.styles["padding-right"] = str(padding_right) + "px"
                 # Other cases
                 else:
                     padding_top = padding_bottom = 5
                     padding_left = padding_right = 5
-                    styles["padding-top"] = str(padding_top) + "px"
-                    styles["padding-bottom"] = str(padding_bottom) + "px"
-                    styles["padding-left"] = str(padding_left) + "px"
-                    styles["padding-right"] = str(padding_right) + "px"
+                    node.styles["padding-top"] = str(padding_top) + "px"
+                    node.styles["padding-bottom"] = str(padding_bottom) + "px"
+                    node.styles["padding-left"] = str(padding_left) + "px"
+                    node.styles["padding-right"] = str(padding_right) + "px"
+
+    # A simple tree rendering to assign kwargs
+    for pre, fill, node in RenderTree(root_block):
+        if (node.element_assigned):
+            structural_type = node.element_assigned
+        else:
+            structural_type = "container"
+
+        node.scenarioelement_kwargs = {
+            "struct_type": structural_type,
+            "parameters": node.parameters,
+            "styles": node.styles,
+            "buoyancy": node.buoyancy,
+        }
+        print(node.styles)
 
 
-                str_styles = "; ".join(
-                    "{}:{}".format(key, val) for key, val in styles.items()
-                )
-                element.set("style", str_styles)
+    # Should add a block of the ET element creation
+    for pre, fill, node in RenderTree(root_block):
+        # displaying various kinds of elements start
+        if (node != root_block):
+            element = node.div = ET.SubElement(node.parent.div, node.element_assigned)
 
-                # Create a new Scenario Element for the elements chain
-                # if(hasattr('node.parent', 'scenarioelement')):
-                scenarioelement_inner_kwargs = {
-                    "struct_type": "listItem",
-                    "parameters": parameters,
-                    "styles": styles,
-                    "buoyancy": node.buoyancy,
-                }
+            # Process the cases of the name differences. Adapt the tags.
+            # The whole dataset of the elements is much larger
+            if node.element_assigned in {"checkbox"}:
+                element.tag = "input"
+                element.set("type", "checkbox")
+            elif node.element_assigned in {"radiobutton"}:
+                element.tag = "input"
+                element.set("type", "radio")
+            elif node.element_assigned in {"text", "ocrtext"}:
+                element.tag = "div"
+            elif node.element_assigned in {"textarea"}:
+                # Text assignment for the placeholder
+                element.set("placeholder", node.parameters["placeholder"])
+            elif node.element_assigned in {"form_heading"}:
+                element.tag = "h3"
+            elif node.element_assigned in {"image"}:
+                # displaying various kinds of elements start
+                element.tag = "img"
+                # displaying various kinds of elements end
+                element.set("src", node.parameters["imageURL"])
 
-            node.scenarioelement_kwargs.update(scenarioelement_inner_kwargs)
+            # Text content assignment
+            if node.parameters["textContent"]:
+                element.text = node.parameters["textContent"]
+
+            str_styles = "; ".join(
+                "{}:{}".format(key, val) for key, val in node.styles.items()
+            )
+            element.set("style", str_styles)
+            element.set("buoyancy", str(node.buoyancy))
+
+    return True
+
+
+def sortchildrenby(parent, attr):
+    try:
+        parent[:] = sorted(parent, key=lambda child: int(child.get(attr)))
+        # print("sorted", parent[:])
+        # input()
+
+    except Exception:
+        # print("exception_sorted", parent[:])
+        pass
 
     return True
 
@@ -2381,14 +2229,25 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
 
         # Localhost only
         if localparams["page"] == 1:
-            """
-            sortchildrenby(root, 'buoyancy')
-            for child in root:
-                print(child.)
-                sortchildrenby(child, 'buoyancy')
-            """
+            for pre, fill, node in RenderTree(root_firstcluster):
+                if node.children:
+                    pass
+
             # Generating HTML for printing
-            html = ET.tostring(root, short_empty_elements=False).decode("utf-8")
+            root1 = root
+
+            for elem in root1.iter():
+                if len(list(elem)) > 1:
+
+                    print('my no of child: %d'%len(list(elem)))
+                    print(elem.attrib.items())
+                    for child in elem:
+                        print(child, child.attrib.items(), child.get("buoyancy"))
+
+                    print(elem, "tag", elem.tag)
+                    sortchildrenby(elem, "buoyancy")
+
+            html = ET.tostring(root1, short_empty_elements=False).decode("utf-8")
             # print("html=", html)
 
             # Print html code
@@ -2419,6 +2278,8 @@ def pipeline_assemble(region_dataset, fdict, o, localparams, freecanvasimg_hw=(0
                         node.styles,
                         "processing:",
                         node.processing,
+                        "buoyancy:",
+                        node.buoyancy,
                         file=tree_file,
                     )
 
