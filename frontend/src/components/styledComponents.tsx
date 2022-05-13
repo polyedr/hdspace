@@ -4,13 +4,13 @@ import {
   AccordionDetailsProps,
   AccordionSummaryProps,
   IconButtonProps,
-  TextFieldProps,
   Accordion as MuiAccordion,
   AccordionSummary as MuiAccordionSummary,
   AccordionDetails as MuiAccordionDetails,
-  TextField,
   IconButton,
   SvgIconTypeMap,
+  TextField,
+  TextFieldProps,
 } from '@material-ui/core';
 import {
   createStyles,

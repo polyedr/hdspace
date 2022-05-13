@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { MenuItem } from '@material-ui/core';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import FlexProperties from '../../helperComponents/Display/FlexProperties';
 import { DISPLAY } from './constants';
 import PlaceItemsProperties from '../../helperComponents/Display/PlaceItemsProperties';
@@ -53,10 +54,12 @@ const Display: React.FC<Props> = ({
         <StyledTextField
           fullWidth
           margin="dense"
-          label="Display"
           value={display || 'initial'}
           onChange={handleDisplayDropdownChange}
           select
+          SelectProps={{
+            IconComponent: KeyboardArrowDownIcon,
+          }}
           disabled={!canEdit}
         >
           {DISPLAY.map(({ value, label }) => (
