@@ -20,6 +20,7 @@ import {
 } from '@material-ui/core/styles';
 import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 const useAccordionStyles = makeStyles(({ palette }) => ({
   root: {
@@ -189,10 +190,16 @@ export const StyledTextField: React.FC<TextFieldProps> = (props) => {
 
   return (
     <TextField
-      {...(!select && {
-        inputRef,
-        onFocus: () => inputRef.current?.select(),
-      })}
+      {...(!select
+        ? {
+            inputRef,
+            onFocus: () => inputRef.current?.select(),
+          }
+        : {
+            SelectProps: {
+              IconComponent: KeyboardArrowDownIcon,
+            },
+          })}
       classes={classes}
       {...props}
     />
