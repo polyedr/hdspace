@@ -77,16 +77,23 @@ const useAccordionDetailsStyles = makeStyles(({ palette }) =>
 );
 
 const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
-  color: theme.palette.grey.A200,
-  '& label.Mui-focused': {
+  '& label, & label.Mui-focused, & label.Mui-disabled': {
     color: theme.palette.grey.A200,
   },
   '& .MuiInput-underline:after': {
     borderBottomColor: theme.palette.grey.A200,
   },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: 'red',
+  '& .MuiOutlinedInput-root, & .MuiInput-root': {
+    color: theme.palette.common.white,
+
+    '&.Mui-disabled': {
+      color: theme.palette.grey.A200,
+    },
+    '&:before, &:hover:before': {
+      borderBottomColor: theme.palette.grey.A200,
+    },
+    '& fieldset, &:hover fieldset': {
+      borderColor: theme.palette.grey.A200,
     },
     '&:hover fieldset': {
       borderColor: theme.palette.grey.A200,
@@ -94,42 +101,11 @@ const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
     '&.Mui-focused fieldset': {
       borderColor: theme.palette.grey.A200,
     },
-  },
-}));
-
-/* const CssTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
-  '.MuiTextField-root': {
-    borderColor: 'red',
-    '& label, & label.Mui-focused, & label.Mui-disabled': {
+    '& .MuiSvgIcon-root': {
       color: theme.palette.grey.A200,
     },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: theme.palette.grey.A200,
-    },
-    '& .MuiOutlinedInput-root, & .MuiInput-root': {
-      color: theme.palette.common.white,
-
-      '&.Mui-disabled': {
-        color: theme.palette.grey.A200,
-      },
-      '&:before, &:hover:before': {
-        borderBottomColor: theme.palette.grey.A200,
-      },
-      '& fieldset, &:hover fieldset': {
-        borderColor: theme.palette.grey.A200,
-      },
-      '&:hover fieldset': {
-        borderColor: theme.palette.grey.A200,
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: theme.palette.grey.A200,
-      },
-      '& .MuiSvgIcon-root': {
-        color: theme.palette.grey.A200,
-      },
-    },
   },
-})); */
+}));
 
 const useToggleButtonStyles = makeStyles(({ palette }) => ({
   root: {
