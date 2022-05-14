@@ -80,6 +80,29 @@ const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
   '& label, & label.Mui-focused, & label.Mui-disabled': {
     color: theme.palette.grey.A200,
   },
+  /* '& 	.MuiSelect-select': {
+    color: theme.palette.common.white,
+    '& .MuiSelect-standard': {
+      '&.Mui-disabled': {
+        color: theme.palette.grey.A200,
+      },
+      '&:before, &:hover:before': {
+        borderBottomColor: theme.palette.grey.A200,
+      },
+      '& fieldset, &:hover fieldset': {
+        borderColor: theme.palette.grey.A200,
+      },
+      '&:hover fieldset': {
+        borderColor: theme.palette.grey.A200,
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: theme.palette.grey.A200,
+      },
+      '& .MuiSvgIcon-root': {
+        color: theme.palette.grey.A200,
+      },
+    },
+  }, */
   '& .MuiInput-underline:after': {
     borderBottomColor: theme.palette.grey.A200,
   },
