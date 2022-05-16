@@ -4,14 +4,13 @@ import {
   AccordionDetailsProps,
   AccordionSummaryProps,
   IconButtonProps,
-  TextFieldProps,
   Accordion as MuiAccordion,
   AccordionSummary as MuiAccordionSummary,
   AccordionDetails as MuiAccordionDetails,
-  TextField,
   IconButton,
   SvgIconTypeMap,
 } from '@material-ui/core';
+import { styled, TextField, TextFieldProps } from '@mui/material';
 import {
   createStyles,
   lighten,
@@ -20,6 +19,7 @@ import {
 } from '@material-ui/core/styles';
 import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 const useAccordionStyles = makeStyles(({ palette }) => ({
   root: {
@@ -76,40 +76,36 @@ const useAccordionDetailsStyles = makeStyles(({ palette }) =>
   }),
 );
 
-const useTextFieldStyles = makeStyles(({ palette }) =>
-  createStyles({
-    root: {
-      '& label, & label.Mui-focused, & label.Mui-disabled': {
-        color: palette.grey.A200,
-      },
-      '& .MuiInput-underline:after': {
-        borderBottomColor: palette.grey.A200,
-      },
-      '& .MuiOutlinedInput-root, & .MuiInput-root': {
-        color: palette.common.white,
+const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
+  '& label, & label.Mui-focused, & label.Mui-disabled': {
+    color: theme.palette.grey.A200,
+  },
+  '& .MuiInput-underline:after': {
+    borderBottomColor: theme.palette.grey.A200,
+  },
+  '& .MuiOutlinedInput-root, & .MuiInput-root': {
+    color: theme.palette.common.white,
 
-        '&.Mui-disabled': {
-          color: palette.grey.A200,
-        },
-        '&:before, &:hover:before': {
-          borderBottomColor: palette.grey.A200,
-        },
-        '& fieldset, &:hover fieldset': {
-          borderColor: palette.grey.A200,
-        },
-        '&:hover fieldset': {
-          borderColor: palette.grey.A200,
-        },
-        '&.Mui-focused fieldset': {
-          borderColor: palette.grey.A200,
-        },
-        '& .MuiSvgIcon-root': {
-          color: palette.grey.A200,
-        },
-      },
+    '&.Mui-disabled': {
+      color: theme.palette.grey.A200,
     },
-  }),
-);
+    '&:before, &:hover:before': {
+      borderBottomColor: theme.palette.grey.A200,
+    },
+    '& fieldset, &:hover fieldset': {
+      borderColor: theme.palette.grey.A200,
+    },
+    '&:hover fieldset': {
+      borderColor: theme.palette.grey.A200,
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.grey.A200,
+    },
+    '& .MuiSvgIcon-root': {
+      color: theme.palette.grey.A200,
+    },
+  },
+}));
 
 const useToggleButtonStyles = makeStyles(({ palette }) => ({
   root: {
@@ -183,35 +179,38 @@ export const StyledAccordionDetails = React.forwardRef<
 });
 
 export const StyledTextField: React.FC<TextFieldProps> = (props) => {
-  const classes = useTextFieldStyles();
   const { select } = props;
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <TextField
-      {...(!select && {
-        inputRef,
-        onFocus: () => inputRef.current?.select(),
-      })}
-      classes={classes}
+    <CustomTextField
+      {...(!select
+        ? {
+            inputRef,
+            onFocus: () => inputRef.current?.select(),
+          }
+        : {
+            SelectProps: {
+              IconComponent: KeyboardArrowDownIcon,
+            },
+          })}
+      variant="standard"
       {...props}
     />
   );
 };
 
 export const PanelTextField: React.FC<
-  TextFieldProps & { styledcolor?: string }
+  TextFieldProps & { styledColor?: string }
 > = (props) => {
-  const classes = useTextFieldStyles();
-  const { styledcolor } = props;
+  const { styledColor } = props;
 
   return (
-    <TextField
-      classes={classes}
+    <CustomTextField
       margin="dense"
       fullWidth
       InputProps={{
-        style: { color: styledcolor || '#fff' },
+        style: { color: styledColor || '#fff' },
       }}
       {...props}
     />
