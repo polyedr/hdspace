@@ -104,7 +104,7 @@ const TaskModal: React.FC<Props> = ({
         >
           <PanelTextField
             name="title"
-            styledcolor="#000"
+            styledColor="#000"
             multiline
             required
             value={title}
