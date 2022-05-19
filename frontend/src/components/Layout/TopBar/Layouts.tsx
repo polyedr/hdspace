@@ -107,8 +107,8 @@ const Layouts: React.FC = () => {
           </optgroup>
         </NativeSelect>
       </FormControl>
-      <div className={classes.rotated}>
-        {layout !== Layout.Desktop && (
+      {layout !== Layout.Desktop && (
+        <div className={classes.rotated}>
           <StyledToggleButton
             size="small"
             selected={rotated}
@@ -118,8 +118,8 @@ const Layouts: React.FC = () => {
           >
             <ScreenRotationIcon />
           </StyledToggleButton>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

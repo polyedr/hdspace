@@ -1,13 +1,6 @@
 import React, { FC, useState, useCallback, MouseEvent } from 'react';
 import ShareIcon from '@material-ui/icons/Share';
-import {
-  Button,
-  IconButton,
-  Popover,
-  Container,
-  Box,
-  Typography,
-} from '@material-ui/core';
+import { Button, IconButton, Popover, Container, Box } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
@@ -31,6 +24,10 @@ const useStyles = makeStyles({
     padding: '1em',
     display: 'flex',
     flexDirection: 'column',
+  },
+  greyIcon: {
+    color: '#81818E',
+    height: 'medium',
   },
 });
 
@@ -121,8 +118,7 @@ const Share: FC<Props> = ({ className = '' }) => {
     <>
       <IconButton title="Share" className={className} onClick={handleClick}>
         <Box component="div">
-          <ShareIcon />
-          <Typography variant="body1">Share</Typography>
+          <ShareIcon className={classes.greyIcon} />
         </Box>
       </IconButton>
 

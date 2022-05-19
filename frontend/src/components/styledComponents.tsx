@@ -133,11 +133,11 @@ const useToggleButtonStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const useIconButtonClasses = makeStyles(({ palette }) => ({
+const useIconButtonClasses = makeStyles(() => ({
   iconButton: {
-    color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+    color: '#5064FF',
+    '&.disabled': {
+      color: '#81818E',
     },
   },
 }));

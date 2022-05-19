@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
-import { Box, Typography } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { executeUndoActions, executeRedoActions } from '@Redux/project/actions';
@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
   root: {
     display: 'flex',
+    color: '#81818E',
     flexDirection: 'row',
   },
 });
@@ -34,7 +35,6 @@ const History: FC = () => {
       >
         <Box component="div">
           <UndoIcon />
-          <Typography variant="body1">Undo</Typography>
         </Box>
       </StyledIconButton>
 
@@ -45,7 +45,6 @@ const History: FC = () => {
       >
         <Box component="div">
           <RedoIcon />
-          <Typography variant="body1">Redo</Typography>
         </Box>
       </StyledIconButton>
     </div>

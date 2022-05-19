@@ -14,7 +14,7 @@ import {
   selectVIAModeEnabled,
   selectVIAResultId,
 } from '@Redux/project/selectors/via';
-import DehazeIcon from '@material-ui/icons/Dehaze';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
 import { StyledIconButton } from '@Components/styledComponents';
@@ -30,7 +30,7 @@ import Logo from '../UI/Logo';
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
-    backgroundColor: palette.panel.main,
+    backgroundColor: 'white',
     color: palette.common.white,
     display: 'flex',
     justifyContent: 'space-between',
@@ -60,6 +60,9 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     '&:hover': {
       backgroundColor: lighten(palette.panel.main, 0.1),
     },
+  },
+  settingIcon: {
+    color: '#81818E',
   },
 }));
 
@@ -113,29 +116,30 @@ const TopPanel = () => {
             handleEditClick={handleEditClick}
           />
         )}
-
-        {viaMode ? <History /> : <TopBar />}
-
-        {!viaMode && viaResultId && (
-          <StyledIconButton
-            title="Return to annotation"
-            onClick={handleReturnToAnnotation}
-          >
-            <SettingsBackupRestoreIcon />
-          </StyledIconButton>
-        )}
-
         <Box style={{ display: 'flex' }}>
-          {projectName && (
-            <IconButton
-              className={classes.sidebarButton}
-              onClick={handleSidebarToggle}
-              title="Toggle Sidebar"
+          {viaMode ? <History /> : <TopBar />}
+
+          {!viaMode && viaResultId && (
+            <StyledIconButton
+              title="Return to annotation"
+              onClick={handleReturnToAnnotation}
             >
-              <DehazeIcon />
-            </IconButton>
+              <SettingsBackupRestoreIcon />
+            </StyledIconButton>
           )}
-          <Avatar />
+
+          <Box style={{ display: 'flex' }}>
+            {projectName && (
+              <IconButton
+                className={classes.sidebarButton}
+                onClick={handleSidebarToggle}
+                title="Toggle Sidebar"
+              >
+                <SettingsOutlinedIcon className={classes.settingIcon} />
+              </IconButton>
+            )}
+            <Avatar />
+          </Box>
         </Box>
       </Toolbar>
 
