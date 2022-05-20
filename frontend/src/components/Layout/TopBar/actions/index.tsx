@@ -7,7 +7,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import { StyledIconButton } from '@Components/styledComponents';
 import { setBordersEnabled, exportScreenFlag } from '@Redux/project/actions';
-import { IconButton, Box } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { HELP_LINK } from '@Src/config/settings';
 import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
@@ -109,11 +109,9 @@ const Actions: React.FC = () => {
         title="Proto mode"
         disabled={imageLoader || canvasMode}
       >
-        <Box component="div">
-          <VisibilityOutlinedIcon
-            sx={{ color: isPrototypeMode ? '#5064FF' : '#81818E' }}
-          />
-        </Box>
+        <VisibilityOutlinedIcon
+          sx={{ color: isPrototypeMode ? '#5064FF' : '#81818E' }}
+        />
       </StyledIconButton>
 
       <IconButton
