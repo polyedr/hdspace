@@ -15,7 +15,7 @@ import {
   selectVIAResultId,
 } from '@Redux/project/selectors/via';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
 import { StyledIconButton } from '@Components/styledComponents';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
@@ -57,9 +57,6 @@ const useStyles = makeStyles(({ typography, palette }) => ({
   },
   sidebarButton: {
     color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
-    },
   },
   settingIcon: {
     color: '#81818E',

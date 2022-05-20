@@ -11,12 +11,7 @@ import {
   SvgIconTypeMap,
 } from '@material-ui/core';
 import { styled, TextField, TextFieldProps } from '@mui/material';
-import {
-  createStyles,
-  lighten,
-  makeStyles,
-  darken,
-} from '@material-ui/core/styles';
+import { createStyles, makeStyles, darken } from '@material-ui/core/styles';
 import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
@@ -109,21 +104,8 @@ const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
 
 const useToggleButtonStyles = makeStyles(({ palette }) => ({
   root: {
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.light, 0.1),
-      borderLeftColor: palette.grey.A200,
-    },
     color: palette.common.white,
     borderColor: palette.grey.A200,
-    '&.Mui-selected': {
-      '&:hover': {
-        backgroundColor: lighten(palette.panel.light, 0.1),
-        borderLeftColor: palette.grey.A200,
-      },
-      color: palette.common.white,
-      backgroundColor: lighten(palette.panel.light, 0.2),
-      borderLeftColor: palette.grey.A200,
-    },
   },
   disabled: {
     color: palette.grey.A200,
