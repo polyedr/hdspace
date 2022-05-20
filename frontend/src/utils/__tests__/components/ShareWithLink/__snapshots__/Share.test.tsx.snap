@@ -13,7 +13,7 @@ exports[`Share should render properly 1`] = `
     >
       <svg
         aria-hidden="true"
-        class="MuiSvgIcon-root makeStyles-greyIcon-303"
+        class="MuiSvgIcon-root makeStyles-greyIcon-2"
         focusable="false"
         viewBox="0 0 24 24"
       >
