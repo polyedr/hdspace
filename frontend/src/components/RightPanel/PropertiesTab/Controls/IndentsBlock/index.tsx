@@ -13,6 +13,19 @@ import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base
 import { InputBase } from '@material-ui/core';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
+const initialOnFocusState = {
+  marginTop: false,
+  marginLeft: false,
+  marginBottom: false,
+  marginRight: false,
+  paddingTop: false,
+  paddingLeft: false,
+  paddingRight: false,
+  paddingBottom: false,
+};
+
+const onFocusColor = 'rgba(80, 100, 255, 0.1)';
+
 const useStyles = makeStyles(() => ({
   container: {
     display: 'flex',
@@ -48,6 +61,7 @@ const useStyles = makeStyles(() => ({
     },
     textAlign: 'center',
   },
+  sizeContainer: {},
   marginTop: {
     display: 'flex',
   },
@@ -225,6 +239,9 @@ const IndentsBlock: React.FC<Props> = ({
     setState({ ...state, [name]: val } as Indents);
     debounced.callback(name, `${val}px`);
   };
+
+  const [isFocusActive, setIsFocusActive] = useState(initialOnFocusState);
+
   return (
     <div className={classes.container}>
       {!isDefaultStyles && !masterScreenEnabled && canEdit && (
@@ -247,13 +264,21 @@ const IndentsBlock: React.FC<Props> = ({
 
       <div className={classes.controlsContainer}>
         <div className={cn(classes.marginTop)}>
-          <div className={cn(classes.topLeftAndRightBottomCorner)} />
+          <div
+            className={cn(classes.topLeftAndRightBottomCorner)}
+            style={{
+              borderTopColor: isFocusActive.marginTop ? onFocusColor : '',
+            }}
+          />
           <div
             className={cn(
               classes.intentsContainer,
               classes.horizontalMarginContainer,
               classes.blocksContainer,
             )}
+            style={{
+              backgroundColor: isFocusActive.marginTop ? onFocusColor : '',
+            }}
           >
             <div className={classes.intentName}>Margin</div>
             <InputBase
@@ -262,6 +287,12 @@ const IndentsBlock: React.FC<Props> = ({
               type="number"
               margin="none"
               className={cn(classes.input)}
+              onFocus={() =>
+                setIsFocusActive({ ...isFocusActive, marginTop: true })
+              }
+              onBlur={() =>
+                setIsFocusActive({ ...isFocusActive, marginTop: false })
+              }
               inputProps={{ className: classes.numberInput }}
               disabled={!canEdit}
               placeholder="0"
@@ -269,12 +300,25 @@ const IndentsBlock: React.FC<Props> = ({
               onChange={handleChange}
             />
           </div>
-          <div className={cn(classes.topRightAndLeftBottomCorner)} />
+          <div
+            className={cn(classes.topRightAndLeftBottomCorner)}
+            style={{
+              borderTopColor: isFocusActive.marginTop ? onFocusColor : '',
+            }}
+          />
         </div>
 
         <div className={cn(classes.marginRight)}>
-          <div className={cn(classes.rightTopAndBottomLeftCorner)} />
           <div
+            className={cn(classes.rightTopAndBottomLeftCorner)}
+            style={{
+              borderBottomColor: isFocusActive.marginRight ? onFocusColor : '',
+            }}
+          />
+          <div
+            style={{
+              backgroundColor: isFocusActive.marginRight ? onFocusColor : '',
+            }}
             className={cn(
               classes.intentsContainer,
               classes.verticalMarginContainer,
@@ -288,18 +332,37 @@ const IndentsBlock: React.FC<Props> = ({
               margin="none"
               className={cn(classes.input)}
               inputProps={{ className: classes.numberInput }}
+              onFocus={() =>
+                setIsFocusActive({ ...isFocusActive, marginRight: true })
+              }
+              onBlur={() =>
+                setIsFocusActive({ ...isFocusActive, marginRight: false })
+              }
               placeholder="0"
               value={(state && parseInt(state.marginRight as string)) || null}
               onChange={handleChange}
               disabled={!canEdit}
             />
           </div>
-          <div className={classes.topLeftAndRightBottomCorner} />
+          <div
+            className={classes.topLeftAndRightBottomCorner}
+            style={{
+              borderTopColor: isFocusActive.marginRight ? onFocusColor : '',
+            }}
+          />
         </div>
 
         <div className={cn(classes.marginBottom)}>
-          <div className={cn(classes.rightTopAndBottomLeftCorner)} />
           <div
+            className={cn(classes.rightTopAndBottomLeftCorner)}
+            style={{
+              borderBottomColor: isFocusActive.marginBottom ? onFocusColor : '',
+            }}
+          />
+          <div
+            style={{
+              backgroundColor: isFocusActive.marginBottom ? onFocusColor : '',
+            }}
             className={cn(
               classes.intentsContainer,
               classes.horizontalMarginContainer,
@@ -313,18 +376,37 @@ const IndentsBlock: React.FC<Props> = ({
               margin="none"
               className={cn(classes.input)}
               inputProps={{ className: classes.numberInput }}
+              onFocus={() =>
+                setIsFocusActive({ ...isFocusActive, marginBottom: true })
+              }
+              onBlur={() =>
+                setIsFocusActive({ ...isFocusActive, marginBottom: false })
+              }
               placeholder="0"
               value={(state && parseInt(state.marginBottom as string)) || null}
               onChange={handleChange}
               disabled={!canEdit}
             />
           </div>
-          <div className={cn(classes.bottomRightAndLeftTopCorner)} />
+          <div
+            className={cn(classes.bottomRightAndLeftTopCorner)}
+            style={{
+              borderBottomColor: isFocusActive.marginBottom ? onFocusColor : '',
+            }}
+          />
         </div>
 
         <div className={cn(classes.marginLeft)}>
-          <div className={cn(classes.bottomRightAndLeftTopCorner)} />
           <div
+            className={cn(classes.bottomRightAndLeftTopCorner)}
+            style={{
+              borderBottomColor: isFocusActive.marginLeft ? onFocusColor : '',
+            }}
+          />
+          <div
+            style={{
+              backgroundColor: isFocusActive.marginLeft ? onFocusColor : '',
+            }}
             className={cn(
               classes.intentsContainer,
               classes.verticalMarginContainer,
@@ -338,18 +420,37 @@ const IndentsBlock: React.FC<Props> = ({
               margin="none"
               inputProps={{ className: classes.numberInput }}
               className={cn(classes.input)}
+              onFocus={() =>
+                setIsFocusActive({ ...isFocusActive, marginLeft: true })
+              }
+              onBlur={() =>
+                setIsFocusActive({ ...isFocusActive, marginLeft: false })
+              }
               placeholder="0"
               value={(state && parseInt(state.marginLeft as string)) || null}
               onChange={handleChange}
               disabled={!canEdit}
             />
           </div>
-          <div className={cn(classes.topRightAndLeftBottomCorner)} />
+          <div
+            className={cn(classes.topRightAndLeftBottomCorner)}
+            style={{
+              borderTopColor: isFocusActive.marginLeft ? onFocusColor : '',
+            }}
+          />
         </div>
 
         <div className={cn(classes.paddingTop)}>
-          <div className={cn(classes.topLeftAndRightBottomCorner)} />
           <div
+            className={cn(classes.topLeftAndRightBottomCorner)}
+            style={{
+              borderTopColor: isFocusActive.paddingTop ? onFocusColor : '',
+            }}
+          />
+          <div
+            style={{
+              backgroundColor: isFocusActive.paddingTop ? onFocusColor : '',
+            }}
             className={cn(
               classes.intentsContainer,
               classes.horizontalPaddingContainer,
@@ -371,18 +472,37 @@ const IndentsBlock: React.FC<Props> = ({
               margin="none"
               inputProps={{ className: classes.numberInput }}
               className={cn(classes.input)}
+              onFocus={() =>
+                setIsFocusActive({ ...isFocusActive, paddingTop: true })
+              }
+              onBlur={() =>
+                setIsFocusActive({ ...isFocusActive, paddingTop: false })
+              }
               placeholder="0"
               value={(state && parseInt(state.paddingTop as string)) || null}
               onChange={handleChange}
               disabled={!canEdit}
             />
           </div>
-          <div className={cn(classes.topRightAndLeftBottomCorner)} />
+          <div
+            className={cn(classes.topRightAndLeftBottomCorner)}
+            style={{
+              borderTopColor: isFocusActive.paddingTop ? onFocusColor : '',
+            }}
+          />
         </div>
 
         <div className={cn(classes.paddingRight)}>
-          <div className={cn(classes.rightTopAndBottomLeftCorner)} />
           <div
+            className={cn(classes.rightTopAndBottomLeftCorner)}
+            style={{
+              borderBottomColor: isFocusActive.paddingRight ? onFocusColor : '',
+            }}
+          />
+          <div
+            style={{
+              backgroundColor: isFocusActive.paddingRight ? onFocusColor : '',
+            }}
             className={cn(
               classes.intentsContainer,
               classes.verticalPaddingContainer,
@@ -396,18 +516,39 @@ const IndentsBlock: React.FC<Props> = ({
               margin="none"
               inputProps={{ className: classes.numberInput }}
               className={cn(classes.input)}
+              onFocus={() =>
+                setIsFocusActive({ ...isFocusActive, paddingRight: true })
+              }
+              onBlur={() =>
+                setIsFocusActive({ ...isFocusActive, paddingRight: false })
+              }
               placeholder="0"
               value={(state && parseInt(state.paddingRight as string)) || null}
               onChange={handleChange}
               disabled={!canEdit}
             />
           </div>
-          <div className={classes.topLeftAndRightBottomCorner} />
+          <div
+            className={classes.topLeftAndRightBottomCorner}
+            style={{
+              borderTopColor: isFocusActive.paddingRight ? onFocusColor : '',
+            }}
+          />
         </div>
 
         <div className={cn(classes.paddingBottom)}>
-          <div className={cn(classes.rightTopAndBottomLeftCorner)} />
           <div
+            className={cn(classes.rightTopAndBottomLeftCorner)}
+            style={{
+              borderBottomColor: isFocusActive.paddingBottom
+                ? onFocusColor
+                : '',
+            }}
+          />
+          <div
+            style={{
+              backgroundColor: isFocusActive.paddingBottom ? onFocusColor : '',
+            }}
             className={cn(
               classes.intentsContainer,
               classes.horizontalPaddingContainer,
@@ -421,18 +562,39 @@ const IndentsBlock: React.FC<Props> = ({
               margin="none"
               className={cn(classes.input)}
               inputProps={{ className: classes.numberInput }}
+              onFocus={() =>
+                setIsFocusActive({ ...isFocusActive, paddingBottom: true })
+              }
+              onBlur={() =>
+                setIsFocusActive({ ...isFocusActive, paddingBottom: false })
+              }
               placeholder="0"
               value={(state && parseInt(state.paddingBottom as string)) || null}
               onChange={handleChange}
               disabled={!canEdit}
             />
           </div>
-          <div className={cn(classes.bottomRightAndLeftTopCorner)} />
+          <div
+            className={cn(classes.bottomRightAndLeftTopCorner)}
+            style={{
+              borderBottomColor: isFocusActive.paddingBottom
+                ? onFocusColor
+                : '',
+            }}
+          />
         </div>
 
         <div className={cn(classes.paddingLeft)}>
-          <div className={cn(classes.bottomRightAndLeftTopCorner)} />
           <div
+            className={cn(classes.bottomRightAndLeftTopCorner)}
+            style={{
+              borderBottomColor: isFocusActive.paddingLeft ? onFocusColor : '',
+            }}
+          />
+          <div
+            style={{
+              backgroundColor: isFocusActive.paddingLeft ? onFocusColor : '',
+            }}
             className={cn(
               classes.intentsContainer,
               classes.verticalPaddingContainer,
@@ -446,13 +608,24 @@ const IndentsBlock: React.FC<Props> = ({
               margin="none"
               className={cn(classes.input)}
               inputProps={{ className: classes.numberInput }}
+              onFocus={() =>
+                setIsFocusActive({ ...isFocusActive, paddingLeft: true })
+              }
+              onBlur={() =>
+                setIsFocusActive({ ...isFocusActive, paddingLeft: false })
+              }
               placeholder="0"
               value={(state && parseInt(state.paddingLeft as string)) || null}
               onChange={handleChange}
               disabled={!canEdit}
             />
           </div>
-          <div className={classes.topRightAndLeftBottomCorner} />
+          <div
+            className={classes.topRightAndLeftBottomCorner}
+            style={{
+              borderTopColor: isFocusActive.paddingLeft ? onFocusColor : '',
+            }}
+          />
         </div>
       </div>
     </div>

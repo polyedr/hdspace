@@ -34,8 +34,15 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     border: 'none',
     backgroundColor: 'transparent',
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: 'rgba(129, 129, 142, 0.1)',
+    },
+    '&:active': {
+      backgroundColor: 'rgba(80, 100, 255, 0.1)',
+    },
   },
-  icon: { width: '16px', height: '16px', color: '#81818E' },
+  icon: { color: '#81818E' },
 });
 
 const RemoveStyles: React.FC<Props> = ({ onClick, propsToRemove }) => {
@@ -55,7 +62,7 @@ const RemoveStyles: React.FC<Props> = ({ onClick, propsToRemove }) => {
       {showClearButton && (
         // eslint-disable-next-line react/button-has-type
         <button className={classes.removeButton} onClick={handleButtonClick}>
-          <ClearIcon className={classes.icon} />
+          <ClearIcon className={classes.icon} sx={{ width: '16px' }} />
           <div>Reset</div>
         </button>
       )}
