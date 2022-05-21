@@ -263,9 +263,9 @@ const IndentsBlock: React.FC<Props> = ({
       )}
 
       <div className={classes.controlsContainer}>
-        <div className={cn(classes.marginTop)}>
+        <div className={classes.marginTop}>
           <div
-            className={cn(classes.topLeftAndRightBottomCorner)}
+            className={classes.topLeftAndRightBottomCorner}
             style={{
               borderTopColor: isFocusActive.marginTop ? onFocusColor : '',
             }}
@@ -286,7 +286,7 @@ const IndentsBlock: React.FC<Props> = ({
               name="marginTop"
               type="number"
               margin="none"
-              className={cn(classes.input)}
+              className={classes.input}
               onFocus={() =>
                 setIsFocusActive({ ...isFocusActive, marginTop: true })
               }
@@ -301,16 +301,16 @@ const IndentsBlock: React.FC<Props> = ({
             />
           </div>
           <div
-            className={cn(classes.topRightAndLeftBottomCorner)}
+            className={classes.topRightAndLeftBottomCorner}
             style={{
               borderTopColor: isFocusActive.marginTop ? onFocusColor : '',
             }}
           />
         </div>
 
-        <div className={cn(classes.marginRight)}>
+        <div className={classes.marginRight}>
           <div
-            className={cn(classes.rightTopAndBottomLeftCorner)}
+            className={classes.rightTopAndBottomLeftCorner}
             style={{
               borderBottomColor: isFocusActive.marginRight ? onFocusColor : '',
             }}
@@ -330,7 +330,7 @@ const IndentsBlock: React.FC<Props> = ({
               name="marginRight"
               type="number"
               margin="none"
-              className={cn(classes.input)}
+              className={classes.input}
               inputProps={{ className: classes.numberInput }}
               onFocus={() =>
                 setIsFocusActive({ ...isFocusActive, marginRight: true })
@@ -352,9 +352,9 @@ const IndentsBlock: React.FC<Props> = ({
           />
         </div>
 
-        <div className={cn(classes.marginBottom)}>
+        <div className={classes.marginBottom}>
           <div
-            className={cn(classes.rightTopAndBottomLeftCorner)}
+            className={classes.rightTopAndBottomLeftCorner}
             style={{
               borderBottomColor: isFocusActive.marginBottom ? onFocusColor : '',
             }}
@@ -374,7 +374,7 @@ const IndentsBlock: React.FC<Props> = ({
               name="marginBottom"
               type="number"
               margin="none"
-              className={cn(classes.input)}
+              className={classes.input}
               inputProps={{ className: classes.numberInput }}
               onFocus={() =>
                 setIsFocusActive({ ...isFocusActive, marginBottom: true })
@@ -389,16 +389,16 @@ const IndentsBlock: React.FC<Props> = ({
             />
           </div>
           <div
-            className={cn(classes.bottomRightAndLeftTopCorner)}
+            className={classes.bottomRightAndLeftTopCorner}
             style={{
               borderBottomColor: isFocusActive.marginBottom ? onFocusColor : '',
             }}
           />
         </div>
 
-        <div className={cn(classes.marginLeft)}>
+        <div className={classes.marginLeft}>
           <div
-            className={cn(classes.bottomRightAndLeftTopCorner)}
+            className={classes.bottomRightAndLeftTopCorner}
             style={{
               borderBottomColor: isFocusActive.marginLeft ? onFocusColor : '',
             }}
@@ -419,7 +419,7 @@ const IndentsBlock: React.FC<Props> = ({
               type="number"
               margin="none"
               inputProps={{ className: classes.numberInput }}
-              className={cn(classes.input)}
+              className={classes.input}
               onFocus={() =>
                 setIsFocusActive({ ...isFocusActive, marginLeft: true })
               }
@@ -433,16 +433,16 @@ const IndentsBlock: React.FC<Props> = ({
             />
           </div>
           <div
-            className={cn(classes.topRightAndLeftBottomCorner)}
+            className={classes.topRightAndLeftBottomCorner}
             style={{
               borderTopColor: isFocusActive.marginLeft ? onFocusColor : '',
             }}
           />
         </div>
 
-        <div className={cn(classes.paddingTop)}>
+        <div className={classes.paddingTop}>
           <div
-            className={cn(classes.topLeftAndRightBottomCorner)}
+            className={classes.topLeftAndRightBottomCorner}
             style={{
               borderTopColor: isFocusActive.paddingTop ? onFocusColor : '',
             }}
@@ -471,7 +471,7 @@ const IndentsBlock: React.FC<Props> = ({
               type="number"
               margin="none"
               inputProps={{ className: classes.numberInput }}
-              className={cn(classes.input)}
+              className={classes.input}
               onFocus={() =>
                 setIsFocusActive({ ...isFocusActive, paddingTop: true })
               }
@@ -485,16 +485,16 @@ const IndentsBlock: React.FC<Props> = ({
             />
           </div>
           <div
-            className={cn(classes.topRightAndLeftBottomCorner)}
+            className={classes.topRightAndLeftBottomCorner}
             style={{
               borderTopColor: isFocusActive.paddingTop ? onFocusColor : '',
             }}
           />
         </div>
 
-        <div className={cn(classes.paddingRight)}>
+        <div className={classes.paddingRight}>
           <div
-            className={cn(classes.rightTopAndBottomLeftCorner)}
+            className={classes.rightTopAndBottomLeftCorner}
             style={{
               borderBottomColor: isFocusActive.paddingRight ? onFocusColor : '',
             }}
@@ -515,7 +515,7 @@ const IndentsBlock: React.FC<Props> = ({
               type="number"
               margin="none"
               inputProps={{ className: classes.numberInput }}
-              className={cn(classes.input)}
+              className={classes.input}
               onFocus={() =>
                 setIsFocusActive({ ...isFocusActive, paddingRight: true })
               }
@@ -536,9 +536,9 @@ const IndentsBlock: React.FC<Props> = ({
           />
         </div>
 
-        <div className={cn(classes.paddingBottom)}>
+        <div className={classes.paddingBottom}>
           <div
-            className={cn(classes.rightTopAndBottomLeftCorner)}
+            className={classes.rightTopAndBottomLeftCorner}
             style={{
               borderBottomColor: isFocusActive.paddingBottom
                 ? onFocusColor
@@ -560,7 +560,7 @@ const IndentsBlock: React.FC<Props> = ({
               name="paddingBottom"
               type="number"
               margin="none"
-              className={cn(classes.input)}
+              className={classes.input}
               inputProps={{ className: classes.numberInput }}
               onFocus={() =>
                 setIsFocusActive({ ...isFocusActive, paddingBottom: true })
@@ -575,7 +575,7 @@ const IndentsBlock: React.FC<Props> = ({
             />
           </div>
           <div
-            className={cn(classes.bottomRightAndLeftTopCorner)}
+            className={classes.bottomRightAndLeftTopCorner}
             style={{
               borderBottomColor: isFocusActive.paddingBottom
                 ? onFocusColor
@@ -584,9 +584,9 @@ const IndentsBlock: React.FC<Props> = ({
           />
         </div>
 
-        <div className={cn(classes.paddingLeft)}>
+        <div className={classes.paddingLeft}>
           <div
-            className={cn(classes.bottomRightAndLeftTopCorner)}
+            className={classes.bottomRightAndLeftTopCorner}
             style={{
               borderBottomColor: isFocusActive.paddingLeft ? onFocusColor : '',
             }}
@@ -606,7 +606,7 @@ const IndentsBlock: React.FC<Props> = ({
               name="paddingLeft"
               type="number"
               margin="none"
-              className={cn(classes.input)}
+              className={classes.input}
               inputProps={{ className: classes.numberInput }}
               onFocus={() =>
                 setIsFocusActive({ ...isFocusActive, paddingLeft: true })
