@@ -60,8 +60,11 @@ const RemoveStyles: React.FC<Props> = ({ onClick, propsToRemove }) => {
   return (
     <div className={classes.header}>
       {showClearButton && (
-        // eslint-disable-next-line react/button-has-type
-        <button className={classes.removeButton} onClick={handleButtonClick}>
+        <button
+          type="button"
+          className={classes.removeButton}
+          onClick={handleButtonClick}
+        >
           <ClearIcon className={classes.icon} sx={{ width: '16px' }} />
           <div>Reset</div>
         </button>
