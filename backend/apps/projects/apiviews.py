@@ -781,7 +781,7 @@ class ProjectcopyView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements']
+        WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements', 'projectillustrationset', 'images']
         projectid = request.data['projectid']
         project = Project.objects.get(pk=projectid)
         project_clone = duplicate_model_with_descendants(project, WHITELIST)
