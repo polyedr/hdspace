@@ -34,6 +34,39 @@ from .models import (
     Scenario,
     ElementComment, ProjectImage, ProjectIllustrationSet, ProjectColumn, ColumnTask)
 
+from collections import OrderedDict
+
+
+def duplicate_model_with_descendants(obj, whitelist, _new_parent_pk=None):
+    kwargs = {}
+    children_to_clone = OrderedDict()
+    for field in obj._meta.get_fields():
+        if field.name == "id":
+            pass
+        elif field.one_to_many:
+            if field.name in whitelist:
+                these_children = list(getattr(obj, field.name).all())
+                if field.name in children_to_clone:
+                    children_to_clone[field.name] |= these_children
+                else:
+                    children_to_clone[field.name] = these_children
+            else:
+                pass
+        elif field.many_to_one:
+            if _new_parent_pk:
+                kwargs[field.name + '_id'] = _new_parent_pk
+        elif field.concrete:
+            kwargs[field.name] = getattr(obj, field.name)
+        else:
+            pass
+    iclone = obj.make_clone()
+    new_instance = iclone
+    for ky in children_to_clone.keys():
+        child_collection = getattr(new_instance, ky)
+        for child in children_to_clone[ky]:
+            child_collection.add(duplicate_model_with_descendants(child, whitelist=whitelist))
+    return new_instance
+
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
@@ -276,7 +309,7 @@ class ScreenScenarioMultipleSerializer(
 
 # DRF-Guardian Test
 from rest_framework_guardian.serializers import ObjectPermissionsAssignmentMixin
-from django.contrib.auth.models import Group
+# from django.contrib.auth.models import Group
 # from rest_framework import permissions
 
 
@@ -350,6 +383,11 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
     def setup_eager_loading(qs):
         queryset = qs.select_related("user").prefetch_related("projectscreen")
         return queryset
+
+
+# Copying the project
+class ProjectcopySerializer:
+    pass
 
 
 class ProjectPermissionsSerializer(ObjectPermissionsAssignmentMixin, serializers.ModelSerializer):
@@ -449,6 +487,7 @@ class ProjectInvitationSerializer(serializers.ModelSerializer):
 class ProjectMemberSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='user', read_only=False)
+
     class Meta:
         model = ProjectMember
         fields = ("id", "role", "status", "project", "user", "user_id")

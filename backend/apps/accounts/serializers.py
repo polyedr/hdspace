@@ -9,7 +9,7 @@ from djoser.serializers import ActivationSerializer
 class MyActivationSerializer(ActivationSerializer):
     def validate(self, attrs):
         attrs = super(MyActivationSerializer, self).validate(attrs)
-        group = Group.objects.get(name='CommonUsers') # This group should be existed with all the rights are necessary
+        group = Group.objects.get(name='CommonUsers')  # This group should be existed with all the rights are necessary
         self.user.groups.add(group)
         return attrs
 
@@ -17,6 +17,7 @@ class MyActivationSerializer(ActivationSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     # users = UserSerializer(read_only=True)
     parameters = serializers.JSONField(allow_null=True)
+
     class Meta:
         model = Profile
         fields = ("avatar", "approved", "role", "experienced", "hourly_rate", "id", "parameters")

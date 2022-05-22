@@ -11,7 +11,6 @@ from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
-from rest_framework import serializers
 
 # from rest_framework import permissions  # Django-Gardian testing Custom Permission
 
@@ -96,7 +95,6 @@ class Project(TimeStampedModel):
 
     def get_project_url(self):
         return reverse("projects:project", kwargs={"pk": self.pk})
-
 
     def __str__(self):
         return self.name
