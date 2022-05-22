@@ -1,4 +1,5 @@
 from django.db import models
+from model_clone import CloneMixin
 
 
 __all__ = (
@@ -6,7 +7,7 @@ __all__ = (
 )
 
 
-class TimeStampedModel(models.Model):
+class TimeStampedModel(CloneMixin, models.Model):
     """
     An abstract base class model that provides self-updating
     ``created`` and ``modified`` fields.

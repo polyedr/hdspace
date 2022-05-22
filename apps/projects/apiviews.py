@@ -57,7 +57,8 @@ from .serializers import (
     ElementCommentSerializer,
     IllustrationSetSerializer,
     ImageSerializer,
-    ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer)
+    ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
+    duplicate_model_with_descendants)
 
 
 class IsOwner(permissions.BasePermission):
@@ -83,7 +84,8 @@ class ProjectViewSet(viewsets.ModelViewSet):
     pagination_class = ProjectCursorSetPagination
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
     filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian and DjangoFilterBackend
-    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'], 'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
+    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'],
+                        'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
                         'updated': ['lte', 'gte', 'lt', 'gt']}
 
     def get_queryset(self):
@@ -770,5 +772,21 @@ class DisplayPermissionsAllusers(APIView):
 
         if rp_users_list:
             return Response(rp_users_list, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+# Copying the project
+class ProjectcopyView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements']
+        projectid = request.data['projectid']
+        project = Project.objects.get(pk=projectid)
+        project_clone = duplicate_model_with_descendants(project, WHITELIST)
+
+        if project_clone:
+            return Response(project_clone.id, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

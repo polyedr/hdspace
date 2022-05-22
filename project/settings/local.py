@@ -42,6 +42,7 @@ INTERNAL_IPS = ENV.list("INTERNAL_IPS", default=("127.0.0.1",))
 # Application definition
 INSTALLED_APPS = [
     "apps",
+    'model_clone',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

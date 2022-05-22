@@ -37,7 +37,7 @@ from .apiviews import (
     IllustrationSetImageList, IllustrationSetImageDetail, ScenarioElementMultipleRecursiveViewSet,
     RemovePermissionsProject,
     AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject,
-    ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail)
+    ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView)
 
 app_name = "projects"
 
@@ -143,10 +143,10 @@ api_permissions_project_patterns = [
          name="api_display_permissions_allusers"),
 ]
 
-# path(
-#     "permissions-projects/<int:pk>/", PermissionsProjectDetail.as_view(),
-#     name="api_permissions_project"
-# ),
+api_copying_projects = [
+    path("projectcopy/", ProjectcopyView.as_view(),
+         name="api_copying_projects"),
+]
 
 router = routers.DefaultRouter()
 router.register(r"screen-scenarios", ScreeScenarioViewSet)
@@ -240,6 +240,7 @@ urlpatterns = [
     # path("", include(api_project_invitation_patterns)),
     # path("", include(api_screen_event_patterns)),
     path("", include(api_permissions_project_patterns)),
+    path("", include(api_copying_projects)),
     path("", include(api_element_comment_patterns)),
     path("", include(api_project_member_patterns)),
     path("", include(api_project_column_patterns)),

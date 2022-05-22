@@ -21,6 +21,7 @@ cffi==1.14.3
 chardet==3.0.4
 Click==7.0
 codegen==1.0
+conditional==1.4
 constantly==15.1.0
 coreapi==2.3.3
 coreschema==0.0.4
@@ -34,6 +35,7 @@ defusedxml==0.5.0
 distro==1.5.0
 Django==2.2.24
 django-anymail==8.4
+django-clone==3.0.1
 django-cors-headers==2.5.2
 django-debug-toolbar==1.9.1
 django-environ==0.4.4
@@ -41,6 +43,7 @@ django-filter==2.1.0
 django-guardian==2.3.0
 django-invitations==1.9.3
 django-js-asset==1.2.2
+django-lazysignup==2.0.0
 django-mptt==0.11.0
 django-polymorphic==2.1.2
 django-polymorphic-tree==1.5.1
