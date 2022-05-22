@@ -3,59 +3,50 @@
 exports[`VIANavigator should render VIANavigator 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiAccordion-root makeStyles-root-3 Mui-expanded makeStyles-expanded-4 MuiAccordion-rounded MuiPaper-elevation1 MuiPaper-rounded"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAccordion-root Mui-expanded css-edq8ae-MuiPaper-root-MuiAccordion-root"
   >
     <div
-      aria-disabled="false"
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-root-5 Mui-expanded makeStyles-expanded-7"
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bdVaJa gJomAl css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content makeStyles-content-6 Mui-expanded makeStyles-expanded-7"
+        class="MuiAccordionSummary-content Mui-expanded css-1betqn-MuiAccordionSummary-content"
       >
         Regions
       </div>
       <div
-        aria-disabled="false"
-        aria-hidden="true"
-        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-8 Mui-expanded makeStyles-expanded-7 MuiIconButton-edgeEnd"
+        class="MuiAccordionSummary-expandIconWrapper Mui-expanded css-yw020d-MuiAccordionSummary-expandIconWrapper"
       >
-        <span
-          class="MuiIconButton-label"
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          viewBox="0 0 24 24"
         >
-          <svg
-            aria-hidden="true"
-            class="MuiSvgIcon-root"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-            />
-          </svg>
-        </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
+          <path
+            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+          />
+        </svg>
       </div>
     </div>
     <div
-      class="MuiCollapse-root MuiCollapse-entered"
+      class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-entered css-pwcg7p-MuiCollapse-root"
       style="min-height: 0px;"
     >
       <div
-        class="MuiCollapse-wrapper"
+        class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
       >
         <div
-          class="MuiCollapse-wrapperInner"
+          class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
         >
           <div
+            class="MuiAccordion-region"
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root makeStyles-root-9 makeStyles-root-1"
+              class="MuiAccordionDetails-root makeStyles-root-1 css-a45536-MuiAccordionDetails-root"
             >
               <div
                 data-react-beautiful-dnd-droppable="0"
@@ -63,7 +54,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
               >
                 <div
                   aria-roledescription="Draggable item. Press space bar to lift"
-                  class="makeStyles-root-10"
+                  class="makeStyles-root-3"
                   data-react-beautiful-dnd-drag-handle="0"
                   data-react-beautiful-dnd-draggable="0"
                   draggable="false"
@@ -71,7 +62,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
                   tabindex="0"
                 >
                   <span
-                    class="makeStyles-title-12"
+                    class="makeStyles-title-5"
                   >
                     ocrtext
                   </span>
@@ -84,62 +75,53 @@ exports[`VIANavigator should render VIANavigator 1`] = `
     </div>
   </div>
   <div
-    class="MuiPaper-root MuiAccordion-root makeStyles-root-3 Mui-expanded makeStyles-expanded-4 MuiAccordion-rounded MuiPaper-elevation1 MuiPaper-rounded"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAccordion-root Mui-expanded css-edq8ae-MuiPaper-root-MuiAccordion-root"
   >
     <div
-      aria-disabled="false"
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-root-5 Mui-expanded makeStyles-expanded-7"
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bdVaJa gJomAl css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content makeStyles-content-6 Mui-expanded makeStyles-expanded-7"
+        class="MuiAccordionSummary-content Mui-expanded css-1betqn-MuiAccordionSummary-content"
       >
         Model
       </div>
       <div
-        aria-disabled="false"
-        aria-hidden="true"
-        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-8 Mui-expanded makeStyles-expanded-7 MuiIconButton-edgeEnd"
+        class="MuiAccordionSummary-expandIconWrapper Mui-expanded css-yw020d-MuiAccordionSummary-expandIconWrapper"
       >
-        <span
-          class="MuiIconButton-label"
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          viewBox="0 0 24 24"
         >
-          <svg
-            aria-hidden="true"
-            class="MuiSvgIcon-root"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-            />
-          </svg>
-        </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
+          <path
+            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+          />
+        </svg>
       </div>
     </div>
     <div
-      class="MuiCollapse-root MuiCollapse-entered"
+      class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-entered css-pwcg7p-MuiCollapse-root"
       style="min-height: 0px;"
     >
       <div
-        class="MuiCollapse-wrapper"
+        class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
       >
         <div
-          class="MuiCollapse-wrapperInner"
+          class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
         >
           <div
+            class="MuiAccordion-region"
             role="region"
           >
             <div
               class="makeStyles-selectWrapper-2"
             >
               <div
-                class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root css-wi7lwd-MuiFormControl-root-MuiTextField-root"
+                class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-bwzfXH bCuzAc css-1z10yd4-MuiFormControl-root-MuiTextField-root"
               >
                 <label
                   class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"

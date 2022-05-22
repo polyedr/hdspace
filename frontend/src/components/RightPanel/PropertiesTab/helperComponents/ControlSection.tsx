@@ -6,6 +6,7 @@ import {
   StyledAccordionDetails,
   StyledAccordionSummary,
 } from '@Components/styledComponents';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const useStyles = makeStyles({
   section: {},
@@ -32,7 +33,10 @@ const ControlSection: React.FC<Props> = ({ title, children }) => {
 
   return (
     <StyledAccordion className={classes.section} defaultExpanded>
-      <StyledAccordionSummary className={classes.title}>
+      <StyledAccordionSummary
+        expandIcon={<ArrowDropDownIcon />}
+        className={classes.title}
+      >
         {splitWords(title)}
       </StyledAccordionSummary>
 

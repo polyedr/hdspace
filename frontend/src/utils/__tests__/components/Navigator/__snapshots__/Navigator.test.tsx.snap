@@ -3,62 +3,53 @@
 exports[`Navigator should render a Navigator component 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiAccordion-root makeStyles-root-1 Mui-expanded makeStyles-expanded-2 MuiAccordion-rounded MuiPaper-elevation1 MuiPaper-rounded"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAccordion-root Mui-expanded css-edq8ae-MuiPaper-root-MuiAccordion-root"
   >
     <div
-      aria-disabled="false"
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root makeStyles-root-3 Mui-expanded makeStyles-expanded-5"
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bdVaJa gJomAl css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
       <div
-        class="MuiAccordionSummary-content makeStyles-content-4 Mui-expanded makeStyles-expanded-5"
+        class="MuiAccordionSummary-content Mui-expanded css-1betqn-MuiAccordionSummary-content"
       >
         Navigator
       </div>
       <div
-        aria-disabled="false"
-        aria-hidden="true"
-        class="MuiButtonBase-root MuiIconButton-root MuiAccordionSummary-expandIcon makeStyles-expandIcon-6 Mui-expanded makeStyles-expanded-5 MuiIconButton-edgeEnd"
+        class="MuiAccordionSummary-expandIconWrapper Mui-expanded css-yw020d-MuiAccordionSummary-expandIconWrapper"
       >
-        <span
-          class="MuiIconButton-label"
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root"
+          focusable="false"
+          viewBox="0 0 24 24"
         >
-          <svg
-            aria-hidden="true"
-            class="MuiSvgIcon-root"
-            focusable="false"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-            />
-          </svg>
-        </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
+          <path
+            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
+          />
+        </svg>
       </div>
     </div>
     <div
-      class="MuiCollapse-root MuiCollapse-entered"
+      class="MuiCollapse-root MuiCollapse-vertical MuiCollapse-entered css-pwcg7p-MuiCollapse-root"
       style="min-height: 0px;"
     >
       <div
-        class="MuiCollapse-wrapper"
+        class="MuiCollapse-wrapper MuiCollapse-vertical css-smkl36-MuiCollapse-wrapper"
       >
         <div
-          class="MuiCollapse-wrapperInner"
+          class="MuiCollapse-wrapperInner MuiCollapse-vertical css-9l5vo-MuiCollapse-wrapperInner"
         >
           <div
+            class="MuiAccordion-region"
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root makeStyles-root-7"
+              class="MuiAccordionDetails-root css-a45536-MuiAccordionDetails-root"
             >
               <div
-                class="makeStyles-tree-8"
+                class="makeStyles-tree-1"
                 id="navigator-id"
               >
                 <div
@@ -78,7 +69,7 @@ exports[`Navigator should render a Navigator component 1`] = `
                         <div
                           aria-expanded="true"
                           aria-selected="false"
-                          class="makeStyles-treeItem-9 makeStyles-treeItem-12"
+                          class="makeStyles-treeItem-2 makeStyles-treeItem-5"
                           data-react-beautiful-dnd-draggable="0"
                           id="treeitem-1"
                           role="group"
@@ -86,7 +77,7 @@ exports[`Navigator should render a Navigator component 1`] = `
                         >
                           <span>
                             <button
-                              class="makeStyles-iconButton-13"
+                              class="makeStyles-iconButton-6"
                               tabindex="-1"
                               type="button"
                             >
@@ -111,7 +102,7 @@ exports[`Navigator should render a Navigator component 1`] = `
                         </div>
                         <div
                           aria-selected="false"
-                          class="makeStyles-treeItem-9 makeStyles-treeItem-14"
+                          class="makeStyles-treeItem-2 makeStyles-treeItem-7"
                           data-react-beautiful-dnd-draggable="0"
                           id="treeitem-2"
                           role="treeitem"
@@ -119,12 +110,12 @@ exports[`Navigator should render a Navigator component 1`] = `
                         >
                           <span>
                             <span
-                              class="makeStyles-iconButton-13"
+                              class="makeStyles-iconButton-6"
                             />
                           </span>
                           <svg
                             aria-hidden="true"
-                            class="MuiSvgIcon-root makeStyles-icon-11"
+                            class="MuiSvgIcon-root makeStyles-icon-4"
                             focusable="false"
                             viewBox="0 0 24 24"
                           >
