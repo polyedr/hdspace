@@ -11,6 +11,7 @@ import {
   TextinputServerElement,
   RadiobuttonGroupServerElement,
   SwitchServerElement,
+  SliderServerElement,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { v4 } from 'uuid';
@@ -303,4 +304,32 @@ export const makeTextarea = (): TextareaServerElement => ({
   },
   name: 'textarea',
   children: [],
+});
+
+export const makeSlider = (): SliderServerElement => ({
+  id: 'slider',
+  buoyancy: 0,
+  func_type: 'slider',
+  struct_type: 'slider',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 170,
+      height: 90,
+    },
+    group: ElementGroup.FORM,
+    min: 0,
+    value: 70,
+    max: 100,
+    step: 1,
+  },
+  styles: {
+    classNames: ['slider'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'slider',
+  children: [],
+  custom: true,
 });

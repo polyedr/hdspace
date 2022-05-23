@@ -27,6 +27,7 @@ import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import PaymentIcon from '@material-ui/icons/Payment';
 import Crop75Icon from '@material-ui/icons/Crop75';
+import SliderIcon from '@material-ui/icons/Tune';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { Entity, LibraryElements, ServerElement } from '@Src/types';
@@ -72,6 +73,7 @@ import {
   makeLabel,
   makeRadiobutton,
   makeSwitch,
+  makeSlider,
 } from './formElements/formElements';
 import { makeButtonGenerator } from './generatorElements/generatorElements';
 import {
@@ -140,6 +142,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   option: makeOption,
   label: makeLabel,
   textarea: makeTextarea,
+  slider: makeSlider,
   heading: makeHeading,
   paragraph: makeParagraph,
   ocrtext: makeOcrtext,
@@ -187,6 +190,7 @@ export const ICONS: Partial<
   dropdown: ArrowDropDownCircleIcon,
   textinput: MessageIcon,
   textarea: TextFieldsIcon,
+  slider: SliderIcon,
   checkbox: CheckBoxIcon,
   switch: ToggleOffIcon,
   radiobuttonGroup: RadioButtonCheckedIcon,

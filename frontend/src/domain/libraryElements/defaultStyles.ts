@@ -939,6 +939,8 @@ export const defaultTextareaStyles: {
   },
 };
 
+export const defaultSliderStyles = {};
+
 export const defaultCheckboxStyles: {
   [K in CheckboxControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
@@ -1270,6 +1272,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   textinput: defaultTextinputStyles,
   input: defaultTextinputStyles,
   textarea: defaultTextareaStyles,
+  slider: defaultSliderStyles,
   checkbox: defaultCheckboxStyles,
   switch: defaultSwitchStyles,
   radiobutton: defaultRadiobuttonStyles,
