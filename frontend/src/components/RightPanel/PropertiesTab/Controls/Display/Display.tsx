@@ -53,7 +53,6 @@ const Display: React.FC<Props> = ({
         <StyledTextField
           fullWidth
           margin="dense"
-          label="Display"
           value={display || 'initial'}
           onChange={handleDisplayDropdownChange}
           select

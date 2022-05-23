@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, batch } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { changePrototypeMode } from '@Redux/user/actions';
@@ -60,19 +60,26 @@ const useStyles = makeStyles(({ palette, typography }) => ({
 
 const Actions: React.FC = () => {
   const classes = useStyles();
+  const isProtoMode = useSelector(selectIsPrototypeMode);
   const dispatch = useDispatch();
+  const protoModeBatch = () => {
+    return (dispatch) => {
+      batch(() => {
+        dispatch(setBordersEnabled(false));
+        dispatch(changePrototypeMode(!isProtoMode));
+      });
+    };
+  };
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const screens = useSelector(selectScreensWithoutMaster);
   const { name: projectName } = useSelector(selectCurrentProject);
-  const isProtoMode = useSelector(selectIsPrototypeMode);
   const enableBordersDebounce = useDebouncedCallback(() => {
     dispatch(setBordersEnabled(true));
   }, PANEL_TRANSITION_DURATION + 120);
   const handleToggleProtoMode = useCallback(() => {
-    dispatch(setBordersEnabled(false));
-    dispatch(changePrototypeMode(!isProtoMode));
+    protoModeBatch();
     enableBordersDebounce.callback();
   }, [dispatch, isProtoMode, enableBordersDebounce]);
 

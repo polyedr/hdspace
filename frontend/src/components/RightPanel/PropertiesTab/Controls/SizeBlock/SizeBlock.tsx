@@ -47,9 +47,15 @@ enum Unit {
 
 type UnitName = keyof typeof Unit;
 
+type MaxMinUnitName = Omit<UnitName, 'auto'>;
+
 type SelectedUnit = {
   width: UnitName;
   height: UnitName;
+  minHeight: MaxMinUnitName;
+  maxHeight: MaxMinUnitName;
+  minWidth: MaxMinUnitName;
+  maxWidth: MaxMinUnitName;
 };
 
 type SizeName = keyof SelectedUnit;
@@ -261,7 +267,6 @@ const SizeBlock: React.FC<Props> = ({
 
         <StyledTextField
           margin="dense"
-          label="Units"
           onChange={(event) => handleSelectChange(event, sizeName)}
           value={Unit[getUnitFromValue(size)]}
           name={`${sizeName}_unit`}
