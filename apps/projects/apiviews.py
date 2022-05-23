@@ -790,3 +790,19 @@ class ProjectcopyView(APIView):
             return Response(project_clone.id, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+# Copying the screen
+class ScreencopyView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        WHITELIST = ['screenscenario', 'elements']
+        screenid = request.data['screenid']
+        screen = ProjectScreen.objects.get(pk=screenid)
+        screen_clone = duplicate_model_with_descendants(screen, WHITELIST)
+
+        if screen_clone:
+            return Response(screen_clone.id, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
