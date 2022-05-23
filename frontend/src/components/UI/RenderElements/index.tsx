@@ -33,6 +33,7 @@ import {
   MaterialTextarea,
   UnstyledTextarea,
 } from './Textarea';
+import { BootstrapSlider, MaterialSlider, UnstyledSlider } from './Slider';
 import {
   BootstrapCheckbox,
   MaterialCheckbox,
@@ -108,6 +109,11 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     bootstrap: BootstrapTextarea,
     material: MaterialTextarea,
     not_selected: UnstyledTextarea,
+  }),
+  slider: withUIFramework({
+    bootstrap: BootstrapSlider,
+    material: MaterialSlider,
+    not_selected: UnstyledSlider,
   }),
   heading: Heading,
   paragraph: Paragraph,

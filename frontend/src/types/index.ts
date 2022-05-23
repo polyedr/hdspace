@@ -236,6 +236,9 @@ export type TextareaServerElement = ServerElement<
   [],
   TextareaParameters
 >;
+
+export type SliderServerElement = ServerElement<'slider', [], SliderParameters>;
+
 export type HeadingServerElement = ServerElement<
   'heading',
   [],
@@ -482,6 +485,8 @@ export type TextareaElement = LibraryElement<
   [],
   TextareaParameters
 >;
+export type SliderElement = LibraryElement<'slider', [], SliderParameters>;
+
 export type HeadingElement = LibraryElement<'heading', [], HeadingParameters>;
 export type ParagraphElement = LibraryElement<
   'paragraph',
@@ -672,6 +677,13 @@ export type ColumnsParameters = BaseElementParams;
 export type TextareaParameters = BaseElementParams & {
   textContent: string;
   placeholder: string;
+};
+
+export type SliderParameters = BaseElementParams & {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
 };
 
 export type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -1438,6 +1450,7 @@ export type ElementsToAdd = {
   select: () => SelectServerElement;
   label: () => LabelServerElement;
   textarea: () => TextareaServerElement;
+  slider: () => SliderServerElement;
   heading: () => HeadingServerElement;
   paragraph: () => ParagraphServerElement;
   ocrtext: () => OcrtextServerElement;
@@ -1575,6 +1588,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'navbar',
   'radiobuttons',
   'imagesList',
+  'sliderSettings',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

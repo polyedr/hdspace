@@ -12,6 +12,7 @@ export const ENTITIES: {
   buttonGenerator: 'buttonGenerator',
   textinput: 'textinput',
   textarea: 'textarea',
+  slider: 'slider',
   checkbox: 'checkbox',
   switch: 'switch',
   radiobuttonGroup: 'radiobuttonGroup',
@@ -101,6 +102,8 @@ export const textareaStyleControls = [
   'background',
   'border',
 ] as const;
+
+export const sliderStyleControls = ['indents', 'size'] as const;
 
 export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
 
@@ -441,6 +444,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   textarea: ['text', 'placeholder', ...textareaStyleControls, 'layouts'],
+  slider: ['sliderSettings', ...sliderStyleControls],
   checkbox: [
     'value',
     'name',
@@ -570,6 +574,7 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   textinput: {},
   input: {},
   textarea: {},
+  slider: {},
   checkbox: {},
   switch: {},
   radiobuttonGroup: {
