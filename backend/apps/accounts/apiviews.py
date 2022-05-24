@@ -1,12 +1,12 @@
 """Views for the accounts api"""
-from rest_framework import generics
+from rest_framework import generics, permissions
 from rest_framework.pagination import CursorPagination
 from .models import User, Profile, Team, TeamMember
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .serializers import UserSerializer, ProfileSerializer, TeamMemberSerializer, TeamSerializer
 from rest_framework import filters
-
+from rest_framework.views import APIView
 
 class UserCursorSetPagination(CursorPagination):
     page_size = 10
@@ -93,3 +93,22 @@ class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
+
+
+# Share the link
+class SharedlinkView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        '''
+        WHITELIST = ['screenscenario', 'elements']
+        screenid = request.data['screenid']
+        screen = ProjectScreen.objects.get(pk=screenid)
+        screen_clone = duplicate_model_with_descendants(screen, WHITELIST)
+
+        if screen_clone:
+            return Response(screen_clone.id, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        '''
+        return True
