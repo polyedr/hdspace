@@ -104,7 +104,7 @@ export const DEFAULT_TYPOGRAPHY: React.CSSProperties = {
   fontSize: '14px',
   fontStyle: 'none',
   fontWeight: 400,
-  lineHeight: '1.5',
+  lineHeight: '150%',
   textAlign: 'left',
 };
 
