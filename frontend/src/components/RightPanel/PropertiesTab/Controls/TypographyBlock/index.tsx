@@ -19,6 +19,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import FONT_WEIGHT from '@Constants/fontWeight';
+import cn from 'classnames';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -32,11 +33,13 @@ const useStyles = makeStyles({
   rootContainer: {
     padding: '16px',
   },
-  lineHeightContainer: {
+  lineHeightAndLetterSpacing: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+  },
+  lineHeightContainer: {
     maxWidth: '141px',
   },
   text: {
@@ -60,6 +63,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   fontStyle?: React.CSSProperties['fontStyle'];
   textAlign?: React.CSSProperties['textAlign'];
   lineHeight?: React.CSSProperties['lineHeight'];
+  letterSpacing?: React.CSSProperties['letterSpacing'];
   color: React.CSSProperties['color'];
   isDefaultStyles?: boolean;
 };
@@ -73,6 +77,7 @@ const TypographyBlock: React.FC<Props> = ({
   fontSize,
   fontWeight,
   lineHeight,
+  letterSpacing,
   textAlign,
   color = 'transparent',
   canEdit,
@@ -82,6 +87,10 @@ const TypographyBlock: React.FC<Props> = ({
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
 
+  const debounced = useDebouncedCallback((value, cb) => {
+    cb(value);
+  }, 500);
+
   const handleFontFamilyChange = (event) => {
     updateStyles({ fontFamily: event.target.value });
   };
@@ -89,6 +98,18 @@ const TypographyBlock: React.FC<Props> = ({
   const handleFontWeightChange = (event) => {
     updateStyles({ fontWeight: event.target.value });
   };
+
+  const [lineHeightState, setLineHeightState] = useState<
+    React.CSSProperties['lineHeight']
+  >(lineHeight || '100%');
+
+  const [letterSpacingState, setLetterSpacingState] = useState<
+    React.CSSProperties['letterSpacing']
+  >(letterSpacing || 1);
+
+  const [fontSizeState, setFontSizeState] = useState<
+    React.CSSProperties['fontSize']
+  >(fontSize || '14px');
 
   const handleChangeLineHeight = useCallback(
     (value) => {
@@ -102,13 +123,20 @@ const TypographyBlock: React.FC<Props> = ({
     [updateStyles],
   );
 
-  const [lineHeightState, setLineHeightState] = useState<
-    React.CSSProperties['lineHeight']
-  >(lineHeight || '100%');
+  const handleChangeLetterSpacing = useCallback(
+    (value) => {
+      updateStyles({ letterSpacing: `${value}px` });
+    },
+    [updateStyles],
+  );
+
+  useEffect(() => {
+    setLetterSpacingState(letterSpacing);
+  }, [letterSpacing]);
 
   useEffect(() => {
     setLineHeightState(lineHeight);
-  }, [lineHeight, isDefaultStyles]);
+  }, [lineHeight]);
 
   const handleChangeFontSize = useCallback(
     (value) => {
@@ -119,23 +147,11 @@ const TypographyBlock: React.FC<Props> = ({
     [updateStyles],
   );
 
-  const [fontSizeState, setFontSizeState] = useState<
-    React.CSSProperties['fontSize']
-  >(fontSize || '14px');
-
   useEffect(() => {
     setFontSizeState(
       (isDefaultStyles && defaultStyles?.typography?.fontSize) || fontSize,
     );
   }, [fontSize, isDefaultStyles]);
-
-  const debouncedFontSize = useDebouncedCallback((value) => {
-    handleChangeFontSize(value);
-  }, 500);
-
-  const debouncedLineHeight = useDebouncedCallback((value) => {
-    handleChangeLineHeight(value);
-  }, 500);
 
   const handleAlignmentChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -221,7 +237,7 @@ const TypographyBlock: React.FC<Props> = ({
             value={fontSizeState ? parseInt(fontSizeState.toString()) : 0}
             onChange={(event) => {
               setFontSizeState(event.target.value);
-              debouncedFontSize.callback(event.target.value);
+              debounced.callback(event.target.value, handleChangeFontSize);
             }}
             disabled={!canEdit}
             style={isDefaultStyles ? { marginRight: '10%' } : {}}
@@ -230,7 +246,12 @@ const TypographyBlock: React.FC<Props> = ({
 
         {!isDefaultStyles && (
           <div className={classes.wrapper}>
-            <div className={classes.lineHeightContainer}>
+            <div
+              className={cn(
+                classes.lineHeightContainer,
+                classes.lineHeightAndLetterSpacing,
+              )}
+            >
               <StyledTextField
                 fullWidth
                 margin="dense"
@@ -240,11 +261,37 @@ const TypographyBlock: React.FC<Props> = ({
                 }
                 onChange={(event) => {
                   setLineHeightState(event.target.value);
-                  debouncedLineHeight.callback(event.target.value);
+                  debounced.callback(
+                    event.target.value,
+                    handleChangeLineHeight,
+                  );
                 }}
                 disabled={!canEdit}
               />
-              <div style={{ color: '#81818E', fontSize: 12 }}>%</div>
+              <div style={{ color: '#81818E', fontSize: 12 }}>Line</div>
+            </div>
+            <div
+              className={cn(classes.text, classes.lineHeightAndLetterSpacing)}
+            >
+              <StyledTextField
+                fullWidth
+                margin="dense"
+                type="number"
+                value={
+                  letterSpacingState
+                    ? parseInt(letterSpacingState.toString())
+                    : 5
+                }
+                onChange={(event) => {
+                  setLetterSpacingState(event.target.value);
+                  debounced.callback(
+                    event.target.value,
+                    handleChangeLetterSpacing,
+                  );
+                }}
+                disabled={!canEdit}
+              />
+              <div style={{ color: '#81818E', fontSize: 12 }}>Character</div>
             </div>
           </div>
         )}
