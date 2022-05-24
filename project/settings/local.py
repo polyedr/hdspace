@@ -90,10 +90,16 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "sesame.middleware.AuthenticationMiddleware",  # django-sesame
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
+
+# Altering the django-sesame token name
+SESAME_TOKEN_NAME = "adevi"
+# Sesame tokens to be usable only once
+SESAME_ONE_TIME = True
 
 # Allow CORS for all domains
 CORS_ORIGIN_ALLOW_ALL = True
@@ -315,6 +321,7 @@ AUTHENTICATION_BACKENDS = (
     "social_core.backends.twitter.TwitterOAuth",
     # "django.contrib.auth.backends.ModelBackend",
     "django.contrib.auth.backends.AllowAllUsersModelBackend",
+    "sesame.backends.ModelBackend",
 )
 
 
