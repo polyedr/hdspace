@@ -84,6 +84,9 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
             "screen_data_text",
             "screen_data_json",
             "screenscenario",
+            "created",
+            "updated",
+            "tags",
         )
         extra_kwargs = {"screenscenario": {"read_only": True}}
 
@@ -103,6 +106,9 @@ class ProjectScreenMultipleSerializer(BulkSerializerMixin, serializers.ModelSeri
             "screen_data_text",
             "screen_data_json",
             "screenscenario",
+            "created",
+            "updated",
+            "tags",
         )
         extra_kwargs = {"screenscenario": {"read_only": True}}
         list_serializer_class = BulkListSerializer
@@ -331,7 +337,6 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             "user",
             "id",
             "created",
-            "updated",
             "updated",
             "project_data_text",
             "project_data_json",
