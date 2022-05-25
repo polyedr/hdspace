@@ -128,6 +128,10 @@ class ProjectScreen(TimeStampedModel):
         Project, related_name="projectscreen", on_delete=models.CASCADE, null=True
     )
 
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    tags = TaggableManager(blank=True)
+
     image = models.ImageField(
         upload_to=utils.get_file_path, blank=True, null=True, max_length=256
     )

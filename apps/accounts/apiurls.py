@@ -12,7 +12,7 @@ from .apiviews import (
     TeamMemberDetail,
     TeamMember,
     TeamMemberList,
-    TeamDetail,
+    TeamDetail, SharedlinkView, SharedlinkprojectView,
 )
 
 
@@ -37,7 +37,8 @@ api_team_patterns = [
 ]
 
 api_sharedlink_patterns = [
-    path("sharedlink/", SharedlinkView.as_view()),
+    path("usersharedlink/", SharedlinkView.as_view()),
+    path("upvieweversharedlink/", SharedlinkprojectView.as_view()),
 ]
 
 app_name = "api_accounts"
