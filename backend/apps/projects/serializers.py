@@ -70,6 +70,7 @@ def duplicate_model_with_descendants(obj, whitelist, _new_parent_pk=None):
 
 class ProjectScreenSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
+    tags = TagListSerializerField(required=False, allow_null=True)
 
     class Meta:
         model = ProjectScreen
@@ -93,6 +94,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
 class ProjectScreenMultipleSerializer(BulkSerializerMixin, serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
+    tags = TagListSerializerField(required=False, allow_null=True)
 
     class Meta:
         model = ProjectScreen
