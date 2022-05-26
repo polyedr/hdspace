@@ -93,7 +93,7 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
       <>
         <TableRow className={classes.tableRow} ref={ref}>
           <TableCell className={classes.cellName}>
-            <Link to={`/project/${id}`} className={classes.link}>
+            <Link to={`/project-detail/${id}`} className={classes.link}>
               {name}
             </Link>
           </TableCell>
