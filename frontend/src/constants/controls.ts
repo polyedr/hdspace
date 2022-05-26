@@ -84,6 +84,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
       'lineHeight',
       'letterSpacing',
       'textAlign',
+      'opacity',
       'color',
     ],
   },

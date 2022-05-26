@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useState, memo } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
-import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
-import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter';
+import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
+import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import * as CSS from 'csstype';
 import { getPermissibleValue } from '@Utils/NumberHelper';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import FONTS from '@Constants/fonts';
-
 import {
   StyledTextField,
   StyledToggleButton,
+  StyledToggleButtonGroup,
 } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { MenuItem } from '@material-ui/core';
@@ -43,7 +43,7 @@ const useStyles = makeStyles({
     maxWidth: '141px',
   },
   text: {
-    width: '62px',
+    width: '80px',
     marginLeft: '24px',
   },
   wrapper: {
@@ -53,6 +53,12 @@ const useStyles = makeStyles({
   },
   fontWeightControl: {
     maxWidth: '141px',
+  },
+  align: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
 });
 
@@ -65,6 +71,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   lineHeight?: React.CSSProperties['lineHeight'];
   letterSpacing?: React.CSSProperties['letterSpacing'];
   color: React.CSSProperties['color'];
+  opacity: React.CSSProperties['opacity'];
   isDefaultStyles?: boolean;
 };
 
@@ -80,6 +87,7 @@ const TypographyBlock: React.FC<Props> = ({
   letterSpacing,
   textAlign,
   color = 'transparent',
+  opacity,
   canEdit,
   editableStyles,
   isDefaultStyles = false,
@@ -296,44 +304,10 @@ const TypographyBlock: React.FC<Props> = ({
           </div>
         )}
 
-        <div
-          className={classes.wrapper}
-          style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}
-        >
-          <div
-            style={
-              isDefaultStyles
-                ? { display: 'flex', flexDirection: 'column' }
-                : {}
-            }
-          >
-            <ToggleButtonGroup
-              value={
-                (isDefaultStyles && defaultStyles?.typography?.textAlign) ||
-                textAlign
-              }
-              onChange={handleAlignmentChange}
-              exclusive
-              size="small"
-              style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
-            >
-              <StyledToggleButton value="left" disabled={!canEdit}>
-                <FormatAlignLeftIcon fontSize="small" />
-              </StyledToggleButton>
-
-              <StyledToggleButton value="center" disabled={!canEdit}>
-                <FormatAlignCenterIcon fontSize="small" />
-              </StyledToggleButton>
-
-              <StyledToggleButton value="right" disabled={!canEdit}>
-                <FormatAlignRightIcon fontSize="small" />
-              </StyledToggleButton>
-            </ToggleButtonGroup>
-          </div>
-        </div>
-
         <div>
           <ColorSettings
+            updateStyles={updateStyles}
+            currentOpacity={opacity}
             currentColor={
               (isDefaultStyles && defaultStyles?.colors?.color) ||
               (colorValue as string) ||
@@ -343,6 +317,42 @@ const TypographyBlock: React.FC<Props> = ({
             onChange={handleColorValueChange as (color: string) => void}
             disabled={!canEdit}
           />
+        </div>
+        <div className={classes.align}>
+          <div>Align</div>
+          <div
+            className={classes.wrapper}
+            style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}
+          >
+            <div>
+              <StyledToggleButtonGroup
+                value={
+                  (isDefaultStyles && defaultStyles?.typography?.textAlign) ||
+                  textAlign
+                }
+                onChange={handleAlignmentChange}
+                exclusive
+                size="small"
+                style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
+              >
+                <StyledToggleButton value="left" disabled={!canEdit}>
+                  <FormatAlignLeftIcon fontSize="small" />
+                </StyledToggleButton>
+
+                <StyledToggleButton value="center" disabled={!canEdit}>
+                  <FormatAlignCenterIcon fontSize="small" />
+                </StyledToggleButton>
+
+                <StyledToggleButton value="justify" disabled={!canEdit}>
+                  <FormatAlignJustifyIcon fontSize="small" />
+                </StyledToggleButton>
+
+                <StyledToggleButton value="right" disabled={!canEdit}>
+                  <FormatAlignRightIcon fontSize="small" />
+                </StyledToggleButton>
+              </StyledToggleButtonGroup>
+            </div>
+          </div>
         </div>
       </div>
     </div>

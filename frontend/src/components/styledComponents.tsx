@@ -8,10 +8,13 @@ import {
   AccordionDetails,
   AccordionDetailsProps,
   AccordionSummaryProps,
+  ToggleButtonGroupProps,
+  ToggleButtonGroup,
+  ToggleButtonProps,
 } from '@mui/material';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
+import ToggleButton from '@mui/material/ToggleButton';
 import { lighten, makeStyles } from '@material-ui/core/styles';
-import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import styled from 'styled-components';
@@ -77,31 +80,35 @@ const CustomTextField = styled(TextField)`
   }
 `;
 
-const useToggleButtonStyles = makeStyles(({ palette }) => ({
-  root: {
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.light, 0.1),
-      borderLeftColor: palette.grey.A200,
-    },
-    color: palette.common.white,
-    borderColor: palette.grey.A200,
-    '&.Mui-selected': {
-      '&:hover': {
-        backgroundColor: lighten(palette.panel.light, 0.1),
-        borderLeftColor: palette.grey.A200,
-      },
-      color: palette.common.white,
-      backgroundColor: lighten(palette.panel.light, 0.2),
-      borderLeftColor: palette.grey.A200,
-    },
-  },
-  disabled: {
-    color: palette.grey.A200,
-  },
-  label: {
-    color: palette.grey.A200,
-  },
-}));
+const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
+  .MuiToggleButtonGroup-grouped {
+    margin: 0 6px;
+    border: 0;
+    &.mui-disabled {
+      border: 0;
+    }
+    &:not(:last-of-type) {
+      border-radius: 4px !important;
+    }
+    &:last-of-type {
+      border-radius: 4px !important;
+    }
+    &:hover {
+      background-color: rgba(80, 100, 255, 0.05);
+      color: rgba(80, 100, 255, 0.5);
+    }
+  }
+`;
+
+const CustomToggleButton = styled(ToggleButton)`
+  &.Mui-selected {
+    background-color: rgba(80, 100, 255, 0.1) !important;
+    color: rgba(80, 100, 255, 0.7) !important;
+    &:hover {
+      background-color: rgba(80, 100, 255, 0.3) !important;
+    }
+  }
+`;
 
 const useIconButtonClasses = makeStyles(({ palette }) => ({
   iconButton: {
@@ -196,8 +203,13 @@ export const PanelTextField: React.FC<
 };
 
 export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => {
-  const classes = useToggleButtonStyles();
-  return <ToggleButton classes={classes} {...props} />;
+  return <CustomToggleButton {...props} />;
+};
+
+export const StyledToggleButtonGroup: React.FC<ToggleButtonGroupProps> = (
+  props,
+) => {
+  return <CustomToggleButtonGroup {...props} />;
 };
 
 export const StyledIconButton: React.FC<IconButtonProps> = ({
