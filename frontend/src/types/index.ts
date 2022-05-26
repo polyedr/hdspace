@@ -916,6 +916,7 @@ export type Typography = {
   fontStyle?: string;
   fontWeight?: number;
   textAlign?: string;
+  verticalAlign?: string;
 };
 
 export type Indents = {

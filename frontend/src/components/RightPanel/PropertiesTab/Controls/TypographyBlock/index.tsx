@@ -20,6 +20,9 @@ import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
 import FONT_WEIGHT from '@Constants/fontWeight';
 import cn from 'classnames';
+import VerticalAlignBottomIcon from '@mui/icons-material/VerticalAlignBottom';
+import VerticalAlignCenterIcon from '@mui/icons-material/VerticalAlignCenter';
+import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -70,6 +73,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   textAlign?: React.CSSProperties['textAlign'];
   lineHeight?: React.CSSProperties['lineHeight'];
   letterSpacing?: React.CSSProperties['letterSpacing'];
+  verticalAlign?: React.CSSProperties['verticalAlign'];
   color: React.CSSProperties['color'];
   opacity: React.CSSProperties['opacity'];
   isDefaultStyles?: boolean;
@@ -86,6 +90,7 @@ const TypographyBlock: React.FC<Props> = ({
   lineHeight,
   letterSpacing,
   textAlign,
+  verticalAlign,
   color = 'transparent',
   opacity,
   canEdit,
@@ -168,6 +173,15 @@ const TypographyBlock: React.FC<Props> = ({
     if (!newAlignment) return;
     updateStyles({
       textAlign: newAlignment,
+    });
+  };
+  const handleVerticalAlignmentChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newAlignment: CSS.Property.VerticalAlign,
+  ) => {
+    if (!newAlignment) return;
+    updateStyles({
+      verticalAlign: newAlignment,
     });
   };
 
@@ -349,6 +363,39 @@ const TypographyBlock: React.FC<Props> = ({
 
                 <StyledToggleButton value="right" disabled={!canEdit}>
                   <FormatAlignRightIcon fontSize="small" />
+                </StyledToggleButton>
+              </StyledToggleButtonGroup>
+            </div>
+          </div>
+        </div>
+        <div className={classes.align}>
+          <div>Style</div>
+          <div
+            className={classes.wrapper}
+            style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}
+          >
+            <div>
+              <StyledToggleButtonGroup
+                value={
+                  (isDefaultStyles &&
+                    defaultStyles?.typography?.verticalAlign) ||
+                  verticalAlign
+                }
+                onChange={handleVerticalAlignmentChange}
+                exclusive
+                size="small"
+                style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
+              >
+                <StyledToggleButton value="top" disabled={!canEdit}>
+                  <VerticalAlignTopIcon fontSize="small" />
+                </StyledToggleButton>
+
+                <StyledToggleButton value="middle" disabled={!canEdit}>
+                  <VerticalAlignCenterIcon fontSize="small" />
+                </StyledToggleButton>
+
+                <StyledToggleButton value="bottom" disabled={!canEdit}>
+                  <VerticalAlignBottomIcon fontSize="small" />
                 </StyledToggleButton>
               </StyledToggleButtonGroup>
             </div>

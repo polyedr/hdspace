@@ -95,7 +95,7 @@ const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
     }
     &:hover {
       background-color: rgba(80, 100, 255, 0.05);
-      color: rgba(80, 100, 255, 0.5);
+      color: rgba(80, 100, 255, 0.7);
     }
   }
 `;
@@ -103,7 +103,7 @@ const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
 const CustomToggleButton = styled(ToggleButton)`
   &.Mui-selected {
     background-color: rgba(80, 100, 255, 0.1) !important;
-    color: rgba(80, 100, 255, 0.7) !important;
+    color: rgba(80, 100, 255) !important;
     &:hover {
       background-color: rgba(80, 100, 255, 0.3) !important;
     }
