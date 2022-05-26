@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, batch } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { changePrototypeMode } from '@Redux/user/actions';
@@ -85,10 +85,12 @@ const Actions: React.FC = () => {
   }, PANEL_TRANSITION_DURATION + 120);
 
   const handleToggleProtoMode = useCallback(() => {
-    dispatch(setBordersEnabled(false));
-    dispatch(changePrototypeMode(!isProtoMode));
+    batch(() => {
+      dispatch(setBordersEnabled(false));
+      dispatch(changePrototypeMode(!isProtoMode));
+    });
     enableBordersDebounce.callback();
-  }, [dispatch, isProtoMode, enableBordersDebounce]);
+  }, [isProtoMode]);
 
   const handleExportScreen = () => {
     if (screens.length > 0) {
