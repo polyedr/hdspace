@@ -1,32 +1,46 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectIsPrototypeMode, selectUserData } from '@Redux/user/selectors';
 import {
   selectCurrentProject,
   selectSidebarOpen,
+  selectBordersEnabled,
+  selectShowingBorders,
 } from '@Redux/project/selectors/base';
 import {
-  deleteElement,
   updateNameAndTagsProject,
   setSidebarOpen,
-  setVIAMode,
+  toggleContainersBorders,
 } from '@Redux/project/actions';
 import {
   selectVIAModeEnabled,
   selectVIAResultId,
 } from '@Redux/project/selectors/via';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { makeStyles } from '@material-ui/core/styles';
+
+import {
+  FormControlLabel,
+  Typography,
+  Checkbox,
+  ToggleButton,
+  Menu,
+  MenuItem,
+} from '@mui/material';
 import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
-import { StyledIconButton } from '@Components/styledComponents';
+import { makeStyles } from '@material-ui/core/styles';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import MenuIcon from '@mui/icons-material/Menu';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { selectUserData } from '@Redux/user/selectors';
+import { StyledIconButton } from '@Components/styledComponents';
+import { HELP_LINK } from '@Src/config/settings';
 import Dialog from '../Dialogs/Dialog';
-import TopBar from './TopBar';
-import Avatar from './Avatar';
-import History from './History';
+import Layouts from './TopBar/Layouts';
+import ShowGrid from './TopBar/ShowGrid';
 import RenameProjectBar from './TopBar/RenameProjectBar';
+import TopBar from './TopBar';
+import History from './History';
 import Logo from '../UI/Logo';
+import Avatar from './Avatar';
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
@@ -35,31 +49,46 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    minHeight: 75,
+    minHeight: 44,
+    gap: '8px',
+  },
+  topbarsections: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    padding: '0.5em 1em',
+    color: '#81818E',
+    fontSize: 14,
     '&:hover $editButton': {
       opacity: 1,
     },
     display: 'flex',
     alignItems: 'center',
   },
-  editButton: {
-    color: palette.common.white,
-    opacity: 0,
-    transition: 'opacity 0.1s ease',
-  },
+
   projectName: {
     fontSize: '1rem',
     fontFamily: typography.fontFamily,
     fontWeight: 'bold',
   },
-  sidebarButton: {
-    color: palette.common.white,
+  togglebutton: {
+    width: '32px',
+    height: '32px',
+    border: 'none !important',
+    borderRadius: '50% !important',
+    color: '#81818E !important',
+    '&.Mui-selected': {
+      color: '#000  !important',
+    },
   },
-  settingIcon: {
+  iconbutton: {
+    width: '32px',
+    height: '32px',
     color: '#81818E',
+  },
+  icon: {
+    width: '16px !important',
   },
 }));
 
@@ -77,9 +106,17 @@ const TopPanel = () => {
   const viaMode = useSelector(selectVIAModeEnabled);
   const sidebarOpen = useSelector(selectSidebarOpen);
   const viaResultId = useSelector(selectVIAResultId);
-  const screenId = useSelector(selectCurrentScreenId);
-
+  const bordersEnabled = useSelector(selectBordersEnabled);
   const handleEditClick = () => setOpenEdit(true);
+  const isProtoMode = useSelector(selectIsPrototypeMode);
+  const showBorders = useSelector(selectShowingBorders);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setIsDropdownOpen(true);
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = () => setOpenEdit(false);
   const handleSubmitNameAndTags = async (values) => {
     dispatch(updateNameAndTagsProject(id, values.name, values.tags));
@@ -95,47 +132,98 @@ const TopPanel = () => {
     dispatch(setSidebarOpen(!sidebarOpen));
   };
 
-  const handleReturnToAnnotation = () => {
-    dispatch(setVIAMode(true));
-    dispatch(deleteElement(viaResultId, { screenId }));
+  const handleCloseDropDown = () => {
+    setIsDropdownOpen(false);
+    setAnchorEl(null);
   };
-
   return (
     <AppBar position="fixed">
       <Toolbar variant="dense" className={classes.toolbar}>
-        <Logo />
+        <Box className={classes.topbarsections}>
+          <Logo className={classes.icon} />
+          {projectName && (
+            <RenameProjectBar
+              projectName={projectName}
+              userIdCreator={userIdCreator}
+              userId={userId}
+              handleEditClick={handleEditClick}
+            />
+          )}
+        </Box>
+        <Box className={classes.topbarsections}>
+          <Layouts />
+        </Box>
 
-        {projectName && (
-          <RenameProjectBar
-            projectName={projectName}
-            userIdCreator={userIdCreator}
-            userId={userId}
-            handleEditClick={handleEditClick}
-          />
-        )}
-        <Box style={{ display: 'flex' }}>
+        <Box className={classes.toolbar}>
           {viaMode ? <History /> : <TopBar />}
 
           {!viaMode && viaResultId && (
-            <StyledIconButton
-              title="Return to annotation"
-              onClick={handleReturnToAnnotation}
-            >
-              <SettingsBackupRestoreIcon />
+            <StyledIconButton title="Return to annotation">
+              <SettingsBackupRestoreIcon className={classes.icon} />
             </StyledIconButton>
           )}
 
-          <Box style={{ display: 'flex' }}>
+          <Box className={classes.toolbar}>
             {projectName && (
-              <IconButton
-                className={classes.sidebarButton}
+              <ToggleButton
+                value="DropDown"
+                selected={isDropdownOpen}
+                className={classes.togglebutton}
+                onClick={handleClick}
+              >
+                <SettingsOutlinedIcon className={classes.icon} />
+              </ToggleButton>
+            )}
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleCloseDropDown}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem onClick={handleClose}>
+                <ShowGrid />
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="Show borders"
+                      checked={showBorders}
+                      disabled={!bordersEnabled && !isProtoMode}
+                      onChange={() =>
+                        dispatch(toggleContainersBorders(!showBorders))
+                      }
+                    />
+                  }
+                  label={
+                    <Typography className={classes.title}>
+                      Show blocks
+                    </Typography>
+                  }
+                />
+              </MenuItem>
+            </Menu>
+            <a target="_blank" href={HELP_LINK} rel="noreferrer noopener">
+              <IconButton className={classes.iconbutton} title="Help">
+                <HelpOutlineIcon className={classes.icon} />
+              </IconButton>
+            </a>
+            {projectName ? (
+              <ToggleButton
+                value="sidebarOpen"
+                selected={sidebarOpen}
                 onClick={handleSidebarToggle}
                 title="Toggle Sidebar"
+                className={classes.togglebutton}
               >
-                <SettingsOutlinedIcon className={classes.settingIcon} />
-              </IconButton>
+                <MenuIcon className={classes.icon} />
+              </ToggleButton>
+            ) : (
+              <Avatar />
             )}
-            <Avatar />
           </Box>
         </Box>
       </Toolbar>

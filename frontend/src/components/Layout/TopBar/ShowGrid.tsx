@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleGrid } from '@Redux/project/actions';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 
-import { FormControlLabel, Typography, Checkbox } from '@material-ui/core';
+import { FormControlLabel, Typography, Checkbox } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(({ typography }) => ({
+const useStyles = makeStyles(() => ({
   title: {
     color: '#81818E',
-    fontSize: typography.fontSize,
+    fontSize: '1rem',
   },
 }));
 
@@ -27,7 +27,7 @@ const ShowGrid: React.FC = () => {
           onChange={() => dispatch(toggleGrid(!showGrid))}
         />
       }
-      label={<Typography className={classes.title}>Show Grid</Typography>}
+      label={<Typography className={classes.title}>Show grid</Typography>}
     />
   );
 };

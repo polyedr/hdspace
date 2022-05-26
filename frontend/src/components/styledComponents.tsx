@@ -92,6 +92,8 @@ const useToggleButtonStyles = makeStyles(({ palette }) => ({
 
 const useIconButtonClasses = makeStyles(() => ({
   iconButton: {
+    width: '32px',
+    height: '32px',
     color: '#5064FF',
     '&.disabled': {
       color: '#81818E',

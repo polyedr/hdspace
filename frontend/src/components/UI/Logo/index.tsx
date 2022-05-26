@@ -12,7 +12,7 @@ const Logo = ({ width, height, ...rest }: BoxProps) => {
     <Link href="/">
       <Box
         sx={{
-          width: width || 30,
+          width: width || 32,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
@@ -20,7 +20,7 @@ const Logo = ({ width, height, ...rest }: BoxProps) => {
         }}
       >
         {currentScreenId !== -1 ? (
-          <ArrowBackIcon />
+          <ArrowBackIcon sx={{ width: '16px' }} />
         ) : (
           <img src={logo} alt="logo" width="100%" />
         )}

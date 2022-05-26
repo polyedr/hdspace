@@ -1,8 +1,9 @@
 import React, { FC, useState, useCallback, MouseEvent } from 'react';
 import ShareIcon from '@material-ui/icons/Share';
-import { Button, IconButton, Popover, Container } from '@material-ui/core';
+import { Button, Popover, Container } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
+import ToggleButton from '@mui/material/ToggleButton';
 import {
   selectTokenPair,
   selectUserData,
@@ -25,9 +26,18 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
   },
-  greyIcon: {
-    color: '#81818E',
-    height: 'medium',
+  icon: {
+    height: '16px',
+  },
+  togglebutton: {
+    width: '32px',
+    height: '32px',
+    border: 'none !important',
+    borderRadius: '50% !important',
+    color: '#81818E !important',
+    '&.Mui-selected': {
+      color: '#000  !important',
+    },
   },
 });
 
@@ -35,7 +45,7 @@ type Props = {
   className?: string;
 };
 
-const Share: FC<Props> = ({ className = '' }) => {
+const Share: FC<Props> = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = useSelector(selectUserData);
@@ -116,9 +126,15 @@ const Share: FC<Props> = ({ className = '' }) => {
 
   return (
     <>
-      <IconButton title="Share" className={className} onClick={handleClick}>
-        <ShareIcon className={classes.greyIcon} />
-      </IconButton>
+      <ToggleButton
+        value="Share"
+        title="Share"
+        selected={open}
+        className={classes.togglebutton}
+        onClick={handleClick}
+      >
+        <ShareIcon className={classes.icon} />
+      </ToggleButton>
 
       <Popover
         open={open}
