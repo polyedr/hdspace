@@ -157,6 +157,13 @@ const ColorSettings: React.FC<Props> = ({
     handleChangeOpacity(1);
   };
 
+  const validateOpacity = () => {
+    const value = (currentOpacityState as unknown) as number;
+    return value && value <= 1 && value > 0 && !Number.isNaN(value)
+      ? value * 100
+      : 100;
+  };
+
   return (
     <div>
       <div className={classes.root}>
@@ -181,14 +188,7 @@ const ColorSettings: React.FC<Props> = ({
         <StyledTextField
           className={classes.input}
           style={{ marginLeft: '24px' }}
-          value={`${
-            currentOpacityState &&
-            (currentOpacityState as any) <= 1 &&
-            (currentOpacityState as any) > 0 &&
-            !Number.isNaN(currentOpacityState as any)
-              ? (currentOpacityState as any) * 100
-              : 100
-          }%`}
+          value={`${validateOpacity()}%`}
           onBlur={({ target: { value } }) => {
             setCurrentOpacityState(parseInt(value) / 100);
             handleChangeOpacity(parseInt(value) / 100);

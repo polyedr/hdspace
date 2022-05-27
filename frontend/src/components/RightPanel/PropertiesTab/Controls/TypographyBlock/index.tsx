@@ -100,7 +100,7 @@ const TypographyBlock: React.FC<Props> = ({
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
 
-  const debounced = useDebouncedCallback((value, cb) => {
+  const debouncedValueChangeHandler = useDebouncedCallback((value, cb) => {
     cb(value);
   }, 500);
 
@@ -259,7 +259,10 @@ const TypographyBlock: React.FC<Props> = ({
             value={fontSizeState ? parseInt(fontSizeState.toString()) : 0}
             onChange={(event) => {
               setFontSizeState(event.target.value);
-              debounced.callback(event.target.value, handleChangeFontSize);
+              debouncedValueChangeHandler.callback(
+                event.target.value,
+                handleChangeFontSize,
+              );
             }}
             disabled={!canEdit}
             style={isDefaultStyles ? { marginRight: '10%' } : {}}
@@ -283,7 +286,7 @@ const TypographyBlock: React.FC<Props> = ({
                 }
                 onChange={(event) => {
                   setLineHeightState(event.target.value);
-                  debounced.callback(
+                  debouncedValueChangeHandler.callback(
                     event.target.value,
                     handleChangeLineHeight,
                   );
@@ -306,7 +309,7 @@ const TypographyBlock: React.FC<Props> = ({
                 }
                 onChange={(event) => {
                   setLetterSpacingState(event.target.value);
-                  debounced.callback(
+                  debouncedValueChangeHandler.callback(
                     event.target.value,
                     handleChangeLetterSpacing,
                   );
