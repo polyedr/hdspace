@@ -323,6 +323,8 @@ const TypographyBlock: React.FC<Props> = ({
 
         <div>
           <ColorSettings
+            onClick={removeStyles}
+            propsToRemove={['color']}
             updateStyles={updateStyles}
             currentOpacity={opacity}
             currentColor={

@@ -52,6 +52,8 @@ const BackgroundBlock: React.FC<Props> = ({
       )}
 
       <ColorSettings
+        onClick={removeStyles}
+        propsToRemove={['backgroundColor']}
         currentColor={color as string}
         activeElementId={element.id}
         onChange={handleColorChange as (color: string) => any}
