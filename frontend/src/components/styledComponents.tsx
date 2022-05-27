@@ -243,9 +243,3 @@ export const TabPanel: React.FC<{
 );
 
 export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
-
-export interface SideBarTitleAction {
-  callback: () => void;
-  icon: IconType | any;
-  title?: string;
-}
