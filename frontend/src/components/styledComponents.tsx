@@ -10,7 +10,7 @@ import {
   AccordionSummaryProps,
 } from '@mui/material';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
@@ -79,21 +79,8 @@ const CustomTextField = styled(TextField)`
 
 const useToggleButtonStyles = makeStyles(({ palette }) => ({
   root: {
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.light, 0.1),
-      borderLeftColor: palette.grey.A200,
-    },
     color: palette.common.white,
     borderColor: palette.grey.A200,
-    '&.Mui-selected': {
-      '&:hover': {
-        backgroundColor: lighten(palette.panel.light, 0.1),
-        borderLeftColor: palette.grey.A200,
-      },
-      color: palette.common.white,
-      backgroundColor: lighten(palette.panel.light, 0.2),
-      borderLeftColor: palette.grey.A200,
-    },
   },
   disabled: {
     color: palette.grey.A200,
@@ -103,11 +90,13 @@ const useToggleButtonStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-const useIconButtonClasses = makeStyles(({ palette }) => ({
+const useIconButtonClasses = makeStyles(() => ({
   iconButton: {
-    color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+    width: '32px',
+    height: '32px',
+    color: '#5064FF',
+    '&.disabled': {
+      color: '#81818E',
     },
   },
 }));

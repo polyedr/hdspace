@@ -8,12 +8,15 @@ const useStyles = makeStyles({
     height: 1, // allows children use height in %
     display: 'flex',
     flexFlow: 'column nowrap',
+    '& header': {
+      position: 'unset',
+    },
   },
   content: {
     flex: 1,
   },
   placeholder: {
-    minHeight: 75, // Toolbar variant="dense" min-height
+    minHeight: 44, // Toolbar variant="dense" min-height
     flex: '0 0',
   },
 });
@@ -24,8 +27,6 @@ const Layout = ({ children }) => {
   return (
     <div className={classes.layout}>
       <TopPanel />
-      <div className={classes.placeholder} />
-
       <div className={classes.content}>{children}</div>
     </div>
   );
