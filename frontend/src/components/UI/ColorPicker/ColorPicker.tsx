@@ -11,9 +11,9 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     container: {
       position: 'relative',
-      width: 80,
-      height: 30,
-      borderRadius: theme.shape.borderRadius,
+      width: '16px',
+      height: '16px',
+      borderRadius: '2px',
       border: '1px solid grey',
       backgroundColor: (props: any) => props.color,
       cursor: 'pointer',
