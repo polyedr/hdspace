@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import ToggleButton from '@mui/material/ToggleButton';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import styled from 'styled-components';
@@ -110,11 +110,13 @@ const CustomToggleButton = styled(ToggleButton)`
   }
 `;
 
-const useIconButtonClasses = makeStyles(({ palette }) => ({
+const useIconButtonClasses = makeStyles(() => ({
   iconButton: {
-    color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+    width: '32px',
+    height: '32px',
+    color: '#5064FF',
+    '&.disabled': {
+      color: '#81818E',
     },
   },
 }));
