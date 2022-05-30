@@ -337,7 +337,15 @@ export function* createProjectSaga(
       yield put(Actions.setProjectList([...projects, createdProject]));
 
       yield put(Actions.setCurrentProjectId(createdProject.id));
-
+      yield put(
+        Actions.updateLayoutProject(
+          createdProject.id,
+          JSON.stringify({
+            ...createdProject.projectData,
+            layout: { value: 'desktop' },
+          }),
+        ),
+      );
       const masterScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(

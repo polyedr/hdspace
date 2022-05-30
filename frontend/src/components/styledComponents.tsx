@@ -1,178 +1,165 @@
-import React, { useRef } from 'react';
-import { AccordionProps } from '@material-ui/core/Accordion';
+import React, { ReactElement, useRef } from 'react';
+import { IconButtonProps, IconButton, SvgIconTypeMap } from '@material-ui/core';
 import {
+  styled as MuiStyled,
+  TextField,
+  TextFieldProps,
+  AccordionSummary,
+  AccordionDetails,
   AccordionDetailsProps,
   AccordionSummaryProps,
-  IconButtonProps,
-  Accordion as MuiAccordion,
-  AccordionSummary as MuiAccordionSummary,
-  AccordionDetails as MuiAccordionDetails,
-  IconButton,
-  SvgIconTypeMap,
-} from '@material-ui/core';
-import { styled, TextField, TextFieldProps } from '@mui/material';
-import {
-  createStyles,
-  lighten,
-  makeStyles,
-  darken,
-} from '@material-ui/core/styles';
-import ToggleButton, { ToggleButtonProps } from '@material-ui/lab/ToggleButton';
+  ToggleButtonGroupProps,
+  ToggleButtonGroup,
+  ToggleButtonProps,
+} from '@mui/material';
+import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
+import ToggleButton from '@mui/material/ToggleButton';
+import { makeStyles } from '@material-ui/core/styles';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import styled from 'styled-components';
 
-const useAccordionStyles = makeStyles(({ palette }) => ({
-  root: {
-    color: palette.common.white,
-    fontWeight: 'normal',
-    backgroundColor: 'transparent',
-    boxShadow: 'none',
+const MuiAccordionSummary = styled(AccordionSummary)`
+  .MuiAccordionSummary-content {
+    font-weight: 600;
+    font-size: 10px;
+    font-family: 'Roboto', serif;
+    color: #81818e;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0.7em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 0;
+    '&$expanded' {
+      margin: 0;
+    }
+  }
+  .Mui-expanded {
+    min-height: 0;
+  }
+  .MuiAccordionSummary-root {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 0;
+    min-height: 0;
     '&$expanded': {
-      margin: 0,
-    },
-  },
-  expanded: {},
-}));
+      min-height: 0;
+    }
+  }
 
-const useAccordionSummaryStyles = makeStyles(({ palette }) => ({
-  root: {
-    paddingLeft: 0,
-    minHeight: 0,
-    '&$expanded': {
-      minHeight: 0,
-    },
-    borderBottom: `1px solid ${darken(palette.panel.dark, 0.1)}`,
-    borderTop: `1px solid ${darken(palette.panel.dark, 0.1)}`,
-    backgroundColor: darken(palette.panel.main, 0.1),
-    fontWeight: 600,
-  },
-  content: {
-    margin: 0,
-    padding: '.7em',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    '&$expanded': {
-      margin: 0,
-    },
-  },
-  expanded: {
-    minHeight: 0,
-  },
-  expandIcon: {
-    padding: '.5em',
-    color: '#eee',
-  },
-}));
+  .MuiAccordionSummary-expandIconWrapper {
+    padding: 0.5em;
+    color: #81818e;
+  }
+`;
 
-const useAccordionDetailsStyles = makeStyles(({ palette }) =>
-  createStyles({
-    root: {
-      padding: 0,
-      backgroundColor: palette.panel.light,
-      boxShadow:
-        '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
-    },
-  }),
-);
+const CustomTextField = styled(TextField)`
+  .MuiTextField-root {
+    flex-direction: column-reverse;
+  }
 
-const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
-  '& label, & label.Mui-focused, & label.Mui-disabled': {
-    color: theme.palette.grey.A200,
-  },
-  '& .MuiInput-underline:after': {
-    borderBottomColor: theme.palette.grey.A200,
-  },
-  '& .MuiOutlinedInput-root, & .MuiInput-root': {
-    color: theme.palette.common.white,
+  .Mui-focused,
+  .Mui-disabled {
+    color: #2a2a2d;
+  }
+  .MuiInput-underline:after {
+    border-bottom-color: rgba(80, 100, 255, 0.1);
+  }
+  .MuiInput-root {
+    color: #2a2a2d;
+    & .Mui-focused fieldset {
+      border-color: rgba(80, 100, 255, 0.1);
+    }
+    & .MuiSvgIcon-root {
+      color: #2a2a2d;
+    }
+  }
+`;
 
-    '&.Mui-disabled': {
-      color: theme.palette.grey.A200,
-    },
-    '&:before, &:hover:before': {
-      borderBottomColor: theme.palette.grey.A200,
-    },
-    '& fieldset, &:hover fieldset': {
-      borderColor: theme.palette.grey.A200,
-    },
-    '&:hover fieldset': {
-      borderColor: theme.palette.grey.A200,
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: theme.palette.grey.A200,
-    },
-    '& .MuiSvgIcon-root': {
-      color: theme.palette.grey.A200,
-    },
-  },
-}));
+const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
+  .MuiToggleButtonGroup-grouped {
+    margin: 0 6px;
+    border: 0;
+    &.mui-disabled {
+      border: 0;
+    }
+    &:not(:last-of-type) {
+      border-radius: 4px !important;
+    }
+    &:last-of-type {
+      border-radius: 4px !important;
+    }
+    &:hover {
+      background-color: rgba(80, 100, 255, 0.05);
+      color: rgba(80, 100, 255, 0.7);
+    }
+  }
+`;
 
-const useToggleButtonStyles = makeStyles(({ palette }) => ({
-  root: {
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.light, 0.1),
-      borderLeftColor: palette.grey.A200,
-    },
-    color: palette.common.white,
-    borderColor: palette.grey.A200,
-    '&.Mui-selected': {
-      '&:hover': {
-        backgroundColor: lighten(palette.panel.light, 0.1),
-        borderLeftColor: palette.grey.A200,
-      },
-      color: palette.common.white,
-      backgroundColor: lighten(palette.panel.light, 0.2),
-      borderLeftColor: palette.grey.A200,
-    },
-  },
-  disabled: {
-    color: palette.grey.A200,
-  },
-  label: {
-    color: palette.grey.A200,
-  },
-}));
+const CustomToggleButton = styled(ToggleButton)`
+  &.Mui-selected {
+    background-color: rgba(80, 100, 255, 0.1) !important;
+    color: rgba(80, 100, 255) !important;
+    &:hover {
+      background-color: rgba(80, 100, 255, 0.3) !important;
+    }
+  }
+`;
 
-const useIconButtonClasses = makeStyles(({ palette }) => ({
+const useIconButtonClasses = makeStyles(() => ({
   iconButton: {
-    color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+    width: '32px',
+    height: '32px',
+    color: '#5064FF',
+    '&.disabled': {
+      color: '#81818E',
     },
   },
 }));
 
-export const StyledAccordion: React.FC<AccordionProps> = ({
-  children,
-  ...props
-}) => {
-  const classes = useAccordionStyles();
-  return (
-    <MuiAccordion classes={classes} {...props}>
-      {children}
-    </MuiAccordion>
-  );
-};
+const Accordion = MuiStyled((props: AccordionProps) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(() => ({
+  '&:not(:last-child)': {
+    borderBottom: 0,
+  },
+  '&:before': {
+    display: 'none',
+  },
+}));
+
+const MuiAccordionDetails = MuiStyled(AccordionDetails)(() => ({
+  padding: '3px',
+  boxShadow:
+    '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
+  backgroundColor: '#ffffff',
+}));
+
+export const StyledAccordion = React.forwardRef<any, AccordionProps>(
+  ({ children, ...props }) => {
+    return (
+      <Accordion {...props}>{(children as unknown) as ReactElement}</Accordion>
+    );
+  },
+);
 
 export const StyledAccordionSummary: React.FC<AccordionSummaryProps> = ({
   children,
   ...props
 }) => {
-  const classes = useAccordionSummaryStyles();
-  return (
-    <MuiAccordionSummary classes={classes} {...props}>
-      {children}
-    </MuiAccordionSummary>
-  );
+  return <MuiAccordionSummary {...props}>{children}</MuiAccordionSummary>;
 };
 
 export const StyledAccordionDetails = React.forwardRef<
   any,
   AccordionDetailsProps
 >(({ children, ...props }, ref) => {
-  const classes = useAccordionDetailsStyles();
   return (
-    <MuiAccordionDetails classes={classes} {...props} ref={ref}>
+    <MuiAccordionDetails {...props} ref={ref}>
       {children}
     </MuiAccordionDetails>
   );
@@ -218,8 +205,13 @@ export const PanelTextField: React.FC<
 };
 
 export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => {
-  const classes = useToggleButtonStyles();
-  return <ToggleButton classes={classes} {...props} />;
+  return <CustomToggleButton {...props} />;
+};
+
+export const StyledToggleButtonGroup: React.FC<ToggleButtonGroupProps> = (
+  props,
+) => {
+  return <CustomToggleButtonGroup {...props} />;
 };
 
 export const StyledIconButton: React.FC<IconButtonProps> = ({
@@ -251,9 +243,3 @@ export const TabPanel: React.FC<{
 );
 
 export type IconType = OverridableComponent<SvgIconTypeMap<{}, 'svg'>>;
-
-export interface SideBarTitleAction {
-  callback: () => void;
-  icon: IconType | any;
-  title?: string;
-}

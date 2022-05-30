@@ -18,5 +18,5 @@ hooks:
 #   in the script specified in "location".
   ApplicationStart:
     - location: scripts/application_start.sh
-      timeout: 300
+      timeout: 600
       runas: ubuntu
