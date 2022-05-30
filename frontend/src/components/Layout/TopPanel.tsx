@@ -110,15 +110,20 @@ const TopPanel = () => {
   const handleEditClick = () => setOpenEdit(true);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const showBorders = useSelector(selectShowingBorders);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleClick = (event: {
+    currentTarget: React.SetStateAction<HTMLElement | null>;
+  }) => {
     setIsDropdownOpen(true);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => setOpenEdit(false);
-  const handleSubmitNameAndTags = async (values) => {
+  const handleSubmitNameAndTags = async (values: {
+    name: string;
+    tags: string;
+  }) => {
     dispatch(updateNameAndTagsProject(id, values.name, values.tags));
     handleClose();
   };

@@ -56,8 +56,10 @@ const Share: FC<Props> = () => {
   const viewToken = useSelector(selectProjectViewTokenPair);
 
   localStorage.setItem('viewToken', JSON.stringify(viewToken));
-  const [anchor, setAnchor] = useState(null);
-  const handleClick = (ev) => {
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const handleClick = (ev: {
+    currentTarget: React.SetStateAction<HTMLElement | null>;
+  }) => {
     setAnchor(ev.currentTarget);
     dispatch(setProjectViewStart());
     dispatch(Actions.getUsersList());
