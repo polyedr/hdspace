@@ -12,6 +12,8 @@ export const ENTITIES: {
   buttonGenerator: 'buttonGenerator',
   textinput: 'textinput',
   textarea: 'textarea',
+  slider: 'slider',
+  dateTimePicker: 'dateTimePicker',
   checkbox: 'checkbox',
   switch: 'switch',
   radiobuttonGroup: 'radiobuttonGroup',
@@ -94,6 +96,14 @@ export const textinputStyleControls = [
   'border',
 ] as const;
 
+export const dateTimePickerStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+] as const;
+
 export const textareaStyleControls = [
   'indents',
   'size',
@@ -101,6 +111,8 @@ export const textareaStyleControls = [
   'background',
   'border',
 ] as const;
+
+export const sliderStyleControls = ['indents', 'size'] as const;
 
 export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
 
@@ -441,6 +453,12 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   textarea: ['text', 'placeholder', ...textareaStyleControls, 'layouts'],
+  dateTimePicker: [
+    'dateTimePickerControls',
+    ...dateTimePickerStyleControls,
+    'layouts',
+  ],
+  slider: ['sliderSettings', ...sliderStyleControls],
   checkbox: [
     'value',
     'name',
@@ -569,7 +587,9 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   textinput: {},
   input: {},
+  dateTimePicker: {},
   textarea: {},
+  slider: {},
   checkbox: {},
   switch: {},
   radiobuttonGroup: {

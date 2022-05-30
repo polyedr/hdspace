@@ -236,6 +236,14 @@ export type TextareaServerElement = ServerElement<
   [],
   TextareaParameters
 >;
+
+export type SliderServerElement = ServerElement<'slider', [], SliderParameters>;
+
+export type DateTimePickerServerElement = ServerElement<
+  'dateTimePicker',
+  [],
+  DateTimePickerParameters
+>;
 export type HeadingServerElement = ServerElement<
   'heading',
   [],
@@ -482,6 +490,13 @@ export type TextareaElement = LibraryElement<
   [],
   TextareaParameters
 >;
+export type SliderElement = LibraryElement<'slider', [], SliderParameters>;
+
+export type DateTimePickerElement = LibraryElement<
+  'dateTimePicker',
+  [],
+  DateTimePickerParameters
+>;
 export type HeadingElement = LibraryElement<'heading', [], HeadingParameters>;
 export type ParagraphElement = LibraryElement<
   'paragraph',
@@ -672,6 +687,24 @@ export type ColumnsParameters = BaseElementParams;
 export type TextareaParameters = BaseElementParams & {
   textContent: string;
   placeholder: string;
+};
+
+export type SliderParameters = BaseElementParams & {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+};
+
+export enum DateTimePickerType {
+  Date = 'Date',
+  Time = 'Time',
+  DateTime = 'Date Time',
+}
+
+export type DateTimePickerParameters = BaseElementParams & {
+  label: string;
+  type: DateTimePickerType;
 };
 
 export type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -1439,6 +1472,7 @@ export type ElementsToAdd = {
   select: () => SelectServerElement;
   label: () => LabelServerElement;
   textarea: () => TextareaServerElement;
+  slider: () => SliderServerElement;
   heading: () => HeadingServerElement;
   paragraph: () => ParagraphServerElement;
   ocrtext: () => OcrtextServerElement;
@@ -1446,6 +1480,7 @@ export type ElementsToAdd = {
   list: () => ListServerElement;
   map: () => MapServerElement;
   calendar: () => CalendarServerElement;
+  dateTimePicker: () => DateTimePickerServerElement;
   clock: () => ClockServerElement;
   dropdown: () => DropdownServerElement;
   video: () => VideoServerElement;
@@ -1576,6 +1611,8 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'navbar',
   'radiobuttons',
   'imagesList',
+  'dateTimePickerControls',
+  'sliderSettings',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
