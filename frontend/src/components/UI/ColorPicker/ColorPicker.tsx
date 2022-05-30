@@ -5,22 +5,22 @@ import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { Popover } from '@material-ui/core';
-import transparentBg from '../../../assets/sprites/background_empty.png';
+import transparentBg from '../../../assets/sprites/transparent.png';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     container: {
       position: 'relative',
-      width: '16px',
-      height: '16px',
+      width: '18px',
+      height: '18px',
       borderRadius: '2px',
-      border: '1px solid grey',
       backgroundColor: (props: any) => props.color,
       cursor: 'pointer',
     },
     transparent: {
       borderRadius: theme.shape.borderRadius,
-      background: `white url(${transparentBg})`,
+      background: `white url(${transparentBg}) 100% 100% no-repeat`,
+      backgroundSize: 'cover',
     },
   }),
 );
