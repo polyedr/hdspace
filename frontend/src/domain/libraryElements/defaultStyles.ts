@@ -939,6 +939,31 @@ export const defaultTextareaStyles: {
   },
 };
 
+export const defaultDateTimePickerStyles: {
+  [K in TextareaControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+    padding: '2px 6px',
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+    border: '1px solid #aaa',
+    borderRadius: '1px',
+    borderColor: '#aaa',
+    borderWidth: '1px',
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+};
+
 export const defaultCheckboxStyles: {
   [K in CheckboxControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
@@ -1270,6 +1295,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   textinput: defaultTextinputStyles,
   input: defaultTextinputStyles,
   textarea: defaultTextareaStyles,
+  dateTimePicker: defaultDateTimePickerStyles,
   checkbox: defaultCheckboxStyles,
   switch: defaultSwitchStyles,
   radiobutton: defaultRadiobuttonStyles,
