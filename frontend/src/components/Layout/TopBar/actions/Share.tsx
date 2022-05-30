@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback, MouseEvent } from 'react';
+import React, { FC, useState, useCallback } from 'react';
 import ShareIcon from '@material-ui/icons/Share';
 import { Button, Popover, Container } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -56,8 +56,8 @@ const Share: FC<Props> = () => {
   const viewToken = useSelector(selectProjectViewTokenPair);
 
   localStorage.setItem('viewToken', JSON.stringify(viewToken));
-  const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
-  const handleClick = (ev: MouseEvent<HTMLButtonElement>) => {
+  const [anchor, setAnchor] = useState(null);
+  const handleClick = (ev) => {
     setAnchor(ev.currentTarget);
     dispatch(setProjectViewStart());
     dispatch(Actions.getUsersList());

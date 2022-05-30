@@ -110,10 +110,10 @@ const TopPanel = () => {
   const handleEditClick = () => setOpenEdit(true);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const showBorders = useSelector(selectShowingBorders);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event) => {
     setIsDropdownOpen(true);
     setAnchorEl(event.currentTarget);
   };
