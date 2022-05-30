@@ -346,30 +346,32 @@ const BorderBlock: React.FC<Props> = ({
 
       <div className={cn(classes.wrapper, classes.position)}>
         <div className={cn(classes.control, classes.position)}>
-          <StyledTextField
-            label="Radius"
-            type="number"
-            value={safeParseFloat(validateBorderRadius(String(radius)))}
-            onChange={handleRadiusChange}
-            margin="dense"
-            className={classes.text}
-            disabled={!canEdit}
-          />
+          <div>
+            <StyledTextField
+              type="number"
+              value={safeParseFloat(validateBorderRadius(String(radius)))}
+              onChange={handleRadiusChange}
+              margin="dense"
+              className={classes.text}
+              disabled={!canEdit}
+            />
 
-          <StyledTextField
-            margin="dense"
-            onChange={handleRadiusUnitsChange}
-            value={radiusUnitsValue}
-            select
-            disabled={!canEdit}
-          >
-            <MenuItem value="px" dense>
-              px
-            </MenuItem>
-            <MenuItem value="%" dense>
-              percent
-            </MenuItem>
-          </StyledTextField>
+            <StyledTextField
+              margin="dense"
+              onChange={handleRadiusUnitsChange}
+              value={radiusUnitsValue}
+              select
+              disabled={!canEdit}
+            >
+              <MenuItem value="px" dense>
+                px
+              </MenuItem>
+              <MenuItem value="%" dense>
+                percent
+              </MenuItem>
+            </StyledTextField>
+            <div className={classes.labelTextField}>Radius</div>
+          </div>
         </div>
       </div>
     </div>
