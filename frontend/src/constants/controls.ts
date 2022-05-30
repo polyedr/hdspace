@@ -46,6 +46,7 @@ import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
 import BackgroundImage from '@Components/RightPanel/PropertiesTab/Controls/BackgroundImage';
 import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
 import ImagesItems from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItems';
+import DateTimePickerControls from '@Components/RightPanel/PropertiesTab/Controls/DateTimePickerControls/DateTimePickerControls';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -98,6 +99,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
   textContent: { Control: TextContent, styles: [] },
+  dateTimePickerControls: { Control: DateTimePickerControls },
   text: { Control: Text, styles: [] },
   image: { Control: Image, styles: [] },
   imagesList: {
