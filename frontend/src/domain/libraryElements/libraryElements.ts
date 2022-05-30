@@ -73,6 +73,7 @@ import {
   makeLabel,
   makeRadiobutton,
   makeSwitch,
+  makeDateTimePicker,
   makeSlider,
 } from './formElements/formElements';
 import { makeButtonGenerator } from './generatorElements/generatorElements';
@@ -151,6 +152,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   listItem: makeListItem,
   map: makeMap,
   calendar: makeCalendar,
+  dateTimePicker: makeDateTimePicker,
   clock: makeClock,
   dropdown: makeDropdown,
   dropdownMenu: makeDropdownMenu,
@@ -198,6 +200,7 @@ export const ICONS: Partial<
   select: TocIcon,
   map: MapIcon,
   calendar: CalendarTodayIcon,
+  dateTimePicker: CalendarTodayIcon,
   clock: QueryBuilderIcon,
   smartHeader: CropOriginalIcon,
   smartFooter: CropOriginalIcon,

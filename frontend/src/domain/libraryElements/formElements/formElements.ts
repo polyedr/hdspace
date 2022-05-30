@@ -12,6 +12,8 @@ import {
   RadiobuttonGroupServerElement,
   SwitchServerElement,
   SliderServerElement,
+  DateTimePickerServerElement,
+  DateTimePickerType,
 } from '@Src/types';
 import { DEFAULT_LAYOUT_LIST } from '@Constants/defaultParams';
 import { v4 } from 'uuid';
@@ -332,4 +334,29 @@ export const makeSlider = (): SliderServerElement => ({
   name: 'slider',
   children: [],
   custom: true,
+});
+
+export const makeDateTimePicker = (): DateTimePickerServerElement => ({
+  id: 'dateTimePicker',
+  buoyancy: 0,
+  func_type: 'dateTimePicker',
+  struct_type: 'dateTimePicker',
+  parameters: {
+    layouts: DEFAULT_LAYOUT_LIST,
+    freeCanvas: {
+      ...defaultFreeCanvasParams,
+      width: 300,
+      height: 300,
+    },
+    label: 'Date & Time Picker',
+    type: DateTimePickerType.DateTime,
+    group: ElementGroup.FORM,
+  },
+  styles: {
+    classNames: ['dateTimePicker'],
+    ownStyles: {},
+    pseudoClassStyles: {},
+  },
+  name: 'dateTimePicker',
+  children: [],
 });
