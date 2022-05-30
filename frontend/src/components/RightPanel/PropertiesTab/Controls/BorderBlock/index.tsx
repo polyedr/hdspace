@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   getPermissibleValue,
   safeMatch,
@@ -29,6 +29,7 @@ import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base
 import cn from 'classnames';
 import BORDER_STYLE from '@Constants/borderStyle';
 import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+import { useDebouncedCallback } from 'use-debounce';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
@@ -93,6 +94,13 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   isDefaultStyles?: boolean;
 };
 
+const detailedLabel = {
+  borderTopWidth: 'Top',
+  borderBottomWidth: 'Bottom',
+  borderLeftWidth: 'Left',
+  borderRightWidth: 'Right',
+};
+
 const BorderBlock: React.FC<Props> = ({
   updateStyles,
   removeStyles,
@@ -106,6 +114,9 @@ const BorderBlock: React.FC<Props> = ({
   editableStyles,
   isDefaultStyles = false,
   borderTopWidth,
+  borderBottomWidth,
+  borderLeftWidth,
+  borderRightWidth,
 }) => {
   const classes = useStyles();
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
@@ -148,21 +159,42 @@ const BorderBlock: React.FC<Props> = ({
     250,
   );
 
-  const [
-    borderTopWidthState,
-    handleBorderTopWidthStateChange,
-  ] = useDebouncedInputChange(
+  const [detailedBorderWidth, setDetailedBorderWidth] = useState({
     borderTopWidth,
-    (value) => {
-      const newWidth = getPermissibleValue(
-        strToNumber(value.toString()),
-        MIN_BORDER_WIDTH,
-        MAX_BORDER_WIDTH,
-      );
-      updateStyles({ borderTopWidth: `${newWidth}px` });
+    borderBottomWidth,
+    borderLeftWidth,
+    borderRightWidth,
+  });
+
+  useEffect(() => {
+    setDetailedBorderWidth({
+      borderTopWidth,
+      borderBottomWidth,
+      borderLeftWidth,
+      borderRightWidth,
+    });
+  }, [borderTopWidth, borderBottomWidth, borderLeftWidth, borderRightWidth]);
+
+  const updateBorderWidth = (name, value) => {
+    const newWidth = getPermissibleValue(
+      strToNumber(value.toString()),
+      MIN_BORDER_WIDTH,
+      MAX_BORDER_WIDTH,
+    );
+    updateStyles({ [name]: `${newWidth}px` });
+  };
+
+  const debouncedValueChangeHandler = useDebouncedCallback(
+    (value, name, cb) => {
+      cb(name, value);
     },
     250,
   );
+
+  const handleBorderWidthChange = (name, value) => {
+    setDetailedBorderWidth({ ...detailedBorderWidth, [name]: value });
+    debouncedValueChangeHandler.callback(value, name, updateBorderWidth);
+  };
 
   const [radius, handleRadiusChange] = useDebouncedInputChange(
     (isDefaultStyles && defaultStyles?.border?.borderRadius) || borderRadius,
@@ -201,7 +233,15 @@ const BorderBlock: React.FC<Props> = ({
       {!isDefaultStyles && !masterScreenEnabled && canEdit && (
         <RemoveStyles
           onClick={removeStyles}
-          propsToRemove={['borderColor', 'borderWidth', 'borderRadius']}
+          propsToRemove={[
+            'borderColor',
+            'borderWidth',
+            'borderRadius',
+            'borderBottomWidth',
+            'borderLeftWidth',
+            'borderRightWidth',
+            'borderTopWidth',
+          ]}
           type={element.type}
           editableStyles={editableStyles}
         />
@@ -278,74 +318,29 @@ const BorderBlock: React.FC<Props> = ({
 
       {isBorderEditorOpen && (
         <div className={cn(classes.styleBlock)}>
-          <div>
-            <StyledTextField
-              type="number"
-              value={
-                borderTopWidthState
-                  ? parseFloat(borderTopWidthState as string)
-                  : ''
-              }
-              onChange={handleBorderTopWidthStateChange}
-              margin="dense"
-              inputProps={{ className: classes.numberInput }}
-              className={classes.detailedBorderWidth}
-              disabled={!canEdit}
-              placeholder="0"
-            />
-            <div className={classes.labelTextField}>Top</div>
-          </div>
-          <div>
-            <StyledTextField
-              type="number"
-              value={
-                borderTopWidthState
-                  ? parseFloat(borderTopWidthState as string)
-                  : ''
-              }
-              onChange={handleBorderTopWidthStateChange}
-              margin="dense"
-              inputProps={{ className: classes.numberInput }}
-              className={classes.detailedBorderWidth}
-              disabled={!canEdit}
-              placeholder="0"
-            />
-            <div className={classes.labelTextField}>Top</div>
-          </div>
-          <div>
-            <StyledTextField
-              type="number"
-              value={
-                borderTopWidthState
-                  ? parseFloat(borderTopWidthState as string)
-                  : ''
-              }
-              onChange={handleBorderTopWidthStateChange}
-              margin="dense"
-              inputProps={{ className: classes.numberInput }}
-              className={classes.detailedBorderWidth}
-              disabled={!canEdit}
-              placeholder="0"
-            />
-            <div className={classes.labelTextField}>Top</div>
-          </div>
-          <div>
-            <StyledTextField
-              type="number"
-              value={
-                borderTopWidthState
-                  ? parseFloat(borderTopWidthState as string)
-                  : ''
-              }
-              onChange={handleBorderTopWidthStateChange}
-              margin="dense"
-              inputProps={{ className: classes.numberInput }}
-              className={classes.detailedBorderWidth}
-              disabled={!canEdit}
-              placeholder="0"
-            />
-            <div className={classes.labelTextField}>Top</div>
-          </div>
+          {Object.keys(detailedBorderWidth).map((item) => (
+            <div key={item}>
+              <StyledTextField
+                type="number"
+                value={
+                  detailedBorderWidth[item]
+                    ? parseFloat(detailedBorderWidth[item] as string)
+                    : ''
+                }
+                onChange={(event) =>
+                  handleBorderWidthChange(item, event.target.value)
+                }
+                margin="dense"
+                inputProps={{ className: classes.numberInput }}
+                className={classes.detailedBorderWidth}
+                disabled={!canEdit}
+                placeholder="0"
+              />
+              <div className={classes.labelTextField}>
+                {detailedLabel[item]}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
