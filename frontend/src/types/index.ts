@@ -236,6 +236,9 @@ export type TextareaServerElement = ServerElement<
   [],
   TextareaParameters
 >;
+
+export type SliderServerElement = ServerElement<'slider', [], SliderParameters>;
+
 export type DateTimePickerServerElement = ServerElement<
   'dateTimePicker',
   [],
@@ -487,6 +490,8 @@ export type TextareaElement = LibraryElement<
   [],
   TextareaParameters
 >;
+export type SliderElement = LibraryElement<'slider', [], SliderParameters>;
+
 export type DateTimePickerElement = LibraryElement<
   'dateTimePicker',
   [],
@@ -682,6 +687,13 @@ export type ColumnsParameters = BaseElementParams;
 export type TextareaParameters = BaseElementParams & {
   textContent: string;
   placeholder: string;
+};
+
+export type SliderParameters = BaseElementParams & {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
 };
 
 export enum DateTimePickerType {
@@ -1460,6 +1472,7 @@ export type ElementsToAdd = {
   select: () => SelectServerElement;
   label: () => LabelServerElement;
   textarea: () => TextareaServerElement;
+  slider: () => SliderServerElement;
   heading: () => HeadingServerElement;
   paragraph: () => ParagraphServerElement;
   ocrtext: () => OcrtextServerElement;
@@ -1599,6 +1612,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'radiobuttons',
   'imagesList',
   'dateTimePickerControls',
+  'sliderSettings',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
