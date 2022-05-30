@@ -39,7 +39,7 @@ const MuiAccordionSummary = styled(AccordionSummary)`
   .Mui-expanded {
     min-height: 0;
   }
-  .MuiAccordionSummary-root {
+  &.MuiAccordionSummary-root {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
