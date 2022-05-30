@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
 import Layout from '../components/Layout';
+import MarketplaceLayout from '../components/Marketplace/components/Layout/index';
 import { selectIsLoggedIn } from '../redux/user/selectors';
 
 const Profile = lazy(() => import('../components/User/Profile'));
@@ -19,7 +20,10 @@ const ResetPassword = lazy(
 const Projects = lazy(() => import('../components/Projects/Projects'));
 const Project = lazy(() => import('./Project'));
 const SharedWithLink = lazy(() => import('@Components/User/SharedWithLink'));
-
+const Marketplace = lazy(
+  () => import('@Components/Marketplace/components/MarketPlace/Marketplace'),
+);
+const Team = lazy(() => import('@Components/Marketplace/components/Team/Team'));
 const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   return (
@@ -76,6 +80,18 @@ const Routes: React.FC = () => {
           <Layout>
             <Profile />
           </Layout>
+        </PrivateRoute>
+
+        <PrivateRoute path={PATH_NAMES.marketplace}>
+          <MarketplaceLayout>
+            <Marketplace />
+          </MarketplaceLayout>
+        </PrivateRoute>
+
+        <PrivateRoute path={PATH_NAMES.team}>
+          <MarketplaceLayout>
+            <Team />
+          </MarketplaceLayout>
         </PrivateRoute>
 
         <Redirect from="/*" to={PATH_NAMES.projects} />

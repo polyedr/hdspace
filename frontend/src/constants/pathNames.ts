@@ -10,6 +10,8 @@ const PATH_NAMES = {
   },
   profile: '/profile',
   passwordRestore: '/password_restore',
+  marketplace: '/marketplace',
+  team: '/team',
 };
 
 export default PATH_NAMES;
