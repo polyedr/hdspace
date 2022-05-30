@@ -37,8 +37,8 @@ api_team_patterns = [
 ]
 
 api_sharedlink_patterns = [
-    path("usersharedlink/", SharedlinkView.as_view()),
-    path("upvieweversharedlink/", SharedlinkprojectView.as_view()),
+    path("sharedlinkuser/", SharedlinkView.as_view()),
+    path("sharedlinkuv/", SharedlinkprojectView.as_view()),
 ]
 
 app_name = "api_accounts"

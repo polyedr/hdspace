@@ -661,12 +661,12 @@ class AssignPermissionsmapProject(APIView):
     CHANGE_PROJECT_PERMISSION = "change_project"
     ASSIGN_PROJECT_PERMISSION = "assign_project"
     DELETE_PROJECT_PERMISSION = "delete_project"
-    ADD_PROJECT_PERMISSION = "delete_project"
+    ADD_PROJECT_PERMISSION = "add_project"
     PROJECT_PERMISSION = (
         (VIEW_PROJECT_PERMISSION, "view_project"),
         (CHANGE_PROJECT_PERMISSION, "change_project"),
-        (VIEW_PROJECT_PERMISSION, "assign_project"),
-        (CHANGE_PROJECT_PERMISSION, "delete_project"),
+        (ASSIGN_PROJECT_PERMISSION, "assign_project"),
+        (DELETE_PROJECT_PERMISSION, "delete_project"),
         (ADD_PROJECT_PERMISSION, "add_project"),
     )
 
