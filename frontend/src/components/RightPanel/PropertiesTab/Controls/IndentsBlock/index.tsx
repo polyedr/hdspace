@@ -189,6 +189,7 @@ const IndentsBlock: React.FC<Props> = ({
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
   const classes = useStyles();
   const [state, setState] = useState<Indents | null>(null);
+
   useEffect(() => {
     const styles = isDefaultStyles
       ? defaultStyles?.indents
@@ -216,7 +217,7 @@ const IndentsBlock: React.FC<Props> = ({
     isDefaultStyles,
   ]);
 
-  const debounced = useDebouncedCallback((name, value) => {
+  const debouncedValueChange = useDebouncedCallback((name, value) => {
     updateStyles({ [name]: value });
   }, 500);
 
@@ -237,7 +238,7 @@ const IndentsBlock: React.FC<Props> = ({
       val = value;
     }
     setState({ ...state, [name]: val } as Indents);
-    debounced.callback(name, `${val}px`);
+    debouncedValueChange.callback(name, `${val}px`);
   };
 
   const [isFocusActive, setIsFocusActive] = useState(initialOnFocusState);
@@ -296,7 +297,7 @@ const IndentsBlock: React.FC<Props> = ({
               inputProps={{ className: classes.numberInput }}
               disabled={!canEdit}
               placeholder="0"
-              value={(state && parseInt(state.marginTop as string)) || null}
+              value={(state && parseInt(state.marginTop as string)) || ''}
               onChange={handleChange}
             />
           </div>
@@ -339,7 +340,7 @@ const IndentsBlock: React.FC<Props> = ({
                 setIsFocusActive({ ...isFocusActive, marginRight: false })
               }
               placeholder="0"
-              value={(state && parseInt(state.marginRight as string)) || null}
+              value={(state && parseInt(state.marginRight as string)) || ''}
               onChange={handleChange}
               disabled={!canEdit}
             />
@@ -383,7 +384,7 @@ const IndentsBlock: React.FC<Props> = ({
                 setIsFocusActive({ ...isFocusActive, marginBottom: false })
               }
               placeholder="0"
-              value={(state && parseInt(state.marginBottom as string)) || null}
+              value={(state && parseInt(state.marginBottom as string)) || ''}
               onChange={handleChange}
               disabled={!canEdit}
             />
@@ -427,7 +428,7 @@ const IndentsBlock: React.FC<Props> = ({
                 setIsFocusActive({ ...isFocusActive, marginLeft: false })
               }
               placeholder="0"
-              value={(state && parseInt(state.marginLeft as string)) || null}
+              value={(state && parseInt(state.marginLeft as string)) || ''}
               onChange={handleChange}
               disabled={!canEdit}
             />
@@ -479,7 +480,7 @@ const IndentsBlock: React.FC<Props> = ({
                 setIsFocusActive({ ...isFocusActive, paddingTop: false })
               }
               placeholder="0"
-              value={(state && parseInt(state.paddingTop as string)) || null}
+              value={(state && parseInt(state.paddingTop as string)) || ''}
               onChange={handleChange}
               disabled={!canEdit}
             />
@@ -523,7 +524,7 @@ const IndentsBlock: React.FC<Props> = ({
                 setIsFocusActive({ ...isFocusActive, paddingRight: false })
               }
               placeholder="0"
-              value={(state && parseInt(state.paddingRight as string)) || null}
+              value={(state && parseInt(state.paddingRight as string)) || ''}
               onChange={handleChange}
               disabled={!canEdit}
             />
@@ -569,7 +570,7 @@ const IndentsBlock: React.FC<Props> = ({
                 setIsFocusActive({ ...isFocusActive, paddingBottom: false })
               }
               placeholder="0"
-              value={(state && parseInt(state.paddingBottom as string)) || null}
+              value={(state && parseInt(state.paddingBottom as string)) || ''}
               onChange={handleChange}
               disabled={!canEdit}
             />
@@ -615,7 +616,7 @@ const IndentsBlock: React.FC<Props> = ({
                 setIsFocusActive({ ...isFocusActive, paddingLeft: false })
               }
               placeholder="0"
-              value={(state && parseInt(state.paddingLeft as string)) || null}
+              value={(state && parseInt(state.paddingLeft as string)) || ''}
               onChange={handleChange}
               disabled={!canEdit}
             />

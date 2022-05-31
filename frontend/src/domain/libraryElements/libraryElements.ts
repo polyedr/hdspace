@@ -27,6 +27,7 @@ import QueryBuilderIcon from '@material-ui/icons/QueryBuilder';
 import CropOriginalIcon from '@material-ui/icons/CropOriginal';
 import PaymentIcon from '@material-ui/icons/Payment';
 import Crop75Icon from '@material-ui/icons/Crop75';
+import SliderIcon from '@material-ui/icons/Tune';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import { SvgIconTypeMap } from '@material-ui/core';
 import { Entity, LibraryElements, ServerElement } from '@Src/types';
@@ -72,6 +73,8 @@ import {
   makeLabel,
   makeRadiobutton,
   makeSwitch,
+  makeDateTimePicker,
+  makeSlider,
 } from './formElements/formElements';
 import { makeButtonGenerator } from './generatorElements/generatorElements';
 import {
@@ -140,6 +143,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   option: makeOption,
   label: makeLabel,
   textarea: makeTextarea,
+  slider: makeSlider,
   heading: makeHeading,
   paragraph: makeParagraph,
   ocrtext: makeOcrtext,
@@ -148,6 +152,7 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   listItem: makeListItem,
   map: makeMap,
   calendar: makeCalendar,
+  dateTimePicker: makeDateTimePicker,
   clock: makeClock,
   dropdown: makeDropdown,
   dropdownMenu: makeDropdownMenu,
@@ -187,6 +192,7 @@ export const ICONS: Partial<
   dropdown: ArrowDropDownCircleIcon,
   textinput: MessageIcon,
   textarea: TextFieldsIcon,
+  slider: SliderIcon,
   checkbox: CheckBoxIcon,
   switch: ToggleOffIcon,
   radiobuttonGroup: RadioButtonCheckedIcon,
@@ -194,6 +200,7 @@ export const ICONS: Partial<
   select: TocIcon,
   map: MapIcon,
   calendar: CalendarTodayIcon,
+  dateTimePicker: CalendarTodayIcon,
   clock: QueryBuilderIcon,
   smartHeader: CropOriginalIcon,
   smartFooter: CropOriginalIcon,

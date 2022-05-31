@@ -186,6 +186,8 @@ const BorderBlock: React.FC<Props> = ({
 
       {!isDefaultStyles && (
         <ColorSettings
+          onClick={removeStyles}
+          propsToRemove={['borderColor']}
           currentColor={borderColorValue as string}
           activeElementId={element.id}
           onChange={handleBorderColorChange as (newBorderColor: string) => void}

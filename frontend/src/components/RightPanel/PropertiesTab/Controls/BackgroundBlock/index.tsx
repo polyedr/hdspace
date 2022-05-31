@@ -6,23 +6,28 @@ import {
   ElementTypeName,
 } from '@Src/types';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
+import { makeStyles } from '@material-ui/core/styles';
 import ColorSettings from '../../helperComponents/ColorSettings';
-import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   backgroundColor?: React.CSSProperties['backgroundColor'];
   controlName?: string;
 };
 
+const useStyles = makeStyles({
+  root: {
+    padding: '16px',
+  },
+});
+
 const BackgroundBlock: React.FC<Props> = ({
   removeStyles,
   updateStyles,
   element,
   backgroundColor = 'transparent',
-  masterScreenEnabled,
   canEdit,
-  editableStyles,
 }) => {
+  const classes = useStyles();
   const [color, handleColorChange] = useDebouncedValueChange(
     backgroundColor,
     (updatedColorValue: string) => {
@@ -41,17 +46,10 @@ const BackgroundBlock: React.FC<Props> = ({
   );
 
   return (
-    <div>
-      {!masterScreenEnabled && canEdit && (
-        <RemoveStyles
-          onClick={removeStyles}
-          propsToRemove={['backgroundColor']}
-          type={element.type}
-          editableStyles={editableStyles}
-        />
-      )}
-
+    <div className={classes.root}>
       <ColorSettings
+        onClick={removeStyles}
+        propsToRemove={['backgroundColor']}
         currentColor={color as string}
         activeElementId={element.id}
         onChange={handleColorChange as (color: string) => any}
