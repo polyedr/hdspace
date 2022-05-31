@@ -1631,6 +1631,7 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'backgroundImage',
   'styleSheets',
   'alignment',
+  'opacity',
 ] as const;
 
 export type Control =

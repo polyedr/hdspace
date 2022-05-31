@@ -11,6 +11,8 @@ import {
   ToggleButtonGroupProps,
   ToggleButtonGroup,
   ToggleButtonProps,
+  Slider,
+  SliderProps,
 } from '@mui/material';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -18,6 +20,23 @@ import { makeStyles } from '@material-ui/core/styles';
 import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import styled from 'styled-components';
+
+const MuiSlider = styled(Slider)`
+  & .MuiSlider-thumb {
+    color: #ffffff;
+    box-shadow: 0 0 1px rgba(55, 56, 60, 0.2), 0 2px 8px rgba(55, 56, 60, 0.08);
+  &:focus, &:hover, &.Mui-active {
+    box-shadow:
+            0 3px 1px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.02);
+  },
+  }
+  & .MuiSlider-track {
+    background-color: #5064ff;
+  }
+  & .MuiSlider-rail {
+    background-color: #e4e6eb;
+  }
+`;
 
 const MuiAccordionSummary = styled(AccordionSummary)`
   .MuiAccordionSummary-content {
@@ -164,6 +183,10 @@ export const StyledAccordionDetails = React.forwardRef<
     </MuiAccordionDetails>
   );
 });
+
+export const StyledSlider: React.FC<SliderProps> = (props) => {
+  return <MuiSlider {...props} />;
+};
 
 export const StyledTextField: React.FC<TextFieldProps> = (props) => {
   const { select } = props;
