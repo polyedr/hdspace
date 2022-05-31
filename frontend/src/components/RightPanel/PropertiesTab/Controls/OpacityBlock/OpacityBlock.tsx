@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import RemoveStyles from '@Components/RightPanel/PropertiesTab/helperComponents/RemoveStyles';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledSlider, StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
+import { useDebouncedValueChange } from '@Utils/debounceHooks';
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   opacity: React.CSSProperties['opacity'];
@@ -28,14 +29,30 @@ const useStyles = makeStyles({
 
 const OpacityBlock: React.FC<Props> = ({
   removeStyles,
+  updateStyles,
   editableStyles,
   element,
   masterScreenEnabled,
   canEdit,
+  opacity,
 }) => {
   const classes = useStyles();
 
-  const [opacityState, setOpacityState] = useState(100);
+  const initialOpacity = opacity || 1;
+
+  const [opacityState, handleOpacityChange] = useDebouncedValueChange(
+    initialOpacity as number,
+    (value) => {
+      updateStyles({ opacity: value });
+    },
+    250,
+  );
+
+  const handlerWrapper = (value: any) => {
+    // @ts-ignore
+    handleOpacityChange(value);
+  };
+
   return (
     <div className={classes.container}>
       {!masterScreenEnabled && canEdit && (
@@ -49,23 +66,23 @@ const OpacityBlock: React.FC<Props> = ({
       <div className={classes.inputsContainer}>
         <StyledTextField
           className={classes.input}
-          value={`${opacityState}%`}
+          value={`${Math.round((opacityState as number) * 100)}%` || '100%'}
           onBlur={({ target: { value } }) => {
-            setOpacityState(parseInt(value));
+            handlerWrapper(parseInt(value) / 100);
           }}
-          onChange={({ target: { value } }) => {
-            setOpacityState(parseInt(value));
-          }}
+          onChange={({ target: { value } }) =>
+            handlerWrapper(parseInt(value) / 100)
+          }
           margin="none"
           disabled={!canEdit}
         />
         <StyledSlider
           style={{ width: '150px' }}
           size="small"
-          defaultValue={opacityState}
-          onChange={(event, value) => setOpacityState(value as number)}
+          value={(opacityState as number) * 100}
+          defaultValue={100}
+          onChange={(event, value) => handlerWrapper((value as number) / 100)}
           aria-label="Small"
-          valueLabelDisplay="auto"
           disabled={!canEdit}
         />
       </div>

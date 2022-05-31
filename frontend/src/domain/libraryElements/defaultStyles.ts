@@ -91,7 +91,7 @@ export const DEFAULT_BACKGROUND_SIZE: React.CSSProperties = {
 };
 
 export const DEFAULT_OPACITY: React.CSSProperties = {
-  opacity: 1,
+  opacity: '100%',
 };
 
 export const DEFAULT_BULLETS: React.CSSProperties = {
