@@ -96,7 +96,16 @@ const CONTROLS: Record<Control, ControlInfo> = {
   },
   border: {
     Control: BorderBlock,
-    styles: ['borderColor', 'borderWidth', 'borderRadius'],
+    styles: [
+      'borderColor',
+      'borderWidth',
+      'borderRadius',
+      'borderStyle',
+      'borderRightWidth',
+      'borderTopWidth',
+      'borderBottomWidth',
+      'borderLeftWidth',
+    ],
   },
   background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
   backgroundImage: { Control: BackgroundImage, styles: ['backgroundImage'] },
