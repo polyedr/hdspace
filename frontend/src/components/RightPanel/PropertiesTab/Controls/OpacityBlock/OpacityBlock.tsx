@@ -66,7 +66,11 @@ const OpacityBlock: React.FC<Props> = ({
       <div className={classes.inputsContainer}>
         <StyledTextField
           className={classes.input}
-          value={`${Math.round((opacityState as number) * 100)}%` || '100%'}
+          value={
+            opacityState
+              ? `${Math.round((opacityState as number) * 100)}%`
+              : '100%'
+          }
           onBlur={({ target: { value } }) => {
             handlerWrapper(parseInt(value) / 100);
           }}
