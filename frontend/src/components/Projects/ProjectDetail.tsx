@@ -39,6 +39,7 @@ import { selectSortedScreens } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
 import AddTags, { Tag } from './AddTags';
+import Screens from './Tabs/Screens';
 
 const useStyles = makeStyles(({ spacing }) =>
   createStyles({
@@ -358,7 +359,7 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
             <StyledTab label="Team" disableRipple {...a11yProps(4)} />
           </StyledTabs>
           <TabPanel value={value} index={0}>
-            Screens
+            <Screens projectId={projectId} />
           </TabPanel>
           <TabPanel value={value} index={1}>
             Activity
