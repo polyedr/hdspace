@@ -45,6 +45,8 @@ import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
 import { makeStyles } from '@material-ui/core/styles';
 
 import logger from 'loglevel';
+import ToggleButton from '@mui/material/ToggleButton';
+import { ToggleButtonGroup } from '@mui/material';
 import RenameElement from './Controls/RenameElement/RenameElement';
 import ShareStyles from './helperComponents/ShareStyles/ShareStyles';
 import Scrollbar from '../../UI/Scrollbar';
@@ -52,13 +54,52 @@ import ControlSection from './helperComponents/ControlSection';
 import PseudoSelectorsSection from './PseudoSelectorsSection';
 import ElementType from './Controls/ElementType/ElementType';
 
+enum PROPERTIES_TYPES {
+  SETTINGS = 'settings',
+  STYLES = 'styles',
+}
+
 const useStyles = makeStyles({
   propertiesTab: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
   },
+
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '10px 16px',
+  },
+
+  toggleButtonsContainer: {
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  activeToggleButton: {
+    color: '#2A2A2D',
+    fontWeight: 'bold',
+    fontSize: '12px',
+    letterSpacing: '145%',
+  },
+  toggleButton: {
+    color: '#81818E',
+    fontWeight: 'bold',
+    fontSize: '12px',
+    letterSpacing: '145%',
+  },
 });
+
+const toggleButtonStyles = {
+  height: '32px',
+  width: '113.5px',
+  border: '1px solid #F3F4F6',
+  fontWeight: 'bold',
+  fontSize: '12px',
+  letterSpacing: '145%',
+};
 
 const PropertiesTab: React.FC = () => {
   const classes = useStyles();
@@ -74,6 +115,11 @@ const PropertiesTab: React.FC = () => {
   const editableStyles = useSelector(selectEditableStyles);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const selectedElements = useSelector(selectSelectedElements);
+
+  const [propertiesType, setPropertiesType] = useState<PROPERTIES_TYPES>(
+    PROPERTIES_TYPES.STYLES,
+  );
+
   const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
@@ -395,10 +441,56 @@ const PropertiesTab: React.FC = () => {
         autoHeightMin="100%"
         style={{
           height: '100%',
+          backgroundColor: '#fff',
         }}
       >
+        <div className={classes.header}>
+          <div
+            style={{
+              fontStyle: 'Roboto-Medium',
+              color: '#2A2A2D',
+              fontWeight: 500,
+              fontSize: '16px',
+              lineHeight: '145%',
+            }}
+          >
+            Properties
+          </div>
+          <div
+            style={{
+              fontStyle: 'Roboto-Regular',
+              fontSize: '14px',
+              lineHeight: '135%',
+              color: '#81818E',
+            }}
+          >
+            Collapse All
+          </div>
+        </div>
         {!isPrototypeMode && (
           <>
+            <div className={classes.toggleButtonsContainer}>
+              <ToggleButtonGroup
+                value={propertiesType}
+                sx={{ height: '32px', width: '227px' }}
+              >
+                <ToggleButton
+                  value={PROPERTIES_TYPES.STYLES}
+                  onClick={() => setPropertiesType(PROPERTIES_TYPES.STYLES)}
+                  sx={toggleButtonStyles}
+                >
+                  {PROPERTIES_TYPES.STYLES}
+                </ToggleButton>
+                <ToggleButton
+                  sx={toggleButtonStyles}
+                  value={PROPERTIES_TYPES.SETTINGS}
+                  onClick={() => setPropertiesType(PROPERTIES_TYPES.SETTINGS)}
+                >
+                  {PROPERTIES_TYPES.SETTINGS}
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </div>
+
             <PseudoSelectorsSection />
             {SELECTION_CONTROLS.map((controlName) => {
               if (
