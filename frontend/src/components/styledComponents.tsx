@@ -81,14 +81,14 @@ const CustomTextField = styled(TextField)`
     flex-direction: column-reverse;
   }
 
-  .Mui-focused,
-  .Mui-disabled {
+  & .Mui-focused,
+  & .Mui-disabled {
     color: #2a2a2d;
   }
-  .MuiInput-underline:after {
+  & .MuiInput-underline:after {
     border-bottom-color: rgba(80, 100, 255, 0.1);
   }
-  .MuiInput-root {
+  & .MuiInput-root {
     color: #2a2a2d;
     & .Mui-focused fieldset {
       border-color: rgba(80, 100, 255, 0.1);

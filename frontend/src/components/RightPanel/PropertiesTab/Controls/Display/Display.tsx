@@ -34,7 +34,7 @@ const Display: React.FC<Props> = ({
   );
 
   return (
-    <>
+    <div style={{ padding: 16 }}>
       <div>
         {!masterScreenEnabled && canEdit && (
           <RemoveStyles
@@ -84,7 +84,7 @@ const Display: React.FC<Props> = ({
           canEdit={canEdit}
         />
       )}
-    </>
+    </div>
   );
 };
 
