@@ -38,9 +38,14 @@ type Props = {
   disabled?: boolean;
   labelTextStyle?: string;
   updateStyles?: any;
+  propsToRemove?: string[];
+  onClick?(propsToRemove: string[] | undefined): void;
+  isDefaultStyles?: boolean;
 };
 
 const ColorSettings: React.FC<Props> = ({
+  propsToRemove,
+  onClick,
   currentColor,
   currentOpacity,
   activeElementId,
@@ -48,6 +53,7 @@ const ColorSettings: React.FC<Props> = ({
   disabled,
   labelTextStyle = 'Color',
   updateStyles,
+  isDefaultStyles,
 }) => {
   const classes = useStyles();
   const [currentOpacityState, setCurrentOpacityState] = useState<
@@ -151,17 +157,15 @@ const ColorSettings: React.FC<Props> = ({
     [currentColorObject, setCurrentBackgroundColor, onChange],
   );
 
-  const onResetColorClick = () => {
-    handleColorInputBlur('#323232');
-    setCurrentOpacityState(1);
-    handleChangeOpacity(1);
-  };
-
   const validateOpacity = () => {
     const value = (currentOpacityState as unknown) as number;
     return value && value <= 1 && value > 0 && !Number.isNaN(value)
       ? value * 100
       : 100;
+  };
+
+  const handleRemoveClick = () => {
+    if (onClick) onClick(propsToRemove);
   };
 
   return (
@@ -200,9 +204,11 @@ const ColorSettings: React.FC<Props> = ({
           margin="none"
           disabled={disabled}
         />
-        <div onClick={onResetColorClick}>
-          <ClearIcon sx={{ width: '16px', color: '#81818E' }} />
-        </div>
+        {!isDefaultStyles && (
+          <div onClick={handleRemoveClick}>
+            <ClearIcon sx={{ width: '16px', color: '#81818E' }} />
+          </div>
+        )}
       </div>
       <FormControlLabel
         control={

@@ -63,6 +63,11 @@ const useStyles = makeStyles({
     justifyContent: 'space-between',
     alignItems: 'flex-end',
   },
+  styleText: {
+    fontSize: '16px',
+    color: 'rgba(129, 129, 142, 1)',
+    paddingBottom: '2px',
+  },
 });
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
@@ -323,6 +328,8 @@ const TypographyBlock: React.FC<Props> = ({
 
         <div>
           <ColorSettings
+            onClick={removeStyles}
+            propsToRemove={['color']}
             updateStyles={updateStyles}
             currentOpacity={opacity}
             currentColor={
@@ -336,7 +343,7 @@ const TypographyBlock: React.FC<Props> = ({
           />
         </div>
         <div className={classes.align}>
-          <div>Align</div>
+          <div className={classes.styleText}>Align</div>
           <div
             className={classes.wrapper}
             style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}
@@ -372,7 +379,7 @@ const TypographyBlock: React.FC<Props> = ({
           </div>
         </div>
         <div className={classes.align}>
-          <div>Style</div>
+          <div className={classes.styleText}>Style</div>
           <div
             className={classes.wrapper}
             style={isDefaultStyles ? { justifyContent: 'flex-start' } : {}}

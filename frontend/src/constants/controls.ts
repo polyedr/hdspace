@@ -46,6 +46,8 @@ import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
 import BackgroundImage from '@Components/RightPanel/PropertiesTab/Controls/BackgroundImage';
 import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
 import ImagesItems from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItems';
+import SliderSettings from '@Components/RightPanel/PropertiesTab/Controls/SliderSettings/SliderSettings';
+import DateTimePickerControls from '@Components/RightPanel/PropertiesTab/Controls/DateTimePickerControls/DateTimePickerControls';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -60,6 +62,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
   display: {
     Control: Display,
     styles: ['display', 'justifyContent', 'alignItems', 'flexDirection'],
+  },
+  sliderSettings: {
+    Control: SliderSettings,
   },
   indents: {
     Control: IndentsBlock,
@@ -91,13 +96,23 @@ const CONTROLS: Record<Control, ControlInfo> = {
   },
   border: {
     Control: BorderBlock,
-    styles: ['borderColor', 'borderWidth', 'borderRadius'],
+    styles: [
+      'borderColor',
+      'borderWidth',
+      'borderRadius',
+      'borderStyle',
+      'borderRightWidth',
+      'borderTopWidth',
+      'borderBottomWidth',
+      'borderLeftWidth',
+    ],
   },
   background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
   backgroundImage: { Control: BackgroundImage, styles: ['backgroundImage'] },
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
   textContent: { Control: TextContent, styles: [] },
+  dateTimePickerControls: { Control: DateTimePickerControls },
   text: { Control: Text, styles: [] },
   image: { Control: Image, styles: [] },
   imagesList: {
