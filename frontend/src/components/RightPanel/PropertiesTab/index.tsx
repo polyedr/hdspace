@@ -16,6 +16,7 @@ import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { AVAILABLE_CONTROLS } from '@Domain/core';
 import {
   CONTROLS_AFFECT_ON_PARAMS,
+  CONTROLS_AFFECT_ON_STYLES,
   Entity,
   Params,
   PropertyName,
@@ -428,6 +429,28 @@ const PropertiesTab: React.FC = () => {
     [dispatch, activeElement.id, currentScreenId],
   );
 
+  const CommonControls = type !== 'root' &&
+    elementsControlsCollection.length === 1 &&
+    !masterScreenEnabled && (
+      <>
+        {!isGroupElement && (
+          <ControlSection title="Share styles">
+            <ShareStyles />
+          </ControlSection>
+        )}
+
+        <ControlSection title="Element name">
+          <RenameElement canEdit={canEdit} />
+        </ControlSection>
+
+        {!isFreeCanvasMode && (
+          <ControlSection title="Replace this element">
+            <ElementType />
+          </ControlSection>
+        )}
+      </>
+    );
+
   if (
     !activeElement ||
     [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
@@ -505,48 +528,62 @@ const PropertiesTab: React.FC = () => {
               const controlInfo = CONTROLS[controlName];
               const { Control } = controlInfo;
 
-              return (
-                <ControlSection key={controlName} title={controlName}>
-                  <Control
-                    {...getControlStyles(controlName, currentEditableStyles)}
-                    canEdit={canEdit}
-                    controlName={controlName}
-                    activeElementId={activeElement.id}
-                    element={activeElement}
-                    removeStyles={!masterScreenEnabled && removeStyles}
-                    updateStyles={updateStyles}
-                    replaceStyles={replaceStyles}
-                    updateParams={!masterScreenEnabled && updateParams}
-                    masterScreenEnabled={masterScreenEnabled}
-                    editableStyles={editableStyles}
-                  />
-                </ControlSection>
-              );
-            })}
-
-            {type !== 'root' &&
-              elementsControlsCollection.length === 1 &&
-              !masterScreenEnabled && (
-                <>
-                  {!isGroupElement && (
-                    <ControlSection title="Share styles">
-                      <ShareStyles />
+              if (
+                propertiesType === PROPERTIES_TYPES.SETTINGS &&
+                CONTROLS_AFFECT_ON_PARAMS.includes(
+                  controlName as typeof CONTROLS_AFFECT_ON_PARAMS[number],
+                )
+              ) {
+                return (
+                  <>
+                    <ControlSection key={controlName} title={controlName}>
+                      <Control
+                        {...getControlStyles(
+                          controlName,
+                          currentEditableStyles,
+                        )}
+                        canEdit={canEdit}
+                        controlName={controlName}
+                        activeElementId={activeElement.id}
+                        element={activeElement}
+                        removeStyles={!masterScreenEnabled && removeStyles}
+                        updateStyles={updateStyles}
+                        replaceStyles={replaceStyles}
+                        updateParams={!masterScreenEnabled && updateParams}
+                        masterScreenEnabled={masterScreenEnabled}
+                        editableStyles={editableStyles}
+                      />
                     </ControlSection>
-                  )}
-
-                  <ControlSection title="Element name">
-                    <RenameElement canEdit={canEdit} />
+                    {CommonControls}
+                  </>
+                );
+              }
+              if (
+                propertiesType === PROPERTIES_TYPES.STYLES &&
+                CONTROLS_AFFECT_ON_STYLES.includes(
+                  controlName as typeof CONTROLS_AFFECT_ON_STYLES[number],
+                )
+              ) {
+                return (
+                  <ControlSection key={controlName} title={controlName}>
+                    <Control
+                      {...getControlStyles(controlName, currentEditableStyles)}
+                      canEdit={canEdit}
+                      controlName={controlName}
+                      activeElementId={activeElement.id}
+                      element={activeElement}
+                      removeStyles={!masterScreenEnabled && removeStyles}
+                      updateStyles={updateStyles}
+                      replaceStyles={replaceStyles}
+                      updateParams={!masterScreenEnabled && updateParams}
+                      masterScreenEnabled={masterScreenEnabled}
+                      editableStyles={editableStyles}
+                    />
                   </ControlSection>
-
-                  <div style={{ display: 'none' }}>test</div>
-
-                  {!isFreeCanvasMode && (
-                    <ControlSection title="Replace this element">
-                      <ElementType />
-                    </ControlSection>
-                  )}
-                </>
-              )}
+                );
+              }
+              return null;
+            })}
           </>
         )}
       </Scrollbar>
