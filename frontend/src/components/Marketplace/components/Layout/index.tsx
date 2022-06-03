@@ -1,33 +1,28 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
 import TopPanel from './TopPanel';
 
-const useStyles = makeStyles({
-  layout: {
-    minHeight: '100vh',
-    height: 1, // allows children use height in %
-    display: 'flex',
-    flexFlow: 'column nowrap',
-  },
-  content: {
-    flex: 1,
-  },
-  placeholder: {
-    minHeight: 75, // Toolbar variant="dense" min-height
-    flex: '0 0',
-  },
-});
+const CustomLayout = styled.div`
+  min-height: 100vh;
+  height: 1%;
+  display: flex;
+  flex-flow: column nowrap;
+`;
+const CustomePlaceholder = styled.div`
+  min-height: 50px;
+  flex: 0 0;
+`;
+const CustomContent = styled.div`
+  flex: 1;
+`;
 
 const Layout = ({ children }) => {
-  const classes = useStyles();
-
   return (
-    <div className={classes.layout}>
+    <CustomLayout>
       <TopPanel />
-      <div className={classes.placeholder} />
-
-      <div className={classes.content}>{children}</div>
-    </div>
+      <CustomePlaceholder />
+      <CustomContent>{children}</CustomContent>
+    </CustomLayout>
   );
 };
 

@@ -1,6 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { TextField, MenuItem } from '@material-ui/core';
-import cn from 'classnames';
+import { TextField, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateRange, ProjectsSearchParameter } from '@Src/types';
 import {
@@ -12,79 +11,85 @@ import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
-import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import styled from 'styled-components';
 
-const useStyles = makeStyles(() => ({
-  form: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0px',
-    gap: '16px',
-    width: '660px',
-    height: '36px',
-    left: '203px',
-    top: '186px',
-  },
-  searchSection: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: '0px',
-    gap: '16px',
-    width: '228px',
-    height: '36px',
-    left: '203px',
-    top: '186px',
-  },
-  input: {
-    margin: 0,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    width: '228px',
-    height: '36px',
-    border: '1px solid #E6E8ED',
-    borderRadius: '4px',
-  },
-  queryInput: {
-    margin: 0,
-    display: 'flex',
-    padding: '8px 0px',
-    gap: '10px',
-    height: '36px',
-  },
-  parameterInput: {
-    minWidth: 150,
-  },
-  basedropdown: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    border: '1px solid #E6E8ED',
-    borderRadius: '4px',
-  },
-  capitalize: {
-    textTransform: 'capitalize',
-  },
+const CustomForm = styled.form`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 660px;
+  height: 36px;
+  left: 203px;
+  top: 186px;
+`;
+const CustomSearchSection = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  width: 228px;
+  height: 36px;
+  left: 203px;
+  top: 186px;
+`;
+const CustomDatePicker = styled(DatePicker)`
+  margin: 0;
+  justify-content: center;
+  padding: 8px 0px;
+  width: 228px;
+  height: 36px;
+  border: 1px solid #e6e8ed;
+  border-radius: 4px;
+`;
+const CustomeSearch = styled(TextField)`
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  width: 228px;
+  height: 36px;
+  border: 1px solid #e6e8ed;
+  border-radius: 4px;
+  & input#search_input {
+    padding: 8px 4px !important;
+  }
+  & .MuiOutlinedInput-input {
+    padding: 8px 4px !important;
+  }
+`;
 
-  shape: {
-    display: 'flex',
-    width: '24px',
-    height: '24px',
-    left: '20.83%',
-    right: '20.87%',
-    top: '20.83%',
-    bottom: '20.83%',
-    color: '#81818E',
-  },
-  dropdownmain: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: '36px',
-  },
-}));
+const CustomSearchIcon = styled.div`
+  display: flex;
+  width: 24px;
+  height: 24px;
+  left: 20.83%;
+  right: 20.87%;
+  top: 20.83%;
+  bottom: 20.83%;
+  color: #81818e;
+`;
+
+const CustomeSelect = styled(TextField)`
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 228px;
+  height: 36px;
+  border: 1px solid #e6e8ed;
+  border-radius: 4px;
+  min-width: 150;
+  text-transform: capitalize;
+  & .MuiOutlinedInput-input {
+    padding: 8px 14px !important;
+  }
+`;
+const CustomMenuItem = styled(MenuItem)`
+  text-transform: capitalize;
+`;
 
 const parameterList = Object.keys(ProjectsSearchParameter).map(
   (k) => ProjectsSearchParameter[k] as ProjectsSearchParameter,
@@ -96,15 +101,11 @@ const initialDateRange = {
 };
 
 const Searchbar: FC = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
-
   const [parameterName, parameterValue] = useSelector(
     selectProjectsSearchParameter,
   );
-
   const isStatus = parameterName === ProjectsSearchParameter.status;
-
   const isDate =
     parameterName === ProjectsSearchParameter.created ||
     parameterName === ProjectsSearchParameter.updated;
@@ -174,41 +175,37 @@ const Searchbar: FC = () => {
 
   return (
     <div>
-      <form className={classes.form}>
-        <div className={classes.searchSection}>
+      <CustomForm>
+        <CustomSearchSection>
           {isDate && typeof parameterValue === 'object' ? (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <DatePicker
+              <CustomDatePicker
                 label="From Date"
                 value={parameterValue.from}
                 onChange={(newDate) => handleDateChange(newDate, 'from')}
                 maxDate={parameterValue.to}
                 inputVariant="outlined"
                 margin="dense"
-                className={classes.input}
                 autoOk
                 clearable
               />
-              <DatePicker
+              <CustomDatePicker
                 label="To Date"
                 value={parameterValue.to}
                 onChange={(newDate) => handleDateChange(newDate, 'to')}
                 minDate={parameterValue.from}
                 inputVariant="outlined"
                 margin="dense"
-                className={classes.input}
                 autoOk
                 clearable
               />
             </MuiPickersUtilsProvider>
           ) : (
-            <TextField
+            <CustomeSearch
               value={parameterValue}
               onChange={handleParameterValueChange}
-              // label="Search Template"
               variant="outlined"
               margin="dense"
-              className={cn(classes.input, classes.queryInput)}
               placeholder="Search Template"
               InputLabelProps={{
                 htmlFor: 'search_input',
@@ -217,7 +214,9 @@ const Searchbar: FC = () => {
                 id: 'search_input',
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon className={classes.shape} />
+                    <CustomSearchIcon>
+                      <SearchIcon />
+                    </CustomSearchIcon>
                   </InputAdornment>
                 ),
               }}
@@ -231,23 +230,16 @@ const Searchbar: FC = () => {
                     {status}
                   </MenuItem>
                 ))}
-            </TextField>
+            </CustomeSearch>
           )}
-        </div>
-
-        <TextField
+        </CustomSearchSection>
+        <CustomeSelect
           value={parameterName}
           onChange={handleParameterNameChange}
           label="Sort by"
           variant="outlined"
           margin="dense"
           select
-          className={cn(
-            classes.input,
-            classes.parameterInput,
-            classes.capitalize,
-            // classes.basedropdown
-          )}
           InputLabelProps={{
             htmlFor: 'parameter_name_input',
           }}
@@ -256,30 +248,22 @@ const Searchbar: FC = () => {
           }}
         >
           {parameterList.map((param) => (
-            <MenuItem
+            <CustomMenuItem
               value={param}
               key={param}
-              className={classes.capitalize}
-              disabled={param === ProjectsSearchParameter.user} // this search parameter is forbidden while projects are initially filtered by user
+              disabled={param === ProjectsSearchParameter.user}
             >
               {param}
-            </MenuItem>
+            </CustomMenuItem>
           ))}
-        </TextField>
-
-        <TextField
+        </CustomeSelect>
+        <CustomeSelect
           value={parameterName}
           onChange={handleParameterNameChange}
           label="Category"
           variant="outlined"
           margin="dense"
           select
-          className={cn(
-            classes.input,
-            classes.parameterInput,
-            classes.capitalize,
-            // classes.basedropdown
-          )}
           InputLabelProps={{
             htmlFor: 'parameter_name_input',
           }}
@@ -288,17 +272,16 @@ const Searchbar: FC = () => {
           }}
         >
           {parameterList.map((param) => (
-            <MenuItem
+            <CustomMenuItem
               value={param}
               key={param}
-              className={classes.capitalize}
-              disabled={param === ProjectsSearchParameter.user} // this search parameter is forbidden while projects are initially filtered by user
+              disabled={param === ProjectsSearchParameter.user}
             >
               {param}
-            </MenuItem>
+            </CustomMenuItem>
           ))}
-        </TextField>
-      </form>
+        </CustomeSelect>
+      </CustomForm>
     </div>
   );
 };

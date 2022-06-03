@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles, lighten } from '@material-ui/core/styles';
 import {
   Card,
   CardMedia,
@@ -8,117 +7,122 @@ import {
   Typography,
   CardActionArea,
   Grid,
-} from '@material-ui/core';
-import { IconButton, Divider } from '@mui/material';
+  IconButton,
+  Divider,
+  styled as muiStyled,
+} from '@mui/material';
+
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import AddIcon from '@mui/icons-material/Add';
+import styled from 'styled-components';
+import Theme from '@Src/styles/Theme';
+import { ThemeProvider } from '@material-ui/core/styles';
 import image1 from '../../../../assets/images/image1.png';
 import image2 from '../../../../assets/images/image2.png';
 import image3 from '../../../../assets/images/image3.png';
 import image4 from '../../../../assets/images/image4.png';
 import image5 from '../../../../assets/images/image5.png';
 
-const useStyles = makeStyles((theme) => ({
-  Maincard: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    width: '309px',
-    height: '234px',
-  },
-  card: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '309px',
-    height: '234px',
-    margin: 'auto',
-    transition: '0.3s',
-    background: '#FFFFFF',
-    boxShadow: '0px 0px 1px rgba(42, 42, 45, 0.16)',
-    '&:hover': {
-      boxShadow: '0px 2px 6px rgba(42, 42, 45, 0.06)',
-    },
-    borderRadius: '6px',
-  },
-  media: {
-    flex: 'none',
-    order: 0,
-    alignSelf: 'stretch',
-    flexGrow: 0,
-    width: '309px',
-    height: '160px',
-  },
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    padding: theme.spacing(2),
-    gap: '12px',
-    width: '310px',
-    height: '74px',
-  },
-  description: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    width: '278px',
-    height: '45px',
-  },
-  divider: {
-    height: '1px',
-    background: '#F3F4F6',
-  },
-  heading: {
-    width: '278px',
-    height: '20px',
-    fontFamily: theme.typography.fontFamily,
-    fontSize: '14px',
-    fontWeight: 500,
-    lineHeight: '145%',
-    color: '#2A2A2D',
-  },
-  subheading: {
-    display: 'flex',
-    alignItems: 'center',
-    width: '278px',
-    height: '16px',
-    fontFamily: theme.typography.fontFamily,
-    fontSize: '12px',
-    fontWeight: 400,
-    lineHeight: '135%',
-    color: '#81818E',
-  },
-  overlay: {
-    position: 'absolute',
-    display: 'flex',
-    height: '32px',
-    right: '8px',
-    top: '8px',
-    transition: 'opacity .1s ease-in-out',
-  },
-  iconButton: {
-    position: 'absolute',
-    height: 32,
-    width: 32,
-    borderRadius: '50%',
-    overflow: 'hidden',
-    color: '#81818E',
-    '&.MuiIconButton-root': {
-      backgroundColor: '#FFFFFF',
-    },
-    '&.MuiIconButton-root:hover': {
-      color: '#FFFFFF',
-      backgroundColor: lighten(theme.palette.panel.main, 0.1),
-    },
-  },
-  icon: {
-    position: 'absolute',
-    left: '12.5%',
-    right: '12.5%',
-    top: '12.5%',
-    bottom: '12.5%',
-  },
+const GridContainer = styled(Grid)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 0;
+`;
+const CustomRoot = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 309px;
+  height: 234px;
+`;
+const CustomCard = styled(Card)`
+  display: flex;
+  flex-direction: column;
+  width: 309px;
+  height: 234px;
+  margin: auto;
+  transition: 0.3s;
+  background-color: #ffffff;
+  box-shadow: rgba(42, 42, 45, 0.06);
+  border-radius: 6px;
+`;
+const CustomCardMedia = styled(CardMedia)`
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+  width: 309px;
+  height: 160px;
+`;
+
+const CustomeCardContent = muiStyled(CardContent)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  padding: theme.spacing(2),
+  gap: '12px',
+  width: '310px',
+  height: '74px',
 }));
+const CustomDescription = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 278px;
+  height: 45px;
+`;
+
+const CustomHeading = muiStyled(Typography)(({ theme }) => ({
+  width: '278px',
+  height: '20px',
+  fontFamily: theme.typography.fontFamily,
+  fontSize: '14px',
+  fontWeight: 500,
+  lineHeight: '145%',
+  color: '#2A2A2D',
+}));
+const CostomSubHeading = muiStyled(Typography)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  width: '278px',
+  height: '16px',
+  fontFamily: theme.typography.fontFamily,
+  fontSize: '12px',
+  fontWeight: 400,
+  lineHeight: '135%',
+  color: '#81818E',
+}));
+const CustomCardActions = styled(CardActions)`
+  display: flex;
+  right: 8px;
+  top: 8px;
+  transition: opacity 0.1s ease-in-out;
+`;
+const CustomIconButton = styled(IconButton)`
+  position: absolute;
+  border-radius: 50%;
+  overflow: hidden;
+  &:nth-child(1) {
+    background: #fff !important;
+    height: 32px;
+    width: 32px;
+  }
+  &:nth-child(1):hover {
+    background: rgb(67, 83, 97) !important;
+    color: #fff;
+  }
+  &:nth-child(2) {
+    background: #fff !important;
+    height: 32px;
+    width: 32px;
+  }
+  &:nth-child(2):hover {
+    background: rgb(67, 83, 97) !important;
+    color: #fff;
+  }
+`;
 const Templetdata = [
   {
     title: 'Template 1',
@@ -152,76 +156,60 @@ const Templetdata = [
   },
 ];
 const TemplateCard = () => {
-  const classes = useStyles();
   const [show, setShow] = React.useState({});
-
   const handleMouseOver = (index) => {
-    setShow({ ...show, [index]: true });
+    setShow({ show, [index]: true });
   };
   const handleMouseOut = (index) => {
-    setShow({ ...show, [index]: false });
+    setShow({ show, [index]: false });
   };
-
   return (
-    <Grid
-      container
-      spacing={4}
-      direction="row"
-      justifyContent="space-evenly"
-      alignItems="center"
-      style={{ minHeight: '80vh' }}
-    >
+    <GridContainer container spacing={4}>
       {Templetdata.map((item, index) => (
-        <Grid item xs={3} sm={6} md={4}>
-          <div className={classes.Maincard}>
-            <Card className={classes.card}>
+        <Grid item xs={3} sm={6} md={4} style={{ marginTop: 0 }}>
+          <CustomRoot>
+            <CustomCard>
               <CardActionArea
                 onMouseEnter={() => handleMouseOver(index)}
                 onMouseLeave={() => handleMouseOut(index)}
-                className={classes.card}
               >
-                <CardMedia
-                  className={classes.media}
+                <CustomCardMedia
                   component="img"
                   height="194"
                   image={item.image}
                   alt="Paella dish"
                 />
-                <Divider className={classes.divider} light />
-                <CardContent className={classes.content}>
-                  <div className={classes.description}>
-                    <Typography className="MuiTypography--heading" gutterBottom>
-                      {item.title}
-                    </Typography>
-                    <Typography
-                      className="MuiTypography--subheading"
-                      variant="caption"
-                    >
-                      {item.subtitle}
-                    </Typography>
-                  </div>
-                </CardContent>
+                <Divider style={{ background: '#F3F4F6' }} light />
+                <ThemeProvider theme={Theme}>
+                  <CustomeCardContent>
+                    <CustomDescription>
+                      <CustomHeading gutterBottom>{item.title}</CustomHeading>
+                      <CostomSubHeading variant="caption">
+                        {item.subtitle}
+                      </CostomSubHeading>
+                    </CustomDescription>
+                  </CustomeCardContent>
+                </ThemeProvider>
                 {show[index] && (
-                  <CardActions
-                    className={classes.overlay}
+                  <CustomCardActions
                     style={{
                       position: show[index] ? 'absolute' : 'unset',
                     }}
                   >
-                    <IconButton className={classes.iconButton}>
-                      <VisibilityOutlinedIcon className={classes.icon} />
-                    </IconButton>
-                    <IconButton className={classes.iconButton}>
-                      <AddIcon className={classes.icon} />
-                    </IconButton>
-                  </CardActions>
+                    <CustomIconButton>
+                      <VisibilityOutlinedIcon />
+                    </CustomIconButton>
+                    <CustomIconButton>
+                      <AddIcon />
+                    </CustomIconButton>
+                  </CustomCardActions>
                 )}
               </CardActionArea>
-            </Card>
-          </div>
+            </CustomCard>
+          </CustomRoot>
         </Grid>
       ))}
-    </Grid>
+    </GridContainer>
   );
 };
 

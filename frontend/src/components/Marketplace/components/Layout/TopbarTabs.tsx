@@ -1,52 +1,56 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
-import { Tab, Tabs, Container } from '@material-ui/core';
+import { Tab, Tabs, Container } from '@mui/material';
+import styled from 'styled-components';
 
-function a11yProps(index) {
+function TabProps(index) {
   return {
     id: `scrollable-tab-${index}`,
     'aria-controls': `scrollable-tabpanel-${index}`,
   };
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  tabList: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    padding: '0px 0px 0px 22px',
-    gap: '32px',
-    height: '20px',
-    left: '203px',
-    top: '18px',
-    '& .MuiTab-root': {
-      minWidth: 0,
-    },
-  },
-  tabs: {
-    '& .MuiTab-wrapper': {
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      textTransform: 'none',
-      fontStyle: 'normal',
-      fontWeight: 500,
-      lineHeight: '145%',
-      fontFamily: theme.typography.fontFamily,
-      fontSize: theme.typography.fontSize,
-      padding: '0px',
-      width: '52px',
-      height: '20px',
-    },
-  },
-}));
-
+const CustomContainer = styled(Container)`
+  flex-grow: 1;
+  background-color: '#FFFFFF';
+`;
+const CustomTabs = styled(Tabs)`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px 0px 0px 22px;
+  gap: 32px;
+  height: 20px;
+  left: 203px;
+  top: 18px;
+  margin-left: 3rem;
+  & .MuiTab-root {
+    min-width: 0;
+    text-transform: none;
+    font-size: 14px;
+    color: #81818e;
+  }
+  .MuiTab-root.Mui-selected {
+    text-transform: none;
+    font-size: 14px;
+    color: #000000;
+  }
+`;
+const CustomTab = styled(Tab)`
+  & .MuiTab-root.MuiButtonBase-root {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 145%;
+    font-family: 'Roboto';
+    padding: 0px;
+    width: 52px;
+    height: 20px;
+  }
+`;
 const NavBarItem = {
   '/projects': 0,
   '/team': 1,
@@ -54,47 +58,39 @@ const NavBarItem = {
 };
 
 const TopbarTabs = ({ location, history }) => {
-  const classes = useStyles();
   const [value, setValue] = React.useState(NavBarItem[location.pathname]);
-
   const handleChange = (newValue) => {
     setValue(newValue);
   };
-
   const navigateTo = (pathname) => {
     history.push(pathname);
     handleChange(NavBarItem[pathname]);
   };
-
   return (
-    <Container maxWidth="md" className={classes.root}>
-      <Tabs
+    <CustomContainer maxWidth="sx">
+      <CustomTabs
         value={value}
         onChange={handleChange}
-        className={classes.tabList}
         aria-label="scrollable tabs example"
         TabIndicatorProps={{ style: { background: '#ffffff' } }}
       >
-        <Tab
-          className={classes.tabs}
+        <CustomTab
           label="Project"
-          {...a11yProps(0)}
+          {...TabProps(0)}
           onClick={() => navigateTo('/projects')}
         />
-        <Tab
-          className={classes.tabs}
+        <CustomTab
           label="Team"
-          {...a11yProps(1)}
+          {...TabProps(1)}
           onClick={() => navigateTo('/team')}
         />
-        <Tab
-          className={classes.tabs}
+        <CustomTab
           label="Marketplace"
-          {...a11yProps(2)}
+          {...TabProps(2)}
           onClick={() => navigateTo('/marketplace')}
         />
-      </Tabs>
-    </Container>
+      </CustomTabs>
+    </CustomContainer>
   );
 };
 

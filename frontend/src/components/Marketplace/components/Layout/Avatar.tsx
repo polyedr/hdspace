@@ -12,28 +12,33 @@ import {
   Divider,
   Avatar as MuiAvatar,
 } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
 
-const useStyles = makeStyles({
-  menu: {
-    '& ul': {
-      fontSize: '1em',
-      padding: 0,
-    },
-  },
-  navLink: {
-    '&:focus, &:hover, &:visited, &:link, &:active': {
-      color: 'inherit',
-      textDecoration: 'none',
-    },
-  },
-});
+const CustomMenu = styled(Menu)`
+  & ul {
+    font-size: 1em;
+    padding: 0;
+  }
+  a {
+    text-decoration: none;
+    color: black;
+  }
+`;
+
+const CustomeNavLink = styled(NavLink)`
+  & li:focus,
+  & li:hover,
+  & li:visited,
+  & li:link,
+  & li:active {
+    color: 'inherit';
+    text-decoration: none;
+  }
+`;
 
 const Avatar: React.FC = () => {
   const dispatch = useDispatch();
-  const classes = useStyles();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-
   const { username } = useSelector(selectUserData);
   const {
     parameters: { avatarCrop: avatar },
@@ -57,26 +62,21 @@ const Avatar: React.FC = () => {
           </MuiAvatar>
         </IconButton>
       </Tooltip>
-
-      <Menu
+      <CustomMenu
         open={Boolean(menuAnchorEl)}
         onClose={handleMenuClose}
         anchorEl={menuAnchorEl}
         keepMounted
-        className={classes.menu}
       >
-        <NavLink to={PATH_NAMES.profile} exact className={classes.navLink}>
+        <CustomeNavLink to={PATH_NAMES.profile} exact>
           <MenuItem onClick={handleMenuClose}>My Profile</MenuItem>
-        </NavLink>
-
-        <NavLink to={PATH_NAMES.projects} exact className={classes.navLink}>
+        </CustomeNavLink>
+        <CustomeNavLink to={PATH_NAMES.projects} exact>
           <MenuItem onClick={handleMenuClose}>My Projects</MenuItem>
-        </NavLink>
-
+        </CustomeNavLink>
         <Divider />
-
         <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
-      </Menu>
+      </CustomMenu>
     </div>
   );
 };
