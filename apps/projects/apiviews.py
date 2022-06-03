@@ -107,9 +107,12 @@ class ProjectWithScreensViewSet(viewsets.ModelViewSet):
     # permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = Project.objects.all()
     serializer_class = ProjectWithScreensSerializer
-    pagination_class = None
+    pagination_class = ProjectCursorSetPagination
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
-    filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
+    filter_backends = [DjangoFilterBackend, filters.ObjectPermissionsFilter]  # Django-Guardian and DjangoFilterBackend
+    filterset_fields = {'tags__name': ['exact'], 'name': ['exact'],
+                        'status': ['exact'], 'created': ['lte', 'gte', 'lt', 'gt'],
+                        'updated': ['lte', 'gte', 'lt', 'gt']}
     http_method_names = ['get', 'head']
 
     def get_queryset(self):
@@ -119,6 +122,7 @@ class ProjectWithScreensViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def filter_queryset(self, queryset):
+        queryset = super(ProjectWithScreensViewSet, self).filter_queryset(queryset)
         # queryset = queryset.filter(user=self.request.user)
         return queryset
 

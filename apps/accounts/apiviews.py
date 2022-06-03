@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 from .serializers import UserSerializer, ProfileSerializer, TeamMemberSerializer, TeamSerializer
 from rest_framework import filters
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from sesame.utils import get_query_string
 from guardian.shortcuts import assign_perm, remove_perm, get_perms, get_users_with_perms
 
@@ -203,9 +204,15 @@ class SharedlinkprojectView(APIView):
             assign_perm(permission, user, project)
 
         rp = get_perms(user, project)  # A resulted permissions array
+
+        # Display tokens for a projectviewer
+        user_tokens = RefreshToken.for_user(user)
+        tokens = {'refresh': str(user_tokens), 'access': str(user_tokens.access_token)}
         print(rp)
+        data = {'user':'projectviewer', 'qstring': qstring}
+        data.update(tokens)
 
         if qstring:
-            return Response(qstring, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
