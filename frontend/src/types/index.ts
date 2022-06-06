@@ -83,6 +83,7 @@ export enum ElementGroup {
   TYPOGRAPHY = 'typography',
   IMAGE = 'image',
   WIDGET = 'widget',
+  ICON = 'icon',
   OTHER = 'other',
   CUSTOM = 'custom',
   NONE = 'none',
@@ -316,6 +317,13 @@ export type NavbarItemServerElement = ServerElement<
   [],
   NavbarItemParameters
 >;
+
+export type IconServerElement = ServerElement<
+  'icon',
+  [],
+  IconElementParameters
+>;
+
 export type MapServerElement = ServerElement<'map', [], MapParameters>;
 export type CalendarServerElement = ServerElement<'calendar', []>;
 export type ClockServerElement = ServerElement<'clock', []>;
@@ -545,6 +553,8 @@ export type DropdownItemElement = LibraryElement<
   DropdownItemParameters
 >;
 
+export type IconElement = LibraryElement<'icon', [], IconElementParameters>;
+
 export type FeatureSectionElement = LibraryElement<
   'featureSection',
   LibraryElement<Entity>[]
@@ -580,6 +590,7 @@ export type LibraryElementUnion =
   | PageTemplateElement
   | SubscribeFormElement
   | FeatureSectionElement
+  | IconElement
   | HTMLLibraryElement;
 
 type InteractiveElementParams = {
@@ -774,6 +785,13 @@ export type NavbarItemParameters = BaseElementParams & {
   link: string;
   itemName: string;
 };
+
+export type IconElementParameters = BaseElementParams & {
+  size: number;
+  iconColor: string;
+  name: string;
+};
+
 export type BreadcrumbItemItemParameters = BaseElementParams & {
   textContent: string;
   isLink: boolean;
@@ -1211,6 +1229,9 @@ export type ElementsHierarchy = {
     form: {
       [elementName in Entity]: ElementData;
     };
+    icon: {
+      [ElementTypeName in Entity]: ElementData;
+    };
     widget: {
       [elementName in Entity]: ElementData;
     };
@@ -1497,6 +1518,7 @@ export type ElementsToAdd = {
   hyperlink: () => LabelServerElement;
   switch: () => SwitchServerElement;
   imagesList: () => ImagesListServerElement;
+  icon: () => IconServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -1613,6 +1635,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'imagesList',
   'dateTimePickerControls',
   'sliderSettings',
+  'icon',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [

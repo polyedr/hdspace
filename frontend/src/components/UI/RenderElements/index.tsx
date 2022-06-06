@@ -67,6 +67,7 @@ import OtherCarouselItem from './CarouselItem/OtherCarouselItem';
 import RadiobuttonGroup from './RadiobuttonGroup';
 
 import { DateTimePicker } from './DateTimePicker';
+import Icon from './Icon/Icon';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -79,6 +80,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
   grid: Grid,
   columns: Columns,
   column: Column,
+  icon: Icon,
   button: withUIFramework({
     bootstrap: BootstrapButton,
     material: MaterialButton,

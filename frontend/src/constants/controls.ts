@@ -48,6 +48,7 @@ import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
 import ImagesItems from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItems';
 import SliderSettings from '@Components/RightPanel/PropertiesTab/Controls/SliderSettings/SliderSettings';
 import DateTimePickerControls from '@Components/RightPanel/PropertiesTab/Controls/DateTimePickerControls/DateTimePickerControls';
+import Icon from '@Components/RightPanel/PropertiesTab/Controls/Icon/Icon';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -166,6 +167,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
   alignment: {
     Control: Alignment,
     styles: ['flexDirection'],
+  },
+  icon: {
+    Control: Icon,
   },
 };
 

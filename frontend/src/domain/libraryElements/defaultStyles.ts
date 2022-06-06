@@ -43,6 +43,7 @@ import {
   radiobuttonGroupStyleControls,
   switchStyleControls,
   listImagesItemStyleControls,
+  iconStyleControls,
 } from '../core';
 
 const columnsMinHeight = '100px';
@@ -846,6 +847,7 @@ export const defaultNativeColumnsStyles: {
 type ButtonControls = typeof buttonStyleControls[number];
 type TextinputControls = typeof textinputStyleControls[number];
 type TextareaControls = typeof textareaStyleControls[number];
+type IconControls = typeof iconStyleControls[number];
 type CheckboxControls = typeof checkboxStyleControls[number];
 type SwitchControls = typeof switchStyleControls[number];
 type RadiobuttonControls = typeof radiobuttonStyleControls[number];
@@ -966,6 +968,21 @@ export const defaultDateTimePickerStyles: {
   },
 };
 
+export const defaultIconStyles: {
+  [K in IconControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  size: {
+    width: 65,
+    height: 65,
+  },
+};
+
 export const defaultCheckboxStyles: {
   [K in CheckboxControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
@@ -979,6 +996,7 @@ export const defaultCheckboxStyles: {
     ...DEFAULT_BACKGROUND,
   },
 };
+
 export const defaultSwitchStyles: {
   [K in CheckboxControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
@@ -1340,4 +1358,5 @@ export const DEFAULT_ELEMENTS_STYLES: {
   navbar: defaultNavbarStyles,
   navbarItem: defaultListItemStyles,
   hyperlink: defaultLabelStyles,
+  icon: defaultIconStyles,
 };
