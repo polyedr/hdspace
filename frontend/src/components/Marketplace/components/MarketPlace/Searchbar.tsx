@@ -11,7 +11,7 @@ import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
-import SearchIcon from '@material-ui/icons/Search';
+import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import styled from 'styled-components';
 
