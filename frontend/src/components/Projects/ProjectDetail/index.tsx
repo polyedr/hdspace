@@ -2,12 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import {
-  selectCurrentProjectId,
-  selectProjectByIdWrapper,
-  selectProjectLoader,
-} from '@Redux/project/selectors/base';
-import { getProject, resetProjectState } from '@Redux/project/actions';
 import { makeStyles, createStyles, withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import {
@@ -25,21 +19,43 @@ import {
   Tab,
   Tabs,
   Typography,
+  TextField,
 } from '@material-ui/core';
 import {
   ExpandMore,
   SystemUpdateAlt,
-  Share,
   SettingsOutlined,
   Edit,
   Close,
   Add,
+  VerticalAlignBottom,
 } from '@material-ui/icons';
-import { selectSortedScreens } from '@Redux/project/selectors/screen';
+
+import {
+  selectCurrentProjectId,
+  selectProjectByIdWrapper,
+  selectProjectLoader,
+  selectCurrentProject,
+} from '@Redux/project/selectors/base';
+import {
+  selectScreensWithoutMaster,
+} from '@Redux/project/selectors/screen';
+import { 
+  getProject, 
+  resetProjectState, 
+  updateNameAndTagsProject,
+  exportScreenFlag, 
+} from '@Redux/project/actions';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import { Screen } from '@Src/types';
+import exportHTML from '@Src/export/app';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
+import History from '@Components/Layout/History';
+import Share from './Share';
 import AddTags, { Tag } from './AddTags';
-import Screens from './Tabs/Screens';
+import Screens from '../Tabs/Screens';
+import Activity from '../Tabs/Activity';
+import RenameProjectBar from './RenameProjectBar';
 
 const useStyles = makeStyles(({ spacing }) =>
   createStyles({
@@ -128,7 +144,7 @@ const TabPanel = (props) => {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
+        <Box py={3}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -155,6 +171,12 @@ const StyledIconButton = withStyles({
   },
 })(IconButton);
 
+const StyledTextField = withStyles({
+  root: {
+    border: 'none',
+  },
+})(TextField);
+
 const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -162,8 +184,12 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
 
   const currentProjectId = useSelector(selectCurrentProjectId);
   const project = useSelector(selectProjectByIdWrapper(currentProjectId));
+  const {
+    name: projectName,
+    tags,
+  } = useSelector(selectCurrentProject);
   const projectLoader = useSelector(selectProjectLoader);
-  const screens = useSelector(selectSortedScreens);
+  const screens = useSelector(selectScreensWithoutMaster);
   const [anchorEl, setAnchorEl] = useState(null);
   const [userTags, setUserTags] = useState<Array<Tag>>([]);
   const [value, setValue] = React.useState(0);
@@ -204,6 +230,10 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
     [dispatch],
   );
 
+  useEffect(() => {
+    dispatch(updateNameAndTagsProject(currentProjectId, projectName, selectedTags));
+  }, [selectedTags]);
+
   const handleClosePopper = () => {
     setAnchorEl(null);
   };
@@ -233,6 +263,27 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
     setSelectedTags(temp);
   };
 
+  const handleExportScreen = () => {
+    if (screens.length > 0) {
+      dispatch(exportScreenFlag(true));
+      exportHTML(screens, projectName);
+      dispatch(exportScreenFlag(false));
+    } else {
+      dispatch(
+        enqueueSnackbar({
+          message: `Must be expert at least one screen.`,
+          options: {
+            variant: 'error',
+          },
+        }),
+      );
+    }
+  };
+
+  const handleRenameChange = (val: string) => {
+    dispatch(updateNameAndTagsProject(currentProjectId, val, null));
+  }
+
   return (
     <Container className={classes.project}>
       <Breadcrumbs aria-label="breadcrumb">
@@ -250,9 +301,10 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
         <Grid item>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
-              <Typography color="textPrimary" variant="h4">
-                {project && project.name}
-              </Typography>
+              <RenameProjectBar
+                projectName={projectName}
+                onChange={handleRenameChange}
+              />
             </Grid>
             <Grid item>
               <Grid container item spacing={2} alignItems="center">
@@ -282,14 +334,12 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
                   </Select>
                 </Grid>
                 <Grid item>
-                  <StyledIconButton aria-label="download">
-                    <SystemUpdateAlt />
+                  <StyledIconButton aria-label="download" onClick={handleExportScreen}>
+                    <VerticalAlignBottom />
                   </StyledIconButton>
                 </Grid>
                 <Grid item>
-                  <StyledIconButton aria-label="share">
-                    <Share />
-                  </StyledIconButton>
+                  <Share />
                 </Grid>
                 <Grid item>
                   <StyledIconButton aria-label="settings">
@@ -362,7 +412,7 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
             <Screens projectId={projectId} />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            Activity
+            <Activity projectId={projectId} />
           </TabPanel>
           <TabPanel value={value} index={2}>
             Board

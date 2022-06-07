@@ -7,9 +7,15 @@ import {
   selectProjectByIdWrapper,
   selectProjectLoader,
 } from '@Redux/project/selectors/base';
+import {
+  clearHistoryAction,
+  requestGetAction,
+} from '@Redux/pmtools/activity/actions';
+import selectActions from '@Redux/pmtools/activity/selectors';
 import { getProject, resetProjectState } from '@Redux/project/actions';
 import { makeStyles, createStyles, withStyles } from '@material-ui/core/styles';
 import {
+  Button,
   Grid,
   IconButton,
   Menu,
@@ -25,10 +31,14 @@ import {
   Edit,
   Add,
   MoreHoriz,
+  Sync,
+  FilterList,
 } from '@material-ui/icons';
 import { selectSortedScreens } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
+import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
+import History from './History';
 
 const useStyles = makeStyles(({ spacing }) =>
   createStyles({
@@ -92,7 +102,7 @@ type Props = {
   elementId?: string;
 };
 
-const Screens: React.FC<Props> = ({ projectId, screenId }) => {
+const Activity: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const history = useHistory();
@@ -100,31 +110,16 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const project = useSelector(selectProjectByIdWrapper(currentProjectId));
   const projectLoader = useSelector(selectProjectLoader);
+  const activities: Array<ActionTypePM> = useSelector(selectActions);
+  const [platform, setPlatform] = useState<PlatformActionData>('ALL');
   const screens = useSelector(selectSortedScreens);
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const menus = [
-    { label: 'Edit', icon: <Edit fontSize='small' /> },
-    { label: 'Copy', icon: <FileCopy fontSize='small' /> },
-    { label: 'Share', icon: <Share fontSize='small' /> },
-    { label: 'Export', icon: <SystemUpdateAlt fontSize='small' /> },
-    { label: 'Delete', icon: <Delete fontSize='small' /> },
-  ];
-
-  const handleOpen = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
-  };
-
-  const getInitialScreenId = (screens: Screen[]) => {
-    const sorted = screens.sort((a, b) => a.buoyancy - b.buoyancy);
-    return sorted[1]?.id || sorted[0]?.id;
-  };
 
   useEffect(() => {
-    if (currentProjectId !== projectId) {
-      dispatch(getProject(projectId));
+    if(currentProjectId > -1) {
+      dispatch(requestGetAction(currentProjectId));
     }
-  }, [dispatch, projectId, currentProjectId]);
+  }, [dispatch, project]);
 
   useEffect(
     () => () => {
@@ -134,60 +129,32 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
     [dispatch],
   );
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleRefresh = () => {
+    dispatch(requestGetAction(currentProjectId));
   };
-
 
   return (
     <Grid container spacing={1}>
-      <Grid item xs={3}>
-        <div className={classes.addScreen}>
-          <StyledIconButton>
-            <Add />
-          </StyledIconButton>
-        </div>
+      <Grid container item spacing={1}>
+        <Grid item>
+          <Button variant="contained" onClick={handleRefresh}>
+            <Sync fontSize='small' />
+            Refresh
+          </Button>
+        </Grid>
+        <Grid item>
+          <IconButton>
+            <FilterList fontSize='small' />
+          </IconButton>
+        </Grid>
       </Grid>
-      <Grid item xs={3}>
-        <div className={classes.screen}>
-          <div 
-            className="screen-img" 
-            style={{ backgroundImage: 'url(https://picsum.photos/seed/picsum/200/300)' }} 
-          />
-          <div className="screen-name">
-            screen1
-          </div>
-          <div className="screen-action">
-            <IconButton
-              aria-controls="simple-menu" 
-              aria-haspopup="true"
-              onClick={handleOpen}
-            >
-              <MoreHoriz />
-            </IconButton>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              {
-                menus.map((item) => (
-                  <MenuItem key={item.label} onClick={handleClose}>
-                    <ListItemIcon>
-                      { item.icon }
-                    </ListItemIcon>
-                    <ListItemText primary={item.label} />
-                  </MenuItem>
-                ))
-              }
-            </Menu>
-          </div>
-        </div>
+      <Grid container item spacing={1}>
+        {activities.map((item, i) => (
+          <History key={i} activity={item} platform={platform} />
+        ))}
       </Grid>
     </Grid>
   );
 };
 
-export default Screens;
+export default Activity;
