@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyledAccordion,
-  StyledAccordionSummary,
-} from '@Components/styledComponents';
 import { makeStyles } from '@material-ui/core/styles';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-
 import AssetLists from './AssetLists';
 import DisplayAssets from './DisplayAssets';
 
@@ -32,13 +26,8 @@ const AssetsSection: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <StyledAccordion defaultExpanded square className={classes.accordion}>
-        <StyledAccordionSummary expandIcon={<ExpandLessIcon />}>
-          Project assets
-        </StyledAccordionSummary>
-        <AssetLists />
-        <DisplayAssets />
-      </StyledAccordion>
+      <AssetLists />
+      <DisplayAssets />
     </div>
   );
 };

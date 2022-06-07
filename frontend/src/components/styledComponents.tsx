@@ -32,7 +32,7 @@ const MuiAccordionSummary = styled(AccordionSummary)`
     justify-content: space-between;
     align-items: center;
     flex-grow: 0;
-    '&$expanded' {
+    &expanded {
       margin: 0;
     }
   }
@@ -46,7 +46,7 @@ const MuiAccordionSummary = styled(AccordionSummary)`
     align-items: center;
     padding-left: 0;
     min-height: 0;
-    '&$expanded': {
+    &expanded {
       min-height: 0;
     }
   }

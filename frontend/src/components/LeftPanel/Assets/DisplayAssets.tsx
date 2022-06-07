@@ -25,6 +25,7 @@ const useStyles = makeStyles({
   root: {
     position: 'relative',
     height: 200,
+    width: '100%',
   },
   progressWrapper: {
     width: '300px',
@@ -130,6 +131,7 @@ const DisplayAssets = () => {
         component="button"
         style={{
           marginBottom: '8px',
+          color: '#81818e',
         }}
         startIcon={<AddIcon />}
         disabled={!currentAssetListId || !canEditProject}

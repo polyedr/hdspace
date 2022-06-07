@@ -17,9 +17,10 @@ import Icon from '../../../UI/Icon';
 
 const StyledMenu = withStyles({
   paper: {
+    padding: 1,
     borderRadius: 0,
-    backgroundColor: '#2f4050',
-    color: 'white',
+    backgroundColor: '#ffffff',
+    color: '#000000',
   },
   list: {
     padding: 0,
@@ -83,7 +84,7 @@ const ContextMenu: React.FC<Props> = ({
       anchorPosition={anchorPosition}
     >
       <MenuItem disabled={type === 'root'} onClick={handleCopy}>
-        <Icon icon="copy" size={16} color="white" />
+        <Icon icon="copy" size={16} color="black" />
         Copy
       </MenuItem>
 
@@ -91,12 +92,12 @@ const ContextMenu: React.FC<Props> = ({
         disabled={!canHaveChildren || emptyClipboard}
         onClick={handlePaste}
       >
-        <Icon icon="folder-open" size={16} color="white" />
+        <Icon icon="folder-open" size={16} color="black" />
         Paste
       </MenuItem>
 
       <MenuItem disabled={type === 'root'} onClick={handleDelete}>
-        <Icon icon="delete" size={16} color="white" />
+        <Icon icon="delete" size={16} color="black" />
         Delete
       </MenuItem>
     </StyledMenu>

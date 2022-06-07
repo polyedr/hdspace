@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
@@ -16,10 +16,10 @@ import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';
 import ScreenLongName from './ScreenLongName';
 
-const useStyles = makeStyles(({ palette, typography }) => ({
+const useStyles = makeStyles(({ typography }) => ({
   listItem: {
     '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.3),
+      backgroundColor: '#F3F4F6',
     },
     '&, &:hover, &:active, &:link, &:visited, &:focus': {
       color: 'inherit',
@@ -32,14 +32,16 @@ const useStyles = makeStyles(({ palette, typography }) => ({
     alignItems: 'center',
   },
   active: {
-    backgroundColor: lighten(palette.panel.main, 0.2),
+    backgroundColor: '#ffffff',
   },
   screenData: {
+    marginLeft: '6px',
     display: 'flex',
     alignItems: 'center',
+    gap: '15px',
   },
   icon: {
-    color: palette.common.white,
+    color: '#81818E',
     minWidth: 0,
     paddingRight: '.1em',
   },
