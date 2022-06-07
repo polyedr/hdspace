@@ -140,9 +140,11 @@ const MuiAccordionDetails = MuiStyled(AccordionDetails)(() => ({
 }));
 
 export const StyledAccordion = React.forwardRef<any, AccordionProps>(
-  ({ children, ...props }) => {
+  ({ children, ...props }, ref) => {
     return (
-      <Accordion {...props}>{(children as unknown) as ReactElement}</Accordion>
+      <Accordion {...props} ref={ref}>
+        {(children as unknown) as ReactElement}
+      </Accordion>
     );
   },
 );
