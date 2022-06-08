@@ -429,28 +429,6 @@ const PropertiesTab: React.FC = () => {
     [dispatch, activeElement.id, currentScreenId],
   );
 
-  const CommonControls = type !== 'root' &&
-    elementsControlsCollection.length === 1 &&
-    !masterScreenEnabled && (
-      <>
-        {!isGroupElement && (
-          <ControlSection title="Share styles">
-            <ShareStyles />
-          </ControlSection>
-        )}
-
-        <ControlSection title="Element name">
-          <RenameElement canEdit={canEdit} />
-        </ControlSection>
-
-        {!isFreeCanvasMode && (
-          <ControlSection title="Replace this element">
-            <ElementType />
-          </ControlSection>
-        )}
-      </>
-    );
-
   if (
     !activeElement ||
     [masterCoreElementId, masterGroupsElementId].includes(activeElement.id)
@@ -554,7 +532,27 @@ const PropertiesTab: React.FC = () => {
                         editableStyles={editableStyles}
                       />
                     </ControlSection>
-                    {CommonControls}
+                    {type !== 'root' &&
+                      elementsControlsCollection.length === 1 &&
+                      !masterScreenEnabled && (
+                        <>
+                          {!isGroupElement && (
+                            <ControlSection title="Share styles">
+                              <ShareStyles />
+                            </ControlSection>
+                          )}
+
+                          <ControlSection title="Element name">
+                            <RenameElement canEdit={canEdit} />
+                          </ControlSection>
+
+                          {!isFreeCanvasMode && (
+                            <ControlSection title="Replace this element">
+                              <ElementType />
+                            </ControlSection>
+                          )}
+                        </>
+                      )}
                   </>
                 );
               }

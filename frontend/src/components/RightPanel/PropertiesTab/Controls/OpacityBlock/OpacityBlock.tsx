@@ -48,10 +48,9 @@ const OpacityBlock: React.FC<Props> = ({
     250,
   );
 
-  const handlerWrapper = (value: any) => {
-    // @ts-ignore
-    handleOpacityChange(value);
-  };
+  const handlerWrapper: (value: number) => void = handleOpacityChange as (
+    value: number,
+  ) => void;
 
   return (
     <div className={classes.container}>
