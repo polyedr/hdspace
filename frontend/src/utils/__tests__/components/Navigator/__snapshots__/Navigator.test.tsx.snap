@@ -7,7 +7,7 @@ exports[`Navigator should render a Navigator component 1`] = `
   >
     <div
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bdVaJa jzHzSW css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jLLiTK css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
