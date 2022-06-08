@@ -19,9 +19,6 @@ const useStyles = makeStyles<Theme, { show: boolean }>({
     height: 16,
     width: 16,
     color: '#81818E',
-    // '&:hover': {
-    //   backgroundColor: darken('#2f4050', 0.2),
-    // },
     '& svg': {
       height: 18,
       width: 18,
