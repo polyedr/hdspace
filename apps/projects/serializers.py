@@ -37,6 +37,35 @@ from .models import (
 from collections import OrderedDict
 
 
+def copy_element_node(instance: ScenarioElement, plan: int = None, parent: ScenarioElement = None) -> ScenarioElement:
+    """
+    Copy the attribute of the `element` and return new instance without `parent`
+    :param instance:
+    :return:
+    """
+    kwargs = {}
+    for attr in instance._meta.get_fields():
+        kwargs['plan'] = plan
+        kwargs['parent'] = parent
+        kwargs[attr] = getattr(instance, attr)
+    return ScenarioElement.objects.create(**kwargs)
+
+
+def copy_children(target_branch: ScenarioElement, parent: ScenarioElement = None, new_node: bool = False) -> None:
+    """
+    :param target_branch: The original
+    :return:
+    """
+    if new_node:
+        new_node = copy_element_node(target_branch, parent=parent)
+    else:
+        new_node = parent
+    for child in target_branch.children.all():
+        # Make children of `plan` node
+        new_child = copy_element_node(child, parent=new_node)
+        copy_children(child, parent=new_child, new_node=False)
+
+
 def duplicate_model_with_descendants(obj, whitelist, _new_parent_pk=None):
     kwargs = {}
     children_to_clone = OrderedDict()

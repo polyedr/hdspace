@@ -58,7 +58,7 @@ from .serializers import (
     IllustrationSetSerializer,
     ImageSerializer,
     ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
-    duplicate_model_with_descendants)
+    duplicate_model_with_descendants, copy_element_node)
 
 
 class IsOwner(permissions.BasePermission):
@@ -808,5 +808,20 @@ class ScreencopyView(APIView):
 
         if screen_clone:
             return Response(screen_clone.id, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+# Copying the element
+class ElementcopyView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        elementid = request.data['elementid']
+        element = ScenarioElement.objects.get(pk=elementid)
+        element_clone = copy_element_node(element)
+
+        if element_clone:
+            return Response(element_clone.id, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
