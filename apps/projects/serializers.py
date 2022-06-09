@@ -43,12 +43,12 @@ def copy_element_node(instance: ScenarioElement, plan: int = None, parent: Scena
     :param instance:
     :return:
     """
-    kwargs = {}
-    for attr in instance._meta.get_fields():
-        kwargs['plan'] = plan
-        kwargs['parent'] = parent
-        kwargs[attr] = getattr(instance, attr)
-    return ScenarioElement.objects.create(**kwargs)
+    iclone = instance.make_clone()
+    iclone.parent = parent
+    iclone.save()
+    print(iclone)
+
+    return iclone
 
 
 def copy_children(target_branch: ScenarioElement, parent: ScenarioElement = None, new_node: bool = False) -> None:
@@ -60,10 +60,14 @@ def copy_children(target_branch: ScenarioElement, parent: ScenarioElement = None
         new_node = copy_element_node(target_branch, parent=parent)
     else:
         new_node = parent
-    for child in target_branch.children.all():
-        # Make children of `plan` node
-        new_child = copy_element_node(child, parent=new_node)
-        copy_children(child, parent=new_child, new_node=False)
+    # print("tb", target_branch)
+    if not target_branch.is_leaf_node():
+        for child in target_branch.children.all():
+            # Make children of `plan` node
+            new_child = copy_element_node(child, parent=new_node)
+            copy_children(child, parent=new_child, new_node=False)
+
+    return new_node
 
 
 def duplicate_model_with_descendants(obj, whitelist, _new_parent_pk=None):
