@@ -7,6 +7,7 @@ import {
   initialEdit,
   initialUi,
 } from '@Redux/project/initial';
+import { initialmarketplaceData } from '@Redux/marketplace/initial';
 import initialPermissions from '@Redux/permissions/initial';
 import { AppReduxState, ProjectEditState } from '@Redux/types';
 import { defaultFreeCanvasParams } from '@Domain/core';
@@ -24,9 +25,11 @@ import {
   AssetsList,
   ProjectWithScreens,
   ProjectsSearchParameter,
+  TemplatesSearchParameter,
   DateRange,
   NNBlockType,
   Layout,
+  Marketplace,
 } from '@Src/types';
 
 export const mockProject: Project = {
@@ -181,6 +184,38 @@ export const mockVIAState = ({
   copiedRegion: null,
 } as unknown) as ProjectEditState['VIAMode'];
 
+export const mockMarketplace: Marketplace = {
+  id: 1,
+  name: 'Mock Project',
+  status: 'in progress',
+  created: new Date(0),
+  updated: new Date(0),
+  projectscreen: [],
+  projectTrelloJSON: null,
+  TemplateLoader: false,
+  tags: [],
+  marketplaceData: {
+    classes: [],
+    uiFramework: NOT_SELECTED_FRAMEWORK,
+    defaultStyles: {
+      accentColor: {},
+      border: {},
+      borderColor: {},
+      colors: {},
+      elementsBackgroundColor: {},
+      fontColorOverlay: {},
+      headingType: {},
+      indents: {},
+      screenBackgroundColor: {},
+      typography: {},
+    },
+    layout: {
+      value: Layout.Desktop,
+      rotated: false,
+    },
+  },
+  user: DEFAULT_USER,
+};
 export const mockInitialState: AppReduxState = {
   user: initialUserState,
   project: {
@@ -204,6 +239,9 @@ export const mockInitialState: AppReduxState = {
     notifications: [],
   },
   permissions: initialPermissions,
+  marketplace: {
+    data: initialmarketplaceData,
+  },
 };
 
 export const mockState: AppReduxState = {
@@ -234,6 +272,18 @@ export const mockState: AppReduxState = {
       ...mockInitialState.project.edit,
       currentProjectId: mockProject.id,
       currentScreenId: mockScreen.id,
+    },
+  },
+  marketplace: {
+    ...mockInitialState.marketplace,
+    data: {
+      ...mockInitialState.marketplace.data,
+      marketplaceData: {
+        ...mockInitialState.marketplace.data.marketplaceData,
+        results: {
+          [mockMarketplace.id]: mockMarketplace,
+        },
+      },
     },
   },
 };
@@ -358,6 +408,11 @@ export const projectSearchParameterMock: [
   ProjectsSearchParameter,
   string | DateRange,
 ] = [ProjectsSearchParameter.name, 'text search'];
+
+export const templateSearchParameterMock: [
+  TemplatesSearchParameter,
+  string | DateRange,
+] = [TemplatesSearchParameter.name, 'text search'];
 
 export const projectScreensMock = [
   createMasterScreenMock(getTestId()),

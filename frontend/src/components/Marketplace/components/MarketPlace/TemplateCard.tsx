@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Card,
   CardMedia,
@@ -11,22 +11,24 @@ import {
   Divider,
   styled as muiStyled,
 } from '@mui/material';
-
+import { getTemplatesLists } from '@Redux/marketplace/actions';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import styled from 'styled-components';
 import Theme from '@Src/styles/Theme';
 import { ThemeProvider } from '@material-ui/core/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectMarketplacesData,
+  selectTemplatessDataNext,
+  selectAreTemplatesLoading,
+} from '@Redux/marketplace/selectors/base';
 import image1 from '../../../../assets/images/image1.png';
-import image2 from '../../../../assets/images/image2.png';
-import image3 from '../../../../assets/images/image3.png';
-import image4 from '../../../../assets/images/image4.png';
-import image5 from '../../../../assets/images/image5.png';
 
 const GridContainer = styled(Grid)`
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   align-items: center;
   margin-top: 0;
 `;
@@ -123,93 +125,120 @@ const CustomIconButton = styled(IconButton)`
     color: #fff;
   }
 `;
-const Templetdata = [
-  {
-    title: 'Template 1',
-    subtitle: 'A short description of the project on one line',
-    image: image1,
-  },
-  {
-    title: 'Template 2',
-    subtitle: 'A short description of the project on one line',
-    image: image2,
-  },
-  {
-    title: 'Template 3',
-    subtitle: 'A short description of the project on one line',
-    image: image3,
-  },
-  {
-    title: 'Template 4',
-    subtitle: 'A short description of the project on one line',
-    image: image4,
-  },
-  {
-    title: 'Template 5',
-    subtitle: 'A short description of the project on one line',
-    image: image5,
-  },
-  {
-    title: 'Template 6',
-    subtitle: 'A short description of the project on one line',
-    image: image1,
-  },
-];
+const Loader = styled.div`
+  padding: 1rem;
+  text-align: center;
+  position: relative;
+  left: 16rem;
+`;
 const TemplateCard = () => {
   const [show, setShow] = React.useState({});
+  const Template = useSelector(selectMarketplacesData);
+  const templateListLoader = useSelector(selectAreTemplatesLoading);
+
+  const dispatch = useDispatch();
+  const hasNext = useSelector(selectTemplatessDataNext);
   const handleMouseOver = (index) => {
     setShow({ show, [index]: true });
   };
   const handleMouseOut = (index) => {
     setShow({ show, [index]: false });
   };
+
+  const ref = useRef<HTMLDivElement>(null);
+  const el = ref && ref.current;
+
+  useEffect(() => {
+    dispatch(getTemplatesLists());
+  }, [dispatch]);
+
+  const handleGetTemplates = () => {
+    if (hasNext) {
+      dispatch(getTemplatesLists());
+    }
+  };
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          handleGetTemplates();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.01,
+      },
+    );
+
+    if (el) {
+      obs.observe(el);
+    }
+
+    return () => {
+      if (el) {
+        obs.unobserve(el);
+      }
+    };
+  }, [el]);
+
+  const sortedTemplateList = Object.values(Template).sort(
+    (a, b) => b.created.getTime() - a.created.getTime(),
+  );
   return (
-    <GridContainer container spacing={4}>
-      {Templetdata.map((item, index) => (
-        <Grid item xs={3} sm={6} md={4} style={{ marginTop: 0 }}>
-          <CustomRoot>
-            <CustomCard>
-              <CardActionArea
-                onMouseEnter={() => handleMouseOver(index)}
-                onMouseLeave={() => handleMouseOut(index)}
-              >
-                <CustomCardMedia
-                  component="img"
-                  height="194"
-                  image={item.image}
-                  alt="Paella dish"
-                />
-                <Divider style={{ background: '#F3F4F6' }} light />
-                <ThemeProvider theme={Theme}>
-                  <CustomeCardContent>
-                    <CustomDescription>
-                      <CustomHeading gutterBottom>{item.title}</CustomHeading>
-                      <CostomSubHeading variant="caption">
-                        {item.subtitle}
-                      </CostomSubHeading>
-                    </CustomDescription>
-                  </CustomeCardContent>
-                </ThemeProvider>
-                {show[index] && (
-                  <CustomCardActions
-                    style={{
-                      position: show[index] ? 'absolute' : 'unset',
-                    }}
-                  >
-                    <CustomIconButton>
-                      <VisibilityOutlinedIcon />
-                    </CustomIconButton>
-                    <CustomIconButton>
-                      <AddIcon />
-                    </CustomIconButton>
-                  </CustomCardActions>
-                )}
-              </CardActionArea>
-            </CustomCard>
-          </CustomRoot>
-        </Grid>
-      ))}
-    </GridContainer>
+    <>
+      <GridContainer container spacing={4}>
+        {sortedTemplateList.map((item, index) => (
+          <Grid item xs={3} sm={6} md={4} style={{ marginTop: 0 }}>
+            <CustomRoot>
+              <CustomCard>
+                <CardActionArea
+                  onMouseEnter={() => handleMouseOver(index)}
+                  onMouseLeave={() => handleMouseOut(index)}
+                >
+                  <CustomCardMedia
+                    component="img"
+                    height="194"
+                    image={image1}
+                    alt="Paella dish"
+                  />
+                  <Divider style={{ background: '#F3F4F6' }} light />
+                  <ThemeProvider theme={Theme}>
+                    <CustomeCardContent>
+                      <CustomDescription>
+                        <CustomHeading gutterBottom>{item?.name}</CustomHeading>
+                        <CostomSubHeading variant="caption">
+                          A short description of the project on one line
+                        </CostomSubHeading>
+                      </CustomDescription>
+                    </CustomeCardContent>
+                  </ThemeProvider>
+                  {show[index] && (
+                    <CustomCardActions
+                      style={{
+                        position: show[index] ? 'absolute' : 'unset',
+                      }}
+                    >
+                      <CustomIconButton>
+                        <VisibilityOutlinedIcon />
+                      </CustomIconButton>
+                      <CustomIconButton>
+                        <AddIcon />
+                      </CustomIconButton>
+                    </CustomCardActions>
+                  )}
+                </CardActionArea>
+              </CustomCard>
+            </CustomRoot>
+          </Grid>
+        ))}
+      </GridContainer>
+
+      {!sortedTemplateList.length && !templateListLoader && (
+        <Loader>No Templates found :(</Loader>
+      )}
+    </>
   );
 };
 

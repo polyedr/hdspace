@@ -16,6 +16,7 @@ import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
 import notificationReducer from './notification/reducer';
 import permissionsReducer from './permissions/reducer';
+import marketplaceReducer from './marketplace/reducers';
 import projectSaga from './project/sagas';
 import userSaga from './user/sagas';
 import history from './history';
@@ -25,6 +26,7 @@ import chatReducer from './pmtools/chat/reducer';
 import boardReducer from './pmtools/board/reducer';
 import inviteReducer from './pmtools/invite/reducer';
 import pmToolsSaga from './pmtools/sagas';
+import marketplaceSaga from './marketplace/sagas';
 
 const userPersistConfig: PersistConfig = {
   key: 'user',
@@ -60,6 +62,7 @@ export const rootReducer = combineReducers({
   chat: chatReducer,
   invite: inviteReducer,
   board: boardReducer,
+  marketplace: marketplaceReducer,
 });
 
 export const store = createStore(
@@ -79,7 +82,7 @@ export function configureStore(): { store: Store<any>; persistor: Persistor } {
   sagaMiddleware.run(userSaga);
   sagaMiddleware.run(projectSaga as any); // TODO: type action types!
   sagaMiddleware.run(pmToolsSaga);
-
+  sagaMiddleware.run(marketplaceSaga as any);
   const persistor = persistStore(store);
 
   return { store, persistor };

@@ -18,6 +18,8 @@ import {
   ServerScreen,
   ServerUserData,
   UserData,
+  ServerMarketplace,
+  Marketplace,
 } from '@Src/types';
 import { capitalize } from '@Utils/stringHelper';
 import { defaultFreeCanvasParams } from '@Domain/core';
@@ -210,7 +212,44 @@ export function convertProjectFromResponse({
     },
   };
 }
-
+export function convertTemplatesFromResponse({
+  id,
+  name,
+  status,
+  projectscreen,
+  created,
+  updated,
+  user,
+  project_data_json,
+  project_data_trello_json,
+  tags,
+}: ServerMarketplace): Marketplace {
+  const projectDataJSON = JSON.parse(project_data_json);
+  const projectTrelloJSON = JSON.parse(project_data_trello_json);
+  return {
+    id,
+    name,
+    status,
+    projectscreen,
+    TemplateLoader: false,
+    created: new Date(created),
+    updated: new Date(updated),
+    tags,
+    projectTrelloJSON,
+    user: convertUserDataFromResponse(user),
+    marketplaceData: {
+      ...projectDataJSON,
+      classes:
+        projectDataJSON.classes?.map((cls: ProjectClass) => {
+          return {
+            ...cls,
+            rules: cssCamelize(cls.rules) as React.CSSProperties,
+          } as ProjectClass;
+        }) || [],
+      uiFramework: projectDataJSON.uiFramework || NOT_SELECTED_FRAMEWORK,
+    },
+  };
+}
 export function convertScreenFromResponse({
   id,
   name,
