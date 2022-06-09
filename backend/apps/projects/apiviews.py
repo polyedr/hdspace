@@ -58,7 +58,7 @@ from .serializers import (
     IllustrationSetSerializer,
     ImageSerializer,
     ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
-    duplicate_model_with_descendants, copy_element_node)
+    duplicate_model_with_descendants, copy_element_node, copy_children)
 
 
 class IsOwner(permissions.BasePermission):
@@ -819,7 +819,8 @@ class ElementcopyView(APIView):
     def post(self, request, format=None):
         elementid = request.data['elementid']
         element = ScenarioElement.objects.get(pk=elementid)
-        element_clone = copy_element_node(element)
+        element_clone = copy_children(element, new_node=True)
+        # print("ec", element_clone)
 
         if element_clone:
             return Response(element_clone.id, status=status.HTTP_200_OK)
