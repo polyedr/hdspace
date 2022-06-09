@@ -13,9 +13,10 @@ const useStyles = makeStyles((theme) =>
       position: 'relative',
       width: '18px',
       height: '18px',
-      borderRadius: '2px',
       backgroundColor: (props: any) => props.color,
       cursor: 'pointer',
+      border: '1px solid #E4E6EB',
+      borderRadius: 2,
     },
     transparent: {
       borderRadius: theme.shape.borderRadius,

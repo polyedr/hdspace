@@ -7,7 +7,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
   >
     <div
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bdVaJa jzHzSW css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jLLiTK css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
@@ -79,7 +79,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
   >
     <div
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bdVaJa jzHzSW css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jLLiTK css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
@@ -121,7 +121,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
               class="makeStyles-selectWrapper-2"
             >
               <div
-                class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-bwzfXH bCuzAc css-1z10yd4-MuiFormControl-root-MuiTextField-root"
+                class="MuiFormControl-root MuiFormControl-marginDense MuiFormControl-fullWidth MuiTextField-root sc-htpNat jSMBPt css-1z10yd4-MuiFormControl-root-MuiTextField-root"
               >
                 <label
                   class="MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-root MuiFormLabel-colorPrimary MuiFormLabel-filled css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
