@@ -7,11 +7,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
   >
     <div
       aria-expanded="true"
-<<<<<<< HEAD
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bdVaJa pjhuL css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
-=======
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jLLiTK css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
->>>>>>> c21e4cb84027dba784257ff47bd0117ec4d66aaa
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jxBqEi css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
@@ -83,11 +79,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
   >
     <div
       aria-expanded="true"
-<<<<<<< HEAD
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bdVaJa pjhuL css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
-=======
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jLLiTK css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
->>>>>>> c21e4cb84027dba784257ff47bd0117ec4d66aaa
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jxBqEi css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
