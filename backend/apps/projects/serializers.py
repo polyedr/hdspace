@@ -72,6 +72,7 @@ def copy_children(target_branch: ScenarioElement, parent: ScenarioElement = None
         for child in target_branch.children.all():
             # Make children of `plan` node
             new_child = copy_element_node(child, parent=new_node)
+            new_child.save()
             copy_children(child, parent=new_child, new_node=False, new_first_node=new_first_node)
 
     return new_first_node
