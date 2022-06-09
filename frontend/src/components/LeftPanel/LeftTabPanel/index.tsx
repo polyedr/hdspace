@@ -23,20 +23,19 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      style={{ display: value === index ? 'block' : 'none' }}
       {...other}
     >
-      {value === index && (
-        <Box
-          sx={{
-            p: '16px',
-            backgroundColor: '#ffffff',
-            minHeight: '424px',
-            maxHeight: '424px',
-          }}
-        >
-          {children}
-        </Box>
-      )}
+      <Box
+        sx={{
+          p: '16px',
+          backgroundColor: '#ffffff',
+          minHeight: '424px',
+          maxHeight: '424px',
+        }}
+      >
+        {children}
+      </Box>
     </div>
   );
 }
