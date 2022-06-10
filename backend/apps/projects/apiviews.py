@@ -819,9 +819,9 @@ class ElementcopyView(APIView):
     def post(self, request, format=None):
         elementid = request.data['elementid']
         element = ScenarioElement.objects.get(pk=elementid)
-        element_clone = copy_children(element, parent=element.parent, new_node=True, first_round=True)
-        # print("ec", element_clone)
-
+        element_clone, counter = copy_children(element, parent=element.parent, new_node=True)
+        # print("POST")
+        # print("counter", counter)
         if element_clone:
             return Response(element_clone.id, status=status.HTTP_200_OK)
         else:
