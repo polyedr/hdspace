@@ -6,7 +6,6 @@ import TYPES from '../../actionTypes';
 import { Action, MarketplaceDataState } from '../../types';
 
 const marketplaceReducer = produce(
-  // eslint-disable-next-line consistent-return
   (
     draft: Draft<MarketplaceDataState> = initialmarketplaceData,
     action: Action,

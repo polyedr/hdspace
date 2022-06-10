@@ -23,7 +23,7 @@ import {
   selectTemplatessDataNext,
   selectAreTemplatesLoading,
 } from '@Redux/marketplace/selectors/base';
-import image1 from '../../../../assets/images/image1.png';
+import tempImage from '../../../../assets/images/image1.png';
 
 const GridContainer = styled(Grid)`
   display: flex;
@@ -200,7 +200,7 @@ const TemplateCard = () => {
                   <CustomCardMedia
                     component="img"
                     height="194"
-                    image={image1}
+                    image={tempImage}
                     alt="Paella dish"
                   />
                   <Divider style={{ background: '#F3F4F6' }} light />
