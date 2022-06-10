@@ -12,7 +12,7 @@ import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import InputAdornment from '@mui/material/InputAdornment';
 import styled from 'styled-components';
 
 const CustomForm = styled.form`
@@ -30,9 +30,12 @@ const CustomSearchSection = styled.div`
   align-items: center;
   gap: 16px;
   width: 228px;
-  height: 36px;
+  height: 38px;
   left: 203px;
   top: 186px;
+  & .MuiTextField-root {
+    margin-top: 4px !important;
+  }
 `;
 const CustomDatePicker = styled(DatePicker)`
   margin: 0;
@@ -40,8 +43,10 @@ const CustomDatePicker = styled(DatePicker)`
   padding: 8px 0px;
   width: 228px;
   height: 36px;
-  border: 1px solid #e6e8ed;
   border-radius: 4px;
+  & .MuiInputBase-root {
+    border: 1px solid #e4e6eb;
+  }
 `;
 const CustomeSearch = styled(TextField)`
   margin: 0;
@@ -51,8 +56,10 @@ const CustomeSearch = styled(TextField)`
   gap: 10px;
   width: 228px;
   height: 36px;
-  border: 1px solid #e6e8ed;
   border-radius: 4px;
+  & .MuiInputBase-root {
+    border: 1px solid #e4e6eb;
+  }
   & input#search_input {
     padding: 8px 4px !important;
   }
@@ -79,10 +86,12 @@ const CustomeSelect = styled(TextField)`
   justify-content: center;
   width: 228px;
   height: 36px;
-  border: 1px solid #e6e8ed;
   border-radius: 4px;
   min-width: 150;
   text-transform: capitalize;
+  & .MuiInputBase-root {
+    border: 1px solid #e4e6eb;
+  }
   & .MuiOutlinedInput-input {
     padding: 8px 14px !important;
   }

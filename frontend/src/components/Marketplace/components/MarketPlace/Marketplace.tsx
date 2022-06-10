@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Typography, Container, Box, styled as muiStyled } from '@mui/material';
 import styled from 'styled-components';
 import Theme from '@Src/styles/Theme';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import TemplateCard from './TemplateCard';
 import Searchbar from './Searchbar';
 

@@ -16,12 +16,8 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import styled from 'styled-components';
 import Theme from '@Src/styles/Theme';
-import { ThemeProvider } from '@material-ui/core/styles';
-import image1 from '../../../../assets/images/image1.png';
-import image2 from '../../../../assets/images/image2.png';
-import image3 from '../../../../assets/images/image3.png';
-import image4 from '../../../../assets/images/image4.png';
-import image5 from '../../../../assets/images/image5.png';
+import { ThemeProvider } from '@mui/material/styles';
+import tempImage from '../../../../assets/images/image1.png';
 
 const GridContainer = styled(Grid)`
   display: flex;
@@ -127,32 +123,32 @@ const Templetdata = [
   {
     title: 'Template 1',
     subtitle: 'A short description of the project on one line',
-    image: image1,
+    image: tempImage,
   },
   {
     title: 'Template 2',
     subtitle: 'A short description of the project on one line',
-    image: image2,
+    image: tempImage,
   },
   {
     title: 'Template 3',
     subtitle: 'A short description of the project on one line',
-    image: image3,
+    image: tempImage,
   },
   {
     title: 'Template 4',
     subtitle: 'A short description of the project on one line',
-    image: image4,
+    image: tempImage,
   },
   {
     title: 'Template 5',
     subtitle: 'A short description of the project on one line',
-    image: image5,
+    image: tempImage,
   },
   {
     title: 'Template 6',
     subtitle: 'A short description of the project on one line',
-    image: image1,
+    image: tempImage,
   },
 ];
 const TemplateCard = () => {
