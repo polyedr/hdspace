@@ -1613,6 +1613,7 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'imagesList',
   'dateTimePickerControls',
   'sliderSettings',
+  'styleSheets',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
@@ -1629,8 +1630,8 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'flexGrow',
   'backgroundSize',
   'backgroundImage',
-  'styleSheets',
   'alignment',
+  'opacity',
 ] as const;
 
 export type Control =
