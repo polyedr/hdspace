@@ -38,7 +38,7 @@ from .apiviews import (
     RemovePermissionsProject,
     AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject,
     ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView,
-    ScreencopyView, ElementcopyView)
+    ScreencopyView, ElementcopyView, ElementmpttcopyView)
 
 app_name = "projects"
 
@@ -154,6 +154,11 @@ api_copying_screens = [
          name="api_copying_screens"),
 ]
 
+api_copying_elementsmptt = [
+    path("elementmpttcopy/", ElementmpttcopyView.as_view(),
+         name="api_copying_elementsmptt"),
+]
+
 api_copying_elements = [
     path("elementcopy/", ElementcopyView.as_view(),
          name="api_copying_elements"),
@@ -253,6 +258,7 @@ urlpatterns = [
     path("", include(api_permissions_project_patterns)),
     path("", include(api_copying_projects)),
     path("", include(api_copying_screens)),
+    path("", include(api_copying_elementsmptt)),
     path("", include(api_copying_elements)),
     path("", include(api_element_comment_patterns)),
     path("", include(api_project_member_patterns)),

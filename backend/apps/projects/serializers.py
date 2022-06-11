@@ -85,8 +85,6 @@ def duplicate_model_with_descendants(obj, whitelist, _new_parent_pk=None):
     for field in obj._meta.get_fields():
         if field.name == "id":
             pass
-        elif field.name == "tree_id":
-            pass
         elif field.one_to_many:
             if field.name in whitelist:
                 these_children = list(getattr(obj, field.name).all())
