@@ -785,7 +785,7 @@ class ProjectcopyView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements', 'projectillustrationset', 'images']
+        WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements', 'children', 'projectillustrationset', 'images']
         projectid = request.data['projectid']
         project = Project.objects.get(pk=projectid)
         project_clone = duplicate_model_with_descendants(project, WHITELIST)
@@ -801,7 +801,7 @@ class ScreencopyView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        WHITELIST = ['screenscenario', 'elements']
+        WHITELIST = ['screenscenario', 'elements', 'children']
         screenid = request.data['screenid']
         screen = ProjectScreen.objects.get(pk=screenid)
         screen_clone = duplicate_model_with_descendants(screen, WHITELIST)
@@ -812,14 +812,32 @@ class ScreencopyView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-# Copying the element
-class ElementcopyView(APIView):
+# Copying the element MPTT
+class ElementmpttcopyView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
         elementid = request.data['elementid']
         element = ScenarioElement.objects.get(pk=elementid)
         element_clone, counter = copy_children(element, parent=element.parent, new_node=True)
+        # print("POST")
+        # print("counter", counter)
+        if element_clone:
+            return Response(element_clone.id, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+# Copying the element
+class ElementcopyView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        WHITELIST = ['elements', 'children']
+        elementid = request.data['elementid']
+        element = ScenarioElement.objects.get(pk=elementid)
+        # element_clone = duplicate_model_with_descendants(element, WHITELIST)
+        element_clone = duplicate_model_with_descendants(element, WHITELIST)
         # print("POST")
         # print("counter", counter)
         if element_clone:
