@@ -1,6 +1,7 @@
 """Views for the projects api"""
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, viewsets, permissions, status
+from rest_framework import generics, viewsets, permissions, status, serializers
+from rest_framework.fields import CurrentUserDefault
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
@@ -782,13 +783,27 @@ class DisplayPermissionsAllusers(APIView):
 
 # Copying the project
 class ProjectcopyView(APIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    DELETE_PROJECT_PERMISSION = "delete_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+        (DELETE_PROJECT_PERMISSION, "delete_project"),
+    )
     permission_classes = (permissions.IsAuthenticated,)
+    # https://stackoverflow.com/questions/30203652/how-to-get-request-user-in-django-rest-framework-serializer
+    # user = serializers.PrimaryKeyRelatedField(default=serializers.CurrentUserDefault())
 
     def post(self, request, format=None):
         WHITELIST = ['projects', 'projectscreen', 'screenscenario', 'elements', 'children', 'projectillustrationset', 'images']
         projectid = request.data['projectid']
         project = Project.objects.get(pk=projectid)
         project_clone = duplicate_model_with_descendants(project, WHITELIST)
+
+        assign_perm("view_project", self.request.user, project_clone)
+        assign_perm("change_project", self.request.user, project_clone)
+        assign_perm("delete_project", self.request.user, project_clone)
 
         if project_clone:
             return Response(project_clone.id, status=status.HTTP_200_OK)
