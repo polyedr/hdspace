@@ -48,7 +48,7 @@ const useStyles = makeStyles({
     justifyContent: 'flex-start',
   },
   container: {
-    padding: '16px',
+    padding: '0 16px',
   },
   numberInput: {
     '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {

@@ -11,7 +11,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 
 const useStyles = makeStyles({
   container: {
-    padding: 16,
+    padding: '0 16px',
   },
   inputsContainer: {
     display: 'flex',
