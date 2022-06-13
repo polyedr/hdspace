@@ -2,6 +2,7 @@ absl-py==0.7.1
 amqp==2.5.0
 anytree==2.8.0
 appdirs==1.4.3
+asgiref==3.4.1
 astor==0.8.0
 attrs==20.3.0
 Automat==20.2.0
@@ -60,7 +61,7 @@ djangorestframework-bulk==0.2.1
 djangorestframework-guardian==0.3.0
 djangorestframework-recursive==0.1.2
 djangorestframework-simplejwt==4.3.0
-djoser==2.0.3
+djoser==2.1.0
 drf-nested-routers==0.91
 drf-writable-nested==0.6.0
 drf-yasg==1.17.1
@@ -194,8 +195,8 @@ simplegeneric==0.8.1
 simplejson==3.16.0
 six==1.12.0
 sklearn==0.0
-social-auth-app-django==2.1.0
-social-auth-core==3.1.0
+social-auth-app-django==4.0.0
+social-auth-core==4.2.0
 soupsieve==1.8
 sqlparse==0.2.4
 substring==0.2
