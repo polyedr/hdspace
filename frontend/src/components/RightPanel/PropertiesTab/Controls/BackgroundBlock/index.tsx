@@ -1,11 +1,18 @@
-import React, { memo, useCallback, useState } from 'react';
+/* eslint-disable no-alert */
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
 import {
+  AssetsList,
+  ElementTypeName,
   Entity,
   LibraryElement,
   PropertiesChangeProps,
-  ElementTypeName,
 } from '@Src/types';
-import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { makeStyles, Theme, darken } from '@material-ui/core/styles';
 import {
   FormControl,
@@ -13,15 +20,38 @@ import {
   Select,
   MenuItem,
   Icon,
+  Button,
 } from '@material-ui/core';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 
 import classNames from 'classnames';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectAllAssetLists,
+  selectCurrentAssetListId,
+} from '@Redux/project/selectors/asset';
+import { uploadElementAsset, uploadImageByUrl } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { StyledTextField } from '@Components/styledComponents';
+import { useDebouncedValueChange } from '@Utils/debounceHooks';
+import { URL_REGEX } from '@Constants/defaultParams';
 import ColorSettings from '../../helperComponents/ColorSettings';
+// import ColorSettings from '../../helperComponents/ColorSettings';
 
-type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+interface StyleProperties {
   backgroundColor?: React.CSSProperties['backgroundColor'];
-  controlName?: string;
-};
+  backgroundImage?: React.CSSProperties['backgroundImage'];
+  backgroundPosition?: React.CSSProperties['backgroundPosition'];
+  backgroundClip?: React.CSSProperties['backgroundClip'];
+  backgroundSize?: React.CSSProperties['backgroundSize'];
+  backgroundRepeat?: React.CSSProperties['backgroundRepeat'];
+}
+
+type Props = PropertiesChangeProps<LibraryElement<Entity>> &
+  StyleProperties & {
+    controlName?: string;
+    assetLists: AssetsList[];
+  };
 
 enum BackgroundType {
   NONE = 'None',
@@ -30,10 +60,10 @@ enum BackgroundType {
 }
 
 enum BackgroundRepeat {
-  NoRepeat = 'No Repeat',
+  NoRepeat = 'No-Repeat',
   Repeat = 'Repeat',
-  RepeatX = 'Repeat X',
-  RepeatY = 'Repeat Y',
+  RepeatX = 'Repeat-X',
+  RepeatY = 'Repeat-Y',
   Space = 'Space',
   Round = 'Round',
 }
@@ -42,9 +72,9 @@ enum BackgroundPosition {
   TOP_LEFT = 'top left',
   TOP_CENTER = 'top center',
   TOP_RIGHT = 'top right',
-  MIDDLE_LEFT = 'middle left',
-  MIDDLE_CENTER = 'middle center',
-  MIDDLE_RIGHT = 'middle right',
+  MIDDLE_LEFT = 'center left',
+  MIDDLE_CENTER = 'center center',
+  MIDDLE_RIGHT = 'center right',
   BOTTOM_LEFT = 'bottom left',
   BOTTOM_CENTER = 'bottom center',
   BOTTOM_RIGHT = 'bottom right',
@@ -58,9 +88,9 @@ enum BackgroundSize {
 
 enum BackgroundClip {
   NONE = 'None',
-  BORDER_BOX = 'Border Box',
-  PADDING_BOX = 'Padding Box',
-  CONTENT_BOX = 'Content Box',
+  BORDER_BOX = 'Border-Box',
+  PADDING_BOX = 'Padding-Box',
+  CONTENT_BOX = 'Content-Box',
 }
 
 const usePositionSelectorStyles = makeStyles((theme: Theme) => ({
@@ -127,19 +157,43 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  assetListsWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginBottom: theme.spacing(2),
+  },
+  assetsSelector: {
+    width: '100%',
+  },
+  urlContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: theme.spacing(2),
+  },
 }));
 
-const PositionButton = () => {
+const PositionButton = ({ onChange, defaultValue, disabled = false }) => {
   const classes = usePositionSelectorStyles();
 
-  const [activePosition, setActivePosition] = useState('');
+  const [activePosition, setActivePosition] = useState(defaultValue || '');
+
+  const handleChangePosition = useCallback(
+    (activePosition) => {
+      setActivePosition(activePosition);
+      onChange(activePosition);
+    },
+    [onChange],
+  );
 
   return (
     <div className={classes.wrapper}>
       <div className={classes.rowWrapper}>
         <button
+          disabled={disabled}
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.TOP_LEFT)}
+          onClick={() => handleChangePosition(BackgroundPosition.TOP_LEFT)}
           className={classNames(classes.button, classes.buttonSquare, {
             [classes.active]: activePosition === BackgroundPosition.TOP_LEFT,
           })}
@@ -148,7 +202,8 @@ const PositionButton = () => {
         </button>
         <button
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.TOP_CENTER)}
+          disabled={disabled}
+          onClick={() => handleChangePosition(BackgroundPosition.TOP_CENTER)}
           className={classNames(classes.button, classes.fillButton, {
             [classes.active]: activePosition === BackgroundPosition.TOP_CENTER,
           })}
@@ -157,7 +212,8 @@ const PositionButton = () => {
         </button>
         <button
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.TOP_RIGHT)}
+          disabled={disabled}
+          onClick={() => handleChangePosition(BackgroundPosition.TOP_RIGHT)}
           className={classNames(classes.button, classes.buttonSquare, {
             [classes.active]: activePosition === BackgroundPosition.TOP_RIGHT,
           })}
@@ -168,7 +224,8 @@ const PositionButton = () => {
       <div className={classNames(classes.rowWrapper, classes.middleRow)}>
         <button
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.MIDDLE_LEFT)}
+          disabled={disabled}
+          onClick={() => handleChangePosition(BackgroundPosition.MIDDLE_LEFT)}
           className={classNames(
             classes.button,
             classes.fillButton,
@@ -183,7 +240,8 @@ const PositionButton = () => {
         </button>
         <button
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.MIDDLE_CENTER)}
+          disabled={disabled}
+          onClick={() => handleChangePosition(BackgroundPosition.MIDDLE_CENTER)}
           className={classNames(classes.button, classes.fillButton, {
             [classes.active]:
               activePosition === BackgroundPosition.MIDDLE_CENTER,
@@ -193,7 +251,8 @@ const PositionButton = () => {
         </button>
         <button
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.MIDDLE_RIGHT)}
+          disabled={disabled}
+          onClick={() => handleChangePosition(BackgroundPosition.MIDDLE_RIGHT)}
           className={classNames(
             classes.button,
             classes.fillButton,
@@ -210,7 +269,8 @@ const PositionButton = () => {
       <div className={classes.rowWrapper}>
         <button
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.BOTTOM_LEFT)}
+          disabled={disabled}
+          onClick={() => handleChangePosition(BackgroundPosition.BOTTOM_LEFT)}
           className={classNames(classes.button, classes.buttonSquare, {
             [classes.active]: activePosition === BackgroundPosition.BOTTOM_LEFT,
           })}
@@ -219,7 +279,8 @@ const PositionButton = () => {
         </button>
         <button
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.BOTTOM_CENTER)}
+          disabled={disabled}
+          onClick={() => handleChangePosition(BackgroundPosition.BOTTOM_CENTER)}
           className={classNames(classes.button, classes.fillButton, {
             [classes.active]:
               activePosition === BackgroundPosition.BOTTOM_CENTER,
@@ -229,7 +290,8 @@ const PositionButton = () => {
         </button>
         <button
           type="button"
-          onClick={() => setActivePosition(BackgroundPosition.BOTTOM_RIGHT)}
+          disabled={disabled}
+          onClick={() => handleChangePosition(BackgroundPosition.BOTTOM_RIGHT)}
           className={classNames(classes.button, classes.buttonSquare, {
             [classes.active]:
               activePosition === BackgroundPosition.BOTTOM_RIGHT,
@@ -242,26 +304,361 @@ const PositionButton = () => {
   );
 };
 
+const DEFAULT_BACKGROUND_COLOR = 'transparent';
+
 const BackgroundBlock: React.FC<Props> = ({
+  element,
+  canEdit,
+  assetLists,
   removeStyles,
   updateStyles,
-  element,
-  backgroundColor = 'transparent',
-  canEdit,
+  backgroundColor = DEFAULT_BACKGROUND_COLOR,
+  backgroundImage = undefined,
+  backgroundSize = BackgroundSize.CONTAIN,
+  backgroundPosition = BackgroundPosition.TOP_LEFT,
+  backgroundClip = BackgroundClip.NONE,
+  backgroundRepeat = BackgroundRepeat.Repeat,
 }) => {
   const classes = useStyles();
 
-  const [type, setType] = useState(BackgroundType.NONE);
+  const isRootElement = element.name === ElementTypeName.ROOT;
+
+  const defaultBackgroundColor = isRootElement
+    ? '#ffffff'
+    : DEFAULT_BACKGROUND_COLOR;
+
+  const getBackgroundType = useMemo(() => {
+    let initialType = BackgroundType.NONE;
+
+    if (backgroundColor && backgroundColor !== defaultBackgroundColor) {
+      initialType = BackgroundType.COLOR;
+    }
+
+    if (
+      backgroundImage &&
+      (backgroundImage !== 'none' ||
+        (isRootElement && backgroundColor !== '#fffff'))
+    ) {
+      initialType = BackgroundType.IMAGE;
+    }
+
+    return initialType;
+  }, [backgroundColor, backgroundImage, isRootElement]);
+
+  const updateCSS = (property: string, value: string) => {
+    updateStyles({ [property]: value });
+  };
+
+  const [type, setType] = useState(getBackgroundType);
+  const inputUrlRef = useRef<HTMLInputElement | null>(null);
+
+  const [color, handleColorChange] = useDebouncedValueChange(
+    backgroundColor,
+    (updatedColorValue: string) => {
+      updateCSS('backgroundColor', updatedColorValue);
+    },
+  );
+
+  useEffect(() => {
+    setType(getBackgroundType);
+  }, [element.id]);
+
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const dispatch = useDispatch();
+
+  const fileSelectorRef = useRef<HTMLInputElement>(null);
+
+  const currentAssetListId = useSelector(selectCurrentAssetListId);
+
+  const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
+
+  const listRef = useRef(
+    !currentAssetListId
+      ? assetLists[assetLists.length - 1]?.id
+      : currentAssetListId,
+  );
 
   const handleChangeType = useCallback(
     (e) => {
+      if (
+        type === BackgroundType.IMAGE &&
+        (!backgroundImage || backgroundImage !== 'none')
+      ) {
+        if (
+          window.confirm('Are you sure want to reset background image styles?')
+        ) {
+          removeStyles([
+            'backgroundImage',
+            'backgroundSize',
+            'backgroundClip',
+            'backgroundPosition',
+          ]);
+
+          setType(e.target.value);
+        }
+
+        return;
+      }
+
+      if (
+        type === BackgroundType.COLOR &&
+        backgroundColor !== defaultBackgroundColor
+      ) {
+        if (
+          // eslint-disable-next-line no-alert
+          window.confirm('Are you sure want to reset background color styles?')
+        ) {
+          removeStyles(['backgroundColor']);
+          setType(e.target.value);
+        }
+
+        return;
+      }
+
       setType(e.target.value);
     },
-    [setType],
+    [setType, type, backgroundColor, backgroundImage, removeStyles],
   );
+
+  const handleChangeFileInput = useCallback(
+    ({ target }) => {
+      const assetId = selectedAsset || listRef.current;
+      if (!assetId) {
+        dispatch(
+          enqueueSnackbar({
+            message: 'Asset list ID is not provided',
+            options: { variant: 'error' },
+          }),
+        );
+        return;
+      }
+      const file = target.files[0];
+
+      if (file.size > 5242880) {
+        alert('Choose image up to 5Mb!');
+      } else {
+        dispatch(
+          uploadElementAsset(
+            element.id,
+            { file, useInBackground: true },
+            assetId,
+            {
+              screenId: currentScreenId,
+            },
+          ),
+        );
+      }
+    },
+    [selectedAsset, dispatch, element.id, currentScreenId],
+  );
+
+  const handleUploadFromUrl = useCallback(() => {
+    if (!inputUrlRef.current) {
+      return;
+    }
+    const imageUrl = inputUrlRef.current.value;
+    if (!imageUrl.trim().length) {
+      dispatch(
+        enqueueSnackbar({
+          message: 'Image URL is not provided',
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    if (!imageUrl.match(URL_REGEX)) {
+      dispatch(
+        enqueueSnackbar({
+          message: 'Image URL is incorrect',
+          options: { variant: 'error' },
+        }),
+      );
+      return;
+    }
+    dispatch(
+      uploadImageByUrl(
+        element.id,
+        { url: imageUrl, useInBackground: true },
+        assetLists[0].id,
+        {
+          screenId: currentScreenId,
+        },
+      ),
+    );
+    inputUrlRef.current.value = '';
+  }, [dispatch, element.id, assetLists, currentScreenId]);
+
+  const handleSelectImage = useCallback(() => {
+    fileSelectorRef.current?.click();
+  }, []);
+
+  const handleChangeBackgroundSize = useCallback(
+    (e: React.ChangeEvent<{ value: unknown }>) => {
+      updateCSS('backgroundSize', e.target.value as string);
+    },
+    [element, currentScreenId],
+  );
+
+  const handleChangeBackgroundClip = useCallback(
+    (e: React.ChangeEvent<{ value: unknown }>) => {
+      updateCSS('backgroundClip', e.target.value as string);
+    },
+    [element, currentScreenId],
+  );
+
+  const handleChangeBackgroundRepeat = useCallback(
+    (e: React.ChangeEvent<{ value: unknown }>) => {
+      updateCSS('backgroundRepeat', e.target.value as string);
+    },
+    [element, currentScreenId],
+  );
+
+  const handleChangePosition = useCallback(
+    (backgroundPosition) => {
+      updateCSS('backgroundPosition', backgroundPosition);
+    },
+    [element, currentScreenId],
+  );
+
+  const handleChangeAssetList = useCallback(
+    (e: React.ChangeEvent<{ value: unknown }>) => {
+      setSelectedAsset(e.target.value as string);
+    },
+    [setSelectedAsset],
+  );
+
+  const renderBackgroundControls = () => {
+    if (type === BackgroundType.NONE) {
+      return null;
+    }
+
+    if (type === BackgroundType.COLOR) {
+      return (
+        <ColorSettings
+          onClick={removeStyles}
+          propsToRemove={['backgroundColor']}
+          currentColor={color as string}
+          activeElementId={element.id}
+          onChange={handleColorChange as (color: string) => any}
+          disabled={!canEdit}
+        />
+      );
+    }
+
+    return (
+      <>
+        <div onClick={handleSelectImage} className={classes.formControl}>
+          <InputLabel>Background Image</InputLabel>
+          <div
+            className={classes.imageWrapper}
+            style={{ backgroundImage, backgroundPosition: 'cover' }}
+          >
+            {!backgroundImage ? <Icon fontSize="medium">image</Icon> : null}
+          </div>
+        </div>
+
+        <div className={classes.urlContainer}>
+          <StyledTextField
+            type="url"
+            label="Upload from URL"
+            inputRef={inputUrlRef}
+            disabled={!canEdit}
+            style={{ width: '100%' }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            component="span"
+            style={{
+              zIndex: 2,
+            }}
+            onClick={handleUploadFromUrl}
+            disabled={!canEdit}
+          >
+            Upload
+          </Button>
+        </div>
+
+        {assetLists.length && canEdit && (
+          <div className={classes.assetListsWrapper}>
+            <label htmlFor="image-asset-list">Upload image to asset list</label>
+            <Select
+              defaultValue={listRef.current}
+              onChange={handleChangeAssetList}
+            >
+              {assetLists.map((list) => (
+                <MenuItem key={`image-asset-${list.id}`} value={list.id} dense>
+                  {list.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </div>
+        )}
+        <FormControl className={classes.formControl}>
+          <InputLabel>Background Repeat</InputLabel>
+          <Select
+            onChange={handleChangeBackgroundRepeat}
+            value={backgroundRepeat}
+            disabled={!canEdit}
+          >
+            {Object.values(BackgroundRepeat).map((type) => (
+              <MenuItem value={type} key={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <InputLabel>Position</InputLabel>
+        <PositionButton
+          defaultValue={backgroundPosition}
+          onChange={handleChangePosition}
+          disabled={!canEdit}
+        />
+        <FormControl className={classes.formControl}>
+          <InputLabel>Background Size</InputLabel>
+          <Select
+            onChange={handleChangeBackgroundSize}
+            value={backgroundSize}
+            disabled={!canEdit}
+          >
+            {Object.values(BackgroundSize).map((type) => (
+              <MenuItem value={type} key={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl}>
+          <InputLabel>Background Clip</InputLabel>
+          <Select
+            onChange={handleChangeBackgroundClip}
+            value={backgroundClip}
+            disabled={!canEdit}
+          >
+            {Object.values(BackgroundClip).map((type) => (
+              <MenuItem value={type} key={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </>
+    );
+  };
 
   return (
     <div className={classes.root}>
+      <input
+        onChange={handleChangeFileInput}
+        ref={fileSelectorRef}
+        accept="image/*"
+        style={{
+          display: 'none',
+        }}
+        id="upload-image"
+        type="file"
+        disabled={!canEdit}
+      />
       <FormControl className={classes.formControl}>
         <InputLabel>Background Type</InputLabel>
         <Select onChange={handleChangeType} value={type}>
@@ -273,61 +670,17 @@ const BackgroundBlock: React.FC<Props> = ({
         </Select>
       </FormControl>
 
-      <div className={classes.formControl}>
-        <InputLabel>Background Style</InputLabel>
-        <div className={classes.imageWrapper}>
-          <Icon fontSize="medium">image</Icon>
-        </div>
-      </div>
-
-      <FormControl className={classes.formControl}>
-        <InputLabel>Background Repeat</InputLabel>
-        <Select value={BackgroundRepeat.NoRepeat}>
-          {Object.values(BackgroundRepeat).map((type) => (
-            <MenuItem value={type} key={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <InputLabel>Position</InputLabel>
-      <PositionButton />
-
-      <FormControl className={classes.formControl}>
-        <InputLabel>Background Size</InputLabel>
-        <Select value={BackgroundSize.AUTO}>
-          {Object.values(BackgroundSize).map((type) => (
-            <MenuItem value={type} key={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <FormControl className={classes.formControl}>
-        <InputLabel>Background Clip</InputLabel>
-        <Select value={BackgroundClip.NONE}>
-          {Object.values(BackgroundClip).map((type) => (
-            <MenuItem value={type} key={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      {/* // <div className={classes.root}>
-    //   <ColorSettings
-    //     onClick={removeStyles}
-    //     propsToRemove={['backgroundColor']}
-    //     currentColor={color as string}
-    //     activeElementId={element.id}
-    //     onChange={handleColorChange as (color: string) => any}
-    //     disabled={!canEdit}
-    //   />
-    // </div> */}
+      {renderBackgroundControls()}
     </div>
   );
 };
 
-export default memo(BackgroundBlock);
+export default (props) => {
+  const assetLists = useSelector(selectAllAssetLists);
+
+  if (!assetLists) {
+    return null;
+  }
+
+  return <BackgroundBlock {...props} assetLists={assetLists} />;
+};
