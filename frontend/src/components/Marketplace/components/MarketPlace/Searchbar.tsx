@@ -44,9 +44,6 @@ const CustomDatePicker = styled(DatePicker)`
   width: 228px;
   height: 36px;
   border-radius: 4px;
-  & .MuiInputBase-root {
-    border: 1px solid #e4e6eb;
-  }
 `;
 const CustomeSearch = styled(TextField)`
   margin: 0;
@@ -57,9 +54,6 @@ const CustomeSearch = styled(TextField)`
   width: 228px;
   height: 36px;
   border-radius: 4px;
-  & .MuiInputBase-root {
-    border: 1px solid #e4e6eb;
-  }
   & input#search_input {
     padding: 8px 4px !important;
   }
@@ -89,9 +83,6 @@ const CustomeSelect = styled(TextField)`
   border-radius: 4px;
   min-width: 150;
   text-transform: capitalize;
-  & .MuiInputBase-root {
-    border: 1px solid #e4e6eb;
-  }
   & .MuiOutlinedInput-input {
     padding: 8px 14px !important;
   }

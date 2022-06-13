@@ -9,14 +9,11 @@ import {
   Grid,
   IconButton,
   Divider,
-  styled as muiStyled,
 } from '@mui/material';
 
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import styled from 'styled-components';
-import Theme from '@Src/styles/Theme';
-import { ThemeProvider } from '@mui/material/styles';
 import tempImage from '../../../../assets/images/image1.png';
 
 const GridContainer = styled(Grid)`
@@ -52,16 +49,15 @@ const CustomCardMedia = styled(CardMedia)`
   width: 309px;
   height: 160px;
 `;
-
-const CustomeCardContent = muiStyled(CardContent)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  padding: theme.spacing(2),
-  gap: '12px',
-  width: '310px',
-  height: '74px',
-}));
+const CustomeCardContent = styled(CardContent)`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  gap: 12px;
+  width: '310px';
+  height: '74px';
+`;
 const CustomDescription = styled.div`
   display: flex;
   flex-direction: column;
@@ -69,27 +65,26 @@ const CustomDescription = styled.div`
   width: 278px;
   height: 45px;
 `;
+const CustomHeading = styled(Typography)`
+  width: 278px;
+  height: 20px;
+  font-family: 'Roboto';
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 145%;
+`;
 
-const CustomHeading = muiStyled(Typography)(({ theme }) => ({
-  width: '278px',
-  height: '20px',
-  fontFamily: theme.typography.fontFamily,
-  fontSize: '14px',
-  fontWeight: 500,
-  lineHeight: '145%',
-  color: '#2A2A2D',
-}));
-const CostomSubHeading = muiStyled(Typography)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  width: '278px',
-  height: '16px',
-  fontFamily: theme.typography.fontFamily,
-  fontSize: '12px',
-  fontWeight: 400,
-  lineHeight: '135%',
-  color: '#81818E',
-}));
+const CostomSubHeading = styled(Typography)`
+  display: flex;
+  align-items: center;
+  width: 278px;
+  height: 16px;
+  font-family: 'Roboto';
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 135%;
+  color: #81818e;
+`;
 const CustomCardActions = styled(CardActions)`
   display: flex;
   right: 8px;
@@ -176,16 +171,14 @@ const TemplateCard = () => {
                   alt="Paella dish"
                 />
                 <Divider style={{ background: '#F3F4F6' }} light />
-                <ThemeProvider theme={Theme}>
-                  <CustomeCardContent>
-                    <CustomDescription>
-                      <CustomHeading gutterBottom>{item.title}</CustomHeading>
-                      <CostomSubHeading variant="caption">
-                        {item.subtitle}
-                      </CostomSubHeading>
-                    </CustomDescription>
-                  </CustomeCardContent>
-                </ThemeProvider>
+                <CustomeCardContent>
+                  <CustomDescription>
+                    <CustomHeading gutterBottom>{item.title}</CustomHeading>
+                    <CostomSubHeading variant="caption">
+                      {item.subtitle}
+                    </CostomSubHeading>
+                  </CustomDescription>
+                </CustomeCardContent>
                 {show[index] && (
                   <CustomCardActions
                     style={{

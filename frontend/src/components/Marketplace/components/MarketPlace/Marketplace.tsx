@@ -1,21 +1,19 @@
 import React, { memo } from 'react';
-import { Typography, Container, Box, styled as muiStyled } from '@mui/material';
+import { Typography, Container, Box } from '@mui/material';
 import styled from 'styled-components';
-import Theme from '@Src/styles/Theme';
-import { ThemeProvider } from '@mui/material/styles';
 import TemplateCard from './TemplateCard';
 import Searchbar from './Searchbar';
 
-const CustomRoot = muiStyled('div')(({ theme }) => ({
-  margin: theme.spacing(2),
-  padding: theme.spacing(1),
-}));
-const CustomHeader = muiStyled('div')(({ theme }) => ({
-  padding: theme.spacing(1),
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '25px',
-}));
+const CustomRoot = styled.div`
+  margin: 16px;
+  padding: 8px;
+`;
+const CustomHeader = styled.div`
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+`;
 const CustomHeaderAction = styled.div`
   display: flex;
   flex-direction: row;
@@ -65,23 +63,21 @@ const CustomProjectCard = styled(Box)`
 const Marketplace: React.FC = () => {
   return (
     <Container style={{ display: 'flex', justifyContent: 'space-around' }}>
-      <ThemeProvider theme={Theme}>
-        <CustomRoot>
-          <CustomHeader>
-            <CustomTitle variant="h5">Marketplace</CustomTitle>
-            <CustomSubTitle variant="h6">
-              Dont know where to start with your project? Feel free to use our
-              templates to inspire your creativity
-            </CustomSubTitle>
-            <CustomHeaderAction>
-              <Searchbar />
-            </CustomHeaderAction>
-          </CustomHeader>
-          <CustomProjectCard sx={{ flexGrow: 1 }}>
-            <TemplateCard />
-          </CustomProjectCard>
-        </CustomRoot>
-      </ThemeProvider>
+      <CustomRoot>
+        <CustomHeader>
+          <CustomTitle variant="h5">Marketplace</CustomTitle>
+          <CustomSubTitle variant="h6">
+            Dont know where to start with your project? Feel free to use our
+            templates to inspire your creativity
+          </CustomSubTitle>
+          <CustomHeaderAction>
+            <Searchbar />
+          </CustomHeaderAction>
+        </CustomHeader>
+        <CustomProjectCard sx={{ flexGrow: 1 }}>
+          <TemplateCard />
+        </CustomProjectCard>
+      </CustomRoot>
     </Container>
   );
 };
