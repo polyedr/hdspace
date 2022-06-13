@@ -313,13 +313,14 @@ SOCIAL_AUTH_TWITTER_SECRET = ENV.str("SOCIAL_AUTH_TWITTER_SECRET", "")
 SOCIAL_AUTH_LINKEDIN_KEY = ENV.str("SOCIAL_AUTH_LINKEDIN_KEY", "77zjjth5sdvi12")
 SOCIAL_AUTH_LINKEDIN_SECRET = ENV.str("SOCIAL_AUTH_LINKEDIN_SECRET", "VNgjUOt0cgNG80Mx")
 
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 AUTHENTICATION_BACKENDS = (
     "guardian.backends.ObjectPermissionBackend",  # django-guardian
     "social_core.backends.facebook.FacebookOAuth2",
     "social_core.backends.google.GoogleOAuth2",
-    "social_core.backends.linkedin.LinkedinOAuth",
-    "social_core.backends.twitter.TwitterOAuth",
+    # "social_core.backends.linkedin.LinkedinOAuth",
+    # "social_core.backends.twitter.TwitterOAuth",
     # "django.contrib.auth.backends.ModelBackend",
     'lazysignup.backends.LazySignupBackend',
     "django.contrib.auth.backends.AllowAllUsersModelBackend",
@@ -360,7 +361,8 @@ SIMPLE_JWT = {
 
 white_list = [
     "http://localhost:8080/projects",
-    "https://staging-26-10.firebaseapp.com/projects",
+    "https://staging.adevi.info/projects",
+    "https://adevi.info/projects",
 ]
 
 DOMAIN = ('adevi.info')
