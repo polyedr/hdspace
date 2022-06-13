@@ -22,7 +22,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
-    padding: 16,
+    padding: '0 16px',
   },
   chip: {
     marginRight: '5px',
