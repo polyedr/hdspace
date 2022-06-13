@@ -513,47 +513,21 @@ const PropertiesTab: React.FC = () => {
                 )
               ) {
                 return (
-                  <>
-                    <ControlSection key={controlName} title={controlName}>
-                      <Control
-                        {...getControlStyles(
-                          controlName,
-                          currentEditableStyles,
-                        )}
-                        canEdit={canEdit}
-                        controlName={controlName}
-                        activeElementId={activeElement.id}
-                        element={activeElement}
-                        removeStyles={!masterScreenEnabled && removeStyles}
-                        updateStyles={updateStyles}
-                        replaceStyles={replaceStyles}
-                        updateParams={!masterScreenEnabled && updateParams}
-                        masterScreenEnabled={masterScreenEnabled}
-                        editableStyles={editableStyles}
-                      />
-                    </ControlSection>
-                    {type !== 'root' &&
-                      elementsControlsCollection.length === 1 &&
-                      !masterScreenEnabled && (
-                        <>
-                          {!isGroupElement && (
-                            <ControlSection title="Share styles">
-                              <ShareStyles />
-                            </ControlSection>
-                          )}
-
-                          <ControlSection title="Element name">
-                            <RenameElement canEdit={canEdit} />
-                          </ControlSection>
-
-                          {!isFreeCanvasMode && (
-                            <ControlSection title="Replace this element">
-                              <ElementType />
-                            </ControlSection>
-                          )}
-                        </>
-                      )}
-                  </>
+                  <ControlSection key={controlName} title={controlName}>
+                    <Control
+                      {...getControlStyles(controlName, currentEditableStyles)}
+                      canEdit={canEdit}
+                      controlName={controlName}
+                      activeElementId={activeElement.id}
+                      element={activeElement}
+                      removeStyles={!masterScreenEnabled && removeStyles}
+                      updateStyles={updateStyles}
+                      replaceStyles={replaceStyles}
+                      updateParams={!masterScreenEnabled && updateParams}
+                      masterScreenEnabled={masterScreenEnabled}
+                      editableStyles={editableStyles}
+                    />
+                  </ControlSection>
                 );
               }
               if (
@@ -584,6 +558,28 @@ const PropertiesTab: React.FC = () => {
             })}
           </>
         )}
+        {propertiesType === PROPERTIES_TYPES.SETTINGS &&
+          type !== 'root' &&
+          elementsControlsCollection.length === 1 &&
+          !masterScreenEnabled && (
+            <>
+              {!isGroupElement && (
+                <ControlSection title="Share styles">
+                  <ShareStyles />
+                </ControlSection>
+              )}
+
+              <ControlSection title="Element name">
+                <RenameElement canEdit={canEdit} />
+              </ControlSection>
+
+              {!isFreeCanvasMode && (
+                <ControlSection title="Replace this element">
+                  <ElementType />
+                </ControlSection>
+              )}
+            </>
+          )}
       </Scrollbar>
       <BasicConfirmForm
         open={showRemoveGroupDialog}
