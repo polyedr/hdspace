@@ -12,7 +12,7 @@ from .apiviews import (
     TeamMemberDetail,
     TeamMember,
     TeamMemberList,
-    TeamDetail, SharedlinkView, SharedlinkprojectView,
+    TeamDetail, SharedlinkView, SharedlinkprojectView, SharedlinknewuserView,
 )
 
 
@@ -37,7 +37,7 @@ api_team_patterns = [
 ]
 
 api_sharelink_patterns = [
-    path("sharelinknewuser/", SharedlinknewView.as_view()),  # Share link for the new user
+    path("sharelinknewuser/", SharedlinknewuserView.as_view()),  # Share link for the new user
     path("sharelinkuser/", SharedlinkView.as_view()),  # Share link for the internal user
     path("sharelinkuv/", SharedlinkprojectView.as_view()),  # Share link for the projectviewer user
 ]
