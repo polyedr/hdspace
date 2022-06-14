@@ -205,14 +205,23 @@ class SharedlinkprojectView(APIView):
 
         rp = get_perms(user, project)  # A resulted permissions array
 
+        '''
         # Display tokens for a projectviewer
+        # It is not necessary, because django-sesame links are authenticated links
         user_tokens = RefreshToken.for_user(user)
         tokens = {'refresh': str(user_tokens), 'access': str(user_tokens.access_token)}
         print(rp)
         data = {'user':'projectviewer', 'qstring': qstring}
         data.update(tokens)
 
+
         if qstring:
             return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        '''
+
+        if qstring:
+            return Response(qstring, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
