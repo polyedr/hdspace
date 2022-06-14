@@ -34,7 +34,7 @@ const MAX_LINE_HEIGHT = 1000;
 
 const useStyles = makeStyles({
   rootContainer: {
-    padding: '16px',
+    padding: '0 16px',
   },
   lineHeightAndLetterSpacing: {
     display: 'flex',
