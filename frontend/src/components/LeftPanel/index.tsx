@@ -158,14 +158,6 @@ const LeftPanel: React.FC = () => {
               <Styles />
             </div>
           )}
-
-          {/* <IconButton
-            className={classes.toggleButton}
-            onClick={toggleLeftPanel}
-            title={`${minimized ? 'Open' : 'Hide'} panel`}
-          >
-            <VerticalAlignTopIcon />
-          </IconButton> */}
         </div>
       </Scrollbar>
     </aside>
