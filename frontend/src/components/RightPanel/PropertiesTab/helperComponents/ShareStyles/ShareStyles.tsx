@@ -22,15 +22,24 @@ const useStyles = makeStyles(({ spacing }) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'stretch',
+    padding: '0 16px',
   },
   chip: {
     marginRight: '5px',
     marginBottom: '5px',
-    color: '#1cc09f',
-    border: '1px solid #1cc09f',
+    color: 'black',
+    border: '1px solid rgba(80, 100, 255, 1)',
     '& .MuiChip-label': {
       textTransform: 'capitalize',
     },
+  },
+
+  text: {
+    color: 'rgba(129, 129, 142, 1)',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '135%',
+    fontFamily: 'Roboto',
   },
 
   icon: {
@@ -44,9 +53,10 @@ const useStyles = makeStyles(({ spacing }) => ({
   elementsStylesChip: {
     marginRight: '5px',
     marginBottom: '5px',
-    backgroundColor: '#1cc09f',
+    color: 'rgba(42, 42, 45, 1)',
+    backgroundColor: 'rgba(243, 244, 246, 0.8)',
     '&:hover, &:focus': {
-      backgroundColor: '#18a689',
+      backgroundColor: 'rgba(243, 244, 246, 1)',
     },
     '& .MuiChip-label': {
       textTransform: 'capitalize',
@@ -54,6 +64,7 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
   chipContainer: {
     padding: spacing(1, 0.5),
+    marginBottom: 14,
   },
 }));
 
@@ -152,12 +163,12 @@ const ShareStyles: React.FC<Props> = ({
               className={classes.chip}
               label={sharedClass.className}
               clickable={canEditProject}
-              color="primary"
+              color="secondary"
               onClick={() => handlePasteButtonClick(sharedClass.className)}
             />
           ))
         ) : (
-          <p>No shared classes</p>
+          <p className={classes.text}>No shared classes</p>
         )}
       </div>
 

@@ -21,14 +21,15 @@ const RenameElement: React.FC<Props> = ({ canEdit }) => {
   });
 
   return (
-    <StyledTextField
-      fullWidth
-      margin="dense"
-      label="Name"
-      value={state}
-      onChange={handleChange}
-      disabled={!canEdit}
-    />
+    <div style={{ padding: '0 16px' }}>
+      <StyledTextField
+        fullWidth
+        margin="dense"
+        value={state}
+        onChange={handleChange}
+        disabled={!canEdit}
+      />
+    </div>
   );
 };
 
