@@ -48,6 +48,7 @@ import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
 import ImagesItems from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItems';
 import SliderSettings from '@Components/RightPanel/PropertiesTab/Controls/SliderSettings/SliderSettings';
 import DateTimePickerControls from '@Components/RightPanel/PropertiesTab/Controls/DateTimePickerControls/DateTimePickerControls';
+import OpacityBlock from '@Components/RightPanel/PropertiesTab/Controls/OpacityBlock/OpacityBlock';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -80,6 +81,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
     ],
   },
   size: { Control: SizeBlock, styles: ['width', 'height'] },
+  opacity: { Control: OpacityBlock, styles: ['opacity'] },
   typography: {
     Control: TypographyBlock,
     styles: [

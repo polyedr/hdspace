@@ -75,7 +75,7 @@ export const useDebouncedValueChange = <T>(
 
   const debounced = useDebouncedCallback(cb, delay);
 
-  const handleChange = (value: T) => {
+  const handleChange: (value: T) => void = (value) => {
     setState(value);
     if (debounced.pending()) {
       debounced.cancel();
