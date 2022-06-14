@@ -11,7 +11,6 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
-import AssetsSection from './Assets';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
@@ -36,27 +35,8 @@ const RightPanel: React.FC = () => {
 
   return (
     <div className={classes.root} id={ELEMENT_IDS.rightPanel}>
-      {/* <Tabs
-              value={activeTabIndex}
-              onChange={handleChange}
-              classes={tabsClasses}
-              variant="fullWidth"
-            >
-              {tabs.map((tab) => (
-                <Tab key={tab} classes={tabClasses} label={tab} />
-              ))}
-            </Tabs> */}
-
-      {/* {tabs.map((tab, i) => {
-              return (
-                <TabPanel index={i} value={activeTabIndex} key={tab}>
-                  {tabContent[tab]}
-                </TabPanel>
-              );
-            })} */}
       <PropertiesTab />
       <ElementsTab />
-      <AssetsSection />
     </div>
   );
 };
