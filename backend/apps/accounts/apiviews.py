@@ -1,4 +1,5 @@
 """Views for the accounts api"""
+import uuid
 from urllib.parse import urlparse
 
 from rest_framework import generics, permissions, status
@@ -104,6 +105,64 @@ class TeamDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TeamSerializer
 
 
+# Share the link for the new user
+class SharedlinknewuserView(APIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+    )
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, format=None):
+        projecturl = request.data['projecturl']
+
+        # Extract a project id
+        o = urlparse(projecturl)
+        patharray = o.path.split('/')
+
+        if(patharray[1] == 'project'):
+            projectid = patharray[2]
+        else:
+            # A non-project string
+            errmsg = "This string is not a correct project string"
+            projectid = -1
+
+        project = Project.objects.get(pk=projectid)
+
+        username = '000' + str(uuid.uuid4())
+        email = username + 'example.com'
+        password = username
+        user = User.objects.create_user(username, email=email, password=password)
+        user.groups.add("CommonUsers")
+        print(user)
+        qstring = get_query_string(user)
+
+        # Modulating the permissions
+        pmap = request.data['pmap']
+        if(pmap == "view"):
+            permissions = ["view_project"]
+        elif(pmap == "edit"):
+            permissions = ["view_project", "change_project"]
+        else:  # All other cases making the empty value
+            permissions = []
+
+        for permission in self.PROJECT_PERMISSION:  # Check the meaning of this statement
+            remove_perm(permission[1], user, project)
+
+        for permission in permissions:
+            assign_perm(permission, user, project)
+
+        rp = get_perms(user, project)  # A resulted permissions array
+        print(rp)
+
+        if qstring:
+            return Response(qstring, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 # Share the link for the user
 class SharedlinkView(APIView):
     VIEW_PROJECT_PERMISSION = "view_project"
@@ -131,7 +190,7 @@ class SharedlinkView(APIView):
         project = Project.objects.get(pk=projectid)
 
         user = request.user
-        print(user)
+        # print(user)
         qstring = get_query_string(user)
 
         # Modulating the permissions
@@ -150,7 +209,7 @@ class SharedlinkView(APIView):
             assign_perm(permission, user, project)
 
         rp = get_perms(user, project)  # A resulted permissions array
-        print(rp)
+        # print(rp)
 
         if qstring:
             return Response(qstring, status=status.HTTP_200_OK)
