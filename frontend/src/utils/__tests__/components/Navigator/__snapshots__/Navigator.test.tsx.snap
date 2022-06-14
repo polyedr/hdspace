@@ -46,7 +46,7 @@ exports[`Navigator should render a Navigator component 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root css-a45536-MuiAccordionDetails-root"
+              class="MuiAccordionDetails-root css-h4f17h-MuiAccordionDetails-root"
             >
               <div
                 class="makeStyles-tree-1"
