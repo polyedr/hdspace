@@ -16,7 +16,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
 
 const useStyles = makeStyles({
   root: {
-    padding: '16px',
+    padding: '0 16px',
   },
 });
 
