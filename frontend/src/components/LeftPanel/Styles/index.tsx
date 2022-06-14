@@ -105,7 +105,7 @@ const Styles = () => {
           <span>Styles</span>
         </StyledAccordionSummary>
         <StyledAccordionDetails className={classes.details}>
-          <ControlSection title={sectionTitleEnum.STYLE_GENERATOR}>
+          <ControlSection title={sectionTitleEnum.STYLE_GENERATOR} expanded>
             <StyleGenerator />
           </ControlSection>
           {SECTION_CONTROLS.map((controlName) => {
@@ -113,7 +113,7 @@ const Styles = () => {
             const { Control } = controlInfo;
 
             return (
-              <ControlSection title={controlName} key={controlName}>
+              <ControlSection title={controlName} key={controlName} expanded>
                 <Control
                   {...getControlStyles(controlName, currentEditableStyles)}
                   canEdit={canEdit}
@@ -128,7 +128,7 @@ const Styles = () => {
               </ControlSection>
             );
           })}
-          <ControlSection title={sectionTitleEnum.COLOR_SCHEME}>
+          <ControlSection title={sectionTitleEnum.COLOR_SCHEME} expanded>
             <ColorScheme />
           </ControlSection>
         </StyledAccordionDetails>

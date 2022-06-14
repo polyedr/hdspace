@@ -32,7 +32,7 @@ const AssetsSection: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <StyledAccordion defaultExpanded square className={classes.accordion}>
+      <StyledAccordion square className={classes.accordion}>
         <StyledAccordionSummary expandIcon={<ExpandLessIcon />}>
           Project assets
         </StyledAccordionSummary>
