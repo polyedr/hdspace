@@ -2,6 +2,7 @@
 import uuid
 from urllib.parse import urlparse
 
+from django.contrib.auth.models import Group
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.pagination import CursorPagination
@@ -132,11 +133,12 @@ class SharedlinknewuserView(APIView):
         project = Project.objects.get(pk=projectid)
 
         username = '000' + str(uuid.uuid4())
-        email = username + 'example.com'
+        email = username + '@example.com'
         password = username
         user = User.objects.create_user(username, email=email, password=password)
-        user.groups.add("CommonUsers")
-        print(user)
+        groupcommonusers = Group.objects.get(name="CommonUsers")
+        user.groups.add(groupcommonusers)
+        # print(user)
         qstring = get_query_string(user)
 
         # Modulating the permissions
