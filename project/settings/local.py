@@ -321,7 +321,7 @@ AUTHENTICATION_BACKENDS = (
     "social_core.backends.google.GoogleOAuth2",
     # "social_core.backends.linkedin.LinkedinOAuth",
     # "social_core.backends.twitter.TwitterOAuth",
-    # "django.contrib.auth.backends.ModelBackend",
+    "django.contrib.auth.backends.ModelBackend",
     'lazysignup.backends.LazySignupBackend',
     "django.contrib.auth.backends.AllowAllUsersModelBackend",
     "sesame.backends.ModelBackend",
