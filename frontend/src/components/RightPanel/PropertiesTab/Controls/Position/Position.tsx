@@ -14,6 +14,9 @@ import {
 import ClearIcon from '@mui/icons-material/Clear';
 import { makeStyles } from '@material-ui/core/styles';
 import FloatIcons from '@Components/RightPanel/PropertiesTab/Controls/Position/components/FloatIcons';
+import ClearIcons, {
+  CLEAR_TYPE,
+} from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcons';
 
 const useStyles = makeStyles({
   align: {
@@ -21,6 +24,7 @@ const useStyles = makeStyles({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
+    marginTop: 14,
   },
   wrapper: {
     display: 'flex',
@@ -29,8 +33,9 @@ const useStyles = makeStyles({
   },
   styleText: {
     fontSize: '16px',
-    color: 'rgba(129, 129, 142, 1)',
+    color: '#2A2A2D',
     paddingBottom: '2px',
+    fontFamily: 'Roboto',
   },
   icon: { width: 24, height: 24 },
 });
@@ -38,19 +43,21 @@ const useStyles = makeStyles({
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   position: React.CSSProperties['position'];
   float: React.CSSProperties['float'];
+  clear: React.CSSProperties['clear'];
 };
 
 const Position: React.FC<Props> = ({
   float,
   position,
+  clear,
   canEdit,
   updateStyles,
 }) => {
   const classes = useStyles();
 
   const [positionState, setPositionState] = useState('');
-  const handleFloatChange = (value) => {
-    updateStyles({ float: value });
+  const handleValueChange = (prop, value) => {
+    updateStyles({ [prop]: value });
   };
 
   const handlePositionDropdownChange = useCallback(
@@ -88,7 +95,7 @@ const Position: React.FC<Props> = ({
           <div>
             <StyledToggleButtonGroup
               value={float || 'none'}
-              onChange={(e, value) => handleFloatChange(value)}
+              onChange={(e, value) => handleValueChange('float', value)}
               exclusive
               size="small"
             >
@@ -102,6 +109,38 @@ const Position: React.FC<Props> = ({
 
               <StyledToggleButton value="right" disabled={!canEdit}>
                 <FloatIcons isActive={float === 'right'} type="right" />
+              </StyledToggleButton>
+            </StyledToggleButtonGroup>
+          </div>
+        </div>
+      </div>
+      <div className={classes.align}>
+        <div className={classes.styleText}>Clear</div>
+        <div className={classes.wrapper}>
+          <div>
+            <StyledToggleButtonGroup
+              value={clear || 'none'}
+              onChange={(e, value) => handleValueChange('clear', value)}
+              exclusive
+              size="small"
+            >
+              <StyledToggleButton value="none" disabled={!canEdit}>
+                <ClearIcon fontSize="medium" />
+              </StyledToggleButton>
+
+              <StyledToggleButton value="left" disabled={!canEdit}>
+                <ClearIcons isActive={clear === CLEAR_TYPE.LEFT} type="left" />
+              </StyledToggleButton>
+
+              <StyledToggleButton value="both" disabled={!canEdit}>
+                <ClearIcons isActive={clear === CLEAR_TYPE.BOTH} type="both" />
+              </StyledToggleButton>
+
+              <StyledToggleButton value="right" disabled={!canEdit}>
+                <ClearIcons
+                  isActive={clear === CLEAR_TYPE.RIGHT}
+                  type="right"
+                />
               </StyledToggleButton>
             </StyledToggleButtonGroup>
           </div>

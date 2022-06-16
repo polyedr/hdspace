@@ -190,7 +190,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
   },
   position: {
     Control: Position,
-    styles: ['position', 'float'],
+    styles: ['position', 'float', 'clear'],
   },
 };
 

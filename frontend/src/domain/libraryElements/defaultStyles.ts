@@ -79,6 +79,7 @@ export const DEFAULT_BACKGROUND: React.CSSProperties = {
 export const DEFAULT_POSITION: React.CSSProperties = {
   position: 'static',
   float: 'none',
+  clear: 'none',
 };
 
 export const DEFAULT_BACKGROUND_IMAGE: React.CSSProperties = {
