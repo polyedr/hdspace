@@ -76,6 +76,11 @@ export const DEFAULT_BACKGROUND: React.CSSProperties = {
   backgroundColor: 'transparent',
 };
 
+export const DEFAULT_POSITION: React.CSSProperties = {
+  position: 'static',
+  float: 'none',
+};
+
 export const DEFAULT_BACKGROUND_IMAGE: React.CSSProperties = {
   backgroundImage: 'none',
   backgroundRepeat: 'no-repeat',
@@ -279,6 +284,9 @@ export const defaultTextBlockStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   other: {
     outline: 0,

@@ -1621,6 +1621,7 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'columns',
   'nativeColumns',
   'display',
+  'position',
   'indents',
   'size',
   'typography',

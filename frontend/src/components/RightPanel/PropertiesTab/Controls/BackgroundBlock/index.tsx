@@ -103,6 +103,7 @@ const usePositionSelectorStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(2),
+    borderRadius: 2,
   },
   button: {
     textIndent: '-1000px',
@@ -113,6 +114,7 @@ const usePositionSelectorStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       background: darken('#E4E6EB', 0.1),
     },
+    borderRadius: 2,
   },
   active: {
     background: '#5064FF',
@@ -174,7 +176,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const PositionButton = ({ onChange, defaultValue, disabled = false }) => {
+export const PositionButton = ({
+  onChange,
+  defaultValue,
+  disabled = false,
+}) => {
   const classes = usePositionSelectorStyles();
 
   const [activePosition, setActivePosition] = useState(defaultValue || '');
