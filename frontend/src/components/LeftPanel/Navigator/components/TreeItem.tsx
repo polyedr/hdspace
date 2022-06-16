@@ -1,4 +1,4 @@
-import React, { MouseEvent, useCallback } from 'react';
+import React, { memo, MouseEvent, useCallback } from 'react';
 import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';

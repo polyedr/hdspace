@@ -59,4 +59,4 @@ const Navigator: React.FC = () => {
   );
 };
 
-export default Navigator;
+export default React.memo(Navigator);

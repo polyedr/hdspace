@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
@@ -160,11 +160,11 @@ const PropertiesTab: React.FC = () => {
   const isGroupElement = !!activeElement.parameters.sourceElementId;
   const isGroupSource = !!activeElement.parameters.groupElements;
 
-  const elementsControlsCollection = Object.keys(selectedElements).map(
-    (elementId) => {
+  const elementsControlsCollection = useMemo(() => {
+    return Object.keys(selectedElements).map((elementId) => {
       return AVAILABLE_CONTROLS[selectedElements[elementId].type];
-    },
-  );
+    });
+  }, [selectedElements, AVAILABLE_CONTROLS]);
 
   const SELECTION_CONTROLS = useMemo(() => {
     if (!elementsControlsCollection.length) {
@@ -594,4 +594,4 @@ const PropertiesTab: React.FC = () => {
   );
 };
 
-export default PropertiesTab;
+export default memo(PropertiesTab);

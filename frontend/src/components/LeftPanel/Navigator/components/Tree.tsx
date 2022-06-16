@@ -4,6 +4,7 @@ import React, {
   MouseEvent,
   useMemo,
   useCallback,
+  memo,
 } from 'react';
 import AtlasTree, {
   mutateTree,
@@ -363,7 +364,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       />
     );
   };
-
+  
   return (
     <div
       className={classes.tree}
@@ -417,4 +418,4 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   );
 };
 
-export default Tree;
+export default memo(Tree);
