@@ -100,7 +100,7 @@ MIDDLEWARE = [
 # Altering the django-sesame token name
 SESAME_TOKEN_NAME = "adevi"
 # Sesame tokens to be usable only once
-SESAME_ONE_TIME = True
+SESAME_ONE_TIME = False
 
 # Allow CORS for all domains
 CORS_ORIGIN_ALLOW_ALL = True
