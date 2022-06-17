@@ -157,10 +157,13 @@ class SharedlinknewuserView(APIView):
             assign_perm(permission, user, project)
 
         rp = get_perms(user, project)  # A resulted permissions array
-        print(rp)
+        user_tokens = RefreshToken.for_user(user)
+        tokens = {'refresh': str(user_tokens), 'access': str(user_tokens.access_token)}
+        data = {'qstring': qstring, 'permissions': permissions}
+        data.update(tokens)
 
         if qstring:
-            return Response(qstring, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -211,10 +214,13 @@ class SharedlinkView(APIView):
             assign_perm(permission, user, project)
 
         rp = get_perms(user, project)  # A resulted permissions array
-        # print(rp)
+        user_tokens = RefreshToken.for_user(user)
+        tokens = {'refresh': str(user_tokens), 'access': str(user_tokens.access_token)}
+        data = {'qstring': qstring, 'permissions': permissions}
+        data.update(tokens)
 
         if qstring:
-            return Response(qstring, status=status.HTTP_200_OK)
+            return Response(data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -266,6 +272,16 @@ class SharedlinkprojectView(APIView):
 
         rp = get_perms(user, project)  # A resulted permissions array
 
+        user_tokens = RefreshToken.for_user(user)
+        tokens = {'refresh': str(user_tokens), 'access': str(user_tokens.access_token)}
+        data = {'qstring': qstring, 'permissions': permissions}
+        data.update(tokens)
+
+        if qstring:
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         '''
         # Display tokens for a projectviewer
         # It is not necessary, because django-sesame links are authenticated links
@@ -281,8 +297,3 @@ class SharedlinkprojectView(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         '''
-
-        if qstring:
-            return Response(qstring, status=status.HTTP_200_OK)
-        else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
