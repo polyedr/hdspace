@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, MouseEvent } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,14 +7,20 @@ import { useHistory } from 'react-router';
 import {
   editScreenNameAndData,
   setActiveElement,
+  deleteScreen,
 } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { ListItem, ListItemIcon } from '@material-ui/core';
+
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import { Screen } from '../../../types';
-import ScreenControls from './ScreenControls';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';
 import ScreenLongName from './ScreenLongName';
+import ContextMenu from './ContextMenu';
 
 const useStyles = makeStyles(({ typography }) => ({
   listItem: {
@@ -62,15 +68,25 @@ type Props = {
   index: number;
   active: boolean;
 };
+type State = {
+  mouseX: number | null;
+  mouseY: number | null;
+};
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();
   const { name, project, id, image, screenData, element } = screen;
+  const initialState: State = {
+    mouseX: null,
+    mouseY: null,
+  };
+  const [state, setState] = useState<State>(initialState);
   const classes = useStyles();
   const history = useHistory();
   const currentProjectId = useSelector(selectCurrentProjectId);
   const [show, setShow] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const handleMouseLeave = useCallback(() => setShow(false), []);
   const handleMouseOver = useCallback(() => !show && setShow(true), [show]);
@@ -98,6 +114,23 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
     history.push(`/project/${currentProjectId}/${screen.id}`);
   };
 
+  const handleMenuOpen = (ev: MouseEvent<HTMLDivElement>) => {
+    ev.preventDefault();
+    setState({
+      mouseX: ev.clientX - 2,
+      mouseY: ev.clientY - 4,
+    });
+  };
+  const handleDeleteClose = () => {
+    dispatch(deleteScreen(project, id));
+    setDeleteModal(false);
+  };
+  const handleDeleteOpen = () => {
+    setDeleteModal(true);
+  };
+
+  const handleClose = () => setState(initialState);
+
   return (
     <Draggable draggableId={screen.id.toString()} index={index}>
       {(provided) => (
@@ -111,6 +144,7 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
             onClick={handleClick}
             onMouseLeave={handleMouseLeave}
             onMouseOver={handleMouseOver}
+            onContextMenu={handleMenuOpen}
             className={cn(classes.listItem, active && classes.active)}
           >
             <div className={classes.screenData}>
@@ -130,12 +164,18 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
                 <span className={classes.name}>{name}</span>
               )}
             </div>
-            {/* it's a bad practice to place interactive elements into anchor, but the app design is going to change soon */}
-            <ScreenControls
-              show={show}
+            <ContextMenu
+              open={state?.mouseY !== null}
               screen={screen}
+              anchorPosition={
+                state.mouseY !== null && state.mouseX !== null
+                  ? { top: state.mouseY, left: state.mouseX }
+                  : undefined
+              }
+              onClose={handleClose}
               openEdit={openEdit}
               closeEdit={closeEdit}
+              openDelete={handleDeleteOpen}
             />
           </ListItem>
           <ScreenEditDialog
@@ -148,6 +188,74 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
             currentScreenId={id}
             project={project}
           />
+          <Modal open={deleteModal}>
+            <Box
+              sx={{
+                position: 'absolute' as 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: 420,
+                bgcolor: 'background.paper',
+                borderRadius: '6px',
+                boxShadow: 24,
+                p: 4,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: '18px',
+                  fontWeight: '600',
+                  fontFamily: 'Roboto',
+                  color: '#2A2A2D',
+                }}
+              >
+                Delete Screen
+              </Typography>
+              <Typography
+                sx={{
+                  marginTop: '12px',
+                  fontSize: '14px',
+                  fontFamily: 'Roboto',
+                  color: '#2A2A2D',
+                }}
+              >
+                Are you sure you want to delete the {screen.name} screen?
+              </Typography>
+              <Box
+                sx={{
+                  marginTop: '20px',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
+                gap={2}
+              >
+                <Button
+                  sx={{
+                    color: '#81818E',
+                    fontWeight: '500',
+                    textTransform: 'capitalize',
+                  }}
+                  onClick={() => {
+                    setDeleteModal(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: '#5064FF',
+                    fontWeight: '500',
+                    textTransform: 'capitalize',
+                  }}
+                  onClick={handleDeleteClose}
+                >
+                  Delete
+                </Button>
+              </Box>
+            </Box>
+          </Modal>
         </div>
       )}
     </Draggable>

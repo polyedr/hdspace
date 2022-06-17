@@ -18,17 +18,18 @@ import Icon from '../../../UI/Icon';
 const StyledMenu = withStyles({
   paper: {
     padding: 1,
-    borderRadius: 0,
+    borderRadius: 4,
     backgroundColor: '#ffffff',
-    color: '#000000',
+    color: '#81818E',
   },
   list: {
     padding: 0,
     '& li': {
-      padding: '2px 5px',
+      padding: '8px 16px 8px 16px',
       fontSize: '.9em',
       '&:hover': {
-        backgroundColor: '#52616e',
+        backgroundColor: '#B0B0BD',
+        color: '#2A2A2D',
       },
       '& svg': {
         marginRight: 5,
