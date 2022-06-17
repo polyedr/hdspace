@@ -8,8 +8,10 @@ import {
 } from '@Components/styledComponents';
 import { MenuItem } from '@material-ui/core';
 import {
-  positionsLIst,
+  positionsList,
   POSITIONS,
+  particularPosition,
+  particularPositionStyles,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
 import ClearIcon from '@mui/icons-material/Clear';
 import { makeStyles } from '@material-ui/core/styles';
@@ -56,6 +58,9 @@ const Position: React.FC<Props> = ({
   const classes = useStyles();
 
   const [positionState, setPositionState] = useState('');
+  const [particularPositionState, setParticularPositionState] = useState(
+    'none',
+  );
   const handleValueChange = (prop, value) => {
     updateStyles({ [prop]: value });
   };
@@ -66,6 +71,12 @@ const Position: React.FC<Props> = ({
     },
     [updateStyles],
   );
+
+  const handleParticularPositionChange = (value) => {
+    setParticularPositionState(value);
+    updateStyles(particularPositionStyles[value]);
+  };
+
   return (
     <div style={{ padding: '0 16px' }}>
       <StyledTextField
@@ -76,18 +87,38 @@ const Position: React.FC<Props> = ({
         select
         disabled={!canEdit}
       >
-        {positionsLIst.map(({ value, label }) => (
+        {positionsList.map(({ value, label }) => (
           <MenuItem key={value} value={value} dense>
             {label}
           </MenuItem>
         ))}
       </StyledTextField>
       {(position === POSITIONS.FIXED || position === POSITIONS.ABSOLUTE) && (
-        <PositionButton
-          defaultValue={positionState}
-          onChange={setPositionState}
-          disabled={!canEdit}
-        />
+        <div style={{ display: 'flex' }}>
+          <div style={{ width: 100, height: 100, marginRight: 16 }}>
+            <PositionButton
+              defaultValue={positionState}
+              onChange={setPositionState}
+              disabled={!canEdit}
+            />
+          </div>
+          <StyledTextField
+            fullWidth
+            margin="dense"
+            value={particularPositionState}
+            onChange={(event) =>
+              handleParticularPositionChange(event.target.value)
+            }
+            select
+            disabled={!canEdit}
+          >
+            {particularPosition.map(({ value, label }) => (
+              <MenuItem key={value} value={value} dense>
+                {label}
+              </MenuItem>
+            ))}
+          </StyledTextField>
+        </div>
       )}
       <div className={classes.align}>
         <div className={classes.styleText}>Float</div>
