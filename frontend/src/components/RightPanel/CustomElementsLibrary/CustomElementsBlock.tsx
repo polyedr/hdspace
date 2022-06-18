@@ -1,4 +1,4 @@
-import React, { useRef, MutableRefObject } from 'react';
+import React, { useRef, MutableRefObject, memo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { ElementData } from '@Src/types';
 import { useStyles as useElementBlockStyles } from '../ElementsTab/ElementsBlock';
@@ -51,4 +51,4 @@ const CustomElementsBlock: React.FC<Props> = ({ name, elements }) => {
   );
 };
 
-export default CustomElementsBlock;
+export default memo(CustomElementsBlock);

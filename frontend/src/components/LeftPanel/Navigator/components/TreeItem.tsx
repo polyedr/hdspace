@@ -194,4 +194,4 @@ const TreeItem: React.FC<Props> = (props) => {
   );
 };
 
-export default TreeItem;
+export default memo(TreeItem);

@@ -364,7 +364,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       />
     );
   };
-  
+
   return (
     <div
       className={classes.tree}
