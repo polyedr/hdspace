@@ -15,28 +15,30 @@ export enum POSITIONS {
 }
 
 export const particularPosition = [
-  { label: 'None', value: 'none' },
-  { label: 'Top Left', value: 'topLeft' },
-  { label: 'Top Center', value: 'topCenter' },
-  { label: 'Top Right', value: 'topRight' },
-  { label: 'Center Left', value: 'centerLeft' },
-  { label: 'Center Center', value: 'centerCenter' },
-  { label: 'Center Right', value: 'centerRight' },
-  { label: 'Bottom Left', value: 'bottomLeft' },
-  { label: 'Bottom Center', value: 'bottomCenter' },
-  { label: 'Bottom Right', value: 'bottomRight' },
+  { label: 'none', value: 'unset' },
+  { label: 'top left', value: '0% 100% 0% 0%' },
+  { label: 'top center', value: '0% 50% 0% 50%' },
+  { label: 'top right', value: '0% 0% 0% 100%' },
+  { label: 'center left', value: '50% 100% 50% 0%' },
+  { label: 'center center', value: '50% 50% 50% 50%' },
+  { label: 'center right', value: '50% 0% 50% 100%' },
+  { label: 'bottom left', value: '100% 100% 0% 0%' },
+  { label: 'bottom center', value: '100% 50% 0% 50%' },
+  { label: 'bottom right', value: '100% 0% 0% 100%' },
 ];
 
 export const particularPositionStyles = {
-  topLeft: { left: '0%', top: '0%' },
-  topCenter: { left: '50%', top: '0%' },
-  topRight: { right: '0%', top: '0%' },
-  centerLeft: { left: '0%', top: '50%' },
-  centerCenter: { left: '50%', top: '50%' },
-  centerRight: { right: '0%', top: '50%' },
-  bottomLeft: { left: '0%', bottom: '0%' },
-  bottomCenter: { left: '50%', bottom: '0%' },
-  bottomRight: { right: '0%', bottom: '0%' },
+  // inset: 'top right bottom left'
+  unset: { inset: 'unset' },
+  topLeft: { inset: '0% 100% 0% 0%' },
+  topCenter: { inset: '0% 50% 0% 50%' },
+  topRight: { inset: '0% 0% 0% 100%' },
+  centerLeft: { inset: '50% 100% 50% 0%' },
+  centerCenter: { inset: '50% 50% 50% 50%' },
+  centerRight: { inset: '50% 0% 50% 100%' },
+  bottomLeft: { inset: '100% 100% 0% 0%' },
+  bottomCenter: { inset: '100% 50% 0% 50%' },
+  bottomRight: { inset: '100% 0% 0% 100%' },
 };
 
 export enum PARTICULAR_POSITION {

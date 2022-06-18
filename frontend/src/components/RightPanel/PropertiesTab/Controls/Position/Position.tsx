@@ -11,7 +11,6 @@ import {
   positionsList,
   POSITIONS,
   particularPosition,
-  particularPositionStyles,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
 import ClearIcon from '@mui/icons-material/Clear';
 import { makeStyles } from '@material-ui/core/styles';
@@ -46,20 +45,21 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   position: React.CSSProperties['position'];
   float: React.CSSProperties['float'];
   clear: React.CSSProperties['clear'];
+  inset: React.CSSProperties['inset'];
 };
 
 const Position: React.FC<Props> = ({
   float,
   position,
   clear,
+  inset,
   canEdit,
   updateStyles,
 }) => {
   const classes = useStyles();
 
-  const [positionState, setPositionState] = useState('');
   const [particularPositionState, setParticularPositionState] = useState(
-    'none',
+    inset || 'unset',
   );
   const handleValueChange = (prop, value) => {
     updateStyles({ [prop]: value });
@@ -74,7 +74,30 @@ const Position: React.FC<Props> = ({
 
   const handleParticularPositionChange = (value) => {
     setParticularPositionState(value);
-    updateStyles(particularPositionStyles[value]);
+    updateStyles({ inset: value });
+  };
+
+  const convert = (value, isToPositionButton: boolean = true) => {
+    const insetValue = { inset: '' };
+    if (isToPositionButton) {
+      particularPosition.forEach((item) => {
+        if (item.label === value) {
+          insetValue.inset = item.value;
+        }
+      });
+    } else {
+      particularPosition.forEach((item) => {
+        if (item.value === value) {
+          insetValue.inset = item.label;
+        }
+      });
+    }
+
+    return insetValue.inset;
+  };
+
+  const handlePositionButtonChange = (value) => {
+    handleParticularPositionChange(convert(value));
   };
 
   return (
@@ -97,8 +120,8 @@ const Position: React.FC<Props> = ({
         <div style={{ display: 'flex' }}>
           <div style={{ width: 100, height: 100, marginRight: 16 }}>
             <PositionButton
-              defaultValue={positionState}
-              onChange={setPositionState}
+              defaultValue={convert(particularPositionState, false)}
+              onChange={handlePositionButtonChange}
               disabled={!canEdit}
             />
           </div>
@@ -111,9 +134,15 @@ const Position: React.FC<Props> = ({
             }
             select
             disabled={!canEdit}
+            style={{ textTransform: 'capitalize' }}
           >
             {particularPosition.map(({ value, label }) => (
-              <MenuItem key={value} value={value} dense>
+              <MenuItem
+                style={{ textTransform: 'capitalize' }}
+                key={value}
+                value={value}
+                dense
+              >
                 {label}
               </MenuItem>
             ))}
