@@ -5,7 +5,10 @@ import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
 } from '@Src/styles/Theme';
-
+import {
+  selectActiveElement,
+  selectCurrentRootId,
+} from '@Redux/project/selectors/element';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 
@@ -31,12 +34,13 @@ const useStyles = makeStyles<Theme>(({ palette }) => ({
 
 const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
+  const activeElement = useSelector(selectActiveElement);
   const classes = useStyles({ open: !isPrototypeMode });
-
+  const rootId = useSelector(selectCurrentRootId);
   return (
     <div className={classes.root} id={ELEMENT_IDS.rightPanel}>
       <PropertiesTab />
-      <ElementsTab />
+      {rootId === activeElement.id ? <ElementsTab /> : null}
     </div>
   );
 };
