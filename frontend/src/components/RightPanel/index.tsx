@@ -38,7 +38,6 @@ import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 import VariablesTab from './VariablesTab';
-import AssetsSection from './Assets';
 
 const useStyles = makeStyles<Theme>(({ palette }) => ({
   root: {
@@ -255,7 +254,6 @@ const RightPanel: React.FC = () => {
                 </TabPanel>
               );
             })}
-            <AssetsSection />
           </>
         )}
         <IconButton

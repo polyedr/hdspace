@@ -104,6 +104,7 @@ const AssetLists: React.FC<Props> = ({ isDefaultStyles = false }) => {
           onChange={(event) => setNewAssetName(event.target.value)}
           focused
           InputProps={{
+            disableUnderline: true,
             className: isDefaultStyles
               ? classes.leftSideColor
               : classes.rightSideColor,
