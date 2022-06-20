@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { PositionButton } from '@Components/RightPanel/PropertiesTab/Controls/BackgroundBlock';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import {
   StyledTextField,
@@ -18,6 +17,7 @@ import FloatIcons from '@Components/RightPanel/PropertiesTab/Controls/Position/c
 import ClearIcons, {
   CLEAR_TYPE,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcons';
+import ParticularPosition from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ParticularPosition';
 
 const useStyles = makeStyles({
   align: {
@@ -117,37 +117,13 @@ const Position: React.FC<Props> = ({
         ))}
       </StyledTextField>
       {(position === POSITIONS.FIXED || position === POSITIONS.ABSOLUTE) && (
-        <div style={{ display: 'flex' }}>
-          <div style={{ width: 100, height: 100, marginRight: 16 }}>
-            <PositionButton
-              defaultValue={convert(particularPositionState, false)}
-              onChange={handlePositionButtonChange}
-              disabled={!canEdit}
-            />
-          </div>
-          <StyledTextField
-            fullWidth
-            margin="dense"
-            value={particularPositionState}
-            onChange={(event) =>
-              handleParticularPositionChange(event.target.value)
-            }
-            select
-            disabled={!canEdit}
-            style={{ textTransform: 'capitalize' }}
-          >
-            {particularPosition.map(({ value, label }) => (
-              <MenuItem
-                style={{ textTransform: 'capitalize' }}
-                key={value}
-                value={value}
-                dense
-              >
-                {label}
-              </MenuItem>
-            ))}
-          </StyledTextField>
-        </div>
+        <ParticularPosition
+          handleParticularPositionChange={handleParticularPositionChange}
+          particularPositionState={particularPositionState}
+          canEdit={canEdit}
+          handlePositionButtonChange={handlePositionButtonChange}
+          convert={convert}
+        />
       )}
       <div className={classes.align}>
         <div className={classes.styleText}>Float</div>
