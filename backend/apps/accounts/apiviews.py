@@ -3,6 +3,7 @@ import uuid
 from urllib.parse import urlparse
 
 import shortuuid
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -140,8 +141,9 @@ class SharedlinknewuserView(APIView):
         groupcommonusers = Group.objects.get(name="CommonUsers")
         user.groups.add(groupcommonusers)
         user.is_active = True
-        # print(user)
+
         qstring = get_query_string(user)
+
 
         # Modulating the permissions
         pmap = request.data['pmap']
@@ -163,6 +165,9 @@ class SharedlinknewuserView(APIView):
         tokens = {'refresh': str(user_tokens), 'access': str(user_tokens.access_token)}
         data = {'qstring': qstring, 'permissions': permissions}
         data.update(tokens)
+        # Pre-authentication of the user. Should be changed later
+        # print(user)
+        authenticate(adevi=qstring[1:])
 
         if qstring:
             return Response(data, status=status.HTTP_200_OK)
