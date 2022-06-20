@@ -2,6 +2,7 @@
 import uuid
 from urllib.parse import urlparse
 
+import shortuuid
 from django.contrib.auth.models import Group
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
@@ -132,7 +133,7 @@ class SharedlinknewuserView(APIView):
 
         project = Project.objects.get(pk=projectid)
 
-        username = '000' + str(uuid.uuid4())[:16]
+        username = '000' + str(shortuuid.uuid())
         email = username + '@example.com'
         password = username
         user = User.objects.create_user(username, email=email, password=password)
