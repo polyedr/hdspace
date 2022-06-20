@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
 import { Menu, MenuItem } from '@material-ui/core';
-import { Screen } from '../../../types';
+import { Screen } from '@Src/types';
 import Icon from '../../UI/Icon';
 
 const StyledMenu = withStyles({

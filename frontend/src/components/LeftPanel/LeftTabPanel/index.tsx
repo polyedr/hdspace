@@ -4,7 +4,7 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { useSelector } from 'react-redux';
-import AssetsSection from '../Assets/index';
+import AssetsSection from '@Src/components/LeftPanel/Assets/index';
 import Navigator from '../Navigator';
 import VIANavigator from '../VIANavigator';
 

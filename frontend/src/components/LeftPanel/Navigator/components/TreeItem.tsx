@@ -79,7 +79,6 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   icon: {
     fontSize: '1.2em',
-    // marginRight: '0.3em',
   },
   text: {
     padding: '5px',
