@@ -90,8 +90,8 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "sesame.middleware.AuthenticationMiddleware",  # django-sesame
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
@@ -316,6 +316,7 @@ SOCIAL_AUTH_LINKEDIN_SECRET = ENV.str("SOCIAL_AUTH_LINKEDIN_SECRET", "VNgjUOt0cg
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 AUTHENTICATION_BACKENDS = (
+    "sesame.backends.ModelBackend",
     "guardian.backends.ObjectPermissionBackend",  # django-guardian
     "social_core.backends.facebook.FacebookOAuth2",
     "social_core.backends.google.GoogleOAuth2",
@@ -324,7 +325,7 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     'lazysignup.backends.LazySignupBackend',
     "django.contrib.auth.backends.AllowAllUsersModelBackend",
-    "sesame.backends.ModelBackend",
+
 )
 
 
