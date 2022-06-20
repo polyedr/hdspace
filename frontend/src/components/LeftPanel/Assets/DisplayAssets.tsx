@@ -1,5 +1,7 @@
 import React, { useCallback, useRef, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -25,6 +27,7 @@ const useStyles = makeStyles({
   root: {
     position: 'relative',
     height: 200,
+    width: '100%',
   },
   progressWrapper: {
     width: '300px',
@@ -130,6 +133,7 @@ const DisplayAssets = () => {
         component="button"
         style={{
           marginBottom: '8px',
+          color: '#81818e',
         }}
         startIcon={<AddIcon />}
         disabled={!currentAssetListId || !canEditProject}
@@ -145,24 +149,26 @@ const DisplayAssets = () => {
 
       <Scrollbar autoHeightMax={150} style={{ height: '100%' }}>
         <ImageList className={classes.gridList} rowHeight={80} cols={3} gap={5}>
-          {assets.map((asset: Asset, index: number) => {
-            return (
-              <ImageListItem key={`asset-${asset.id}`}>
-                <AssetImage
-                  asset={asset}
-                  ref={
-                    index === assets.length - 1
-                      ? (image: HTMLImageElement) => {
-                          if (image) {
-                            setLastImage(image);
+          <DndProvider backend={HTML5Backend}>
+            {assets.map((asset: Asset, index: number) => {
+              return (
+                <ImageListItem key={`asset-${asset.id}`}>
+                  <AssetImage
+                    asset={asset}
+                    ref={
+                      index === assets.length - 1
+                        ? (image: HTMLImageElement) => {
+                            if (image) {
+                              setLastImage(image);
+                            }
                           }
-                        }
-                      : undefined
-                  }
-                />
-              </ImageListItem>
-            );
-          })}
+                        : undefined
+                    }
+                  />
+                </ImageListItem>
+              );
+            })}
+          </DndProvider>
         </ImageList>
       </Scrollbar>
     </div>

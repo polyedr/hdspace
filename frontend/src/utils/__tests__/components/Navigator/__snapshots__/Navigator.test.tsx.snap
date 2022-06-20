@@ -3,32 +3,122 @@
 exports[`Navigator should render a Navigator component 1`] = `
 <div>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAccordion-root Mui-expanded css-edq8ae-MuiPaper-root-MuiAccordion-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAccordion-root Mui-expanded css-1mfhkj-MuiPaper-root-MuiAccordion-root"
   >
     <div
-      aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jLLiTK css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
-      role="button"
-      tabindex="0"
+      class="MuiAccordionDetails-root css-a45536-MuiAccordionDetails-root"
     >
       <div
-        class="MuiAccordionSummary-content Mui-expanded css-1betqn-MuiAccordionSummary-content"
+        class="makeStyles-tree-1"
+        id="navigator-id"
       >
-        Navigator
-      </div>
-      <div
-        class="MuiAccordionSummary-expandIconWrapper Mui-expanded css-yw020d-MuiAccordionSummary-expandIconWrapper"
-      >
-        <svg
-          aria-hidden="true"
-          class="MuiSvgIcon-root"
-          focusable="false"
-          viewBox="0 0 24 24"
+        <div
+          style="position: relative; overflow: hidden; width: 100%; height: 385px; min-height: 385px; max-height: 385px;"
         >
-          <path
-            d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"
-          />
-        </svg>
+          <div
+            class="box removeNativeScrollbars"
+            style="position: relative; overflow: scroll; margin-right: 0px; margin-bottom: 0px; min-height: 100%; max-height: 385px; display: block; height: 100%;"
+          >
+            <div
+<<<<<<< HEAD
+              class="MuiAccordionDetails-root css-h4f17h-MuiAccordionDetails-root"
+=======
+              style="width: 100%; height: 100%;"
+>>>>>>> 81844959587d21b4fa2614c352d736b46211599d
+            >
+              <div
+                data-react-beautiful-dnd-droppable="0"
+                style="pointer-events: auto;"
+              >
+                <div
+                  aria-expanded="true"
+                  aria-selected="false"
+                  class="makeStyles-treeItem-2 makeStyles-treeItem-6"
+                  data-react-beautiful-dnd-draggable="0"
+                  id="treeitem-1"
+                  role="group"
+                  style="padding-left: 0px;"
+                >
+                  <span>
+                    <button
+                      class="makeStyles-iconButton-7"
+                      tabindex="-1"
+                      type="button"
+                    >
+                      <svg
+                        fill="none"
+                        id="icon-chevron-down"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <polyline
+                          points="6 9 12 15 18 9"
+                        />
+                      </svg>
+                    </button>
+                  </span>
+                  <span
+                    class="makeStyles-text-5"
+                  >
+                    Root
+                  </span>
+                </div>
+                <div
+                  aria-selected="false"
+                  class="makeStyles-treeItem-2 makeStyles-treeItem-8"
+                  data-react-beautiful-dnd-draggable="0"
+                  id="treeitem-2"
+                  role="treeitem"
+                  style="padding-left: 15px;"
+                >
+                  <span>
+                    <span
+                      class="makeStyles-iconButton-7"
+                    />
+                  </span>
+                  <svg
+                    aria-hidden="true"
+                    class="MuiSvgIcon-root makeStyles-icon-4"
+                    focusable="false"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M3 18h12v-2H3v2zM3 6v2h18V6H3zm0 7h18v-2H3v2z"
+                    />
+                  </svg>
+                  <span
+                    class="makeStyles-text-5"
+                  >
+                    paragraph
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="track-horizontal"
+            hidden=""
+            style="position: absolute; height: 6px; display: none; bottom: 0px; left: 0px; width: 100%; opacity: 0.3; transition: opacity 0.5s ease;"
+          >
+            <div
+              class="thumb-vertical"
+              style="position: relative; display: block; height: 100%; background-color: rgb(28, 192, 159); border-radius: 4px; z-index: 5;"
+            />
+          </div>
+          <div
+            class="track-vertical"
+            hidden=""
+            style="position: absolute; width: 6px; display: none; z-index: 10; top: 0px; right: 0px; height: 100%; opacity: 0.3; transition: opacity 0.5s ease;"
+          >
+            <div
+              class="thumb-vertical"
+              style="position: relative; display: block; width: 100%; background-color: rgb(28, 192, 159); border-radius: 4px; z-index: 5;"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -44,116 +134,7 @@ exports[`Navigator should render a Navigator component 1`] = `
           <div
             class="MuiAccordion-region"
             role="region"
-          >
-            <div
-              class="MuiAccordionDetails-root css-h4f17h-MuiAccordionDetails-root"
-            >
-              <div
-                class="makeStyles-tree-1"
-                id="navigator-id"
-              >
-                <div
-                  style="position: relative; overflow: hidden; width: 100%; height: 300px; min-height: 300px; max-height: 300px;"
-                >
-                  <div
-                    class="box removeNativeScrollbars"
-                    style="position: relative; overflow: scroll; margin-right: 0px; margin-bottom: 0px; min-height: 100%; max-height: 200px; display: block; height: 100%;"
-                  >
-                    <div
-                      style="width: 500px;"
-                    >
-                      <div
-                        data-react-beautiful-dnd-droppable="0"
-                        style="pointer-events: auto;"
-                      >
-                        <div
-                          aria-expanded="true"
-                          aria-selected="false"
-                          class="makeStyles-treeItem-2 makeStyles-treeItem-5"
-                          data-react-beautiful-dnd-draggable="0"
-                          id="treeitem-1"
-                          role="group"
-                          style="padding-left: 0px;"
-                        >
-                          <span>
-                            <button
-                              class="makeStyles-iconButton-6"
-                              tabindex="-1"
-                              type="button"
-                            >
-                              <svg
-                                fill="none"
-                                id="icon-chevron-down"
-                                stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                viewBox="0 0 24 24"
-                              >
-                                <polyline
-                                  points="6 9 12 15 18 9"
-                                />
-                              </svg>
-                            </button>
-                          </span>
-                          <span>
-                            Root
-                          </span>
-                        </div>
-                        <div
-                          aria-selected="false"
-                          class="makeStyles-treeItem-2 makeStyles-treeItem-7"
-                          data-react-beautiful-dnd-draggable="0"
-                          id="treeitem-2"
-                          role="treeitem"
-                          style="padding-left: 15px;"
-                        >
-                          <span>
-                            <span
-                              class="makeStyles-iconButton-6"
-                            />
-                          </span>
-                          <svg
-                            aria-hidden="true"
-                            class="MuiSvgIcon-root makeStyles-icon-4"
-                            focusable="false"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              d="M3 18h12v-2H3v2zM3 6v2h18V6H3zm0 7h18v-2H3v2z"
-                            />
-                          </svg>
-                          <span>
-                            paragraph
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="track-horizontal"
-                    hidden=""
-                    style="position: absolute; height: 6px; display: none; bottom: 0px; left: 0px; width: 100%; opacity: 0.3; transition: opacity 0.5s ease;"
-                  >
-                    <div
-                      class="thumb-vertical"
-                      style="position: relative; display: block; height: 100%; background-color: rgb(28, 192, 159); border-radius: 4px; z-index: 5;"
-                    />
-                  </div>
-                  <div
-                    class="track-vertical"
-                    hidden=""
-                    style="position: absolute; width: 6px; display: none; z-index: 10; top: 0px; right: 0px; height: 100%; opacity: 0.3; transition: opacity 0.5s ease;"
-                  >
-                    <div
-                      class="thumb-vertical"
-                      style="position: relative; display: block; width: 100%; background-color: rgb(28, 192, 159); border-radius: 4px; z-index: 5;"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          />
         </div>
       </div>
     </div>

@@ -90,6 +90,7 @@ const renderView = ({ style, ...props }: any) => {
     display: 'block',
     height: '100%',
     minHeight: '100%',
+    maxHeight: '385px',
     marginRight: '0', // prevent react-custom-scrollbars to overwrite margins (we dont need it since we're not displaying native ones)
     marginBottom: '0',
   };

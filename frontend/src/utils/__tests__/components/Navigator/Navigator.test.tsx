@@ -28,10 +28,6 @@ describe('Navigator', () => {
     expect(ui.container).toMatchSnapshot();
   });
 
-  it('should have a header', () => {
-    expect(ui.getByText('Navigator')).toBeInTheDocument();
-  });
-
   it('open context menu on tree item right click', async () => {
     const treeItem = ui.getByRole('treeitem');
     fireEvent.contextMenu(treeItem);

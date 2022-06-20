@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { mutateTree, TreeData } from '@atlaskit/tree';
 import { useSelector } from 'react-redux';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import {
   selectCurrentRootId,
@@ -15,7 +14,6 @@ import { makeTree, updateTree, convertElements } from './utils';
 import {
   StyledAccordion,
   StyledAccordionDetails,
-  StyledAccordionSummary,
 } from '../../styledComponents';
 
 const Navigator: React.FC = () => {
@@ -42,18 +40,18 @@ const Navigator: React.FC = () => {
       setTree((prevTree) => {
         return mutateTree(prevTree, parentId, { isExpanded: true });
       });
-
       expandParents(parentId);
     },
     [tree],
   );
-
+  const styles = {
+    '& .MuiAccordionDetails-root': {
+      boxShadow: 'none',
+      backgroundColor: '#ffffff',
+    },
+  };
   return (
-    <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-        Navigator
-      </StyledAccordionSummary>
-
+    <StyledAccordion defaultExpanded sx={styles}>
       <StyledAccordionDetails>
         <Tree tree={tree} setTree={setTree} elements={elements} />
       </StyledAccordionDetails>
