@@ -132,12 +132,13 @@ class SharedlinknewuserView(APIView):
 
         project = Project.objects.get(pk=projectid)
 
-        username = '000' + str(uuid.uuid4())
+        username = '000' + str(uuid.uuid4())[:16]
         email = username + '@example.com'
         password = username
         user = User.objects.create_user(username, email=email, password=password)
         groupcommonusers = Group.objects.get(name="CommonUsers")
         user.groups.add(groupcommonusers)
+        user.is_active = True
         # print(user)
         qstring = get_query_string(user)
 
