@@ -2,7 +2,7 @@ import React from 'react';
 import { PositionButton } from '@Components/RightPanel/PropertiesTab/Controls/BackgroundBlock';
 import { StyledTextField } from '@Components/styledComponents';
 import { particularPosition } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 
 type Props = {
   convert: (value, isToPositionButton) => string;

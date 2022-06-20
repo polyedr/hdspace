@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import {
   StyledTextField,
@@ -10,6 +10,7 @@ import {
   positionsList,
   POSITIONS,
   particularPosition,
+  initialInsetStyles,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
 import ClearIcon from '@mui/icons-material/Clear';
 import { makeStyles } from '@material-ui/core/styles';
@@ -18,6 +19,12 @@ import ClearIcons, {
   CLEAR_TYPE,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcons';
 import ParticularPosition from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ParticularPosition';
+import InsetChange from '@Components/RightPanel/PropertiesTab/Controls/Position/components/InsetChange';
+
+type ParsedInset = {
+  value: number | null;
+  name: string;
+};
 
 const useStyles = makeStyles({
   align: {
@@ -39,6 +46,11 @@ const useStyles = makeStyles({
     fontFamily: 'Roboto',
   },
   icon: { width: 24, height: 24 },
+  insetChange: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: 12,
+  },
 });
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
@@ -46,6 +58,10 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   float: React.CSSProperties['float'];
   clear: React.CSSProperties['clear'];
   inset: React.CSSProperties['inset'];
+  top: React.CSSProperties['top'];
+  right: React.CSSProperties['right'];
+  left: React.CSSProperties['left'];
+  bottom: React.CSSProperties['bottom'];
 };
 
 const Position: React.FC<Props> = ({
@@ -55,15 +71,58 @@ const Position: React.FC<Props> = ({
   inset,
   canEdit,
   updateStyles,
+  left,
+  top,
+  right,
+  bottom,
 }) => {
   const classes = useStyles();
 
   const [particularPositionState, setParticularPositionState] = useState(
     inset || 'unset',
   );
+
+  const [parsedInset, setParsedInset] = useState<ParsedInset[]>(
+    initialInsetStyles,
+  );
+
   const handleValueChange = (prop, value) => {
     updateStyles({ [prop]: value });
   };
+
+  useEffect(() => {
+    if (
+      typeof top === 'string' &&
+      typeof right === 'string' &&
+      typeof left === 'string' &&
+      typeof bottom === 'string'
+    )
+      setParsedInset([
+        { name: 'top', value: parseInt(top) },
+        { name: 'right', value: parseInt(right) },
+        { name: 'bottom', value: parseInt(bottom) },
+        { name: 'left', value: parseInt(left) },
+      ]);
+  }, [right, top, left, bottom]);
+
+  useEffect(() => {
+    if (
+      typeof particularPositionState === 'string' &&
+      particularPositionState !== 'unset'
+    ) {
+      const splitResult = particularPositionState.split(' ');
+      splitResult.forEach((item, index) =>
+        handleValueChange(initialInsetStyles[index].name, item),
+      );
+      const result = splitResult.map((item) => parseInt(item));
+      setParsedInset([
+        { name: 'top', value: result[0] },
+        { name: 'right', value: result[1] },
+        { name: 'bottom', value: result[2] },
+        { name: 'left', value: result[3] },
+      ]);
+    }
+  }, [inset]);
 
   const handlePositionDropdownChange = useCallback(
     (event) => {
@@ -125,6 +184,20 @@ const Position: React.FC<Props> = ({
           convert={convert}
         />
       )}
+      <div className={classes.insetChange}>
+        {parsedInset?.map((item) => (
+          <InsetChange
+            key={item.name}
+            style={{
+              width: 45,
+            }}
+            name={item.name}
+            value={item.value}
+            handleValueChange={handleValueChange}
+            canEdit={canEdit}
+          />
+        ))}
+      </div>
       <div className={classes.align}>
         <div className={classes.styleText}>Float</div>
         <div className={classes.wrapper}>

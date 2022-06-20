@@ -27,6 +27,13 @@ export const particularPosition = [
   { label: 'bottom right', value: '100% 0% 0% 100%' },
 ];
 
+export const initialInsetStyles = [
+  { name: 'top', value: null },
+  { name: 'right', value: null },
+  { name: 'bottom', value: null },
+  { name: 'left', value: null },
+];
+
 export const particularPositionStyles = {
   // inset: 'top right bottom left'
   unset: { inset: 'unset' },
