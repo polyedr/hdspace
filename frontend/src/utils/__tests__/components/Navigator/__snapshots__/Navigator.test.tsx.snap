@@ -6,7 +6,7 @@ exports[`Navigator should render a Navigator component 1`] = `
     class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAccordion-root Mui-expanded css-1mfhkj-MuiPaper-root-MuiAccordion-root"
   >
     <div
-      class="MuiAccordionDetails-root css-a45536-MuiAccordionDetails-root"
+      class="MuiAccordionDetails-root css-h4f17h-MuiAccordionDetails-root"
     >
       <div
         class="makeStyles-tree-1"
@@ -20,11 +20,7 @@ exports[`Navigator should render a Navigator component 1`] = `
             style="position: relative; overflow: scroll; margin-right: 0px; margin-bottom: 0px; min-height: 100%; max-height: 385px; display: block; height: 100%;"
           >
             <div
-<<<<<<< HEAD
-              class="MuiAccordionDetails-root css-h4f17h-MuiAccordionDetails-root"
-=======
               style="width: 100%; height: 100%;"
->>>>>>> 81844959587d21b4fa2614c352d736b46211599d
             >
               <div
                 data-react-beautiful-dnd-droppable="0"
