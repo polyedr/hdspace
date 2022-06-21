@@ -28,8 +28,8 @@ const useStyles = makeStyles({
   },
   assetImage: ({ sizeDirection }: StyleProps) => ({
     display: 'block',
-    width: sizeDirection === FullSizeDirection.HORIZONTAL ? '100%' : 'auto',
-    height: sizeDirection === FullSizeDirection.VERTICAL ? '100%' : 'auto',
+    width: sizeDirection === FullSizeDirection.HORIZONTAL ? '100%' : '5rem',
+    height: sizeDirection === FullSizeDirection.VERTICAL ? '100%' : '5rem',
   }),
 });
 
