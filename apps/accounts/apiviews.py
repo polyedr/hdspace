@@ -10,10 +10,10 @@ from rest_framework.response import Response
 from rest_framework.pagination import CursorPagination
 
 from apps.projects.models import Project
-from .models import User, Profile, Team, TeamMember
+from .models import User, Profile, Team, TeamMember, SharedLink
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .serializers import UserSerializer, ProfileSerializer, TeamMemberSerializer, TeamSerializer
+from .serializers import UserSerializer, ProfileSerializer, TeamMemberSerializer, TeamSerializer, SharedLinkSerializer
 from rest_framework import filters
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -167,7 +167,7 @@ class SharedlinknewuserView(APIView):
         data.update(tokens)
         # Pre-authentication of the user. Should be changed later
         # print(user)
-        authenticate(adevi=qstring[1:])
+        # authenticate(adevi=qstring[1:])
 
         if qstring:
             return Response(data, status=status.HTTP_200_OK)
@@ -304,3 +304,66 @@ class SharedlinkprojectView(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         '''
+
+class SharedLinkList(generics.ListCreateAPIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+    )
+    """
+    Show a shared link, or create a new shared link.
+    """
+
+    queryset = SharedLink.objects.all()
+    serializer_class = SharedLinkSerializer
+
+    def perform_create(self, serializer):
+        project = Project.objects.get(pk=self.request.data['project_id'])
+
+        shortuuid_token = '000' + str(shortuuid.uuid())
+        username = shortuuid_token
+        email = username + '@example.com'
+        password = username
+        owner = User.objects.create_user(username, email=email, password=password)
+        groupcommonusers = Group.objects.get(name="CommonUsers")
+        owner.groups.add(groupcommonusers)
+        owner.is_active = True
+
+        # Modulating the permissions
+        pmap = self.request.data['pmap']
+        if(pmap == "view"):
+            permissions = ["view_project"]
+        elif(pmap == "edit"):
+            permissions = ["view_project", "change_project"]
+        else:  # All other cases making the empty value
+            permissions = []
+
+        for permission in self.PROJECT_PERMISSION:  # Check the meaning of this statement
+            remove_perm(permission[1], owner, project)
+
+        for permission in permissions:
+            assign_perm(permission, owner, project)
+
+        rp = get_perms(owner, project)  # A resulted permissions array
+
+        owner_tokens = RefreshToken.for_user(owner)
+        # tokens = {'refresh': str(owner_tokens), 'access': str(owner_tokens.access_token)}
+        access_token = str(owner_tokens.access_token)
+
+        creator = self.request.user
+
+        serializer.save(creator=creator, owner=owner, shortuuid_token=shortuuid_token, access_token=access_token)
+
+    def get_queryset(self):
+        return SharedLink.objects.filter(user=self.request.user)
+
+
+class SharedLinkDetail(generics.RetrieveDestroyAPIView):
+    """
+    Retrieve, update or delete a shared link
+    """
+
+    queryset = SharedLink.objects.all()
+    serializer_class = SharedLinkSerializer
