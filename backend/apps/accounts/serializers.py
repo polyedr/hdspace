@@ -1,6 +1,6 @@
 """Serializers for the accounts"""
 from rest_framework import serializers
-from .models import User, Profile, Team, TeamMember
+from .models import User, Profile, Team, TeamMember, SharedLink
 from django.contrib.auth.models import Group
 from djoser.serializers import ActivationSerializer
 
@@ -71,4 +71,10 @@ class TeamSerializer(serializers.ModelSerializer):
 class TeamMemberSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamMember
+        fields = '__all__'
+
+
+class SharedLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SharedLink
         fields = '__all__'

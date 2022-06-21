@@ -1,5 +1,7 @@
 import uuid
 import datetime
+
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -126,3 +128,27 @@ class Team(TimeStampedModel):
 
     def __str__(self):
         return self.team_name
+
+
+class SharedLink(TimeStampedModel):
+    ROLE_VIEWER = "view"
+    ROLE_EDITOR = "edit"
+    VIEWER_OR_EDITOR = ((ROLE_VIEWER, "view"), (ROLE_EDITOR, "edit"))
+
+    pmap = models.CharField(
+        choices=VIEWER_OR_EDITOR, default=ROLE_VIEWER, max_length=64
+    )
+    shortuuid_token = models.CharField(max_length=64, editable=False, null=True)
+    access_token = models.CharField(max_length=256, editable=False, null=True)
+    project_id = models.IntegerField(default=0)
+    screen_id = models.IntegerField(default=0)
+    element_id = models.IntegerField(default=0)
+
+    creator = models.ForeignKey(get_user_model(), related_name="linkcreator", null=True, blank=True,
+                                on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        get_user_model(), related_name="linkowner", null=True, blank=True, on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.shortuuid_token
