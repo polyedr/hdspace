@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 import shortuuid
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.pagination import CursorPagination
@@ -357,7 +358,20 @@ class SharedLinkList(generics.ListCreateAPIView):
         serializer.save(creator=creator, owner=owner, shortuuid_token=shortuuid_token, access_token=access_token)
 
     def get_queryset(self):
-        return SharedLink.objects.filter(user=self.request.user)
+        # print(self.request.data)
+        # shortuuid_token = self.request.data['shortuuid_token']
+        shortuuid_token = self.request.query_params.get('shortuuid_token')
+
+        try:
+            sharedlink = SharedLink.objects.filter(shortuuid_token=shortuuid_token)
+        except ObjectDoesNotExist:
+            sharedlink = None
+
+        if len(sharedlink) > 1:
+            sharedlink = None
+
+        # return SharedLink.objects.filter(shortuuid_token=shortuuid_token)
+        return sharedlink
 
 
 class SharedLinkDetail(generics.RetrieveDestroyAPIView):
