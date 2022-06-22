@@ -13,10 +13,6 @@ describe('VIADescription', () => {
   let store: MockStoreEnhanced<AppReduxState>;
   let ui: RenderResult;
   const region = Object.values(mockVIAState.regions.fdict)[0];
-  const {
-    region_attributes: { 'HTML element': type },
-  } = region;
-
   beforeEach(() => {
     const mockStore = configureStore<AppReduxState>([]);
     store = mockStore({
@@ -41,28 +37,6 @@ describe('VIADescription', () => {
 
   it('should render a description', () => {
     expect(ui.container).toMatchSnapshot();
-  });
-
-  it('should display region type', () => {
-    const typeInput = ui.getByLabelText('Type') as HTMLInputElement;
-    expect(typeInput.value).toBe(type);
-  });
-
-  it('should change region type', () => {
-    const typeInput = ui.getByLabelText('Type') as HTMLInputElement;
-    fireEvent.change(typeInput, {
-      target: {
-        value: 'container',
-      },
-    });
-
-    const actions = store.getActions();
-    expect(actions[actions.length - 1].type).toBe(TYPES.UPDATE_VIA_REGION);
-    expect(
-      actions[actions.length - 1].payload.data.region_attributes[
-        'HTML element'
-      ],
-    ).toBe('container');
   });
 
   it('should delete element on proper button click', () => {

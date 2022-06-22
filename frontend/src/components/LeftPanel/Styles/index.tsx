@@ -48,6 +48,7 @@ const useStyles = makeStyles(({ palette, typography }) => ({
   },
   details: {
     display: 'flex',
+    bottom: 0,
     flexDirection: 'column',
   },
   blockTitle: {
@@ -100,7 +101,7 @@ const Styles = () => {
 
   return (
     <>
-      <StyledAccordion defaultExpanded id={ELEMENT_IDS.styles}>
+      <StyledAccordion id={ELEMENT_IDS.styles}>
         <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
           <span>Styles</span>
         </StyledAccordionSummary>
