@@ -8,7 +8,7 @@ type Props = {
   convert: (value, isToPositionButton) => string;
   particularPositionState: string | number;
   handlePositionButtonChange: (value) => void;
-  canEdit: boolean;
+  disabled: boolean;
   handleParticularPositionChange: (value) => void;
 };
 
@@ -16,7 +16,7 @@ const ParticularPosition: React.FC<Props> = ({
   convert,
   particularPositionState,
   handlePositionButtonChange,
-  canEdit,
+  disabled,
   handleParticularPositionChange,
 }) => {
   return (
@@ -25,7 +25,7 @@ const ParticularPosition: React.FC<Props> = ({
         <PositionButton
           defaultValue={convert(particularPositionState, false)}
           onChange={handlePositionButtonChange}
-          disabled={!canEdit}
+          disabled={disabled}
         />
       </div>
       <StyledTextField
@@ -34,7 +34,7 @@ const ParticularPosition: React.FC<Props> = ({
         value={particularPositionState}
         onChange={(event) => handleParticularPositionChange(event.target.value)}
         select
-        disabled={!canEdit}
+        disabled={disabled}
         style={{ textTransform: 'capitalize' }}
       >
         {particularPosition.map(({ value, label }) => (

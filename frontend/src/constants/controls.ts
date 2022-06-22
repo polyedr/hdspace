@@ -199,6 +199,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
       'top',
       'right',
       'bottom',
+      'zIndex',
     ],
   },
 };

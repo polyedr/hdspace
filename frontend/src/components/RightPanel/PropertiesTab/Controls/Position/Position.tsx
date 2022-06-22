@@ -19,7 +19,10 @@ import ClearIcons, {
   CLEAR_TYPE,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcons';
 import ParticularPosition from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ParticularPosition';
-import InsetChange from '@Components/RightPanel/PropertiesTab/Controls/Position/components/InsetChange';
+import Input from '@Components/RightPanel/PropertiesTab/Controls/Position/components/Input';
+import { useSelector } from 'react-redux';
+import { selectParentOfActiveElement } from '@Redux/project/selectors/element';
+import TargetIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/TargetIcon';
 
 type ParsedInset = {
   value: number | null;
@@ -46,6 +49,7 @@ const useStyles = makeStyles({
     fontFamily: 'Roboto',
   },
   icon: { width: 24, height: 24 },
+  targetIcon: { paddingTop: 12, marginRight: 10 },
   insetChange: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -62,6 +66,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   right: React.CSSProperties['right'];
   left: React.CSSProperties['left'];
   bottom: React.CSSProperties['bottom'];
+  zIndex: React.CSSProperties['zIndex'];
 };
 
 const Position: React.FC<Props> = ({
@@ -75,8 +80,10 @@ const Position: React.FC<Props> = ({
   top,
   right,
   bottom,
+  zIndex,
 }) => {
   const classes = useStyles();
+  const parentOfActiveElement = useSelector(selectParentOfActiveElement);
 
   const [particularPositionState, setParticularPositionState] = useState(
     inset || 'unset',
@@ -179,14 +186,14 @@ const Position: React.FC<Props> = ({
         <ParticularPosition
           handleParticularPositionChange={handleParticularPositionChange}
           particularPositionState={particularPositionState}
-          canEdit={canEdit}
+          disabled={!canEdit}
           handlePositionButtonChange={handlePositionButtonChange}
           convert={convert}
         />
       )}
       <div className={classes.insetChange}>
         {parsedInset?.map((item) => (
-          <InsetChange
+          <Input
             key={item.name}
             style={{
               width: 45,
@@ -194,9 +201,29 @@ const Position: React.FC<Props> = ({
             name={item.name}
             value={item.value}
             handleValueChange={handleValueChange}
-            canEdit={canEdit}
+            disabled={!canEdit}
           />
         ))}
+      </div>
+      <div className={classes.insetChange}>
+        <Input
+          name="Relative to"
+          value={parentOfActiveElement?.name || 'root'}
+          disabled
+          style={{ width: 142 }}
+        >
+          <div className={classes.targetIcon}>
+            <TargetIcon />
+          </div>
+        </Input>
+        <Input
+          handleValueChange={handleValueChange}
+          value={zIndex || 'auto'}
+          name="zIndex"
+          disabled={!canEdit}
+          style={{ width: 62 }}
+          valueType="number"
+        />
       </div>
       <div className={classes.align}>
         <div className={classes.styleText}>Float</div>

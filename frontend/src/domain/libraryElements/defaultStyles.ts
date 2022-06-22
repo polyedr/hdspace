@@ -81,6 +81,7 @@ export const DEFAULT_POSITION: React.CSSProperties = {
   float: 'none',
   clear: 'none',
   inset: 'unset',
+  zIndex: 'auto',
 };
 
 export const DEFAULT_BACKGROUND_IMAGE: React.CSSProperties = {
