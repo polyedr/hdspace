@@ -1,12 +1,13 @@
 import React, { memo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import { ToggleButtonGroup } from '@mui/material';
 import { isLibraryTab } from '@Redux/project/actions';
 import { makeStyles } from '@material-ui/core/styles';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import { selectFreeCanvasMode } from '@Redux/project/selectors/screen';
+import styled from 'styled-components';
 import CustomElementsBlocks from '../CustomElementsLibrary/CustomElementsBlocks';
 import GeneratedElementsBlocks from '../CustomElementsLibrary/GeneratedElementBlocks';
 import ElementsBlock from './ElementsBlock';
@@ -32,40 +33,24 @@ const useStyles = makeStyles(({ typography }) => ({
   },
 }));
 
-const useToggleButtonGroupStyles = makeStyles({
-  root: {
-    width: '100%',
-    display: 'flex',
-  },
-  grouped: {
-    flex: 1,
-  },
-});
+const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
+  display: flex;
+`;
 
-const useToggleButtonStyles = makeStyles(() => ({
-  root: {
-    textTransform: 'none',
-    backgroundColor: '#ffffff',
-    '&.Mui-selected': {
-      backgroundColor: '#ffffff',
-      borderBottom: '3px solid #5064FF',
-    },
-    '&:hover': {
-      backgroundColor: '#ffffff',
-    },
-  },
-  disabled: {},
-  selected: {},
-  label: {
-    color: '#81818E',
-  },
-}));
+const CustomToggleButton = styled(ToggleButton)`
+  text-transform: none;
+  font-size: 80% !important;
+  font-weight: 600 !important;
+  color: #81818e;
+  &.Mui-selected {
+    background: #fff;
+    border-bottom: 3px solid #5064ff;
+  }
+`;
 
 const ElementsTab = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const toggleButtonGroupClasses = useToggleButtonGroupStyles();
-  const toggleButtonClasses = useToggleButtonStyles();
   const isFreeCanvasMode = useSelector(selectFreeCanvasMode);
 
   const [section, setSection] = useState(sections[0]);
@@ -101,28 +86,19 @@ const ElementsTab = () => {
         </Section>
       ) : (
         <>
-          <ToggleButtonGroup
-            classes={toggleButtonGroupClasses}
+          <CustomToggleButtonGroup
             value={section}
             onChange={handleChangeSection}
             exclusive
             size="small"
           >
-            <ToggleButton classes={toggleButtonClasses} value="elements">
-              <span className={classes.title}>Elements</span>
-            </ToggleButton>
-
-            <ToggleButton classes={toggleButtonClasses} value="templates">
-              <span className={classes.title}>Templates</span>
-            </ToggleButton>
-
-            <ToggleButton classes={toggleButtonClasses} value="generators">
-              <span className={classes.title}>Generators</span>
-            </ToggleButton>
-            <ToggleButton classes={toggleButtonClasses} value="library">
-              <span className={classes.title}>Library</span>
-            </ToggleButton>
-          </ToggleButtonGroup>
+            <CustomToggleButton value="elements">Elements</CustomToggleButton>
+            <CustomToggleButton value="templates">Templates</CustomToggleButton>
+            <CustomToggleButton value="generators">
+              Generators
+            </CustomToggleButton>
+            <CustomToggleButton value="library">Library</CustomToggleButton>
+          </CustomToggleButtonGroup>
 
           <Section title="elements" activeSection={section}>
             {Object.entries(elements).map(([key, value]) => (

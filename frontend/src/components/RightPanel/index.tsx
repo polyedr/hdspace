@@ -10,12 +10,12 @@ import {
   selectCurrentRootId,
 } from '@Redux/project/selectors/element';
 import ELEMENT_IDS from '@Constants/elementIds';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 import PropertiesTab from './PropertiesTab';
 import ElementsTab from './ElementsTab';
 
-const useStyles = makeStyles<Theme>(({ palette }) => ({
+const useStyles = makeStyles(({ palette }) => ({
   root: {
     width: (props: any) => (props.open ? RIGHT_PANEL_WIDTH : 0),
     display: 'flex',

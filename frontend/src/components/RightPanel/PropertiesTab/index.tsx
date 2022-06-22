@@ -60,6 +60,11 @@ enum PROPERTIES_TYPES {
   STYLES = 'styles',
 }
 
+enum CollapseTypes {
+  COLLAPSE = 'Collapse All',
+  EXPAND = 'Expand All',
+}
+
 const useStyles = makeStyles({
   propertiesTab: {
     height: '100%',
@@ -123,7 +128,7 @@ const PropertiesTab: React.FC = () => {
 
   const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
   const [isAccordianExpanded, setIsAccordianExpanded] = useState(true);
-  const [title, setTitle] = useState('Expand All');
+  const [title, setTitle] = useState<CollapseTypes>(CollapseTypes.COLLAPSE);
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -443,7 +448,9 @@ const PropertiesTab: React.FC = () => {
   const collapseAll = () => {
     setIsAccordianExpanded(!isAccordianExpanded);
     setTitle((state) => {
-      return state === 'Expand All' ? 'Collapse All' : 'Expand All';
+      return state === CollapseTypes.EXPAND
+        ? CollapseTypes.COLLAPSE
+        : CollapseTypes.EXPAND;
     });
   };
 
