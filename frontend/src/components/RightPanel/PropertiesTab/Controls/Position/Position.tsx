@@ -9,7 +9,6 @@ import { MenuItem } from '@material-ui/core';
 import {
   positionsList,
   POSITIONS,
-  particularPosition,
   initialInsetStyles,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -62,10 +61,6 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   float: React.CSSProperties['float'];
   clear: React.CSSProperties['clear'];
   inset: React.CSSProperties['inset'];
-  top: React.CSSProperties['top'];
-  right: React.CSSProperties['right'];
-  left: React.CSSProperties['left'];
-  bottom: React.CSSProperties['bottom'];
   zIndex: React.CSSProperties['zIndex'];
 };
 
@@ -76,10 +71,6 @@ const Position: React.FC<Props> = ({
   inset,
   canEdit,
   updateStyles,
-  left,
-  top,
-  right,
-  bottom,
   zIndex,
 }) => {
   const classes = useStyles();
@@ -90,14 +81,14 @@ const Position: React.FC<Props> = ({
   );
 
   const [parsedInset, setParsedInset] = useState<ParsedInset[]>(
-    [
-      { name: 'top', value: top },
-      { name: 'right', value: right },
-      { name: 'bottom', value: bottom },
-      { name: 'left', value: left },
-    ] || initialInsetStyles,
+    initialInsetStyles,
   );
-
+  /* [
+    { name: 'top', value: top },
+    { name: 'right', value: right },
+    { name: 'bottom', value: bottom },
+    { name: 'left', value: left },
+  ] || */
   const handleValueChange = (prop, value) => {
     updateStyles({ [prop]: value });
   };
@@ -107,26 +98,29 @@ const Position: React.FC<Props> = ({
       if (item.name === name) item.value = value;
       return item;
     });
+
     setParsedInset(changedState);
-    handleValueChange(name, value);
+    const result = parsedInset
+      .map((item) => (item.value ? `${item.value}%` : null))
+      .toString()
+      .replace(/,/gi, ' ');
+    handleValueChange('inset', result);
   };
 
   useEffect(() => {
-    if (
-      typeof top === 'string' &&
-      typeof right === 'string' &&
-      typeof left === 'string' &&
-      typeof bottom === 'string'
-    )
+    if (inset && typeof inset === 'string') {
+      setParticularPositionState(inset);
+      const result = inset.split(' ').map((item) => item.replace(/.$/, ''));
       setParsedInset([
-        { name: 'top', value: parseInt(top) },
-        { name: 'right', value: parseInt(right) },
-        { name: 'bottom', value: parseInt(bottom) },
-        { name: 'left', value: parseInt(left) },
+        { name: 'top', value: result[0] },
+        { name: 'right', value: result[1] },
+        { name: 'bottom', value: result[2] },
+        { name: 'left', value: result[3] },
       ]);
-  }, [right, top, left, bottom]);
+    }
+  }, [inset]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (
       typeof particularPositionState === 'string' &&
       particularPositionState !== 'unset'
@@ -143,7 +137,7 @@ const Position: React.FC<Props> = ({
         { name: 'left', value: result[3] },
       ]);
     }
-  }, [inset, particularPositionState]);
+  }, [inset, particularPositionState, element.id]); */
 
   const handlePositionDropdownChange = useCallback(
     (event) => {
@@ -155,29 +149,6 @@ const Position: React.FC<Props> = ({
   const handleParticularPositionChange = (value) => {
     setParticularPositionState(value);
     updateStyles({ inset: value });
-  };
-
-  const convert = (value, isToPositionButton: boolean = true) => {
-    const insetValue = { inset: '' };
-    if (isToPositionButton) {
-      particularPosition.forEach((item) => {
-        if (item.label === value) {
-          insetValue.inset = item.value;
-        }
-      });
-    } else {
-      particularPosition.forEach((item) => {
-        if (item.value === value) {
-          insetValue.inset = item.label;
-        }
-      });
-    }
-
-    return insetValue.inset;
-  };
-
-  const handlePositionButtonChange = (value) => {
-    handleParticularPositionChange(convert(value));
   };
 
   return (
@@ -201,8 +172,6 @@ const Position: React.FC<Props> = ({
           handleParticularPositionChange={handleParticularPositionChange}
           particularPositionState={particularPositionState}
           disabled={!canEdit}
-          handlePositionButtonChange={handlePositionButtonChange}
-          convert={convert}
         />
       )}
       <div className={classes.insetChange}>
@@ -236,7 +205,6 @@ const Position: React.FC<Props> = ({
           name="zIndex"
           disabled={!canEdit}
           style={{ width: 62 }}
-          valueType="number"
         />
       </div>
       <div className={classes.align}>

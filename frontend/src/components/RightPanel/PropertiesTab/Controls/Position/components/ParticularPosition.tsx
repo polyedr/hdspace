@@ -5,20 +5,39 @@ import { particularPosition } from '@Components/RightPanel/PropertiesTab/Control
 import { MenuItem } from '@mui/material';
 
 type Props = {
-  convert: (value, isToPositionButton) => string;
   particularPositionState: string | number;
-  handlePositionButtonChange: (value) => void;
   disabled: boolean;
   handleParticularPositionChange: (value) => void;
 };
 
 const ParticularPosition: React.FC<Props> = ({
-  convert,
   particularPositionState,
-  handlePositionButtonChange,
   disabled,
   handleParticularPositionChange,
 }) => {
+  const convert = (value, isToPositionButton: boolean = true) => {
+    const insetValue = { inset: '' };
+    if (isToPositionButton) {
+      particularPosition.forEach((item) => {
+        if (item.label === value) {
+          insetValue.inset = item.value;
+        }
+      });
+    } else {
+      particularPosition.forEach((item) => {
+        if (item.value === value) {
+          insetValue.inset = item.label;
+        }
+      });
+    }
+
+    return insetValue.inset;
+  };
+
+  const handlePositionButtonChange = (value) => {
+    handleParticularPositionChange(convert(value));
+  };
+
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ width: 100, height: 100, marginRight: 16 }}>

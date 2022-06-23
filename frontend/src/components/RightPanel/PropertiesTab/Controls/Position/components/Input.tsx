@@ -8,7 +8,6 @@ type Props = {
   handleValueChange?: (name, value) => void;
   disabled: boolean;
   style?: React.CSSProperties;
-  valueType?: 'percent' | 'number';
 };
 
 const useStyles = makeStyles({
@@ -34,17 +33,9 @@ const Input: React.FC<Props> = ({
   disabled,
   style,
   children,
-  valueType = 'percent',
 }) => {
   const classes = useStyles();
 
-  const handleChange = (name, value) => {
-    if (valueType === 'percent' && handleValueChange) {
-      handleValueChange(name, `${value}%`);
-    } else if (handleValueChange) {
-      handleValueChange(name, value);
-    }
-  };
   return (
     <div style={style}>
       <div className={classes.withIcon}>
@@ -54,7 +45,9 @@ const Input: React.FC<Props> = ({
           margin="dense"
           placeholder="0"
           value={value || ''}
-          onChange={(event) => handleChange(name, event.target.value)}
+          onChange={(event) =>
+            handleValueChange && handleValueChange(name, event.target.value)
+          }
           disabled={disabled}
         />
       </div>

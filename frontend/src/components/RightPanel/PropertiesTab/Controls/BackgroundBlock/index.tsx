@@ -36,7 +36,6 @@ import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { URL_REGEX } from '@Constants/defaultParams';
 import ColorSettings from '../../helperComponents/ColorSettings';
-// import ColorSettings from '../../helperComponents/ColorSettings';
 
 interface StyleProperties {
   backgroundColor?: React.CSSProperties['backgroundColor'];
@@ -184,6 +183,10 @@ export const PositionButton = ({
   const classes = usePositionSelectorStyles();
 
   const [activePosition, setActivePosition] = useState(defaultValue || '');
+
+  useEffect(() => {
+    setActivePosition(defaultValue);
+  }, [defaultValue]);
 
   const handleChangePosition = useCallback(
     (activePosition) => {
