@@ -25,7 +25,7 @@ import { selectParentOfActiveElement } from '@Redux/project/selectors/element';
 import TargetIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/TargetIcon';
 
 type ParsedInset = {
-  value: number | null;
+  value: React.CSSProperties['top'] | null;
   name: string;
 };
 
@@ -90,11 +90,25 @@ const Position: React.FC<Props> = ({
   );
 
   const [parsedInset, setParsedInset] = useState<ParsedInset[]>(
-    initialInsetStyles,
+    [
+      { name: 'top', value: top },
+      { name: 'right', value: right },
+      { name: 'bottom', value: bottom },
+      { name: 'left', value: left },
+    ] || initialInsetStyles,
   );
 
   const handleValueChange = (prop, value) => {
     updateStyles({ [prop]: value });
+  };
+
+  const handleInputPositionChange = (name, value) => {
+    const changedState = parsedInset.map((item) => {
+      if (item.name === name) item.value = value;
+      return item;
+    });
+    setParsedInset(changedState);
+    handleValueChange(name, value);
   };
 
   useEffect(() => {
@@ -129,7 +143,7 @@ const Position: React.FC<Props> = ({
         { name: 'left', value: result[3] },
       ]);
     }
-  }, [inset]);
+  }, [inset, particularPositionState]);
 
   const handlePositionDropdownChange = useCallback(
     (event) => {
@@ -200,7 +214,7 @@ const Position: React.FC<Props> = ({
             }}
             name={item.name}
             value={item.value}
-            handleValueChange={handleValueChange}
+            handleValueChange={handleInputPositionChange}
             disabled={!canEdit}
           />
         ))}

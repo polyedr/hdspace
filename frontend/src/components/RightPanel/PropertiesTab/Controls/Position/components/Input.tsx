@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 type Props = {
   name: string;
-  value: number | null | string;
+  value: any;
   handleValueChange?: (name, value) => void;
   disabled: boolean;
   style?: React.CSSProperties;
