@@ -2,6 +2,7 @@ import uuid
 import datetime
 
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import ArrayField
 from django.urls import reverse
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -11,9 +12,9 @@ from django.conf import settings
 from jsonfield import JSONField
 from apps.utils.models import TimeStampedModel
 from .utils import utils
+import ast
 
 __all__ = ("User", "Profile", "Team", "TeamMember")
-
 
 class User(AbstractUser):
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
@@ -138,6 +139,8 @@ class SharedLink(TimeStampedModel):
     pmap = models.CharField(
         choices=VIEWER_OR_EDITOR, default=ROLE_VIEWER, max_length=64
     )
+    # permissions = ArrayField(models.CharField(max_length=20, editable=False, null=True), size=10, )
+    permissions = JSONField(blank=True)
     shortuuid_token = models.CharField(max_length=64, editable=False, null=True)
     access_token = models.CharField(max_length=256, editable=False, null=True)
     project_id = models.IntegerField(default=0)

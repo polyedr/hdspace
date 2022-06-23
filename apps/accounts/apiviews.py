@@ -1,4 +1,5 @@
 """Views for the accounts api"""
+import json
 import uuid
 from urllib.parse import urlparse
 
@@ -355,7 +356,7 @@ class SharedLinkList(generics.ListCreateAPIView):
 
         creator = self.request.user
 
-        serializer.save(creator=creator, owner=owner, shortuuid_token=shortuuid_token, access_token=access_token)
+        serializer.save(creator=creator, owner=owner, shortuuid_token=shortuuid_token, access_token=access_token, permissions=rp)
 
     def get_queryset(self):
         # print(self.request.data)
