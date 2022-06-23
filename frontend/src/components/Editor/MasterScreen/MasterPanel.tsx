@@ -63,7 +63,7 @@ const MasterPanel = () => {
           const { Control } = controlInfo;
 
           return (
-            <ControlSection key={controlName} title={controlName}>
+            <ControlSection key={controlName} title={controlName} expanded>
               <Control
                 {...sharedStyles}
                 activeElementId={id}

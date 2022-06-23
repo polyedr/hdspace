@@ -6,7 +6,7 @@ exports[`Navigator should render a Navigator component 1`] = `
     class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation0 MuiAccordion-root Mui-expanded css-1mfhkj-MuiPaper-root-MuiAccordion-root"
   >
     <div
-      class="MuiAccordionDetails-root css-a45536-MuiAccordionDetails-root"
+      class="MuiAccordionDetails-root css-h4f17h-MuiAccordionDetails-root"
     >
       <div
         class="makeStyles-tree-1"
