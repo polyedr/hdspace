@@ -59,6 +59,7 @@ import {
   DuplicateScreen,
   ElementHistoryMeta,
   GetProject,
+  GetSharedProject,
   HistoryMeta,
   LoadProjects,
   LoadProjectsSuccess,
@@ -255,6 +256,12 @@ export const deleteProject = (id: number): DeleteProject => ({
 export const getProject = (id: number): GetProject => ({
   type: TYPES.GET_PROJECT,
   payload: { id },
+});
+export const getSharedProject = (
+  shortuuid_token: string,
+): GetSharedProject => ({
+  type: TYPES.GET_SHARED_PROJECT,
+  payload: { shortuuid_token },
 });
 
 export const setCurrentProjectId = (

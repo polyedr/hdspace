@@ -19,13 +19,24 @@ const useStyles = makeStyles({
     minHeight: 44, // Toolbar variant="dense" min-height
     flex: '0 0',
   },
+  noeventclass: {
+    pointerEvents: 'none',
+  },
 });
 
 const Layout = ({ children }) => {
   const classes = useStyles();
+  const url = new URL(window.location.href);
+  const shortuuid_token = url?.pathname.split('/')[4];
 
   return (
-    <div className={classes.layout}>
+    <div
+      className={
+        shortuuid_token
+          ? `${classes.layout} ${classes.noeventclass}`
+          : classes.layout
+      }
+    >
       <TopPanel />
       <div className={classes.content}>{children}</div>
     </div>
