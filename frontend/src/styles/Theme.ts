@@ -25,7 +25,7 @@ export const PANEL_TRANSITION_DURATION = 250;
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#51718c' },
-    secondary: { main: '#1cc09f' },
+    secondary: { main: 'rgb(26 192 158)' },
     link: {
       main: '#247c9c',
       light: lighten('#247c9c', 0.2),

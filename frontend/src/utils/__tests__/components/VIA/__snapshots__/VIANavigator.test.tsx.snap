@@ -7,7 +7,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
   >
     <div
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jLLiTK css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jxBqEi css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
@@ -46,7 +46,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
             role="region"
           >
             <div
-              class="MuiAccordionDetails-root makeStyles-root-1 css-a45536-MuiAccordionDetails-root"
+              class="MuiAccordionDetails-root makeStyles-root-1 css-h4f17h-MuiAccordionDetails-root"
             >
               <div
                 data-react-beautiful-dnd-droppable="0"
@@ -79,7 +79,7 @@ exports[`VIANavigator should render VIANavigator 1`] = `
   >
     <div
       aria-expanded="true"
-      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jLLiTK css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
+      class="MuiButtonBase-root MuiAccordionSummary-root Mui-expanded sc-bwzfXH jxBqEi css-1pvvkxv-MuiButtonBase-root-MuiAccordionSummary-root"
       role="button"
       tabindex="0"
     >
