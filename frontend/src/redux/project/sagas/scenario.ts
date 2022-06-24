@@ -1389,6 +1389,27 @@ export const updateElementSaga = compose(
   try {
     const { elementID, data } = action.payload;
 
+    const { useHistory } = action.meta;
+
+    if (!useHistory) {
+      const oldElement = yield select(selectActiveElement);
+      yield put(
+        Actions.addUndoActions([
+          Actions.updateElement(
+            {
+              elementID,
+              data: {
+                ...oldElement,
+              },
+            },
+            {
+              ...action.meta,
+            },
+          ),
+        ]),
+      );
+    }
+
     yield put(Actions.updateStateElement(elementID, { ...data }));
 
     const updatedElement: LibraryElement<any> = yield select(

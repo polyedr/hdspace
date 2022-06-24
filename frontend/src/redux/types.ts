@@ -310,6 +310,10 @@ export type DeleteProject = IAction<
 export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
 
 export type LoadTemlates = IPlainAction<typeof TYPES.LOAD_TEMPLATES>;
+export type GetSharedProject = IAction<
+  typeof TYPES.GET_SHARED_PROJECT,
+  { shortuuid_token: string }
+>;
 
 export type SetCurrentProjectId = IAction<
   typeof TYPES.SET_CURRENT_PROJECT_ID,
@@ -1260,6 +1264,7 @@ export type Action =
   | DeleteProject
   | GetProject
   | LoadTemlates
+  | GetSharedProject
   | SetCurrentProjectId
   | ChangeScreensOrder
   | UpdateNameAndTagsProject

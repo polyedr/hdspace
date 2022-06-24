@@ -1,16 +1,16 @@
 /* eslint-disable no-undef */
-import React from 'react';
+import React, { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import SubjectIcon from '@material-ui/icons/Subject';
 import WebIcon from '@material-ui/icons/Web';
+
 import {
   lighten,
   Theme,
   createStyles,
   makeStyles,
 } from '@material-ui/core/styles';
-import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 import { changeMinLPanel } from '@Redux/user/actions';
 import { selectIsLeftPanelMinimized } from '@Redux/user/selectors';
 import { setBordersEnabled } from '@Redux/project/actions';
@@ -27,11 +27,10 @@ import {
   PANEL_TRANSITION_DURATION,
 } from '@Src/styles/Theme';
 import Styles from '@Components/LeftPanel/Styles';
-import Navigator from './Navigator';
 import Screens from './Screens';
 import Scrollbar from '../UI/Scrollbar';
-import VIANavigator from './VIANavigator';
 import ScreenEdits from './Screens/ScreenEdits';
+import LeftTabPanel from './LeftTabPanel';
 
 const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
   createStyles({
@@ -39,7 +38,7 @@ const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
       maxHeight: '100%',
       width: ({ minimized }) =>
         minimized ? LEFT_PANEL_WIDTH_MIN : LEFT_PANEL_WIDTH,
-      backgroundColor: palette.panel.main,
+      backgroundColor: '#ffffff',
       transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
     },
     iconContainer: {
@@ -86,9 +85,11 @@ const LeftPanel: React.FC = () => {
   const dispatch = useDispatch();
   const currentScreen = useSelector(selectCurrentScreen);
   const infoUser = useSelector(selectInfoUser);
+
   const editingUsers = currentScreen.screenData.editableScreenUser.filter(
     (item) => item.idUser !== infoUser.idUser,
   );
+
   const minimized = useSelector(selectIsLeftPanelMinimized);
   const viaMode = useSelector(selectVIAModeEnabled);
   const classes = useStyles({ minimized });
@@ -154,23 +155,15 @@ const LeftPanel: React.FC = () => {
                   isMinimized={minimized}
                 />
               )}
+              <LeftTabPanel />
               <FrameworkSection />
-              {viaMode ? <VIANavigator /> : <Navigator />}
               <Styles />
             </div>
           )}
-
-          <IconButton
-            className={classes.toggleButton}
-            onClick={toggleLeftPanel}
-            title={`${minimized ? 'Open' : 'Hide'} panel`}
-          >
-            <VerticalAlignTopIcon />
-          </IconButton>
         </div>
       </Scrollbar>
     </aside>
   );
 };
 
-export default LeftPanel;
+export default memo(LeftPanel);

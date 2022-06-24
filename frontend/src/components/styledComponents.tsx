@@ -51,7 +51,7 @@ const MuiAccordionSummary = styled(AccordionSummary)`
     justify-content: space-between;
     align-items: center;
     flex-grow: 0;
-    '&$expanded' {
+    &expanded {
       margin: 0;
     }
   }
@@ -65,7 +65,7 @@ const MuiAccordionSummary = styled(AccordionSummary)`
     align-items: center;
     padding-left: 0;
     min-height: 0;
-    '&$expanded': {
+    &expanded {
       min-height: 0;
     }
   }
@@ -153,15 +153,15 @@ const Accordion = MuiStyled((props: AccordionProps) => (
 
 const MuiAccordionDetails = MuiStyled(AccordionDetails)(() => ({
   padding: '3px',
-  boxShadow:
-    '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
   backgroundColor: '#ffffff',
 }));
 
 export const StyledAccordion = React.forwardRef<any, AccordionProps>(
-  ({ children, ...props }) => {
+  ({ children, ...props }, ref) => {
     return (
-      <Accordion {...props}>{(children as unknown) as ReactElement}</Accordion>
+      <Accordion {...props} ref={ref}>
+        {(children as unknown) as ReactElement}
+      </Accordion>
     );
   },
 );

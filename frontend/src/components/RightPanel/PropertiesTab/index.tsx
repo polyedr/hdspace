@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import BasicConfirmForm from '@Components/Forms/BasicConfirmForm';
 import {
@@ -58,6 +58,11 @@ import ElementType from './Controls/ElementType/ElementType';
 enum PROPERTIES_TYPES {
   SETTINGS = 'settings',
   STYLES = 'styles',
+}
+
+enum CollapseTypes {
+  COLLAPSE = 'Collapse All',
+  EXPAND = 'Expand All',
 }
 
 const useStyles = makeStyles({
@@ -122,6 +127,8 @@ const PropertiesTab: React.FC = () => {
   );
 
   const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
+  const [isAccordianExpanded, setIsAccordianExpanded] = useState(true);
+  const [title, setTitle] = useState<CollapseTypes>(CollapseTypes.EXPAND);
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -142,6 +149,8 @@ const PropertiesTab: React.FC = () => {
     setEditedStyles(null);
   }, []);
 
+  useEffect(() => {});
+
   const handleConfirmSourceUnbinding = () => {
     if (!editedStyles) {
       logger.error('Edited styles is null!');
@@ -160,11 +169,11 @@ const PropertiesTab: React.FC = () => {
   const isGroupElement = !!activeElement.parameters.sourceElementId;
   const isGroupSource = !!activeElement.parameters.groupElements;
 
-  const elementsControlsCollection = Object.keys(selectedElements).map(
-    (elementId) => {
+  const elementsControlsCollection = useMemo(() => {
+    return Object.keys(selectedElements).map((elementId) => {
       return AVAILABLE_CONTROLS[selectedElements[elementId].type];
-    },
-  );
+    });
+  }, [selectedElements, AVAILABLE_CONTROLS]);
 
   const SELECTION_CONTROLS = useMemo(() => {
     if (!elementsControlsCollection.length) {
@@ -436,6 +445,15 @@ const PropertiesTab: React.FC = () => {
     return null;
   }
 
+  const collapseAll = () => {
+    setIsAccordianExpanded(!isAccordianExpanded);
+    setTitle((state) => {
+      return state === CollapseTypes.EXPAND
+        ? CollapseTypes.COLLAPSE
+        : CollapseTypes.EXPAND;
+    });
+  };
+
   return (
     <div className={classes.propertiesTab}>
       <Scrollbar
@@ -463,9 +481,11 @@ const PropertiesTab: React.FC = () => {
               fontSize: '14px',
               lineHeight: '135%',
               color: '#81818E',
+              cursor: 'pointer',
             }}
+            onClick={collapseAll}
           >
-            Collapse All
+            {title}
           </div>
         </div>
         {!isPrototypeMode && (
@@ -513,47 +533,25 @@ const PropertiesTab: React.FC = () => {
                 )
               ) {
                 return (
-                  <>
-                    <ControlSection key={controlName} title={controlName}>
-                      <Control
-                        {...getControlStyles(
-                          controlName,
-                          currentEditableStyles,
-                        )}
-                        canEdit={canEdit}
-                        controlName={controlName}
-                        activeElementId={activeElement.id}
-                        element={activeElement}
-                        removeStyles={!masterScreenEnabled && removeStyles}
-                        updateStyles={updateStyles}
-                        replaceStyles={replaceStyles}
-                        updateParams={!masterScreenEnabled && updateParams}
-                        masterScreenEnabled={masterScreenEnabled}
-                        editableStyles={editableStyles}
-                      />
-                    </ControlSection>
-                    {type !== 'root' &&
-                      elementsControlsCollection.length === 1 &&
-                      !masterScreenEnabled && (
-                        <>
-                          {!isGroupElement && (
-                            <ControlSection title="Share styles">
-                              <ShareStyles />
-                            </ControlSection>
-                          )}
-
-                          <ControlSection title="Element name">
-                            <RenameElement canEdit={canEdit} />
-                          </ControlSection>
-
-                          {!isFreeCanvasMode && (
-                            <ControlSection title="Replace this element">
-                              <ElementType />
-                            </ControlSection>
-                          )}
-                        </>
-                      )}
-                  </>
+                  <ControlSection
+                    key={controlName}
+                    title={controlName}
+                    expanded={isAccordianExpanded}
+                  >
+                    <Control
+                      {...getControlStyles(controlName, currentEditableStyles)}
+                      canEdit={canEdit}
+                      controlName={controlName}
+                      activeElementId={activeElement.id}
+                      element={activeElement}
+                      removeStyles={!masterScreenEnabled && removeStyles}
+                      updateStyles={updateStyles}
+                      replaceStyles={replaceStyles}
+                      updateParams={!masterScreenEnabled && updateParams}
+                      masterScreenEnabled={masterScreenEnabled}
+                      editableStyles={editableStyles}
+                    />
+                  </ControlSection>
                 );
               }
               if (
@@ -563,7 +561,11 @@ const PropertiesTab: React.FC = () => {
                 )
               ) {
                 return (
-                  <ControlSection key={controlName} title={controlName}>
+                  <ControlSection
+                    key={controlName}
+                    title={controlName}
+                    expanded={isAccordianExpanded}
+                  >
                     <Control
                       {...getControlStyles(controlName, currentEditableStyles)}
                       canEdit={canEdit}
@@ -584,6 +586,37 @@ const PropertiesTab: React.FC = () => {
             })}
           </>
         )}
+        {propertiesType === PROPERTIES_TYPES.SETTINGS &&
+          type !== 'root' &&
+          elementsControlsCollection.length === 1 &&
+          !masterScreenEnabled && (
+            <>
+              {!isGroupElement && (
+                <ControlSection
+                  title="Share styles"
+                  expanded={isAccordianExpanded}
+                >
+                  <ShareStyles />
+                </ControlSection>
+              )}
+
+              <ControlSection
+                title="Element name"
+                expanded={isAccordianExpanded}
+              >
+                <RenameElement canEdit={canEdit} />
+              </ControlSection>
+
+              {!isFreeCanvasMode && (
+                <ControlSection
+                  title="Replace this element"
+                  expanded={isAccordianExpanded}
+                >
+                  <ElementType />
+                </ControlSection>
+              )}
+            </>
+          )}
       </Scrollbar>
       <BasicConfirmForm
         open={showRemoveGroupDialog}
@@ -598,4 +631,4 @@ const PropertiesTab: React.FC = () => {
   );
 };
 
-export default PropertiesTab;
+export default memo(PropertiesTab);

@@ -144,7 +144,7 @@ export const selectCurrentGeneratorElements = createSelector(
   selectActiveElementId,
   (elements, id) => {
     const childrenContainerIds = elements[id]?.children;
-    const currentGeneratorElements = childrenContainerIds.map(
+    const currentGeneratorElements = childrenContainerIds?.map(
       (id) => elements[id],
     );
     return currentGeneratorElements;

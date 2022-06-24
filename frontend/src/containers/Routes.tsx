@@ -19,6 +19,7 @@ const ResetPassword = lazy(
 );
 const Projects = lazy(() => import('../components/Projects/Projects'));
 const Project = lazy(() => import('./Project'));
+const SharedProject = lazy(() => import('./SharedProject'));
 const SharedWithLink = lazy(() => import('@Components/User/SharedWithLink'));
 const Marketplace = lazy(
   () => import('@Components/Marketplace/components/MarketPlace/Marketplace'),
@@ -26,9 +27,15 @@ const Marketplace = lazy(
 const Team = lazy(() => import('@Components/Marketplace/components/Team/Team'));
 const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
+  const url = new URL(window.location.href);
+  const shortuuid_token = url?.pathname.split('/')[4];
   return (
     <Route {...rest}>
-      {isLoggedIn ? children : <Redirect to={PATH_NAMES.user.signin} />}
+      {isLoggedIn || shortuuid_token ? (
+        children
+      ) : (
+        <Redirect to={PATH_NAMES.user.signin} />
+      )}
     </Route>
   );
 };
@@ -58,6 +65,16 @@ const Routes: React.FC = () => {
         <Route path={PATH_NAMES.user.success} component={Success} />
 
         <Route path="/share/" component={SharedWithLink} exact />
+        <PrivateRoute path="/share/:projectId/:screenId/">
+          {({ match: { params } }: any) => (
+            <Layout>
+              <SharedProject
+                projectId={parseInt(params.projectId)}
+                screenId={parseInt(params.screenId)}
+              />
+            </Layout>
+          )}
+        </PrivateRoute>
 
         <PrivateRoute path={PATH_NAMES.projects}>
           <Layout>

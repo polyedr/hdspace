@@ -13,6 +13,14 @@ const useStyles = makeStyles({
   capitalized: {
     textTransform: 'capitalize',
   },
+  text: {
+    color: 'rgba(129, 129, 142, 1)',
+    fontWeight: 400,
+    fontSize: '14px',
+    lineHeight: '135%',
+    fontFamily: 'Roboto',
+    marginTop: 5,
+  },
 });
 
 type StateProps = {
@@ -51,25 +59,27 @@ const EditableStyles: React.FC<Props> = ({
   };
 
   return (
-    <StyledTextField
-      fullWidth
-      label="Styles to edit"
-      value={editableStyles}
-      onChange={handleDropdownChange}
-      select
-      className={classes.capitalized}
-      disabled={disabled}
-    >
-      {classNames.map((className) => (
-        <MenuItem
-          key={className}
-          value={className}
-          className={classes.capitalized}
-        >
-          {splitWords(className)}
-        </MenuItem>
-      ))}
-    </StyledTextField>
+    <>
+      <StyledTextField
+        fullWidth
+        value={editableStyles}
+        onChange={handleDropdownChange}
+        select
+        className={classes.capitalized}
+        disabled={disabled}
+      >
+        {classNames.map((className) => (
+          <MenuItem
+            key={className}
+            value={className}
+            className={classes.capitalized}
+          >
+            {splitWords(className)}
+          </MenuItem>
+        ))}
+      </StyledTextField>
+      <div className={classes.text}>Styles to edit</div>
+    </>
   );
 };
 

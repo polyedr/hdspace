@@ -9,6 +9,7 @@ import cn from 'classnames';
 import DateFnsUtils from '@date-io/date-fns';
 import useEventHandlers from '@Components/UI/RenderHooks/useEventHandlers';
 import { DateTimePickerType } from '@Src/types';
+import { TextField, TextFieldProps } from '@material-ui/core';
 import { makeComponentStyles } from '../styles';
 import { RendererProps } from '../types';
 
@@ -41,6 +42,19 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
       disabled: isDisabled,
       disableToolbar: false,
       label,
+      TextFieldComponent: (props: TextFieldProps) => {
+        return (
+          <TextField
+            {...props}
+            inputProps={{
+              className: cn(
+                classes.ownStyles,
+                isDisabled ? classes.disabled : classes.ownPseudoStyles,
+              ),
+            }}
+          />
+        );
+      },
     };
 
     const renderPicker = useCallback(() => {
@@ -94,12 +108,7 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
       <div
         ref={ref}
         data-ls-id={element.id}
-        className={cn(
-          className,
-          groupClass,
-          classes.ownStyles,
-          isDisabled ? classes.disabled : classes.ownPseudoStyles,
-        )}
+        className={cn(className, groupClass)}
         {...eventHandlers}
       >
         <MuiPickersUtilsProvider utils={DateFnsUtils}>

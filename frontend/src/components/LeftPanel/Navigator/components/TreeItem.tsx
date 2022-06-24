@@ -1,7 +1,7 @@
-import React, { MouseEvent, useCallback } from 'react';
+import React, { memo, MouseEvent, useCallback } from 'react';
 import { RenderItemParams, TreeItem as TreeItemType } from '@atlaskit/tree';
 import cn from 'classnames';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { splitWords } from '@Utils/stringHelper';
 import { ICONS } from '@Domain/libraryElements/libraryElements';
 import { useDispatch } from 'react-redux';
@@ -21,7 +21,7 @@ const useIndicatorStyles = makeStyles({
       width: '1em',
     },
     '& svg': {
-      color: 'white',
+      color: 'black',
       width: '1em',
       height: '1em',
       display: 'inline-block',
@@ -38,12 +38,12 @@ const useStyles = makeStyles(({ palette }) => ({
     alignItems: 'center',
     position: 'relative',
     height: ({ height }: Props) => height,
-    padding: '0.25em',
     outline: 'none',
     whiteSpace: 'nowrap',
     textTransform: 'capitalize',
     '& button': {
       padding: 0,
+      color: '#000000',
       border: 'none',
       appearance: 'none',
       boxShadow: 'none',
@@ -52,11 +52,11 @@ const useStyles = makeStyles(({ palette }) => ({
     },
 
     '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.3),
+      backgroundColor: '#F3F4F6',
     },
 
     '&[aria-selected="true"]': {
-      backgroundColor: lighten(palette.panel.main, 0.2),
+      backgroundColor: '#F3F4F6',
     },
 
     '&:before': {
@@ -79,7 +79,9 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   icon: {
     fontSize: '1.2em',
-    marginRight: '0.3em',
+  },
+  text: {
+    padding: '5px',
   },
 }));
 
@@ -187,9 +189,9 @@ const TreeItem: React.FC<Props> = (props) => {
 
       {ElementIcon && <ElementIcon className={classes.icon} />}
 
-      <span>{splitWords(item.data?.title)}</span>
+      <span className={classes.text}>{splitWords(item.data?.title)}</span>
     </div>
   );
 };
 
-export default TreeItem;
+export default memo(TreeItem);

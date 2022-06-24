@@ -41,7 +41,6 @@ describe('Share', () => {
     const button = screen.getByTitle('Share');
     fireEvent.click(button);
     expect(screen.getByText('Copy screen link'));
-    expect(screen.getByText('Copy element link'));
   });
 
   // it.skip('should paste a screen link to a clipboard', () => {

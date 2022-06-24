@@ -109,7 +109,17 @@ const CONTROLS: Record<Control, ControlInfo> = {
       'borderLeftWidth',
     ],
   },
-  background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
+  background: {
+    Control: BackgroundBlock,
+    styles: [
+      'backgroundColor',
+      'backgroundImage',
+      'backgroundSize',
+      'backgroundClip',
+      'backgroundPosition',
+      'backgroundRepeat',
+    ],
+  },
   backgroundImage: { Control: BackgroundImage, styles: ['backgroundImage'] },
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
