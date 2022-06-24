@@ -26,7 +26,7 @@ import AssetImage from './AssetImage';
 const useStyles = makeStyles({
   root: {
     position: 'relative',
-    height: 200,
+    height: 300,
     width: '100%',
   },
   progressWrapper: {
@@ -147,7 +147,7 @@ const DisplayAssets = () => {
         New asset
       </Button>
 
-      <Scrollbar autoHeightMax={150} style={{ height: '100%' }}>
+      <Scrollbar autoHeightMax={385} style={{ height: '100%' }}>
         <ImageList className={classes.gridList} rowHeight={80} cols={3} gap={5}>
           <DndProvider backend={HTML5Backend}>
             {assets.map((asset: Asset, index: number) => {
