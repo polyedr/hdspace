@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { makeStyles, Theme, darken } from '@material-ui/core/styles';
 import classNames from 'classnames';
 
 export enum BackgroundPosition {
+  NONE = 'none',
   TOP_LEFT = 'top left',
   TOP_CENTER = 'top center',
   TOP_RIGHT = 'top right',
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(2),
+    borderRadius: 2,
   },
   button: {
     textIndent: '-1000px',
@@ -34,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     '&:hover': {
       background: darken('#E4E6EB', 0.1),
     },
+    borderRadius: 2,
   },
   active: {
     background: '#5064FF',
@@ -64,6 +67,10 @@ const PositionSelector = ({ onChange, defaultValue, disabled = false }) => {
   const classes = useStyles();
 
   const [activePosition, setActivePosition] = useState(defaultValue ?? '');
+
+  useEffect(() => {
+    setActivePosition(defaultValue);
+  }, [defaultValue]);
 
   const handleChangePosition = useCallback(
     (activePosition) => {
