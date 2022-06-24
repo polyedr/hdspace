@@ -103,7 +103,7 @@ export const apigetSharedProject = (
     ...props,
     method: 'GET',
     params: { shortuuid_token: props.shortuuid_token },
-    url: `https://api-staging.adevi.info/api/v1/accounts/sharedlinks/?shortuuid_token=`,
+    url: `/accounts/sharedlinks/?shortuuid_token=`,
   })
     .then((result) => ({
       result: result.data,
