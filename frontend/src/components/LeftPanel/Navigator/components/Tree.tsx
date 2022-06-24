@@ -373,9 +373,9 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     >
       <Scrollbar
         style={{
-          height: '385px',
-          maxHeight: '385px',
-          minHeight: '385px',
+          height: '50vh',
+          maxHeight: '50vh',
+          minHeight: '50vh',
         }}
       >
         <div

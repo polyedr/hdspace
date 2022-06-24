@@ -128,7 +128,7 @@ const PropertiesTab: React.FC = () => {
 
   const [showRemoveGroupDialog, setShowRemoveGroupDialog] = useState(false);
   const [isAccordianExpanded, setIsAccordianExpanded] = useState(true);
-  const [title, setTitle] = useState<CollapseTypes>(CollapseTypes.COLLAPSE);
+  const [title, setTitle] = useState<CollapseTypes>(CollapseTypes.EXPAND);
   const canEdit = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );

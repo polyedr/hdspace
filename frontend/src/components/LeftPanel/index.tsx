@@ -38,7 +38,7 @@ const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
       maxHeight: '100%',
       width: ({ minimized }) =>
         minimized ? LEFT_PANEL_WIDTH_MIN : LEFT_PANEL_WIDTH,
-      backgroundColor: palette.panel.main,
+      backgroundColor: '#ffffff',
       transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
     },
     iconContainer: {
