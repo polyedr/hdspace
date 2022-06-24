@@ -1,11 +1,10 @@
-import * as React from 'react';
+import React, { memo } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { useSelector } from 'react-redux';
-
-import AssetsSection from '@Components/RightPanel/Assets';
+import AssetsSection from '@Src/components/LeftPanel/Assets/index';
 import Navigator from '../Navigator';
 import VIANavigator from '../VIANavigator';
 
@@ -31,8 +30,8 @@ function TabPanel(props: TabPanelProps) {
         sx={{
           p: '16px',
           backgroundColor: '#ffffff',
-          minHeight: '424px',
-          maxHeight: '424px',
+          minHeight: '50vh',
+          maxHeight: '50vh',
         }}
       >
         {children}
@@ -54,7 +53,6 @@ const LeftTabPanel = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-
   return (
     <Box sx={{ width: '100%' }}>
       <Box
@@ -68,12 +66,25 @@ const LeftTabPanel = () => {
           value={value}
           onChange={handleChange}
           TabIndicatorProps={{ style: { background: '#5064FF' } }}
-          sx={{ textTransform: 'capitalize' }}
+          sx={{
+            textTransform: 'capitalize',
+            '& .MuiTab-root': {
+              color: '#81818E',
+              fontWeight: '600',
+              fontStyle: 'Roboto',
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: '#000000',
+            },
+          }}
         >
           <Tab
             label="Layers"
             {...panelProps(0)}
-            sx={{ textTransform: 'capitalize', backgroundColor: '#ffffff' }}
+            sx={{
+              textTransform: 'capitalize',
+              backgroundColor: '#ffffff',
+            }}
           />
           <Tab
             label="Assets"
@@ -92,4 +103,4 @@ const LeftTabPanel = () => {
   );
 };
 
-export default LeftTabPanel;
+export default memo(LeftTabPanel);

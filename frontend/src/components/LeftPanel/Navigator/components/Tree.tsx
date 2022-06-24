@@ -4,6 +4,7 @@ import React, {
   MouseEvent,
   useMemo,
   useCallback,
+  memo,
 } from 'react';
 import AtlasTree, {
   mutateTree,
@@ -173,9 +174,8 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   const select = useCallback(
     (itemId) => {
       if (selectedItemId === itemId) return;
-
-      dispatch(setActiveElement(itemId));
       setSelectedItem(itemId);
+      dispatch(setActiveElement(itemId));
     },
     [dispatch, selectedItemId],
   );
@@ -373,14 +373,15 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     >
       <Scrollbar
         style={{
-          height: '300px',
-          maxHeight: '300px',
-          minHeight: '300px',
+          height: '50vh',
+          maxHeight: '50vh',
+          minHeight: '50vh',
         }}
       >
         <div
           style={{
-            width: '500px',
+            width: '100%',
+            height: '100%',
           }}
         >
           <AtlasTree
@@ -400,19 +401,21 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
       </Scrollbar>
 
       {state.item && !coreElementSelected && canEdit && (
-        <ContextMenu
-          open={state.mouseY !== null}
-          anchorPosition={
-            state.mouseY !== null && state.mouseX !== null
-              ? { top: state.mouseY, left: state.mouseX }
-              : undefined
-          }
-          onClose={handleClose}
-          item={state.item}
-        />
+        <>
+          <ContextMenu
+            open={state?.mouseY !== null}
+            anchorPosition={
+              state.mouseY !== null && state.mouseX !== null
+                ? { top: state.mouseY, left: state.mouseX }
+                : undefined
+            }
+            onClose={handleClose}
+            item={state.item}
+          />
+        </>
       )}
     </div>
   );
 };
 
-export default Tree;
+export default memo(Tree);

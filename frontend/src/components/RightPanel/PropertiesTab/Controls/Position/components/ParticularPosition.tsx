@@ -1,5 +1,5 @@
 import React from 'react';
-import { PositionButton } from '@Components/RightPanel/PropertiesTab/Controls/BackgroundBlock';
+import PositionSelector from '@Components/RightPanel/PropertiesTab/Controls/BackgroundBlock/PositionSelector';
 import { StyledTextField } from '@Components/styledComponents';
 import { particularPosition } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
 import { MenuItem } from '@mui/material';
@@ -52,7 +52,7 @@ const ParticularPosition: React.FC<Props> = ({
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ width: 100, height: 100, marginRight: 16 }}>
-        <PositionButton
+        <PositionSelector
           defaultValue={convert(particularPositionState, false)}
           onChange={handlePositionButtonChange}
           disabled={disabled}

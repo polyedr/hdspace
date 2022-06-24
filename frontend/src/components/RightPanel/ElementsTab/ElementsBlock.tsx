@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -70,4 +70,4 @@ const ElementsBlock: React.FC<Props> = ({
   );
 };
 
-export default ElementsBlock;
+export default memo(ElementsBlock);

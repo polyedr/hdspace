@@ -118,6 +118,7 @@ const CONTROLS: Record<Control, ControlInfo> = {
       'backgroundSize',
       'backgroundClip',
       'backgroundPosition',
+      'backgroundRepeat',
     ],
   },
   backgroundImage: { Control: BackgroundImage, styles: ['backgroundImage'] },

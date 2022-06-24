@@ -278,6 +278,11 @@ export type DeleteProject = IAction<
   { id: number }
 >;
 export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
+export type GetSharedProject = IAction<
+  typeof TYPES.GET_SHARED_PROJECT,
+  { shortuuid_token: string }
+>;
+
 export type SetCurrentProjectId = IAction<
   typeof TYPES.SET_CURRENT_PROJECT_ID,
   { projectId: number }
@@ -1021,7 +1026,6 @@ export type SetProjectsData = IAction<
   typeof TYPES.SET_PROJECTS_DATA,
   PaginatedArray<Project>
 >;
-
 export type SetUsersData = IAction<
   typeof TYPES.SET_USERS_DATA,
   { search: string; data: PaginatedResponse<UserData> }
@@ -1217,6 +1221,7 @@ export type Action =
   | CreateProject
   | DeleteProject
   | GetProject
+  | GetSharedProject
   | SetCurrentProjectId
   | ChangeScreensOrder
   | UpdateNameAndTagsProject

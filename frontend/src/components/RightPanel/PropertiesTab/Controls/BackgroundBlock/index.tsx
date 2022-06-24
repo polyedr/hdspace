@@ -13,7 +13,7 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
-import { makeStyles, Theme, darken } from '@material-ui/core/styles';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import {
   FormControl,
   InputLabel,
@@ -24,7 +24,6 @@ import {
 } from '@material-ui/core';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 
-import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectAllAssetLists,
@@ -36,6 +35,7 @@ import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
 import { URL_REGEX } from '@Constants/defaultParams';
 import ColorSettings from '../../helperComponents/ColorSettings';
+import PositionSelector, { BackgroundPosition } from './PositionSelector';
 
 interface StyleProperties {
   backgroundColor?: React.CSSProperties['backgroundColor'];
@@ -67,19 +67,6 @@ enum BackgroundRepeat {
   Round = 'Round',
 }
 
-enum BackgroundPosition {
-  NONE = 'none',
-  TOP_LEFT = 'top left',
-  TOP_CENTER = 'top center',
-  TOP_RIGHT = 'top right',
-  MIDDLE_LEFT = 'center left',
-  MIDDLE_CENTER = 'center center',
-  MIDDLE_RIGHT = 'center right',
-  BOTTOM_LEFT = 'bottom left',
-  BOTTOM_CENTER = 'bottom center',
-  BOTTOM_RIGHT = 'bottom right',
-}
-
 enum BackgroundSize {
   AUTO = 'Auto',
   COVER = 'Cover',
@@ -92,54 +79,6 @@ enum BackgroundClip {
   PADDING_BOX = 'Padding-Box',
   CONTENT_BOX = 'Content-Box',
 }
-
-const usePositionSelectorStyles = makeStyles((theme: Theme) => ({
-  wrapper: {
-    height: 100,
-    width: 100,
-    background: '#F3F4F6',
-    padding: 2,
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(2),
-    borderRadius: 2,
-  },
-  button: {
-    textIndent: '-1000px',
-    border: 'none',
-    background: '#E4E6EB',
-    outline: 'none',
-    margin: 2,
-    '&:hover': {
-      background: darken('#E4E6EB', 0.1),
-    },
-    borderRadius: 2,
-  },
-  active: {
-    background: '#5064FF',
-    '&:hover': {
-      background: '#5064FF',
-    },
-  },
-  buttonSquare: {
-    height: 22,
-    width: 22,
-  },
-  fillButton: {
-    flex: 1,
-  },
-  rowWrapper: {
-    display: 'flex',
-  },
-  middleRow: {
-    display: 'flex',
-    flex: 1,
-  },
-  middleSideCol: {
-    maxWidth: 22,
-  },
-}));
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -175,144 +114,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(2),
   },
 }));
-
-export const PositionButton = ({
-  onChange,
-  defaultValue,
-  disabled = false,
-}) => {
-  const classes = usePositionSelectorStyles();
-
-  const [activePosition, setActivePosition] = useState(defaultValue || '');
-
-  useEffect(() => {
-    setActivePosition(defaultValue);
-  }, [defaultValue]);
-
-  const handleChangePosition = useCallback(
-    (activePosition) => {
-      setActivePosition(activePosition);
-      onChange(activePosition);
-    },
-    [onChange],
-  );
-
-  return (
-    <div className={classes.wrapper}>
-      <div className={classes.rowWrapper}>
-        <button
-          disabled={disabled}
-          type="button"
-          onClick={() => handleChangePosition(BackgroundPosition.TOP_LEFT)}
-          className={classNames(classes.button, classes.buttonSquare, {
-            [classes.active]: activePosition === BackgroundPosition.TOP_LEFT,
-          })}
-        >
-          {BackgroundPosition.TOP_LEFT}
-        </button>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => handleChangePosition(BackgroundPosition.TOP_CENTER)}
-          className={classNames(classes.button, classes.fillButton, {
-            [classes.active]: activePosition === BackgroundPosition.TOP_CENTER,
-          })}
-        >
-          {BackgroundPosition.TOP_CENTER}
-        </button>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => handleChangePosition(BackgroundPosition.TOP_RIGHT)}
-          className={classNames(classes.button, classes.buttonSquare, {
-            [classes.active]: activePosition === BackgroundPosition.TOP_RIGHT,
-          })}
-        >
-          {BackgroundPosition.TOP_RIGHT}
-        </button>
-      </div>
-      <div className={classNames(classes.rowWrapper, classes.middleRow)}>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => handleChangePosition(BackgroundPosition.MIDDLE_LEFT)}
-          className={classNames(
-            classes.button,
-            classes.fillButton,
-            classes.middleSideCol,
-            {
-              [classes.active]:
-                activePosition === BackgroundPosition.MIDDLE_LEFT,
-            },
-          )}
-        >
-          {BackgroundPosition.MIDDLE_LEFT}
-        </button>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => handleChangePosition(BackgroundPosition.MIDDLE_CENTER)}
-          className={classNames(classes.button, classes.fillButton, {
-            [classes.active]:
-              activePosition === BackgroundPosition.MIDDLE_CENTER,
-          })}
-        >
-          {BackgroundPosition.MIDDLE_CENTER}
-        </button>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => handleChangePosition(BackgroundPosition.MIDDLE_RIGHT)}
-          className={classNames(
-            classes.button,
-            classes.fillButton,
-            classes.middleSideCol,
-            {
-              [classes.active]:
-                activePosition === BackgroundPosition.MIDDLE_RIGHT,
-            },
-          )}
-        >
-          {BackgroundPosition.MIDDLE_RIGHT}
-        </button>
-      </div>
-      <div className={classes.rowWrapper}>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => handleChangePosition(BackgroundPosition.BOTTOM_LEFT)}
-          className={classNames(classes.button, classes.buttonSquare, {
-            [classes.active]: activePosition === BackgroundPosition.BOTTOM_LEFT,
-          })}
-        >
-          {BackgroundPosition.BOTTOM_LEFT}
-        </button>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => handleChangePosition(BackgroundPosition.BOTTOM_CENTER)}
-          className={classNames(classes.button, classes.fillButton, {
-            [classes.active]:
-              activePosition === BackgroundPosition.BOTTOM_CENTER,
-          })}
-        >
-          {BackgroundPosition.BOTTOM_CENTER}
-        </button>
-        <button
-          type="button"
-          disabled={disabled}
-          onClick={() => handleChangePosition(BackgroundPosition.BOTTOM_RIGHT)}
-          className={classNames(classes.button, classes.buttonSquare, {
-            [classes.active]:
-              activePosition === BackgroundPosition.BOTTOM_RIGHT,
-          })}
-        >
-          {BackgroundPosition.BOTTOM_RIGHT}
-        </button>
-      </div>
-    </div>
-  );
-};
 
 const DEFAULT_BACKGROUND_COLOR = 'transparent';
 
@@ -561,7 +362,12 @@ const BackgroundBlock: React.FC<Props> = ({
           <InputLabel>Background Image</InputLabel>
           <div
             className={classes.imageWrapper}
-            style={{ backgroundImage, backgroundPosition: 'cover' }}
+            style={{
+              backgroundImage,
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'cover',
+            }}
           >
             {!backgroundImage ? <Icon fontSize="medium">image</Icon> : null}
           </div>
@@ -619,7 +425,7 @@ const BackgroundBlock: React.FC<Props> = ({
           </Select>
         </FormControl>
         <InputLabel>Position</InputLabel>
-        <PositionButton
+        <PositionSelector
           defaultValue={backgroundPosition}
           onChange={handleChangePosition}
           disabled={!canEdit}
