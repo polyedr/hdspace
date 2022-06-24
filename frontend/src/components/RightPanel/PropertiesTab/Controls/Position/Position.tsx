@@ -8,20 +8,20 @@ import {
 import { MenuItem } from '@material-ui/core';
 import {
   positionsList,
-  POSITIONS,
   initialInsetStyles,
+  particularPositionStyles,
 } from '@Components/RightPanel/PropertiesTab/Controls/Position/constants/constants';
-import ClearIcon from '@mui/icons-material/Clear';
+import ClearIconMui from '@mui/icons-material/Clear';
 import { makeStyles } from '@material-ui/core/styles';
 import FloatIcons from '@Components/RightPanel/PropertiesTab/Controls/Position/components/FloatIcons';
-import ClearIcons, {
-  CLEAR_TYPE,
-} from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcons';
+import { IconType } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/IconTypes';
+import { POSITIONS } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/Positions';
 import ParticularPosition from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ParticularPosition';
 import Input from '@Components/RightPanel/PropertiesTab/Controls/Position/components/Input';
 import { useSelector } from 'react-redux';
 import { selectParentOfActiveElement } from '@Redux/project/selectors/element';
 import TargetIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/TargetIcon';
+import ClearIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcon';
 
 type ParsedInset = {
   value: React.CSSProperties['top'] | null;
@@ -77,18 +77,12 @@ const Position: React.FC<Props> = ({
   const parentOfActiveElement = useSelector(selectParentOfActiveElement);
 
   const [particularPositionState, setParticularPositionState] = useState(
-    inset || 'unset',
+    inset ?? particularPositionStyles.unset.inset,
   );
 
   const [parsedInset, setParsedInset] = useState<ParsedInset[]>(
     initialInsetStyles,
   );
-  /* [
-    { name: 'top', value: top },
-    { name: 'right', value: right },
-    { name: 'bottom', value: bottom },
-    { name: 'left', value: left },
-  ] || */
   const handleValueChange = (prop, value) => {
     updateStyles({ [prop]: value });
   };
@@ -119,25 +113,6 @@ const Position: React.FC<Props> = ({
       ]);
     }
   }, [inset]);
-
-  /* useEffect(() => {
-    if (
-      typeof particularPositionState === 'string' &&
-      particularPositionState !== 'unset'
-    ) {
-      const splitResult = particularPositionState.split(' ');
-      splitResult.forEach((item, index) =>
-        handleValueChange(initialInsetStyles[index].name, item),
-      );
-      const result = splitResult.map((item) => parseInt(item));
-      setParsedInset([
-        { name: 'top', value: result[0] },
-        { name: 'right', value: result[1] },
-        { name: 'bottom', value: result[2] },
-        { name: 'left', value: result[3] },
-      ]);
-    }
-  }, [inset, particularPositionState, element.id]); */
 
   const handlePositionDropdownChange = useCallback(
     (event) => {
@@ -218,15 +193,21 @@ const Position: React.FC<Props> = ({
               size="small"
             >
               <StyledToggleButton value="none" disabled={!canEdit}>
-                <ClearIcon fontSize="medium" />
+                <ClearIconMui fontSize="medium" />
               </StyledToggleButton>
 
               <StyledToggleButton value="left" disabled={!canEdit}>
-                <FloatIcons isActive={float === 'left'} type="left" />
+                <FloatIcons
+                  isActive={float === IconType.LEFT}
+                  type={IconType.LEFT}
+                />
               </StyledToggleButton>
 
               <StyledToggleButton value="right" disabled={!canEdit}>
-                <FloatIcons isActive={float === 'right'} type="right" />
+                <FloatIcons
+                  isActive={float === IconType.RIGHT}
+                  type={IconType.RIGHT}
+                />
               </StyledToggleButton>
             </StyledToggleButtonGroup>
           </div>
@@ -243,21 +224,27 @@ const Position: React.FC<Props> = ({
               size="small"
             >
               <StyledToggleButton value="none" disabled={!canEdit}>
-                <ClearIcon fontSize="medium" />
+                <ClearIconMui fontSize="medium" />
               </StyledToggleButton>
 
               <StyledToggleButton value="left" disabled={!canEdit}>
-                <ClearIcons isActive={clear === CLEAR_TYPE.LEFT} type="left" />
+                <ClearIcon
+                  isActive={clear === IconType.LEFT}
+                  type={IconType.LEFT}
+                />
               </StyledToggleButton>
 
               <StyledToggleButton value="both" disabled={!canEdit}>
-                <ClearIcons isActive={clear === CLEAR_TYPE.BOTH} type="both" />
+                <ClearIcon
+                  isActive={clear === IconType.BOTH}
+                  type={IconType.BOTH}
+                />
               </StyledToggleButton>
 
               <StyledToggleButton value="right" disabled={!canEdit}>
-                <ClearIcons
-                  isActive={clear === CLEAR_TYPE.RIGHT}
-                  type="right"
+                <ClearIcon
+                  isActive={clear === IconType.RIGHT}
+                  type={IconType.RIGHT}
                 />
               </StyledToggleButton>
             </StyledToggleButtonGroup>

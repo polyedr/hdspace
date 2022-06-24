@@ -29,6 +29,7 @@ const ParticularPosition: React.FC<Props> = ({
           insetValue.inset = item.label;
         }
       });
+      if (!insetValue.inset) insetValue.inset = 'custom';
     }
 
     return insetValue.inset;
@@ -36,6 +37,16 @@ const ParticularPosition: React.FC<Props> = ({
 
   const handlePositionButtonChange = (value) => {
     handleParticularPositionChange(convert(value));
+  };
+
+  const getValueFromRange = (value) => {
+    const isValueFromRange = particularPosition
+      .map((item) => item.value)
+      .includes(value);
+
+    if (!isValueFromRange) return 'custom';
+
+    return value;
   };
 
   return (
@@ -50,7 +61,7 @@ const ParticularPosition: React.FC<Props> = ({
       <StyledTextField
         fullWidth
         margin="dense"
-        value={particularPositionState}
+        value={getValueFromRange(particularPositionState)}
         onChange={(event) => handleParticularPositionChange(event.target.value)}
         select
         disabled={disabled}

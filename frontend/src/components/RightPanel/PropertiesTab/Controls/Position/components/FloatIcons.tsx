@@ -1,12 +1,13 @@
 import React from 'react';
+import { IconType } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/IconTypes';
 
 type Props = {
   isActive?: boolean;
-  type: 'left' | 'right';
+  type: IconType;
 };
 
 const FloatIcons: React.FC<Props> = ({ isActive = false, type }) => {
-  return type === 'left' ? (
+  return type === IconType.LEFT ? (
     <>
       <svg
         width="24"

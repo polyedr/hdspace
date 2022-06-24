@@ -68,6 +68,7 @@ enum BackgroundRepeat {
 }
 
 enum BackgroundPosition {
+  NONE = 'none',
   TOP_LEFT = 'top left',
   TOP_CENTER = 'top center',
   TOP_RIGHT = 'top right',

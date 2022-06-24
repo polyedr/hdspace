@@ -6,14 +6,6 @@ export const positionsList = [
   { label: 'Fixed', value: 'fixed' },
 ];
 
-export enum POSITIONS {
-  STATIC = 'static',
-  RELATIVE = 'relative',
-  ABSOLUTE = 'absolute',
-  STICKY = 'sticky',
-  FIXED = 'fixed',
-}
-
 export const particularPosition = [
   { label: 'none', value: 'unset' },
   { label: 'top left', value: '0% 100% 0% 0%' },
@@ -25,6 +17,7 @@ export const particularPosition = [
   { label: 'bottom left', value: '100% 100% 0% 0%' },
   { label: 'bottom center', value: '100% 50% 0% 50%' },
   { label: 'bottom right', value: '100% 0% 0% 100%' },
+  { label: 'custom', value: 'custom' },
 ];
 
 export const initialInsetStyles = [
@@ -47,15 +40,3 @@ export const particularPositionStyles = {
   bottomCenter: { inset: '100% 50% 0% 50%' },
   bottomRight: { inset: '100% 0% 0% 100%' },
 };
-
-export enum PARTICULAR_POSITION {
-  TOP_LEFT = 'topLeft',
-  TOP_CENTER = 'topCenter',
-  TOP_RIGHT = 'topRight',
-  MIDDLE_LEFT = 'centerLeft',
-  MIDDLE_CENTER = 'centerCenter',
-  MIDDLE_RIGHT = 'centerRight',
-  BOTTOM_LEFT = 'bottomLeft',
-  BOTTOM_CENTER = 'bottomCenter',
-  BOTTOM_RIGHT = 'bottomRight',
-}

@@ -1,18 +1,13 @@
 import React from 'react';
-
-export enum CLEAR_TYPE {
-  LEFT = 'left',
-  RIGHT = 'right',
-  BOTH = 'both',
-}
+import { IconType } from '@Components/RightPanel/PropertiesTab/Controls/Position/enums/IconTypes';
 
 type Props = {
   isActive?: boolean;
-  type: 'left' | 'right' | 'both';
+  type: IconType;
 };
 
-const ClearIcons: React.FC<Props> = ({ type, isActive = false }) => {
-  if (type === CLEAR_TYPE.LEFT)
+const ClearIcon: React.FC<Props> = ({ type, isActive = false }) => {
+  if (type === IconType.LEFT)
     return (
       <>
         <svg
@@ -37,7 +32,7 @@ const ClearIcons: React.FC<Props> = ({ type, isActive = false }) => {
         </svg>
       </>
     );
-  if (type === CLEAR_TYPE.BOTH)
+  if (type === IconType.BOTH)
     return (
       <>
         <svg
@@ -94,4 +89,4 @@ const ClearIcons: React.FC<Props> = ({ type, isActive = false }) => {
   );
 };
 
-export default ClearIcons;
+export default ClearIcon;
