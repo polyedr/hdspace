@@ -110,7 +110,7 @@ const TaskModal: React.FC<Props> = ({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Title"
-            inputProps={{ maxLength: 30 }}
+            inputProps={{ maxLength: 200 }}
           />
           {members.length ? (
             <Autocomplete
