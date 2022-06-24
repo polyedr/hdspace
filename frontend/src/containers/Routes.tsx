@@ -2,8 +2,8 @@ import React, { lazy, Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PATH_NAMES from '@Constants/pathNames';
+import MarketplaceLayout from '@Components/Marketplace/components/Layout/index';
 import Layout from '../components/Layout';
-import MarketplaceLayout from '../components/Marketplace/components/Layout/index';
 import { selectIsLoggedIn } from '../redux/user/selectors';
 
 const Profile = lazy(() => import('../components/User/Profile'));
