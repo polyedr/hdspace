@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import React from 'react';
+import React, { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import SubjectIcon from '@material-ui/icons/Subject';
@@ -85,9 +85,11 @@ const LeftPanel: React.FC = () => {
   const dispatch = useDispatch();
   const currentScreen = useSelector(selectCurrentScreen);
   const infoUser = useSelector(selectInfoUser);
+
   const editingUsers = currentScreen.screenData.editableScreenUser.filter(
     (item) => item.idUser !== infoUser.idUser,
   );
+
   const minimized = useSelector(selectIsLeftPanelMinimized);
   const viaMode = useSelector(selectVIAModeEnabled);
   const classes = useStyles({ minimized });
@@ -164,4 +166,4 @@ const LeftPanel: React.FC = () => {
   );
 };
 
-export default LeftPanel;
+export default memo(LeftPanel);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
@@ -99,4 +99,4 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
   );
 };
 
-export default ElementDropdown;
+export default memo(ElementDropdown);

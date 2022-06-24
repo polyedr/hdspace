@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, MutableRefObject, useState } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  MutableRefObject,
+  useState,
+  memo,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import ReactTooltip from 'react-tooltip';
@@ -184,4 +190,4 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
   },
 );
 
-export default ElementButton;
+export default memo(ElementButton);
