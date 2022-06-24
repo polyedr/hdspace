@@ -154,20 +154,11 @@ const Share: FC<Props> = () => {
       >
         <Container maxWidth="xs" className={classes.popup}>
           <Button
-            style={{ marginBottom: '1em' }}
             variant="contained"
             color="primary"
             onClick={() => handleCopyLink()}
           >
             Copy screen link
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleCopyLink(true)}
-            disabled={!activeElementId || parseInt(activeElementId) <= 0}
-          >
-            Copy element link
           </Button>
         </Container>
       </Popover>
