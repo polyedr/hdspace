@@ -35,8 +35,7 @@ const useStyles = makeStyles((theme) =>
       width: 200,
     },
     cellName: {
-      width: 400,
-      minWidth: 400,
+      minWidth: 250,
     },
   }),
 );
@@ -51,7 +50,7 @@ type Ref = HTMLTableRowElement;
 const ProjectListItem = React.forwardRef<Ref, Props>(
   (
     {
-      project: { status, id, name, updated, projectscreen, user, tags },
+      project: { status, id, name, updated, created, user, tags },
       onPermissionsManagementClick,
     },
     ref,
@@ -93,15 +92,22 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
     return (
       <>
         <TableRow className={classes.tableRow} ref={ref}>
-          <TableCell className={classes.cellStatus}>
-            <Typography color="secondary">{status}</Typography>
-          </TableCell>
-
           <TableCell className={classes.cellName}>
             <Link to={`/project/${id}`} className={classes.link}>
               {name}
             </Link>
-            {tags && <TagsList tags={tags} />}
+          </TableCell>
+
+          <TableCell>{tags && <TagsList tags={tags} />}</TableCell>
+
+          <TableCell className={classes.cellStatus}>
+            <Typography color="secondary">{status}</Typography>
+          </TableCell>
+
+          <TableCell>
+            <Typography variant="caption">
+              {convertDateToRelative(created)}
+            </Typography>
           </TableCell>
 
           <TableCell>
@@ -109,8 +115,6 @@ const ProjectListItem = React.forwardRef<Ref, Props>(
               {convertDateToRelative(updated)}
             </Typography>
           </TableCell>
-
-          <TableCell>{projectscreen.length}</TableCell>
 
           <TableCell>
             {user.id === userData.id && (

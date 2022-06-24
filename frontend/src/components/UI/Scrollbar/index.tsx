@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useDebouncedCallback } from 'use-debounce';
 import cn from 'classnames';
@@ -88,10 +88,13 @@ const renderView = ({ style, ...props }: any) => {
   const viewStyle = {
     position: 'relative',
     display: 'block',
+    width: '100%',
     height: '100%',
     minHeight: '100%',
+    maxHeight: '50vh',
     marginRight: '0', // prevent react-custom-scrollbars to overwrite margins (we dont need it since we're not displaying native ones)
     marginBottom: '0',
+    overflow: 'scroll',
   };
   return (
     <div
@@ -162,4 +165,4 @@ const Scrollbar = React.forwardRef<any, IScrollbarProps>((props, ref) => {
   );
 });
 
-export default Scrollbar;
+export default memo(Scrollbar);

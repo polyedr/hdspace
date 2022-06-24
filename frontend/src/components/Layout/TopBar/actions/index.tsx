@@ -1,58 +1,96 @@
-import React from 'react';
-import SaveIcon from '@material-ui/icons/Save';
-import VerticalAlignBottomIcon from '@material-ui/icons/VerticalAlignBottom';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  CircularProgress,
-  IconButton,
-  Box,
-  Typography,
-} from '@material-ui/core';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import React, { useCallback } from 'react';
+import { useDispatch, useSelector, batch } from 'react-redux';
+import { useDebouncedCallback } from 'use-debounce';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import { changePrototypeMode } from '@Redux/user/actions';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import ToggleButton from '@mui/material/ToggleButton';
+import { setBordersEnabled, exportScreenFlag } from '@Redux/project/actions';
+import { IconButton } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { PANEL_TRANSITION_DURATION } from '@Src/styles/Theme';
 import {
   selectUpdateScreenImageLoader,
   selectCurrentProject,
 } from '@Redux/project/selectors/base';
 import {
-  selectCurrentScreen,
   selectFreeCanvasMode,
   selectScreensWithoutMaster,
 } from '@Redux/project/selectors/screen';
-import { updateScreenImage, exportScreenFlag } from '@Redux/project/actions';
 
 import exportHTML from '@Src/export/app';
 import History from '@Components/Layout/History';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import Share from './Share';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(({ typography }) => ({
   root: {
     display: 'flex',
     flexWrap: 'nowrap',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    gap: '8px',
+  },
+  switch: {
+    padding: '0 1em',
+  },
+  title: {
+    fontSize: typography.fontSize,
   },
   iconButton: {
-    color: palette.common.white,
+    width: '32px',
+    height: '32px',
+    color: '#81818E',
+  },
+  helpTextStyle: {
+    textDecoration: 'none',
+    color: '#81818E',
     '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+      cursor: 'pointer',
     },
-    '&.Mui-disabled': {
-      color: '#888',
+    margin: '10px',
+  },
+  greyIcon: {
+    color: '#81818E',
+    height: 'large',
+  },
+  togglebutton: {
+    width: '32px',
+    height: '32px',
+    border: 'none !important',
+    borderRadius: '50% !important',
+    color: '#81818E !important',
+    '&.Mui-selected': {
+      color: '#000  !important',
     },
+  },
+  icon: {
+    width: '16px !important',
   },
 }));
 
 const Actions: React.FC = () => {
   const classes = useStyles();
+  const isProtoMode = useSelector(selectIsPrototypeMode);
   const dispatch = useDispatch();
-  const { id } = useSelector(selectCurrentScreen);
   const imageLoader = useSelector(selectUpdateScreenImageLoader);
   const canvasMode = useSelector(selectFreeCanvasMode);
+  const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const screens = useSelector(selectScreensWithoutMaster);
   const { name: projectName } = useSelector(selectCurrentProject);
 
-  const handleSaveScreen = () => dispatch(updateScreenImage(id));
+  const enableBordersDebounce = useDebouncedCallback(() => {
+    dispatch(setBordersEnabled(true));
+  }, PANEL_TRANSITION_DURATION + 120);
+
+  const handleToggleProtoMode = useCallback(() => {
+    batch(() => {
+      dispatch(setBordersEnabled(false));
+      dispatch(changePrototypeMode(!isProtoMode));
+    });
+    enableBordersDebounce.callback();
+  }, [isProtoMode]);
 
   const handleExportScreen = () => {
     if (screens.length > 0) {
@@ -74,31 +112,26 @@ const Actions: React.FC = () => {
   return (
     <div className={classes.root}>
       <History />
-
-      <IconButton
-        onClick={handleSaveScreen}
-        title="Save screen"
+      <ToggleButton
+        className={classes.togglebutton}
+        value="Proto mode"
+        onClick={handleToggleProtoMode}
+        title="Proto mode"
         disabled={imageLoader || canvasMode}
-        className={classes.iconButton}
+        selected={isPrototypeMode}
       >
-        <Box component="div">
-          {!imageLoader ? <SaveIcon /> : <CircularProgress size={24} />}
-          <Typography variant="body1">Save screen</Typography>
-        </Box>
-      </IconButton>
+        <VisibilityOutlinedIcon className={classes.icon} />
+      </ToggleButton>
 
       <IconButton
         onClick={handleExportScreen}
         title="Export screen"
         className={classes.iconButton}
       >
-        <Box component="div">
-          <VerticalAlignBottomIcon />
-          <Typography variant="body1">Export screen</Typography>
-        </Box>
+        <FileDownloadOutlinedIcon className={classes.icon} />
       </IconButton>
 
-      <Share className={classes.iconButton} />
+      <Share />
     </div>
   );
 };

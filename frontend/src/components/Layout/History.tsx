@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
-import { Box, Typography } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCanUndo, selectCanRedo } from '@Redux/project/selectors/control';
 import { executeUndoActions, executeRedoActions } from '@Redux/project/actions';
@@ -10,8 +9,15 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   root: {
+    gap: '8px',
     display: 'flex',
+    color: '#81818E',
+    alignItems: 'center',
     flexDirection: 'row',
+    marginRight: '24px',
+  },
+  icon: {
+    width: '16px',
   },
 });
 
@@ -32,10 +38,7 @@ const History: FC = () => {
         disabled={!canUndo}
         title="Undo"
       >
-        <Box component="div">
-          <UndoIcon />
-          <Typography variant="body1">Undo</Typography>
-        </Box>
+        <UndoIcon className={classes.icon} />
       </StyledIconButton>
 
       <StyledIconButton
@@ -43,10 +46,7 @@ const History: FC = () => {
         disabled={!canRedo}
         title="Redo"
       >
-        <Box component="div">
-          <RedoIcon />
-          <Typography variant="body1">Redo</Typography>
-        </Box>
+        <RedoIcon className={classes.icon} />
       </StyledIconButton>
     </div>
   );

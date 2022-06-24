@@ -59,6 +59,7 @@ import {
   DuplicateScreen,
   ElementHistoryMeta,
   GetProject,
+  GetSharedProject,
   HistoryMeta,
   LoadProjects,
   LoadProjectsSuccess,
@@ -202,6 +203,7 @@ import {
   UpdateDefaultStyles,
   GenerateImagePalette,
   SetImagePalette,
+  UpdateLayoutProjects,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -255,6 +257,12 @@ export const getProject = (id: number): GetProject => ({
   type: TYPES.GET_PROJECT,
   payload: { id },
 });
+export const getSharedProject = (
+  shortuuid_token: string,
+): GetSharedProject => ({
+  type: TYPES.GET_SHARED_PROJECT,
+  payload: { shortuuid_token },
+});
 
 export const setCurrentProjectId = (
   projectId: number,
@@ -307,6 +315,14 @@ export const updateNameAndTagsProject = (
 ): UpdateNameAndTagsProject => ({
   type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   payload: { projectID, name, tags },
+});
+
+export const updateLayoutProject = (
+  projectID: number,
+  projectDataJson: string,
+): UpdateLayoutProjects => ({
+  type: TYPES.UPDATE_LAYOUT_PROJECT,
+  payload: { projectID, projectDataJson },
 });
 
 export const setProjectListLoader = (
@@ -406,11 +422,11 @@ export const clearEditableScreen = (screen: Screen) => ({
 });
 
 export const createScreen = (
-  { projectID, name, buoyancy, rootName, freeCanvas }: CreateScreenData,
+  { projectID, name, buoyancy, rootName, freeCanvas, styles }: CreateScreenData,
   meta?: HistoryMeta,
 ): CreateScreen => ({
   type: TYPES.CREATE_SCREEN,
-  payload: { projectID, name, buoyancy, rootName, freeCanvas },
+  payload: { projectID, name, buoyancy, rootName, freeCanvas, styles },
   meta,
 });
 

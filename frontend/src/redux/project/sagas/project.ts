@@ -10,6 +10,7 @@ import {
   apiGetProjectList,
   apiUpdateProject,
   apiGetProjectWithScreens,
+  apigetSharedProject,
 } from '@Api/project';
 import { apiCreateAssetList } from '@Api/assetList';
 import { DEFAULT_ASSET_LIST_NAME } from '@Constants/defaultParams';
@@ -24,7 +25,9 @@ import {
   Result,
   Screen,
   UserProjectPermission,
+  ServerUserData,
 } from '@Src/types';
+
 import getSearchParams from '@Utils/getSearchParams';
 import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElements';
 import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
@@ -43,6 +46,10 @@ import {
 import logger from 'loglevel';
 import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
 import { selectUserData } from '@Redux/user/selectors';
+import { setStateCurrentUserPermissions } from '@Redux/permissions/actions';
+import { apiGetUser } from '@Api/user';
+import { setUserData, setTokenPair } from '@Redux/user/actions';
+import { convertUserDataFromResponse } from '@Api/converters/fromResponse';
 import { enqueueSnackbar } from '../../notification/actions';
 import { projectUpdateHelperSaga, reqWrapper } from './shared';
 import * as Actions from '../actions';
@@ -230,6 +237,10 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
     }
 
     if (result) {
+      yield put(Actions.changeLayout(result?.projectData?.layout?.value));
+      yield put(
+        Actions.rotateScreenFormat(result?.projectData?.layout?.rotated),
+      );
       yield put(PermissionsActions.getMyPermissionsForProject(result.id));
       yield put(
         Actions.setProject({
@@ -333,7 +344,15 @@ export function* createProjectSaga(
       yield put(Actions.setProjectList([...projects, createdProject]));
 
       yield put(Actions.setCurrentProjectId(createdProject.id));
-
+      yield put(
+        Actions.updateLayoutProject(
+          createdProject.id,
+          JSON.stringify({
+            ...createdProject.projectData,
+            layout: { value: 'desktop' },
+          }),
+        ),
+      );
       const masterScreen: Screen = yield call(
         createScreenSaga,
         Actions.createScreen(
@@ -495,6 +514,46 @@ export const updateNameAndTagsProjectSaga = function* ({
   }
 };
 
+export const updateLayoutProjectSaga = function* ({
+  payload: { projectID, projectDataJson },
+}: ReturnType<typeof Actions.updateLayoutProject>) {
+  try {
+    const project: Project = yield select(selectProjectById, projectID);
+    const { result, error }: Result<Project> = yield call(
+      reqWrapper,
+      apiUpdateProject,
+      {
+        data: {
+          id: projectID,
+          project_data_json: projectDataJson,
+          projectscreen: project.projectscreen,
+        },
+      },
+    );
+
+    if (result) {
+      yield put(Actions.setProject(result));
+    }
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
+          },
+          e,
+        ),
+      );
+    }
+  }
+};
+
 export function* updateProjectSaga(
   action: ReturnType<typeof Actions.updateProject>,
 ) {
@@ -600,3 +659,58 @@ export const resetCurrentUIFrameworkVariablesSaga = withRequiredPermissions(
     }),
   );
 });
+
+export function* getSharedProjectSaga(
+  action: ReturnType<typeof Actions.getSharedProject>,
+) {
+  try {
+    const { shortuuid_token } = action.payload;
+
+    yield put(Actions.setProjectLoader(true));
+
+    const { result, error }: Result = yield call(
+      reqWrapper,
+      apigetSharedProject,
+      {
+        shortuuid_token,
+      },
+    );
+    if (result) {
+      yield put(
+        setTokenPair({ access: result.results[0].access_token, refresh: '' }),
+      );
+      const id = result?.results[0].owner;
+      const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
+        id,
+      });
+      yield put(
+        setUserData({
+          ...convertUserDataFromResponse(userData),
+        }),
+      );
+      const updatedPermissions: UserProjectPermission[] = [];
+      updatedPermissions.push(UserProjectPermission.VIEW_PROJECT);
+      yield put(setStateCurrentUserPermissions(updatedPermissions));
+    }
+
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
+          },
+          e,
+        ),
+      );
+    }
+  } finally {
+    yield put(Actions.setProjectLoader(false));
+  }
+}

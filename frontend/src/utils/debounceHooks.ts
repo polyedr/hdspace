@@ -10,19 +10,26 @@ export const useDebouncedRichInputChange = (
   delay: number = 500,
 ) => {
   const content = richContent || '';
-  const [state, setState] = useState<any>(
-    EditorState.createWithContent(convertFromHTML(content)),
-  );
+  const [state, setState] = useState<{ editor: any; id: number }>({
+    editor: EditorState.createWithContent(convertFromHTML(content)),
+    id,
+  });
 
   useEffect(() => {
-    setState(EditorState.createWithContent(convertFromHTML(content)));
-  }, [content]);
+    setState({
+      editor: EditorState.createWithContent(convertFromHTML(content)),
+      id,
+    });
+  }, [content, id]);
 
   const debounced = useDebouncedCallback(cb, delay);
 
   const handleChange = (value: EditorState) => {
     // @ts-ignore
-    setState(value);
+    setState({
+      editor: value,
+      id,
+    });
     if (debounced.pending()) {
       debounced.cancel();
     }
@@ -68,7 +75,7 @@ export const useDebouncedValueChange = <T>(
 
   const debounced = useDebouncedCallback(cb, delay);
 
-  const handleChange = (value: T) => {
+  const handleChange: (value: T) => void = (value) => {
     setState(value);
     if (debounced.pending()) {
       debounced.cancel();

@@ -132,6 +132,7 @@ const ColorScheme = () => {
         >).map((key) => {
           return (
             <ColorSettings
+              isDefaultStyles
               currentColor={currentColor(key)}
               activeElementId={ColorSettingsTypes[key]}
               onChange={(color) => onColorChange(color, key)}

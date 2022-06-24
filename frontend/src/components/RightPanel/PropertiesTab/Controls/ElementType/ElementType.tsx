@@ -123,19 +123,22 @@ const ElementType: React.FC = () => {
   };
 
   return (
-    <StyledTextField
-      margin="dense"
-      label="New element type"
-      onChange={handleDropdownChange}
-      select
-      value=""
-    >
-      {TYPE.map(({ label, value }) => (
-        <MenuItem value={value} key={value} dense>
-          {label}
-        </MenuItem>
-      ))}
-    </StyledTextField>
+    <div style={{ padding: '0 16px' }}>
+      <StyledTextField
+        fullWidth
+        margin="dense"
+        label="New element type"
+        onChange={handleDropdownChange}
+        select
+        value=""
+      >
+        {TYPE.map(({ label, value }) => (
+          <MenuItem value={value} key={value} dense>
+            {label}
+          </MenuItem>
+        ))}
+      </StyledTextField>
+    </div>
   );
 };
 

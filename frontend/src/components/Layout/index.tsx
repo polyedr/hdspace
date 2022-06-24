@@ -8,24 +8,36 @@ const useStyles = makeStyles({
     height: 1, // allows children use height in %
     display: 'flex',
     flexFlow: 'column nowrap',
+    '& header': {
+      position: 'unset',
+    },
   },
   content: {
     flex: 1,
   },
   placeholder: {
-    minHeight: 75, // Toolbar variant="dense" min-height
+    minHeight: 44, // Toolbar variant="dense" min-height
     flex: '0 0',
+  },
+  noeventclass: {
+    pointerEvents: 'none',
   },
 });
 
 const Layout = ({ children }) => {
   const classes = useStyles();
+  const url = new URL(window.location.href);
+  const shortuuid_token = url?.pathname.split('/')[4];
 
   return (
-    <div className={classes.layout}>
+    <div
+      className={
+        shortuuid_token
+          ? `${classes.layout} ${classes.noeventclass}`
+          : classes.layout
+      }
+    >
       <TopPanel />
-      <div className={classes.placeholder} />
-
       <div className={classes.content}>{children}</div>
     </div>
   );

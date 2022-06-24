@@ -51,6 +51,13 @@ export const setTokenPair = (tokenPair: TokenPair) => ({
   type: TYPES.SET_TOKEN_PAIR,
   tokenPair,
 });
+export const setProjectViewStart = () => ({
+  type: TYPES.PROJECT_VIEW_START,
+});
+export const setProjectViewEnd = (viewTokenPair: TokenPair) => ({
+  type: TYPES.PROJECT_VIEW_END,
+  viewTokenPair,
+});
 
 export const setUserData = (data: Partial<UserData>) => ({
   type: TYPES.SET_USER_DATA,

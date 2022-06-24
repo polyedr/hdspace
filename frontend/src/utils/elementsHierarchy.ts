@@ -44,6 +44,7 @@ export const getRightPanelCategoryTabs = (
     case 'paragraph':
     case 'heading':
     case 'image':
+    case 'imagesList':
     case 'video':
     case 'textBlock':
     case 'html':
@@ -63,7 +64,10 @@ export const getRightPanelCategoryTabs = (
     case 'button':
     case 'textinput':
     case 'textarea':
+    case 'slider':
+    case 'dateTimePicker':
     case 'checkbox':
+    case 'switch':
     case 'radiobuttonGroup':
     case 'label':
     case 'select':

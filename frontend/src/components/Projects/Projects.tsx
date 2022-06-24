@@ -12,9 +12,7 @@ import {
 import Searchbar from '@Components/Projects/Searchbar';
 import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
 import {
-  Paper,
   Typography,
-  Divider,
   Table,
   TableHead,
   TableRow,
@@ -35,10 +33,15 @@ const useStyles = makeStyles((theme) =>
       padding: theme.spacing(1),
     },
     header: {
+      padding: theme.spacing(1),
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '25px',
+    },
+    headerAction: {
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: theme.spacing(1),
     },
     headerText: {
       fontWeight: 'bold',
@@ -60,8 +63,10 @@ const useStyles = makeStyles((theme) =>
       width: 200,
     },
     cellName: {
-      width: 400,
-      minWidth: 400,
+      minWidth: 250,
+    },
+    cellTags: {
+      minWidth: 200,
     },
   }),
 );
@@ -128,44 +133,44 @@ const Projects: React.FC = () => {
 
   return (
     <Container maxWidth="lg">
-      <Paper className={classes.root}>
+      <div className={classes.root}>
         <div className={classes.header}>
           <Typography variant="h5" className={classes.headerText}>
             All projects
           </Typography>
-
-          <Searchbar />
-
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={handleProjectAdd}
-            disabled={projectCreateLoader}
-            className={classes.createButton}
-          >
-            {!projectCreateLoader ? (
-              'Create a project'
-            ) : (
-              <CircularProgress size={24} />
-            )}
-          </Button>
+          <div className={classes.headerAction}>
+            <Searchbar />
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleProjectAdd}
+              disabled={projectCreateLoader}
+              className={classes.createButton}
+            >
+              {!projectCreateLoader ? (
+                'Create a project'
+              ) : (
+                <CircularProgress size={24} />
+              )}
+            </Button>
+          </div>
         </div>
-
-        <Divider />
 
         <TableContainer className={classes.table}>
           <Table size="small">
             <TableHead className={classes.tableHeader}>
               <TableRow>
+                <TableCell className={classes.cellName}>Project Name</TableCell>
+
+                <TableCell className={classes.cellTags}>Tags</TableCell>
+
                 <TableCell className={classes.cellStatus}>
                   Project Status
                 </TableCell>
 
-                <TableCell className={classes.cellName}>Project Name</TableCell>
+                <TableCell>Date of creation</TableCell>
 
                 <TableCell>Last Edit</TableCell>
-
-                <TableCell>Total Pages</TableCell>
 
                 <TableCell>Actions</TableCell>
               </TableRow>
@@ -201,7 +206,7 @@ const Projects: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      </Paper>
+      </div>
       {!!sortedProjectList.length && (
         <UserPermissionsModal
           projectId={permissionsManagementProjectId}

@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, MutableRefObject, useState } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  MutableRefObject,
+  useState,
+  memo,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDrag } from 'react-dnd';
 import ReactTooltip from 'react-tooltip';
@@ -25,12 +31,11 @@ type Props = {
   elementData: ElementData;
 };
 
-const useButtonStyles = makeStyles(({ palette }) => ({
+const useButtonStyles = makeStyles(() => ({
   root: {
-    color: palette.grey.A100,
+    color: '#81818E',
     '&:hover': {
-      color: palette.common.white,
-      backgroundColor: palette.panel.dark,
+      color: '#000000',
       boxShadow:
         '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
     },
@@ -185,4 +190,4 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
   },
 );
 
-export default ElementButton;
+export default memo(ElementButton);

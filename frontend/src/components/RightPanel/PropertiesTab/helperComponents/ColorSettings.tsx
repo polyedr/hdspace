@@ -4,37 +4,61 @@ import { ColorResult } from 'react-color';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from '@material-ui/core/styles';
+import { getPermissibleValue } from '@Utils/NumberHelper';
+import ClearIcon from '@mui/icons-material/Clear';
 import { ColorPicker, normalizeColor, useColor } from '../../../UI/ColorPicker';
 import { StyledTextField } from '../../../styledComponents';
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'flex-end',
     padding: '0.5em 0',
+    flexDirection: 'row',
   },
   wrapper: {
-    padding: '0 0.5em',
+    padding: '0.5em',
+  },
+  input: {
+    width: '95px',
+  },
+  colorPickerBlock: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
   },
 });
 
 type Props = {
   currentColor: string;
+  currentOpacity?: React.CSSProperties['opacity'];
   activeElementId: string;
   onChange(color: string): any | void;
   disabled?: boolean;
   labelTextStyle?: string;
+  updateStyles?: any;
+  propsToRemove?: string[];
+  onClick?(propsToRemove: string[] | undefined): void;
+  isDefaultStyles?: boolean;
 };
 
 const ColorSettings: React.FC<Props> = ({
+  propsToRemove,
+  onClick,
   currentColor,
+  currentOpacity,
   activeElementId,
   onChange,
   disabled,
   labelTextStyle = 'Color',
+  updateStyles,
+  isDefaultStyles,
 }) => {
   const classes = useStyles();
+  const [currentOpacityState, setCurrentOpacityState] = useState<
+    React.CSSProperties['opacity']
+  >(currentOpacity || 1);
   const [currentBackgroundColor, setCurrentBackgroundColor] = useColor(
     currentColor,
     activeElementId,
@@ -46,6 +70,20 @@ const ColorSettings: React.FC<Props> = ({
     currentBackgroundColor.value.includes('rgba'),
   );
 
+  useEffect(() => {
+    if (currentColorObject.rgb.a)
+      setCurrentOpacityState(currentColorObject.rgb.a || currentOpacity || 1);
+  }, [currentColorObject]);
+
+  const handleChangeOpacity = useCallback(
+    (value) => {
+      const newOpacity = getPermissibleValue(value, 0, 1);
+
+      updateStyles({ opacity: `${newOpacity}` });
+    },
+    [updateStyles],
+  );
+
   const formatTextColor = useCallback(
     (isValueCheckBox: boolean) => {
       if (isValueCheckBox) {
@@ -55,6 +93,7 @@ const ColorSettings: React.FC<Props> = ({
           convertedColor,
           currentColorObject,
         );
+
         setCurrentBackgroundColor(normalizedColor);
         onChange(convertedColor);
         const reactColorObject = toState(convertedColor);
@@ -118,26 +157,58 @@ const ColorSettings: React.FC<Props> = ({
     [currentColorObject, setCurrentBackgroundColor, onChange],
   );
 
+  const validateOpacity = () => {
+    const value = (currentOpacityState as unknown) as number;
+    return value && value <= 1 && value > 0 && !Number.isNaN(value)
+      ? value * 100
+      : 100;
+  };
+
+  const handleRemoveClick = () => {
+    if (onClick) onClick(propsToRemove);
+  };
+
   return (
     <div>
       <div className={classes.root}>
-        <StyledTextField
-          label={labelTextStyle}
-          fullWidth
-          value={currentBackgroundColor.value}
-          onBlur={({ target: { value } }) => handleColorInputBlur(value)}
-          onChange={({ target: { value } }) => handleColorChange(value)}
-          margin="none"
-          disabled={disabled}
-        />
-
-        <div className={classes.wrapper}>
-          <ColorPicker
-            color={currentBackgroundColor.value}
-            onChangeComplete={handleColorChange}
+        <div className={classes.colorPickerBlock}>
+          <div className={classes.wrapper}>
+            <ColorPicker
+              color={currentBackgroundColor.value}
+              onChangeComplete={handleColorChange}
+              disabled={disabled}
+            />
+          </div>
+          <StyledTextField
+            className={classes.input}
+            label={labelTextStyle}
+            value={currentBackgroundColor.value}
+            onBlur={({ target: { value } }) => handleColorInputBlur(value)}
+            onChange={({ target: { value } }) => handleColorChange(value)}
+            margin="none"
             disabled={disabled}
           />
         </div>
+        <StyledTextField
+          className={classes.input}
+          style={{ marginLeft: '24px' }}
+          value={`${validateOpacity()}%`}
+          onBlur={({ target: { value } }) => {
+            setCurrentOpacityState(parseInt(value) / 100);
+            handleChangeOpacity(parseInt(value) / 100);
+          }}
+          onChange={({ target: { value } }) => {
+            setCurrentOpacityState(parseInt(value) / 100);
+            handleChangeOpacity(parseInt(value) / 100);
+          }}
+          margin="none"
+          disabled={disabled}
+        />
+        {!isDefaultStyles && (
+          <div onClick={handleRemoveClick}>
+            <ClearIcon sx={{ width: '16px', color: '#81818E' }} />
+          </div>
+        )}
       </div>
       <FormControlLabel
         control={

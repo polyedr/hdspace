@@ -184,6 +184,7 @@ export type FeatureSectionServerElement = ServerElement<
   'featureSection',
   ServerElement<Entity>[]
 >;
+
 export type ImageServerElement = ServerElement<'image', [], ImageParameters>;
 export type SmartContainerServerElement<T extends Entity> = ServerElement<
   T,
@@ -205,6 +206,14 @@ export type CheckboxServerElement = ServerElement<
   [],
   CheckboxParameters
 >;
+export type SwitchServerElement = ServerElement<'switch', [], SwitchParameters>;
+
+export type ImagesListServerElement = ServerElement<
+  'imagesList',
+  ImageServerElement[],
+  ImagesListParameters
+>;
+
 export type RadiobuttonServerElement = ServerElement<
   'radiobutton',
   [],
@@ -226,6 +235,14 @@ export type TextareaServerElement = ServerElement<
   'textarea',
   [],
   TextareaParameters
+>;
+
+export type SliderServerElement = ServerElement<'slider', [], SliderParameters>;
+
+export type DateTimePickerServerElement = ServerElement<
+  'dateTimePicker',
+  [],
+  DateTimePickerParameters
 >;
 export type HeadingServerElement = ServerElement<
   'heading',
@@ -375,6 +392,7 @@ export type LibraryElement<
     link?: string;
     screenName?: string;
     screenLink?: string;
+    columns?: number;
   } & Params;
   shared?: boolean;
 };
@@ -425,7 +443,7 @@ export type ImageElement = LibraryElement<'image', [], ImageParameters>;
 export type ButtonElement = LibraryElement<'button', [], ButtonParameters>;
 
 // Generator Elements
-export type buttonGeneratorElement = ServerElement<
+export type ButtonGeneratorElement = ServerElement<
   'buttonGenerator',
   ServerElement<Entity>[]
 >;
@@ -471,6 +489,13 @@ export type TextareaElement = LibraryElement<
   'textarea',
   [],
   TextareaParameters
+>;
+export type SliderElement = LibraryElement<'slider', [], SliderParameters>;
+
+export type DateTimePickerElement = LibraryElement<
+  'dateTimePicker',
+  [],
+  DateTimePickerParameters
 >;
 export type HeadingElement = LibraryElement<'heading', [], HeadingParameters>;
 export type ParagraphElement = LibraryElement<
@@ -586,6 +611,12 @@ export type ImageParameters = BaseElementParams & {
   keepAspectRatio: boolean;
 };
 
+export type ImagesListParameters = BaseElementParams & {
+  images: ImageElement[];
+  name: string;
+  columns: number;
+};
+
 export type LinkType = 'internal' | 'external';
 
 export type LinkParams = BaseElementParams & {
@@ -616,6 +647,12 @@ export type CheckboxParameters = BaseElementParams & {
   value: string;
   name: string;
   showRipple: boolean;
+  defaultChecked: boolean;
+};
+
+export type SwitchParameters = BaseElementParams & {
+  value: string;
+  name: string;
   defaultChecked: boolean;
 };
 
@@ -650,6 +687,24 @@ export type ColumnsParameters = BaseElementParams;
 export type TextareaParameters = BaseElementParams & {
   textContent: string;
   placeholder: string;
+};
+
+export type SliderParameters = BaseElementParams & {
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+};
+
+export enum DateTimePickerType {
+  Date = 'Date',
+  Time = 'Time',
+  DateTime = 'Date Time',
+}
+
+export type DateTimePickerParameters = BaseElementParams & {
+  label: string;
+  type: DateTimePickerType;
 };
 
 export type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -710,6 +765,9 @@ export type PaginationItemParameters = BaseElementParams & {
 };
 export type CarouselItemParameters = BaseElementParams & {
   link: string;
+  alt: string;
+};
+export type ImagesItemParameters = BaseElementParams & {
   alt: string;
 };
 export type NavbarItemParameters = BaseElementParams & {
@@ -831,9 +889,15 @@ export type ProjectClass = {
   rules: React.CSSProperties;
 };
 
+export type LayoutData = {
+  value: Layout;
+  rotated: boolean;
+};
+
 export type ProjectData = {
   classes: ProjectClass[];
   defaultStyles: DefaultStyles;
+  layout: LayoutData;
   uiFramework: UIFramework;
 };
 
@@ -885,6 +949,7 @@ export type Typography = {
   fontStyle?: string;
   fontWeight?: number;
   textAlign?: string;
+  verticalAlign?: string;
 };
 
 export type Indents = {
@@ -1181,7 +1246,10 @@ export type TokenPair = {
   access: string;
   refresh: string;
 };
-
+export type ViewTokenPair = {
+  access: string;
+  refresh: string;
+};
 export type LoginFormData = {
   username: string;
   password: string;
@@ -1378,6 +1446,7 @@ export type ChildrenElements = {
   paginationItem: () => PaginationItemServerElement;
   carouselItem: () => CarouselItemServerElement;
   navbarItem: () => NavbarItemServerElement;
+  image: () => ImageServerElement;
 };
 
 export type ElementsToAdd = {
@@ -1395,7 +1464,7 @@ export type ElementsToAdd = {
   smartForm: () => SmartFormServerElement;
   smartWebpage: () => SmartWebpageServerElement;
   button: () => ButtonServerElement;
-  buttonGenerator: () => buttonGeneratorElement;
+  buttonGenerator: () => ButtonGeneratorElement;
   input: () => TextinputServerElement;
   textinput: () => TextinputServerElement;
   checkbox: () => CheckboxServerElement;
@@ -1403,6 +1472,7 @@ export type ElementsToAdd = {
   select: () => SelectServerElement;
   label: () => LabelServerElement;
   textarea: () => TextareaServerElement;
+  slider: () => SliderServerElement;
   heading: () => HeadingServerElement;
   paragraph: () => ParagraphServerElement;
   ocrtext: () => OcrtextServerElement;
@@ -1410,6 +1480,7 @@ export type ElementsToAdd = {
   list: () => ListServerElement;
   map: () => MapServerElement;
   calendar: () => CalendarServerElement;
+  dateTimePicker: () => DateTimePickerServerElement;
   clock: () => ClockServerElement;
   dropdown: () => DropdownServerElement;
   video: () => VideoServerElement;
@@ -1424,6 +1495,8 @@ export type ElementsToAdd = {
   carousel: () => CarouselServerElement;
   navbar: () => NavbarServerElement;
   hyperlink: () => LabelServerElement;
+  switch: () => SwitchServerElement;
+  imagesList: () => ImagesListServerElement;
 };
 
 export type LibraryElements = ChildrenElements & ElementsToAdd;
@@ -1537,6 +1610,10 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
   'carousel',
   'navbar',
   'radiobuttons',
+  'imagesList',
+  'dateTimePickerControls',
+  'sliderSettings',
+  'styleSheets',
 ] as const;
 
 export const CONTROLS_AFFECT_ON_STYLES = [
@@ -1544,6 +1621,7 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'columns',
   'nativeColumns',
   'display',
+  'position',
   'indents',
   'size',
   'typography',
@@ -1553,8 +1631,8 @@ export const CONTROLS_AFFECT_ON_STYLES = [
   'flexGrow',
   'backgroundSize',
   'backgroundImage',
-  'styleSheets',
   'alignment',
+  'opacity',
 ] as const;
 
 export type Control =

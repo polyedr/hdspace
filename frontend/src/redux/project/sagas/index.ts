@@ -91,11 +91,13 @@ import {
   getProjectListSaga,
   getProjectSaga,
   updateNameAndTagsProjectSaga,
+  updateLayoutProjectSaga,
   searchProjectsSaga,
   updateCurrentUIFrameworkSaga,
   updateCurrentUIFrameworkVariablesSaga,
   resetCurrentUIFrameworkVariablesSaga,
   updateProjectSaga,
+  getSharedProjectSaga,
 } from './project';
 import TYPES from '../../actionTypes';
 import { projectUpdateHelperSaga } from './shared';
@@ -297,23 +299,19 @@ const duplicateScreenSaga = withRequiredPermissions(
     const sourceRoot: LibraryElement<'root'> = yield select(
       selectScreenRootElement(screenID),
     );
-
     const screenData: ScreenData = yield select(selectScreen(screenID));
     const sourceCurrentScreen: ReturnType<
       typeof selectCurrentScreen
     > = yield select(selectCurrentScreen);
-
     const duplicatedItems = sourceRoot.children.map((child) => ({
       id: child.id,
       screenID: sourceCurrentScreen.id,
     }));
-
     const currentProject: ReturnType<
       typeof selectCurrentProject
     > = yield select(selectCurrentProject);
     const projectID = currentProject.id;
     const screensNumber = currentProject.projectscreen.length;
-
     const screen = yield call(
       createScreenSaga,
       Actions.createScreen({
@@ -321,9 +319,9 @@ const duplicateScreenSaga = withRequiredPermissions(
         name,
         buoyancy: screensNumber,
         freeCanvas: screenData.freeCanvas,
+        styles: sourceRoot.styles,
       }),
     );
-
     if (!screen) {
       throw new Error('Failed to create screen');
     }
@@ -334,7 +332,7 @@ const duplicateScreenSaga = withRequiredPermissions(
       selectScreenRootElement(screen.id),
     );
     const targetRootID = targetRoot.id;
-
+    targetRoot.styles = sourceRoot.styles;
     yield put(Actions.setActiveElement(targetRootID));
 
     if (duplicatedItems.length) {
@@ -437,8 +435,9 @@ export default function* projectSaga() {
     TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
     updateNameAndTagsProjectSaga,
   );
+  yield takeLatest(TYPES.UPDATE_LAYOUT_PROJECT, updateLayoutProjectSaga);
   yield takeLatest(TYPES.SEARCH_PROJECTS, searchProjectsSaga);
-
+  yield takeLatest(TYPES.GET_SHARED_PROJECT, getSharedProjectSaga);
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
   yield takeLatest(TYPES.CREATE_SCREEN, createScreenSaga);
   yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);

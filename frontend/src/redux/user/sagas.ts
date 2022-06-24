@@ -14,9 +14,18 @@ import {
   apiRestorePassword,
   registerUser,
   apiGetUser,
+  apiGetUsers,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
-import { ServerProfileData, ServerUserData, TokenPair } from '@Src/types';
+import {
+  ServerProfileData,
+  ServerUserData,
+  TokenPair,
+  ViewTokenPair,
+  PaginatedResponse,
+  Result,
+  UserData,
+} from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   sidebarLogout,
@@ -24,6 +33,7 @@ import {
 } from '@Redux/project/actions';
 import _ from 'lodash';
 
+import { USERNAME_VIEW, PASSWORD_VIEW } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
 import { reqWrapper } from '../project/sagas/shared';
@@ -46,7 +56,28 @@ export function* getTokenPairSaga(username: string, password: string) {
     }
   }
 }
+export function* getTokenPairSagaProjectView() {
+  try {
+    const username = USERNAME_VIEW;
+    const password = PASSWORD_VIEW;
+    const tokens: ViewTokenPair = yield call(apiGetToken, {
+      username,
+      password,
+    });
 
+    yield put(Actions.setProjectViewEnd(tokens));
+  } catch (e: any) {
+    yield put(
+      enqueueSnackbar(
+        {
+          message: e.message,
+          options: { variant: 'error' },
+        },
+        e,
+      ),
+    );
+  }
+}
 export function* loginSaga({
   payload: { username, password },
 }: ReturnType<typeof Actions.login>) {
@@ -231,12 +262,36 @@ function* sendResetPasswordMailSaga(
       payload: { email },
     } = action;
     yield put(Actions.toggleUserLoading(true));
-
-    yield call(apiRestorePassword, email);
-
-    yield put(
-      Actions.setConfirmMessage('Please, check your mail and set new password'),
+    const { result }: Result<PaginatedResponse<UserData>> = yield call(
+      reqWrapper,
+      apiGetUsers,
+      {
+        search: email || '',
+      },
     );
+    if (result) {
+      if (result?.results.length > 0) {
+        yield call(apiRestorePassword, email);
+        yield put(
+          enqueueSnackbar({
+            message: 'Please check your mail and follow the instructions.',
+            options: {
+              variant: 'info',
+            },
+          }),
+        );
+      } else {
+        yield put(
+          enqueueSnackbar({
+            message: "This email doesn't exist in the system",
+            options: {
+              variant: 'error',
+            },
+          }),
+        );
+      }
+    }
+
     openSignScreen('signin');
   } catch (e) {
     // @ts-ignore
@@ -339,4 +394,5 @@ export default function* userSaga() {
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
   yield takeEvery(TYPES.LOAD_USER_DATA, loadUserDataSaga);
+  yield takeEvery(TYPES.PROJECT_VIEW_START, getTokenPairSagaProjectView);
 }

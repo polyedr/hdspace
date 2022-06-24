@@ -25,6 +25,7 @@ const RadiobuttonGroup = React.forwardRef<HTMLDivElement, RendererProps>(
           classes.ownStyles,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        style={{ width: 'fit-content' }}
         {...eventHandlers}
         {...(isDisabled && {
           onMouseDown: (ev) => {

@@ -21,8 +21,8 @@ import {
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
-import { EditorState } from 'draft-js';
-import { convertFromHTML, convertToHTML } from 'draft-convert';
+import { convertToHTML } from 'draft-convert';
+import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
 import RichTextContent from '../../helperComponents/RichTextContent/RichTextContent';
 
 const useStyles = makeStyles(({ palette, spacing }) => ({
@@ -72,10 +72,6 @@ const ListItem: React.FC<Props> = ({
   const [selectedScreen, selectScreen] = useState(screenName);
   const screens = useSelector(selectScreensWithoutMaster);
   const [isValidURL, setValidURL] = useState(true);
-
-  const debouncedText = useDebouncedCallback((value) => {
-    updateParams({ textContent: convertToHTML(value.getCurrentContent()) }, id);
-  }, 500);
 
   const debouncedLink = useDebouncedCallback((value) => {
     if (value) {
@@ -133,9 +129,17 @@ const ListItem: React.FC<Props> = ({
     selectScreen('noScreen');
   };
 
-  const [state, setState] = useState(
-    EditorState.createWithContent(convertFromHTML(textContent)),
-  );
+  const [
+    textContentValue,
+    handleTextContentChange,
+  ] = useDebouncedRichInputChange(textContent, parseInt(id), (value) => {
+    updateParams(
+      {
+        textContent: convertToHTML(value.getCurrentContent()),
+      },
+      id,
+    );
+  });
 
   useEffect(() => {
     if (screenName && screenLink) {
@@ -145,11 +149,6 @@ const ListItem: React.FC<Props> = ({
       selectScreen('noScreen');
     }
   }, [screenName, screenLink]);
-
-  const handleChange = (value) => {
-    setState(value);
-    debouncedText.callback(value);
-  };
 
   return (
     <StyledAccordion>
@@ -172,7 +171,10 @@ const ListItem: React.FC<Props> = ({
       </StyledAccordionSummary>
 
       <StyledAccordionDetails className={classes.details}>
-        <RichTextContent textState={state} handleChange={handleChange} />
+        <RichTextContent
+          textState={textContentValue}
+          handleChange={handleTextContentChange}
+        />
 
         <FormControlLabel
           control={

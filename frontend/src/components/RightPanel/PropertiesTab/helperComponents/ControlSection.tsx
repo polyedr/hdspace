@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { splitWords } from '@Utils/stringHelper';
 import {
@@ -6,6 +6,7 @@ import {
   StyledAccordionDetails,
   StyledAccordionSummary,
 } from '@Components/styledComponents';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const useStyles = makeStyles({
   section: {},
@@ -25,14 +26,31 @@ const useStyles = makeStyles({
 
 type Props = {
   title: string;
+  expanded: boolean;
 };
 
-const ControlSection: React.FC<Props> = ({ title, children }) => {
+const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
   const classes = useStyles();
-
+  const [isCollapse, setIsCollapse] = useState(expanded);
+  const animate = (expanded) => {
+    setIsCollapse(expanded);
+  };
+  const toggle = () => {
+    setIsCollapse(!isCollapse);
+  };
+  useEffect(() => {
+    animate(!expanded);
+  }, [expanded]);
   return (
-    <StyledAccordion className={classes.section} defaultExpanded>
-      <StyledAccordionSummary className={classes.title}>
+    <StyledAccordion
+      className={classes.section}
+      expanded={isCollapse}
+      onChange={() => toggle()}
+    >
+      <StyledAccordionSummary
+        expandIcon={<ArrowDropDownIcon />}
+        className={classes.title}
+      >
         {splitWords(title)}
       </StyledAccordionSummary>
 

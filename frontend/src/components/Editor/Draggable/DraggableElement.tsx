@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useEffect, useCallback, memo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
 import { useDebouncedCallback } from 'use-debounce';
@@ -24,6 +24,7 @@ import { ElementType } from '@Constants/dragAndDrop';
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
 import Scrollbars from 'react-custom-scrollbars';
+import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import RENDERERS from '../../UI/RenderElements';
 
@@ -53,6 +54,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   scrollRef,
 }) => {
   const dispatch = useDispatch();
+  const isProto = useSelector(selectIsPrototypeMode);
 
   const element = allElements[elementId];
   const parent = useMemo(
@@ -88,7 +90,8 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       !NOT_DRAGGABLE_COMPONENTS.includes(element.type) &&
       !!parent &&
       !element.parameters.sourceElementId &&
-      canDragAndDrop,
+      canDragAndDrop &&
+      !isProto,
     end: (dragSource, monitor) => {
       if (!monitor.didDrop()) {
         dispatch(setCurrentDropTargetParams(null));

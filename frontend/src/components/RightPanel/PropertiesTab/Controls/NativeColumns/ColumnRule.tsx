@@ -47,12 +47,14 @@ type Props = {
   element: StateElement;
   canEdit: boolean;
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
+  removeStyles: PropertiesChangeProps<ColumnsElement>['removeStyles'];
   ruleWidth: React.CSSProperties['columnRuleWidth'];
   ruleStyle: React.CSSProperties['columnRuleStyle'];
   ruleColor: React.CSSProperties['columnRuleColor'];
 };
 
 const ColumnRule: React.FC<Props> = ({
+  removeStyles,
   updateStyles,
   element,
   ruleWidth,
@@ -124,6 +126,8 @@ const ColumnRule: React.FC<Props> = ({
         }
       />
       <ColorSettings
+        onClick={removeStyles}
+        propsToRemove={['columnRuleColor']}
         currentColor={ruleColorValue as string}
         activeElementId={element.id}
         onChange={handleRuleColorChange as (color: string) => void}

@@ -32,11 +32,21 @@ const RichTextContent = ({ textState, handleChange }) => {
     }
   };
 
+  const [editorState, handleEditorState] = useState(textState.editor);
+
+  useEffect(() => {
+    handleChange(editorState);
+  }, [editorState]);
+
+  useEffect(() => {
+    handleEditorState(textState.editor);
+  }, [textState.id]);
+
   const [selectedBlock, setSelectedBlock] = useState<string>('');
 
   useEffect(() => {
-    setSelectedBlock(getSelectedBlocksType(textState));
-  }, [textState]);
+    setSelectedBlock(getSelectedBlocksType(editorState));
+  }, [editorState]);
 
   const handleKeyCommand = (command: string): DraftHandleValue => {
     if (
@@ -44,7 +54,7 @@ const RichTextContent = ({ textState, handleChange }) => {
       selectedBlock !== SelectedBlocks.ORDERED_LIST_ITEM &&
       selectedBlock !== SelectedBlocks.UNORDERED_LIST_ITEM
     ) {
-      handleChange(RichUtils.insertSoftNewline(textState));
+      handleChange(RichUtils.insertSoftNewline(editorState));
       return 'handled';
     }
     return 'not-handled';
@@ -54,8 +64,8 @@ const RichTextContent = ({ textState, handleChange }) => {
     <div className="editor" onClick={focusEditor}>
       <Editor
         ref={editor}
-        editorState={textState}
-        onChange={handleChange}
+        editorState={editorState}
+        onChange={handleEditorState}
         plugins={plugins}
         handleKeyCommand={handleKeyCommand}
       />

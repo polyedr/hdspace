@@ -12,7 +12,10 @@ export const ENTITIES: {
   buttonGenerator: 'buttonGenerator',
   textinput: 'textinput',
   textarea: 'textarea',
+  slider: 'slider',
+  dateTimePicker: 'dateTimePicker',
   checkbox: 'checkbox',
+  switch: 'switch',
   radiobuttonGroup: 'radiobuttonGroup',
   label: 'label',
   heading: 'heading',
@@ -20,6 +23,7 @@ export const ENTITIES: {
   textBlock: 'textBlock',
   list: 'list',
   image: 'image',
+  imagesList: 'imagesList',
   select: 'select',
   map: 'map',
   calendar: 'calendar',
@@ -60,6 +64,7 @@ export const containerStyleControls = [
   'border',
   'display',
   'flexGrow',
+  'opacity',
 ] as const;
 
 export const divBlockStyleControls = [
@@ -70,6 +75,7 @@ export const divBlockStyleControls = [
   'backgroundImage',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const buttonStyleControls = [
@@ -80,6 +86,7 @@ export const buttonStyleControls = [
   'backgroundImage',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const buttonParamsControls = ['text'] as const;
@@ -90,6 +97,16 @@ export const textinputStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
+] as const;
+
+export const dateTimePickerStyleControls = [
+  'indents',
+  'size',
+  'typography',
+  'background',
+  'border',
+  'opacity',
 ] as const;
 
 export const textareaStyleControls = [
@@ -98,20 +115,37 @@ export const textareaStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
-export const checkboxStyleControls = ['indents', 'size', 'background'] as const;
+export const sliderStyleControls = ['indents', 'size', 'opacity'] as const;
+
+export const checkboxStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'opacity',
+] as const;
+
+export const switchStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'opacity',
+] as const;
 
 export const radiobuttonStyleControls = [
   'indents',
   'size',
   'background',
+  'opacity',
 ] as const;
 
 export const radiobuttonGroupStyleControls = [
   'indents',
   'size',
   'background',
+  'opacity',
 ] as const;
 
 export const labelStyleControls = [
@@ -121,6 +155,7 @@ export const labelStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const headingStyleControls = [
@@ -129,6 +164,7 @@ export const headingStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const paragraphStyleControls = [
@@ -137,6 +173,7 @@ export const paragraphStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const ocrtextStyleControls = [
@@ -145,6 +182,7 @@ export const ocrtextStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const textBlockStyleControls = [
@@ -152,7 +190,9 @@ export const textBlockStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
+  'opacity',
 ] as const;
 
 export const listStyleControls = [
@@ -162,6 +202,7 @@ export const listStyleControls = [
   'border',
   'display',
   'bullets',
+  'opacity',
 ] as const;
 
 export const paginationStyleControls = [
@@ -170,22 +211,34 @@ export const paginationStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const listItemStyleControls = [
+  'indents',
+  'size',
+  'background',
+  'border',
+  'opacity',
+] as const;
+
+export const listImagesItemStyleControls = [
   'indents',
   'size',
   'typography',
   'background',
   'backgroundImage',
   'border',
+  'opacity',
 ] as const;
+
 export const breadcrumbItemStyleControls = [
   'indents',
   'size',
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 export const paginationItemStyleControls = [
   'indents',
@@ -193,6 +246,7 @@ export const paginationItemStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 export const navbarItemStyleControls = [
   'indents',
@@ -200,12 +254,14 @@ export const navbarItemStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 export const imageStyleControls = [
   'indents',
   'size',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const smartContainerStyleControls = [
@@ -215,6 +271,7 @@ export const smartContainerStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const selectStyleControls = [
@@ -223,6 +280,7 @@ export const selectStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const selectMenuStyleControls = [
@@ -230,6 +288,7 @@ export const selectMenuStyleControls = [
   'size',
   'border',
   'background',
+  'opacity',
 ] as const;
 
 export const optionStyleControls = [
@@ -238,6 +297,7 @@ export const optionStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const mapStyleControls = [
@@ -246,6 +306,7 @@ export const mapStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const calendarStyleControls = [
@@ -254,6 +315,7 @@ export const calendarStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const clockStyleControls = [
@@ -262,6 +324,7 @@ export const clockStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const dropdownStyleControls = [
@@ -270,6 +333,7 @@ export const dropdownStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const dropdownMenuStyleControls = [
@@ -277,6 +341,7 @@ export const dropdownMenuStyleControls = [
   'size',
   'border',
   'background',
+  'opacity',
 ] as const;
 
 export const dropdownItemStyleControls = [
@@ -285,9 +350,15 @@ export const dropdownItemStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
-export const videoStyleControls = ['indents', 'size', 'border'] as const;
+export const videoStyleControls = [
+  'indents',
+  'size',
+  'border',
+  'opacity',
+] as const;
 
 export const pageTemplateStyleControls = [
   'indents',
@@ -296,6 +367,7 @@ export const pageTemplateStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const emptyPageTemplateStyleControls = [
@@ -305,6 +377,7 @@ export const emptyPageTemplateStyleControls = [
   'typography',
   'border',
   'background',
+  'opacity',
 ] as const;
 
 export const gridItemStyleControls = [
@@ -313,6 +386,7 @@ export const gridItemStyleControls = [
   'background',
   'backgroundImage',
   'border',
+  'opacity',
 ] as const;
 
 export const gridStyleControls = [
@@ -322,6 +396,7 @@ export const gridStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const nativeColumnsStyleControls = [
@@ -332,6 +407,7 @@ export const nativeColumnsStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const columnsStyleControls = [
@@ -341,6 +417,7 @@ export const columnsStyleControls = [
   'background',
   'backgroundImage',
   'border',
+  'opacity',
 ] as const;
 
 export const columnStyleControls = [
@@ -348,6 +425,7 @@ export const columnStyleControls = [
   'typography',
   'background',
   'border',
+  'opacity',
 ] as const;
 
 export const subscribeFormStyleControls = [
@@ -357,6 +435,7 @@ export const subscribeFormStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const undefinedControls = ['size', 'background'] as const;
@@ -370,6 +449,7 @@ export const cardsSectionStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const featureSectionStyleControls = [
@@ -379,6 +459,7 @@ export const featureSectionStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const breadcrumbStyleControls = [
@@ -387,6 +468,7 @@ export const breadcrumbStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const carouselStyleControls = [
@@ -395,6 +477,7 @@ export const carouselStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
 export const navbarStyleControls = [
@@ -403,9 +486,14 @@ export const navbarStyleControls = [
   'background',
   'border',
   'display',
+  'opacity',
 ] as const;
 
-export const elementsGroupStyleControls = ['indents', 'background'] as const;
+export const elementsGroupStyleControls = [
+  'indents',
+  'background',
+  'opacity',
+] as const;
 
 // WARN: every time you add or remove some properties in prod, you must write migration to add/remove properties for existing entities in db
 export const AVAILABLE_CONTROLS: AvailableControls = {
@@ -429,6 +517,12 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
   ],
   textarea: ['text', 'placeholder', ...textareaStyleControls, 'layouts'],
+  dateTimePicker: [
+    'dateTimePickerControls',
+    ...dateTimePickerStyleControls,
+    'layouts',
+  ],
+  slider: ['sliderSettings', ...sliderStyleControls],
   checkbox: [
     'value',
     'name',
@@ -436,6 +530,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'layouts',
     'textContent',
   ],
+  switch: ['value', 'name', ...switchStyleControls, 'layouts'],
   radiobutton: ['value', ...radiobuttonStyleControls, 'layouts'],
   radiobuttonGroup: [
     'radiobuttons',
@@ -449,7 +544,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
   ocrtext: ['textContent', ...paragraphStyleControls, 'layouts'],
   textBlock: ['textContent', ...textBlockStyleControls, 'layouts'],
   list: ['listItems', 'isOrdered', ...listStyleControls, 'layouts'],
-  listItem: [...listItemStyleControls, 'layouts'],
+  listItem: [...listItemStyleControls, 'text', 'layouts'],
   image: [
     'image',
     ...imageStyleControls,
@@ -458,6 +553,7 @@ export const AVAILABLE_CONTROLS: AvailableControls = {
     'resizeOptions',
     'layouts',
   ],
+  imagesList: ['imagesList', ...imageStyleControls, 'layouts'],
   select: ['selectValue', 'selectOptions', ...selectStyleControls, 'layouts'],
   option: [...optionStyleControls, 'layouts'],
   map: ['mapProps', ...mapStyleControls, 'layouts'],
@@ -555,8 +651,11 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   textinput: {},
   input: {},
+  dateTimePicker: {},
   textarea: {},
+  slider: {},
   checkbox: {},
+  switch: {},
   radiobuttonGroup: {
     radiobutton: {
       min: 2,
@@ -583,6 +682,12 @@ export const AVAILABLE_CHILDREN: AvailableChildren = {
   },
   listItem: {},
   image: {},
+  imagesList: {
+    image: {
+      min: 1,
+      max: Infinity,
+    },
+  },
   select: {
     option: {
       min: 1,

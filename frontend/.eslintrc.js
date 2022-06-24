@@ -129,6 +129,9 @@ module.exports = {
     'func-names': ['error', 'as-needed', { generators: 'never' }],
     camelcase: 'off',
     'no-console': 'error',
+    'import/no-extraneous-dependencies': 'off',
+    'import/prefer-default-export': 'off',
+    'react/jsx-one-expression-per-line': 'off',
     'no-restricted-imports': [
       'error',
       {

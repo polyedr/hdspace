@@ -44,7 +44,8 @@ export function* taskAddSaga({
     });
     if (email) {
       // @ts-ignore
-      yield call(addMemberToTasks, payload.id, email);
+      const member = yield call(addMemberToTasks, task.id, email);
+      task.idMembers = member.map((item: any) => item.id);
     }
     yield put({ type: TYPES.ADD_TASK_SUCCESS, payload: task });
     yield put(requestAddHistory({ project, ...action }));
@@ -62,7 +63,8 @@ export function* taskEditSaga({
       data: payload,
     });
     if (email && !selectedTask.idMembers.find((id) => id === email)) {
-      yield call(addMemberToTasks, payload.id, email);
+      const members = yield call(addMemberToTasks, payload.id, email);
+      selectedTask.idMembers = members.map((item: any) => item.id);
     }
     yield put({ type: TYPES.EDIT_TASK_SUCCESS, payload: selectedTask });
     yield put(requestAddHistory({ project, ...action }));

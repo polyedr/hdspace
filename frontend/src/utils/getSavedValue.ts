@@ -7,6 +7,7 @@ const getSavedValue = (element: LibraryElementUnion | StateElement) => {
       return element.parameters.textContent || '';
     }
 
+    case 'switch':
     case 'checkbox': {
       return element.parameters.defaultChecked || '';
     }

@@ -64,13 +64,13 @@ const useStyles = makeStyles({
     flexBasis: (rotated) => (rotated ? 568 : 320),
   },
   iphone678: {
-    flexBasis: (rotated) => (rotated ? 375 : 667),
+    flexBasis: (rotated) => (rotated ? 667 : 375),
   },
   iphone678Plus: {
-    flexBasis: (rotated) => (rotated ? 414 : 736),
+    flexBasis: (rotated) => (rotated ? 736 : 414),
   },
   iphoneX: {
-    flexBasis: (rotated) => (rotated ? 375 : 812),
+    flexBasis: (rotated) => (rotated ? 812 : 375),
   },
   ipad: {
     flexBasis: (rotated) => (rotated ? 768 : 1024),

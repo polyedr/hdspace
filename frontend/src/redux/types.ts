@@ -10,6 +10,7 @@ import {
   Indices,
   ItemToCopyInfo,
   TokenPair,
+  ViewTokenPair,
   LibraryElement,
   LibraryElementPatch,
   NNBlockType,
@@ -187,6 +188,7 @@ export type UserState = {
   restoreUserId?: number;
   isLoading: boolean;
   confirmMessage: string;
+  viewTokenPair?: ViewTokenPair | null;
   userGuide: {
     active: boolean;
   };
@@ -230,6 +232,7 @@ export type CreateScreenData = {
   buoyancy: number;
   rootName?: string;
   freeCanvas?: boolean;
+  styles?: any;
 };
 
 export type UploadAssetData = {
@@ -275,6 +278,11 @@ export type DeleteProject = IAction<
   { id: number }
 >;
 export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
+export type GetSharedProject = IAction<
+  typeof TYPES.GET_SHARED_PROJECT,
+  { shortuuid_token: string }
+>;
+
 export type SetCurrentProjectId = IAction<
   typeof TYPES.SET_CURRENT_PROJECT_ID,
   { projectId: number }
@@ -309,6 +317,10 @@ export type ChangeScreensOrder = IAction<
 export type UpdateNameAndTagsProject = IAction<
   typeof TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   { projectID: number; name: string; tags: string }
+>;
+export type UpdateLayoutProjects = IAction<
+  typeof TYPES.UPDATE_LAYOUT_PROJECT,
+  { projectID: number; projectDataJson: string }
 >;
 export type SetProjectListLoader = IAction<
   typeof TYPES.SET_PROJECT_LIST_LOADER,
@@ -1014,7 +1026,6 @@ export type SetProjectsData = IAction<
   typeof TYPES.SET_PROJECTS_DATA,
   PaginatedArray<Project>
 >;
-
 export type SetUsersData = IAction<
   typeof TYPES.SET_USERS_DATA,
   { search: string; data: PaginatedResponse<UserData> }
@@ -1210,9 +1221,11 @@ export type Action =
   | CreateProject
   | DeleteProject
   | GetProject
+  | GetSharedProject
   | SetCurrentProjectId
   | ChangeScreensOrder
   | UpdateNameAndTagsProject
+  | UpdateLayoutProjects
   | SetProjectListLoader
   | SetProjectUsersLoader
   | SetUsersLoader

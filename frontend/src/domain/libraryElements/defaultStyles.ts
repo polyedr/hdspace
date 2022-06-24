@@ -41,6 +41,8 @@ import {
   htmlElementControls,
   paginationStyleControls,
   radiobuttonGroupStyleControls,
+  switchStyleControls,
+  listImagesItemStyleControls,
 } from '../core';
 
 const columnsMinHeight = '100px';
@@ -74,6 +76,14 @@ export const DEFAULT_BACKGROUND: React.CSSProperties = {
   backgroundColor: 'transparent',
 };
 
+export const DEFAULT_POSITION: React.CSSProperties = {
+  position: 'static',
+  float: 'none',
+  clear: 'none',
+  inset: 'unset',
+  zIndex: 'auto',
+};
+
 export const DEFAULT_BACKGROUND_IMAGE: React.CSSProperties = {
   backgroundImage: 'none',
   backgroundRepeat: 'no-repeat',
@@ -86,6 +96,10 @@ export const DEFAULT_BACKGROUND_POSITION: React.CSSProperties = {
 
 export const DEFAULT_BACKGROUND_SIZE: React.CSSProperties = {
   backgroundSize: '100% auto',
+};
+
+export const DEFAULT_OPACITY: React.CSSProperties = {
+  opacity: 1,
 };
 
 export const DEFAULT_BULLETS: React.CSSProperties = {
@@ -102,7 +116,7 @@ export const DEFAULT_TYPOGRAPHY: React.CSSProperties = {
   fontSize: '14px',
   fontStyle: 'none',
   fontWeight: 400,
-  lineHeight: '1.5',
+  lineHeight: '150%',
   textAlign: 'left',
 };
 
@@ -130,6 +144,9 @@ export const defaultMapStyles: { [K in MapControls]: React.CSSProperties } & {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultCalendarStyles: {
@@ -149,6 +166,9 @@ export const defaultCalendarStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -172,6 +192,9 @@ export const defaultClockStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 type HeadingControls = typeof headingStyleControls[number];
@@ -180,6 +203,7 @@ type TextBlockControls = typeof textBlockStyleControls[number];
 type ListControls = typeof listStyleControls[number];
 type ListItemControls = typeof listItemStyleControls[number];
 type PaginationControls = typeof paginationStyleControls[number];
+type ImagesListControls = typeof listImagesItemStyleControls[number];
 
 export const defaultHeadingStyles: {
   [K in HeadingControls]: React.CSSProperties;
@@ -210,6 +234,9 @@ export const defaultHeadingStyles: {
     wordBreak: 'break-word',
     outline: 0,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultParagraphStyles: {
@@ -238,6 +265,9 @@ export const defaultParagraphStyles: {
     outline: 0,
     wordBreak: 'break-word',
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultTextBlockStyles: {
@@ -258,8 +288,14 @@ export const defaultTextBlockStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   other: {
     outline: 0,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -284,6 +320,9 @@ export const defaultListStyles: { [K in ListControls]: React.CSSProperties } & {
   bullets: {
     ...DEFAULT_BULLETS,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 export const defaultBreadcrumbStyles: {
   [K in PaginationControls]: React.CSSProperties;
@@ -304,6 +343,9 @@ export const defaultBreadcrumbStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 export const defaultPaginationStyles: {
@@ -326,6 +368,9 @@ export const defaultPaginationStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 export const defaultCarouselStyles: {
   [K in PaginationControls]: React.CSSProperties;
@@ -346,6 +391,9 @@ export const defaultCarouselStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 export const defaultNavbarStyles: {
@@ -370,6 +418,9 @@ export const defaultNavbarStyles: {
     ...DEFAULT_BACKGROUND,
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultListItemStyles: {
@@ -380,6 +431,31 @@ export const defaultListItemStyles: {
   },
   size: {
     ...DEFAULT_SIZE,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  other: {
+    outline: 0,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
+};
+
+export const defaultImagesListItemStyles: {
+  [K in ImagesListControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+    width: '500px',
+    height: '450px',
   },
   typography: {
     ...DEFAULT_TYPOGRAPHY,
@@ -395,6 +471,10 @@ export const defaultListItemStyles: {
   },
   other: {
     outline: 0,
+    alignItems: 'center',
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -461,6 +541,9 @@ export const defaultContainerStyles: {
   flexGrow: {
     ...DEFAULT_FLEX_GROW,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultElementsGroupStyles: {
@@ -472,6 +555,9 @@ export const defaultElementsGroupStyles: {
   indents: {
     ...DEFAULT_INDENTS,
     padding: '3px',
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -504,6 +590,9 @@ export const defaultSectionStyles: {
   flexGrow: {
     ...DEFAULT_FLEX_GROW,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultDivBlockStyles: {
@@ -531,6 +620,9 @@ export const defaultDivBlockStyles: {
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultImageStyles: {
@@ -549,6 +641,9 @@ export const defaultImageStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -575,6 +670,9 @@ export const defaultSmartContainerStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
     backgroundColor: '#e0e0e0',
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -605,6 +703,9 @@ export const defaultDropdownStyles: {
     position: 'relative',
     display: 'inline-block',
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultDropdownMenuStyles: {
@@ -625,6 +726,9 @@ export const defaultDropdownMenuStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
     backgroundColor: '#ffffff',
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -650,6 +754,9 @@ export const defaultDropdownItemStyles: {
     ...DEFAULT_BACKGROUND,
     backgroundColor: '#ffffff',
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultVideoStyles: {
@@ -668,6 +775,9 @@ export const defaultVideoStyles: {
   },
   other: {
     aspectRatio: '16 / 9',
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -703,6 +813,9 @@ export const defaultGridItemStyles: {
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultGridStyles: {
@@ -729,6 +842,9 @@ export const defaultGridStyles: {
     gridTemplateRows: 'repeat(2, 1fr)',
     gridTemplateColumns: 'repeat(2, 1fr)',
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultColumnStyles: {
@@ -750,6 +866,9 @@ export const defaultColumnStyles: {
     flexGrow: 1,
     flexShrink: 1,
     flexBasis: '50%',
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -780,6 +899,9 @@ export const defaultColumnsStyles: {
     flexFlow: 'row nowrap',
     justifyContent: 'stretch',
     alignItems: 'stretch',
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -815,12 +937,16 @@ export const defaultNativeColumnsStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 type ButtonControls = typeof buttonStyleControls[number];
 type TextinputControls = typeof textinputStyleControls[number];
 type TextareaControls = typeof textareaStyleControls[number];
 type CheckboxControls = typeof checkboxStyleControls[number];
+type SwitchControls = typeof switchStyleControls[number];
 type RadiobuttonControls = typeof radiobuttonStyleControls[number];
 type RadiobuttonGroupControls = typeof radiobuttonGroupStyleControls[number];
 type LabelControls = typeof labelStyleControls[number];
@@ -860,9 +986,12 @@ export const defaultButtonStyles: {
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
-export const defaultTextinputStyles: {
+export const defaultTextInputStyles: {
   [K in TextinputControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
   indents: {
@@ -884,6 +1013,9 @@ export const defaultTextinputStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -910,6 +1042,39 @@ export const defaultTextareaStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
+};
+
+export const defaultSliderStyles = {};
+
+export const defaultDateTimePickerStyles: {
+  [K in TextareaControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+    padding: '2px 6px',
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  typography: {
+    ...DEFAULT_TYPOGRAPHY,
+  },
+  border: {
+    ...DEFAULT_BORDER,
+    border: '1px solid #aaa',
+    borderRadius: '1px',
+    borderColor: '#aaa',
+    borderWidth: '1px',
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultCheckboxStyles: {
@@ -923,6 +1088,25 @@ export const defaultCheckboxStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
+};
+export const defaultSwitchStyles: {
+  [K in CheckboxControls]: React.CSSProperties;
+} & { other?: React.CSSProperties } = {
+  indents: {
+    ...DEFAULT_INDENTS,
+  },
+  size: {
+    ...DEFAULT_SIZE,
+  },
+  background: {
+    ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -938,6 +1122,9 @@ export const defaultRadiobuttonStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -958,6 +1145,9 @@ export const defaultRadiobuttonGroupStyles: {
   other: {
     display: 'flex',
     flexDirection: Alignments.Vertical,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -984,6 +1174,9 @@ export const defaultLabelStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -1012,6 +1205,9 @@ export const defaultSelectStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultOptionStyles: {
@@ -1031,6 +1227,9 @@ export const defaultOptionStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -1064,6 +1263,9 @@ export const defaultPageTemplateStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultEmptyPageTemplateStyles: {
@@ -1090,6 +1292,9 @@ export const defaultEmptyPageTemplateStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  opacity: {
+    ...DEFAULT_OPACITY,
   },
 };
 
@@ -1120,6 +1325,9 @@ export const defaultSubscribeFormStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultButtonGeneratorStyles: {
@@ -1149,6 +1357,9 @@ export const defaultButtonGeneratorStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultCardsSectionStyles: {
@@ -1177,11 +1388,17 @@ export const defaultCardsSectionStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
 };
 
 export const defaultFeatureSectionStyles: {
   [K in featureSectionControls]: React.CSSProperties;
 } = {
+  opacity: {
+    ...DEFAULT_OPACITY,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '100px 0',
@@ -1227,10 +1444,13 @@ export const DEFAULT_ELEMENTS_STYLES: {
   column: defaultColumnStyles,
   button: defaultButtonStyles,
   buttonGenerator: defaultButtonGeneratorStyles,
-  textinput: defaultTextinputStyles,
-  input: defaultTextinputStyles,
+  textinput: defaultTextInputStyles,
+  input: defaultTextInputStyles,
   textarea: defaultTextareaStyles,
+  slider: defaultSliderStyles,
+  dateTimePicker: defaultDateTimePickerStyles,
   checkbox: defaultCheckboxStyles,
+  switch: defaultSwitchStyles,
   radiobutton: defaultRadiobuttonStyles,
   radiobuttonGroup: defaultRadiobuttonGroupStyles,
   label: defaultLabelStyles,
@@ -1241,6 +1461,7 @@ export const DEFAULT_ELEMENTS_STYLES: {
   list: defaultListStyles,
   listItem: defaultListItemStyles,
   image: defaultImageStyles,
+  imagesList: defaultImagesListItemStyles,
   smartHeader: defaultSmartContainerStyles,
   smartFooter: defaultSmartContainerStyles,
   smartForm: defaultSmartContainerStyles,

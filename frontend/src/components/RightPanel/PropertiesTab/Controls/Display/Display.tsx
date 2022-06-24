@@ -34,7 +34,7 @@ const Display: React.FC<Props> = ({
   );
 
   return (
-    <>
+    <div style={{ padding: '0 16px' }}>
       <div>
         {!masterScreenEnabled && canEdit && (
           <RemoveStyles
@@ -53,7 +53,6 @@ const Display: React.FC<Props> = ({
         <StyledTextField
           fullWidth
           margin="dense"
-          label="Display"
           value={display || 'initial'}
           onChange={handleDisplayDropdownChange}
           select
@@ -85,7 +84,7 @@ const Display: React.FC<Props> = ({
           canEdit={canEdit}
         />
       )}
-    </>
+    </div>
   );
 };
 

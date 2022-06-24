@@ -1,5 +1,5 @@
-import React, { FC, FormEvent } from 'react';
-import { Button, TextField, MenuItem } from '@material-ui/core';
+import React, { FC, useEffect } from 'react';
+import { TextField, MenuItem } from '@material-ui/core';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateRange, ProjectsSearchParameter } from '@Src/types';
@@ -24,6 +24,7 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   form: {
     display: 'flex',
     alignItems: 'center',
+    gap: '10px',
   },
   parameterInput: {
     minWidth: 150,
@@ -67,10 +68,9 @@ const Searchbar: FC = () => {
     parameterName === ProjectsSearchParameter.created ||
     parameterName === ProjectsSearchParameter.updated;
 
-  const handleSubmit = (ev: FormEvent) => {
-    ev.preventDefault();
+  useEffect(() => {
     dispatch(searchProjects());
-  };
+  }, [parameterName, parameterValue]);
 
   const handleParameterValueChange = (
     ev: React.ChangeEvent<HTMLInputElement>,
@@ -133,8 +133,8 @@ const Searchbar: FC = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className={classes.form}>
-        <div>
+      <form className={classes.form}>
+        <div className={classes.form}>
           {isDate && typeof parameterValue === 'object' ? (
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DatePicker
@@ -219,10 +219,6 @@ const Searchbar: FC = () => {
             </MenuItem>
           ))}
         </TextField>
-
-        <Button type="submit" className={classes.submit} title="Search">
-          Go
-        </Button>
       </form>
     </div>
   );

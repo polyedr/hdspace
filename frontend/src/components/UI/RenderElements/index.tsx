@@ -3,6 +3,8 @@ import Grid from '@Components/UI/RenderElements/Grid';
 import Column from '@Components/UI/RenderElements/Columns/Column';
 import NativeColumns from '@Components/UI/RenderElements/NativeColumns';
 import { Entity, NNBlockType } from '@Src/types';
+import SwitchMui from '@Components/UI/RenderElements/Switch/SwitchMui';
+import ImagesList from '@Components/UI/RenderElements/ImagesList/ImagesList';
 import Heading from './Heading/Heading';
 import Paragraph from './Paragraph/Paragraph';
 import TextBlock from './TextBlock/TextBlock';
@@ -31,6 +33,7 @@ import {
   MaterialTextarea,
   UnstyledTextarea,
 } from './Textarea';
+import { BootstrapSlider, MaterialSlider, UnstyledSlider } from './Slider';
 import {
   BootstrapCheckbox,
   MaterialCheckbox,
@@ -62,6 +65,8 @@ import OtherCarousel from './Carousel/OtherCarousel';
 import OtherNavbar from './Navbar/OtherNavbar';
 import OtherCarouselItem from './CarouselItem/OtherCarouselItem';
 import RadiobuttonGroup from './RadiobuttonGroup';
+
+import { DateTimePicker } from './DateTimePicker';
 
 const RENDERERS: Record<Entity, React.FC<any>> = {
   root: Container,
@@ -101,10 +106,17 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     material: MaterialCheckbox,
     not_selected: UnstyledCheckbox,
   }),
+  switch: SwitchMui,
   textarea: withUIFramework({
     bootstrap: BootstrapTextarea,
     material: MaterialTextarea,
     not_selected: UnstyledTextarea,
+  }),
+  dateTimePicker: DateTimePicker,
+  slider: withUIFramework({
+    bootstrap: BootstrapSlider,
+    material: MaterialSlider,
+    not_selected: UnstyledSlider,
   }),
   heading: Heading,
   paragraph: Paragraph,
@@ -143,6 +155,7 @@ const RENDERERS: Record<Entity, React.FC<any>> = {
     not_selected: OtherCarouselItem,
   }),
   label: Label,
+  imagesList: ImagesList,
   image: Image,
   smartHeader: withSmartContainer(NNBlockType.HEADER),
   smartFooter: withSmartContainer(NNBlockType.FOOTER),

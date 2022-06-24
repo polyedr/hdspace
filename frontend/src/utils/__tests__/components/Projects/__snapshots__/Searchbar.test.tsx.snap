@@ -6,7 +6,9 @@ exports[`Searchbar should render a searchbar 1`] = `
     <form
       class="makeStyles-form-3"
     >
-      <div>
+      <div
+        class="makeStyles-form-3"
+      >
         <div
           class="MuiFormControl-root MuiTextField-root makeStyles-input-1 makeStyles-queryInput-2 MuiFormControl-marginDense"
         >
@@ -95,21 +97,6 @@ exports[`Searchbar should render a searchbar 1`] = `
           </fieldset>
         </div>
       </div>
-      <button
-        class="MuiButtonBase-root MuiButton-root MuiButton-text makeStyles-submit-5"
-        tabindex="0"
-        title="Search"
-        type="submit"
-      >
-        <span
-          class="MuiButton-label"
-        >
-          Go
-        </span>
-        <span
-          class="MuiTouchRipple-root"
-        />
-      </button>
     </form>
   </div>
 </div>

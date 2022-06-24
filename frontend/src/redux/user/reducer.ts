@@ -49,6 +49,14 @@ const setTokenPair: ActionHandler<typeof Actions.setTokenPair> = (
   authError: null,
 });
 
+const setProjectViewEnd: ActionHandler<typeof Actions.setProjectViewEnd> = (
+  state,
+  { viewTokenPair },
+) => ({
+  ...state,
+  viewTokenPair,
+  authError: null,
+});
 const setUserData: ActionHandler<typeof Actions.setUserData> = (
   state,
   { payload },
@@ -167,6 +175,7 @@ const handlers: Handlers<UserState> = {
   [TYPES.CHANGE_PROTOTYPE_MODE]: changePrototypeMode,
   [TYPES.TOGGLE_USER_LOADING]: changeSignLoader,
   [TYPES.SET_TOKEN_PAIR]: setTokenPair,
+  [TYPES.PROJECT_VIEW_END]: setProjectViewEnd,
   [TYPES.SET_USER_DATA]: setUserData,
   [TYPES.RESET_USER_DATA]: resetUserData,
   [TYPES.SET_PROFILE_DATA]: setProfileData,

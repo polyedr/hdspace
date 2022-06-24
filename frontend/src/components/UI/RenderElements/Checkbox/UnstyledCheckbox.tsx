@@ -45,6 +45,7 @@ const UnstyledCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
           classes.ownStyles,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        style={{ width: 'fit-content' }}
       >
         <label>
           {!isDisabled && isChecked ? (

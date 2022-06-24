@@ -45,6 +45,11 @@ import Radiobuttons from '@Components/RightPanel/PropertiesTab/Controls/Radiobut
 import Alignment from '@Components/RightPanel/PropertiesTab/Controls/Alignment';
 import BackgroundImage from '@Components/RightPanel/PropertiesTab/Controls/BackgroundImage';
 import Text from '@Components/RightPanel/PropertiesTab/Controls/Text/Text';
+import ImagesItems from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItems';
+import SliderSettings from '@Components/RightPanel/PropertiesTab/Controls/SliderSettings/SliderSettings';
+import DateTimePickerControls from '@Components/RightPanel/PropertiesTab/Controls/DateTimePickerControls/DateTimePickerControls';
+import OpacityBlock from '@Components/RightPanel/PropertiesTab/Controls/OpacityBlock/OpacityBlock';
+import Position from '@Components/RightPanel/PropertiesTab/Controls/Position/Position';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -60,6 +65,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
     Control: Display,
     styles: ['display', 'justifyContent', 'alignItems', 'flexDirection'],
   },
+  sliderSettings: {
+    Control: SliderSettings,
+  },
   indents: {
     Control: IndentsBlock,
     styles: [
@@ -74,28 +82,56 @@ const CONTROLS: Record<Control, ControlInfo> = {
     ],
   },
   size: { Control: SizeBlock, styles: ['width', 'height'] },
+  opacity: { Control: OpacityBlock, styles: ['opacity'] },
   typography: {
     Control: TypographyBlock,
     styles: [
       'fontFamily',
       'fontSize',
       'fontWeight',
-      'fontStyle',
+      'lineHeight',
+      'letterSpacing',
+      'verticalAlign',
       'textAlign',
+      'opacity',
       'color',
     ],
   },
   border: {
     Control: BorderBlock,
-    styles: ['borderColor', 'borderWidth', 'borderRadius'],
+    styles: [
+      'borderColor',
+      'borderWidth',
+      'borderRadius',
+      'borderStyle',
+      'borderRightWidth',
+      'borderTopWidth',
+      'borderBottomWidth',
+      'borderLeftWidth',
+    ],
   },
-  background: { Control: BackgroundBlock, styles: ['backgroundColor'] },
+  background: {
+    Control: BackgroundBlock,
+    styles: [
+      'backgroundColor',
+      'backgroundImage',
+      'backgroundSize',
+      'backgroundClip',
+      'backgroundPosition',
+      'backgroundRepeat',
+    ],
+  },
   backgroundImage: { Control: BackgroundImage, styles: ['backgroundImage'] },
   mapProps: { Control: MapProps },
   placeholder: { Control: Placeholder },
   textContent: { Control: TextContent, styles: [] },
+  dateTimePickerControls: { Control: DateTimePickerControls },
   text: { Control: Text, styles: [] },
   image: { Control: Image, styles: [] },
+  imagesList: {
+    Control: ImagesItems,
+    styles: [],
+  },
   alt: { Control: Alt },
   title: { Control: Title },
   smartHeader: { Control: withSmartContainerControl(NNBlockType.HEADER) },
@@ -152,6 +188,10 @@ const CONTROLS: Record<Control, ControlInfo> = {
   alignment: {
     Control: Alignment,
     styles: ['flexDirection'],
+  },
+  position: {
+    Control: Position,
+    styles: ['position', 'float', 'clear', 'inset', 'zIndex'],
   },
 };
 

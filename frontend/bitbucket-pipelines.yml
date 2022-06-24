@@ -4,7 +4,7 @@ pipelines:
   pull-requests:
     '**':
     - step:
-        size: 2x
+        # size: 2x
         script:
             - npm install
             - npm run lint:fix

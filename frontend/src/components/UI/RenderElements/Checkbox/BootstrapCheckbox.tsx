@@ -45,6 +45,7 @@ const BootstrapCheckbox = React.forwardRef<HTMLInputElement, RendererProps>(
           classes.ownStyles,
           isDisabled ? classes.disabled : classes.ownPseudoStyles,
         )}
+        style={{ width: 'fit-content' }}
       >
         <input
           type="checkbox"

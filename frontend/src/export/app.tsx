@@ -3,6 +3,10 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
 import { ServerStyleSheets, ThemeProvider } from '@material-ui/core/styles';
+import {
+  ThemeProvider as MuiThemeProvider,
+  StyledEngineProvider,
+} from '@mui/material/styles';
 import JSZip from 'jszip';
 import theme from '@Src/styles/Theme';
 import { store } from '@Redux/store';
@@ -98,11 +102,15 @@ const exportHTML = (allScreensData, projectName) => {
     const html = ReactDOMServer.renderToStaticMarkup(
       sheets.collect(
         <Provider store={store}>
-          <ThemeProvider theme={theme}>
-            <BrowserRouter>
-              <ExportedElement elementId={data.element} state={state} />
-            </BrowserRouter>
-          </ThemeProvider>
+          <StyledEngineProvider injectFirst>
+            <MuiThemeProvider theme={theme}>
+              <ThemeProvider theme={theme}>
+                <BrowserRouter>
+                  <ExportedElement elementId={data.element} state={state} />
+                </BrowserRouter>
+              </ThemeProvider>
+            </MuiThemeProvider>
+          </StyledEngineProvider>
         </Provider>,
       ),
     );

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   getPermissibleValue,
   safeMatch,
@@ -6,7 +6,11 @@ import {
   strToNumber,
 } from '@Utils/NumberHelper';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
-import { StyledTextField } from '@Components/styledComponents';
+import {
+  StyledTextField,
+  StyledToggleButton,
+  StyledToggleButtonGroup,
+} from '@Components/styledComponents';
 import {
   MAX_BORDER_WIDTH,
   MIN_BORDER_WIDTH,
@@ -22,22 +26,54 @@ import { MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
+import cn from 'classnames';
+import BORDER_STYLE from '@Constants/borderStyle';
+import CheckBoxOutlineBlankRoundedIcon from '@mui/icons-material/CheckBoxOutlineBlankRounded';
+import { useDebouncedCallback } from 'use-debounce';
 import ColorSettings from '../../helperComponents/ColorSettings';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({
   wrapper: {
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
   },
   text: {
-    width: 50,
+    width: '76px',
   },
-  control: {
+  position: {
     display: 'flex',
     alignItems: 'flex-end',
+  },
+  control: {
     justifyContent: 'flex-start',
+  },
+  container: {
+    padding: '0 16px',
+  },
+  numberInput: {
+    '&::-webkit-outer-spin-button, &::-webkit-inner-spin-button': {
+      '-webkit-appearance': 'none',
+      margin: 0,
+    },
+  },
+  borderStyleControl: {
+    maxWidth: '70px',
+  },
+  styleBlock: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+  },
+  labelTextField: {
+    fontSize: '16px',
+    color: 'rgba(129, 129, 142, 1)',
+  },
+  borderWidthLabel: {
+    paddingBottom: '5px',
+  },
+  detailedBorderWidth: {
+    width: '45px',
   },
 });
 
@@ -49,8 +85,20 @@ const accessBorderRadius = (border: string) => {
 type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   borderColor?: React.CSSProperties['borderColor'];
   borderWidth?: React.CSSProperties['borderWidth'];
+  borderTopWidth?: React.CSSProperties['borderTopWidth'];
+  borderBottomWidth?: React.CSSProperties['borderBottomWidth'];
+  borderRightWidth?: React.CSSProperties['borderRightWidth'];
+  borderLeftWidth?: React.CSSProperties['borderLeftWidth'];
   borderRadius?: React.CSSProperties['borderRadius'];
+  borderStyle?: React.CSSProperties['borderStyle'];
   isDefaultStyles?: boolean;
+};
+
+const detailedLabel = {
+  borderTopWidth: 'Top',
+  borderBottomWidth: 'Bottom',
+  borderLeftWidth: 'Left',
+  borderRightWidth: 'Right',
 };
 
 const BorderBlock: React.FC<Props> = ({
@@ -59,11 +107,16 @@ const BorderBlock: React.FC<Props> = ({
   borderWidth,
   borderColor = 'transparent',
   borderRadius = 'px',
+  borderStyle,
   masterScreenEnabled,
   canEdit,
   element,
   editableStyles,
   isDefaultStyles = false,
+  borderTopWidth,
+  borderBottomWidth,
+  borderLeftWidth,
+  borderRightWidth,
 }) => {
   const classes = useStyles();
   const defaultStyles = useSelector(selectCurrentProjectDefaultStyles);
@@ -106,6 +159,43 @@ const BorderBlock: React.FC<Props> = ({
     250,
   );
 
+  const [detailedBorderWidth, setDetailedBorderWidth] = useState({
+    borderTopWidth,
+    borderBottomWidth,
+    borderLeftWidth,
+    borderRightWidth,
+  });
+
+  useEffect(() => {
+    setDetailedBorderWidth({
+      borderTopWidth,
+      borderBottomWidth,
+      borderLeftWidth,
+      borderRightWidth,
+    });
+  }, [borderTopWidth, borderBottomWidth, borderLeftWidth, borderRightWidth]);
+
+  const updateBorderWidth = (name, value) => {
+    const newWidth = getPermissibleValue(
+      strToNumber(value.toString()),
+      MIN_BORDER_WIDTH,
+      MAX_BORDER_WIDTH,
+    );
+    updateStyles({ [name]: `${newWidth}px` });
+  };
+
+  const debouncedValueChangeHandler = useDebouncedCallback(
+    (value, name, cb) => {
+      cb(name, value);
+    },
+    250,
+  );
+
+  const handleBorderWidthChange = (name, value) => {
+    setDetailedBorderWidth({ ...detailedBorderWidth, [name]: value });
+    debouncedValueChangeHandler.callback(value, name, updateBorderWidth);
+  };
+
   const [radius, handleRadiusChange] = useDebouncedInputChange(
     (isDefaultStyles && defaultStyles?.border?.borderRadius) || borderRadius,
     (value) => {
@@ -132,66 +222,158 @@ const BorderBlock: React.FC<Props> = ({
     },
   );
 
+  const handleBorderStyleChange = (event) => {
+    updateStyles({ borderStyle: event.target.value });
+  };
+
+  const [isBorderEditorOpen, setIsBorderEditorOpen] = useState(false);
+
   return (
-    <div>
+    <div className={classes.container}>
       {!isDefaultStyles && !masterScreenEnabled && canEdit && (
         <RemoveStyles
           onClick={removeStyles}
-          propsToRemove={['borderColor', 'borderWidth', 'borderRadius']}
+          propsToRemove={[
+            'borderColor',
+            'borderWidth',
+            'borderRadius',
+            'borderBottomWidth',
+            'borderLeftWidth',
+            'borderRightWidth',
+            'borderTopWidth',
+          ]}
           type={element.type}
           editableStyles={editableStyles}
         />
       )}
 
-      <div className={classes.wrapper}>
-        {!isDefaultStyles && (
-          <StyledTextField
-            label="Width"
-            type="number"
-            value={width ? parseFloat(width as string) : ''}
-            onChange={handleWidthChange}
-            margin="dense"
-            className={classes.text}
-            disabled={!canEdit}
-          />
-        )}
-
-        <div className={classes.control}>
-          <StyledTextField
-            label="Radius"
-            type="number"
-            value={safeParseFloat(validateBorderRadius(String(radius)))}
-            onChange={handleRadiusChange}
-            margin="dense"
-            className={classes.text}
-            disabled={!canEdit}
-          />
-
-          <StyledTextField
-            margin="dense"
-            onChange={handleRadiusUnitsChange}
-            value={radiusUnitsValue}
-            select
-            disabled={!canEdit}
-          >
-            <MenuItem value="px" dense>
-              px
-            </MenuItem>
-            <MenuItem value="%" dense>
-              percent
-            </MenuItem>
-          </StyledTextField>
-        </div>
-      </div>
-
       {!isDefaultStyles && (
         <ColorSettings
+          onClick={removeStyles}
+          propsToRemove={['borderColor']}
           currentColor={borderColorValue as string}
           activeElementId={element.id}
           onChange={handleBorderColorChange as (newBorderColor: string) => void}
           disabled={!canEdit}
         />
       )}
+
+      <div className={cn(classes.wrapper, classes.position)}>
+        <div
+          className={cn(classes.styleBlock)}
+          style={{
+            width: '101px',
+          }}
+        >
+          {!isDefaultStyles && (
+            <>
+              <div
+                className={cn(classes.labelTextField, classes.borderWidthLabel)}
+              >
+                W
+              </div>
+              <StyledTextField
+                type="number"
+                value={width ? parseFloat(width as string) : ''}
+                onChange={handleWidthChange}
+                margin="dense"
+                inputProps={{ className: classes.numberInput }}
+                className={classes.text}
+                disabled={!canEdit}
+              />
+            </>
+          )}
+        </div>
+        <StyledTextField
+          className={classes.borderStyleControl}
+          fullWidth
+          margin="dense"
+          value={borderStyle || BORDER_STYLE[1].value}
+          onChange={handleBorderStyleChange}
+          select
+          disabled={!canEdit}
+        >
+          {BORDER_STYLE.map(({ label, value }) => (
+            <MenuItem value={value} key={value}>
+              {label}
+            </MenuItem>
+          ))}
+        </StyledTextField>
+
+        <StyledToggleButtonGroup
+          value={isBorderEditorOpen}
+          exclusive
+          size="small"
+          style={isDefaultStyles ? { width: '20px', height: '20px' } : {}}
+        >
+          <StyledToggleButton
+            value
+            disabled={!canEdit}
+            onClick={() => setIsBorderEditorOpen(!isBorderEditorOpen)}
+          >
+            <CheckBoxOutlineBlankRoundedIcon fontSize="medium" />
+          </StyledToggleButton>
+        </StyledToggleButtonGroup>
+      </div>
+
+      {isBorderEditorOpen && (
+        <div className={cn(classes.styleBlock)}>
+          {Object.keys(detailedBorderWidth).map((item) => (
+            <div key={item}>
+              <StyledTextField
+                type="number"
+                value={
+                  detailedBorderWidth[item]
+                    ? parseFloat(detailedBorderWidth[item] as string)
+                    : ''
+                }
+                onChange={(event) =>
+                  handleBorderWidthChange(item, event.target.value)
+                }
+                margin="dense"
+                inputProps={{ className: classes.numberInput }}
+                className={classes.detailedBorderWidth}
+                disabled={!canEdit}
+                placeholder="0"
+              />
+              <div className={classes.labelTextField}>
+                {detailedLabel[item]}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className={cn(classes.wrapper, classes.position)}>
+        <div className={cn(classes.control, classes.position)}>
+          <div>
+            <StyledTextField
+              type="number"
+              value={safeParseFloat(validateBorderRadius(String(radius)))}
+              onChange={handleRadiusChange}
+              margin="dense"
+              className={classes.text}
+              disabled={!canEdit}
+            />
+
+            <StyledTextField
+              margin="dense"
+              onChange={handleRadiusUnitsChange}
+              value={radiusUnitsValue}
+              select
+              disabled={!canEdit}
+            >
+              <MenuItem value="px" dense>
+                px
+              </MenuItem>
+              <MenuItem value="%" dense>
+                percent
+              </MenuItem>
+            </StyledTextField>
+            <div className={classes.labelTextField}>Radius</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
