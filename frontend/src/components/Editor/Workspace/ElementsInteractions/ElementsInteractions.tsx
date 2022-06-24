@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-prop-types */
-import React, { useContext, useCallback } from 'react';
+import React, { useContext, useCallback, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -225,4 +225,4 @@ const ElementsInteractions: React.FC<Props> = (props) => {
   );
 };
 
-export default ElementsInteractions;
+export default memo(ElementsInteractions);

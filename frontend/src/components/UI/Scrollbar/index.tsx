@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useDebouncedCallback } from 'use-debounce';
 import cn from 'classnames';
@@ -163,4 +163,4 @@ const Scrollbar = React.forwardRef<any, IScrollbarProps>((props, ref) => {
   );
 });
 
-export default Scrollbar;
+export default memo(Scrollbar);

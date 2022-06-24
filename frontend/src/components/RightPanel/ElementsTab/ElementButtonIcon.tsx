@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import createColorElementIcon from '@Utils/createColorElementIcon';
 import { ColorElementIcon } from '@Src/types';
@@ -29,7 +29,9 @@ const useStyles = makeStyles({
 });
 
 const ElementButtonIcon: React.FC<Props> = ({ name }) => {
-  const colors: ColorElementIcon = createColorElementIcon(name);
+  const colors: ColorElementIcon = useMemo(() => {
+    return createColorElementIcon(name);
+  }, [name]);
   const classes = useStyles(colors);
   return (
     <>
@@ -43,4 +45,4 @@ const ElementButtonIcon: React.FC<Props> = ({ name }) => {
   );
 };
 
-export default ElementButtonIcon;
+export default memo(ElementButtonIcon);
