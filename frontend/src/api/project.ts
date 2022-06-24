@@ -95,3 +95,18 @@ export const apiUpdateProject = (
       result: convertProjectFromResponse(result.data),
     }))
     .catch(handleError);
+
+export const apigetSharedProject = (
+  props: MyAxiosProps & { shortuuid_token: string },
+) => {
+  return myAxios({
+    ...props,
+    method: 'GET',
+    params: { shortuuid_token: props.shortuuid_token },
+    url: `/accounts/sharedlinks/?shortuuid_token=`,
+  })
+    .then((result) => ({
+      result: result.data,
+    }))
+    .catch(onError);
+};
