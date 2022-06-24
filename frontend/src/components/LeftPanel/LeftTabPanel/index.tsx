@@ -30,8 +30,8 @@ function TabPanel(props: TabPanelProps) {
         sx={{
           p: '16px',
           backgroundColor: '#ffffff',
-          minHeight: '424px',
-          maxHeight: '424px',
+          minHeight: '50vh',
+          maxHeight: '50vh',
         }}
       >
         {children}
