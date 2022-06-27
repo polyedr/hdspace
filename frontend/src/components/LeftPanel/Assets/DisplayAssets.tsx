@@ -36,9 +36,6 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  gridList: {
-    width: 300,
-  },
 });
 
 const DisplayAssets = () => {
@@ -148,7 +145,7 @@ const DisplayAssets = () => {
       </Button>
 
       <Scrollbar autoHeightMax={385} style={{ height: '100%' }}>
-        <ImageList className={classes.gridList} rowHeight={80} cols={3} gap={5}>
+        <ImageList rowHeight={80} cols={3} gap={5}>
           <DndProvider backend={HTML5Backend}>
             {assets.map((asset: Asset, index: number) => {
               return (

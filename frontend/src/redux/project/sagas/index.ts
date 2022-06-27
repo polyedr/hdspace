@@ -97,6 +97,7 @@ import {
   updateCurrentUIFrameworkVariablesSaga,
   resetCurrentUIFrameworkVariablesSaga,
   updateProjectSaga,
+  getSharedProjectSaga,
 } from './project';
 import TYPES from '../../actionTypes';
 import { projectUpdateHelperSaga } from './shared';
@@ -436,7 +437,7 @@ export default function* projectSaga() {
   );
   yield takeLatest(TYPES.UPDATE_LAYOUT_PROJECT, updateLayoutProjectSaga);
   yield takeLatest(TYPES.SEARCH_PROJECTS, searchProjectsSaga);
-
+  yield takeLatest(TYPES.GET_SHARED_PROJECT, getSharedProjectSaga);
   yield takeLatest(TYPES.ACTIVATE_SCREEN, activateScreenSaga);
   yield takeLatest(TYPES.CREATE_SCREEN, createScreenSaga);
   yield takeEvery(TYPES.DUPLICATE_SCREEN, duplicateScreenSaga);

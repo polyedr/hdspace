@@ -150,9 +150,9 @@ const Screens = () => {
         <Droppable droppableId="droppable">
           {(provided) => (
             <Scrollbar
-              autoHeightMin={259}
-              autoHeightMax={259}
-              style={{ backgroundColor: '#ffffff' }}
+              autoHeightMin="30vh"
+              autoHeightMax="30vh"
+              style={{ backgroundColor: '#ffffff', overflow: 'scroll' }}
             >
               <StyledCustomList
                 innerRef={provided.innerRef}

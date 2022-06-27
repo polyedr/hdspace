@@ -16,9 +16,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { setProjectViewStart } from '@Redux/user/actions';
 import axios from 'axios';
-import { shorten_url_api_key, SHARING_USER_ID } from '@Constants/defaultParams';
+import { shorten_url_api_key } from '@Constants/defaultParams';
 import * as Actions from '@Redux/permissions/actions';
-import { UserProjectPermission } from '@Src/types';
 
 const useStyles = makeStyles({
   popup: {
@@ -54,7 +53,6 @@ const Share: FC<Props> = () => {
   const screenId = useSelector(selectCurrentScreenId);
   const activeElementId = useSelector(selectActiveElementId);
   const viewToken = useSelector(selectProjectViewTokenPair);
-
   localStorage.setItem('viewToken', JSON.stringify(viewToken));
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const handleClick = (ev: {
@@ -78,30 +76,34 @@ const Share: FC<Props> = () => {
       if (typeof token === 'string') {
         jsonToken = JSON.parse(token);
       }
-
-      const url = `${origin}/share/?user=${SHARING_USER_ID}&project=${projectId}&screen=${screenId}${
-        activeElementId && includeElement ? `&element=${activeElementId}` : ''
-      }&token=${jsonToken.access}&refresh=${jsonToken.refresh}`;
-      const headers = {
-        apikey: shorten_url_api_key,
+      const data = {
+        user: user.id,
+        pmap: 'edit',
+        project_id: projectId,
       };
-
       axios
-        .post('https://api.apilayer.com/short_url/hash', url, { headers })
-        .then((response) =>
-          navigator.clipboard.writeText(response.data.short_url),
-        );
-
-      const updatedPermissions: UserProjectPermission[] = [];
-
-      updatedPermissions.push(UserProjectPermission.VIEW_PROJECT);
-      dispatch(
-        Actions.updateUserPermissionsForProject(
-          projectId,
-          SHARING_USER_ID,
-          updatedPermissions,
-        ),
-      );
+        .post(
+          'https://api-staging.adevi.info/api/v1/accounts/sharedlinks/',
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${jsonToken.access}`,
+            },
+          },
+        )
+        .then((response) => {
+          const url = `${origin}/share/${response.data.project_id}/${screenId}/${response.data.shortuuid_token}`;
+          // navigator.clipboard.writeText(url);
+          axios
+            .post('https://api.apilayer.com/short_url/hash', url, {
+              headers: {
+                apikey: shorten_url_api_key,
+              },
+            })
+            .then((response) =>
+              navigator.clipboard.writeText(response.data.short_url),
+            );
+        });
       handleClose();
       if (includeElement) {
         dispatch(
@@ -125,7 +127,6 @@ const Share: FC<Props> = () => {
     },
     [access, activeElementId, dispatch, projectId, refresh, screenId, user.id],
   );
-
   return (
     <>
       <ToggleButton
@@ -153,20 +154,11 @@ const Share: FC<Props> = () => {
       >
         <Container maxWidth="xs" className={classes.popup}>
           <Button
-            style={{ marginBottom: '1em' }}
             variant="contained"
             color="primary"
             onClick={() => handleCopyLink()}
           >
             Copy screen link
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleCopyLink(true)}
-            disabled={!activeElementId || parseInt(activeElementId) <= 0}
-          >
-            Copy element link
           </Button>
         </Container>
       </Popover>

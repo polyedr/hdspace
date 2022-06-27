@@ -190,6 +190,7 @@ export const textBlockStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
