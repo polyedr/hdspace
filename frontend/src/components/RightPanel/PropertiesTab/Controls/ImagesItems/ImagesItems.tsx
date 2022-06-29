@@ -11,15 +11,15 @@ import ImagesItem from '@Components/RightPanel/PropertiesTab/Controls/ImagesItem
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedCallback } from 'use-debounce';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles(() => ({
   row: {
     display: 'flex',
     justifyContent: 'flex-start',
   },
   iconButton: {
-    color: palette.common.white,
+    color: '#5064FF',
     '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+      backgroundColor: lighten('rgba(80, 100, 255, 0.3)', 0.1),
     },
   },
   columnsCountBlock: {
