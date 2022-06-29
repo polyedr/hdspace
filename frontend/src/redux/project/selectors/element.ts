@@ -260,6 +260,12 @@ export const selectElementStyles = (elementId: string) => ({
   project,
 }: AppReduxState) => project.data.elements[elementId]?.styles.ownStyles;
 
+export const selectElementsStyles = (elementsIds: string[]) => ({
+  project,
+}: AppReduxState) => {
+  return elementsIds.map((id) => project.data.elements[id]?.styles.ownStyles);
+};
+
 export const selectElementParameters = (elementId: string) => ({
   project,
 }: AppReduxState) => project.data.elements[elementId]?.parameters;

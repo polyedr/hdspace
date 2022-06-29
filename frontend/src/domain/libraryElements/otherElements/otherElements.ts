@@ -274,8 +274,8 @@ export const makeImage = ({
     imageURL: IMAGES.imageIcon,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 300,
-      height: 300,
+      width: 150,
+      height: 150,
     },
     keepAspectRatio: false,
   },
@@ -289,6 +289,7 @@ export const makeImage = ({
 });
 
 export const makeImagesList = ({
+  ownStyles = {},
   UID = 'master',
 } = {}): ImagesListServerElement => ({
   id: `images-list-${UID}`,
@@ -307,7 +308,7 @@ export const makeImagesList = ({
   },
   styles: {
     classNames: ['imagesList'],
-    ownStyles: {},
+    ownStyles,
     pseudoClassStyles: {},
   },
   name: 'images list',
