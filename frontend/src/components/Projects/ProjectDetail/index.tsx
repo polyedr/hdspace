@@ -190,6 +190,7 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
   } = useSelector(selectCurrentProject);
   const projectLoader = useSelector(selectProjectLoader);
   const screens = useSelector(selectScreensWithoutMaster);
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const [userTags, setUserTags] = useState<Array<Tag>>([]);
   const [value, setValue] = React.useState(0);

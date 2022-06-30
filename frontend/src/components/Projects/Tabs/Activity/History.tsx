@@ -3,14 +3,25 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Typography, Grid, Avatar } from '@material-ui/core';
 import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   action: {
     maxWidth: '270px',
     margin: '10px 0',
     wordWrap: 'break-word',
     fontSize: 14,
   },
-});
+  description: {
+    color: '#81818E',
+    fontSize: 12,
+  },
+  time: {
+    fontSize: 12,
+    color: '#81818E',
+  },
+  title: {
+    marginRight: theme.spacing(1) 
+  },
+}));
 
 type Props = {
   activity: ActionTypePM;
@@ -25,15 +36,19 @@ const History: React.FC<Props> = ({ activity, platform }) => {
       <Grid item>
         <Avatar src="https://picsum.photos/200/300?grayscale">N</Avatar>
       </Grid>
-      <Grid container item spacing={1} direction="column">
-        <Grid item>
-          <Typography variant="subtitle1" className={classes.action}>
-            {platform === 'ALL' && activity.action}
-            {platform === activity.platform && activity.action}
-          </Typography>
-        </Grid>
-        <Grid item>
-          <Typography variant="body1">{ platform }</Typography>
+      <Grid item>
+        <Grid container direction="column">
+          <Grid item>
+            <span className={classes.title}>
+              { activity.action }
+            </span>
+            <span className={classes.time}>
+              3 minutes ago
+            </span>
+          </Grid>
+          <Grid item>
+            <span className={classes.description}>{ platform }</span>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>

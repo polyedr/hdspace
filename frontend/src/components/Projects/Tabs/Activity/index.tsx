@@ -3,16 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import {
-  selectCurrentProjectId,
-  selectProjectByIdWrapper,
-  selectProjectLoader,
-} from '@Redux/project/selectors/base';
-import {
-  clearHistoryAction,
-  requestGetAction,
-} from '@Redux/pmtools/activity/actions';
-import selectActions from '@Redux/pmtools/activity/selectors';
-import { getProject, resetProjectState } from '@Redux/project/actions';
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 import { makeStyles, createStyles, withStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -20,9 +14,12 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  ListItemIcon,
-  ListItemText,
+  Select,
+  TextField,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
   FileCopy,
   Delete,
@@ -33,8 +30,22 @@ import {
   MoreHoriz,
   Sync,
   FilterList,
+  Close,
 } from '@material-ui/icons';
+
+import {
+  selectCurrentProjectId,
+  selectProjectByIdWrapper,
+  selectProjectLoader,
+} from '@Redux/project/selectors/base';
+import {
+  clearHistoryAction,
+  requestGetAction,
+} from '@Redux/pmtools/activity/actions';
+import selectActions from '@Redux/pmtools/activity/selectors';
+import { getProject, resetProjectState } from '@Redux/project/actions';
 import { selectSortedScreens } from '@Redux/project/selectors/screen';
+import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import { Screen } from '@Src/types';
 import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
@@ -86,7 +97,12 @@ const useStyles = makeStyles(({ spacing }) =>
           backgroundColor: '#FFFFFF',
         },
       },
-    }
+    },
+    textField: {
+      marginLeft: spacing(1),
+      marginRight: spacing(1),
+      width: 200,
+    },
   }),
 );
 
@@ -111,9 +127,13 @@ const Activity: React.FC<Props> = ({ projectId, screenId }) => {
   const project = useSelector(selectProjectByIdWrapper(currentProjectId));
   const projectLoader = useSelector(selectProjectLoader);
   const activities: Array<ActionTypePM> = useSelector(selectActions);
-  const [platform, setPlatform] = useState<PlatformActionData>('ALL');
   const screens = useSelector(selectSortedScreens);
+  const members = useSelector(selectAllUsersPermissions);
+  console.log(members);
+
+  const [platform, setPlatform] = useState<PlatformActionData>('ALL');
   const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
 
   useEffect(() => {
     if(currentProjectId > -1) {
@@ -133,13 +153,64 @@ const Activity: React.FC<Props> = ({ projectId, screenId }) => {
     dispatch(requestGetAction(currentProjectId));
   };
 
+  const handlePlatformChange = (e) => {
+    setPlatform(e.target.value);
+  }
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
   return (
-    <Grid container spacing={1}>
-      <Grid container item spacing={1}>
+    <Grid container spacing={3}>
+      <Grid container item spacing={3} alignItems="center">
         <Grid item>
-          <Button variant="contained" onClick={handleRefresh}>
+          <Button onClick={handleRefresh}>
             <Sync fontSize='small' />
             Refresh
+          </Button>
+        </Grid>
+        <Grid item>
+          <FormControl variant="outlined">
+            <InputLabel id="demo-simple-select-outlined-label">Age</InputLabel>
+            <Select
+              value={platform}
+              onChange={handlePlatformChange}
+              label="Type"
+              style={{ width: 150 }}
+            >
+              <MenuItem value='board'>Board</MenuItem>
+              <MenuItem value='editor'>Editor</MenuItem>
+              <MenuItem value='members'>Members</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item>
+          <Autocomplete
+            options={[{name: 'me'}]}
+            getOptionLabel={(option) => option.name}
+            style={{ width: 200 }}
+            renderInput={(params) => <TextField {...params} label="User" variant="outlined" />}
+          />
+        </Grid>
+        <Grid item>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              label="Date"
+              inputVariant="outlined"
+              value={selectedDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
+        </Grid>
+        <Grid item>
+          <Button>
+            <Close fontSize='small' /> Reset Filters
           </Button>
         </Grid>
         <Grid item>
