@@ -63,8 +63,8 @@ urlpatterns = [
     path("api/v1/djauth/", include("djoser.social.urls"), name="djosersocial"),
     # path("api/v1/convert/", include("lazysignup.urls"), name="lazysignup"),
     path("api/v1/invitations/", include("rest_invitations.urls"), name="invitations"),
+    path("api/v1/subscriptions/", include("subscriptions_api.urls"), name="subscriptions"),
 ]
-
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
