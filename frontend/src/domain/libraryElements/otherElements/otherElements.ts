@@ -274,8 +274,8 @@ export const makeImage = ({
     imageURL: IMAGES.imageIcon,
     freeCanvas: {
       ...defaultFreeCanvasParams,
-      width: 150,
-      height: 150,
+      width: 300,
+      height: 300,
     },
     keepAspectRatio: false,
   },

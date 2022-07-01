@@ -56,15 +56,15 @@ const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
             height: element.styles.ownStyles.height || 450,
           }}
           cols={element.parameters.columns}
-          rowHeight={164}
+          rowHeight="auto"
         >
           {childrenImages?.map((item, index) => {
             return (
               <ImageListItem
                 key={item.key}
                 sx={{
-                  width: childrenStyles[index]?.width,
-                  height: childrenStyles[index]?.height,
+                  width: childrenStyles[index]?.width || 150,
+                  height: childrenStyles[index]?.height || 150,
                   margin: 1,
                 }}
               >
