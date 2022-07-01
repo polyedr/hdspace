@@ -11,7 +11,6 @@ import TYPES from '@Redux/actionTypes';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { setUserData } from '@Redux/user/actions';
 import { selectUserData } from '@Redux/user/selectors';
-import generator from 'generate-password';
 import { ServerUserData } from '@Src/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { configAdmin, configUser } from '@Constants/pmtools/zulipChatLoginData';
@@ -84,12 +83,12 @@ function* loginUserSaga({
   }
 }
 
-export function* registerZulipUserSaga(): any {
+export function* registerZulipUserSaga({ payload }: any): any {
   try {
     const { id, email, username }: ServerUserData = yield select(
       selectUserData,
     );
-    const password = generator.generate();
+    const password = payload as string;
 
     const res = yield call(apiRegisterUser, configAdmin, {
       email,
