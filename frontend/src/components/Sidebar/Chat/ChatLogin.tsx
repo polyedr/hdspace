@@ -40,9 +40,7 @@ const ChatLogin: React.FC = () => {
       {parameters.passwordZulip || isLogin ? (
         <>
           <Button
-            onClick={() =>
-              dispatch(action.requestLoginChatUser(parameters.passwordZulip))
-            }
+            onClick={() => dispatch(action.requestLoginChatUser(password))}
             style={{ margin: '10px 0' }}
             type="submit"
             color="secondary"

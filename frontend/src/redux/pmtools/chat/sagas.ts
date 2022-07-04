@@ -1,3 +1,4 @@
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import { convertUserDataFromResponse } from '@Api/converters/fromResponse';
 import {
   apiAuthUser,
@@ -68,7 +69,11 @@ function* loginUserSaga({
   type: string;
 }) {
   try {
-    const { email: username } = yield select(selectUserData);
+    const {
+      id,
+      email: username,
+      profile: { parameters },
+    } = yield select(selectUserData);
     const client = yield call(apiAuthUser, {
       realm: configAdmin.realm,
       username,
@@ -77,6 +82,30 @@ function* loginUserSaga({
     if (client.result === 'success') {
       yield put(action.successLoginChatUser(client));
       localStorage.setItem('login', JSON.stringify({ password }));
+      if (parameters.passwordZulip !== password) {
+        yield call(apiChangeProfileData, {
+          id,
+          data: {
+            parameters: { passwordZulip: password },
+          },
+        });
+        const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
+          id,
+        });
+
+        yield put(
+          setUserData({
+            ...convertUserDataFromResponse(userData),
+          }),
+        );
+      }
+    } else {
+      yield put(
+        enqueueSnackbar({
+          message: 'Chat login failed!',
+          options: { variant: 'error' },
+        }),
+      );
     }
   } catch (e) {
     yield put(panelErrorMsg(e));
@@ -123,6 +152,13 @@ export function* registerZulipUserSaga({ payload }: any): any {
         yield put(action.successLoginChatUser(client));
         localStorage.setItem('login', JSON.stringify({ password }));
       }
+    } else {
+      yield put(
+        enqueueSnackbar({
+          message: 'Chat Register failed!',
+          options: { variant: 'error' },
+        }),
+      );
     }
   } catch (e) {
     yield put(panelErrorMsg(e));
