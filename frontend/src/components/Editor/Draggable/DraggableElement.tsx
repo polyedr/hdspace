@@ -180,6 +180,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   const ElementRenderer = RENDERERS[element.type];
 
+  if (!ElementRenderer) {
+    // eslint-disable-next-line no-console
+    console.warn(element.type);
+    return null;
+  }
+
   return (
     <ElementRenderer
       element={element}
@@ -199,25 +205,27 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string, index: number) => (
-        <DraggableElement
-          key={`element-${
-            element.children.indexOf(childId) === index
-              ? childId
-              : childId + Math.random()
-          }`}
-          elementId={childId}
-          parentIds={parentsIdsForChildren}
-          scrollRef={scrollRef}
-          isDisabled={isDisabled}
-          screenId={screenId}
-          allElements={allElements}
-          preSelectedElementId={preSelectedElementId}
-          masterSourceElementId={masterSourceElementId}
-          canDragAndDrop={canDragAndDrop}
-          projectClasses={projectClasses}
-        />
-      ))}
+      {element.children.map((childId: string, index: number) => {
+        return (
+          <DraggableElement
+            key={`element-${
+              element.children.indexOf(childId) === index
+                ? childId
+                : childId + Math.random()
+            }`}
+            elementId={childId}
+            parentIds={parentsIdsForChildren}
+            scrollRef={scrollRef}
+            isDisabled={isDisabled}
+            screenId={screenId}
+            allElements={allElements}
+            preSelectedElementId={preSelectedElementId}
+            masterSourceElementId={masterSourceElementId}
+            canDragAndDrop={canDragAndDrop}
+            projectClasses={projectClasses}
+          />
+        );
+      })}
     </ElementRenderer>
   );
 };
