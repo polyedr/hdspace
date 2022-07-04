@@ -178,7 +178,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     return null;
   }
 
-  const ElementRenderer = RENDERERS[element.type];
+  // handling div element with divBlock as server using div elements
+  const ElementRenderer =
+    // @ts-ignore
+    RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
 
   if (!ElementRenderer) {
     // eslint-disable-next-line no-console
