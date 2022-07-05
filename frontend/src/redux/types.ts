@@ -72,6 +72,7 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
+  assetImageList: boolean;
   imagePalette: ParsedImagePalette | null;
 };
 
@@ -905,6 +906,13 @@ export type AddStateAsset = IAction<
   HistoryMeta
 >;
 
+export type AddImageList = IAction<
+  typeof TYPES.SET_IMAGE_LIST,
+  {
+    valueImage: boolean;
+  }
+>;
+
 export type RemoveAssetListRedux = IAction<
   typeof TYPES.REMOVE_ASSET_LIST_REDUX,
   string
@@ -1334,6 +1342,7 @@ export type Action =
   | AddStateAssetList
   | AddAssetList
   | AddStateAsset
+  | AddImageList
   | RemoveAssetList
   | RemoveAssetListRedux
   | RemoveAsset

@@ -152,6 +152,7 @@ import {
   ReplaceMultipleElementsParameters,
   WrapMultipleElementsIntoContainer,
   UploadImageByUrl,
+  AddImageList,
   UpdateStateAssetImage,
   SetSelectedAssetListId,
   RestoreMultipleElementsChildren,
@@ -1517,6 +1518,11 @@ export const uploadImageByUrl = (
   type: TYPES.UPLOAD_IMAGE_BY_URL,
   payload: { elementId, imageData, listId },
   meta,
+});
+
+export const setImageList = (valueImage: boolean): AddImageList => ({
+  type: TYPES.SET_IMAGE_LIST,
+  payload: { valueImage },
 });
 
 export const updateStateAssetImage = (

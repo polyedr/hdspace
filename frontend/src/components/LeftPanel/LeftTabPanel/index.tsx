@@ -1,10 +1,12 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AssetsSection from '@Src/components/LeftPanel/Assets/index';
+import { selectImageList } from '@Redux/project/selectors/asset';
+import { setImageList } from '@Redux/project/actions';
 import Navigator from '../Navigator';
 import VIANavigator from '../VIANavigator';
 
@@ -48,11 +50,25 @@ function panelProps(index: number) {
 }
 
 const LeftTabPanel = () => {
+  const assetImageList = useSelector(selectImageList);
+  const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
+
   const viaMode = useSelector(selectVIAModeEnabled);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (assetImageList) {
+      setValue(1);
+    }
+  }, [assetImageList]);
+
+  const handleChangleValue = () => {
+    dispatch(setImageList(false));
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
       <Box
@@ -80,6 +96,7 @@ const LeftTabPanel = () => {
         >
           <Tab
             label="Layers"
+            onClick={handleChangleValue}
             {...panelProps(0)}
             sx={{
               textTransform: 'capitalize',

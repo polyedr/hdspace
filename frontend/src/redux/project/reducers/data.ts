@@ -32,7 +32,6 @@ const dataReducer = produce(
         draft.imagePalette = action.payload;
         break;
       }
-
       case TYPES.MOVE_STATE_ELEMENT: {
         const { elementId, indices, parents } = action.payload;
         draft.elements = moveMapElement(
@@ -293,6 +292,12 @@ const dataReducer = produce(
           1,
         );
         delete draft.assetResults[action.payload];
+        break;
+      }
+
+      case TYPES.SET_IMAGE_LIST: {
+        const { valueImage } = action.payload;
+        draft.assetImageList = valueImage;
         break;
       }
 

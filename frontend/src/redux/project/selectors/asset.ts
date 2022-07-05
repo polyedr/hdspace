@@ -8,6 +8,10 @@ export const selectAllAssetLists = (state: AppReduxState) =>
 export const selectAllAssetListsLoading = (state: AppReduxState) =>
   selectProjectState(state).data.assetLists.loading;
 
+export const selectImageList = ({ project }: AppReduxState) => {
+  return project.data.assetImageList;
+};
+
 export const selectCurrentAssetListId = (state: AppReduxState) => {
   return selectProjectState(state).edit.selectedAssetListId;
 };

@@ -34,6 +34,7 @@ export const initialData: ProjectDataState = {
     pageSize: 40,
   },
   assetResults: {},
+  assetImageList: false,
   imagePalette: null,
 };
 

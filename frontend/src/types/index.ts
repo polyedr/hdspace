@@ -1514,6 +1514,7 @@ export type Asset = {
   image: string | null;
   created: Date;
   modified: Date;
+
   listId: string | null;
 };
 

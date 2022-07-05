@@ -15,7 +15,7 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const { imageURL, alt, title } = element.parameters;
+    const { imageURL, alt, title } = element?.parameters;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 
@@ -31,7 +31,7 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
           }
           imgRef.current = dom;
         }}
-        src={imageURL}
+        src={imageURL || ''}
         id={element.id}
         data-ls-id={element.id}
         className={cn(className, groupClass, classes.ownStyles)}
@@ -44,7 +44,7 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
     ) : (
       <img
         ref={ref}
-        src={imageURL}
+        src={imageURL || ''}
         id={element.id}
         data-ls-id={element.id}
         className={cn(
