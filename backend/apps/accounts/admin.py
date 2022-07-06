@@ -4,7 +4,16 @@ from django.contrib.auth.admin import UserAdmin
 from .models import *  # noqa
 
 
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'Profile'
+    fk_name = 'user'
+
+
 class MyUserAdmin(UserAdmin):
+    # Adding inline profiles
+    inlines = (ProfileInline,)
     # override the default sort column
     ordering = ("date_joined",)
     # if you want the date they joined or other columns displayed in the list,
@@ -20,6 +29,10 @@ class MyUserAdmin(UserAdmin):
         "is_staff",
         "is_superuser",
     )
+    def get_inline_instances(self, request, obj=None):
+        if not obj:
+            return list()
+        return super(MyUserAdmin, self).get_inline_instances(request, obj)
 
 
 # finally replace the default UserAdmin with yours
