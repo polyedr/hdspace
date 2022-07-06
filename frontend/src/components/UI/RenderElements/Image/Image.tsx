@@ -31,7 +31,7 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
           }
           imgRef.current = dom;
         }}
-        src={imageURL || ''}
+        src={imageURL}
         id={element.id}
         data-ls-id={element.id}
         className={cn(className, groupClass, classes.ownStyles)}
@@ -44,7 +44,7 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
     ) : (
       <img
         ref={ref}
-        src={imageURL || ''}
+        src={imageURL}
         id={element.id}
         data-ls-id={element.id}
         className={cn(

@@ -55,15 +55,15 @@ const DisplayAssets = () => {
   const screenId = useSelector(selectCurrentScreenId);
   const selectAsset = useSelector(selectImageList);
   const element = useSelector(selectActiveElement);
-
-  const [showImage, setShowImage] = useState<HTMLImageElement | null | number>(
-    null,
-  );
+  const [mouseEnterImageShow, setMouseEnterImageShow] = useState<
+    HTMLImageElement | null | number
+  >(null);
   const hasNextPage = useSelector(selectIfListHasNextPage);
   const assetsLoading = useSelector(selectAssetsLoading);
+  const staticDefaultImage = '/e47198a3fce7b4e4d3bd1d3fcdceecc1.svg';
   const [assetImage, setAssetImage] = useState<
     HTMLImageElement | null | string
-  >('/e47198a3fce7b4e4d3bd1d3fcdceecc1.svg');
+  >(staticDefaultImage);
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -87,25 +87,22 @@ const DisplayAssets = () => {
 
   useEffect(() => {
     assets?.map((data, index) => {
-      const { parameters } = element;
-      const image = data?.image;
       const elementData = {
         parameters: {
-          ...parameters,
-          imageURL: image,
+          ...element?.parameters,
+          imageURL: data?.image,
         },
       };
-      if (index === showImage) {
+      if (index === mouseEnterImageShow) {
         dispatch(updateStateElement(element.id, elementData));
       }
     });
-  }, [showImage]);
+  }, [mouseEnterImageShow]);
 
   const handleLeaveBtn = () => {
-    const { parameters } = element;
     const firstImageData = {
       parameters: {
-        ...parameters,
+        ...element?.parameters,
         imageURL: assetImage,
       },
     };
@@ -114,10 +111,9 @@ const DisplayAssets = () => {
 
   const handleSetImage = (clickIndex) => {
     assets?.map((data, index) => {
-      const { parameters } = element;
       const secondImageData = {
         parameters: {
-          ...parameters,
+          ...element?.parameters,
           imageURL: data.image,
         },
       };
@@ -214,7 +210,6 @@ const DisplayAssets = () => {
       >
         New asset
       </Button>
-      {/* <--------------------------- assets Image list -------------------->  */}
       <Scrollbar autoHeightMax={385} style={{ height: '100%' }}>
         <ImageList
           rowHeight={80}
@@ -227,7 +222,9 @@ const DisplayAssets = () => {
               <ImageListItem
                 style={{ width: '100%', margin: '5px', height: '100%' }}
                 key={`asset-${asset.id}`}
-                onMouseEnter={() => selectAsset && setShowImage(index)}
+                onMouseEnter={() =>
+                  selectAsset && setMouseEnterImageShow(index)
+                }
                 onMouseLeave={() => selectAsset && handleLeaveBtn()}
                 onClick={() => selectAsset && handleSetImage(index)}
               >
@@ -240,7 +237,7 @@ const DisplayAssets = () => {
                             setLastImage(image);
                           }
                         }
-                      : undefined
+                      : null
                   }
                 />
               </ImageListItem>

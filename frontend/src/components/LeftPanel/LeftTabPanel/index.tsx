@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AssetsSection from '@Src/components/LeftPanel/Assets/index';
 import { selectImageList } from '@Redux/project/selectors/asset';
 import { setImageList } from '@Redux/project/actions';
+import { TabsIndex } from '@Src/types';
 import Navigator from '../Navigator';
 import VIANavigator from '../VIANavigator';
 
@@ -52,8 +53,7 @@ function panelProps(index: number) {
 const LeftTabPanel = () => {
   const assetImageList = useSelector(selectImageList);
   const dispatch = useDispatch();
-  const [value, setValue] = React.useState(0);
-
+  const [value, setValue] = React.useState(TabsIndex.MinValue);
   const viaMode = useSelector(selectVIAModeEnabled);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -61,7 +61,7 @@ const LeftTabPanel = () => {
 
   useEffect(() => {
     if (assetImageList) {
-      setValue(1);
+      setValue(TabsIndex.MaxValue);
     }
   }, [assetImageList]);
 

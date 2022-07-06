@@ -14,7 +14,7 @@ import {
   selectCurrentAssetListId,
   selectImageList,
 } from '@Redux/project/selectors/asset';
-import { Button } from '@material-ui/core';
+import Button from '@mui/material/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { URL_REGEX } from '@Constants/defaultParams';
 
@@ -104,7 +104,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
-      const assetId = null || listRef.current;
+      const assetId = listRef.current;
       if (!assetId) {
         dispatch(
           enqueueSnackbar({
@@ -127,7 +127,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
         );
       }
     },
-    [null, dispatch, activeElementId, currentScreenId],
+    [dispatch, activeElementId, currentScreenId],
   );
 
   return (
@@ -178,22 +178,6 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
       </div>
       {assetLists.length && canEdit && (
         <div className={classes.assetListsWrapper}>
-          {/* <label htmlFor="image-asset-list">Take from assets</label> */}
-          {/* <StyledTextField
-            id="image-asset-list"
-            className={classes.assetsSelector}
-            select
-            defaultValue={listRef.current}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setSelectedAsset(event.target.value);
-            }}
-          >
-            {assetLists.map((list) => (
-              <MenuItem key={`image-asset-${list.id}`} value={list.id} dense>
-                {list.name}
-              </MenuItem>
-            ))}
-          </StyledTextField> */}
           <Button
             component="span"
             style={{

@@ -1542,6 +1542,11 @@ export enum baseLayout {
   Mobile = 'Mobile',
 }
 
+export enum TabsIndex {
+  MinValue = 0,
+  MaxValue = 1,
+}
+
 export enum Layout {
   Desktop = 'desktop',
   Tablet = 'tablet',
