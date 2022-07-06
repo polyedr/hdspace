@@ -84,7 +84,15 @@ const TextContent = ({ element, updateParams, canEdit }) => {
       if (oldElementId === element.id) {
         updateParams(
           {
-            textContent: convertToHTML(value.getCurrentContent()),
+            textContent: convertToHTML({
+              // eslint-disable-next-line consistent-return
+              blockToHTML: (block) => {
+                if (block.type === 'unstyled') {
+                  if (block.text === ' ' || block.text === '') return <br />;
+                  return <div />;
+                }
+              },
+            })(value.getCurrentContent()),
           },
           element?.id,
         );
