@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Button, TextField, IconButton } from '@material-ui/core';
+import { Button, TextField, IconButton } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { Visibility, VisibilityOff } from '@material-ui/icons';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import * as action from '@Redux/pmtools/chat/actions';
 import { selectProfileData } from '@Redux/user/selectors';
 
@@ -12,6 +12,12 @@ const ChatLogin: React.FC = () => {
   const [password, setPassword] = useState(parameters.passwordZulip || '');
   const [isLogin, setIsLogin] = useState(false);
   const [isVisible, setVisible] = useState(false);
+  const zulipPasswordResetLink =
+    'https://zulip.adevi.info/accounts/password/reset/';
+
+  const handleRegister = () => {
+    dispatch(action.requestRegisterZulip(password));
+  };
 
   return (
     <>
@@ -49,11 +55,7 @@ const ChatLogin: React.FC = () => {
           >
             Login
           </Button>
-          <Button
-            target="_blank"
-            href="https://zulip.adevi.info/accounts/password/reset/"
-            fullWidth
-          >
+          <Button target="_blank" href={zulipPasswordResetLink} fullWidth>
             Forgot password?
           </Button>
         </>
@@ -63,7 +65,7 @@ const ChatLogin: React.FC = () => {
             type="submit"
             color="secondary"
             style={{ margin: '10px 0' }}
-            onClick={() => dispatch(action.requestRegisterZulip(password))}
+            onClick={handleRegister}
             variant="contained"
             fullWidth
           >
