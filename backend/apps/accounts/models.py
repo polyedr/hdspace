@@ -54,6 +54,7 @@ class Profile(TimeStampedModel):
     avatar = models.ImageField(upload_to=utils.get_file_path, blank=True, null=True)
     approved = models.BooleanField(default=False)
     hourly_rate = models.IntegerField(default=0)
+    projects_max = models.IntegerField(default=0)
     parameters = JSONField(blank=True)
 
     def get_confirmation_url(self) -> str:
