@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "rest_framework",
+    "drf_stripe",
     "subscriptions_api",
     "invitations",
     "rest_invitations",
@@ -103,12 +104,20 @@ SESAME_TOKEN_NAME = "adevi"
 # Sesame tokens to be usable only once
 SESAME_ONE_TIME = False
 
+'''
 # Stripe settings
 STRIPE_TEST_PUBLIC_KEY ='pk_test_51L620rJoSQ0eiPwx1bQyVqnwgjRFtH28DKzCUJcU8aBRLf9mJDbNoym8nPisb9L0bNTJOdwfTMw5ARXaoKiyqZj700QhH5iKwO'
 STRIPE_TEST_SECRET_KEY = 'sk_test_51L620rJoSQ0eiPwxeb8479Rw4QaM65WXig9JfApcad5kOKVMVtIDaK1giPp9tZ168o1RNJlue9m1N81vhQImMgHW00C0uqXOHS'
 STRIPE_LIVE_MODE = False  # Change to True in production
-DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"
+DJSTRIPE_WEBHOOK_SECRET = "whsec_282093a53f7bbfdb42092e1431c8308736a76a94cb3438067ccba26b8b60c8da"
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+'''
+
+DRF_STRIPE = {
+    "STRIPE_API_SECRET": "sk_test_51L620rJoSQ0eiPwxeb8479Rw4QaM65WXig9JfApcad5kOKVMVtIDaK1giPp9tZ168o1RNJlue9m1N81vhQImMgHW00C0uqXOHS",
+    "STRIPE_WEBHOOK_SECRET": "whsec_282093a53f7bbfdb42092e1431c8308736a76a94cb3438067ccba26b8b60c8da",
+    "FRONT_END_BASE_URL": "http://localhost:3000",
+}
 
 # Allow CORS for all domains
 CORS_ORIGIN_ALLOW_ALL = True

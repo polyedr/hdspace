@@ -64,6 +64,7 @@ urlpatterns = [
     # path("api/v1/convert/", include("lazysignup.urls"), name="lazysignup"),
     path("api/v1/invitations/", include("rest_invitations.urls"), name="invitations"),
     path("api/v1/subscriptions/", include("subscriptions_api.urls"), name="subscriptions"),
+    path("api/v1/stripe/", include("drf_stripe.urls"), name="drfstripes"),
 ]
 
 if settings.DEBUG:
