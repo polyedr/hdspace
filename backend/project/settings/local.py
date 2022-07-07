@@ -117,6 +117,8 @@ DRF_STRIPE = {
     "STRIPE_API_SECRET": "sk_test_51L620rJoSQ0eiPwxeb8479Rw4QaM65WXig9JfApcad5kOKVMVtIDaK1giPp9tZ168o1RNJlue9m1N81vhQImMgHW00C0uqXOHS",
     "STRIPE_WEBHOOK_SECRET": "whsec_282093a53f7bbfdb42092e1431c8308736a76a94cb3438067ccba26b8b60c8da",
     "FRONT_END_BASE_URL": "http://localhost:3000",
+    "DJANGO_USER_EMAIL_FIELD": "email",
+    "USER_CREATE_DEFAULTS_ATTRIBUTE_MAP": {"username": "email"},
 }
 
 # Allow CORS for all domains

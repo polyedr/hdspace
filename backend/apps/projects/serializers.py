@@ -7,7 +7,10 @@ import cv2
 from django.core.files.uploadedfile import UploadedFile
 import requests
 from urllib.parse import urlparse
+
+from drf_stripe.stripe_api.customers import get_or_create_stripe_user
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
 from rest_framework_recursive.fields import RecursiveField
 
@@ -409,14 +412,46 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
         }
 
     def create(self, validated_data):
-        projectscreens_data = validated_data.pop("projectscreen")
-        project = Project(id=None, **validated_data)
-        project.preview = project.generate_preview_token()
-        project.save()
-        project.name = "AProject-" + str(project.id)
-        project.save()
-        project.projectscreen.set(projectscreens_data, clear=True)
-        return project
+
+        # Check if user can create projects, based on projects_max value and subscriptions status
+        current_user = self.context["request"].user
+        current_profile = self.context["request"].user.profile
+        projects_max = current_profile.projects_max
+        is_superuser = current_user.is_superuser
+
+
+
+        # A flag to set number of projects available manually instead of the subscripitons value
+        approved = current_profile.approved
+        can_create_projects = 1
+        print("is_superuser: ", is_superuser, "approved: ", approved)
+        now_projects = Project.objects.filter(user=current_user).count()
+        if not is_superuser:
+            can_create_projects = 0
+        if approved:
+            print(now_projects, projects_max)
+            if now_projects < projects_max:
+                can_create_projects = 1
+        else:
+            # Calculate a number of projects available with subscriptions tables
+            # Set number of projects available according to the subscriptions value
+            stripe_user = get_or_create_stripe_user(user_id=current_user.id)
+            projects_max = (len(stripe_user.current_subscription_items)) * 3
+            print(now_projects, projects_max)
+            if now_projects < projects_max:
+                can_create_projects = 1
+
+        if can_create_projects:
+            projectscreens_data = validated_data.pop("projectscreen")
+            project = Project(id=None, **validated_data)
+            project.preview = project.generate_preview_token()
+            project.save()
+            project.name = "AProject-" + str(project.id)
+            project.save()
+            project.projectscreen.set(projectscreens_data, clear=True)
+            return project
+        else:
+            raise ValidationError("Maximum count of projectss reached.")
 
     def update(self, instance, validated_data):
         """
