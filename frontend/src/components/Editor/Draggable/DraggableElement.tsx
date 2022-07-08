@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useEffect, useCallback, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import logger from 'loglevel';
 import { useDebouncedCallback } from 'use-debounce';
 import {
   processDropElement,
@@ -185,7 +186,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   if (!ElementRenderer) {
     // eslint-disable-next-line no-console
-    console.warn(element.type);
+    logger.warn(`Element dose not exists: ${element.type}`);
     return null;
   }
 
