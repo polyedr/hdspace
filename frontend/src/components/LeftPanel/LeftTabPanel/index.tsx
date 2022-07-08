@@ -5,9 +5,12 @@ import Box from '@mui/material/Box';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { useDispatch, useSelector } from 'react-redux';
 import AssetsSection from '@Src/components/LeftPanel/Assets/index';
-import { selectImageList } from '@Redux/project/selectors/asset';
-import { setImageList } from '@Redux/project/actions';
 import { TabsIndex } from '@Src/types';
+import {
+  selectBackGroundAssetsList,
+  selectImageList,
+} from '@Redux/project/selectors/asset';
+import { setBackgroundList, setImageList } from '@Redux/project/actions';
 import Navigator from '../Navigator';
 import VIANavigator from '../VIANavigator';
 
@@ -52,6 +55,7 @@ function panelProps(index: number) {
 
 const LeftTabPanel = () => {
   const assetImageList = useSelector(selectImageList);
+  const backGroundListValue = useSelector(selectBackGroundAssetsList);
   const dispatch = useDispatch();
   const [value, setValue] = React.useState(TabsIndex.MinValue);
   const viaMode = useSelector(selectVIAModeEnabled);
@@ -65,8 +69,15 @@ const LeftTabPanel = () => {
     }
   }, [assetImageList]);
 
+  useEffect(() => {
+    if (backGroundListValue) {
+      setValue(1);
+    }
+  }, [backGroundListValue]);
+
   const handleChangleValue = () => {
     dispatch(setImageList(false));
+    dispatch(setBackgroundList(false));
   };
 
   return (

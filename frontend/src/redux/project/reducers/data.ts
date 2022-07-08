@@ -301,6 +301,12 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.SET_BACKGROUND_LIST: {
+        const { backGroundValue } = action.payload;
+        draft.backGroundAssetsList = backGroundValue;
+        break;
+      }
+
       case TYPES.REMOVE_ASSET_REDUX: {
         const { id, listId } = action.payload;
         if (draft.assetResults[listId]) {

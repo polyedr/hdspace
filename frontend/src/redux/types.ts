@@ -74,6 +74,7 @@ export type ProjectDataState = {
   assetResults: AssetResults;
   assetImageList: boolean;
   imagePalette: ParsedImagePalette | null;
+  backGroundAssetsList: boolean;
 };
 
 export type ProjectUiState = {
@@ -913,6 +914,13 @@ export type AddImageList = IAction<
   }
 >;
 
+export type AddBackgroundImageList = IAction<
+  typeof TYPES.SET_BACKGROUND_LIST,
+  {
+    backGroundValue: boolean;
+  }
+>;
+
 export type RemoveAssetListRedux = IAction<
   typeof TYPES.REMOVE_ASSET_LIST_REDUX,
   string
@@ -1343,6 +1351,7 @@ export type Action =
   | AddAssetList
   | AddStateAsset
   | AddImageList
+  | AddBackgroundImageList
   | RemoveAssetList
   | RemoveAssetListRedux
   | RemoveAsset

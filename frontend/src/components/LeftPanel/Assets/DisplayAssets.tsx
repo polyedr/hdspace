@@ -16,6 +16,7 @@ import {
   selectIfListHasNextPage,
   selectAssetsLoading,
   selectImageList,
+  selectBackGroundAssetsList,
 } from '@Redux/project/selectors/asset';
 import {
   uploadAsset,
@@ -23,6 +24,8 @@ import {
   updateStateElement,
   setImageList,
   updateElementParameters,
+  updateElementStyles,
+  setBackgroundList,
 } from '@Redux/project/actions';
 import Scrollbar from '@Components/UI/Scrollbar';
 
@@ -54,16 +57,23 @@ const DisplayAssets = () => {
   const assets = useSelector(selectDisplayAssets);
   const screenId = useSelector(selectCurrentScreenId);
   const selectAsset = useSelector(selectImageList);
+  const selectBackgroundAssetValue = useSelector(selectBackGroundAssetsList);
   const element = useSelector(selectActiveElement);
   const [mouseEnterImageShow, setMouseEnterImageShow] = useState<
     HTMLImageElement | null | number
   >(null);
+  const [backGraundImageEnter, setBackGraundImageEnater] = useState<
+    HTMLImageElement | null | number
+  >(null);
+  const [secondBackgroundImage, setSecondBackgroundImage] = useState<
+    HTMLImageElement | null | string | undefined
+  >(null);
   const hasNextPage = useSelector(selectIfListHasNextPage);
   const assetsLoading = useSelector(selectAssetsLoading);
-  const staticDefaultImage = '/e47198a3fce7b4e4d3bd1d3fcdceecc1.svg';
+  const currentScreenId = useSelector(selectCurrentScreenId);
   const [assetImage, setAssetImage] = useState<
     HTMLImageElement | null | string
-  >(staticDefaultImage);
+  >(null);
   const canEditProject = useSelector(
     selectIfCurrentUserHasPermission(UserProjectPermission.CHANGE_PROJECT),
   );
@@ -87,6 +97,7 @@ const DisplayAssets = () => {
 
   useEffect(() => {
     assets?.map((data, index) => {
+      const elementId = element.id;
       const elementData = {
         parameters: {
           ...element?.parameters,
@@ -94,21 +105,64 @@ const DisplayAssets = () => {
         },
       };
       if (index === mouseEnterImageShow) {
-        dispatch(updateStateElement(element.id, elementData));
+        dispatch(updateStateElement(elementId, elementData));
       }
     });
   }, [mouseEnterImageShow]);
 
+  useEffect(() => {
+    assets?.map((data, index) => {
+      const image = data?.image;
+      const elementId = element?.id;
+      if (index === backGraundImageEnter) {
+        const setMouseEnterImageData = {
+          styles: {
+            ...element?.styles,
+            ownStyles: {
+              ...element?.styles?.ownStyles,
+              backgroundImage: `url(${image})`,
+            },
+          },
+        };
+        dispatch(updateStateElement(elementId, setMouseEnterImageData));
+      }
+    });
+  }, [backGraundImageEnter]);
+
   const handleLeaveBtn = () => {
-    const firstImageData = {
+    const secondImageData = {
       parameters: {
         ...element?.parameters,
         imageURL: assetImage,
       },
     };
-    dispatch(updateStateElement(element.id, firstImageData));
+    dispatch(updateStateElement(element.id, secondImageData));
   };
 
+  const images = element?.styles?.ownStyles?.backgroundImage;
+  const imageBackground = images?.split('(')[1].split(')')[0];
+  useEffect(() => {
+    setSecondBackgroundImage(imageBackground);
+  }, [selectBackgroundAssetValue]);
+
+  const assetsSecondImages = element?.parameters?.imageURL;
+  useEffect(() => {
+    setAssetImage(assetsSecondImages);
+  }, [selectAsset]);
+
+  const handleLeaveBackgroundImage = () => {
+    const elementId = element?.id;
+    const secondBackgroundImageData = {
+      styles: {
+        ...element?.styles,
+        ownStyles: {
+          ...element?.styles?.ownStyles,
+          backgroundImage: `url(${secondBackgroundImage})`,
+        },
+      },
+    };
+    dispatch(updateStateElement(elementId, secondBackgroundImageData));
+  };
   const handleSetImage = (clickIndex) => {
     assets?.map((data, index) => {
       const secondImageData = {
@@ -132,6 +186,26 @@ const DisplayAssets = () => {
       }
 
       dispatch(setImageList(false));
+    });
+  };
+
+  const handleSetBackgroundImage = (clickIndex) => {
+    assets?.map((data, index) => {
+      const image = data?.image;
+      const elementId = element?.id;
+      if (index === clickIndex) {
+        setSecondBackgroundImage(image);
+        dispatch(
+          updateElementStyles(
+            elementId,
+            {
+              backgroundImage: `url(${image})`,
+            },
+            { screenId: currentScreenId },
+          ),
+        );
+      }
+      dispatch(setBackgroundList(false));
     });
   };
 
@@ -223,10 +297,19 @@ const DisplayAssets = () => {
                 style={{ width: '100%', margin: '5px', height: '100%' }}
                 key={`asset-${asset.id}`}
                 onMouseEnter={() =>
-                  selectAsset && setMouseEnterImageShow(index)
+                  (selectAsset && setMouseEnterImageShow(index)) ||
+                  (selectBackgroundAssetValue &&
+                    setBackGraundImageEnater(index))
                 }
-                onMouseLeave={() => selectAsset && handleLeaveBtn()}
-                onClick={() => selectAsset && handleSetImage(index)}
+                onMouseLeave={() =>
+                  (selectAsset && handleLeaveBtn()) ||
+                  (selectBackgroundAssetValue && handleLeaveBackgroundImage())
+                }
+                onClick={() =>
+                  (selectAsset && handleSetImage(index)) ||
+                  (selectBackgroundAssetValue &&
+                    handleSetBackgroundImage(index))
+                }
               >
                 <AssetImage
                   asset={asset}

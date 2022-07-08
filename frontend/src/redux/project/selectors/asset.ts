@@ -12,6 +12,10 @@ export const selectImageList = ({ project }: AppReduxState) => {
   return project.data.assetImageList;
 };
 
+export const selectBackGroundAssetsList = ({ project }: AppReduxState) => {
+  return project.data.backGroundAssetsList;
+};
+
 export const selectCurrentAssetListId = (state: AppReduxState) => {
   return selectProjectState(state).edit.selectedAssetListId;
 };
