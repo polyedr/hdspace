@@ -76,6 +76,14 @@ export const DEFAULT_BACKGROUND: React.CSSProperties = {
   backgroundColor: 'transparent',
 };
 
+export const DEFAULT_POSITION: React.CSSProperties = {
+  position: 'static',
+  float: 'none',
+  clear: 'none',
+  inset: 'unset',
+  zIndex: 'auto',
+};
+
 export const DEFAULT_BACKGROUND_IMAGE: React.CSSProperties = {
   backgroundImage: 'none',
   backgroundRepeat: 'no-repeat',
@@ -136,6 +144,9 @@ export const defaultMapStyles: { [K in MapControls]: React.CSSProperties } & {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   opacity: {
     ...DEFAULT_OPACITY,
   },
@@ -158,6 +169,9 @@ export const defaultCalendarStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   opacity: {
     ...DEFAULT_OPACITY,
@@ -183,6 +197,9 @@ export const defaultClockStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   opacity: {
     ...DEFAULT_OPACITY,
@@ -222,6 +239,9 @@ export const defaultHeadingStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   other: {
     wordBreak: 'break-word',
     outline: 0,
@@ -253,6 +273,9 @@ export const defaultParagraphStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   other: {
     outline: 0,
     wordBreak: 'break-word',
@@ -280,6 +303,9 @@ export const defaultTextBlockStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   other: {
     outline: 0,
   },
@@ -305,6 +331,9 @@ export const defaultListStyles: { [K in ListControls]: React.CSSProperties } & {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   bullets: {
     ...DEFAULT_BULLETS,
@@ -333,6 +362,9 @@ export const defaultBreadcrumbStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   opacity: {
     ...DEFAULT_OPACITY,
   },
@@ -357,6 +389,9 @@ export const defaultPaginationStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   opacity: {
     ...DEFAULT_OPACITY,
   },
@@ -380,6 +415,9 @@ export const defaultCarouselStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   opacity: {
     ...DEFAULT_OPACITY,
@@ -407,6 +445,9 @@ export const defaultNavbarStyles: {
     ...DEFAULT_BACKGROUND,
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   opacity: {
     ...DEFAULT_OPACITY,
   },
@@ -426,6 +467,9 @@ export const defaultListItemStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   other: {
     outline: 0,
@@ -454,6 +498,9 @@ export const defaultImagesListItemStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
@@ -524,6 +571,9 @@ export const defaultContainerStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
   },
@@ -540,6 +590,9 @@ export const defaultElementsGroupStyles: {
 } & { other?: React.CSSProperties } = {
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   indents: {
     ...DEFAULT_INDENTS,
@@ -572,6 +625,9 @@ export const defaultSectionStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
@@ -606,6 +662,9 @@ export const defaultDivBlockStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
   },
@@ -631,6 +690,9 @@ export const defaultImageStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   opacity: {
     ...DEFAULT_OPACITY,
   },
@@ -639,6 +701,9 @@ export const defaultImageStyles: {
 export const defaultSmartContainerStyles: {
   [K in SmartContainerControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -668,6 +733,9 @@ export const defaultSmartContainerStyles: {
 export const defaultDropdownStyles: {
   [K in DropdownControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -700,6 +768,9 @@ export const defaultDropdownStyles: {
 export const defaultDropdownMenuStyles: {
   [K in DropdownMenuControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '3px 0',
@@ -724,6 +795,9 @@ export const defaultDropdownMenuStyles: {
 export const defaultDropdownItemStyles: {
   [K in DropdownItemControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '6px 16px',
@@ -799,6 +873,9 @@ export const defaultGridItemStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
   },
@@ -826,6 +903,9 @@ export const defaultGridStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   grid: {
     display: 'grid',
     gridTemplateRows: 'repeat(2, 1fr)',
@@ -851,6 +931,9 @@ export const defaultColumnStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   other: {
     flexGrow: 1,
     flexShrink: 1,
@@ -866,6 +949,9 @@ export const defaultColumnsStyles: {
 } & { other?: React.CSSProperties } = {
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   backgroundImage: {
     ...DEFAULT_BACKGROUND_IMAGE,
@@ -926,6 +1012,9 @@ export const defaultNativeColumnsStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   opacity: {
     ...DEFAULT_OPACITY,
   },
@@ -948,6 +1037,9 @@ export const defaultButtonStyles: {
 } & {
   other?: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '2px 6px',
@@ -983,6 +1075,9 @@ export const defaultButtonStyles: {
 export const defaultTextInputStyles: {
   [K in TextinputControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '2px 6px',
@@ -1011,6 +1106,9 @@ export const defaultTextInputStyles: {
 export const defaultTextareaStyles: {
   [K in TextareaControls]: React.CSSProperties;
 } & { other?: React.CSSProperties } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '2px 6px',
@@ -1045,6 +1143,9 @@ export const defaultDateTimePickerStyles: {
     ...DEFAULT_INDENTS,
     padding: '2px 6px',
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   size: {
     ...DEFAULT_SIZE,
   },
@@ -1072,6 +1173,9 @@ export const defaultCheckboxStyles: {
   indents: {
     ...DEFAULT_INDENTS,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   size: {
     ...DEFAULT_SIZE,
   },
@@ -1087,6 +1191,9 @@ export const defaultSwitchStyles: {
 } & { other?: React.CSSProperties } = {
   indents: {
     ...DEFAULT_INDENTS,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
   size: {
     ...DEFAULT_SIZE,
@@ -1106,6 +1213,9 @@ export const defaultRadiobuttonStyles: {
     ...DEFAULT_INDENTS,
     margin: '3px',
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   size: {
     ...DEFAULT_SIZE,
   },
@@ -1122,6 +1232,9 @@ export const defaultRadiobuttonGroupStyles: {
 } & {
   other?: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -1145,6 +1258,9 @@ export const defaultLabelStyles: {
 } & {
   other?: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -1174,6 +1290,9 @@ export const defaultSelectStyles: {
 } & {
   other?: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -1217,6 +1336,9 @@ export const defaultOptionStyles: {
   background: {
     ...DEFAULT_BACKGROUND,
   },
+  position: {
+    ...DEFAULT_POSITION,
+  },
   opacity: {
     ...DEFAULT_OPACITY,
   },
@@ -1230,6 +1352,9 @@ type featureSectionControls = typeof featureSectionStyleControls[number];
 export const defaultPageTemplateStyles: {
   [K in pageTemplateControls]: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -1260,6 +1385,9 @@ export const defaultPageTemplateStyles: {
 export const defaultEmptyPageTemplateStyles: {
   [K in pageTemplateControls]: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
   },
@@ -1290,6 +1418,9 @@ export const defaultEmptyPageTemplateStyles: {
 export const defaultSubscribeFormStyles: {
   [K in subscribeFormControls]: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '100px 0',
@@ -1322,6 +1453,9 @@ export const defaultSubscribeFormStyles: {
 export const defaultButtonGeneratorStyles: {
   [K in subscribeFormControls]: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '100px 0',
@@ -1354,6 +1488,9 @@ export const defaultButtonGeneratorStyles: {
 export const defaultCardsSectionStyles: {
   [K in cardsSectionControls]: React.CSSProperties;
 } = {
+  position: {
+    ...DEFAULT_POSITION,
+  },
   indents: {
     ...DEFAULT_INDENTS,
     padding: '100px 0',
@@ -1409,6 +1546,9 @@ export const defaultFeatureSectionStyles: {
   },
   background: {
     ...DEFAULT_BACKGROUND,
+  },
+  position: {
+    ...DEFAULT_POSITION,
   },
 };
 

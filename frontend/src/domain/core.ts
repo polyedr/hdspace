@@ -60,6 +60,7 @@ export const containerStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'backgroundImage',
   'border',
   'display',
@@ -72,6 +73,7 @@ export const divBlockStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'backgroundImage',
   'border',
   'display',
@@ -83,6 +85,7 @@ export const buttonStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'backgroundImage',
   'border',
   'display',
@@ -96,6 +99,7 @@ export const textinputStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -105,6 +109,7 @@ export const dateTimePickerStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -114,6 +119,7 @@ export const textareaStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -124,6 +130,7 @@ export const checkboxStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'opacity',
 ] as const;
 
@@ -131,6 +138,7 @@ export const switchStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'opacity',
 ] as const;
 
@@ -138,6 +146,7 @@ export const radiobuttonStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'opacity',
 ] as const;
 
@@ -145,6 +154,7 @@ export const radiobuttonGroupStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'opacity',
 ] as const;
 
@@ -153,6 +163,7 @@ export const labelStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -163,6 +174,7 @@ export const headingStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -172,6 +184,7 @@ export const paragraphStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -181,6 +194,7 @@ export const ocrtextStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -190,6 +204,7 @@ export const textBlockStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -198,6 +213,7 @@ export const listStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'border',
   'display',
   'bullets',
@@ -208,6 +224,7 @@ export const paginationStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -217,6 +234,7 @@ export const listItemStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -226,6 +244,7 @@ export const listImagesItemStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'backgroundImage',
   'border',
   'opacity',
@@ -236,6 +255,7 @@ export const breadcrumbItemStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -244,6 +264,7 @@ export const paginationItemStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -252,6 +273,7 @@ export const navbarItemStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -259,6 +281,7 @@ export const imageStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -268,6 +291,7 @@ export const smartContainerStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -278,6 +302,7 @@ export const selectStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -287,6 +312,7 @@ export const selectMenuStyleControls = [
   'size',
   'border',
   'background',
+  'position',
   'opacity',
 ] as const;
 
@@ -295,6 +321,7 @@ export const optionStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -304,6 +331,7 @@ export const mapStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -313,6 +341,7 @@ export const calendarStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -322,6 +351,7 @@ export const clockStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -331,6 +361,7 @@ export const dropdownStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -340,6 +371,7 @@ export const dropdownMenuStyleControls = [
   'size',
   'border',
   'background',
+  'position',
   'opacity',
 ] as const;
 
@@ -348,6 +380,7 @@ export const dropdownItemStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -364,6 +397,7 @@ export const pageTemplateStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -376,6 +410,7 @@ export const emptyPageTemplateStyleControls = [
   'typography',
   'border',
   'background',
+  'position',
   'opacity',
 ] as const;
 
@@ -383,6 +418,7 @@ export const gridItemStyleControls = [
   'indents',
   'typography',
   'background',
+  'position',
   'backgroundImage',
   'border',
   'opacity',
@@ -394,6 +430,7 @@ export const gridStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -404,6 +441,7 @@ export const nativeColumnsStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -414,6 +452,7 @@ export const columnsStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'backgroundImage',
   'border',
   'opacity',
@@ -423,6 +462,7 @@ export const columnStyleControls = [
   'indents',
   'typography',
   'background',
+  'position',
   'border',
   'opacity',
 ] as const;
@@ -432,6 +472,7 @@ export const subscribeFormStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -446,6 +487,7 @@ export const cardsSectionStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -456,6 +498,7 @@ export const featureSectionStyleControls = [
   'size',
   'typography',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -465,6 +508,7 @@ export const breadcrumbStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -474,6 +518,7 @@ export const carouselStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -483,6 +528,7 @@ export const navbarStyleControls = [
   'indents',
   'size',
   'background',
+  'position',
   'border',
   'display',
   'opacity',
@@ -491,6 +537,7 @@ export const navbarStyleControls = [
 export const elementsGroupStyleControls = [
   'indents',
   'background',
+  'position',
   'opacity',
 ] as const;
 
