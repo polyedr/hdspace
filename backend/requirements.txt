@@ -65,7 +65,7 @@ djangorestframework-simplejwt==4.3.0
 djoser==2.1.0
 drf-django-flexible-subscriptions==1.0.0
 drf-nested-routers==0.91
-drf-stripe-subscription36==1.1.11.3
+drf-stripe-subscription36==1.1.11.4
 drf-writable-nested==0.6.0
 drf-yasg==1.17.1
 factory-boy==2.11.1
