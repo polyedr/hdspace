@@ -60,17 +60,6 @@ export const setProjectViewEnd = (viewTokenPair: TokenPair) => ({
   viewTokenPair,
 });
 
-// export const setSubscriptionData = (data : Partial<UserSubscriptionsData>) => ({
-//   type : TYPES.SET_SUBSCRIPTION_DATA,
-//   subcritionData :{
-//     data
-//   },
-// })
-// export const setSubscriptionData = (subcritionData: PaginatedResponse<UserSubscriptionsData>) => ({
-//   type: TYPES.SET_SUBSCRIPTION_DATA,
-//   payload: {subcritionData},
-// });
-
 export const setSubscriptionData = (
   subscriptionData: Partial<UserSubscriptionsData>,
 ) => ({
