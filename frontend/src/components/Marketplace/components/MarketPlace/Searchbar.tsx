@@ -1,19 +1,19 @@
 import React, { FC, useEffect } from 'react';
 import { TextField, MenuItem } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { DateRange, ProjectsSearchParameter } from '@Src/types';
+import { DateRange, TemplatesSearchParameter } from '@Src/types';
 import {
-  searchProjects,
-  setProjectsSearchParameter,
-} from '@Redux/project/actions';
-import { selectProjectsSearchParameter } from '@Redux/project/selectors/base';
-import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
+  searchTemplates,
+  setTemplatesSearchParameter,
+} from '@Redux/marketplace/actions';
+import { TEMPLATE_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import styled from 'styled-components';
+import { selectTemplatesSearchParameter } from '@Redux/marketplace/selectors/base';
 
 const CustomForm = styled.form`
   display: flex;
@@ -91,8 +91,8 @@ const CustomMenuItem = styled(MenuItem)`
   text-transform: capitalize;
 `;
 
-const parameterList = Object.keys(ProjectsSearchParameter).map(
-  (k) => ProjectsSearchParameter[k] as ProjectsSearchParameter,
+const parameterList = Object.keys(TemplatesSearchParameter).map(
+  (k) => TemplatesSearchParameter[k] as TemplatesSearchParameter,
 );
 
 const initialDateRange = {
@@ -102,22 +102,25 @@ const initialDateRange = {
 
 const Searchbar: FC = () => {
   const dispatch = useDispatch();
+
   const [parameterName, parameterValue] = useSelector(
-    selectProjectsSearchParameter,
+    selectTemplatesSearchParameter,
   );
-  const isStatus = parameterName === ProjectsSearchParameter.status;
+
+  const isStatus = parameterName === TemplatesSearchParameter.status;
   const isDate =
-    parameterName === ProjectsSearchParameter.created ||
-    parameterName === ProjectsSearchParameter.updated;
+    parameterName === TemplatesSearchParameter.created ||
+    parameterName === TemplatesSearchParameter.updated;
 
   useEffect(() => {
-    dispatch(searchProjects());
+    dispatch(searchTemplates());
   }, [parameterName, parameterValue]);
 
   const handleParameterValueChange = (
     ev: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    dispatch(setProjectsSearchParameter([parameterName, ev.target.value]));
+    dispatch(setTemplatesSearchParameter([parameterName, ev.target.value]));
+    dispatch(searchTemplates());
   };
 
   const handleParameterNameChange = ({
@@ -125,31 +128,32 @@ const Searchbar: FC = () => {
   }: React.ChangeEvent<HTMLInputElement>) => {
     let newValue = parameterValue;
 
-    if (newName === ProjectsSearchParameter.name) {
+    if (newName === TemplatesSearchParameter.name) {
       newValue = '';
     }
 
-    if (newName === ProjectsSearchParameter.tags) {
+    if (newName === TemplatesSearchParameter.tags) {
       newValue = '';
     }
 
-    if (newName === ProjectsSearchParameter.status) {
-      [newValue] = PROJECT_STATUS_LIST;
+    if (newName === TemplatesSearchParameter.status) {
+      [newValue] = TEMPLATE_STATUS_LIST;
     }
 
     if (
-      newName === ProjectsSearchParameter.updated ||
-      newName === ProjectsSearchParameter.created
+      newName === TemplatesSearchParameter.updated ||
+      newName === TemplatesSearchParameter.created
     ) {
       newValue = typeof newValue === 'object' ? newValue : initialDateRange;
     }
 
     dispatch(
-      setProjectsSearchParameter([
-        newName as ProjectsSearchParameter,
+      setTemplatesSearchParameter([
+        newName as TemplatesSearchParameter,
         newValue,
       ]),
     );
+    dispatch(searchTemplates());
   };
 
   const handleDateChange = (newDate: Date | null, type: keyof DateRange) => {
@@ -166,7 +170,7 @@ const Searchbar: FC = () => {
     }
 
     dispatch(
-      setProjectsSearchParameter([
+      setTemplatesSearchParameter([
         parameterName,
         { ...parameterValue, [type]: date },
       ]),
@@ -225,7 +229,7 @@ const Searchbar: FC = () => {
               })}
             >
               {isStatus &&
-                PROJECT_STATUS_LIST.map((status) => (
+                TEMPLATE_STATUS_LIST.map((status) => (
                   <MenuItem key={status} value={status}>
                     {status}
                   </MenuItem>
@@ -251,7 +255,7 @@ const Searchbar: FC = () => {
             <CustomMenuItem
               value={param}
               key={param}
-              disabled={param === ProjectsSearchParameter.user}
+              disabled={param === TemplatesSearchParameter.user}
             >
               {param}
             </CustomMenuItem>
@@ -275,7 +279,7 @@ const Searchbar: FC = () => {
             <CustomMenuItem
               value={param}
               key={param}
-              disabled={param === ProjectsSearchParameter.user}
+              disabled={param === TemplatesSearchParameter.user}
             >
               {param}
             </CustomMenuItem>
