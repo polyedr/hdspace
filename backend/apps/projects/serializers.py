@@ -451,7 +451,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             project.projectscreen.set(projectscreens_data, clear=True)
             return project
         else:
-            raise ValidationError("Maximum count of projectss reached.")
+            raise ValidationError("Maximum count of projects reached.")
 
     def update(self, instance, validated_data):
         """
