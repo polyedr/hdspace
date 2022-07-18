@@ -181,6 +181,7 @@
     "mat-ripple": "^1.0.3",
     "material-ui-popup-state": "^1.6.1",
     "mockdate": "^3.0.5",
+    "moment": "^2.29.4",
     "notistack": "^1.0.10",
     "postcss-preset-env": "^6.7.0",
     "pretty": "^2.0.0",

@@ -15,6 +15,7 @@ import {
   registerUser,
   apiGetUser,
   apiGetUsers,
+  apiGetSubscriptionData,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import {
@@ -24,7 +25,9 @@ import {
   ViewTokenPair,
   PaginatedResponse,
   Result,
+  Data,
   UserData,
+  UserSubscriptionsData,
 } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
@@ -32,7 +35,6 @@ import {
   updateUISettingsParameters,
 } from '@Redux/project/actions';
 import _ from 'lodash';
-
 import { USERNAME_VIEW, PASSWORD_VIEW } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
 import * as Actions from './actions';
@@ -78,13 +80,42 @@ export function* getTokenPairSagaProjectView() {
     );
   }
 }
+
+export function* getSubscriptionSaga() {
+  try {
+    const { data, error }: Data<Partial<UserSubscriptionsData>> = yield call(
+      reqWrapper,
+      apiGetSubscriptionData,
+    );
+    if (data) {
+      yield put(Actions.setSubscriptionData(data));
+    }
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: {
+              variant: 'error',
+            },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
 export function* loginSaga({
   payload: { username, password },
 }: ReturnType<typeof Actions.login>) {
   try {
     const tokenPair = yield call(getTokenPairSaga, username, password);
     if (!tokenPair) return;
-
     const { id } = yield call(reqWrapper, apiIdentifyUser);
 
     const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
@@ -395,4 +426,5 @@ export default function* userSaga() {
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
   yield takeEvery(TYPES.LOAD_USER_DATA, loadUserDataSaga);
   yield takeEvery(TYPES.PROJECT_VIEW_START, getTokenPairSagaProjectView);
+  yield takeEvery(TYPES.SUBSCRIPTION_DATA, getSubscriptionSaga);
 }

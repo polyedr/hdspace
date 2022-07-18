@@ -101,6 +101,14 @@ const setLoadedToken: ActionHandler<typeof Actions.setLoadedToken> = (
   isLoadedToken,
 });
 
+const setSubscriptionData: ActionHandler<typeof Actions.setSubscriptionData> = (
+  state,
+  { subscriptionData },
+) => ({
+  ...state,
+  subscriptionData,
+});
+
 const setConfirmMessage: ActionHandler<typeof Actions.setConfirmMessage> = (
   state,
   { payload },
@@ -189,6 +197,7 @@ const handlers: Handlers<UserState> = {
   [TYPES.SET_USER_GUIDE_ACTIVE]: setUserGuideActive,
   [TYPES.SET_CHAT_CREDENTIALS]: setChatCredentials,
   [TYPES.CHAT_LOGOUT]: chatLogout,
+  [TYPES.SET_SUBSCRIPTION_DATA]: setSubscriptionData,
 } as const;
 
 export default createReducer(initialUserState, handlers);
