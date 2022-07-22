@@ -1,4 +1,5 @@
 """Serializers for the projects"""
+import datetime
 import os
 from io import BytesIO
 import json
@@ -412,14 +413,11 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
         }
 
     def create(self, validated_data):
-
         # Check if user can create projects, based on projects_max value and subscriptions status
         current_user = self.context["request"].user
         current_profile = self.context["request"].user.profile
         projects_max = current_profile.projects_max
         is_superuser = current_user.is_superuser
-
-
 
         # A flag to set number of projects available manually instead of the subscripitons value
         approved = current_profile.approved
@@ -440,6 +438,17 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             print(now_projects, projects_max)
             if now_projects < projects_max:
                 can_create_projects = 1
+
+        # A flag to check the free trial
+        user_date_joined = current_user.date_joined
+        # Add timezone information to the datetime object
+        dt_obj_w_tz = datetime.datetime.now()
+        user_time_now = dt_obj_w_tz.replace(tzinfo=datetime.timezone.utc)
+        # A free trial period is defined here
+        user_free_trial = (user_time_now - user_date_joined) < datetime.timedelta(days=14)
+
+        if user_free_trial:
+            can_create_projects = 1
 
         if can_create_projects:
             projectscreens_data = validated_data.pop("projectscreen")
