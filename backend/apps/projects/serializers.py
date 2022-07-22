@@ -448,7 +448,9 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
         user_free_trial = (user_time_now - user_date_joined) < datetime.timedelta(days=14)
 
         if user_free_trial:
-            can_create_projects = 1
+            projects_max = 3  # A number of the available project for the free trial
+            if now_projects < projects_max:
+                can_create_projects = 1
 
         if can_create_projects:
             projectscreens_data = validated_data.pop("projectscreen")
