@@ -49,6 +49,7 @@ import {
   VIARegions,
   importData,
   ParsedImagePalette,
+  UserSubscriptionsData,
   Marketplace,
   TemplatesSearchParameter,
 } from '../types';
@@ -204,6 +205,7 @@ export type UserState = {
     active: boolean;
   };
   chat: ChatCredentials;
+  subscriptionData: UserSubscriptionsData;
 };
 
 export type Notification = {
@@ -260,6 +262,10 @@ export type RestoreChildrenData = {
 };
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
+
+export type GetSubscriptionDataType = IPlainAction<
+  typeof TYPES.SUBSCRIPTION_DATA
+>;
 
 export type SetUsersSearchValue = IAction<
   typeof TYPES.SET_USERS_SEARCH,
@@ -1443,8 +1449,9 @@ export type Action =
   | SetStatePseudoClass
   | SetValueCheckRobots
   | GenerateImagePalette
-  | SetMarketplaceListLoader
-  | SetImagePalette;
+  | SetImagePalette
+  | GetSubscriptionDataType
+  | SetMarketplaceListLoader;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

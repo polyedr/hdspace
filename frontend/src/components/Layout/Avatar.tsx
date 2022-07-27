@@ -33,7 +33,6 @@ const Avatar: React.FC = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-
   const { username } = useSelector(selectUserData);
   const {
     parameters: { avatarCrop: avatar },

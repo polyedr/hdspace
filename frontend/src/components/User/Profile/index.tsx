@@ -1,15 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
-import {
-  createStyles,
-  darken,
-  makeStyles,
-  styled,
-} from '@material-ui/core/styles';
+import { styled } from '@mui/material/styles';
+import { createStyles, darken, makeStyles } from '@material-ui/core/styles';
 import Alert from '@material-ui/lab/Alert';
 import {
   selectProfileData,
+  selectSubscriptionData,
   selectUserData,
   selectUserGuideWatched,
 } from '@Redux/user/selectors';
@@ -45,7 +42,9 @@ import {
 import ImageCropper from '@Components/CropImage';
 import { useHistory } from 'react-router';
 import { Avatar } from '@mui/material';
+import { getSubscriptionData } from '@Redux/permissions/actions';
 import SubmitError from '../SubmitError';
+import { SubscriptionCard } from './SubscriptionCard';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -178,7 +177,6 @@ const Profile: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
@@ -186,6 +184,10 @@ const Profile: React.FC = () => {
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
+
+  useEffect(() => {
+    dispatch(getSubscriptionData());
+  }, []);
 
   const handleClose = () => {
     setDialogOpen(false);
@@ -221,7 +223,7 @@ const Profile: React.FC = () => {
       dispatch(changeProfileData(values));
     }
   };
-
+  const userSubscriptionData = useSelector(selectSubscriptionData);
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
@@ -315,8 +317,9 @@ const Profile: React.FC = () => {
             aria-label="lab API tabs example"
           >
             <TabStyle label="Profile" {...a11yProps(0)} />
-            <TabStyle label="Security" {...a11yProps(1)} />
-            <TabStyle label="UI settings" {...a11yProps(2)} />
+            <TabStyle label="Subscription" {...a11yProps(1)} />
+            <TabStyle label="Security" {...a11yProps(2)} />
+            <TabStyle label="UI settings" {...a11yProps(3)} />
           </Tabs>
         </div>
         <TabPanelStyle value={activeTab} index={0}>
@@ -569,6 +572,24 @@ const Profile: React.FC = () => {
           </div>
         </TabPanelStyle>
         <TabPanelStyle value={activeTab} index={1} style={{ paddingBottom: 0 }}>
+          {userSubscriptionData === null ? (
+            <div className={classes.settingsPart}>
+              <div className={classes.subheader}>
+                Now you do not have a subscription you can choose a suitable
+                rate plan here
+              </div>
+              <Button
+                style={{ background: '#5064FF', color: '#FFFFFF' }}
+                variant="contained"
+              >
+                Subscription
+              </Button>
+            </div>
+          ) : (
+            <SubscriptionCard result={userSubscriptionData} />
+          )}
+        </TabPanelStyle>
+        <TabPanelStyle value={activeTab} index={2} style={{ paddingBottom: 0 }}>
           <div className={classes.settingsPart}>
             <div className={classes.subheader}>Password</div>
             <Button
@@ -580,7 +601,7 @@ const Profile: React.FC = () => {
             </Button>
           </div>
         </TabPanelStyle>
-        <TabPanelStyle value={activeTab} index={2} style={{ paddingBottom: 0 }}>
+        <TabPanelStyle value={activeTab} index={3} style={{ paddingBottom: 0 }}>
           <div className={classes.settingsPart}>
             <div className={classes.subheader}>
               Always display drop target element borders
@@ -607,7 +628,7 @@ const Profile: React.FC = () => {
             </div>
           </div>
         </TabPanelStyle>
-        {activeTab !== 1 && (
+        {activeTab !== 1 && activeTab !== 2 && (
           <Box padding="8px 0" className={classes.buttonsWrapper}>
             <Button
               color="secondary"

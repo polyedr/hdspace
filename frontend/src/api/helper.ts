@@ -53,6 +53,8 @@ export const handleError = (error) => {
 
 export const parseResult = <T>(result: AxiosResponse<T>) => result?.data;
 
+export const parseData = <T>(data: AxiosResponse<T>) => data;
+
 export const parseCursor = (nextUrl: string | null) => {
   if (nextUrl === null) {
     return null;
