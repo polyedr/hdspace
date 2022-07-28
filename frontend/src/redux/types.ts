@@ -76,6 +76,7 @@ export type ProjectDataState = {
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
   imagePalette: ParsedImagePalette | null;
+  createProjectError: string | null;
 };
 
 export type MarketplaceDataState = {
@@ -313,6 +314,12 @@ export type DeleteProject = IAction<
   typeof TYPES.DELETE_PROJECT,
   { id: number }
 >;
+
+export type ProjectError = IAction<
+  typeof TYPES.SET_PROJECT_ERROR,
+  { errorResponse: string | null }
+>;
+
 export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
 
 export type LoadTemlates = IPlainAction<typeof TYPES.LOAD_TEMPLATES>;
@@ -1451,7 +1458,8 @@ export type Action =
   | GenerateImagePalette
   | SetImagePalette
   | GetSubscriptionDataType
-  | SetMarketplaceListLoader;
+  | SetMarketplaceListLoader
+  | ProjectError;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

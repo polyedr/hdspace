@@ -1240,6 +1240,8 @@ export type CustomElementsCategory = {
   otherElements: Array<ElementData>;
 };
 
+export type ErrorResponse = [];
+
 export type ColorElementIcon = {
   squareTopLeft: string;
   squareTopRight: string;

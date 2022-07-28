@@ -47,7 +47,13 @@ export const onError = ({ response: r }: AxiosError) => {
 export const handleError = (error) => {
   logger.error(error);
   return {
-    error: error.response?.data?.detail || error.message,
+    error: error?.response?.data?.detail || error?.message,
+  };
+};
+export const handleErrorResponseMessage = (error) => {
+  logger.error(error);
+  return {
+    error: error?.response?.data[0],
   };
 };
 
