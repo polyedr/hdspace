@@ -277,14 +277,13 @@ const Projects: React.FC = () => {
                 subscription plans ?
               </span>
             ) : null}
-            ;
+
             {projectErrorData === 'Maximum count of projects reached.' ? (
               <span>
                 You have reached maximum number of projects. Do you want to
                 upgrade your subscription ?
               </span>
             ) : null}
-            ;
           </Typography>
           <Box
             sx={{
