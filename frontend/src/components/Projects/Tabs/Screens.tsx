@@ -48,7 +48,6 @@ const useStyles = makeStyles(({ spacing }) =>
       justifyContent: 'center',
       alignItems: 'center',
     },
-    
   }),
 );
 
@@ -57,6 +56,11 @@ const StyledIconButton = withStyles({
     backgroundColor: 'rgba(0, 0, 0, 0.04)',
   },
 })(IconButton);
+
+interface Props {
+  projectId: number;
+  screenId: number;
+}
 
 const Screens: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();
@@ -111,7 +115,6 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
     setAnchorEl(null);
   };
 
-
   return (
     <Grid container spacing={1}>
       <Grid item xs={3}>
@@ -123,10 +126,8 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
       </Grid>
       <Grid item xs={3}>
         <div className="screen">
-          <div className="screen-img"></div>
-          <div className="screen-name">
-            screen1
-          </div>
+          <div className="screen-img" />
+          <div className="screen-name">screen1</div>
         </div>
       </Grid>
     </Grid>
