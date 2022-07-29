@@ -42,6 +42,16 @@ type ProjectBase = {
   updated: Date;
   tags: Array<string>;
 };
+type MarketplaceBase = {
+  id: number;
+  preview?: string;
+  name: string;
+  status: string;
+  TemplateLoader: boolean;
+  created: Date;
+  updated: Date;
+  tags: Array<string>;
+};
 
 export type PropertyName = keyof React.CSSProperties;
 
@@ -878,7 +888,22 @@ export type ServerProject = {
   project_data_text: string;
   tags: Array<string>;
 };
-
+export type ServerMarketplace = {
+  id: number;
+  favicon?: null | string;
+  preview?: string;
+  name: string;
+  status: string;
+  projectscreen: number[];
+  created: string;
+  updated: string;
+  user: ServerUserData;
+  project_data_trello_json: string;
+  project_data_activity_json?: string;
+  project_data_json: string;
+  project_data_text: string;
+  tags: Array<string>;
+};
 export type ServerScreen = ScreenBase & {
   screen_data_json: any;
 };
@@ -895,6 +920,12 @@ export type LayoutData = {
 };
 
 export type ProjectData = {
+  classes: ProjectClass[];
+  defaultStyles: DefaultStyles;
+  layout: LayoutData;
+  uiFramework: UIFramework;
+};
+export type MarketplaceData = {
   classes: ProjectClass[];
   defaultStyles: DefaultStyles;
   layout: LayoutData;
@@ -969,7 +1000,12 @@ export type Project = ProjectBase & {
   projectData: ProjectData;
   user: UserData;
 };
-
+export type Marketplace = MarketplaceBase & {
+  projectscreen: number[];
+  projectTrelloJSON: IBoardForUI | null;
+  marketplaceData: MarketplaceData;
+  user: UserData;
+};
 export type ProjectWithScreens = ProjectBase & {
   projectData: ProjectData;
   projectTrelloJSON: IBoardForUI | null;
@@ -1653,6 +1689,14 @@ export type DateRange = {
   to: Date | null;
 };
 
+export enum TemplatesSearchParameter {
+  name = 'name',
+  user = 'user',
+  status = 'status',
+  updated = 'updated',
+  created = 'created',
+  tags = 'tags',
+}
 export type PostUrlResponse = { wpname: string; owner: any };
 
 export type PostURLCheckRobots = {

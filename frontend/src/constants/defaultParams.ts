@@ -238,7 +238,7 @@ export const UNIQUE_CONTROLS = [
 export const ALL_ELEMENTS_INDEX = 'all';
 
 export const PROJECT_STATUS_LIST = ['pending', 'paid'];
-
+export const TEMPLATE_STATUS_LIST = ['pending', 'paid'];
 export const EDITABLE_USER_PERMISSIONS = [
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,

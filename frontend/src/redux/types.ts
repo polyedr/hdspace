@@ -49,6 +49,8 @@ import {
   VIARegions,
   importData,
   ParsedImagePalette,
+  Marketplace,
+  TemplatesSearchParameter,
 } from '../types';
 import TYPES from './actionTypes';
 
@@ -73,6 +75,12 @@ export type ProjectDataState = {
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
   imagePalette: ParsedImagePalette | null;
+};
+
+export type MarketplaceDataState = {
+  marketplaceData: PaginatedData<Marketplace> & {
+    parameter: [TemplatesSearchParameter, string | DateRange];
+  };
 };
 
 export type ProjectUiState = {
@@ -171,6 +179,9 @@ export type ProjectState = {
   communication: ProjectCommunicationState;
   control: ProjectControlState;
 };
+export type MarketplaceState = {
+  data: MarketplaceDataState;
+};
 
 export type UserState = {
   isLPanelMinimized: boolean;
@@ -218,6 +229,7 @@ export type AppReduxState = {
   router: RouterState;
   notification: NotificationState;
   permissions: PermissionsState;
+  marketplace: MarketplaceState;
 };
 
 export type WrapIntoContainerData = {
@@ -269,6 +281,24 @@ export type LoadProjectUsersSuccess = IAction<
   { users: UserData[] }
 >;
 
+export type SetUsersSearchTemplateValue = IAction<
+  typeof TYPES.SET_USERS_SEARCH_TEMPLATES,
+  { search: string }
+>;
+
+export type SearchTemplates = IPlainAction<typeof TYPES.SEARCH_TEMPLATES>;
+
+export type SetTemplateSearchParameter = IAction<
+  typeof TYPES.SET_TEMPLATE_SEARCH_PARAMETER,
+  [TemplatesSearchParameter, string | DateRange]
+>;
+
+export type LoadTemplatesSuccess = IAction<
+  typeof TYPES.SET_TEMPLATES_LIST,
+  { marketplace: Marketplace[] }
+>;
+export type LoadTemplatesFail = IPlainFailAction<'marketplace/LOAD_TEMPLATES_FAIL'>;
+
 export type CreateProject = IAction<
   typeof TYPES.CREATE_PROJECT,
   { name: string }
@@ -278,6 +308,8 @@ export type DeleteProject = IAction<
   { id: number }
 >;
 export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
+
+export type LoadTemlates = IPlainAction<typeof TYPES.LOAD_TEMPLATES>;
 export type GetSharedProject = IAction<
   typeof TYPES.GET_SHARED_PROJECT,
   { shortuuid_token: string }
@@ -324,6 +356,10 @@ export type UpdateLayoutProjects = IAction<
 >;
 export type SetProjectListLoader = IAction<
   typeof TYPES.SET_PROJECT_LIST_LOADER,
+  { active: boolean }
+>;
+export type SetMarketplaceListLoader = IAction<
+  typeof TYPES.SET_MARKETPLACE_LIST_LOADER,
   { active: boolean }
 >;
 export type SetProjectUsersLoader = IAction<
@@ -1026,6 +1062,11 @@ export type SetProjectsData = IAction<
   typeof TYPES.SET_PROJECTS_DATA,
   PaginatedArray<Project>
 >;
+
+export type SetMarketplaceData = IAction<
+  typeof TYPES.SET_MARKETPLACE_DATA,
+  PaginatedArray<Marketplace>
+>;
 export type SetUsersData = IAction<
   typeof TYPES.SET_USERS_DATA,
   { search: string; data: PaginatedResponse<UserData> }
@@ -1214,6 +1255,7 @@ export type SetImagePalette = IAction<
 export type Action =
   | LoadProjects
   | SetUsersSearchValue
+  | SetUsersSearchTemplateValue
   | LoadProjectsSuccess
   | LoadProjectsFail
   | SetUsersData
@@ -1221,6 +1263,7 @@ export type Action =
   | CreateProject
   | DeleteProject
   | GetProject
+  | LoadTemlates
   | GetSharedProject
   | SetCurrentProjectId
   | ChangeScreensOrder
@@ -1312,6 +1355,7 @@ export type Action =
   | WrapStateElements
   | UnwrapStateElements
   | SetProjectsData
+  | SetMarketplaceData
   | ExtractStateElement
   | UpdateLastElements
   | ChangeScreenFormat
@@ -1343,6 +1387,9 @@ export type Action =
   | SetSelectedAssetListId
   | SearchProjects
   | SetProjectSearchParameter
+  | SearchTemplates
+  | SetTemplateSearchParameter
+  | LoadTemplatesSuccess
   | AddSelectedElement
   | RemoveSelectedElement
   | SetSelectedElements
@@ -1396,6 +1443,7 @@ export type Action =
   | SetStatePseudoClass
   | SetValueCheckRobots
   | GenerateImagePalette
+  | SetMarketplaceListLoader
   | SetImagePalette;
 
 export type SetValueImportLoader = IAction<

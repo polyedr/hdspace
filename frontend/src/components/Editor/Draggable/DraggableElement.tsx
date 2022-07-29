@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useEffect, useCallback, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import logger from 'loglevel';
 import { useDebouncedCallback } from 'use-debounce';
 import {
   processDropElement,
@@ -178,7 +179,16 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     return null;
   }
 
-  const ElementRenderer = RENDERERS[element.type];
+  // handling div element with divBlock as server using div elements
+  const ElementRenderer =
+    // @ts-ignore
+    RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
+
+  if (!ElementRenderer) {
+    // eslint-disable-next-line no-console
+    logger.warn(`Element dose not exists: ${element.type}`);
+    return null;
+  }
 
   return (
     <ElementRenderer
@@ -199,25 +209,27 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       onMouseLeave={mouseLeaveHandler}
       onClick={clickHandler}
     >
-      {element.children.map((childId: string, index: number) => (
-        <DraggableElement
-          key={`element-${
-            element.children.indexOf(childId) === index
-              ? childId
-              : childId + Math.random()
-          }`}
-          elementId={childId}
-          parentIds={parentsIdsForChildren}
-          scrollRef={scrollRef}
-          isDisabled={isDisabled}
-          screenId={screenId}
-          allElements={allElements}
-          preSelectedElementId={preSelectedElementId}
-          masterSourceElementId={masterSourceElementId}
-          canDragAndDrop={canDragAndDrop}
-          projectClasses={projectClasses}
-        />
-      ))}
+      {element.children.map((childId: string, index: number) => {
+        return (
+          <DraggableElement
+            key={`element-${
+              element.children.indexOf(childId) === index
+                ? childId
+                : childId + Math.random()
+            }`}
+            elementId={childId}
+            parentIds={parentsIdsForChildren}
+            scrollRef={scrollRef}
+            isDisabled={isDisabled}
+            screenId={screenId}
+            allElements={allElements}
+            preSelectedElementId={preSelectedElementId}
+            masterSourceElementId={masterSourceElementId}
+            canDragAndDrop={canDragAndDrop}
+            projectClasses={projectClasses}
+          />
+        );
+      })}
     </ElementRenderer>
   );
 };
