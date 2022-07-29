@@ -38,7 +38,7 @@ import {
 import { selectSortedScreens } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
-import AddTags, { Tag } from './AddTags';
+import AddTags, { Tag } from '../ProjectDetail/AddTags';
 
 const useStyles = makeStyles(({ spacing }) =>
   createStyles({
