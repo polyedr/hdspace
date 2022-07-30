@@ -18,7 +18,6 @@ import {
   composeValidators,
   isLongLength,
   isPassword,
-  isUsername,
 } from '@Utils/validators';
 import SubmitError from '../SubmitError';
 import useStyles from '../LoginRegistration/LoginRegistrationStyles';
@@ -69,7 +68,7 @@ const LoginForm: React.FC = () => {
               cookiePolicy="single_host_origin"
             /> */}
 
-                <Field name="username" validate={isUsername}>
+                <Field name="username">
                   {({ input, meta }) => (
                     <TextField
                       {...input}
