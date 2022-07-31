@@ -439,6 +439,10 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             if now_projects < projects_max:
                 can_create_projects = 1
 
+            # Process the Lifetime and the Course subscriptions
+            # This should be changed later to make a subscription checking once after its appearance
+
+
         # A flag to check the free trial
         user_date_joined = current_user.date_joined
         # Add timezone information to the datetime object
