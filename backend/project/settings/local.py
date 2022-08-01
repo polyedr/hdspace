@@ -386,6 +386,11 @@ white_list = [
 ]
 
 DOMAIN = ('adevi.info')
+
+# https://getstream.io/dashboard/
+STREAM_API_KEY = ENV.str("YOUR_STREAM_API_KEY", "jfcd9hhxbwq8")
+STREAM_API_SECRET = ENV.str("YOUR_STREAM_API_SECRET", "umgv5enpu6bd644ft7g4em5h3e9zcf5fmf635xm3awzugfatz6tajkft94zv6yma")
+
 # Djoser settings
 DJOSER = {
     'USERNAME_CHANGED_EMAIL_CONFIRMATION': True,
@@ -395,10 +400,11 @@ DJOSER = {
     "DOMAIN": "adevi.info",
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
-    "SERIALIZERS": {'activation': 'apps.accounts.serializers.MyActivationSerializer', },
+    "SERIALIZERS": {'activation': 'apps.accounts.serializers.MyActivationSerializer',
+                    'token': 'apps.schat.serializers.StreamTokenSerializer',
+                    },
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": white_list,  # Redirected URL we listen on google console
 }
-
 
 # # Mask R-CNN model initial load
 # ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
@@ -408,7 +414,6 @@ DJOSER = {
 # import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
 # Directory to save logs and trained model
 MODEL_DIR = os.path.join(ROOT_DIR, "trained_models")
-
 
 # Configurations:
 class LoginConfig(Config):
