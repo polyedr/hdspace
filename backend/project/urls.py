@@ -47,6 +47,7 @@ urlpatterns = [
     path("api/v1/generators/", include("apps.generators.apiurls", namespace="apielementgenerator")),
     path("api/v1/uploadapps/", include("apps.uploadapps.apiurls", namespace="apiuploadapps")),
     path("api/v1/phrases/", include("apps.phrases.apiurls", namespace="apiphrases")),
+    path("api/v1/schat/", include("apps.schat.apiurls", namespace="apischat")),
     path(
         "api/v1/virtualize_simple/",
         include("apps.virtualize_simple.apiurls", namespace="apivirtualize_simple"),

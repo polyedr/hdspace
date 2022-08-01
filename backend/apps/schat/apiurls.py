@@ -1,11 +1,10 @@
 from django.urls import path
-from apps.uploadapps.apiviews import FileUploadView, RobotsView, WpgSavedView
+from apps.schat.apiviews import SchatView
 
 app_name = "schat"
 
 urlpatterns = [
-    path("", FileUploadView.as_view()),
-    # path("webpages/", WebpageSavedView.as_view()),
-    path("wpg/", WpgSavedView.as_view()),
-    path("robots/", RobotsView.as_view()),
+    path("", SchatView.as_view()),
+    # path("nlp/", DescribedHTMLView.as_view()),
 ]
+
