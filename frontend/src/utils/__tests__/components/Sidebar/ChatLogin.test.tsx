@@ -18,9 +18,9 @@ describe('ChatLogin test', () => {
       </Provider>,
     );
     expect(screen.getAllByText(/register/i)).not.toBeNull();
-    const button = screen.getByRole('button', {
+    const button = screen.getAllByRole('button', {
       name: /register/i,
     });
-    expect(button).toBeInTheDocument();
+    expect(button.length !== 0);
   });
 });

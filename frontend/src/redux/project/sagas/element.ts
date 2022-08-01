@@ -302,7 +302,7 @@ function* removeElementStyles(
   try {
     if (!action.meta) {
       logger.error(
-        `You have to provide metainformation for action ${action.type}`,
+        `You have to provide meta information for action ${action.type}`,
       );
       return;
     }
@@ -379,7 +379,7 @@ export const copyElementStylesSaga = compose(
 
     if (!action.meta) {
       logger.error(
-        `You have to provide metainformation for action ${action.type}`,
+        `You have to provide meta information for action ${action.type}`,
       );
       return;
     }
@@ -632,7 +632,7 @@ export const removeMultipleElementsStylesSaga = compose(
 
   if (!action.meta) {
     logger.error(
-      `You have to provide metainformation for action ${action.type}`,
+      `You have to provide meta information for action ${action.type}`,
     );
     return;
   }
