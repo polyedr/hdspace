@@ -1,10 +1,9 @@
+import stream_chat
 from rest_framework.response import Response
 from rest_framework import permissions
-
-# Create your views here.
 from rest_framework.views import APIView
-
-import stream_chat
+from rest_framework_simplejwt.views import TokenObtainPairView
+from apps.schat.serializers import TokenObtainSerializer
 
 
 class SchatView(APIView):
@@ -17,3 +16,6 @@ class SchatView(APIView):
         server_client = stream_chat.StreamChat(api_key="STREAM_KEY", api_secret="STREAM_SECRET")
         token = server_client.create_token('self.request.user')
         return Response(token)
+
+class CutomObtainPairView(TokenObtainPairView):
+    serializer_class = TokenObtainSerializer

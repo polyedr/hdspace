@@ -24,6 +24,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 # drf_yasg SchemaView
+from apps.schat.apiviews import CutomObtainPairView
+
 SchemaView = get_schema_view(
     openapi.Info(
         title="Adevi API",
@@ -60,6 +62,7 @@ urlpatterns = [
     ),
     # djoser
     path("api/v1/djauth/", include("djoser.urls"), name="djoserauth"),
+    path("api/v1/djauth/jwt/create/", CutomObtainPairView.as_view(), name='customtoken'),
     path("api/v1/djauth/", include("djoser.urls.jwt"), name="djoserauthjwt"),
     path("api/v1/djauth/", include("djoser.social.urls"), name="djosersocial"),
     # path("api/v1/convert/", include("lazysignup.urls"), name="lazysignup"),
