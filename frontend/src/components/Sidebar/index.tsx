@@ -3,14 +3,16 @@ import {
   selectCurrentProjectId,
   selectSidebarOpen,
 } from '@Redux/project/selectors/base';
-import React, { FC, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import React, { FC, useState, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { Tabs, Tab } from '@material-ui/core';
 import { TabPanel } from '@Components/styledComponents';
 import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
 import { IMessageZulip } from '@Src/types/pmtools/types';
 import { selectMessagesZulip } from '@Redux/pmtools/chat/selectors';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import { setSidebarOpen } from '@Redux/project/actions';
 
 const useTabStyles = makeStyles(({ palette }) => ({
   root: {
@@ -61,7 +63,12 @@ const SideModule: FC = () => {
   const tabClasses = useTabStyles();
   const open = useSelector(selectSidebarOpen);
   const projectId = useSelector(selectCurrentProjectId);
+  const dispatch = useDispatch();
   const [selectedTabNumber, setSelectedTabNumber] = useState(0);
+
+  const handleSetSidebarOpen = useCallback(() => {
+    dispatch(setSidebarOpen(false));
+  }, []);
 
   useEffect(() => {
     const tabEl = document.getElementById('simple-tabpanel-0');
@@ -78,37 +85,35 @@ const SideModule: FC = () => {
   }
 
   return (
-    <div className={cn(classes.wrapper, open && classes.open)}>
-      <div className={classes.root} data-testid="sidebar-container">
+    <SwipeableDrawer
+      anchor="right"
+      open={open}
+      onClose={handleSetSidebarOpen}
+      onOpen={() => {}}
+    >
+      <div
+        style={{
+          width: '90vw',
+        }}
+      >
         <Tabs
           value={selectedTabNumber}
           onChange={(e, v) => setSelectedTabNumber(v)}
         >
           {Object.values(TABS_PMTOOLS).map((tab) => (
-            <Tab
-              data-testid={`${tab}-tab`}
-              label={tab}
-              key={tab}
-              classes={tabClasses}
-              title={tab}
-            />
+            <Tab data-testid={`${tab}-tab`} label={tab} key={tab} title={tab} />
           ))}
         </Tabs>
         {Object.values(TABS_PMTOOLS).map((tab, idx) => {
           const Tab = components[tab];
           return (
-            <TabPanel
-              value={selectedTabNumber}
-              panelClass={classes.panel}
-              key={tab}
-              index={idx}
-            >
+            <TabPanel value={selectedTabNumber} key={tab} index={idx}>
               <Tab />
             </TabPanel>
           );
         })}
       </div>
-    </div>
+    </SwipeableDrawer>
   );
 };
 
