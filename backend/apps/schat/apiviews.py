@@ -4,6 +4,7 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from apps.schat.serializers import TokenObtainSerializer
+from project import settings
 
 
 class SchatView(APIView):
@@ -15,7 +16,7 @@ class SchatView(APIView):
 
     def post(self, request, format=None):
         server_client = stream_chat.StreamChat(
-            api_key="STREAM_KEY", api_secret="STREAM_SECRET"
+            api_key=settings.local.STREAM_API_KEY, api_secret=settings.local.STREAM_API_SECRET
         )
         token = server_client.create_token(self.request.user.id)
         return Response(token)
