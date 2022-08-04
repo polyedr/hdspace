@@ -14,7 +14,7 @@ class SchatView(APIView):
 
     def post(self, request, format=None):
         server_client = stream_chat.StreamChat(api_key="STREAM_KEY", api_secret="STREAM_SECRET")
-        token = server_client.create_token('self.request.user')
+        token = server_client.create_token('self.request.user.id')
         return Response(token)
 
 class CutomObtainPairView(TokenObtainPairView):
