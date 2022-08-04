@@ -1,7 +1,8 @@
 import React from 'react';
+import Chat from '../../Chat';
 
 const ChatTab: React.FC = () => {
-  return null;
+  return <Chat />;
 };
 
 export default ChatTab;
