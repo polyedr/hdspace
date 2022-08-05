@@ -13,9 +13,9 @@ class TokenObtainSerializer(TokenObtainPairSerializer):
 
         try:
             server_client = stream_chat.StreamChat(
-                api_key=settings.local.STREAM_API_KEY, api_secret=settings.local.STREAM_API_SECRET
+                api_key="jfcd9hhxbwq8", api_secret="umgv5enpu6bd644ft7g4em5h3e9zcf5fmf635xm3awzugfatz6tajkft94zv6yma"
             )
-            streamtoken = server_client.create_token(self.user.id)
+            streamtoken = server_client.create_token(str(self.user.id))
             data["streamchat"] = streamtoken
         except Exception:
             pass

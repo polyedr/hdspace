@@ -1,4 +1,4 @@
-import stream_chat
+from stream_chat import StreamChat
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework.views import APIView
@@ -15,10 +15,17 @@ class SchatView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
-        server_client = stream_chat.StreamChat(
-            api_key=settings.local.STREAM_API_KEY, api_secret=settings.local.STREAM_API_SECRET
+        # server_client = stream_chat.StreamChat(
+        #     api_key=settings.local.STREAM_API_KEY, api_secret=settings.local.STREAM_API_SECRET
+        # )
+        server_client = StreamChat(
+            api_secret=settings.local.STREAM_API_SECRET, api_key=settings.local.STREAM_API_KEY
         )
-        token = server_client.create_token(self.request.user.id)
+
+        # print(settings.local.STREAM_API_KEY, settings.local.STREAM_API_SECRET)
+        # add a user
+        token = server_client.create_token(str(self.request.user.id))
+
         return Response(token)
 
 
