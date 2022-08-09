@@ -10,7 +10,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from './index';
+} from './client';
 
 const notifyParent = (parent: string) => (message: any) => {
   window.parent.postMessage(message, parent);

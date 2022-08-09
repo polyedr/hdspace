@@ -23,7 +23,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 export const ThreadMessageInput: React.FC<Props> = () => {
   const { giphyState, setGiphyState } = useContext(GiphyContext);

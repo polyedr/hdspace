@@ -1,5 +1,5 @@
 .channel__container {
-  height: calc(100vh / 2);
+  height: 100%;
   width: 100%;
   background-color: white;
   border-left: 1px solid #E4E6EB;

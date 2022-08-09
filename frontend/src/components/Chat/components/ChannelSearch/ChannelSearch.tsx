@@ -18,7 +18,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 export const ChannelSearch = () => {
   const { client, setActiveChannel } = useChatContext<

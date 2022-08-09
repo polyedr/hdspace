@@ -13,7 +13,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 export const ChannelEmptyState = () => {
   const { channel, client } = useChatContext<

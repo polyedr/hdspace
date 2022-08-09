@@ -126,8 +126,11 @@ module.exports = ({ MODE }) => {
           ],
         },
         {
-          test: /\.(eot|ttf|woff|woff2|otf|svg)$/,
-          include: [path.resolve(__dirname, 'src', 'assets', 'fonts')],
+          test: /\.(eot|ttf|woff|woff2|otf|svg|jpe?g|png|gif)$/,
+          include: [
+            path.resolve(__dirname, 'src', 'assets', 'fonts'),
+            path.resolve(__dirname, 'src', 'components', 'Chat'),
+          ],
           use: {
             loader: 'file-loader',
             options: {

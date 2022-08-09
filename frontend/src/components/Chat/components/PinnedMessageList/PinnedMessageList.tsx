@@ -3,7 +3,6 @@ import {
   useChannelActionContext,
   useChannelStateContext,
   Message,
-  MessageTeam,
 } from 'stream-chat-react';
 
 import './PinnedMessageList.css';
@@ -16,7 +15,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 import { CloseThreadIcon } from '../../assets';
 

@@ -16,7 +16,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 type InputProps = {
   channelName: string;

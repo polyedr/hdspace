@@ -35,7 +35,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 export type Props = MessageInputProps & {
   pinsOpen?: boolean;

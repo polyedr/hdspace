@@ -21,7 +21,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 type Props = {
   createType: string;
@@ -56,13 +56,8 @@ const ThreadHeader: React.FC<HeaderProps> = (props) => {
 };
 
 export const ChannelContainer: React.FC<Props> = (props) => {
-  const {
-    createType,
-    isCreating,
-    isEditing,
-    setIsCreating,
-    setIsEditing,
-  } = props;
+  const { createType, isCreating, isEditing, setIsCreating, setIsEditing } =
+    props;
 
   const { channel } = useChatContext<
     TeamAttachmentType,

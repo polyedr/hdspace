@@ -14,7 +14,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 const ListContainer: React.FC = (props) => {
   const { children } = props;

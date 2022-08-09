@@ -2,6 +2,7 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline } from '@material-ui/core';
+import ChatProvider from '@Components/Chat/ChatProvider';
 import history from '../redux/history';
 import Routes from './Routes';
 import theme from '../styles/Theme';
@@ -12,9 +13,9 @@ const App: React.FC = () => {
     <ConnectedRouter history={history}>
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
-
-        <Routes />
-
+        <ChatProvider>
+          <Routes />
+        </ChatProvider>
         <Notifier />
       </MuiThemeProvider>
     </ConnectedRouter>

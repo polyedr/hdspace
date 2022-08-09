@@ -18,7 +18,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 type Props = {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;

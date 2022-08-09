@@ -11,7 +11,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 export const TeamTypingIndicator: React.FC<{ type: string }> = (props) => {
   const { type } = props;

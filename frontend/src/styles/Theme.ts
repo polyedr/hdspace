@@ -24,7 +24,7 @@ export const PANEL_TRANSITION_DURATION = 250;
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: '#51718c' },
+    primary: { main: '#5064FF' },
     secondary: { main: 'rgb(26 192 158)' },
     link: {
       main: '#247c9c',
@@ -43,6 +43,11 @@ const theme = createMuiTheme({
     MuiButton: {
       containedSecondary: {
         color: '#fff',
+      },
+    },
+    MuiTab: {
+      root: {
+        textTransform: 'capitalize',
       },
     },
   },

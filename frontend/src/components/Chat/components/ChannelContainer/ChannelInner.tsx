@@ -25,7 +25,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 type InnerProps = {
   pinsOpen: boolean;

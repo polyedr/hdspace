@@ -17,7 +17,7 @@ import type {
   TeamMessageType,
   TeamReactionType,
   TeamUserType,
-} from '../../index';
+} from '../../client';
 
 type Props = ChannelPreviewUIComponentProps & {
   setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;

@@ -1281,10 +1281,12 @@ export type ElementsToCreate<T extends Entity> = {
 export type TokenPair = {
   access: string;
   refresh: string;
+  streamchat?: string;
 };
 export type ViewTokenPair = {
   access: string;
   refresh: string;
+  streamchat?: string;
 };
 export type LoginFormData = {
   username: string;
