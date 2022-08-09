@@ -57,6 +57,8 @@ import Screens from '../Tabs/Screens';
 import Activity from '../Tabs/Activity';
 import RenameProjectBar from './RenameProjectBar';
 
+import TeamMember from '../Tabs/Team';
+
 const useStyles = makeStyles(({ spacing }) =>
   createStyles({
     project: {
@@ -423,6 +425,7 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
           </TabPanel>
           <TabPanel value={value} index={4}>
             Team
+            <TeamMember />
           </TabPanel>
         </Grid>
       </Grid>
