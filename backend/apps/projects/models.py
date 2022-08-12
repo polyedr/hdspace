@@ -90,6 +90,8 @@ class Project(TimeStampedModel):
     project_data_zulip_json = JSONField(blank=True, default=[])
     project_data_trello_json = JSONField(blank=True, default=[])
 
+    history = HistoricalRecords()
+
     @staticmethod
     def generate_preview_token():
         return secrets.token_urlsafe(16)
@@ -139,6 +141,8 @@ class ProjectScreen(TimeStampedModel):
 
     screen_data_text = models.TextField(blank=True)
     screen_data_json = JSONField(blank=True, default=[])
+
+    history = HistoricalRecords()
 
     def get_screen_url(self):
         return reverse(
