@@ -5,6 +5,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from jsonfield import JSONField
+from simple_history.models import HistoricalRecords
 from taggit.managers import TaggableManager
 
 from apps.utils.models import TimeStampedModel
@@ -268,6 +269,7 @@ class ColumnTask(TimeStampedModel):
     sub_task = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="subtask"
     )
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.title

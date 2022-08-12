@@ -10,6 +10,7 @@ from rest_framework.pagination import CursorPagination
 # from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters  # Django-Guardian
 from guardian.shortcuts import assign_perm, remove_perm, get_perms, get_users_with_perms
+from rest_framework_tracking.mixins import LoggingMixin
 
 from apps.accounts.serializers import UserSerializer
 from apps.accounts.models import User
@@ -264,7 +265,7 @@ class ProjectWithMembersViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class ProjectScreenList(generics.ListCreateAPIView):
+class ProjectScreenList(LoggingMixin, generics.ListCreateAPIView):
     """
     List all project screens, or create a new project screen.
     """

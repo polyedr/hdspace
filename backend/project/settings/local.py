@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     # "lazysignup",
     "drf_yasg",
     "corsheaders",
+    "rest_framework_tracking",
+    "simple_history",
     "mptt",
     "anymail",
     "schema_graph",
@@ -97,6 +99,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "social_django.middleware.SocialAuthExceptionMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
 ]
 
 # Altering the django-sesame token name
