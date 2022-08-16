@@ -24,6 +24,7 @@ ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
 sys.path.append(ROOT_DIR)  # To find local version of the library
 from apps.virtualize_simple.mask_rcnn.mrcnn.config import Config
 import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
+from stream_chat import StreamChat
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -545,3 +546,14 @@ model_headers.keras_model._make_predict_function()
 
 model_footers.load_weights(model_footers_path, by_name=True)
 model_footers.keras_model._make_predict_function()
+
+
+# Start a Stream chat
+try:
+    schat_client = StreamChat(
+        api_secret=STREAM_API_SECRET, api_key=STREAM_API_KEY
+    )
+    # https://getstream.io/chat/docs/react/multi_tenant_chat/?language=python
+    schat_client.update_app_settings(multi_tenant_enabled=True)
+except Exception:
+    pass
