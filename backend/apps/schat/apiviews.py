@@ -158,7 +158,7 @@ class SchatUpdatePartialUsersView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         result = False
         try:
-            result = schat_client.update_user_partial(request.data)
+            result = schat_client.update_users_partial(request.data)
         except Exception:
             pass
 
