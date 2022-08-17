@@ -16,7 +16,7 @@ const ChatProvider = ({ children, user, token }) => {
     const payload = {
       id: user.id.toString(),
       name: `${user.firstName} ${user.lastName}`,
-      // image: user.profile.parameters.avatarCrop,
+      image: user.profile.avatar,
       username: user.username,
     };
 
@@ -38,7 +38,7 @@ export default ({ children }) => {
   const token = useSelector(selectTokenPair);
   const user = useSelector(selectUserData);
 
-  if (user && token?.streamchat) {
+  if (user?.username.trim() !== '' && token?.streamchat) {
     return (
       <ChatProvider user={user} token={token.streamchat}>
         {children}
