@@ -5,11 +5,11 @@ import apps.activity.apiviews as views
 
 app_name = "activity"
 
-router = routers.DefaultRouter(trailing_slash=False)
+router = routers.DefaultRouter()
 
 # router.register('customers', views.CustomerView)
-router.register("columntaskhistory/", views.ColumnTaskHistoryView)
-router.register("projectscreenhistory/", views.ProjectScreenHistoryView)
-router.register("projecthistory/", views.ProjectHistoryView)
+router.register(r"columntaskhistory", views.ColumnTaskHistoryView)
+router.register(r"projectscreenhistory", views.ProjectScreenHistoryView)
+router.register(r"projecthistory", views.ProjectHistoryView)
 
 urlpatterns = [path("", include(router.urls))]

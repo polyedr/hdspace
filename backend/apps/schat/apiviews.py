@@ -131,3 +131,35 @@ class SchatSyncingChannelView(CreateAPIView):
             pass
 
         return Response(cdict)
+
+
+class SchatUpdatePartialUserView(CreateAPIView):
+    """
+    Stream chat update partial user
+    """
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        result = False
+        try:
+            result = schat_client.update_user_partial(request.data)
+        except Exception:
+            pass
+
+        return Response(result)
+
+
+class SchatUpdatePartialUsersView(CreateAPIView):
+    """
+    Stream chat update partial users
+    """
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        result = False
+        try:
+            result = schat_client.update_user_partial(request.data)
+        except Exception:
+            pass
+
+        return Response(result)
