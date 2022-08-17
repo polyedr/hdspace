@@ -15,6 +15,7 @@ from rest_framework_tracking.mixins import LoggingMixin
 from apps.accounts.serializers import UserSerializer
 from apps.accounts.models import User
 from permissions import CustomObjectPermissions
+from project.settings import schat_client
 
 from .models import (
     Project,
@@ -682,6 +683,15 @@ class AssignPermissionsmapProject(APIView):
         permissions = request.data['permissions']
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
+
+        # A Stream chat connection
+        try:
+            schat_client.update_user_partial(
+                {"id": str(user.id), "set": {"teams": [str(projectid)]}}
+            )
+        except Exception:
+            pass
+
         for permission in self.PROJECT_PERMISSION:
             remove_perm(permission[1], user, project)
 

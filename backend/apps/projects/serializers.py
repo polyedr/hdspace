@@ -21,7 +21,7 @@ from taggit_serializer.serializers import (TagListSerializerField,
 from apps.accounts.models import User
 from apps.accounts.serializers import UserSerializer
 from apps.utils.fset1 import get_dominant_palette
-from project.settings import MEDIA_ROOT
+from project.settings import MEDIA_ROOT, schat_client
 from .models import (
     Project,
     ProjectMember,
@@ -464,6 +464,15 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             project.name = "AProject-" + str(project.id)
             project.save()
             project.projectscreen.set(projectscreens_data, clear=True)
+
+            # A Stream chat connection
+            try:
+                schat_client.update_user_partial(
+                    {"id": str(current_user.id), "set": {"teams": [str(project.id)]}}
+                )
+            except Exception:
+                pass
+
             return project
         else:
             raise ValidationError("Maximum count of projects reached.")
