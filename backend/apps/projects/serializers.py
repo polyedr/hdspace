@@ -468,7 +468,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             # A Stream chat connection
             try:
                 schat_client.update_user_partial(
-                    {"id": str(current_user.id), "role": "admin", "set": {"teams": [str(project.id)]}}
+                    {"id": str(current_user.id), "set": {"role": "admin", "teams": [str(project.id)]}}
                 )
             except Exception:
                 pass

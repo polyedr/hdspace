@@ -684,19 +684,26 @@ class AssignPermissionsmapProject(APIView):
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
 
-        # A Stream chat connection
-        try:
-            schat_client.update_user_partial(
-                {"id": str(user.id), "set": {"teams": [str(projectid)]}}
-            )
-        except Exception:
-            pass
-
         for permission in self.PROJECT_PERMISSION:
             remove_perm(permission[1], user, project)
+            # A Stream chat connection
+            try:
+                schat_client.update_user_partial(
+                    {"id": str(user.id), "upset": {"teams": [str(projectid)]}}
+                )
+            except Exception:
+                pass
 
         for permission in permissions:
             assign_perm(permission, user, project)
+            # A Stream chat connection
+            try:
+                schat_client.update_user_partial(
+                    {"id": str(user.id), "set": {"teams": [str(projectid)]}}
+                )
+            except Exception:
+                pass
+
         rp = get_perms(user, project)
 
         return Response({"permissions": rp}, status=status.HTTP_200_OK)
