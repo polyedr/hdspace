@@ -471,6 +471,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
                     {"id": str(current_user.id), "set": {"role": "admin", "teams": [str(project.id)]}}
                 )
             except Exception:
+                print("123")
                 pass
 
             return project

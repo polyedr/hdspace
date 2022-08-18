@@ -689,7 +689,7 @@ class AssignPermissionsmapProject(APIView):
             # A Stream chat connection
             try:
                 schat_client.update_user_partial(
-                    {"id": str(user.id), "upset": {"teams": [str(projectid)]}}
+                    {"id": str(user.id), "unset": {"teams": [str(projectid)]}}
                 )
             except Exception:
                 pass
