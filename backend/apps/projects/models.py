@@ -250,6 +250,7 @@ class ProjectColumn(TimeStampedModel):
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
     project = models.ForeignKey(Project, related_name="projectcolumn", on_delete=models.CASCADE)
+    buyoancy = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -273,6 +274,7 @@ class ColumnTask(TimeStampedModel):
     description = models.TextField(null=True, blank=True)
     status = models.CharField(choices=TASK_STATUS, default=TASK_INPROGRESS, max_length=32)
     priority = models.CharField(choices=TASK_PRIORITY, default=TASK_MEDIUM, max_length=32)
+    buyoancy = models.IntegerField(default=0)
     tags = TaggableManager(blank=True)
 
     column = models.ForeignKey(ProjectColumn, related_name="columntask", on_delete=models.CASCADE)

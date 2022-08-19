@@ -617,8 +617,9 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "tags", "story_points", "column", "author", "assignee", "responsible", "related_task")
-        depth = 1
+        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "story_points", "column", "author", "assignee", "responsible")
+        # , "related_task"
+        # depth = 1
         extra_kwargs = {
             "author": {"read_only": True},
         }
@@ -635,13 +636,14 @@ class ColumnWithTasksSerializer(serializers.ModelSerializer):
             "description",
             "project",
             "columntask",
+            "buyoancy",
         )
 
 
 class ProjectColumnSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectColumn
-        fields = ("id", "title", "description", "project")
+        fields = ("id", "title", "description", "project", "buyoancy")
 
 
 class ProjectWithColumnsSerializer(serializers.ModelSerializer):

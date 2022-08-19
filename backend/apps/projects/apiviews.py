@@ -343,7 +343,7 @@ class ColumnTaskList(generics.ListCreateAPIView):
 
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        serializer.save(author=self.request.user)
 
 
 class ColumnTaskDetail(generics.RetrieveUpdateDestroyAPIView):
