@@ -36,7 +36,7 @@ from .models import (
     ScenarioElement,
     Element,
     Scenario,
-    ElementComment, ProjectImage, ProjectIllustrationSet, ProjectColumn, ColumnTask)
+    ElementComment, ProjectImage, ProjectIllustrationSet, ProjectColumn, ColumnTask, ColumnTaskComment)
 
 from collections import OrderedDict
 
@@ -471,7 +471,6 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
                     {"id": str(current_user.id), "set": {"role": "admin", "teams": [str(project.id)]}}
                 )
             except Exception:
-                print("123")
                 pass
 
             return project
@@ -587,6 +586,12 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = "text"
 
 
+class ColumnTaskCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColumnTaskComment
+        fields = ("text", "created", "modified")
+
+
 class ProjectInvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectInvitation
@@ -602,17 +607,20 @@ class ProjectMemberSerializer(serializers.ModelSerializer):
         fields = ("id", "role", "status", "project", "user", "user_id")
 
     extra_kwargs = {
-        "creator": {"read_only": True},
+        "author": {"read_only": True},
         "user": {"read_only": True},
     }
 
 
 class ColumnTaskSerializer(serializers.ModelSerializer):
+    tags = TagListSerializerField(required=False, allow_null=True)
+
     class Meta:
         model = ColumnTask
-        fields = ("id", "title", "description", "status", "column", "creator", "owner")
+        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "tags", "story_points", "column", "author", "assignee", "responsible", "related_task")
+        depth = 1
         extra_kwargs = {
-            "creator": {"read_only": True},
+            "author": {"read_only": True},
         }
 
 

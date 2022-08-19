@@ -256,23 +256,39 @@ class ProjectColumn(TimeStampedModel):
 
 
 class ColumnTask(TimeStampedModel):
-    TASK_CREATED = "created"
-    TASK_COMPLETED = "completed"
-    TASK_STATUS = ((TASK_CREATED, "CREATED"), (TASK_COMPLETED, "COMPLETED"))
+    TASK_INPROGRESS = "in progress"
+    TASK_PAUSED = "paused"
+    TASK_ACCEPTED = "accepted"
+    TASK_WAITINGFORREVIEW = "waiting for review"
+    TASK_STATUS = ((TASK_INPROGRESS, "INPROGRESS"), (TASK_PAUSED, "PAUSED"), (TASK_ACCEPTED, "ACCEPTED"), (TASK_WAITINGFORREVIEW, "WAITINGFORREVIEW"))
+
+    TASK_MEDIUM = "medium"
+    TASK_HIGHEST = "highest"
+    TASK_HIGH = "high"
+    TASK_LOW = "low"
+    TASK_LOWEST = "lowest"
+    TASK_PRIORITY = ((TASK_MEDIUM, "MEDIUM"), (TASK_HIGHEST, "HIGHEST"), (TASK_HIGH, "HIGH"), (TASK_LOW, "LOW"), (TASK_LOWEST, "LOWEST"))
 
     title = models.CharField(max_length=250)
     description = models.TextField(null=True, blank=True)
-    status = models.CharField(choices=TASK_STATUS, default=TASK_CREATED, max_length=32)
+    status = models.CharField(choices=TASK_STATUS, default=TASK_INPROGRESS, max_length=32)
+    priority = models.CharField(choices=TASK_PRIORITY, default=TASK_MEDIUM, max_length=32)
+    tags = TaggableManager(blank=True)
 
     column = models.ForeignKey(ProjectColumn, related_name="columntask", on_delete=models.CASCADE)
 
-    creator = models.ForeignKey(get_user_model(), related_name="creator", null=True, blank=True, on_delete=models.CASCADE)
-    owner = models.ForeignKey(
-        get_user_model(), related_name="owner", null=True, blank=True, on_delete=models.CASCADE
+    author = models.ForeignKey(get_user_model(), related_name="author", null=True, blank=True, on_delete=models.CASCADE)
+    assignee = models.ForeignKey(get_user_model(), related_name="assignee", null=True, blank=True, on_delete=models.CASCADE)
+    responsible = models.ForeignKey(
+        get_user_model(), related_name="responsible", null=True, blank=True, on_delete=models.CASCADE
     )
-    sub_task = models.ForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="subtask"
+    related_task = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="relatedtask"
     )
+    story_points = models.IntegerField(default=0)
+    due_date = models.DateField(auto_now_add=True)
+    time = models.DurationField(null=True, blank=True)
+
     history = HistoricalRecords()
 
     def __str__(self):
@@ -286,6 +302,13 @@ class ColumnTask(TimeStampedModel):
             ("Dummy permission 4", "Can do dummy action 4"),
             ("Dummy permission 5", "Can do dummy action 5"),
         )
+
+
+class ColumnTaskComment(TimeStampedModel):
+    text = models.TextField()
+
+    columntask = models.ForeignKey(ColumnTask, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
 
 class TaskTime(TimeStampedModel):
