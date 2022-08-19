@@ -33,6 +33,10 @@ const ColumnHeader = styled('h3')(() => ({
   margin: '0',
 }));
 
+const ButtonWrapper = styled('div')(() => ({
+  margin: '0 8px 8px',
+}));
+
 const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
   return {
     flexGrow: 1,
@@ -67,11 +71,11 @@ const Column = ({ column, index }) => {
           <div {...provided.dragHandleProps}>
             <ColumnHeader>{column.text}</ColumnHeader>
           </div>
-          <div style={{ margin: '0 8px 8px' }}>
+          <ButtonWrapper>
             <NewTaskButton>
               <AddIcon fontSize="small" /> New Task
             </NewTaskButton>
-          </div>
+          </ButtonWrapper>
           <Tasks column={column} />
         </Container>
       )}
