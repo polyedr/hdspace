@@ -284,9 +284,7 @@ class ColumnTask(TimeStampedModel):
     responsible = models.ForeignKey(
         get_user_model(), related_name="responsible", null=True, blank=True, on_delete=models.CASCADE
     )
-    related_task = models.ForeignKey(
-        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="relatedtask"
-    )
+    related_task = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="relatedtask")
     story_points = models.IntegerField(default=0)
     due_date = models.DateField(auto_now_add=True)
     time = models.DurationField(null=True, blank=True)
@@ -311,6 +309,14 @@ class ColumnTaskComment(TimeStampedModel):
 
     columntask = models.ForeignKey(ColumnTask, on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+
+class ColumnTaskCheckitem(TimeStampedModel):
+    text = models.TextField()
+
+    columntask = models.ForeignKey(ColumnTask, on_delete=models.CASCADE)
+    status = models.IntegerField(default=0)
+    buyoancy = models.IntegerField(default=0)
 
 
 class TaskTime(TimeStampedModel):

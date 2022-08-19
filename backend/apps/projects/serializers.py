@@ -36,7 +36,8 @@ from .models import (
     ScenarioElement,
     Element,
     Scenario,
-    ElementComment, ProjectImage, ProjectIllustrationSet, ProjectColumn, ColumnTask, ColumnTaskComment)
+    ElementComment, ProjectImage, ProjectIllustrationSet, ProjectColumn, ColumnTask, ColumnTaskComment,
+    ColumnTaskCheckitem)
 
 from collections import OrderedDict
 
@@ -592,6 +593,12 @@ class ColumnTaskCommentSerializer(serializers.ModelSerializer):
         fields = ("text", "created", "modified")
 
 
+class ColumnTaskCheckitemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColumnTaskCheckitem
+        fields = ("text", "created", "modified", "status", "buyoancy")
+
+
 class ProjectInvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectInvitation
@@ -612,14 +619,24 @@ class ProjectMemberSerializer(serializers.ModelSerializer):
     }
 
 
+class SubColumnTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColumnTask
+        fields = ("id", "created", "due_date", "status", "title")
+
+
 class ColumnTaskSerializer(serializers.ModelSerializer):
     tags = TagListSerializerField(required=False, allow_null=True)
+    comments = ColumnTaskCommentSerializer(many=True, required=False)
+    checklist = ColumnTaskCheckitemSerializer(many=True, required=False)
+    # related_task = ColumnTaskSerializer(many=True, required=False)
+    related_tasks = SubColumnTaskSerializer(many=True, required=False)
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "story_points", "column", "author", "assignee", "responsible")
+        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "story_points", "column", "author", "assignee", "responsible", "comments", "checklist", "related_tasks")
         # , "related_task"
-        # depth = 1
+        # depth = 2
         extra_kwargs = {
             "author": {"read_only": True},
         }
