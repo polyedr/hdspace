@@ -15,11 +15,11 @@ type ColumnsProps = {
   index: number;
 };
 
-const useStyles = makeStyles(({ spacing, shadows, shape, palette }) => ({
+const useStyles = makeStyles(({ shape, palette }) => ({
   card: {
     borderRadius: shape.borderRadius,
-    boxShadow: shadows[5],
-    margin: spacing(1, 0),
+    backgroundColor: palette.grey[400],
+    marginRight: 15,
   },
   dragging: {
     backgroundColor: palette.primary.light,
@@ -51,33 +51,30 @@ const Columns: FC<ColumnsProps> = ({ column, index }) => {
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
+            className={Classnames(classes.card, {
+              [classes.dragging]: snapshot.isDragging,
+            })}
           >
-            <div
-              className={Classnames(classes.card, {
-                [classes.dragging]: snapshot.isDragging,
-              })}
-            >
-              <Column
-                setConfirmModal={setConfirmModal}
-                setColumnModal={setColumnModal}
-                setTasksModal={setTasksModal}
-                tasksModal={tasksModal}
-                column={column}
-              />
-              <ColumnModal
-                show={columnModal}
-                column={column}
-                hide={() => setColumnModal(false)}
-                action={ModalAction.Edit}
-              />
-              <ConfirmModal
-                show={confirmModal}
-                hide={() => setConfirmModal(false)}
-                elementText="column"
-                actionText="delete"
-                action={handleDeleteColumn}
-              />
-            </div>
+            <Column
+              setConfirmModal={setConfirmModal}
+              setColumnModal={setColumnModal}
+              setTasksModal={setTasksModal}
+              tasksModal={tasksModal}
+              column={column}
+            />
+            <ColumnModal
+              show={columnModal}
+              column={column}
+              hide={() => setColumnModal(false)}
+              action={ModalAction.Edit}
+            />
+            <ConfirmModal
+              show={confirmModal}
+              hide={() => setConfirmModal(false)}
+              elementText="column"
+              actionText="delete"
+              action={handleDeleteColumn}
+            />
           </div>
         );
       }}
