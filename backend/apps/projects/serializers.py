@@ -54,7 +54,6 @@ def copy_element_node(instance: ScenarioElement, plan: int = None, parent: Scena
     print(iclone)
     return iclone
 
-
 counter = 0
 def copy_children(target_branch: ScenarioElement, parent: ScenarioElement = None, new_node: bool = False, counter=1) -> None:
     """
@@ -443,7 +442,6 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             # Process the Lifetime and the Course subscriptions
             # This should be changed later to make a subscription checking once after its appearance
 
-
         # A flag to check the free trial
         user_date_joined = current_user.date_joined
         # Add timezone information to the datetime object
@@ -590,13 +588,13 @@ class CommentSerializer(serializers.ModelSerializer):
 class ColumnTaskCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTaskComment
-        fields = ("text", "created", "modified")
+        fields = ("text", "created", "modified", "user", "columntask")
 
 
 class ColumnTaskCheckitemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTaskCheckitem
-        fields = ("text", "created", "modified", "status", "buyoancy")
+        fields = ("text", "created", "modified", "status", "buyoancy", "columntask")
 
 
 class ProjectInvitationSerializer(serializers.ModelSerializer):

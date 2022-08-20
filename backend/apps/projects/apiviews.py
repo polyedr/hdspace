@@ -32,7 +32,8 @@ from .models import (
     ScenarioElement,
     elements,
     scenarios,
-    ElementComment, ProjectIllustrationSet, ProjectImage, ProjectColumn, ColumnTask)
+    ElementComment, ProjectIllustrationSet, ProjectImage, ProjectColumn, ColumnTask, ColumnTaskComment,
+    ColumnTaskCheckitem)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -61,7 +62,8 @@ from .serializers import (
     IllustrationSetSerializer,
     ImageSerializer,
     ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
-    duplicate_model_with_descendants, copy_element_node, copy_children)
+    duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
+    ColumnTaskCheckitemSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -643,7 +645,7 @@ class ScenarioElementRecursiveViewSet(viewsets.ModelViewSet):
 
 class ElementCommentList(generics.ListCreateAPIView):
     """
-    List all column tasks, or create a new column task.
+    List all element comments, or create a new element comment.
     """
 
     queryset = ElementComment.objects.all()
@@ -656,11 +658,51 @@ class ElementCommentList(generics.ListCreateAPIView):
 
 class ElementCommentDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update or delete a column task
+    Retrieve, update or delete a element comment
     """
 
     queryset = ElementComment.objects.all()
     serializer_class = ElementCommentSerializer
+
+
+class ColumnTaskCommentList(generics.ListCreateAPIView):
+    """
+    List all column task comments, or create a new column task comment.
+    """
+
+    queryset = ColumnTaskComment.objects.all()
+    serializer_class = ColumnTaskCommentSerializer
+
+    # Inject current user at the point of saving the instance
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ColumnTaskCommentDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a column task comment
+    """
+
+    queryset = ColumnTaskComment.objects.all()
+    serializer_class = ColumnTaskCommentSerializer
+
+
+class ColumnTaskCheckitemList(generics.ListCreateAPIView):
+    """
+    List all column task checklist items, or create a new column task checklist item.
+    """
+
+    queryset = ColumnTaskCheckitem.objects.all()
+    serializer_class = ColumnTaskCheckitemSerializer
+
+
+class ColumnTaskCheckitemDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a column task  checklist item
+    """
+
+    queryset = ColumnTaskCheckitem.objects.all()
+    serializer_class = ColumnTaskCheckitemSerializer
 
 
 class AssignPermissionsmapProject(APIView):

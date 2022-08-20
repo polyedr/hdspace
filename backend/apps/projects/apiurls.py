@@ -131,6 +131,24 @@ api_element_comment_patterns = [
     ),
 ]
 
+api_columntask_comment_patterns = [
+    path("columntask-comments/", ElementCommentList.as_view(),
+         name="api_columntask_comments"),
+    path(
+        "columntask_comments/<int:pk>/", ElementCommentDetail.as_view(),
+        name="api_columntask_comment"
+    ),
+]
+
+api_columntask_checkitem_patterns = [
+    path("columntask-checkitems/", ElementCommentList.as_view(),
+         name="api_columntask_checkitems"),
+    path(
+        "columntask_checkitems/<int:pk>/", ElementCommentDetail.as_view(),
+        name="api_columntask_checkitem"
+    ),
+]
+
 api_permissions_project_patterns = [
     path("permissionsmap-projects-assign/", AssignPermissionsmapProject.as_view(),
          name="api_assign_permissionsmap_projects"),
@@ -261,6 +279,8 @@ urlpatterns = [
     path("", include(api_copying_elementsmptt)),
     path("", include(api_copying_elements)),
     path("", include(api_element_comment_patterns)),
+    path("", include(api_columntask_comment_patterns)),
+    path("", include(api_columntask_checkitem_patterns)),
     path("", include(api_project_member_patterns)),
     path("", include(api_project_column_patterns)),
     path("", include(api_column_task_patterns)),
