@@ -70,7 +70,7 @@ const Column = ({ column, index }) => {
           <div style={{ margin: '0 8px 8px' }}>
             <NewTaskButton>
               <AddIcon fontSize="small" /> New Task
-            </NewTaskButton>
+            </NewTaskButton> 
           </div>
           <Tasks column={column} />
         </Container>
