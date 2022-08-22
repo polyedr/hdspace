@@ -43,7 +43,7 @@ export type ChatState = {
 };
 
 export type BoardState = {
-  board: IBoard | null;
+  fetching: boolean;
   columns: Array<IColumnData>;
   tasks: Array<IServerTaskData>;
   members: Array<any>;
@@ -70,19 +70,13 @@ export type ActivityAction = ReturnType<
   | typeof actionsActivity.successAction
 >;
 
-export type InviteAction = ReturnType<
+export type BoardAction = ReturnType<
   | typeof actionsTasks.successFetchTask
   | typeof actionsTasks.successAddTask
   | typeof actionsTasks.successEditTask
   | typeof actionsTasks.successDeleteTask
   | typeof actionsTasks.successUpdateCardIndex
-  | typeof actionsColumns.successFetchColumn
-  | typeof actionsColumns.successAddColumn
-  | typeof actionsColumns.successEditColumn
-  | typeof actionsColumns.successDeleteColumn
-  | typeof actionsColumns.successSavedBoard
   | typeof actionsTasks.successFetchMembers
-  | typeof actionsColumns.successUpdateColumnIndex
 >;
 
 export type ChatAction = ReturnType<

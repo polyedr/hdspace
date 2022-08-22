@@ -1,6 +1,9 @@
 import { styled } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import { fetchBoard } from '@Redux/pmtools/board/actions/columns';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import React, { useCallback, useEffect, useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 import Column from './Column';
 
 const initialData = [
@@ -44,6 +47,13 @@ const Container = styled('div')(() => ({
 
 const Board = () => {
   const [boardState, setBoardState] = useState(initialData);
+
+  const project = useSelector(selectCurrentProjectId);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchBoard());
+  }, [dispatch, project]);
 
   const handleDragEnd = useCallback(
     (result: DropResult) => {

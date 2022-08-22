@@ -1,95 +1,39 @@
-/* eslint-disable no-case-declarations */
+import { createReducer, Handlers } from 'reduxsauce';
 import TYPES from '@Redux/actionTypes';
-import { BoardState, InviteAction } from '../types';
+import * as columnActions from './actions/columns';
+import { BoardState } from '../types';
 
-const initialState: BoardState = {
-  board: null,
+const INITIAL_STATE: BoardState = {
+  fetching: true,
   columns: [],
-  tasks: [],
   members: [],
+  tasks: [],
 };
 
-const boardReducer = (
-  state: BoardState = initialState,
-  action: InviteAction,
+interface ActionHandler<T> {
+  (state: BoardState, action: T): BoardState;
+}
+
+const setColumns: ActionHandler<ReturnType<typeof columnActions.setColumns>> = (
+  state = INITIAL_STATE,
+  { columns },
 ) => {
-  switch (action.type) {
-    case TYPES.MEMBERS_SAVED_SUCCESS:
-      return { ...state, members: action.payload };
-    case TYPES.FETCH_COLUMNS_SUCCESS:
-      return { ...state, columns: action.payload };
-    case TYPES.ADD_COLUMN_SUCCESS:
-      return { ...state, columns: [...state.columns, action.payload] };
-    case TYPES.EDIT_COLUMN_SUCCESS:
-      return {
-        ...state,
-        columns: [
-          ...state.columns.map((column) => {
-            if (column.id === action.payload.id) {
-              column.name = action.payload.name;
-            }
-            return column;
-          }),
-        ],
-      };
-    case TYPES.BOARD_SAVED_SUCCESS:
-      return { ...state, board: action.payload };
-    case TYPES.DELETE_COLUMN_SUCCESS:
-      return {
-        ...state,
-        columns: state.columns.filter((column) => column.id !== action.payload),
-      };
-    case TYPES.FETCH_TASKS_SUCCESS:
-      return { ...state, tasks: action.payload };
-    case TYPES.ADD_TASK_SUCCESS:
-      return { ...state, tasks: [...state.tasks, action.payload] };
-    case TYPES.EDIT_TASK_SUCCESS:
-      return {
-        ...state,
-        tasks: [
-          ...state.tasks.map((task) => {
-            if (task.id === action.payload.id) {
-              task.name = action.payload.name;
-              task.idMembers = action.payload.idMembers;
-            }
-            return task;
-          }),
-        ],
-      };
-    case TYPES.DELETE_TASK_SUCCESS:
-      return {
-        ...state,
-        tasks: state.tasks.filter((task) => task.id !== action.payload),
-      };
-    case TYPES.UPDATE_CARD_INDEX_SUCCESS:
-      const { tasks } = state;
-      const { destList, removed, dest, source, sourceList } = action.payload;
-      const taskList = [...tasks];
-      sourceList.tasks.splice(source, 1);
-      destList.tasks.splice(dest, 0, removed);
-      const removeIndex = taskList.findIndex((item) => item.id === removed.id);
-      taskList[removeIndex].idList = destList.id;
-      return {
-        ...state,
-        tasks: taskList,
-      };
-    case TYPES.UPDATE_COLUMN_INDEX_SUCCESS:
-      const { columns } = state;
-      const {
-        dest: destColumnIndex,
-        source: sourceColumnIndex,
-      } = action.payload;
-      const columnsList = [...columns];
-      const removedColumn = columnsList.splice(sourceColumnIndex, 1);
-      columnsList.splice(destColumnIndex, 0, removedColumn[0]);
-      return {
-        ...state,
-        columns: columnsList,
-      };
-
-    default:
-      return state;
-  }
+  return {
+    ...state,
+    columns,
+  };
 };
 
-export default boardReducer;
+const setColumnsFetching: ActionHandler<
+  ReturnType<typeof columnActions.setColumnsFetching>
+> = (state = INITIAL_STATE, { fetching }) => ({
+  ...state,
+  fetching,
+});
+
+const HANDLERS: Handlers<BoardState> = {
+  [TYPES.BOARD_SET_COLUMNS]: setColumns,
+  [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
+};
+
+export default createReducer(INITIAL_STATE, HANDLERS);
