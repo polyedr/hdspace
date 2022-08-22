@@ -728,20 +728,24 @@ class AssignPermissionsmapProject(APIView):
 
         # get schat_client user
         schat_users = schat_client.query_users({"id": {"$in": [str(user.id)]}})
+        print("schat_users", schat_users)
         # extract teams array if exist,
         teams = []
         try:
             teams = schat_users["users"][0]["teams"]
+            print("teams", teams)
         except Exception:
             pass
 
         for permission in self.PROJECT_PERMISSION:
             remove_perm(permission[1], user, project)
             # A Stream chat connection
-            if str(user.id) not in teams:
+            if str(project.id) not in teams:
+                print("non teams")
                 pass
             else:
-                teams.remove(str(user.id))
+                print("with teams")
+                teams.remove(str(project.id))
                 schat_client.update_user_partial(
                     {"id": str(user.id), "set": {"teams": teams}}
                 )
@@ -749,10 +753,13 @@ class AssignPermissionsmapProject(APIView):
         for permission in permissions:
             assign_perm(permission, user, project)
             # A Stream chat connection
-            if str(user.id) in teams:
+            if str(project.id) in teams:
+                print("with teams0")
                 pass
             else:
-                teams.append(str(user.id))
+                print("non teams0")
+                teams.append(str(project.id))
+                print("teams1", teams)
                 schat_client.update_user_partial(
                     {"id": str(user.id), "set": {"teams": teams}}
                 )
