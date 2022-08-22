@@ -37,7 +37,7 @@ const ButtonWrapper = styled('div')(() => ({
   margin: '0 8px 8px',
 }));
 
-const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
+00000c0onst TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
   return {
     flexGrow: 1,
     // backgroundColor: isDraggingOver ? 'red' : 'initial',
