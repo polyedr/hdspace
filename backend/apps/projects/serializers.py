@@ -21,7 +21,7 @@ from taggit_serializer.serializers import (TagListSerializerField,
 from apps.accounts.models import User
 from apps.accounts.serializers import UserSerializer
 from apps.utils.fset1 import get_dominant_palette
-from project.settings import MEDIA_ROOT, schat_client
+from project.settings import MEDIA_ROOT, schat_client, MEDIA_URL
 from .models import (
     Project,
     ProjectMember,
@@ -417,6 +417,13 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
         current_user = self.context["request"].user
         username = current_user.username
         current_profile = self.context["request"].user.profile
+        avatar = ""
+        try:
+            o = urlparse(self.context["request"].build_absolute_uri())
+            avatar = "https://" + o.netloc + MEDIA_URL + str(current_profile.avatar)
+        except Exception:
+            pass
+
         projects_max = current_profile.projects_max
         is_superuser = current_user.is_superuser
 
@@ -469,10 +476,10 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             schat_users = schat_client.query_users({"id": {"$in": [str(current_user.id)]}})
             if (schat_users["users"]):
                 schat_client.update_user_partial(
-                    {"id": str(current_user.id), "set": {"role": "admin", "name": username, "teams": [str(project.id)]}}
+                    {"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": [str(project.id)]}}
                 )
             else:
-                schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "name": username, "teams": [str(project.id)]}})
+                schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": [str(project.id)]}})
 
             return project
         else:

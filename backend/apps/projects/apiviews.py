@@ -1,4 +1,6 @@
 """Views for the projects api"""
+from urllib.parse import urlparse
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, viewsets, permissions, status, serializers
 from rest_framework.fields import CurrentUserDefault
@@ -15,7 +17,7 @@ from rest_framework_tracking.mixins import LoggingMixin
 from apps.accounts.serializers import UserSerializer
 from apps.accounts.models import User
 from permissions import CustomObjectPermissions
-from project.settings import schat_client
+from project.settings import schat_client, MEDIA_URL
 
 from .models import (
     Project,
@@ -724,6 +726,14 @@ class AssignPermissionsmapProject(APIView):
         permissions = request.data['permissions']
         user = User.objects.get(username=username)
         project = Project.objects.get(pk=projectid)
+        current_profile = user.profile
+        avatar = ""
+        try:
+            o = urlparse(request.build_absolute_uri())
+            avatar = "https://" + o.netloc + MEDIA_URL + str(current_profile.avatar)
+            # print(avatar)
+        except Exception:
+            pass
 
         # get schat_client user
         schat_users = schat_client.query_users({"id": {"$in": [str(user.id)]}})
@@ -750,7 +760,7 @@ class AssignPermissionsmapProject(APIView):
                 print("with teams")
                 teams.remove(str(project.id))
                 schat_client.update_user_partial(
-                    {"id": str(user.id), "set": {"name": username, "teams": teams}}
+                    {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
                 )
 
         for permission in permissions:
@@ -764,7 +774,7 @@ class AssignPermissionsmapProject(APIView):
                 teams.append(str(project.id))
                 print("teams1", teams)
                 schat_client.update_user_partial(
-                    {"id": str(user.id), "set": {"name": username, "teams": teams}}
+                    {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
                 )
 
         rp = get_perms(user, project)
