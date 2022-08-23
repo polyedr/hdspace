@@ -43,6 +43,7 @@ const initialData = [
 
 const Container = styled('div')(() => ({
   display: 'flex',
+  padding: '100px',
 }));
 
 const Board = () => {
