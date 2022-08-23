@@ -49,12 +49,12 @@ const Container = styled('div')(() => ({
 const Board = () => {
   const [boardState, setBoardState] = useState(initialData);
 
-  const project = useSelector(selectCurrentProjectId);
+  const projectId = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchBoard());
-  }, [dispatch, project]);
+  }, [dispatch, projectId]);
 
   const handleDragEnd = useCallback(
     (result: DropResult) => {
