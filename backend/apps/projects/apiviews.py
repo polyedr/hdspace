@@ -143,10 +143,9 @@ class ProjectWithColumnsViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
+    #
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
     def filter_queryset(self, queryset):
         # queryset = queryset.filter(user=self.request.user)
         return queryset

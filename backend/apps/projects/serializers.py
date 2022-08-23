@@ -664,36 +664,25 @@ class ProjectColumnSerializer(serializers.ModelSerializer):
 
 
 class ProjectWithColumnsSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    # user = UserSerializer(read_only=True)
     projectcolumn = ProjectColumnSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
         fields = (
-            "preview",
-            "name",
-            "favicon",
-            "status",
             "projectcolumn",
-            "user",
             "id",
-            "created",
-            "updated",
-            "project_data_text",
-            "project_data_json",
-            "project_data_activity_json",
-            "project_data_trello_json",
         )
-        extra_kwargs = {
-            "preview": {"read_only": True},
-            "created": {"read_only": True},
-            "updated": {"read_only": True},
-        }
-
-    @staticmethod
-    def setup_eager_loading(qs):
-        queryset = qs.select_related("user").prefetch_related("projectcolumn")
-        return queryset
+    #     extra_kwargs = {
+    #         "preview": {"read_only": True},
+    #         "created": {"read_only": True},
+    #         "updated": {"read_only": True},
+    #     }
+    #
+    # @staticmethod
+    # def setup_eager_loading(qs):
+    #     queryset = qs.select_related("user").prefetch_related("projectcolumn")
+    #     return queryset
 
 
 class ProjectWithMembersSerializer(serializers.ModelSerializer):
