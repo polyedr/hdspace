@@ -3,6 +3,12 @@ import { styled } from '@mui/material/styles';
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 import Task from './Task';
 
@@ -15,7 +21,8 @@ const NewTaskButton = styled(ButtonBase)(() => ({
 }));
 
 const Container = styled('div')(() => ({
-  width: 260,
+  width: 309,
+  //width: '100%',
   backgroundColor: '#F3F4F6',
   marginRight: 16,
   borderRadius: '4px 4px 0px 0px',
@@ -23,7 +30,13 @@ const Container = styled('div')(() => ({
   flexDirection: 'column',
 }));
 
-const ColumnHeader = styled('h3')(() => ({
+const ColumnHeader = styled('div')(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+}));
+
+const ColumnTitle = styled('h3')(() => ({
   fontSize: 14,
   fontWeight: 500,
   height: 48,
@@ -33,12 +46,27 @@ const ColumnHeader = styled('h3')(() => ({
   margin: '0',
 }));
 
+const ButtonWrapper = styled('div')(() => ({
+  margin: '0 8px 8px',
+}));
+
 const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
   return {
     flexGrow: 1,
     // backgroundColor: isDraggingOver ? 'red' : 'initial',
   };
 });
+
+const StyledMenu = styled(Menu)(() => ({
+  '& .MuiMenuItem-root': {
+    minHeight: '40px',
+    fontSize: 14,
+  },
+  '& svg': {
+    color: '#81818E',
+    marginRight: '8px',
+  },
+}));
 
 const Tasks = ({ column }) => {
   return (
@@ -60,18 +88,65 @@ const Tasks = ({ column }) => {
 };
 
 const Column = ({ column, index }) => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Draggable index={index} draggableId={column.id}>
       {(provided, snapshot) => (
         <Container ref={provided.innerRef} {...provided.draggableProps}>
-          <div {...provided.dragHandleProps}>
-            <ColumnHeader>{column.text}</ColumnHeader>
-          </div>
-          <div style={{ margin: '0 8px 8px' }}>
+          <ColumnHeader>
+            <div {...provided.dragHandleProps}>
+              <ColumnTitle>{column.text}</ColumnTitle>
+            </div>
+            <IconButton
+              aria-label="more"
+              id="long-button"
+              aria-controls={open ? 'long-menu' : undefined}
+              aria-expanded={open ? 'true' : undefined}
+              aria-haspopup="true"
+              onClick={handleClick}
+            >
+              <MoreHorizIcon />
+            </IconButton>
+            <StyledMenu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+            >
+              <MenuItem>
+                <EditIcon fontSize="small" />
+                Edit Column
+              </MenuItem>
+              <MenuItem>
+                <DeleteOutlineIcon fontSize="small" />
+                Delete Column
+              </MenuItem>
+            </StyledMenu>
+          </ColumnHeader>
+          <ButtonWrapper>
             <NewTaskButton>
               <AddIcon fontSize="small" /> New Task
-            </NewTaskButton> 
-          </div>
+            </NewTaskButton>
+          </ButtonWrapper>
           <Tasks column={column} />
         </Container>
       )}
