@@ -415,6 +415,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
     def create(self, validated_data):
         # Check if user can create projects, based on projects_max value and subscriptions status
         current_user = self.context["request"].user
+        username = current_user.username
         current_profile = self.context["request"].user.profile
         projects_max = current_profile.projects_max
         is_superuser = current_user.is_superuser
@@ -468,10 +469,10 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             schat_users = schat_client.query_users({"id": {"$in": [str(current_user.id)]}})
             if (schat_users["users"]):
                 schat_client.update_user_partial(
-                    {"id": str(current_user.id), "set": {"role": "admin", "teams": [str(project.id)]}}
+                    {"id": str(current_user.id), "set": {"role": "admin", "name": username, "teams": [str(project.id)]}}
                 )
             else:
-                schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "teams": [str(project.id)]}})
+                schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "name": username, "teams": [str(project.id)]}})
 
             return project
         else:

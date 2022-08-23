@@ -747,12 +747,11 @@ class AssignPermissionsmapProject(APIView):
             # A Stream chat connection
             if str(project.id) not in teams:
                 print("non teams")
-                pass
             else:
                 print("with teams")
                 teams.remove(str(project.id))
                 schat_client.update_user_partial(
-                    {"id": str(user.id), "set": {"teams": teams}}
+                    {"id": str(user.id), "set": {"name": username, "teams": teams}}
                 )
 
         for permission in permissions:
@@ -766,7 +765,7 @@ class AssignPermissionsmapProject(APIView):
                 teams.append(str(project.id))
                 print("teams1", teams)
                 schat_client.update_user_partial(
-                    {"id": str(user.id), "set": {"teams": teams}}
+                    {"id": str(user.id), "set": {"name": username, "teams": teams}}
                 )
 
         rp = get_perms(user, project)
