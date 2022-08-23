@@ -148,6 +148,7 @@ class ProjectWithColumnsViewSet(viewsets.ModelViewSet):
     #
     # def perform_create(self, serializer):
     #     serializer.save(user=self.request.user)
+
     def filter_queryset(self, queryset):
         # queryset = queryset.filter(user=self.request.user)
         return queryset
@@ -334,15 +335,27 @@ class ProjectColumnDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectColumnSerializer
 
 
+'''
+class IsProjectFilterBackend(DjangoFilterBackend):
+    """
+    Filter that reveal projects for tasks
+    """
+    def filter_queryset(self, request, queryset, view):
+        if request.query_params.get('project_id'):
+            return queryset.filter(column__project=request.query_params.get('project_id'))
+        else:
+            pass
+'''
+
+
 class ColumnTaskList(generics.ListCreateAPIView):
     """
     List all column tasks, or create a new column task.
     """
-
     queryset = ColumnTask.objects.all()
     serializer_class = ColumnTaskSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['title', 'status', 'column']
+    filterset_fields = ['title', 'status', 'column', 'column__project']
 
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):

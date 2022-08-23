@@ -638,14 +638,16 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
     checklist = ColumnTaskCheckitemSerializer(many=True, required=False)
     # related_task = ColumnTaskSerializer(many=True, required=False)
     related_tasks = SubColumnTaskSerializer(many=True, required=False)
+    project_id = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), source='column.project')
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "story_points", "column", "author", "assignee", "responsible", "comments", "checklist", "related_tasks")
+        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "story_points", "column", "author", "assignee", "responsible", "comments", "checklist", "related_tasks", "project_id")
         # , "related_task"
         # depth = 2
         extra_kwargs = {
             "author": {"read_only": True},
+            "project_id": {"read_only": True},
         }
 
 
@@ -686,10 +688,10 @@ class ProjectWithColumnsSerializer(serializers.ModelSerializer):
     #         "updated": {"read_only": True},
     #     }
     #
-    # @staticmethod
-    # def setup_eager_loading(qs):
-    #     queryset = qs.select_related("user").prefetch_related("projectcolumn")
-    #     return queryset
+    @staticmethod
+    def setup_eager_loading(qs):
+        queryset = qs.select_related("user").prefetch_related("projectcolumn")
+        return queryset
 
 
 class ProjectWithMembersSerializer(serializers.ModelSerializer):
