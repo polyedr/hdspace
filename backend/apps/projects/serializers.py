@@ -638,7 +638,7 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
     checklist = ColumnTaskCheckitemSerializer(many=True, required=False)
     # related_task = ColumnTaskSerializer(many=True, required=False)
     related_tasks = SubColumnTaskSerializer(many=True, required=False)
-    project_id = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), source='column.project')
+    project_id = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), source='column.project', required=False)
 
     class Meta:
         model = ColumnTask
