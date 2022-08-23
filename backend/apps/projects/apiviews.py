@@ -728,13 +728,18 @@ class AssignPermissionsmapProject(APIView):
 
         # get schat_client user
         schat_users = schat_client.query_users({"id": {"$in": [str(user.id)]}})
-        print("schat_users", schat_users)
+        if not (schat_users["users"]):
+            schat_client.update_user({"id": str(user.id)})
+
+        # print("schat_users", schat_users)
         # extract teams array if exist,
         teams = []
         try:
             teams = schat_users["users"][0]["teams"]
             print("teams", teams)
         except Exception:
+            pass
+        finally:
             pass
 
         for permission in self.PROJECT_PERMISSION:
