@@ -8,7 +8,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import Avatar from '@mui/material/Avatar';
 import { deepOrange } from '@mui/material/colors';
 
-const Container = styled('div')(() => ({
+const Container = styled('div')<{ dragging: boolean }>(({ dragging }) => ({
   padding: '10px 12px',
   margin: '0 8px 8px',
   backgroundColor: '#FFFFFF',
@@ -16,17 +16,21 @@ const Container = styled('div')(() => ({
     '0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.08)',
   flexGrow: 1,
   borderRadius: 4,
-  border: '1px solid #ffffff',
+  border: `1px solid ${dragging ? 'blue' : '#ffffff'}`,
 
   '&:hover': {
     border: '1px solid #5064FF',
   },
+
+  '&:focus': {
+    border: '1px solid #5064FF',
+  },
 }));
 
-const StyledChip = styled(Chip)(() => ({
+const StyledChip = styled(Chip)({
   backgroundColor: '#F3F4F6',
   fontSize: 12,
-}));
+});
 
 const TimeStack = styled(Stack)(() => ({
   '& svg': {
@@ -48,6 +52,7 @@ const Task = ({ task, index }) => {
           {...provided.dragHandleProps}
           {...provided.draggableProps}
           ref={provided.innerRef}
+          dragging={snapshot.isDragging}
         >
           <Stack
             direction="row"
@@ -74,7 +79,7 @@ const Task = ({ task, index }) => {
               <p>08 Apr 12:00</p>
             </TimeStack>
 
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={0.5}>
               <Avatar
                 sx={{
                   bgcolor: deepOrange[500],

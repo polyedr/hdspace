@@ -18,11 +18,15 @@ const NewTaskButton = styled(ButtonBase)(() => ({
   padding: '8px 14px 8px 8px',
   backgroundColor: '#E4E6EB',
   borderRadius: 4,
+  color: '#81818E',
+
+  '&:hover': {
+    color: '#2A2A2D',
+  },
 }));
 
 const Container = styled('div')(() => ({
   width: 309,
-  //width: '100%',
   backgroundColor: '#F3F4F6',
   marginRight: 16,
   borderRadius: '4px 4px 0px 0px',
