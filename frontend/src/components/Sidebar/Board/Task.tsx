@@ -32,14 +32,14 @@ const StyledChip = styled(Chip)({
   fontSize: 12,
 });
 
-const TimeStack = styled(Stack)(() => ({
+const TimeStack = styled(Stack)<{ priority: boolean }>(({ priority }) => ({
   '& svg': {
     fontSize: 13,
-    color: '#81818E',
+    color: priority ? 'red' : '#81818E',
   },
   '& p': {
     fontSize: 12,
-    color: '#81818E',
+    color: priority ? 'red' : '#81818E',
     lineHeight: 'initial',
   },
 }));
@@ -74,7 +74,7 @@ const Task = ({ task, index }) => {
             alignItems="flex-end"
             justifyContent="space-between"
           >
-            <TimeStack direction="row" spacing={1} alignItems="center">
+            <TimeStack direction="row" spacing={1} alignItems="center" priority>
               <ScheduleIcon fontSize="small" />
               <p>08 Apr 12:00</p>
             </TimeStack>

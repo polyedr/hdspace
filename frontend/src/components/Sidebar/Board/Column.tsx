@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
+import { TextField } from '@mui/material';
 import Task from './Task';
 
 const NewTaskButton = styled(ButtonBase)(() => ({
@@ -38,7 +39,7 @@ const ColumnHeader = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  borderTop: '2px solid red',
+  borderTop: '3px solid red',
   borderRadius: '4px 4px 0px 0px',
 }));
 
@@ -58,6 +59,17 @@ const ColumnTitle = styled('div')(() => ({
 const ButtonWrapper = styled('div')(() => ({
   margin: '0 8px 8px',
 }));
+
+const CssTextField = styled(TextField)({
+  '& .MuiOutlinedInput-root': {
+    '&:hover fieldset': {
+      borderColor: '#5064FF',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#5064FF',
+    },
+  },
+});
 
 const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
   return {
@@ -112,7 +124,7 @@ const Column = ({ column, index }) => {
         <Container ref={provided.innerRef} {...provided.draggableProps}>
           <ColumnHeader>
             <ColumnTitle {...provided.dragHandleProps}>
-              <h3>{column.title}</h3>
+              <h3>{column.title} (1)</h3>
             </ColumnTitle>
             <IconButton
               aria-label="more"
@@ -156,6 +168,12 @@ const Column = ({ column, index }) => {
               <AddIcon sx={{ fontSize: 16 }} /> New Task
             </NewTaskButton>
           </ButtonWrapper>
+          <CssTextField
+            type="text"
+            placeholder="Type Task Name"
+            size="small"
+            sx={{ mx: 1, mb: 1 }}
+          />
           <Tasks column={column} />
         </Container>
       )}
