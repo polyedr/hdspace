@@ -16,7 +16,7 @@ const Container = styled('div')<{ dragging: boolean }>(({ dragging }) => ({
     '0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.08)',
   flexGrow: 1,
   borderRadius: 4,
-  border: `1px solid ${dragging ? 'blue' : '#ffffff'}`,
+  border: `1px solid ${dragging ? '#5064FF' : '#ffffff'}`,
 
   '&:hover': {
     border: '1px solid #5064FF',

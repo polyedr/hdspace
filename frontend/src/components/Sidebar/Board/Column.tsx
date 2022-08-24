@@ -38,16 +38,21 @@ const ColumnHeader = styled('div')(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
+  borderTop: '2px solid red',
+  borderRadius: '4px 4px 0px 0px',
 }));
 
-const ColumnTitle = styled('h3')(() => ({
-  fontSize: 14,
-  fontWeight: 500,
-  height: 48,
-  padding: '0 8px',
-  display: 'flex',
-  alignItems: 'center',
-  margin: '0',
+const ColumnTitle = styled('div')(() => ({
+  flex: 1,
+  '& h3': {
+    fontSize: 14,
+    fontWeight: 500,
+    height: 48,
+    padding: '0 8px',
+    display: 'flex',
+    alignItems: 'center',
+    margin: '0',
+  },
 }));
 
 const ButtonWrapper = styled('div')(() => ({
@@ -103,12 +108,12 @@ const Column = ({ column, index }) => {
 
   return (
     <Draggable index={index} draggableId={column.id.toString()}>
-      {(provided, snapshot) => (
+      {(provided) => (
         <Container ref={provided.innerRef} {...provided.draggableProps}>
           <ColumnHeader>
-            <div {...provided.dragHandleProps}>
-              <ColumnTitle>{column.title}</ColumnTitle>
-            </div>
+            <ColumnTitle {...provided.dragHandleProps}>
+              <h3>{column.title}</h3>
+            </ColumnTitle>
             <IconButton
               aria-label="more"
               id="long-button"
@@ -148,7 +153,7 @@ const Column = ({ column, index }) => {
           </ColumnHeader>
           <ButtonWrapper>
             <NewTaskButton>
-              <AddIcon fontSize="small" /> New Task
+              <AddIcon sx={{ fontSize: 16 }} /> New Task
             </NewTaskButton>
           </ButtonWrapper>
           <Tasks column={column} />
