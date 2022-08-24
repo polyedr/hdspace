@@ -18,7 +18,7 @@ import Button from '@mui/material/Button';
 import Column from './Column';
 
 const ContentWrapper = styled('div')(() => ({
-  padding: '50px 0 0 50px',
+  padding: '20px 0 0 65px',
 }));
 
 const ContentHeader = styled('div')(() => ({
@@ -31,9 +31,10 @@ const Container = styled('div')(() => ({
 
 const StyledForm = styled('div')(() => ({
   position: 'relative',
+  width: 309,
 
   '& input': {
-    padding: '10px 14px 10px 40px',
+    padding: '7px 14px 7px 40px',
   },
 
   '& .MuiIconButton-root': {
@@ -65,9 +66,12 @@ const StyledButton = styled(Button)(() => ({
   backgroundColor: '#F3F4F6',
   color: '#81818E',
   borderRadius: 4,
+  boxShadow: 'none',
+  textTransform: 'capitalize',
 
   '&:hover': {
     backgroundColor: '#e4e8ef',
+    boxShadow: 'none',
   },
 }));
 
@@ -109,15 +113,15 @@ const Board = () => {
     <ContentWrapper>
       <ContentHeader>
         <Grid container spacing={2} alignItems="center">
-          <Grid item md={2}>
+          <Grid item md="auto">
             <StyledForm>
-              <TextField type="text" placeholder="Search Task" />
+              <TextField type="text" placeholder="Search Task" fullWidth />
               <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                 <SearchIcon />
               </IconButton>
             </StyledForm>
           </Grid>
-          <Grid item md={2}>
+          <Grid item md="auto" justifyContent="left">
             <StyledAvatarGroup max={4}>
               <Avatar
                 alt="Remy Sharp"

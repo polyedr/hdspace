@@ -86,6 +86,7 @@ const Task = ({ task, index }) => {
                   width: 24,
                   height: 24,
                   fontSize: 12,
+                  lineHeight: 0.8,
                 }}
                 alt="Remy Sharp"
                 src="/broken-image.jpg"
@@ -98,13 +99,14 @@ const Task = ({ task, index }) => {
                   width: 24,
                   height: 24,
                   fontSize: 12,
+                  lineHeight: 0.8,
                 }}
                 alt="Remy Sharp"
                 src="/broken-image.jpg"
               />
               <Avatar
                 src="/broken-image.jpg"
-                sx={{ width: 24, height: 24, fontSize: 12 }}
+                sx={{ width: 24, height: 24, fontSize: 12, lineHeight: 0.8 }}
               />
             </Stack>
           </Stack>

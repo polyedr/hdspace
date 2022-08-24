@@ -172,7 +172,7 @@ const Column = ({ column, index }) => {
             type="text"
             placeholder="Type Task Name"
             size="small"
-            sx={{ mx: 1, mb: 1 }}
+            sx={{ mx: 1, mb: 1, backgroundColor: '#fff' }}
           />
           <Tasks column={column} />
         </Container>
