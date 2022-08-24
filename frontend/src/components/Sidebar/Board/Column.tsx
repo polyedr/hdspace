@@ -74,7 +74,7 @@ const StyledMenu = styled(Menu)(() => ({
 
 const Tasks = ({ column }) => {
   return (
-    <Droppable droppableId={column.id} type="tasks">
+    <Droppable droppableId={column.id.toString()} type="tasks">
       {(provided, snapshot) => (
         <TasksContainer
           {...provided.droppableProps}
@@ -102,12 +102,12 @@ const Column = ({ column, index }) => {
   };
 
   return (
-    <Draggable index={index} draggableId={column.id}>
+    <Draggable index={index} draggableId={column.id.toString()}>
       {(provided, snapshot) => (
         <Container ref={provided.innerRef} {...provided.draggableProps}>
           <ColumnHeader>
             <div {...provided.dragHandleProps}>
-              <ColumnTitle>{column.text}</ColumnTitle>
+              <ColumnTitle>{column.title}</ColumnTitle>
             </div>
             <IconButton
               aria-label="more"

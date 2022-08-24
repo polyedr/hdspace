@@ -7,7 +7,6 @@ const INITIAL_STATE: BoardState = {
   fetching: true,
   columns: [],
   members: [],
-  tasks: [],
 };
 
 interface ActionHandler<T> {
@@ -20,7 +19,23 @@ const setColumns: ActionHandler<ReturnType<typeof columnActions.setColumns>> = (
 ) => {
   return {
     ...state,
-    columns,
+    columns: columns.map((column: any) => {
+      column.tasks = column?.hasOwnProperty('tasks') ? column.tasks : [];
+      return column;
+    }),
+  };
+};
+
+const setTasks: ActionHandler<ReturnType<typeof columnActions.setTasks>> = (
+  state = INITIAL_STATE,
+  { tasks },
+) => {
+  return {
+    ...state,
+    columns: state.columns.map((column) => {
+      column.tasks = tasks.filter((t) => t.column === column.id);
+      return column;
+    }),
   };
 };
 
@@ -34,6 +49,7 @@ const setColumnsFetching: ActionHandler<
 const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_COLUMNS]: setColumns,
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
+  [TYPES.BOARD_SET_TASKS]: setTasks,
 };
 
 export default createReducer(INITIAL_STATE, HANDLERS);

@@ -7,7 +7,15 @@ export const fetchColumns = ({
   ...options
 }: MyAxiosProps & { projectId: number }) => {
   return myAxios({
-    url: `/projects/project-columns/${projectId}`,
+    url: `/projects/columns-for-project/${projectId}/`,
+    method: 'get',
+    ...options,
+  }).catch(handleError);
+};
+
+export const fetchTasks = ({ projectId, ...options }) => {
+  return myAxios({
+    url: `/projects/column-tasks/?column__project=${projectId}`,
     method: 'get',
     ...options,
   }).catch(handleError);

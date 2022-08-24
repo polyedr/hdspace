@@ -42,10 +42,19 @@ export type ChatState = {
   messages: Array<IMessageZulip> | [];
 };
 
+export interface BoardTask {
+  id: number;
+  name: string;
+}
+export interface BoardColumn {
+  id: number;
+  title: string;
+  tasks: BoardTask[];
+}
+
 export type BoardState = {
   fetching: boolean;
-  columns: Array<IColumnData>;
-  tasks: Array<IServerTaskData>;
+  columns: BoardColumn[];
   members: Array<any>;
 };
 
