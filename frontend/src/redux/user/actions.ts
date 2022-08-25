@@ -178,6 +178,11 @@ export const changeProfileData = (data: Partial<ProfileData>) => ({
   payload: data,
 });
 
+export const changeProfileAvatar = (avatar) => ({
+  type: TYPES.CHANGE_PROFILE_AVATAR,
+  payload: avatar,
+});
+
 export const changeProfileDataComplete = (
   errors?: { [key in keyof ProfileData]: string } | { [FORM_ERROR]: string },
 ) => ({

@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-
+import TextField from '@mui/material/TextField';
 import type { Channel, UserResponse } from 'stream-chat';
 import { useChatContext } from 'stream-chat-react';
 import _debounce from 'lodash.debounce';
-
-import './ChannelSearch.css';
-
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
+import Box from '@mui/material/Box';
 import { channelByUser, ChannelOrUserType, isChannel } from './utils';
 import { ResultsDropdown } from './ResultsDropdown';
 
-import { SearchIcon } from '../../assets';
+import './ChannelSearch.css';
+
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -175,18 +176,29 @@ export const ChannelSearch = () => {
 
   return (
     <div className="channel-search__container">
-      <div className="channel-search__input__wrapper">
-        <div className="channel-search__input__icon">
-          <SearchIcon />
-        </div>
-        <input
-          className="channel-search__input__text"
+      <Box
+        component="form"
+        sx={{
+          '& .MuiTextField-root': { m: 1 },
+        }}
+        noValidate
+        autoComplete="off"
+      >
+        <TextField
           onChange={onSearch}
           placeholder="Search"
           type="text"
           value={query}
+          variant="standard"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
         />
-      </div>
+      </Box>
       {query && (
         <ResultsDropdown
           teamChannels={teamChannels}

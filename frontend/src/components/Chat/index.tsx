@@ -22,8 +22,6 @@ const sort: ChannelSort<TeamChannelType> = {
   updated_at: -1,
 };
 
-// client.connectUser({ id: user!, name: user, image: '' }, userToken);
-
 const App = () => {
   const [createType, setCreateType] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -44,7 +42,6 @@ const App = () => {
       handleColorChange(event.data),
     );
     return () => {
-      client.disconnectUser();
       window.removeEventListener('message', (event) =>
         handleColorChange(event.data),
       );

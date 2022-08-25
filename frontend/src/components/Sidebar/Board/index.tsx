@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { Container } from '@material-ui/core';
 import { DragDropContext, DropResult, Droppable } from 'react-beautiful-dnd';
 import {
   StyledAccordionSummary,
@@ -38,8 +37,8 @@ const TasksTab: FC = () => {
   }, [dispatch, project]);
 
   return (
-    <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
-      <Container>
+    <div style={{ padding: '10px 30px' }}>
+      <DragDropContext onDragEnd={onDragEnd}>
         <StyledAccordionSummary
           expandIcon={
             <StyledIconButton
@@ -74,8 +73,8 @@ const TasksTab: FC = () => {
           hide={() => setOpen(false)}
           action={ModalAction.Create}
         />
-      </Container>
-    </DragDropContext>
+      </DragDropContext>
+    </div>
   );
 };
 
