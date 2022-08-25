@@ -62,6 +62,26 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"id": {"read_only": True}, "profile": {"read_only": True}}
 
 
+
+class UserSimpleSerializer(serializers.ModelSerializer):
+    profile_avatar = serializers.ImageField(read_only=True, source="profile.avatar")
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "date_joined",
+            "is_active",
+            "profile_avatar",
+        )
+        ref_name = "User Django"  # Added to avoid SwaggerGeneration Conflicts
+        extra_kwargs = {"id": {"read_only": True}, "profile": {"read_only": True}}
+
+
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team

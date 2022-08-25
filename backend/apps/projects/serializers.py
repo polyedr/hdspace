@@ -19,7 +19,7 @@ from taggit_serializer.serializers import (TagListSerializerField,
                                            TaggitSerializer)
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 from apps.accounts.models import User
-from apps.accounts.serializers import UserSerializer
+from apps.accounts.serializers import UserSerializer, UserSimpleSerializer
 from apps.utils.fset1 import get_dominant_palette
 from project.settings import MEDIA_ROOT, schat_client, MEDIA_URL
 from .models import (
@@ -639,16 +639,23 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
     # related_task = ColumnTaskSerializer(many=True, required=False)
     related_tasks = SubColumnTaskSerializer(many=True, required=False)
     project_id = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), source='column.project', required=False)
-    assignee = UserSerializer(many=True, read_only=True)
-    responssible = UserSerializer(many=True, read_only=True)
+    author = UserSimpleSerializer(required=False, allow_null=True)
+    assignee = UserSimpleSerializer(required=False, allow_null=True)
+    responsible = UserSimpleSerializer(required=False, allow_null=True)
+
+    author_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='author', read_only=False, required=False)
+    assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='assignee', read_only=False, required=False)
+    responsible_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='responsible', required=False)
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "story_points", "column", "author", "assignee", "responsible", "comments", "checklist", "related_tasks", "project_id")
+        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
         # , "related_task"
         # depth = 2
         extra_kwargs = {
             "author": {"read_only": True},
+            "assignee": {"read_only": True},
+            "responsible": {"read_only": True},
             "project_id": {"read_only": True},
         }
 
