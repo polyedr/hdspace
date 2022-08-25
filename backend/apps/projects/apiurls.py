@@ -38,7 +38,7 @@ from .apiviews import (
     RemovePermissionsProject,
     AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject,
     ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView,
-    ScreencopyView, ElementcopyView, ElementmpttcopyView)
+    ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder)
 
 app_name = "projects"
 
@@ -182,6 +182,11 @@ api_copying_elements = [
          name="api_copying_elements"),
 ]
 
+api_update_children_order = [
+    path("project/update_children_order/<int:pk>/", ColumnsReorder.as_view(),
+         name="api_update_children_order"),
+]
+
 router = routers.DefaultRouter()
 router.register(r"screen-scenarios", ScreeScenarioViewSet)
 router.register(r"scenario-elements", ScenarioElementViewSet)
@@ -278,6 +283,7 @@ urlpatterns = [
     path("", include(api_copying_screens)),
     path("", include(api_copying_elementsmptt)),
     path("", include(api_copying_elements)),
+    path("", include(api_update_children_order)),
     path("", include(api_element_comment_patterns)),
     path("", include(api_columntask_comment_patterns)),
     path("", include(api_columntask_checkitem_patterns)),

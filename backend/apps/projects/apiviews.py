@@ -1,5 +1,7 @@
 """Views for the projects api"""
 from urllib.parse import urlparse
+from django_bulk_update.helper import bulk_update
+import json
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, viewsets, permissions, status, serializers
@@ -963,3 +965,33 @@ class ElementcopyView(APIView):
             return Response(element_clone.id, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class ColumnsReorder(APIView):
+
+    def patch(self, request, pk=None):
+        """
+        Update the order of the columns by the parent project id
+        request.data is in the expected structure:
+        column pk is in data.children.{n}.id
+        """
+        # because the data is expected to be nested dictionary
+        decoded = request.body.decode('utf8')
+        data = json.loads(decoded)
+        print(data)
+
+        sorted_dict = {}
+        for key, value in enumerate(data['children']):
+            sorted_dict[value['id']] = key
+
+        # sorted dict uses column pk as key and new order as value
+        print(pk)
+        columns = ProjectColumn.objects.filter(project=pk)
+        print(columns)
+        for column in columns:
+            print(column.id)
+            column.buyoancy = sorted_dict[column.id]
+        affected_rows = bulk_update(columns, update_fields=['buyoancy'])
+        if affected_rows:
+            return Response({'affected_rows': affected_rows})
+        return Response({}, status.HTTP_204_NO_CONTENT)
