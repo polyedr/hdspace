@@ -639,6 +639,8 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
     # related_task = ColumnTaskSerializer(many=True, required=False)
     related_tasks = SubColumnTaskSerializer(many=True, required=False)
     project_id = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), source='column.project', required=False)
+    assignee = UserSerializer(many=True, read_only=True)
+    responssible = UserSerializer(many=True, read_only=True)
 
     class Meta:
         model = ColumnTask
