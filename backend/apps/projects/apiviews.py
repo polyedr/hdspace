@@ -978,14 +978,14 @@ class ColumnsReorder(APIView):
         # because the data is expected to be nested dictionary
         decoded = request.body.decode('utf8')
         data = json.loads(decoded)
-        print(data)
+        # print(data)
 
         sorted_dict = {}
         for key, value in enumerate(data['children']):
             sorted_dict[value['id']] = key
 
         # sorted dict uses column pk as key and new order as value
-        print(pk)
+        # print(pk)
         columns = ProjectColumn.objects.filter(project=pk)
         print(columns)
         for column in columns:
@@ -995,3 +995,34 @@ class ColumnsReorder(APIView):
         if affected_rows:
             return Response({'affected_rows': affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
+
+
+class TasksReorder(APIView):
+
+    def patch(self, request, pk=None):
+        """
+        Update the order of the tasks by the parent column id
+        request.data is in the expected structure:
+        task pk is in data.children.{n}.id
+        """
+        # because the data is expected to be nested dictionary
+        decoded = request.body.decode('utf8')
+        data = json.loads(decoded)
+        # print(data)
+
+        sorted_dict = {}
+        for key, value in enumerate(data['children']):
+            sorted_dict[value['id']] = key
+
+        # sorted dict uses task pk as key and new order as value
+        # print(pk)
+        tasks = ColumnTask.objects.filter(column=pk)
+        print(tasks)
+        for task in tasks:
+            print(task.id)
+            task.buyoancy = sorted_dict[task.id]
+        affected_rows = bulk_update(tasks, update_fields=['buyoancy'])
+        if affected_rows:
+            return Response({'affected_rows': affected_rows})
+        return Response({}, status.HTTP_204_NO_CONTENT)
+
