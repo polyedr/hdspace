@@ -271,6 +271,7 @@ class ColumnTask(TimeStampedModel):
     TASK_PRIORITY = ((TASK_MEDIUM, "MEDIUM"), (TASK_HIGHEST, "HIGHEST"), (TASK_HIGH, "HIGH"), (TASK_LOW, "LOW"), (TASK_LOWEST, "LOWEST"))
 
     title = models.CharField(max_length=250)
+    colour = models.CharField(max_length=16, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     status = models.CharField(choices=TASK_STATUS, default=TASK_INPROGRESS, max_length=32)
     priority = models.CharField(choices=TASK_PRIORITY, default=TASK_MEDIUM, max_length=32)
@@ -286,7 +287,7 @@ class ColumnTask(TimeStampedModel):
     )
     related_task = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="relatedtask")
     story_points = models.IntegerField(default=0)
-    due_date = models.DateField(auto_now_add=True)
+    due_date = models.DateField(null=True, blank=True)
     time = models.DurationField(null=True, blank=True)
 
     history = HistoricalRecords()

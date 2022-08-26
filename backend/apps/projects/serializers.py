@@ -634,6 +634,7 @@ class SubColumnTaskSerializer(serializers.ModelSerializer):
 
 class ColumnTaskSerializer(serializers.ModelSerializer):
     tags = TagListSerializerField(required=False, allow_null=True)
+    colour = serializers.CharField(required=False, allow_null=True)
     comments = ColumnTaskCommentSerializer(many=True, required=False)
     checklist = ColumnTaskCheckitemSerializer(many=True, required=False)
     # related_task = ColumnTaskSerializer(many=True, required=False)
@@ -649,7 +650,7 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
+        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
         # , "related_task"
         # depth = 2
         extra_kwargs = {
