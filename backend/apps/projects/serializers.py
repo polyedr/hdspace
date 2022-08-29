@@ -659,6 +659,7 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
             "responsible": {"read_only": True},
             "project_id": {"read_only": True},
         }
+        order_by = ['buyoancy']
 
 
 class ColumnWithTasksSerializer(serializers.ModelSerializer):

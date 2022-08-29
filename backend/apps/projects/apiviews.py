@@ -354,7 +354,7 @@ class ColumnTaskList(generics.ListCreateAPIView):
     """
     List all column tasks, or create a new column task.
     """
-    queryset = ColumnTask.objects.all().order_by('buyoancy')
+    queryset = ColumnTask.objects.all()
     serializer_class = ColumnTaskSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'status', 'column__project', 'column']
