@@ -255,6 +255,10 @@ class ProjectColumn(TimeStampedModel):
     def __str__(self):
         return self.title
 
+    class Meta:
+        ordering = ['buyoancy', 'pk']
+
+
 
 class ColumnTask(TimeStampedModel):
     TASK_INPROGRESS = "in progress"
@@ -303,6 +307,7 @@ class ColumnTask(TimeStampedModel):
             ("Dummy permission 4", "Can do dummy action 4"),
             ("Dummy permission 5", "Can do dummy action 5"),
         )
+        ordering = ['buyoancy', 'pk']
 
 
 class ColumnTaskComment(TimeStampedModel):

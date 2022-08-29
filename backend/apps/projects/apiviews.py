@@ -357,7 +357,7 @@ class ColumnTaskList(generics.ListCreateAPIView):
     queryset = ColumnTask.objects.all()
     serializer_class = ColumnTaskSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['title', 'status', 'column', 'column__project']
+    filterset_fields = ['title', 'status', 'column__project', 'column']
 
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):
