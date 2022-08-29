@@ -251,6 +251,7 @@ class ProjectColumn(TimeStampedModel):
     description = models.TextField(null=True, blank=True)
     project = models.ForeignKey(Project, related_name="projectcolumn", on_delete=models.CASCADE)
     buyoancy = models.IntegerField(default=0)
+    colour = models.CharField(max_length=16, null=True, blank=True)
 
     def __str__(self):
         return self.title

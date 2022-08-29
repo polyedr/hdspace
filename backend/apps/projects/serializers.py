@@ -650,7 +650,7 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "title", "description", "status", "priority", "buyoancy", "tags", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
+        fields = ("id", "created", "modified", "due_date", "time", "colour", "title", "description", "status", "priority", "buyoancy", "tags", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
         # , "related_task"
         # depth = 2
         extra_kwargs = {
@@ -674,13 +674,14 @@ class ColumnWithTasksSerializer(serializers.ModelSerializer):
             "project",
             "columntask",
             "buyoancy",
+            "colour",
         )
 
 
 class ProjectColumnSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectColumn
-        fields = ("id", "title", "description", "project", "buyoancy")
+        fields = ("id", "title", "description", "project", "buyoancy", "colour")
 
 
 class ProjectWithColumnsSerializer(serializers.ModelSerializer):
