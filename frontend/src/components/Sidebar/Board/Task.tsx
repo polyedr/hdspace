@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import Avatar from '@mui/material/Avatar';
 import { deepOrange } from '@mui/material/colors';
+import { format } from 'date-fns';
 
 const Container = styled('div')<{ dragging: boolean }>(({ dragging }) => ({
   padding: '10px 12px',
@@ -61,10 +62,10 @@ const Task = ({ task, index }) => {
             justifyContent="space-between"
             alignItems="center"
           >
-            {task.text}
+            {task.title}
             <SignalCellularAltIcon />
           </Stack>
-          <Stack direction="row" spacing={1} mb={2}>
+          <Stack direction="row" spacing={0.2} mb={2}>
             <StyledChip label="Tag 1" size="small" />
             <StyledChip label="Tag 2" size="small" />
           </Stack>
@@ -74,10 +75,19 @@ const Task = ({ task, index }) => {
             alignItems="flex-end"
             justifyContent="space-between"
           >
-            <TimeStack direction="row" spacing={1} alignItems="center" priority>
-              <ScheduleIcon fontSize="small" />
-              <p>08 Apr 12:00</p>
-            </TimeStack>
+            {task.due_date ? (
+              <TimeStack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                priority
+              >
+                <ScheduleIcon fontSize="small" />
+                <p>{format(Date.parse(task.due_date), 'dd MMM')}</p>
+              </TimeStack>
+            ) : (
+              <div />
+            )}
 
             <Stack direction="row" spacing={0.5}>
               <Avatar
@@ -116,4 +126,4 @@ const Task = ({ task, index }) => {
   );
 };
 
-export default Task;
+export default React.memo(Task);

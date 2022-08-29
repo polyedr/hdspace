@@ -1,9 +1,17 @@
 import * as columnsApi from '@Api/pmtools/board/columnsApi';
-import { BoardColumn } from '@Redux/pmtools/types';
+import * as tasksApi from '@Api/pmtools/board/tasksApi';
+import { BoardColumn, BoardNewColumn } from '@Redux/pmtools/types';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { DropResult } from 'react-beautiful-dnd';
 import { put, call, select } from 'redux-saga/effects';
-import { setColumns, setColumnsFetching, setTasks } from '../actions/columns';
+import {
+  addColumn,
+  deleteColumnFromState,
+  setColumns,
+  setColumnsFetching,
+  updateColumnOnState,
+} from '../actions/columns';
+import { setTasks } from '../actions/tasks';
 import { selectColumns } from '../selectors';
 
 export function* fetchBoard({
@@ -25,7 +33,7 @@ export function* fetchBoard({
 
     const {
       data: { results: tasks },
-    } = yield call(reqWrapper, columnsApi.fetchTasks, {
+    } = yield call(reqWrapper, tasksApi.fetchTasks, {
       projectId,
     });
 
@@ -37,10 +45,25 @@ export function* fetchBoard({
   }
 }
 
+export function* updateColumnsSequence({ projectId }: { projectId: string }) {
+  const columns: BoardColumn[] = yield select(selectColumns);
+
+  yield call(reqWrapper, columnsApi.updateColumnsSequence, {
+    contentType: 'application/json',
+    projectId,
+    data: {
+      children: columns.map((c) => ({ id: c.id })),
+    },
+  });
+}
+
 export function* updateColumnsOrderSaga({
-  dropResult,
+  payload: { dropResult, projectId },
 }: {
-  dropResult: DropResult;
+  payload: {
+    projectId: number;
+    dropResult: DropResult;
+  };
   type: string;
 }) {
   const { source, destination } = dropResult;
@@ -67,4 +90,67 @@ export function* updateColumnsOrderSaga({
   );
 
   yield put(setColumns(newColumns));
+
+  yield call(reqWrapper, columnsApi.updateColumnsSequence, {
+    projectId,
+    data: {
+      children: newColumns.map((c) => ({ id: c.id })),
+    },
+  });
+}
+
+export function* createColumnSaga({
+  column,
+}: {
+  column: BoardNewColumn;
+  type: string;
+}) {
+  try {
+    const { data: createdColumn } = yield call(
+      reqWrapper,
+      columnsApi.createColumn,
+      column,
+    );
+
+    yield put(addColumn(createdColumn));
+  } catch (error) {
+    console.log('create column error', error);
+  }
+}
+
+export function* updateColumnSaga({
+  column: fields,
+  columnId,
+}: {
+  column: BoardNewColumn;
+  columnId: number;
+  type: string;
+}) {
+  try {
+    yield put(updateColumnOnState(fields, columnId));
+
+    yield call(reqWrapper, columnsApi.updateColumn, {
+      fields,
+      columnId,
+    });
+  } catch (error) {
+    console.log('update column error', error);
+  }
+}
+
+export function* deleteColumnSaga({
+  columnId,
+}: {
+  columnId: number;
+  type: string;
+}) {
+  try {
+    yield put(deleteColumnFromState(columnId));
+
+    yield call(reqWrapper, tasksApi.deleteColumn, {
+      columnId,
+    });
+  } catch (error) {
+    console.log('delete column error', error);
+  }
 }

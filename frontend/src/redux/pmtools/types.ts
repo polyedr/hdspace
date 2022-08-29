@@ -42,9 +42,24 @@ export type ChatState = {
   messages: Array<IMessageZulip> | [];
 };
 
+export interface BoardNewTask {
+  title: string;
+  columnId: number;
+}
+
+export interface BoardNewColumn {
+  title: string;
+  colour: string;
+  projectId?: number;
+}
+
 export interface BoardTask {
   id: number;
   name: string;
+  column: number;
+  created: string;
+  modified: string;
+  due_date: string;
 }
 export interface BoardColumn {
   id: number;

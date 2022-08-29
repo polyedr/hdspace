@@ -1,8 +1,12 @@
-import { BoardColumn } from '@Redux/pmtools/types';
+import { BoardColumn, BoardNewTask } from '@Redux/pmtools/types';
+import * as tasksApi from '@Api/pmtools/board/tasksApi';
+import { call } from 'ramda';
 import { DropResult } from 'react-beautiful-dnd';
 import { put, select } from 'redux-saga/effects';
+import { reqWrapper } from '@Redux/project/sagas/shared';
 import { setColumns } from '../actions/columns';
 import { selectColumns } from '../selectors';
+import { addTask } from '../actions/tasks';
 
 export function* updateTasksOrderSaga({
   dropResult,
@@ -10,7 +14,7 @@ export function* updateTasksOrderSaga({
   dropResult: DropResult;
   type: string;
 }) {
-  const { source, destination } = dropResult;
+  const { source, destination, draggableId } = dropResult;
 
   if (!destination) {
     return null;
@@ -46,5 +50,46 @@ export function* updateTasksOrderSaga({
 
   yield put(setColumns(newColumns));
 
+  if (source.droppableId !== destination.droppableId) {
+    yield call(reqWrapper, tasksApi.updateTask, {
+      taskId: draggableId,
+      fields: {
+        column: destination.droppableId,
+      },
+    });
+
+    yield call(reqWrapper, tasksApi.updateTasksSequence, {
+      columnId: destination.droppableId,
+      data: {
+        children: destinationTasks.map((t) => ({ id: t.id })),
+      },
+    });
+  }
+
+  yield call(reqWrapper, tasksApi.updateTasksSequence, {
+    columnId: source.droppableId,
+    data: {
+      children: sourceTasks.map((t) => ({ id: t.id })),
+    },
+  });
+
   return null;
+}
+
+export function* createTaskSaga({
+  task: { title, columnId },
+}: {
+  task: BoardNewTask;
+  type: string;
+}) {
+  try {
+    const { data: task } = yield call(reqWrapper, tasksApi.createTask, {
+      title,
+      columnId,
+    });
+
+    yield put(addTask(task));
+  } catch (error) {
+    console.log('task create error', error);
+  }
 }

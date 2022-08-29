@@ -1,4 +1,5 @@
 import { handleError } from '@Api/helper';
+import { BoardNewColumn } from '@Redux/pmtools/types';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
 
@@ -13,32 +14,49 @@ export const fetchColumns = ({
   }).catch(handleError);
 };
 
-export const fetchTasks = ({ projectId, ...options }) => {
-  return myAxios({
-    url: `/projects/column-tasks/?column__project=${projectId}`,
-    method: 'get',
-    ...options,
-  }).catch(handleError);
-};
-
 export const createColumn = ({
   title,
-  description,
+  colour,
   projectId,
   ...options
-}: MyAxiosProps & {
-  title: string;
-  description: string;
-  projectId: number;
-}) => {
+}: MyAxiosProps & BoardNewColumn) => {
   return myAxios({
     url: `/projects/project-columns/`,
     method: 'post',
     data: {
       title,
-      description,
+      colour,
       project: projectId,
     },
+    ...options,
+  }).catch(handleError);
+};
+
+export const updateColumn = ({
+  fields,
+  columnId,
+  ...options
+}: MyAxiosProps & {
+  fields: any;
+  columnId: number;
+}) => {
+  return myAxios({
+    url: `/projects/project-columns/${columnId}/`,
+    method: 'patch',
+    data: fields,
+    ...options,
+  }).catch(handleError);
+};
+
+export const updateColumnsSequence = ({
+  projectId,
+  ...options
+}: MyAxiosProps & {
+  projectId: number;
+}) => {
+  return myAxios({
+    url: `/projects/project/update_children_order/${projectId}/`,
+    method: 'patch',
     ...options,
   }).catch(handleError);
 };

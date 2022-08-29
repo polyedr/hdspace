@@ -179,6 +179,7 @@
     "loglevel": "^1.8.0",
     "lorem-ipsum": "^2.0.3",
     "mat-ripple": "^1.0.3",
+    "material-ui-color": "^1.2.0",
     "material-ui-popup-state": "^1.6.1",
     "mockdate": "^3.0.5",
     "notistack": "^1.0.10",

@@ -1,4 +1,6 @@
 import TYPES from '@Redux/actionTypes';
+// eslint-disable-next-line import/no-cycle
+import { BoardColumn, BoardNewColumn } from '@Redux/pmtools/types';
 import { DropResult } from 'react-beautiful-dnd';
 
 export const setColumnsFetching = (fetching = true) => ({
@@ -11,9 +13,15 @@ export const fetchBoard = (projectId: number) => ({
   projectId,
 });
 
-export const updateColumnsOrder = (dropResult: DropResult) => ({
+export const updateColumnsOrder = (
+  dropResult: DropResult,
+  projectId: number,
+) => ({
   type: TYPES.BOARD_UPDATE_COLUMNS_ORDER,
-  dropResult,
+  payload: {
+    dropResult,
+    projectId,
+  },
 });
 
 export const updateTasksOrder = (dropResult: DropResult) => ({
@@ -26,7 +34,37 @@ export const setColumns = (columns) => ({
   columns,
 });
 
-export const setTasks = (tasks) => ({
-  type: TYPES.BOARD_SET_TASKS,
-  tasks,
+export const createColumn = (column: BoardNewColumn) => ({
+  type: TYPES.BOARD_CREATE_COLUMN,
+  column,
+});
+
+export const updateColumn = (column: BoardNewColumn, columnId: number) => ({
+  type: TYPES.BOARD_UPDATE_COLUMN,
+  column,
+  columnId,
+});
+
+export const updateColumnOnState = (
+  column: BoardNewColumn,
+  columnId: number,
+) => ({
+  type: TYPES.BOARD_UPDATE_COLUMN_ON_STATE,
+  column,
+  columnId,
+});
+
+export const addColumn = (column: BoardColumn) => ({
+  type: TYPES.BOARD_ADD_COLUMN,
+  column,
+});
+
+export const deleteColumn = (columnId: number) => ({
+  type: TYPES.BOARD_DELETE_COLUMN,
+  columnId,
+});
+
+export const deleteColumnFromState = (columnId: number) => ({
+  type: TYPES.BOARD_DELETE_COLUMN_FROM_STATE,
+  columnId,
 });

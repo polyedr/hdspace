@@ -1,9 +1,5 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-} from '@material-ui/core';
+import { DialogTitle } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import React, { MouseEvent } from 'react';
 
 type Props = {
@@ -29,25 +25,16 @@ const ConfirmModal: React.FC<Props> = ({
 
   return (
     <Dialog open={show} onClose={hide}>
+      <DialogTitle>Confirm</DialogTitle>
       <DialogContent>
-        <form>
-          <h2>Confirm</h2>
-          <p>{`Are you sure you want to ${actionText} ${elementText}?`}</p>
-          <DialogActions>
-            <Button
-              onClick={handleAction}
-              type="submit"
-              variant="contained"
-              color="secondary"
-            >
-              Yes
-            </Button>
-            <Button onClick={hide} variant="contained" color="primary">
-              No
-            </Button>
-          </DialogActions>
-        </form>
+        {`Are you sure you want to ${actionText} ${elementText}?`}
       </DialogContent>
+      <DialogActions>
+        <Button onClick={handleAction} type="submit">
+          Yes
+        </Button>
+        <Button onClick={hide}>No</Button>
+      </DialogActions>
     </Dialog>
   );
 };

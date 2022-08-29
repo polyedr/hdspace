@@ -1,4 +1,12 @@
-import { styled, TextField } from '@mui/material';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  styled,
+  TextField,
+} from '@mui/material';
 import {
   fetchBoard,
   updateColumnsOrder,
@@ -6,7 +14,7 @@ import {
 } from '@Redux/pmtools/board/actions/columns';
 import { selectBoard } from '@Redux/pmtools/board/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
@@ -16,6 +24,7 @@ import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Button from '@mui/material/Button';
 import Column from './Column';
+import { NewColumn } from './NewColumn';
 
 const ContentWrapper = styled('div')(() => ({
   padding: '20px 0 0 65px',
@@ -76,110 +85,140 @@ const StyledButton = styled(Button)(() => ({
 }));
 
 const Board = () => {
+  const [showCreateColumn, setShowCreateColumn] = useState(false);
+
   const { columns } = useSelector(selectBoard);
 
   const projectId = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
 
+  const handleShowCreateColumn = useCallback(() => {
+    setShowCreateColumn(true);
+  }, []);
+
+  const handleCloseCreateColumn = useCallback(() => {
+    setShowCreateColumn(false);
+  }, [setShowCreateColumn]);
+
   useEffect(() => {
     dispatch(fetchBoard(projectId));
   }, [dispatch, projectId]);
 
-  const handleDragEnd = useCallback((result: DropResult) => {
-    const { source, destination } = result;
+  const handleDragEnd = useCallback(
+    (result: DropResult) => {
+      const { source, destination } = result;
 
-    if (!destination) {
+      if (!destination) {
+        return null;
+      }
+
+      if (
+        source.index === destination?.index &&
+        source.droppableId === destination.droppableId
+      ) {
+        return null;
+      }
+
+      if (result.type === 'board-columns') {
+        dispatch(updateColumnsOrder(result, projectId));
+        return null;
+      }
+
+      dispatch(updateTasksOrder(result));
+
       return null;
-    }
-
-    if (
-      source.index === destination?.index &&
-      source.droppableId === destination.droppableId
-    ) {
-      return null;
-    }
-
-    if (result.type === 'board-columns') {
-      dispatch(updateColumnsOrder(result));
-      return null;
-    }
-
-    dispatch(updateTasksOrder(result));
-
-    return null;
-  }, []);
+    },
+    [projectId],
+  );
 
   return (
-    <ContentWrapper>
-      <ContentHeader>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item md="auto">
-            <StyledForm>
-              <TextField type="text" placeholder="Search Task" fullWidth />
-              <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                <SearchIcon />
-              </IconButton>
-            </StyledForm>
-          </Grid>
-          <Grid item md="auto" justifyContent="left">
-            <StyledAvatarGroup max={4}>
-              <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/1.jpg"
-                sx={{ width: 32, height: 32 }}
-              />
-              <Avatar
-                alt="Travis Howard"
-                src="/static/images/avatar/2.jpg"
-                sx={{ width: 32, height: 32 }}
-              />
-              <Avatar
-                alt="Cindy Baker"
-                src="/static/images/avatar/3.jpg"
-                sx={{ width: 32, height: 32 }}
-              />
-              <Avatar
-                alt="Agnes Walker"
-                src="/static/images/avatar/4.jpg"
-                sx={{ width: 32, height: 32 }}
-              />
-              <Avatar
-                alt="Trevor Henderson"
-                src="/static/images/avatar/5.jpg"
-                sx={{ width: 32, height: 32 }}
-              />
-            </StyledAvatarGroup>
-          </Grid>
-          <Grid item md={2}>
-            <StyledButton variant="contained">Only my tasks</StyledButton>
-          </Grid>
-          <Grid item md={5} style={{ textAlign: 'right' }}>
-            <StyledButton variant="contained">New Column</StyledButton>
-          </Grid>
-        </Grid>
-      </ContentHeader>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable
-          droppableId="board-columns"
-          type="board-columns"
-          direction="horizontal"
-        >
-          {(provided) => (
-            <Container ref={provided.innerRef} {...provided.droppableProps}>
-              {columns.map((column, index) => (
-                <Column
-                  column={column}
-                  index={index}
-                  key={column.id.toString()}
+    <>
+      <ContentWrapper>
+        <ContentHeader>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item md="auto">
+              <StyledForm>
+                <TextField type="text" placeholder="Search Task" fullWidth />
+                <IconButton
+                  type="button"
+                  sx={{ p: '10px' }}
+                  aria-label="search"
+                >
+                  <SearchIcon />
+                </IconButton>
+              </StyledForm>
+            </Grid>
+            <Grid item md="auto" justifyContent="left">
+              <StyledAvatarGroup max={4}>
+                <Avatar
+                  alt="Remy Sharp"
+                  src="/static/images/avatar/1.jpg"
+                  sx={{ width: 32, height: 32 }}
                 />
-              ))}
-              {provided.placeholder}
-            </Container>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </ContentWrapper>
+                <Avatar
+                  alt="Travis Howard"
+                  src="/static/images/avatar/2.jpg"
+                  sx={{ width: 32, height: 32 }}
+                />
+                <Avatar
+                  alt="Cindy Baker"
+                  src="/static/images/avatar/3.jpg"
+                  sx={{ width: 32, height: 32 }}
+                />
+                <Avatar
+                  alt="Agnes Walker"
+                  src="/static/images/avatar/4.jpg"
+                  sx={{ width: 32, height: 32 }}
+                />
+                <Avatar
+                  alt="Trevor Henderson"
+                  src="/static/images/avatar/5.jpg"
+                  sx={{ width: 32, height: 32 }}
+                />
+              </StyledAvatarGroup>
+            </Grid>
+            <Grid item md={2}>
+              <StyledButton variant="contained">Only my tasks</StyledButton>
+            </Grid>
+            <Grid item md={5} style={{ textAlign: 'right' }}>
+              <StyledButton
+                onClick={handleShowCreateColumn}
+                variant="contained"
+              >
+                New Column
+              </StyledButton>
+            </Grid>
+          </Grid>
+        </ContentHeader>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable
+            droppableId="board-columns"
+            type="board-columns"
+            direction="horizontal"
+          >
+            {(provided) => (
+              <Container ref={provided.innerRef} {...provided.droppableProps}>
+                {columns.map((column, index) => (
+                  <Column
+                    column={column}
+                    index={index}
+                    key={column.id.toString()}
+                    projectId={projectId}
+                  />
+                ))}
+                {provided.placeholder}
+              </Container>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </ContentWrapper>
+      <NewColumn
+        projectId={projectId}
+        open={showCreateColumn}
+        onClose={handleCloseCreateColumn}
+      />
+    </>
   );
 };
 
-export default Board;
+export default React.memo(Board);
