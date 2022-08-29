@@ -300,6 +300,7 @@ class ColumnTask(TimeStampedModel):
         return self.title
 
     class Meta:  # Only people with the following permissions can work on this task.
+        ordering = ['buyoancy', 'pk']
         permissions = (
             ("Dummy permission 1", "Can do dummy action 1"),
             ("Dummy permission 2", "Can do dummy action 2"),
@@ -307,7 +308,6 @@ class ColumnTask(TimeStampedModel):
             ("Dummy permission 4", "Can do dummy action 4"),
             ("Dummy permission 5", "Can do dummy action 5"),
         )
-        ordering = ['buyoancy', 'pk']
 
 
 class ColumnTaskComment(TimeStampedModel):
