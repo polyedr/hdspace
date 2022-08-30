@@ -398,8 +398,8 @@ white_list = [
 DOMAIN = ('adevi.info')
 
 # https://getstream.io/dashboard/
-STREAM_API_KEY = ENV.str("STREAM_API_KEY", "jfcd9hhxbwq8")
-STREAM_API_SECRET = ENV.str("STREAM_API_SECRET", "umgv5enpu6bd644ft7g4em5h3e9zcf5fmf635xm3awzugfatz6tajkft94zv6yma")
+STREAM_API_KEY = ENV.str("STREAM_API_KEY", "5d6u689nppfz")
+STREAM_API_SECRET = ENV.str("STREAM_API_SECRET", "aa3px7h5u8r96ea9z5t7q9p2bfdrjt95nks8h9fuy8jku6teryjjhkrk4gmk6ng4")
 
 # Djoser settings
 DJOSER = {
