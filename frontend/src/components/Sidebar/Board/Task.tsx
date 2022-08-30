@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import Chip from '@mui/material/Chip';
@@ -8,6 +8,7 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import Avatar from '@mui/material/Avatar';
 import { deepOrange } from '@mui/material/colors';
 import { format } from 'date-fns';
+import TaskDialog from './TaskDialog';
 
 const Container = styled('div')<{ dragging: boolean }>(({ dragging }) => ({
   padding: '10px 12px',
@@ -46,83 +47,100 @@ const TimeStack = styled(Stack)<{ priority: boolean }>(({ priority }) => ({
 }));
 
 const Task = ({ task, index }) => {
-  return (
-    <Draggable draggableId={task.id.toString()} index={index}>
-      {(provided, snapshot) => (
-        <Container
-          {...provided.dragHandleProps}
-          {...provided.draggableProps}
-          ref={provided.innerRef}
-          dragging={snapshot.isDragging}
-        >
-          <Stack
-            direction="row"
-            spacing={1}
-            mb={2}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            {task.title}
-            <SignalCellularAltIcon />
-          </Stack>
-          <Stack direction="row" spacing={0.2} mb={2}>
-            <StyledChip label="Tag 1" size="small" />
-            <StyledChip label="Tag 2" size="small" />
-          </Stack>
-          <Stack
-            direction="row"
-            spacing={1}
-            alignItems="flex-end"
-            justifyContent="space-between"
-          >
-            {task.due_date ? (
-              <TimeStack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                priority
-              >
-                <ScheduleIcon fontSize="small" />
-                <p>{format(Date.parse(task.due_date), 'dd MMM')}</p>
-              </TimeStack>
-            ) : (
-              <div />
-            )}
+  const [showDialog, setShowDialog] = useState(false);
 
-            <Stack direction="row" spacing={0.5}>
-              <Avatar
-                sx={{
-                  bgcolor: deepOrange[500],
-                  width: 24,
-                  height: 24,
-                  fontSize: 12,
-                  lineHeight: 0.8,
-                }}
-                alt="Remy Sharp"
-                src="/broken-image.jpg"
-              >
-                B
-              </Avatar>
-              <Avatar
-                sx={{
-                  bgcolor: deepOrange[500],
-                  width: 24,
-                  height: 24,
-                  fontSize: 12,
-                  lineHeight: 0.8,
-                }}
-                alt="Remy Sharp"
-                src="/broken-image.jpg"
-              />
-              <Avatar
-                src="/broken-image.jpg"
-                sx={{ width: 24, height: 24, fontSize: 12, lineHeight: 0.8 }}
-              />
+  const handleShowDialog = useCallback(
+    (show) => {
+      return () => setShowDialog(show);
+    },
+    [setShowDialog],
+  );
+
+  return (
+    <>
+      <TaskDialog
+        task={task}
+        onClose={handleShowDialog(false)}
+        open={showDialog}
+      />
+      <Draggable draggableId={task.id.toString()} index={index}>
+        {(provided, snapshot) => (
+          <Container
+            {...provided.dragHandleProps}
+            {...provided.draggableProps}
+            ref={provided.innerRef}
+            dragging={snapshot.isDragging}
+            onClick={handleShowDialog(true)}
+          >
+            <Stack
+              direction="row"
+              spacing={1}
+              mb={2}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              {task.title}
+              <SignalCellularAltIcon />
             </Stack>
-          </Stack>
-        </Container>
-      )}
-    </Draggable>
+            <Stack direction="row" spacing={0.2} mb={2}>
+              <StyledChip label="Tag 1" size="small" />
+              <StyledChip label="Tag 2" size="small" />
+            </Stack>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="flex-end"
+              justifyContent="space-between"
+            >
+              {task.due_date ? (
+                <TimeStack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  priority
+                >
+                  <ScheduleIcon fontSize="small" />
+                  <p>{format(Date.parse(task.due_date), 'dd MMM')}</p>
+                </TimeStack>
+              ) : (
+                <div />
+              )}
+
+              <Stack direction="row" spacing={0.5}>
+                <Avatar
+                  sx={{
+                    bgcolor: deepOrange[500],
+                    width: 24,
+                    height: 24,
+                    fontSize: 12,
+                    lineHeight: 0.8,
+                  }}
+                  alt="Remy Sharp"
+                  src="/broken-image.jpg"
+                >
+                  B
+                </Avatar>
+                <Avatar
+                  sx={{
+                    bgcolor: deepOrange[500],
+                    width: 24,
+                    height: 24,
+                    fontSize: 12,
+                    lineHeight: 0.8,
+                  }}
+                  alt="Remy Sharp"
+                  src="/broken-image.jpg"
+                />
+                <Avatar
+                  src="/broken-image.jpg"
+                  sx={{ width: 24, height: 24, fontSize: 12, lineHeight: 0.8 }}
+                />
+              </Stack>
+            </Stack>
+          </Container>
+        )}
+      </Draggable>
+    </>
   );
 };
 

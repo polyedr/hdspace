@@ -35,7 +35,9 @@ export const EditColumn = ({ open, onClose, column }) => {
         onSubmit={handleUpdateColumn}
         initialValues={{
           title: column.title,
-          color: column.colour || createColor('#F3F4F6'),
+          color: column.colour
+            ? createColor(`#${column.colour}`)
+            : createColor('#F3F4F6'),
         }}
         render={({ handleSubmit, values }) => (
           <>

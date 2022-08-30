@@ -1,12 +1,4 @@
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  styled,
-  TextField,
-} from '@mui/material';
+import { styled, TextField } from '@mui/material';
 import {
   fetchBoard,
   updateColumnsOrder,
@@ -203,7 +195,6 @@ const Board = () => {
                     column={column}
                     index={index}
                     key={column.id.toString()}
-                    projectId={projectId}
                   />
                 ))}
                 {provided.placeholder}
