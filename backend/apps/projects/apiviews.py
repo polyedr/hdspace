@@ -6,6 +6,7 @@ import json
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, viewsets, permissions, status, serializers
 from rest_framework.fields import CurrentUserDefault
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
@@ -356,8 +357,10 @@ class ColumnTaskList(generics.ListCreateAPIView):
     """
     queryset = ColumnTask.objects.all()
     serializer_class = ColumnTaskSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['title', 'status', 'column__project', 'column']
+    ordering_fields = ['buyoancy', 'id']
+    ordering = ['buyoancy']
 
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):

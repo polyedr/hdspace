@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "rest_invitations",
     "rest_framework.authtoken",
     "djoser",
+    # "django_extensions",
     # "lazysignup",
     "drf_yasg",
     "corsheaders",
@@ -71,6 +72,11 @@ INSTALLED_APPS = [
     'taggit',
     'taggit_serializer',
 ]
+
+# GRAPH_MODELS ={
+# 'all_applications': True,
+# 'graph_models': True,
+# }
 
 SITE_ID = 1
 
