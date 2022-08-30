@@ -4,7 +4,14 @@ import { Avatar, useChatContext } from 'stream-chat-react';
 import './UserList.css';
 
 import type { ChannelFilters, UserResponse } from 'stream-chat';
-import { InviteIcon } from '../../assets';
+import Checkbox from '@mui/material/Checkbox';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import { styled } from '@mui/material/styles';
 
 import type {
   TeamAttachmentType,
@@ -16,18 +23,75 @@ import type {
   TeamUserType,
 } from '../../client';
 
+const StyledTableCell = styled(TableCell)({
+  '&.MuiTableCell-root': {
+    padding: 12,
+    width: '33%',
+
+    '&:first-child': {
+      paddingLeft: 0,
+      width: '20px',
+    },
+  },
+
+  '&.MuiTableCell-head': {
+    color: '#81818E',
+    fontWeight: 500,
+    borderWidth: 2,
+  },
+});
+
 const ListContainer: React.FC = (props) => {
   const { children } = props;
 
   return (
-    <div className="user-list__container">
-      <div className="user-list__header">
+    <>
+      {/* <div className="user-list__container"> */}
+      {/* <div className="user-list__header">
+        <Checkbox
+          sx={{
+            color: '#E4E6EB',
+            '&.Mui-checked': {
+              color: '#5064FF',
+            },
+          }}
+        />
         <p>User</p>
+        <p>Role</p>
         <p>Last Active</p>
-        <p>Invite</p>
-      </div>
-      {children}
-    </div>
+        {/* <p>Invite</p> 
+      </div> */}
+      <TableContainer sx={{ margin: '0 20px', width: 'auto' }}>
+        <Table
+          sx={{ minWidth: 650, borderCollapse: 'inherit' }}
+          aria-label="table"
+        >
+          <TableHead>
+            <TableRow>
+              <StyledTableCell width="20px">
+                <Checkbox
+                  sx={{
+                    color: '#E4E6EB',
+                    padding: 0,
+                    '&.Mui-checked': {
+                      color: '#5064FF',
+                    },
+                  }}
+                />
+              </StyledTableCell>
+              <StyledTableCell>User</StyledTableCell>
+              <StyledTableCell>Role</StyledTableCell>
+              <StyledTableCell>Last Active</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {children}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {/* {children}
+      </div> */}
+    </>
   );
 };
 
@@ -73,14 +137,52 @@ const UserItem: React.FC<ItemProps> = (props) => {
   };
 
   return (
-    <div className="user-item__wrapper" onClick={handleClick}>
+    <>
+      {/* <div className="user-item__wrapper" onClick={handleClick}> */}
+      <TableRow
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        onClick={handleClick}
+      >
+        <StyledTableCell width="20px">
+          <Checkbox
+            checked={selected}
+            sx={{
+              color: '#E4E6EB',
+              padding: 0,
+              '&.Mui-checked': {
+                color: '#5064FF',
+              },
+            }}
+          />
+        </StyledTableCell>
+        <StyledTableCell>
+          <div className="user-item__name-wrapper">
+            <Avatar image={user.image} name={user.name || user.id} size={32} />
+            <p className="user-item__name">{user.name || user.id}</p>
+          </div>
+        </StyledTableCell>
+        <StyledTableCell>Project Manager</StyledTableCell>
+        <StyledTableCell>{getLastActive(index)}</StyledTableCell>
+      </TableRow>
+
+      {/* <Checkbox
+        checked={selected}
+        sx={{
+          color: '#E4E6EB',
+          '&.Mui-checked': {
+            color: '#5064FF',
+          },
+        }}
+      />
       <div className="user-item__name-wrapper">
         <Avatar image={user.image} name={user.name || user.id} size={32} />
         <p className="user-item__name">{user.name || user.id}</p>
       </div>
-      <p className="user-item__last-active">{getLastActive(index)}</p>
-      {selected ? <InviteIcon /> : <div className="user-item__invite-empty" />}
-    </div>
+      <p className="user-item__role">Role</p>
+      <p className="user-item__last-active">{getLastActive(index)}</p> */}
+      {/* {selected ? <InviteIcon /> : <div className="user-item__invite-empty" />} */}
+      {/* </div> */}
+    </>
   );
 };
 

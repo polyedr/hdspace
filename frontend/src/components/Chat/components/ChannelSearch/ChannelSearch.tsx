@@ -6,6 +6,7 @@ import _debounce from 'lodash.debounce';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 import { channelByUser, ChannelOrUserType, isChannel } from './utils';
 import { ResultsDropdown } from './ResultsDropdown';
 
@@ -20,6 +21,14 @@ import type {
   TeamReactionType,
   TeamUserType,
 } from '../../client';
+
+const SearchTextField = styled(TextField)({
+  '& .MuiInputBase-root': {
+    '&:before': {
+      borderColor: '#E4E6EB',
+    },
+  },
+});
 
 export const ChannelSearch = () => {
   const { client, setActiveChannel } = useChatContext<
@@ -184,7 +193,7 @@ export const ChannelSearch = () => {
         noValidate
         autoComplete="off"
       >
-        <TextField
+        <SearchTextField
           onChange={onSearch}
           placeholder="Search"
           type="text"
@@ -192,7 +201,7 @@ export const ChannelSearch = () => {
           variant="standard"
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">
+              <InputAdornment position="end">
                 <SearchIcon />
               </InputAdornment>
             ),
