@@ -38,7 +38,8 @@ from .apiviews import (
     RemovePermissionsProject,
     AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject,
     ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView,
-    ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder)
+    ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder, ColumnTaskCheckitemList,
+    ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail)
 
 app_name = "projects"
 
@@ -132,19 +133,19 @@ api_element_comment_patterns = [
 ]
 
 api_columntask_comment_patterns = [
-    path("columntask-comments/", ElementCommentList.as_view(),
+    path("columntask-comments/", ColumnTaskCommentList.as_view(),
          name="api_columntask_comments"),
     path(
-        "columntask_comments/<int:pk>/", ElementCommentDetail.as_view(),
+        "columntask_comments/<int:pk>/", ColumnTaskCommentDetail.as_view(),
         name="api_columntask_comment"
     ),
 ]
 
 api_columntask_checkitem_patterns = [
-    path("columntask-checkitems/", ElementCommentList.as_view(),
+    path("columntask-checkitems/", ColumnTaskCheckitemList.as_view(),
          name="api_columntask_checkitems"),
     path(
-        "columntask_checkitems/<int:pk>/", ElementCommentDetail.as_view(),
+        "columntask_checkitems/<int:pk>/", ColumnTaskCheckitemDetail.as_view(),
         name="api_columntask_checkitem"
     ),
 ]
