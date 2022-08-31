@@ -12,6 +12,37 @@ import { Form, Field } from 'react-final-form';
 import { ColorPicker, createColor } from 'material-ui-color';
 import { useDispatch } from 'react-redux';
 import { createColumn } from '@Redux/pmtools/board/actions/columns';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import { styled } from '@mui/material/styles';
+
+const StyledDialog = styled(Dialog)({
+  '& .MuiPaper-root': {
+    minWidth: '420px',
+    borderRadius: 6,
+  },
+
+  '& .InputLabel': {
+    marginBottom: 3,
+  },
+});
+
+const StyledTextField = styled(TextField)({
+  '& label.Mui-focused': {
+    color: '#81818E',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: '#E4E6EB !important',
+    },
+    '&:hover fieldset': {
+      borderColor: 'var(--blue)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#E4E6EB',
+    },
+  },
+});
 
 export const NewColumn = ({ open, projectId, onClose }) => {
   const dispatch = useDispatch();
@@ -31,7 +62,7 @@ export const NewColumn = ({ open, projectId, onClose }) => {
   );
 
   return (
-    <Dialog maxWidth="md" open={open} onClose={onClose}>
+    <StyledDialog maxWidth="sm" open={open} onClose={onClose}>
       <Form
         onSubmit={handleCreateColumn}
         initialValues={{
@@ -40,25 +71,43 @@ export const NewColumn = ({ open, projectId, onClose }) => {
         }}
         render={({ handleSubmit, values }) => (
           <>
-            <DialogTitle>New Column</DialogTitle>
+            <DialogTitle sx={{ pb: 1, fontSize: 18, fontWeight: 600 }}>
+              New Column
+              {onClose ? (
+                <IconButton
+                  aria-label="close"
+                  onClick={onClose}
+                  sx={{
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                    color: (theme) => theme.palette.grey[500],
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+              ) : null}
+            </DialogTitle>
             <DialogContent>
               <Field name="title">
                 {(props) => (
-                  <TextField
+                  <StyledTextField
                     autoFocus
                     margin="dense"
                     id="title"
-                    label="Name"
+                    label="Column Name"
                     fullWidth
                     variant="outlined"
+                    size="small"
                     {...props.input}
                   />
                 )}
               </Field>
 
+              <p className="InputLabel">Select the column color</p>
               <Field name="color">
                 {({ input: { onChange, value, ...inputProps } }) => (
-                  <TextField
+                  <StyledTextField
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -79,21 +128,41 @@ export const NewColumn = ({ open, projectId, onClose }) => {
                     }}
                     margin="dense"
                     id="color"
-                    label="Color"
                     fullWidth
                     variant="outlined"
                     disabled
+                    size="small"
                     value={value.hex}
                     {...inputProps}
                   />
                 )}
               </Field>
             </DialogContent>
-            <DialogActions>
-              <Button onClick={onClose}>Cancel</Button>
+            <DialogActions sx={{ p: '0 24px 24px' }}>
+              <Button
+                onClick={onClose}
+                variant="text"
+                size="small"
+                sx={{
+                  p: '8px 16px',
+                  textTransform: 'capitalize',
+                  fontSize: 14,
+                  color: '#81818E',
+                }}
+              >
+                Cancel
+              </Button>
               <Button
                 disabled={!values.title || values.title.trim().length < 1}
                 onClick={handleSubmit}
+                variant="contained"
+                size="small"
+                sx={{
+                  p: '8px 16px',
+                  backgroundColor: 'var(--blue)',
+                  textTransform: 'capitalize',
+                  fontSize: 14,
+                }}
               >
                 Create
               </Button>
@@ -101,6 +170,6 @@ export const NewColumn = ({ open, projectId, onClose }) => {
           </>
         )}
       />
-    </Dialog>
+    </StyledDialog>
   );
 };
