@@ -163,6 +163,7 @@
     "draftjs-utils": "^0.10.2",
     "file-saver": "^2.0.2",
     "final-form": "^4.20.1",
+    "fuzzysort": "^2.0.1",
     "generate-password": "^1.6.1",
     "google-map-react": "^2.1.9",
     "highlight.js": "^10.7.2",

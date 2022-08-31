@@ -1,4 +1,5 @@
 import { styled, TextField } from '@mui/material';
+import fuzzysort from 'fuzzysort';
 import {
   fetchBoard,
   updateColumnsOrder,
@@ -15,8 +16,10 @@ import SearchIcon from '@mui/icons-material/Search';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Button from '@mui/material/Button';
+import { useMemo } from '@storybook/addons';
 import Column from './Column';
 import { NewColumn } from './NewColumn';
+import { BoardColumn } from '@Redux/pmtools/types';
 
 const ContentWrapper = styled('div')(() => ({
   padding: '20px 0 0 65px',
@@ -78,6 +81,7 @@ const StyledButton = styled(Button)(() => ({
 
 const Board = () => {
   const [showCreateColumn, setShowCreateColumn] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   const { columns } = useSelector(selectBoard);
 
@@ -123,6 +127,23 @@ const Board = () => {
     [projectId],
   );
 
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(e.target.value);
+    },
+    [],
+  );
+
+  const columnsToDisplay = useMemo(() => {
+    if (searchText.trim().length > 0) {
+      return columns.map((column: any) => {
+        return fuzzysort.go(searchText, column, { key: 'title' });
+      });
+    }
+
+    return columns;
+  }, [columns, searchText]);
+
   return (
     <>
       <ContentWrapper>
@@ -130,7 +151,12 @@ const Board = () => {
           <Grid container spacing={2} alignItems="center">
             <Grid item md="auto">
               <StyledForm>
-                <TextField type="text" placeholder="Search Task" fullWidth />
+                <TextField
+                  onChange={handleSearchChange}
+                  type="text"
+                  placeholder="Search Task"
+                  fullWidth
+                />
                 <IconButton
                   type="button"
                   sx={{ p: '10px' }}
@@ -190,7 +216,7 @@ const Board = () => {
           >
             {(provided) => (
               <Container ref={provided.innerRef} {...provided.droppableProps}>
-                {columns.map((column, index) => (
+                {columnsToDisplay.map((column, index) => (
                   <Column
                     column={column}
                     index={index}
