@@ -79,6 +79,8 @@ const NewTaskInput = styled(TextField)({
 const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
   return {
     flexGrow: 1,
+    maxHeight: 'calc(100vh - 200px)',
+    overflowY: 'auto',
     // backgroundColor: isDraggingOver ? 'red' : 'initial',
   };
 });
