@@ -7,7 +7,7 @@ import {
 } from '@Redux/pmtools/board/actions/columns';
 import { selectBoard } from '@Redux/pmtools/board/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
@@ -16,10 +16,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Button from '@mui/material/Button';
-import { useMemo } from '@storybook/addons';
 import Column from './Column';
 import { NewColumn } from './NewColumn';
-import { BoardColumn } from '@Redux/pmtools/types';
 
 const ContentWrapper = styled('div')(() => ({
   padding: '20px 0 0 65px',
@@ -131,13 +129,20 @@ const Board = () => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchText(e.target.value);
     },
-    [],
+    [setSearchText],
   );
 
   const columnsToDisplay = useMemo(() => {
     if (searchText.trim().length > 0) {
       return columns.map((column: any) => {
-        return fuzzysort.go(searchText, column, { key: 'title' });
+        const bestResult = fuzzysort.go(searchText.trim(), column.tasks, {
+          keys: ['title', 'description'],
+        });
+
+        return {
+          ...column,
+          tasks: bestResult.map((r) => r?.obj),
+        };
       });
     }
 
