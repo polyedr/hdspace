@@ -4,7 +4,7 @@ from mptt.admin import MPTTModelAdmin
 
 
 from apps.projects.models import ScreenScenario, ScenarioElement, ElementComment, ProjectIllustrationSet, \
-    ProjectImage, ProjectColumn
+    ProjectImage, ProjectColumn, ColumnTaskCheckitem
 from .models import *  # noqa
 
 class ScenarioElementAdmin(MPTTModelAdmin):
@@ -21,6 +21,7 @@ admin.site.register(ProjectMember)
 # admin.site.register(ProjectActivity)
 admin.site.register(ProjectColumn)
 admin.site.register(ColumnTask)
+admin.site.register(ColumnTaskCheckitem)
 admin.site.register(ProjectIllustrationSet)
 admin.site.register(ProjectImage)
 # admin.site.register(TaskTime)

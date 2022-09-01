@@ -597,13 +597,22 @@ class CommentSerializer(serializers.ModelSerializer):
 class ColumnTaskCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTaskComment
-        fields = ("text", "created", "modified", "user", "columntask")
-
+        fields = ("id", "text", "created", "modified", "user", "columntask")
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "created": {"read_only": True},
+            "modified": {"read_only": True},
+        }
 
 class ColumnTaskCheckitemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTaskCheckitem
-        fields = ("text", "created", "modified", "status", "buyoancy", "columntask")
+        fields = ("id", "text", "created", "modified", "status", "buyoancy", "columntask")
+        extra_kwargs = {
+            "id": {"read_only": True},
+            "created": {"read_only": True},
+            "modified": {"read_only": True},
+        }
 
 
 class ProjectInvitationSerializer(serializers.ModelSerializer):
@@ -636,7 +645,7 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
     tags = TagListSerializerField(required=False, allow_null=True)
     colour = serializers.CharField(required=False, allow_null=True)
     comments = ColumnTaskCommentSerializer(many=True, required=False)
-    checklist = ColumnTaskCheckitemSerializer(many=True, required=False)
+    checklist = ColumnTaskCheckitemSerializer(many=True, read_only=True)
     # related_task = ColumnTaskSerializer(many=True, required=False)
     related_tasks = SubColumnTaskSerializer(many=True, required=False)
     project_id = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), source='column.project', required=False)
@@ -658,6 +667,7 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
             "assignee": {"read_only": True},
             "responsible": {"read_only": True},
             "project_id": {"read_only": True},
+            "comments": {"read_only": True},
         }
 
 

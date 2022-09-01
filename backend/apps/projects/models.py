@@ -314,14 +314,14 @@ class ColumnTask(TimeStampedModel):
 class ColumnTaskComment(TimeStampedModel):
     text = models.TextField()
 
-    columntask = models.ForeignKey(ColumnTask, on_delete=models.CASCADE)
+    columntask = models.ForeignKey(ColumnTask, related_name="comments", on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
 
 class ColumnTaskCheckitem(TimeStampedModel):
     text = models.TextField()
 
-    columntask = models.ForeignKey(ColumnTask, on_delete=models.CASCADE)
+    columntask = models.ForeignKey(ColumnTask, related_name="checklist", on_delete=models.CASCADE, null=True)
     status = models.IntegerField(default=0)
     buyoancy = models.IntegerField(default=0)
 
