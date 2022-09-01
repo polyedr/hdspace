@@ -60,12 +60,6 @@ const StyledInputAdornment = styled(InputAdornment)({
   },
 });
 
-const StyledColorPicker = styled(ColorPicker)({
-  '& .MuiBox-root': {
-    width: '267px',
-  },
-});
-
 export const EditColumn = ({ open, onClose, column }) => {
   const dispatch = useDispatch();
 
@@ -134,7 +128,7 @@ export const EditColumn = ({ open, onClose, column }) => {
                     InputProps={{
                       startAdornment: (
                         <StyledInputAdornment position="start">
-                          <StyledColorPicker
+                          <ColorPicker
                             disableAlpha
                             value={value}
                             onChange={(color) =>
@@ -167,7 +161,7 @@ export const EditColumn = ({ open, onClose, column }) => {
                 variant="text"
                 size="small"
                 sx={{
-                  p: '8px 16px',
+                  p: '6px 16px',
                   textTransform: 'capitalize',
                   fontSize: 14,
                   color: '#81818E',
@@ -181,7 +175,7 @@ export const EditColumn = ({ open, onClose, column }) => {
                 variant="contained"
                 size="small"
                 sx={{
-                  p: '8px 16px',
+                  p: '6px 16px',
                   backgroundColor: 'var(--blue)',
                   textTransform: 'capitalize',
                   fontSize: 14,

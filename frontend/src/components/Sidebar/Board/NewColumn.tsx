@@ -44,6 +44,22 @@ const StyledTextField = styled(TextField)({
   },
 });
 
+const StyledInputAdornment = styled(InputAdornment)({
+  '& button': {
+    width: '16px',
+    height: '16px',
+    minWidth: 'auto',
+    margin: 0,
+
+    '& .MuiButton-label div': {
+      width: '16px',
+      height: '16px',
+      minWidth: 'auto',
+      borderRadius: 2,
+    },
+  },
+});
+
 export const NewColumn = ({ open, projectId, onClose }) => {
   const dispatch = useDispatch();
 
@@ -110,7 +126,7 @@ export const NewColumn = ({ open, projectId, onClose }) => {
                   <StyledTextField
                     InputProps={{
                       startAdornment: (
-                        <InputAdornment position="start">
+                        <StyledInputAdornment position="start">
                           <ColorPicker
                             disableAlpha
                             value={value}
@@ -123,7 +139,7 @@ export const NewColumn = ({ open, projectId, onClose }) => {
                             }
                             hideTextfield
                           />
-                        </InputAdornment>
+                        </StyledInputAdornment>
                       ),
                     }}
                     margin="dense"
@@ -144,7 +160,7 @@ export const NewColumn = ({ open, projectId, onClose }) => {
                 variant="text"
                 size="small"
                 sx={{
-                  p: '8px 16px',
+                  p: '6px 16px',
                   textTransform: 'capitalize',
                   fontSize: 14,
                   color: '#81818E',
@@ -158,7 +174,7 @@ export const NewColumn = ({ open, projectId, onClose }) => {
                 variant="contained"
                 size="small"
                 sx={{
-                  p: '8px 16px',
+                  p: '6px 16px',
                   backgroundColor: 'var(--blue)',
                   textTransform: 'capitalize',
                   fontSize: 14,
