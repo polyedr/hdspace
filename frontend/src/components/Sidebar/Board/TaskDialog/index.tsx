@@ -237,6 +237,7 @@ const AuthorStack = styled(Stack)({
 
   '& span': {
     padding: '3px 8px 3px 3px',
+    color: '#2A2A2D',
   },
 });
 
