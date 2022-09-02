@@ -53,13 +53,27 @@ export interface BoardNewColumn {
   projectId?: number;
 }
 
+interface BoardTaskUser {
+  date_joined: string;
+  email: string;
+  first_name: string;
+  id: number;
+  is_active: boolean;
+  last_name: string;
+  profile_avatar?: string;
+  username: string;
+}
+
 export interface BoardTask {
   id: number;
-  name: string;
+  title: string;
   column: number;
   created: string;
   modified: string;
   due_date: string;
+  author: BoardTaskUser;
+  assignee: BoardTaskUser;
+  responsible: BoardTaskUser;
 }
 export interface BoardColumn {
   id: number;
@@ -71,6 +85,7 @@ export type BoardState = {
   fetching: boolean;
   columns: BoardColumn[];
   members: Array<any>;
+  activeTask: BoardTask | null;
 };
 
 export type InviteState = {
@@ -95,12 +110,20 @@ export type ActivityAction = ReturnType<
 >;
 
 export type BoardAction = ReturnType<
-  | typeof actionsTasks.successFetchTask
-  | typeof actionsTasks.successAddTask
-  | typeof actionsTasks.successEditTask
-  | typeof actionsTasks.successDeleteTask
-  | typeof actionsTasks.successUpdateCardIndex
-  | typeof actionsTasks.successFetchMembers
+  | typeof actionsColumns.setColumnsFetching
+  | typeof actionsColumns.fetchBoard
+  | typeof actionsColumns.updateColumnsOrder
+  | typeof actionsColumns.updateTasksOrder
+  | typeof actionsColumns.setColumns
+  | typeof actionsColumns.createColumn
+  | typeof actionsColumns.updateColumn
+  | typeof actionsColumns.updateColumnOnState
+  | typeof actionsColumns.addColumn
+  | typeof actionsColumns.deleteColumn
+  | typeof actionsColumns.deleteColumnFromState
+  | typeof actionsTasks.addTask
+  | typeof actionsTasks.setTasks
+  | typeof actionsTasks.createTask
 >;
 
 export type ChatAction = ReturnType<

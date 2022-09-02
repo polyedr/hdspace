@@ -2,12 +2,13 @@ import { createReducer, Handlers } from 'reduxsauce';
 import TYPES from '@Redux/actionTypes';
 import * as columnActions from './actions/columns';
 import * as taskActions from './actions/tasks';
-import { BoardState } from '../types';
+import { BoardAction, BoardState } from '../types';
 
 const INITIAL_STATE: BoardState = {
   fetching: true,
   columns: [],
   members: [],
+  activeTask: null,
 };
 
 interface ActionHandler<T> {
@@ -106,4 +107,4 @@ const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_UPDATE_COLUMN_ON_STATE]: updateColumn,
 };
 
-export default createReducer(INITIAL_STATE, HANDLERS);
+export default createReducer<BoardState, BoardAction>(INITIAL_STATE, HANDLERS);

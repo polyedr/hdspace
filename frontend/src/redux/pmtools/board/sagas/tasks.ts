@@ -8,6 +8,14 @@ import { setColumns } from '../actions/columns';
 import { selectColumns } from '../selectors';
 import { addTask } from '../actions/tasks';
 
+export function* fetchTaskSaga({ taskId }: { taskId: number; type: string }) {
+  try {
+    const { data } = yield call(reqWrapper, tasksApi.fetchTask, { taskId });
+  } catch (error) {
+    console.log('fetch task error', error);
+  }
+}
+
 export function* updateTasksOrderSaga({
   dropResult,
 }: {

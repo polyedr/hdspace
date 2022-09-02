@@ -17,4 +17,6 @@ export default function* boardSaga() {
   yield takeLatest(TYPES.BOARD_CREATE_COLUMN, createColumnSaga);
   yield takeLatest(TYPES.BOARD_DELETE_COLUMN, deleteColumnSaga);
   yield takeLatest(TYPES.BOARD_UPDATE_COLUMN, updateColumnSaga);
+
+  
 }

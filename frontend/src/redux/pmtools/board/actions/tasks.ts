@@ -2,12 +2,17 @@ import TYPES from '@Redux/actionTypes';
 // eslint-disable-next-line import/no-cycle
 import { BoardNewTask, BoardTask } from '@Redux/pmtools/types';
 
+export const fetchTask = (taskId: number) => ({
+  type: TYPES.BOARD_FETCH_TASK,
+  taskId,
+});
+
 export const addTask = (task: BoardTask) => ({
   type: TYPES.BOARD_ADD_TASK,
   task,
 });
 
-export const setTasks = (tasks) => ({
+export const setTasks = (tasks: BoardTask[]) => ({
   type: TYPES.BOARD_SET_TASKS,
   tasks,
 });

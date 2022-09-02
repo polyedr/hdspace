@@ -13,11 +13,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
-import Avatar from '@mui/material/Avatar';
-import AvatarGroup from '@mui/material/AvatarGroup';
 import Button from '@mui/material/Button';
 import Column from './Column';
 import { NewColumn } from './NewColumn';
+import Members from './Members';
 
 const ContentWrapper = styled('div')(() => ({
   padding: '20px 0 0 65px',
@@ -53,14 +52,6 @@ const StyledForm = styled('div')(() => ({
         backgroundColor: 'none',
       },
     },
-  },
-}));
-
-const StyledAvatarGroup = styled(AvatarGroup)(() => ({
-  '& .MuiAvatar-root': {
-    width: 32,
-    height: 32,
-    fontSize: 16,
   },
 }));
 
@@ -135,13 +126,13 @@ const Board = () => {
   const columnsToDisplay = useMemo(() => {
     if (searchText.trim().length > 0) {
       return columns.map((column: any) => {
-        const bestResult = fuzzysort.go(searchText.trim(), column.tasks, {
+        const searchResults = fuzzysort.go(searchText.trim(), column.tasks, {
           keys: ['title', 'description'],
         });
 
         return {
           ...column,
-          tasks: bestResult.map((r) => r?.obj),
+          tasks: searchResults.map((r) => r.obj),
         };
       });
     }
@@ -171,35 +162,7 @@ const Board = () => {
                 </IconButton>
               </StyledForm>
             </Grid>
-            <Grid item md="auto" justifyContent="left">
-              <StyledAvatarGroup max={4}>
-                <Avatar
-                  alt="Remy Sharp"
-                  src="/static/images/avatar/1.jpg"
-                  sx={{ width: 32, height: 32 }}
-                />
-                <Avatar
-                  alt="Travis Howard"
-                  src="/static/images/avatar/2.jpg"
-                  sx={{ width: 32, height: 32 }}
-                />
-                <Avatar
-                  alt="Cindy Baker"
-                  src="/static/images/avatar/3.jpg"
-                  sx={{ width: 32, height: 32 }}
-                />
-                <Avatar
-                  alt="Agnes Walker"
-                  src="/static/images/avatar/4.jpg"
-                  sx={{ width: 32, height: 32 }}
-                />
-                <Avatar
-                  alt="Trevor Henderson"
-                  src="/static/images/avatar/5.jpg"
-                  sx={{ width: 32, height: 32 }}
-                />
-              </StyledAvatarGroup>
-            </Grid>
+            <Members />
             <Grid item md={2}>
               <StyledButton variant="contained">Only my tasks</StyledButton>
             </Grid>

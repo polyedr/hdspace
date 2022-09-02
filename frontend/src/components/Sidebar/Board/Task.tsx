@@ -5,10 +5,10 @@ import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import Avatar from '@mui/material/Avatar';
-import { deepOrange } from '@mui/material/colors';
-import { format } from 'date-fns';
+import { differenceInDays, format } from 'date-fns';
+import { BoardTask } from '@Redux/pmtools/types';
 import TaskDialog from './TaskDialog';
+import User from './User';
 
 const Container = styled('div')<{ dragging: boolean }>(({ dragging }) => ({
   padding: '10px 12px',
@@ -46,7 +46,12 @@ const TimeStack = styled(Stack)<{ priority: boolean }>(({ priority }) => ({
   },
 }));
 
-const Task = ({ task, index }) => {
+interface Props {
+  task: BoardTask;
+  index: number;
+}
+
+const Task: React.FC<Props> = ({ task, index }) => {
   const [showDialog, setShowDialog] = useState(false);
 
   const handleShowDialog = useCallback(
@@ -97,7 +102,9 @@ const Task = ({ task, index }) => {
                   direction="row"
                   spacing={1}
                   alignItems="center"
-                  priority
+                  priority={
+                    differenceInDays(Date.parse(task.due_date), new Date()) < 1
+                  }
                 >
                   <ScheduleIcon fontSize="small" />
                   <p>{format(Date.parse(task.due_date), 'dd MMM')}</p>
@@ -107,34 +114,8 @@ const Task = ({ task, index }) => {
               )}
 
               <Stack direction="row" spacing={0.5}>
-                <Avatar
-                  sx={{
-                    bgcolor: deepOrange[500],
-                    width: 24,
-                    height: 24,
-                    fontSize: 12,
-                    lineHeight: 0.8,
-                  }}
-                  alt="Remy Sharp"
-                  src="/broken-image.jpg"
-                >
-                  B
-                </Avatar>
-                <Avatar
-                  sx={{
-                    bgcolor: deepOrange[500],
-                    width: 24,
-                    height: 24,
-                    fontSize: 12,
-                    lineHeight: 0.8,
-                  }}
-                  alt="Remy Sharp"
-                  src="/broken-image.jpg"
-                />
-                <Avatar
-                  src="/broken-image.jpg"
-                  sx={{ width: 24, height: 24, fontSize: 12, lineHeight: 0.8 }}
-                />
+                {task.assignee ? <User user={task.assignee} /> : null}
+                {task.author ? <User user={task.author} /> : null}
               </Stack>
             </Stack>
           </Container>
