@@ -749,7 +749,7 @@ class AssignPermissionsmapProject(APIView):
         try:
             o = urlparse(request.build_absolute_uri())
             avatar = "https://" + o.netloc + MEDIA_URL + str(current_profile.avatar)
-            # print(avatar)
+            print("avatar", avatar)
         except Exception:
             pass
 
@@ -763,7 +763,7 @@ class AssignPermissionsmapProject(APIView):
         teams = []
         try:
             teams = schat_users["users"][0]["teams"]
-            print("teams", teams)
+            # print("teams", teams)
         except Exception:
             pass
         finally:
@@ -790,7 +790,7 @@ class AssignPermissionsmapProject(APIView):
             else:
                 print("non teams0")
                 teams.append(str(project.id))
-                print("teams1", teams)
+                # print("teams1", teams)
                 schat_client.update_user_partial(
                     {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
                 )

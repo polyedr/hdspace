@@ -421,6 +421,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
         try:
             o = urlparse(self.context["request"].build_absolute_uri())
             avatar = "https://" + o.netloc + MEDIA_URL + str(current_profile.avatar)
+            # print("avatar", avatar)
         except Exception:
             pass
 
@@ -430,7 +431,7 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
         # A flag to set number of projects available manually instead of the subscripitons value
         approved = current_profile.approved
         can_create_projects = 1
-        print("is_superuser: ", is_superuser, "approved: ", approved)
+        # print("is_superuser: ", is_superuser, "approved: ", approved)
         now_projects = Project.objects.filter(user=current_user).count()
         if not is_superuser:
             can_create_projects = 0
@@ -602,6 +603,7 @@ class ColumnTaskCommentSerializer(serializers.ModelSerializer):
             "id": {"read_only": True},
             "created": {"read_only": True},
             "modified": {"read_only": True},
+            "user": {"read_only": True},
         }
 
 class ColumnTaskCheckitemSerializer(serializers.ModelSerializer):
