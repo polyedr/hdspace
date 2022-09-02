@@ -25,7 +25,7 @@ import Fade from '@mui/material/Fade';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CircleIcon from '@mui/icons-material/Circle';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
-import { Comment } from './Comment';
+import Comment from './Comments';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -36,14 +36,14 @@ const Dialog = styled(MuiDialog)({
 });
 
 const InfoGrid = styled(Grid)({
-  '& span': {
+  '& > span': {
     color: '#81818E',
     fontSize: 14,
     fontWeight: 500,
     margin: '16px 0',
   },
 
-  '& p': {
+  '& > p': {
     fontSize: 16,
     color: '#81818E',
   },
