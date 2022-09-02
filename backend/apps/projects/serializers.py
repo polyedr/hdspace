@@ -643,7 +643,7 @@ class SubColumnTaskSerializer(serializers.ModelSerializer):
         fields = ("id", "created", "due_date", "status", "title")
 
 
-class ColumnTaskSerializer(serializers.ModelSerializer):
+class ColumnTaskSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField(required=False, allow_null=True)
     colour = serializers.CharField(required=False, allow_null=True)
     comments = ColumnTaskCommentSerializer(many=True, required=False)
