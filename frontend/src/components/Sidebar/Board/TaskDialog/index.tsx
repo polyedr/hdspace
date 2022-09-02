@@ -5,7 +5,7 @@ import {
   Dialog as MuiDialog,
   DialogContent,
   DialogTitle,
-  Grid as MuiGrid,
+  Grid,
   Menu as MuiMenu,
   MenuItem as MuiMenuItem,
   Table,
@@ -25,6 +25,7 @@ import Fade from '@mui/material/Fade';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CircleIcon from '@mui/icons-material/Circle';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import { Comment } from './Comment';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -34,19 +35,17 @@ const Dialog = styled(MuiDialog)({
   },
 });
 
-const Grid = styled(MuiGrid)({
-  '&.InfoGrid': {
-    '& span': {
-      color: '#81818E',
-      fontSize: 14,
-      fontWeight: 500,
-      margin: '16px 0',
-    },
+const InfoGrid = styled(Grid)({
+  '& span': {
+    color: '#81818E',
+    fontSize: 14,
+    fontWeight: 500,
+    margin: '16px 0',
+  },
 
-    '& p': {
-      fontSize: 16,
-      color: '#81818E',
-    },
+  '& p': {
+    fontSize: 16,
+    color: '#81818E',
   },
 });
 
@@ -80,11 +79,6 @@ const IconWrapper = styled('div')({
     color: '#81818E',
     fontSize: 16,
   },
-});
-
-const Avatar = styled(MuiAvatar)({
-  width: 32,
-  height: 32,
 });
 
 const AssigneeAvatar = styled(MuiAvatar)({
@@ -370,7 +364,7 @@ const TaskDialog = ({ task, open, onClose }) => {
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={8} className="InfoGrid">
+          <InfoGrid item xs={8}>
             <Stack direction="row" spacing={2} alignItems="center">
               <span>Add Tag</span>
               <IconWrapper>
@@ -395,24 +389,9 @@ const TaskDialog = ({ task, open, onClose }) => {
             </Stack>
             <Stack>
               <span>Comments</span>
-              <Grid container spacing={1}>
-                <Grid item md="auto">
-                  <Avatar
-                    alt="Travis Howard"
-                    src="/static/images/avatar/2.jpg"
-                  />
-                </Grid>
-                <Grid item md={10}>
-                  <TextField
-                    type="text"
-                    placeholder="Add a comment"
-                    fullWidth
-                    size="small"
-                  />
-                </Grid>
-              </Grid>
+              <Comment />
             </Stack>
-          </Grid>
+          </InfoGrid>
           <Grid item xs={4}>
             <TableContainer>
               <Table aria-label="simple table">
