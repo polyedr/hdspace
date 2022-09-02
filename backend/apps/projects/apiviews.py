@@ -879,8 +879,28 @@ class DisplayPermissionsAllusers(APIView):
         rp_users_list = []
         for user in users_list:
             userseries = UserSerializer(user)
-            print(userseries.data)
+            '''
+            avatar = ""
+            try:
+                o = urlparse(request.build_absolute_uri())
+                avatar = "https://" + o.netloc + MEDIA_URL + str(user.profile.avatar)
+                print("avatar", avatar)
+            except Exception:
+                pass
+            '''
+            # user.profile.avatar = avatar
             rp = get_perms(user, project)
+            avatar = userseries.data['profile'].pop("avatar")
+            if avatar:
+                try:
+                    o = urlparse(request.build_absolute_uri())
+                    avatar = "https://" + o.netloc + MEDIA_URL + str(user.profile.avatar)
+                    # print("avatar", avatar)
+                except Exception:
+                    pass
+
+            userseries.data['profile']['avatar'] = avatar
+            # print(avatar)
             rdictionary = {"permissions": rp, "userdata": userseries.data}
             rp_users_list.append(rdictionary)
 
