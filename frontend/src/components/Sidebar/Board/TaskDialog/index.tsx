@@ -49,7 +49,7 @@ const InfoGrid = styled(Grid)({
   },
 });
 
-const EditIconWrapper = styled('div')({
+const EditIconButton = styled(MuiButton)({
   backgroundColor: '#F3F4F6',
   width: 32,
   height: 32,
@@ -58,6 +58,7 @@ const EditIconWrapper = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  minWidth: 'auto',
 
   '& svg': {
     color: '#81818E',
@@ -65,7 +66,7 @@ const EditIconWrapper = styled('div')({
   },
 });
 
-const IconWrapper = styled('div')({
+const AddIconButton = styled(MuiButton)({
   backgroundColor: '#F3F4F6',
   width: 24,
   height: 24,
@@ -74,6 +75,7 @@ const IconWrapper = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  minWidth: 'auto',
 
   '& svg': {
     color: '#81818E',
@@ -224,14 +226,17 @@ const TableCell = styled(MuiTableCell)({
   fontSize: 14,
 });
 
-const AuthorStack = styled(Stack)({
+const AuthorButton = styled(MuiButton)({
   backgroundColor: '#F3F4F6',
   borderRadius: '16px',
   height: 24,
+  padding: 0,
 
   '& span': {
     padding: '3px 8px 3px 3px',
     color: '#2A2A2D',
+    fontSize: 14,
+    textTransform: 'capitalize',
   },
 });
 
@@ -358,18 +363,18 @@ const TaskDialog = ({ task, open, onClose }) => {
     >
       <DialogTitle display="flex" alignItems="center">
         {task.title}
-        <EditIconWrapper>
+        <EditIconButton variant="text">
           <EditIcon />
-        </EditIconWrapper>
+        </EditIconButton>
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           <InfoGrid item xs={8}>
             <Stack direction="row" spacing={2} alignItems="center">
               <span>Add Tag</span>
-              <IconWrapper>
+              <AddIconButton variant="text">
                 <AddIcon />
-              </IconWrapper>
+              </AddIconButton>
             </Stack>
             <Stack>
               <span>Description</span>
@@ -377,15 +382,15 @@ const TaskDialog = ({ task, open, onClose }) => {
             </Stack>
             <Stack direction="row" spacing={2} alignItems="center">
               <span>Related tasks</span>
-              <IconWrapper>
+              <AddIconButton variant="text">
                 <AddIcon />
-              </IconWrapper>
+              </AddIconButton>
             </Stack>
             <Stack direction="row" spacing={2} alignItems="center">
               <span>Checklist</span>
-              <IconWrapper>
+              <AddIconButton variant="text">
                 <AddIcon />
-              </IconWrapper>
+              </AddIconButton>
             </Stack>
             <Stack>
               <span>Comments</span>
@@ -409,9 +414,9 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Due Date
                     </TableCell>
                     <TableCell>
-                      <IconWrapper>
+                      <AddIconButton variant="text">
                         <AddIcon />
-                      </IconWrapper>
+                      </AddIconButton>
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -432,9 +437,9 @@ const TaskDialog = ({ task, open, onClose }) => {
                           alt="Cindy Baker"
                           src="/static/images/avatar/3.jpg"
                         />
-                        <IconWrapper>
+                        <AddIconButton variant="text">
                           <AddIcon />
-                        </IconWrapper>
+                        </AddIconButton>
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -443,9 +448,9 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Responsible
                     </TableCell>
                     <TableCell>
-                      <IconWrapper>
+                      <AddIconButton variant="text">
                         <AddIcon />
-                      </IconWrapper>
+                      </AddIconButton>
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -469,9 +474,7 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Time
                     </TableCell>
                     <TableCell>
-                      <IconWrapper>
-                        <AddIcon />
-                      </IconWrapper>
+                      <TextField type="number" variant="standard" />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -479,19 +482,13 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Author
                     </TableCell>
                     <TableCell>
-                      <AuthorStack
-                        direction="row"
-                        spacing={0.5}
-                        ml={1.3}
-                        display="inline-flex"
-                        alignItems="center"
-                      >
+                      <AuthorButton variant="text">
                         <AuthorAvatar
                           alt="Remy Sharp"
                           src="/static/images/avatar/1.jpg"
                         />
                         <span>Aleksandra Sayapina</span>
-                      </AuthorStack>
+                      </AuthorButton>
                     </TableCell>
                   </TableRow>
                 </TableBody>
