@@ -6,7 +6,7 @@ import {
   styled,
   TextField as MuiTextField,
 } from '@mui/material';
-import MUIRichTextEditor from 'mui-rte';
+import Editor from './CommentEditor';
 
 const Avatar = styled(MuiAvatar)({
   width: 32,
@@ -41,12 +41,7 @@ const CommentInput = () => {
       <Grid item md={10}>
         {showEditor ? (
           <div>
-            <MUIRichTextEditor
-              label="Add a comment"
-              inlineToolbar
-              controls={['bold', 'italic', 'underline', 'code']}
-            />
-            <br />
+            <Editor />
             <Button>Save</Button>
             <Button onClick={() => setShowEditor(false)}>Cancel</Button>
           </div>
