@@ -18,7 +18,6 @@ import {
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import { styled } from '@mui/material/styles';
-import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import Fade from '@mui/material/Fade';
@@ -26,6 +25,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CircleIcon from '@mui/icons-material/Circle';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import Comment from './Comments';
+import TaskName from './TaskName';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -46,23 +46,6 @@ const InfoGrid = styled(Grid)({
   '& > p': {
     fontSize: 16,
     color: '#81818E',
-  },
-});
-
-const EditIconButton = styled(MuiButton)({
-  backgroundColor: '#F3F4F6',
-  width: 32,
-  height: 32,
-  borderRadius: '50%',
-  marginLeft: 10,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minWidth: 'auto',
-
-  '& svg': {
-    color: '#81818E',
-    fontSize: 16,
   },
 });
 
@@ -362,10 +345,7 @@ const TaskDialog = ({ task, open, onClose }) => {
       maxWidth="lg"
     >
       <DialogTitle display="flex" alignItems="center">
-        {task.title}
-        <EditIconButton variant="text">
-          <EditIcon />
-        </EditIconButton>
+        <TaskName task={task} />
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
