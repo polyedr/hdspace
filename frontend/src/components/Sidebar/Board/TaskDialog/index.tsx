@@ -26,7 +26,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CircleIcon from '@mui/icons-material/Circle';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import Comment from './Comments';
-import TaskName from './TaskName';
+import TaskTitle from './TaskTitle';
+import DueDate from './DueDate';
+import { IconButton } from './StyledComponents';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -52,23 +54,6 @@ const InfoGrid = styled(Grid)({
   '& p': {
     fontSize: 16,
     color: '#81818E',
-  },
-});
-
-const AddIconButton = styled(MuiButton)({
-  backgroundColor: '#F3F4F6',
-  width: 24,
-  height: 24,
-  borderRadius: '50%',
-  marginLeft: 10,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minWidth: 'auto',
-
-  '& svg': {
-    color: '#81818E',
-    fontSize: 16,
   },
 });
 
@@ -351,39 +336,37 @@ const TaskDialog = ({ task, open, onClose }) => {
       maxWidth="lg"
     >
       <DialogTitle display="flex" alignItems="center">
-        <TaskName task={task} />
+        <TaskTitle task={task} />
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           <InfoGrid item xs={8}>
-            <div className="InfoSection">
-              <Stack direction="row" spacing={2} alignItems="center">
-                <span>Add Tag</span>
-                <AddIconButton variant="text">
-                  <AddIcon />
-                </AddIconButton>
-              </Stack>
-              <Stack>
-                <span>Description</span>
-                <p>Add Description</p>
-              </Stack>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <span>Related tasks</span>
-                <AddIconButton variant="text">
-                  <AddIcon />
-                </AddIconButton>
-              </Stack>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <span>Checklist</span>
-                <AddIconButton variant="text">
-                  <AddIcon />
-                </AddIconButton>
-              </Stack>
-              <Stack>
-                <span>Comments</span>
-                <Comment />
-              </Stack>
-            </div>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <span>Add Tag</span>
+              <IconButton variant="text">
+                <AddIcon />
+              </IconButton>
+            </Stack>
+            <Stack>
+              <span>Description</span>
+              <p>Add Description</p>
+            </Stack>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <span>Related tasks</span>
+              <IconButton variant="text">
+                <AddIcon />
+              </IconButton>
+            </Stack>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <span>Checklist</span>
+              <IconButton variant="text">
+                <AddIcon />
+              </IconButton>
+            </Stack>
+            <Stack>
+              <span>Comments</span>
+              <Comment />
+            </Stack>
           </InfoGrid>
           <Grid item xs={4}>
             <TableContainer>
@@ -402,9 +385,7 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Due Date
                     </TableCell>
                     <TableCell>
-                      <AddIconButton variant="text">
-                        <AddIcon />
-                      </AddIconButton>
+                      <DueDate />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -425,9 +406,9 @@ const TaskDialog = ({ task, open, onClose }) => {
                           alt="Cindy Baker"
                           src="/static/images/avatar/3.jpg"
                         />
-                        <AddIconButton variant="text">
+                        <IconButton variant="text">
                           <AddIcon />
-                        </AddIconButton>
+                        </IconButton>
                       </Stack>
                     </TableCell>
                   </TableRow>
@@ -436,9 +417,9 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Responsible
                     </TableCell>
                     <TableCell>
-                      <AddIconButton variant="text">
+                      <IconButton variant="text">
                         <AddIcon />
-                      </AddIconButton>
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                   <TableRow>
