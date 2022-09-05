@@ -19,7 +19,6 @@ import {
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import { styled } from '@mui/material/styles';
-import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import Fade from '@mui/material/Fade';
@@ -31,6 +30,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Comment from './Comments';
+import TaskName from './TaskName';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -56,23 +56,6 @@ const InfoGrid = styled(Grid)({
   '& p': {
     fontSize: 16,
     color: '#81818E',
-  },
-});
-
-const EditIconButton = styled(MuiButton)({
-  backgroundColor: '#F3F4F6',
-  width: 32,
-  height: 32,
-  borderRadius: '50%',
-  marginLeft: 10,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minWidth: 'auto',
-
-  '& svg': {
-    color: '#81818E',
-    fontSize: 16,
   },
 });
 
@@ -372,33 +355,7 @@ const TaskDialog = ({ task, open, onClose }) => {
       maxWidth="lg"
     >
       <DialogTitle display="flex" alignItems="center">
-        <Grid container alignItems="center">
-          <Grid item xs={6} display="flex" alignItems="center">
-            {task.title}
-            <EditIconButton variant="text">
-              <EditIcon />
-            </EditIconButton>
-          </Grid>
-          <Grid item xs={6} textAlign="right" pr={2}>
-            <NotificationsIcon className='BellIcon' />
-            <ShareIcon />
-            <SettingsIcon />
-            {onClose ? (
-              <IconButton
-                aria-label="close"
-                onClick={onClose}
-                sx={{
-                  position: 'absolute',
-                  right: 8,
-                  top: 8,
-                  color: (theme) => theme.palette.grey[500],
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-            ) : null}
-          </Grid>
-        </Grid>
+        <TaskName task={task} />
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
