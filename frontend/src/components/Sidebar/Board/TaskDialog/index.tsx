@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  IconButton,
   Menu as MuiMenu,
   MenuItem as MuiMenuItem,
   Table,
@@ -25,6 +26,10 @@ import Fade from '@mui/material/Fade';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CircleIcon from '@mui/icons-material/Circle';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import CloseIcon from '@mui/icons-material/Close';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import ShareIcon from '@mui/icons-material/Share';
+import SettingsIcon from '@mui/icons-material/Settings';
 import Comment from './Comments';
 
 const Dialog = styled(MuiDialog)({
@@ -36,14 +41,19 @@ const Dialog = styled(MuiDialog)({
 });
 
 const InfoGrid = styled(Grid)({
-  '& > span': {
+  '& .Infosection': {
+    overflowY: 'scroll',
+    maxHeight: 'calc(100vh - 200px)',
+  },
+
+  '& span': {
     color: '#81818E',
     fontSize: 14,
     fontWeight: 500,
     margin: '16px 0',
   },
 
-  '& > p': {
+  '& p': {
     fontSize: 16,
     color: '#81818E',
   },
@@ -362,40 +372,65 @@ const TaskDialog = ({ task, open, onClose }) => {
       maxWidth="lg"
     >
       <DialogTitle display="flex" alignItems="center">
-        {task.title}
-        <EditIconButton variant="text">
-          <EditIcon />
-        </EditIconButton>
+        <Grid container alignItems="center">
+          <Grid item xs={6} display="flex" alignItems="center">
+            {task.title}
+            <EditIconButton variant="text">
+              <EditIcon />
+            </EditIconButton>
+          </Grid>
+          <Grid item xs={6} textAlign="right" pr={2}>
+            <NotificationsIcon className='BellIcon' />
+            <ShareIcon />
+            <SettingsIcon />
+            {onClose ? (
+              <IconButton
+                aria-label="close"
+                onClick={onClose}
+                sx={{
+                  position: 'absolute',
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            ) : null}
+          </Grid>
+        </Grid>
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           <InfoGrid item xs={8}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <span>Add Tag</span>
-              <AddIconButton variant="text">
-                <AddIcon />
-              </AddIconButton>
-            </Stack>
-            <Stack>
-              <span>Description</span>
-              <p>Add Description</p>
-            </Stack>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <span>Related tasks</span>
-              <AddIconButton variant="text">
-                <AddIcon />
-              </AddIconButton>
-            </Stack>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <span>Checklist</span>
-              <AddIconButton variant="text">
-                <AddIcon />
-              </AddIconButton>
-            </Stack>
-            <Stack>
-              <span>Comments</span>
-              <Comment />
-            </Stack>
+            <div className="InfoSection">
+              <Stack direction="row" spacing={2} alignItems="center">
+                <span>Add Tag</span>
+                <AddIconButton variant="text">
+                  <AddIcon />
+                </AddIconButton>
+              </Stack>
+              <Stack>
+                <span>Description</span>
+                <p>Add Description</p>
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <span>Related tasks</span>
+                <AddIconButton variant="text">
+                  <AddIcon />
+                </AddIconButton>
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <span>Checklist</span>
+                <AddIconButton variant="text">
+                  <AddIcon />
+                </AddIconButton>
+              </Stack>
+              <Stack>
+                <span>Comments</span>
+                <Comment />
+              </Stack>
+            </div>
           </InfoGrid>
           <Grid item xs={4}>
             <TableContainer>
