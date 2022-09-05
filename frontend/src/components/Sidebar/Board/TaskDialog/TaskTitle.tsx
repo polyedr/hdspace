@@ -22,7 +22,7 @@ const IconButton = styled(MuiButton)({
   },
 });
 
-const TaskName = ({ task }) => {
+const TaskTitle = ({ task }) => {
   const [editMode, setEditMode] = useState(false);
   const [taskTitle, setTaskTitle] = useState(task.title);
 
@@ -68,4 +68,4 @@ const TaskName = ({ task }) => {
   );
 };
 
-export default TaskName;
+export default TaskTitle;

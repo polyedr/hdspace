@@ -139,6 +139,7 @@
     "@mui/icons-material": "^5.10.3",
     "@mui/material": "^5.10.3",
     "@mui/styles": "^5.10.3",
+    "@mui/x-date-pickers": "^5.0.0",
     "@react-hook/resize-observer": "^1.1.0",
     "@types/classnames": "^2.2.10",
     "@types/ramda": "^0.26.44",
