@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  IconButton,
   Menu as MuiMenu,
   MenuItem as MuiMenuItem,
   Table,

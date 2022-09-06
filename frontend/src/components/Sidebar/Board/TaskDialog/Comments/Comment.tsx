@@ -6,6 +6,7 @@ import {
   Button as MuiButton,
 } from '@mui/material';
 import React from 'react';
+import CircleIcon from '@mui/icons-material/Circle';
 
 const Avatar = styled(MuiAvatar)({
   width: 32,
@@ -14,7 +15,7 @@ const Avatar = styled(MuiAvatar)({
 
 const CommentUserName = styled('h5')({
   fontSize: 14,
-  fontWeight: 500,
+  fontWeight: 600,
   margin: 0,
   color: '#2A2A2D',
 });
@@ -34,6 +35,13 @@ const Button = styled(MuiButton)({
   textTransform: 'capitalize',
 });
 
+const IconWrapper = styled('div')({
+  '& svg': {
+    fontSize: 3,
+    color: '#81818E',
+  },
+});
+
 const Comment = () => {
   return (
     <Grid container spacing={1}>
@@ -50,7 +58,9 @@ const Comment = () => {
         </p>
         <Stack direction="row" spacing={1.5} alignItems="center">
           <Button variant="text">Edit</Button>
-          <span>.</span>
+          <IconWrapper>
+            <CircleIcon />
+          </IconWrapper>
           <Button variant="text">Delete</Button>
         </Stack>
       </Grid>

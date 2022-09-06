@@ -14,7 +14,15 @@ import {
 } from 'slate';
 import { withHistory } from 'slate-history';
 
+import { Grid } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import { styled } from '@mui/material/styles';
 import { Button, Icon, Toolbar } from './Components';
+
+const SendButton = styled(SendIcon)({
+  color: '#81818E',
+  marginTop: '16px',
+});
 
 const HOTKEYS = {
   'mod+b': 'bold',
@@ -36,7 +44,7 @@ const CommentEditor = () => {
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
-        placeholder="Enter some rich text…"
+        placeholder="Add a comment…"
         spellCheck
         autoFocus
         onKeyDown={(event) => {
@@ -49,21 +57,28 @@ const CommentEditor = () => {
           }
         }}
       />
-      <Toolbar>
-        <MarkButton format="bold" icon="format_bold" />
-        <MarkButton format="italic" icon="format_italic" />
-        <MarkButton format="underline" icon="format_underlined" />
-        <MarkButton format="code" icon="code" />
-        <BlockButton format="heading-one" icon="looks_one" />
-        <BlockButton format="heading-two" icon="looks_two" />
-        <BlockButton format="block-quote" icon="format_quote" />
-        <BlockButton format="numbered-list" icon="format_list_numbered" />
-        <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-        <BlockButton format="left" icon="format_align_left" />
-        <BlockButton format="center" icon="format_align_center" />
-        <BlockButton format="right" icon="format_align_right" />
-        <BlockButton format="justify" icon="format_align_justify" />
-      </Toolbar>
+      <Grid container alignItems="center">
+        <Grid item md={9}>
+          <Toolbar>
+            <MarkButton format="bold" icon="format_bold" />
+            <MarkButton format="italic" icon="format_italic" />
+            <MarkButton format="underline" icon="format_underlined" />
+            <MarkButton format="code" icon="code" />
+            <BlockButton format="heading-one" icon="looks_one" />
+            <BlockButton format="heading-two" icon="looks_two" />
+            <BlockButton format="block-quote" icon="format_quote" />
+            <BlockButton format="numbered-list" icon="format_list_numbered" />
+            <BlockButton format="bulleted-list" icon="format_list_bulleted" />
+            <BlockButton format="left" icon="format_align_left" />
+            <BlockButton format="center" icon="format_align_center" />
+            <BlockButton format="right" icon="format_align_right" />
+            <BlockButton format="justify" icon="format_align_justify" />
+          </Toolbar>
+        </Grid>
+        <Grid item md={3} textAlign="right">
+          <SendButton />
+        </Grid>
+      </Grid>
     </Slate>
   );
 };
