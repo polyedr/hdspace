@@ -2,7 +2,7 @@ import { Avatar, Tooltip } from '@mui/material';
 import React from 'react';
 import { deepOrange } from '@mui/material/colors';
 
-function username(user) {
+export function username(user) {
   if (user.firstName || user.lastName) {
     return `${user.firstName} ${user.lastName}`;
   }

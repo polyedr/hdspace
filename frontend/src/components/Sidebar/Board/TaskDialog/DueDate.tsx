@@ -24,7 +24,7 @@ const DueDate = () => {
 
   return (
     <>
-      <IconButton onClick={handleOpen} variant="text">
+      <IconButton onClick={handleOpen}>
         <AddIcon />
       </IconButton>
       <Popover
@@ -43,6 +43,7 @@ const DueDate = () => {
           value={value}
           onChange={(newValue) => {
             setValue(newValue);
+            handleClose();
           }}
           renderInput={(params) => <TextField {...params} />}
         />

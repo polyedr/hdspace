@@ -6,8 +6,6 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  Menu as MuiMenu,
-  MenuItem as MuiMenuItem,
   Table,
   TableBody,
   TableCell as MuiTableCell,
@@ -20,14 +18,14 @@ import { TransitionProps } from '@mui/material/transitions';
 import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
-import Fade from '@mui/material/Fade';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import CircleIcon from '@mui/icons-material/Circle';
-import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import Comment from './Comments';
 import TaskTitle from './TaskTitle';
 import DueDate from './DueDate';
 import { IconButton } from './StyledComponents';
+import Priority from './Priority';
+import Status from './Status';
+import MemberPicker from './MemberPicker';
+import Description from './Description';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -61,113 +59,6 @@ const AuthorAvatar = styled(MuiAvatar)({
   width: 24,
   height: 24,
   fontSize: 14,
-});
-
-const Menu = styled(MuiMenu)({
-  '& .MuiPaper-root': {
-    boxShadow:
-      '0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.08) !important',
-  },
-});
-
-const StatusDropDownButton = styled(MuiButton)({
-  fontSize: 14,
-  fontWeight: 500,
-  textTransform: 'capitalize',
-  padding: '0 16px',
-
-  '& .CircleIcon': {
-    fontSize: '8px !important',
-  },
-});
-
-const StatusMenuItem = styled(MuiMenuItem)({
-  fontSize: 14,
-  fontWeight: 500,
-  padding: '8px 16px',
-
-  '& svg': {
-    fontSize: 8,
-    marginRight: 5,
-  },
-
-  '&:first-child': {
-    color: '#5064FF',
-  },
-
-  '&:nth-child(2)': {
-    color: '#81818E',
-  },
-
-  '&:nth-child(3)': {
-    color: '#1CC09F',
-  },
-
-  '&:nth-child(4)': {
-    color: '#FAB200',
-  },
-
-  '&:hover': {
-    backgroundColor: 'rgba(80, 100, 255, 0.1)',
-  },
-});
-
-const PriorityDropDownButton = styled(MuiButton)({
-  fontSize: 14,
-  fontWeight: 500,
-  textTransform: 'capitalize',
-  padding: '0 16px',
-  color: '#2A2A2D',
-
-  '& .SignalIcon': {
-    fontSize: '14px !important',
-  },
-});
-
-const PriorityMenuItem = styled(MuiMenuItem)({
-  fontSize: 14,
-  fontWeight: 500,
-  padding: '8px 16px',
-  color: '#2A2A2D',
-
-  '& svg': {
-    fontSize: 16,
-    marginRight: 5,
-  },
-
-  '&:first-child': {
-    '& svg': {
-      color: '#EF3052',
-    },
-  },
-
-  '&:nth-child(2)': {
-    '& svg': {
-      color: '#EF3052',
-    },
-  },
-
-  '&:nth-child(3)': {
-    '& svg': {
-      color: '#FAB200',
-    },
-  },
-
-  '&:nth-child(4)': {
-    '& svg': {
-      color: '#5064FF',
-    },
-  },
-
-  '&:nth-child(5)': {
-    '& svg': {
-      color: '#5064FF',
-    },
-  },
-
-  '&:hover': {
-    backgroundColor: 'rgba(80, 100, 255, 0.1)',
-  },
 });
 
 const TextField = styled(MuiTextField)({
@@ -217,109 +108,6 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const StatusDropDown = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <div>
-      <StatusDropDownButton
-        id="fade-button"
-        aria-controls={open ? 'fade-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
-        startIcon={<CircleIcon className="CircleIcon" />}
-      >
-        In Process
-      </StatusDropDownButton>
-      <Menu
-        id="fade-menu"
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Fade}
-      >
-        <StatusMenuItem onClick={handleClose}>
-          <CircleIcon fontSize="small" /> In Progress
-        </StatusMenuItem>
-        <StatusMenuItem onClick={handleClose}>
-          <CircleIcon fontSize="small" /> Paused
-        </StatusMenuItem>
-        <StatusMenuItem onClick={handleClose}>
-          <CircleIcon fontSize="small" /> Accepted
-        </StatusMenuItem>
-        <StatusMenuItem onClick={handleClose}>
-          <CircleIcon fontSize="small" /> Waiting for Review
-        </StatusMenuItem>
-      </Menu>
-    </div>
-  );
-};
-
-const PriorityDropDown = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  return (
-    <div>
-      <PriorityDropDownButton
-        id="fade-button"
-        aria-controls={open ? 'fade-menu' : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
-        startIcon={<SignalCellularAltIcon className="SignalIcon" />}
-      >
-        Medium
-      </PriorityDropDownButton>
-      <Menu
-        id="fade-menu"
-        MenuListProps={{
-          'aria-labelledby': 'fade-button',
-        }}
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Fade}
-      >
-        <PriorityMenuItem onClick={handleClose}>
-          <SignalCellularAltIcon fontSize="small" /> Highest
-        </PriorityMenuItem>
-        <PriorityMenuItem onClick={handleClose}>
-          <SignalCellularAltIcon fontSize="small" /> High
-        </PriorityMenuItem>
-        <PriorityMenuItem onClick={handleClose}>
-          <SignalCellularAltIcon fontSize="small" /> Medium
-        </PriorityMenuItem>
-        <PriorityMenuItem onClick={handleClose}>
-          <SignalCellularAltIcon fontSize="small" /> Low
-        </PriorityMenuItem>
-        <PriorityMenuItem onClick={handleClose}>
-          <SignalCellularAltIcon fontSize="small" /> Lowles
-        </PriorityMenuItem>
-      </Menu>
-    </div>
-  );
-};
-
 const TaskDialog = ({ task, open, onClose }) => {
   return (
     <Dialog
@@ -337,23 +125,23 @@ const TaskDialog = ({ task, open, onClose }) => {
           <InfoGrid item xs={8}>
             <Stack direction="row" spacing={2} alignItems="center">
               <span>Add Tag</span>
-              <IconButton variant="text">
+              <IconButton>
                 <AddIcon />
               </IconButton>
             </Stack>
             <Stack>
               <span>Description</span>
-              <p>Add Description</p>
+              <Description />
             </Stack>
             <Stack direction="row" spacing={2} alignItems="center">
               <span>Related tasks</span>
-              <IconButton variant="text">
+              <IconButton>
                 <AddIcon />
               </IconButton>
             </Stack>
             <Stack direction="row" spacing={2} alignItems="center">
               <span>Checklist</span>
-              <IconButton variant="text">
+              <IconButton>
                 <AddIcon />
               </IconButton>
             </Stack>
@@ -371,7 +159,7 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Status
                     </TableCell>
                     <TableCell>
-                      <StatusDropDown />
+                      <Status />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -387,23 +175,7 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Assignee
                     </TableCell>
                     <TableCell>
-                      <Stack direction="row" spacing={0.5} ml={1.3}>
-                        <AssigneeAvatar
-                          alt="Remy Sharp"
-                          src="/static/images/avatar/1.jpg"
-                        />
-                        <AssigneeAvatar
-                          alt="Travis Howard"
-                          src="/static/images/avatar/2.jpg"
-                        />
-                        <AssigneeAvatar
-                          alt="Cindy Baker"
-                          src="/static/images/avatar/3.jpg"
-                        />
-                        <IconButton variant="text">
-                          <AddIcon />
-                        </IconButton>
-                      </Stack>
+                      <MemberPicker />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -411,8 +183,8 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Responsible
                     </TableCell>
                     <TableCell>
-                      <IconButton variant="text">
-                        <AddIcon />
+                      <IconButton>
+                        <MemberPicker />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -421,7 +193,7 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Priority
                     </TableCell>
                     <TableCell>
-                      <PriorityDropDown />
+                      <Priority />
                     </TableCell>
                   </TableRow>
                   <TableRow>
