@@ -76,6 +76,7 @@ const CommentEditor = () => {
             <MarkButton format="bold" icon="format_bold" />
             <MarkButton format="italic" icon="format_italic" />
             <MarkButton format="underline" icon="format_underlined" />
+            <MarkButton format="strikethrough" icon="format_strikethrough" />
             <MarkButton format="code" icon="code" />
             <BlockButton format="heading-one" icon="looks_one" />
             <BlockButton format="heading-two" icon="looks_two" />

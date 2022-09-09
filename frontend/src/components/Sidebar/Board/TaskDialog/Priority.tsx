@@ -1,65 +1,64 @@
-import { Menu as MuiMenu, Fade, Button, MenuItem } from '@mui/material';
-import { styled } from '@mui/styles';
+import { Menu as MuiMenu, Fade, Button, MenuItem, styled } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
+import BarIcon from '../BarIcon';
 
-const PriorityMenu = styled(Button)({
-  fontSize: 14,
-  fontWeight: 500,
-  textTransform: 'capitalize',
-  padding: '0 16px',
-  color: '#2A2A2D',
+enum PriorityOptions {
+  Highest = 'Highest',
+  High = 'High',
+  Medium = 'Medium',
+  Low = 'Low',
+  Lowest = 'Lowest',
+}
 
-  '& .SignalIcon': {
-    fontSize: '14px !important',
-  },
+const colors = {
+  [PriorityOptions.Highest]: '#EF3052',
+  [PriorityOptions.High]: '#EF3052',
+  [PriorityOptions.Medium]: '#FAB200',
+  [PriorityOptions.Low]: '#5064FF',
+  [PriorityOptions.Lowest]: '#5064FF',
+};
+
+const PriorityMenu = styled(Button)<{
+  priorityType: keyof typeof PriorityOptions;
+}>(({ priorityType }) => {
+  return {
+    fontSize: 14,
+    fontWeight: 500,
+    textTransform: 'capitalize',
+    padding: '0 16px',
+    color: '#5064FF',
+
+    // colors[priorityType]
+
+    '& .SignalIcon': {
+      fontSize: '14px !important',
+    },
+  };
 });
 
-const PriorityMenuItem = styled(MenuItem)({
-  fontSize: 14,
-  fontWeight: 500,
-  padding: '8px 16px',
-  color: '#2A2A2D',
+const PriorityMenuItem = styled(MenuItem)<{
+  priorityType: keyof typeof PriorityOptions;
+}>(({ priorityType }) => {
+  const color = colors[priorityType];
 
-  '& svg': {
-    fontSize: 16,
-    marginRight: 5,
-  },
+  return {
+    fontSize: 14,
+    fontWeight: 500,
+    padding: '8px 16px',
+    color: '#2A2A2D',
 
-  '&:first-child': {
     '& svg': {
-      color: '#EF3052',
+      fontSize: 16,
+      marginRight: 5,
+      color,
     },
-  },
 
-  '&:nth-child(2)': {
-    '& svg': {
-      color: '#EF3052',
+    '&:hover': {
+      backgroundColor: 'rgba(80, 100, 255, 0.1)',
     },
-  },
-
-  '&:nth-child(3)': {
-    '& svg': {
-      color: '#FAB200',
-    },
-  },
-
-  '&:nth-child(4)': {
-    '& svg': {
-      color: '#5064FF',
-    },
-  },
-
-  '&:nth-child(5)': {
-    '& svg': {
-      color: '#5064FF',
-    },
-  },
-
-  '&:hover': {
-    backgroundColor: 'rgba(80, 100, 255, 0.1)',
-  },
+  };
 });
 
 const Menu = styled(MuiMenu)({
@@ -69,10 +68,9 @@ const Menu = styled(MuiMenu)({
   },
 });
 
-const options = ['Hightest', 'High', 'Medium', 'Low', 'Lowest'];
-
 const Priority = () => {
-  const [priority, setPriority] = useState('Medium');
+  const [priority, setPriority] =
+    useState<keyof typeof PriorityOptions>('Medium');
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -98,8 +96,14 @@ const Priority = () => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
+        priorityType={priority}
         endIcon={<KeyboardArrowDownIcon />}
-        startIcon={<SignalCellularAltIcon className="SignalIcon" />}
+        startIcon={
+          <BarIcon
+            color={colors[priority]}
+            barCount={Object.keys(PriorityOptions).indexOf(priority) + 1}
+          />
+        }
       >
         {priority}
       </PriorityMenu>
@@ -113,13 +117,14 @@ const Priority = () => {
         onClose={handleClose}
         TransitionComponent={Fade}
       >
-        {options.map((priority) => (
+        {Object.values(PriorityOptions).map((priority, index) => (
           <PriorityMenuItem
             key={priority}
+            priorityType={priority as keyof typeof PriorityOptions}
             onClick={() => handleSelected(priority)}
             data-value={priority}
           >
-            <SignalCellularAltIcon fontSize="small" /> {priority}
+            <BarIcon color={colors[priority]} barCount={index + 1} /> {priority}
           </PriorityMenuItem>
         ))}
       </Menu>

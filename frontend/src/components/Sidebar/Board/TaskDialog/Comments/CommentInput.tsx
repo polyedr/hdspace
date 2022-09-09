@@ -19,7 +19,7 @@ const CommentField = styled('div')({
   padding: 12,
 
   '& p': {
-    margin: 0,
+    margin: '0 12px 12px',
   },
 
   '& p span': {
