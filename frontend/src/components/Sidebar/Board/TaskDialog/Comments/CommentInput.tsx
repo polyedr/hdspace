@@ -24,29 +24,7 @@ const CommentField = styled('div')({
 
   '& p span': {
     margin: 0,
-    fontSize: '14',
     color: '#2A2A2D',
-  },
-
-  '& .material-icons': {
-    color: '#81818E',
-    fontSize: 20,
-    margin: '0 15px 0 0',
-  },
-
-  '& .css-1rh39ed': {
-    margin: 0,
-    padding: 0,
-    border: 0,
-
-    '& span': {
-      marginBottom: 0,
-    },
-  },
-
-  '& button': {
-    color: '#81818E',
-    minWidth: 'auto',
   },
 });
 
@@ -76,11 +54,10 @@ const CommentInput = () => {
         <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
       </Grid>
       <Grid item md={10}>
-        {/* <CommentField> */}
         {showEditor ? (
           <CommentField>
             <Editor />
-            <Button variant="text" size="small">
+            {/* <Button variant="text" size="small">
               Save
             </Button>
             <Button
@@ -89,7 +66,7 @@ const CommentInput = () => {
               size="small"
             >
               Cancel
-            </Button>
+            </Button> */}
           </CommentField>
         ) : (
           <TextField
@@ -100,7 +77,6 @@ const CommentInput = () => {
             onFocus={() => setShowEditor(true)}
           />
         )}
-        {/* </CommentField> */}
       </Grid>
     </Grid>
   );

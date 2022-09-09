@@ -14,14 +14,27 @@ import {
 } from 'slate';
 import { withHistory } from 'slate-history';
 
-import { Grid } from '@mui/material';
+import { Grid, IconButton as MuiIconButton, Icon } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { styled } from '@mui/material/styles';
-import { Button, Icon, Toolbar } from './Components';
+import { Toolbar } from './Components';
 
 const SendButton = styled(SendIcon)({
   color: '#81818E',
-  marginTop: '16px',
+});
+
+const IconButton = styled(MuiIconButton)({
+  display: 'inline-flex !important',
+  marginLeft: '0 !important',
+
+  '& .material-icons': {
+    fontSize: 20,
+  },
+
+  '& span': {
+    color: '#81818E',
+    margin: 0,
+  },
 });
 
 const HOTKEYS = {
@@ -58,7 +71,7 @@ const CommentEditor = () => {
         }}
       />
       <Grid container alignItems="center">
-        <Grid item md={9}>
+        <Grid item md={10}>
           <Toolbar>
             <MarkButton format="bold" icon="format_bold" />
             <MarkButton format="italic" icon="format_italic" />
@@ -75,8 +88,16 @@ const CommentEditor = () => {
             <BlockButton format="justify" icon="format_align_justify" />
           </Toolbar>
         </Grid>
-        <Grid item md={3} textAlign="right">
-          <SendButton />
+        <Grid
+          item
+          md={2}
+          display="flex"
+          alignItems="center"
+          justifyContent="flex-end"
+        >
+          <IconButton>
+            <SendButton />
+          </IconButton>
         </Grid>
       </Grid>
     </Slate>
@@ -220,7 +241,7 @@ const Leaf = ({ attributes, children, leaf }) => {
 const BlockButton = ({ format, icon }) => {
   const editor = useSlate();
   return (
-    <Button
+    <IconButton
       active={isBlockActive(
         editor,
         format,
@@ -232,14 +253,14 @@ const BlockButton = ({ format, icon }) => {
       }}
     >
       <Icon>{icon}</Icon>
-    </Button>
+    </IconButton>
   );
 };
 
 const MarkButton = ({ format, icon }) => {
   const editor = useSlate();
   return (
-    <Button
+    <IconButton
       active={isMarkActive(editor, format)}
       onMouseDown={(event) => {
         event.preventDefault();
@@ -247,7 +268,7 @@ const MarkButton = ({ format, icon }) => {
       }}
     >
       <Icon>{icon}</Icon>
-    </Button>
+    </IconButton>
   );
 };
 

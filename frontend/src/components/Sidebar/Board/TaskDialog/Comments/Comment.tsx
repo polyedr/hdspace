@@ -4,6 +4,7 @@ import {
   Stack,
   styled,
   Button as MuiButton,
+  IconButton as MuiIconButton,
 } from '@mui/material';
 import React from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -35,7 +36,7 @@ const Button = styled(MuiButton)({
   textTransform: 'capitalize',
 });
 
-const IconWrapper = styled('div')({
+const IconButton = styled(MuiIconButton)({
   '& svg': {
     fontSize: 3,
     color: '#81818E',
@@ -56,11 +57,11 @@ const Comment = () => {
         <p className="MainComment">
           Let's move the deadline by a couple of days, we don't have time now
         </p>
-        <Stack direction="row" spacing={1.5} alignItems="center">
+        <Stack direction="row" spacing={0.5} alignItems="center">
           <Button variant="text">Edit</Button>
-          <IconWrapper>
+          <IconButton>
             <CircleIcon />
-          </IconWrapper>
+          </IconButton>
           <Button variant="text">Delete</Button>
         </Stack>
       </Grid>
