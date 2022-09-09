@@ -26,6 +26,7 @@ import Priority from './Priority';
 import Status from './Status';
 import MemberPicker from './MemberPicker';
 import Description from './Description';
+import Tags from './Tags';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -123,14 +124,8 @@ const TaskDialog = ({ task, open, onClose }) => {
       <DialogContent>
         <Grid container spacing={2}>
           <InfoGrid item xs={8}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <span>Add Tag</span>
-              <IconButton>
-                <AddIcon />
-              </IconButton>
-            </Stack>
+            <Tags />
             <Stack>
-              <span>Description</span>
               <Description />
             </Stack>
             <Stack direction="row" spacing={2} alignItems="center">

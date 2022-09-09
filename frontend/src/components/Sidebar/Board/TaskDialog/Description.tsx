@@ -3,13 +3,13 @@ import React, { useCallback, useState } from 'react';
 
 const Description = () => {
   const [editMode, setEditMode] = useState(false);
-  const [taskTitle, setTaskTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setTaskTitle(e.target.value.trim());
+      setDescription(e.target.value.trim());
     },
-    [],
+    [setDescription],
   );
 
   const handleSetEditMode = useCallback(
@@ -30,8 +30,8 @@ const Description = () => {
       placeholder="Add Description"
       onChange={handleChange}
       autoFocus
-      style={{ border: 'none' }}
       onBlur={handleSaveDescription}
+      value={description}
     />
   ) : (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
