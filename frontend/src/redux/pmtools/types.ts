@@ -64,6 +64,21 @@ interface BoardTaskUser {
   username: string;
 }
 
+export enum PriorityOptions {
+  Highest = 'highest',
+  High = 'high',
+  Medium = 'medium',
+  Low = 'low',
+  Lowest = 'lowest',
+}
+
+export enum StatusOptions {
+  Pending = 'pending',
+  Progress = 'in progress',
+  Paused = 'paused',
+  Accepted = 'accepted',
+  Review = 'waiting for review',
+}
 export interface BoardTask {
   id: number;
   title: string;
@@ -74,6 +89,8 @@ export interface BoardTask {
   author: BoardTaskUser;
   assignee: BoardTaskUser;
   responsible: BoardTaskUser;
+  priority: PriorityOptions;
+  status: StatusOptions;
 }
 export interface BoardColumn {
   id: number;

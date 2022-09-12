@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   Avatar as MuiAvatar,
   Button as MuiButton,
@@ -19,7 +19,8 @@ import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import { useDispatch } from 'react-redux';
-import { fetchTask } from '@Redux/pmtools/board/actions/tasks';
+import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
+import { BoardTask } from '@Redux/pmtools/types';
 import Comment from './Comments';
 import TaskTitle from './TaskTitle';
 import DueDate from './DueDate';
@@ -125,6 +126,12 @@ const TaskDialog = ({ task, open, onClose }) => {
     }
   }, [open, dispatch]);
 
+  const handleUpdateTask = useCallback(
+    (field: keyof BoardTask, value) =>
+      dispatch(updateTask(task.id, { [field]: value })),
+    [task],
+  );
+
   return (
     <Dialog
       TransitionComponent={Transition}
@@ -134,7 +141,10 @@ const TaskDialog = ({ task, open, onClose }) => {
       maxWidth="lg"
     >
       <DialogTitle display="flex" alignItems="center">
-        <TaskTitle task={task} />
+        <TaskTitle
+          onChange={(title) => handleUpdateTask('title', title)}
+          task={task}
+        />
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
@@ -169,7 +179,12 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Status
                     </TableCell>
                     <TableCell>
-                      <Status />
+                      <Status
+                        onChange={(status) =>
+                          handleUpdateTask('status', status)
+                        }
+                        task={task}
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -203,7 +218,12 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Priority
                     </TableCell>
                     <TableCell>
-                      <Priority />
+                      <Priority
+                        onChange={(priority) =>
+                          handleUpdateTask('priority', priority)
+                        }
+                        task={task}
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>

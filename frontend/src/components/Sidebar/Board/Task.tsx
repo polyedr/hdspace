@@ -9,6 +9,7 @@ import { differenceInDays, format } from 'date-fns';
 import { BoardTask } from '@Redux/pmtools/types';
 import TaskDialog from './TaskDialog';
 import User from './User';
+import BarIcon from './BarIcon';
 
 const Container = styled('div')<{ dragging: boolean }>(({ dragging }) => ({
   padding: '10px 12px',
@@ -85,7 +86,7 @@ const Task: React.FC<Props> = ({ task, index }) => {
               alignItems="center"
             >
               {task.title}
-              <SignalCellularAltIcon />
+              <BarIcon priority={task.priority} />
             </Stack>
             <Stack direction="row" spacing={0.2} mb={2}>
               <StyledChip label="Tag 1" size="small" />

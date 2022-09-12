@@ -6,7 +6,7 @@ import { put, select } from 'redux-saga/effects';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { setColumns } from '../actions/columns';
 import { selectColumns } from '../selectors';
-import { addTask } from '../actions/tasks';
+import { addTask, setTask } from '../actions/tasks';
 
 export function* fetchTaskSaga({ taskId }: { taskId: number; type: string }) {
   try {
@@ -15,6 +15,25 @@ export function* fetchTaskSaga({ taskId }: { taskId: number; type: string }) {
     console.log('fetch task', data);
   } catch (error) {
     console.log('fetch task error', error);
+  }
+}
+
+export function* updateTaskSags({
+  payload: { taskId, fields },
+}: {
+  payload: { taskId: number; fields: { [key: string]: any } };
+  type: string;
+}) {
+  try {
+    const { data } = yield call(reqWrapper, tasksApi.updateTask, {
+      taskId,
+      fields,
+    });
+
+    yield put(setTask(data));
+
+  } catch (error) {
+    console.log('update task error', error);
   }
 }
 

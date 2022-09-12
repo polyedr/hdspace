@@ -2,53 +2,34 @@ import { Menu as MuiMenu, Fade, Button, MenuItem, styled } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
-import BarIcon from '../BarIcon';
+import { BoardTask, PriorityOptions } from '@Redux/pmtools/types';
+import BarIcon, { colors } from '../BarIcon';
 
-enum PriorityOptions {
-  Highest = 'Highest',
-  High = 'High',
-  Medium = 'Medium',
-  Low = 'Low',
-  Lowest = 'Lowest',
-}
+const PriorityMenu = styled(Button)({
+  fontSize: 14,
+  fontWeight: 500,
+  textTransform: 'capitalize',
+  padding: '0 16px',
+  color: '#2A2A2D',
 
-const colors = {
-  [PriorityOptions.Highest]: '#EF3052',
-  [PriorityOptions.High]: '#EF3052',
-  [PriorityOptions.Medium]: '#FAB200',
-  [PriorityOptions.Low]: '#5064FF',
-  [PriorityOptions.Lowest]: '#5064FF',
-};
+  // colors[priorityType]
 
-const PriorityMenu = styled(Button)<{
-  priorityType: keyof typeof PriorityOptions;
-}>(({ priorityType }) => {
-  return {
-    fontSize: 14,
-    fontWeight: 500,
-    textTransform: 'capitalize',
-    padding: '0 16px',
-    color: '#2A2A2D',
+  '& .SignalIcon': {
+    fontSize: '14px !important',
+  },
 
-    // colors[priorityType]
+  '& .css-9tj150-MuiButton-endIcon': {
+    marginLeft: 3,
+  },
 
-    '& .SignalIcon': {
-      fontSize: '14px !important',
-    },
-
-    '& .css-9tj150-MuiButton-endIcon': {
-      marginLeft: 3,
-    },
-
-    '& .ArrowIcon': {
-      color: '#81818E',
-      fontSize: '22px !important',
-    },
-  };
+  '& .ArrowIcon': {
+    color: '#81818E',
+    fontSize: '22px !important',
+  },
 });
 
 const PriorityMenuItem = styled(MenuItem)<{
-  priorityType: keyof typeof PriorityOptions;
+  priorityType: PriorityOptions;
 }>(({ priorityType }) => {
   const color = colors[priorityType];
 
@@ -60,6 +41,7 @@ const PriorityMenuItem = styled(MenuItem)<{
       color: '#2A2A2D',
       fontSize: 14,
       fontWeight: 500,
+      textTransform: 'capitalize',
     },
 
     '& svg': {
@@ -81,9 +63,14 @@ const Menu = styled(MuiMenu)({
   },
 });
 
-const Priority = () => {
-  const [priority, setPriority] =
-    useState<keyof typeof PriorityOptions>('Medium');
+const Priority = ({
+  task,
+  onChange,
+}: {
+  task: BoardTask;
+  onChange(priority: PriorityOptions);
+}) => {
+  const [priority, setPriority] = useState<PriorityOptions>(task.priority);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -99,6 +86,7 @@ const Priority = () => {
   const handleSelected = useCallback((priority) => {
     setPriority(priority);
     handleClose();
+    onChange(priority);
   }, []);
 
   return (
@@ -109,14 +97,8 @@ const Priority = () => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        priorityType={priority}
         endIcon={<KeyboardArrowDownIcon className="ArrowIcon" />}
-        startIcon={
-          <BarIcon
-            color={colors[priority]}
-            barCount={Object.keys(PriorityOptions).indexOf(priority) + 1}
-          />
-        }
+        startIcon={<BarIcon priority={priority} />}
       >
         {priority}
       </PriorityMenu>
@@ -130,15 +112,14 @@ const Priority = () => {
         onClose={handleClose}
         TransitionComponent={Fade}
       >
-        {Object.values(PriorityOptions).map((priority, index) => (
+        {Object.entries(PriorityOptions).map(([key, val]) => (
           <PriorityMenuItem
-            key={priority}
-            priorityType={priority as keyof typeof PriorityOptions}
-            onClick={() => handleSelected(priority)}
-            data-value={priority}
+            key={val}
+            priorityType={val}
+            onClick={() => handleSelected(val)}
+            data-value={val}
           >
-            <BarIcon color={colors[priority]} barCount={index + 1} />{' '}
-            <span>{priority}</span>
+            <BarIcon priority={val} /> <span>{key}</span>
           </PriorityMenuItem>
         ))}
       </Menu>

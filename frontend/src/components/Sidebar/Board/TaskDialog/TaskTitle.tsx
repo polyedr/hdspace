@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { BoardTask } from '@Redux/pmtools/types';
 
 const IconButton = styled(MuiButton)({
   backgroundColor: '#F3F4F6',
@@ -26,13 +27,18 @@ const IconButton = styled(MuiButton)({
   },
 });
 
-const TaskTitle = ({ task }) => {
+interface Props {
+  task: BoardTask;
+  onChange(title: string): void;
+}
+
+const TaskTitle = ({ task, onChange }: Props) => {
   const [editMode, setEditMode] = useState(false);
   const [taskTitle, setTaskTitle] = useState(task.title);
 
   const handleChangeTaskTitle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setTaskTitle(e.target.value.trim());
+      setTaskTitle(e.target.value);
     },
     [],
   );
@@ -45,7 +51,8 @@ const TaskTitle = ({ task }) => {
   );
 
   const handleSaveTitle = useCallback(() => {
-    // TODO: save title logic
+    onChange(taskTitle.trim());
+    setEditMode(false);
   }, []);
 
   return (
@@ -53,7 +60,11 @@ const TaskTitle = ({ task }) => {
       {editMode ? (
         <>
           <Input value={taskTitle} onChange={handleChangeTaskTitle} />
-          <IconButton onClick={handleSaveTitle} variant="text">
+          <IconButton
+            disabled={taskTitle.trim().length < 1}
+            onClick={handleSaveTitle}
+            variant="text"
+          >
             <CheckIcon />
           </IconButton>
           <IconButton onClick={handleSetEditMode(false)} variant="text">

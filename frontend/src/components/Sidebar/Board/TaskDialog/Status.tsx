@@ -8,14 +8,7 @@ import {
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CircleIcon from '@mui/icons-material/Circle';
 import Fade from '@mui/material/Fade';
-
-enum StatusOptions {
-  Pending = 'Pending',
-  Progress = 'In Progress',
-  Paused = 'Paused',
-  Accepted = 'Accepted',
-  Review = 'Waiting for Review',
-}
+import { BoardTask, StatusOptions } from '@Redux/pmtools/types';
 
 const colors = {
   [StatusOptions.Pending]: '#EF3052',
@@ -26,7 +19,7 @@ const colors = {
 };
 
 const MenuButton = styled(Button)<{
-  statusType: keyof typeof StatusOptions;
+  statusType: StatusOptions;
 }>(({ statusType }) => {
   const color = colors[statusType];
   return {
@@ -52,7 +45,7 @@ const MenuButton = styled(Button)<{
 });
 
 const MenuItem = styled(MuiMenuItem)<{
-  statusType: keyof typeof StatusOptions;
+  statusType: StatusOptions;
 }>(({ statusType }) => {
   const color = colors[statusType];
 
@@ -60,6 +53,7 @@ const MenuItem = styled(MuiMenuItem)<{
     fontSize: 14,
     fontWeight: 500,
     padding: '8px 16px',
+    textTransform: 'capitalize',
     color,
 
     '& svg': {
@@ -80,8 +74,14 @@ const Menu = styled(MuiMenu)({
   },
 });
 
-const Status = () => {
-  const [status, setStatus] = useState<keyof typeof StatusOptions>('Pending');
+const Status = ({
+  task,
+  onChange,
+}: {
+  task: BoardTask;
+  onChange(status: StatusOptions): void;
+}) => {
+  const [status, setStatus] = useState<StatusOptions>(task.status);
   // const [status, setStatus] = useState(options[0]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -94,10 +94,14 @@ const Status = () => {
     setAnchorEl(null);
   }, []);
 
-  const handleSelected = useCallback((status) => {
-    setStatus(status);
-    handleClose();
-  }, []);
+  const handleSelected = useCallback(
+    (status) => {
+      setStatus(status);
+      handleClose();
+      onChange(status);
+    },
+    [onChange],
+  );
 
   return (
     <>
@@ -123,13 +127,13 @@ const Status = () => {
         onClose={handleClose}
         TransitionComponent={Fade}
       >
-        {Object.values(StatusOptions).map((status) => (
+        {Object.entries(StatusOptions).map(([, value]) => (
           <MenuItem
-            key={status}
-            onClick={() => handleSelected(status)}
-            statusType={status as keyof typeof StatusOptions}
+            key={value}
+            onClick={() => handleSelected(value)}
+            statusType={value}
           >
-            <CircleIcon fontSize="small" /> {status}
+            <CircleIcon fontSize="small" /> {value}
           </MenuItem>
         ))}
         {/* {options.map((option) => (

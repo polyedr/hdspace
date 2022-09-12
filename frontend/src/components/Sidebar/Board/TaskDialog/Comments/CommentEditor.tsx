@@ -2,9 +2,11 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 // @ts-nocheck
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, useSlate, Slate } from 'slate-react';
+import Html from 'slate-html-serializer';
+
 import {
   Editor,
   Transforms,
@@ -17,8 +19,8 @@ import { withHistory } from 'slate-history';
 import { Grid, IconButton as MuiIconButton, Icon } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { styled } from '@mui/material/styles';
-import { Toolbar } from './Components';
 import { EditableProps } from 'slate-react/dist/components/editable';
+import { Toolbar } from './Components';
 
 const SendButton = styled(SendIcon)({
   color: '#81818E',
@@ -49,12 +51,31 @@ const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 
 const RichTextEditor = React.forwardRef((props: EditableProps, forwardRef) => {
+  const [value, setValue] = useState(initialValue);
+
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
+  const handleOnChange = useCallback(
+    (value: Descendant[]) => {
+      setValue(value);
+    },
+    [setValue],
+  );
+
+  const handleSubmit = useCallback(() => {
+    const html = new Html();
+    console.log(html.serialize(value));
+  }, [value]);
+
   return (
-    <Slate ref={forwardRef} editor={editor} value={initialValue}>
+    <Slate
+      onChange={handleOnChange}
+      ref={forwardRef}
+      editor={editor}
+      value={value}
+    >
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
@@ -80,15 +101,15 @@ const RichTextEditor = React.forwardRef((props: EditableProps, forwardRef) => {
             <MarkButton format="underline" icon="format_underlined" />
             <MarkButton format="strikethrough" icon="format_strikethrough" />
             <MarkButton format="code" icon="code" />
-            <BlockButton format="heading-one" icon="looks_one" />
+            {/* <BlockButton format="heading-one" icon="looks_one" />
             <BlockButton format="heading-two" icon="looks_two" />
-            <BlockButton format="block-quote" icon="format_quote" />
+            <BlockButton format="block-quote" icon="format_quote" /> */}
             <BlockButton format="numbered-list" icon="format_list_numbered" />
             <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-            <BlockButton format="left" icon="format_align_left" />
+            {/* <BlockButton format="left" icon="format_align_left" />
             <BlockButton format="center" icon="format_align_center" />
             <BlockButton format="right" icon="format_align_right" />
-            <BlockButton format="justify" icon="format_align_justify" />
+            <BlockButton format="justify" icon="format_align_justify" /> */}
           </Toolbar>
         </Grid>
         <Grid
@@ -98,7 +119,7 @@ const RichTextEditor = React.forwardRef((props: EditableProps, forwardRef) => {
           alignItems="center"
           justifyContent="flex-end"
         >
-          <IconButton>
+          <IconButton onClick={handleSubmit}>
             <SendButton />
           </IconButton>
         </Grid>

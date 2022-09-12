@@ -1,4 +1,5 @@
 import { styled } from '@mui/material';
+import { PriorityOptions } from '@Redux/pmtools/types';
 import React, { useMemo } from 'react';
 
 const Container = styled('div')<{ size: number }>(({ size }) => ({
@@ -19,16 +20,26 @@ const Bar = styled('div')<{ color: string; size: number }>(
   }),
 );
 
+export const colors = {
+  [PriorityOptions.Highest]: '#EF3052',
+  [PriorityOptions.High]: '#EF3052',
+  [PriorityOptions.Medium]: '#FAB200',
+  [PriorityOptions.Low]: '#5064FF',
+  [PriorityOptions.Lowest]: '#5064FF',
+};
+
 interface Props {
   size?: number;
-  color: string;
-  barCount: number;
+  priority: PriorityOptions;
 }
 
-const BarIcon = ({ color, barCount, size = 20 }: Props) => {
+const BarIcon = ({ priority, size = 20 }: Props) => {
   const bars = useMemo(() => {
     return new Array(5).fill(1);
   }, []);
+
+  const barCount = Object.values(PriorityOptions).indexOf(priority) + 1;
+  const color = colors[priority];
 
   return (
     <Container size={size}>

@@ -54,6 +54,25 @@ const addTask: ActionHandler<ReturnType<typeof taskActions.addTask>> = (
   return newState;
 };
 
+const setTask: ActionHandler<ReturnType<typeof taskActions.setTask>> = (
+  state = INITIAL_STATE,
+  { task },
+) => {
+  const newState = { ...state };
+
+  const columnIndex = state.columns.findIndex((c) => c.id === task.column);
+  const taskIndex = state.columns[columnIndex].tasks.findIndex(
+    (t) => t.id === task.id,
+  );
+
+  newState.columns[columnIndex].tasks[taskIndex] = {
+    ...newState.columns[columnIndex].tasks[taskIndex],
+    ...task,
+  };
+
+  return newState;
+};
+
 const setColumnsFetching: ActionHandler<
   ReturnType<typeof columnActions.setColumnsFetching>
 > = (state = INITIAL_STATE, { fetching }) => ({
@@ -102,6 +121,7 @@ const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
   [TYPES.BOARD_SET_TASKS]: setTasks,
   [TYPES.BOARD_ADD_TASK]: addTask,
+  [TYPES.BOARD_SET_TASK]: setTask,
   [TYPES.BOARD_ADD_COLUMN]: addColumn,
   [TYPES.BOARD_DELETE_COLUMN_FROM_STATE]: deleteColumn,
   [TYPES.BOARD_UPDATE_COLUMN_ON_STATE]: updateColumn,

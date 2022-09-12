@@ -7,6 +7,11 @@ export const fetchTask = (taskId: number) => ({
   taskId,
 });
 
+export const updateTask = (taskId: number, fields: { [key: string]: any }) => ({
+  type: TYPES.BOARD_UPDATE_TASK,
+  payload: { taskId, fields },
+});
+
 export const addTask = (task: BoardTask) => ({
   type: TYPES.BOARD_ADD_TASK,
   task,
