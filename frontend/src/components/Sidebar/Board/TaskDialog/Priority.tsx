@@ -28,12 +28,21 @@ const PriorityMenu = styled(Button)<{
     fontWeight: 500,
     textTransform: 'capitalize',
     padding: '0 16px',
-    color: '#5064FF',
+    color: '#2A2A2D',
 
     // colors[priorityType]
 
     '& .SignalIcon': {
       fontSize: '14px !important',
+    },
+
+    '& .css-9tj150-MuiButton-endIcon': {
+      marginLeft: 3,
+    },
+
+    '& .ArrowIcon': {
+      color: '#81818E',
+      fontSize: '22px !important',
     },
   };
 });
@@ -44,10 +53,14 @@ const PriorityMenuItem = styled(MenuItem)<{
   const color = colors[priorityType];
 
   return {
-    fontSize: 14,
-    fontWeight: 500,
     padding: '8px 16px',
-    color: '#2A2A2D',
+
+    '& span': {
+      marginLeft: '10px',
+      color: '#2A2A2D',
+      fontSize: 14,
+      fontWeight: 500,
+    },
 
     '& svg': {
       fontSize: 16,
@@ -97,7 +110,7 @@ const Priority = () => {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
         priorityType={priority}
-        endIcon={<KeyboardArrowDownIcon />}
+        endIcon={<KeyboardArrowDownIcon className="ArrowIcon" />}
         startIcon={
           <BarIcon
             color={colors[priority]}
@@ -124,7 +137,8 @@ const Priority = () => {
             onClick={() => handleSelected(priority)}
             data-value={priority}
           >
-            <BarIcon color={colors[priority]} barCount={index + 1} /> {priority}
+            <BarIcon color={colors[priority]} barCount={index + 1} />{' '}
+            <span>{priority}</span>
           </PriorityMenuItem>
         ))}
       </Menu>

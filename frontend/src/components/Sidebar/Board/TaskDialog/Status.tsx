@@ -9,46 +9,68 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CircleIcon from '@mui/icons-material/Circle';
 import Fade from '@mui/material/Fade';
 
-const MenuButton = styled(Button)({
-  fontSize: 14,
-  fontWeight: 500,
-  textTransform: 'capitalize',
-  padding: '0 16px',
+enum StatusOptions {
+  Pending = 'Pending',
+  Progress = 'In Progress',
+  Paused = 'Paused',
+  Accepted = 'Accepted',
+  Review = 'Waiting for Review',
+}
 
-  '& .CircleIcon': {
-    fontSize: '8px !important',
-  },
+const colors = {
+  [StatusOptions.Pending]: '#EF3052',
+  [StatusOptions.Progress]: '#5064FF',
+  [StatusOptions.Paused]: '#81818E',
+  [StatusOptions.Accepted]: '#1CC09F',
+  [StatusOptions.Review]: '#FAB200',
+};
+
+const MenuButton = styled(Button)<{
+  statusType: keyof typeof StatusOptions;
+}>(({ statusType }) => {
+  const color = colors[statusType];
+  return {
+    fontSize: 14,
+    fontWeight: 500,
+    textTransform: 'capitalize',
+    padding: '0 16px',
+    color,
+
+    '& .CircleIcon': {
+      fontSize: '9px !important',
+    },
+
+    '& .css-9tj150-MuiButton-endIcon': {
+      marginLeft: 3,
+    },
+
+    '& .ArrowIcon': {
+      color: '#81818E',
+      fontSize: '22px !important',
+    },
+  };
 });
 
-const MenuItem = styled(MuiMenuItem)({
-  fontSize: 14,
-  fontWeight: 500,
-  padding: '8px 16px',
+const MenuItem = styled(MuiMenuItem)<{
+  statusType: keyof typeof StatusOptions;
+}>(({ statusType }) => {
+  const color = colors[statusType];
 
-  '& svg': {
-    fontSize: 8,
-    marginRight: 5,
-  },
+  return {
+    fontSize: 14,
+    fontWeight: 500,
+    padding: '8px 16px',
+    color,
 
-  '&:first-child': {
-    color: '#5064FF',
-  },
+    '& svg': {
+      fontSize: 9,
+      marginRight: 8,
+    },
 
-  '&:nth-child(2)': {
-    color: '#81818E',
-  },
-
-  '&:nth-child(3)': {
-    color: '#1CC09F',
-  },
-
-  '&:nth-child(4)': {
-    color: '#FAB200',
-  },
-
-  '&:hover': {
-    backgroundColor: 'rgba(80, 100, 255, 0.1)',
-  },
+    '&:hover': {
+      backgroundColor: 'rgba(80, 100, 255, 0.1)',
+    },
+  };
 });
 
 const Menu = styled(MuiMenu)({
@@ -58,16 +80,9 @@ const Menu = styled(MuiMenu)({
   },
 });
 
-const options = [
-  'Pending',
-  'In Progress',
-  'Paused',
-  'Accepted',
-  'Waiting for Review',
-];
-
 const Status = () => {
-  const [status, setStatus] = useState(options[0]);
+  const [status, setStatus] = useState<keyof typeof StatusOptions>('Pending');
+  // const [status, setStatus] = useState(options[0]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -92,8 +107,9 @@ const Status = () => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
+        endIcon={<KeyboardArrowDownIcon className="ArrowIcon" />}
         startIcon={<CircleIcon className="CircleIcon" />}
+        statusType={status}
       >
         {status}
       </MenuButton>
@@ -107,11 +123,23 @@ const Status = () => {
         onClose={handleClose}
         TransitionComponent={Fade}
       >
-        {options.map((option) => (
-          <MenuItem key={option} onClick={() => handleSelected(option)}>
-            <CircleIcon fontSize="small" /> {option}
+        {Object.values(StatusOptions).map((status) => (
+          <MenuItem
+            key={status}
+            onClick={() => handleSelected(status)}
+            statusType={status as keyof typeof StatusOptions}
+          >
+            <CircleIcon fontSize="small" /> {status}
           </MenuItem>
         ))}
+        {/* {options.map((option) => (
+          <MenuItem
+            key={option}
+            onClick={() => handleSelected(option)}
+          >
+            <CircleIcon fontSize="small" /> {option}
+          </MenuItem>
+        ))} */}
       </Menu>
     </>
   );

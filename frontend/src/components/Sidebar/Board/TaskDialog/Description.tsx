@@ -1,5 +1,21 @@
-import { TextareaAutosize } from '@mui/material';
+import { styled, TextareaAutosize } from '@mui/material';
 import React, { useCallback, useState } from 'react';
+import Editor from './Comments/CommentEditor';
+
+const EditorWrapper = styled('div')({
+  border: '1px solid #E4E6EB',
+  borderRadius: 4,
+  padding: 12,
+
+  '& p': {
+    margin: '0 12px 12px',
+  },
+
+  '& p span': {
+    margin: 0,
+    color: '#2A2A2D',
+  },
+});
 
 const Description = () => {
   const [editMode, setEditMode] = useState(false);
@@ -25,14 +41,17 @@ const Description = () => {
   }, []);
 
   return editMode ? (
-    <TextareaAutosize
-      aria-label="task description"
-      placeholder="Add Description"
-      onChange={handleChange}
-      autoFocus
-      onBlur={handleSaveDescription}
-      value={description}
-    />
+    // <TextareaAutosize
+    //   aria-label="task description"
+    //   placeholder="Add Description"
+    //   onChange={handleChange}
+    //   autoFocus
+    //   onBlur={handleSaveDescription}
+    //   value={description}
+    // />
+    <EditorWrapper>
+      <Editor />
+    </EditorWrapper>
   ) : (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <p onClick={handleSetEditMode(true)}>Add Description</p>

@@ -16,11 +16,21 @@ import {
   Stack,
   Theme,
   useTheme,
+  styled,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import { IconButton } from './StyledComponents';
 import { username } from '../User';
+
+const FormWrapper = styled('div')({
+  padding: 20,
+});
+
+const FormTitle = styled('p')({
+  margin: 0,
+  fontWeight: 500,
+});
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -76,19 +86,36 @@ const MemberPicker = () => {
         <AddIcon />
       </IconButton>
       <Popover id={id} open={open} anchorEl={anchorEl} onClose={handleClose}>
-        <FormControl sx={{ m: 1, width: 300 }}>
-          <InputLabel id="demo-multiple-chip-label">Members</InputLabel>
-          <Select
-            labelId="demo-multiple-chip-label"
-            id="demo-multiple-chip"
-            value={person}
-            onChange={handleChange}
-            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-            renderValue={(selected) => {
-              const user = users.find((u) => u.id === parseInt(selected))!;
+        <FormWrapper>
+          <FormTitle>Add Member</FormTitle>
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="demo-multiple-chip-label">Members</InputLabel>
+            <Select
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
+              value={person}
+              onChange={handleChange}
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected) => {
+                const user = users.find((u) => u.id === parseInt(selected))!;
 
-              return (
-                <Stack direction="row" spacing={2}>
+                return (
+                  <Stack direction="row" spacing={2}>
+                    <ListItemIcon>
+                      <Avatar
+                        src={user.avatar || undefined}
+                        sx={{ width: 24, height: 24 }}
+                        alt={user.name}
+                      />
+                    </ListItemIcon>
+                    <ListItemText>{user.name}</ListItemText>
+                  </Stack>
+                );
+              }}
+              MenuProps={MenuProps}
+            >
+              {users.map((user) => (
+                <MenuItem key={user.id} value={user.id}>
                   <ListItemIcon>
                     <Avatar
                       src={user.avatar || undefined}
@@ -97,25 +124,11 @@ const MemberPicker = () => {
                     />
                   </ListItemIcon>
                   <ListItemText>{user.name}</ListItemText>
-                </Stack>
-              );
-            }}
-            MenuProps={MenuProps}
-          >
-            {users.map((user) => (
-              <MenuItem key={user.id} value={user.id}>
-                <ListItemIcon>
-                  <Avatar
-                    src={user.avatar || undefined}
-                    sx={{ width: 24, height: 24 }}
-                    alt={user.name}
-                  />
-                </ListItemIcon>
-                <ListItemText>{user.name}</ListItemText>
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </FormWrapper>
       </Popover>
     </>
   );

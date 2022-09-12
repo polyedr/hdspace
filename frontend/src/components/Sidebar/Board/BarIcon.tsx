@@ -7,11 +7,12 @@ const Container = styled('div')<{ size: number }>(({ size }) => ({
   alignItems: 'flex-end',
   width: size,
   height: size,
+  padding: '3px 0',
 }));
 
 const Bar = styled('div')<{ color: string; size: number }>(
   ({ color, size }) => ({
-    width: '10%',
+    width: '12%',
     height: `${size * 20}%`,
     backgroundColor: color,
     borderRadius: '2px',
@@ -24,7 +25,7 @@ interface Props {
   barCount: number;
 }
 
-const BarIcon = ({ color, barCount, size = 15 }: Props) => {
+const BarIcon = ({ color, barCount, size = 20 }: Props) => {
   const bars = useMemo(() => {
     return new Array(5).fill(1);
   }, []);
