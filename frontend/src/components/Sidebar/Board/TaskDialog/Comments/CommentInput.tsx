@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Avatar as MuiAvatar,
   Button,
+  ClickAwayListener,
   Grid,
   styled,
   TextField as MuiTextField,
@@ -56,7 +57,11 @@ const CommentInput = () => {
       <Grid item md={10}>
         {showEditor ? (
           <CommentField>
-            <Editor />
+            <ClickAwayListener onClickAway={() => setShowEditor(false)}>
+              <div>
+                <Editor />
+              </div>
+            </ClickAwayListener>
             {/* <Button variant="text" size="small">
               Save
             </Button>

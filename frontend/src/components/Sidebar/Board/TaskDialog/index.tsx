@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Avatar as MuiAvatar,
   Button as MuiButton,
@@ -18,6 +18,8 @@ import { TransitionProps } from '@mui/material/transitions';
 import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
+import { useDispatch } from 'react-redux';
+import { fetchTask } from '@Redux/pmtools/board/actions/tasks';
 import Comment from './Comments';
 import TaskTitle from './TaskTitle';
 import DueDate from './DueDate';
@@ -115,6 +117,14 @@ const Transition = React.forwardRef(function Transition(
 });
 
 const TaskDialog = ({ task, open, onClose }) => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (open) {
+      dispatch(fetchTask(task.id));
+    }
+  }, [open, dispatch]);
+
   return (
     <Dialog
       TransitionComponent={Transition}

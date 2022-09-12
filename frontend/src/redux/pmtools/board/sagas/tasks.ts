@@ -11,6 +11,8 @@ import { addTask } from '../actions/tasks';
 export function* fetchTaskSaga({ taskId }: { taskId: number; type: string }) {
   try {
     const { data } = yield call(reqWrapper, tasksApi.fetchTask, { taskId });
+
+    console.log('fetch task', data);
   } catch (error) {
     console.log('fetch task error', error);
   }

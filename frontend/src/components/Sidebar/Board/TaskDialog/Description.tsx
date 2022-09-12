@@ -1,3 +1,4 @@
+import { ClickAwayListener } from '@material-ui/core';
 import { styled, TextareaAutosize } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import Editor from './Comments/CommentEditor';
@@ -49,9 +50,11 @@ const Description = () => {
     //   onBlur={handleSaveDescription}
     //   value={description}
     // />
-    <EditorWrapper>
-      <Editor />
-    </EditorWrapper>
+    <ClickAwayListener onClickAway={handleSetEditMode(false)}>
+      <EditorWrapper>
+        <Editor placeholder="Add Description" />
+      </EditorWrapper>
+    </ClickAwayListener>
   ) : (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <p onClick={handleSetEditMode(true)}>Add Description</p>

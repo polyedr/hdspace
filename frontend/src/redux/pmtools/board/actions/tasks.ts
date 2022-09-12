@@ -12,6 +12,11 @@ export const addTask = (task: BoardTask) => ({
   task,
 });
 
+export const setTask = (task: BoardTask) => ({
+  type: TYPES.BOARD_SET_TASK,
+  task,
+});
+
 export const setTasks = (tasks: BoardTask[]) => ({
   type: TYPES.BOARD_SET_TASKS,
   tasks,

@@ -18,6 +18,7 @@ import { Grid, IconButton as MuiIconButton, Icon } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { styled } from '@mui/material/styles';
 import { Toolbar } from './Components';
+import { EditableProps } from 'slate-react/dist/components/editable';
 
 const SendButton = styled(SendIcon)({
   color: '#81818E',
@@ -47,13 +48,13 @@ const HOTKEYS = {
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 
-const CommentEditor = () => {
+const RichTextEditor = React.forwardRef((props: EditableProps, forwardRef) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   return (
-    <Slate editor={editor} value={initialValue}>
+    <Slate ref={forwardRef} editor={editor} value={initialValue}>
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
@@ -69,6 +70,7 @@ const CommentEditor = () => {
             }
           }
         }}
+        {...props}
       />
       <Grid container alignItems="center">
         <Grid item md={10}>
@@ -103,7 +105,7 @@ const CommentEditor = () => {
       </Grid>
     </Slate>
   );
-};
+});
 
 const toggleBlock = (editor, format) => {
   const isActive = isBlockActive(
@@ -280,4 +282,4 @@ const initialValue: Descendant[] = [
   },
 ];
 
-export default CommentEditor;
+export default RichTextEditor;
