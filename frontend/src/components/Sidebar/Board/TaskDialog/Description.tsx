@@ -19,6 +19,11 @@ const EditorWrapper = styled('div')({
   },
 });
 
+const InfoSubTitle = styled('p')({
+  fontSize: 16,
+  color: '#81818E',
+});
+
 interface Props {
   onSubmit(description: string): void;
   task: BoardTask;
@@ -71,7 +76,7 @@ const Description = ({ onSubmit, task }) => {
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <Box onClick={handleSetEditMode(true)}>
       {!parsedDescription ? (
-        <p>Add Description</p>
+        <InfoSubTitle>Add Description</InfoSubTitle>
       ) : (
         <RenderEditorHtml nodes={parsedDescription} />
       )}

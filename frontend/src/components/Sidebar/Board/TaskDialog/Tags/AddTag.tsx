@@ -1,15 +1,16 @@
 import {
-  Button,
+  Button as MuiButton,
   ButtonBase,
   IconButton,
   Stack,
   styled,
-  TextField,
-  Typography,
+  TextField as MuiTextField,
+  Typography as MuiTypography,
 } from '@mui/material';
 import { BoardTaskTag } from '@Src/types/pmtools/board';
 import React, { useCallback, useState } from 'react';
 import ArrowBack from '@mui/icons-material/ArrowBack';
+import CheckIcon from '@mui/icons-material/Check';
 
 const colors = [
   '#F3F4F6',
@@ -25,12 +26,42 @@ const colors = [
 const ColorSquare = styled(ButtonBase)<{ color: string; selected: boolean }>(
   ({ color, selected }) => ({
     backgroundColor: color,
-    height: 30,
-    width: 30,
+    height: 24,
+    width: 24,
     borderRadius: 4,
     transform: selected ? `scale(1.1)` : 'scale(1)',
+
+    '& svg': {
+      color: '#81818E',
+      fontSize: 14,
+    },
   }),
 );
+
+const Typography = styled(MuiTypography)({
+  fontSize: 14,
+  fontWeight: 600,
+});
+
+const TextField = styled(MuiTextField)({
+  marginTop: 12,
+  '& input': {
+    fontSize: 14,
+    padding: '8px 14px',
+  },
+});
+
+const Button = styled(MuiButton)({
+  textTransform: 'capitalize',
+
+  '&.MuiButton-text': {
+    color: '#81818E',
+  },
+
+  '&.MuiButton-contained:not(.Mui-disabled)': {
+    backgroundColor: 'var(--blue)',
+  },
+});
 
 const AddTag = ({
   onClose,
@@ -65,7 +96,7 @@ const AddTag = ({
     <>
       <Stack direction="row" spacing={2} alignItems="center">
         {onBack ? (
-          <IconButton onClick={onBack}>
+          <IconButton onClick={onBack} sx={{ padding: 0 }}>
             <ArrowBack />
           </IconButton>
         ) : null}
@@ -93,12 +124,16 @@ const AddTag = ({
             key={c}
             color={c}
             selected={c === color}
-          />
+          >
+            {c === color ? <CheckIcon /> : null}
+          </ColorSquare>
         ))}
       </Stack>
 
       <Stack direction="row" spacing={1} justifyContent="flex-end">
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose} variant="text">
+          Cancel
+        </Button>
         <Button
           variant="contained"
           color="primary"
