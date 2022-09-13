@@ -128,7 +128,7 @@ const TaskDialog = ({ task, open, onClose }) => {
 
   const handleUpdateTask = useCallback(
     (field: keyof BoardTask, value) =>
-      dispatch(updateTask(task.id, { [field]: value })),
+      dispatch(updateTask(task, { [field]: value })),
     [task],
   );
 

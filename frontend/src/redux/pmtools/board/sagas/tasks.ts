@@ -1,4 +1,4 @@
-import { BoardColumn, BoardNewTask } from '@Redux/pmtools/types';
+import { BoardColumn, BoardNewTask, BoardTask } from '@Redux/pmtools/types';
 import * as tasksApi from '@Api/pmtools/board/tasksApi';
 import { call } from 'ramda';
 import { DropResult } from 'react-beautiful-dnd';
@@ -19,19 +19,20 @@ export function* fetchTaskSaga({ taskId }: { taskId: number; type: string }) {
 }
 
 export function* updateTaskSags({
-  payload: { taskId, fields },
+  payload: { task, fields },
 }: {
-  payload: { taskId: number; fields: { [key: string]: any } };
+  payload: { task: BoardTask; fields: { [key: string]: any } };
   type: string;
 }) {
   try {
+    yield put(setTask({ ...task, ...fields }));
+
     const { data } = yield call(reqWrapper, tasksApi.updateTask, {
-      taskId,
+      taskId: task.id,
       fields,
     });
 
     yield put(setTask(data));
-
   } catch (error) {
     console.log('update task error', error);
   }
