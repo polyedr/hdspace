@@ -5,7 +5,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, useSlate, Slate } from 'slate-react';
-import Html from 'slate-html-serializer';
 
 import {
   Editor,
@@ -13,6 +12,7 @@ import {
   createEditor,
   Descendant,
   Element as SlateElement,
+  Text,
 } from 'slate';
 import { withHistory } from 'slate-history';
 
@@ -20,7 +20,54 @@ import { Grid, IconButton as MuiIconButton, Icon } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { styled } from '@mui/material/styles';
 import { EditableProps } from 'slate-react/dist/components/editable';
+import escapeHtml from 'escape-html';
 import { Toolbar } from './Components';
+
+export const serialize = (node: Descendant) => {
+  if (Text.isText(node)) {
+    let string = escapeHtml(node.text);
+    if (node.bold) {
+      string = <strong>{string}</strong>;
+    }
+
+    if (node.italic) {
+      string = <em>{string}</em>;
+    }
+
+    if (node.underline) {
+      string = <s>{string}</s>;
+    }
+
+    return string;
+  }
+
+  const children = node.children.map((n) => serialize(n));
+
+  switch (node.type) {
+    case 'block-quote':
+      return <blockquote>{children}</blockquote>;
+    case 'bulleted-list':
+      return <ul>{children}</ul>;
+    case 'heading-one':
+      return <h1>{children}</h1>;
+    case 'heading-two':
+      return <h2>{children}</h2>;
+    case 'list-item':
+      return <li>{children}</li>;
+    case 'code':
+      return <code>{children}</code>;
+    case 'numbered-list':
+      return <ol>{children}</ol>;
+    case 'link':
+      return <a href={escapeHtml(node.url)}>${children}</a>;
+    default:
+      return <p>{children}</p>;
+  }
+};
+
+export const RenderEditorHtml = ({ nodes }: { nodes: Descendant[] }) => {
+  return <>{nodes.map(serialize)}</>;
+};
 
 const SendButton = styled(SendIcon)({
   color: '#81818E',
@@ -50,83 +97,88 @@ const HOTKEYS = {
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 
-const RichTextEditor = React.forwardRef((props: EditableProps, forwardRef) => {
-  const [value, setValue] = useState(initialValue);
+const RichTextEditor = React.forwardRef(
+  ({ onSubmit, value: val, ...props }: EditableProps, forwardRef) => {
+    const [value, setValue] = useState(val ?? initialValue);
 
-  const renderElement = useCallback((props) => <Element {...props} />, []);
-  const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+    const renderElement = useCallback((props) => <Element {...props} />, []);
+    const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+    const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
-  const handleOnChange = useCallback(
-    (value: Descendant[]) => {
-      setValue(value);
-    },
-    [setValue],
-  );
+    const handleOnChange = useCallback(
+      (value: Descendant[]) => {
+        const isAstChange = editor.operations.some(
+          (op) => op.type !== 'set_selection',
+        );
+        if (isAstChange) {
+          setValue(value);
+        }
+      },
+      [setValue, editor],
+    );
 
-  const handleSubmit = useCallback(() => {
-    const html = new Html();
-    console.log(html.serialize(value));
-  }, [value]);
+    const handleSubmit = useCallback(() => {
+      onSubmit(value);
+    }, [value]);
 
-  return (
-    <Slate
-      onChange={handleOnChange}
-      ref={forwardRef}
-      editor={editor}
-      value={value}
-    >
-      <Editable
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-        placeholder="Add a comment…"
-        spellCheck
-        autoFocus
-        onKeyDown={(event) => {
-          for (const hotkey in HOTKEYS) {
-            if (isHotkey(hotkey, event as any)) {
-              event.preventDefault();
-              const mark = HOTKEYS[hotkey];
-              toggleMark(editor, mark);
+    return (
+      <Slate
+        onChange={handleOnChange}
+        ref={forwardRef}
+        editor={editor}
+        value={value}
+      >
+        <Editable
+          {...props}
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          spellCheck
+          autoFocus
+          onKeyDown={(event) => {
+            for (const hotkey in HOTKEYS) {
+              if (isHotkey(hotkey, event as any)) {
+                event.preventDefault();
+                const mark = HOTKEYS[hotkey];
+                toggleMark(editor, mark);
+              }
             }
-          }
-        }}
-        {...props}
-      />
-      <Grid container alignItems="center">
-        <Grid item md={10}>
-          <Toolbar>
-            <MarkButton format="bold" icon="format_bold" />
-            <MarkButton format="italic" icon="format_italic" />
-            <MarkButton format="underline" icon="format_underlined" />
-            <MarkButton format="strikethrough" icon="format_strikethrough" />
-            <MarkButton format="code" icon="code" />
-            {/* <BlockButton format="heading-one" icon="looks_one" />
+          }}
+        />
+        <Grid container alignItems="center">
+          <Grid item md={10}>
+            <Toolbar>
+              <MarkButton format="bold" icon="format_bold" />
+              <MarkButton format="italic" icon="format_italic" />
+              <MarkButton format="underline" icon="format_underlined" />
+              <MarkButton format="strikethrough" icon="format_strikethrough" />
+              <MarkButton format="code" icon="code" />
+              {/* <BlockButton format="heading-one" icon="looks_one" />
             <BlockButton format="heading-two" icon="looks_two" />
             <BlockButton format="block-quote" icon="format_quote" /> */}
-            <BlockButton format="numbered-list" icon="format_list_numbered" />
-            <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-            {/* <BlockButton format="left" icon="format_align_left" />
+              <BlockButton format="numbered-list" icon="format_list_numbered" />
+              <BlockButton format="bulleted-list" icon="format_list_bulleted" />
+              {/* <BlockButton format="left" icon="format_align_left" />
             <BlockButton format="center" icon="format_align_center" />
             <BlockButton format="right" icon="format_align_right" />
             <BlockButton format="justify" icon="format_align_justify" /> */}
-          </Toolbar>
+            </Toolbar>
+          </Grid>
+          <Grid
+            item
+            md={2}
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+          >
+            <IconButton onClick={handleSubmit}>
+              <SendButton />
+            </IconButton>
+          </Grid>
         </Grid>
-        <Grid
-          item
-          md={2}
-          display="flex"
-          alignItems="center"
-          justifyContent="flex-end"
-        >
-          <IconButton onClick={handleSubmit}>
-            <SendButton />
-          </IconButton>
-        </Grid>
-      </Grid>
-    </Slate>
-  );
-});
+      </Slate>
+    );
+  },
+);
 
 const toggleBlock = (editor, format) => {
   const isActive = isBlockActive(

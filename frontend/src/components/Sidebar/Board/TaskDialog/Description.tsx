@@ -1,7 +1,8 @@
 import { ClickAwayListener } from '@material-ui/core';
-import { styled, TextareaAutosize } from '@mui/material';
-import React, { useCallback, useState } from 'react';
-import Editor from './Comments/CommentEditor';
+import { Box, styled, Typography } from '@mui/material';
+import { BoardTask } from '@Redux/pmtools/types';
+import React, { useCallback, useMemo, useState } from 'react';
+import Editor, { RenderEditorHtml } from './Comments/CommentEditor';
 
 const EditorWrapper = styled('div')({
   border: '1px solid #E4E6EB',
@@ -18,16 +19,13 @@ const EditorWrapper = styled('div')({
   },
 });
 
-const Description = () => {
-  const [editMode, setEditMode] = useState(false);
-  const [description, setDescription] = useState('');
+interface Props {
+  onSubmit(description: string): void;
+  task: BoardTask;
+}
 
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setDescription(e.target.value.trim());
-    },
-    [setDescription],
-  );
+const Description = ({ onSubmit, task }) => {
+  const [editMode, setEditMode] = useState(false);
 
   const handleSetEditMode = useCallback(
     (mode: boolean) => {
@@ -36,10 +34,20 @@ const Description = () => {
     [setEditMode],
   );
 
-  const handleSaveDescription = useCallback(() => {
-    // TODO: save description logic
+  const handleSaveDescription = useCallback((value) => {
+    onSubmit(JSON.stringify(value));
     setEditMode(false);
   }, []);
+
+  const parsedDescription = useMemo(() => {
+    try {
+      return JSON.parse(task.description);
+    } catch (error) {
+
+      console.log('json error', error);
+      return null;
+    }
+  }, [task.description]);
 
   return editMode ? (
     // <TextareaAutosize
@@ -52,12 +60,22 @@ const Description = () => {
     // />
     <ClickAwayListener onClickAway={handleSetEditMode(false)}>
       <EditorWrapper>
-        <Editor placeholder="Add Description" />
+        <Editor
+          onSubmit={handleSaveDescription}
+          placeholder="Add Description"
+          value={parsedDescription}
+        />
       </EditorWrapper>
     </ClickAwayListener>
   ) : (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-    <p onClick={handleSetEditMode(true)}>Add Description</p>
+    <Box onClick={handleSetEditMode(true)}>
+      {!parsedDescription ? (
+        <p>Add Description</p>
+      ) : (
+        <RenderEditorHtml nodes={parsedDescription} />
+      )}
+    </Box>
   );
 };
 

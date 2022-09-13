@@ -82,6 +82,7 @@ export enum StatusOptions {
 export interface BoardTask {
   id: number;
   title: string;
+  description?: string;
   column: number;
   created: string;
   modified: string;

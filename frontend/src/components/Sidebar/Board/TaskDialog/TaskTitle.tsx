@@ -53,7 +53,7 @@ const TaskTitle = ({ task, onChange }: Props) => {
   const handleSaveTitle = useCallback(() => {
     onChange(taskTitle.trim());
     setEditMode(false);
-  }, []);
+  }, [taskTitle]);
 
   return (
     <>

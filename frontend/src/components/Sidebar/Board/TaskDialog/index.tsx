@@ -151,7 +151,10 @@ const TaskDialog = ({ task, open, onClose }) => {
           <InfoGrid item xs={8}>
             <Tags />
             <Stack>
-              <Description />
+              <Description
+                onSubmit={(desc) => handleUpdateTask('description', desc)}
+                task={task}
+              />
             </Stack>
             <Stack direction="row" spacing={2} alignItems="center">
               <span>Related tasks</span>
