@@ -54,7 +54,10 @@ def copy_element_node(instance: ScenarioElement, plan: int = None, parent: Scena
     print(iclone)
     return iclone
 
+
 counter = 0
+
+
 def copy_children(target_branch: ScenarioElement, parent: ScenarioElement = None, new_node: bool = False, counter=1) -> None:
     """
     :param target_branch: The original
@@ -475,12 +478,29 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
 
             # A Stream chat connection
             schat_users = schat_client.query_users({"id": {"$in": [str(current_user.id)]}})
+
+            # extract teams array if exists
+            teams = []
+            try:
+                teams = schat_users["users"][0]["teams"]
+                # print("teams", teams)
+            except Exception:
+                pass
+            finally:
+                pass
+
+            # update teams array
+            if str(project.id) in teams:
+                pass
+            else:
+                teams.append(str(project.id))
+
             if (schat_users["users"]):
                 schat_client.update_user_partial(
-                    {"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": [str(project.id)]}}
+                    {"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": teams}}
                 )
             else:
-                schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": [str(project.id)]}})
+                schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": teams}})
 
             return project
         else:
@@ -606,6 +626,7 @@ class ColumnTaskCommentSerializer(serializers.ModelSerializer):
             "user": {"read_only": True},
         }
 
+
 class ColumnTaskCheckitemSerializer(serializers.ModelSerializer):
     class Meta:
         model = ColumnTaskCheckitem
@@ -711,6 +732,7 @@ class ProjectWithColumnsSerializer(serializers.ModelSerializer):
     #         "updated": {"read_only": True},
     #     }
     #
+
     @staticmethod
     def setup_eager_loading(qs):
         queryset = qs.select_related("user").prefetch_related("projectcolumn")

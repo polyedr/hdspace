@@ -6,7 +6,9 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from jsonfield import JSONField
 from simple_history.models import HistoricalRecords
+from django.utils.translation import gettext_lazy as _
 from taggit.managers import TaggableManager
+from taggit.models import TagBase, GenericTaggedItemBase
 
 from apps.utils.models import TimeStampedModel
 from apps.accounts.utils import utils
@@ -260,6 +262,28 @@ class ProjectColumn(TimeStampedModel):
         ordering = ['buyoancy', 'pk']
 
 
+class ColumnTaskCustomTag(TagBase):
+    text = models.CharField(max_length=64, null=True, blank=True)
+    colour = models.CharField(max_length=16, null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
+
+class TaggedWhatever(GenericTaggedItemBase):
+    # TaggedWhatever can also extend TaggedItemBase or a combination of
+    # both TaggedItemBase and GenericTaggedItemBase. GenericTaggedItemBase
+    # allows using the same tag for different kinds of objects, in this
+    # example Food and Drink.
+
+    # Here is where you provide your custom Tag class.
+    tag = models.ForeignKey(
+        ColumnTaskCustomTag,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_items",
+    )
+
 
 class ColumnTask(TimeStampedModel):
     TASK_INPROGRESS = "in progress"
@@ -281,7 +305,7 @@ class ColumnTask(TimeStampedModel):
     status = models.CharField(choices=TASK_STATUS, default=TASK_INPROGRESS, max_length=32)
     priority = models.CharField(choices=TASK_PRIORITY, default=TASK_MEDIUM, max_length=32)
     buyoancy = models.IntegerField(default=0)
-    tags = TaggableManager(blank=True)
+    tags = TaggableManager(through=TaggedWhatever, blank=True)
 
     column = models.ForeignKey(ProjectColumn, related_name="columntask", on_delete=models.CASCADE)
 
