@@ -34,28 +34,30 @@ import Tags from './Tags';
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
     minWidth: '420px',
-    minHeight: '656px',
+    height: '656px',
     borderRadius: 6,
   },
 });
 
-const InfoGrid = styled(Grid)({
-  '& .Infosection': {
-    overflowY: 'scroll',
-    maxHeight: 'calc(100vh - 200px)',
+const InfoWrapper = styled('div')({
+  overflowY: 'auto',
+  maxHeight: '656px',
+
+  '&::-webkit-scrollbar': {
+    width: 4,
+    background: '#F3F4F6',
   },
 
-  '& span': {
-    color: '#81818E',
-    fontSize: 14,
-    fontWeight: 500,
-    margin: '16px 0',
+  '&::-webkit-scrollbar-thumb': {
+    background: '#B0B0BD',
   },
+});
 
-  '& p': {
-    fontSize: 16,
-    color: '#81818E',
-  },
+const InfoTitle = styled('span')({
+  color: '#81818E',
+  fontSize: 14,
+  fontWeight: 500,
+  margin: '16px 0',
 });
 
 const AssigneeAvatar = styled(MuiAvatar)({
@@ -148,31 +150,33 @@ const TaskDialog = ({ task, open, onClose }) => {
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
-          <InfoGrid item xs={8}>
-            <Tags />
-            <Stack>
-              <Description
-                onSubmit={(desc) => handleUpdateTask('description', desc)}
-                task={task}
-              />
-            </Stack>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <span>Related tasks</span>
-              <IconButton>
-                <AddIcon />
-              </IconButton>
-            </Stack>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <span>Checklist</span>
-              <IconButton>
-                <AddIcon />
-              </IconButton>
-            </Stack>
-            <Stack>
-              <span>Comments</span>
-              <Comment />
-            </Stack>
-          </InfoGrid>
+          <Grid item xs={8}>
+            <InfoWrapper>
+              <Tags />
+              <Stack>
+                <Description
+                  onSubmit={(desc) => handleUpdateTask('description', desc)}
+                  task={task}
+                />
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <InfoTitle>Related tasks</InfoTitle>
+                <IconButton>
+                  <AddIcon />
+                </IconButton>
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <InfoTitle>Checklist</InfoTitle>
+                <IconButton>
+                  <AddIcon />
+                </IconButton>
+              </Stack>
+              <Stack>
+                <InfoTitle>Comments</InfoTitle>
+                <Comment />
+              </Stack>
+            </InfoWrapper>
+          </Grid>
           <Grid item xs={4}>
             <TableContainer>
               <Table aria-label="simple table">

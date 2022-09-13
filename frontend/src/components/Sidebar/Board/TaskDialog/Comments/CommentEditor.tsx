@@ -82,7 +82,7 @@ const IconButton = styled(MuiIconButton)({
   },
 
   '& span': {
-    color: '#81818E',
+    // color: '#81818E',
     margin: 0,
   },
 });
@@ -318,11 +318,15 @@ const BlockButton = ({ format, icon }) => {
   const editor = useSlate();
   return (
     <IconButton
-      active={isBlockActive(
-        editor,
-        format,
-        TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
-      )}
+      color={
+        isBlockActive(
+          editor,
+          format,
+          TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
+        )
+          ? 'secondary'
+          : undefined
+      }
       onMouseDown={(event) => {
         event.preventDefault();
         toggleBlock(editor, format);
@@ -337,7 +341,7 @@ const MarkButton = ({ format, icon }) => {
   const editor = useSlate();
   return (
     <IconButton
-      active={isMarkActive(editor, format)}
+      color={isMarkActive(editor, format) ? 'secondary' : undefined}
       onMouseDown={(event) => {
         event.preventDefault();
         toggleMark(editor, format);
