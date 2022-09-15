@@ -1,5 +1,11 @@
 import { ClickAwayListener } from '@material-ui/core';
-import { Box, styled, Typography } from '@mui/material';
+import {
+  Box,
+  Button as MuiButton,
+  Stack,
+  styled,
+  Typography,
+} from '@mui/material';
 import { BoardTask } from '@Redux/pmtools/types';
 import React, { useCallback, useMemo, useState } from 'react';
 import Editor, { RenderEditorHtml } from './Comments/CommentEditor';
@@ -22,6 +28,18 @@ const EditorWrapper = styled('div')({
 const InfoSubTitle = styled('p')({
   fontSize: 16,
   color: '#81818E',
+});
+
+const Button = styled(MuiButton)({
+  textTransform: 'capitalize',
+
+  '&.MuiButton-text': {
+    color: '#81818E',
+  },
+
+  '&.MuiButton-contained': {
+    backgroundColor: 'var(--blue)',
+  },
 });
 
 interface Props {
@@ -48,7 +66,6 @@ const Description = ({ onSubmit, task }) => {
     try {
       return JSON.parse(task.description);
     } catch (error) {
-
       console.log('json error', error);
       return null;
     }
@@ -64,13 +81,19 @@ const Description = ({ onSubmit, task }) => {
     //   value={description}
     // />
     <ClickAwayListener onClickAway={handleSetEditMode(false)}>
-      <EditorWrapper>
-        <Editor
-          onSubmit={handleSaveDescription}
-          placeholder="Add Description"
-          value={parsedDescription}
-        />
-      </EditorWrapper>
+      <div>
+        <EditorWrapper>
+          <Editor
+            onSubmit={handleSaveDescription}
+            placeholder="Add Description"
+            value={parsedDescription}
+          />
+        </EditorWrapper>
+        <Stack direction="row" spacing={2} mt={2} mb={1}>
+          <Button variant="contained">Save</Button>
+          <Button variant="text">Cancel</Button>
+        </Stack>
+      </div>
     </ClickAwayListener>
   ) : (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions

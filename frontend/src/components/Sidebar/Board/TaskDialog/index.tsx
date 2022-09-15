@@ -40,8 +40,9 @@ const Dialog = styled(MuiDialog)({
 });
 
 const InfoWrapper = styled('div')({
-  overflowY: 'auto',
-  maxHeight: '656px',
+  overflowY: 'scroll',
+  height: '100%',
+  paddingRight: 24,
 
   '&::-webkit-scrollbar': {
     width: 4,
@@ -50,6 +51,11 @@ const InfoWrapper = styled('div')({
 
   '&::-webkit-scrollbar-thumb': {
     background: '#B0B0BD',
+    borderRadius: 4,
+  },
+
+  '&::-webkit-scrollbar-track': {
+    borderRadius: 4,
   },
 });
 
@@ -149,11 +155,12 @@ const TaskDialog = ({ task, open, onClose }) => {
         />
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} height="100%">
           <Grid item xs={8}>
             <InfoWrapper>
               <Tags />
               <Stack>
+                <InfoTitle>Description</InfoTitle>
                 <Description
                   onSubmit={(desc) => handleUpdateTask('description', desc)}
                   task={task}
