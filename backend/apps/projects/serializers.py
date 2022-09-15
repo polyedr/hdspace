@@ -37,7 +37,7 @@ from .models import (
     Element,
     Scenario,
     ElementComment, ProjectImage, ProjectIllustrationSet, ProjectColumn, ColumnTask, ColumnTaskComment,
-    ColumnTaskCheckitem)
+    ColumnTaskCheckitem, ColumnTaskLabel)
 
 from collections import OrderedDict
 
@@ -635,6 +635,15 @@ class ColumnTaskCheckitemSerializer(serializers.ModelSerializer):
             "id": {"read_only": True},
             "created": {"read_only": True},
             "modified": {"read_only": True},
+        }
+
+
+class ColumnTaskLabelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ColumnTaskLabel
+        fields = ("id", "text", "colour", "columntask")
+        extra_kwargs = {
+            "id": {"read_only": True},
         }
 
 

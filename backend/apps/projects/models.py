@@ -350,6 +350,13 @@ class ColumnTaskCheckitem(TimeStampedModel):
     buyoancy = models.IntegerField(default=0)
 
 
+class ColumnTaskLabel(TimeStampedModel):
+    text = models.CharField(max_length=64, null=True, blank=True)
+    colour = models.CharField(max_length=16, null=True, blank=True)
+
+    columntask = models.ForeignKey(ColumnTask, related_name="labels", on_delete=models.CASCADE, null=True)
+
+
 class TaskTime(TimeStampedModel):
     track_time = models.IntegerField(default=0)
     started = models.DateTimeField(blank=True)

@@ -39,7 +39,8 @@ from .apiviews import (
     AssignPermissionsProject, DisplayPermissionsProject, DisplayPermissionsAllusers, AssignPermissionsmapProject,
     ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView,
     ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder, ColumnTaskCheckitemList,
-    ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail)
+    ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
+    ColumnTaskLabelDetail)
 
 app_name = "projects"
 
@@ -142,11 +143,20 @@ api_columntask_comment_patterns = [
 ]
 
 api_columntask_checkitem_patterns = [
-    path("columntask-checkitems/", ColumnTaskCheckitemList.as_view(),
+    path("columntask-checkitems/", ColumnTaskLabelList.as_view(),
          name="api_columntask_checkitems"),
     path(
-        "columntask_checkitems/<int:pk>/", ColumnTaskCheckitemDetail.as_view(),
+        "columntask_checkitems/<int:pk>/", ColumnTaskLabelDetail.as_view(),
         name="api_columntask_checkitem"
+    ),
+]
+
+api_columntask_label_patterns = [
+    path("columntask-labels/", ColumnTaskLabelList.as_view(),
+         name="api_columntask_labels"),
+    path(
+        "columntask_labels/<int:pk>/", ColumnTaskLabelDetail.as_view(),
+        name="api_columntask_label"
     ),
 ]
 
@@ -294,6 +304,7 @@ urlpatterns = [
     path("", include(api_element_comment_patterns)),
     path("", include(api_columntask_comment_patterns)),
     path("", include(api_columntask_checkitem_patterns)),
+    path("", include(api_columntask_label_patterns)),
     path("", include(api_project_member_patterns)),
     path("", include(api_project_column_patterns)),
     path("", include(api_column_task_patterns)),

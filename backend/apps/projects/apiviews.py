@@ -38,7 +38,7 @@ from .models import (
     elements,
     scenarios,
     ElementComment, ProjectIllustrationSet, ProjectImage, ProjectColumn, ColumnTask, ColumnTaskComment,
-    ColumnTaskCheckitem)
+    ColumnTaskCheckitem, ColumnTaskLabel)
 from .serializers import (
     ProjectSerializer,
     ProjectMemberSerializer,
@@ -68,7 +68,7 @@ from .serializers import (
     ImageSerializer,
     ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
     duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
-    ColumnTaskCheckitemSerializer)
+    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -722,6 +722,25 @@ class ColumnTaskCheckitemDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ColumnTaskCheckitem.objects.all()
     serializer_class = ColumnTaskCheckitemSerializer
+
+
+
+class ColumnTaskLabelList(generics.ListCreateAPIView):
+    """
+    List all column task checklist items, or create a new column task checklist item.
+    """
+
+    queryset = ColumnTaskLabel.objects.all()
+    serializer_class = ColumnTaskLabelSerializer
+
+
+class ColumnTaskLabelDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a column task  checklist item
+    """
+
+    queryset = ColumnTaskLabel.objects.all()
+    serializer_class = ColumnTaskLabelSerializer
 
 
 class AssignPermissionsmapProject(APIView):
