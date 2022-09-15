@@ -10,6 +10,7 @@ import requests
 from urllib.parse import urlparse
 
 from drf_stripe.stripe_api.customers import get_or_create_stripe_user
+from drf_writable_nested import WritableNestedModelSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_bulk import BulkSerializerMixin, BulkListSerializer
@@ -673,9 +674,9 @@ class SubColumnTaskSerializer(serializers.ModelSerializer):
         fields = ("id", "created", "due_date", "status", "title")
 
 
-class ColumnTaskSerializer(TaggitSerializer, serializers.ModelSerializer):
-    tags = TagListSerializerField(required=False, allow_null=True)
-    colour = serializers.CharField(required=False, allow_null=True)
+class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
+    # tags = TagListSerializerField(required=False, allow_null=True)
+    labels = ColumnTaskLabelSerializer(many=True)
     comments = ColumnTaskCommentSerializer(many=True, required=False)
     checklist = ColumnTaskCheckitemSerializer(many=True, read_only=True)
     # related_task = ColumnTaskSerializer(many=True, required=False)
@@ -689,9 +690,11 @@ class ColumnTaskSerializer(TaggitSerializer, serializers.ModelSerializer):
     assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='assignee', read_only=False, required=False)
     responsible_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='responsible', required=False)
 
+    colour = serializers.CharField(required=False, allow_null=True)
+
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "colour", "title", "description", "status", "priority", "buyoancy", "tags", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
+        fields = ("id", "created", "modified", "due_date", "time", "colour", "title", "description", "status", "priority", "buyoancy", "labels", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
         # , "related_task"
         # depth = 2
         extra_kwargs = {
@@ -702,6 +705,17 @@ class ColumnTaskSerializer(TaggitSerializer, serializers.ModelSerializer):
             "comments": {"read_only": True},
         }
 
+    '''
+    def update(self, instance, validated_data):
+        """
+        Update and return an existing `ColumnTask` instance, given the validated data.
+        """
+        instance = super(ColumnTaskSerializer, self).update(instance, validated_data)
+        labels_data = validated_data.get("labels")
+        instance.labels.set(labels_data, clear=True)
+        instance.save()
+        return instance
+    '''
 
 class ColumnWithTasksSerializer(serializers.ModelSerializer):
     columntask = ColumnTaskSerializer(many=True, read_only=True)
