@@ -21,6 +21,7 @@ import Stack from '@mui/material/Stack';
 import { useDispatch } from 'react-redux';
 import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
 import { BoardTask } from '@Redux/pmtools/types';
+import { BoardTaskTag } from '@Src/types/pmtools/board';
 import Comment from './Comments';
 import TaskTitle from './TaskTitle';
 import DueDate from './DueDate';
@@ -119,7 +120,13 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const TaskDialog = ({ task, open, onClose }) => {
+interface Props {
+  task: BoardTask;
+  open: boolean;
+  onClose(): void;
+}
+
+const TaskDialog = ({ task, open, onClose }: Props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -152,7 +159,15 @@ const TaskDialog = ({ task, open, onClose }) => {
         <Grid container spacing={2}>
           <Grid item xs={8}>
             <InfoWrapper>
-              <Tags />
+              <Tags
+                task={task}
+                onChange={(tags) =>
+                  handleUpdateTask(
+                    'tags',
+                    JSON.stringify(tags.map((t: BoardTaskTag) => t.text)),
+                  )
+                }
+              />
               <Stack>
                 <Description
                   onSubmit={(desc) => handleUpdateTask('description', desc)}
@@ -199,7 +214,10 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Due Date
                     </TableCell>
                     <TableCell>
-                      <DueDate />
+                      <DueDate
+                        date={task.due_date}
+                        onChange={(date) => handleUpdateTask('due_date', date)}
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -207,7 +225,12 @@ const TaskDialog = ({ task, open, onClose }) => {
                       Assignee
                     </TableCell>
                     <TableCell>
-                      <MemberPicker />
+                      <MemberPicker
+                        selected={task?.assignee_id?.toString()}
+                        onChange={(member) =>
+                          handleUpdateTask('assignee_id', member?.id)
+                        }
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -216,7 +239,12 @@ const TaskDialog = ({ task, open, onClose }) => {
                     </TableCell>
                     <TableCell>
                       <IconButton>
-                        <MemberPicker />
+                        <MemberPicker
+                          selected={task?.responsible_id?.toString()}
+                          onChange={(member) =>
+                            handleUpdateTask('responsible_id', member?.id)
+                          }
+                        />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -256,10 +284,10 @@ const TaskDialog = ({ task, open, onClose }) => {
                     <TableCell>
                       <AuthorButton variant="text">
                         <AuthorAvatar
-                          alt="Remy Sharp"
-                          src="/static/images/avatar/1.jpg"
+                          alt={`${task.author.first_name} ${task.author.last_name}`}
+                          src={task.author.profile_avatar}
                         />
-                        <span>Aleksandra Sayapina</span>
+                        <span>{`${task.author.first_name} ${task.author.last_name}`}</span>
                       </AuthorButton>
                     </TableCell>
                   </TableRow>

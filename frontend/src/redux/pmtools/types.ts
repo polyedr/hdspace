@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import { ServerUserData } from '@Src/types';
 import { DefaultRootState } from 'react-redux';
 import {
@@ -6,7 +7,6 @@ import {
   ChatClient,
   IMessageZulip,
 } from '@Src/types/pmtools/types';
-import { IBoard, IColumnData, IServerTaskData } from '@Src/types/pmtools/board';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
@@ -89,8 +89,12 @@ export interface BoardTask {
   due_date: string;
   author: BoardTaskUser;
   assignee: BoardTaskUser;
+  assignee_id?: number;
   responsible: BoardTaskUser;
+  responsible_id?: number;
   priority: PriorityOptions;
+  story_points: number;
+  time?: string;
   status: StatusOptions;
 }
 export interface BoardColumn {

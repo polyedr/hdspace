@@ -318,14 +318,14 @@ const BlockButton = ({ format, icon }) => {
   const editor = useSlate();
   return (
     <IconButton
-      color={
+      style={
         isBlockActive(
           editor,
           format,
           TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
         )
-          ? 'secondary'
-          : undefined
+          ? { color: '#000' }
+          : {}
       }
       onMouseDown={(event) => {
         event.preventDefault();
@@ -341,11 +341,11 @@ const MarkButton = ({ format, icon }) => {
   const editor = useSlate();
   return (
     <IconButton
-      color={isMarkActive(editor, format) ? 'secondary' : undefined}
       onMouseDown={(event) => {
         event.preventDefault();
         toggleMark(editor, format);
       }}
+      style={isMarkActive(editor, format) ? { color: '#000' } : {}}
     >
       <Icon>{icon}</Icon>
     </IconButton>
