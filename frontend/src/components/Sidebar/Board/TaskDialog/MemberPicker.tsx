@@ -1,11 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import {
-  Avatar,
-  Box,
-  Chip,
+  Avatar as MuiAvatar,
   FormControl as MuiFormControl,
-  InputLabel,
   ListItemIcon as MuiListItemIcon,
   ListItemText as MuiListItemText,
   MenuItem,
@@ -14,8 +11,6 @@ import {
   Select,
   SelectChangeEvent,
   Stack as MuiStack,
-  Theme,
-  useTheme,
   styled,
   Button as MuiButton,
 } from '@mui/material';
@@ -82,6 +77,26 @@ const Button = styled(MuiButton)({
   },
 });
 
+const AuthorButton = styled(MuiButton)({
+  backgroundColor: '#F3F4F6',
+  borderRadius: '16px',
+  height: 24,
+  padding: 0,
+
+  '& span': {
+    padding: '3px 8px 3px 3px',
+    color: '#2A2A2D',
+    fontSize: 14,
+    textTransform: 'capitalize',
+  },
+});
+
+const AuthorAvatar = styled(MuiAvatar)({
+  width: 24,
+  height: 24,
+  fontSize: 14,
+});
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -93,10 +108,20 @@ const MenuProps = {
   },
 };
 
-const MemberPicker = () => {
-  const theme = useTheme();
+interface User {
+  id: number;
+  name: string;
+  avatar?: string;
+}
+
+interface Props {
+  selected?: string;
+  onChange(member: User | undefined): void;
+}
+
+const MemberPicker = ({ selected, onChange }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
-  const [person, setPerson] = React.useState<string>('');
+  const [person, setPerson] = React.useState<string>(selected ?? '');
 
   const members = useSelector(selectAllUsersPermissions);
 
@@ -114,14 +139,6 @@ const MemberPicker = () => {
     setAnchorEl(null);
   }, [setAnchorEl]);
 
-  const handleChange = (event: SelectChangeEvent<typeof person>) => {
-    const {
-      target: { value },
-    } = event;
-
-    setPerson(value);
-  };
-
   const users = useMemo(() => {
     return Object.values(members).map(({ userData }) => ({
       id: userData.id,
@@ -130,12 +147,47 @@ const MemberPicker = () => {
     }));
   }, [members]);
 
+  const handleChange = useCallback(
+    (event: SelectChangeEvent<typeof person>) => {
+      const {
+        target: { value },
+      } = event;
+      setPerson(value);
+    },
+    [setPerson],
+  );
+
+  const selectedUser = users.find((u) => u.id === parseInt(selected ?? '0'));
+
+  const handleSubmit = useCallback(() => {
+    onChange(users.find((u) => u.id === parseInt(person)));
+    handleClose();
+  }, [users, person, onChange]);
+
   return (
     <>
       <IconButton onClick={handleOpen}>
-        <AddIcon />
+        {selectedUser ? (
+          <AuthorAvatar alt={selectedUser.name} src={selectedUser.avatar} />
+        ) : (
+          <AddIcon />
+        )}
       </IconButton>
-      <Popover id={id} open={open} anchorEl={anchorEl} onClose={handleClose}>
+
+      <Popover
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+      >
         <FormWrapper>
           <FormTitle>Add Member</FormTitle>
           <FormControl sx={{ width: 300 }}>
@@ -157,7 +209,7 @@ const MemberPicker = () => {
                     alignItems="center"
                   >
                     <ListItemIcon>
-                      <Avatar
+                      <MuiAvatar
                         src={user.avatar || undefined}
                         sx={{ width: 24, height: 24 }}
                         alt={user.name}
@@ -172,7 +224,7 @@ const MemberPicker = () => {
               {users.map((user) => (
                 <MenuItem key={user.id} value={user.id}>
                   <ListItemIcon>
-                    <Avatar
+                    <MuiAvatar
                       src={user.avatar || undefined}
                       sx={{ width: 24, height: 24 }}
                       alt={user.name}
@@ -189,8 +241,16 @@ const MemberPicker = () => {
             justifyContent="flex-end"
             mt={2}
           >
-            <Button variant="text">Cancel</Button>
-            <Button variant="contained">Add</Button>
+            <Button onClick={handleClose} variant="text">
+              Cancel
+            </Button>
+            <Button
+              disabled={!person}
+              onClick={handleSubmit}
+              variant="contained"
+            >
+              Add
+            </Button>
           </MuiStack>
         </FormWrapper>
       </Popover>

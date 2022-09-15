@@ -1,12 +1,20 @@
 import React, { useCallback, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
-import { Popover, TextField } from '@mui/material';
+import { Button, Popover, TextField } from '@mui/material';
+import { format } from 'date-fns';
 import { IconButton } from './StyledComponents';
 
-const DueDate = () => {
+interface Props {
+  date: string;
+  onChange(date?: string): void;
+}
+
+const DueDate = ({ date, onChange }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
-  const [value, setValue] = React.useState<Date | null>(new Date());
+  const [value, setValue] = React.useState<Date | null>(
+    date ? new Date(date) : new Date(),
+  );
 
   const handleOpen = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -24,9 +32,16 @@ const DueDate = () => {
 
   return (
     <>
-      <IconButton onClick={handleOpen}>
-        <AddIcon />
-      </IconButton>
+      {date ? (
+        <Button onClick={handleOpen}>
+          {format(Date.parse(date), 'dd MMM')}
+        </Button>
+      ) : (
+        <IconButton onClick={handleOpen}>
+          <AddIcon />
+        </IconButton>
+      )}
+
       <Popover
         id={id}
         open={open}
@@ -43,6 +58,11 @@ const DueDate = () => {
           value={value}
           onChange={(newValue) => {
             setValue(newValue);
+            if (newValue) {
+              onChange(format(newValue, 'yyyy-MM-dd'));
+            } else {
+              onChange(undefined);
+            }
             handleClose();
           }}
           renderInput={(params) => <TextField {...params} />}

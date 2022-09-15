@@ -1,15 +1,14 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Chip as MuiChip,
   Stack,
-  Box,
   Popover as MuiPopover,
   styled,
 } from '@mui/material';
 import { BoardTaskTag } from '@Src/types/pmtools/board';
+import { BoardTask } from '@Redux/pmtools/types';
 import { IconButton } from '../StyledComponents';
-import AddTag from './AddTag';
 import AllTags from './AllTags';
 
 const InfoTitle = styled('span')({
@@ -38,9 +37,16 @@ const Chip = styled(MuiChip)({
   },
 });
 
-const Tags = () => {
+interface Props {
+  task: BoardTask;
+  onChange(tags: BoardTaskTag[]): void;
+}
+
+const Tags = ({ task, onChange }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [selectedTags, setSelectedTags] = useState<BoardTaskTag[]>([]);
+
+  const mountedRef = useRef(false);
 
   // const handleDelete = useCallback(
   //   (index: number) => {
@@ -64,6 +70,14 @@ const Tags = () => {
   const handleCloseTagPicker = useCallback(() => {
     setAnchorEl(null);
   }, []);
+
+  useEffect(() => {
+    if (mountedRef.current) {
+      onChange(selectedTags);
+    } else {
+      mountedRef.current = true;
+    }
+  }, [selectedTags]);
 
   const open = Boolean(anchorEl);
   const id = open ? 'task-tags-picker' : undefined;
