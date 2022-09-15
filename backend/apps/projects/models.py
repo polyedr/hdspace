@@ -316,7 +316,7 @@ class ColumnTask(TimeStampedModel):
     )
     related_task = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="relatedtask")
     story_points = models.IntegerField(default=0)
-    due_date = models.DateField(null=True, blank=True)
+    due_date = models.DateTimeField(null=True, blank=True)
     time = models.DurationField(null=True, blank=True)
 
     history = HistoricalRecords()
