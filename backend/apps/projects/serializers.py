@@ -740,21 +740,16 @@ class ProjectColumnSerializer(serializers.ModelSerializer):
 
 
 class ProjectWithColumnsSerializer(serializers.ModelSerializer):
-    # user = UserSerializer(read_only=True)
+    tasklabels = ColumnTaskLabelSerializer(many=True, read_only=True)
     projectcolumn = ProjectColumnSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
         fields = (
             "projectcolumn",
+            "tasklabels",
             "id",
         )
-    #     extra_kwargs = {
-    #         "preview": {"read_only": True},
-    #         "created": {"read_only": True},
-    #         "updated": {"read_only": True},
-    #     }
-    #
 
     @staticmethod
     def setup_eager_loading(qs):
