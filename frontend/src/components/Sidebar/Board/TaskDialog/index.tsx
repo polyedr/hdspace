@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Avatar as MuiAvatar,
   Button as MuiButton,
@@ -129,6 +129,9 @@ interface Props {
 const TaskDialog = ({ task, open, onClose }: Props) => {
   const dispatch = useDispatch();
 
+  const [storyPoints, setStoryPoints] = useState(task.story_points.toString());
+  const [time, setTime] = useState(task.time);
+
   useEffect(() => {
     if (open) {
       dispatch(fetchTask(task.id));
@@ -139,6 +142,24 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
     (field: keyof BoardTask, value) =>
       dispatch(updateTask(task, { [field]: value })),
     [task],
+  );
+
+  const handleChangeStoryPoints = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.value.match('^[0-9\\.\\-]+$') || e.target.value === '') {
+        setStoryPoints(e.target.value);
+      }
+    },
+    [setStoryPoints],
+  );
+
+  const handleChangeTime = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.value.match('^[0-9\\.\\-]+$') || e.target.value === '') {
+        setTime(e.target.value);
+      }
+    },
+    [setTime],
   );
 
   return (
@@ -266,7 +287,16 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                       Story Points
                     </TableCell>
                     <TableCell>
-                      <TextField type="number" variant="standard" />
+                      <TextField
+                        value={storyPoints}
+                        onChange={handleChangeStoryPoints}
+                        onBlur={() =>
+                          handleUpdateTask('story_points', storyPoints)
+                        }
+                        type="text"
+                        variant="standard"
+                        autoComplete="off"
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -274,7 +304,13 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                       Time
                     </TableCell>
                     <TableCell>
-                      <TextField type="number" variant="standard" />
+                      <TextField
+                        onChange={handleChangeTime}
+                        type="text"
+                        variant="standard"
+                        autoComplete="off"
+                        onBlur={() => handleUpdateTask('time', time)}
+                      />
                     </TableCell>
                   </TableRow>
                   <TableRow>

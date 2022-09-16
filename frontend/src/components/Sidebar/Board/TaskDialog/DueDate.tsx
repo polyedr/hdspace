@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
-import { StaticDatePicker } from '@mui/x-date-pickers/StaticDatePicker';
 import { Button, Popover, TextField } from '@mui/material';
 import { format } from 'date-fns';
+import { StaticDateTimePicker } from '@mui/x-date-pickers';
 import { IconButton } from './StyledComponents';
 
 interface Props {
@@ -52,7 +52,7 @@ const DueDate = ({ date, onChange }: Props) => {
           horizontal: 'left',
         }}
       >
-        <StaticDatePicker
+        <StaticDateTimePicker
           displayStaticWrapperAs="desktop"
           disablePast
           value={value}
