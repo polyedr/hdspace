@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import {
   Avatar as MuiAvatar,
+  Button,
   Button as MuiButton,
   Dialog as MuiDialog,
   DialogContent,
@@ -31,6 +32,7 @@ import Status from './Status';
 import MemberPicker from './MemberPicker';
 import Description from './Description';
 import Tags from './Tags';
+import Checklist from './Checklist';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -42,7 +44,7 @@ const Dialog = styled(MuiDialog)({
 
 const InfoWrapper = styled('div')({
   overflowY: 'scroll',
-  height: '100%',
+  height: '570px',
   paddingRight: 24,
 
   '&::-webkit-scrollbar': {
@@ -187,12 +189,21 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                   <AddIcon />
                 </IconButton>
               </Stack>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <InfoTitle>Checklist</InfoTitle>
-                <IconButton>
-                  <AddIcon />
-                </IconButton>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <InfoTitle>Checklist</InfoTitle>
+                  <IconButton>
+                    <AddIcon />
+                  </IconButton>
+                </Stack>
+                <Button variant="text">Remove</Button>
               </Stack>
+              <Checklist />
               <Stack>
                 <InfoTitle>Comments</InfoTitle>
                 <Comment />
