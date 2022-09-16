@@ -2,7 +2,6 @@ import {
   Box,
   Button as MuiButton,
   Checkbox,
-  Container as MuiContainer,
   List,
   ListItem,
   ListItemButton as MuiListItemButton,
@@ -16,13 +15,24 @@ import React, { useCallback, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import AddTag from './AddTag';
 
-const Container = styled(MuiContainer)({
-  padding: 15,
-  maxHeight: '300px',
+const SearchWrapper = styled('div')({
+  padding: '8px 15px',
+  maxHeight: '305px',
   overflowY: 'scroll',
+  margin: '5px',
 
   '&::-webkit-scrollbar': {
-    width: 6,
+    width: 4,
+    background: '#F3F4F6',
+  },
+
+  '&::-webkit-scrollbar-thumb': {
+    background: '#B0B0BD',
+    borderRadius: 4,
+  },
+
+  '&::-webkit-scrollbar-track': {
+    borderRadius: 4,
   },
 });
 
@@ -157,7 +167,7 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
   }
 
   return (
-    <Container>
+    <SearchWrapper>
       <Box>
         <FormWrapper>
           <SearchIcon />
@@ -202,7 +212,7 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
           );
         })}
       </List>
-    </Container>
+    </SearchWrapper>
   );
 };
 

@@ -45,7 +45,7 @@ const IconButton = styled(MuiIconButton)({
 
 const Comment = () => {
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} mb={3}>
       <Grid item md="auto">
         <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
       </Grid>

@@ -18,6 +18,10 @@ const Comments = () => {
       <CommentInput />
       <CommentHistory>
         <Comment />
+        <Comment />
+        <Comment />
+        <Comment />
+        <Comment />
       </CommentHistory>
     </>
   );

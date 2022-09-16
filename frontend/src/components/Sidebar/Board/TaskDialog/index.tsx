@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Avatar as MuiAvatar,
+  Button,
   Button as MuiButton,
   Dialog as MuiDialog,
   DialogContent,
@@ -31,6 +32,7 @@ import Status from './Status';
 import MemberPicker from './MemberPicker';
 import Description from './Description';
 import Tags from './Tags';
+import Checklist from './Checklist';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -41,8 +43,9 @@ const Dialog = styled(MuiDialog)({
 });
 
 const InfoWrapper = styled('div')({
-  overflowY: 'auto',
-  maxHeight: '656px',
+  overflowY: 'scroll',
+  height: '570px',
+  paddingRight: 24,
 
   '&::-webkit-scrollbar': {
     width: 4,
@@ -51,6 +54,11 @@ const InfoWrapper = styled('div')({
 
   '&::-webkit-scrollbar-thumb': {
     background: '#B0B0BD',
+    borderRadius: 4,
+  },
+
+  '&::-webkit-scrollbar-track': {
+    borderRadius: 4,
   },
 });
 
@@ -177,7 +185,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
         />
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} height="100%">
           <Grid item xs={8}>
             <InfoWrapper>
               <Tags
@@ -190,6 +198,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                 }
               />
               <Stack>
+                <InfoTitle>Description</InfoTitle>
                 <Description
                   onSubmit={(desc) => handleUpdateTask('description', desc)}
                   task={task}
@@ -201,12 +210,21 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                   <AddIcon />
                 </IconButton>
               </Stack>
-              <Stack direction="row" spacing={2} alignItems="center">
-                <InfoTitle>Checklist</InfoTitle>
-                <IconButton>
-                  <AddIcon />
-                </IconButton>
+              <Stack
+                direction="row"
+                spacing={2}
+                alignItems="center"
+                justifyContent="space-between"
+              >
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <InfoTitle>Checklist</InfoTitle>
+                  <IconButton>
+                    <AddIcon />
+                  </IconButton>
+                </Stack>
+                <Button variant="text">Remove</Button>
               </Stack>
+              <Checklist />
               <Stack>
                 <InfoTitle>Comments</InfoTitle>
                 <Comment />

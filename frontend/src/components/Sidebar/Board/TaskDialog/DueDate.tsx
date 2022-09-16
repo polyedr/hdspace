@@ -1,9 +1,23 @@
 import React, { useCallback, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
-import { Button, Popover, TextField } from '@mui/material';
+import { Button as MuiButton, Popover, styled, TextField } from '@mui/material';
 import { format } from 'date-fns';
 import { StaticDateTimePicker } from '@mui/x-date-pickers';
+import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from './StyledComponents';
+
+const Button = styled(MuiButton)<{ icon: boolean }>(({ icon }) => {
+  if (icon) {
+    return {
+      width: 50,
+      height: 50,
+    };
+  }
+
+  return {
+    color: '#2A2A2D',
+  };
+});
 
 interface Props {
   date: string;
@@ -32,15 +46,10 @@ const DueDate = ({ date, onChange }: Props) => {
 
   return (
     <>
-      {date ? (
-        <Button onClick={handleOpen}>
-          {format(Date.parse(date), 'dd MMM')}
-        </Button>
-      ) : (
-        <IconButton onClick={handleOpen}>
-          <AddIcon />
-        </IconButton>
-      )}
+      <Button icon={!date} onClick={handleOpen}>
+        {date ? format(Date.parse(date), 'dd MMM') : <AddIcon />}{' '}
+        <CloseIcon className="CloseIcon" />
+      </Button>
 
       <Popover
         id={id}
