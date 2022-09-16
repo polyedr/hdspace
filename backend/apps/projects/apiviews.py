@@ -727,16 +727,21 @@ class ColumnTaskCheckitemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ColumnTaskLabelList(generics.ListCreateAPIView):
     """
-    List all column task checklist items, or create a new column task checklist item.
+    List all column task labels, or create a new column task label.
     """
-
     queryset = ColumnTaskLabel.objects.all()
     serializer_class = ColumnTaskLabelSerializer
+
+    # Inject current project at the point of saving the instance
+    def perform_create(self, serializer):
+        columntask_id = self.request.data['columntask']
+        columntask = ColumnTask.objects.get(id=columntask_id)
+        serializer.save(project=columntask.column.project)
 
 
 class ColumnTaskLabelDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update or delete a column task  checklist item
+    Retrieve, update or delete a column task label
     """
 
     queryset = ColumnTaskLabel.objects.all()
