@@ -739,8 +739,8 @@ class ProjectColumnSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "description", "project", "buyoancy", "colour")
 
 
-class ProjectWithColumnsSerializer(serializers.ModelSerializer):
-    tasklabels = ColumnTaskLabelSerializer(many=True, read_only=True)
+class ProjectWithColumnsSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
+    tasklabels = ColumnTaskLabelSerializer(many=True)
     projectcolumn = ProjectColumnSerializer(many=True, read_only=True)
 
     class Meta:

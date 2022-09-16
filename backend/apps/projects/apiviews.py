@@ -144,7 +144,7 @@ class ProjectWithColumnsViewSet(viewsets.ModelViewSet):
     pagination_class = None
     permission_classes = [CustomObjectPermissions]  # Django-Guardian
     filter_backends = [filters.ObjectPermissionsFilter]  # Django-Guardian
-    http_method_names = ['get', 'head']
+    # http_method_names = ['get', 'post', 'head']
 
     def get_queryset(self):
         return self.get_serializer_class().setup_eager_loading(self.queryset)
