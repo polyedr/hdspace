@@ -10,7 +10,7 @@ const EditorWrapper = styled('div')({
   padding: 12,
 
   '& p': {
-    margin: '0 12px 12px',
+    margin: '0 0 15px',
   },
 
   '& p span': {

@@ -75,7 +75,8 @@ const SendButton = styled(SendIcon)({
 
 const IconButton = styled(MuiIconButton)({
   display: 'inline-flex !important',
-  marginLeft: '0 !important',
+  // marginLeft: '0 !important',
+  padding: 3,
 
   '& .material-icons': {
     fontSize: 20,
