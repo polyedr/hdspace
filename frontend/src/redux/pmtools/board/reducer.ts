@@ -2,6 +2,7 @@ import { createReducer, Handlers } from 'reduxsauce';
 import TYPES from '@Redux/actionTypes';
 import * as columnActions from './actions/columns';
 import * as taskActions from './actions/tasks';
+import * as commentActions from './actions/comments';
 import { BoardAction, BoardState } from '../types';
 
 const INITIAL_STATE: BoardState = {
@@ -116,6 +117,24 @@ const deleteColumn: ActionHandler<
   };
 };
 
+const addComment: ActionHandler<
+  ReturnType<typeof commentActions.addComment>
+> = (state = INITIAL_STATE, { comment, task }) => {
+  const columnIndex = state.columns.findIndex((c) => c.id === task.column);
+  const taskIndex = state.columns[columnIndex].tasks.findIndex(
+    (t) => t.id === task.id,
+  );
+
+  const newState = { ...state };
+
+  newState.columns[columnIndex].tasks[taskIndex].comments = [
+    comment,
+    ...(newState.columns[columnIndex].tasks[taskIndex].comments ?? []),
+  ];
+
+  return newState;
+};
+
 const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_COLUMNS]: setColumns,
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
@@ -125,6 +144,7 @@ const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_ADD_COLUMN]: addColumn,
   [TYPES.BOARD_DELETE_COLUMN_FROM_STATE]: deleteColumn,
   [TYPES.BOARD_UPDATE_COLUMN_ON_STATE]: updateColumn,
+  [TYPES.BOARD_TASK_ADD_COMMENT]: addComment,
 };
 
 export default createReducer<BoardState, BoardAction>(INITIAL_STATE, HANDLERS);

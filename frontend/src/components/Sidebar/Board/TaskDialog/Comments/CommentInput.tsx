@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Avatar as MuiAvatar,
-  Button,
   ClickAwayListener,
   Grid,
   styled,
   TextField as MuiTextField,
 } from '@mui/material';
-import Editor from './CommentEditor';
+import { Typography } from '@material-ui/core';
+import Editor from '../Editor';
+import { BoardTask } from '@Redux/pmtools/types';
+import { useSelector } from 'react-redux';
+import { selectIsLoggedIn, selectProfileData } from '@Redux/user/selectors';
+import { username } from '../../User';
 
 const Avatar = styled(MuiAvatar)({
   width: 32,
@@ -29,37 +33,44 @@ const CommentField = styled('div')({
   },
 });
 
-const TextField = styled(MuiTextField)({
-  '& .MuiOutlinedInput-root': {
-    '& input': {
-      padding: '6.5px 14px',
-    },
-    '& > fieldset': {
-      borderColor: '#E4E6EB !important',
-    },
-    '&:hover > fieldset': {
-      borderColor: 'var(--blue)',
-    },
-    '&.Mui-focused > fieldset': {
-      borderColor: '#E4E6EB',
-    },
-  },
-});
+interface Props {
+  onSubmit(value: any): void;
+}
 
-const CommentInput = () => {
+const CommentInput = ({ onSubmit }: Props) => {
+  const [value, setValue] = useState(undefined);
   const [showEditor, setShowEditor] = useState(false);
+
+  const user = useSelector(selectProfileData);
+
+  const handleChange = useCallback(
+    (value) => {
+      setValue(value);
+    },
+    [setValue],
+  );
+
+  const handleSubmit = useCallback(() => {
+    onSubmit(value);
+    setShowEditor(false);
+    setValue(undefined);
+  }, [onSubmit, setValue, value]);
 
   return (
     <Grid container spacing={1}>
       <Grid item md="auto">
-        <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+        <Avatar alt={username(user)} src={user.avatar ?? undefined} />
       </Grid>
       <Grid item md={10}>
         {showEditor ? (
           <CommentField>
             <ClickAwayListener onClickAway={() => setShowEditor(false)}>
               <div>
-                <Editor />
+                <Editor
+                  value={value}
+                  onChange={handleChange}
+                  onSubmit={handleSubmit}
+                />
               </div>
             </ClickAwayListener>
             {/* <Button variant="text" size="small">
@@ -74,13 +85,9 @@ const CommentInput = () => {
             </Button> */}
           </CommentField>
         ) : (
-          <TextField
-            type="text"
-            placeholder="Add a comment"
-            fullWidth
-            size="small"
-            onFocus={() => setShowEditor(true)}
-          />
+          <Typography onClick={() => setShowEditor(true)}>
+            Add a Comment
+          </Typography>
         )}
       </Grid>
     </Grid>

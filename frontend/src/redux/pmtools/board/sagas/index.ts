@@ -7,6 +7,7 @@ import {
   updateColumnSaga,
   updateColumnsOrderSaga,
 } from './columns';
+import { createCommentSaga } from './comments';
 import {
   createTaskSaga,
   fetchTaskSaga,
@@ -25,4 +26,6 @@ export default function* boardSaga() {
   yield takeLatest(TYPES.BOARD_UPDATE_TASKS_ORDER, updateTasksOrderSaga);
   yield takeLatest(TYPES.BOARD_CREATE_TASK, createTaskSaga);
   yield takeEvery(TYPES.BOARD_UPDATE_TASK, updateTaskSags);
+
+  yield takeEvery(TYPES.BOARD_TASK_CREATE_COMMENT, createCommentSaga);
 }

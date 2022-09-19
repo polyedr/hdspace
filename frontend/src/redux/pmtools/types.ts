@@ -79,6 +79,13 @@ export enum StatusOptions {
   Accepted = 'accepted',
   Review = 'waiting for review',
 }
+
+export interface BoardTaskComment {
+  id: number;
+  text: string;
+  user: BoardTaskUser;
+  created: string;
+}
 export interface BoardTask {
   id: number;
   title: string;
@@ -96,6 +103,7 @@ export interface BoardTask {
   story_points: number;
   time?: string;
   status: StatusOptions;
+  comments?: BoardTaskComment[];
 }
 export interface BoardColumn {
   id: number;

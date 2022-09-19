@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 // @ts-nocheck
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import isHotkey from 'is-hotkey';
 import { Editable, withReact, useSlate, Slate } from 'slate-react';
 
@@ -98,9 +98,7 @@ const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 
 const RichTextEditor = React.forwardRef(
-  ({ onSubmit, value: val, ...props }: EditableProps, forwardRef) => {
-    const [value, setValue] = useState(val ?? initialValue);
-
+  ({ onSubmit, onChange, value, ...props }: EditableProps, forwardRef) => {
     const renderElement = useCallback((props) => <Element {...props} />, []);
     const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
     const editor = useMemo(() => withHistory(withReact(createEditor())), []);
@@ -111,22 +109,18 @@ const RichTextEditor = React.forwardRef(
           (op) => op.type !== 'set_selection',
         );
         if (isAstChange) {
-          setValue(value);
+          onChange(value);
         }
       },
-      [setValue, editor],
+      [onChange, editor],
     );
-
-    const handleSubmit = useCallback(() => {
-      onSubmit(value);
-    }, [value]);
 
     return (
       <Slate
         onChange={handleOnChange}
         ref={forwardRef}
         editor={editor}
-        value={value}
+        value={value ?? initialValue}
       >
         <Editable
           {...props}
@@ -170,9 +164,11 @@ const RichTextEditor = React.forwardRef(
             alignItems="center"
             justifyContent="flex-end"
           >
-            <IconButton onClick={handleSubmit}>
-              <SendButton />
-            </IconButton>
+            {onSubmit ? (
+              <IconButton onClick={onSubmit}>
+                <SendButton />
+              </IconButton>
+            ) : null}
           </Grid>
         </Grid>
       </Slate>
