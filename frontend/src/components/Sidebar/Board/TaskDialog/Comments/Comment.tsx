@@ -4,10 +4,13 @@ import {
   Stack,
   styled,
   Button as MuiButton,
-  IconButton as MuiIconButton,
 } from '@mui/material';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
+import { BoardTaskComment } from '@Redux/pmtools/types';
+import { formatDistanceToNowStrict } from 'date-fns';
+import { RenderEditorHtml } from '../Editor';
+import { username } from '../../User';
 
 const Avatar = styled(MuiAvatar)({
   width: 32,
@@ -36,33 +39,53 @@ const Button = styled(MuiButton)({
   textTransform: 'capitalize',
 });
 
-const IconButton = styled(MuiIconButton)({
+const IconWrapper = styled('div')({
   '& svg': {
     fontSize: 3,
     color: '#81818E',
   },
 });
 
-const Comment = () => {
+interface Props {
+  comment: BoardTaskComment;
+}
+
+const Comment = ({ comment }: Props) => {
+  const [editMode, setEditMode] = useState(false);
+
+  const handleSetEditMode = useCallback(
+    (mode) => {
+      return () => setEditMode(mode);
+    },
+    [setEditMode],
+  );
+
   return (
     <Grid container spacing={1} mb={3}>
       <Grid item md="auto">
-        <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+        <Avatar
+          alt={username(comment.user)}
+          src={comment.user.profile_avatar}
+        />
       </Grid>
       <Grid item md={10}>
         <Stack direction="row" spacing={2} alignItems="center">
-          <CommentUserName>Aleksandra Sayapina</CommentUserName>
-          <CommentTime className="Time">3 minutes ago</CommentTime>
+          <CommentUserName>{username(comment.user)}</CommentUserName>
+          <CommentTime className="Time">
+            {formatDistanceToNowStrict(Date.parse(comment.created))} ago
+          </CommentTime>
         </Stack>
-        <p className="MainComment">
-          Let's move the deadline by a couple of days, we don't have time now
-        </p>
+        <RenderEditorHtml nodes={JSON.parse(comment.text)} />
         <Stack direction="row" spacing={0.5} alignItems="center">
-          <Button variant="text">Edit</Button>
-          <IconButton>
+          <Button onClick={handleSetEditMode(true)} variant="text">
+            Edit
+          </Button>
+          <IconWrapper>
             <CircleIcon />
-          </IconButton>
-          <Button variant="text">Delete</Button>
+          </IconWrapper>
+          <Button onClick={handleSetEditMode(false)} variant="text">
+            Delete
+          </Button>
         </Stack>
       </Grid>
     </Grid>

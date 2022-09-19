@@ -3,12 +3,17 @@ import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
 
 export const createComment = ({
-  projectId,
+  text,
+  taskId,
   ...options
-}: MyAxiosProps & { projectId: number }) => {
+}: MyAxiosProps & { taskId: number; text: string }) => {
   return myAxios({
-    url: `/projects/columns-for-project/${projectId}/`,
-    method: 'get',
+    url: `/projects/columntask-comments/`,
+    method: 'post',
+    data: {
+      text,
+      columntask: taskId,
+    },
     ...options,
   }).catch(handleError);
 };

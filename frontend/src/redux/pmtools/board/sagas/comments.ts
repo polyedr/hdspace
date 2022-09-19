@@ -1,19 +1,26 @@
 import { reqWrapper } from '@Redux/project/sagas/shared';
-import { call } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 import * as commentsApi from '@Api/pmtools/board/commensApi';
+import { BoardTask } from '@Redux/pmtools/types';
+import { addComment } from '../actions/comments';
 
-export function* createCommentSags({
-  comment,
+export function* createCommentSaga({
+  text,
+  task,
 }: {
-  comment: any;
+  text: string;
+  task: BoardTask;
   type: string;
 }) {
   try {
     const { data } = yield call(reqWrapper, commentsApi.createComment, {
-      comment,
+      data: {
+        text,
+        columntask: task.id,
+      },
     });
 
-    console.log(data);
+    yield put(addComment(data, task));
   } catch (error) {
     console.log('create comment', error);
   }

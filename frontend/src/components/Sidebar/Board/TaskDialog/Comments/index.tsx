@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { styled } from '@mui/material/styles';
+import { BoardTask } from '@Redux/pmtools/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { createComment } from '@Redux/pmtools/board/actions/comments';
+import { selectComments } from '@Redux/pmtools/board/selectors';
 import CommentInput from './CommentInput';
 import Comment from './Comment';
 
@@ -12,16 +16,29 @@ const CommentHistory = styled('div')({
   },
 });
 
-const Comments = () => {
+interface Props {
+  task: BoardTask;
+}
+
+const Comments = ({ task }: Props) => {
+  const dispatch = useDispatch();
+
+  const comments = useSelector(selectComments(task));
+
+  const handleSubmit = useCallback(
+    (value) => {
+      dispatch(createComment(JSON.stringify(value), task));
+    },
+    [task],
+  );
+
   return (
     <>
-      <CommentInput />
+      <CommentInput onSubmit={handleSubmit} />
       <CommentHistory>
-        <Comment />
-        <Comment />
-        <Comment />
-        <Comment />
-        <Comment />
+        {comments.map((comment) => (
+          <Comment key={comment.id} comment={comment} />
+        ))}
       </CommentHistory>
     </>
   );

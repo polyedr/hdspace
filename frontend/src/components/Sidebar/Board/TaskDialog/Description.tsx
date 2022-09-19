@@ -1,14 +1,8 @@
 import { ClickAwayListener } from '@material-ui/core';
-import {
-  Box,
-  Button as MuiButton,
-  Stack,
-  styled,
-  Typography,
-} from '@mui/material';
+import { Box, Button as MuiButton, Stack, styled } from '@mui/material';
 import { BoardTask } from '@Redux/pmtools/types';
-import React, { useCallback, useMemo, useState } from 'react';
-import Editor, { RenderEditorHtml } from './Comments/CommentEditor';
+import React, { useCallback, useState } from 'react';
+import Editor, { RenderEditorHtml } from './Editor';
 
 const EditorWrapper = styled('div')({
   border: '1px solid #E4E6EB',
@@ -48,6 +42,8 @@ interface Props {
 }
 
 const Description = ({ onSubmit, task }) => {
+  const [value, setValue] = useState(JSON.parse(task.description) ?? null);
+
   const [editMode, setEditMode] = useState(false);
 
   const handleSetEditMode = useCallback(
@@ -57,51 +53,45 @@ const Description = ({ onSubmit, task }) => {
     [setEditMode],
   );
 
-  const handleSaveDescription = useCallback((value) => {
+  const handleChangeValue = useCallback(
+    (value) => {
+      setValue(value);
+    },
+    [setValue],
+  );
+
+  const handleSaveDescription = useCallback(() => {
     onSubmit(JSON.stringify(value));
     setEditMode(false);
-  }, []);
-
-  const parsedDescription = useMemo(() => {
-    try {
-      return JSON.parse(task.description);
-    } catch (error) {
-      console.log('json error', error);
-      return null;
-    }
-  }, [task.description]);
+  }, [value]);
 
   return editMode ? (
-    // <TextareaAutosize
-    //   aria-label="task description"
-    //   placeholder="Add Description"
-    //   onChange={handleChange}
-    //   autoFocus
-    //   onBlur={handleSaveDescription}
-    //   value={description}
-    // />
     <ClickAwayListener onClickAway={handleSetEditMode(false)}>
       <div>
         <EditorWrapper>
           <Editor
-            onSubmit={handleSaveDescription}
             placeholder="Add Description"
-            value={parsedDescription}
+            value={value}
+            onChange={handleChangeValue}
           />
         </EditorWrapper>
         <Stack direction="row" spacing={2} mt={2} mb={1}>
-          <Button variant="contained">Save</Button>
-          <Button variant="text">Cancel</Button>
+          <Button onClick={handleSaveDescription} variant="contained">
+            Save
+          </Button>
+          <Button onClick={handleSetEditMode(false)} variant="text">
+            Cancel
+          </Button>
         </Stack>
       </div>
     </ClickAwayListener>
   ) : (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <Box onClick={handleSetEditMode(true)}>
-      {!parsedDescription ? (
+      {!value ? (
         <InfoSubTitle>Add Description</InfoSubTitle>
       ) : (
-        <RenderEditorHtml nodes={parsedDescription} />
+        <RenderEditorHtml nodes={value} />
       )}
     </Box>
   );

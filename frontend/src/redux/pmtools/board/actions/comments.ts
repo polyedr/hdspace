@@ -1,13 +1,16 @@
 import TYPES from '@Redux/actionTypes';
+import { BoardTask, BoardTaskComment } from '@Redux/pmtools/types';
 
-export const createComment = (text: string, taskId: number) => ({
+export const createComment = (text: string, task: BoardTask) => ({
   type: TYPES.BOARD_TASK_CREATE_COMMENT,
-  payload: { text, taskId },
+  text,
+  task,
 });
 
-export const addComment = (comment: string, taskId: number) => ({
+export const addComment = (comment: BoardTaskComment, task: BoardTask) => ({
   type: TYPES.BOARD_TASK_ADD_COMMENT,
-  payload: { comment, taskId },
+  comment,
+  task,
 });
 
 export const addComments = (comments) => ({
@@ -15,9 +18,9 @@ export const addComments = (comments) => ({
   comments,
 });
 
-export const editComment = (text: string, commentId: number) => ({
+export const editComment = (text: string, comment: BoardTaskComment) => ({
   type: TYPES.BOARD_TASK_EDIT_COMMENT,
-  payload: { text, commentId },
+  payload: { text, comment },
 });
 
 export const updateComment = (comment) => ({
@@ -25,7 +28,7 @@ export const updateComment = (comment) => ({
   comment,
 });
 
-export const deleteComment = (commentId: number) => ({
+export const deleteComment = (comment: BoardTaskComment) => ({
   type: TYPES.BOARD_TASK_DELETE_COMMENT,
-  commentId,
+  comment,
 });
