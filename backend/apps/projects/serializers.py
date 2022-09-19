@@ -617,6 +617,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class ColumnTaskCommentSerializer(serializers.ModelSerializer):
+    user = UserSimpleSerializer(read_only=True)
+    # user_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='user', read_only=True)
     class Meta:
         model = ColumnTaskComment
         fields = ("id", "text", "created", "modified", "user", "columntask")
@@ -625,6 +627,7 @@ class ColumnTaskCommentSerializer(serializers.ModelSerializer):
             "created": {"read_only": True},
             "modified": {"read_only": True},
             "user": {"read_only": True},
+            # "user_id": {"read_only": True},
         }
 
 
