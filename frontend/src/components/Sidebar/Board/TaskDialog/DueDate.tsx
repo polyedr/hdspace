@@ -1,7 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
-import { Button as MuiButton, Popover, styled, TextField } from '@mui/material';
-import { format } from 'date-fns';
+import {
+  Button as MuiButton,
+  Popover,
+  styled,
+  TextField,
+  Stack,
+} from '@mui/material';
+import { format, formatISO } from 'date-fns';
 import { StaticDateTimePicker } from '@mui/x-date-pickers';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from './StyledComponents';
@@ -26,7 +32,7 @@ interface Props {
 
 const DueDate = ({ date, onChange }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
-  const [value, setValue] = React.useState<Date | null>(
+  const [value, setValue] = React.useState<Date | null | undefined>(
     date ? new Date(date) : new Date(),
   );
 
@@ -41,15 +47,27 @@ const DueDate = ({ date, onChange }: Props) => {
     setAnchorEl(null);
   }, [setAnchorEl]);
 
+  const handleClear = useCallback(() => {
+    setValue(new Date());
+    onChange('');
+  }, []);
+
   const open = Boolean(anchorEl);
   const id = open ? 'due-date-popover' : undefined;
 
   return (
     <>
-      <Button icon={!date} onClick={handleOpen}>
-        {date ? format(Date.parse(date), 'dd MMM') : <AddIcon />}{' '}
-        <CloseIcon className="CloseIcon" />
-      </Button>
+      <Stack alignItems="center" direction="row">
+        <Button icon={!date} onClick={handleOpen}>
+          {date ? format(Date.parse(date), 'dd MMM hh:mm aaa') : <AddIcon />}{' '}
+        </Button>
+
+        {date ? (
+          <IconButton onClick={handleClear}>
+            <CloseIcon className="CloseIcon" />
+          </IconButton>
+        ) : null}
+      </Stack>
 
       <Popover
         id={id}
@@ -68,11 +86,10 @@ const DueDate = ({ date, onChange }: Props) => {
           onChange={(newValue) => {
             setValue(newValue);
             if (newValue) {
-              onChange(format(newValue, 'yyyy-MM-dd'));
+              onChange(formatISO(newValue));
             } else {
               onChange(undefined);
             }
-            handleClose();
           }}
           renderInput={(params) => <TextField {...params} />}
         />
