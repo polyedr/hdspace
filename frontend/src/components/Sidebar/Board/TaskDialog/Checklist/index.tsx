@@ -23,7 +23,7 @@ const Checklist = () => {
           </IconButton>
         </Stack>
       </Stack>
-      {/* <CheckItem /> */}
+      <CheckItem />
     </div>
   );
 };
