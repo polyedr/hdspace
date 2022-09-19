@@ -692,6 +692,10 @@ class ColumnTaskCommentList(generics.ListCreateAPIView):
     queryset = ColumnTaskComment.objects.all()
     serializer_class = ColumnTaskCommentSerializer
 
+    filter_backends = [OrderingFilter]
+    ordering_fields = ['created']
+    ordering = ['-created']
+
     # Inject current user at the point of saving the instance
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
