@@ -354,7 +354,7 @@ class ColumnTaskLabel(TimeStampedModel):
     text = models.CharField(max_length=64, null=True, blank=True)
     colour = models.CharField(max_length=16, null=True, blank=True)
 
-    columntask = models.ForeignKey(ColumnTask, related_name="labels", on_delete=models.CASCADE, null=True)
+    columntask = models.ManyToManyField(ColumnTask, related_name="labels", blank=True)
     project = models.ForeignKey(Project, related_name="tasklabels", on_delete=models.CASCADE, null=True)
 
 

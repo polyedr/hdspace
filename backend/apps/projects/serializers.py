@@ -648,6 +648,7 @@ class ColumnTaskLabelSerializer(serializers.ModelSerializer):
         fields = ("id", "text", "colour", "columntask", "project")
         extra_kwargs = {
             "id": {"read_only": True},
+            "columntask": {"required": False},
         }
 
 

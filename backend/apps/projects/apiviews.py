@@ -738,9 +738,13 @@ class ColumnTaskLabelList(generics.ListCreateAPIView):
 
     # Inject current project at the point of saving the instance
     def perform_create(self, serializer):
-        columntask_id = self.request.data['columntask']
-        columntask = ColumnTask.objects.get(id=columntask_id)
-        serializer.save(project=columntask.column.project)
+        try:
+            if self.request.data['columntask']:
+                columntask_id = self.request.data['columntask']
+                columntask = ColumnTask.objects.get(id=columntask_id)
+                serializer.save(project=columntask.column.project)
+        except Exception:
+            pass
 
 
 class ColumnTaskLabelDetail(generics.RetrieveUpdateDestroyAPIView):
