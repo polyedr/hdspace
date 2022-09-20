@@ -690,8 +690,8 @@ class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSeria
     assignee = UserSimpleSerializer(required=False, allow_null=True)
     responsible = UserSimpleSerializer(required=False, allow_null=True)
 
-    author_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='author', read_only=False, required=False)
-    assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='assignee', read_only=False, required=False)
+    author_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='author', required=False)
+    assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='assignee', required=False)
     responsible_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='responsible', required=False)
 
     colour = serializers.CharField(required=False, allow_null=True)
@@ -703,8 +703,6 @@ class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSeria
         # depth = 2
         extra_kwargs = {
             "author": {"read_only": True},
-            "assignee": {"read_only": True},
-            "responsible": {"read_only": True},
             "project_id": {"read_only": True},
             "comments": {"read_only": True},
         }
