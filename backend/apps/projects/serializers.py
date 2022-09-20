@@ -678,7 +678,7 @@ class SubColumnTaskSerializer(serializers.ModelSerializer):
         fields = ("id", "created", "due_date", "status", "title")
 
 
-class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
+class ColumnTaskSerializer(serializers.ModelSerializer):
     # tags = TagListSerializerField(required=False, allow_null=True)
     labels = ColumnTaskLabelSerializer(many=True)
     comments = ColumnTaskCommentSerializer(many=True, required=False)
