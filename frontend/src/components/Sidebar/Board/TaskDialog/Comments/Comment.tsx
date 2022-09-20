@@ -4,6 +4,7 @@ import {
   Stack,
   styled,
   Button as MuiButton,
+  IconButton as MuiIconButton,
 } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -31,15 +32,28 @@ const CommentTime = styled('h6')({
   fontWeight: 400,
 });
 
+const CommentText = styled('div')({
+  '& p': {
+    margin: '5px 0',
+  },
+});
+
 const Button = styled(MuiButton)({
   fontSize: 12,
   color: '#81818E',
   padding: 0,
   minWidth: 'auto',
   textTransform: 'capitalize',
+
+  '&:hover': {
+    background: 'none',
+  },
 });
 
-const IconWrapper = styled('div')({
+const IconButton = styled(MuiIconButton)({
+  cursor: 'inherit',
+  padding: 0,
+
   '& svg': {
     fontSize: 3,
     color: '#81818E',
@@ -69,20 +83,22 @@ const Comment = ({ comment }: Props) => {
         />
       </Grid>
       <Grid item md={10}>
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} alignItems="baseline">
           <CommentUserName>{username(comment.user)}</CommentUserName>
           <CommentTime className="Time">
             {formatDistanceToNowStrict(Date.parse(comment.created))} ago
           </CommentTime>
         </Stack>
-        <RenderEditorHtml nodes={JSON.parse(comment.text)} />
+        <CommentText>
+          <RenderEditorHtml nodes={JSON.parse(comment.text)} />
+        </CommentText>
         <Stack direction="row" spacing={0.5} alignItems="center">
           <Button onClick={handleSetEditMode(true)} variant="text">
             Edit
           </Button>
-          <IconWrapper>
+          <IconButton>
             <CircleIcon />
-          </IconWrapper>
+          </IconButton>
           <Button onClick={handleSetEditMode(false)} variant="text">
             Delete
           </Button>

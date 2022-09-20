@@ -16,7 +16,12 @@ import {
 } from 'slate';
 import { withHistory } from 'slate-history';
 
-import { Grid, IconButton as MuiIconButton, Icon } from '@mui/material';
+import {
+  Grid,
+  IconButton as MuiIconButton,
+  Icon,
+  Divider,
+} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { styled } from '@mui/material/styles';
 import { EditableProps } from 'slate-react/dist/components/editable';
@@ -75,7 +80,6 @@ const SendButton = styled(SendIcon)({
 
 const IconButton = styled(MuiIconButton)({
   display: 'inline-flex !important',
-  // marginLeft: '0 !important',
   padding: 3,
 
   '& .material-icons': {
@@ -150,6 +154,10 @@ const RichTextEditor = React.forwardRef(
               {/* <BlockButton format="heading-one" icon="looks_one" />
             <BlockButton format="heading-two" icon="looks_two" />
             <BlockButton format="block-quote" icon="format_quote" /> */}
+              <Divider
+                orientation="vertical"
+                sx={{ height: 16, verticalAlign: 'middle' }}
+              />
               <BlockButton format="numbered-list" icon="format_list_numbered" />
               <BlockButton format="bulleted-list" icon="format_list_bulleted" />
               {/* <BlockButton format="left" icon="format_align_left" />

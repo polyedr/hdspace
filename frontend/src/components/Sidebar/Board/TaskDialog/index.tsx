@@ -13,7 +13,6 @@ import {
   TableContainer,
   TableRow,
   TextField as MuiTextField,
-  LinearProgress as MuiLinearProgress,
 } from '@mui/material';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
@@ -34,6 +33,7 @@ import MemberPicker from './MemberPicker';
 import Description from './Description';
 import Tags from './Tags';
 import Checklist from './Checklist';
+import ProgressBar from './Checklist/ProgressBar';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -117,22 +117,6 @@ const AuthorButton = styled(MuiButton)({
     color: '#2A2A2D',
     fontSize: 14,
     textTransform: 'capitalize',
-  },
-});
-
-const LinearProgress = styled(MuiLinearProgress)({
-  width: '50%',
-  height: 6,
-  borderRadius: 10,
-
-  '& .css-3qeldf-MuiLinearProgress-root': {
-    '&:before': {
-      backgroundColor: '#E4E6EB',
-    },
-  },
-
-  '& .css-1wqgwi1-MuiLinearProgress-bar1': {
-    backgroundColor: '#1CC09F',
   },
 });
 
@@ -239,11 +223,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                     <AddIcon />
                   </IconButton>
                 </Stack>
-                <LinearProgress
-                  variant="determinate"
-                  value={30}
-                  color="inherit"
-                />
+                <ProgressBar />
                 <Button variant="contained" color="inherit">
                   Remove
                 </Button>

@@ -1,8 +1,24 @@
 import { ClickAwayListener } from '@material-ui/core';
-import { Box, Button as MuiButton, Stack, styled } from '@mui/material';
+import {
+  Box as MuiBox,
+  Button as MuiButton,
+  Stack,
+  styled,
+} from '@mui/material';
 import { BoardTask } from '@Redux/pmtools/types';
 import React, { useCallback, useState } from 'react';
 import Editor, { RenderEditorHtml } from './Editor';
+
+const Box = styled(MuiBox)({
+  border: '1px solid #B0B0BD',
+  padding: '8px 12px',
+  borderRadius: 4,
+  marginBottom: 10,
+
+  '& p': {
+    margin: 0,
+  },
+});
 
 const EditorWrapper = styled('div')({
   border: '1px solid #E4E6EB',

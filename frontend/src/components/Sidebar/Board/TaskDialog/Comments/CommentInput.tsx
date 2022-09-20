@@ -5,12 +5,12 @@ import {
   Grid,
   styled,
   TextField as MuiTextField,
+  Typography as MuiTypography,
 } from '@mui/material';
-import { Typography } from '@material-ui/core';
-import Editor from '../Editor';
 import { BoardTask } from '@Redux/pmtools/types';
 import { useSelector } from 'react-redux';
 import { selectIsLoggedIn, selectProfileData } from '@Redux/user/selectors';
+import Editor from '../Editor';
 import { username } from '../../User';
 
 const Avatar = styled(MuiAvatar)({
@@ -24,13 +24,21 @@ const CommentField = styled('div')({
   padding: 12,
 
   '& p': {
-    margin: '0 12px 12px',
+    margin: '0 0 12px',
   },
 
   '& p span': {
     margin: 0,
-    color: '#2A2A2D',
+    // color: '#2A2A2D',
   },
+});
+
+const Typography = styled(MuiTypography)({
+  border: '1px solid #E4E6EB',
+  padding: '6.5px 12px',
+  borderRadius: 4,
+  color: '#81818E',
+  fontSize: 14,
 });
 
 interface Props {
@@ -61,7 +69,7 @@ const CommentInput = ({ onSubmit }: Props) => {
       <Grid item md="auto">
         <Avatar alt={username(user)} src={user.avatar ?? undefined} />
       </Grid>
-      <Grid item md={10}>
+      <Grid item md={11}>
         {showEditor ? (
           <CommentField>
             <ClickAwayListener onClickAway={() => setShowEditor(false)}>
