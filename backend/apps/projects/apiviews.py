@@ -745,7 +745,7 @@ class ColumnTaskLabelList(generics.ListCreateAPIView):
                 columntask = ColumnTask.objects.get(id=columntask_id)
                 serializer.save(project=columntask.column.project)
         except Exception:
-            pass
+            serializer.save()
 
 
 class ColumnTaskLabelDetail(generics.RetrieveUpdateDestroyAPIView):
