@@ -740,7 +740,8 @@ class ColumnTaskLabelList(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         try:
             if self.request.data['columntask']:
-                columntask_id = self.request.data['columntask']
+                # Take a first columntask from the array
+                columntask_id = self.request.data['columntask'][0]
                 columntask = ColumnTask.objects.get(id=columntask_id)
                 serializer.save(project=columntask.column.project)
         except Exception:
