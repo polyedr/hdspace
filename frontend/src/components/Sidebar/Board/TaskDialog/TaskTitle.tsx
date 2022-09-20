@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Button as MuiButton, Grid, Input } from '@mui/material';
+import { IconButton as MuiIconButton, Grid, Input } from '@mui/material';
 import { styled } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
@@ -10,15 +10,12 @@ import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { BoardTask } from '@Redux/pmtools/types';
 
-const IconButton = styled(MuiButton)({
-  backgroundColor: '#F3F4F6',
+const IconButton = styled(MuiIconButton)({
+  backgroundColor: '#F3F4F6 !important',
   width: 32,
   height: 32,
   borderRadius: '50%',
-  marginLeft: 10,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  marginLeft: '10px !important',
   minWidth: 'auto',
 
   '& svg': {
@@ -63,18 +60,19 @@ const TaskTitle = ({ task, onChange }: Props) => {
           <IconButton
             disabled={taskTitle.trim().length < 1}
             onClick={handleSaveTitle}
-            variant="text"
+            // variant="text"
           >
             <CheckIcon />
           </IconButton>
-          <IconButton onClick={handleSetEditMode(false)} variant="text">
-            <CancelIcon />
+          <IconButton onClick={handleSetEditMode(false)}>
+            {/* <CancelIcon /> */}
+            <CloseIcon />
           </IconButton>
         </>
       ) : (
         <>
           {task.title}
-          <IconButton onClick={handleSetEditMode(true)} variant="text">
+          <IconButton onClick={handleSetEditMode(true)}>
             <EditIcon />
           </IconButton>
 

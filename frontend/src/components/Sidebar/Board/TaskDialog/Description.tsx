@@ -11,7 +11,7 @@ import Editor, { RenderEditorHtml } from './Editor';
 
 const Box = styled(MuiBox)({
   border: '1px solid #B0B0BD',
-  padding: '8px 12px',
+  padding: 12,
   borderRadius: 4,
   marginBottom: 10,
 

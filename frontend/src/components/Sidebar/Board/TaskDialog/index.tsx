@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Avatar as MuiAvatar,
-  Button,
   Button as MuiButton,
   Dialog as MuiDialog,
   DialogContent,
@@ -120,6 +119,18 @@ const AuthorButton = styled(MuiButton)({
   },
 });
 
+const RemoveButton = styled(MuiButton)({
+  backgroundColor: '#F3F4F6',
+  boxShadow: 'none',
+  fontSize: 12,
+  textTransform: 'capitalize',
+  color: '#81818E',
+
+  '&:hover': {
+    boxShadow: 'none',
+  },
+});
+
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
@@ -224,9 +235,9 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                   </IconButton>
                 </Stack>
                 <ProgressBar />
-                <Button variant="contained" color="inherit">
+                <RemoveButton variant="contained" color="inherit" size="small">
                   Remove
-                </Button>
+                </RemoveButton>
               </Stack>
               <Checklist />
               <Stack>
