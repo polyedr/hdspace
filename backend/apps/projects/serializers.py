@@ -678,17 +678,18 @@ class SubColumnTaskSerializer(serializers.ModelSerializer):
         fields = ("id", "created", "due_date", "status", "title")
 
 
-class ColumnTaskSerializer(serializers.ModelSerializer):
+class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSerializer):
     # tags = TagListSerializerField(required=False, allow_null=True)
-    labels = ColumnTaskLabelSerializer(many=True)
+    labels = ColumnTaskLabelSerializer(many=True, required=False, read_only=True)
     comments = ColumnTaskCommentSerializer(many=True, required=False)
     checklist = ColumnTaskCheckitemSerializer(many=True, read_only=True)
     # related_task = ColumnTaskSerializer(many=True, required=False)
     related_tasks = SubColumnTaskSerializer(many=True, required=False)
     project_id = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all(), source='column.project', required=False)
-    author = UserSimpleSerializer(required=False, allow_null=True)
-    assignee = UserSimpleSerializer(required=False, allow_null=True)
-    responsible = UserSimpleSerializer(required=False, allow_null=True)
+    label_ids = serializers.PrimaryKeyRelatedField(many=True, source='labels', required=False, queryset=ColumnTaskLabel.objects.all())
+    author = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
+    assignee = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
+    responsible = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
 
     author_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='author', required=False)
     assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='assignee', required=False)
@@ -698,13 +699,14 @@ class ColumnTaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "colour", "title", "description", "status", "priority", "buyoancy", "labels", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
+        fields = ("id", "created", "modified", "due_date", "time", "colour", "title", "description", "status", "priority", "buyoancy", "label_ids", "labels", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
         # , "related_task"
         # depth = 2
         extra_kwargs = {
             "author": {"read_only": True},
             "project_id": {"read_only": True},
             "comments": {"read_only": True},
+            "labels": {"read_only": True},
         }
 
     '''

@@ -1,4 +1,5 @@
 """Serializers for the accounts"""
+from drf_writable_nested import UniqueFieldsMixin
 from rest_framework import serializers
 from .models import User, Profile, Team, TeamMember, SharedLink
 from django.contrib.auth.models import Group
@@ -60,7 +61,6 @@ class UserSerializer(serializers.ModelSerializer):
         )
         ref_name = "User Django"  # Added to avoid SwaggerGeneration Conflicts
         extra_kwargs = {"id": {"read_only": True}, "profile": {"read_only": True}}
-
 
 
 class UserSimpleSerializer(serializers.ModelSerializer):
