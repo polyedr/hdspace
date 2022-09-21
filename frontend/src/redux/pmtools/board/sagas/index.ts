@@ -7,7 +7,12 @@ import {
   updateColumnSaga,
   updateColumnsOrderSaga,
 } from './columns';
-import { createCommentSaga } from './comments';
+import {
+  createCommentSaga,
+  deleteCommentSaga,
+  updateCommentSaga,
+} from './comments';
+import { createProjectLabelSaga, updateTaskLabelsSaga } from './labels';
 import {
   createTaskSaga,
   fetchTaskSaga,
@@ -28,4 +33,9 @@ export default function* boardSaga() {
   yield takeEvery(TYPES.BOARD_UPDATE_TASK, updateTaskSags);
 
   yield takeEvery(TYPES.BOARD_TASK_CREATE_COMMENT, createCommentSaga);
+  yield takeEvery(TYPES.BOARD_COMMENT_UPDATE_REQUESTED, updateCommentSaga);
+  yield takeEvery(TYPES.BOARD_TASK_DELETE_COMMENT, deleteCommentSaga);
+
+  yield takeEvery(TYPES.BOARD_CREATE_PROJECT_LABEL, createProjectLabelSaga);
+  yield takeLatest(TYPES.BOARD_UPDATE_TASK_LABELS, updateTaskLabelsSaga);
 }

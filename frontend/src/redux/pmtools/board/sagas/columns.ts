@@ -1,5 +1,6 @@
 import * as columnsApi from '@Api/pmtools/board/columnsApi';
 import * as tasksApi from '@Api/pmtools/board/tasksApi';
+import * as labelsApi from '@Api/pmtools/board/labelsApi';
 import { BoardColumn, BoardNewColumn } from '@Redux/pmtools/types';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { DropResult } from 'react-beautiful-dnd';
@@ -13,6 +14,7 @@ import {
 } from '../actions/columns';
 import { setTasks } from '../actions/tasks';
 import { selectColumns } from '../selectors';
+import { setProjectLabels } from '../actions/labels';
 
 export function* fetchBoard({
   projectId,
@@ -24,12 +26,13 @@ export function* fetchBoard({
 
   try {
     const {
-      data: { projectcolumn: columns },
+      data: { projectcolumn: columns, tasklabels: labels },
     } = yield call(reqWrapper, columnsApi.fetchColumns, {
       projectId,
     });
 
     yield put(setColumns(columns));
+    yield put(setProjectLabels(labels));
 
     const {
       data: { results: tasks },

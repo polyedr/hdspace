@@ -25,7 +25,7 @@ const ConfirmModal: React.FC<Props> = ({
 
   return (
     <Dialog open={show} onClose={hide}>
-      <DialogTitle>Confirm</DialogTitle>
+      <DialogTitle>{actionText}</DialogTitle>
       <DialogContent>
         {`Are you sure you want to ${actionText} ${elementText}?`}
       </DialogContent>

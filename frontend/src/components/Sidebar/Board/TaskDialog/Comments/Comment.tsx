@@ -6,11 +6,17 @@ import {
   Button as MuiButton,
   IconButton as MuiIconButton,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
-import { BoardTaskComment } from '@Redux/pmtools/types';
+import { BoardTask, BoardTaskComment } from '@Redux/pmtools/types';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { RenderEditorHtml } from '../Editor';
+import { useDispatch } from 'react-redux';
+import {
+  deleteComment,
+  requestUpdateComment,
+} from '@Redux/pmtools/board/actions/comments';
+import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
+import Editor, { RenderEditorHtml } from '../Editor';
 import { username } from '../../User';
 
 const Avatar = styled(MuiAvatar)({
@@ -62,10 +68,16 @@ const IconButton = styled(MuiIconButton)({
 
 interface Props {
   comment: BoardTaskComment;
+  task: BoardTask;
 }
 
-const Comment = ({ comment }: Props) => {
+const Comment = ({ comment, task }: Props) => {
+  const [value, setValue] = useState(JSON.parse(comment.text) ?? undefined);
   const [editMode, setEditMode] = useState(false);
+
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleSetEditMode = useCallback(
     (mode) => {
@@ -74,37 +86,85 @@ const Comment = ({ comment }: Props) => {
     [setEditMode],
   );
 
+  const handleDeleteComment = useCallback(() => {
+    dispatch(deleteComment(comment.id, task));
+  }, [comment]);
+
+  const handleSave = useCallback(() => {
+    dispatch(requestUpdateComment(JSON.stringify(value), comment.id, task));
+    setEditMode(false);
+  }, [comment, value, task]);
+
+  const parsedValue = useMemo(() => {
+    return JSON.parse(comment.text);
+  }, [comment.text]);
+
+  const handleShowDeleteConfirm = useCallback(
+    (show) => {
+      return () => setDeleteConfirm(show);
+    },
+    [setDeleteConfirm],
+  );
+
   return (
-    <Grid container spacing={1} mb={3}>
-      <Grid item md="auto">
-        <Avatar
-          alt={username(comment.user)}
-          src={comment.user.profile_avatar}
-        />
+    <>
+      <Grid container spacing={1} mb={3}>
+        <Grid item md="auto">
+          <Avatar
+            alt={username(comment.user)}
+            src={comment.user.profile_avatar}
+          />
+        </Grid>
+        <Grid item md={10}>
+          <Stack direction="row" spacing={2} alignItems="baseline">
+            <CommentUserName>{username(comment.user)}</CommentUserName>
+            <CommentTime className="Time">
+              {formatDistanceToNowStrict(Date.parse(comment.created))} ago
+            </CommentTime>
+          </Stack>
+          {editMode ? (
+            <>
+              <Editor value={value} onChange={setValue} />
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <Button onClick={handleSave} variant="text">
+                  Save
+                </Button>
+                <IconButton>
+                  <CircleIcon />
+                </IconButton>
+                <Button onClick={handleSetEditMode(false)} variant="text">
+                  Cancel
+                </Button>
+              </Stack>
+            </>
+          ) : (
+            <>
+              <CommentText>
+                <RenderEditorHtml nodes={parsedValue} />
+              </CommentText>
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <Button onClick={handleSetEditMode(true)} variant="text">
+                  Edit
+                </Button>
+                <IconButton>
+                  <CircleIcon />
+                </IconButton>
+                <Button onClick={handleShowDeleteConfirm(true)} variant="text">
+                  Delete
+                </Button>
+              </Stack>
+            </>
+          )}
+        </Grid>
       </Grid>
-      <Grid item md={10}>
-        <Stack direction="row" spacing={2} alignItems="baseline">
-          <CommentUserName>{username(comment.user)}</CommentUserName>
-          <CommentTime className="Time">
-            {formatDistanceToNowStrict(Date.parse(comment.created))} ago
-          </CommentTime>
-        </Stack>
-        <CommentText>
-          <RenderEditorHtml nodes={JSON.parse(comment.text)} />
-        </CommentText>
-        <Stack direction="row" spacing={0.5} alignItems="center">
-          <Button onClick={handleSetEditMode(true)} variant="text">
-            Edit
-          </Button>
-          <IconButton>
-            <CircleIcon />
-          </IconButton>
-          <Button onClick={handleSetEditMode(false)} variant="text">
-            Delete
-          </Button>
-        </Stack>
-      </Grid>
-    </Grid>
+      <ConfirmModal
+        show={deleteConfirm}
+        action={handleDeleteComment}
+        elementText="Comment"
+        hide={handleShowDeleteConfirm(false)}
+        actionText="Delete"
+      />
+    </>
   );
 };
 

@@ -15,3 +15,5 @@ export const selectComments = (task: BoardTask) =>
   });
 
 export const selectColumns = (state: BoardRootState) => state.board.columns;
+
+export const selectLabels = (state: BoardRootState) => state.board.labels;

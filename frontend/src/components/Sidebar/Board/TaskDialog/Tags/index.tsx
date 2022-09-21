@@ -6,8 +6,7 @@ import {
   Popover as MuiPopover,
   styled,
 } from '@mui/material';
-import { BoardTaskTag } from '@Src/types/pmtools/board';
-import { BoardTask } from '@Redux/pmtools/types';
+import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
 import { IconButton } from '../StyledComponents';
 import AllTags from './AllTags';
 
@@ -39,12 +38,12 @@ const Chip = styled(MuiChip)({
 
 interface Props {
   task: BoardTask;
-  onChange(tags: BoardTaskTag[]): void;
+  onChange(tags: BoardLabel[]): void;
 }
 
 const Tags = ({ task, onChange }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [selectedTags, setSelectedTags] = useState<BoardTaskTag[]>([]);
+  const [selectedLabels, setSelectedTags] = useState<BoardLabel[]>([]);
 
   const mountedRef = useRef(false);
 
@@ -73,24 +72,24 @@ const Tags = ({ task, onChange }) => {
 
   useEffect(() => {
     if (mountedRef.current) {
-      onChange(selectedTags);
+      onChange(selectedLabels);
     } else {
       mountedRef.current = true;
     }
-  }, [selectedTags]);
+  }, [selectedLabels]);
 
   const open = Boolean(anchorEl);
   const id = open ? 'task-tags-picker' : undefined;
 
   return (
     <Stack direction="row" spacing={1} alignItems="center">
-      {selectedTags.length > 0 ? (
-        selectedTags.map((tag, index) => (
+      {selectedLabels.length > 0 ? (
+        selectedLabels.map((label) => (
           <Chip
             // onDelete={() => handleDelete(index)}
-            key={tag.text}
-            label={tag.text}
-            style={{ backgroundColor: tag.color, color: 'white' }}
+            key={label.id.toString()}
+            label={label.text}
+            style={{ backgroundColor: label.colour, color: 'white' }}
           />
         ))
       ) : (
@@ -116,7 +115,7 @@ const Tags = ({ task, onChange }) => {
       >
         <AllTags
           onClose={handleCloseTagPicker}
-          selected={selectedTags}
+          selected={selectedLabels}
           onChange={setSelectedTags}
         />
       </Popover>

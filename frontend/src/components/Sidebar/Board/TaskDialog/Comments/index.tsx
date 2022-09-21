@@ -37,7 +37,7 @@ const Comments = ({ task }: Props) => {
       <CommentInput onSubmit={handleSubmit} />
       <CommentHistory>
         {comments.map((comment) => (
-          <Comment key={comment.id} comment={comment} />
+          <Comment key={comment.id} task={task} comment={comment} />
         ))}
       </CommentHistory>
     </>
