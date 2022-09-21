@@ -202,12 +202,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
             <InfoWrapper>
               <Tags
                 task={task}
-                onChange={(labels) =>
-                  handleUpdateTask(
-                    'labels',
-                    labels.map((t: BoardLabel) => t.id),
-                  )
-                }
+                onChange={(labels) => handleUpdateTask('label_ids', labels)}
               />
               <Stack>
                 <InfoTitle>Description</InfoTitle>

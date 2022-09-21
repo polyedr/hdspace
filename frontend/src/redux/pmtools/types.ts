@@ -100,7 +100,7 @@ export interface BoardTask {
   assignee_id?: number;
   responsible: BoardTaskUser;
   responsible_id?: number;
-  labels: number[];
+  label_ids: number[];
   priority: PriorityOptions;
   story_points: number;
   time?: string;

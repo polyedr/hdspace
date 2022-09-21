@@ -1,12 +1,13 @@
 import { styled } from '@mui/material/styles';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { differenceInDays, format } from 'date-fns';
-import { BoardTask } from '@Redux/pmtools/types';
+import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
+import { useSelector } from 'react-redux';
+import { selectLabels } from '@Redux/pmtools/board/selectors';
 import TaskDialog from './TaskDialog';
 import User from './User';
 import BarIcon from './BarIcon';
@@ -55,12 +56,22 @@ interface Props {
 const Task: React.FC<Props> = ({ task, index }) => {
   const [showDialog, setShowDialog] = useState(false);
 
+  const labels = useSelector(selectLabels);
+
   const handleShowDialog = useCallback(
     (show) => {
       return () => setShowDialog(show);
     },
     [setShowDialog],
   );
+
+  const selectedLabels = useMemo(() => {
+    return task.label_ids
+      .map((id) => {
+        return labels.find((l) => l.id === id) ?? null;
+      })
+      .filter((l) => l !== null) as BoardLabel[];
+  }, [task.label_ids, labels]);
 
   return (
     <>
@@ -89,8 +100,13 @@ const Task: React.FC<Props> = ({ task, index }) => {
               <BarIcon priority={task.priority} />
             </Stack>
             <Stack direction="row" spacing={0.2} mb={2}>
-              <StyledChip label="Tag 1" size="small" />
-              <StyledChip label="Tag 2" size="small" />
+              {selectedLabels.map((label) => (
+                <StyledChip
+                  key={label.id.toString()}
+                  label={label.text}
+                  size="small"
+                />
+              ))}
             </Stack>
             <Stack
               direction="row"
