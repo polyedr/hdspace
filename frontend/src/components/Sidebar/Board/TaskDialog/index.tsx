@@ -241,7 +241,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
         </Grid>
       </Grid>
 
-      <DialogContent>
+      <DialogContent sx={{ paddingTop: 0 }}>
         <Grid container spacing={2} height="100%">
           <Grid item xs={8}>
             <InfoWrapper>

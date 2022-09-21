@@ -27,7 +27,7 @@ const Avatar = styled(MuiAvatar)({
 const CommentUserName = styled('h5')({
   fontSize: 14,
   fontWeight: 600,
-  margin: 0,
+  margin: '0 0 0 5px',
   color: '#2A2A2D',
 });
 
@@ -40,14 +40,14 @@ const CommentTime = styled('h6')({
 
 const CommentText = styled('div')({
   '& p': {
-    margin: '5px 0',
+    margin: '8px 5px',
   },
 });
 
 const Button = styled(MuiButton)({
   fontSize: 12,
   color: '#81818E',
-  padding: 0,
+  padding: 5,
   minWidth: 'auto',
   textTransform: 'capitalize',
 
@@ -63,6 +63,23 @@ const IconButton = styled(MuiIconButton)({
   '& svg': {
     fontSize: 3,
     color: '#81818E',
+  },
+});
+
+const EditorWrapper = styled('div')({
+  border: '1px solid #E4E6EB',
+  borderRadius: 4,
+  padding: '3px 8px',
+  marginLeft: -4,
+  marginTop: 5,
+
+  '& p': {
+    margin: '0 0 15px',
+  },
+
+  '& p span': {
+    margin: 0,
+    color: '#2A2A2D',
   },
 });
 
@@ -124,7 +141,9 @@ const Comment = ({ comment, task }: Props) => {
           </Stack>
           {editMode ? (
             <>
-              <Editor value={value} onChange={setValue} />
+              <EditorWrapper>
+                <Editor value={value} onChange={setValue} />
+              </EditorWrapper>
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <Button onClick={handleSave} variant="text">
                   Save
