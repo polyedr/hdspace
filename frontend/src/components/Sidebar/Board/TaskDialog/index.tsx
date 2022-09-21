@@ -12,6 +12,7 @@ import {
   TableContainer,
   TableRow,
   TextField as MuiTextField,
+  IconButton as MuiIconButton,
 } from '@mui/material';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
@@ -22,6 +23,7 @@ import { useDispatch } from 'react-redux';
 import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
 import { BoardTask } from '@Redux/pmtools/types';
 import { BoardTaskTag } from '@Src/types/pmtools/board';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import Comment from './Comments';
 import TaskTitle from './TaskTitle';
 import DueDate from './DueDate';
@@ -33,12 +35,28 @@ import Description from './Description';
 import Tags from './Tags';
 import Checklist from './Checklist';
 import ProgressBar from './Checklist/ProgressBar';
+import ShareIcon from '@mui/icons-material/Share';
+import SettingsIcon from '@mui/icons-material/Settings';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
     minWidth: '420px',
     height: '656px',
     borderRadius: 6,
+  },
+});
+
+const ActionIconwrapper = styled(MuiIconButton)({
+  '& svg': {
+    fontSize: 20,
+    fill: '#81818E',
+  },
+
+  '&:hover': {
+    '& svg': {
+      fill: '#FAB200',
+    },
   },
 });
 
@@ -190,12 +208,39 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
       fullWidth
       maxWidth="lg"
     >
-      <DialogTitle display="flex" alignItems="center">
-        <TaskTitle
-          onChange={(title) => handleUpdateTask('title', title)}
-          task={task}
-        />
-      </DialogTitle>
+      <Grid container alignItems="center">
+        <Grid item xs={8}>
+          <DialogTitle display="flex" alignItems="center">
+            <TaskTitle
+              onChange={(title) => handleUpdateTask('title', title)}
+              task={task}
+            />
+          </DialogTitle>
+        </Grid>
+        <Grid item xs={4}>
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            justifyContent="flex-end"
+            mr={2}
+          >
+            <ActionIconwrapper>
+              <NotificationsIcon />
+            </ActionIconwrapper>
+            <ActionIconwrapper>
+              <ShareIcon />
+            </ActionIconwrapper>
+            <ActionIconwrapper>
+              <SettingsIcon />
+            </ActionIconwrapper>
+            <ActionIconwrapper>
+              <CloseIcon />
+            </ActionIconwrapper>
+          </Stack>
+        </Grid>
+      </Grid>
+
       <DialogContent>
         <Grid container spacing={2} height="100%">
           <Grid item xs={8}>
