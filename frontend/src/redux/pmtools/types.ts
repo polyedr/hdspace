@@ -47,12 +47,6 @@ export interface BoardNewTask {
   columnId: number;
 }
 
-export interface BoardNewColumn {
-  title: string;
-  colour: string;
-  projectId?: number;
-}
-
 interface BoardTaskUser {
   date_joined: string;
   email: string;
@@ -86,6 +80,13 @@ export interface BoardTaskComment {
   user: BoardTaskUser;
   created: string;
 }
+
+export interface BoardLabel {
+  id: number;
+  text: string;
+  colour: string;
+}
+
 export interface BoardTask {
   id: number;
   title: string;
@@ -99,22 +100,32 @@ export interface BoardTask {
   assignee_id?: number;
   responsible: BoardTaskUser;
   responsible_id?: number;
+  labels: number[];
   priority: PriorityOptions;
   story_points: number;
   time?: string;
   status: StatusOptions;
   comments?: BoardTaskComment[];
 }
+
 export interface BoardColumn {
   id: number;
   title: string;
+  colour: string;
   tasks: BoardTask[];
+}
+
+export interface BoardNewColumn {
+  title: string;
+  colour: string;
+  projectId?: number;
 }
 
 export type BoardState = {
   fetching: boolean;
   columns: BoardColumn[];
   members: Array<any>;
+  labels: BoardLabel[];
   activeTask: BoardTask | null;
 };
 

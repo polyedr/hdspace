@@ -23,12 +23,34 @@ export const editComment = (text: string, comment: BoardTaskComment) => ({
   payload: { text, comment },
 });
 
-export const updateComment = (comment) => ({
-  type: TYPES.BOARD_TASK_UPDATE_COMMENT,
-  comment,
+export const deleteComment = (commentId: number, task: BoardTask) => ({
+  type: TYPES.BOARD_TASK_DELETE_COMMENT,
+  commentId,
+  task,
 });
 
-export const deleteComment = (comment: BoardTaskComment) => ({
-  type: TYPES.BOARD_TASK_DELETE_COMMENT,
+export const removeComment = (commentId: number, task: BoardTask) => ({
+  type: TYPES.BOARD_TASK_REMOVE_COMMENT,
+  commentId,
+  task,
+});
+
+export const requestUpdateComment = (
+  text: string,
+  commentId: number,
+  task: BoardTask,
+) => ({
+  type: TYPES.BOARD_COMMENT_UPDATE_REQUESTED,
+  text,
+  commentId,
+  task,
+});
+
+export const commentUpdated = (
+  comment: Partial<BoardTaskComment> & { id: number },
+  task: BoardTask,
+) => ({
+  type: TYPES.BOARD_TASK_COMMENT_UPDATED,
   comment,
+  task,
 });

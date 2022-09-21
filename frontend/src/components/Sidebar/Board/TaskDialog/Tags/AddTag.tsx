@@ -7,10 +7,11 @@ import {
   TextField as MuiTextField,
   Typography as MuiTypography,
 } from '@mui/material';
-import { BoardTaskTag } from '@Src/types/pmtools/board';
 import React, { useCallback, useState } from 'react';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
+import { useDispatch } from 'react-redux';
+import { createProjectLabel } from '@Redux/pmtools/board/actions/labels';
 
 const colors = [
   '#F3F4F6',
@@ -63,34 +64,39 @@ const Button = styled(MuiButton)({
   },
 });
 
-const AddTag = ({
-  onClose,
-  onBack,
-  onSubmit,
-}: {
-  onClose(): void;
-  onBack?(): void;
-  onSubmit(tag: BoardTaskTag): void;
-}) => {
+const AddTag = ({ onBack, onClose }: { onBack?(): void; onClose(): void }) => {
   const [value, setValue] = useState('');
-  const [color, setColor] = useState(colors[0]);
+  const [colour, seColour] = useState(colors[0]);
+
+  const dispatch = useDispatch();
 
   const handleChangeValue = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(e.target.value.trim());
+      setValue(e.target.value);
     },
     [setValue],
   );
 
   const handleChangeColor = useCallback((color) => {
-    return () => setColor(color);
+    return () => seColour(color);
   }, []);
 
   const handleSubmit = useCallback(() => {
-    onSubmit({ color, text: value });
-    setColor(colors[0]);
+    dispatch(createProjectLabel(value, colour));
+    seColour(colors[0]);
     setValue('');
-  }, [onSubmit, color, value, onBack, onClose]);
+    if (onBack) {
+      onBack();
+    }
+  }, [colour, value, onBack]);
+
+  const handleCancel = useCallback(() => {
+    if (onBack) {
+      onBack();
+    } else {
+      onClose();
+    }
+  }, [onClose]);
 
   return (
     <>
@@ -123,15 +129,15 @@ const AddTag = ({
             onClick={handleChangeColor(c)}
             key={c}
             color={c}
-            selected={c === color}
+            selected={c === colour}
           >
-            {c === color ? <CheckIcon /> : null}
+            {c === colour ? <CheckIcon /> : null}
           </ColorSquare>
         ))}
       </Stack>
 
       <Stack direction="row" spacing={1} justifyContent="flex-end">
-        <Button onClick={onClose} variant="text">
+        <Button onClick={handleCancel} variant="text">
           Cancel
         </Button>
         <Button

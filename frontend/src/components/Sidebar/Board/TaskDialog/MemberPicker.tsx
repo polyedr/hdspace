@@ -116,12 +116,12 @@ interface User {
 
 interface Props {
   selected?: string;
-  onChange(member: User | undefined): void;
+  onChange(member: User | null): void;
 }
 
 const MemberPicker = ({ selected, onChange }: Props) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
-  const [person, setPerson] = React.useState<string>(selected ?? '');
+  const [person, setPerson] = React.useState<string>(selected ?? '-1');
 
   const members = useSelector(selectAllUsersPermissions);
 
@@ -160,7 +160,8 @@ const MemberPicker = ({ selected, onChange }: Props) => {
   const selectedUser = users.find((u) => u.id === parseInt(selected ?? '0'));
 
   const handleSubmit = useCallback(() => {
-    onChange(users.find((u) => u.id === parseInt(person)));
+    const user = users.find((u) => u.id === parseInt(person));
+    onChange(user ?? null);
     handleClose();
   }, [users, person, onChange]);
 
@@ -201,6 +202,25 @@ const MemberPicker = ({ selected, onChange }: Props) => {
               renderValue={(selected) => {
                 const user = users.find((u) => u.id === parseInt(selected))!;
 
+                if (user) {
+                  return (
+                    <ListStack
+                      direction="row"
+                      spacing={1}
+                      display="inline-flex"
+                      alignItems="center"
+                    >
+                      <ListItemIcon>
+                        <MuiAvatar
+                          src={user.avatar || undefined}
+                          sx={{ width: 24, height: 24 }}
+                          alt={user.name}
+                        />
+                      </ListItemIcon>
+                      <ListItemText>{user.name}</ListItemText>
+                    </ListStack>
+                  );
+                }
                 return (
                   <ListStack
                     direction="row"
@@ -208,19 +228,15 @@ const MemberPicker = ({ selected, onChange }: Props) => {
                     display="inline-flex"
                     alignItems="center"
                   >
-                    <ListItemIcon>
-                      <MuiAvatar
-                        src={user.avatar || undefined}
-                        sx={{ width: 24, height: 24 }}
-                        alt={user.name}
-                      />
-                    </ListItemIcon>
-                    <ListItemText>{user.name}</ListItemText>
+                    <ListItemText>Unassigned</ListItemText>
                   </ListStack>
                 );
               }}
               MenuProps={MenuProps}
             >
+              <MenuItem key="unassigned" value={-1}>
+                <ListItemText>Unassigned</ListItemText>
+              </MenuItem>
               {users.map((user) => (
                 <MenuItem key={user.id} value={user.id}>
                   <ListItemIcon>

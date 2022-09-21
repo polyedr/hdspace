@@ -21,7 +21,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import { useDispatch } from 'react-redux';
 import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
-import { BoardTask } from '@Redux/pmtools/types';
+import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
 import { BoardTaskTag } from '@Src/types/pmtools/board';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import Comment from './Comments';
@@ -247,10 +247,10 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
             <InfoWrapper>
               <Tags
                 task={task}
-                onChange={(tags) =>
+                onChange={(labels) =>
                   handleUpdateTask(
-                    'tags',
-                    JSON.stringify(tags.map((t: BoardTaskTag) => t.text)),
+                    'labels',
+                    labels.map((t: BoardLabel) => t.id),
                   )
                 }
               />

@@ -3,17 +3,28 @@ import TYPES from '@Redux/actionTypes';
 import * as columnActions from './actions/columns';
 import * as taskActions from './actions/tasks';
 import * as commentActions from './actions/comments';
-import { BoardAction, BoardState } from '../types';
+import * as labelsActions from './actions/labels';
+import { BoardAction, BoardState, BoardTask } from '../types';
 
 const INITIAL_STATE: BoardState = {
   fetching: true,
   columns: [],
   members: [],
+  labels: [],
   activeTask: null,
 };
 
 interface ActionHandler<T> {
   (state: BoardState, action: T): BoardState;
+}
+
+function findColumnIndex(state: BoardState, columnId: number) {
+  return state.columns.findIndex((c) => c.id === columnId);
+}
+
+function findTaskIndex(state: BoardState, task: BoardTask) {
+  const columnIndex = findColumnIndex(state, task.column);
+  return state.columns[columnIndex].tasks.findIndex((t) => t.id === task.id);
 }
 
 const setColumns: ActionHandler<ReturnType<typeof columnActions.setColumns>> = (
@@ -48,7 +59,7 @@ const addTask: ActionHandler<ReturnType<typeof taskActions.addTask>> = (
 ) => {
   const newState = { ...state };
 
-  const columnIndex = state.columns.findIndex((c) => c.id === task.column);
+  const columnIndex = findColumnIndex(state, task.column);
 
   newState.columns[columnIndex].tasks.unshift(task);
 
@@ -61,10 +72,8 @@ const setTask: ActionHandler<ReturnType<typeof taskActions.setTask>> = (
 ) => {
   const newState = { ...state };
 
-  const columnIndex = state.columns.findIndex((c) => c.id === task.column);
-  const taskIndex = state.columns[columnIndex].tasks.findIndex(
-    (t) => t.id === task.id,
-  );
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
 
   newState.columns[columnIndex].tasks[taskIndex] = {
     ...newState.columns[columnIndex].tasks[taskIndex],
@@ -96,7 +105,7 @@ const addColumn: ActionHandler<ReturnType<typeof columnActions.addColumn>> = (
 const updateColumn: ActionHandler<
   ReturnType<typeof columnActions.updateColumnOnState>
 > = (state = INITIAL_STATE, { column, columnId }) => {
-  const columnIndex = state.columns.findIndex((c) => c.id === columnId);
+  const columnIndex = findColumnIndex(state, columnId);
 
   state.columns[columnIndex] = {
     ...state.columns[columnIndex],
@@ -120,10 +129,8 @@ const deleteColumn: ActionHandler<
 const addComment: ActionHandler<
   ReturnType<typeof commentActions.addComment>
 > = (state = INITIAL_STATE, { comment, task }) => {
-  const columnIndex = state.columns.findIndex((c) => c.id === task.column);
-  const taskIndex = state.columns[columnIndex].tasks.findIndex(
-    (t) => t.id === task.id,
-  );
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
 
   const newState = { ...state };
 
@@ -135,6 +142,63 @@ const addComment: ActionHandler<
   return newState;
 };
 
+const updateComment: ActionHandler<
+  ReturnType<typeof commentActions.commentUpdated>
+> = (state = INITIAL_STATE, { comment: partialComment, task }) => {
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  const newState = { ...state };
+
+  const comments =
+    newState.columns[columnIndex].tasks[taskIndex].comments ?? [];
+
+  const commentIndex = comments.findIndex((c) => c.id === partialComment.id);
+
+  comments[commentIndex] = {
+    ...comments[commentIndex],
+    ...partialComment,
+  };
+
+  newState.columns[columnIndex].tasks[taskIndex].comments = [...comments];
+
+  return newState;
+};
+
+const removeComment: ActionHandler<
+  ReturnType<typeof commentActions.removeComment>
+> = (state = INITIAL_STATE, { commentId, task }) => {
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  const newState = { ...state };
+
+  const { comments } = newState.columns[columnIndex].tasks[taskIndex];
+
+  newState.columns[columnIndex].tasks[taskIndex].comments = comments?.filter(
+    (c) => c.id !== commentId,
+  );
+
+  return newState;
+};
+
+const addProjectLabels: ActionHandler<
+  ReturnType<typeof labelsActions.setProjectLabels>
+> = (state = INITIAL_STATE, { labels }) => {
+  return {
+    ...state,
+    labels,
+  };
+};
+
+const addProjectLabel: ActionHandler<
+  ReturnType<typeof labelsActions.addProjectLabel>
+> = (state = INITIAL_STATE, { label }) => {
+  return {
+    ...state,
+    labels: [...state.labels, label],
+  };
+};
 const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_COLUMNS]: setColumns,
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
@@ -144,7 +208,13 @@ const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_ADD_COLUMN]: addColumn,
   [TYPES.BOARD_DELETE_COLUMN_FROM_STATE]: deleteColumn,
   [TYPES.BOARD_UPDATE_COLUMN_ON_STATE]: updateColumn,
+
   [TYPES.BOARD_TASK_ADD_COMMENT]: addComment,
+  [TYPES.BOARD_TASK_COMMENT_UPDATED]: updateComment,
+  [TYPES.BOARD_TASK_REMOVE_COMMENT]: removeComment,
+
+  [TYPES.BOARD_SET_PROJECT_LABELS]: addProjectLabels,
+  [TYPES.BOARD_ADD_PROJECT_LABEL]: addProjectLabel,
 };
 
 export default createReducer<BoardState, BoardAction>(INITIAL_STATE, HANDLERS);

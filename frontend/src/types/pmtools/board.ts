@@ -128,5 +128,5 @@ type CoverType = {
 
 export interface BoardTaskTag {
   text: string;
-  color: string;
+  colour: string;
 }

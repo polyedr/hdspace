@@ -27,7 +27,7 @@ const Button = styled(MuiButton)<{ icon: boolean }>(({ icon }) => {
 
 interface Props {
   date: string;
-  onChange(date?: string): void;
+  onChange(date?: string | null): void;
 }
 
 const DueDate = ({ date, onChange }: Props) => {
@@ -49,7 +49,7 @@ const DueDate = ({ date, onChange }: Props) => {
 
   const handleClear = useCallback(() => {
     setValue(new Date());
-    onChange('');
+    onChange(null);
   }, []);
 
   const open = Boolean(anchorEl);
