@@ -10,11 +10,11 @@ import {
   TextField,
   styled,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import { useSelector } from 'react-redux';
 import { selectLabels } from '@Redux/pmtools/board/selectors';
-import { BoardLabel } from '@Redux/pmtools/types';
+import fuzzysort from 'fuzzysort';
 import AddTag from './AddTag';
 
 const SearchWrapper = styled('div')({
@@ -95,14 +95,15 @@ const ListItemText = styled(MuiListItemText)<{ color: string }>(
 );
 
 interface Props {
-  selected: BoardLabel[];
-  onChange(labels: BoardLabel[]): void;
+  selected: number[];
+  onChange(labels: number[]): void;
   onClose(): void;
 }
 
 const AllTags = ({ selected, onChange, onClose }: Props) => {
   const labels = useSelector(selectLabels);
 
+  const [searchText, setSearchText] = useState('');
   const [showAddLabel, setShowAddLabel] = useState(labels.length < 1);
 
   const handleHideAddTags = useCallback(() => {
@@ -110,13 +111,13 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
   }, [setShowAddLabel]);
 
   const handleToggle = useCallback(
-    (label: BoardLabel) => {
+    (id) => {
       return () => {
-        const currentIndex = selected.indexOf(label);
+        const currentIndex = selected.indexOf(id);
         const newSelected = [...selected];
 
         if (currentIndex === -1) {
-          newSelected.push(label);
+          newSelected.push(id);
         } else {
           newSelected.splice(currentIndex, 1);
         }
@@ -124,6 +125,25 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
       };
     },
     [selected, onChange],
+  );
+
+  const filteredLabels = useMemo(() => {
+    if (searchText.trim().length) {
+      return fuzzysort
+        .go(searchText.trim(), labels, {
+          keys: ['text'],
+        })
+        .map((r) => r.obj);
+    }
+
+    return labels;
+  }, [searchText, labels]);
+
+  const handleChangeSearchText = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(e.target.value);
+    },
+    [setSearchText],
   );
 
   if (showAddLabel) {
@@ -144,6 +164,8 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
             variant="standard"
             placeholder="Search"
             margin="normal"
+            onChange={handleChangeSearchText}
+            value={searchText}
           />
         </FormWrapper>
         <Button fullWidth onClick={() => setShowAddLabel(true)}>
@@ -155,20 +177,20 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
         dense
         sx={{ width: '100%', bgcolor: 'background.paper', maxHeight: 400 }}
       >
-        {labels.map((label) => {
-          const labelId = `checkbox-list-label-${label.text}`;
+        {filteredLabels.map((label) => {
+          const labelId = `checkbox-list-label-${label.id}`;
 
           return (
-            <ListItem key={label.text} disablePadding disableGutters>
+            <ListItem key={label.id.toString()} disablePadding disableGutters>
               <ListItemButton
                 role={undefined}
                 dense
-                onClick={handleToggle(label)}
+                onClick={handleToggle(label.id)}
               >
                 <ListItemIcon>
                   <Checkbox
                     edge="start"
-                    checked={selected.indexOf(label) !== -1}
+                    checked={selected.indexOf(label.id) !== -1}
                     tabIndex={-1}
                     disableRipple
                     inputProps={{ 'aria-labelledby': labelId }}

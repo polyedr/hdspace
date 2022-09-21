@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Chip as MuiChip,
@@ -7,6 +13,8 @@ import {
   styled,
 } from '@mui/material';
 import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
+import { useSelector } from 'react-redux';
+import { selectLabels } from '@Redux/pmtools/board/selectors';
 import { IconButton } from '../StyledComponents';
 import AllTags from './AllTags';
 
@@ -43,21 +51,11 @@ interface Props {
 
 const Tags = ({ task, onChange }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [selectedLabels, setSelectedTags] = useState<BoardLabel[]>([]);
+  const [selected, setSelected] = useState<number[]>(task.label_ids);
+
+  const labels = useSelector(selectLabels);
 
   const mountedRef = useRef(false);
-
-  // const handleDelete = useCallback(
-  //   (index: number) => {
-  //     setTags((tags) => {
-  //       const newTags = [...tags];
-  //       newTags.splice(index, 1);
-
-  //       return newTags;
-  //     });
-  //   },
-  //   [setTags],
-  // );
 
   const handleShowTagPicker = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -70,13 +68,19 @@ const Tags = ({ task, onChange }) => {
     setAnchorEl(null);
   }, []);
 
+  const selectedLabels = useMemo(() => {
+    return selected.map((id) => {
+      return labels.find((l) => l.id === id);
+    });
+  }, [selected, labels]);
+
   useEffect(() => {
     if (mountedRef.current) {
-      onChange(selectedLabels);
+      onChange(selected);
     } else {
       mountedRef.current = true;
     }
-  }, [selectedLabels]);
+  }, [selected]);
 
   const open = Boolean(anchorEl);
   const id = open ? 'task-tags-picker' : undefined;
@@ -84,14 +88,19 @@ const Tags = ({ task, onChange }) => {
   return (
     <Stack direction="row" spacing={1} alignItems="center">
       {selectedLabels.length > 0 ? (
-        selectedLabels.map((label) => (
-          <Chip
-            // onDelete={() => handleDelete(index)}
-            key={label.id.toString()}
-            label={label.text}
-            style={{ backgroundColor: label.colour, color: 'white' }}
-          />
-        ))
+        selectedLabels.map((label) => {
+          if (label) {
+            return (
+              <Chip
+                key={label.id.toString()}
+                label={label.text}
+                style={{ backgroundColor: label.colour, color: 'white' }}
+              />
+            );
+          }
+
+          return null;
+        })
       ) : (
         <InfoTitle>Add Tag</InfoTitle>
       )}
@@ -115,8 +124,8 @@ const Tags = ({ task, onChange }) => {
       >
         <AllTags
           onClose={handleCloseTagPicker}
-          selected={selectedLabels}
-          onChange={setSelectedTags}
+          selected={selected}
+          onChange={setSelected}
         />
       </Popover>
     </Stack>
