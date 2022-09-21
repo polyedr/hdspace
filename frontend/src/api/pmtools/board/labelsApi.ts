@@ -49,6 +49,17 @@ export const updateLabel = ({
   }).catch(handleError);
 };
 
+export const deleteLabel = ({
+  labelId,
+  ...options
+}: MyAxiosProps & { labelId: number }) => {
+  return myAxios({
+    url: `/projects/columntask_labels/${labelId}/`,
+    method: 'delete',
+    ...options,
+  }).catch(handleError);
+};
+
 export const updateTaskLabels = ({
   text,
   colour,

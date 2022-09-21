@@ -69,9 +69,13 @@ const Tags = ({ task, onChange }) => {
   }, []);
 
   const selectedLabels = useMemo(() => {
-    return selected.map((id) => {
-      return labels.find((l) => l.id === id);
-    });
+    const mergedLabels = selected
+      .map((id) => {
+        return labels.find((l) => l.id === id) ?? null;
+      })
+      .filter((l) => l !== null) as BoardLabel[];
+
+    return mergedLabels.sort((a, b) => (a.text > b.text ? 1 : -1));
   }, [selected, labels]);
 
   useEffect(() => {
@@ -88,19 +92,13 @@ const Tags = ({ task, onChange }) => {
   return (
     <Stack direction="row" spacing={1} alignItems="center">
       {selectedLabels.length > 0 ? (
-        selectedLabels.map((label) => {
-          if (label) {
-            return (
-              <Chip
-                key={label.id.toString()}
-                label={label.text}
-                style={{ backgroundColor: label.colour, color: 'white' }}
-              />
-            );
-          }
-
-          return null;
-        })
+        selectedLabels.map((label) => (
+          <Chip
+            key={label.id.toString()}
+            label={label.text}
+            style={{ backgroundColor: label.colour, color: 'white' }}
+          />
+        ))
       ) : (
         <InfoTitle>Add Tag</InfoTitle>
       )}

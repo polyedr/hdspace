@@ -199,6 +199,16 @@ const addProjectLabel: ActionHandler<
     labels: [...state.labels, label],
   };
 };
+
+const deleteProjectLabel: ActionHandler<
+  ReturnType<typeof labelsActions.projectLabelDeleted>
+> = (state = INITIAL_STATE, { id }) => {
+  return {
+    ...state,
+    labels: state.labels.filter((l) => l.id !== id),
+  };
+};
+
 const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_COLUMNS]: setColumns,
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
@@ -215,6 +225,7 @@ const HANDLERS: Handlers<BoardState> = {
 
   [TYPES.BOARD_SET_PROJECT_LABELS]: addProjectLabels,
   [TYPES.BOARD_ADD_PROJECT_LABEL]: addProjectLabel,
+  [TYPES.BOARD_PROJECT_LABEL_DELETED]: deleteProjectLabel,
 };
 
 export default createReducer<BoardState, BoardAction>(INITIAL_STATE, HANDLERS);

@@ -66,11 +66,13 @@ const Task: React.FC<Props> = ({ task, index }) => {
   );
 
   const selectedLabels = useMemo(() => {
-    return task.label_ids
+    const mergedLabels = task.label_ids
       .map((id) => {
         return labels.find((l) => l.id === id) ?? null;
       })
       .filter((l) => l !== null) as BoardLabel[];
+
+    return mergedLabels.sort((a, b) => (a.text > b.text ? 1 : -1));
   }, [task.label_ids, labels]);
 
   return (
