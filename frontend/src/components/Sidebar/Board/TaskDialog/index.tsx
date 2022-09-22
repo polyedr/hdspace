@@ -44,6 +44,7 @@ const Dialog = styled(MuiDialog)({
     minWidth: '420px',
     height: '656px',
     borderRadius: 6,
+    maxWidth: '1000px',
   },
 });
 
