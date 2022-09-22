@@ -2,9 +2,6 @@ import {
   Box,
   Button as MuiButton,
   List,
-  ListItemButton as MuiListItemButton,
-  ListItemIcon as MuiListItemIcon,
-  ListItemText as MuiListItemText,
   TextField,
   styled,
 } from '@mui/material';
