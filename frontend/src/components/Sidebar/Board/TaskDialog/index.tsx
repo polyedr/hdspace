@@ -237,7 +237,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
             <ActionIconwrapper>
               <SettingsIcon />
             </ActionIconwrapper>
-            <ActionIconwrapper>
+            <ActionIconwrapper onClick={onClose}>
               <CloseIcon />
             </ActionIconwrapper>
           </Stack>

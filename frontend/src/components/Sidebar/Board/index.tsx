@@ -14,6 +14,7 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
+import { selectUserData } from '@Redux/user/selectors';
 import Column from './Column';
 import { NewColumn } from './NewColumn';
 import Members from './Members';
@@ -55,24 +56,28 @@ const StyledForm = styled('div')(() => ({
   },
 }));
 
-const StyledButton = styled(Button)(() => ({
-  backgroundColor: '#F3F4F6',
-  color: '#81818E',
-  borderRadius: 4,
-  boxShadow: 'none',
-  textTransform: 'capitalize',
-
-  '&:hover': {
-    backgroundColor: '#e4e8ef',
+const StyledButton = styled(Button)<{ active?: boolean }>(
+  ({ active = false, theme }) => ({
+    backgroundColor: active ? theme.palette.primary.main : '#e4e8ef',
+    color: '#81818E',
+    borderRadius: 4,
     boxShadow: 'none',
-  },
-}));
+    textTransform: 'capitalize',
+
+    '&:hover': {
+      backgroundColor: active ? theme.palette.primary.main : '#e4e8ef',
+      boxShadow: 'none',
+    },
+  }),
+);
 
 const Board = () => {
   const [showCreateColumn, setShowCreateColumn] = useState(false);
+  const [filteredUsers, setFilteredUsers] = useState<number[]>([]);
   const [searchText, setSearchText] = useState('');
 
   const { columns } = useSelector(selectBoard);
+  const { id: activeUserId } = useSelector(selectUserData);
 
   const projectId = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
@@ -88,6 +93,23 @@ const Board = () => {
   useEffect(() => {
     dispatch(fetchBoard(projectId));
   }, [dispatch, projectId]);
+
+  const toggleFilteredUsers = useCallback(
+    (id: number) => {
+      const newFilteredUsers = [...filteredUsers];
+
+      const index = filteredUsers.indexOf(id);
+
+      if (index !== -1) {
+        newFilteredUsers.splice(index, 1);
+      } else {
+        newFilteredUsers.push(id);
+      }
+
+      setFilteredUsers(newFilteredUsers);
+    },
+    [setFilteredUsers, filteredUsers],
+  );
 
   const handleDragEnd = useCallback(
     (result: DropResult) => {
@@ -124,8 +146,23 @@ const Board = () => {
   );
 
   const columnsToDisplay = useMemo(() => {
+    let filteredColumns = [...columns];
+
+    if (filteredUsers.length) {
+      filteredColumns = filteredColumns.map((column) => {
+        const tasks = column.tasks.filter(
+          (t) => filteredUsers.indexOf(t.assignee_id ?? 0) !== -1,
+        );
+
+        return {
+          ...column,
+          tasks,
+        };
+      });
+    }
+
     if (searchText.trim().length > 0) {
-      return columns.map((column: any) => {
+      return filteredColumns.map((column: any) => {
         const searchResults = fuzzysort.go(searchText.trim(), column.tasks, {
           keys: ['title', 'description'],
         });
@@ -137,8 +174,8 @@ const Board = () => {
       });
     }
 
-    return columns;
-  }, [columns, searchText]);
+    return filteredColumns;
+  }, [columns, searchText, filteredUsers, activeUserId]);
 
   return (
     <>
@@ -162,9 +199,18 @@ const Board = () => {
                 </IconButton>
               </StyledForm>
             </Grid>
-            <Members />
+            <Members
+              selected={filteredUsers}
+              onSelected={toggleFilteredUsers}
+            />
             <Grid item md={2}>
-              <StyledButton variant="contained">Only my tasks</StyledButton>
+              <StyledButton
+                onClick={() => toggleFilteredUsers(activeUserId)}
+                variant="contained"
+                active={filteredUsers.indexOf(activeUserId) !== -1}
+              >
+                Only my tasks
+              </StyledButton>
             </Grid>
             <Grid item md={5} style={{ textAlign: 'right' }}>
               <StyledButton

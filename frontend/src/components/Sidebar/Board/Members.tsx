@@ -12,14 +12,28 @@ const StyledAvatarGroup = styled(AvatarGroup)(() => ({
   },
 }));
 
-const Members = () => {
+interface Props {
+  onSelected?(id: number): void;
+  selected?: number[];
+}
+
+const Members = ({ onSelected, selected = [] }: Props) => {
   const members = useSelector(selectAllUsersPermissions);
 
   return (
     <Grid item md="auto" justifyContent="left">
       <StyledAvatarGroup max={4}>
         {Object.values(members).map(({ userData }) => (
-          <User user={userData} sx={{ width: 32, height: 32 }} />
+          <User
+            active={selected.indexOf(userData.id) !== -1}
+            user={userData}
+            sx={{ width: 32, height: 32 }}
+            onClick={() => {
+              if (onSelected) {
+                onSelected(userData.id);
+              }
+            }}
+          />
         ))}
       </StyledAvatarGroup>
     </Grid>

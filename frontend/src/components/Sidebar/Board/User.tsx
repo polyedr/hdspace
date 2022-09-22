@@ -9,7 +9,7 @@ export function username(user) {
   return user.username;
 }
 
-const User = ({ user, ...options }) => {
+const User = ({ user, active = false, ...options }) => {
   return (
     <Avatar
       sx={{
@@ -17,6 +17,7 @@ const User = ({ user, ...options }) => {
         height: 24,
         fontSize: 12,
         lineHeight: 0.8,
+        scale: active ? 1.2 : 1,
       }}
       src={user.profile_avatar ?? undefined}
       alt={username(user)}
