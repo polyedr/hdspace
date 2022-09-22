@@ -24,6 +24,9 @@ import { fetchTask, updateTask } from '@Redux/pmtools/board/actions/tasks';
 import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
 import { BoardTaskTag } from '@Src/types/pmtools/board';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import ShareIcon from '@mui/icons-material/Share';
+import SettingsIcon from '@mui/icons-material/Settings';
+import CloseIcon from '@mui/icons-material/Close';
 import Comment from './Comments';
 import TaskTitle from './TaskTitle';
 import DueDate from './DueDate';
@@ -35,9 +38,6 @@ import Description from './Description';
 import Tags from './Tags';
 import Checklist from './Checklist';
 import ProgressBar from './Checklist/ProgressBar';
-import ShareIcon from '@mui/icons-material/Share';
-import SettingsIcon from '@mui/icons-material/Settings';
-import CloseIcon from '@mui/icons-material/Close';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -87,12 +87,6 @@ const InfoTitle = styled('span')({
   margin: '16px 0',
 });
 
-const AssigneeAvatar = styled(MuiAvatar)({
-  width: 24,
-  height: 24,
-  fontSize: 14,
-});
-
 const AuthorAvatar = styled(MuiAvatar)({
   width: 24,
   height: 24,
@@ -113,6 +107,16 @@ const TextField = styled(MuiTextField)({
     '&.Mui-focused fieldset': {
       borderColor: '#E4E6EB',
     },
+  },
+});
+
+const StandardTextField = styled(MuiTextField)({
+  '& .MuiInputBase-root:before': {
+    borderColor: '#E4E6EB',
+  },
+
+  '& input': {
+    maxWidth: 64,
   },
 });
 
@@ -360,7 +364,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                       Story Points
                     </TableCell>
                     <TableCell>
-                      <TextField
+                      <StandardTextField
                         value={storyPoints}
                         onChange={handleChangeStoryPoints}
                         onBlur={() =>
@@ -377,7 +381,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                       Time
                     </TableCell>
                     <TableCell>
-                      <TextField
+                      <StandardTextField
                         onChange={handleChangeTime}
                         type="text"
                         variant="standard"

@@ -6,23 +6,51 @@ import {
   styled,
   TextField,
   Stack,
+  IconButton as MuiIconButton,
 } from '@mui/material';
 import { format, formatISO } from 'date-fns';
 import { StaticDateTimePicker } from '@mui/x-date-pickers';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton } from './StyledComponents';
+// import { IconButton } from './StyledComponents';
 
 const Button = styled(MuiButton)<{ icon: boolean }>(({ icon }) => {
   if (icon) {
     return {
-      width: 50,
-      height: 50,
+      backgroundColor: '#F3F4F6 !important',
+      width: 24,
+      height: 24,
+      borderRadius: '50%',
+      marginLeft: 10,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minWidth: 'auto',
+
+      '& svg': {
+        color: '#81818E',
+        fontSize: 16,
+      },
     };
   }
 
   return {
     color: '#2A2A2D',
+    padding: 0,
+
+    '&:hover': {
+      background: 'none',
+    },
   };
+});
+
+const IconButton = styled(MuiIconButton)({
+  minWidth: 'auto',
+  marginLeft: 5,
+
+  '& svg': {
+    color: '#81818E',
+    fontSize: 13,
+  },
 });
 
 interface Props {
@@ -63,7 +91,7 @@ const DueDate = ({ date, onChange }: Props) => {
         </Button>
 
         {date ? (
-          <IconButton onClick={handleClear}>
+          <IconButton onClick={handleClear} size="small">
             <CloseIcon className="CloseIcon" />
           </IconButton>
         ) : null}

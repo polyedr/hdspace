@@ -40,7 +40,7 @@ const CommentTime = styled('h6')({
 
 const CommentText = styled('div')({
   '& p': {
-    margin: '8px 5px',
+    margin: '9px 5px 5px',
   },
 });
 
@@ -132,7 +132,7 @@ const Comment = ({ comment, task }: Props) => {
             src={comment.user.profile_avatar}
           />
         </Grid>
-        <Grid item md={10}>
+        <Grid item md={11}>
           <Stack direction="row" spacing={2} alignItems="baseline">
             <CommentUserName>{username(comment.user)}</CommentUserName>
             <CommentTime className="Time">

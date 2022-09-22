@@ -26,8 +26,12 @@ const MenuButton = styled(Button)<{
     fontSize: 14,
     fontWeight: 500,
     textTransform: 'capitalize',
-    padding: '0 16px',
+    padding: '0 0 0 5px',
     color,
+
+    '&:hover': {
+      background: 'none',
+    },
 
     '& .CircleIcon': {
       fontSize: '9px !important',
