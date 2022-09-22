@@ -34,6 +34,7 @@ const Container = styled('div')<{ dragging: boolean }>(({ dragging }) => ({
 const StyledChip = styled(Chip)({
   backgroundColor: '#F3F4F6',
   fontSize: 12,
+  marginBottom: '5px !important',
 });
 
 const TimeStack = styled(Stack)<{ priority: boolean }>(({ priority }) => ({
@@ -101,7 +102,7 @@ const Task: React.FC<Props> = ({ task, index }) => {
               {task.title}
               <BarIcon priority={task.priority} />
             </Stack>
-            <Stack direction="row" spacing={0.2} mb={2}>
+            <Stack direction="row" spacing={0.2} mb={2} flexWrap="wrap">
               {selectedLabels.map((label) => (
                 <StyledChip
                   key={label.id.toString()}

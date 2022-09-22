@@ -9,10 +9,14 @@ const PriorityMenu = styled(Button)({
   fontSize: 14,
   fontWeight: 500,
   textTransform: 'capitalize',
-  padding: '0 16px',
+  padding: '0 0 0 5px',
   color: '#2A2A2D',
 
   // colors[priorityType]
+
+  '&:hover': {
+    background: 'none',
+  },
 
   '& .SignalIcon': {
     fontSize: '14px !important',

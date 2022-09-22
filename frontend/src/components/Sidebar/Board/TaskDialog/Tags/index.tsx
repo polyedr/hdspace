@@ -90,20 +90,24 @@ const Tags = ({ task, onChange }) => {
   const id = open ? 'task-tags-picker' : undefined;
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
       {selectedLabels.length > 0 ? (
         selectedLabels.map((label) => (
           <Chip
             key={label.id.toString()}
             label={label.text}
-            style={{ backgroundColor: label.colour, color: 'white' }}
+            style={{
+              backgroundColor: label.colour,
+              color: 'white',
+              margin: '8px 8px 0 0',
+            }}
           />
         ))
       ) : (
         <InfoTitle>Add Tag</InfoTitle>
       )}
 
-      <IconButton onClick={handleShowTagPicker}>
+      <IconButton onClick={handleShowTagPicker} style={{ marginTop: 8 }}>
         <AddIcon />
       </IconButton>
       <Popover
