@@ -63,7 +63,6 @@ const Button = styled(MuiButton)({
   margin: '20px 0 0',
   textTransform: 'capitalize',
 });
-
 interface Props {
   selected: number[];
   onChange(labels: number[]): void;

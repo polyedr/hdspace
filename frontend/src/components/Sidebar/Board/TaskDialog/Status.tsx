@@ -23,7 +23,7 @@ const MenuButton = styled(Button)<{
 }>(({ statusType }) => {
   const color = colors[statusType];
   return {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 500,
     textTransform: 'capitalize',
     padding: '0 0 0 5px',
@@ -34,7 +34,7 @@ const MenuButton = styled(Button)<{
     },
 
     '& .CircleIcon': {
-      fontSize: '9px !important',
+      fontSize: '8px !important',
     },
 
     '& .css-9tj150-MuiButton-endIcon': {
@@ -43,7 +43,7 @@ const MenuButton = styled(Button)<{
 
     '& .ArrowIcon': {
       color: '#81818E',
-      fontSize: '22px !important',
+      fontSize: '20px !important',
     },
   };
 });
@@ -54,14 +54,14 @@ const MenuItem = styled(MuiMenuItem)<{
   const color = colors[statusType];
 
   return {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 500,
     padding: '8px 16px',
     textTransform: 'capitalize',
     color,
 
     '& svg': {
-      fontSize: 9,
+      fontSize: 8,
       marginRight: 8,
     },
 

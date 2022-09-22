@@ -82,7 +82,7 @@ const InfoWrapper = styled('div')({
 
 const InfoTitle = styled('span')({
   color: '#81818E',
-  fontSize: 14,
+  fontSize: 12,
   fontWeight: 500,
   margin: '16px 0',
 });
@@ -124,7 +124,7 @@ const TableCell = styled(MuiTableCell)({
   padding: '10px',
   border: 0,
   color: '#81818E',
-  fontSize: 14,
+  fontSize: 12,
 });
 
 const AuthorButton = styled(MuiButton)({
@@ -136,7 +136,7 @@ const AuthorButton = styled(MuiButton)({
   '& span': {
     padding: '3px 8px 3px 3px',
     color: '#2A2A2D',
-    fontSize: 14,
+    fontSize: 12,
     textTransform: 'capitalize',
   },
 });
@@ -238,7 +238,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
             <ActionIconwrapper>
               <SettingsIcon />
             </ActionIconwrapper>
-            <ActionIconwrapper>
+            <ActionIconwrapper onClick={onClose}>
               <CloseIcon />
             </ActionIconwrapper>
           </Stack>
