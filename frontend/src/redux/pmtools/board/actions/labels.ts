@@ -28,3 +28,13 @@ export const createProjectLabel = (text: string, colour: string) => ({
   text,
   colour,
 });
+
+export const requestDeleteProjectLabel = (id: number) => ({
+  type: TYPES.BOARD_DELETE_PROJECT_LABEL_REQUEST,
+  id,
+});
+
+export const projectLabelDeleted = (id: number) => ({
+  type: TYPES.BOARD_PROJECT_LABEL_DELETED,
+  id,
+});

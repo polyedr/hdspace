@@ -1,9 +1,7 @@
 import {
   Box,
   Button as MuiButton,
-  Checkbox,
   List,
-  ListItem,
   ListItemButton as MuiListItemButton,
   ListItemIcon as MuiListItemIcon,
   ListItemText as MuiListItemText,
@@ -12,10 +10,13 @@ import {
 } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import { useSelector } from 'react-redux';
+
+import { useDispatch, useSelector } from 'react-redux';
 import { selectLabels } from '@Redux/pmtools/board/selectors';
 import fuzzysort from 'fuzzysort';
+import { requestDeleteProjectLabel } from '@Redux/pmtools/board/actions/labels';
 import AddTag from './AddTag';
+import ListItem from './ListItem';
 
 const SearchWrapper = styled('div')({
   padding: '8px 15px',
@@ -66,34 +67,6 @@ const Button = styled(MuiButton)({
   textTransform: 'capitalize',
 });
 
-const ListItemIcon = styled(MuiListItemIcon)({
-  padding: 0,
-  minWidth: 'auto',
-});
-
-const ListItemButton = styled(MuiListItemButton)({
-  padding: 0,
-
-  '&:hover': {
-    backgroundColor: 'transparent',
-  },
-});
-
-const ListItemText = styled(MuiListItemText)<{ color: string }>(
-  ({ color }) => ({
-    borderRadius: 16,
-    padding: '4px 8px',
-    display: 'inline-block',
-    flex: 'none',
-    background: color,
-
-    '& span': {
-      fontSize: 12,
-      color: 'white',
-    },
-  }),
-);
-
 interface Props {
   selected: number[];
   onChange(labels: number[]): void;
@@ -102,6 +75,8 @@ interface Props {
 
 const AllTags = ({ selected, onChange, onClose }: Props) => {
   const labels = useSelector(selectLabels);
+
+  const dispatch = useDispatch();
 
   const [searchText, setSearchText] = useState('');
   const [showAddLabel, setShowAddLabel] = useState(labels.length < 1);
@@ -112,17 +87,15 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
 
   const handleToggle = useCallback(
     (id) => {
-      return () => {
-        const currentIndex = selected.indexOf(id);
-        const newSelected = [...selected];
+      const currentIndex = selected.indexOf(id);
+      const newSelected = [...selected];
 
-        if (currentIndex === -1) {
-          newSelected.push(id);
-        } else {
-          newSelected.splice(currentIndex, 1);
-        }
-        onChange(newSelected);
-      };
+      if (currentIndex === -1) {
+        newSelected.push(id);
+      } else {
+        newSelected.splice(currentIndex, 1);
+      }
+      onChange(newSelected);
     },
     [selected, onChange],
   );
@@ -144,6 +117,13 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
       setSearchText(e.target.value);
     },
     [setSearchText],
+  );
+
+  const handleDelete = useCallback(
+    (id) => {
+      dispatch(requestDeleteProjectLabel(id));
+    },
+    [dispatch],
   );
 
   if (showAddLabel) {
@@ -177,34 +157,15 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
         dense
         sx={{ width: '100%', bgcolor: 'background.paper', maxHeight: 400 }}
       >
-        {filteredLabels.map((label) => {
-          const labelId = `checkbox-list-label-${label.id}`;
-
-          return (
-            <ListItem key={label.id.toString()} disablePadding disableGutters>
-              <ListItemButton
-                role={undefined}
-                dense
-                onClick={handleToggle(label.id)}
-              >
-                <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    checked={selected.indexOf(label.id) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    inputProps={{ 'aria-labelledby': labelId }}
-                  />
-                </ListItemIcon>
-                <ListItemText
-                  color={label.colour}
-                  id={labelId}
-                  primary={label.text}
-                />
-              </ListItemButton>
-            </ListItem>
-          );
-        })}
+        {filteredLabels.map((label) => (
+          <ListItem
+            selected={selected.indexOf(label.id) !== -1}
+            key={label.id.toString()}
+            label={label}
+            onToggle={handleToggle}
+            onDelete={handleDelete}
+          />
+        ))}
       </List>
     </SearchWrapper>
   );
