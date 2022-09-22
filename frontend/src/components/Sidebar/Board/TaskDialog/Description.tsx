@@ -10,7 +10,7 @@ import React, { useCallback, useState } from 'react';
 import Editor, { RenderEditorHtml } from './Editor';
 
 const Box = styled(MuiBox)({
-  border: '1px solid transparent',
+  border: '1px solid #F3F4F6',
   padding: 12,
   borderRadius: 4,
   marginBottom: 10,

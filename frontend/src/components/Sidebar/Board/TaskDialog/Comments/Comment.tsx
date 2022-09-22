@@ -26,7 +26,7 @@ const Avatar = styled(MuiAvatar)({
 
 const CommentUserName = styled('h5')({
   fontSize: 14,
-  fontWeight: 600,
+  fontWeight: 500,
   margin: '0 0 0 5px',
   color: '#2A2A2D',
 });
@@ -40,19 +40,26 @@ const CommentTime = styled('h6')({
 
 const CommentText = styled('div')({
   '& p': {
-    margin: '9px 5px 5px',
+    margin: '5px 5px 3px',
   },
 });
 
 const Button = styled(MuiButton)({
   fontSize: 12,
-  color: '#81818E',
-  padding: 5,
   minWidth: 'auto',
   textTransform: 'capitalize',
 
-  '&:hover': {
-    background: 'none',
+  '&.MuiButton-contained': {
+    backgroundColor: 'var(--blue)',
+  },
+
+  '&.MuiButton-text': {
+    color: '#81818E',
+    padding: 5,
+
+    '&:hover': {
+      background: 'none',
+    },
   },
 });
 
@@ -69,9 +76,8 @@ const IconButton = styled(MuiIconButton)({
 const EditorWrapper = styled('div')({
   border: '1px solid #E4E6EB',
   borderRadius: 4,
-  padding: '3px 8px',
-  marginLeft: -4,
-  marginTop: 5,
+  padding: '8px 8px 5px',
+  marginTop: '8px 0 8px -4px',
 
   '& p': {
     margin: '0 0 15px',
@@ -144,8 +150,8 @@ const Comment = ({ comment, task }: Props) => {
               <EditorWrapper>
                 <Editor value={value} onChange={setValue} />
               </EditorWrapper>
-              <Stack direction="row" spacing={0.5} alignItems="center">
-                <Button onClick={handleSave} variant="text">
+              <Stack direction="row" spacing={1} alignItems="center">
+                <Button onClick={handleSave} variant="contained">
                   Save
                 </Button>
                 <IconButton>

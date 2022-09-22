@@ -43,6 +43,7 @@ const Dialog = styled(MuiDialog)({
     minWidth: '420px',
     height: '656px',
     borderRadius: 6,
+    maxWidth: '1000px',
   },
 });
 
@@ -81,7 +82,7 @@ const InfoWrapper = styled('div')({
 
 const InfoTitle = styled('span')({
   color: '#81818E',
-  fontSize: 14,
+  fontSize: 12,
   fontWeight: 500,
   margin: '16px 0',
 });
@@ -123,7 +124,7 @@ const TableCell = styled(MuiTableCell)({
   padding: '10px',
   border: 0,
   color: '#81818E',
-  fontSize: 14,
+  fontSize: 12,
 });
 
 const AuthorButton = styled(MuiButton)({
@@ -135,7 +136,7 @@ const AuthorButton = styled(MuiButton)({
   '& span': {
     padding: '3px 8px 3px 3px',
     color: '#2A2A2D',
-    fontSize: 14,
+    fontSize: 12,
     textTransform: 'capitalize',
   },
 });

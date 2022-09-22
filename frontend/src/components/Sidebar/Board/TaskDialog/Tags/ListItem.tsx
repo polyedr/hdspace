@@ -1,6 +1,6 @@
 import {
-  Checkbox,
-  IconButton,
+  Checkbox as MuiCheckbox,
+  IconButton as MuiIconButton,
   ListItem as MuiListItem,
   ListItemButton as MuiListItemButton,
   ListItemIcon as MuiListItemIcon,
@@ -15,6 +15,14 @@ import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 const ListItemIcon = styled(MuiListItemIcon)({
   padding: 0,
   minWidth: 'auto',
+
+  '& .MuiButtonBase-root': {
+    padding: '0 9px',
+  },
+});
+
+const Checkbox = styled(MuiCheckbox)({
+  color: '#E4E6EB',
 });
 
 const ListItemButton = styled(MuiListItemButton)({
@@ -28,7 +36,7 @@ const ListItemButton = styled(MuiListItemButton)({
 const ListItemText = styled(MuiListItemText)<{ color: string }>(
   ({ color }) => ({
     borderRadius: 16,
-    padding: '4px 8px',
+    padding: '3.5px 8px',
     display: 'inline-block',
     flex: 'none',
     background: color,
@@ -39,6 +47,13 @@ const ListItemText = styled(MuiListItemText)<{ color: string }>(
     },
   }),
 );
+
+const IconButton = styled(MuiIconButton)({
+  '& svg': {
+    fontSize: 16,
+    color: '#81818E',
+  },
+});
 
 interface Props {
   label: BoardLabel;

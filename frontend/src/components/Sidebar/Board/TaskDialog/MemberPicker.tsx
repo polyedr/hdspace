@@ -17,7 +17,7 @@ import {
 import { useSelector } from 'react-redux';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import { IconButton } from './StyledComponents';
-import { username } from '../User';
+import User, { username } from '../User';
 
 const Popover = styled(MuiPopover)({
   boxShadow:
@@ -50,18 +50,20 @@ const ListStack = styled(MuiStack)({
 });
 
 const ListItemIcon = styled(MuiListItemIcon)({
-  minWidth: 'auto',
+  minWidth: 'auto !important',
 });
 
 const ListItemText = styled(MuiListItemText)({
-  paddingRight: 10,
+  // paddingRight: 10,
+  marginLeft: 0,
 
   '& span': {
     whiteSpace: 'nowrap',
-    width: 200,
+    maxWidth: 200,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     fontSize: 12,
+    padding: '0 10px',
   },
 });
 
@@ -206,7 +208,7 @@ const MemberPicker = ({ selected, onChange }: Props) => {
                   return (
                     <ListStack
                       direction="row"
-                      spacing={1}
+                      spacing={0}
                       display="inline-flex"
                       alignItems="center"
                     >

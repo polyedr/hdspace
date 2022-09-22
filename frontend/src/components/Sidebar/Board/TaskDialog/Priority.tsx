@@ -6,7 +6,7 @@ import { BoardTask, PriorityOptions } from '@Redux/pmtools/types';
 import BarIcon, { colors } from '../BarIcon';
 
 const PriorityMenu = styled(Button)({
-  fontSize: 14,
+  fontSize: 12,
   fontWeight: 500,
   textTransform: 'capitalize',
   padding: '0 0 0 5px',
@@ -28,7 +28,7 @@ const PriorityMenu = styled(Button)({
 
   '& .ArrowIcon': {
     color: '#81818E',
-    fontSize: '22px !important',
+    fontSize: '20px !important',
   },
 });
 
