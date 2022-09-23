@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { styled } from '@mui/material/styles';
 import { BoardTask } from '@Redux/pmtools/types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,11 +32,15 @@ const Comments = ({ task }: Props) => {
     [task],
   );
 
+  const sortedComments = useMemo(() => {
+    return comments.sort((a, b) => (a.id < b.id ? 1 : -1));
+  }, [comments]);
+
   return (
     <>
       <CommentInput onSubmit={handleSubmit} />
       <CommentHistory>
-        {comments.map((comment) => (
+        {sortedComments.map((comment) => (
           <Comment key={comment.id} task={task} comment={comment} />
         ))}
       </CommentHistory>
