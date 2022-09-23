@@ -65,7 +65,9 @@ const Styles = () => {
 
   const activeElement = useSelector(selectActiveElement);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
-  const currentEditableStyles = useSelector(selectCurrentEditableStyles);
+  const currentEditableStyles = useSelector(
+    selectCurrentEditableStyles,
+  ) as React.CSSProperties;
   const currentScreenId = useSelector(selectCurrentScreenId);
   const editableStyles = useSelector(selectEditableStyles);
   const canEdit = useSelector(

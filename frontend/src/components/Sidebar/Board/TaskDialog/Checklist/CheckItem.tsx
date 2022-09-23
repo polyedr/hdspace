@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Checkbox as MuiCheckbox,
@@ -17,6 +17,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EditIcon from '@mui/icons-material/Edit';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { ClickAwayListener } from '@material-ui/core';
 
 const ListItemInput = styled(ListItem)({
   padding: 0,
@@ -67,6 +69,7 @@ const IconButton = styled(MuiIconButton)({
 });
 
 const CheckItem = ({ value }) => {
+  const [editing, setEditing] = useState(false);
   const [checked, setChecked] = React.useState([0]);
 
   const handleToggle = (value: number) => () => {
@@ -82,85 +85,107 @@ const CheckItem = ({ value }) => {
     setChecked(newChecked);
   };
 
+  const handleSetEditing = useCallback((editing: boolean) => {
+    return () => setEditing(editing);
+  }, []);
+
+  const handleSave = useCallback(() => {
+    setEditing(false);
+  }, []);
+
+  const handleSaveOnEnter = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        handleSave();
+      }
+    },
+    [handleSave],
+  );
+
   const labelId = `checkbox-list-label-${value}`;
 
   return (
     <>
-      <ListItemTitle
-        key={value}
-        secondaryAction={
-          <Stack direction="row" spacing={0.5} alignItems="center">
-            <IconButton>
-              <EditIcon />
-            </IconButton>
-            <IconButton>
-              <DeleteOutlineIcon />
-            </IconButton>
-          </Stack>
-        }
-        disablePadding
-      >
-        <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-          <ListItemIcon>
-            <Checkbox
-              edge="start"
-              checked={checked.indexOf(value) !== -1}
-              tabIndex={-1}
-              disableRipple
-              inputProps={{ 'aria-labelledby': labelId }}
-            />
-          </ListItemIcon>
-          <ListItemText>List Item 1</ListItemText>
-        </ListItemButton>
-      </ListItemTitle>
-
-      <ListItemInput
-        key={value}
-        secondaryAction={
-          <Stack direction="row" spacing={0.5} alignItems="center">
-            <IconButton>
-              <CheckIcon />
-            </IconButton>
-            <IconButton>
-              <DeleteOutlineIcon />
-            </IconButton>
-          </Stack>
-        }
-        disablePadding
-      >
-        <Box
-          role={undefined}
-          onClick={handleToggle(value)}
-          px={0.5}
-          width="100%"
-          display="flex"
-          alignItems="center"
+      {editing ? (
+        <ClickAwayListener onClickAway={handleSetEditing(false)}>
+          <ListItemInput
+            key={value}
+            secondaryAction={
+              <Stack direction="row" spacing={0.5} alignItems="center">
+                <IconButton onClick={handleSave}>
+                  <CheckIcon />
+                </IconButton>
+                <IconButton onClick={handleSetEditing(false)}>
+                  <CancelIcon />
+                </IconButton>
+              </Stack>
+            }
+            disablePadding
+          >
+            <Box
+              role={undefined}
+              px={0.5}
+              width="100%"
+              display="flex"
+              alignItems="center"
+            >
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  checked={checked.indexOf(value) !== -1}
+                  tabIndex={-1}
+                  disabled={editing}
+                  disableRipple
+                  inputProps={{ 'aria-labelledby': labelId }}
+                />
+              </ListItemIcon>
+              <TextField
+                variant="outlined"
+                placeholder="Add Item"
+                onKeyDown={handleSaveOnEnter}
+                size="small"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton edge="end">
+                        <AlternateEmailIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+          </ListItemInput>
+        </ClickAwayListener>
+      ) : (
+        <ListItemTitle
+          key={value}
+          secondaryAction={
+            <Stack direction="row" spacing={0.5} alignItems="center">
+              <IconButton onClick={handleSetEditing(true)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton>
+                <DeleteOutlineIcon />
+              </IconButton>
+            </Stack>
+          }
+          disablePadding
         >
-          <ListItemIcon>
-            <Checkbox
-              edge="start"
-              checked={checked.indexOf(value) !== -1}
-              tabIndex={-1}
-              disableRipple
-              inputProps={{ 'aria-labelledby': labelId }}
-            />
-          </ListItemIcon>
-          <TextField
-            variant="outlined"
-            placeholder="Add Item"
-            size="small"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton edge="end">
-                    <AlternateEmailIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Box>
-      </ListItemInput>
+          <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+            <ListItemIcon>
+              <Checkbox
+                edge="start"
+                checked={checked.indexOf(value) !== -1}
+                tabIndex={-1}
+                disableRipple
+                inputProps={{ 'aria-labelledby': labelId }}
+              />
+            </ListItemIcon>
+            <ListItemText>List Item 1</ListItemText>
+          </ListItemButton>
+        </ListItemTitle>
+      )}
     </>
   );
 };

@@ -36,7 +36,6 @@ import MemberPicker from './MemberPicker';
 import Description from './Description';
 import Tags from './Tags';
 import Checklist from './Checklist';
-import ProgressBar from './Checklist/ProgressBar';
 
 const Dialog = styled(MuiDialog)({
   '& .MuiPaper-root': {
@@ -93,23 +92,6 @@ const AuthorAvatar = styled(Avatar)({
   fontSize: 14,
 });
 
-const TextField = styled(MuiTextField)({
-  '& .MuiOutlinedInput-root': {
-    '& input': {
-      padding: '6.5px 14px',
-    },
-    '& fieldset': {
-      borderColor: '#E4E6EB !important',
-    },
-    '&:hover fieldset': {
-      borderColor: 'var(--blue)',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: '#E4E6EB',
-    },
-  },
-});
-
 const StandardTextField = styled(MuiTextField)({
   '& .MuiInputBase-root:before': {
     borderColor: '#E4E6EB',
@@ -138,18 +120,6 @@ const AuthorButton = styled(MuiButton)({
     color: '#2A2A2D',
     fontSize: 12,
     textTransform: 'capitalize',
-  },
-});
-
-const RemoveButton = styled(MuiButton)({
-  backgroundColor: '#F3F4F6',
-  boxShadow: 'none',
-  fontSize: 12,
-  textTransform: 'capitalize',
-  color: '#81818E',
-
-  '&:hover': {
-    boxShadow: 'none',
   },
 });
 
@@ -265,23 +235,6 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                 <IconButton>
                   <AddIcon />
                 </IconButton>
-              </Stack>
-              <Stack
-                direction="row"
-                spacing={2}
-                alignItems="center"
-                justifyContent="space-between"
-              >
-                <Stack direction="row" spacing={2} alignItems="center">
-                  <InfoTitle>Checklist</InfoTitle>
-                  <IconButton>
-                    <AddIcon />
-                  </IconButton>
-                </Stack>
-                <ProgressBar />
-                <RemoveButton variant="contained" color="inherit" size="small">
-                  Remove
-                </RemoveButton>
               </Stack>
               <Checklist />
               <Stack>
