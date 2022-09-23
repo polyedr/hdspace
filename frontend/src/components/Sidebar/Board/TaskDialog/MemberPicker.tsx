@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
+import Avatar from '@Components/UI/Avatar';
 import { IconButton } from './StyledComponents';
 import User, { username } from '../User';
 
@@ -93,7 +94,7 @@ const AuthorButton = styled(MuiButton)({
   },
 });
 
-const AuthorAvatar = styled(MuiAvatar)({
+const AuthorAvatar = styled(Avatar)({
   width: 24,
   height: 24,
   fontSize: 14,
@@ -171,7 +172,11 @@ const MemberPicker = ({ selected, onChange }: Props) => {
     <>
       <IconButton onClick={handleOpen}>
         {selectedUser ? (
-          <AuthorAvatar alt={selectedUser.name} src={selectedUser.avatar} />
+          <AuthorAvatar
+            uniqueKey={selectedUser.id}
+            alt={selectedUser.name}
+            src={selectedUser.avatar}
+          />
         ) : (
           <AddIcon />
         )}

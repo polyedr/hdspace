@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Avatar as MuiAvatar,
   Button as MuiButton,
   Dialog as MuiDialog,
   DialogContent,
@@ -26,6 +25,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
+import Avatar from '@Components/UI/Avatar';
 import Comment from './Comments';
 import TaskTitle from './TaskTitle';
 import DueDate from './DueDate';
@@ -87,7 +87,7 @@ const InfoTitle = styled('span')({
   margin: '16px 0',
 });
 
-const AuthorAvatar = styled(MuiAvatar)({
+const AuthorAvatar = styled(Avatar)({
   width: 24,
   height: 24,
   fontSize: 14,
@@ -399,6 +399,8 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                         <AuthorAvatar
                           alt={`${task.author.first_name} ${task.author.last_name}`}
                           src={task.author.profile_avatar}
+                          uniqueKey={task.author.id}
+                          tooltipDisabled
                         />
                         <span>{`${task.author.first_name} ${task.author.last_name}`}</span>
                       </AuthorButton>

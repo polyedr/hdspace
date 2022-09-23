@@ -3,7 +3,7 @@ import {
   Button as MuiButton,
   Dialog as MuiDialog,
   DialogActions as MuiDialogActions,
-  DialogContent,
+  DialogContent as MuiDialogContent,
   DialogTitle as MuiDialogTitle,
   IconButton,
   Stack,
@@ -21,13 +21,17 @@ const Dialog = styled(MuiDialog)({
 
 const DialogTitle = styled(MuiDialogTitle)({
   fontSize: 18,
-  fontWeight: 600,
+  fontWeight: 500,
   padding: 0,
   lineHeight: 2,
 });
 
+const DialogContent = styled(MuiDialogContent)({
+  padding: '10px 24px 24px',
+});
+
 const DialogActions = styled(MuiDialogActions)({
-  padding: '0 24px 20px',
+  padding: '0 24px 24px',
 });
 
 const Button = styled(MuiButton)({

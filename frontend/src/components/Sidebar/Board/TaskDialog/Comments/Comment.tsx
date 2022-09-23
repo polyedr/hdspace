@@ -1,5 +1,4 @@
 import {
-  Avatar as MuiAvatar,
   Grid,
   Stack,
   styled,
@@ -16,10 +15,11 @@ import {
   requestUpdateComment,
 } from '@Redux/pmtools/board/actions/comments';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
+import Avatar from '@Components/UI/Avatar';
 import Editor, { RenderEditorHtml } from '../Editor';
 import { username } from '../../User';
 
-const Avatar = styled(MuiAvatar)({
+const UssrAvatar = styled(Avatar)({
   width: 32,
   height: 32,
 });
@@ -36,6 +36,7 @@ const CommentTime = styled('h6')({
   color: '#81818E',
   margin: 0,
   fontWeight: 400,
+  marginLeft: '10px !important',
 });
 
 const CommentText = styled('div')({
@@ -51,6 +52,7 @@ const Button = styled(MuiButton)({
 
   '&.MuiButton-contained': {
     backgroundColor: 'var(--blue)',
+    marginRight: 5,
   },
 
   '&.MuiButton-text': {
@@ -76,8 +78,8 @@ const IconButton = styled(MuiIconButton)({
 const EditorWrapper = styled('div')({
   border: '1px solid #E4E6EB',
   borderRadius: 4,
-  padding: '8px 8px 5px',
-  marginTop: '8px 0 8px -4px',
+  padding: '12px 15px 10px',
+  margin: '12px 0',
 
   '& p': {
     margin: '0 0 15px',
@@ -133,9 +135,11 @@ const Comment = ({ comment, task }: Props) => {
     <>
       <Grid container spacing={1} mb={3}>
         <Grid item md="auto">
-          <Avatar
+          <UssrAvatar
+            uniqueKey={comment.user.id}
             alt={username(comment.user)}
             src={comment.user.profile_avatar}
+            tooltipDisabled
           />
         </Grid>
         <Grid item md={11}>
@@ -150,7 +154,7 @@ const Comment = ({ comment, task }: Props) => {
               <EditorWrapper>
                 <Editor value={value} onChange={setValue} />
               </EditorWrapper>
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={0.5} alignItems="center">
                 <Button onClick={handleSave} variant="contained">
                   Save
                 </Button>

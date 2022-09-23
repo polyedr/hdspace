@@ -159,7 +159,7 @@ export const Menu = React.forwardRef(
           }
 
           & > * + * {
-            margin-left: 15px;
+            margin-left: 10px;
           }
         `,
       )}
