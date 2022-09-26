@@ -31,6 +31,10 @@ import { Toolbar } from './Components';
 export const serialize = (node: Descendant) => {
   if (Text.isText(node)) {
     let string = escapeHtml(node.text);
+    if (node.code) {
+      string = <code>{string}</code>;
+    }
+
     if (node.bold) {
       string = <strong>{string}</strong>;
     }
@@ -40,6 +44,10 @@ export const serialize = (node: Descendant) => {
     }
 
     if (node.underline) {
+      string = <u>{string}</u>;
+    }
+
+    if (node.strikethrough) {
       string = <s>{string}</s>;
     }
 
@@ -314,6 +322,10 @@ const Leaf = ({ attributes, children, leaf }) => {
 
   if (leaf.underline) {
     children = <u>{children}</u>;
+  }
+
+  if (leaf.strikethrough) {
+    children = <s>{children}</s>;
   }
 
   return <span {...attributes}>{children}</span>;

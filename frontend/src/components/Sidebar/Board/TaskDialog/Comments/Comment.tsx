@@ -1,10 +1,10 @@
 import {
-  Avatar as MuiAvatar,
   Grid,
   Stack,
   styled,
   Button as MuiButton,
   IconButton as MuiIconButton,
+  lighten,
 } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -16,10 +16,11 @@ import {
   requestUpdateComment,
 } from '@Redux/pmtools/board/actions/comments';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
+import Avatar from '@Components/UI/Avatar';
 import Editor, { RenderEditorHtml } from '../Editor';
 import { username } from '../../User';
 
-const Avatar = styled(MuiAvatar)({
+const UssrAvatar = styled(Avatar)({
   width: 32,
   height: 32,
 });
@@ -36,13 +37,21 @@ const CommentTime = styled('h6')({
   color: '#81818E',
   margin: 0,
   fontWeight: 400,
+  marginLeft: '10px !important',
 });
 
-const CommentText = styled('div')({
+const CommentText = styled('div')(({ theme }) => ({
   '& p': {
     margin: '5px 5px 3px',
+
+    '& code': {
+      backgroundColor: lighten(theme.palette.primary.main, 0.9),
+      padding: '0 5px',
+      borderRadius: 2,
+      color: theme.palette.primary.main,
+    },
   },
-});
+}));
 
 const Button = styled(MuiButton)({
   fontSize: 12,
@@ -51,6 +60,7 @@ const Button = styled(MuiButton)({
 
   '&.MuiButton-contained': {
     backgroundColor: 'var(--blue)',
+    marginRight: 5,
   },
 
   '&.MuiButton-text': {
@@ -73,21 +83,30 @@ const IconButton = styled(MuiIconButton)({
   },
 });
 
-const EditorWrapper = styled('div')({
+const EditorWrapper = styled('div')(({ theme }) => ({
   border: '1px solid #E4E6EB',
   borderRadius: 4,
-  padding: '8px 8px 5px',
-  marginTop: '8px 0 8px -4px',
+  padding: '12px 15px 10px',
+  margin: '12px 0',
 
   '& p': {
     margin: '0 0 15px',
+
+    '& code': {
+      backgroundColor: lighten(theme.palette.primary.main, 0.9),
+      borderRadius: 2,
+
+      '& span': {
+        color: theme.palette.primary.main,
+      },
+    },
   },
 
   '& p span': {
     margin: 0,
     color: '#2A2A2D',
   },
-});
+}));
 
 interface Props {
   comment: BoardTaskComment;
@@ -133,9 +152,11 @@ const Comment = ({ comment, task }: Props) => {
     <>
       <Grid container spacing={1} mb={3}>
         <Grid item md="auto">
-          <Avatar
+          <UssrAvatar
+            uniqueKey={comment.user.id}
             alt={username(comment.user)}
             src={comment.user.profile_avatar}
+            tooltipDisabled
           />
         </Grid>
         <Grid item md={11}>
@@ -150,7 +171,7 @@ const Comment = ({ comment, task }: Props) => {
               <EditorWrapper>
                 <Editor value={value} onChange={setValue} />
               </EditorWrapper>
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack direction="row" spacing={0.5} alignItems="center">
                 <Button onClick={handleSave} variant="contained">
                   Save
                 </Button>

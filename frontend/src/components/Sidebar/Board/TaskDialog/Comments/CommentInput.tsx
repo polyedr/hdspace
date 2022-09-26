@@ -22,6 +22,7 @@ const CommentField = styled('div')({
   border: '1px solid #E4E6EB',
   borderRadius: 4,
   padding: 12,
+  marginLeft: 5,
 
   '& p': {
     margin: '0 0 12px',
@@ -39,6 +40,7 @@ const Typography = styled(MuiTypography)({
   borderRadius: 4,
   color: '#81818E',
   fontSize: 14,
+  marginLeft: 5,
 });
 
 interface Props {

@@ -4,11 +4,16 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import User from './User';
 
-const StyledAvatarGroup = styled(AvatarGroup)(() => ({
-  '& .MuiAvatar-root': {
-    width: 32,
-    height: 32,
-    fontSize: 16,
+const UserAvatar = styled(User)<{ active: boolean }>(({ active, theme }) => ({
+  width: 32,
+  height: 32,
+  fontSize: 16,
+  borderColor: active
+    ? `${theme.palette.primary.main} !important`
+    : 'transparent',
+  transition: '0.1s ease-in-out',
+  '&:hover': {
+    transform: 'scale(1.1)',
   },
 }));
 
@@ -22,12 +27,12 @@ const Members = ({ onSelected, selected = [] }: Props) => {
 
   return (
     <Grid item md="auto" justifyContent="left">
-      <StyledAvatarGroup max={4}>
+      <AvatarGroup max={4}>
         {Object.values(members).map(({ userData }) => (
-          <User
+          <UserAvatar
             active={selected.indexOf(userData.id) !== -1}
             user={userData}
-            sx={{ width: 32, height: 32 }}
+            // sx={{ width: 32, height: 32 }}
             onClick={() => {
               if (onSelected) {
                 onSelected(userData.id);
@@ -35,7 +40,7 @@ const Members = ({ onSelected, selected = [] }: Props) => {
             }}
           />
         ))}
-      </StyledAvatarGroup>
+      </AvatarGroup>
     </Grid>
   );
 };
