@@ -198,6 +198,17 @@ const Board = () => {
                   <SearchIcon />
                 </IconButton>
               </StyledForm>
+              {/* <Members
+                selected={filteredUsers}
+                onSelected={toggleFilteredUsers}
+              />
+              <StyledButton
+                onClick={() => toggleFilteredUsers(activeUserId)}
+                variant="contained"
+                active={filteredUsers.indexOf(activeUserId) !== -1}
+              >
+                Only my tasks
+              </StyledButton> */}
             </Grid>
             <Members
               selected={filteredUsers}
@@ -212,7 +223,7 @@ const Board = () => {
                 Only my tasks
               </StyledButton>
             </Grid>
-            <Grid item md={5} style={{ textAlign: 'right' }}>
+            <Grid item md="auto" style={{ textAlign: 'right' }}>
               <StyledButton
                 onClick={handleShowCreateColumn}
                 variant="contained"

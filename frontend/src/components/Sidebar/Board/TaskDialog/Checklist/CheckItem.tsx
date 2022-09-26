@@ -16,7 +16,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EditIcon from '@mui/icons-material/Edit';
-import CancelIcon from '@mui/icons-material/Cancel';
+import CloseIcon from '@mui/icons-material/Close';
 import { ClickAwayListener } from '@material-ui/core';
 import { BoardTask, BoardTaskCheckListItem } from '@Redux/pmtools/types';
 import { useDispatch } from 'react-redux';
@@ -64,6 +64,10 @@ const TextField = styled(MuiTextField)({
   width: '80%',
   '& input': {
     padding: '6.5px 14px',
+  },
+
+  '& fieldset': {
+    borderColor: '#E4E6EB !important',
   },
 });
 
@@ -150,7 +154,7 @@ const CheckItem = ({ item, task }: Props) => {
                   <CheckIcon />
                 </IconButton>
                 <IconButton onClick={handleSetEditing(false)}>
-                  <CancelIcon />
+                  <CloseIcon />
                 </IconButton>
               </Stack>
             }
