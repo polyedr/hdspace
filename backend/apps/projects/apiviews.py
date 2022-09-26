@@ -719,6 +719,18 @@ class ColumnTaskCheckitemList(generics.ListCreateAPIView):
     serializer_class = ColumnTaskCheckitemSerializer
 
 
+class ColumnTaskCheckitemDelete(APIView):
+    """
+    Delete a checklist
+    """
+    def delete(self, request):
+        task_id = request.query_params.get('task_id', None)
+        if task_id:
+            ColumnTaskCheckitem.objects.filter(columntask=task_id).delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class ColumnTaskCheckitemDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a column task  checklist item

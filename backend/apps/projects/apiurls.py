@@ -40,7 +40,7 @@ from .apiviews import (
     ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView,
     ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder, ColumnTaskCheckitemList,
     ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
-    ColumnTaskLabelDetail)
+    ColumnTaskLabelDetail, ColumnTaskCheckitemDelete)
 
 app_name = "projects"
 
@@ -143,10 +143,12 @@ api_columntask_comment_patterns = [
 ]
 
 api_columntask_checkitem_patterns = [
-    path("columntask-checkitems/", ColumnTaskLabelList.as_view(),
+    path("columntask-checkitems/", ColumnTaskCheckitemList.as_view(),
          name="api_columntask_checkitems"),
+    path("columntask-checkitems-delete/", ColumnTaskCheckitemDelete.as_view(),
+         name="api_columntask_checklist"),
     path(
-        "columntask_checkitems/<int:pk>/", ColumnTaskLabelDetail.as_view(),
+        "columntask_checkitems/<int:pk>/", ColumnTaskCheckitemDetail.as_view(),
         name="api_columntask_checkitem"
     ),
 ]
