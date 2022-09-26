@@ -4,6 +4,7 @@ import {
   styled,
   Button as MuiButton,
   IconButton as MuiIconButton,
+  lighten,
 } from '@mui/material';
 import React, { useCallback, useMemo, useState } from 'react';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -39,11 +40,18 @@ const CommentTime = styled('h6')({
   marginLeft: '10px !important',
 });
 
-const CommentText = styled('div')({
+const CommentText = styled('div')(({ theme }) => ({
   '& p': {
     margin: '5px 5px 3px',
+
+    '& code': {
+      backgroundColor: lighten(theme.palette.primary.main, 0.9),
+      padding: '0 5px',
+      borderRadius: 2,
+      color: theme.palette.primary.main,
+    },
   },
-});
+}));
 
 const Button = styled(MuiButton)({
   fontSize: 12,
@@ -75,7 +83,7 @@ const IconButton = styled(MuiIconButton)({
   },
 });
 
-const EditorWrapper = styled('div')({
+const EditorWrapper = styled('div')(({ theme }) => ({
   border: '1px solid #E4E6EB',
   borderRadius: 4,
   padding: '12px 15px 10px',
@@ -83,13 +91,22 @@ const EditorWrapper = styled('div')({
 
   '& p': {
     margin: '0 0 15px',
+
+    '& code': {
+      backgroundColor: lighten(theme.palette.primary.main, 0.9),
+      borderRadius: 2,
+
+      '& span': {
+        color: theme.palette.primary.main,
+      },
+    },
   },
 
   '& p span': {
     margin: 0,
     color: '#2A2A2D',
   },
-});
+}));
 
 interface Props {
   comment: BoardTaskComment;

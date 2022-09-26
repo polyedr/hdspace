@@ -8,10 +8,12 @@ const UserAvatar = styled(User)<{ active: boolean }>(({ active, theme }) => ({
   width: 32,
   height: 32,
   fontSize: 16,
-  borderColor: active ? `${theme.palette.primary.main} !important` : '#fff',
+  borderColor: active
+    ? `${theme.palette.primary.main} !important`
+    : 'transparent',
+  transition: '0.1s ease-in-out',
   '&:hover': {
     transform: 'scale(1.1)',
-    transition: '0.1s ease-in-out',
   },
 }));
 

@@ -59,7 +59,7 @@ const StyledForm = styled('div')(() => ({
 const StyledButton = styled(Button)<{ active?: boolean }>(
   ({ active = false, theme }) => ({
     backgroundColor: active ? theme.palette.primary.main : '#e4e8ef',
-    color: '#81818E',
+    color: active ? `#fff` : '#81818E',
     borderRadius: 4,
     boxShadow: 'none',
     textTransform: 'capitalize',
