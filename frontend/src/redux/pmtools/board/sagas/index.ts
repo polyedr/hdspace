@@ -12,7 +12,11 @@ import {
   deleteCommentSaga,
   updateCommentSaga,
 } from './comments';
-import { createProjectLabelSaga, deleteProjectLabelsSaga, updateTaskLabelsSaga } from './labels';
+import {
+  createProjectLabelSaga,
+  deleteProjectLabelsSaga,
+  updateTaskLabelsSaga,
+} from './labels';
 import {
   createTaskSaga,
   fetchTaskSaga,
@@ -38,5 +42,8 @@ export default function* boardSaga() {
 
   yield takeEvery(TYPES.BOARD_CREATE_PROJECT_LABEL, createProjectLabelSaga);
   yield takeLatest(TYPES.BOARD_UPDATE_TASK_LABELS, updateTaskLabelsSaga);
-  yield takeEvery(TYPES.BOARD_DELETE_PROJECT_LABEL_REQUEST, deleteProjectLabelsSaga);
+  yield takeEvery(
+    TYPES.BOARD_DELETE_PROJECT_LABEL_REQUEST,
+    deleteProjectLabelsSaga,
+  );
 }

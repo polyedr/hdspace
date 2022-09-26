@@ -54,10 +54,10 @@ module.exports = ({ MODE }) => {
     module: {
       rules: [
         {
-          test: /\.tsx?$/,
+          test: /\.ts|\.tsx$/,
           use: [
             isProduction && {
-              loader: 'babel-loader',
+              loaders: ['react-hot', 'babel-loader'],
             },
             {
               loader: 'ts-loader',

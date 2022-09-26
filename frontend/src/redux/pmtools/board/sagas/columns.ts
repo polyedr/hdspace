@@ -1,10 +1,10 @@
 import * as columnsApi from '@Api/pmtools/board/columnsApi';
 import * as tasksApi from '@Api/pmtools/board/tasksApi';
-import * as labelsApi from '@Api/pmtools/board/labelsApi';
 import { BoardColumn, BoardNewColumn } from '@Redux/pmtools/types';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { DropResult } from 'react-beautiful-dnd';
 import { put, call, select } from 'redux-saga/effects';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   addColumn,
   deleteColumnFromState,
@@ -43,8 +43,18 @@ export function* fetchBoard({
     yield put(setTasks(tasks));
 
     yield put(setColumnsFetching(false));
-  } catch (err) {
-    console.log(err);
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -116,8 +126,18 @@ export function* createColumnSaga({
     );
 
     yield put(addColumn(createdColumn));
-  } catch (error) {
-    console.log('create column error', error);
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -136,8 +156,18 @@ export function* updateColumnSaga({
       fields,
       columnId,
     });
-  } catch (error) {
-    console.log('update column error', error);
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
@@ -153,7 +183,17 @@ export function* deleteColumnSaga({
     yield call(reqWrapper, tasksApi.deleteColumn, {
       columnId,
     });
-  } catch (error) {
-    console.log('delete column error', error);
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
