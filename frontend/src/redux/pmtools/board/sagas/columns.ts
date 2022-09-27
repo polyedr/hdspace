@@ -1,10 +1,10 @@
 import * as columnsApi from '@Api/pmtools/board/columnsApi';
 import * as tasksApi from '@Api/pmtools/board/tasksApi';
-import { BoardColumn, BoardNewColumn } from '@Redux/pmtools/types';
+import { BoardColumn } from '@Redux/pmtools/types';
 import { reqWrapper } from '@Redux/project/sagas/shared';
-import { DropResult } from 'react-beautiful-dnd';
 import { put, call, select } from 'redux-saga/effects';
 import { enqueueSnackbar } from '@Redux/notification/actions';
+import * as columnActions from '../actions/columns';
 import {
   addColumn,
   deleteColumnFromState,
@@ -18,10 +18,7 @@ import { setProjectLabels } from '../actions/labels';
 
 export function* fetchBoard({
   projectId,
-}: {
-  projectId: number;
-  type: string;
-}) {
+}: ReturnType<typeof columnActions.fetchBoard>) {
   yield put(setColumnsFetching(true));
 
   try {
@@ -58,27 +55,9 @@ export function* fetchBoard({
   }
 }
 
-export function* updateColumnsSequence({ projectId }: { projectId: string }) {
-  const columns: BoardColumn[] = yield select(selectColumns);
-
-  yield call(reqWrapper, columnsApi.updateColumnsSequence, {
-    contentType: 'application/json',
-    projectId,
-    data: {
-      children: columns.map((c) => ({ id: c.id })),
-    },
-  });
-}
-
 export function* updateColumnsOrderSaga({
   payload: { dropResult, projectId },
-}: {
-  payload: {
-    projectId: number;
-    dropResult: DropResult;
-  };
-  type: string;
-}) {
+}: ReturnType<typeof columnActions.updateColumnsOrder>) {
   const { source, destination } = dropResult;
 
   if (!destination) {
@@ -114,10 +93,7 @@ export function* updateColumnsOrderSaga({
 
 export function* createColumnSaga({
   column,
-}: {
-  column: BoardNewColumn;
-  type: string;
-}) {
+}: ReturnType<typeof columnActions.createColumn>) {
   try {
     const { data: createdColumn } = yield call(
       reqWrapper,
@@ -144,11 +120,7 @@ export function* createColumnSaga({
 export function* updateColumnSaga({
   column: fields,
   columnId,
-}: {
-  column: BoardNewColumn;
-  columnId: number;
-  type: string;
-}) {
+}: ReturnType<typeof columnActions.updateColumn>) {
   try {
     yield put(updateColumnOnState(fields, columnId));
 
@@ -173,10 +145,7 @@ export function* updateColumnSaga({
 
 export function* deleteColumnSaga({
   columnId,
-}: {
-  columnId: number;
-  type: string;
-}) {
+}: ReturnType<typeof columnActions.deleteColumn>) {
   try {
     yield put(deleteColumnFromState(columnId));
 

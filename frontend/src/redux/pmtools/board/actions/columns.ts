@@ -24,11 +24,6 @@ export const updateColumnsOrder = (
   },
 });
 
-export const updateTasksOrder = (dropResult: DropResult) => ({
-  type: TYPES.BOARD_UPDATE_TASKS_ORDER,
-  dropResult,
-});
-
 export const setColumns = (columns) => ({
   type: TYPES.BOARD_SET_COLUMNS,
   columns,

@@ -1,49 +1,65 @@
-import { BoardColumn, BoardNewTask, BoardTask } from '@Redux/pmtools/types';
+import { BoardColumn } from '@Redux/pmtools/types';
 import * as tasksApi from '@Api/pmtools/board/tasksApi';
 import { call } from 'ramda';
-import { DropResult } from 'react-beautiful-dnd';
 import { put, select } from 'redux-saga/effects';
 import { reqWrapper } from '@Redux/project/sagas/shared';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import * as taskActions from '../actions/tasks';
 import { setColumns } from '../actions/columns';
 import { selectColumns } from '../selectors';
-import { addTask, setTask } from '../actions/tasks';
 
-export function* fetchTaskSaga({ taskId }: { taskId: number; type: string }) {
+export function* fetchTaskSaga({
+  taskId,
+}: ReturnType<typeof taskActions.fetchTask>) {
   try {
     const { data } = yield call(reqWrapper, tasksApi.fetchTask, { taskId });
 
-    yield put(setTask(data));
-  } catch (error) {
-    console.log('fetch task error', error);
+    yield put(taskActions.setTask(data));
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
 export function* updateTaskSags({
   payload: { task, fields },
-}: {
-  payload: { task: BoardTask; fields: { [key: string]: any } };
-  type: string;
-}) {
+}: ReturnType<typeof taskActions.updateTask>) {
   try {
-    yield put(setTask({ ...task, ...fields }));
+    yield put(taskActions.setTask({ ...task, ...fields }));
 
     const { data } = yield call(reqWrapper, tasksApi.updateTask, {
       taskId: task.id,
       fields,
     });
 
-    yield put(setTask(data));
-  } catch (error) {
-    console.log('update task error', error);
+    yield put(taskActions.setTask(data));
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
 export function* updateTasksOrderSaga({
   dropResult,
-}: {
-  dropResult: DropResult;
-  type: string;
-}) {
+}: ReturnType<typeof taskActions.updateTasksOrder>) {
   const { source, destination, draggableId } = dropResult;
 
   if (!destination) {
@@ -108,18 +124,25 @@ export function* updateTasksOrderSaga({
 
 export function* createTaskSaga({
   task: { title, columnId },
-}: {
-  task: BoardNewTask;
-  type: string;
-}) {
+}: ReturnType<typeof taskActions.createTask>) {
   try {
     const { data: task } = yield call(reqWrapper, tasksApi.createTask, {
       title,
       columnId,
     });
 
-    yield put(addTask(task));
-  } catch (error) {
-    console.log('task create error', error);
+    yield put(taskActions.addTask(task));
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }

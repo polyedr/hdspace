@@ -160,7 +160,7 @@ export const StyledAccordion = React.forwardRef<any, AccordionProps>(
   ({ children, ...props }, ref) => {
     return (
       <Accordion {...props} ref={ref}>
-        {(children as unknown) as ReactElement}
+        {children as unknown as ReactElement}
       </Accordion>
     );
   },
