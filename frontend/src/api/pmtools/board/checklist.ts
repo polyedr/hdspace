@@ -1,4 +1,5 @@
 import { handleError } from '@Api/helper';
+import { BoardTaskCheckListItem } from '@Redux/pmtools/types';
 import { myAxios } from '@Src/config/settings';
 import { MyAxiosProps } from '@Src/types';
 
@@ -19,17 +20,17 @@ export const createCheckItem = ({
 };
 
 export const updateCheckItem = ({
-  text,
-  taskId,
+  item,
+  checkItemId,
   ...options
-}: MyAxiosProps & { text: string; taskId: number }) => {
+}: MyAxiosProps & {
+  item: Partial<BoardTaskCheckListItem>;
+  checkItemId: number;
+}) => {
   return myAxios({
-    url: `/projects/columntask-checkitems/`,
-    method: 'post',
-    data: {
-      text,
-      columntask: taskId,
-    },
+    url: `/projects/columntask_checkitems/${checkItemId}/`,
+    method: 'patch',
+    data: item,
     ...options,
   }).catch(handleError);
 };

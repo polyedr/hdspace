@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --mode=development --hot --progress --color --port 8080",
+    "start": "webpack serve --mode=development --port 8080",
     "build:production": "webpack --mode=production --progress --color --env MODE=production",
     "build:staging": "webpack --mode=production --progress --color --env MODE=staging",
     "start:server": "node server.js",
@@ -145,6 +145,7 @@
     "@mui/styles": "^5.10.3",
     "@mui/x-date-pickers": "^5.0.0",
     "@react-hook/resize-observer": "^1.1.0",
+    "@reduxjs/toolkit": "^1.8.5",
     "@types/classnames": "^2.2.10",
     "@types/ramda": "^0.26.44",
     "@types/redux-mock-store": "^1.0.2",

@@ -285,7 +285,7 @@ module.exports = ({ MODE }) => {
 
     devServer: {
       port: 8080,
-      hot: true,
+      hotOnly: true,
       inline: true,
       contentBase: 'dist',
       publicPath: '/',

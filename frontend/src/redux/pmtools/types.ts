@@ -87,6 +87,12 @@ export interface BoardLabel {
   colour: string;
 }
 
+export interface BoardTaskCheckListItem {
+  id: number;
+  text: string;
+  status: number;
+}
+
 export interface BoardTask {
   id: number;
   title: string;
@@ -106,6 +112,7 @@ export interface BoardTask {
   time?: string;
   status: StatusOptions;
   comments?: BoardTaskComment[];
+  checklist: BoardTaskCheckListItem[];
 }
 
 export interface BoardColumn {

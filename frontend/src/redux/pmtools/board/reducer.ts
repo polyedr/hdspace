@@ -4,7 +4,13 @@ import * as columnActions from './actions/columns';
 import * as taskActions from './actions/tasks';
 import * as commentActions from './actions/comments';
 import * as labelsActions from './actions/labels';
-import { BoardAction, BoardState, BoardTask } from '../types';
+import * as checklistActions from './actions/checklist';
+import {
+  BoardAction,
+  BoardState,
+  BoardTask,
+  BoardTaskCheckListItem,
+} from '../types';
 
 const INITIAL_STATE: BoardState = {
   fetching: true,
@@ -209,6 +215,80 @@ const deleteProjectLabel: ActionHandler<
   };
 };
 
+// checklist
+const addChecklistItem: ActionHandler<
+  ReturnType<typeof checklistActions.checklistItemCreated>
+> = (state = INITIAL_STATE, { item, task }) => {
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  const newState = { ...state };
+
+  const { checklist } = newState.columns[columnIndex].tasks[taskIndex];
+
+  newState.columns[columnIndex].tasks[taskIndex].checklist = [
+    ...checklist,
+    item,
+  ];
+
+  return newState;
+};
+
+const updateChecklistItem: ActionHandler<
+  ReturnType<typeof checklistActions.checklistItemUpdated>
+> = (state = INITIAL_STATE, { item, task }) => {
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  const newState = { ...state };
+
+  const checklist = [
+    ...newState.columns[columnIndex].tasks[taskIndex].checklist,
+  ];
+
+  const itemIndex = checklist.findIndex((c) => c.id === item.id);
+
+  const updatedItem = {
+    ...checklist[itemIndex],
+    ...item,
+  };
+
+  checklist[itemIndex] = updatedItem;
+
+  newState.columns[columnIndex].tasks[taskIndex].checklist = checklist;
+
+  return newState;
+};
+
+const deleteChecklistItem: ActionHandler<
+  ReturnType<typeof checklistActions.checklistItemDeleted>
+> = (state = INITIAL_STATE, { itemId, task }) => {
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  const newState = { ...state };
+
+  const { checklist } = newState.columns[columnIndex].tasks[taskIndex];
+
+  newState.columns[columnIndex].tasks[taskIndex].checklist = checklist.filter(
+    (c) => c.id !== itemId,
+  );
+
+  return newState;
+};
+
+const deleteChecklist: ActionHandler<
+  ReturnType<typeof checklistActions.checklistDeleted>
+> = (state = INITIAL_STATE, { task }) => {
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  const newState = { ...state };
+  newState.columns[columnIndex].tasks[taskIndex].checklist = [];
+
+  return newState;
+};
+
 const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_COLUMNS]: setColumns,
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
@@ -226,6 +306,11 @@ const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_PROJECT_LABELS]: addProjectLabels,
   [TYPES.BOARD_ADD_PROJECT_LABEL]: addProjectLabel,
   [TYPES.BOARD_PROJECT_LABEL_DELETED]: deleteProjectLabel,
+
+  [TYPES.BOARD_CHECKLIST_ITEM_CREATED]: addChecklistItem,
+  [TYPES.BOARD_CHECKLIST_ITEM_UPDATED]: updateChecklistItem,
+  [TYPES.BOARD_CHECKLIST_ITEM_DELETED]: deleteChecklistItem,
+  [TYPES.BOARD_CHECKLIST_DELETED]: deleteChecklist,
 };
 
 export default createReducer<BoardState, BoardAction>(INITIAL_STATE, HANDLERS);

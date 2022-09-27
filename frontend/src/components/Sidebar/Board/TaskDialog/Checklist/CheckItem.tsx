@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import {
   Box,
   Checkbox as MuiCheckbox,
-  FormControlLabel,
   IconButton as MuiIconButton,
   InputAdornment,
   ListItem,
@@ -19,6 +18,13 @@ import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import EditIcon from '@mui/icons-material/Edit';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { ClickAwayListener } from '@material-ui/core';
+import { BoardTask, BoardTaskCheckListItem } from '@Redux/pmtools/types';
+import { useDispatch } from 'react-redux';
+import {
+  requestDeleteChecklistItem,
+  requestUpdateChecklistItem,
+} from '@Redux/pmtools/board/actions/checklist';
+import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 
 const ListItemInput = styled(ListItem)({
   padding: 0,
@@ -68,22 +74,26 @@ const IconButton = styled(MuiIconButton)({
   },
 });
 
-const CheckItem = ({ value }) => {
+interface Props {
+  item: BoardTaskCheckListItem;
+  task: BoardTask;
+}
+
+const CheckItem = ({ item, task }: Props) => {
+  const [value, setValue] = useState(item.text);
   const [editing, setEditing] = useState(false);
-  const [checked, setChecked] = React.useState([0]);
+  const [confirmDelete, showConfirmDelete] = useState(false);
 
-  const handleToggle = (value: number) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+  const dispatch = useDispatch();
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
-  };
+  const handleToggle = useCallback(() => {
+    dispatch(
+      requestUpdateChecklistItem(
+        { id: item.id, status: item.status === 0 ? 1 : 0 },
+        task,
+      ),
+    );
+  }, [item, task]);
 
   const handleSetEditing = useCallback((editing: boolean) => {
     return () => setEditing(editing);
@@ -91,7 +101,29 @@ const CheckItem = ({ value }) => {
 
   const handleSave = useCallback(() => {
     setEditing(false);
-  }, []);
+    dispatch(
+      requestUpdateChecklistItem({ id: item.id, text: value.trim() }, task),
+    );
+  }, [dispatch, item, value, task]);
+
+  const handleDelete = useCallback(() => {
+    dispatch(requestDeleteChecklistItem(item.id, task));
+  }, [dispatch, item, value, task]);
+
+  const handleRequestDelete = useCallback(() => {
+    showConfirmDelete(true);
+  }, [showConfirmDelete]);
+
+  const handleCancelDelete = useCallback(() => {
+    showConfirmDelete(false);
+  }, [showConfirmDelete]);
+
+  const handleChangeValue = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(e.target.value);
+    },
+    [setValue],
+  );
 
   const handleSaveOnEnter = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -102,17 +134,19 @@ const CheckItem = ({ value }) => {
     [handleSave],
   );
 
-  const labelId = `checkbox-list-label-${value}`;
+  const labelId = `checkbox-list-label-${item.id}`;
 
   return (
     <>
       {editing ? (
         <ClickAwayListener onClickAway={handleSetEditing(false)}>
           <ListItemInput
-            key={value}
             secondaryAction={
               <Stack direction="row" spacing={0.5} alignItems="center">
-                <IconButton onClick={handleSave}>
+                <IconButton
+                  disabled={value.trim().length < 1}
+                  onClick={handleSave}
+                >
                   <CheckIcon />
                 </IconButton>
                 <IconButton onClick={handleSetEditing(false)}>
@@ -132,7 +166,7 @@ const CheckItem = ({ value }) => {
               <ListItemIcon>
                 <Checkbox
                   edge="start"
-                  checked={checked.indexOf(value) !== -1}
+                  checked={item.status === 1}
                   tabIndex={-1}
                   disabled={editing}
                   disableRipple
@@ -143,6 +177,8 @@ const CheckItem = ({ value }) => {
                 variant="outlined"
                 placeholder="Add Item"
                 onKeyDown={handleSaveOnEnter}
+                onChange={handleChangeValue}
+                value={value}
                 size="small"
                 InputProps={{
                   endAdornment: (
@@ -159,35 +195,42 @@ const CheckItem = ({ value }) => {
         </ClickAwayListener>
       ) : (
         <ListItemTitle
-          key={value}
           secondaryAction={
             <Stack direction="row" spacing={0.5} alignItems="center">
               <IconButton onClick={handleSetEditing(true)}>
                 <EditIcon />
               </IconButton>
-              <IconButton>
+              <IconButton onClick={handleRequestDelete}>
                 <DeleteOutlineIcon />
               </IconButton>
             </Stack>
           }
           disablePadding
         >
-          <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+          <ListItemButton role={undefined} onClick={handleToggle} dense>
             <ListItemIcon>
               <Checkbox
                 edge="start"
-                checked={checked.indexOf(value) !== -1}
+                checked={item.status === 1}
                 tabIndex={-1}
                 disableRipple
                 inputProps={{ 'aria-labelledby': labelId }}
               />
             </ListItemIcon>
-            <ListItemText>List Item 1</ListItemText>
+            <ListItemText>{item.text}</ListItemText>
           </ListItemButton>
         </ListItemTitle>
       )}
+
+      <ConfirmModal
+        action={handleDelete}
+        elementText="checklist item"
+        hide={handleCancelDelete}
+        show={confirmDelete}
+        actionText="delete"
+      />
     </>
   );
 };
 
-export default React.memo(CheckItem);
+export default CheckItem;

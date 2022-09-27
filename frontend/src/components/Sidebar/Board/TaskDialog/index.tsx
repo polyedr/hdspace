@@ -236,7 +236,7 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                   <AddIcon />
                 </IconButton>
               </Stack>
-              <Checklist />
+              <Checklist task={task} />
               <Stack>
                 <InfoTitle>Comments</InfoTitle>
                 <Comment task={task} />

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Stack,
   TextField as MuiTextField,
@@ -12,8 +12,16 @@ import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import CheckItem from './CheckItem';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  requestCreateChecklistItem,
+  requestDeleteChecklist,
+} from '@Redux/pmtools/board/actions/checklist';
+import { BoardTask } from '@Redux/pmtools/types';
+import { selectChecklist } from '@Redux/pmtools/board/selectors';
+import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import ProgressBar from './ProgressBar';
+import CheckItem from './CheckItem';
 
 // const TextField = styled(MuiTextField)({
 //   '& .MuiOutlinedInput-root': {
@@ -64,12 +72,58 @@ const InfoTitle = styled('span')({
   margin: '16px 0',
 });
 
-const Checklist = () => {
+interface Props {
+  task: BoardTask;
+}
+
+const Checklist = ({ task }: Props) => {
   const [addingItem, setAddingItem] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const dispatch = useDispatch();
+
+  const checklist = useSelector(selectChecklist(task));
+
+  const [value, setValue] = useState('');
 
   const handleSetAddingItem = useCallback((adding: boolean) => {
     return () => setAddingItem(adding);
   }, []);
+
+  const handleDeleteChecklist = useCallback(() => {
+    dispatch(requestDeleteChecklist(task));
+  }, [task]);
+
+  const handleCancelDeleteRequest = useCallback(() => {
+    setConfirmDelete(false);
+  }, []);
+
+  const handleRequestDelete = useCallback(() => {
+    setConfirmDelete(true);
+  }, []);
+
+  const handleAddItem = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        dispatch(requestCreateChecklistItem(value.trim(), task));
+        setAddingItem(false);
+        setValue('');
+      }
+    },
+    [value, task, setAddingItem],
+  );
+
+  const handleChangeValue = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(e.target.value);
+    },
+    [setValue],
+  );
+
+  const progress = useMemo(() => {
+    return (
+      (checklist.filter((c) => c.status === 1).length * 100) / checklist.length
+    );
+  }, [checklist]);
 
   return (
     <div>
@@ -85,10 +139,19 @@ const Checklist = () => {
             <AddIcon />
           </IconButton>
         </Stack>
-        <ProgressBar />
-        <RemoveButton variant="contained" color="inherit" size="small">
-          Remove
-        </RemoveButton>
+        {checklist.length > 0 && (
+          <>
+            <ProgressBar progress={progress} />
+            <RemoveButton
+              onClick={handleRequestDelete}
+              variant="contained"
+              color="inherit"
+              size="small"
+            >
+              Remove
+            </RemoveButton>
+          </>
+        )}
       </Stack>
       {!addingItem || (
         <Stack direction="row" spacing={2} alignItems="center">
@@ -96,6 +159,9 @@ const Checklist = () => {
             variant="outlined"
             placeholder="Add Item"
             fullWidth
+            onKeyDown={handleAddItem}
+            onChange={handleChangeValue}
+            value={value}
             size="small"
             InputProps={{
               endAdornment: (
@@ -118,12 +184,17 @@ const Checklist = () => {
         </Stack>
       )}
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        <CheckItem value="" />
-        <CheckItem value="" />
-        <CheckItem value="" />
-        <CheckItem value="" />
-        <CheckItem value="" />
+        {checklist.map((item) => (
+          <CheckItem task={task} item={item} key={item.id.toString()} />
+        ))}
       </List>
+      <ConfirmModal
+        show={confirmDelete}
+        action={handleDeleteChecklist}
+        elementText="checklist"
+        actionText="delete"
+        hide={handleCancelDeleteRequest}
+      />
     </div>
   );
 };

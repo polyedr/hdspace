@@ -1,6 +1,12 @@
 import TYPES from '@Redux/actionTypes';
 import { takeEvery, takeLatest } from 'redux-saga/effects';
 import {
+  createChecklistItemSaga,
+  deleteChecklistItemSaga,
+  deleteChecklistSaga,
+  updateChecklistItemSaga,
+} from './checklist';
+import {
   createColumnSaga,
   deleteColumnSaga,
   fetchBoard,
@@ -46,4 +52,21 @@ export default function* boardSaga() {
     TYPES.BOARD_DELETE_PROJECT_LABEL_REQUEST,
     deleteProjectLabelsSaga,
   );
+
+  yield takeLatest(
+    TYPES.BOARD_CHECKLIST_ITEM_CREATE_REQUESTED,
+    createChecklistItemSaga,
+  );
+
+  yield takeLatest(
+    TYPES.BOARD_CHECKLIST_ITEM_UPDATE_REQUESTED,
+    updateChecklistItemSaga,
+  );
+
+  yield takeLatest(
+    TYPES.BOARD_CHECKLIST_ITEM_DELETE_REQUESTED,
+    deleteChecklistItemSaga,
+  );
+
+  yield takeLatest(TYPES.BOARD_CHECKLIST_DELETE_REQUESTED, deleteChecklistSaga);
 }
