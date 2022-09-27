@@ -26,7 +26,7 @@ const Members = ({ onSelected, selected = [] }: Props) => {
   const members = useSelector(selectAllUsersPermissions);
 
   return (
-    <Grid item md="auto" justifyContent="left">
+    <>
       <AvatarGroup max={4}>
         {Object.values(members).map(({ userData }) => (
           <UserAvatar
@@ -41,7 +41,7 @@ const Members = ({ onSelected, selected = [] }: Props) => {
           />
         ))}
       </AvatarGroup>
-    </Grid>
+    </>
   );
 };
 

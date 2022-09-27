@@ -1,4 +1,4 @@
-import { styled, TextField } from '@mui/material';
+import { Stack, styled, TextField } from '@mui/material';
 import fuzzysort from 'fuzzysort';
 import {
   fetchBoard,
@@ -182,48 +182,37 @@ const Board = () => {
       <ContentWrapper>
         <ContentHeader>
           <Grid container spacing={2} alignItems="center">
-            <Grid item md="auto">
-              <StyledForm>
-                <TextField
-                  onChange={handleSearchChange}
-                  type="text"
-                  placeholder="Search Task"
-                  fullWidth
+            <Grid item md={8} alignItems="center">
+              <Stack direction="row" spacing={1} alignItems="center">
+                <StyledForm>
+                  <TextField
+                    onChange={handleSearchChange}
+                    type="text"
+                    placeholder="Search Task"
+                    fullWidth
+                  />
+                  <IconButton
+                    type="button"
+                    sx={{ p: '10px' }}
+                    aria-label="search"
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </StyledForm>
+                <Members
+                  selected={filteredUsers}
+                  onSelected={toggleFilteredUsers}
                 />
-                <IconButton
-                  type="button"
-                  sx={{ p: '10px' }}
-                  aria-label="search"
+                <StyledButton
+                  onClick={() => toggleFilteredUsers(activeUserId)}
+                  variant="contained"
+                  active={filteredUsers.indexOf(activeUserId) !== -1}
                 >
-                  <SearchIcon />
-                </IconButton>
-              </StyledForm>
-              {/* <Members
-                selected={filteredUsers}
-                onSelected={toggleFilteredUsers}
-              />
-              <StyledButton
-                onClick={() => toggleFilteredUsers(activeUserId)}
-                variant="contained"
-                active={filteredUsers.indexOf(activeUserId) !== -1}
-              >
-                Only my tasks
-              </StyledButton> */}
+                  Only my tasks
+                </StyledButton>
+              </Stack>
             </Grid>
-            <Members
-              selected={filteredUsers}
-              onSelected={toggleFilteredUsers}
-            />
-            <Grid item md={2}>
-              <StyledButton
-                onClick={() => toggleFilteredUsers(activeUserId)}
-                variant="contained"
-                active={filteredUsers.indexOf(activeUserId) !== -1}
-              >
-                Only my tasks
-              </StyledButton>
-            </Grid>
-            <Grid item md="auto" style={{ textAlign: 'right' }}>
+            <Grid item md={4} textAlign="right" pr={2}>
               <StyledButton
                 onClick={handleShowCreateColumn}
                 variant="contained"
