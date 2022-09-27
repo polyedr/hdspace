@@ -1,14 +1,13 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { MenuProps } from '@material-ui/core/Menu';
 import { useDispatch, useSelector } from 'react-redux';
 import { duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
 import { Menu, MenuItem } from '@material-ui/core';
 import { Screen } from '@Src/types';
+import { styled } from '@mui/material';
 import Icon from '../../UI/Icon';
 
-const StyledMenu = withStyles({
+const StyledMenu = styled(Menu)({
   paper: {
     padding: 1,
     borderRadius: 4,
@@ -29,14 +28,13 @@ const StyledMenu = withStyles({
       },
     },
   },
-})((props: MenuProps) => <Menu {...props} />);
+});
 
 type Props = {
   screen: Screen;
   open: boolean;
   onClose: () => void;
   openEdit: () => void;
-  closeEdit: () => void;
   openDelete: () => void;
   anchorPosition: any;
 };

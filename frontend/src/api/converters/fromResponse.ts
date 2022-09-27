@@ -39,7 +39,7 @@ const getDefaultStyles = (struct_type: Entity) => ({
 export const convertElementFromResponse = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters']
+  P extends ServerElement<T>['parameters'],
 >({
   id,
   name,
@@ -87,7 +87,7 @@ export const convertElementFromResponse = <
 export const convertNNElementFromResponse = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters']
+  P extends ServerElement<T>['parameters'],
 >({
   id,
   name,

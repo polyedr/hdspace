@@ -150,11 +150,10 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     return tree;
   }, []);
 
-  const expandedTree = useMemo(() => expandItemParents(tree, activeElementId), [
-    activeElementId,
-    expandItemParents,
-    tree,
-  ]);
+  const expandedTree = useMemo(
+    () => expandItemParents(tree, activeElementId),
+    [activeElementId, expandItemParents, tree],
+  );
 
   const [selectedItemId, setSelectedItem] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);

@@ -1,7 +1,6 @@
 import { Menu as MuiMenu, Fade, Button, MenuItem, styled } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import SignalCellularAltIcon from '@mui/icons-material/SignalCellularAlt';
 import { BoardTask, PriorityOptions } from '@Redux/pmtools/types';
 import BarIcon, { colors } from '../BarIcon';
 

@@ -80,20 +80,6 @@ const Button = styled(MuiButton)({
   },
 });
 
-const AuthorButton = styled(MuiButton)({
-  backgroundColor: '#F3F4F6',
-  borderRadius: '16px',
-  height: 24,
-  padding: 0,
-
-  '& span': {
-    padding: '3px 8px 3px 3px',
-    color: '#2A2A2D',
-    fontSize: 14,
-    textTransform: 'capitalize',
-  },
-});
-
 const AuthorAvatar = styled(Avatar)({
   width: 24,
   height: 24,

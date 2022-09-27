@@ -1,13 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import { IconButton as MuiIconButton, Grid, Input } from '@mui/material';
+import { IconButton as MuiIconButton, Input } from '@mui/material';
 import { styled } from '@mui/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
-import CancelIcon from '@mui/icons-material/Cancel';
 import CloseIcon from '@mui/icons-material/Close';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import ShareIcon from '@mui/icons-material/Share';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { BoardTask } from '@Redux/pmtools/types';
 
 const IconButton = styled(MuiIconButton)({

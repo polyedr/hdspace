@@ -161,7 +161,6 @@ export type BoardAction = ReturnType<
   | typeof actionsColumns.setColumnsFetching
   | typeof actionsColumns.fetchBoard
   | typeof actionsColumns.updateColumnsOrder
-  | typeof actionsColumns.updateTasksOrder
   | typeof actionsColumns.setColumns
   | typeof actionsColumns.createColumn
   | typeof actionsColumns.updateColumn

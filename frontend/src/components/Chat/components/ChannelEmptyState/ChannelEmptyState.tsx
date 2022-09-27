@@ -39,7 +39,7 @@ export const ChannelEmptyState = () => {
           if (i > 2) return null;
           return (
             <Avatar
-              key={i}
+              key={member.user?.id}
               image={member.user?.image}
               name={member.user?.name || member.user?.id}
               size={72}

@@ -3,8 +3,8 @@ import fuzzysort from 'fuzzysort';
 import {
   fetchBoard,
   updateColumnsOrder,
-  updateTasksOrder,
 } from '@Redux/pmtools/board/actions/columns';
+import { updateTasksOrder } from '@Redux/pmtools/board/actions/tasks';
 import { selectBoard } from '@Redux/pmtools/board/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import React, { useCallback, useEffect, useState, useMemo } from 'react';

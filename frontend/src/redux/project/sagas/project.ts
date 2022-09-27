@@ -1,8 +1,5 @@
 import { put, call, select } from 'redux-saga/effects';
-import {
-  convertCreatedElementToRequest,
-  convertCreatedProjectToRequest,
-} from '@Api/converters/toRequest';
+import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import generator from 'generate-password';
 import {
   apiCreateProject,
@@ -34,7 +31,7 @@ import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryEl
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
 // import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
-import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
+import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
 // import {
 //   apiGetBoard,
 //   createNewBoard,
@@ -44,8 +41,6 @@ import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
 //   getUserByEmail,
 // } from '@Api/pmtools/board/boardApi';
 import logger from 'loglevel';
-import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
-import { selectUserData } from '@Redux/user/selectors';
 import { setStateCurrentUserPermissions } from '@Redux/permissions/actions';
 import { apiGetUser } from '@Api/user';
 import { setUserData, setTokenPair } from '@Redux/user/actions';
@@ -289,12 +284,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   }
 }
 
-export function* createProjectSaga(
-  action: ReturnType<typeof Actions.createProject>,
-) {
-  const {
-    payload: { name },
-  } = action;
+export function* createProjectSaga() {
   try {
     const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));

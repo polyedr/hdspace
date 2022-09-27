@@ -4,12 +4,10 @@ import {
   ClickAwayListener,
   Grid,
   styled,
-  TextField as MuiTextField,
   Typography as MuiTypography,
 } from '@mui/material';
-import { BoardTask } from '@Redux/pmtools/types';
 import { useSelector } from 'react-redux';
-import { selectIsLoggedIn, selectProfileData } from '@Redux/user/selectors';
+import { selectProfileData } from '@Redux/user/selectors';
 import Editor from '../Editor';
 import { username } from '../../User';
 

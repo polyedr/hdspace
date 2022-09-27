@@ -81,6 +81,7 @@ export const EditorValue = React.forwardRef(
             background: #f8f8f8;
           `}
         >
+          {/* eslint-disable-next-line react/no-unescaped-entities */}
           Slate's value as text
         </div>
         <div
