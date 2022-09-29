@@ -21,6 +21,7 @@
 @include font('Raleway');
 @include font-face('Roboto', '../assets/fonts/Roboto-Bold', 800, null, ttf woff svg);
 @include font-face('Roboto', '../assets/fonts/Roboto-Regular', 400, null, ttf woff svg);
+@include font-face('Roboto', '../assets/fonts/Roboto-Medium', 500, null, ttf woff svg);
 @include font('Roboto Condensed', 'RobotoCondensed');
 @include font('Roboto Mono', 'RobotoMono');
 @include font('Source Sans Pro', 'SourceSansPro');

@@ -41,9 +41,9 @@ export const selectProjectById = (
 /**
  * use this selector in components with useSelector hook
  */
-export const selectProjectByIdWrapper = (projectId: number) => (
-  state: AppReduxState,
-) => selectProjectById(state, projectId);
+export const selectProjectByIdWrapper =
+  (projectId: number) => (state: AppReduxState) =>
+    selectProjectById(state, projectId);
 
 export const selectCurrentProjectId = ({ project }: AppReduxState) =>
   project.edit.currentProjectId;
@@ -133,45 +133,43 @@ export const selectProjectClasses = createSelector(
   (projects, id) => projects[id].projectData.classes,
 );
 
-export const selectElementFileInput = (id: string) => (
-  state: AppReduxState,
-) => {
-  return selectProjectState(state).data.elementInputs[id];
-};
+export const selectElementFileInput =
+  (id: string) => (state: AppReduxState) => {
+    return selectProjectState(state).data.elementInputs[id];
+  };
 
 // think over how can we fix this one in a different way
-export const selectFreeCanvasOffset = (id: string) => (
-  state: AppReduxState,
-) => {
-  const { elements } = state.project.data;
-  const parent = state.project.edit.freeCanvas.lastElements[id];
-  if (!parent) return 0;
+export const selectFreeCanvasOffset =
+  (id: string) => (state: AppReduxState) => {
+    const { elements } = state.project.data;
+    const parent = state.project.edit.freeCanvas.lastElements[id];
+    if (!parent) return 0;
 
-  const needOffset =
-    elements[id].children.includes(
-      parent.elements[parent.elements.length - 1],
-    ) &&
-    elements[parent.elements[parent.elements.length - 1]].parameters.freeCanvas
-      .left === parent.offset &&
-    elements[parent.elements[parent.elements.length - 1]].parameters.freeCanvas
-      .top === parent.offset;
+    const needOffset =
+      elements[id].children.includes(
+        parent.elements[parent.elements.length - 1],
+      ) &&
+      elements[parent.elements[parent.elements.length - 1]].parameters
+        .freeCanvas.left === parent.offset &&
+      elements[parent.elements[parent.elements.length - 1]].parameters
+        .freeCanvas.top === parent.offset;
 
-  if (needOffset) return parent.offset + 20;
-  return 0;
-};
+    if (needOffset) return parent.offset + 20;
+    return 0;
+  };
 
-export const selectFreeCanvasOffsetList = (ids: string[]) => (
-  state: AppReduxState,
-): FreeCanvasOffset => {
-  return ids.reduce(
-    (ids, id) =>
-      ({
-        ...ids,
-        [id]: selectFreeCanvasOffset(id)(state),
-      } as FreeCanvasOffset),
-    {},
-  );
-};
+export const selectFreeCanvasOffsetList =
+  (ids: string[]) =>
+  (state: AppReduxState): FreeCanvasOffset => {
+    return ids.reduce(
+      (ids, id) =>
+        ({
+          ...ids,
+          [id]: selectFreeCanvasOffset(id)(state),
+        } as FreeCanvasOffset),
+      {},
+    );
+  };
 
 export const selectLayout = ({ project }: AppReduxState) =>
   project.ui.layout.value;

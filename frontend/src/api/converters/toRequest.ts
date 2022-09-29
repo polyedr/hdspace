@@ -21,7 +21,7 @@ import {
 
 export const convertCreatedElementToRequest = <
   T extends Entity,
-  K extends ServerElement<T>['parameters']
+  K extends ServerElement<T>['parameters'],
 >(
   elementType: T,
   parentID: string | null,
@@ -30,9 +30,9 @@ export const convertCreatedElementToRequest = <
   shared?: boolean,
   styles?: any,
 ): ServerElement<T, ServerElement<Entity>[], K> => {
-  const libraryElement = (LIBRARY_ELEMENTS[
+  const libraryElement = LIBRARY_ELEMENTS[
     elementType
-  ]() as unknown) as ServerElement<T, ServerElement<Entity>[], K>;
+  ]() as unknown as ServerElement<T, ServerElement<Entity>[], K>;
   const { name } = libraryElement;
   return {
     ...libraryElement,
@@ -51,7 +51,7 @@ export const convertCreatedElementToRequest = <
 export const convertElementToRequest = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters']
+  P extends ServerElement<T>['parameters'],
 >(
   element: LibraryElement<T, LibraryElement<K>[], P>,
   convertFn?: (
@@ -59,16 +59,8 @@ export const convertElementToRequest = <
     convertedEl: ServerElement<T, ServerElement<K>[], P>,
   ) => ServerElement<T, ServerElement<K>[], P>,
 ): ServerElement<T, ServerElement<K>[], P> => {
-  const {
-    id,
-    name,
-    children,
-    type,
-    buoyancy,
-    image,
-    parameters,
-    styles,
-  } = element;
+  const { id, name, children, type, buoyancy, image, parameters, styles } =
+    element;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { pseudoClassViewStyles, ...serverStyles } = styles;
   const serverEl: ServerElement<T, ServerElement<K>[], P> = {
@@ -76,7 +68,7 @@ export const convertElementToRequest = <
     name,
     children: children.map((child) =>
       convertElementToRequest(
-        (child as any) as LibraryElement<T, LibraryElement<K>[], P>,
+        child as any as LibraryElement<T, LibraryElement<K>[], P>,
         convertFn,
       ),
     ) as any[],
@@ -103,7 +95,7 @@ export const convertElementToRequest = <
 export const convertElementToPatchRequest = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters']
+  P extends ServerElement<T>['parameters'],
 >(
   element: LibraryElement<T, LibraryElement<K>[], P>,
 ): ServerElement<T, ServerElement<K>[], P> => {

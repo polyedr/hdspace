@@ -97,9 +97,9 @@ const ElementButton = React.forwardRef<HTMLButtonElement, Props>(
     const isLibraryTab = useSelector(checkIsLibraryTab);
     const buttonClasses = useButtonStyles();
     const classes = useStyles(props);
-    const ref = (outerRef === null
-      ? React.createRef<HTMLButtonElement>()
-      : outerRef) as MutableRefObject<HTMLButtonElement>;
+    const ref = (
+      outerRef === null ? React.createRef<HTMLButtonElement>() : outerRef
+    ) as MutableRefObject<HTMLButtonElement>;
     const imgRef = useRef<SVGSVGElement | null>(null);
     const [over, setOver] = useState(false);
     const [, drag, preview] = useDrag({

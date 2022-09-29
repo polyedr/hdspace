@@ -22,38 +22,41 @@ export const selectUsersPageSize = ({ permissions }: AppReduxState) =>
 export const selectAllUsersPermissions = ({ permissions }: AppReduxState) => {
   return permissions.projectUsersPermissionsList.data;
 };
-export const selectUserFromAllUsers = (userId: string) => (
-  state: AppReduxState,
-) => {
-  const allUsers = selectAllUsers(state);
-  return allUsers[userId];
-};
+export const selectUserFromAllUsers =
+  (userId: string) => (state: AppReduxState) => {
+    const allUsers = selectAllUsers(state);
+    return allUsers[userId];
+  };
 
-export const selectUserFromProjectUsers = (userId: string) => ({
-  permissions,
-}: AppReduxState) => {
-  return permissions.projectUsersPermissionsList.data[userId]?.userData || null;
-};
+export const selectUserFromProjectUsers =
+  (userId: string) =>
+  ({ permissions }: AppReduxState) => {
+    return (
+      permissions.projectUsersPermissionsList.data[userId]?.userData || null
+    );
+  };
 
-export const selectUserPermissions = (userId: string) => ({
-  permissions,
-}: AppReduxState) => {
-  const existingUserData = permissions.projectUsersPermissionsList.data[userId];
-  if (!existingUserData) {
-    return [];
-  }
-  return existingUserData.permissions;
-};
+export const selectUserPermissions =
+  (userId: string) =>
+  ({ permissions }: AppReduxState) => {
+    const existingUserData =
+      permissions.projectUsersPermissionsList.data[userId];
+    if (!existingUserData) {
+      return [];
+    }
+    return existingUserData.permissions;
+  };
 
-export const selectIfProjectUserExists = (userId: number) => ({
-  permissions,
-}: AppReduxState) => {
-  const existingProjectUserData = permissions.projectUsersPermissionsList.data;
-  if (!existingProjectUserData) {
-    return false;
-  }
-  return !!existingProjectUserData[userId.toString()];
-};
+export const selectIfProjectUserExists =
+  (userId: number) =>
+  ({ permissions }: AppReduxState) => {
+    const existingProjectUserData =
+      permissions.projectUsersPermissionsList.data;
+    if (!existingProjectUserData) {
+      return false;
+    }
+    return !!existingProjectUserData[userId.toString()];
+  };
 
 export const selectCurrentUserProjectPermissions = ({
   permissions,
@@ -61,9 +64,8 @@ export const selectCurrentUserProjectPermissions = ({
   return permissions.currentUserProjectPermissions;
 };
 
-export const selectIfCurrentUserHasPermission = (
-  permission: UserProjectPermission,
-) => (state: AppReduxState) => {
-  const permissions = selectCurrentUserProjectPermissions(state);
-  return permissions.includes(permission);
-};
+export const selectIfCurrentUserHasPermission =
+  (permission: UserProjectPermission) => (state: AppReduxState) => {
+    const permissions = selectCurrentUserProjectPermissions(state);
+    return permissions.includes(permission);
+  };

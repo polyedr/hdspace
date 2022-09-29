@@ -125,3 +125,8 @@ type CoverType = {
   idUploadedBackground: null;
   size: string;
 };
+
+export interface BoardTaskTag {
+  text: string;
+  colour: string;
+}

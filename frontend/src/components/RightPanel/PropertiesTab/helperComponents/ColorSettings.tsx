@@ -158,7 +158,7 @@ const ColorSettings: React.FC<Props> = ({
   );
 
   const validateOpacity = () => {
-    const value = (currentOpacityState as unknown) as number;
+    const value = currentOpacityState as unknown as number;
     return value && value <= 1 && value > 0 && !Number.isNaN(value)
       ? value * 100
       : 100;

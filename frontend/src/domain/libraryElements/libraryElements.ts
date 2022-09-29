@@ -174,11 +174,9 @@ export const LIBRARY_ELEMENTS: LibraryElements = {
   hyperlink: makeLabel,
 };
 
-export const ICONS: Partial<
-  {
-    [key in Entity]: OverridableComponent<SvgIconTypeMap> | undefined;
-  }
-> = {
+export const ICONS: Partial<{
+  [key in Entity]: OverridableComponent<SvgIconTypeMap> | undefined;
+}> = {
   grid: GridOnIcon,
   columns: ViewColumnIcon,
   button: SlideshowIcon,

@@ -163,6 +163,15 @@ export const apiChangeProfileData = ({ id, ...props }) =>
     .then(parseResult)
     .catch(handleError);
 
+export const apiChangeProfileAAvatar = ({ id, data }) =>
+  myAxios({
+    method: 'PATCH',
+    url: `/accounts/profiles/${id}/`,
+    data,
+  })
+    .then(parseResult)
+    .catch(handleError);
+
 export const apiIdentifyUser = (props) =>
   myAxios({
     ...props,

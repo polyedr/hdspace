@@ -77,9 +77,8 @@ const StyleSheets: React.FC<PropertiesChangeProps<LibraryElement<Entity>>> = ({
                   if (!styleRule.trim().length) {
                     return json;
                   }
-                  const [ruleName, ruleValue, ...otherValues] = styleRule.split(
-                    ':',
-                  );
+                  const [ruleName, ruleValue, ...otherValues] =
+                    styleRule.split(':');
                   if (!ruleName || !ruleValue || otherValues.length) {
                     throw new Error(
                       `Invalid CSS input: '${styleRule.replaceAll('\n', '')}'`,

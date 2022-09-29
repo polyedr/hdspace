@@ -76,10 +76,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
 
   const isDisplayed = useLayout(element?.parameters.layouts);
 
-  const parentsIdsForChildren = useMemo(() => [...parentIds, elementId], [
-    elementId,
-    parentIds,
-  ]);
+  const parentsIdsForChildren = useMemo(
+    () => [...parentIds, elementId],
+    [elementId, parentIds],
+  );
 
   const [, drag, preview] = useDrag({
     item: {

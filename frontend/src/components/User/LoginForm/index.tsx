@@ -14,11 +14,7 @@ import {
   Container,
   InputAdornment,
 } from '@material-ui/core';
-import {
-  composeValidators,
-  isLongLength,
-  isPassword,
-} from '@Utils/validators';
+import { composeValidators, isLongLength, isPassword } from '@Utils/validators';
 import SubmitError from '../SubmitError';
 import useStyles from '../LoginRegistration/LoginRegistrationStyles';
 import user from '../../../assets/images/user.png';
