@@ -217,7 +217,7 @@ const Board = () => {
                 onClick={handleShowCreateColumn}
                 variant="contained"
               >
-                New Column 12
+                New Column
               </StyledButton>
             </Grid>
           </Grid>

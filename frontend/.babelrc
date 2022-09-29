@@ -1,7 +1,6 @@
 {
   "plugins": [
     [
-      "react-hot-loader/babel",
       "babel-plugin-transform-imports",
       {
         "@material-ui/core": {

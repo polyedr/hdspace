@@ -48,16 +48,15 @@ module.exports = ({ MODE }) => {
         '@Types': path.resolve(__dirname, 'src', 'types'),
         '@Domain': path.resolve(__dirname, 'src', 'domain'),
         '@Src': path.resolve(__dirname, 'src'),
-        'react-dom': '@hot-loader/react-dom',
       },
     },
     module: {
       rules: [
         {
-          test: /\.ts|\.tsx$/,
+          test: /\.tsx?$/,
           use: [
             isProduction && {
-              loaders: ['react-hot', 'babel-loader'],
+              loader: 'babel-loader',
             },
             {
               loader: 'ts-loader',
@@ -144,7 +143,6 @@ module.exports = ({ MODE }) => {
     },
     optimization: {
       minimize: isProduction,
-      moduleIds: 'named',
       minimizer: [
         // This is only used in production mode
         new TerserPlugin({
@@ -209,7 +207,6 @@ module.exports = ({ MODE }) => {
       },
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin(),
       new webpack.EnvironmentPlugin({
         NODE_ENV: MODE || 'development', // use 'development' unless process.env.NODE_ENV is defined
         DEBUG: false,
@@ -285,14 +282,14 @@ module.exports = ({ MODE }) => {
 
     devServer: {
       port: 8080,
-      hotOnly: true,
+      hot: true,
       inline: true,
       contentBase: 'dist',
       publicPath: '/',
       historyApiFallback: {
         disableDotRule: true,
       },
-      // stats: 'minimal',
+      stats: 'minimal',
     },
   };
 };
