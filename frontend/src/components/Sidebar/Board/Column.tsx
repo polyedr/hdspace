@@ -80,10 +80,10 @@ const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
   return {
     flexGrow: 1,
     maxHeight: 'calc(100vh - 200px)',
-    overflowY: 'auto',
-    overflowX: 'auto',
-    width: 'inherit',
+    overflowY: 'scroll',
+    overflowX: 'scroll',
     // backgroundColor: isDraggingOver ? 'red' : 'initial',
+    // backgroundColor: 'red',
   };
 });
 
