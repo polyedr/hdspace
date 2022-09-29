@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack serve --mode=development --hot --progress --color --port 8080",
-    "build:production": "webpack --mode=production --progress --color --env MODE=production",
+    "build:production": "webpack --mode=production --progress --color --env MODE=production --stats-error-details",
     "build:staging": "webpack --mode=production --progress --color --env MODE=staging",
     "start:server": "node server.js",
     "lint:check": "npx eslint src/**/*.{ts,tsx}",
@@ -191,7 +191,7 @@
     "mockdate": "^3.0.5",
     "mui-rte": "^2.0.1",
     "notistack": "^1.0.10",
-    "postcss-preset-env": "^6.7.0",
+    "postcss-preset-env": "^7.8.2",
     "pretty": "^2.0.0",
     "pretty-bytes": "^5.4.1",
     "ramda": "^0.26.1",
