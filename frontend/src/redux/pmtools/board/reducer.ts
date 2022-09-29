@@ -28,6 +28,57 @@ function findTaskIndex(state: BoardState, task: BoardTask) {
   return state.columns[columnIndex].tasks.findIndex((t) => t.id === task.id);
 }
 
+const setColumnsFetching: ActionHandler<
+  ReturnType<typeof columnActions.setColumnsFetching>
+> = (state = INITIAL_STATE, { fetching }) => ({
+  ...state,
+  fetching,
+});
+
+// columns
+
+const addColumn: ActionHandler<ReturnType<typeof columnActions.addColumn>> = (
+  state = INITIAL_STATE,
+  { column },
+) => {
+  const columns = [...state.columns];
+
+  column.tasks = [];
+  columns.push(column);
+
+  return {
+    ...state,
+    columns,
+  };
+};
+
+const updateColumn: ActionHandler<
+  ReturnType<typeof columnActions.updateColumnOnState>
+> = (state = INITIAL_STATE, { column, columnId }) => {
+  const columnIndex = findColumnIndex(state, columnId);
+
+  const newColumns = [...state.columns];
+
+  newColumns[columnIndex] = {
+    ...state.columns[columnIndex],
+    ...column,
+  };
+
+  return {
+    ...state,
+    columns: newColumns,
+  };
+};
+
+const deleteColumn: ActionHandler<
+  ReturnType<typeof columnActions.deleteColumnFromState>
+> = (state = INITIAL_STATE, { columnId }) => {
+  return {
+    ...state,
+    columns: state.columns.filter((c) => c.id !== columnId),
+  };
+};
+
 const setColumns: ActionHandler<ReturnType<typeof columnActions.setColumns>> = (
   state = INITIAL_STATE,
   { columns },
@@ -40,6 +91,8 @@ const setColumns: ActionHandler<ReturnType<typeof columnActions.setColumns>> = (
     }),
   };
 };
+
+// tasks
 
 const setTasks: ActionHandler<ReturnType<typeof taskActions.setTasks>> = (
   state = INITIAL_STATE,
@@ -84,48 +137,7 @@ const setTask: ActionHandler<ReturnType<typeof taskActions.setTask>> = (
   return newState;
 };
 
-const setColumnsFetching: ActionHandler<
-  ReturnType<typeof columnActions.setColumnsFetching>
-> = (state = INITIAL_STATE, { fetching }) => ({
-  ...state,
-  fetching,
-});
-
-const addColumn: ActionHandler<ReturnType<typeof columnActions.addColumn>> = (
-  state = INITIAL_STATE,
-  { column },
-) => {
-  const newState = { ...state };
-
-  column.tasks = [];
-  newState.columns.push(column);
-
-  return newState;
-};
-
-const updateColumn: ActionHandler<
-  ReturnType<typeof columnActions.updateColumnOnState>
-> = (state = INITIAL_STATE, { column, columnId }) => {
-  const columnIndex = findColumnIndex(state, columnId);
-
-  state.columns[columnIndex] = {
-    ...state.columns[columnIndex],
-    ...column,
-  };
-
-  return {
-    ...state,
-  };
-};
-
-const deleteColumn: ActionHandler<
-  ReturnType<typeof columnActions.deleteColumnFromState>
-> = (state = INITIAL_STATE, { columnId }) => {
-  return {
-    ...state,
-    columns: state.columns.filter((c) => c.id !== columnId),
-  };
-};
+// comments
 
 const addComment: ActionHandler<
   ReturnType<typeof commentActions.addComment>
@@ -182,6 +194,8 @@ const removeComment: ActionHandler<
 
   return newState;
 };
+
+// labels
 
 const addProjectLabels: ActionHandler<
   ReturnType<typeof labelsActions.setProjectLabels>
