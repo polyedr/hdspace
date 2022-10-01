@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectProjectByIdWrapper } from '@Redux/project/selectors/base';
 import {
@@ -7,48 +7,76 @@ import {
   DialogTitle,
   DialogActions,
   Button,
+  Typography,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import AllUsersList from './AllUsersList';
-import ProjectUsersList from './ProjectUsersList';
+import { Checkbox, FormControlLabel, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { UserData } from '@Src/types';
+import InviteUserSearch from './InviteUserSearch';
 
 type Props = {
   onClose: () => void;
   projectId: number | null;
 };
 
-const useStyles = makeStyles({
-  dialog: {
-    minWidth: 640,
-    minHeight: 500,
-  },
-});
-
 const UserPermissionsModal: React.FC<Props> = ({
   onClose,
   projectId,
 }: Props) => {
+  const [selectedUsers, setSelectedUsers] = useState<UserData[]>([]);
+  const [writePermission, setWritePermission] = useState<boolean>(false);
+
   const project = useSelector(selectProjectByIdWrapper(projectId || -1));
-  const styles = useStyles();
+
+  const handleChangeWritePermission = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setWritePermission(e.target.checked);
+    },
+    [setWritePermission],
+  );
 
   if (!project) {
     return null;
   }
 
   return (
-    <Dialog open={projectId !== null} onClose={onClose} fullWidth maxWidth="lg">
-      <DialogTitle>{`${project.name}: manage users' permissions`}</DialogTitle>
-      <DialogContent className={styles.dialog}>
-        {projectId && (
-          <>
-            <ProjectUsersList projectId={projectId} />
-            <AllUsersList projectId={projectId} />
-          </>
-        )}
+    <Dialog maxWidth="sm" open={projectId !== null} onClose={onClose}>
+      <DialogTitle>
+        Invite People
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent style={{ minWidth: 600 }}>
+        <InviteUserSearch
+          selected={selectedUsers}
+          onChange={setSelectedUsers}
+        />
+        <br />
+        <Typography>Every user will be able to</Typography>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={writePermission}
+              onChange={handleChangeWritePermission}
+            />
+          }
+          label="Change Project"
+          labelPlacement="end"
+        />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary" variant="contained">
-          Cancel
+        <Button color="primary" variant="contained">
+          Send
         </Button>
       </DialogActions>
     </Dialog>

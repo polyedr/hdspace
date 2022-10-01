@@ -1,54 +1,30 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
-import {
-  PanelTextField,
-  StyledAccordionSummary,
-  StyledIconButton,
-} from '@Components/styledComponents';
-import GroupIcon from '@material-ui/icons/Group';
 import * as Actions from '@Redux/permissions/actions';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { requestSendEmail } from '@Redux/pmtools/invite/actions';
-import { Container } from '@material-ui/core';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import { styled } from '@mui/material/styles';
-import { Button } from '@mui/material';
-import { makeStyles } from '@material-ui/core/styles';
+import {
+  Button,
+  Container,
+  Stack,
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import Member from './Member';
 
-const useStyles = makeStyles({
-  search: {
-    position: 'relative',
-    '& svg': {
-      position: 'absolute',
-      top: '50%',
-      left: '10px',
-      transform: 'translateY(-50%)',
-      color: '#E4E6EB',
-    },
-  },
-  searchField: {
-    marginTop: '0 !important',
-    '& input': {
-      paddingLeft: '40px',
-    },
-    '& .css-md26zr-MuiInputBase-root-MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline':
-      {
-        borderColor: '#E4E6EB',
-      },
-  },
-});
-
 const ProjectMembers: React.FC = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const members = useSelector(selectAllUsersPermissions);
@@ -85,44 +61,30 @@ const ProjectMembers: React.FC = () => {
 
   return (
     <Container>
-      <StyledAccordionSummary
-        expandIcon={
-          <StyledIconButton
-            size="small"
-            title="Edit member"
-            onClick={() => setPermissionsManagementProjectId(projectId)}
-          >
-            <GroupIcon fontSize="small" />
-          </StyledIconButton>
-        }
-      >
-        Members
-      </StyledAccordionSummary>
+      <Typography variant="h5" marginBottom={3} marginTop={3}>Team</Typography>
 
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <form onSubmit={handleEmail} className={classes.search}>
-          <SearchIcon />
-          <PanelTextField
-            type="email"
-            value={email}
-            required
-            disabled
-            onChange={(e) => setEmail(e.target.value)}
-            // placeholder="abc@email.com"
-            placeholder="Search User"
-            size="small"
-            className={classes.searchField}
-          />
-        </form>
-
-        <Button variant="contained">Invite People</Button>
-      </div>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <TextField
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Search User"
+          size="small"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          onClick={() => setPermissionsManagementProjectId(projectId)}
+          variant="contained"
+        >
+          Invite People
+        </Button>
+      </Stack>
 
       <TableContainer>
         <StyledTable sx={{ minWidth: 650 }} aria-label="simple table">
