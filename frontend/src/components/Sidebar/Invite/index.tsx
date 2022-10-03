@@ -61,7 +61,9 @@ const ProjectMembers: React.FC = () => {
 
   return (
     <Container>
-      <Typography variant="h5" marginBottom={3} marginTop={3}>Team</Typography>
+      <Typography variant="h5" marginBottom={3} marginTop={3}>
+        Team
+      </Typography>
 
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <TextField
