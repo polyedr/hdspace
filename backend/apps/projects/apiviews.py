@@ -740,7 +740,6 @@ class ColumnTaskCheckitemDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ColumnTaskCheckitemSerializer
 
 
-
 class ColumnTaskLabelList(generics.ListCreateAPIView):
     """
     List all column task labels, or create a new column task label.

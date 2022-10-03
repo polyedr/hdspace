@@ -446,9 +446,11 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
         else:
             # Calculate a number of projects available with subscriptions tables
             # Set number of projects available according to the subscriptions value
-            stripe_user = get_or_create_stripe_user(user_id=current_user.id)
+            try:
+                stripe_user = get_or_create_stripe_user(user_id=current_user.id)
+            except Exception:
+                pass
             projects_max = (len(stripe_user.current_subscription_items)) * 3
-            print(now_projects, projects_max)
             if now_projects < projects_max:
                 can_create_projects = 1
 
@@ -477,32 +479,34 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             project.save()
             project.projectscreen.set(projectscreens_data, clear=True)
 
-            # A Stream chat connection
-            schat_users = schat_client.query_users({"id": {"$in": [str(current_user.id)]}})
-
-            # extract teams array if exists
-            teams = []
             try:
-                teams = schat_users["users"][0]["teams"]
-                # print("teams", teams)
+                # A Stream chat connection
+                schat_users = schat_client.query_users({"id": {"$in": [str(current_user.id)]}})
+
+                # extract teams array if exists
+                teams = []
+                try:
+                    teams = schat_users["users"][0]["teams"]
+                    # print("teams", teams)
+                except Exception:
+                    pass
+                finally:
+                    pass
+
+                # update teams array
+                if str(project.id) in teams:
+                    pass
+                else:
+                    teams.append(str(project.id))
+
+                if (schat_users["users"]):
+                    schat_client.update_user_partial(
+                        {"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": teams}}
+                    )
+                else:
+                    schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": teams}})
             except Exception:
                 pass
-            finally:
-                pass
-
-            # update teams array
-            if str(project.id) in teams:
-                pass
-            else:
-                teams.append(str(project.id))
-
-            if (schat_users["users"]):
-                schat_client.update_user_partial(
-                    {"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": teams}}
-                )
-            else:
-                schat_client.update_user({"id": str(current_user.id), "set": {"role": "admin", "name": username, "image": avatar, "teams": teams}})
-
             return project
         else:
             raise ValidationError("Maximum count of projects reached.")
