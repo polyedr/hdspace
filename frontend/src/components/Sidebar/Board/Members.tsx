@@ -1,6 +1,10 @@
 import { AvatarGroup, Grid, styled } from '@mui/material';
-import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
-import React from 'react';
+import {
+  selectAllUsersPermissions,
+  selectUserPermissions,
+} from '@Redux/permissions/selectors';
+import { selectUserData } from '@Redux/user/selectors';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import User from './User';
 
@@ -36,11 +40,18 @@ interface Props {
 
 const Members = ({ onSelected, selected = [] }: Props) => {
   const members = useSelector(selectAllUsersPermissions);
+  const activeUser = useSelector(selectUserData);
+
+  const filteredMembers = useMemo(() => {
+    return Object.values(members).filter(
+      (m) => m.userData.id !== activeUser.id,
+    );
+  }, [members, activeUser]);
 
   return (
     <>
       <AvatarGroup max={4}>
-        {Object.values(members).map(({ userData }) => (
+        {filteredMembers.map(({ userData }) => (
           <UserAvatar
             active={selected.indexOf(userData.id) !== -1}
             user={userData}

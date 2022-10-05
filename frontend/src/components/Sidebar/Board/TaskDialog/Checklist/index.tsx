@@ -2,14 +2,13 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   Stack,
   TextField as MuiTextField,
-  IconButton as MuiIconButton,
   styled,
   InputAdornment,
   List,
   Button as MuiButton,
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
-import CancelIcon from '@mui/icons-material/Cancel';
+import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,23 +21,7 @@ import { selectChecklist } from '@Redux/pmtools/board/selectors';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import ProgressBar from './ProgressBar';
 import CheckItem from './CheckItem';
-
-// const TextField = styled(MuiTextField)({
-//   '& .MuiOutlinedInput-root': {
-//     '& input': {
-//       padding: '6.5px 14px',
-//     },
-//     '& fieldset': {
-//       borderColor: '#E4E6EB !important',
-//     },
-//     '&:hover fieldset': {
-//       borderColor: 'var(--blue)',
-//     },
-//     '&.Mui-focused fieldset': {
-//       borderColor: '#E4E6EB',
-//     },
-//   },
-// });
+import { IconButton } from '../StyledComponents';
 
 const TextField = styled(MuiTextField)({
   '& input': {
@@ -46,11 +29,11 @@ const TextField = styled(MuiTextField)({
   },
 });
 
-const IconButton = styled(MuiIconButton)({
-  '& svg': {
-    color: '#81818E',
-    fontSize: 18,
-  },
+const StyledIconButton = styled(IconButton)({
+  backgroundColor: 'transparent !important',
+  height: 'auto',
+  width: 'auto',
+  marginLeft: 'auto',
 });
 
 const RemoveButton = styled(MuiButton)({
@@ -101,15 +84,19 @@ const Checklist = ({ task }: Props) => {
     setConfirmDelete(true);
   }, []);
 
-  const handleAddItem = useCallback(
+  const handleAddItem = useCallback(() => {
+    dispatch(requestCreateChecklistItem(value.trim(), task));
+    setAddingItem(false);
+    setValue('');
+  }, [value, task, setAddingItem]);
+
+  const handleEnterAddItem = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        dispatch(requestCreateChecklistItem(value.trim(), task));
-        setAddingItem(false);
-        setValue('');
+        handleAddItem();
       }
     },
-    [value, task, setAddingItem],
+    [value, task, setAddingItem, handleAddItem],
   );
 
   const handleChangeValue = useCallback(
@@ -159,27 +146,30 @@ const Checklist = ({ task }: Props) => {
             variant="outlined"
             placeholder="Add Item"
             fullWidth
-            onKeyDown={handleAddItem}
+            onKeyDown={handleEnterAddItem}
             onChange={handleChangeValue}
             value={value}
             size="small"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton edge="end">
+                  <StyledIconButton edge="end">
                     <AlternateEmailIcon />
-                  </IconButton>
+                  </StyledIconButton>
                 </InputAdornment>
               ),
             }}
           />
           <Stack direction="row" spacing={0.5} alignItems="center">
-            <IconButton>
+            <StyledIconButton
+              disabled={value.trim().length < 1}
+              onClick={handleAddItem}
+            >
               <CheckIcon />
-            </IconButton>
-            <IconButton onClick={handleSetAddingItem(false)}>
-              <CancelIcon />
-            </IconButton>
+            </StyledIconButton>
+            <StyledIconButton onClick={handleSetAddingItem(false)}>
+              <CloseIcon />
+            </StyledIconButton>
           </Stack>
         </Stack>
       )}
@@ -192,7 +182,7 @@ const Checklist = ({ task }: Props) => {
         show={confirmDelete}
         action={handleDeleteChecklist}
         elementText="checklist"
-        actionText="delete"
+        actionText="Delete"
         hide={handleCancelDeleteRequest}
       />
     </div>

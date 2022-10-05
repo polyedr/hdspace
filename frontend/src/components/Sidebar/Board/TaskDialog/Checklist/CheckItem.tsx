@@ -231,7 +231,7 @@ const CheckItem = ({ item, task }: Props) => {
         elementText="checklist item"
         hide={handleCancelDelete}
         show={confirmDelete}
-        actionText="delete"
+        actionText="Delete"
       />
     </>
   );

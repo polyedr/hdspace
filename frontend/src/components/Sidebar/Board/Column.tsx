@@ -32,12 +32,15 @@ const NewTaskButton = styled(ButtonBase)(() => ({
 }));
 
 const Container = styled('div')(() => ({
-  width: 309,
+  width: '309px',
+  minWidth: '309px',
   backgroundColor: '#F3F4F6',
   marginRight: 16,
-  borderRadius: '4px 4px 0px 0px',
+  borderRadius: 4,
   display: 'flex',
   flexDirection: 'column',
+  height: 'calc(100vh - 145px)',
+  paddingBottom: 20,
 }));
 
 const ColumnHeader = styled('div')<{ cardColor: string }>(({ cardColor }) => ({
@@ -79,11 +82,26 @@ const NewTaskInput = styled(TextField)({
 const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
   return {
     flexGrow: 1,
-    maxHeight: 'calc(100vh - 200px)',
-    overflowY: 'scroll',
-    overflowX: 'scroll',
+    // maxHeight: 'calc(100vh - 200px)',
+    overflow: 'auto',
+    height: '100%',
     // backgroundColor: isDraggingOver ? 'red' : 'initial',
-    // backgroundColor: 'red',
+    '&::-webkit-scrollbar': {
+      width: 4,
+      background: '#E4E6EB',
+      borderRadius: 6,
+    },
+
+    '&::-webkit-scrollbar-thumb': {
+      background: '#B0B0BD',
+      borderRadius: 4,
+      // backgroundImage: 'linear-gradient(360deg, #E4E6EB 70%, #B0B0BD 70%)',
+    },
+
+    '&::-webkit-scrollbar-track': {
+      borderRadius: 4,
+      backgroundClip: 'content-box',
+    },
   };
 });
 
