@@ -40,7 +40,7 @@ from .apiviews import (
     ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView,
     ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder, ColumnTaskCheckitemList,
     ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
-    ColumnTaskLabelDetail, ColumnTaskCheckitemDelete)
+    ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject)
 
 app_name = "projects"
 
@@ -165,6 +165,8 @@ api_columntask_label_patterns = [
 api_permissions_project_patterns = [
     path("permissionsmap-projects-assign/", AssignPermissionsmapProject.as_view(),
          name="api_assign_permissionsmap_projects"),
+    path("permissionsmaps-projects-assign/", AssignPermissionsmapsProject.as_view(),
+         name="api_assign_permissionsmaps_projects"),
     path("permissions-projects-assign/", AssignPermissionsProject.as_view(),
          name="api_assign_permissions_projects"),
     path("permissions-projects-remove/", RemovePermissionsProject.as_view(),

@@ -798,50 +798,147 @@ class AssignPermissionsmapProject(APIView):
             print("avatar", avatar)
         except Exception:
             pass
-
-        # get schat_client user
-        schat_users = schat_client.query_users({"id": {"$in": [str(user.id)]}})
-        if not (schat_users["users"]):
-            schat_client.update_user({"id": str(user.id)})
-
-        # print("schat_users", schat_users)
-        # extract teams array if exist,
-        teams = []
         try:
-            teams = schat_users["users"][0]["teams"]
-            # print("teams", teams)
+            # get schat_client user
+            schat_users = schat_client.query_users({"id": {"$in": [str(user.id)]}})
+            if not (schat_users["users"]):
+                schat_client.update_user({"id": str(user.id)})
+
+            # print("schat_users", schat_users)
+            # extract teams array if exist,
+            teams = []
+            try:
+                teams = schat_users["users"][0]["teams"]
+                # print("teams", teams)
+            except Exception:
+                pass
+            finally:
+                pass
         except Exception:
-            pass
-        finally:
             pass
 
         for permission in self.PROJECT_PERMISSION:
             remove_perm(permission[1], user, project)
-            # A Stream chat connection
-            if str(project.id) not in teams:
-                print("non teams")
-            else:
-                print("with teams")
-                teams.remove(str(project.id))
-                schat_client.update_user_partial(
-                    {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
-                )
+
+            try:
+                # A Stream chat connection
+                if str(project.id) not in teams:
+                    print("non teams")
+                else:
+                    print("with teams")
+                    teams.remove(str(project.id))
+                    schat_client.update_user_partial(
+                        {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
+                    )
+            except Exception:
+                pass
 
         for permission in permissions:
             assign_perm(permission, user, project)
-            # A Stream chat connection
-            if str(project.id) in teams:
-                print("with teams0")
+            try:
+                # A Stream chat connection
+                if str(project.id) in teams:
+                    print("with teams0")
+                    pass
+                else:
+                    print("non teams0")
+                    teams.append(str(project.id))
+                    # print("teams1", teams)
+                    schat_client.update_user_partial(
+                        {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
+                    )
+            except Exception:
                 pass
-            else:
-                print("non teams0")
-                teams.append(str(project.id))
-                # print("teams1", teams)
-                schat_client.update_user_partial(
-                    {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
-                )
 
         rp = get_perms(user, project)
+
+        return Response({"permissions": rp}, status=status.HTTP_200_OK)
+
+
+class AssignPermissionsmapsProject(APIView):
+    VIEW_PROJECT_PERMISSION = "view_project"
+    CHANGE_PROJECT_PERMISSION = "change_project"
+    ASSIGN_PROJECT_PERMISSION = "assign_project"
+    DELETE_PROJECT_PERMISSION = "delete_project"
+    ADD_PROJECT_PERMISSION = "add_project"
+    PROJECT_PERMISSION = (
+        (VIEW_PROJECT_PERMISSION, "view_project"),
+        (CHANGE_PROJECT_PERMISSION, "change_project"),
+        (ASSIGN_PROJECT_PERMISSION, "assign_project"),
+        (DELETE_PROJECT_PERMISSION, "delete_project"),
+        (ADD_PROJECT_PERMISSION, "add_project"),
+    )
+
+    def post(self, request):
+        user_emails = request.data['emails']
+        projectid = request.data['projectid']
+        permissions = request.data['permissions']
+        project = Project.objects.get(pk=projectid)
+
+        for user_email in user_emails:
+            user = User.objects.get(email=user_email)
+            username = user.username
+            current_profile = user.profile
+            avatar = ""
+            try:
+                o = urlparse(request.build_absolute_uri())
+                avatar = "https://" + o.netloc + MEDIA_URL + str(current_profile.avatar)
+                print("avatar", avatar)
+            except Exception:
+                pass
+
+            try:
+                # get schat_client user
+                schat_users = schat_client.query_users({"id": {"$in": [str(user.id)]}})
+                if not (schat_users["users"]):
+                    schat_client.update_user({"id": str(user.id)})
+
+                # print("schat_users", schat_users)
+                # extract teams array if exist,
+                teams = []
+                try:
+                    teams = schat_users["users"][0]["teams"]
+                    # print("teams", teams)
+                except Exception:
+                    pass
+                finally:
+                    pass
+            except Exception:
+                pass
+
+            for permission in self.PROJECT_PERMISSION:
+                remove_perm(permission[1], user, project)
+                try:
+                    # A Stream chat connection
+                    if str(project.id) not in teams:
+                        print("non teams")
+                    else:
+                        print("with teams")
+                        teams.remove(str(project.id))
+                        schat_client.update_user_partial(
+                            {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
+                        )
+                except Exception:
+                    pass
+
+            for permission in permissions:
+                assign_perm(permission, user, project)
+                try:
+                    # A Stream chat connection
+                    if str(project.id) in teams:
+                        print("with teams0")
+                        pass
+                    else:
+                        print("non teams0")
+                        teams.append(str(project.id))
+                        # print("teams1", teams)
+                        schat_client.update_user_partial(
+                            {"id": str(user.id), "set": {"name": username, "image": avatar, "teams": teams}}
+                        )
+                except Exception:
+                    pass
+
+            rp = get_perms(user, project)
 
         return Response({"permissions": rp}, status=status.HTTP_200_OK)
 
