@@ -26,7 +26,7 @@ const MenuButton = styled(Button)<{
     fontSize: 12,
     fontWeight: 500,
     textTransform: 'capitalize',
-    padding: '0 0 0 5px',
+    padding: '0 0 0 3px',
     color,
 
     '&:hover': {
