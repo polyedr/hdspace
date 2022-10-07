@@ -15,14 +15,18 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = ({ MODE }) => {
   const isProduction = MODE === 'production';
+  const isLocal = !MODE;
+
   return {
     context: __dirname,
     mode: MODE || 'development',
     bail: isProduction,
     devtool: !isProduction ? 'cheap-module-source-map' : false,
-    entry: {
-      app: path.resolve(__dirname, 'src', 'index.tsx'),
-    },
+    entry: isLocal
+      ? ['react-hot-loader/patch', path.resolve(__dirname, 'src', 'index.tsx')]
+      : {
+          app: path.resolve(__dirname, 'src', 'index.tsx'),
+        },
     output: {
       path: path.join(__dirname, './dist'),
       filename: '[name].bundle.js',
@@ -207,12 +211,13 @@ module.exports = ({ MODE }) => {
       },
     },
     plugins: [
+      ...(isLocal ? [new webpack.HotModuleReplacementPlugin()] : []),
       new webpack.EnvironmentPlugin({
         NODE_ENV: MODE || 'development', // use 'development' unless process.env.NODE_ENV is defined
         DEBUG: false,
         SIDE_MODULE_HOST: 'https://adevi-sidebar-production.firebaseapp.com/',
       }),
-      new webpack.optimize.ModuleConcatenationPlugin(),
+      // new webpack.optimize.ModuleConcatenationPlugin(),
       new MiniCssExtractPlugin({
         filename: '[contenthash].css',
         disable: !isProduction,
@@ -279,7 +284,11 @@ module.exports = ({ MODE }) => {
         },
       }),
     ],
-
+    stats: {
+      // Display bailout reasons
+      optimizationBailout: true,
+      children: true,
+    },
     devServer: {
       port: 8080,
       hot: true,
