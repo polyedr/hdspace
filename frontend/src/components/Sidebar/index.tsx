@@ -9,6 +9,45 @@ import { Tabs, Tab } from '@material-ui/core';
 import { components, TABS_PMTOOLS } from '@Constants/pmtools/tabsNamesSidebar';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { setSidebarOpen } from '@Redux/project/actions';
+import { makeStyles, styled } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  root: {
+    '& > *': {
+      '&::-webkit-scrollbar': {
+        width: '4px !important',
+        background: '#F3F4F6',
+      },
+
+      '&::-webkit-scrollbar-thumb': {
+        background: '#B0B0BD',
+        borderRadius: 4,
+      },
+
+      '&::-webkit-scrollbar-track': {
+        borderRadius: 4,
+      },
+    },
+  },
+});
+
+const TabContent = styled('div')({
+  '& > *': {
+    '::-webkit-scrollbar': {
+      width: '4px !important',
+      background: '#F3F4F6',
+    },
+
+    '::-webkit-scrollbar-thumb': {
+      background: '#B0B0BD',
+      borderRadius: 4,
+    },
+
+    '::-webkit-scrollbar-track': {
+      borderRadius: 4,
+    },
+  },
+});
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -39,6 +78,7 @@ const SideModule: FC = () => {
   const projectId = useSelector(selectCurrentProjectId);
   const dispatch = useDispatch();
   const [selectedTabNumber, setSelectedTabNumber] = useState(0);
+  const classes = useStyles();
 
   const handleSetSidebarOpen = useCallback(() => {
     dispatch(setSidebarOpen(false));
@@ -54,6 +94,7 @@ const SideModule: FC = () => {
       open={open}
       onClose={handleSetSidebarOpen}
       onOpen={() => {}}
+      className={classes.root}
     >
       <div
         style={{
@@ -78,12 +119,15 @@ const SideModule: FC = () => {
             ))}
           </Tabs>
         </Box>
+
         {Object.values(TABS_PMTOOLS).map((tab, idx) => {
           const Tab = components[tab];
           return (
-            <TabPanel value={selectedTabNumber} key={tab} index={idx}>
-              <Tab />
-            </TabPanel>
+            <TabContent>
+              <TabPanel value={selectedTabNumber} key={tab} index={idx}>
+                <Tab />
+              </TabPanel>
+            </TabContent>
           );
         })}
       </div>

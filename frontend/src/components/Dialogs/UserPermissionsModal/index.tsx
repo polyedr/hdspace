@@ -2,17 +2,49 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectProjectByIdWrapper } from '@Redux/project/selectors/base';
 import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
+  Dialog as MuiDialog,
+  DialogContent as MuiDialogContent,
+  DialogTitle as MuiDialogTitle,
+  DialogActions as MuiDialogActions,
   Button,
   Typography,
 } from '@material-ui/core';
-import { Checkbox, FormControlLabel, IconButton } from '@mui/material';
+import {
+  Checkbox,
+  FormControlLabel as MuiFormControlLabel,
+  IconButton,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { UserData } from '@Src/types';
+import { styled } from '@mui/material/styles';
 import InviteUserSearch from './InviteUserSearch';
+
+const Dialog = styled(MuiDialog)({
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+  },
+});
+
+const DialogTitle = styled(MuiDialogTitle)({
+  padding: '16px 20px 5px',
+  '& .MuiTypography-h6': {
+    fontSize: 18,
+  },
+});
+
+const DialogContent = styled(MuiDialogContent)({
+  padding: '8px 20px',
+});
+
+const FormControlLabel = styled(MuiFormControlLabel)({
+  '& .css-ahj2mt-MuiTypography-root': {
+    fontSize: 14,
+  },
+});
+
+const DialogActions = styled(MuiDialogActions)({
+  padding: '0 20px 24px',
+});
 
 type Props = {
   onClose: () => void;
@@ -40,7 +72,7 @@ const UserPermissionsModal: React.FC<Props> = ({
   }
 
   return (
-    <Dialog maxWidth="sm" open={projectId !== null} onClose={onClose}>
+    <Dialog maxWidth="xs" open={projectId !== null} onClose={onClose}>
       <DialogTitle>
         Invite People
         <IconButton
@@ -56,7 +88,7 @@ const UserPermissionsModal: React.FC<Props> = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent style={{ minWidth: 600 }}>
+      <DialogContent style={{ minWidth: 420 }}>
         <InviteUserSearch
           selected={selectedUsers}
           onChange={setSelectedUsers}
@@ -68,6 +100,7 @@ const UserPermissionsModal: React.FC<Props> = ({
             <Checkbox
               checked={writePermission}
               onChange={handleChangeWritePermission}
+              size="small"
             />
           }
           label="Change Project"

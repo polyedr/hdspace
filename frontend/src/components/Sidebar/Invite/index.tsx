@@ -1,10 +1,10 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
 import * as Actions from '@Redux/permissions/actions';
 import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { requestSendEmail } from '@Redux/pmtools/invite/actions';
+// import { requestSendEmail } from '@Redux/pmtools/invite/actions';
 import {
   Button,
   Container,
@@ -22,42 +22,66 @@ import {
   InputAdornment,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import fuzzysort from 'fuzzysort';
 import Member from './Member';
 
+const StyledTable = styled(Table)(() => ({
+  border: 0,
+  borderRadius: 0,
+  boxShadow: 'none',
+}));
+
+const StyledTableCell = styled(TableCell)(() => ({
+  [`&.${tableCellClasses.head}`]: {
+    color: '#81818E',
+    fontSize: 12,
+    boxShadow: 'none',
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(() => ({
+  boxShadow: 'none',
+}));
+
 const ProjectMembers: React.FC = () => {
+  const [searchText, setSearchText] = useState('');
+
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
+  // const [email, setEmail] = useState('');
   const members = useSelector(selectAllUsersPermissions);
   const projectId = useSelector(selectCurrentProjectId);
   const [permissionsManagementProjectId, setPermissionsManagementProjectId] =
     useState<number | null>(null);
 
-  const handleEmail = (e: FormEvent) => {
-    e.preventDefault();
-    dispatch(requestSendEmail(email));
-  };
+  // const handleEmail = (e: FormEvent) => {
+  //   e.preventDefault();
+  //   dispatch(requestSendEmail(email));
+  // };
 
   useEffect(() => {
     dispatch(Actions.getAllUsersProjectPermissions(projectId));
   }, [dispatch, projectId]);
 
-  const StyledTable = styled(Table)(() => ({
-    border: 0,
-    borderRadius: 0,
-    boxShadow: 'none',
-  }));
+  const filteredUsers = useMemo(() => {
+    const users = Object.values(members).map((m) => m.userData);
 
-  const StyledTableCell = styled(TableCell)(() => ({
-    [`&.${tableCellClasses.head}`]: {
-      color: '#81818E',
-      fontSize: 12,
-      boxShadow: 'none',
+    if (searchText.trim().length > 0) {
+      return fuzzysort
+        .go(searchText, users, {
+          keys: ['email', 'username', 'first_name', 'last_name'],
+        })
+        .map((r) => r.obj);
+    }
+
+    return users;
+  }, [members, searchText]);
+
+  const handleChangeSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchText(e.target.value);
     },
-  }));
-
-  const StyledTableRow = styled(TableRow)(() => ({
-    boxShadow: 'none',
-  }));
+    [setSearchText],
+  );
 
   return (
     <Container>
@@ -67,9 +91,8 @@ const ProjectMembers: React.FC = () => {
 
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <TextField
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={searchText}
+          onChange={handleChangeSearch}
           placeholder="Search User"
           size="small"
           InputProps={{
@@ -95,18 +118,17 @@ const ProjectMembers: React.FC = () => {
               <StyledTableCell>Member</StyledTableCell>
               <StyledTableCell>Email</StyledTableCell>
               <StyledTableCell>Role</StyledTableCell>
-              <StyledTableCell>Guest</StyledTableCell>
+              <StyledTableCell>Permissions</StyledTableCell>
               <StyledTableCell>Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {Object.keys(members).map((userId) => {
-              const { userData, permissions } = members[userId];
+            {filteredUsers.map((userData) => {
               return (
                 <Member
                   userData={userData}
-                  permissions={permissions}
-                  key={`project-user-pm-${userId}`}
+                  permissions={members[userData.id].permissions}
+                  key={`project-user-pm-${userData.id}`}
                   project={projectId}
                 />
               );

@@ -12,14 +12,77 @@ import {
 } from '@Redux/permissions/selectors';
 import {
   Autocomplete,
-  Chip,
+  Chip as MuiChip,
   Stack,
-  TextField,
-  Typography,
+  TextField as MuiTextField,
+  Typography as MuiTypography,
 } from '@mui/material';
 import Avatar from '@Components/UI/Avatar';
 import { username } from '@Components/Sidebar/Board/User';
+import { styled } from '@mui/material/styles';
 import { UserData } from '@Src/types';
+import { makeStyles } from '@material-ui/core/styles';
+
+const InputTitle = styled('p')({
+  marginTop: 0,
+  marginBottom: 10,
+});
+
+const TextField = styled(MuiTextField)({
+  '& label.Mui-focused': {
+    color: '#81818E',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      borderColor: '#E4E6EB !important',
+    },
+    '&:hover fieldset': {
+      borderColor: 'var(--blue)',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#E4E6EB',
+    },
+  },
+});
+
+const Chip = styled(MuiChip)({
+  background: '#F3F4F6',
+  borderColor: 'transparent',
+  height: '24px',
+
+  '& .MuiChip-avatar': {
+    color: 'white',
+    marginLeft: 0,
+  },
+});
+
+const TypographyTitle = styled(MuiTypography)({
+  fontSize: 14,
+});
+
+const TypographySubTitle = styled(MuiTypography)({
+  fontSize: 14,
+  color: '#81818E',
+  fontWeight: 400,
+});
+
+const useStyles = makeStyles({
+  option: {
+    '&::-webkit-scrollbar': {
+      width: '4px !important',
+      background: '#F3F4F6',
+    },
+
+    '&::-webkit-scrollbar-thumb': {
+      background: '#B0B0BD',
+      borderRadius: 4,
+    },
+
+    '&::-webkit-scrollbar-track': {
+      borderRadius: 4,
+    },
+  },
+});
 
 type Props = {
   selected: UserData[];
@@ -88,80 +151,92 @@ const AllUsersList: React.FC<Props> = ({ onChange, selected }: Props) => {
     400,
   );
 
+  const classes = useStyles();
+
   return (
-    <Autocomplete
-      multiple
-      autoComplete
-      includeInputInList
-      filterSelectedOptions
-      id="multiple-limit-tags"
-      loading={usersListLoader}
-      filterOptions={filterOptions}
-      options={Object.values(users)}
-      onChange={(_, value) => onChange(value)}
-      value={selected}
-      onInputChange={(_, newInputValue) => {
-        if (handleSearchDelayedChange.pending()) {
-          handleSearchDelayedChange.cancel();
-        }
-        handleSearchDelayedChange.callback(newInputValue);
-      }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          defaultValue={searchValue}
-          size="small"
-          // label="Invite by Email"
-          placeholder="Email"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {usersListLoader ? (
-                  <CircularProgress color="inherit" size={20} />
-                ) : null}
-                {params.InputProps.endAdornment}
-              </>
-            ),
-          }}
-        />
-      )}
-      renderTags={(value, getTagProps) => {
-        return value.map((user, index) => {
+    <>
+      <InputTitle>Invite by email address</InputTitle>
+      <Autocomplete
+        multiple
+        autoComplete
+        includeInputInList
+        filterSelectedOptions
+        id="multiple-limit-tags"
+        loading={usersListLoader}
+        filterOptions={filterOptions}
+        options={Object.values(users)}
+        onChange={(_, value) => onChange(value)}
+        value={selected}
+        classes={{
+          listbox: classes.option,
+        }}
+        onInputChange={(_, newInputValue) => {
+          if (handleSearchDelayedChange.pending()) {
+            handleSearchDelayedChange.cancel();
+          }
+          handleSearchDelayedChange.callback(newInputValue);
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            defaultValue={searchValue}
+            size="small"
+            placeholder="Email"
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <>
+                  {usersListLoader ? (
+                    <CircularProgress color="inherit" size={20} />
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
+            }}
+          />
+        )}
+        renderTags={(value, getTagProps) => {
+          return value.map((user, index) => {
+            return (
+              <Chip
+                avatar={
+                  <Avatar
+                    alt={username(user)}
+                    src={user.profile.avatar ?? undefined}
+                    tooltipDisabled
+                  />
+                }
+                variant="outlined"
+                label={username(user)}
+                {...getTagProps({ index })}
+              />
+            );
+          });
+        }}
+        renderOption={(props, user) => {
           return (
-            <Chip
-              avatar={
+            <li {...props}>
+              <Stack direction="row" alignItems="center" spacing={1.5}>
                 <Avatar
                   alt={username(user)}
                   src={user.profile.avatar ?? undefined}
                   tooltipDisabled
+                  sx={{ height: 36, width: 36 }}
                 />
-              }
-              variant="outlined"
-              label={username(user)}
-              {...getTagProps({ index })}
-            />
-          );
-        });
-      }}
-      renderOption={(props, user) => {
-        return (
-          <li {...props}>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Avatar
-                alt={username(user)}
-                src={user.profile.avatar ?? undefined}
-                tooltipDisabled
-              />
-              <Stack>
-                <Typography variant="subtitle1">{username(user)}</Typography>
-                <Typography variant="subtitle2">{user.username}</Typography>
+                <Stack>
+                  <TypographyTitle variant="subtitle1">
+                    {username(user)}
+                  </TypographyTitle>
+                  <TypographySubTitle variant="subtitle2">
+                    {user.username}
+                  </TypographySubTitle>
+                </Stack>
               </Stack>
-            </Stack>
-          </li>
-        );
-      }}
-    />
+            </li>
+          );
+        }}
+      />
+    </>
   );
 };
 
