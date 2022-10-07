@@ -19,6 +19,10 @@ const StyledTableCell = styled(TableCell)(() => ({
     fontSize: 14,
     boxShadow: 'none',
     textTransform: 'capitalize',
+
+    '&:nth-child(2)': {
+      textTransform: 'lowercase',
+    },
   },
 }));
 
@@ -45,11 +49,11 @@ const Member: React.FC<PropsType> = ({ userData, permissions }) => {
         <Avatar
           src={userData.profile.avatar ?? undefined}
           alt={username}
-          sx={{ marginRight: '10px' }}
+          // sx={{ marginRight: '10px' }}
         />
         {username}
       </StyledTableCell>
-      <StyledTableCell style={{ textTransform: 'lowercase' }}>
+      <StyledTableCell>
         {userData.email}
       </StyledTableCell>
       <StyledTableCell>{userData.profile.role}</StyledTableCell>
