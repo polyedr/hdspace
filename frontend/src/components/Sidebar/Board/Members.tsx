@@ -1,8 +1,5 @@
-import { AvatarGroup, Grid, styled } from '@mui/material';
-import {
-  selectAllUsersPermissions,
-  selectUserPermissions,
-} from '@Redux/permissions/selectors';
+import { AvatarGroup, styled } from '@mui/material';
+import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
 import { selectUserData } from '@Redux/user/selectors';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -16,21 +13,9 @@ const UserAvatar = styled(User)<{ active: boolean }>(({ active, theme }) => ({
     ? `${theme.palette.primary.main} !important`
     : 'transparent',
   transition: '0.1s ease-in-out',
-  // position: 'relative',
   '&:hover': {
     transform: 'scale(1.1)',
   },
-  // '&:after': {
-  //   content: '" "',
-  //   position: 'absolute',
-  //   border: '2px solid red',
-  //   height: '32px',
-  //   width: '32px',
-  //   top: 0,
-  //   bottom: 0,
-  //   left: 0,
-  //   right: 0,
-  // },
 }));
 
 interface Props {
@@ -55,7 +40,6 @@ const Members = ({ onSelected, selected = [] }: Props) => {
           <UserAvatar
             active={selected.indexOf(userData.id) !== -1}
             user={userData}
-            // sx={{ width: 32, height: 32 }}
             onClick={() => {
               if (onSelected) {
                 onSelected(userData.id);

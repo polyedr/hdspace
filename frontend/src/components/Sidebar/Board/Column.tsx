@@ -82,10 +82,8 @@ const NewTaskInput = styled(TextField)({
 const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
   return {
     flexGrow: 1,
-    // maxHeight: 'calc(100vh - 200px)',
     overflow: 'auto',
     height: '100%',
-    // backgroundColor: isDraggingOver ? 'red' : 'initial',
     '&::-webkit-scrollbar': {
       width: 4,
       background: '#E4E6EB',
@@ -95,7 +93,6 @@ const TasksContainer = styled('div')<{ isDraggingOver: boolean }>(() => {
     '&::-webkit-scrollbar-thumb': {
       background: '#B0B0BD',
       borderRadius: 4,
-      // backgroundImage: 'linear-gradient(360deg, #E4E6EB 70%, #B0B0BD 70%)',
     },
 
     '&::-webkit-scrollbar-track': {
