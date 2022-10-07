@@ -95,7 +95,7 @@ const ProjectMembers: React.FC = () => {
               <StyledTableCell>Member</StyledTableCell>
               <StyledTableCell>Email</StyledTableCell>
               <StyledTableCell>Role</StyledTableCell>
-              <StyledTableCell>Guest</StyledTableCell>
+              <StyledTableCell>Permissions</StyledTableCell>
               <StyledTableCell>Action</StyledTableCell>
             </StyledTableRow>
           </TableHead>

@@ -24,6 +24,7 @@ const DialogTitle = styled(MuiDialogTitle)({
   fontWeight: 500,
   padding: 0,
   lineHeight: 2,
+  textTransform: 'capitalize',
 });
 
 const DialogContent = styled(MuiDialogContent)({
