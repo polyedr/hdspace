@@ -110,8 +110,9 @@ const AllUsersList: React.FC<Props> = ({ onChange, selected }: Props) => {
         <TextField
           {...params}
           defaultValue={searchValue}
-          variant="outlined"
-          label="Invite by Email"
+          size="small"
+          // label="Invite by Email"
+          placeholder="Email"
           InputProps={{
             ...params.InputProps,
             endAdornment: (
