@@ -129,17 +129,15 @@ const ListItem: React.FC<Props> = ({
     selectScreen('noScreen');
   };
 
-  const [
-    textContentValue,
-    handleTextContentChange,
-  ] = useDebouncedRichInputChange(textContent, parseInt(id), (value) => {
-    updateParams(
-      {
-        textContent: convertToHTML(value.getCurrentContent()),
-      },
-      id,
-    );
-  });
+  const [textContentValue, handleTextContentChange] =
+    useDebouncedRichInputChange(textContent, parseInt(id), (value) => {
+      updateParams(
+        {
+          textContent: convertToHTML(value.getCurrentContent()),
+        },
+        id,
+      );
+    });
 
   useEffect(() => {
     if (screenName && screenLink) {

@@ -7,7 +7,7 @@ export type TeamCommandType = LiteralStringForUnion;
 export type TeamEventType = Record<string, unknown>;
 export type TeamMessageType = Record<string, unknown>;
 export type TeamReactionType = Record<string, unknown>;
-export type TeamUserType = { image?: string };;
+export type TeamUserType = { image?: string };
 
 const client = StreamChat.getInstance<
   TeamAttachmentType,

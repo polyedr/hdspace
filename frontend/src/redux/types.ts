@@ -297,7 +297,8 @@ export type LoadTemplatesSuccess = IAction<
   typeof TYPES.SET_TEMPLATES_LIST,
   { marketplace: Marketplace[] }
 >;
-export type LoadTemplatesFail = IPlainFailAction<'marketplace/LOAD_TEMPLATES_FAIL'>;
+export type LoadTemplatesFail =
+  IPlainFailAction<'marketplace/LOAD_TEMPLATES_FAIL'>;
 
 export type CreateProject = IAction<
   typeof TYPES.CREATE_PROJECT,

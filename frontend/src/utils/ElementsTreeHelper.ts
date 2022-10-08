@@ -34,7 +34,7 @@ export const updateElementParameters = <
   T extends Entity,
   K extends Entity,
   P extends Entity,
-  R extends Entity
+  R extends Entity,
 >(
   elementID: string,
   parameters: Partial<LibraryElement<T, LibraryElement<K>[]>['parameters']>,

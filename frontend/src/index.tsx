@@ -1,13 +1,17 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { disableReactDevTools } from '@fvilers/disable-react-devtools';
+import { configureStore } from '@Redux/store';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { disableReactDevTools } from '@fvilers/disable-react-devtools';
-import { SnackbarProvider } from 'notistack';
+import { setConfig } from 'react-hot-loader';
 import App from './containers/App';
-import { configureStore } from './redux/store';
 
 import './styles/index.scss';
+
+setConfig({
+  reloadHooks: false,
+});
 
 if (process.env.NODE_ENV === 'production') {
   disableReactDevTools();
@@ -15,16 +19,22 @@ if (process.env.NODE_ENV === 'production') {
 
 const { store, persistor } = configureStore();
 
-render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <SnackbarProvider
-        maxSnack={10}
-        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-      >
+const renderApp = () =>
+  render(
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
         <App />
-      </SnackbarProvider>
-    </PersistGate>
-  </Provider>,
-  document.getElementById('app'),
-);
+      </PersistGate>
+    </Provider>,
+    document.getElementById('app'),
+  );
+
+if (process.env.NODE_ENV === 'development' && module.hot) {
+  module.hot.accept('./containers/App', renderApp);
+}
+
+renderApp();
+
+if (process.env.NODE_ENV === 'development' && module.hot) {
+  module.hot.accept();
+}

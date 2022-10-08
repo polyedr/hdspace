@@ -74,6 +74,7 @@ type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
   fontFamily?: React.CSSProperties['fontFamily'];
   fontSize?: React.CSSProperties['fontSize'];
   fontWeight?: React.CSSProperties['fontWeight'];
+  // eslint-disable-next-line react/no-unused-prop-types
   fontStyle?: React.CSSProperties['fontStyle'];
   textAlign?: React.CSSProperties['textAlign'];
   lineHeight?: React.CSSProperties['lineHeight'];
