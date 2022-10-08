@@ -18,7 +18,6 @@ import {
   Typography as MuiTypography,
 } from '@mui/material';
 import Avatar from '@Components/UI/Avatar';
-import { username } from '@Components/Sidebar/Board/User';
 import { styled } from '@mui/material/styles';
 import { UserData } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -201,13 +200,13 @@ const AllUsersList: React.FC<Props> = ({ onChange, selected }: Props) => {
               <Chip
                 avatar={
                   <Avatar
-                    alt={username(user)}
+                    alt={user.email}
                     src={user.profile.avatar ?? undefined}
                     tooltipDisabled
                   />
                 }
                 variant="outlined"
-                label={username(user)}
+                label={user.email}
                 {...getTagProps({ index })}
               />
             );
@@ -218,14 +217,14 @@ const AllUsersList: React.FC<Props> = ({ onChange, selected }: Props) => {
             <li {...props}>
               <Stack direction="row" alignItems="center" spacing={1.5}>
                 <Avatar
-                  alt={username(user)}
+                  alt={user.email}
                   src={user.profile.avatar ?? undefined}
                   tooltipDisabled
                   sx={{ height: 36, width: 36 }}
                 />
                 <Stack>
                   <TypographyTitle variant="subtitle1">
-                    {username(user)}
+                    {user.email}
                   </TypographyTitle>
                   <TypographySubTitle variant="subtitle2">
                     {user.username}
