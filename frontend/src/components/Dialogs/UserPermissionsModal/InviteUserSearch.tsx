@@ -93,7 +93,7 @@ const filterOptions = (options: UserData[], { inputValue }) =>
     keys: ['firstName', 'lastName', 'email', 'username'],
   });
 
-const AllUsersList: React.FC<Props> = ({ onChange, selected }: Props) => {
+const InviteUserSearch: React.FC<Props> = ({ onChange, selected }: Props) => {
   const dispatch = useDispatch();
   const usersListLoader = useSelector(selectUsersLoading);
   const hasNext = useSelector(selectUsersNext);
@@ -239,4 +239,4 @@ const AllUsersList: React.FC<Props> = ({ onChange, selected }: Props) => {
   );
 };
 
-export default AllUsersList;
+export default InviteUserSearch;
