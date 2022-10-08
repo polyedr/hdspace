@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography } from '@material-ui/core';
 import { ActionTypePM, PlatformActionData } from '@Src/types/pmtools/types';
-import { ListItem, ListItemAvatar, ListItemText, Avatar } from '@mui/material';
+import { ListItemAvatar, Avatar } from '@mui/material';
 import AssignmentTurnedInOutlinedIcon from '@material-ui/icons/AssignmentTurnedInOutlined';
 
 const useStyles = makeStyles({
@@ -89,7 +89,7 @@ const History: React.FC<Props> = ({ activity, platform }) => {
                   }}
                 />
               </span>
-              <h6>Finalize the editor's screen</h6>
+              <h6>Finalize the editor&apos;s screen</h6>
             </div>
             <div>
               <img
