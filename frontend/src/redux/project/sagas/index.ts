@@ -36,6 +36,7 @@ import {
   getMyPermissionsForProjectSaga,
   getUsersSaga,
   updateUserPermissionsForProjectSaga,
+  updateUsersPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { compose } from 'redux';
@@ -551,6 +552,11 @@ export default function* projectSaga() {
   yield takeEvery(
     TYPES.UPDATE_USER_PERMISSIONS_FOR_PROJECT,
     updateUserPermissionsForProjectSaga,
+  );
+
+  yield takeEvery(
+    TYPES.UPDATE_USERS_PERMISSIONS_FOR_PROJECT,
+    updateUsersPermissionsForProjectSaga,
   );
 
   yield fork(viaSaga);

@@ -9,6 +9,7 @@ import {
   apiGetAllUsersPermissionsForProject,
   apiGetPermissionsList,
   apiSetUserPermissionsForProject,
+  apiSetUsersPermissionsForProject,
 } from '@Api/permissions';
 import { selectUserData } from '@Redux/user/selectors';
 import { requestAddHistory } from '@Redux/pmtools/activity/actions';
@@ -197,6 +198,37 @@ export function* updateUserPermissionsForProjectSaga(
     }
     const { error } = yield call(reqWrapper, apiSetUserPermissionsForProject, {
       username: user.username,
+      projectId,
+      permissions,
+    });
+    if (error) {
+      throw new Error(error);
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
+export function* updateUsersPermissionsForProjectSaga(
+  action: ReturnType<typeof Actions.updateUsersPermissionsForProject>,
+) {
+  const { users, projectId, permissions } = action.payload;
+
+  try {
+    yield put(Actions.setStateUsersPermissions(users, permissions));
+
+    const { error } = yield call(reqWrapper, apiSetUsersPermissionsForProject, {
+      emails: users.map((u) => u.email),
       projectId,
       permissions,
     });
