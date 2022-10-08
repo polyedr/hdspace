@@ -84,9 +84,7 @@ const ListContainer: React.FC = (props) => {
               <StyledTableCell>Last Active</StyledTableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {children}
-          </TableBody>
+          <TableBody>{children}</TableBody>
         </Table>
       </TableContainer>
       {/* {children}

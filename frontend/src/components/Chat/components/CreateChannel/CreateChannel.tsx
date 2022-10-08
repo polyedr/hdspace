@@ -9,7 +9,6 @@ import Stack from '@mui/material/Stack';
 import { Button, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FormControl from '@mui/material/FormControl';
-import { getAbsoluteValue } from 'html2canvas/dist/types/css/types/length-percentage';
 import { styled } from '@mui/material/styles';
 import { UserList } from './UserList';
 
