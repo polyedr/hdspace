@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectProjectByIdWrapper } from '@Redux/project/selectors/base';
 import {
   Dialog as MuiDialog,
@@ -14,8 +14,9 @@ import {
   FormControlLabel as MuiFormControlLabel,
   IconButton,
 } from '@mui/material';
+import * as Actions from '@Redux/permissions/actions';
 import CloseIcon from '@mui/icons-material/Close';
-import { UserData } from '@Src/types';
+import { UserData, UserProjectPermission } from '@Src/types';
 import { styled } from '@mui/material/styles';
 import InviteUserSearch from './InviteUserSearch';
 
@@ -57,6 +58,7 @@ const UserPermissionsModal: React.FC<Props> = ({
 }: Props) => {
   const [selectedUsers, setSelectedUsers] = useState<UserData[]>([]);
   const [writePermission, setWritePermission] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   const project = useSelector(selectProjectByIdWrapper(projectId || -1));
 
@@ -66,6 +68,25 @@ const UserPermissionsModal: React.FC<Props> = ({
     },
     [setWritePermission],
   );
+
+  const handleSend = useCallback(() => {
+    if (projectId) {
+      dispatch(
+        Actions.updateUsersPermissionsForProject(
+          projectId,
+          selectedUsers,
+          writePermission
+            ? [
+                UserProjectPermission.CHANGE_PROJECT,
+                UserProjectPermission.VIEW_PROJECT,
+              ]
+            : [UserProjectPermission.VIEW_PROJECT],
+        ),
+      );
+
+      onClose();
+    }
+  }, [selectedUsers, projectId, writePermission, onClose]);
 
   if (!project) {
     return null;
@@ -108,7 +129,7 @@ const UserPermissionsModal: React.FC<Props> = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button color="primary" variant="contained">
+        <Button onClick={handleSend} color="primary" variant="contained">
           Send
         </Button>
       </DialogActions>

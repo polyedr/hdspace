@@ -25,6 +25,28 @@ export const apiSetUserPermissionsForProject = (
     .catch(handleError);
 };
 
+export const apiSetUsersPermissionsForProject = (
+  props: MyAxiosProps & {
+    emails: string[];
+    projectId: number;
+    permissions: UserProjectPermission[];
+  },
+) => {
+  const { emails, projectId, permissions, ...axiosProps } = props;
+  return myAxios({
+    ...axiosProps,
+    url: '/projects/permissionsmaps-projects-assign/',
+    method: 'POST',
+    data: {
+      emails,
+      projectid: projectId,
+      permissions,
+    },
+  })
+    .then((res) => res.data)
+    .catch(handleError);
+};
+
 export const apiGetPermissionsList = (
   props: MyAxiosProps & {
     username: string;

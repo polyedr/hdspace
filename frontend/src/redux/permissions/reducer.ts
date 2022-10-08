@@ -51,8 +51,7 @@ export default produce(
         break;
       }
 
-      case TYPES.SET_STATE_USER_PERMISSIONS:
-        // eslint-disable-next-line no-case-declarations
+      case TYPES.SET_STATE_USER_PERMISSIONS: {
         const { userData, permissions } = action.payload;
         draft.projectUsersPermissionsList.data = {
           ...draft.projectUsersPermissionsList.data,
@@ -63,6 +62,27 @@ export default produce(
           } as PermissionsUserData & { id: string },
         };
         break;
+      }
+
+      case TYPES.SET_STATE_USERS_PERMISSIONS: {
+        const { users, permissions } = action.payload;
+
+        const usersCombinedPermissions = {};
+
+        users.forEach((user) => {
+          usersCombinedPermissions[user.id.toString()] = {
+            id: user.id.toString(),
+            permissions,
+            userData: user,
+          };
+        });
+
+        draft.projectUsersPermissionsList.data = {
+          ...draft.projectUsersPermissionsList.data,
+          ...usersCombinedPermissions,
+        };
+        break;
+      }
 
       case TYPES.CLEAR_STATE_USER_PERMISSIONS:
         // eslint-disable-next-line no-case-declarations
