@@ -20,7 +20,7 @@ const Button = styled(MuiButton)<{ icon: boolean }>(({ icon }) => {
       width: 24,
       height: 24,
       borderRadius: '50%',
-      marginLeft: 10,
+      // marginLeft: 10,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

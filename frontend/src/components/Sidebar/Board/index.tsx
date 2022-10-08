@@ -1,4 +1,4 @@
-import { styled, TextField } from '@mui/material';
+import { Stack, styled, TextField } from '@mui/material';
 import fuzzysort from 'fuzzysort';
 import {
   fetchBoard,
@@ -29,6 +29,24 @@ const ContentHeader = styled('div')(() => ({
 
 const Container = styled('div')(() => ({
   display: 'flex',
+  overflow: 'scroll',
+  width: '100%',
+  height: 'calc(100vh - 127px)',
+
+  '&::-webkit-scrollbar': {
+    height: 5,
+    background: '#E4E6EB',
+    borderRadius: 6,
+  },
+
+  '&::-webkit-scrollbar-thumb': {
+    background: '#B0B0BD',
+    borderRadius: 6,
+  },
+
+  '&::-webkit-scrollbar-track': {
+    borderRadius: 6,
+  },
 }));
 
 const StyledForm = styled('div')(() => ({
@@ -58,7 +76,7 @@ const StyledForm = styled('div')(() => ({
 
 const StyledButton = styled(Button)<{ active?: boolean }>(
   ({ active = false, theme }) => ({
-    backgroundColor: active ? theme.palette.primary.main : '#e4e8ef',
+    backgroundColor: active ? theme.palette.primary.main : '#F3F4F6',
     color: active ? `#fff` : '#81818E',
     borderRadius: 4,
     boxShadow: 'none',
@@ -70,6 +88,20 @@ const StyledButton = styled(Button)<{ active?: boolean }>(
     },
   }),
 );
+
+const NoContentWrapper = styled('div')({
+  textAlign: 'center',
+  marginTop: '10%',
+
+  '& p': {
+    margin: '10px 0 30px',
+  },
+});
+
+const PrimaryButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  textTransform: 'capitalize',
+}));
 
 const Board = () => {
   const [showCreateColumn, setShowCreateColumn] = useState(false);
@@ -182,37 +214,37 @@ const Board = () => {
       <ContentWrapper>
         <ContentHeader>
           <Grid container spacing={2} alignItems="center">
-            <Grid item md="auto">
-              <StyledForm>
-                <TextField
-                  onChange={handleSearchChange}
-                  type="text"
-                  placeholder="Search Task"
-                  fullWidth
+            <Grid item md={8} alignItems="center">
+              <Stack direction="row" spacing={1} alignItems="center">
+                <StyledForm>
+                  <TextField
+                    onChange={handleSearchChange}
+                    type="text"
+                    placeholder="Search Task"
+                    fullWidth
+                  />
+                  <IconButton
+                    type="button"
+                    sx={{ p: '10px' }}
+                    aria-label="search"
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </StyledForm>
+                <Members
+                  selected={filteredUsers}
+                  onSelected={toggleFilteredUsers}
                 />
-                <IconButton
-                  type="button"
-                  sx={{ p: '10px' }}
-                  aria-label="search"
+                <StyledButton
+                  onClick={() => toggleFilteredUsers(activeUserId)}
+                  variant="contained"
+                  active={filteredUsers.indexOf(activeUserId) !== -1}
                 >
-                  <SearchIcon />
-                </IconButton>
-              </StyledForm>
+                  Only my tasks
+                </StyledButton>
+              </Stack>
             </Grid>
-            <Members
-              selected={filteredUsers}
-              onSelected={toggleFilteredUsers}
-            />
-            <Grid item md={2}>
-              <StyledButton
-                onClick={() => toggleFilteredUsers(activeUserId)}
-                variant="contained"
-                active={filteredUsers.indexOf(activeUserId) !== -1}
-              >
-                Only my tasks
-              </StyledButton>
-            </Grid>
-            <Grid item md={5} style={{ textAlign: 'right' }}>
+            <Grid item md={4} textAlign="right" pr={2}>
               <StyledButton
                 onClick={handleShowCreateColumn}
                 variant="contained"
@@ -222,26 +254,45 @@ const Board = () => {
             </Grid>
           </Grid>
         </ContentHeader>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable
-            droppableId="board-columns"
-            type="board-columns"
-            direction="horizontal"
-          >
-            {(provided) => (
-              <Container ref={provided.innerRef} {...provided.droppableProps}>
-                {columnsToDisplay.map((column, index) => (
-                  <Column
-                    column={column}
-                    index={index}
-                    key={column.id.toString()}
-                  />
-                ))}
-                {provided.placeholder}
-              </Container>
-            )}
-          </Droppable>
-        </DragDropContext>
+        {columnsToDisplay.length > 0 ? (
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable
+              droppableId="board-columns"
+              type="board-columns"
+              direction="horizontal"
+            >
+              {(provided) => (
+                <Container ref={provided.innerRef} {...provided.droppableProps}>
+                  {columnsToDisplay.map((column, index) => (
+                    <Column
+                      column={column}
+                      index={index}
+                      key={column.id.toString()}
+                    />
+                  ))}
+                  {provided.placeholder}
+                </Container>
+              )}
+            </Droppable>
+          </DragDropContext>
+        ) : (
+          <NoContentWrapper>
+            <h2>There is no task column in your board yet</h2>
+            <p>
+              Create new column by clicking on the button below and then add
+              tasks in it.
+            </p>
+            <div>
+              <PrimaryButton
+                onClick={handleShowCreateColumn}
+                variant="contained"
+                color="primary"
+              >
+                New Column
+              </PrimaryButton>
+            </div>
+          </NoContentWrapper>
+        )}
       </ContentWrapper>
       <NewColumn
         projectId={projectId}
