@@ -4,7 +4,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { ThemeProvider } from '@mui/styles';
 import { CssBaseline } from '@material-ui/core';
-import ChatProvider from '@Components/Chat/ChatProvider';
+import ChatProvider from '@Components/Sidebar/Chat/ChatProvider';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { SnackbarProvider } from 'notistack';

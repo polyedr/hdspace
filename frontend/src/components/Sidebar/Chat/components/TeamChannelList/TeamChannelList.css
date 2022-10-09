@@ -23,10 +23,11 @@
   }
 
   .team-channel-list__header__title {
-    font-family: Helvetica Neue, sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 16px;
-    height: 16px;
     color: #81818E;
-    margin-bottom: 10px;
+  }
+
+  .team-channel-list p:not(.team-channel-list__header__title) {
+    padding: 0 16px;
   }
