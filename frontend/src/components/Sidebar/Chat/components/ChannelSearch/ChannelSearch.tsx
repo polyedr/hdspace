@@ -7,6 +7,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
 import { channelByUser, ChannelOrUserType, isChannel } from './utils';
 import { ResultsDropdown } from './ResultsDropdown';
 
@@ -21,6 +22,7 @@ import type {
   TeamReactionType,
   TeamUserType,
 } from '../../client';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 const SearchTextField = styled(TextField)({
   '& .MuiInputBase-root': {
@@ -31,6 +33,8 @@ const SearchTextField = styled(TextField)({
 });
 
 export const ChannelSearch = () => {
+  const projectId = useSelector(selectCurrentProjectId);
+
   const { client, setActiveChannel } = useChatContext<
     TeamAttachmentType,
     TeamChannelType,
@@ -139,6 +143,7 @@ export const ChannelSearch = () => {
         {
           type: 'team',
           name: { $autocomplete: text },
+          team: projectId.toString(),
         },
         {},
         { limit: 5 },
@@ -147,7 +152,12 @@ export const ChannelSearch = () => {
       const userResponse = client.queryUsers(
         {
           id: { $ne: client.userID || '' },
-          $and: [{ name: { $autocomplete: text } }],
+          $and: [
+            {
+              name: { $autocomplete: text },
+              teams: { $contains: projectId.toString() },
+            },
+          ],
         },
         { id: 1 },
         { limit: 5 },

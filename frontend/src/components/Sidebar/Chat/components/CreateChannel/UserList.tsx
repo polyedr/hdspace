@@ -13,6 +13,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { styled } from '@mui/material/styles';
 
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -192,6 +194,8 @@ type Props = {
 export const UserList: React.FC<Props> = (props) => {
   const { filters, setSelectedUsers } = props;
 
+  const projectId = useSelector(selectCurrentProjectId);
+
   const { client } = useChatContext<
     TeamAttachmentType,
     TeamChannelType,
@@ -216,7 +220,11 @@ export const UserList: React.FC<Props> = (props) => {
 
       try {
         const response = await client.queryUsers(
-          { id: { $ne: client.userID || '' }, ...filters },
+          {
+            id: { $ne: client.userID || '' },
+            ...filters,
+            teams: { $contains: projectId.toString() },
+          },
           { id: 1 },
           { limit: 8 },
         );

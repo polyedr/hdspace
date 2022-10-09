@@ -10,6 +10,9 @@ import { Button, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FormControl from '@mui/material/FormControl';
 import { styled } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import UserPermissionsModal from '@Components/Dialogs/UserPermissionsModal';
 import { UserList } from './UserList';
 
 import { CloseCreateChannel } from '../../assets';
@@ -129,6 +132,8 @@ type Props = {
 export const CreateChannel: React.FC<Props> = (props) => {
   const { createType, filters, setIsCreating } = props;
 
+  const [inviteProjectId, setInviteProjectId] = useState<number | null>(null);
+
   const { client, setActiveChannel } = useChatContext<
     TeamAttachmentType,
     TeamChannelType,
@@ -138,6 +143,8 @@ export const CreateChannel: React.FC<Props> = (props) => {
     TeamReactionType,
     TeamUserType
   >();
+
+  const projectId = useSelector(selectCurrentProjectId);
 
   const [channelName, setChannelName] = useState('');
   const [selectedUsers, setSelectedUsers] = useState<string[] | undefined>([
@@ -152,7 +159,7 @@ export const CreateChannel: React.FC<Props> = (props) => {
       const newChannel = await client.channel(createType, channelName, {
         name: channelName,
         members: selectedUsers,
-        demo: 'team',
+        team: projectId.toString(),
       });
 
       await newChannel.watch();
@@ -192,7 +199,12 @@ export const CreateChannel: React.FC<Props> = (props) => {
             <SearchIcon />
           </InputWrapper>
           <div>
-            <InviteButton variant="contained">Invite People</InviteButton>
+            <InviteButton
+              onClick={() => setInviteProjectId(projectId)}
+              variant="contained"
+            >
+              Invite People
+            </InviteButton>
           </div>
         </Stack>
       </div>
@@ -206,6 +218,10 @@ export const CreateChannel: React.FC<Props> = (props) => {
       <div className="create-channel__button-wrapper" onClick={createChannel}>
         <p>{createType === 'team' ? 'Create Channel' : 'Start Conversation'}</p>
       </div>
+      <UserPermissionsModal
+        projectId={inviteProjectId}
+        onClose={() => setInviteProjectId(null)}
+      />
     </div>
   );
 };
