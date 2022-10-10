@@ -10402,6 +10402,9 @@ button.str-chat__message-reactions-list-item {
 
 /*# sourceMappingURL=index.css.map */
 
+.div-root-384 {
+  height: calc(100% - 50px);
+}
 
 .app__wrapper {
   display: flex;
@@ -10409,7 +10412,7 @@ button.str-chat__message-reactions-list-item {
   /* height: 800px; */
   height: 100%;
   /* border-radius: 16px; */
-  box-shadow: rgba(0, 0, 0, 0.33) 0px 1px 4px 0px;
+  /* box-shadow: rgba(0, 0, 0, 0.33) 0px 1px 4px 0px; */
 }
 
 .str-chat-channel-list {
