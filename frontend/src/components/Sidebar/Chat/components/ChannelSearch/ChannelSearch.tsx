@@ -8,6 +8,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { channelByUser, ChannelOrUserType, isChannel } from './utils';
 import { ResultsDropdown } from './ResultsDropdown';
 
@@ -22,7 +23,6 @@ import type {
   TeamReactionType,
   TeamUserType,
 } from '../../client';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 
 const SearchTextField = styled(TextField)({
   '& .MuiInputBase-root': {

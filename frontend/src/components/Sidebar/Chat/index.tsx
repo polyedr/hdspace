@@ -1,4 +1,6 @@
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { ChannelFilters, ChannelSort } from 'stream-chat';
 
@@ -10,12 +12,8 @@ import client, { TeamChannelType } from './client';
 import { ChannelContainer } from './components/ChannelContainer/ChannelContainer';
 import { ChannelListContainer } from './components/ChannelListContainer/ChannelListContainer';
 
-const targetOrigin = 'localhost:8080';
+const targetOrigin = document.location.origin;
 
-const filters: ChannelFilters[] = [
-  { type: 'team', demo: 'team' },
-  { type: 'messaging', demo: 'team' },
-];
 const options = { state: true, watch: true, presence: true, limit: 3 };
 const sort: ChannelSort<TeamChannelType> = {
   last_message_at: -1,
@@ -23,6 +21,13 @@ const sort: ChannelSort<TeamChannelType> = {
 };
 
 const App = () => {
+  const projectId = useSelector(selectCurrentProjectId);
+
+  const filters: ChannelFilters[] = [
+    { type: 'team', team: { $in: [projectId.toString()] } },
+    { type: 'messaging', team: { $in: [projectId.toString()] } },
+  ];
+
   const [createType, setCreateType] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
