@@ -83,3 +83,8 @@
     cursor: pointer;
     margin: 20px;
   }
+
+  .create-channel__container .button-wrapper {
+    text-align: right;
+    padding: 20px;
+  }

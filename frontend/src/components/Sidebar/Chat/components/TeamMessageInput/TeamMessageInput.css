@@ -2,7 +2,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background: #f7f6f8;
+    /* background: #f7f6f8; */
     padding: 15px 20px 28px;
     width: 100%;
   }
@@ -12,8 +12,8 @@
   }
 
   .team-message-input__input {
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    border: 1px solid #E4E6EB;
+    border-radius: 4px;
   }
 
   .team-message-input__input:focus-within {
@@ -42,7 +42,7 @@
   }
 
   .team-message-input__wrapper .giphy-icon__text {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: Helvetica Neue, sans-serif; 
     font-style: normal;
     font-weight: bold;
     font-size: 11px;
@@ -76,7 +76,7 @@
     background: #fff;
     border: none;
     outline: none;
-    font-family: Helvetica Neue, sans-serif;
+    font-family: Helvetica Neue, sans-serif; 
     font-style: normal;
     font-weight: normal;
     font-size: 15px;
@@ -173,7 +173,7 @@
   }
 
   .rta__list-header {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: Helvetica Neue, sans-serif; 
     font-size: 14px;
     line-height: 16px;
     color: #2c2c30;

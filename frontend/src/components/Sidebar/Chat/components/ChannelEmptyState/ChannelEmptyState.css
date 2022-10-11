@@ -33,7 +33,7 @@
   }
 
   .channel-empty__first {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: Helvetica Neue, sans-serif; 
     font-weight: bold;
     font-size: 18px;
     line-height: 120%;
@@ -46,7 +46,7 @@
   }
 
   .channel-empty__second {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: Helvetica Neue, sans-serif; 
     font-size: 14px;
     line-height: 120%;
     margin: 0;

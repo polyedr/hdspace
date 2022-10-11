@@ -10402,10 +10402,6 @@ button.str-chat__message-reactions-list-item {
 
 /*# sourceMappingURL=index.css.map */
 
-.div-root-384 {
-  height: calc(100% - 50px);
-}
-
 .app__wrapper {
   display: flex;
   flex: 1;
@@ -10452,4 +10448,10 @@ button.str-chat__message-reactions-list-item {
     box-shadow: unset;
     transition: unset;
   }
+}
+
+/* custom css */
+
+.div-root-384 {
+  height: calc(100% - 50px);
 }

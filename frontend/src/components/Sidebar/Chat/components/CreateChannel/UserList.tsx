@@ -72,8 +72,9 @@ const ListContainer = (props) => {
             <StyledTableCell>Last Active</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody>{children}</TableBody>
+        {/* <TableBody>{children}</TableBody> */}
       </Table>
+      {children}
     </TableContainer>
   );
 };

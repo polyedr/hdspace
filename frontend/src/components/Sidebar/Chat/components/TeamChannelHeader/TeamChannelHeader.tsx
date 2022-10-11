@@ -115,15 +115,16 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
       ) : (
         <div className="team-channel-header__channel-wrapper">
           <p className="team-channel-header__name">{teamHeader}</p>
-          <span style={{ display: 'flex' }} onClick={() => setIsEditing(true)}>
+          {/* <span style={{ display: 'flex' }} onClick={() => setIsEditing(true)}>
             <ChannelInfo />
-          </span>
+          </span> */}
         </div>
       )}
       <div className="team-channel-header__right">
         <p className="team-channel-header__right-text">
           {getWatcherText(watcher_count)}
         </p>
+
         <div
           className="team-channel-header__right-pin-wrapper"
           onClick={(event) => {
@@ -134,6 +135,10 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
           <PinIcon />
           <p className="team-channel-header__right-text">Pins</p>
         </div>
+
+        <span style={{ display: 'flex' }} onClick={() => setIsEditing(true)}>
+          <ChannelInfo />
+        </span>
       </div>
     </div>
   );

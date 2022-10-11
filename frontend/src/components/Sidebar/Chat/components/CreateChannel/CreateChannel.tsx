@@ -209,13 +209,15 @@ export const CreateChannel: React.FC<Props> = (props) => {
         </Stack>
       </div>
       <UserList {...{ filters, setSelectedUsers, selectedUsers }} />
-      <Button
-        variant="contained"
-        disabled={!selectedUsers || selectedUsers?.length < 2}
-        onClick={createChannel}
-      >
-        {createType === 'team' ? 'Create Channel' : 'Start Conversation'}
-      </Button>
+      <div className="button-wrapper">
+        <Button
+          variant="contained"
+          disabled={!selectedUsers || selectedUsers?.length < 2}
+          onClick={createChannel}
+        >
+          {createType === 'team' ? 'Create Channel' : 'Start Conversation'}
+        </Button>
+      </div>
       <UserPermissionsModal
         projectId={inviteProjectId}
         onClose={() => setInviteProjectId(null)}

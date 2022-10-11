@@ -27,7 +27,7 @@
 }
 
 .str-chat__thread-header-details small {
-  font-family: Helvetica Neue, sans-serif;
+  font-family: Helvetica Neue, sans-serif; 
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
@@ -99,7 +99,7 @@
 }
 
 .thread-message-input__wrapper .giphy-icon__text {
-  font-family: Helvetica Neue, sans-serif;
+  font-family: Helvetica Neue, sans-serif; 
   font-style: normal;
   font-weight: bold;
   font-size: 11px;
@@ -142,7 +142,7 @@
   background: #fff;
   border: none;
   outline: none;
-  font-family: Helvetica Neue, sans-serif;
+  font-family: Helvetica Neue, sans-serif; 
   font-size: 15px;
   line-height: 10px;
 }
