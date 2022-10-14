@@ -72,7 +72,7 @@ export const serialize = (node: Descendant) => {
   }
 
   if (node.type === 'mention') {
-    return <strong>@{node.character}</strong>;
+    return <strong>{node.character}</strong>;
   }
 
   const children = node.children.map((n) => serialize(n));
