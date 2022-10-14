@@ -26,7 +26,10 @@ class ProjectScreenHistorySerializer(serializers.ModelSerializer):
             "project",
             "history_user"
             )
+<<<<<<< HEAD
 
+=======
+>>>>>>> d4d8823 (Optimizing fields for the ProjectScreen activity)
 
 
 class ProjectHistorySerializer(serializers.ModelSerializer):

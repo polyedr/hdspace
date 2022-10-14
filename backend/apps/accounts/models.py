@@ -147,6 +147,7 @@ class SharedLink(TimeStampedModel):
     access_token = models.CharField(max_length=256, editable=False, null=True)
     project_id = models.IntegerField(default=0)
     screen_id = models.IntegerField(default=0)
+    task_id = models.IntegerField(default=0)
     element_id = models.IntegerField(default=0)
 
     creator = models.ForeignKey(get_user_model(), related_name="linkcreator", null=True, blank=True,
