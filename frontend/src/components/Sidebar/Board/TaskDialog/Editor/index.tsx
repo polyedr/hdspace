@@ -218,6 +218,11 @@ const RichTextEditor = React.forwardRef(
             >
               {chars.map((char, i) => (
                 <div
+                  onClick={() => {
+                    Transforms.select(editor, target);
+                    insertMention(editor, char);
+                    setTarget(null);
+                  }}
                   key={char}
                   style={{
                     padding: '4px 8px',
