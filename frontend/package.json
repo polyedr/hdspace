@@ -230,7 +230,6 @@
     "slate": "^0.82.1",
     "slate-history": "^0.66.0",
     "slate-html-serializer": "^0.8.13",
-    "slate-mentions": "0.0.5",
     "slate-react": "^0.82.1",
     "stream": "0.0.2",
     "stream-chat": "4.5.0-beta.0",
