@@ -2,122 +2,86 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-use-before-define */
 // @ts-nocheck
-import React, { useCallback, useMemo } from 'react';
-import isHotkey from 'is-hotkey';
-import { Editable, withReact, useSlate, Slate } from 'slate-react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import ReactDOM from 'react-dom';
+import { Editable, withReact, Slate, ReactEditor } from 'slate-react';
 
-import {
-  Editor,
-  Transforms,
-  createEditor,
-  Descendant,
-  Element as SlateElement,
-  Text,
-} from 'slate';
+import { Editor, Transforms, createEditor, Descendant, Range } from 'slate';
 import { withHistory } from 'slate-history';
 
-import {
-  Grid,
-  IconButton as MuiIconButton,
-  Icon,
-  Divider,
-} from '@mui/material';
-import SendIcon from '@mui/icons-material/Send';
-import { styled } from '@mui/material/styles';
+import { Grid, Divider } from '@mui/material';
 import { EditableProps } from 'slate-react/dist/components/editable';
-import escapeHtml from 'escape-html';
-import { Toolbar } from './Components';
-
-export const serialize = (node: Descendant) => {
-  if (Text.isText(node)) {
-    let string = escapeHtml(node.text);
-    if (node.code) {
-      string = <code>{string}</code>;
-    }
-
-    if (node.bold) {
-      string = <strong>{string}</strong>;
-    }
-
-    if (node.italic) {
-      string = <em>{string}</em>;
-    }
-
-    if (node.underline) {
-      string = <u>{string}</u>;
-    }
-
-    if (node.strikethrough) {
-      string = <s>{string}</s>;
-    }
-
-    return string;
-  }
-
-  const children = node.children.map((n) => serialize(n));
-
-  switch (node.type) {
-    case 'block-quote':
-      return <blockquote>{children}</blockquote>;
-    case 'bulleted-list':
-      return <ul>{children}</ul>;
-    case 'heading-one':
-      return <h1>{children}</h1>;
-    case 'heading-two':
-      return <h2>{children}</h2>;
-    case 'list-item':
-      return <li>{children}</li>;
-    case 'code':
-      return <code>{children}</code>;
-    case 'numbered-list':
-      return <ol>{children}</ol>;
-    case 'link':
-      return <a href={escapeHtml(node.url)}>${children}</a>;
-    default:
-      return <p>{children}</p>;
-  }
-};
+import { useSelector } from 'react-redux';
+import { selectAllUsersPermissions } from '@Redux/permissions/selectors';
+import fuzzysort from 'fuzzysort';
+import {
+  Toolbar,
+  IconButton,
+  SendButton,
+  BlockButton,
+  MarkButton,
+  Leaf,
+  Element,
+  serialize,
+} from './Components';
+import { insertMention, withMentions } from './helpers';
 
 export const RenderEditorHtml = ({ nodes }: { nodes: Descendant[] }) => {
   return <>{nodes.map(serialize)}</>;
 };
 
-const SendButton = styled(SendIcon)({
-  color: '#81818E',
-});
-
-const IconButton = styled(MuiIconButton)({
-  display: 'inline-flex !important',
-  padding: 3,
-
-  '& .material-icons': {
-    fontSize: 20,
-  },
-
-  '& span': {
-    // color: '#81818E',
-    margin: 0,
-  },
-});
-
-const HOTKEYS = {
-  'mod+b': 'bold',
-  'mod+i': 'italic',
-  'mod+u': 'underline',
-  'mod+`': 'code',
+export const Portal = ({ children }) => {
+  return typeof document === 'object'
+    ? ReactDOM.createPortal(children, document.body)
+    : null;
 };
-
-const LIST_TYPES = ['numbered-list', 'bulleted-list'];
-const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 
 const RichTextEditor = React.forwardRef(
   ({ onSubmit, onChange, value, ...props }: EditableProps, forwardRef) => {
+    const ref = useRef<HTMLDivElement | null>();
+    const [target, setTarget] = useState<Range | undefined>();
+    const [index, setIndex] = useState(0);
+    const [search, setSearch] = useState('');
+
     const renderElement = useCallback((props) => <Element {...props} />, []);
     const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-    const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+    const editor = useMemo(
+      () => withMentions(withHistory(withReact(createEditor()))),
+      [],
+    );
+
+    const userPermissions = useSelector(selectAllUsersPermissions);
 
     const handleOnChange = useCallback(
       (value: Descendant[]) => {
+        if (editor.selection && Range.isCollapsed(editor.selection)) {
+          const [start] = Range.edges(editor.selection);
+          const wordBefore = Editor.before(editor, start, { unit: 'word' });
+          const before = wordBefore && Editor.before(editor, wordBefore);
+          const beforeRange = before && Editor.range(editor, before, start);
+          const beforeText = beforeRange && Editor.string(editor, beforeRange);
+          const beforeMatch = beforeText && beforeText.match(/^@(\w+)$/);
+          const after = Editor.after(editor, start);
+          const afterRange = Editor.range(editor, start, after);
+          const afterText = Editor.string(editor, afterRange);
+          const afterMatch = afterText.match(/^(\s|$)/);
+
+          if (beforeMatch && afterMatch) {
+            setTarget(beforeRange);
+            setSearch(beforeMatch[1]);
+            setIndex(0);
+            return;
+          }
+        }
+
+        setTarget(null);
+
         const isAstChange = editor.operations.some(
           (op) => op.type !== 'set_selection',
         );
@@ -127,6 +91,62 @@ const RichTextEditor = React.forwardRef(
       },
       [onChange, editor],
     );
+
+    const users = useMemo(() => {
+      return Object.values(userPermissions).map((u) => u.userData);
+    }, [userPermissions]);
+
+    const chars = useMemo(() => {
+      return fuzzysort
+        .go(search, users, {
+          keys: ['username', 'email', 'first_name', 'last_name'],
+        })
+        .map((r) => r.obj.username);
+    }, [search]);
+
+    const onKeyDown = useCallback(
+      (event) => {
+        if (target) {
+          switch (event.key) {
+            case 'ArrowDown':
+              event.preventDefault();
+              // eslint-disable-next-line no-case-declarations
+              const prevIndex = index >= chars.length - 1 ? 0 : index + 1;
+              setIndex(prevIndex);
+              break;
+            case 'ArrowUp':
+              event.preventDefault();
+              // eslint-disable-next-line no-case-declarations
+              const nextIndex = index <= 0 ? chars.length - 1 : index - 1;
+              setIndex(nextIndex);
+              break;
+            case 'Tab':
+            case 'Enter':
+              event.preventDefault();
+              Transforms.select(editor, target);
+              insertMention(editor, chars[index]);
+              setTarget(null);
+              break;
+            case 'Escape':
+              event.preventDefault();
+              setTarget(null);
+              break;
+            default:
+          }
+        }
+      },
+      [index, search, target],
+    );
+
+    useEffect(() => {
+      if (target && chars.length > 0) {
+        const el = ref.current;
+        const domRange = ReactEditor.toDOMRange(editor, target);
+        const rect = domRange.getBoundingClientRect();
+        el.style.top = `${rect.top + window.pageYOffset + 24}px`;
+        el.style.left = `${rect.left + window.pageXOffset}px`;
+      }
+    }, [chars.length, editor, index, search, target]);
 
     return (
       <Slate
@@ -141,15 +161,7 @@ const RichTextEditor = React.forwardRef(
           renderLeaf={renderLeaf}
           spellCheck
           autoFocus
-          onKeyDown={(event) => {
-            for (const hotkey in HOTKEYS) {
-              if (isHotkey(hotkey, event as any)) {
-                event.preventDefault();
-                const mark = HOTKEYS[hotkey];
-                toggleMark(editor, mark);
-              }
-            }
-          }}
+          onKeyDown={onKeyDown}
         />
         <Grid container alignItems="center">
           <Grid item md={10}>
@@ -188,186 +200,42 @@ const RichTextEditor = React.forwardRef(
             ) : null}
           </Grid>
         </Grid>
+        {target && chars.length > 0 && (
+          <Portal>
+            <div
+              ref={ref}
+              style={{
+                top: '-9999px',
+                left: '-9999px',
+                position: 'absolute',
+                zIndex: 100000,
+                padding: '3px',
+                background: 'white',
+                borderRadius: '4px',
+                boxShadow: '0 1px 5px rgba(0,0,0,.2)',
+              }}
+              data-cy="mentions-portal"
+            >
+              {chars.map((char, i) => (
+                <div
+                  key={char}
+                  style={{
+                    padding: '4px 8px',
+                    minWidth: 200,
+                    borderRadius: '3px',
+                    background: i === index ? '#B4D5FF' : 'transparent',
+                  }}
+                >
+                  {char}
+                </div>
+              ))}
+            </div>
+          </Portal>
+        )}
       </Slate>
     );
   },
 );
-
-const toggleBlock = (editor, format) => {
-  const isActive = isBlockActive(
-    editor,
-    format,
-    TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
-  );
-  const isList = LIST_TYPES.includes(format);
-
-  Transforms.unwrapNodes(editor, {
-    match: (n) =>
-      !Editor.isEditor(n) &&
-      SlateElement.isElement(n) &&
-      LIST_TYPES.includes(n.type) &&
-      !TEXT_ALIGN_TYPES.includes(format),
-    split: true,
-  });
-  let newProperties: Partial<SlateElement>;
-  if (TEXT_ALIGN_TYPES.includes(format)) {
-    newProperties = {
-      align: isActive ? undefined : format,
-    };
-  } else {
-    newProperties = {
-      type: isActive ? 'paragraph' : isList ? 'list-item' : format,
-    };
-  }
-  Transforms.setNodes<SlateElement>(editor, newProperties);
-
-  if (!isActive && isList) {
-    const block = { type: format, children: [] };
-    Transforms.wrapNodes(editor, block);
-  }
-};
-
-const toggleMark = (editor, format) => {
-  const isActive = isMarkActive(editor, format);
-
-  if (isActive) {
-    Editor.removeMark(editor, format);
-  } else {
-    Editor.addMark(editor, format, true);
-  }
-};
-
-const isBlockActive = (editor, format, blockType = 'type') => {
-  const { selection } = editor;
-  if (!selection) return false;
-
-  const [match] = Array.from(
-    Editor.nodes(editor, {
-      at: Editor.unhangRange(editor, selection),
-      match: (n) =>
-        !Editor.isEditor(n) &&
-        SlateElement.isElement(n) &&
-        n[blockType] === format,
-    }),
-  );
-
-  return !!match;
-};
-
-const isMarkActive = (editor, format) => {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format] === true : false;
-};
-
-const Element = ({ attributes, children, element }) => {
-  const style = { textAlign: element.align };
-  switch (element.type) {
-    case 'block-quote':
-      return (
-        <blockquote style={style} {...attributes}>
-          {children}
-        </blockquote>
-      );
-    case 'bulleted-list':
-      return (
-        <ul style={style} {...attributes}>
-          {children}
-        </ul>
-      );
-    case 'heading-one':
-      return (
-        <h1 style={style} {...attributes}>
-          {children}
-        </h1>
-      );
-    case 'heading-two':
-      return (
-        <h2 style={style} {...attributes}>
-          {children}
-        </h2>
-      );
-    case 'list-item':
-      return (
-        <li style={style} {...attributes}>
-          {children}
-        </li>
-      );
-    case 'numbered-list':
-      return (
-        <ol style={style} {...attributes}>
-          {children}
-        </ol>
-      );
-    default:
-      return (
-        <p style={style} {...attributes}>
-          {children}
-        </p>
-      );
-  }
-};
-
-const Leaf = ({ attributes, children, leaf }) => {
-  if (leaf.bold) {
-    children = <strong>{children}</strong>;
-  }
-
-  if (leaf.code) {
-    children = <code>{children}</code>;
-  }
-
-  if (leaf.italic) {
-    children = <em>{children}</em>;
-  }
-
-  if (leaf.underline) {
-    children = <u>{children}</u>;
-  }
-
-  if (leaf.strikethrough) {
-    children = <s>{children}</s>;
-  }
-
-  return <span {...attributes}>{children}</span>;
-};
-
-const BlockButton = ({ format, icon }) => {
-  const editor = useSlate();
-  return (
-    <IconButton
-      style={
-        isBlockActive(
-          editor,
-          format,
-          TEXT_ALIGN_TYPES.includes(format) ? 'align' : 'type',
-        )
-          ? { color: '#000' }
-          : {}
-      }
-      onMouseDown={(event) => {
-        event.preventDefault();
-        toggleBlock(editor, format);
-      }}
-    >
-      <Icon>{icon}</Icon>
-    </IconButton>
-  );
-};
-
-const MarkButton = ({ format, icon }) => {
-  const editor = useSlate();
-  return (
-    <IconButton
-      onMouseDown={(event) => {
-        event.preventDefault();
-        toggleMark(editor, format);
-      }}
-      style={isMarkActive(editor, format) ? { color: '#000' } : {}}
-    >
-      <Icon>{icon}</Icon>
-    </IconButton>
-  );
-};
 
 const initialValue: Descendant[] = [
   {
