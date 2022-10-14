@@ -11,7 +11,22 @@ class ColumnTaskHistorySerializer(serializers.ModelSerializer):
 class ProjectScreenHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectScreen.history.model
-        fields = "__all__"
+        fields = ("history_id",
+            "id",
+            "modified",
+            "name",
+            "buoyancy",
+            "status",
+            "created",
+            "updated",
+            "image",
+            "history_date",
+            "history_change_reason",
+            "history_type",
+            "project",
+            "history_user"
+            )
+
 
 
 class ProjectHistorySerializer(serializers.ModelSerializer):
