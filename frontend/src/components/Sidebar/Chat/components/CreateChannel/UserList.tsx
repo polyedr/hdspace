@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles';
 
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { selectUserPermissions } from '@Redux/permissions/selectors';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -158,6 +159,8 @@ export const UserList: React.FC<Props> = (props) => {
 
   const projectId = useSelector(selectCurrentProjectId);
 
+  const members = useSelector(selectUserPermissions);
+
   const { client } = useChatContext<
     TeamAttachmentType,
     TeamChannelType,
@@ -215,7 +218,7 @@ export const UserList: React.FC<Props> = (props) => {
     };
 
     if (client) getUsers();
-  }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [filters, members]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (error) {
     return (
