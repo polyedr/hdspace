@@ -34,7 +34,7 @@ export const ChannelListContainer: React.FC<Props> = (props) => {
         <ChannelList
           channelRenderFilterFn={customChannelTeamFilter}
           filters={filters[0]}
-          // options={options}
+          options={options}
           sort={sort}
           List={(listProps) => (
             <TeamChannelList
@@ -54,7 +54,7 @@ export const ChannelListContainer: React.FC<Props> = (props) => {
         <ChannelList
           channelRenderFilterFn={customChannelMessagingFilter}
           filters={filters[1]}
-          // options={options}
+          options={options}
           setActiveChannelOnMount={false}
           sort={sort}
           List={(listProps) => (
