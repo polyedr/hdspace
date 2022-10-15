@@ -14,7 +14,7 @@ import { ChannelListContainer } from './components/ChannelListContainer/ChannelL
 
 const targetOrigin = document.location.origin;
 
-const options = { state: true, watch: true, presence: true, limit: 3 };
+const options = { state: true, watch: true, presence: true, limit: -1 };
 const sort: ChannelSort<TeamChannelType> = {
   last_message_at: -1,
   updated_at: -1,
