@@ -25,6 +25,7 @@
     font-size: 16px;
     color: #2c2c30;
     margin-right: 8px;
+    font-family: 'Roboto', sans-serif;
   }
 
   .team-channel-header__name-wrapper {
@@ -74,7 +75,7 @@
   }
 
   .team-channel-header__right-text {
-    font-family: Helvetica Neue, sans-serif; 
+    font-family: 'Roboto', sans-serif; 
     font-size: 14px;
     color: #858688;
   }

@@ -33,11 +33,10 @@
   }
 
   .channel-empty__first {
-    font-family: Helvetica Neue, sans-serif; 
-    font-weight: bold;
-    font-size: 18px;
-    line-height: 120%;
-    color: #2c2c30;
+    font-family: 'Roboto', sans-serif; 
+    font-weight: 500;
+    font-size: 14px;
+    color: #2A2A2D;
     margin-bottom: 10px;
   }
 
@@ -46,9 +45,19 @@
   }
 
   .channel-empty__second {
-    font-family: Helvetica Neue, sans-serif; 
+    font-family: 'Roboto', sans-serif; 
     font-size: 14px;
     line-height: 120%;
     margin: 0;
     color: #858688;
+  }
+
+  /* custom css */
+
+  .channel-empty__heading {
+    font-size: 18px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    color: #2A2A2D;
+    margin-bottom: 0;
   }

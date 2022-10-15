@@ -30,7 +30,7 @@
 }
 
 .custom-thread-header {
-  height: 62px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,16 +44,15 @@
 }
 
 .custom-thread-header__left-title {
-  font-family: Helvetica Neue, sans-serif; 
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 22px;
-  color: #2c2c30;
-  margin-right: 10px;
+  font-family: 'Roboto', sans-serif; 
+  font-weight: 500;
+  font-size: 16px;
+  color: #2A2A2D;
+  margin: 0 10px 0 0;
 }
 
 .custom-thread-header__left-count {
-  font-family: Helvetica Neue, sans-serif; 
+  font-family: 'Roboto', sans-serif; 
   font-size: 14px;
   color: #858688;
 }

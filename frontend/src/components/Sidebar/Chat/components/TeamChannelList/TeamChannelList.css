@@ -28,6 +28,6 @@
     color: #81818E;
   }
 
-  .team-channel-list p:not(.team-channel-list__header__title) {
+  .team-channel-list p {
     padding: 0 16px;
   }

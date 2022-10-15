@@ -23,7 +23,7 @@
   .channel-preview__item {
     font-size: 14px;
     color: #2A2A2D;
-    padding-left: 18px;
+    padding-left: 15px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -31,20 +31,24 @@
 
   .channel-preview__item.multi {
     max-width: 220px;
+    display: flex;
+    align-items: center;
   }
 
   .channel-preview__item.single .str-chat__avatar {
     margin-right: 12px;
+    font-size: 12px;
   }
 
   .channel-preview__item.multi .str-chat__avatar {
     margin-right: 0;
+    font-size: 12px;
   }
 
   .channel-preview__item.multi span:first-child {
     position: relative;
     z-index: 2;
-    bottom: 6px;
+    /* bottom: 6px; */
   }
 
   .channel-preview__item.multi div:nth-child(2) {

@@ -1,12 +1,11 @@
 .str-chat__message-team:hover {
   /* background: #e9e9ea; */
-  background: #fff;
+  background: rgba(80, 100, 255, 0.1);
 }
 
 .str-chat__message-team-group {
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .str-chat__message-team-content p {
@@ -17,6 +16,7 @@
   color: #000000;
   margin: 0;
   background: none; */
+  font-family: 'Roboto', sans-serif;
   font-size: 14px;
   font-weight: 400;
 }
@@ -41,7 +41,7 @@
 .str-chat__message-team-meta time {
   visibility: visible;
   z-index: 2;
-  font-family: Helvetica Neue, sans-serif; 
+  font-family: 'Roboto', sans-serif; 
   font-style: normal;
   font-weight: normal;
   font-size: 10px;
@@ -88,11 +88,12 @@
 
 .str-chat__message-team-actions {
   right: -3px;
+  top: -45px;
 }
 
 .str-chat__date-separator-date {
   color: #858688;
-  font-family: Helvetica Neue, sans-serif; 
+  font-family: 'Roboto', sans-serif; 
   font-style: normal;
   font-weight: normal;
 }
@@ -153,11 +154,11 @@ ul.str-chat__simple-reactions-list:hover {
 }
 
 .str-chat__simple-reactions-list-item--last-number {
-  font-family: Helvetica Neue, sans-serif; 
+  font-family: 'Roboto', sans-serif; 
   font-style: normal;
   font-weight: normal;
-  font-size: 11px;
-  color: #2c2c30;
+  font-size: 12px;
+  color: #2A2A2D;
 }
 
 .str-chat__message-attachment-actions-form {
@@ -221,7 +222,7 @@ ul.str-chat__simple-reactions-list:hover {
 .str-chat__edit-message-form .str-chat__message-team-form-footer button {
   cursor: pointer;
   color: rgba(0, 0, 0, 0.33);
-  font-family: Helvetica Neue, sans-serif; 
+  font-family: 'Roboto', sans-serif; 
   font-size: 14px;
 }
 
@@ -246,8 +247,8 @@ ul.str-chat__simple-reactions-list:hover {
   color: var(--primary-color);
 }
 
-.pinned-message {
-  background: #e6efff;
+.pinned-message:not(.str-chat__message-team) {
+  background: rgba(80, 100, 255, 0.1);
 }
 
 .unpinned-message {
@@ -257,8 +258,11 @@ ul.str-chat__simple-reactions-list:hover {
 .str-chat__message-team-pin-indicator {
   display: flex;
   align-items: center;
-  margin-left: 40px;
-  height: 18px;
+  /* margin-left: 40px;
+  height: 18px; */
+  margin-left: -12px;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
 
 .str-chat__message-team-pin-indicator div svg {
@@ -267,7 +271,7 @@ ul.str-chat__simple-reactions-list:hover {
 }
 
 .str-chat__message-team-pin-indicator div div {
-  font-family: Helvetica Neue, sans-serif; 
+  font-family: 'Roboto', sans-serif; 
   font-size: 10px !important;
   line-height: 120%;
   color: #858688;
@@ -306,6 +310,46 @@ ul.str-chat__simple-reactions-list:hover {
 }
 
 .str-chat__message-replies-count-button svg {
-  font-size: 7px;
+  font-size: 10px;
 }
+
+.str-chat__message-team-actions span svg {
+  height: auto;
+  width: 16px;
+  color: #81818E;
+  margin: 0 5px;
+  transform: matrix(-1, 0, 0, 1, 0, 0);
+}
+
+.str-chat__message-team-actions {
+  padding: 2px 6px;
+  height: 36px;
+  width: auto;
+  box-shadow: 0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.08);
+  border: 0;
+}
+
+.str-chat__avatar {
+  height: 32px !important;
+  width: 32px !important;
+  border-radius: 50%;
+  flex-basis: inherit !important;
+  line-height: auto;
+}
+
+.str-chat__avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.str-chat__message-team {
+  padding: 10px 20px;
+}
+
+.str-chat__li--single, .str-chat__li {
+  margin: 1px 0 0;
+}
+
+
 

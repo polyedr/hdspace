@@ -11,7 +11,7 @@
   }
 
   .user-list__header p {
-    /* font-family: Helvetica Neue, sans-serif;  */
+    font-family: 'Roboto', sans-serif;
     font-size: 14px;
     line-height: 17px;
     color: #81818E;
@@ -38,7 +38,7 @@
   }
 
   .user-list__message {
-    font-family: Helvetica Neue, sans-serif; 
+    font-family: 'Roboto', sans-serif; 
     font-size: 16px;
     color: #2c2c30;
     margin: 20px;
@@ -63,7 +63,7 @@
   }
 
   .user-item__wrapper p {
-    font-family: Helvetica Neue, sans-serif; 
+    font-family: 'Roboto', sans-serif; 
     font-size: 14px;
     line-height: 17px;
     color: #2c2c30;

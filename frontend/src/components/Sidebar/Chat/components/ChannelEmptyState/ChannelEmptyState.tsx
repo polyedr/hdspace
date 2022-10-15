@@ -92,7 +92,12 @@ export const ChannelEmptyState = () => {
 
   return (
     <div className="channel-empty__container">
-      {channel?.type === 'team' ? <HashIcon /> : getAvatarGroup()}
+      {/* {channel?.type === 'team' ? <HashIcon /> : getAvatarGroup()} */}
+      <h5 className="channel-empty__heading">
+        {channel?.type === 'team'
+          ? `#${channel?.data?.name || channel?.data?.id}`
+          : getUserText()}
+      </h5>
       <p className="channel-empty__first">
         This is the beginning of your chat history
         {channel?.type === 'team' ? ' in ' : ' with '}
