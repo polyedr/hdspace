@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-  Avatar,
   useChannelActionContext,
   useChannelStateContext,
   useChatContext,
 } from 'stream-chat-react';
+
+import Avatar from '@Components/UI/Avatar';
 
 import './TeamChannelHeader.css';
 
@@ -38,7 +39,7 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
     TeamUserType
   >();
 
-  const { channel, watcher_count } = useChannelStateContext<
+  const { channel, watchers } = useChannelStateContext<
     TeamAttachmentType,
     TeamChannelType,
     TeamCommandType,
@@ -69,12 +70,7 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
     const additionalMembers = members.length - 3;
 
     if (!members.length) {
-      return (
-        <div className="team-channel-header__name-wrapper">
-          <Avatar image={null} size={32} />
-          <p className="team-channel-header__name user">Johnny Blaze</p>
-        </div>
-      );
+      return null;
     }
 
     return (
@@ -84,14 +80,10 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
           return (
             // eslint-disable-next-line react/no-array-index-key
             <div key={i} className="team-channel-header__name-multi">
-              <Avatar
-                image={user?.image}
-                name={user?.name || user?.id}
-                size={32}
-              />
-              <p className="team-channel-header__name user">
-                {user?.name || user?.id || 'Johnny Blaze'}
-              </p>
+              <Avatar src={user?.image} alt={user?.name || user?.id || ''} />
+              {/* <p className="team-channel-header__name user">
+                {user?.name || user?.id || null}
+              </p> */}
             </div>
           );
         })}
@@ -102,10 +94,12 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
     );
   };
 
-  const getWatcherText = (watchers?: number) => {
-    if (!watchers) return 'No users online';
-    if (watchers === 1) return '1 user online';
-    return `${watchers} users online`;
+  const getPinnedMessageText = (count: number) => {
+    if (count === 1) {
+      return '(1) message pinned';
+    }
+
+    return `(${count}) messages pinned`;
   };
 
   return (
@@ -121,20 +115,29 @@ export const TeamChannelHeader: React.FC<Props> = (props) => {
         </div>
       )}
       <div className="team-channel-header__right">
-        <p className="team-channel-header__right-text">
-          {getWatcherText(watcher_count)}
-        </p>
+        {watchers
+          ? Object.values(watchers).map((watcher) => (
+              <Avatar
+                src={watcher?.image ?? undefined}
+                alt={watcher.name || ''}
+              />
+            ))
+          : null}
 
-        <div
-          className="team-channel-header__right-pin-wrapper"
-          onClick={(event) => {
-            if (closeThread) closeThread(event);
-            setPinsOpen((prevState) => !prevState);
-          }}
-        >
-          <PinIcon />
-          <p className="team-channel-header__right-text">Pins</p>
-        </div>
+        {channel.state.pinnedMessages.length > 0 ? (
+          <div
+            className="team-channel-header__right-pin-wrapper"
+            onClick={(event) => {
+              if (closeThread) closeThread(event);
+              setPinsOpen((prevState) => !prevState);
+            }}
+          >
+            <PinIcon />
+            <p className="team-channel-header__right-text">
+              {getPinnedMessageText(channel.state.pinnedMessages.length)}
+            </p>
+          </div>
+        ) : null}
 
         <span style={{ display: 'flex' }} onClick={() => setIsEditing(true)}>
           <ChannelInfo />

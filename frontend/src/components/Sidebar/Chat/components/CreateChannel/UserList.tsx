@@ -6,7 +6,6 @@ import './UserList.css';
 import type { ChannelFilters, UserResponse } from 'stream-chat';
 import Checkbox from '@mui/material/Checkbox';
 import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
@@ -15,7 +14,11 @@ import { styled } from '@mui/material/styles';
 
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { selectUserPermissions } from '@Redux/permissions/selectors';
+import {
+  selectAllUsersPermissions,
+  selectUserPermissions,
+} from '@Redux/permissions/selectors';
+import { formatDistanceToNowStrict } from 'date-fns';
 import type {
   TeamAttachmentType,
   TeamChannelType,
@@ -88,24 +91,9 @@ type ItemProps = {
 };
 
 const UserItem: React.FC<ItemProps> = (props) => {
-  const { index, setSelectedUsers, user, selected } = props;
+  const { setSelectedUsers, user, selected } = props;
 
-  const getLastActive = (i: number) => {
-    switch (i) {
-      case 0:
-        return '12 min ago';
-      case 1:
-        return '27 min ago';
-      case 2:
-        return '6 hours ago';
-      case 3:
-        return '14 hours ago';
-      case 4:
-        return 'Yesterday';
-      default:
-        return 'Yesterday';
-    }
-  };
+  const users = useSelector(selectAllUsersPermissions);
 
   const handleClick = () => {
     if (selected) {
@@ -142,8 +130,14 @@ const UserItem: React.FC<ItemProps> = (props) => {
           <p className="user-item__name">{user.name || user.id}</p>
         </div>
       </StyledTableCell>
-      <StyledTableCell>Project Manager</StyledTableCell>
-      <StyledTableCell>{getLastActive(index)}</StyledTableCell>
+      <StyledTableCell>
+        {users[user.id]?.userData.profile.role || ''}
+      </StyledTableCell>
+      <StyledTableCell>
+        {user.last_active
+          ? `${formatDistanceToNowStrict(Date.parse(user.last_active))} ago`
+          : 'Never'}
+      </StyledTableCell>
     </TableRow>
   );
 };
@@ -202,7 +196,7 @@ export const UserList: React.FC<Props> = (props) => {
             teams: { $contains: projectId.toString() },
           },
           { id: 1 },
-          { limit: 8 },
+          // { limit: 8 },
         );
 
         if (response.users.length) {
