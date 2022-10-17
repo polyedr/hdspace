@@ -69,7 +69,7 @@ export const EditChannel: React.FC<Props> = (props) => {
   const [channelName, setChannelName] = useState<string>(
     channel?.data?.name || (channel?.data?.id as string),
   );
-  const [selectedUsers, setSelectedUsers] = useState<string[] | undefined>();
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
 
   const updateChannel = async (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -93,7 +93,7 @@ export const EditChannel: React.FC<Props> = (props) => {
 
     setChannelName('');
     setIsEditing(false);
-    setSelectedUsers(undefined);
+    setSelectedUsers([]);
   };
 
   return (

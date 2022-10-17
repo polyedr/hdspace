@@ -147,7 +147,7 @@ export const CreateChannel: React.FC<Props> = (props) => {
   const projectId = useSelector(selectCurrentProjectId);
 
   const [channelName, setChannelName] = useState('');
-  const [selectedUsers, setSelectedUsers] = useState<string[] | undefined>([
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([
     client.userID || '',
   ]);
 

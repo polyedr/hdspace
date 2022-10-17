@@ -84,8 +84,7 @@ const ListContainer = (props) => {
 };
 
 type ItemProps = {
-  index: number;
-  setSelectedUsers: React.Dispatch<React.SetStateAction<string[] | undefined>>;
+  setSelectedUsers: React.Dispatch<React.SetStateAction<string[]>>;
   user: UserResponse<TeamUserType>;
   selected: boolean;
 };
@@ -144,8 +143,8 @@ const UserItem: React.FC<ItemProps> = (props) => {
 
 type Props = {
   filters: ChannelFilters[];
-  setSelectedUsers: React.Dispatch<React.SetStateAction<string[] | undefined>>;
-  selectedUsers: string[] | undefined;
+  setSelectedUsers: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedUsers: string[];
 };
 
 export const UserList: React.FC<Props> = (props) => {
@@ -175,7 +174,7 @@ export const UserList: React.FC<Props> = (props) => {
   const handleToggleAll = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.checked) {
-        setSelectedUsers(users?.map((u) => u.id));
+        setSelectedUsers(users?.map((u) => u.id) ?? []);
       } else {
         setSelectedUsers([]);
       }
@@ -241,9 +240,8 @@ export const UserList: React.FC<Props> = (props) => {
         <div className="user-list__message">Loading users...</div>
       ) : (
         users?.length &&
-        users.map((user, i) => (
+        users.map((user) => (
           <UserItem
-            index={i}
             selected={selectedUsers?.indexOf(user.id) !== -1}
             key={user.id}
             setSelectedUsers={setSelectedUsers}
