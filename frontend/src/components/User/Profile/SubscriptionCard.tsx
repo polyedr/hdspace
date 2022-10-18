@@ -6,7 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { Button } from '@material-ui/core';
-import moment from 'moment';
+import { format } from 'date-fns';
 
 export const SubscriptionCard = ({ result }) => {
   const currentDate = new Date();
@@ -15,7 +15,7 @@ export const SubscriptionCard = ({ result }) => {
     <div>
       <Box sx={{ width: '100%' }} style={{ display: 'flex' }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2 }}>
-          {result?.map((resultData, i) => {
+          {result?.map((resultData) => {
             const periodDate = resultData.period_end
               .toLocaleString()
               .split(',')[0];
@@ -24,19 +24,19 @@ export const SubscriptionCard = ({ result }) => {
             const milliSSecond = periodEndDate.getTime();
             const difference =
               (milliSSecond - milliSFirst) / (1000 * 3600 * 24);
-            const trialEndDate = moment(resultData.trial_end).format(
-              'MMM  DD, YYYY',
-            );
-            const periodEndDateFormat = moment(resultData.period_end).format(
-              'MMM DD, YYYY',
-            );
+            const trialEndDate = resultData.trial_end
+              ? format(Date.parse(resultData.trial_end), 'MMM  dd, yyyy')
+              : null;
+            const periodEndDateFormat = resultData.period_end
+              ? format(Date.parse(resultData.period_end), 'MMM  dd, yyyy')
+              : null;
             return (
               <Grid
                 item
                 xs={6}
                 sx={{ height: '182px', marginTop: '14px  ' }}
                 style={{ width: '100%' }}
-                key={i}
+                key={resultData.product_id}
               >
                 <Card
                   sx={{ minWidth: 275, minHeight: 182 }}
