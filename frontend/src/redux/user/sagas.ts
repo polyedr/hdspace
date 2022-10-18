@@ -16,6 +16,7 @@ import {
   apiGetUser,
   apiGetUsers,
   apiGetSubscriptionData,
+  apiChangeProfileAAvatar,
 } from '@Api/user';
 import { convertUserDataToRequest } from '@Api/converters/toRequest';
 import {
@@ -213,6 +214,34 @@ export function* changeProfileDataSaga({
       yield put(Actions.changeProfileDataComplete(e.response.data));
     } else {
       yield put(Actions.changeProfileDataComplete({ [FORM_ERROR]: e.message }));
+    }
+  }
+}
+
+export function* uploadProfileAvatarSaga({
+  payload,
+}: ReturnType<typeof Actions.changeProfileAvatar>) {
+  try {
+    const { id } = yield select(selectProfileData);
+
+    const data = new FormData();
+    data.append('avatar', payload, payload?.name);
+
+    const newProfileData: ServerProfileData = yield call(
+      reqWrapper,
+      apiChangeProfileAAvatar,
+      {
+        id,
+        data,
+      },
+    );
+
+    yield put(
+      Actions.setProfileData(convertProfileDataFromResponse(newProfileData)),
+    );
+  } catch (e: any) {
+    if (typeof e.response?.data === 'object') {
+      yield put(Actions.changeProfileDataComplete(e.response.data));
     }
   }
 }
@@ -424,6 +453,7 @@ export default function* userSaga() {
   yield takeLatest(TYPES.REGISTER_WITH_GOOGLE, registerWithGoogleSaga);
   yield takeEvery(TYPES.CHANGE_USER_DATA, changeUserDataSaga);
   yield takeEvery(TYPES.CHANGE_PROFILE_DATA, changeProfileDataSaga);
+  yield takeEvery(TYPES.CHANGE_PROFILE_AVATAR, uploadProfileAvatarSaga);
   yield takeEvery(TYPES.LOAD_USER_DATA, loadUserDataSaga);
   yield takeEvery(TYPES.PROJECT_VIEW_START, getTokenPairSagaProjectView);
   yield takeEvery(TYPES.SUBSCRIPTION_DATA, getSubscriptionSaga);

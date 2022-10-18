@@ -174,7 +174,6 @@ const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
               }
               onClose={handleClose}
               openEdit={openEdit}
-              closeEdit={closeEdit}
               openDelete={handleDeleteOpen}
             />
           </ListItem>

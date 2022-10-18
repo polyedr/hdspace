@@ -45,7 +45,10 @@ const setTokenPair: ActionHandler<typeof Actions.setTokenPair> = (
   { tokenPair },
 ) => ({
   ...state,
-  tokenPair,
+  tokenPair: {
+    ...state.tokenPair,
+    ...tokenPair,
+  },
   authError: null,
 });
 

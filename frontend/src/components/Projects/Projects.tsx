@@ -100,10 +100,8 @@ const Projects: React.FC = () => {
   const ref = useRef<HTMLTableRowElement>(null);
   const el = ref && ref.current;
 
-  const [
-    permissionsManagementProjectId,
-    setPermissionsManagementProjectId,
-  ] = useState<number | null>(null);
+  const [permissionsManagementProjectId, setPermissionsManagementProjectId] =
+    useState<number | null>(null);
 
   const projects = useSelector(selectProjects);
   const projectListLoader = useSelector(selectAreProjectsLoading);

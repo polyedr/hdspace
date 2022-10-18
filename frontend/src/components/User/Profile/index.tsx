@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Form, Field } from 'react-final-form';
 import { styled } from '@mui/material/styles';
@@ -15,6 +15,7 @@ import {
   setUserExperience,
   sendResetPasswordMail,
   changeUserData,
+  changeProfileAvatar,
 } from '@Redux/user/actions';
 import { ROLES } from '@Constants/defaultParams';
 import { Experience, ProfileData } from '@Src/types';
@@ -173,10 +174,12 @@ const Profile: React.FC = () => {
   const history = useHistory();
 
   const [imageToCrop, setImageToCrop] = useState<any>(undefined);
-  const [croppedImage, setCroppedImage] = useState<any>(undefined);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
+
+  const imageRef = useRef(null);
+
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
@@ -195,6 +198,7 @@ const Profile: React.FC = () => {
   };
 
   const userData = useSelector(selectUserData);
+
   const { firstName, lastName, email, profile, username } = userData;
   const {
     parameters: {
@@ -240,13 +244,9 @@ const Profile: React.FC = () => {
   };
 
   const handleSaved = () => {
-    dispatch(
-      changeProfileData({
-        parameters: {
-          avatarCrop: croppedImage as string,
-        },
-      } as ProfileData),
-    );
+    if (imageRef.current) {
+      dispatch(changeProfileAvatar(imageRef.current));
+    }
     setImageToCrop(undefined);
   };
 
@@ -299,6 +299,10 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleSetCroppedImage = useCallback((_, imageBlob) => {
+    imageRef.current = imageBlob;
+  }, []);
+
   const handleCancel = () => {
     history.go(0);
   };
@@ -336,7 +340,7 @@ const Profile: React.FC = () => {
                   <Avatar
                     sx={{ bgcolor: '#344AF0', width: 100, height: 100 }}
                     alt={username}
-                    src={avatarCrop}
+                    src={profile.avatar ?? undefined}
                   >
                     <div className={classes.avatar}>
                       {username[0].toUpperCase()}
@@ -347,7 +351,7 @@ const Profile: React.FC = () => {
                     <>
                       <ImageCropper
                         imageToCrop={imageToCrop}
-                        setResult={setCroppedImage}
+                        setResult={handleSetCroppedImage}
                       />
                       <div>
                         <button type="button" onClick={handleSaved}>

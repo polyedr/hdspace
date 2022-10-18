@@ -55,6 +55,19 @@ export const updateUserPermissionsForProject = (
   },
 });
 
+export const updateUsersPermissionsForProject = (
+  projectId: number,
+  users: any[],
+  permissions: UserProjectPermission[],
+) => ({
+  type: TYPES.UPDATE_USERS_PERMISSIONS_FOR_PROJECT,
+  payload: {
+    projectId,
+    users,
+    permissions,
+  },
+});
+
 export const getUserPermissionsForProject = (
   projectId: number,
   userId: number,
@@ -84,6 +97,14 @@ export const setStateUserPermissions = (
 ) => ({
   type: TYPES.SET_STATE_USER_PERMISSIONS,
   payload: { userData, permissions },
+});
+
+export const setStateUsersPermissions = (
+  users: UserData[],
+  permissions: UserProjectPermission[],
+) => ({
+  type: TYPES.SET_STATE_USERS_PERMISSIONS,
+  payload: { users, permissions },
 });
 
 export const clearStateUserPermissions = (userId: string) => ({

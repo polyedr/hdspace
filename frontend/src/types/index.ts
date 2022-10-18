@@ -90,11 +90,10 @@ export type PaginatedArray<T> = PaginatedBase<T> & {
   results: T[];
 };
 
-export type PaginatedData<
-  T extends { id: string | number }
-> = PaginatedBase<T> & {
-  results: Normalized<T>;
-};
+export type PaginatedData<T extends { id: string | number }> =
+  PaginatedBase<T> & {
+    results: Normalized<T>;
+  };
 
 export enum ElementGroup {
   CONTAINERS = 'containers',
@@ -134,7 +133,7 @@ export enum UpdateDataActionType {
 export type ServerElement<
   Type extends Entity,
   Children = any[],
-  Params = BaseElementParams
+  Params = BaseElementParams,
 > = {
   id: number | string;
   name: string;
@@ -160,7 +159,7 @@ export type ServerElement<
 export type NNServerElement<
   Type extends Entity,
   Children = any[],
-  Params = BaseElementParams
+  Params = BaseElementParams,
 > = Omit<ServerElement<Type, Children, Params>, 'styles'> & {
   styles: React.CSSProperties;
 };
@@ -210,10 +209,13 @@ export type SmartContainerServerElement<T extends Entity> = ServerElement<
   [],
   SmartElementParameters
 >;
-export type SmartHeaderServerElement = SmartContainerServerElement<'smartHeader'>;
-export type SmartFooterServerElement = SmartContainerServerElement<'smartFooter'>;
+export type SmartHeaderServerElement =
+  SmartContainerServerElement<'smartHeader'>;
+export type SmartFooterServerElement =
+  SmartContainerServerElement<'smartFooter'>;
 export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
-export type SmartWebpageServerElement = SmartContainerServerElement<'smartWebpage'>;
+export type SmartWebpageServerElement =
+  SmartContainerServerElement<'smartWebpage'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type TextinputServerElement = ServerElement<
   'textinput',
@@ -388,7 +390,7 @@ export type LibraryElement<
   Type extends Entity,
   Children = any[],
   Params = any,
-  OwnStyles = {}
+  OwnStyles = {},
 > = {
   id: string;
   name: string;
@@ -1292,10 +1294,12 @@ export type ElementsToCreate<T extends Entity> = {
 export type TokenPair = {
   access: string;
   refresh: string;
+  streamchat?: string;
 };
 export type ViewTokenPair = {
   access: string;
   refresh: string;
+  streamchat?: string;
 };
 export type LoginFormData = {
   username: string;

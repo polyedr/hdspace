@@ -229,9 +229,10 @@ const dataReducer = produce(
         ];
         break;
       case TYPES.REMOVE_CUSTOM_ELEMENT:
-        draft.customElementsData.results = draft.customElementsData.results.filter(
-          (elementData) => elementData.id !== action.payload.id,
-        );
+        draft.customElementsData.results =
+          draft.customElementsData.results.filter(
+            (elementData) => elementData.id !== action.payload.id,
+          );
         break;
 
       case TYPES.ADD_FILE_INPUT: {

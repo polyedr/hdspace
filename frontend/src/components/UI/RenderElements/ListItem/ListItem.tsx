@@ -51,13 +51,8 @@ const useLinkStyles = makeStyles({
 const ListItem = React.forwardRef<HTMLElement, RendererProps>((props, ref) => {
   const { element, isDisabled } = props;
   const [className, groupClass] = element.styles.classNames;
-  const {
-    textContent,
-    isLink,
-    link,
-    screenLink,
-    screenName,
-  } = element.parameters;
+  const { textContent, isLink, link, screenLink, screenName } =
+    element.parameters;
 
   const listItemClasses = useItemStyles(props);
   const listItemWithLinkClasses = useEditableItemStyles(props);
