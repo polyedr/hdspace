@@ -1,15 +1,18 @@
-import React from 'react';
-import Box from '@mui/material/Box';
+import React, { useCallback } from 'react';
+import { Box, Button } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { Button } from '@material-ui/core';
 import { format } from 'date-fns';
 
 export const SubscriptionCard = ({ result }) => {
   const currentDate = new Date();
+
+  const handleGoToPricing = useCallback(() => {
+    window.location.href = 'https://adevi.io/pricing/';
+  }, []);
 
   return (
     <div>
@@ -72,6 +75,7 @@ export const SubscriptionCard = ({ result }) => {
                   <CardActions>
                     {difference > 0 ? (
                       <Button
+                        onClick={handleGoToPricing}
                         style={{ background: '#5064FF', color: '#FFFFFF' }}
                         variant="contained"
                       >
@@ -79,6 +83,7 @@ export const SubscriptionCard = ({ result }) => {
                       </Button>
                     ) : (
                       <Button
+                        onClick={handleGoToPricing}
                         style={{
                           background: '#5064FF',
                           color: '#FFFFFF',
