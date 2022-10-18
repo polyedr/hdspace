@@ -1,6 +1,7 @@
 import { put, call, select } from 'redux-saga/effects';
 import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
 import generator from 'generate-password';
+import { setProjectError } from '@Redux/project/actions';
 import {
   apiCreateProject,
   apiDeleteProject,
@@ -315,6 +316,7 @@ export function* createProjectSaga() {
         data: [],
       },
     );
+    yield put(setProjectError(error));
     // yield put(successSavedBoard(boardForUI));
 
     if (createdProject?.created) {

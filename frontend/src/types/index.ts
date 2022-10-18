@@ -64,10 +64,19 @@ export type Result<T = any> = {
   error?: string;
 };
 
+export type Data<T = any> = {
+  data?: T;
+  error?: string;
+};
+
 export type PaginatedResponse<T> = {
   next: string | null;
   previous: string | null;
   results: T[];
+};
+
+export type PaginatedSubscriptionData<T> = {
+  data: T[];
 };
 
 export type PaginatedBase<T> = {
@@ -1233,6 +1242,8 @@ export type CustomElementsCategory = {
   otherElements: Array<ElementData>;
 };
 
+export type ErrorResponse = [];
+
 export type ColorElementIcon = {
   squareTopLeft: string;
   squareTopRight: string;
@@ -1379,6 +1390,7 @@ export type UserData = {
   profile: ProfileData;
 };
 
+export type UserSubscriptionsData = [];
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R
   : any;
