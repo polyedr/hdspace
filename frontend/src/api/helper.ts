@@ -47,11 +47,19 @@ export const onError = ({ response: r }: AxiosError) => {
 export const handleError = (error) => {
   logger.error(error);
   return {
-    error: error.response?.data?.detail || error.message,
+    error: error?.response?.data?.detail || error?.message,
+  };
+};
+export const handleErrorResponseMessage = (error) => {
+  logger.error(error);
+  return {
+    error: error?.response?.data[0],
   };
 };
 
 export const parseResult = <T>(result: AxiosResponse<T>) => result?.data;
+
+export const parseData = <T>(data: AxiosResponse<T>) => data;
 
 export const parseCursor = (nextUrl: string | null) => {
   if (nextUrl === null) {

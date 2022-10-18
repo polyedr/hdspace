@@ -204,6 +204,7 @@ import {
   GenerateImagePalette,
   SetImagePalette,
   UpdateLayoutProjects,
+  ProjectError,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -297,6 +298,11 @@ export const updateCurrentUIFrameworkVariables = (variables: {
 }) => ({
   type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
   payload: variables,
+});
+
+export const setProjectError = (errorResponse): ProjectError => ({
+  type: TYPES.SET_PROJECT_ERROR,
+  payload: { errorResponse },
 });
 
 export const resetCurrentUIFrameworkVariables = () => ({

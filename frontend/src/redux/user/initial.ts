@@ -52,4 +52,6 @@ export const initialUserState: UserState = {
     realm: '',
     username: '',
   },
+
+  subscriptionData: [],
 };

@@ -95,6 +95,12 @@ const dataReducer = produce(
         break;
       }
 
+      case TYPES.SET_PROJECT_ERROR: {
+        const { errorResponse } = action.payload;
+        draft.createProjectError = errorResponse;
+        break;
+      }
+
       case TYPES.WRAP_STATE_ELEMENTS: {
         const { parentId, childIds, element } = action.payload;
         draft.elements = insertMapElementWrapper(
