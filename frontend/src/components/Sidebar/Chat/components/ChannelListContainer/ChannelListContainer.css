@@ -57,7 +57,7 @@
   }
 
   .channel-list__header__text {
-    /* font-family: Helvetica Neue, sans-serif;  */
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: bold;
     font-size: 18px;

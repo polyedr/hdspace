@@ -48,7 +48,7 @@
   .channel-preview__item.multi span:first-child {
     position: relative;
     z-index: 2;
-    /* bottom: 6px; */
+    bottom: 6px;
   }
 
   .channel-preview__item.multi div:nth-child(2) {
@@ -62,4 +62,15 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+
+  /* custom css */
+
+  .channel-preview__item.single {
+    display: flex;
+    align-items: center;
+  }
+
+  .team-channel-list .channel-preview__item.single p, .team-channel-list .channel-preview__item.multi p {
+    padding: 0;
   }

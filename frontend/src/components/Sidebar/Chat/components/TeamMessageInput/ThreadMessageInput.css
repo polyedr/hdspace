@@ -108,7 +108,7 @@
 }
 
 .thread-message-input__input {
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid #E4E6EB;
   border-radius: 8px;
   display: flex;
   align-items: center;

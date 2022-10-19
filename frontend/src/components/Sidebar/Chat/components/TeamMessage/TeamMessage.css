@@ -329,7 +329,7 @@ ul.str-chat__simple-reactions-list:hover {
   border: 0;
 }
 
-.str-chat__avatar {
+/* .str-chat__avatar {
   height: 32px !important;
   width: 32px !important;
   border-radius: 50%;
@@ -341,7 +341,7 @@ ul.str-chat__simple-reactions-list:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-}
+} */
 
 .str-chat__message-team {
   padding: 10px 20px;

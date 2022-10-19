@@ -28,6 +28,27 @@
     color: #81818E;
   }
 
-  .team-channel-list p {
+  .team-channel-list p:not(.team-channel-list__header__title) {
     padding: 0 16px;
   }
+
+  .channel-list-wrapper {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  /* ::-webkit-scrollbar {
+    width: 4px !important; 
+    background: #E4E6EB;
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #B0B0BD;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background-clip: content-box;
+  } */
