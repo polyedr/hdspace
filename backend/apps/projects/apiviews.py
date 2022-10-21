@@ -1,5 +1,7 @@
 """Views for the projects api"""
 from urllib.parse import urlparse
+
+from django.core.mail import send_mail
 from django_bulk_update.helper import bulk_update
 import json
 
@@ -367,6 +369,23 @@ class ColumnTaskList(generics.ListCreateAPIView):
         serializer.save(author=self.request.user)
 
 
+def send_email_confirmation(instance):
+    try:
+        # Inform a user about the subscriptions changed
+        subject = "The task subscription informing"
+
+        to_email = []
+        for user in instance.subscribers.all():
+            if user.email:
+                to_email += ['{}'.format(user.email)]
+        from_email = "Adevi Admin <info@adevi.info>"
+
+        # message = get_template('email/email.html').render(order_information)
+        message = "The task " + str(instance.id) + " " + instance.description + " subscription list have been changed recently. " + ','.join(to_email)
+        send_mail(subject, message, from_email, to_email, fail_silently=False)
+    except IOError as e:
+        return e
+
 class ColumnTaskDetail(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a column task
@@ -374,6 +393,12 @@ class ColumnTaskDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ColumnTask.objects.all()
     serializer_class = ColumnTaskSerializer
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if instance.subscribers:
+            send_email_confirmation(instance=instance)
+
 
 
 class ProjectActivityList(generics.ListCreateAPIView):
