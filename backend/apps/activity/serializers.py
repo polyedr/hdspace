@@ -32,3 +32,19 @@ class ProjectHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Project.history.model
         fields = "__all__"
+
+
+class UnionHistorySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    history_id = serializers.IntegerField()
+    created = serializers.DateTimeField()
+    modified = serializers.DateTimeField()
+    history_date = serializers.DateTimeField()
+    history_change_reason = serializers.CharField()
+    history_type = serializers.CharField()
+    history_user = serializers.IntegerField()
+    name = serializers.CharField()
+    status = serializers.CharField()
+
+    class Meta:
+        fields = ('id', 'history_id', "created", "modified", "history_date", "history_change_reason", "history_type", "history_user", "name", "status")
