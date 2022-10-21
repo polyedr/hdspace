@@ -45,6 +45,7 @@ class UnionHistorySerializer(serializers.Serializer):
     history_user = serializers.IntegerField()
     name = serializers.CharField()
     status = serializers.CharField()
+    project = serializers.IntegerField()
 
     class Meta:
-        fields = ('id', 'history_id', "created", "modified", "history_date", "history_change_reason", "history_type", "history_user", "name", "status")
+        fields = ['id', 'history_id', "created", "modified", "history_date", "history_change_reason", "history_type", "history_user", "name", "status", "project"]
