@@ -694,16 +694,18 @@ class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSeria
     author = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
     assignee = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
     responsible = UserSimpleSerializer(required=False, allow_null=True, read_only=True)
+    subscribers = UserSimpleSerializer(required=False, allow_null=True, read_only=True, many=True)
 
     author_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='author', required=False)
     assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='assignee', required=False)
     responsible_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='responsible', required=False)
+    subscribers_ids = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='subscribers', required=False, many=True)
 
     colour = serializers.CharField(required=False, allow_null=True)
 
     class Meta:
         model = ColumnTask
-        fields = ("id", "created", "modified", "due_date", "time", "colour", "title", "description", "status", "priority", "buyoancy", "label_ids", "labels", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "comments", "checklist", "related_tasks", "project_id")
+        fields = ("id", "created", "modified", "due_date", "time", "colour", "title", "description", "status", "priority", "buyoancy", "label_ids", "labels", "colour", "story_points", "column", "author", "assignee", "responsible", "author_id", "assignee_id", "responsible_id", "subscribers", "subscribers_ids", "comments", "checklist", "related_tasks", "project_id")
         # , "related_task"
         # depth = 2
         extra_kwargs = {

@@ -314,6 +314,7 @@ class ColumnTask(TimeStampedModel):
     responsible = models.ForeignKey(
         get_user_model(), related_name="responsible", null=True, blank=True, on_delete=models.CASCADE
     )
+    subscribers = models.ManyToManyField(get_user_model(), related_name="set_subscribers")
     related_task = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="relatedtask")
     story_points = models.IntegerField(default=0)
     due_date = models.DateTimeField(null=True, blank=True)

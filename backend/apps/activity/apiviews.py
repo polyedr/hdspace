@@ -46,11 +46,13 @@ class UnionHistoryView(viewsets.ModelViewSet):
                                               "history_change_reason", "history_type", "history_user", "name", "status", "project")
     # print(q_ct)
     queryset = q_p.union(q_ps, q_ct).order_by('history_date')
+    # queryset.filter(project='project')
     print(queryset)
     serializer_class = UnionHistorySerializer
     # print(serializer_class)
     # filterset_fields = "__all__"
-    filterset_fields = ["history_date", "history_change_reason", "history_type", "history_user", "project",]
+    filterset_fields = ["history_date", "history_change_reason", "history_type", "history_user"]
+    # search_fields = ["history_date", "history_change_reason", "history_type", "history_user", "project"]
 
 
 class UHistoryView(APIView):
