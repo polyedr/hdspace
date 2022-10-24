@@ -227,7 +227,7 @@
 }
 
 .str-chat-channel .str-chat__container .rfu-dropzone {
-  width: 100%
+  width: 100%;
 }
 
 .str-chat-channel.messaging .str-chat__main-panel {
@@ -4941,7 +4941,7 @@
   width: 100%;
   font-size: var(--lg-font);
   line-height: 22px;
-  color: var(--black)
+  color: var(--black);
 }
 
 .str-chat__edit-message-form textarea:focus {
@@ -4961,7 +4961,10 @@
 }
 
 .str-chat__edit-message-form .rfu-dropzone {
-  width: 100%
+  width: 100%;
+  box-shadow: 0 0 0 1px #fab200;
+  border-radius: 4px;
+  background-color: white;
 }
 
 .str-chat__edit-message-form .rfu-file-upload-button,
@@ -8108,7 +8111,7 @@
   visibility: hidden;
   right: 100%;
   top: -10px;
-  border-radius: 7px
+  border-radius: 4px;
 }
 
 .str-chat__message-team-actions .str-chat__message-actions-box--open {
@@ -8332,8 +8335,9 @@
 
 .str-chat__message-team--editing {
   padding: 10px;
-  background: #edf4ff;
-  box-shadow: 0 0 11px 0 rgba(0, 0, 0, .06), inset 0 1px 0 0 #006cff, inset 0 -1px 0 0 #006cff;
+  background: rgba(250, 178, 0, 0.12);
+  /* background: #edf4ff;
+  box-shadow: 0 0 11px 0 rgba(0, 0, 0, .06), inset 0 1px 0 0 #006cff, inset 0 -1px 0 0 #006cff; */
   z-index: 1
 }
 
