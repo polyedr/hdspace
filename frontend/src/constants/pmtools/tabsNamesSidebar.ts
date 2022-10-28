@@ -7,7 +7,7 @@ export enum TABS_PMTOOLS {
   chat = 'Chat',
   board = 'Board',
   activity = 'Activity',
-  members = 'Members',
+  members = 'Team',
 }
 
 export const components = {

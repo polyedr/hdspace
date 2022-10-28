@@ -29,7 +29,7 @@ exports[`Profile should render profile page 1`] = `
               <button
                 aria-controls="simple-tabpanel-0"
                 aria-selected="true"
-                class="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit WithStyles(ForwardRef(Tab))-root-19 WithStyles(ForwardRef(Tab))-root-20 Mui-selected"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit css-159f5n Mui-selected"
                 id="simple-tab-0"
                 role="tab"
                 tabindex="0"
@@ -47,8 +47,26 @@ exports[`Profile should render profile page 1`] = `
               <button
                 aria-controls="simple-tabpanel-1"
                 aria-selected="false"
-                class="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit WithStyles(ForwardRef(Tab))-root-19 WithStyles(ForwardRef(Tab))-root-25"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit css-159f5n"
                 id="simple-tab-1"
+                role="tab"
+                tabindex="-1"
+                type="button"
+              >
+                <span
+                  class="MuiTab-wrapper"
+                >
+                  Subscription
+                </span>
+                <span
+                  class="MuiTouchRipple-root"
+                />
+              </button>
+              <button
+                aria-controls="simple-tabpanel-2"
+                aria-selected="false"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit css-159f5n"
+                id="simple-tab-2"
                 role="tab"
                 tabindex="-1"
                 type="button"
@@ -63,10 +81,10 @@ exports[`Profile should render profile page 1`] = `
                 />
               </button>
               <button
-                aria-controls="simple-tabpanel-2"
+                aria-controls="simple-tabpanel-3"
                 aria-selected="false"
-                class="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit WithStyles(ForwardRef(Tab))-root-19 WithStyles(ForwardRef(Tab))-root-26"
-                id="simple-tab-2"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorInherit css-159f5n"
+                id="simple-tab-3"
                 role="tab"
                 tabindex="-1"
                 type="button"
@@ -82,7 +100,7 @@ exports[`Profile should render profile page 1`] = `
               </button>
             </div>
             <span
-              class="PrivateTabIndicator-root-21 PrivateTabIndicator-colorSecondary-23 MuiTabs-indicator"
+              class="PrivateTabIndicator-root-19 PrivateTabIndicator-colorSecondary-21 MuiTabs-indicator"
               style="left: 0px; width: 0px;"
             />
           </div>
@@ -90,7 +108,7 @@ exports[`Profile should render profile page 1`] = `
       </div>
       <div
         aria-labelledby="simple-tab-0"
-        class="TabPanel-root-27 TabPanel-root-28"
+        class="css-9xkigw"
         id="simple-tabpanel-0"
         role="tabpanel"
       >
@@ -178,10 +196,10 @@ exports[`Profile should render profile page 1`] = `
                         />
                         <fieldset
                           aria-hidden="true"
-                          class="PrivateNotchedOutline-root-29 MuiOutlinedInput-notchedOutline"
+                          class="PrivateNotchedOutline-root-23 MuiOutlinedInput-notchedOutline"
                         >
                           <legend
-                            class="PrivateNotchedOutline-legendLabelled-31 PrivateNotchedOutline-legendNotched-32"
+                            class="PrivateNotchedOutline-legendLabelled-25 PrivateNotchedOutline-legendNotched-26"
                           >
                             <span>
                               First Name
@@ -216,10 +234,10 @@ exports[`Profile should render profile page 1`] = `
                         />
                         <fieldset
                           aria-hidden="true"
-                          class="PrivateNotchedOutline-root-29 MuiOutlinedInput-notchedOutline"
+                          class="PrivateNotchedOutline-root-23 MuiOutlinedInput-notchedOutline"
                         >
                           <legend
-                            class="PrivateNotchedOutline-legendLabelled-31 PrivateNotchedOutline-legendNotched-32"
+                            class="PrivateNotchedOutline-legendLabelled-25 PrivateNotchedOutline-legendNotched-26"
                           >
                             <span>
                               Last Name
@@ -258,10 +276,10 @@ exports[`Profile should render profile page 1`] = `
                         />
                         <fieldset
                           aria-hidden="true"
-                          class="PrivateNotchedOutline-root-29 MuiOutlinedInput-notchedOutline"
+                          class="PrivateNotchedOutline-root-23 MuiOutlinedInput-notchedOutline"
                         >
                           <legend
-                            class="PrivateNotchedOutline-legendLabelled-31"
+                            class="PrivateNotchedOutline-legendLabelled-25"
                           >
                             <span>
                               Company Name
@@ -315,10 +333,10 @@ exports[`Profile should render profile page 1`] = `
                         </svg>
                         <fieldset
                           aria-hidden="true"
-                          class="PrivateNotchedOutline-root-29 MuiOutlinedInput-notchedOutline"
+                          class="PrivateNotchedOutline-root-23 MuiOutlinedInput-notchedOutline"
                         >
                           <legend
-                            class="PrivateNotchedOutline-legendLabelled-31 PrivateNotchedOutline-legendNotched-32"
+                            class="PrivateNotchedOutline-legendLabelled-25 PrivateNotchedOutline-legendNotched-26"
                           >
                             <span>
                               Role
@@ -361,10 +379,10 @@ exports[`Profile should render profile page 1`] = `
                         />
                         <fieldset
                           aria-hidden="true"
-                          class="PrivateNotchedOutline-root-29 MuiOutlinedInput-notchedOutline"
+                          class="PrivateNotchedOutline-root-23 MuiOutlinedInput-notchedOutline"
                         >
                           <legend
-                            class="PrivateNotchedOutline-legendLabelled-31 PrivateNotchedOutline-legendNotched-32"
+                            class="PrivateNotchedOutline-legendLabelled-25 PrivateNotchedOutline-legendNotched-26"
                           >
                             <span>
                               Email
@@ -382,7 +400,7 @@ exports[`Profile should render profile page 1`] = `
       </div>
       <div
         aria-labelledby="simple-tab-1"
-        class="TabPanel-root-27 TabPanel-root-33"
+        class="css-9xkigw"
         hidden=""
         id="simple-tabpanel-1"
         role="tabpanel"
@@ -390,14 +408,22 @@ exports[`Profile should render profile page 1`] = `
       />
       <div
         aria-labelledby="simple-tab-2"
-        class="TabPanel-root-27 TabPanel-root-34"
+        class="css-9xkigw"
         hidden=""
         id="simple-tabpanel-2"
         role="tabpanel"
         style="padding-bottom: 0px;"
       />
       <div
-        class="MuiBox-root MuiBox-root-35 makeStyles-buttonsWrapper-16"
+        aria-labelledby="simple-tab-3"
+        class="css-9xkigw"
+        hidden=""
+        id="simple-tabpanel-3"
+        role="tabpanel"
+        style="padding-bottom: 0px;"
+      />
+      <div
+        class="MuiBox-root MuiBox-root-27 makeStyles-buttonsWrapper-16"
       >
         <button
           class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary"

@@ -12,7 +12,7 @@ import {
   IconButtonProps,
   ListProps,
 } from '@material-ui/core';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import Box from '@mui/material/Box';
 import {
@@ -95,7 +95,7 @@ const Screens = () => {
     );
   };
 
-  const handleReorder = ({ destination, source }) => {
+  const handleReorder = ({ destination, source }: DropResult) => {
     if (!destination) return;
     const indices: Indices = {
       newIndex: destination.index,

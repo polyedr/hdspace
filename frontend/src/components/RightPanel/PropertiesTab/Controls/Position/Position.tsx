@@ -80,9 +80,8 @@ const Position: React.FC<Props> = ({
     inset ?? particularPositionStyles.unset.inset,
   );
 
-  const [parsedInset, setParsedInset] = useState<ParsedInset[]>(
-    initialInsetStyles,
-  );
+  const [parsedInset, setParsedInset] =
+    useState<ParsedInset[]>(initialInsetStyles);
   const handleValueChange = (prop, value) => {
     updateStyles({ [prop]: value });
   };

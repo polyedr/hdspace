@@ -116,7 +116,7 @@ export const apiChangeRecursiveMultipleElements = (
 export const apiGetElement = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters']
+  P extends ServerElement<T>['parameters'],
 >({
   id,
   ...props
@@ -165,7 +165,7 @@ export const apiDelElement = (props: MyAxiosProps & { id: string }) =>
 export const apiUpdateElement = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters']
+  P extends ServerElement<T>['parameters'],
 >(
   props: MyAxiosProps & { id: string },
 ): Promise<Result<LibraryElement<any>>> =>
@@ -182,7 +182,7 @@ export const apiUpdateElement = <
 export const apiCreateElements = <
   T extends Entity,
   K extends Entity,
-  P extends ServerElement<T>['parameters']
+  P extends ServerElement<T>['parameters'],
 >(
   props: MyAxiosProps,
 ): Promise<Result<LibraryElement<T, LibraryElement<K>[], P>[]>> =>

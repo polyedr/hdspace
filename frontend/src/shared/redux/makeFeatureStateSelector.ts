@@ -2,7 +2,7 @@ import { AppReduxState } from '@Redux/types';
 
 function makeFeatureStateSelector<
   T extends AppReduxState,
-  K extends keyof AppReduxState
+  K extends keyof AppReduxState,
 >(featureName: K) {
   return (state: T): T[K] => {
     if (!state[featureName]) {

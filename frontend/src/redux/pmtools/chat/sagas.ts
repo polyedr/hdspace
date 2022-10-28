@@ -1,3 +1,4 @@
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import { convertUserDataFromResponse } from '@Api/converters/fromResponse';
 import {
   apiAuthUser,
@@ -11,7 +12,6 @@ import TYPES from '@Redux/actionTypes';
 import { reqWrapper } from '@Redux/project/sagas/shared';
 import { setUserData } from '@Redux/user/actions';
 import { selectUserData } from '@Redux/user/selectors';
-import generator from 'generate-password';
 import { ServerUserData } from '@Src/types';
 import { call, put, select, takeLatest } from 'redux-saga/effects';
 import { configAdmin, configUser } from '@Constants/pmtools/zulipChatLoginData';
@@ -69,7 +69,11 @@ function* loginUserSaga({
   type: string;
 }) {
   try {
-    const { email: username } = yield select(selectUserData);
+    const {
+      id,
+      email: username,
+      profile: { parameters },
+    } = yield select(selectUserData);
     const client = yield call(apiAuthUser, {
       realm: configAdmin.realm,
       username,
@@ -78,18 +82,42 @@ function* loginUserSaga({
     if (client.result === 'success') {
       yield put(action.successLoginChatUser(client));
       localStorage.setItem('login', JSON.stringify({ password }));
+      if (parameters.passwordZulip !== password) {
+        yield call(apiChangeProfileData, {
+          id,
+          data: {
+            parameters: { passwordZulip: password },
+          },
+        });
+        const userData: ServerUserData = yield call(reqWrapper, apiGetUser, {
+          id,
+        });
+
+        yield put(
+          setUserData({
+            ...convertUserDataFromResponse(userData),
+          }),
+        );
+      }
+    } else {
+      yield put(
+        enqueueSnackbar({
+          message: 'Chat login failed!',
+          options: { variant: 'error' },
+        }),
+      );
     }
   } catch (e) {
     yield put(panelErrorMsg(e));
   }
 }
 
-export function* registerZulipUserSaga(): any {
+export function* registerZulipUserSaga({ payload }: any): any {
   try {
     const { id, email, username }: ServerUserData = yield select(
       selectUserData,
     );
-    const password = generator.generate();
+    const password = payload as string;
 
     const res = yield call(apiRegisterUser, configAdmin, {
       email,
@@ -124,6 +152,13 @@ export function* registerZulipUserSaga(): any {
         yield put(action.successLoginChatUser(client));
         localStorage.setItem('login', JSON.stringify({ password }));
       }
+    } else {
+      yield put(
+        enqueueSnackbar({
+          message: 'Chat Register failed!',
+          options: { variant: 'error' },
+        }),
+      );
     }
   } catch (e) {
     yield put(panelErrorMsg(e));

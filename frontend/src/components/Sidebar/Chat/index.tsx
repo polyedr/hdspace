@@ -1,23 +1,79 @@
-import { Container } from '@material-ui/core';
-import { requestLoginChatUser } from '@Redux/pmtools/chat/actions';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectChatUser } from '@Redux/pmtools/chat/selectors';
-import Messages from './Messages/Messages';
-import ChatLogin from './ChatLogin';
+import React, { useEffect, useState } from 'react';
 
-const ChatTab: React.FC = () => {
-  const dispatch = useDispatch();
-  const authenticated = useSelector(selectChatUser);
+import { ChannelFilters, ChannelSort } from 'stream-chat';
 
-  useEffect(() => {
-    const login = JSON.parse(localStorage.getItem('login') || '{}');
-    if (Object.entries(login).length > 0 && !authenticated) {
-      dispatch(requestLoginChatUser(login.password));
-    }
-  }, [authenticated, dispatch]);
+// import 'stream-chat-react/dist/css/index.css';
+import './App.css';
 
-  return <Container>{authenticated ? <Messages /> : <ChatLogin />}</Container>;
+import { useChecklist } from './ChecklistTasks';
+import client, { TeamChannelType } from './client';
+import { ChannelContainer } from './components/ChannelContainer/ChannelContainer';
+import { ChannelListContainer } from './components/ChannelListContainer/ChannelListContainer';
+
+const targetOrigin = 'localhost:8080';
+
+const filters: ChannelFilters[] = [
+  { type: 'team', demo: 'team' },
+  { type: 'messaging', demo: 'team' },
+];
+const options = { state: true, watch: true, presence: true, limit: 3 };
+const sort: ChannelSort<TeamChannelType> = {
+  last_message_at: -1,
+  updated_at: -1,
 };
 
-export default ChatTab;
+const App = () => {
+  const [createType, setCreateType] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
+  useChecklist({ chatClient: client, targetOrigin: targetOrigin! });
+
+  useEffect(() => {
+    const handleColorChange = (color: string) => {
+      const root = document.documentElement;
+      if (color.length && color.length === 7) {
+        root.style.setProperty('--primary-color', `${color}E6`);
+        root.style.setProperty('--primary-color-alpha', `${color}1A`);
+      }
+    };
+
+    window.addEventListener('message', (event) =>
+      handleColorChange(event.data),
+    );
+    return () => {
+      window.removeEventListener('message', (event) =>
+        handleColorChange(event.data),
+      );
+    };
+  }, []);
+
+  return (
+    <>
+      <div className="app__wrapper">
+        <ChannelListContainer
+          {...{
+            isCreating,
+            filters,
+            options,
+            setCreateType,
+            setIsCreating,
+            setIsEditing,
+            sort,
+          }}
+        />
+        <ChannelContainer
+          {...{
+            createType,
+            isCreating,
+            isEditing,
+            setIsCreating,
+            setIsEditing,
+          }}
+        />
+      </div>
+    </>
+  );
+};
+
+export default App;

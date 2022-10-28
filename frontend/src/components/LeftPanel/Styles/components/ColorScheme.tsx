@@ -56,9 +56,11 @@ const ColorScheme = () => {
 
   useEffect(() => {
     if (defaultStyles) {
-      const colorValue = (Object.keys(ColorSettingsTypes) as Array<
-        keyof typeof ColorSettingsTypes
-      >).reduce((value, key) => ({ ...value, [key]: getColorByKey(key) }), {});
+      const colorValue = (
+        Object.keys(ColorSettingsTypes) as Array<
+          keyof typeof ColorSettingsTypes
+        >
+      ).reduce((value, key) => ({ ...value, [key]: getColorByKey(key) }), {});
 
       setColorValue(colorValue);
     }
@@ -92,9 +94,11 @@ const ColorScheme = () => {
         FILL_INSIDE_COLOR: formatImagePaletteColor(parsedImagePalette, 4),
         ACCENT_COLOR: formatImagePaletteColor(parsedImagePalette, 5),
       });
-      (Object.keys(ColorSettingsTypes) as Array<
-        keyof typeof ColorSettingsTypes
-      >).forEach((key, index) => {
+      (
+        Object.keys(ColorSettingsTypes) as Array<
+          keyof typeof ColorSettingsTypes
+        >
+      ).forEach((key, index) => {
         updateColor(
           formatImagePaletteColor(parsedImagePalette, index) as string,
           key,
@@ -127,9 +131,11 @@ const ColorScheme = () => {
   return (
     <div>
       <div>
-        {(Object.keys(ColorSettingsTypes) as Array<
-          keyof typeof ColorSettingsTypes
-        >).map((key) => {
+        {(
+          Object.keys(ColorSettingsTypes) as Array<
+            keyof typeof ColorSettingsTypes
+          >
+        ).map((key) => {
           return (
             <ColorSettings
               isDefaultStyles

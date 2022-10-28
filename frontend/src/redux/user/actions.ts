@@ -7,6 +7,7 @@ import {
   SignupFormData,
   Experience,
   ChatCredentials,
+  UserSubscriptionsData,
 } from '@Src/types';
 import TYPES from '@Redux/actionTypes';
 
@@ -57,6 +58,13 @@ export const setProjectViewStart = () => ({
 export const setProjectViewEnd = (viewTokenPair: TokenPair) => ({
   type: TYPES.PROJECT_VIEW_END,
   viewTokenPair,
+});
+
+export const setSubscriptionData = (
+  subscriptionData: Partial<UserSubscriptionsData>,
+) => ({
+  type: TYPES.SET_SUBSCRIPTION_DATA,
+  subscriptionData,
 });
 
 export const setUserData = (data: Partial<UserData>) => ({
@@ -176,6 +184,11 @@ export const changeUserDataFailure = (error: any) => ({
 export const changeProfileData = (data: Partial<ProfileData>) => ({
   type: TYPES.CHANGE_PROFILE_DATA,
   payload: data,
+});
+
+export const changeProfileAvatar = (avatar) => ({
+  type: TYPES.CHANGE_PROFILE_AVATAR,
+  payload: avatar,
 });
 
 export const changeProfileDataComplete = (

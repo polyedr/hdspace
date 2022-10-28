@@ -1,6 +1,6 @@
 import React from 'react';
 import { VIMEO_HEIGHT_RATIO } from '@Constants/players';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { StateElement } from '../../../types';
 
 export const useElementClassNames = (element: StateElement) => {
@@ -16,9 +16,11 @@ export const getWrapperStyles = (ownStyles: React.CSSProperties) =>
 
 export const getIframeContainerClassStyles = (style: React.CSSProperties) => ({
   height: style.height,
-  ...(style.height && {
-    paddingTop: style.height === 'auto' ? `${VIMEO_HEIGHT_RATIO}%` : '0',
-  }),
+  ...(style.height
+    ? {
+        paddingTop: style.height === 'auto' ? `${VIMEO_HEIGHT_RATIO}%` : '0',
+      }
+    : {}),
   overflow: 'hidden',
   position: 'relative' as React.CSSProperties['position'],
 });

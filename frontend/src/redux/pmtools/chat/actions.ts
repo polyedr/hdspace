@@ -7,8 +7,9 @@ export const requestLoginChatUser = (payload: string) => ({
   payload,
 });
 
-export const requestRegisterZulip = () => ({
+export const requestRegisterZulip = (payload: string) => ({
   type: TYPES.REGISTER_PMTOOLS,
+  payload,
 });
 
 export const requestLogoutChatUser = () => ({

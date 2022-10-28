@@ -19,7 +19,7 @@ const Marker: React.FC<IMarkerProps> = ({ text }) => {
   );
 };
 
-const GMap: React.FC<IMapProps> = ({ center, zoom, markerText, apiKey }) => (
+const GMap = ({ center, zoom, markerText, apiKey }: IMapProps) => (
   <GoogleMapReact
     center={center}
     zoom={zoom}

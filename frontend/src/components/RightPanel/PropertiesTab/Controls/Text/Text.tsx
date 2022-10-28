@@ -22,13 +22,8 @@ const Text: React.FC<PropertiesChangeProps<ParagraphElement>> = ({
   updateParams,
   canEdit,
 }) => {
-  const {
-    link,
-    isLink,
-    textContent,
-    screenName,
-    screenLink,
-  } = element.parameters;
+  const { link, isLink, textContent, screenName, screenLink } =
+    element.parameters;
 
   const elementType: any = element?.type;
 

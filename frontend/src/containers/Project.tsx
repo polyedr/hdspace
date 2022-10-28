@@ -80,12 +80,11 @@ const Project: React.FC<Props> = ({ projectId, screenId }) => {
         );
       }
     }
-  }, [screenId, currentProjectId, project, history, screens]);
+  }, [screenId, currentProjectId, project, screens]);
 
   return (
     <div className={classes.project}>
       <LeftPanel />
-
       {projectLoader ? (
         <div className={classes.loader}>
           <CircularProgress />

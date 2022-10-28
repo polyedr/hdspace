@@ -7,7 +7,7 @@ function ImageCropper(props) {
 
   const [cropConfig, setCropConfig] = useState({
     unit: '%',
-    height: 25,
+    height: 100,
     aspect: 1 / 1,
   });
 
@@ -35,7 +35,6 @@ function ImageCropper(props) {
 
     const base64Image = canvas.toDataURL('image/jpeg', 1);
 
-    setResult(base64Image);
     return new Promise((resolve, reject) => {
       canvas.toBlob((blob: any) => {
         if (!blob) {
@@ -44,6 +43,8 @@ function ImageCropper(props) {
         }
 
         blob.name = fileName;
+        setResult(base64Image, blob);
+
         const croppedImageUrl = window.URL.createObjectURL(blob);
 
         resolve(croppedImageUrl);
