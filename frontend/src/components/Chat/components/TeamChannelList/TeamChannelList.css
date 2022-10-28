@@ -1,0 +1,33 @@
+.team-channel-list {
+    width: 100%;
+  }
+
+  .team-channel-list__message {
+    color: #ffffff;
+    padding: 0 16px;
+  }
+
+  .team-channel-list__message.loading {
+    height: 115px;
+  }
+
+  .team-channel-list__header {
+    padding: 0 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .team-channel-list__header svg {
+    cursor: pointer;
+  }
+
+  .team-channel-list__header__title {
+    font-size: 14px;
+    line-height: 16px;
+    color: #81818E;
+  }
+
+  .team-channel-list p:not(.team-channel-list__header__title) {
+    padding: 0 16px;
+  }

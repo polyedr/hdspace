@@ -13,7 +13,13 @@ import {
   ServerProject,
   ServerProjectWithScreens,
 } from '../types';
-import { handleError, onError, parseCursor } from './helper';
+
+import {
+  handleError,
+  onError,
+  parseCursor,
+  handleErrorResponseMessage,
+} from './helper';
 
 export const apiGetProjectList = (
   props: MyAxiosProps,
@@ -70,7 +76,7 @@ export const apiCreateProject = (
     .then((result: AxiosResponse<ServerProject>) => ({
       result: convertProjectFromResponse(result.data),
     }))
-    .catch(handleError);
+    .catch(handleErrorResponseMessage);
 
 export const apiDeleteProject = (props: MyAxiosProps & { id: string }) =>
   myAxios({

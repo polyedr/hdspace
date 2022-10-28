@@ -37,6 +37,7 @@ export const initialData: ProjectDataState = {
   assetImageList: false,
   backGroundAssetsList: false,
   imagePalette: null,
+  createProjectError: null,
 };
 
 export const initialUi: ProjectUiState = {

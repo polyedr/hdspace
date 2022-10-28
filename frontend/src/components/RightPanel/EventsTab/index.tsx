@@ -142,9 +142,9 @@ const EventsTab: FC = () => {
             margin="dense"
             select
           >
-            {(Object.keys(EventType).map(
-              (k) => EventType[k],
-            ) as EventType[]).map((eventType) => (
+            {(
+              Object.keys(EventType).map((k) => EventType[k]) as EventType[]
+            ).map((eventType) => (
               <MenuItem value={eventType} dense key={eventType}>
                 {eventType}
               </MenuItem>

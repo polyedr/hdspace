@@ -9,6 +9,7 @@ import {
 } from '@mui/material/styles';
 import JSZip from 'jszip';
 import theme from '@Src/styles/Theme';
+// eslint-disable-next-line import/named
 import { store } from '@Redux/store';
 import { AppReduxState } from '@Redux/types';
 import {

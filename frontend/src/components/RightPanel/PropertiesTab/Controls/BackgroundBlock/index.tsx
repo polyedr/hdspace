@@ -53,6 +53,7 @@ interface StyleProperties {
 
 type Props = PropertiesChangeProps<LibraryElement<Entity>> &
   StyleProperties & {
+    // eslint-disable-next-line react/no-unused-prop-types
     controlName?: string;
     assetLists: AssetsList[];
   };

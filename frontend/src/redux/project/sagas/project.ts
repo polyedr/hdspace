@@ -4,6 +4,7 @@ import {
   convertCreatedProjectToRequest,
 } from '@Api/converters/toRequest';
 import generator from 'generate-password';
+import { setProjectError } from '@Redux/project/actions';
 import {
   apiCreateProject,
   apiDeleteProject,
@@ -33,19 +34,17 @@ import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElemen
 import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
-import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
-import { apiCreateNewStreams, apiDeleteStream } from '@Api/pmtools/chatApi';
-import {
-  apiGetBoard,
-  createNewBoard,
-  createOrganization,
-  deleteOrganization,
-  getAddUserToBoard,
-  getUserByEmail,
-} from '@Api/pmtools/board/boardApi';
+// import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
+import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
+// import {
+//   apiGetBoard,
+//   createNewBoard,
+//   createOrganization,
+//   deleteOrganization,
+//   getAddUserToBoard,
+//   getUserByEmail,
+// } from '@Api/pmtools/board/boardApi';
 import logger from 'loglevel';
-import { IBoardForUI, IOrganization } from '@Src/types/pmtools/board';
-import { selectUserData } from '@Redux/user/selectors';
 import { setStateCurrentUserPermissions } from '@Redux/permissions/actions';
 import { apiGetUser } from '@Api/user';
 import { setUserData, setTokenPair } from '@Redux/user/actions';
@@ -232,9 +231,9 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       },
     );
 
-    if (result?.projectTrelloJSON) {
-      yield put(successSavedBoard(result.projectTrelloJSON));
-    }
+    // if (result?.projectTrelloJSON) {
+    //   yield put(successSavedBoard(result.projectTrelloJSON));
+    // }
 
     if (result) {
       yield put(Actions.changeLayout(result?.projectData?.layout?.value));
@@ -292,39 +291,42 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
 export function* createProjectSaga(
   action: ReturnType<typeof Actions.createProject>,
 ) {
-  const {
-    payload: { name },
-  } = action;
   try {
+    const {
+      payload: { name },
+    } = action;
+
     const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
 
-    const organization: IOrganization = yield call(
-      createOrganization,
-      `${generateName}-adevi-org`,
-    );
-    const board: IBoardForUI = yield call(createNewBoard, generateName);
+    // const organization: IOrganization = yield call(
+    //   createOrganization,
+    //   `${generateName}-adevi-org`,
+    // );
+    // const board: IBoardForUI = yield call(createNewBoard, generateName);
     yield call(apiCreateNewStreams, generateName);
 
-    const boardForUI: IBoardForUI = {
-      organization,
-      ...board,
-    };
+    // const boardForUI: IBoardForUI = {
+    //   organization,
+    //   ...board,
+    // };
 
-    const { email } = yield select(selectUserData);
-    const userTrello = yield call(getUserByEmail, email);
-    if (!userTrello.error) {
-      yield call(getAddUserToBoard, email, board.id);
-    }
+    // const { email } = yield select(selectUserData);
+    // const userTrello = yield call(getUserByEmail, email);
+    // if (!userTrello.error) {
+    //   yield call(getAddUserToBoard, email, board.id);
+    // }
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
-        data: convertCreatedProjectToRequest(name, boardForUI),
+        data: convertCreatedProjectToRequest(name, {}),
+        // data: [],
       },
     );
-    yield put(successSavedBoard(boardForUI));
+    yield put(setProjectError(error));
+    // yield put(successSavedBoard(boardForUI));
 
     if (createdProject?.created) {
       yield put(
@@ -424,12 +426,12 @@ export function* deleteProjectSaga({
   payload: { id },
 }: ReturnType<typeof Actions.deleteProject>) {
   try {
-    const board = yield call(reqWrapper, apiGetBoard, {
-      project: id,
-    });
+    // const board = yield call(reqWrapper, apiGetBoard, {
+    //   project: id,
+    // });
 
-    yield call(deleteOrganization, JSON.parse(board).organization?.id);
-    yield call(apiDeleteStream, JSON.parse(board).name);
+    // yield call(deleteOrganization, JSON.parse(board).organization?.id);
+    // yield call(apiDeleteStream, JSON.parse(board).name);
 
     const { result, error }: Result<boolean> = yield call(
       reqWrapper,
@@ -567,9 +569,8 @@ export function* updateProjectSaga(
       return;
     }
 
-    const currentProject: ReturnType<
-      typeof selectCurrentProject
-    > = yield select(selectCurrentProject);
+    const currentProject: ReturnType<typeof selectCurrentProject> =
+      yield select(selectCurrentProject);
 
     const success: boolean = yield call(projectUpdateHelperSaga, project);
 

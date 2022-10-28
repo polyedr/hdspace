@@ -42,6 +42,16 @@ type ProjectBase = {
   updated: Date;
   tags: Array<string>;
 };
+type MarketplaceBase = {
+  id: number;
+  preview?: string;
+  name: string;
+  status: string;
+  TemplateLoader: boolean;
+  created: Date;
+  updated: Date;
+  tags: Array<string>;
+};
 
 export type PropertyName = keyof React.CSSProperties;
 
@@ -54,10 +64,19 @@ export type Result<T = any> = {
   error?: string;
 };
 
+export type Data<T = any> = {
+  data?: T;
+  error?: string;
+};
+
 export type PaginatedResponse<T> = {
   next: string | null;
   previous: string | null;
   results: T[];
+};
+
+export type PaginatedSubscriptionData<T> = {
+  data: T[];
 };
 
 export type PaginatedBase<T> = {
@@ -71,11 +90,10 @@ export type PaginatedArray<T> = PaginatedBase<T> & {
   results: T[];
 };
 
-export type PaginatedData<
-  T extends { id: string | number }
-> = PaginatedBase<T> & {
-  results: Normalized<T>;
-};
+export type PaginatedData<T extends { id: string | number }> =
+  PaginatedBase<T> & {
+    results: Normalized<T>;
+  };
 
 export enum ElementGroup {
   CONTAINERS = 'containers',
@@ -115,7 +133,7 @@ export enum UpdateDataActionType {
 export type ServerElement<
   Type extends Entity,
   Children = any[],
-  Params = BaseElementParams
+  Params = BaseElementParams,
 > = {
   id: number | string;
   name: string;
@@ -141,7 +159,7 @@ export type ServerElement<
 export type NNServerElement<
   Type extends Entity,
   Children = any[],
-  Params = BaseElementParams
+  Params = BaseElementParams,
 > = Omit<ServerElement<Type, Children, Params>, 'styles'> & {
   styles: React.CSSProperties;
 };
@@ -191,10 +209,13 @@ export type SmartContainerServerElement<T extends Entity> = ServerElement<
   [],
   SmartElementParameters
 >;
-export type SmartHeaderServerElement = SmartContainerServerElement<'smartHeader'>;
-export type SmartFooterServerElement = SmartContainerServerElement<'smartFooter'>;
+export type SmartHeaderServerElement =
+  SmartContainerServerElement<'smartHeader'>;
+export type SmartFooterServerElement =
+  SmartContainerServerElement<'smartFooter'>;
 export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
-export type SmartWebpageServerElement = SmartContainerServerElement<'smartWebpage'>;
+export type SmartWebpageServerElement =
+  SmartContainerServerElement<'smartWebpage'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type TextinputServerElement = ServerElement<
   'textinput',
@@ -369,7 +390,7 @@ export type LibraryElement<
   Type extends Entity,
   Children = any[],
   Params = any,
-  OwnStyles = {}
+  OwnStyles = {},
 > = {
   id: string;
   name: string;
@@ -878,7 +899,22 @@ export type ServerProject = {
   project_data_text: string;
   tags: Array<string>;
 };
-
+export type ServerMarketplace = {
+  id: number;
+  favicon?: null | string;
+  preview?: string;
+  name: string;
+  status: string;
+  projectscreen: number[];
+  created: string;
+  updated: string;
+  user: ServerUserData;
+  project_data_trello_json: string;
+  project_data_activity_json?: string;
+  project_data_json: string;
+  project_data_text: string;
+  tags: Array<string>;
+};
 export type ServerScreen = ScreenBase & {
   screen_data_json: any;
 };
@@ -895,6 +931,12 @@ export type LayoutData = {
 };
 
 export type ProjectData = {
+  classes: ProjectClass[];
+  defaultStyles: DefaultStyles;
+  layout: LayoutData;
+  uiFramework: UIFramework;
+};
+export type MarketplaceData = {
   classes: ProjectClass[];
   defaultStyles: DefaultStyles;
   layout: LayoutData;
@@ -969,7 +1011,12 @@ export type Project = ProjectBase & {
   projectData: ProjectData;
   user: UserData;
 };
-
+export type Marketplace = MarketplaceBase & {
+  projectscreen: number[];
+  projectTrelloJSON: IBoardForUI | null;
+  marketplaceData: MarketplaceData;
+  user: UserData;
+};
 export type ProjectWithScreens = ProjectBase & {
   projectData: ProjectData;
   projectTrelloJSON: IBoardForUI | null;
@@ -1195,6 +1242,8 @@ export type CustomElementsCategory = {
   otherElements: Array<ElementData>;
 };
 
+export type ErrorResponse = [];
+
 export type ColorElementIcon = {
   squareTopLeft: string;
   squareTopRight: string;
@@ -1245,10 +1294,12 @@ export type ElementsToCreate<T extends Entity> = {
 export type TokenPair = {
   access: string;
   refresh: string;
+  streamchat?: string;
 };
 export type ViewTokenPair = {
   access: string;
   refresh: string;
+  streamchat?: string;
 };
 export type LoginFormData = {
   username: string;
@@ -1339,6 +1390,7 @@ export type UserData = {
   profile: ProfileData;
 };
 
+export type UserSubscriptionsData = [];
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R
   : any;
@@ -1659,6 +1711,14 @@ export type DateRange = {
   to: Date | null;
 };
 
+export enum TemplatesSearchParameter {
+  name = 'name',
+  user = 'user',
+  status = 'status',
+  updated = 'updated',
+  created = 'created',
+  tags = 'tags',
+}
 export type PostUrlResponse = { wpname: string; owner: any };
 
 export type PostURLCheckRobots = {
