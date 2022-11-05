@@ -310,7 +310,7 @@ EMAIL_BACKEND = (
     "anymail.backends.amazon_ses.EmailBackend"
 )  # or sendgrid.EmailBackend, or...
 # DEFAULT_FROM_EMAIL = "demo@178-21-8-79.xen.vps.regruhosting.ru"  # if you don't already have this in settings
-DEFAULT_FROM_EMAIL = "info@poly-edr.com"  # if you don't already have this in settings
+DEFAULT_FROM_EMAIL = "info@adevi.io"  # if you don't already have this in settings
 
 # Django PayPal settings
 """
