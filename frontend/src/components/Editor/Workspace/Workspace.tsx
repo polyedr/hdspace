@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   selectLayout,
@@ -20,6 +20,7 @@ import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
 import { DOMHandler } from './DOMHandler';
+import ELEMENT_IDS from '@Constants/elementIds';
 
 const useStyles = makeStyles({
   workspace: {
@@ -88,6 +89,8 @@ const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
   const freeCanvasMode = useSelector(selectFreeCanvasMode);
 
+  const [scrollbarRef, setScrollbarRef] = useState<Scrollbars | null>(null);
+
   const format = useSelector(selectLayout);
   const rotated = useSelector(selectScreenRotated);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
@@ -97,6 +100,30 @@ const Workspace: React.FC<Props> = () => {
   const scrollRef = useRef<Scrollbars | null>(null);
 
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (scrollbarRef) {
+      const params = new URLSearchParams(window.location.search);
+
+      const canvas = document.getElementById(
+        ELEMENT_IDS.canvas,
+      ) as HTMLIFrameElement;
+
+      const innerDoc = canvas.contentDocument || canvas.contentWindow?.document;
+      const element = innerDoc?.getElementById(
+        params.get('moveToElement') || '',
+      );
+
+      if (element) {
+        const offsetTop =
+          element.offsetTop -
+          (canvas.contentWindow?.innerHeight ??
+            0 / 2 - element?.clientHeight / 2);
+
+        scrollbarRef.scrollTop(offsetTop);
+      }
+    }
+  }, [scrollbarRef]);
 
   return (
     <div className={classes.workspace} ref={ref}>
@@ -109,6 +136,7 @@ const Workspace: React.FC<Props> = () => {
                   if (!scrollbars) {
                     return;
                   }
+                  setScrollbarRef(scrollbars);
                   scrollRef.current = scrollbars;
                   DOMHandler.INSTANCE.watch(scrollbars.view);
                 }}
