@@ -105,64 +105,66 @@ const renderView = ({ style, ...props }: any) => {
   );
 };
 
-const Scrollbar = React.forwardRef<any, IScrollbarProps>((props, ref) => {
-  const {
-    children,
-    style,
-    className,
-    trackStylesBg,
-    autoHeightMin,
-    autoHeightMax,
-    hideTracksWhenNotNeeded = true,
-    onScroll,
-    onScrollStart,
-    onScrollStop,
-  } = props;
-  const [show, setShow] = useState(false);
-  const [scroll, setScroll] = useState(false);
+const Scrollbar = React.forwardRef<any, IScrollbarProps>(
+  (props, forwardRef) => {
+    const {
+      children,
+      style,
+      className,
+      trackStylesBg,
+      autoHeightMin,
+      autoHeightMax,
+      hideTracksWhenNotNeeded = true,
+      onScroll,
+      onScrollStart,
+      onScrollStop,
+    } = props;
+    const [show, setShow] = useState(false);
+    const [scroll, setScroll] = useState(false);
 
-  const unsetScroll = useDebouncedCallback(() => {
-    setScroll(false);
-  }, 500);
+    const unsetScroll = useDebouncedCallback(() => {
+      setScroll(false);
+    }, 500);
 
-  const handleScroll = useCallback(
-    (event) => {
-      if (onScroll) {
-        onScroll(event);
-      }
-      setScroll(true);
-      unsetScroll.callback();
-    },
-    [onScroll, setScroll],
-  );
+    const handleScroll = useCallback(
+      (event) => {
+        if (onScroll) {
+          onScroll(event);
+        }
+        setScroll(true);
+        unsetScroll.callback();
+      },
+      [onScroll, setScroll],
+    );
 
-  return (
-    <Scrollbars
-      ref={ref || null}
-      style={style}
-      className={className}
-      autoHeight
-      autoHeightMin={autoHeightMin}
-      autoHeightMax={autoHeightMax}
-      renderTrackVertical={(args) =>
-        renderTrack({ ...args, trackStylesBg, scroll, show })
-      } // TODO: find typings for all elements!
-      renderTrackHorizontal={(args) =>
-        renderTrackHorizontal({ ...args, trackStylesBg, scroll, show })
-      }
-      renderView={(args) => renderView({ ...args })}
-      renderThumbVertical={renderThumb}
-      renderThumbHorizontal={renderThumb}
-      hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
-      onScroll={handleScroll}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-      onScrollStart={onScrollStart}
-      onScrollStop={onScrollStop}
-    >
-      {children}
-    </Scrollbars>
-  );
-});
+    return (
+      <Scrollbars
+        ref={forwardRef}
+        style={style}
+        className={className}
+        autoHeight
+        autoHeightMin={autoHeightMin}
+        autoHeightMax={autoHeightMax}
+        renderTrackVertical={(args) =>
+          renderTrack({ ...args, trackStylesBg, scroll, show })
+        } // TODO: find typings for all elements!
+        renderTrackHorizontal={(args) =>
+          renderTrackHorizontal({ ...args, trackStylesBg, scroll, show })
+        }
+        renderView={(args) => renderView({ ...args })}
+        renderThumbVertical={renderThumb}
+        renderThumbHorizontal={renderThumb}
+        hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
+        onScroll={handleScroll}
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onScrollStart={onScrollStart}
+        onScrollStop={onScrollStop}
+      >
+        {children}
+      </Scrollbars>
+    );
+  },
+);
 
 export default memo(Scrollbar);

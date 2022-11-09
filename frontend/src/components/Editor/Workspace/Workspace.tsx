@@ -14,13 +14,13 @@ import MasterScreen from '@Components/Editor/MasterScreen';
 import TreeCanvas from '@Components/Editor/TreeCanvas';
 import Scrollbars from 'react-custom-scrollbars';
 import { makeStyles } from '@material-ui/core/styles';
+import ELEMENT_IDS from '@Constants/elementIds';
 import ElementsInteractions from './ElementsInteractions/ElementsInteractions';
 import NNProcessingModal from '../../Dialogs/NNProcessing';
 import Scrollbar from '../../UI/Scrollbar';
 import FreeCanvas from '../FreeCanvas';
 import EditorViewport from '../Viewport/Viewport';
 import { DOMHandler } from './DOMHandler';
-import ELEMENT_IDS from '@Constants/elementIds';
 
 const useStyles = makeStyles({
   workspace: {
@@ -102,26 +102,28 @@ const Workspace: React.FC<Props> = () => {
   const [scrollLeft, setScrollLeft] = useState<number | null>(null);
 
   useEffect(() => {
-    if (scrollbarRef) {
-      const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
 
+    if (scrollbarRef && params.has('moveToElement')) {
       const canvas = document.getElementById(
         ELEMENT_IDS.canvas,
       ) as HTMLIFrameElement;
 
-      const innerDoc = canvas.contentDocument || canvas.contentWindow?.document;
-      const element = innerDoc?.getElementById(
-        params.get('moveToElement') || '',
-      );
+      canvas.onload = () => {
+        const innerDoc =
+          canvas.contentDocument || canvas.contentWindow?.document;
+        const element = innerDoc?.getElementById(
+          params.get('moveToElement') || '',
+        );
 
-      if (element) {
-        const offsetTop =
-          element.offsetTop -
-          (canvas.contentWindow?.innerHeight ??
-            0 / 2 - element?.clientHeight / 2);
-
-        scrollbarRef.scrollTop(offsetTop);
-      }
+        if (element) {
+          element?.scrollIntoView({
+            block: 'center',
+            inline: 'nearest',
+            behavior: 'smooth',
+          });
+        }
+      };
     }
   }, [scrollbarRef]);
 

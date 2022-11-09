@@ -25,8 +25,10 @@ import {
   selectCurrentRootId,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import ShareIcon from '@mui/icons-material/Share';
 
 import { makeStyles } from '@material-ui/core/styles';
+import { enqueueSnackbar } from '@Redux/notification/actions';
 import Icon from '../../../../UI/Icon';
 
 type Props = {
@@ -201,6 +203,24 @@ const BorderCrumb: React.FC<Props> = (props) => {
     dispatch(pasteCopiedElement({ screenId: currentScreenId }));
   };
 
+  const handleCopyLink = useCallback(() => {
+    const { origin, pathname, search } = window.location;
+
+    const params = new URLSearchParams(search);
+    params.set('moveToElement', element.id);
+
+    navigator.clipboard.writeText(`${origin}${pathname}?${params.toString()}`);
+
+    dispatch(
+      enqueueSnackbar({
+        message: 'Link copied to clipboard.',
+        options: {
+          variant: 'success',
+        },
+      }),
+    );
+  }, [element]);
+
   return element && show ? (
     <div className={cn(classes.crumb)}>
       <span
@@ -212,6 +232,16 @@ const BorderCrumb: React.FC<Props> = (props) => {
       </span>
       {element.type !== 'root' && element.name.indexOf('Master') < 0 && (
         <>
+          <span className={classes.icon} onClick={handleCopyLink}>
+            <ShareIcon
+              sx={{ color: '#fff' }}
+              style={{
+                fontSize: 16,
+                width: 16,
+                marginRight: 3,
+              }}
+            />
+          </span>
           <span className={classes.icon} onClick={handleDuplicate}>
             <Icon icon="copy" size={16} color="white" />
           </span>
