@@ -234,7 +234,7 @@ const BorderCrumb: React.FC<Props> = (props) => {
         <>
           <span className={classes.icon} onClick={handleCopyLink}>
             <ShareIcon
-              sx={{ color: '#fff' }}
+              sx={{ color: 'white' }}
               style={{
                 fontSize: 16,
                 width: 16,
