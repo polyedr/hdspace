@@ -6,6 +6,8 @@ import type { ChannelListMessengerProps } from 'stream-chat-react';
 import { useSelector } from 'react-redux';
 import { selectCurrentProject } from '@Redux/project/selectors/base';
 import { selectUserData } from '@Redux/user/selectors';
+import Scrollbars from 'react-custom-scrollbars';
+import Scrollbar from '@Components/UI/Scrollbar';
 import { AddChannel } from '../../assets';
 
 export type TeamChannelListProps = ChannelListMessengerProps & {
@@ -62,7 +64,19 @@ const ChannelList: React.FC<TeamChannelListProps> = (props) => {
           />
         ) : null}
       </div>
-      {children}
+      {/* <div className="channel-list-wrapper">{children}</div> */}
+      <Scrollbar
+        autoHeightMin="100%"
+        style={{
+          height: '250px',
+
+          // '&::-webkit-scrollbar': {
+          //   width: '4px !important',
+          // },
+        }}
+      >
+        {children}
+      </Scrollbar>
     </div>
   );
 };

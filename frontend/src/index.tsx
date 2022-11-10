@@ -1,5 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
+import * as Sentry from '@sentry/react';
+import { BrowserTracing } from '@sentry/tracing';
 import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 import { configureStore } from '@Redux/store';
 import { Provider } from 'react-redux';
@@ -8,6 +10,17 @@ import { setConfig } from 'react-hot-loader';
 import App from './containers/App';
 
 import './styles/index.scss';
+
+if (
+  process.env.NODE_ENV === 'production' ||
+  process.env.NODE_ENV === 'staging'
+) {
+  Sentry.init({
+    dsn: 'https://8ba6442c457b4bccbb4b2bddb368b192@o1115998.ingest.sentry.io/4504082243256320',
+    integrations: [new BrowserTracing()],
+    tracesSampleRate: 1.0,
+  });
+}
 
 setConfig({
   reloadHooks: false,

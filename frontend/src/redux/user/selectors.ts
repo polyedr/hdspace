@@ -6,6 +6,9 @@ export const selectUserData = ({ user }: AppReduxState) => user.userData;
 export const selectUserProfileDataParameters = ({ user }: AppReduxState) =>
   user.userData.profile.parameters.profileDataParameters;
 
+export const selectSubscriptionData = ({ user }: AppReduxState) =>
+  user?.subscriptionData;
+
 export const selectProfileData = ({ user }: AppReduxState) =>
   user.userData.profile;
 

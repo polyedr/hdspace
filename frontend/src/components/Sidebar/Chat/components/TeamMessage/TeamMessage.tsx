@@ -26,6 +26,13 @@ export const TeamMessage: React.FC<Props> = (props) => {
       <MessageTeam
         {...props}
         message={message}
+        additionalMessageInputProps={{
+          additionalTextareaProps: {
+            style: {
+              height: 400,
+            },
+          },
+        }}
         handleOpenThread={handleOpenThreadOverride}
       />
       {/** potentially add replies component here */}

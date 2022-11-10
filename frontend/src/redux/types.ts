@@ -49,6 +49,7 @@ import {
   VIARegions,
   importData,
   ParsedImagePalette,
+  UserSubscriptionsData,
   Marketplace,
   TemplatesSearchParameter,
 } from '../types';
@@ -75,6 +76,7 @@ export type ProjectDataState = {
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
   imagePalette: ParsedImagePalette | null;
+  createProjectError: string | null;
 };
 
 export type MarketplaceDataState = {
@@ -204,6 +206,7 @@ export type UserState = {
     active: boolean;
   };
   chat: ChatCredentials;
+  subscriptionData: UserSubscriptionsData;
 };
 
 export type Notification = {
@@ -261,6 +264,10 @@ export type RestoreChildrenData = {
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 
+export type GetSubscriptionDataType = IPlainAction<
+  typeof TYPES.SUBSCRIPTION_DATA
+>;
+
 export type SetUsersSearchValue = IAction<
   typeof TYPES.SET_USERS_SEARCH,
   { search: string }
@@ -308,6 +315,12 @@ export type DeleteProject = IAction<
   typeof TYPES.DELETE_PROJECT,
   { id: number }
 >;
+
+export type ProjectError = IAction<
+  typeof TYPES.SET_PROJECT_ERROR,
+  { errorResponse: string | null }
+>;
+
 export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
 
 export type LoadTemlates = IPlainAction<typeof TYPES.LOAD_TEMPLATES>;
@@ -1444,8 +1457,10 @@ export type Action =
   | SetStatePseudoClass
   | SetValueCheckRobots
   | GenerateImagePalette
+  | SetImagePalette
+  | GetSubscriptionDataType
   | SetMarketplaceListLoader
-  | SetImagePalette;
+  | ProjectError;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

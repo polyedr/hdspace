@@ -41,7 +41,7 @@
     margin-top: 18px;
   }
 
-  /* .channel-name-input__wrapper input {
+   .channel-name-input__wrapper input {
     font-size: 14px;
     color: rgba(0, 0, 0, 0.5);
     height: 40px;
@@ -61,7 +61,7 @@
   .channel-name-input__wrapper input::placeholder {
     font-weight: 300;
     color: rgba(0, 0, 0, 0.5);
-  } */
+  } 
 
   .create-channel__button-wrapper {
     /* height: 82px; */

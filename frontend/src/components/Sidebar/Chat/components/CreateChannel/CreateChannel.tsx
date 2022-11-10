@@ -78,8 +78,8 @@ const StyledInput = styled(TextField)({
 });
 
 const InviteButton = styled(Button)({
-  textTransform: 'capitalize',
-  backgroundColor: 'var(--blue)',
+
+  
 });
 
 const NameInputWrapper = styled('div')({
@@ -202,6 +202,7 @@ export const CreateChannel: React.FC<Props> = (props) => {
             <InviteButton
               onClick={() => setInviteProjectId(projectId)}
               variant="contained"
+              color="primary"
             >
               Invite People
             </InviteButton>
