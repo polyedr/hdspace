@@ -3,7 +3,7 @@ import { IconButton, TextField, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 
-const useStyles = makeStyles(({ typography, palette }) => ({
+const useStyles = makeStyles(({ typography }) => ({
   title: {
     padding: '0.5em 1em 0.5em 0',
     '&:hover $editButton': {
@@ -28,15 +28,12 @@ const useStyles = makeStyles(({ typography, palette }) => ({
       '& input': {
         fontSize: 24,
         fontWeight: 'bold',
-      }
-    } 
-  }
+      },
+    },
+  },
 }));
 
-const RenameProjectBar = ({
-  projectName,
-  onChange,
-}) => {
+const RenameProjectBar = ({ projectName, onChange }) => {
   const classes = useStyles();
   const [editMode, setEditMode] = useState(false);
   const [name, setName] = useState(projectName);
@@ -54,8 +51,8 @@ const RenameProjectBar = ({
   };
 
   const handleKeyDown = (e) => {
-    if(e.key === "Enter") {
-      if(name.trim()) {
+    if (e.key === 'Enter') {
+      if (name.trim()) {
         onChange(name);
         handleModeChange();
       }
@@ -64,34 +61,30 @@ const RenameProjectBar = ({
 
   return (
     <div className={classes.title}>
-      {
-        !editMode && (
-          <>
-            <Typography variant="h5" className={classes.projectName}>
-              {projectName}
-            </Typography>
-            <IconButton
-              onClick={handleModeChange}
-              className={classes.editButton}
-              size="small"
-              title="Rename project"
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </>
-        )
-      }
-      {
-        editMode && (
-          <TextField 
-            autoFocus
-            classes={{ root: classes.input }}
-            value={name} 
-            onChange={handleChange} 
-            onKeyDown={handleKeyDown}
-          />
-        )
-      }
+      {!editMode && (
+        <>
+          <Typography variant="h5" className={classes.projectName}>
+            {projectName}
+          </Typography>
+          <IconButton
+            onClick={handleModeChange}
+            className={classes.editButton}
+            size="small"
+            title="Rename project"
+          >
+            <EditIcon fontSize="small" />
+          </IconButton>
+        </>
+      )}
+      {editMode && (
+        <TextField
+          autoFocus
+          classes={{ root: classes.input }}
+          value={name}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+        />
+      )}
     </div>
   );
 };

@@ -1,9 +1,7 @@
 import React from 'react';
-import { Avatar, useChatContext } from 'stream-chat-react';
+import { useChatContext } from 'stream-chat-react';
 
 import './ChannelEmptyState.css';
-
-import { HashIcon } from '../../assets';
 
 import type {
   TeamAttachmentType,
@@ -30,25 +28,25 @@ export const ChannelEmptyState = () => {
     ({ user }) => user?.id !== client.userID,
   );
 
-  const getAvatarGroup = () => {
-    if (!members.length) return <Avatar size={72} />;
+  // const getAvatarGroup = () => {
+  //   if (!members.length) return <Avatar size={72} />;
 
-    return (
-      <div className="channel-empty__avatars">
-        {members.map((member, i) => {
-          if (i > 2) return null;
-          return (
-            <Avatar
-              key={member.user?.id}
-              image={member.user?.image}
-              name={member.user?.name || member.user?.id}
-              size={72}
-            />
-          );
-        })}
-      </div>
-    );
-  };
+  //   return (
+  //     <div className="channel-empty__avatars">
+  //       {members.map((member, i) => {
+  //         if (i > 2) return null;
+  //         return (
+  //           <Avatar
+  //             key={member.user?.id}
+  //             image={member.user?.image}
+  //             name={member.user?.name || member.user?.id}
+  //             size={72}
+  //           />
+  //         );
+  //       })}
+  //     </div>
+  //   );
+  // };
 
   const getUserText = () => {
     if (members.length === 1) {

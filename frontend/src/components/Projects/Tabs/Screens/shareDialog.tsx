@@ -42,12 +42,12 @@ const useStyles = makeStyles(({ spacing, palette }) =>
     },
     dialog: {
       '& .MuiDialogTitle-root': {
-        paddingBottom: 0, 
+        paddingBottom: 0,
       },
       '& .MuiDialogContent-root': {
         paddingBottom: 24,
-      }
-    }
+      },
+    },
   }),
 );
 
@@ -57,11 +57,7 @@ type Props = {
   onInvite: (e) => void;
 };
 
-const ShareDialog: React.FC<Props> = ({
-  open,
-  onInvite,
-  onClose,
-}) => {
+const ShareDialog: React.FC<Props> = ({ open, onInvite, onClose }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const user = useSelector(selectUserData);
@@ -136,9 +132,9 @@ const ShareDialog: React.FC<Props> = ({
     >
       <DialogTitle id="alert-dialog-title">
         Share Project
-        <IconButton 
-          aria-label="close" 
-          className={classes.closeBtn} 
+        <IconButton
+          aria-label="close"
+          className={classes.closeBtn}
           onClick={onClose}
         >
           <Close />
@@ -148,28 +144,23 @@ const ShareDialog: React.FC<Props> = ({
         <Grid container spacing={2} direction="column">
           <Grid item>
             <FormControlLabel
-              control={
-                <Checkbox
-                  checked={true}
-                  color="primary"
-                />
-              }
+              control={<Checkbox checked color="primary" />}
               label="Everyone who has this link will be able to change project"
             />
           </Grid>
           <Grid item>
-            <IconButton size='small' onClick={() => handleCopyLink()}>
-              <FileCopyOutlined fontSize='small' />
+            <IconButton size="small" onClick={() => handleCopyLink()}>
+              <FileCopyOutlined fontSize="small" />
             </IconButton>
             Copy link to the screen
           </Grid>
           <Grid item>
-            <IconButton 
-              size='small' 
+            <IconButton
+              size="small"
               onClick={() => handleCopyLink(true)}
               disabled={!activeElementId || parseInt(activeElementId) <= 0}
             >
-              <FileCopyOutlined fontSize='small' />
+              <FileCopyOutlined fontSize="small" />
             </IconButton>
             Copy link to the element
           </Grid>
@@ -179,9 +170,7 @@ const ShareDialog: React.FC<Props> = ({
             </Typography>
           </Grid>
           <Grid item>
-            <Button>
-              Invite People
-            </Button>
+            <Button>Invite People</Button>
           </Grid>
         </Grid>
       </DialogContent>

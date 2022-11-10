@@ -67,12 +67,13 @@ const useStyles = makeStyles(({ spacing }) =>
       display: 'flex',
       flexDirection: 'column',
       borderRadius: 4,
-      boxShadow: '0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.06)',
+      boxShadow:
+        '0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.06)',
       position: 'relative',
       '&:hover': {
         '& .screen-action': {
           display: 'inline',
-        }
+        },
       },
       '& .screen-img': {
         backgroundPosition: 'center',
@@ -136,7 +137,7 @@ const Activity: React.FC<Props> = ({ projectId, screenId }) => {
   const [selectedDate, setSelectedDate] = React.useState(new Date());
 
   useEffect(() => {
-    if(currentProjectId > -1) {
+    if (currentProjectId > -1) {
       dispatch(requestGetAction(currentProjectId));
     }
   }, [dispatch, project]);
@@ -155,7 +156,7 @@ const Activity: React.FC<Props> = ({ projectId, screenId }) => {
 
   const handlePlatformChange = (e) => {
     setPlatform(e.target.value);
-  }
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -166,7 +167,7 @@ const Activity: React.FC<Props> = ({ projectId, screenId }) => {
       <Grid container item spacing={3} alignItems="center">
         <Grid item>
           <Button onClick={handleRefresh}>
-            <Sync fontSize='small' />
+            <Sync fontSize="small" />
             Refresh
           </Button>
         </Grid>
@@ -179,18 +180,20 @@ const Activity: React.FC<Props> = ({ projectId, screenId }) => {
               label="Type"
               style={{ width: 150 }}
             >
-              <MenuItem value='board'>Board</MenuItem>
-              <MenuItem value='editor'>Editor</MenuItem>
-              <MenuItem value='members'>Members</MenuItem>
+              <MenuItem value="board">Board</MenuItem>
+              <MenuItem value="editor">Editor</MenuItem>
+              <MenuItem value="members">Members</MenuItem>
             </Select>
           </FormControl>
         </Grid>
         <Grid item>
           <Autocomplete
-            options={[{name: 'me'}]}
+            options={[{ name: 'me' }]}
             getOptionLabel={(option) => option.name}
             style={{ width: 200 }}
-            renderInput={(params) => <TextField {...params} label="User" variant="outlined" />}
+            renderInput={(params) => (
+              <TextField {...params} label="User" variant="outlined" />
+            )}
           />
         </Grid>
         <Grid item>
@@ -210,12 +213,12 @@ const Activity: React.FC<Props> = ({ projectId, screenId }) => {
         </Grid>
         <Grid item>
           <Button>
-            <Close fontSize='small' /> Reset Filters
+            <Close fontSize="small" /> Reset Filters
           </Button>
         </Grid>
         <Grid item>
           <IconButton>
-            <FilterList fontSize='small' />
+            <FilterList fontSize="small" />
           </IconButton>
         </Grid>
       </Grid>

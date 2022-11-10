@@ -77,10 +77,7 @@ const StyledInput = styled(TextField)({
   },
 });
 
-const InviteButton = styled(Button)({
-
-  
-});
+const InviteButton = styled(Button)({});
 
 const NameInputWrapper = styled('div')({
   padding: '20px 0 0 20px',

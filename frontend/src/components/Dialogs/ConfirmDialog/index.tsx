@@ -39,7 +39,7 @@ const ConfirmDialog: React.FC<Props> = ({
   onClose,
 }) => {
   const classes = useStyles();
-  
+
   return (
     <Dialog
       open={open}
@@ -48,10 +48,10 @@ const ConfirmDialog: React.FC<Props> = ({
       aria-describedby="alert-dialog-description"
     >
       <DialogTitle id="alert-dialog-title">
-        { title }
-        <IconButton 
-          aria-label="close" 
-          className={classes.closeBtn} 
+        {title}
+        <IconButton
+          aria-label="close"
+          className={classes.closeBtn}
           onClick={onClose}
         >
           <Close />
@@ -59,7 +59,7 @@ const ConfirmDialog: React.FC<Props> = ({
       </DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
-          { description }
+          {description}
         </DialogContentText>
       </DialogContent>
       <DialogActions>

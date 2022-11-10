@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#81818E',
   },
   title: {
-    marginRight: theme.spacing(1) 
+    marginRight: theme.spacing(1),
   },
 }));
 
@@ -30,7 +30,7 @@ type Props = {
 
 const History: React.FC<Props> = ({ activity, platform }) => {
   const classes = useStyles();
-  console.log(activity)
+  console.log(activity);
   return (
     <Grid container spacing={1}>
       <Grid item>
@@ -39,15 +39,11 @@ const History: React.FC<Props> = ({ activity, platform }) => {
       <Grid item>
         <Grid container direction="column">
           <Grid item>
-            <span className={classes.title}>
-              { activity.action }
-            </span>
-            <span className={classes.time}>
-              3 minutes ago
-            </span>
+            <span className={classes.title}>{activity.action}</span>
+            <span className={classes.time}>3 minutes ago</span>
           </Grid>
           <Grid item>
-            <span className={classes.description}>{ platform }</span>
+            <span className={classes.description}>{platform}</span>
           </Grid>
         </Grid>
       </Grid>

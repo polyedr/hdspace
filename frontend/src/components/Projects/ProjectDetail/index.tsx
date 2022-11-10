@@ -37,14 +37,12 @@ import {
   selectProjectLoader,
   selectCurrentProject,
 } from '@Redux/project/selectors/base';
+import { selectScreensWithoutMaster } from '@Redux/project/selectors/screen';
 import {
-  selectScreensWithoutMaster,
-} from '@Redux/project/selectors/screen';
-import { 
-  getProject, 
-  resetProjectState, 
+  getProject,
+  resetProjectState,
   updateNameAndTagsProject,
-  exportScreenFlag, 
+  exportScreenFlag,
 } from '@Redux/project/actions';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import { Screen } from '@Src/types';
@@ -186,13 +184,10 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
 
   const currentProjectId = useSelector(selectCurrentProjectId);
   const project = useSelector(selectProjectByIdWrapper(currentProjectId));
-  const {
-    name: projectName,
-    tags,
-  } = useSelector(selectCurrentProject);
+  const { name: projectName, tags } = useSelector(selectCurrentProject);
   const projectLoader = useSelector(selectProjectLoader);
   const screens = useSelector(selectScreensWithoutMaster);
-  
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [userTags, setUserTags] = useState<Array<Tag>>([]);
   const [value, setValue] = React.useState(0);
@@ -234,7 +229,9 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
   );
 
   useEffect(() => {
-    dispatch(updateNameAndTagsProject(currentProjectId, projectName, selectedTags));
+    dispatch(
+      updateNameAndTagsProject(currentProjectId, projectName, selectedTags),
+    );
   }, [selectedTags]);
 
   const handleClosePopper = () => {
@@ -285,7 +282,7 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
 
   const handleRenameChange = (val: string) => {
     dispatch(updateNameAndTagsProject(currentProjectId, val, null));
-  }
+  };
 
   return (
     <Container className={classes.project}>
@@ -337,7 +334,10 @@ const ProjectDetail: React.FC<Props> = ({ projectId, screenId }) => {
                   </Select>
                 </Grid>
                 <Grid item>
-                  <StyledIconButton aria-label="download" onClick={handleExportScreen}>
+                  <StyledIconButton
+                    aria-label="download"
+                    onClick={handleExportScreen}
+                  >
                     <VerticalAlignBottom />
                   </StyledIconButton>
                 </Grid>

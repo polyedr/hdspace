@@ -8,13 +8,14 @@ import {
   selectProjectLoader,
   selectScreenCreateLoader,
 } from '@Redux/project/selectors/base';
-import { 
-  getProject, 
-  resetProjectState, 
-  createScreen, 
+import {
+  getProject,
+  resetProjectState,
+  createScreen,
   editScreenNameAndData,
   duplicateScreen,
   deleteScreen,
+  exportScreenFlag,
 } from '@Redux/project/actions';
 import { makeStyles, createStyles, withStyles } from '@material-ui/core/styles';
 import {
@@ -42,7 +43,6 @@ import ScreenEditDialog from '@Components/LeftPanel/Screens/ScreenEditDialog';
 import ConfirmDialog from '@Components/Dialogs/ConfirmDialog';
 import ShareDialog from '@Components/Projects/Tabs/Screens/shareDialog';
 import prevent from '@Utils/preventEvent';
-import { exportScreenFlag } from '@Redux/project/actions';
 import exportHTML from '@Src/export/app';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 
@@ -62,12 +62,13 @@ const useStyles = makeStyles(({ spacing }) =>
       display: 'flex',
       flexDirection: 'column',
       borderRadius: 4,
-      boxShadow: '0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.06)',
+      boxShadow:
+        '0px 0px 1px rgba(42, 42, 45, 0.16), 0px 2px 6px rgba(42, 42, 45, 0.06)',
       position: 'relative',
       '&:hover': {
         '& .screen-action': {
           display: 'inline',
-        }
+        },
       },
       '& .screen-img': {
         backgroundPosition: 'center',
@@ -94,8 +95,9 @@ const useStyles = makeStyles(({ spacing }) =>
       },
     },
     menu: {
-      boxShadow: '0px 0px 1px rgba(55, 56, 60, 0.12), 0px 2px 6px rgba(55, 56, 60, 0.1)',
-    }
+      boxShadow:
+        '0px 0px 1px rgba(55, 56, 60, 0.12), 0px 2px 6px rgba(55, 56, 60, 0.1)',
+    },
   }),
 );
 
@@ -128,17 +130,17 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
   const [openShareDialog, setOpenShareDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const menus = [
-    { 
-      label: 'Edit', 
-      icon: <Edit fontSize='small' />,
+    {
+      label: 'Edit',
+      icon: <Edit fontSize="small" />,
       action: (values: any) => {
         setOpenEditDialog(true);
         handleClose();
       },
     },
-    { 
-      label: 'Copy', 
-      icon: <FileCopyOutlined fontSize='small' />,
+    {
+      label: 'Copy',
+      icon: <FileCopyOutlined fontSize="small" />,
       action: (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
@@ -146,17 +148,17 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
         dispatch(duplicateScreen(name, id));
       },
     },
-    { 
-      label: 'Share', 
-      icon: <Share fontSize='small' />,
+    {
+      label: 'Share',
+      icon: <Share fontSize="small" />,
       action: () => {
         setOpenShareDialog(true);
         handleClose();
       },
     },
-    { 
-      label: 'Export', 
-      icon: <SystemUpdateAlt fontSize='small' />,
+    {
+      label: 'Export',
+      icon: <SystemUpdateAlt fontSize="small" />,
       action: () => {
         if (screens.length > 0) {
           dispatch(exportScreenFlag(true));
@@ -174,9 +176,9 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
         }
       },
     },
-    { 
-      label: 'Delete', 
-      icon: <Delete fontSize='small' />,
+    {
+      label: 'Delete',
+      icon: <Delete fontSize="small" />,
       action: () => {
         setOpenConfirmDialog(true);
         handleClose();
@@ -257,7 +259,7 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
     <Grid container spacing={1}>
       <Grid item xs={3}>
         <div className={classes.addScreen}>
-          <StyledIconButton  
+          <StyledIconButton
             title="Create Screen"
             size="small"
             onClick={handleOpenScreen}
@@ -293,54 +295,52 @@ const Screens: React.FC<Props> = ({ projectId, screenId }) => {
           </Menu>
         </div>
       </Grid>
-      {
-        screens.map((item, index: number) => (
-          <Grid key={item.id} item xs={3}>
-            <div className={classes.screen}>
-              <div 
-                className="screen-img" 
-                style={{ backgroundImage: item.image || 'url(https://picsum.photos/seed/picsum/200/300)' }} 
-              />
-              <div className="screen-name">
-                { item.name }
-              </div>
-              <div className="screen-action">
-                <IconButton
-                  aria-controls="simple-menu" 
-                  aria-haspopup="true"
-                  onClick={e => handleOpen(e, index)}
-                >
-                  <MoreHoriz />
-                </IconButton>
-                <Menu
-                  id="simple-menu"
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                  PopoverClasses={{ paper: classes.menu }}
-                >
-                  {
-                    menus.map((item) => (
-                      <MenuItem key={item.label} onClick={item.action}>
-                        <ListItemIcon>
-                          { item.icon }
-                        </ListItemIcon>
-                        <ListItemText primary={item.label} />
-                      </MenuItem>
-                    ))
-                  }
-                </Menu>
-              </div>
+      {screens.map((item, index: number) => (
+        <Grid key={item.id} item xs={3}>
+          <div className={classes.screen}>
+            <div
+              className="screen-img"
+              style={{
+                backgroundImage:
+                  item.image ||
+                  'url(https://picsum.photos/seed/picsum/200/300)',
+              }}
+            />
+            <div className="screen-name">{item.name}</div>
+            <div className="screen-action">
+              <IconButton
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={(e) => handleOpen(e, index)}
+              >
+                <MoreHoriz />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                PopoverClasses={{ paper: classes.menu }}
+              >
+                {menus.map((item) => (
+                  <MenuItem key={item.label} onClick={item.action}>
+                    <ListItemIcon>{item.icon}</ListItemIcon>
+                    <ListItemText primary={item.label} />
+                  </MenuItem>
+                ))}
+              </Menu>
             </div>
-          </Grid>
-        ))
-      }
+          </div>
+        </Grid>
+      ))}
       {openConfirmDialog && (
         <ConfirmDialog
           open={openConfirmDialog}
           title="Delete screen"
-          description={`Are you sure you want to delete the "${screens[selectedScreenIndex].name || ''}" screen?`}
+          description={`Are you sure you want to delete the "${
+            screens[selectedScreenIndex].name || ''
+          }" screen?`}
           onDelete={handleDelete}
           onClose={() => setOpenConfirmDialog(false)}
         />

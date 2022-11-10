@@ -1,13 +1,6 @@
 import React, { FC, useState, useCallback, MouseEvent } from 'react';
 import ShareIcon from '@material-ui/icons/Share';
-import {
-  Button,
-  IconButton,
-  Popover,
-  Container,
-  Box,
-  Typography,
-} from '@material-ui/core';
+import { Button, IconButton, Popover, Container } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
@@ -125,7 +118,11 @@ const Share: FC<Props> = ({ className = '' }) => {
 
   return (
     <>
-      <StyledIconButton title="Share" className={className} onClick={handleClick}>
+      <StyledIconButton
+        title="Share"
+        className={className}
+        onClick={handleClick}
+      >
         <ShareIcon />
       </StyledIconButton>
 
