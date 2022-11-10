@@ -1,6 +1,10 @@
 import { put, call, select } from 'redux-saga/effects';
-import { convertCreatedElementToRequest } from '@Api/converters/toRequest';
+import {
+  convertCreatedElementToRequest,
+  convertCreatedProjectToRequest,
+} from '@Api/converters/toRequest';
 import generator from 'generate-password';
+import { setProjectError } from '@Redux/project/actions';
 import {
   apiCreateProject,
   apiDeleteProject,
@@ -284,8 +288,14 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
   }
 }
 
-export function* createProjectSaga() {
+export function* createProjectSaga(
+  action: ReturnType<typeof Actions.createProject>,
+) {
   try {
+    const {
+      payload: { name },
+    } = action;
+
     const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
 
@@ -311,10 +321,11 @@ export function* createProjectSaga() {
       reqWrapper,
       apiCreateProject,
       {
-        // data: convertCreatedProjectToRequest(name, boardForUI),
-        data: [],
+        data: convertCreatedProjectToRequest(name, {}),
+        // data: [],
       },
     );
+    yield put(setProjectError(error));
     // yield put(successSavedBoard(boardForUI));
 
     if (createdProject?.created) {

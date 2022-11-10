@@ -5,6 +5,7 @@ import {
   UserData,
   UserProjectPermission,
 } from '@Src/types';
+import { GetSubscriptionDataType } from '@Redux/types';
 
 export const getUsersList = (searchValue?: string) => ({
   type: TYPES.LOAD_USERS,
@@ -17,6 +18,10 @@ export const setUsersData = (
 ) => ({
   type: TYPES.SET_USERS_DATA,
   payload: { search, data },
+});
+
+export const getSubscriptionData = (): GetSubscriptionDataType => ({
+  type: TYPES.SUBSCRIPTION_DATA,
 });
 
 export const assignUserPermissionForProject = (
