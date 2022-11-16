@@ -448,9 +448,10 @@ class ProjectSerializer(TaggitSerializer, ObjectPermissionsAssignmentMixin, seri
             # Set number of projects available according to the subscriptions value
             try:
                 stripe_user = get_or_create_stripe_user(user_id=current_user.id)
+                projects_max = (len(stripe_user.current_subscription_items)) * 3
             except Exception:
                 pass
-            projects_max = (len(stripe_user.current_subscription_items)) * 3
+
             if now_projects < projects_max:
                 can_create_projects = 1
 
