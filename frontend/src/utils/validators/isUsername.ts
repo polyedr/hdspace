@@ -9,7 +9,7 @@ const isValidEmail = (email: string) => {
 const isUsername = (value: string) => {
   return /^[0-9a-zA-Z@]+$/.test(value) || isValidEmail(value)
     ? undefined
-    : 'ADEVI Login Failed. Please enter a valid User name';
+    : 'Invalid username';
 };
 
 export default isUsername;
