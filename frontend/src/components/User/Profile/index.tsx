@@ -44,9 +44,9 @@ import ImageCropper from '@Components/CropImage';
 import { useHistory } from 'react-router';
 import { Avatar } from '@mui/material';
 import { getSubscriptionData } from '@Redux/permissions/actions';
+import { isRequired } from '@Utils/validators';
 import SubmitError from '../SubmitError';
 import { SubscriptionCard } from './SubscriptionCard';
-import { isRequired } from '@Utils/validators';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
