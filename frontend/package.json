@@ -234,7 +234,7 @@
     "slate-html-serializer": "^0.8.13",
     "slate-react": "^0.82.1",
     "stream": "0.0.2",
-    "stream-chat": "4.5.0-beta.0",
+    "stream-chat": "^4.5.0-beta.0",
     "stream-chat-react": "6.4.0",
     "string-to-color": "^2.2.2",
     "styled-components": "^4.4.1",

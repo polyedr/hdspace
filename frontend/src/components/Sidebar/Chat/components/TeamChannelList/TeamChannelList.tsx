@@ -3,6 +3,10 @@ import React from 'react';
 import './TeamChannelList.css';
 
 import type { ChannelListMessengerProps } from 'stream-chat-react';
+import { useSelector } from 'react-redux';
+import { selectCurrentProject } from '@Redux/project/selectors/base';
+import { selectUserData } from '@Redux/user/selectors';
+import Scrollbar from '@Components/UI/Scrollbar';
 import { AddChannel } from '../../assets';
 
 export type TeamChannelListProps = ChannelListMessengerProps & {
@@ -22,6 +26,9 @@ const ChannelList: React.FC<TeamChannelListProps> = (props) => {
     setIsEditing,
     type,
   } = props;
+
+  const project = useSelector(selectCurrentProject);
+  const user = useSelector(selectUserData);
 
   if (error) {
     return type === 'team' ? (
@@ -49,12 +56,26 @@ const ChannelList: React.FC<TeamChannelListProps> = (props) => {
         <p className="team-channel-list__header__title">
           {type === 'team' ? 'Channels' : 'Direct Messages'}
         </p>
-        <AddChannel
-          {...{ setCreateType, setIsCreating, setIsEditing }}
-          type={type === 'team' ? 'team' : 'messaging'}
-        />
+        {project.user.id === user.id ? (
+          <AddChannel
+            {...{ setCreateType, setIsCreating, setIsEditing }}
+            type={type === 'team' ? 'team' : 'messaging'}
+          />
+        ) : null}
       </div>
-      {children}
+      {/* <div className="channel-list-wrapper">{children}</div> */}
+      <Scrollbar
+        autoHeightMin="100%"
+        style={{
+          height: '250px',
+
+          // '&::-webkit-scrollbar': {
+          //   width: '4px !important',
+          // },
+        }}
+      >
+        {children}
+      </Scrollbar>
     </div>
   );
 };
