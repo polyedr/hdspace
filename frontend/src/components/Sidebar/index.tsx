@@ -65,7 +65,8 @@ function TabPanel(props: TabPanelProps) {
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
-      style={{ height: 'calc(100% - 48px)' }}
+      // style={{ height: 'calc(100% - 48px)' }}
+      style={{ height: '100%' }}
       {...other}
     >
       {children}
@@ -120,16 +121,18 @@ const SideModule: FC = () => {
           </Tabs>
         </Box>
 
-        {Object.values(TABS_PMTOOLS).map((tab, idx) => {
-          const Tab = components[tab];
-          return (
-            <TabContent>
-              <TabPanel value={selectedTabNumber} key={tab} index={idx}>
-                <Tab />
-              </TabPanel>
-            </TabContent>
-          );
-        })}
+        <TabContent style={{ height: 'calc(100% - 50px)' }}>
+          {Object.values(TABS_PMTOOLS).map((tab, idx) => {
+            const Tab = components[tab];
+            return (
+              <>
+                <TabPanel value={selectedTabNumber} key={tab} index={idx}>
+                  <Tab />
+                </TabPanel>
+              </>
+            );
+          })}
+        </TabContent>
       </div>
     </SwipeableDrawer>
   );

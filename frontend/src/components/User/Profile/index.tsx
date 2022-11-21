@@ -44,6 +44,7 @@ import ImageCropper from '@Components/CropImage';
 import { useHistory } from 'react-router';
 import { Avatar } from '@mui/material';
 import { getSubscriptionData } from '@Redux/permissions/actions';
+import { isRequired } from '@Utils/validators';
 import SubmitError from '../SubmitError';
 import { SubscriptionCard } from './SubscriptionCard';
 
@@ -415,7 +416,7 @@ const Profile: React.FC = () => {
                       <Grid container spacing={4}>
                         <Grid container item spacing={2}>
                           <Grid item xs={12} sm={6}>
-                            <Field name="first_name" validate={fieldValidate}>
+                            <Field name="first_name" validate={isRequired}>
                               {({ input, meta }) => (
                                 <TextField
                                   {...input}
@@ -447,7 +448,7 @@ const Profile: React.FC = () => {
                             </Field>
                           </Grid>
                           <Grid item xs={12} sm={6}>
-                            <Field name="last_name" validate={fieldValidate}>
+                            <Field name="last_name" validate={isRequired}>
                               {({ input, meta }) => (
                                 <TextField
                                   {...input}

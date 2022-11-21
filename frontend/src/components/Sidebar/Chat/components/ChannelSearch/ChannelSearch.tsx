@@ -6,6 +6,9 @@ import _debounce from 'lodash.debounce';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
+import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { channelByUser, ChannelOrUserType, isChannel } from './utils';
 import { ResultsDropdown } from './ResultsDropdown';
 
@@ -21,7 +24,17 @@ import type {
   TeamUserType,
 } from '../../client';
 
+const SearchTextField = styled(TextField)({
+  '& .MuiInputBase-root': {
+    '&:before': {
+      borderColor: '#E4E6EB',
+    },
+  },
+});
+
 export const ChannelSearch = () => {
+  const projectId = useSelector(selectCurrentProjectId);
+
   const { client, setActiveChannel } = useChatContext<
     TeamAttachmentType,
     TeamChannelType,
@@ -130,6 +143,7 @@ export const ChannelSearch = () => {
         {
           type: 'team',
           name: { $autocomplete: text },
+          team: projectId.toString(),
         },
         {},
         { limit: 5 },
@@ -138,7 +152,12 @@ export const ChannelSearch = () => {
       const userResponse = client.queryUsers(
         {
           id: { $ne: client.userID || '' },
-          $and: [{ name: { $autocomplete: text } }],
+          $and: [
+            {
+              name: { $autocomplete: text },
+              teams: { $contains: projectId.toString() },
+            },
+          ],
         },
         { id: 1 },
         { limit: 5 },
@@ -184,7 +203,7 @@ export const ChannelSearch = () => {
         noValidate
         autoComplete="off"
       >
-        <TextField
+        <SearchTextField
           onChange={onSearch}
           placeholder="Search"
           type="text"
@@ -192,7 +211,7 @@ export const ChannelSearch = () => {
           variant="standard"
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">
+              <InputAdornment position="end">
                 <SearchIcon />
               </InputAdornment>
             ),

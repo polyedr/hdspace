@@ -210,7 +210,7 @@ export const TeamMessageInput: React.FC<Props> = (props) => {
           <div className="team-message-input__bottom">
             <div className="team-message-input__icons">
               <SmileyFace openEmojiPicker={messageInput.openEmojiPicker} />
-              <div className="icon-divider" />
+              {/* <div className="icon-divider" /> */}
               <BoldIcon {...{ boldState, resetIconState, setBoldState }} />
               <ItalicsIcon
                 {...{ italicState, resetIconState, setItalicState }}

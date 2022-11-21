@@ -19,7 +19,14 @@ const Success: React.FC = () => {
         ]}
         img={bigimg}
       />
-      <Grid item xs={12} sm={5} className={classes.containerCenter}>
+      <Grid
+        item
+        xs={12}
+        sm={5}
+        container
+        alignItems="center"
+        justifyContent="center"
+      >
         <img src={logo} alt="Logo" />
         <div className={classes.main}>
           <Typography className={classes.underLogoText}>

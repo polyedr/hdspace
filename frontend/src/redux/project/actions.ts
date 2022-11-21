@@ -319,7 +319,7 @@ export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
 export const updateNameAndTagsProject = (
   projectID: number,
   name: string,
-  tags: string,
+  tags: any,
 ): UpdateNameAndTagsProject => ({
   type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   payload: { projectID, name, tags },
