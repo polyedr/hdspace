@@ -11,7 +11,6 @@ const useImageUpload = (elementId: string) => {
   const handleFileInputChange = useCallback(
     ({ target }: React.ChangeEvent<HTMLInputElement>) => {
       const file = target.files && target.files[0];
-
       if (!file) {
         return;
       }

@@ -19,12 +19,13 @@ type StyleProps = {
 
 const useStyles = makeStyles({
   assetWrapper: {
-    border: '1px solid rgba(180,188,191,.5)',
     display: 'flex',
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    border: 'none',
+    boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',
   },
   assetImage: ({ sizeDirection }: StyleProps) => ({
     display: 'block',
@@ -63,7 +64,11 @@ const AssetImage = React.forwardRef<HTMLImageElement, Props>(
           src={asset.image || ''}
           alt="No asset"
           className={classes.assetImage}
-          style={!imageLoaded ? { display: 'none' } : {}}
+          style={
+            !imageLoaded
+              ? { display: 'none' }
+              : { borderRadius: ' 10px', height: '80%' }
+          }
           onLoad={(event: React.SyntheticEvent) => {
             const imgDom = event.target as HTMLImageElement;
             setImageLoaded(true);

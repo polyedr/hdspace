@@ -27,9 +27,14 @@ import { enqueueSnackbar } from '@Redux/notification/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectAllAssetLists,
+  selectBackGroundAssetsList,
   selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import { uploadElementAsset, uploadImageByUrl } from '@Redux/project/actions';
+import {
+  setBackgroundList,
+  uploadElementAsset,
+  uploadImageByUrl,
+} from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedValueChange } from '@Utils/debounceHooks';
@@ -132,7 +137,7 @@ const BackgroundBlock: React.FC<Props> = ({
   backgroundRepeat = BackgroundRepeat.Repeat,
 }) => {
   const classes = useStyles();
-
+  const selectAssetValue = useSelector(selectBackGroundAssetsList);
   const isRootElement = element.name === ElementTypeName.ROOT;
 
   const defaultBackgroundColor = isRootElement
@@ -160,10 +165,13 @@ const BackgroundBlock: React.FC<Props> = ({
   const updateCSS = (property: string, value: string) => {
     updateStyles({ [property]: value });
   };
+  const dispatch = useDispatch();
+  const handleImageAssets = () => {
+    dispatch(setBackgroundList(true));
+  };
 
   const [type, setType] = useState(getBackgroundType);
   const inputUrlRef = useRef<HTMLInputElement | null>(null);
-
   const [color, handleColorChange] = useDebouncedValueChange(
     backgroundColor,
     (updatedColorValue: string) => {
@@ -176,13 +184,10 @@ const BackgroundBlock: React.FC<Props> = ({
   }, [element.id]);
 
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const dispatch = useDispatch();
 
   const fileSelectorRef = useRef<HTMLInputElement>(null);
 
   const currentAssetListId = useSelector(selectCurrentAssetListId);
-
-  const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
 
   const listRef = useRef(
     !currentAssetListId
@@ -234,7 +239,7 @@ const BackgroundBlock: React.FC<Props> = ({
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
-      const assetId = selectedAsset || listRef.current;
+      const assetId = listRef.current;
       if (!assetId) {
         dispatch(
           enqueueSnackbar({
@@ -261,7 +266,7 @@ const BackgroundBlock: React.FC<Props> = ({
         );
       }
     },
-    [selectedAsset, dispatch, element.id, currentScreenId],
+    [dispatch, element.id, currentScreenId],
   );
 
   const handleUploadFromUrl = useCallback(() => {
@@ -332,13 +337,6 @@ const BackgroundBlock: React.FC<Props> = ({
     [element, currentScreenId],
   );
 
-  const handleChangeAssetList = useCallback(
-    (e: React.ChangeEvent<{ value: unknown }>) => {
-      setSelectedAsset(e.target.value as string);
-    },
-    [setSelectedAsset],
-  );
-
   const renderBackgroundControls = () => {
     if (type === BackgroundType.NONE) {
       return null;
@@ -395,22 +393,21 @@ const BackgroundBlock: React.FC<Props> = ({
             Upload
           </Button>
         </div>
+        <Button
+          component="span"
+          style={{
+            zIndex: 2,
+            color: selectAssetValue ? '#000' : '#81818E',
+            fontSize: '12px',
+            background: selectAssetValue ? '#F3F4F6' : 'white',
+            display: 'flex',
+          }}
+          onClick={handleImageAssets}
+          disabled={!canEdit}
+        >
+          Upload image to asset list
+        </Button>
 
-        {assetLists.length && canEdit && (
-          <div className={classes.assetListsWrapper}>
-            <label htmlFor="image-asset-list">Upload image to asset list</label>
-            <Select
-              defaultValue={listRef.current}
-              onChange={handleChangeAssetList}
-            >
-              {assetLists.map((list) => (
-                <MenuItem key={`image-asset-${list.id}`} value={list.id} dense>
-                  {list.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </div>
-        )}
         <FormControl className={classes.formControl}>
           <InputLabel>Background Repeat</InputLabel>
           <Select
