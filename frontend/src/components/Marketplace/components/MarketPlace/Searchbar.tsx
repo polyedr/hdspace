@@ -24,6 +24,7 @@ const CustomForm = styled.form`
   left: 203px;
   top: 186px;
 `;
+
 const CustomSearchSection = styled.div`
   display: flex;
   flex-direction: row;
@@ -37,6 +38,7 @@ const CustomSearchSection = styled.div`
     margin-top: 4px !important;
   }
 `;
+
 const CustomDatePicker = styled(DatePicker)`
   margin: 0;
   justify-content: center;
@@ -45,6 +47,7 @@ const CustomDatePicker = styled(DatePicker)`
   height: 36px;
   border-radius: 4px;
 `;
+
 const CustomeSearch = styled(TextField)`
   margin: 0;
   display: flex;
@@ -87,6 +90,7 @@ const CustomeSelect = styled(TextField)`
     padding: 8px 14px !important;
   }
 `;
+
 const CustomMenuItem = styled(MenuItem)`
   text-transform: capitalize;
 `;

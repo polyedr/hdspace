@@ -67,8 +67,8 @@ const Marketplace: React.FC = () => {
         <CustomHeader>
           <CustomTitle variant="h5">Marketplace</CustomTitle>
           <CustomSubTitle variant="h6">
-            Dont know where to start with your project? Feel free to use our
-            templates to inspire your creativity
+            Don&apos;t know where to start with your project? Feel free to use
+            our templates to inspire your creativity
           </CustomSubTitle>
           <CustomHeaderAction>
             <Searchbar />
