@@ -1566,6 +1566,7 @@ export type Asset = {
   image: string | null;
   created: Date;
   modified: Date;
+
   listId: string | null;
 };
 
@@ -1591,6 +1592,11 @@ export enum baseLayout {
   Desktop = 'Desktop',
   Tablet = 'Tablet',
   Mobile = 'Mobile',
+}
+
+export enum TabsIndex {
+  MinValue = 0,
+  MaxValue = 1,
 }
 
 export enum Layout {
