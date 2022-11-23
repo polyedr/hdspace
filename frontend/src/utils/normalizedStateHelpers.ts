@@ -1,4 +1,4 @@
-import produce, { Draft } from 'immer';
+import produce from 'immer';
 import { AVAILABLE_CHILDREN } from '@Domain/core';
 import {
   Entity,
