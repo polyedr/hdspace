@@ -1,4 +1,4 @@
-import produce from 'immer';
+import produce, { Draft } from 'immer';
 import { AVAILABLE_CHILDREN } from '@Domain/core';
 import {
   Entity,
@@ -307,6 +307,7 @@ export const restoreMapElement = (
   // eslint-disable-next-line consistent-return
   produce(state, (draft) => {
     const element = draft[elementId];
+
     if (!element.parent) return draft;
     const parent = draft[element.parent];
     parent.children.splice(element.buoyancy, 0, element.id);
