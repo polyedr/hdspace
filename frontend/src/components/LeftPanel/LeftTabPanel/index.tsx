@@ -1,10 +1,16 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AssetsSection from '@Src/components/LeftPanel/Assets/index';
+import { TabsIndex } from '@Src/types';
+import {
+  selectBackGroundAssetsList,
+  selectImageList,
+} from '@Redux/project/selectors/asset';
+import { setBackgroundList, setImageList } from '@Redux/project/actions';
 import Navigator from '../Navigator';
 import VIANavigator from '../VIANavigator';
 
@@ -48,11 +54,32 @@ function panelProps(index: number) {
 }
 
 const LeftTabPanel = () => {
-  const [value, setValue] = React.useState(0);
+  const assetImageList = useSelector(selectImageList);
+  const backGroundListValue = useSelector(selectBackGroundAssetsList);
+  const dispatch = useDispatch();
+  const [value, setValue] = React.useState(TabsIndex.MinValue);
   const viaMode = useSelector(selectVIAModeEnabled);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (assetImageList) {
+      setValue(TabsIndex.MaxValue);
+    }
+  }, [assetImageList]);
+
+  useEffect(() => {
+    if (backGroundListValue) {
+      setValue(1);
+    }
+  }, [backGroundListValue]);
+
+  const handleChangleValue = () => {
+    dispatch(setImageList(false));
+    dispatch(setBackgroundList(false));
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
       <Box
@@ -80,6 +107,7 @@ const LeftTabPanel = () => {
         >
           <Tab
             label="Layers"
+            onClick={handleChangleValue}
             {...panelProps(0)}
             sx={{
               textTransform: 'capitalize',

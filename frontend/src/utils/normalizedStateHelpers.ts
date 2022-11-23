@@ -168,13 +168,14 @@ export const updateMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
   data: Partial<StateElement>,
-): Normalized<StateElement> =>
-  produce(state, (draft) => {
+): Normalized<StateElement> => {
+  return produce(state, (draft) => {
     draft[elementId] = {
       ...draft[elementId],
       ...data,
     };
   });
+};
 
 export const moveMapElement = (
   state: Normalized<StateElement>,

@@ -138,7 +138,6 @@ export function* updateOrReplaceElementStyles(
 ) {
   try {
     const { id, styles } = action.payload;
-
     if (!action.meta) {
       logger.error(
         `You have to provide metainformation for action ${action.type}`,
