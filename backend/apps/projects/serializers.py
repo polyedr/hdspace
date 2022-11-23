@@ -193,6 +193,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Remove nested objects to handle separately
+        # print(validated_data)
+        # print(self.mptt_level)
+        print(self.context)
+        # print(self.is_root_node())
         children = validated_data.pop("children", [])
         node = ScenarioElement.objects.create(
             # parent is null only on the root node
@@ -210,8 +214,10 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         # Remove nested objects to handle separately
         children = validated_data.pop("children", [])
         node = super().update(instance, validated_data)
+        print(instance, instance.parent)
         for child_data in children:
             # child_data['scenario'] = child_data['scenario'].pk
+            print(child_data)
             s = ScenarioElementSerializer(data=child_data, context={"parent": node})
             s.is_valid(raise_exception=True)
             s.save()
