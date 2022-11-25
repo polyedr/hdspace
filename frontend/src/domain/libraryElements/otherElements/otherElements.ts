@@ -289,6 +289,7 @@ export const makeImage = ({
 });
 
 export const makeImagesList = ({
+  ownStyles = {},
   UID = 'master',
 } = {}): ImagesListServerElement => ({
   id: `images-list-${UID}`,
@@ -307,7 +308,7 @@ export const makeImagesList = ({
   },
   styles: {
     classNames: ['imagesList'],
-    ownStyles: {},
+    ownStyles,
     pseudoClassStyles: {},
   },
   name: 'images list',
