@@ -1,6 +1,6 @@
 .channel-list__container {
     display: flex;
-    box-shadow: inset 1px 0px 0px rgba(0, 0, 0, 0.1);
+    /* box-shadow: inset 1px 0px 0px rgba(0, 0, 0, 0.1); */
   }
 
   .channel-list__sidebar {
@@ -28,7 +28,7 @@
   }
 
   .icon1__inner {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: 'Roboto', sans-serif; 
     height: 100%;
     display: flex;
     align-items: center;
@@ -45,7 +45,6 @@
   }
 
   .icon2__inner {
-    font-family: Helvetica Neue, sans-serif;
     height: 100%;
     display: flex;
     align-items: center;
@@ -58,7 +57,7 @@
   }
 
   .channel-list__header__text {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-style: normal;
     font-weight: bold;
     font-size: 18px;

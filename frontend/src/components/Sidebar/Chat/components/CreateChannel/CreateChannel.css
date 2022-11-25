@@ -11,12 +11,11 @@
     height: 62px;
     box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.1);
     padding-right: 20px;
-    padding-bottom: 4px;
+    /* padding-bottom: 4px; */
   }
 
   .create-channel__header p {
-    font-family: Helvetica Neue, sans-serif;
-    font-weight: bold;
+    font-weight: 500;
     font-size: 18px;
     line-height: 22px;
     color: #2c2c30;
@@ -36,24 +35,22 @@
   }
 
   .channel-name-input__wrapper p {
-    font-family: Helvetica Neue, sans-serif;
     font-size: 16px;
     line-height: 120%;
     color: #2c2c30;
-    margin-top: 30px;
+    margin-top: 18px;
   }
 
-  .channel-name-input__wrapper input {
-    font-family: Helvetica Neue, sans-serif;
-    font-size: 18px;
+   .channel-name-input__wrapper input {
+    font-size: 14px;
     color: rgba(0, 0, 0, 0.5);
-    height: 50px;
+    height: 40px;
     width: 540px;
-    background: #f7f6f8;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: 1px solid #E4E6EB;
+    border-radius: 4px;
     box-sizing: border-box;
-    border-radius: 8px;
-    padding-left: 16px;
+    margin-bottom: 10px;
+    padding: 8.5px 14px;
   }
 
   .channel-name-input__wrapper input:focus {
@@ -64,25 +61,30 @@
   .channel-name-input__wrapper input::placeholder {
     font-weight: 300;
     color: rgba(0, 0, 0, 0.5);
-  }
+  } 
 
   .create-channel__button-wrapper {
-    height: 82px;
+    /* height: 82px; */
+    height: 36px;
     background: #f7f6f8;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     border-bottom-right-radius: 16px;
+    background-color: white;
   }
 
   .create-channel__button-wrapper p {
     background: var(--blue);
-    font-family: Helvetica Neue, sans-serif;
-    font-weight: bold;
-    font-size: 18px;
-    padding: 10px 20px;
+    font-size: 14px;
+    padding: 10px 16px;
     color: #ffffff;
-    margin-right: 30px;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
+    margin: 20px;
+  }
+
+  .create-channel__container .button-wrapper {
+    text-align: right;
+    padding: 20px;
   }

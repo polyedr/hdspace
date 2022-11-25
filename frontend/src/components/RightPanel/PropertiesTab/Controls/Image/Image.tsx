@@ -1,15 +1,20 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { StyledTextField } from '@Components/styledComponents';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { uploadElementAsset, uploadImageByUrl } from '@Redux/project/actions';
+import {
+  setImageList,
+  uploadElementAsset,
+  uploadImageByUrl,
+} from '@Redux/project/actions';
 import { ImageElement, PropertiesChangeProps } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
 import {
   selectAllAssetLists,
   selectCurrentAssetListId,
+  selectImageList,
 } from '@Redux/project/selectors/asset';
-import { Button, MenuItem } from '@material-ui/core';
+import Button from '@mui/material/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import { URL_REGEX } from '@Constants/defaultParams';
 
@@ -54,16 +59,18 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
 
   const currentScreenId = useSelector(selectCurrentScreenId);
   const dispatch = useDispatch();
+  const selectAsset = useSelector(selectImageList);
   const assetLists = useSelector(selectAllAssetLists);
   const currentAssetListId = useSelector(selectCurrentAssetListId);
-
-  const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
   const listRef = useRef(
     !currentAssetListId
       ? assetLists[assetLists.length - 1].id
       : currentAssetListId,
   );
 
+  const handleImageAssets = () => {
+    dispatch(setImageList(true));
+  };
   const handleUploadFromUrl = useCallback(() => {
     if (!inputUrlRef.current) {
       return;
@@ -97,7 +104,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
 
   const handleChangeFileInput = useCallback(
     ({ target }) => {
-      const assetId = selectedAsset || listRef.current;
+      const assetId = listRef.current;
       if (!assetId) {
         dispatch(
           enqueueSnackbar({
@@ -120,7 +127,7 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
         );
       }
     },
-    [selectedAsset, dispatch, activeElementId, currentScreenId],
+    [dispatch, activeElementId, currentScreenId],
   );
 
   return (
@@ -171,22 +178,19 @@ const Component: React.FC<PropertiesChangeProps<ImageElement>> = ({
       </div>
       {assetLists.length && canEdit && (
         <div className={classes.assetListsWrapper}>
-          <label htmlFor="image-asset-list">Upload image to asset list</label>
-          <StyledTextField
-            id="image-asset-list"
-            className={classes.assetsSelector}
-            select
-            defaultValue={listRef.current}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setSelectedAsset(event.target.value);
+          <Button
+            component="span"
+            style={{
+              zIndex: 2,
+              color: selectAsset ? '#000' : '#81818E',
+              fontSize: '12px',
+              background: selectAsset ? '#F3F4F6' : 'white',
             }}
+            onClick={handleImageAssets}
+            disabled={!canEdit}
           >
-            {assetLists.map((list) => (
-              <MenuItem key={`image-asset-${list.id}`} value={list.id} dense>
-                {list.name}
-              </MenuItem>
-            ))}
-          </StyledTextField>
+            Take from assets
+          </Button>
         </div>
       )}
     </div>

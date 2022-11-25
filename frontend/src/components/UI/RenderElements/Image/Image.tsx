@@ -15,7 +15,7 @@ const Image = React.forwardRef<HTMLImageElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const { imageURL, alt, title } = element.parameters;
+    const { imageURL, alt, title } = element?.parameters;
     const classes = useStyles(props);
     const eventHandlers = useEventHandlers(props);
 

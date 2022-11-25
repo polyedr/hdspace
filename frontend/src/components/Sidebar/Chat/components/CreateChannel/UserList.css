@@ -11,23 +11,34 @@
   }
 
   .user-list__header p {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 14px;
     line-height: 17px;
-    color: #858688;
+    color: #81818E;
     margin-top: 16px;
+    font-weight: 500;
   }
 
   .user-list__header p:first-child {
-    width: 60%;
+    /* width: 60%; */
+    width: 50%;
   }
 
   .user-list__header p:nth-child(2) {
-    width: 30%;
+    /* width: 30%; */
+    width: 50%;
+  }
+
+  .user-list__header p:nth-child(3) {
+    width: 25%;
+  }
+
+  .user-list__header p:nth-child(4) {
+    width: 25%;
   }
 
   .user-list__message {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: 'Roboto', sans-serif; 
     font-size: 16px;
     color: #2c2c30;
     margin: 20px;
@@ -47,11 +58,12 @@
   .user-item__name-wrapper {
     display: flex;
     align-items: center;
-    width: 60%;
+    /* width: 60%; */
+    width: 50%;
   }
 
   .user-item__wrapper p {
-    font-family: Helvetica Neue, sans-serif;
+    font-family: 'Roboto', sans-serif; 
     font-size: 14px;
     line-height: 17px;
     color: #2c2c30;
@@ -59,19 +71,25 @@
 
   .user-item__name {
     font-weight: 500;
+    margin: 0;
   }
 
   .user-item__last-active {
     font-weight: 400;
-    width: 30%;
+    /* width: 30%; */
+    width: 25%;
+  }
+
+  .user-item__role {
+    width: 25%;
   }
 
   .user-item__invite-empty {
-    height: 28px;
-    width: 28px;
-    background: #f7f6f8;
-    border: 1px solid #dedddf;
-    border-radius: 14px;
+    height: 16px;
+    width: 16px;
+    /* background: #5064FF; */
+    border: 1px solid #E4E6EB;
     box-sizing: border-box;
-    margin-left: 2px;
+    /* margin-left: 2px;*/
+    margin: 9px;
   }

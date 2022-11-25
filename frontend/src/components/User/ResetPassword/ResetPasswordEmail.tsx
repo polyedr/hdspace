@@ -2,21 +2,22 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Field, Form } from 'react-final-form';
+import { Form } from 'react-final-form';
 import { sendResetPasswordMail } from '@Redux/user/actions';
 
 import {
   InputAdornment,
-  TextField,
   Typography,
   Container,
   Button,
   Grid,
-} from '@material-ui/core';
+  Box,
+} from '@mui/material';
 
 import PATH_NAMES from '@Constants/pathNames';
 import { Alert } from '@material-ui/lab';
-import { isValidEmail } from '@Utils/validators';
+import { composeValidators, isRequired, isValidEmail } from '@Utils/validators';
+import { TextField } from '../FormField';
 import Info from '../Info';
 
 import useStyles from '../LoginRegistration/LoginRegistrationStyles';
@@ -34,7 +35,7 @@ const ResetPassword: React.FC = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <Grid container className={classes.root}>
       <Info
         title={['Did you know?', 'When working with ADEVI, you always can:']}
         list={[
@@ -44,48 +45,55 @@ const ResetPassword: React.FC = () => {
         img={bigimg}
       />
 
-      <Grid item xs={12} sm={5} className={classes.containerCenter}>
+      <Grid
+        container
+        xs={12}
+        sm={5}
+        alignItems="center"
+        justifyContent="center"
+      >
         <Form
           onSubmit={confirmRestore}
           subscription={{ submitError: true, submitting: true }}
         >
           {({ handleSubmit, submitError, submitting }) => (
             <Container maxWidth="xs">
-              <form onSubmit={handleSubmit} className={classes.containerCenter}>
-                <img src={logo} alt="Logo" />
+              <form onSubmit={handleSubmit}>
+                <Box className={classes.resizableImg}>
+                  <img src={logo} alt="Logo" />
+                </Box>
                 <Typography className={classes.underLogoText}>
                   Reset Your Password
                 </Typography>
-                <Field name="email" validate={isValidEmail}>
-                  {({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      className={classes.input}
-                      placeholder="Email"
-                      type="email"
-                      required
-                      autoFocus
-                      error={(meta.error || meta.submitError) && meta.touched}
-                      InputProps={{
-                        disableUnderline: true,
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <img src={mail} alt="mail" />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                </Field>
-                <Button
-                  type="submit"
-                  disabled={submitting}
-                  className={classes.button}
-                  variant="contained"
-                  color="secondary"
-                >
-                  Change password
-                </Button>
+
+                <TextField
+                  name="email"
+                  validate={composeValidators(isRequired, isValidEmail)}
+                  type="email"
+                  label="Email"
+                  autoFocus
+                  InputProps={{
+                    disableUnderline: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <img src={mail} alt="padlock" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                <Box sx={{ mb: 3, mt: 3 }}>
+                  <Button
+                    type="submit"
+                    disabled={submitting}
+                    className={classes.button}
+                    variant="contained"
+                    color="secondary"
+                    fullWidth
+                  >
+                    Change password
+                  </Button>
+                </Box>
                 <div className="signButtonBlock">
                   {submitError && (
                     <div className={classes.error}>
@@ -96,15 +104,17 @@ const ResetPassword: React.FC = () => {
                     </div>
                   )}
                 </div>
-                <Link to={PATH_NAMES.user.signin} className={classes.link}>
-                  Back to Login
-                </Link>
+                <Typography textAlign="center">
+                  <Link to={PATH_NAMES.user.signin} className={classes.link}>
+                    Back to Login
+                  </Link>
+                </Typography>
               </form>
             </Container>
           )}
         </Form>
       </Grid>
-    </div>
+    </Grid>
   );
 };
 

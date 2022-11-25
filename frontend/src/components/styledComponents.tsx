@@ -25,10 +25,12 @@ const MuiSlider = styled(Slider)`
   & .MuiSlider-thumb {
     color: #ffffff;
     box-shadow: 0 0 1px rgba(55, 56, 60, 0.2), 0 2px 8px rgba(55, 56, 60, 0.08);
-  &:focus, &:hover, &.Mui-active {
-    box-shadow:
-            0 3px 1px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,0,0,0.02);
-  },
+    &:focus,
+    &:hover,
+    &.Mui-active {
+      box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
+    }
   }
   & .MuiSlider-track {
     background-color: #5064ff;

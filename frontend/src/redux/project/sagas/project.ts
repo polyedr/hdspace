@@ -487,7 +487,11 @@ export const updateNameAndTagsProjectSaga = function* ({
         data: {
           id: projectID,
           name,
-          tags: typeof tags !== 'object' ? getTagsArr(tags) : tags,
+          tags: tags
+            ? typeof tags === 'string'
+              ? getTagsArr(tags)
+              : tags
+            : project.tags,
           projectscreen: project.projectscreen,
         },
       },

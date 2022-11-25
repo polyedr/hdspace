@@ -7,6 +7,8 @@ import {
   StyledAccordionSummary,
 } from '@Components/styledComponents';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { setImageList } from '@Redux/project/actions';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles({
   section: {},
@@ -32,11 +34,13 @@ type Props = {
 const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
   const classes = useStyles();
   const [isCollapse, setIsCollapse] = useState(expanded);
+  const dispatch = useDispatch();
   const animate = (expanded) => {
     setIsCollapse(expanded);
   };
   const toggle = () => {
     setIsCollapse(!isCollapse);
+    dispatch(setImageList(false));
   };
   useEffect(() => {
     animate(!expanded);
