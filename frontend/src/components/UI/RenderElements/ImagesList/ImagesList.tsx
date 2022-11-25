@@ -20,7 +20,7 @@ const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
     const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
 
-    const childrenImages = (children as unknown) as ChildrenImage[];
+    const childrenImages = children as unknown as ChildrenImage[];
 
     return (
       <div

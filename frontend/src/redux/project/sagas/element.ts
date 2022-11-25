@@ -302,7 +302,7 @@ function* removeElementStyles(
   try {
     if (!action.meta) {
       logger.error(
-        `You have to provide metainformation for action ${action.type}`,
+        `You have to provide meta information for action ${action.type}`,
       );
       return;
     }
@@ -379,14 +379,13 @@ export const copyElementStylesSaga = compose(
 
     if (!action.meta) {
       logger.error(
-        `You have to provide metainformation for action ${action.type}`,
+        `You have to provide meta information for action ${action.type}`,
       );
       return;
     }
 
-    const currentProject: ReturnType<
-      typeof selectCurrentProject
-    > = yield select(selectCurrentProject);
+    const currentProject: ReturnType<typeof selectCurrentProject> =
+      yield select(selectCurrentProject);
 
     const sharedClassNames = currentProject.projectData.classes.map(
       (cssClass) => cssClass.className,
@@ -632,7 +631,7 @@ export const removeMultipleElementsStylesSaga = compose(
 
   if (!action.meta) {
     logger.error(
-      `You have to provide metainformation for action ${action.type}`,
+      `You have to provide meta information for action ${action.type}`,
     );
     return;
   }
@@ -914,19 +913,13 @@ export function* loadCustomElementsSaga(
   try {
     const pagination = yield select(selectCustomElementsPagination);
     yield put(Actions.updateElementsLoading(true));
-    const {
-      result,
-      error,
-    }: Result<PaginatedResponse<LibraryElement<Entity>>> = yield call(
-      reqWrapper,
-      apiGetCustomLibraryElements,
-      {
+    const { result, error }: Result<PaginatedResponse<LibraryElement<Entity>>> =
+      yield call(reqWrapper, apiGetCustomLibraryElements, {
         params: {
           cursor: pagination.next,
           page_size: pagination.pageSize,
         },
-      },
-    );
+      });
     if (result) {
       yield put(Actions.addCustomElementsPage(result, action.payload.initial));
       yield put(Actions.addElements(result.results));

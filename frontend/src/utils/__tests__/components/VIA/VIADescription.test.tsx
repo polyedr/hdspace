@@ -7,7 +7,7 @@ import { AppReduxState } from '@Redux/types';
 import VIADescription from '@Components/Editor/VIA/VIADescription';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import TYPES from '@Redux/actionTypes';
-import theme from '../../../../styles/Theme';
+import { themeOld as theme } from '../../../../styles/Theme';
 
 describe('VIADescription', () => {
   let store: MockStoreEnhanced<AppReduxState>;

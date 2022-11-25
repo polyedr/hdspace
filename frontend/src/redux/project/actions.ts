@@ -152,6 +152,8 @@ import {
   ReplaceMultipleElementsParameters,
   WrapMultipleElementsIntoContainer,
   UploadImageByUrl,
+  AddImageList,
+  AddBackgroundImageList,
   UpdateStateAssetImage,
   SetSelectedAssetListId,
   RestoreMultipleElementsChildren,
@@ -204,6 +206,7 @@ import {
   GenerateImagePalette,
   SetImagePalette,
   UpdateLayoutProjects,
+  ProjectError,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -299,6 +302,11 @@ export const updateCurrentUIFrameworkVariables = (variables: {
   payload: variables,
 });
 
+export const setProjectError = (errorResponse): ProjectError => ({
+  type: TYPES.SET_PROJECT_ERROR,
+  payload: { errorResponse },
+});
+
 export const resetCurrentUIFrameworkVariables = () => ({
   type: TYPES.RESET_CURRENT_UI_FRAMEWORK_VARIABLES,
 });
@@ -311,7 +319,7 @@ export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
 export const updateNameAndTagsProject = (
   projectID: number,
   name: string,
-  tags: string,
+  tags: any,
 ): UpdateNameAndTagsProject => ({
   type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   payload: { projectID, name, tags },
@@ -810,7 +818,7 @@ export const uploadElementAsset = (
 
 export const updateElementParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   elementId: string,
   parameters: K,
@@ -826,7 +834,7 @@ export const updateElementParameters = <
 
 export const replaceElementParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   elementId: string,
   parameters: K,
@@ -842,7 +850,7 @@ export const replaceElementParameters = <
 
 export const updateMultipleElementsParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   ids: string[],
   parameters: {
@@ -860,7 +868,7 @@ export const updateMultipleElementsParameters = <
 
 export const replaceMultipleElementsParameters = <
   T extends Entity,
-  K extends LibraryElement<T>['parameters']
+  K extends LibraryElement<T>['parameters'],
 >(
   ids: string[],
   parameters: {
@@ -1517,6 +1525,18 @@ export const uploadImageByUrl = (
   type: TYPES.UPLOAD_IMAGE_BY_URL,
   payload: { elementId, imageData, listId },
   meta,
+});
+
+export const setImageList = (valueImage: boolean): AddImageList => ({
+  type: TYPES.SET_IMAGE_LIST,
+  payload: { valueImage },
+});
+
+export const setBackgroundList = (
+  backGroundValue: boolean,
+): AddBackgroundImageList => ({
+  type: TYPES.SET_BACKGROUND_LIST,
+  payload: { backGroundValue },
 });
 
 export const updateStateAssetImage = (

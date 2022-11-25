@@ -21,14 +21,8 @@ const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled } = props;
     const [className, groupClass] = element.styles.classNames;
-    const {
-      labelFor,
-      textContent,
-      isLink,
-      link,
-      screenLink,
-      screenName,
-    } = element.parameters;
+    const { labelFor, textContent, isLink, link, screenLink, screenName } =
+      element.parameters;
     const styles = useStyles(props);
     const contentEditableSettings = useContentEditable(element.id, textContent);
     const eventHandlers = useEventHandlers(

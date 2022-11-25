@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, useRouteMatch, useHistory } from 'react-router-dom';
-import { Field, Form } from 'react-final-form';
+import { Form } from 'react-final-form';
 import * as Actions from '@Redux/user/actions';
 import {
   composeValidators,
@@ -12,15 +12,17 @@ import {
 } from '@Utils/validators';
 import { AppReduxState } from '@Redux/types';
 
+import PATH_NAMES from '@Constants/pathNames';
 import {
+  Grid,
   InputAdornment,
-  TextField,
   Typography,
   Container,
   Button,
-} from '@material-ui/core';
+  Box,
+} from '@mui/material';
+import { TextField } from '../FormField';
 
-import PATH_NAMES from '@Constants/pathNames';
 import Info from '../Info';
 import Spinner from '../../UI/Spinner';
 
@@ -57,7 +59,7 @@ const ResetPassword: React.FC<IProps> = ({
     '/password/reset/confirm/:uid/:token',
   );
 
-  const { uid, token } = (match?.params as unknown) as {
+  const { uid, token } = match?.params as unknown as {
     uid: string;
     token: string;
   };
@@ -81,7 +83,7 @@ const ResetPassword: React.FC<IProps> = ({
 
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <Grid container className={classes.root}>
       <Info
         title="AI Assistant for App Development with extended collaboration tools"
         list={[
@@ -91,7 +93,16 @@ const ResetPassword: React.FC<IProps> = ({
         img={bigimg}
       />
 
-      <div className={classes.formContainer}>
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        item
+        sm={5}
+        xs={12}
+        className={classes.rightContainer}
+      >
         <Form
           onSubmit={handleFormSubmit}
           initialValues={initialValues}
@@ -107,87 +118,81 @@ const ResetPassword: React.FC<IProps> = ({
         >
           {({ handleSubmit, submitError, submitting }) => (
             <Container maxWidth="xs">
-              <form onSubmit={handleSubmit} className={classes.containerCenter}>
-                <img src={logo} alt="Logo" />
+              <form onSubmit={handleSubmit}>
+                <Box className={classes.resizableImg}>
+                  <img src={logo} alt="Logo" />
+                </Box>
                 <Typography className={classes.underLogoText}>
                   Reset Your Password
                 </Typography>
-                <Field
+
+                <TextField
                   name="newPassword"
                   validate={composeValidators(
                     isRequired,
                     isLongLength,
                     isPassword,
                   )}
-                >
-                  {({ input, meta }) => (
-                    <>
-                      <TextField
-                        {...input}
-                        className={classes.input}
-                        placeholder="New password"
-                        type="password"
-                        required
-                        autoFocus
-                        error={(meta.error || meta.submitError) && meta.touched}
-                        InputProps={{
-                          disableUnderline: true,
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <img src={padlock} alt="padlock" />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </>
+                  type="password"
+                  label="New password"
+                  autoFocus
+                  InputProps={{
+                    disableUnderline: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <img src={padlock} alt="padlock" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                <TextField
+                  name="reNewPassword"
+                  validate={composeValidators(
+                    isRequired,
+                    isLongLength,
+                    isPassword,
                   )}
-                </Field>
-                <Field name="reNewPassword">
-                  {({ input, meta }) => (
-                    <>
-                      <TextField
-                        {...input}
-                        className={classes.input}
-                        placeholder="Retype new password"
-                        type="password"
-                        required
-                        autoFocus
-                        error={(meta.error || meta.submitError) && meta.touched}
-                        InputProps={{
-                          disableUnderline: true,
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <img src={padlock} alt="padlock" />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </>
-                  )}
-                </Field>
-                <div className="signButtonBlock">
+                  type="password"
+                  label="Retype new password"
+                  autoFocus
+                  InputProps={{
+                    disableUnderline: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <img src={padlock} alt="padlock" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                <Box sx={{ mb: 3, mt: 3 }}>
                   {!!submitError && <p>{submitError}</p>}
                   {authError && <p>{authError.message}</p>}
+
                   <Button
                     type="submit"
                     disabled={submitting}
                     className={classes.button}
                     variant="contained"
                     color="secondary"
+                    fullWidth
                   >
                     Change password
                   </Button>
-                </div>
-                <Link to={PATH_NAMES.user.signin} className={classes.link}>
-                  Back to Login
-                </Link>
+                </Box>
+                <Typography fontSize={16} variant="body1" textAlign="center">
+                  <Link to={PATH_NAMES.user.signin} className={classes.link}>
+                    Back to Login
+                  </Link>
+                </Typography>
               </form>
             </Container>
           )}
         </Form>
-      </div>
+      </Grid>
       <Spinner active={isSignLoader} />
-    </div>
+    </Grid>
   );
 };
 

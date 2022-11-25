@@ -51,5 +51,9 @@ export const myAxios = (props: MyAxiosProps) => {
 
 export const MAX_TOKEN_TRIALS = 4;
 
+export const STREAM_CHAT_CLIENT_ID = 'qa83st6cgefj';
+
 export const HELP_LINK =
   'https://docs.google.com/document/d/e/2PACX-1vTwu72-tooZHmF5D5ExkAyFNRja1dnQVugPLBKmKYViYVj0xpvPJk6nZv9WFCWPNki1pQ4vq96H-sSB/pub#h.rvwljq5j4kb7';
+
+export { api };

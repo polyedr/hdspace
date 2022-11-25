@@ -238,7 +238,7 @@ export const UNIQUE_CONTROLS = [
 export const ALL_ELEMENTS_INDEX = 'all';
 
 export const PROJECT_STATUS_LIST = ['pending', 'paid'];
-
+export const TEMPLATE_STATUS_LIST = ['pending', 'paid'];
 export const EDITABLE_USER_PERMISSIONS = [
   UserProjectPermission.VIEW_PROJECT,
   UserProjectPermission.CHANGE_PROJECT,
@@ -249,7 +249,8 @@ export const PERMISSION_LABELS = {
   [UserProjectPermission.CHANGE_PROJECT]: 'Change project',
 };
 
-export const URL_REGEX = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+export const URL_REGEX =
+  /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
 
 export const shorten_url_api_key = 'vhDRD2O8a2G7NDk2LLej7vUxiDzDIYBp';
 export const SHARING_USER_ID: string = '105';

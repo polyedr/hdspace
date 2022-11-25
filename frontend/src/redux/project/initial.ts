@@ -34,7 +34,10 @@ export const initialData: ProjectDataState = {
     pageSize: 40,
   },
   assetResults: {},
+  assetImageList: false,
+  backGroundAssetsList: false,
   imagePalette: null,
+  createProjectError: null,
 };
 
 export const initialUi: ProjectUiState = {

@@ -1,82 +1,42 @@
 import TYPES from '@Redux/actionTypes';
-import { IServerTaskData, ITaskData } from '@Src/types/pmtools/board';
-import {
-  ActionTypePM,
-  UpdateCardIndexType,
-  UpdateCardIndexTypeSuccess,
-} from '@Src/types/pmtools/types';
-import { ServerProject } from '@Src/types';
+// eslint-disable-next-line import/no-cycle
+import { BoardNewTask, BoardTask } from '@Redux/pmtools/types';
+import { DropResult } from 'react-beautiful-dnd';
 
-export type AddTaskType = {
-  id: IServerTaskData['id'];
-  project: ServerProject['id'];
-  email: string;
-  action: ActionTypePM;
-  name: IServerTaskData['name'];
-};
-
-export const requestUpdateCardIndex = ({
-  destination,
-  source,
-}: UpdateCardIndexType) => ({
-  type: TYPES.UPDATE_CARD_INDEX,
-  payload: { destination, source },
+export const fetchTask = (taskId: number) => ({
+  type: TYPES.BOARD_FETCH_TASK,
+  taskId,
 });
 
-export const successUpdateCardIndex = (
-  payload: UpdateCardIndexTypeSuccess,
+export const updateTask = (
+  task: BoardTask,
+  fields: { [key: string]: any },
 ) => ({
-  type: TYPES.UPDATE_CARD_INDEX_SUCCESS,
-  payload,
+  type: TYPES.BOARD_UPDATE_TASK,
+  payload: { task, fields },
 });
 
-export const requestAddTask = (payload: AddTaskType) => ({
-  type: TYPES.ADD_TASK,
-  payload,
+export const updateTasksOrder = (dropResult: DropResult) => ({
+  type: TYPES.BOARD_UPDATE_TASKS_ORDER,
+  dropResult,
 });
 
-export const requestEditTask = (payload: AddTaskType) => ({
-  type: TYPES.EDIT_TASK,
-  payload,
+export const addTask = (task: BoardTask) => ({
+  type: TYPES.BOARD_ADD_TASK,
+  task,
 });
 
-export const requestDeleteTask = (
-  payload: { taskId: ITaskData['id'] } & { action: ActionTypePM },
-) => ({
-  type: TYPES.DELETE_TASK,
-  payload,
+export const setTask = (task: BoardTask) => ({
+  type: TYPES.BOARD_SET_TASK,
+  task,
 });
 
-export const requestDeleteMemberTask = (payload: {
-  cardId: string;
-  userId: string;
-}) => ({
-  type: TYPES.DELETE_MEMBER_TASK,
-  payload,
+export const setTasks = (tasks: BoardTask[]) => ({
+  type: TYPES.BOARD_SET_TASKS,
+  tasks,
 });
 
-// SUCCESS
-export const successFetchTask = (payload: any) => ({
-  type: TYPES.FETCH_TASKS_SUCCESS,
-  payload,
-});
-
-export const successFetchMembers = (payload: Array<any>) => ({
-  type: TYPES.MEMBERS_SAVED_SUCCESS,
-  payload,
-});
-
-export const successAddTask = (payload: any) => ({
-  type: TYPES.ADD_TASK_SUCCESS,
-  payload,
-});
-
-export const successEditTask = (payload: any) => ({
-  type: TYPES.EDIT_TASK_SUCCESS,
-  payload,
-});
-
-export const successDeleteTask = (payload: any) => ({
-  type: TYPES.DELETE_TASK_SUCCESS,
-  payload,
+export const createTask = (task: BoardNewTask) => ({
+  type: TYPES.BOARD_CREATE_TASK,
+  task,
 });

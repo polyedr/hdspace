@@ -19,13 +19,8 @@ import { convertToHTML } from 'draft-convert';
 import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
 const TextContent = ({ element, updateParams, canEdit }) => {
-  const {
-    link,
-    isLink,
-    textContent,
-    screenName,
-    screenLink,
-  } = element.parameters;
+  const { link, isLink, textContent, screenName, screenLink } =
+    element.parameters;
   const [input, setInput] = useState(link);
   const [selectedScreen, selectScreen] = useState(screenName);
   const screens = useSelector(selectScreensWithoutMaster);
@@ -74,17 +69,15 @@ const TextContent = ({ element, updateParams, canEdit }) => {
     }
   };
 
-  const [
-    textContentValue,
-    handleTextContentValueChange,
-  ] = useDebouncedRichInputChange(
-    textContent,
-    element.id,
-    (value, oldElementId) => {
-      if (oldElementId === element.id) {
-        updateParams(
-          {
-            textContent: convertToHTML({
+  const [textContentValue, handleTextContentValueChange] =
+    useDebouncedRichInputChange(
+      textContent,
+      element.id,
+      (value, oldElementId) => {
+        if (oldElementId === element.id) {
+          updateParams(
+            {
+              textContent: convertToHTML({
               // eslint-disable-next-line consistent-return
               blockToHTML: (block) => {
                 if (block.type === 'unstyled') {
@@ -93,12 +86,12 @@ const TextContent = ({ element, updateParams, canEdit }) => {
                 }
               },
             })(value.getCurrentContent()),
-          },
-          element?.id,
-        );
-      }
-    },
-  );
+            },
+            element?.id,
+          );
+        }
+      },
+    );
 
   const handleCheckboxChange = (
     textId: string,

@@ -8,6 +8,14 @@ export const selectAllAssetLists = (state: AppReduxState) =>
 export const selectAllAssetListsLoading = (state: AppReduxState) =>
   selectProjectState(state).data.assetLists.loading;
 
+export const selectImageList = ({ project }: AppReduxState) => {
+  return project.data.assetImageList;
+};
+
+export const selectBackGroundAssetsList = ({ project }: AppReduxState) => {
+  return project.data.backGroundAssetsList;
+};
+
 export const selectCurrentAssetListId = (state: AppReduxState) => {
   return selectProjectState(state).edit.selectedAssetListId;
 };
@@ -63,21 +71,19 @@ export const selectIfListHasNextPage = createSelector(
   },
 );
 
-export const selectAssetListById = (listId: string | null) => (
-  state: AppReduxState,
-) => {
-  if (!listId) {
-    return null;
-  }
-  return selectProjectState(state).data.assetLists[listId];
-};
+export const selectAssetListById =
+  (listId: string | null) => (state: AppReduxState) => {
+    if (!listId) {
+      return null;
+    }
+    return selectProjectState(state).data.assetLists[listId];
+  };
 
-export const selectAssetByListAndId = (id: string, listId: string) => (
-  state: AppReduxState,
-) => {
-  const assetList = selectProjectState(state).data.assetLists[listId];
-  if (!assetList) {
-    return null;
-  }
-  return assetList.results.find((asset) => asset.id === id);
-};
+export const selectAssetByListAndId =
+  (id: string, listId: string) => (state: AppReduxState) => {
+    const assetList = selectProjectState(state).data.assetLists[listId];
+    if (!assetList) {
+      return null;
+    }
+    return assetList.results.find((asset) => asset.id === id);
+  };

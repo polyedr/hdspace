@@ -1,8 +1,5 @@
-import {
-  createTheme as createMuiTheme,
-  darken,
-  lighten,
-} from '@material-ui/core/styles';
+import { createTheme, darken, lighten } from '@mui/material/styles';
+import { createTheme as createMuiTheme } from '@material-ui/core/styles';
 
 declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
@@ -22,9 +19,9 @@ export const RIGHT_PANEL_WIDTH = 310;
 export const RIGHT_PANEL_WIDTH_MIN = 50;
 export const PANEL_TRANSITION_DURATION = 250;
 
-const theme = createMuiTheme({
+export const themeOld = createMuiTheme({
   palette: {
-    primary: { main: '#51718c' },
+    primary: { main: '#5064FF' },
     secondary: { main: 'rgb(26 192 158)' },
     link: {
       main: '#247c9c',
@@ -41,8 +38,16 @@ const theme = createMuiTheme({
   },
   overrides: {
     MuiButton: {
+      root: {
+        textTransform: 'capitalize',
+      },
       containedSecondary: {
         color: '#fff',
+      },
+    },
+    MuiTab: {
+      root: {
+        textTransform: 'capitalize',
       },
     },
   },
@@ -58,4 +63,28 @@ const theme = createMuiTheme({
   transitions: {},
 });
 
-export default theme;
+export const theme = createTheme({
+  palette: {
+    primary: { main: '#5064FF' },
+    secondary: { main: 'rgb(26 192 158)' },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'capitalize',
+        },
+      },
+    },
+  },
+  breakpoints: {},
+  shape: {},
+  typography: {
+    fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+    fontSize: 14,
+    body1: {
+      fontSize: 14,
+    },
+  },
+  transitions: {},
+});

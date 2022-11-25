@@ -5,6 +5,7 @@ import {
   UserData,
   UserProjectPermission,
 } from '@Src/types';
+import { GetSubscriptionDataType } from '@Redux/types';
 
 export const getUsersList = (searchValue?: string) => ({
   type: TYPES.LOAD_USERS,
@@ -17,6 +18,10 @@ export const setUsersData = (
 ) => ({
   type: TYPES.SET_USERS_DATA,
   payload: { search, data },
+});
+
+export const getSubscriptionData = (): GetSubscriptionDataType => ({
+  type: TYPES.SUBSCRIPTION_DATA,
 });
 
 export const assignUserPermissionForProject = (
@@ -50,6 +55,19 @@ export const updateUserPermissionsForProject = (
   },
 });
 
+export const updateUsersPermissionsForProject = (
+  projectId: number,
+  users: any[],
+  permissions: UserProjectPermission[],
+) => ({
+  type: TYPES.UPDATE_USERS_PERMISSIONS_FOR_PROJECT,
+  payload: {
+    projectId,
+    users,
+    permissions,
+  },
+});
+
 export const getUserPermissionsForProject = (
   projectId: number,
   userId: number,
@@ -79,6 +97,14 @@ export const setStateUserPermissions = (
 ) => ({
   type: TYPES.SET_STATE_USER_PERMISSIONS,
   payload: { userData, permissions },
+});
+
+export const setStateUsersPermissions = (
+  users: UserData[],
+  permissions: UserProjectPermission[],
+) => ({
+  type: TYPES.SET_STATE_USERS_PERMISSIONS,
+  payload: { users, permissions },
 });
 
 export const clearStateUserPermissions = (userId: string) => ({

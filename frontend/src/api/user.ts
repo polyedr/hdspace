@@ -7,7 +7,7 @@ import {
   ServerUserData,
 } from '../types';
 import { convertUserDataFromResponse } from './converters/fromResponse';
-import { handleError, parseCursor, parseResult } from './helper';
+import { handleError, parseCursor, parseData, parseResult } from './helper';
 
 type SendActivationMailData = {
   username: string;
@@ -163,9 +163,26 @@ export const apiChangeProfileData = ({ id, ...props }) =>
     .then(parseResult)
     .catch(handleError);
 
+export const apiChangeProfileAAvatar = ({ id, data }) =>
+  myAxios({
+    method: 'PATCH',
+    url: `/accounts/profiles/${id}/`,
+    data,
+  })
+    .then(parseResult)
+    .catch(handleError);
+
 export const apiIdentifyUser = (props) =>
   myAxios({
     ...props,
     method: 'GET',
     url: '/djauth/users/me/',
   }).then(parseResult);
+
+export const apiGetSubscriptionData = (props) => {
+  return myAxios({
+    ...props,
+    method: 'GET',
+    url: '/stripe/my-subscription-items/',
+  }).then(parseData);
+};

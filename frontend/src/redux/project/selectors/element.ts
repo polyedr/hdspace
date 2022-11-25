@@ -31,19 +31,19 @@ import {
   selectScreens,
 } from './screen';
 
-export const selectScreenRootElement = (screenId: number) => ({
-  project,
-}: AppReduxState) => {
-  const rootId = project.data.screens[screenId]?.element;
+export const selectScreenRootElement =
+  (screenId: number) =>
+  ({ project }: AppReduxState) => {
+    const rootId = project.data.screens[screenId]?.element;
 
-  return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
-};
+    return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
+  };
 
-export const selectScreen = (screenId: number) => ({
-  project,
-}: AppReduxState) => {
-  return project.data.screens[screenId]?.screenData;
-};
+export const selectScreen =
+  (screenId: number) =>
+  ({ project }: AppReduxState) => {
+    return project.data.screens[screenId]?.screenData;
+  };
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
@@ -57,40 +57,38 @@ export const selectElementById = (state: AppReduxState, id: string) =>
   selectProjectState(state).data.elements[id];
 
 /* for use in components only */
-export const selectElementByIdWrapper = (id: string) => (
-  state: AppReduxState,
-) => selectProjectState(state).data.elements[id];
+export const selectElementByIdWrapper =
+  (id: string) => (state: AppReduxState) =>
+    selectProjectState(state).data.elements[id];
 
-export const selectElementsByIds = (ids: string[]) => (
-  state: AppReduxState,
-) => {
-  if (!ids || !ids.length) {
-    return [];
-  }
-  return ids.map((id: string) => selectElementById(state, id));
-};
+export const selectElementsByIds =
+  (ids: string[]) => (state: AppReduxState) => {
+    if (!ids || !ids.length) {
+      return [];
+    }
+    return ids.map((id: string) => selectElementById(state, id));
+  };
 
-export const selectElementAsTree = (id: string) => ({
-  project,
-}: AppReduxState) => {
-  if (!(id in project.data.elements)) return DEFAULT_ROOT;
+export const selectElementAsTree =
+  (id: string) =>
+  ({ project }: AppReduxState) => {
+    if (!(id in project.data.elements)) return DEFAULT_ROOT;
 
-  return buildElementsTree(project.data.elements, id);
-};
+    return buildElementsTree(project.data.elements, id);
+  };
 
 export const selectCurrentRootElement = (state: AppReduxState) => {
   const currentRootId = selectCurrentRootId(state);
   return selectElementAsTree(currentRootId)(state);
 };
 
-export const selectElementByChildId = (id: string) => (
-  state: AppReduxState,
-) => {
-  const element = selectElementById(state, id);
-  return element && element.parent
-    ? selectElementById(state, element.parent)
-    : null;
-};
+export const selectElementByChildId =
+  (id: string) => (state: AppReduxState) => {
+    const element = selectElementById(state, id);
+    return element && element.parent
+      ? selectElementById(state, element.parent)
+      : null;
+  };
 
 export const selectActiveElementId = ({ project }: AppReduxState) =>
   project.edit.activeElementId;
@@ -110,18 +108,17 @@ export const selectEnabledPseudoClass = ({ project }: AppReduxState) =>
 export const selectAllElements = ({ project }: AppReduxState) =>
   project.data.elements;
 
-export const selectElementsAsTrees = (ids: string[]) => (
-  state: AppReduxState,
-) => {
-  const allElements = selectAllElements(state);
+export const selectElementsAsTrees =
+  (ids: string[]) => (state: AppReduxState) => {
+    const allElements = selectAllElements(state);
 
-  return ids.map((id: string) => {
-    if (!allElements[id]) {
-      return DEFAULT_ROOT;
-    }
-    return buildElementsTree(allElements, id);
-  });
-};
+    return ids.map((id: string) => {
+      if (!allElements[id]) {
+        return DEFAULT_ROOT;
+      }
+      return buildElementsTree(allElements, id);
+    });
+  };
 
 export const selectActiveElement = createSelector(
   selectAllElements,
@@ -153,7 +150,7 @@ export const selectCurrentGeneratorElements = createSelector(
 
 function makeActiveElementInfoSelector<
   T extends StateElement,
-  K extends 'styles' | 'parameters'
+  K extends 'styles' | 'parameters',
 >(
   prop: K,
 ): <R extends T>(
@@ -168,9 +165,8 @@ function makeActiveElementInfoSelector<
   };
 }
 
-export const selectActiveElementStyles = makeActiveElementInfoSelector(
-  'styles',
-);
+export const selectActiveElementStyles =
+  makeActiveElementInfoSelector('styles');
 
 export const selectCurrentEditableStyles = createSelector<
   AppReduxState,
@@ -215,9 +211,9 @@ export const selectCurrentEditableStyles = createSelector<
     const getActiveItemStyles = (activeStyles: string): React.CSSProperties => {
       if (activeStyles === 'ownStyles' || activeStyles === '') {
         const { ownStyles, pseudoClassViewStyles } = activeElementStyles;
-        return (pseudoClass
-          ? pseudoClassViewStyles
-          : ownStyles) as Required<React.CSSProperties>;
+        return (
+          pseudoClass ? pseudoClassViewStyles : ownStyles
+        ) as Required<React.CSSProperties>;
       }
       if (activeStyles === type) {
         return activeEntityStyles;
@@ -256,26 +252,27 @@ export const selectActiveItemChildren = (childType: ChildEntity) =>
         .filter((child) => child.type === childType),
   );
 
-export const selectElementStyles = (elementId: string) => ({
-  project,
-}: AppReduxState) => project.data.elements[elementId]?.styles.ownStyles;
+export const selectElementStyles =
+  (elementId: string) =>
+  ({ project }: AppReduxState) =>
+    project.data.elements[elementId]?.styles.ownStyles;
 
-export const selectElementParameters = (elementId: string) => ({
-  project,
-}: AppReduxState) => project.data.elements[elementId]?.parameters;
+export const selectElementParameters =
+  (elementId: string) =>
+  ({ project }: AppReduxState) =>
+    project.data.elements[elementId]?.parameters;
 
-export const selectActiveItemChildrenStyles = makeActiveElementInfoSelector(
-  'styles',
-);
+export const selectActiveItemChildrenStyles =
+  makeActiveElementInfoSelector('styles');
 
 export const selectActiveElementParams = createSelector(
   selectActiveElement,
   (element) => element.parameters,
 );
 
-export const selectActiveElementParamByName = (name: string) => (
-  state: AppReduxState,
-) => selectActiveElementParams(state)[name];
+export const selectActiveElementParamByName =
+  (name: string) => (state: AppReduxState) =>
+    selectActiveElementParams(state)[name];
 
 export function selectItemToCopyInfo(state: AppReduxState) {
   return selectProjectState(state).ui.itemToCopyInfo;
@@ -300,9 +297,9 @@ export const selectElementsForScreenById = (state, screenId) => {
   return flattenElements([tree]);
 };
 
-export const selectElementsForScreen = (screenId: number) => (
-  state: AppReduxState,
-) => selectElementsForScreenById(state, screenId);
+export const selectElementsForScreen =
+  (screenId: number) => (state: AppReduxState) =>
+    selectElementsForScreenById(state, screenId);
 
 // RESELECT selectors
 export const selectElementsForCurrentScreen = createSelector(
@@ -395,12 +392,11 @@ export const selectSelectedElements = createSelector(
   },
 );
 
-export const selectIsElementSelected = (elementId: string) => (
-  state: AppReduxState,
-) => {
-  const selectedElements = selectSelectedElementsIds(state);
-  return selectedElements.includes(elementId);
-};
+export const selectIsElementSelected =
+  (elementId: string) => (state: AppReduxState) => {
+    const selectedElements = selectSelectedElementsIds(state);
+    return selectedElements.includes(elementId);
+  };
 
 export const selectSharedStyles = (type: Entity) =>
   createSelector(
@@ -447,34 +443,34 @@ export const selectElementTreeGroups = (state: AppReduxState) => {
   );
 };
 
-export const selectTreeChildElementsIds = (elementId: string) => ({
-  project,
-}: AppReduxState) => {
-  const parent = project.data.elements[elementId];
-  return !parent
-    ? []
-    : parent.children.reduce((allChildren: string[], childId) => {
-        return [
-          ...allChildren,
-          ...getAllElementChildrenIds(project.data.elements, childId),
-        ];
-      }, []);
-};
+export const selectTreeChildElementsIds =
+  (elementId: string) =>
+  ({ project }: AppReduxState) => {
+    const parent = project.data.elements[elementId];
+    return !parent
+      ? []
+      : parent.children.reduce((allChildren: string[], childId) => {
+          return [
+            ...allChildren,
+            ...getAllElementChildrenIds(project.data.elements, childId),
+          ];
+        }, []);
+  };
 
-export const selectTreeChildIdsByParentsIds = (ids: string[]) => ({
-  project,
-}: AppReduxState) => {
-  const parentElements = ids.map((id: string) => project.data.elements[id]);
-  return parentElements.reduce(
-    (allChildIds: string[], parentElement: StateElement) => {
-      return [
-        ...allChildIds,
-        ...getAllElementChildrenIds(project.data.elements, parentElement.id),
-      ];
-    },
-    [] as string[],
-  );
-};
+export const selectTreeChildIdsByParentsIds =
+  (ids: string[]) =>
+  ({ project }: AppReduxState) => {
+    const parentElements = ids.map((id: string) => project.data.elements[id]);
+    return parentElements.reduce(
+      (allChildIds: string[], parentElement: StateElement) => {
+        return [
+          ...allChildIds,
+          ...getAllElementChildrenIds(project.data.elements, parentElement.id),
+        ];
+      },
+      [] as string[],
+    );
+  };
 
 export const selectMasterScreenRoot = (state: AppReduxState) => {
   const masterScreen = selectMasterScreen(state);
@@ -484,17 +480,16 @@ export const selectMasterScreenRoot = (state: AppReduxState) => {
   return selectElementById(state, masterScreen.element);
 };
 
-export const selectElementsChildren = (ids: string[]) => (
-  state: AppReduxState,
-) => {
-  const allElementsArray = Object.values(selectAllElements(state));
+export const selectElementsChildren =
+  (ids: string[]) => (state: AppReduxState) => {
+    const allElementsArray = Object.values(selectAllElements(state));
 
-  return ids
-    .map((id: string) => {
-      return allElementsArray.filter((element) => element.parent === id);
-    })
-    .reduce((children, childrenArray) => [...children, ...childrenArray], []);
-};
+    return ids
+      .map((id: string) => {
+        return allElementsArray.filter((element) => element.parent === id);
+      })
+      .reduce((children, childrenArray) => [...children, ...childrenArray], []);
+  };
 
 export const selectPreSelectedElementId = ({ project }: AppReduxState) =>
   project.edit.preSelectedElementId;
