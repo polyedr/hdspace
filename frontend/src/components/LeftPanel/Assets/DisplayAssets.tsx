@@ -87,6 +87,7 @@ const DisplayAssets = () => {
       }
 
       if (file.size > 5242880) {
+        // eslint-disable-next-line no-alert
         alert('Choose image up to 5Mb!');
       } else {
         dispatch(uploadAsset(file));
