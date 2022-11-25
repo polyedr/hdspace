@@ -14,20 +14,17 @@ const useStyles = makeComponentStyles('imagesList', {
   },
 });
 
-type ChildrenImage = Element & { key: string };
-
 const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled, children } = props;
     const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
 
-    const childrenImages = children as unknown as ChildrenImage[];
+    const childrenImages = children;
 
     const childrenStyles = useSelector(
       selectElementsStyles(
-        childrenImages.map((item) => {
-          // @ts-ignore
+        (childrenImages as React.ReactElement[])?.map((item) => {
           return item.props.elementId;
         }),
       ),
@@ -58,20 +55,18 @@ const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
           cols={element.parameters.columns}
           rowHeight="auto"
         >
-          {childrenImages?.map((item, index) => {
-            return (
-              <ImageListItem
-                key={item.key}
-                sx={{
-                  width: childrenStyles[index]?.width || 150,
-                  height: childrenStyles[index]?.height || 150,
-                  margin: 1,
-                }}
-              >
-                {item}
-              </ImageListItem>
-            );
-          })}
+          {(childrenImages as React.ReactElement[])?.map((item, index) => (
+            <ImageListItem
+              key={item.key}
+              sx={{
+                width: childrenStyles[index]?.width || 150,
+                height: childrenStyles[index]?.height || 150,
+                margin: 1,
+              }}
+            >
+              {item}
+            </ImageListItem>
+          ))}
         </ImageList>
       </div>
     );
