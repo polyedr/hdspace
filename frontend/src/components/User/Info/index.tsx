@@ -57,10 +57,9 @@ const useStyles = makeStyles((theme) =>
     },
     pluses: {
       height: 160,
-      alignSelf: 'end',
-      marginRight: 20,
-      top: '-25px',
-      position: 'relative',
+      right: 0,
+      bottom: 0,
+      position: 'absolute',
     },
   }),
 );

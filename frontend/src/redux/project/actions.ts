@@ -152,6 +152,8 @@ import {
   ReplaceMultipleElementsParameters,
   WrapMultipleElementsIntoContainer,
   UploadImageByUrl,
+  AddImageList,
+  AddBackgroundImageList,
   UpdateStateAssetImage,
   SetSelectedAssetListId,
   RestoreMultipleElementsChildren,
@@ -317,7 +319,7 @@ export const changeScreensOrder = (indices: Indices): ChangeScreensOrder => ({
 export const updateNameAndTagsProject = (
   projectID: number,
   name: string,
-  tags: string,
+  tags: any,
 ): UpdateNameAndTagsProject => ({
   type: TYPES.UPDATE_NAME_AND_TAGS_PROJECT,
   payload: { projectID, name, tags },
@@ -1523,6 +1525,18 @@ export const uploadImageByUrl = (
   type: TYPES.UPLOAD_IMAGE_BY_URL,
   payload: { elementId, imageData, listId },
   meta,
+});
+
+export const setImageList = (valueImage: boolean): AddImageList => ({
+  type: TYPES.SET_IMAGE_LIST,
+  payload: { valueImage },
+});
+
+export const setBackgroundList = (
+  backGroundValue: boolean,
+): AddBackgroundImageList => ({
+  type: TYPES.SET_BACKGROUND_LIST,
+  payload: { backGroundValue },
 });
 
 export const updateStateAssetImage = (

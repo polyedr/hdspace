@@ -2,15 +2,15 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { ThemeProvider } from '@mui/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@material-ui/core';
-import ChatProvider from '@Components/Chat/ChatProvider';
+import ChatProvider from '@Components/Sidebar/Chat/ChatProvider';
 
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { SnackbarProvider } from 'notistack';
 import history from '../redux/history';
 import Routes from './Routes';
-import theme from '../styles/Theme';
+import { theme, themeOld } from '../styles/Theme';
 import Notifier from '../components/Notifier';
 
 const App: React.FC = () => {
@@ -20,7 +20,7 @@ const App: React.FC = () => {
       anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
     >
       <ConnectedRouter history={history}>
-        <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider theme={themeOld}>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <ThemeProvider theme={theme}>
               <CssBaseline />

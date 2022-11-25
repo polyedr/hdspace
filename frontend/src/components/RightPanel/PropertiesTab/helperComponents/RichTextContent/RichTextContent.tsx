@@ -13,12 +13,7 @@ import {
   OrderedListButton,
   BlockquoteButton,
 } from '@draft-js-plugins/buttons';
-import { RichUtils, DraftHandleValue } from 'draft-js';
-import { getSelectedBlocksType } from 'draftjs-utils';
-import {
-  Commands,
-  SelectedBlocks,
-} from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/constants';
+import { RichUtils, KeyBindingUtil, EditorState } from 'draft-js';
 
 const staticToolbarPlugin = createToolbarPlugin();
 const { Toolbar } = staticToolbarPlugin;
@@ -32,7 +27,9 @@ const RichTextContent = ({ textState, handleChange }) => {
     }
   };
 
-  const [editorState, handleEditorState] = useState(textState.editor);
+  const [editorState, handleEditorState] = useState<EditorState>(
+    textState.editor,
+  );
 
   useEffect(() => {
     handleChange(editorState);
@@ -42,19 +39,9 @@ const RichTextContent = ({ textState, handleChange }) => {
     handleEditorState(textState.editor);
   }, [textState.id]);
 
-  const [selectedBlock, setSelectedBlock] = useState<string>('');
-
-  useEffect(() => {
-    setSelectedBlock(getSelectedBlocksType(editorState));
-  }, [editorState]);
-
-  const handleKeyCommand = (command: string): DraftHandleValue => {
-    if (
-      command === Commands.SPLIT_BLOCK &&
-      selectedBlock !== SelectedBlocks.ORDERED_LIST_ITEM &&
-      selectedBlock !== SelectedBlocks.UNORDERED_LIST_ITEM
-    ) {
-      handleChange(RichUtils.insertSoftNewline(editorState));
+  const handleReturn = (event) => {
+    if (KeyBindingUtil.isSoftNewlineEvent(event)) {
+      handleEditorState(RichUtils.insertSoftNewline(editorState));
       return 'handled';
     }
     return 'not-handled';
@@ -67,7 +54,7 @@ const RichTextContent = ({ textState, handleChange }) => {
         editorState={editorState}
         onChange={handleEditorState}
         plugins={plugins}
-        handleKeyCommand={handleKeyCommand}
+        handleReturn={handleReturn}
       />
       <Toolbar>
         {(externalProps) => (
