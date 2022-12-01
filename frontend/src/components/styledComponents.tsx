@@ -21,6 +21,32 @@ import { OverridableComponent } from '@material-ui/core/OverridableComponent';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import styled from 'styled-components';
 
+const StyledAccordianSummary = MuiStyled(AccordionSummary)({
+  flexDirection: 'row-reverse',
+
+  '&.MuiAccordionSummary-root': {
+    minHeight: 32,
+    backgroundColor: '#F3F4F6',
+  },
+
+  '& .MuiAccordionSummary-content': {
+    margin: 0,
+    fontSize: 10,
+    textTransform: 'uppercase',
+    padding: '0 2px',
+    fontWeight: 600,
+
+    '& svg': {
+      height: 15,
+    },
+  },
+});
+
+export const PropertyAccordianSummary: React.FC<AccordionSummaryProps> = ({
+  children,
+  ...props
+}) => <StyledAccordianSummary {...props}>{children}</StyledAccordianSummary>;
+
 const MuiSlider = styled(Slider)`
   & .MuiSlider-thumb {
     color: #ffffff;

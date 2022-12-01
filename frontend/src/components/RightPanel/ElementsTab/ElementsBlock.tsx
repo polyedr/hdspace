@@ -2,13 +2,11 @@ import React, { memo } from 'react';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Accordion, AccordionDetails } from '@mui/material';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
-import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
-} from '../../styledComponents';
+import { PropertyAccordianSummary } from '../../styledComponents';
 
 type Props = {
   title?: string;
@@ -28,10 +26,26 @@ export const useStyles = makeStyles({
   elementsBlock: {
     display: 'flex',
     flexFlow: 'row wrap',
-    padding: '0 2px 2px',
-    '& > *': {
-      width: '25%',
-      height: 'calc(300px/4)',
+    padding: '0',
+    justifyContent: 'space-between',
+    '& .MuiButton-text ': {
+      width: '33%',
+      height: '70px',
+
+      '& span': {
+        fontSize: 12,
+        color: '#81818E',
+        fontWeight: 400,
+      },
+    },
+
+    '& .MuiButton-text:hover': {
+      boxShadow: 'none',
+      backgroundColor: 'transparent',
+
+      '& span': {
+        color: 'black',
+      },
     },
   },
 });
@@ -56,15 +70,18 @@ const ElementsBlock: React.FC<Props> = ({
   const content = renderElementButtons(elements);
 
   return expandable ? (
-    <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary className={classes.title}>
+    <Accordion defaultExpanded>
+      <PropertyAccordianSummary
+        className={classes.title}
+        expandIcon={<ExpandMoreIcon />}
+      >
         {splitWords(title)}
-      </StyledAccordionSummary>
+      </PropertyAccordianSummary>
 
-      <StyledAccordionDetails className={classes.elementsBlock}>
+      <AccordionDetails className={classes.elementsBlock}>
         {content}
-      </StyledAccordionDetails>
-    </StyledAccordion>
+      </AccordionDetails>
+    </Accordion>
   ) : (
     <div className={classes.elementsBlock}>{content}</div>
   );
