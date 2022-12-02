@@ -48,6 +48,10 @@ export const useStyles = makeStyles({
       },
     },
   },
+
+  '& .MuiAccordion-root': {
+    boxShadow: 'none',
+  },
 });
 
 export const renderElementButtons = (

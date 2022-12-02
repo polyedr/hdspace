@@ -36,6 +36,10 @@ const StyledAccordianSummary = MuiStyled(AccordionSummary)({
     padding: '0 2px',
     fontWeight: 600,
 
+    '&.Mui-expanded': {
+      margin: 0,
+    },
+
     '& svg': {
       height: 15,
     },
