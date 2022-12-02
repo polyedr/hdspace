@@ -3,7 +3,11 @@ import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Accordion, AccordionDetails } from '@mui/material';
+import {
+  Accordion as MUIAccordion,
+  AccordionDetails as MUIAccordionDetails,
+  styled,
+} from '@mui/material';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
 import { PropertyAccordianSummary } from '../../styledComponents';
@@ -15,6 +19,52 @@ type Props = {
   };
   expandable?: boolean;
 };
+
+const Accordion = styled(MUIAccordion)({
+  '&.MuiAccordion-root': {
+    boxShadow: 'none',
+    margin: 0,
+    borderRight: '1px solid #E4E6EB',
+    borderBottom: '1px solid #E4E6EB',
+
+    '&:nth-child(1)': {
+      borderTop: '1px solid #E4E6EB',
+    },
+
+    '&:before': {
+      display: 'none',
+    },
+  },
+});
+
+const AccordionDetails = styled(MUIAccordionDetails)({
+  '&.MuiAccordionDetails-root': {
+    display: 'flex',
+    flexFlow: 'row wrap',
+    padding: '0',
+    justifyContent: 'space-between',
+
+    '& .MuiButton-text ': {
+      width: '33%',
+      height: '70px',
+
+      '& span': {
+        fontSize: 12,
+        color: '#81818E',
+        fontWeight: 400,
+      },
+    },
+
+    '& .MuiButton-text:hover': {
+      boxShadow: 'none',
+      backgroundColor: 'transparent',
+
+      '& span': {
+        color: 'black',
+      },
+    },
+  },
+});
 
 export const useStyles = makeStyles({
   title: {
@@ -49,7 +99,7 @@ export const useStyles = makeStyles({
     },
   },
 
-  '& .MuiAccordion-root': {
+  '&.MuiAccordion-root': {
     boxShadow: 'none',
   },
 });
@@ -82,9 +132,7 @@ const ElementsBlock: React.FC<Props> = ({
         {splitWords(title)}
       </PropertyAccordianSummary>
 
-      <AccordionDetails className={classes.elementsBlock}>
-        {content}
-      </AccordionDetails>
+      <AccordionDetails>{content}</AccordionDetails>
     </Accordion>
   ) : (
     <div className={classes.elementsBlock}>{content}</div>
