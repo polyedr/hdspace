@@ -26,10 +26,7 @@ const Accordion = styled(MUIAccordion)({
     margin: 0,
     borderRight: '1px solid #E4E6EB',
     borderBottom: '1px solid #E4E6EB',
-
-    '&:nth-child(1)': {
-      borderTop: '1px solid #E4E6EB',
-    },
+    borderRadius: 0,
 
     '&:before': {
       display: 'none',

@@ -24,8 +24,14 @@ import {
   ToggleButton,
   Menu,
   MenuItem,
+  styled,
 } from '@mui/material';
-import { AppBar, Toolbar, IconButton, Box } from '@material-ui/core';
+import {
+  AppBar as MUIAppbar,
+  Toolbar,
+  IconButton,
+  Box,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -41,6 +47,26 @@ import TopBar from './TopBar';
 import History from './History';
 import Logo from '../UI/Logo';
 import Avatar from './Avatar';
+
+const Appbar = styled(MUIAppbar)({
+  '&.MuiAppBar-root': {
+    boxShadow: 'none',
+    borderBottom: '1px solid #E4E6EB',
+
+    '& .MuiToolbar-root': {
+      padding: 0,
+    },
+
+    '& .MuiLink-root': {
+      width: '73px',
+      height: 55,
+      borderRight: '1px solid #E4E6EB',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  },
+});
 
 const useStyles = makeStyles(({ typography, palette }) => ({
   toolbar: {
@@ -142,7 +168,7 @@ const TopPanel = () => {
     setAnchorEl(null);
   };
   return (
-    <AppBar position="fixed">
+    <Appbar position="fixed">
       <Toolbar variant="dense" className={classes.toolbar}>
         <Box className={classes.topbarsections}>
           <Logo className={classes.icon} />
@@ -243,7 +269,7 @@ const TopPanel = () => {
         initialValueTags={tagsWithoutSpace}
         description={`Enter new name for project ${projectName}`}
       />
-    </AppBar>
+    </Appbar>
   );
 };
 
