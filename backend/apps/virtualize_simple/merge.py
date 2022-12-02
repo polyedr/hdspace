@@ -1,5 +1,9 @@
+import json
+from contextlib import redirect_stdout
+
 import cv2
 import pytesseract
+import requests
 
 import os
 
@@ -598,19 +602,19 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
 
     # Detect elements for the case of "forms", "headers", "footers"
     if region_dataset in {"forms", "headers", "footers"}:
-
-        # Detect elements with Mask R CNN model start
-        if region_dataset == "forms":
-            results = model_forms.detect([img], verbose=1)
-
-        if region_dataset == "headers":
-            results = model_headers.detect([img], verbose=1)
-
-        if region_dataset == "footers":
-            results = model_footers.detect([img], verbose=1)
+        # results = model_forms.detect([img], verbose=1)
+        # Request the external MaskRCNN API
+        # call another api for POST
+        url = 'https://api-staging.adevi.info/api/v1/virtualize_simple/maskrcnn/' # The staging
+        data = {"image":imgpath,"block_type":region_dataset}  # post data
+        api_call = requests.post(url, headers={}, data=data)
+        # print(api_call.content)
+        # print(api_call.json())
+        results = json.loads(api_call.content)
 
         # Results of the Mask R CNN recognition
-        r = results[0]
+        # r = results[0]
+        r = results
         # Detect elements with Mask R CNN model end
 
         # Printing 4 dictionaries start
