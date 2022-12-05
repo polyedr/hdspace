@@ -18,7 +18,7 @@ from celery.schedules import crontab
 from datetime import timedelta
 
 from stream_chat import StreamChat
-print("2")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -409,7 +409,6 @@ DJOSER = {
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": white_list,  # Redirected URL we listen on google console
 }
 
-print("3")
 # Start a Stream chat
 try:
     schat_client = StreamChat(
@@ -419,4 +418,3 @@ try:
     schat_client.update_app_settings(multi_tenant_enabled=True)
 except Exception:
     pass
-print("4")

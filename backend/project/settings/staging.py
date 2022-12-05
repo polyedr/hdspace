@@ -1,6 +1,9 @@
 import os, sys
 from .base import BASE_DIR
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Mask R-CNN model initial load
 ROOT_DIR = os.path.abspath(BASE_DIR + "/apps/virtualize_simple/mask_rcnn")
 # Import Mask RCNN
@@ -15,7 +18,6 @@ import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
 # import apps.virtualize_simple.mask_rcnn.mrcnn.model as modellib
 # Directory to save logs and trained model
 MODEL_DIR = os.path.join(ROOT_DIR, "trained_models")
-
 
 # Configurations:
 class LoginConfig(Config):
@@ -144,3 +146,20 @@ model_headers.keras_model._make_predict_function()
 
 model_footers.load_weights(model_footers_path, by_name=True)
 model_footers.keras_model._make_predict_function()
+
+# Sentry initialization
+sentry_sdk.init(
+    dsn="https://024604bbc06845d8830f18d3ddfbbbe7@o4504276841725952.ingest.sentry.io/4504276846116864",
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
