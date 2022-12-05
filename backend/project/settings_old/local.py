@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import sys
 
-from .base import *  # noqa
+# from .base import *  # noqa
 from celery.schedules import crontab
 from datetime import timedelta
 

@@ -15,11 +15,16 @@ from anytree.exporter import DictExporter
 from project.settings import (
     MEDIA_ROOT,
     MEDIA_URL,
-    model_forms,
-    model_headers,
-    model_footers,
     BASE_DIR,
 )
+
+if os.environ.get("ENV_NAME") == 'Staging':
+    # This should be changed for the command line interface
+    from project.settings import (
+        model_forms,
+        model_headers,
+        model_footers,
+    )
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_blobs

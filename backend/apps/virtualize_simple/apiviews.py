@@ -1,15 +1,20 @@
+import os
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from keras.preprocessing.image import load_img
 from keras_preprocessing.image import img_to_array
 
-from apps.virtualize_simple.serializers import ProjectScreenSerializer, ScenarioElementSerializer, \
+from apps.virtualize_simple.serializers import ProjectScreenSerializer, \
     ScenarioElementAssemblingSerializer, ScenarioElementFreecanvasSerializer
 from apps.projects.models import ScenarioElement, ProjectScreen
 
 from rest_framework import status, generics, permissions
-from project.settings import model_forms, model_headers, model_footers
 
+if os.environ.get("ENV_NAME") == 'Staging':
+    from project.settings import model_forms, model_headers, model_footers
+
+'''
 class ScenarioElementList(generics.CreateAPIView):
     """
     Create a new DOM of the neural network
@@ -20,7 +25,7 @@ class ScenarioElementList(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save()
-
+'''
 
 class ScenarioElementAssemblingList(generics.CreateAPIView):
     """

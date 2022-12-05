@@ -24,12 +24,13 @@ from apps.utils.fset1 import (
     SQUARES_OVERLAP_THRESHOLD_CONTOUR,
 )
 
-# This should be changed for the command line interface
-from project.settings import (
-    model_forms,
-    model_headers,
-    model_footers,
-)
+if os.environ.get("ENV_NAME") == 'Staging':
+    # This should be changed for the command line interface
+    from project.settings import (
+        model_forms,
+        model_headers,
+        model_footers,
+    )
 
 
 # Writing the element text value based on its id
@@ -602,14 +603,16 @@ def create_recognized_elements(imgpath, rect_contours, text_contours, region_dat
 
     # Detect elements for the case of "forms", "headers", "footers"
     if region_dataset in {"forms", "headers", "footers"}:
+        print(imgpath)
+        print(img)
         # results = model_forms.detect([img], verbose=1)
         # Request the external MaskRCNN API
         # call another api for POST
         url = 'https://api-staging.adevi.info/api/v1/virtualize_simple/maskrcnn/' # The staging
-        data = {"image":imgpath,"block_type":region_dataset}  # post data
-        api_call = requests.post(url, headers={}, data=data)
+        picture = open(imgpath, "rb")
+        data = {"block_type":region_dataset}  # post data
+        api_call = requests.post(url, headers={}, data=data, files = {"image": picture})
         # print(api_call.content)
-        # print(api_call.json())
         results = json.loads(api_call.content)
 
         # Results of the Mask R CNN recognition

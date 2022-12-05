@@ -12,7 +12,8 @@ from statistics import median, median_low
 
 from anytree import RenderTree
 from rest_framework_recursive.fields import RecursiveField
-
+from project.settings import BASE_DIR, MEDIA_ROOT
+'''
 from project.settings import (
     MEDIA_ROOT,
     MEDIA_URL,
@@ -21,6 +22,7 @@ from project.settings import (
     model_footers,
     BASE_DIR,
 )
+'''
 from rest_framework import serializers
 from apps.projects.models import ScenarioElement, ProjectScreen
 # from sklearn.preprocessing import StandardScaler
@@ -407,7 +409,7 @@ class ProjectScreenSerializer(serializers.ModelSerializer):
 
         return node
 
-
+'''
 class ScenarioElementSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
     styles = serializers.JSONField()
@@ -1351,7 +1353,7 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         )
 
         return serializer_node
-
+'''
 
 class ScenarioElementAssemblingSerializer(serializers.ModelSerializer):
     parameters = serializers.JSONField()
