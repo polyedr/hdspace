@@ -26,7 +26,7 @@ const RenderElementGrid = ({ elements }: { elements: object }) => {
   );
 };
 
-export default [
+export const mainMenu = [
   {
     id: 'elements-tab',
     label: 'Elements',

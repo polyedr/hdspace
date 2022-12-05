@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Stack, Box, styled, Typography, ButtonBase } from '@mui/material';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import menu from './menu';
+import Scrollbars from 'react-custom-scrollbars';
+import { Dashboard as DashboardIcon } from '@mui/icons-material';
+import { mainMenu } from './menu';
 import { SettingIcon } from './icons';
 
 const IconButton = styled(ButtonBase)<{ active: boolean }>(
@@ -52,19 +54,32 @@ const LeftSideBar = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
   const ActiveComponent = activeMenu
-    ? menu.find((m) => m.id === activeMenu)?.component
+    ? mainMenu.find((m) => m.id === activeMenu)?.component
     : null;
+
+  const handleChangeMenu = useCallback(
+    (menu) => {
+      return () => {
+        if (menu === activeMenu) {
+          setActiveMenu(null);
+        } else {
+          setActiveMenu(menu);
+        }
+      };
+    },
+    [activeMenu],
+  );
 
   return (
     <DndProvider backend={HTML5Backend}>
       <Stack direction="row">
         <Boxstacked>
           <Stack spacing={1}>
-            {menu.map(({ id, icon: Icon, label }) => (
+            {mainMenu.map(({ id, icon: Icon, label }) => (
               <IconButton
                 active={activeMenu === id}
                 key={id}
-                onClick={() => setActiveMenu(id)}
+                onClick={handleChangeMenu(id)}
               >
                 <Icon />
                 <Typography variant="h5" fontSize={12}>
@@ -76,18 +91,22 @@ const LeftSideBar = () => {
           <hr />
           <Stack flex={1} justifyContent="space-between">
             <Stack spacing={1}>
-              {menu.map(({ id, icon: Icon, label }) => (
-                <IconButton
-                  active={activeMenu === id}
-                  key={id}
-                  onClick={() => setActiveMenu(id)}
-                >
-                  <Icon />
-                  <Typography variant="h5" fontSize={12}>
-                    {label}
-                  </Typography>
-                </IconButton>
-              ))}
+              <IconButton active={false}>
+                <DashboardIcon />
+                <label>Board</label>
+              </IconButton>
+              <IconButton active={false}>
+                <DashboardIcon />
+                <label>Chat</label>
+              </IconButton>
+              <IconButton active={false}>
+                <DashboardIcon />
+                <label>Team</label>
+              </IconButton>
+              <IconButton active={false}>
+                <DashboardIcon />
+                <label>Activities</label>
+              </IconButton>
             </Stack>
 
             <IconButton active={false}>
@@ -98,7 +117,9 @@ const LeftSideBar = () => {
         </Boxstacked>
         {ActiveComponent && (
           <Box width={248}>
-            <ActiveComponent />
+            <Scrollbars>
+              <ActiveComponent />
+            </Scrollbars>
           </Box>
         )}
       </Stack>
