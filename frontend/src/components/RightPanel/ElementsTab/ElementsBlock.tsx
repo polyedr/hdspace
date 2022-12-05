@@ -43,10 +43,15 @@ const AccordionDetails = styled(MUIAccordionDetails)({
 
     '& .MuiButton-text ': {
       width: '33%',
-      height: '70px',
+      minHeight: '65px',
+      paddingTop: '8px',
+
+      // '& svg': {
+      //   height: 20,
+      // },
 
       '& span': {
-        fontSize: 12,
+        fontSize: 11,
         color: '#81818E',
         fontWeight: 400,
       },

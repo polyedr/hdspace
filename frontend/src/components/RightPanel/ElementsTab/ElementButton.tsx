@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-end',
-    height: '45%',
+    // height: '45%',
     width: '100%',
   },
   nameSection: (props: Props) => ({

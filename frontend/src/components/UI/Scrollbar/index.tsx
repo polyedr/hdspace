@@ -91,7 +91,7 @@ const renderView = ({ style, ...props }: any) => {
     width: '100%',
     height: '100%',
     minHeight: '100%',
-    maxHeight: '50vh',
+    maxHeight: 'calc(100vh - 56px)',
     marginRight: '0', // prevent react-custom-scrollbars to overwrite margins (we dont need it since we're not displaying native ones)
     marginBottom: '0',
     overflow: 'scroll',

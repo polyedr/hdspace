@@ -41,15 +41,20 @@ const Title = styled(Typography)`
   font-family: Roboto;
   font-style: normal;
   font-weight: 600 !important;
-  font-size: 14px;
+  font-size: 10px !important;
+  text-transform: uppercase;
   line-height: 145%;
 `;
 
-const CustomIconButton = styled(IconButton)`
-  width: 32px;
-  height: 32px;
-  color: #81818e;
-`;
+const CustomIconButton = styled(IconButton)({
+  width: '32px',
+  height: '32px',
+  color: '#81818e',
+
+  '& svg': {
+    height: 20,
+  },
+});
 
 const CustomList = styled(List)`
   width: 100%;
@@ -105,7 +110,11 @@ const Screens = () => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        borderRight: '1px solid #E4E6EB',
+      }}
+    >
       <TitleContainer>
         <Title>Screens</Title>
         <StyledIconButton
@@ -150,9 +159,9 @@ const Screens = () => {
         <Droppable droppableId="droppable">
           {(provided) => (
             <Scrollbar
-              autoHeightMin="30vh"
-              autoHeightMax="30vh"
-              style={{ backgroundColor: '#ffffff', overflow: 'scroll' }}
+              autoHeightMin="calc(100vh - 90px)"
+              autoHeightMax="calc(100vh - 90px)"
+              style={{ backgroundColor: '#ffffff', overflow: 'hidden' }}
             >
               <StyledCustomList
                 innerRef={provided.innerRef}
@@ -174,7 +183,7 @@ const Screens = () => {
           )}
         </Droppable>
       </DragDropContext>
-    </>
+    </Box>
   );
 };
 
