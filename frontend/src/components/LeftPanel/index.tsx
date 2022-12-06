@@ -3,9 +3,14 @@ import { Stack, Box, styled, Typography, ButtonBase } from '@mui/material';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Scrollbars from 'react-custom-scrollbars';
-import { Dashboard as DashboardIcon } from '@mui/icons-material';
 import { mainMenu } from './menu';
-import { SettingIcon } from './icons';
+import {
+  SettingIcon,
+  BoardIcon,
+  ChatIcon,
+  MemberIcon,
+  ActivityIcon,
+} from './icons';
 
 const IconButton = styled(ButtonBase)<{ active: boolean }>(
   ({ active, theme }) => ({
@@ -92,19 +97,19 @@ const LeftSideBar = () => {
           <Stack flex={1} justifyContent="space-between">
             <Stack spacing={1}>
               <IconButton active={false}>
-                <DashboardIcon />
+                <BoardIcon />
                 <label>Board</label>
               </IconButton>
               <IconButton active={false}>
-                <DashboardIcon />
+                <ChatIcon />
                 <label>Chat</label>
               </IconButton>
               <IconButton active={false}>
-                <DashboardIcon />
+                <MemberIcon />
                 <label>Team</label>
               </IconButton>
               <IconButton active={false}>
-                <DashboardIcon />
+                <ActivityIcon />
                 <label>Activities</label>
               </IconButton>
             </Stack>
