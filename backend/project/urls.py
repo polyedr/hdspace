@@ -38,8 +38,8 @@ SchemaView = get_schema_view(
     public=True,
 )
 
-# def trigger_error(request):
-#     division_by_zero = 1 / 0
+def trigger_error(request):
+    division_by_zero = 1 / 0
 
 urlpatterns = [
     # path("oauth/", include("social_django.urls", namespace="social")),
@@ -73,7 +73,7 @@ urlpatterns = [
     path("api/v1/invitations/", include("rest_invitations.urls"), name="invitations"),
     path("api/v1/subscriptions/", include("subscriptions_api.urls"), name="subscriptions"),
     path("api/v1/stripe/", include("drf_stripe.urls"), name="drfstripes"),
-    # path('sentry-debug/', trigger_error),
+    path('sentry-debug/', trigger_error),
 ]
 
 if settings.DEBUG:
