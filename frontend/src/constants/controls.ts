@@ -50,6 +50,7 @@ import SliderSettings from '@Components/RightPanel/PropertiesTab/Controls/Slider
 import DateTimePickerControls from '@Components/RightPanel/PropertiesTab/Controls/DateTimePickerControls/DateTimePickerControls';
 import OpacityBlock from '@Components/RightPanel/PropertiesTab/Controls/OpacityBlock/OpacityBlock';
 import Position from '@Components/RightPanel/PropertiesTab/Controls/Position/Position';
+import FlexConstraints from '@Components/RightPanel/PropertiesTab/Controls/FlexConstraints';
 
 type ControlInfo = {
   Control: React.ComponentType<any>;
@@ -67,6 +68,9 @@ const CONTROLS: Record<Control, ControlInfo> = {
   },
   sliderSettings: {
     Control: SliderSettings,
+  },
+  flexConstraints: {
+    Control: FlexConstraints,
   },
   indents: {
     Control: IndentsBlock,
