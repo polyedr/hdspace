@@ -110,11 +110,7 @@ const Screens = () => {
   };
 
   return (
-    <Box
-      sx={{
-        borderRight: '1px solid #E4E6EB',
-      }}
-    >
+    <>
       <TitleContainer>
         <Title>Screens</Title>
         <StyledIconButton
@@ -183,7 +179,7 @@ const Screens = () => {
           )}
         </Droppable>
       </DragDropContext>
-    </Box>
+    </>
   );
 };
 

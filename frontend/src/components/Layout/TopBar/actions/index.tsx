@@ -66,7 +66,7 @@ const useStyles = makeStyles(({ typography }) => ({
     },
   },
   icon: {
-    width: '16px !important',
+    width: '20px !important',
   },
 }));
 

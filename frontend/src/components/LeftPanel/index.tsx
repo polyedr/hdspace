@@ -116,7 +116,13 @@ const LeftSideBar = () => {
           </Stack>
         </Boxstacked>
         {ActiveComponent && (
-          <Box width={248}>
+          <Box
+            width={248}
+            sx={{
+              borderRight: '1px solid #E4E6EB',
+              backgroundColor: '#ffffff',
+            }}
+          >
             <Scrollbars>
               <ActiveComponent />
             </Scrollbars>

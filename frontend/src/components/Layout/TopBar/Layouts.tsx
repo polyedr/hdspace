@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) =>
       backgroundColor: 'white',
       '& .MuiSelect-select': {
         display: 'flex',
+        alignItems: 'center',
       },
     },
     root: {
@@ -65,6 +66,7 @@ const useStyles = makeStyles((theme) =>
     dropdowntext: {
       paddingLeft: '10px',
       fontSize: '12px',
+      textTransform: 'capitalize',
     },
     icon: {
       color: '#5064FF',

@@ -59,14 +59,17 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-end',
-    // height: '45%',
+    alignItems: 'flex-start',
     width: '100%',
+
+    '& svg': {
+      height: 30,
+    },
   },
   nameSection: (props: Props) => ({
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     lineHeight: 1.5,
     width: '100%',
     height: props.elementData.icon ? '55%' : '100%',

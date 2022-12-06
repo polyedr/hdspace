@@ -114,7 +114,7 @@ const useStyles = makeStyles(({ typography, palette }) => ({
     color: '#81818E',
   },
   icon: {
-    width: '16px !important',
+    width: '20px !important',
   },
 }));
 

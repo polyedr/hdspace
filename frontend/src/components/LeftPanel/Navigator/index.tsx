@@ -53,11 +53,7 @@ const Navigator: React.FC = () => {
     },
   };
   return (
-    <Box
-      sx={{
-        borderRight: '1px solid #E4E6EB',
-      }}
-    >
+    <Box>
       <StyledAccordion defaultExpanded sx={styles}>
         <StyledAccordionDetails>
           <Tree tree={tree} setTree={setTree} elements={elements} />

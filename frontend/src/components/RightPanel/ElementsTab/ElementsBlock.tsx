@@ -24,9 +24,9 @@ const Accordion = styled(MUIAccordion)({
   '&.MuiAccordion-root': {
     boxShadow: 'none',
     margin: 0,
-    borderRight: '1px solid #E4E6EB',
     borderBottom: '1px solid #E4E6EB',
     borderRadius: 0,
+    // paddingBottom: 10,
 
     '&:before': {
       display: 'none',
