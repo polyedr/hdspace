@@ -381,7 +381,7 @@ def send_email_confirmation(instance):
         from_email = "Adevi Admin <info@adevi.info>"
 
         # message = get_template('email/email.html').render(order_information)
-        message = "The task " + str(instance.id) + " " + instance.description + " subscription list have been changed recently. " + ','.join(to_email)
+        message = "The task " + str(instance.id) + " " + str(instance.description) + " subscription list have been changed recently. " + ",".join(to_email)
         send_mail(subject, message, from_email, to_email, fail_silently=False)
     except IOError as e:
         return e
@@ -396,9 +396,9 @@ class ColumnTaskDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         instance = serializer.save()
-        if instance.subscribers:
-            send_email_confirmation(instance=instance)
-
+        if instance:
+            if instance.subscribers:
+                send_email_confirmation(instance=instance)
 
 
 class ProjectActivityList(generics.ListCreateAPIView):

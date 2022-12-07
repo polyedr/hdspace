@@ -11,13 +11,15 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-import sys
 
 from .base_old import *  # noqa
 from celery.schedules import crontab
 from datetime import timedelta
 
 from stream_chat import StreamChat
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -418,3 +420,21 @@ try:
     schat_client.update_app_settings(multi_tenant_enabled=True)
 except Exception:
     pass
+
+
+# Sentry initialization
+sentry_sdk.init(
+    dsn="https://024604bbc06845d8830f18d3ddfbbbe7@o4504276841725952.ingest.sentry.io/4504276846116864",
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)

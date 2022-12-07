@@ -73,7 +73,7 @@ urlpatterns = [
     path("api/v1/invitations/", include("rest_invitations.urls"), name="invitations"),
     path("api/v1/subscriptions/", include("subscriptions_api.urls"), name="subscriptions"),
     path("api/v1/stripe/", include("drf_stripe.urls"), name="drfstripes"),
-    path('sentry-debug/', trigger_error),
+    path('api/v1/sentry-debug/', trigger_error),
 ]
 
 if settings.DEBUG:

@@ -99,3 +99,6 @@ apps/virtualize_simple/ScenarioElementFreecanvasSerializer.py
 apps/virtualize_simple/ScenarioElementSerializer.py
 *.png
 out*.txt
+
+# erd diagram
+erd.dot
