@@ -3,7 +3,9 @@ import { Stack, Box, styled, Typography, ButtonBase } from '@mui/material';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import Scrollbars from 'react-custom-scrollbars';
-import { mainMenu } from './menu';
+import { setSidebarOpen } from '@Redux/project/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectSidebarOpen } from '@Redux/project/selectors/base';
 import {
   SettingIcon,
   BoardIcon,
@@ -11,6 +13,7 @@ import {
   MemberIcon,
   ActivityIcon,
 } from './icons';
+import { mainMenu } from './menu';
 
 const IconButton = styled(ButtonBase)<{ active: boolean }>(
   ({ active, theme }) => ({
@@ -58,9 +61,16 @@ const Boxstacked = styled(Box)({
 const LeftSideBar = () => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
+  const sidebarOpen = useSelector(selectSidebarOpen);
+  const dispatch = useDispatch();
+
   const ActiveComponent = activeMenu
     ? mainMenu.find((m) => m.id === activeMenu)?.component
     : null;
+
+  const handleSidebarToggle = useCallback(() => {
+    dispatch(setSidebarOpen(!sidebarOpen));
+  }, [sidebarOpen]);
 
   const handleChangeMenu = useCallback(
     (menu) => {
@@ -96,19 +106,19 @@ const LeftSideBar = () => {
           <hr />
           <Stack flex={1} justifyContent="space-between">
             <Stack spacing={1}>
-              <IconButton active={false}>
+              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
                 <BoardIcon />
                 <label>Board</label>
               </IconButton>
-              <IconButton active={false}>
+              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
                 <ChatIcon />
                 <label>Chat</label>
               </IconButton>
-              <IconButton active={false}>
+              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
                 <MemberIcon />
                 <label>Team</label>
               </IconButton>
-              <IconButton active={false}>
+              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
                 <ActivityIcon />
                 <label>Activities</label>
               </IconButton>

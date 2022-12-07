@@ -130,7 +130,6 @@ const TopPanel = () => {
   } = useSelector(selectCurrentProject);
   const { id: userId } = useSelector(selectUserData);
   const viaMode = useSelector(selectVIAModeEnabled);
-  const sidebarOpen = useSelector(selectSidebarOpen);
   const viaResultId = useSelector(selectVIAResultId);
   const bordersEnabled = useSelector(selectBordersEnabled);
   const handleEditClick = () => setOpenEdit(true);
@@ -158,10 +157,6 @@ const TopPanel = () => {
     if (index === 0) return item;
     return ` ${item}`;
   });
-
-  const handleSidebarToggle = () => {
-    dispatch(setSidebarOpen(!sidebarOpen));
-  };
 
   const handleCloseDropDown = () => {
     setIsDropdownOpen(false);
@@ -242,19 +237,7 @@ const TopPanel = () => {
                 <HelpOutlineIcon className={classes.icon} />
               </IconButton>
             </a>
-            {projectName ? (
-              <ToggleButton
-                value="sidebarOpen"
-                selected={sidebarOpen}
-                onClick={handleSidebarToggle}
-                title="Toggle Sidebar"
-                className={classes.togglebutton}
-              >
-                <MenuIcon className={classes.icon} />
-              </ToggleButton>
-            ) : (
-              <Avatar />
-            )}
+            {!projectName && <Avatar />}
           </Box>
         </Box>
       </Toolbar>

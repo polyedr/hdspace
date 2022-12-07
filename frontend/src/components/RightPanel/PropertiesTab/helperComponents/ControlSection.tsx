@@ -1,30 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { splitWords } from '@Utils/stringHelper';
 import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
+  PropertyAccordianSummary,
+  PropertyAccordion,
+  PropertyAccordionDetails,
 } from '@Components/styledComponents';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { setImageList } from '@Redux/project/actions';
 import { useDispatch } from 'react-redux';
-
-const useStyles = makeStyles({
-  section: {},
-  title: {
-    textTransform: 'capitalize',
-    '& .MuiAccordionSummary-content': {
-      padding: '0 1em',
-    },
-  },
-  content: {
-    padding: '0.5em',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-  },
-});
 
 type Props = {
   title: string;
@@ -32,7 +15,6 @@ type Props = {
 };
 
 const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
-  const classes = useStyles();
   const [isCollapse, setIsCollapse] = useState(expanded);
   const dispatch = useDispatch();
   const animate = (expanded) => {
@@ -46,22 +28,15 @@ const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
     animate(!expanded);
   }, [expanded]);
   return (
-    <StyledAccordion
-      className={classes.section}
-      expanded={isCollapse}
-      onChange={() => toggle()}
-    >
-      <StyledAccordionSummary
-        expandIcon={<ArrowDropDownIcon />}
-        className={classes.title}
-      >
+    <PropertyAccordion expanded={isCollapse} onChange={() => toggle()}>
+      <PropertyAccordianSummary expandIcon={<ArrowDropDownIcon />}>
         {splitWords(title)}
-      </StyledAccordionSummary>
+      </PropertyAccordianSummary>
 
-      <StyledAccordionDetails className={classes.content}>
-        {children}
-      </StyledAccordionDetails>
-    </StyledAccordion>
+      <PropertyAccordionDetails>
+        <div style={{ flex: 1 }}>{children}</div>
+      </PropertyAccordionDetails>
+    </PropertyAccordion>
   );
 };
 
