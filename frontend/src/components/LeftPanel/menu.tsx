@@ -17,6 +17,7 @@ import {
 import LibraryMenu from './LibraryMenu';
 import Styles from './Styles';
 import VIANavigator from './VIANavigator';
+import FrameworkSection from '@Components/RightPanel/FrameworkSection';
 
 const { elements, templates, generators, library } =
   createElementsHierarchy(LIBRARY_ELEMENTS);
@@ -59,6 +60,7 @@ export const mainMenu = [
     icon: ComponentIcon,
     component: () => (
       <Scrollbar>
+        <FrameworkSection />
         <Styles />
       </Scrollbar>
     ),
