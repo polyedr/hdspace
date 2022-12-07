@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { Stack, Box, styled, Typography, ButtonBase } from '@mui/material';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import Scrollbars from 'react-custom-scrollbars';
 import { setSidebarOpen } from '@Redux/project/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectSidebarOpen } from '@Redux/project/selectors/base';
@@ -138,9 +137,7 @@ const LeftSideBar = () => {
               backgroundColor: '#ffffff',
             }}
           >
-            <Scrollbars>
-              <ActiveComponent />
-            </Scrollbars>
+            <ActiveComponent />
           </Box>
         )}
       </Stack>

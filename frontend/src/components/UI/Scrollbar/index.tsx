@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useCallback, memo } from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
+import React, { useState, useCallback } from 'react';
+import { Scrollbars, ScrollbarProps } from 'react-custom-scrollbars';
 import { useDebouncedCallback } from 'use-debounce';
 import cn from 'classnames';
 import './styles.css';
@@ -9,23 +9,10 @@ interface IStyle {
   [x: string]: string | number;
 }
 
-interface IScrollbarProps {
-  children: any;
-  style?: IStyle;
-  className?: string;
-  trackStylesBg?: string;
-  autoHeightMax?: number | string;
-  autoHeightMin?: number | string;
-  hideTracksWhenNotNeeded?: boolean;
-  onScroll?: (event: { srcElement: HTMLElement }) => void;
-  onScrollStart?: () => void;
-  onScrollStop?: () => void;
-}
-
 const renderTrack = ({ style, trackStylesBg, scroll, show, ...props }: any) => {
   const trackStyle = {
     zIndex: 10,
-    backgroundColor: trackStylesBg || 'rgb(0, 0, 0, .01)',
+    backgroundColor: trackStylesBg || 'rgba(0, 0, 0, .01)',
     top: 0,
     right: 0,
     width: '6px',
@@ -51,7 +38,7 @@ const renderTrackHorizontal = ({
   ...props
 }: any) => {
   const trackStyle = {
-    backgroundColor: trackStylesBg || 'rgb(0, 0, 0, .01)',
+    backgroundColor: trackStylesBg || 'rgba(0, 0, 0, .01)',
     bottom: 0,
     left: 0,
     width: '100%',
@@ -105,64 +92,14 @@ const renderView = ({ style, ...props }: any) => {
   );
 };
 
-const Scrollbar = React.forwardRef<any, IScrollbarProps>((props, ref) => {
-  const {
-    children,
-    style,
-    className,
-    trackStylesBg,
-    autoHeightMin,
-    autoHeightMax,
-    hideTracksWhenNotNeeded = true,
-    onScroll,
-    onScrollStart,
-    onScrollStop,
-  } = props;
-  const [show, setShow] = useState(false);
-  const [scroll, setScroll] = useState(false);
+const Scrollbar = React.forwardRef<any, ScrollbarProps>(
+  ({ children, ...props }, forwardRef) => {
+    return (
+      <Scrollbars ref={forwardRef} autoHide {...props}>
+        {children}
+      </Scrollbars>
+    );
+  },
+);
 
-  const unsetScroll = useDebouncedCallback(() => {
-    setScroll(false);
-  }, 500);
-
-  const handleScroll = useCallback(
-    (event) => {
-      if (onScroll) {
-        onScroll(event);
-      }
-      setScroll(true);
-      unsetScroll.callback();
-    },
-    [onScroll, setScroll],
-  );
-
-  return (
-    <Scrollbars
-      ref={ref || null}
-      style={style}
-      className={className}
-      autoHeight
-      autoHeightMin={autoHeightMin}
-      autoHeightMax={autoHeightMax}
-      renderTrackVertical={(args) =>
-        renderTrack({ ...args, trackStylesBg, scroll, show })
-      } // TODO: find typings for all elements!
-      renderTrackHorizontal={(args) =>
-        renderTrackHorizontal({ ...args, trackStylesBg, scroll, show })
-      }
-      renderView={(args) => renderView({ ...args })}
-      renderThumbVertical={renderThumb}
-      renderThumbHorizontal={renderThumb}
-      hideTracksWhenNotNeeded={hideTracksWhenNotNeeded}
-      onScroll={handleScroll}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-      onScrollStart={onScrollStart}
-      onScrollStop={onScrollStop}
-    >
-      {children}
-    </Scrollbars>
-  );
-});
-
-export default memo(Scrollbar);
+export default Scrollbar;
