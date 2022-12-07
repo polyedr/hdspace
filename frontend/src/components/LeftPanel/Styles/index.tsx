@@ -103,39 +103,32 @@ const Styles = () => {
 
   return (
     <>
-      <StyledAccordion id={ELEMENT_IDS.styles}>
-        <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <span>Styles</span>
-        </StyledAccordionSummary>
-        <StyledAccordionDetails className={classes.details}>
-          <ControlSection title={sectionTitleEnum.STYLE_GENERATOR} expanded>
-            <StyleGenerator />
-          </ControlSection>
-          {SECTION_CONTROLS.map((controlName) => {
-            const controlInfo = CONTROLS[controlName];
-            const { Control } = controlInfo;
+      <ControlSection title={sectionTitleEnum.STYLE_GENERATOR} expanded>
+        <StyleGenerator />
+      </ControlSection>
+      {SECTION_CONTROLS.map((controlName) => {
+        const controlInfo = CONTROLS[controlName];
+        const { Control } = controlInfo;
 
-            return (
-              <ControlSection title={controlName} key={controlName} expanded>
-                <Control
-                  {...getControlStyles(controlName, currentEditableStyles)}
-                  canEdit={canEdit}
-                  activeElementId={activeElement.id}
-                  element={activeElement}
-                  updateStyles={(styles) => updateStyles(styles, controlName)}
-                  masterScreenEnabled={masterScreenEnabled}
-                  editableStyles={editableStyles}
-                  updateParams={updateParams}
-                  isDefaultStyles
-                />
-              </ControlSection>
-            );
-          })}
-          <ControlSection title={sectionTitleEnum.COLOR_SCHEME} expanded>
-            <ColorScheme />
+        return (
+          <ControlSection title={controlName} key={controlName} expanded>
+            <Control
+              {...getControlStyles(controlName, currentEditableStyles)}
+              canEdit={canEdit}
+              activeElementId={activeElement.id}
+              element={activeElement}
+              updateStyles={(styles) => updateStyles(styles, controlName)}
+              masterScreenEnabled={masterScreenEnabled}
+              editableStyles={editableStyles}
+              updateParams={updateParams}
+              isDefaultStyles
+            />
           </ControlSection>
-        </StyledAccordionDetails>
-      </StyledAccordion>
+        );
+      })}
+      <ControlSection title={sectionTitleEnum.COLOR_SCHEME} expanded>
+        <ColorScheme />
+      </ControlSection>
     </>
   );
 };

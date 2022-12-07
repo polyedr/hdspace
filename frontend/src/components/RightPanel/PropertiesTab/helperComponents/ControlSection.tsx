@@ -17,16 +17,12 @@ type Props = {
 const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
   const [isCollapse, setIsCollapse] = useState(expanded);
   const dispatch = useDispatch();
-  const animate = (expanded) => {
-    setIsCollapse(expanded);
-  };
+
   const toggle = () => {
     setIsCollapse(!isCollapse);
     dispatch(setImageList(false));
   };
-  useEffect(() => {
-    animate(!expanded);
-  }, [expanded]);
+
   return (
     <PropertyAccordion expanded={isCollapse} onChange={() => toggle()}>
       <PropertyAccordianSummary expandIcon={<ArrowDropDownIcon />}>

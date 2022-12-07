@@ -2,16 +2,22 @@ import ElementsBlock from '@Components/RightPanel/ElementsTab/ElementsBlock';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import { createElementsHierarchy } from '@Utils/elementsHierarchy';
 import React from 'react';
+import Scrollbar from '@Components/UI/Scrollbar';
+import { useSelector } from 'react-redux';
+import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import {
   ElementsIcon,
   ComponentIcon,
   StylesIcon,
-  LayersIcon,
   ScreensIcon,
   LibraryIcon,
 } from './icons';
+import LibraryMenu from './LibraryMenu';
+import Styles from './Styles';
+import VIANavigator from './VIANavigator';
+import FrameworkSection from '@Components/RightPanel/FrameworkSection';
 
 const { elements, templates, generators, library } =
   createElementsHierarchy(LIBRARY_ELEMENTS);
@@ -26,12 +32,21 @@ const RenderElementGrid = ({ elements }: { elements: object }) => {
   );
 };
 
+const Layers = () => {
+  const viaMode = useSelector(selectVIAModeEnabled);
+  return viaMode ? <VIANavigator /> : <Navigator />;
+};
+
 export const mainMenu = [
   {
     id: 'elements-tab',
     label: 'Elements',
     icon: ElementsIcon,
-    component: () => <RenderElementGrid elements={elements} />,
+    component: () => (
+      <Scrollbar>
+        <RenderElementGrid elements={elements} />
+      </Scrollbar>
+    ),
   },
   {
     id: 'screens',
@@ -40,31 +55,42 @@ export const mainMenu = [
     component: Screens,
   },
   {
+    id: 'styles',
+    label: 'Styles',
+    icon: ComponentIcon,
+    component: () => (
+      <Scrollbar>
+        <FrameworkSection />
+        <Styles />
+      </Scrollbar>
+    ),
+  },
+  {
     id: 'layers-tab',
     label: 'Layers',
     icon: StylesIcon,
-    component: Navigator,
-  },
-  {
-    id: 'templates',
-    label: 'Templates',
-    icon: LayersIcon,
-    component: () => (
-      <ElementsBlock title="Templates" elements={templates} expandable />
-    ),
+    component: Layers,
   },
   {
     id: 'generators',
     label: 'Generators',
     icon: ScreensIcon,
     component: () => (
-      <ElementsBlock title="Generators" elements={generators} expandable />
+      <Scrollbar>
+        <ElementsBlock title="Generators" elements={generators} expandable />
+      </Scrollbar>
     ),
   },
   {
     id: 'libraries',
-    label: 'Libraries',
+    label: 'Library',
     icon: LibraryIcon,
-    component: () => <RenderElementGrid elements={library} />,
+    component: () => <LibraryMenu library={library} templates={templates} />,
   },
+  // {
+  //   id: 'libraries',
+  //   label: 'Libraries',
+  //   icon: LibraryIcon,
+  //   component: () => <RenderElementGrid elements={library} />,
+  // },
 ];
