@@ -4,15 +4,15 @@ import ChatTab from '@Components/Sidebar/Chat';
 import InviteTab from '@Components/Sidebar/Invite';
 
 export enum TABS_PMTOOLS {
-  chat = 'Chat',
   board = 'Board',
-  activity = 'Activity',
+  chat = 'Chat',
   members = 'Team',
+  activity = 'Activity',
 }
 
 export const components = {
-  [TABS_PMTOOLS.chat]: ChatTab,
   [TABS_PMTOOLS.board]: TasksTab,
-  [TABS_PMTOOLS.activity]: ActivityTab,
+  [TABS_PMTOOLS.chat]: ChatTab,
   [TABS_PMTOOLS.members]: InviteTab,
+  [TABS_PMTOOLS.activity]: ActivityTab,
 };

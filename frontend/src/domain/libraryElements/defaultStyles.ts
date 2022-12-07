@@ -555,7 +555,7 @@ export const defaultContainerStyles: {
     ...DEFAULT_INDENTS,
     padding: '3px',
   },
-  flexConstrains: {},
+  flexConstraints: {},
   size: {
     ...DEFAULT_SIZE,
     minHeight: '50px',
@@ -611,7 +611,7 @@ export const defaultSectionStyles: {
     ...DEFAULT_INDENTS,
     padding: '3px',
   },
-  flexConstrains: {},
+  flexConstraints: {},
   size: {
     ...DEFAULT_SIZE,
     minHeight: '50px',

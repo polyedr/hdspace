@@ -3,14 +3,13 @@ import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {
-  Accordion as MUIAccordion,
-  AccordionDetails as MUIAccordionDetails,
-  styled,
-} from '@mui/material';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
-import { PropertyAccordianSummary } from '../../styledComponents';
+import {
+  PropertyAccordion,
+  PropertyAccordianSummary,
+  PropertyAccordionDetails,
+} from '../../styledComponents';
 
 type Props = {
   title?: string;
@@ -19,54 +18,6 @@ type Props = {
   };
   expandable?: boolean;
 };
-
-const Accordion = styled(MUIAccordion)({
-  '&.MuiAccordion-root': {
-    boxShadow: 'none',
-    margin: 0,
-    borderBottom: '1px solid #E4E6EB',
-    borderRadius: 0,
-    // paddingBottom: 10,
-
-    '&:before': {
-      display: 'none',
-    },
-  },
-});
-
-const AccordionDetails = styled(MUIAccordionDetails)({
-  '&.MuiAccordionDetails-root': {
-    display: 'flex',
-    flexFlow: 'row wrap',
-    padding: '0',
-    justifyContent: 'space-between',
-
-    '& .MuiButton-text ': {
-      width: '33%',
-      minHeight: '65px',
-      paddingTop: '8px',
-
-      // '& svg': {
-      //   height: 20,
-      // },
-
-      '& span': {
-        fontSize: 11,
-        color: '#81818E',
-        fontWeight: 400,
-      },
-    },
-
-    '& .MuiButton-text:hover': {
-      boxShadow: 'none',
-      backgroundColor: 'transparent',
-
-      '& span': {
-        color: 'black',
-      },
-    },
-  },
-});
 
 export const useStyles = makeStyles({
   title: {
@@ -126,7 +77,7 @@ const ElementsBlock: React.FC<Props> = ({
   const content = renderElementButtons(elements);
 
   return expandable ? (
-    <Accordion defaultExpanded>
+    <PropertyAccordion defaultExpanded>
       <PropertyAccordianSummary
         className={classes.title}
         expandIcon={<ExpandMoreIcon />}
@@ -134,8 +85,8 @@ const ElementsBlock: React.FC<Props> = ({
         {splitWords(title)}
       </PropertyAccordianSummary>
 
-      <AccordionDetails>{content}</AccordionDetails>
-    </Accordion>
+      <PropertyAccordionDetails>{content}</PropertyAccordionDetails>
+    </PropertyAccordion>
   ) : (
     <div className={classes.elementsBlock}>{content}</div>
   );
