@@ -8,10 +8,10 @@ import {
   ElementsIcon,
   ComponentIcon,
   StylesIcon,
-  LayersIcon,
   ScreensIcon,
   LibraryIcon,
 } from './icons';
+import LibraryMenu from './LibraryMenu';
 
 const { elements, templates, generators, library } =
   createElementsHierarchy(LIBRARY_ELEMENTS);
@@ -46,14 +46,6 @@ export const mainMenu = [
     component: Navigator,
   },
   {
-    id: 'templates',
-    label: 'Templates',
-    icon: LayersIcon,
-    component: () => (
-      <ElementsBlock title="Templates" elements={templates} expandable />
-    ),
-  },
-  {
     id: 'generators',
     label: 'Generators',
     icon: ScreensIcon,
@@ -65,6 +57,12 @@ export const mainMenu = [
     id: 'libraries',
     label: 'Libraries',
     icon: LibraryIcon,
-    component: () => <RenderElementGrid elements={library} />,
+    component: () => <LibraryMenu library={library} templates={templates} />,
   },
+  // {
+  //   id: 'libraries',
+  //   label: 'Libraries',
+  //   icon: LibraryIcon,
+  //   component: () => <RenderElementGrid elements={library} />,
+  // },
 ];
