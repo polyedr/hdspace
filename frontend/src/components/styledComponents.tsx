@@ -49,7 +49,7 @@ export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({
 export const PropertyAccordion = styled(MuiAccordion)({
   '&.MuiAccordion-root': {
     boxShadow: 'none',
-    margin: 0,
+    margin: '0 !important',
     borderBottom: '1px solid #E4E6EB',
     borderRadius: 0,
     // paddingBottom: 10,

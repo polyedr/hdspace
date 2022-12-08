@@ -67,3 +67,42 @@ export const RowIcon = () => (
     />
   </svg>
 );
+
+export const ColumnGroupIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="9" height="9" rx="2" fill="#81818E" />
+    <rect y="11" width="9" height="9" rx="2" fill="#81818E" />
+    <rect x="11" width="9" height="9" rx="2" fill="#81818E" />
+  </svg>
+);
+
+export const JustifyIcon = () => (
+  <svg
+    width="20"
+    height="10"
+    viewBox="0 0 20 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="6" height="10" rx="2" fill="#81818E" />
+    <rect x="14" width="6" height="10" rx="2" fill="#81818E" />
+  </svg>
+);
+
+export const RectangleIcon = () => (
+  <svg
+    width="6"
+    height="10"
+    viewBox="0 0 6 10"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width="6" height="10" rx="2" fill="#81818E" />
+  </svg>
+);

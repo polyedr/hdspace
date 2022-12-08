@@ -5,6 +5,7 @@ import React from 'react';
 import Scrollbar from '@Components/UI/Scrollbar';
 import { useSelector } from 'react-redux';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
+import FrameworkSection from '@Components/RightPanel/FrameworkSection';
 import Navigator from './Navigator';
 import Screens from './Screens';
 import {
@@ -17,7 +18,6 @@ import {
 import LibraryMenu from './LibraryMenu';
 import Styles from './Styles';
 import VIANavigator from './VIANavigator';
-import FrameworkSection from '@Components/RightPanel/FrameworkSection';
 
 const { elements, templates, generators, library } =
   createElementsHierarchy(LIBRARY_ELEMENTS);
