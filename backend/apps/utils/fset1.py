@@ -241,7 +241,7 @@ def get_dominant_palette(image, k=27, image_processing_size=None):
     dominant color is found by running k means on the
     pixels & returning the centroid of the largest cluster
 
-    processing time is sped up by working with a smaller image;
+    processing time is speed up by working with a smaller image;
     this resizing can be done with the image_processing_size param
     which takes a tuple of image dims as input
 
@@ -274,7 +274,8 @@ def get_dominant_palette(image, k=27, image_processing_size=None):
         colour = [int(round(c)) for c in colour]
         colour.reverse()
 
-        palette.appendcss(colour)
+        # palette.appendcss(colour)
+        palette.append(colour)
 
     return palette
 
