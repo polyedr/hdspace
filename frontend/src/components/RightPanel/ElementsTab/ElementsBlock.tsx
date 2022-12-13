@@ -3,6 +3,7 @@ import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Grid } from '@mui/material';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
 import {
@@ -59,13 +60,21 @@ export const useStyles = makeStyles({
 
 export const renderElementButtons = (
   elements: Record<string, ElementData | ElementData[]>,
-) =>
-  Object.values(elements).map((element) => {
-    if (Array.isArray(element)) {
-      return <ElementDropdown options={element} key={element[0].key} />;
-    }
-    return <ElementButton elementData={element} key={element.key} />;
-  });
+) => {
+  return (
+    <Grid container>
+      {Object.values(elements).map((element) => (
+        <Grid xs={4} item>
+          {Array.isArray(element) ? (
+            <ElementDropdown options={element} key={element[0].key} />
+          ) : (
+            <ElementButton elementData={element} key={element.key} />
+          )}
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
 
 const ElementsBlock: React.FC<Props> = ({
   title = '',
