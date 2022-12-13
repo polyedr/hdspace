@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     # "lazysignup",
     "drf_yasg",
     "corsheaders",
-    "rest_framework_tracking",
+    # "rest_framework_tracking",
     "simple_history",
     "mptt",
     "anymail",

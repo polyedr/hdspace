@@ -76,7 +76,6 @@ djangorestframework-guardian==0.3.0
 djangorestframework-recursive==0.1.2
 djangorestframework-simplejwt==4.4.0
 djoser==2.1.0
-drf-api-tracking==1.8.0
 drf-django-flexible-subscriptions==1.0.0
 drf-nested-routers==0.91
 drf-stripe-subscription36==1.1.11.4
