@@ -71,6 +71,19 @@ const CONTROLS: Record<Control, ControlInfo> = {
   },
   flexConstraints: {
     Control: FlexConstraints,
+    styles: [
+      'marginTop',
+      'marginBottom',
+      'marginLeft',
+      'marginRight',
+      'paddingTop',
+      'paddingBottom',
+      'paddingLeft',
+      'paddingRight',
+      'flexDirection',
+      'alignItems',
+      'justifyContent',
+    ],
   },
   indents: {
     Control: IndentsBlock,

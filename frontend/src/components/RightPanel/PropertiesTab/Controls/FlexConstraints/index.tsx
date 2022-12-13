@@ -1,9 +1,15 @@
-import React from 'react';
-import IconButton from '@mui/material/IconButton';
+import React, { useCallback, useState } from 'react';
+import { IconButton, TextField } from '@mui/material';
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
-import TextField from '@mui/material/TextField';
+import { Property } from 'csstype';
 // import { FormControl } from '@material-ui/core';
+import {
+  Entity,
+  FlexConstraints as FlexConstraintsType,
+  LibraryElement,
+  PropertiesChangeProps,
+} from '@Src/types';
 import {
   RightArrowIcon,
   DownArrowIcon,
@@ -44,6 +50,12 @@ const useStyles = makeStyles(() => ({
       '& rect': {
         fill: '#E4E6EB',
       },
+    },
+  },
+  iconBoxActive: {
+    backgroundColor: '#999 !important',
+    '& path': {
+      fill: '#fff',
     },
   },
   inputGroup: {
@@ -322,16 +334,122 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const FlexConstraints: React.FC = () => {
+enum MarginType {
+  TOP = 'marginTop',
+  LEFT = 'marginLeft',
+  RIGHT = 'marginRight',
+  BOTTOM = 'marginBottom',
+}
+
+enum PaddingType {
+  TOP = 'paddingTop',
+  LEFT = 'paddingLeft',
+  RIGHT = 'paddingRight',
+  BOTTOM = 'paddingBottom',
+}
+
+enum FlexDirection {
+  COLUMN = 'flex-column',
+  ROW = 'flex-row',
+}
+
+const gridValues: Property.JustifyContent[] = [
+  'flex-start',
+  'center',
+  'flex-end',
+];
+
+type Props = PropertiesChangeProps<LibraryElement<Entity>> &
+  FlexConstraintsType;
+
+const FlexConstraints: React.FC<Props> = ({
+  updateStyles,
+  marginTop,
+  marginBottom,
+  marginLeft,
+  marginRight,
+  paddingLeft,
+  paddingRight,
+  paddingTop,
+  paddingBottom,
+  flexDirection,
+  justifyContent,
+  alignItems,
+  flexWrap,
+  removeStyles,
+}) => {
+  const [state, setState] = useState<FlexConstraintsType>({
+    marginTop,
+    marginBottom,
+    marginLeft,
+    marginRight,
+    paddingLeft,
+    paddingRight,
+    paddingTop,
+    paddingBottom,
+    flexDirection,
+    justifyContent,
+    alignItems,
+    flexWrap,
+  });
+
   const classes = useStyles();
+
+  const handleUpdateMarginPadding = useCallback(
+    (position: MarginType | PaddingType) => {
+      return (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value) {
+          updateStyles({ [position]: `${e.target.value}px` });
+          setState((state) => ({ ...state, [position]: e.target.value ?? 0 }));
+        } else {
+          setState((state) => ({ ...state, [position]: 0 }));
+          removeStyles([position]);
+        }
+      };
+    },
+    [updateStyles, setState],
+  );
+
+  const handleUpdateFlexDirection = useCallback(
+    (flexDirection) => {
+      return () => {
+        updateStyles({ flexDirection });
+        setState((state) => ({ ...state, flexDirection }));
+      };
+    },
+    [updateStyles],
+  );
+
+  const handleChangeFlexPosition = useCallback(
+    (justifyContent, alignItems) => {
+      return () => {
+        updateStyles({ justifyContent, alignItems });
+        setState((state) => ({ ...state, justifyContent, alignItems }));
+      };
+    },
+    [updateStyles, setState],
+  );
+
   return (
     <div className={classes.flexParent}>
       <div className={classes.topParent}>
         <div className={classes.buttonGroup}>
-          <IconButton className={classes.iconBox}>
+          <IconButton
+            className={cn(classes.iconBox, {
+              [classes.iconBoxActive]:
+                (state.flexDirection as string) === FlexDirection.ROW,
+            })}
+            onClick={handleUpdateFlexDirection(FlexDirection.ROW)}
+          >
             <RightArrowIcon />
           </IconButton>
-          <IconButton className={classes.iconBox}>
+          <IconButton
+            className={cn(classes.iconBox, {
+              [classes.iconBoxActive]:
+                (state.flexDirection as string) === FlexDirection.COLUMN,
+            })}
+            onClick={handleUpdateFlexDirection(FlexDirection.COLUMN)}
+          >
             <DownArrowIcon />
           </IconButton>
         </div>
@@ -348,40 +466,73 @@ const FlexConstraints: React.FC = () => {
       </div>
       <div className={classes.spacingBox}>
         <div className={classes.outerTopInput}>
-          <TextField label="" placeholder="0" />
+          <TextField
+            onChange={handleUpdateMarginPadding(MarginType.TOP)}
+            value={parseInt(state.marginTop as string)}
+          />
         </div>
         <div className={classes.outerRightInput}>
-          <TextField label="" placeholder="0" />
+          <TextField
+            onChange={handleUpdateMarginPadding(MarginType.RIGHT)}
+            value={parseInt(state.marginRight as string)}
+          />
         </div>
         <div className={classes.outerBottomInput}>
-          <TextField label="" placeholder="0" />
+          <TextField
+            onChange={handleUpdateMarginPadding(MarginType.BOTTOM)}
+            value={parseInt(state.marginBottom as string)}
+          />
         </div>
         <div className={classes.outerLeftInput}>
-          <TextField label="" placeholder="0" />
+          <TextField
+            onChange={handleUpdateMarginPadding(MarginType.LEFT)}
+            value={parseInt(state.marginLeft as string)}
+          />
         </div>
         <div className={classes.innerSpacingBox}>
           <div className={classes.innerTopInput}>
-            <TextField label="" placeholder="0" />
+            <TextField
+              onChange={handleUpdateMarginPadding(PaddingType.TOP)}
+              value={parseInt(state.paddingTop as string)}
+            />
           </div>
           <div className={classes.innerRightInput}>
-            <TextField label="" placeholder="0" />
+            <TextField
+              onChange={handleUpdateMarginPadding(PaddingType.RIGHT)}
+              value={parseInt(state.paddingRight as string)}
+            />
           </div>
           <div className={classes.innerBottomInput}>
-            <TextField label="" placeholder="0" />
+            <TextField
+              onChange={handleUpdateMarginPadding(PaddingType.BOTTOM)}
+              value={parseInt(state.paddingBottom as string)}
+            />
           </div>
           <div className={classes.innerLeftInput}>
-            <TextField label="" placeholder="0" />
+            <TextField
+              onChange={handleUpdateMarginPadding(PaddingType.LEFT)}
+              value={parseInt(state.paddingLeft as string)}
+            />
           </div>
           <div className={classes.innerButtonBox}>
-            <IconButton aria-label="delete" size="small" />
-            <IconButton aria-label="delete" size="small" />
-            <IconButton aria-label="delete" size="small" />
-            <IconButton aria-label="delete" size="small" />
-            <IconButton aria-label="delete" size="small" />
-            <IconButton aria-label="delete" size="small" />
-            <IconButton aria-label="delete" size="small" />
-            <IconButton aria-label="delete" size="small" />
-            <IconButton aria-label="delete" size="small" />
+            {gridValues.map((justify) =>
+              gridValues.map((align) => (
+                <IconButton
+                  title={`${justify} ${align}`}
+                  onClick={handleChangeFlexPosition(justify, align)}
+                  key={`${align}-${justify}`}
+                  aria-label="delete"
+                  size="small"
+                  style={{
+                    backgroundColor:
+                      state.justifyContent === justify &&
+                      state.alignItems === align
+                        ? 'red'
+                        : 'transparent',
+                  }}
+                />
+              )),
+            )}
           </div>
         </div>
       </div>

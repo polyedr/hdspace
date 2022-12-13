@@ -649,6 +649,12 @@ export const defaultDivBlockStyles: {
     ...DEFAULT_INDENTS,
     padding: '3px',
   },
+  flexConstraints: {
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    marginRight: 0,
+  },
   size: {
     ...DEFAULT_SIZE,
   },

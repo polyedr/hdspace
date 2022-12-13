@@ -1005,6 +1005,13 @@ export type Indents = {
   paddingRight?: string | number;
 };
 
+export type FlexConstraints = Indents & {
+  flexDirection: React.CSSProperties['flexDirection'];
+  alignItems: React.CSSProperties['alignItems'];
+  justifyContent: React.CSSProperties['justifyContent'];
+  flexWrap: React.CSSProperties['flexWrap'];
+};
+
 export type Project = ProjectBase & {
   projectscreen: number[];
   projectTrelloJSON: IBoardForUI | null;
