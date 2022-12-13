@@ -1,8 +1,3 @@
-import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
-} from '@Components/styledComponents';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useCallback } from 'react';
 import ELEMENT_IDS from '@Constants/elementIds';

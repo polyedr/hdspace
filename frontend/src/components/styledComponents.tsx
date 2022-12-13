@@ -61,37 +61,32 @@ export const PropertyAccordion = styled(MuiAccordion)({
 });
 
 export const PropertyAccordionDetails = styled(AccordionDetails)({
-  '&.MuiAccordionDetails-root': {
-    display: 'flex',
-    flexFlow: 'row wrap',
-    padding: '0',
-    justifyContent: 'space-between',
-
-    '& .MuiButton-text ': {
-      width: '33%',
-      minHeight: '65px',
-      paddingTop: '8px',
-
-      // '& svg': {
-      //   height: 20,
-      // },
-
-      '& span': {
-        fontSize: 11,
-        color: '#81818E',
-        fontWeight: 400,
-      },
-    },
-
-    '& .MuiButton-text:hover': {
-      boxShadow: 'none',
-      backgroundColor: 'transparent',
-
-      '& span': {
-        color: 'black',
-      },
-    },
-  },
+  // '&.MuiAccordionDetails-root': {
+  //   display: 'flex',
+  //   flexFlow: 'row wrap',
+  //   padding: '0',
+  //   justifyContent: 'space-between',
+  //   '& .MuiButton-text ': {
+  //     width: '33%',
+  //     minHeight: '65px',
+  //     paddingTop: '8px',
+  //     '& svg': {
+  //       height: 20,
+  //     },
+  //     '& span': {
+  //       fontSize: 11,
+  //       color: '#81818E',
+  //       fontWeight: 400,
+  //     },
+  //   },
+  //   '& .MuiButton-text:hover': {
+  //     boxShadow: 'none',
+  //     backgroundColor: 'transparent',
+  //     '& span': {
+  //       color: 'black',
+  //     },
+  //   },
+  // },
 });
 
 const MuiSlider = styled(Slider)`
@@ -163,32 +158,32 @@ const CustomTextField = styled(TextField)`
   & .MuiInput-underline:after {
     border-bottom-color: rgba(80, 100, 255, 0.1);
   }
+
+  & .MuiInput-underline:before {
+    border-color: #e4e6eb !important;
+  }
+
   & .MuiInput-root {
     color: #2a2a2d;
     & .Mui-focused fieldset {
       border-color: rgba(80, 100, 255, 0.1);
     }
     & .MuiSvgIcon-root {
-      color: #2a2a2d;
+      color: #81818e;
     }
   }
 `;
 
 const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
   .MuiToggleButtonGroup-grouped {
-    margin: 0 6px;
+    margin: 0 6px 0 0;
+    border-radius: 4px !important;
     border: 0;
     &.mui-disabled {
       border: 0;
     }
-    &:not(:last-of-type) {
-      border-radius: 4px !important;
-    }
-    &:last-of-type {
-      border-radius: 4px !important;
-    }
     &:hover {
-      background-color: rgba(80, 100, 255, 0.05);
+      background-color: rgba(80, 100, 255, 0.04);
       color: rgba(80, 100, 255, 0.7);
     }
   }
@@ -196,7 +191,7 @@ const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
 
 const CustomToggleButton = styled(ToggleButton)`
   &.Mui-selected {
-    background-color: rgba(80, 100, 255, 0.1) !important;
+    background-color: rgba(80, 100, 255, 0.3) !important;
     color: rgba(80, 100, 255) !important;
     &:hover {
       background-color: rgba(80, 100, 255, 0.3) !important;
@@ -269,6 +264,7 @@ export const StyledTextField: React.FC<TextFieldProps> = (props) => {
 
   return (
     <CustomTextField
+      fullWidth
       {...(!select
         ? {
             inputRef,

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { splitWords } from '@Utils/stringHelper';
+import { AccordionDetails } from '@mui/material';
 import {
   PropertyAccordianSummary,
   PropertyAccordion,
-  PropertyAccordionDetails,
 } from '@Components/styledComponents';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { setImageList } from '@Redux/project/actions';
@@ -29,9 +29,7 @@ const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
         {splitWords(title)}
       </PropertyAccordianSummary>
 
-      <PropertyAccordionDetails>
-        <div style={{ flex: 1 }}>{children}</div>
-      </PropertyAccordionDetails>
+      <AccordionDetails>{children}</AccordionDetails>
     </PropertyAccordion>
   );
 };

@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
   },
   selectWrapper: {
-    padding: '0 1em',
+    // padding: '0 1em',
   },
   name: {
     textTransrorm: 'capitalize',
