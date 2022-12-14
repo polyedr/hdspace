@@ -47,6 +47,7 @@ import TopBar from './TopBar';
 import History from './History';
 import Logo from '../UI/Logo';
 import Avatar from './Avatar';
+import { ShowGridIcon, ShowBlockIcon } from './icons';
 
 const Appbar = styled(MUIAppbar)({
   '&.MuiAppBar-root': {
@@ -190,7 +191,13 @@ const TopPanel = () => {
           )}
 
           <Box className={classes.toolbar}>
-            {projectName && (
+            <Box>
+              <ShowBlockIcon />
+            </Box>
+            <Box>
+              <ShowGridIcon />
+            </Box>
+            {/* {projectName && (
               <ToggleButton
                 value="DropDown"
                 selected={isDropdownOpen}
@@ -199,7 +206,7 @@ const TopPanel = () => {
               >
                 <SettingsOutlinedIcon className={classes.icon} />
               </ToggleButton>
-            )}
+            )} */}
             <Menu
               id="basic-menu"
               anchorEl={anchorEl}
