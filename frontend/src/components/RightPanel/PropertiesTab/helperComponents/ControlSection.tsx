@@ -5,7 +5,8 @@ import {
   PropertyAccordianSummary,
   PropertyAccordion,
 } from '@Components/styledComponents';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+// import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { setImageList } from '@Redux/project/actions';
 import { useDispatch } from 'react-redux';
 
@@ -25,7 +26,7 @@ const ControlSection: React.FC<Props> = ({ title, children, expanded }) => {
 
   return (
     <PropertyAccordion expanded={isCollapse} onChange={() => toggle()}>
-      <PropertyAccordianSummary expandIcon={<ArrowDropDownIcon />}>
+      <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
         {splitWords(title)}
       </PropertyAccordianSummary>
 

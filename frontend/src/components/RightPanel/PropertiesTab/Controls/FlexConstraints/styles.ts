@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/styles';
 
 export const constraintsStyles = makeStyles(() => ({
   flexParent: {
-    padding: '8px 12px',
+    // padding: '8px 12px',
   },
   topParent: {
     display: 'flex',

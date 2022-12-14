@@ -70,6 +70,7 @@ const useStyles = makeStyles({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    borderLeft: '1px solid #E4E6EB',
   },
   header: {
     display: 'flex',

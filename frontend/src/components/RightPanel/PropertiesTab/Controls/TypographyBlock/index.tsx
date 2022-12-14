@@ -34,7 +34,7 @@ const MAX_LINE_HEIGHT = 1000;
 
 const useStyles = makeStyles({
   rootContainer: {
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   lineHeightAndLetterSpacing: {
     display: 'flex',
@@ -60,14 +60,14 @@ const useStyles = makeStyles({
   align: {
     display: 'flex',
     flexDirection: 'row',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   styleText: {
     fontSize: '14px',
     // color: 'rgba(129, 129, 142, 1)',
     // paddingBottom: '2px',
-    marginRight: 30,
+    // marginRight: 30,
   },
 });
 

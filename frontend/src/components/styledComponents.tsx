@@ -27,6 +27,7 @@ export const PropertyAccordianSummary = MuiStyled(AccordionSummary)({
   '&.MuiAccordionSummary-root': {
     minHeight: 32,
     backgroundColor: '#F3F4F6',
+    padding: '0 5px',
   },
 
   '& .MuiAccordionSummary-content': {
@@ -57,6 +58,10 @@ export const PropertyAccordion = styled(MuiAccordion)({
     '&:before': {
       display: 'none',
     },
+  },
+
+  '& .MuiAccordionDetails-root': {
+    padding: '8px 10px 16px',
   },
 });
 
@@ -179,6 +184,8 @@ const CustomToggleButtonGroup = styled(ToggleButtonGroup)`
     margin: 0 6px 0 0;
     border-radius: 4px !important;
     border: 0;
+    height: 34px;
+    width: 34px;
     &.mui-disabled {
       border: 0;
     }
