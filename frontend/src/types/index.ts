@@ -1684,7 +1684,8 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
 export const CONTROLS_AFFECT_ON_STYLES = [
   'grid',
   'columns',
-  'flexConstraints',
+  'constraints',
+  'constraintsChild',
   'nativeColumns',
   'display',
   'position',

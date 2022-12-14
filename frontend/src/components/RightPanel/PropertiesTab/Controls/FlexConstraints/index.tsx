@@ -1,15 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo, useEffect } from 'react';
 import { IconButton, TextField } from '@mui/material';
 import cn from 'classnames';
-import { makeStyles } from '@material-ui/core/styles';
 import { Property } from 'csstype';
 // import { FormControl } from '@material-ui/core';
-import {
-  Entity,
-  FlexConstraints as FlexConstraintsType,
-  LibraryElement,
-  PropertiesChangeProps,
-} from '@Src/types';
+import { FlexConstraints as FlexConstraintsType } from '@Src/types';
 import {
   RightArrowIcon,
   DownArrowIcon,
@@ -19,348 +13,22 @@ import {
   JustifyIcon,
   RectangleIcon,
 } from './icons';
+import {
+  FlexDirection,
+  FlexSpacing,
+  FlexWrap,
+  MarginType,
+  PaddingType,
+  Props,
+} from './types';
 
-const useStyles = makeStyles(() => ({
-  flexParent: {
-    padding: '8px 12px',
-  },
-  topParent: {
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  buttonGroup: {
-    display: 'flex',
-    gap: 4,
-  },
-  iconBox: {
-    width: 28,
-    height: 28,
-    padding: '0 !important',
-    backgroundColor: '#E4E6EB !important',
-    borderRadius: '4px !important',
-    transition: 'background-color 0.2s ease-in-out',
-
-    '&:hover': {
-      backgroundColor: '#2A2A2D !important',
-
-      '& path': {
-        fill: '#E4E6EB',
-      },
-
-      '& rect': {
-        fill: '#E4E6EB',
-      },
-    },
-  },
-  iconBoxActive: {
-    backgroundColor: '#999 !important',
-    '& path': {
-      fill: '#fff',
-    },
-  },
-  inputGroup: {
-    display: 'flex',
-    gap: 4,
-  },
-  inputWithIcon: {
-    height: 28,
-    backgroundColor: '#E4E6EB',
-    borderRadius: 4,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0 5px 0 7px',
-    width: '60px',
-
-    '& input': {
-      padding: '0 0 0 8px',
-      border: 'none',
-      width: 30,
-      height: 28,
-    },
-
-    '& fieldset': {
-      border: 'none',
-    },
-
-    '& label': {
-      display: 'none',
-    },
-  },
-  spacingBox: {
-    border: '1px solid #E4E6EB',
-    height: 250,
-    marginTop: 4,
-
-    '& fieldset': {
-      border: 'none',
-    },
-
-    '& input': {
-      border: 'none',
-      width: '100%',
-      height: 35,
-      padding: '0 5px',
-      backgroundColor: '#F3F4F6',
-      textAlign: 'center',
-    },
-
-    '& label': {
-      display: 'none',
-    },
-  },
-  outerTopInput: {
-    width: 'calc(100% - 70px)',
-    margin: 'auto',
-    position: 'relative',
-
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: '-35px',
-      borderRight: '35px solid #F3F4F6',
-      borderBottom: '35px solid transparent',
-    },
-
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      right: '-35px',
-      borderLeft: '35px solid #F3F4F6',
-      borderBottom: '35px solid transparent',
-    },
-
-    '& .MuiTextField-root': {
-      display: 'flex',
-    },
-  },
-
-  outerRightInput: {
-    left: 'calc(100% - 35px)',
-    width: 'fit-content',
-    bottom: '0',
-    position: 'relative',
-
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: '-35px',
-      right: 0,
-      borderLeft: '35px solid transparent',
-      borderBottom: '35px solid #F3F4F6',
-    },
-
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      bottom: '-33px',
-      left: '0',
-      borderRight: '35px solid #F3F4F6',
-      borderBottom: '33px solid transparent',
-    },
-
-    '& input': {
-      height: 'calc(250px - 70px)',
-      width: '35px',
-      padding: '6px',
-      boxSizing: 'border-box',
-    },
-  },
-
-  outerBottomInput: {
-    width: 'calc(100% - 70px)',
-    bottom: '2px',
-    margin: 'auto',
-    position: 'relative',
-
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      bottom: 0,
-      left: '-35px',
-      borderLeft: '35px solid transparent',
-      borderBottom: '35px solid #F3F4F6',
-    },
-
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      bottom: 0,
-      right: '-35px',
-      borderLeft: '35px solid #F3F4F6',
-      borderTop: '33px solid transparent',
-    },
-
-    '& .MuiTextField-root': {
-      display: 'flex',
-    },
-  },
-
-  outerLeftInput: {
-    width: 'fit-content',
-    bottom: '215px',
-    position: 'relative',
-
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: '-35px',
-      left: 0,
-      borderRight: '35px solid transparent',
-      borderBottom: '35px solid #F3F4F6',
-    },
-
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      bottom: '-33px',
-      left: '0',
-      borderRight: '35px solid transparent',
-      borderTop: '33px solid #F3F4F6',
-    },
-
-    '& input': {
-      height: 'calc(250px - 70px)',
-      width: '35px',
-      boxSizing: 'border-box',
-    },
-  },
-  innerSpacingBox: {
-    backgroundColor: '#ffffff',
-    border: '1px solid #E4E6EB',
-    height: 'calc(250px - 70px)',
-    width: 'calc(100% - 70px)',
-    margin: 'auto',
-    position: 'relative',
-    bottom: '395px',
-
-    '& input': {
-      backgroundColor: 'transparent',
-    },
-  },
-  innerTopInput: {
-    width: 'calc(100% - 70px)',
-    margin: 'auto',
-
-    '& .MuiTextField-root': {
-      display: 'flex',
-    },
-  },
-  innerRightInput: {
-    left: 'calc(100% - 35px)',
-    width: 'fit-content',
-    bottom: '0',
-    position: 'relative',
-
-    '& input': {
-      height: 'calc(250px - 140px)',
-      width: '35px',
-      padding: '6px',
-      boxSizing: 'border-box',
-    },
-  },
-  innerBottomInput: {
-    width: 'calc(100% - 70px)',
-    bottom: '2px',
-    margin: 'auto',
-    position: 'relative',
-
-    '& .MuiTextField-root': {
-      display: 'flex',
-    },
-  },
-  innerLeftInput: {
-    width: 'fit-content',
-    bottom: '146px',
-    position: 'relative',
-
-    '& input': {
-      height: 'calc(250px - 140px)',
-      width: '35px',
-      boxSizing: 'border-box',
-    },
-  },
-  innerButtonBox: {
-    width: 'calc(100% - 70px)',
-    border: '1px solid #E4E6EB',
-    bottom: '256px',
-    position: 'relative',
-    margin: 'auto',
-    height: 'calc(250px - 140px)',
-    padding: 10,
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'spacep-between',
-    alignItems: 'center',
-
-    '& button': {
-      height: '30px',
-      width: '33%',
-      textAlign: 'center',
-      padding: 0,
-
-      '& span': {
-        height: 4,
-        width: 4,
-        borderRadius: '50%',
-        backgroundColor: '#B0B0BD',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-      },
-
-      '&:hover': {
-        backgroundColor: 'transparent',
-
-        '& span': {
-          backgroundColor: 'black',
-        },
-      },
-    },
-  },
-  bottomParent: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginTop: 4,
-  },
-  bottomIconBox: {
-    justifyContent: 'space-around !important',
-  },
-  justifyContentIcon: {
-    justifyContent: 'space-between !important',
-    padding: '0 2px !important',
-  },
-}));
-
-enum MarginType {
-  TOP = 'marginTop',
-  LEFT = 'marginLeft',
-  RIGHT = 'marginRight',
-  BOTTOM = 'marginBottom',
-}
-
-enum PaddingType {
-  TOP = 'paddingTop',
-  LEFT = 'paddingLeft',
-  RIGHT = 'paddingRight',
-  BOTTOM = 'paddingBottom',
-}
-
-enum FlexDirection {
-  COLUMN = 'flex-column',
-  ROW = 'flex-row',
-}
+import { constraintsStyles as useStyles } from './styles';
 
 const gridValues: Property.JustifyContent[] = [
   'flex-start',
   'center',
   'flex-end',
 ];
-
-type Props = PropertiesChangeProps<LibraryElement<Entity>> &
-  FlexConstraintsType;
 
 const FlexConstraints: React.FC<Props> = ({
   updateStyles,
@@ -393,6 +61,11 @@ const FlexConstraints: React.FC<Props> = ({
     flexWrap,
   });
 
+  const [activeElePos, setActiveElePos] = useState<{
+    left: number;
+    top: number;
+  } | null>(null);
+
   const classes = useStyles();
 
   const handleUpdateMarginPadding = useCallback(
@@ -411,7 +84,7 @@ const FlexConstraints: React.FC<Props> = ({
   );
 
   const handleUpdateFlexDirection = useCallback(
-    (flexDirection) => {
+    (flexDirection: React.CSSProperties['flexDirection']) => {
       return () => {
         updateStyles({ flexDirection });
         setState((state) => ({ ...state, flexDirection }));
@@ -422,13 +95,83 @@ const FlexConstraints: React.FC<Props> = ({
 
   const handleChangeFlexPosition = useCallback(
     (justifyContent, alignItems) => {
-      return () => {
-        updateStyles({ justifyContent, alignItems });
+      return (e: React.MouseEvent<HTMLButtonElement>) => {
+        const top = (e.target as HTMLElement).offsetTop ?? 0;
+        const left = (e.target as HTMLElement).offsetLeft ?? 0;
+
+        setActiveElePos({ left, top });
+
+        if (state.flexDirection === FlexDirection.ROW) {
+          updateStyles({
+            alignItems: justifyContent,
+            justifyContent: alignItems,
+          });
+        } else {
+          updateStyles({ justifyContent, alignItems });
+        }
         setState((state) => ({ ...state, justifyContent, alignItems }));
+      };
+    },
+    [updateStyles, setState, state.flexDirection],
+  );
+
+  const handleUpdateSpacing = useCallback(
+    (value: FlexSpacing) => {
+      return () => {
+        updateStyles({ justifyContent: value });
+        setState((state) => ({ ...state, justifyContent: value }));
+      };
+    },
+    [updateStyles, setState, state.flexDirection],
+  );
+
+  const handleUpdateFlexWrap = useCallback(
+    (wrap: React.CSSProperties['flexWrap']) => {
+      return () => {
+        updateStyles({ flexWrap: wrap });
+        setState((state) => ({ ...state, flexWrap: wrap }));
       };
     },
     [updateStyles, setState],
   );
+
+  const activeElementStyle = useMemo(() => {
+    if (!activeElePos) {
+      return {};
+    }
+
+    const defaultStyle = {
+      position: 'absolute',
+      backgroundColor: 'rgba(0,0,0,.5)',
+    };
+
+    if (flexDirection === FlexDirection.COLUMN) {
+      return {
+        ...defaultStyle,
+        width: 20,
+        top: 10,
+        bottom: 10,
+        left: activeElePos.left,
+        marginLeft: 5,
+      };
+    }
+
+    return {
+      ...defaultStyle,
+      height: 20,
+      left: 10,
+      right: 10,
+      top: activeElePos.top,
+      marginTop: 6,
+    };
+  }, [activeElePos, flexDirection]);
+
+  useEffect(() => {
+    const elem = document.querySelector(
+      '.active-flex-grid-item',
+    ) as HTMLElement;
+    setActiveElePos({ left: elem.offsetLeft, top: elem.offsetTop });
+  }, []);
 
   return (
     <div className={classes.flexParent}>
@@ -521,27 +264,41 @@ const FlexConstraints: React.FC<Props> = ({
                   title={`${justify} ${align}`}
                   onClick={handleChangeFlexPosition(justify, align)}
                   key={`${align}-${justify}`}
-                  aria-label="delete"
+                  aria-label={`flex position ${align} ${justify}`}
                   size="small"
-                  style={{
-                    backgroundColor:
+                  className={cn({
+                    [`${classes.activeGridItem} active-flex-grid-item`]:
                       state.justifyContent === justify &&
-                      state.alignItems === align
-                        ? 'red'
-                        : 'transparent',
-                  }}
+                      state.alignItems === align,
+                  })}
+                  style={{ position: 'relative', zIndex: 1 }}
                 />
               )),
             )}
+            {activeElePos && <div style={activeElementStyle} />}
           </div>
         </div>
       </div>
       <div className={classes.bottomParent}>
         <div className={classes.buttonGroup}>
-          <IconButton className={classes.iconBox}>
+          <IconButton
+            onClick={handleUpdateFlexWrap(FlexWrap.WRAP)}
+            title="Wrap"
+            className={cn(classes.iconBox, {
+              [classes.iconBoxActive]:
+                (state.flexWrap as string) === FlexWrap.WRAP,
+            })}
+          >
             <ColumnGroupIcon />
           </IconButton>
-          <IconButton className={cn(classes.iconBox, classes.bottomIconBox)}>
+          <IconButton
+            onClick={handleUpdateFlexWrap(FlexWrap.NOWRAP)}
+            title="No Wrap"
+            className={cn(classes.iconBox, classes.bottomIconBox, {
+              [classes.iconBoxActive]:
+                (state.flexWrap as string) === FlexWrap.NOWRAP,
+            })}
+          >
             <RectangleIcon />
             <RectangleIcon />
             <RectangleIcon />
@@ -549,12 +306,24 @@ const FlexConstraints: React.FC<Props> = ({
         </div>
         <div className={classes.inputGroup}>
           <IconButton
-            className={cn(classes.iconBox, classes.justifyContentIcon)}
+            title="Space Between"
+            onClick={handleUpdateSpacing(FlexSpacing.BETWEEEN)}
+            className={cn(classes.iconBox, classes.justifyContentIcon, {
+              [classes.iconBoxActive]:
+                (state.justifyContent as string) === FlexSpacing.BETWEEEN,
+            })}
           >
             <RectangleIcon />
             <RectangleIcon />
           </IconButton>
-          <IconButton className={classes.iconBox}>
+          <IconButton
+            onClick={handleUpdateSpacing(FlexSpacing.AROUND)}
+            title="Space Around"
+            className={cn(classes.iconBox, {
+              [classes.iconBoxActive]:
+                (state.justifyContent as string) === FlexSpacing.AROUND,
+            })}
+          >
             <JustifyIcon />
           </IconButton>
         </div>

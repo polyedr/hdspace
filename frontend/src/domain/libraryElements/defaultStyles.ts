@@ -555,7 +555,8 @@ export const defaultContainerStyles: {
     ...DEFAULT_INDENTS,
     padding: '3px',
   },
-  flexConstraints: {},
+  constraints: {},
+  constraintsChild: {},
   size: {
     ...DEFAULT_SIZE,
     minHeight: '50px',
@@ -611,7 +612,8 @@ export const defaultSectionStyles: {
     ...DEFAULT_INDENTS,
     padding: '3px',
   },
-  flexConstraints: {},
+  constraints: {},
+  constraintsChild: {},
   size: {
     ...DEFAULT_SIZE,
     minHeight: '50px',
@@ -649,12 +651,16 @@ export const defaultDivBlockStyles: {
     ...DEFAULT_INDENTS,
     padding: '3px',
   },
-  flexConstraints: {
+  constraints: {
     marginTop: 0,
     marginBottom: 0,
     marginLeft: 0,
     marginRight: 0,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexWrap: 'nowrap',
   },
+  constraintsChild: {},
   size: {
     ...DEFAULT_SIZE,
   },

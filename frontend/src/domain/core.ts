@@ -59,7 +59,8 @@ export const containerStyleControls = [
   'indents',
   'size',
   'display',
-  'flexConstraints',
+  'constraints',
+  'constraintsChild',
   'typography',
   'background',
   'position',
@@ -71,7 +72,8 @@ export const containerStyleControls = [
 
 export const divBlockStyleControls = [
   'indents',
-  'flexConstraints',
+  'constraints',
+  'constraintsChild',
   'size',
   'typography',
   'background',

@@ -11,9 +11,6 @@ import {
   PropertyAccordianSummary,
   PropertyAccordion,
   PropertyAccordionDetails,
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
