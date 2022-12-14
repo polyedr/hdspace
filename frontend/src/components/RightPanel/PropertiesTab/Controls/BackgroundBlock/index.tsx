@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   formControl: {
     width: '100%',
-    marginBottom: theme.spacing(2),
+    // marginBottom: theme.spacing(2),
   },
   imageWrapper: {
     height: 100,
