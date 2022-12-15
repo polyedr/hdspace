@@ -64,6 +64,8 @@ const FlexConstraints: React.FC<Props> = ({
   const [activeElePos, setActiveElePos] = useState<{
     left: number;
     top: number;
+    width: number;
+    height: number;
   } | null>(null);
 
   const classes = useStyles();
@@ -95,12 +97,7 @@ const FlexConstraints: React.FC<Props> = ({
 
   const handleChangeFlexPosition = useCallback(
     (justifyContent, alignItems) => {
-      return (e: React.MouseEvent<HTMLButtonElement>) => {
-        const top = (e.target as HTMLElement).offsetTop ?? 0;
-        const left = (e.target as HTMLElement).offsetLeft ?? 0;
-
-        setActiveElePos({ left, top });
-
+      return () => {
         if (state.flexDirection === FlexDirection.ROW) {
           updateStyles({
             alignItems: justifyContent,
@@ -119,7 +116,10 @@ const FlexConstraints: React.FC<Props> = ({
     (value: FlexSpacing) => {
       return () => {
         updateStyles({ justifyContent: value });
-        setState((state) => ({ ...state, justifyContent: value }));
+        setState((state) => ({
+          ...state,
+          justifyContent: value,
+        }));
       };
     },
     [updateStyles, setState, state.flexDirection],
@@ -135,6 +135,34 @@ const FlexConstraints: React.FC<Props> = ({
     [updateStyles, setState],
   );
 
+  const handleUpdateHorizontalSpacing = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = parseInt(e.target.value) ?? 0;
+
+      updateStyles({
+        '& > *': {
+          marginLeft: `${val}px`,
+          marginRight: `${val}px`,
+        },
+      });
+    },
+    [],
+  );
+
+  const handleUpdateVerticalSpacing = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const val = parseInt(e.target.value) ?? 0;
+
+      updateStyles({
+        '& > *': {
+          marginTop: `${val}px`,
+          marginButtom: `${val}px`,
+        },
+      });
+    },
+    [],
+  );
+
   const activeElementStyle = useMemo(() => {
     if (!activeElePos) {
       return {};
@@ -148,21 +176,19 @@ const FlexConstraints: React.FC<Props> = ({
     if (flexDirection === FlexDirection.COLUMN) {
       return {
         ...defaultStyle,
-        width: 20,
+        width: activeElePos.width - 4,
         top: 10,
         bottom: 10,
-        left: activeElePos.left,
-        marginLeft: 5,
+        left: activeElePos.left + 2,
       };
     }
 
     return {
       ...defaultStyle,
-      height: 20,
+      height: activeElePos.height - 4,
       left: 10,
       right: 10,
-      top: activeElePos.top,
-      marginTop: 6,
+      top: activeElePos.top + 2,
     };
   }, [activeElePos, flexDirection]);
 
@@ -170,8 +196,17 @@ const FlexConstraints: React.FC<Props> = ({
     const elem = document.querySelector(
       '.active-flex-grid-item',
     ) as HTMLElement;
-    setActiveElePos({ left: elem.offsetLeft, top: elem.offsetTop });
-  }, []);
+    if (elem) {
+      setActiveElePos({
+        left: elem.offsetLeft,
+        top: elem.offsetTop,
+        width: elem.clientWidth,
+        height: elem.clientHeight,
+      });
+    } else {
+      setActiveElePos(null);
+    }
+  }, [state.justifyContent, state.alignItems]);
 
   return (
     <div className={classes.flexParent}>
@@ -199,11 +234,11 @@ const FlexConstraints: React.FC<Props> = ({
         <div className={classes.inputGroup}>
           <div className={classes.inputWithIcon}>
             <RowIcon />
-            <TextField label="" />
+            <TextField onChange={handleUpdateHorizontalSpacing} />
           </div>
           <div className={classes.inputWithIcon}>
             <ColumnIcon />
-            <TextField label="" />
+            <TextField onChange={handleUpdateVerticalSpacing} />
           </div>
         </div>
       </div>
