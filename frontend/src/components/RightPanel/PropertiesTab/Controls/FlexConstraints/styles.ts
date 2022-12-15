@@ -322,4 +322,6 @@ export const constraintsStyles = makeStyles(() => ({
       width: '100%',
     },
   },
+  flexRow: {},
+  flexColumn: {},
 }));

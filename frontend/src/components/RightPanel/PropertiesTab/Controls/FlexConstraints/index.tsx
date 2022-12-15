@@ -310,7 +310,16 @@ const FlexConstraints: React.FC<Props> = ({
                 />
               )),
             )}
-            {activeElePos && <div style={activeElementStyle} />}
+            {activeElePos && (
+              <div
+                className={
+                  FlexDirection.ROW === state.flexDirection
+                    ? classes.flexRow
+                    : classes.flexColumn
+                }
+                style={activeElementStyle}
+              />
+            )}
           </div>
         </div>
       </div>
