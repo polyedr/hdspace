@@ -33,8 +33,11 @@ export const constraintsStyles = makeStyles(() => ({
     },
   },
   iconBoxActive: {
-    backgroundColor: '#999 !important',
+    backgroundColor: '#2A2A2D !important',
     '& path': {
+      fill: '#fff',
+    },
+    '& rect': {
       fill: '#fff',
     },
   },
@@ -276,7 +279,7 @@ export const constraintsStyles = makeStyles(() => ({
     alignItems: 'center',
 
     '& button': {
-      height: '30px',
+      height: '33%',
       width: '33%',
       textAlign: 'center',
       padding: 0,
@@ -313,14 +316,19 @@ export const constraintsStyles = makeStyles(() => ({
     padding: '0 2px !important',
   },
   activeGridItem: {
-    backgroundColor: 'red !important',
-    '&::after': {
-      content: '',
-      backgroundColor: 'green',
-      display: 'block',
-      height: 20,
-      width: '100%',
-    },
+    backgroundColor: 'black !important',
+    borderRadius: '2.5px !important',
+    margin: 'auto !important',
+    width: '25px !important',
+    height: '25px !important',
+    transform: 'rotate(-45deg) !important',
+    // '&::after': {
+    //   content: '',
+    //   backgroundColor: 'green',
+    //   display: 'block',
+    //   height: 20,
+    //   width: '100%',
+    // },
   },
   flexRow: {},
   flexColumn: {},

@@ -106,3 +106,81 @@ export const RectangleIcon = () => (
     <rect width="6" height="10" rx="2" fill="#81818E" />
   </svg>
 );
+
+export const FlexShrinkIcon = () => (
+  <svg
+    width="24"
+    height="18"
+    viewBox="0 0 24 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9.75 2C9.75 1.30964 10.3096 0.75 11 0.75H13C13.6904 0.75 14.25 1.30964 14.25 2V7V16C14.25 16.6904 13.6904 17.25 13 17.25H11C10.3096 17.25 9.75 16.6904 9.75 16V2Z"
+      stroke="#81818E"
+      strokeWidth="1.5"
+    />
+    <path d="M20 5L16 9L20 13" stroke="#81818E" strokeWidth="1.5" />
+    <path d="M4 13L8 9L4 5" stroke="#81818E" strokeWidth="1.5" />
+    <path d="M16 9L24 9" stroke="#81818E" strokeWidth="1.5" />
+    <path d="M0 9L8 9" stroke="#81818E" strokeWidth="1.5" />
+  </svg>
+);
+
+export const FlexGrowIcon = () => (
+  <svg
+    width="28"
+    height="18"
+    viewBox="0 0 28 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M12 0.75H16C17.7949 0.75 19.25 2.20507 19.25 4V7V14C19.25 15.7949 17.7949 17.25 16 17.25H12C10.2051 17.25 8.75 15.7949 8.75 14V4C8.75 2.20507 10.2051 0.75 12 0.75Z"
+      stroke="#81818E"
+      strokeWidth="1.5"
+    />
+    <path d="M6 5L2 9L6 13" stroke="#81818E" strokeWidth="1.5" />
+    <path d="M22 13L26 9L22 5" stroke="#81818E" strokeWidth="1.5" />
+    <path d="M3 9L25 9" stroke="#81818E" strokeWidth="1.5" />
+  </svg>
+);
+
+export const FlexBasicIcon = () => (
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 18 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M4 0.75H14C15.7949 0.75 17.25 2.20507 17.25 4V7V14C17.25 15.7949 15.7949 17.25 14 17.25H4C2.20507 17.25 0.75 15.7949 0.75 14V4C0.75 2.20507 2.20507 0.75 4 0.75Z"
+      stroke="#81818E"
+      strokeWidth="1.5"
+    />
+    <path d="M7 5L3 9L7 13" stroke="#81818E" strokeWidth="1.5" />
+    <path d="M11 13L15 9L11 5" stroke="#81818E" strokeWidth="1.5" />
+    <path d="M3 9H15" stroke="#81818E" strokeWidth="1.5" />
+  </svg>
+);
+
+export const AlignSelfIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 20 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="2" cy="2" r="2" fill="#81818E" />
+    <circle cx="10" cy="2" r="2" fill="#81818E" />
+    <circle cx="18" cy="2" r="2" fill="#81818E" />
+    <circle cx="2" cy="10" r="2" fill="#81818E" />
+    <circle cx="10" cy="10" r="2" fill="#81818E" />
+    <circle cx="18" cy="10" r="2" fill="#81818E" />
+    <circle cx="2" cy="18" r="2" fill="#81818E" />
+    <circle cx="10" cy="18" r="2" fill="#81818E" />
+    <circle cx="18" cy="18" r="2" fill="#81818E" />
+  </svg>
+);
