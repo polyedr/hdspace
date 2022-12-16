@@ -170,7 +170,7 @@ const FlexConstraints: React.FC<Props> = ({
 
     const defaultStyle = {
       position: 'absolute',
-      backgroundColor: 'rgba(0,0,0,.5)',
+      backgroundColor: '#E4E6EB',
     };
 
     if (flexDirection === FlexDirection.COLUMN) {

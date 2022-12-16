@@ -330,6 +330,21 @@ export const constraintsStyles = makeStyles(() => ({
     //   width: '100%',
     // },
   },
-  flexRow: {},
+  flexRow: {
+    '&:after': {
+      content: '""',
+      position: 'absolute',
+      bottom: 0,
+      borderLeft: '20px solid #fff',
+      borderTop: '12px solid transparent',
+    },
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      borderLeft: '20px solid #fff',
+      borderBottom: '12px solid transparent',
+    },
+  },
   flexColumn: {},
 }));
