@@ -40,15 +40,18 @@ const ListItemTitle = styled(ListItem)({
 
   '& .MuiListItemSecondaryAction-root': {
     display: 'none',
+    transform: 'none',
+    top: '5px',
+    right: 0,
   },
 });
 
 const ListItemButton = styled(MuiListItemButton)({
-  padding: '0 4px',
+  padding: '10px 80px 10px 0 !important',
   borderRadius: 4,
 
   '&:hover': {
-    background: '#F3F4F6',
+    background: 'none',
   },
 });
 
@@ -58,6 +61,9 @@ const ListItemIcon = styled(MuiListItemIcon)({
 
 const Checkbox = styled(MuiCheckbox)({
   color: '#E4E6EB',
+  padding: 0,
+  marginRight: 5,
+  marginLeft: '-2px',
 });
 
 const TextField = styled(MuiTextField)({
@@ -146,7 +152,7 @@ const CheckItem = ({ item, task }: Props) => {
         <ClickAwayListener onClickAway={handleSetEditing(false)}>
           <ListItemInput
             secondaryAction={
-              <Stack direction="row" spacing={0.5} alignItems="center">
+              <Stack direction="row" spacing={0.5}>
                 <IconButton
                   disabled={value.trim().length < 1}
                   onClick={handleSave}
@@ -211,8 +217,13 @@ const CheckItem = ({ item, task }: Props) => {
           }
           disablePadding
         >
-          <ListItemButton role={undefined} onClick={handleToggle} dense>
-            <ListItemIcon>
+          <ListItemButton
+            alignItems="flex-start"
+            role={undefined}
+            onClick={handleToggle}
+            dense
+          >
+            <ListItemIcon style={{ margin: 0 }}>
               <Checkbox
                 edge="start"
                 checked={item.status === 1}
@@ -221,7 +232,7 @@ const CheckItem = ({ item, task }: Props) => {
                 inputProps={{ 'aria-labelledby': labelId }}
               />
             </ListItemIcon>
-            <ListItemText>{item.text}</ListItemText>
+            <ListItemText style={{ marginTop: 0 }}>{item.text}</ListItemText>
           </ListItemButton>
         </ListItemTitle>
       )}

@@ -176,19 +176,19 @@ const FlexConstraints: React.FC<Props> = ({
     if (flexDirection === FlexDirection.COLUMN) {
       return {
         ...defaultStyle,
-        width: activeElePos.width - 4,
+        width: activeElePos.width - 10,
         top: 10,
         bottom: 10,
-        left: activeElePos.left + 2,
+        left: activeElePos.left + 5,
       };
     }
 
     return {
       ...defaultStyle,
-      height: activeElePos.height - 4,
+      height: activeElePos.height,
       left: 10,
       right: 10,
-      top: activeElePos.top + 2,
+      top: activeElePos.top,
     };
   }, [activeElePos, flexDirection]);
 
@@ -318,7 +318,9 @@ const FlexConstraints: React.FC<Props> = ({
                     : classes.flexColumn
                 }
                 style={activeElementStyle}
-              />
+              >
+                <span />
+              </div>
             )}
           </div>
         </div>
