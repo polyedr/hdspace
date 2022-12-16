@@ -704,8 +704,8 @@ class ColumnTaskSerializer(WritableNestedModelSerializer, serializers.ModelSeria
     subscribers = UserSimpleSerializer(required=False, allow_null=True, read_only=True, many=True)
 
     author_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='author', required=False)
-    assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='assignee', required=False)
-    responsible_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='responsible', required=False)
+    assignee_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), allow_null=True, source='assignee', required=False)
+    responsible_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), allow_null=True, source='responsible', required=False)
     subscribers_ids = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='subscribers', required=False, many=True)
 
     colour = serializers.CharField(required=False, allow_null=True)
