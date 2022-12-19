@@ -1,27 +1,27 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import {
-  Stack,
-  TextField as MuiTextField,
-  styled,
-  InputAdornment,
-  List,
-  Button as MuiButton,
-} from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
+import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 import AddIcon from '@mui/icons-material/Add';
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import { useDispatch, useSelector } from 'react-redux';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  Button as MuiButton,
+  InputAdornment,
+  List,
+  Stack,
+  styled,
+  TextField as MuiTextField,
+} from '@mui/material';
 import {
   requestCreateChecklistItem,
   requestDeleteChecklist,
 } from '@Redux/pmtools/board/actions/checklist';
-import { BoardTask } from '@Redux/pmtools/types';
 import { selectChecklist } from '@Redux/pmtools/board/selectors';
-import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
-import ProgressBar from './ProgressBar';
-import CheckItem from './CheckItem';
+import { BoardTask } from '@Redux/pmtools/types';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { IconButton } from '../StyledComponents';
+import CheckItem from './CheckItem';
+import ProgressBar from './ProgressBar';
 
 const TextField = styled(MuiTextField)({
   '& input': {
@@ -112,6 +112,11 @@ const Checklist = ({ task }: Props) => {
     );
   }, [checklist]);
 
+  const checklistMemonized = useMemo(() => {
+    const updatedList = [...checklist];
+    return updatedList.reverse();
+  }, [checklist]);
+
   return (
     <div>
       <Stack
@@ -174,7 +179,7 @@ const Checklist = ({ task }: Props) => {
         </Stack>
       )}
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-        {checklist.map((item) => (
+        {checklistMemonized.map((item) => (
           <CheckItem task={task} item={item} key={item.id.toString()} />
         ))}
       </List>
