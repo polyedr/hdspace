@@ -1,5 +1,6 @@
 import { Stack, Box, TextField } from '@mui/material';
-import React from 'react';
+import React, { useCallback } from 'react';
+import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import {
   FlexGrowIcon,
   FlexShrinkIcon,
@@ -8,13 +9,23 @@ import {
 } from './icons';
 import { InputWithIcon, IconWithButton } from '../../styledComponents';
 
-const ConstrainsChild = () => {
-  return (
+type Props = PropertiesChangeProps<LibraryElement<Entity>> & {
+  flexGrow: React.CSSProperties['flexGrow'];
+  flexShrink: React.CSSProperties['flexShrink'];
+  flexBasis: React.CSSProperties['flexBasis'];
+}; 
+
+const ConstrainsChild: React.FC<Props> = () => {
+  const handleChangeFlex = useCallback(() => {
+
+  }, []);
+
+  return ( 
     <>
       <Stack
         flexDirection="row"
         marginBottom={1}
-        justifyContent="space-between"
+        justifyContent="space-between"  
       >
         <Stack flexDirection="row">
           <Box>

@@ -31,6 +31,7 @@ const gridValues: Property.JustifyContent[] = [
 ];
 
 const FlexConstraints: React.FC<Props> = ({
+  element,
   updateStyles,
   marginTop,
   marginBottom,
@@ -60,6 +61,10 @@ const FlexConstraints: React.FC<Props> = ({
     alignItems,
     flexWrap,
   });
+
+  const childStyles = element.styles['& > *'];
+
+  console.log(childStyles);
 
   const [activeElePos, setActiveElePos] = useState<{
     left: number;

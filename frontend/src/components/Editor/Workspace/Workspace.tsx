@@ -133,7 +133,6 @@ const Workspace: React.FC<Props> = () => {
                 )}
               </Scrollbar>
             </EditorViewport>
-
             <NNProcessingModal />
           </FrameWrapper>
         </div>
