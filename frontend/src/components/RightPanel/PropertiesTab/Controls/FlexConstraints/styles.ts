@@ -316,19 +316,19 @@ export const constraintsStyles = makeStyles(() => ({
     padding: '0 2px !important',
   },
   activeGridItem: {
-    backgroundColor: 'black !important',
-    borderRadius: '2.5px !important',
-    margin: 'auto !important',
-    width: '25px !important',
-    height: '25px !important',
-    transform: 'rotate(-45deg) !important',
-    // '&::after': {
-    //   content: '',
-    //   backgroundColor: 'green',
-    //   display: 'block',
-    //   height: 20,
-    //   width: '100%',
-    // },
+    '&:before': {
+      content: '""',
+      height: 'calc(100% - 7px)',
+      width: 'calc(100% - 18px)',
+      backgroundColor: 'black',
+      display: 'block',
+      transform: 'rotate(-45deg)',
+      borderRadius: '2.5px',
+    },
+
+    '& span': {
+      backgroundColor: 'black !important',
+    },
   },
   flexRow: {
     '&:after': {
@@ -336,15 +336,66 @@ export const constraintsStyles = makeStyles(() => ({
       position: 'absolute',
       bottom: 0,
       borderLeft: '20px solid #fff',
-      borderTop: '12px solid transparent',
+      borderTop: '20px solid transparent',
     },
     '&:before': {
       content: '""',
       position: 'absolute',
       top: 0,
       borderLeft: '20px solid #fff',
-      borderBottom: '12px solid transparent',
+      borderBottom: '20px solid transparent',
+    },
+
+    '& span': {
+      '&:before': {
+        content: '""',
+        position: 'absolute',
+        right: 0,
+        borderTop: '20px solid #fff',
+        borderLeft: '20px solid transparent',
+      },
+      '&:after': {
+        content: '""',
+        position: 'absolute',
+        bottom: 0,
+        borderBottom: '20px solid #fff',
+        borderLeft: '20px solid transparent',
+        right: 0,
+      },
     },
   },
-  flexColumn: {},
+  flexColumn: {
+    '&:after': {
+      content: '""',
+      position: 'absolute',
+      borderTop: '15px solid #fff',
+      borderLeft: '15px solid transparent',
+      right: 0,
+    },
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      borderLeft: '15px solid #fff',
+      borderBottom: '15px solid transparent',
+    },
+
+    '& span': {
+      '&:before': {
+        content: '""',
+        position: 'absolute',
+        bottom: 0,
+        borderTop: '15px solid transparent',
+        borderLeft: '15px solid #fff',
+      },
+      '&:after': {
+        content: '""',
+        position: 'absolute',
+        bottom: 0,
+        right: 0,
+        borderTop: '15px solid transparent',
+        borderRight: '15px solid #fff',
+      },
+    },
+  },
 }));
