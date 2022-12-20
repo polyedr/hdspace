@@ -3,29 +3,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectIsPrototypeMode, selectUserData } from '@Redux/user/selectors';
 import {
   selectCurrentProject,
-  selectSidebarOpen,
   selectBordersEnabled,
   selectShowingBorders,
+  selectShowingGrid,
 } from '@Redux/project/selectors/base';
 import {
   updateNameAndTagsProject,
-  setSidebarOpen,
   toggleContainersBorders,
+  toggleGrid,
 } from '@Redux/project/actions';
 import {
   selectVIAModeEnabled,
   selectVIAResultId,
 } from '@Redux/project/selectors/via';
 
-import {
-  FormControlLabel,
-  Typography,
-  Checkbox,
-  ToggleButton,
-  Menu,
-  MenuItem,
-  styled,
-} from '@mui/material';
+import { styled } from '@mui/material';
+import ToggleButton from '@mui/material/ToggleButton';
+
 import {
   AppBar as MUIAppbar,
   Toolbar,
@@ -33,15 +27,12 @@ import {
   Box,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import MenuIcon from '@mui/icons-material/Menu';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import SettingsBackupRestoreIcon from '@material-ui/icons/SettingsBackupRestore';
 import { StyledIconButton } from '@Components/styledComponents';
 import { HELP_LINK } from '@Src/config/settings';
 import Dialog from '../Dialogs/Dialog';
 import Layouts from './TopBar/Layouts';
-import ShowGrid from './TopBar/ShowGrid';
 import RenameProjectBar from './TopBar/RenameProjectBar';
 import TopBar from './TopBar';
 import History from './History';
@@ -136,15 +127,9 @@ const TopPanel = () => {
   const handleEditClick = () => setOpenEdit(true);
   const isProtoMode = useSelector(selectIsPrototypeMode);
   const showBorders = useSelector(selectShowingBorders);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: {
-    currentTarget: React.SetStateAction<HTMLElement | null>;
-  }) => {
-    setIsDropdownOpen(true);
-    setAnchorEl(event.currentTarget);
-  };
+
+  const showGrid = useSelector(selectShowingGrid);
+
   const handleClose = () => setOpenEdit(false);
   const handleSubmitNameAndTags = async (values: {
     name: string;
@@ -159,10 +144,6 @@ const TopPanel = () => {
     return ` ${item}`;
   });
 
-  const handleCloseDropDown = () => {
-    setIsDropdownOpen(false);
-    setAnchorEl(null);
-  };
   return (
     <Appbar position="fixed">
       <Toolbar variant="dense" className={classes.toolbar}>
@@ -192,53 +173,26 @@ const TopPanel = () => {
 
           <Box className={classes.toolbar}>
             <Box>
-              <ShowBlockIcon />
+              <ToggleButton
+                selected={showBorders}
+                value="borders"
+                className={classes.togglebutton}
+                disabled={!bordersEnabled && !isProtoMode}
+                onClick={() => dispatch(toggleContainersBorders(!showBorders))}
+              >
+                <ShowBlockIcon />
+              </ToggleButton>
             </Box>
             <Box>
-              <ShowGridIcon />
-            </Box>
-            {/* {projectName && (
               <ToggleButton
-                value="DropDown"
-                selected={isDropdownOpen}
+                selected={showGrid}
+                value="grid"
                 className={classes.togglebutton}
-                onClick={handleClick}
+                onClick={() => dispatch(toggleGrid(!showGrid))}
               >
-                <SettingsOutlinedIcon className={classes.icon} />
+                <ShowGridIcon />
               </ToggleButton>
-            )} */}
-            <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleCloseDropDown}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-            >
-              <MenuItem onClick={handleClose}>
-                <ShowGrid />
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="Show borders"
-                      checked={showBorders}
-                      disabled={!bordersEnabled && !isProtoMode}
-                      onChange={() =>
-                        dispatch(toggleContainersBorders(!showBorders))
-                      }
-                    />
-                  }
-                  label={
-                    <Typography className={classes.title}>
-                      Show blocks
-                    </Typography>
-                  }
-                />
-              </MenuItem>
-            </Menu>
+            </Box>
             <a target="_blank" href={HELP_LINK} rel="noreferrer noopener">
               <IconButton className={classes.iconbutton} title="Help">
                 <HelpOutlineIcon className={classes.icon} />

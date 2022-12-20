@@ -1,7 +1,4 @@
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useCallback } from 'react';
-import ELEMENT_IDS from '@Constants/elementIds';
-import { lighten, makeStyles } from '@material-ui/core/styles';
 import ControlSection from '@Components/RightPanel/PropertiesTab/helperComponents/ControlSection';
 import sectionTitleEnum from '@Components/LeftPanel/Styles/Enums/sectionTitle';
 import CONTROLS from '@Constants/controls';
@@ -26,37 +23,10 @@ import StyleGenerator from '@Components/LeftPanel/Styles/components/StyleGenerat
 import ColorScheme from '@Components/LeftPanel/Styles/components/ColorScheme';
 import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
 
-const useStyles = makeStyles(({ palette, typography }) => ({
-  name: {
-    fontSize: typography.fontSize,
-  },
-  button: {
-    color: palette.common.white,
-    '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
-    },
-  },
-  list: {
-    width: '100%',
-    padding: 0,
-    overflowX: 'hidden',
-  },
-  details: {
-    display: 'flex',
-    bottom: 0,
-    flexDirection: 'column',
-  },
-  blockTitle: {
-    backgroundColor: palette.panel.main,
-    paddingLeft: 3,
-  },
-}));
-
 const SECTION_CONTROLS = ['indents', 'typography', 'headingType', 'border'];
 
 const Styles = () => {
   const dispatch = useDispatch();
-  const classes = useStyles();
 
   const activeElement = useSelector(selectActiveElement);
   const masterScreenEnabled = useSelector(selectMasterScreenEnabled);
