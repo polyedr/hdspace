@@ -172,10 +172,11 @@ const CodeEditorEditable = ({
         if (codeBlockRef.current === null) {
           return;
         }
-        codeBlockRef.current.innerHTML = codeBlockRef.current.innerHTML.replaceAll(
-          error.keyPart,
-          `<span class="${classes.error}">${error.keyPart}</span>`,
-        );
+        codeBlockRef.current.innerHTML =
+          codeBlockRef.current.innerHTML.replaceAll(
+            error.keyPart,
+            `<span class="${classes.error}">${error.keyPart}</span>`,
+          );
       });
     },
     [classes.error],

@@ -36,6 +36,7 @@ import {
   getMyPermissionsForProjectSaga,
   getUsersSaga,
   updateUserPermissionsForProjectSaga,
+  updateUsersPermissionsForProjectSaga,
 } from '@Redux/permissions/sagas';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import { compose } from 'redux';
@@ -300,16 +301,14 @@ const duplicateScreenSaga = withRequiredPermissions(
       selectScreenRootElement(screenID),
     );
     const screenData: ScreenData = yield select(selectScreen(screenID));
-    const sourceCurrentScreen: ReturnType<
-      typeof selectCurrentScreen
-    > = yield select(selectCurrentScreen);
+    const sourceCurrentScreen: ReturnType<typeof selectCurrentScreen> =
+      yield select(selectCurrentScreen);
     const duplicatedItems = sourceRoot.children.map((child) => ({
       id: child.id,
       screenID: sourceCurrentScreen.id,
     }));
-    const currentProject: ReturnType<
-      typeof selectCurrentProject
-    > = yield select(selectCurrentProject);
+    const currentProject: ReturnType<typeof selectCurrentProject> =
+      yield select(selectCurrentProject);
     const projectID = currentProject.id;
     const screensNumber = currentProject.projectscreen.length;
     const screen = yield call(
@@ -553,6 +552,11 @@ export default function* projectSaga() {
   yield takeEvery(
     TYPES.UPDATE_USER_PERMISSIONS_FOR_PROJECT,
     updateUserPermissionsForProjectSaga,
+  );
+
+  yield takeEvery(
+    TYPES.UPDATE_USERS_PERMISSIONS_FOR_PROJECT,
+    updateUsersPermissionsForProjectSaga,
   );
 
   yield fork(viaSaga);

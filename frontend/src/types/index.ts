@@ -64,10 +64,19 @@ export type Result<T = any> = {
   error?: string;
 };
 
+export type Data<T = any> = {
+  data?: T;
+  error?: string;
+};
+
 export type PaginatedResponse<T> = {
   next: string | null;
   previous: string | null;
   results: T[];
+};
+
+export type PaginatedSubscriptionData<T> = {
+  data: T[];
 };
 
 export type PaginatedBase<T> = {
@@ -81,11 +90,10 @@ export type PaginatedArray<T> = PaginatedBase<T> & {
   results: T[];
 };
 
-export type PaginatedData<
-  T extends { id: string | number }
-> = PaginatedBase<T> & {
-  results: Normalized<T>;
-};
+export type PaginatedData<T extends { id: string | number }> =
+  PaginatedBase<T> & {
+    results: Normalized<T>;
+  };
 
 export enum ElementGroup {
   CONTAINERS = 'containers',
@@ -125,7 +133,7 @@ export enum UpdateDataActionType {
 export type ServerElement<
   Type extends Entity,
   Children = any[],
-  Params = BaseElementParams
+  Params = BaseElementParams,
 > = {
   id: number | string;
   name: string;
@@ -151,7 +159,7 @@ export type ServerElement<
 export type NNServerElement<
   Type extends Entity,
   Children = any[],
-  Params = BaseElementParams
+  Params = BaseElementParams,
 > = Omit<ServerElement<Type, Children, Params>, 'styles'> & {
   styles: React.CSSProperties;
 };
@@ -201,10 +209,13 @@ export type SmartContainerServerElement<T extends Entity> = ServerElement<
   [],
   SmartElementParameters
 >;
-export type SmartHeaderServerElement = SmartContainerServerElement<'smartHeader'>;
-export type SmartFooterServerElement = SmartContainerServerElement<'smartFooter'>;
+export type SmartHeaderServerElement =
+  SmartContainerServerElement<'smartHeader'>;
+export type SmartFooterServerElement =
+  SmartContainerServerElement<'smartFooter'>;
 export type SmartFormServerElement = SmartContainerServerElement<'smartForm'>;
-export type SmartWebpageServerElement = SmartContainerServerElement<'smartWebpage'>;
+export type SmartWebpageServerElement =
+  SmartContainerServerElement<'smartWebpage'>;
 export type ButtonServerElement = ServerElement<'button', [], ButtonParameters>;
 export type TextinputServerElement = ServerElement<
   'textinput',
@@ -379,7 +390,7 @@ export type LibraryElement<
   Type extends Entity,
   Children = any[],
   Params = any,
-  OwnStyles = {}
+  OwnStyles = {},
 > = {
   id: string;
   name: string;
@@ -1231,6 +1242,8 @@ export type CustomElementsCategory = {
   otherElements: Array<ElementData>;
 };
 
+export type ErrorResponse = [];
+
 export type ColorElementIcon = {
   squareTopLeft: string;
   squareTopRight: string;
@@ -1281,10 +1294,12 @@ export type ElementsToCreate<T extends Entity> = {
 export type TokenPair = {
   access: string;
   refresh: string;
+  streamchat?: string;
 };
 export type ViewTokenPair = {
   access: string;
   refresh: string;
+  streamchat?: string;
 };
 export type LoginFormData = {
   username: string;
@@ -1375,6 +1390,7 @@ export type UserData = {
   profile: ProfileData;
 };
 
+export type UserSubscriptionsData = [];
 export type UnsafeReturnType<T> = T extends (...args: any[]) => infer R
   ? R
   : any;
@@ -1550,6 +1566,7 @@ export type Asset = {
   image: string | null;
   created: Date;
   modified: Date;
+
   listId: string | null;
 };
 
@@ -1575,6 +1592,11 @@ export enum baseLayout {
   Desktop = 'Desktop',
   Tablet = 'Tablet',
   Mobile = 'Mobile',
+}
+
+export enum TabsIndex {
+  MinValue = 0,
+  MaxValue = 1,
 }
 
 export enum Layout {

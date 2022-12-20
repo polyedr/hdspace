@@ -4,6 +4,8 @@ import ImageListItem from '@mui/material/ImageListItem';
 import { makeComponentStyles } from '@Components/UI/RenderElements/styles';
 import { RendererProps } from '@Components/UI/RenderElements/types';
 import cn from 'classnames';
+import { selectElementsStyles } from '@Redux/project/selectors/element';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeComponentStyles('imagesList', {
   imagesList: {
@@ -12,15 +14,21 @@ const useStyles = makeComponentStyles('imagesList', {
   },
 });
 
-type ChildrenImage = Element & { key: string };
-
 const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
   (props, ref) => {
     const { element, isDisabled, children } = props;
     const [className, groupClass] = element.styles.classNames;
     const classes = useStyles(props);
 
-    const childrenImages = (children as unknown) as ChildrenImage[];
+    const childrenImages = children;
+
+    const childrenStyles = useSelector(
+      selectElementsStyles(
+        (childrenImages as React.ReactElement[])?.map((item) => {
+          return item.props.elementId;
+        }),
+      ),
+    );
 
     return (
       <div
@@ -38,16 +46,23 @@ const ImagesList = React.forwardRef<HTMLDivElement, RendererProps>(
             className,
             groupClass,
             classes.ownStyles,
-            classes.imagesList,
             !isDisabled && classes.ownPseudoStyles,
           )}
+          sx={{
+            width: element.styles.ownStyles.width || 500,
+            height: element.styles.ownStyles.height || 450,
+          }}
           cols={element.parameters.columns}
-          rowHeight={164}
+          rowHeight="auto"
         >
-          {childrenImages?.map((item) => (
+          {(childrenImages as React.ReactElement[])?.map((item, index) => (
             <ImageListItem
               key={item.key}
-              sx={{ width: '150px', height: '150px' }}
+              sx={{
+                width: childrenStyles[index]?.width || 150,
+                height: childrenStyles[index]?.height || 150,
+                margin: 1,
+              }}
             >
               {item}
             </ImageListItem>

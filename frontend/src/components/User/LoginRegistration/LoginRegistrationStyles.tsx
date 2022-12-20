@@ -8,15 +8,14 @@ const useStyles = makeStyles((theme) =>
     },
     rightContainer: {
       color: 'rgb(53, 67, 89)',
-    },
-    containerCenter: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
+      paddingTop: 30,
     },
     resizableImg: {
-      minHeight: 10,
+      textAlign: 'center',
+      marginBottom: 20,
+      '& img': {
+        maxWidth: '100%',
+      },
     },
     alertText: {
       '&::first-letter': {
@@ -26,26 +25,21 @@ const useStyles = makeStyles((theme) =>
       fontSize: 14,
     },
     button: {
-      background: theme.palette.secondary.main,
-      width: 428,
-      height: 62,
-      margin: '17px 0 19px 0',
-      borderRadius: 45,
-      fontSize: 20,
-      textTransform: 'uppercase',
-      lineHeight: '1.2',
+      height: 54,
+      fontSize: '20px !important',
+      color: 'white !important',
     },
-    input: {
-      background: '#dee4f0',
-      borderRadius: 45,
-      fontSize: 20,
-      color: 'rgb(122, 123, 123)',
-      margin: '7px 0',
-      width: 428,
-      height: 62,
-      justifyContent: 'center',
-      paddingLeft: 23,
-    },
+    // input: {
+    //   background: '#dee4f0',
+    //   borderRadius: 45,
+    //   fontSize: 20,
+    //   color: 'rgb(122, 123, 123)',
+    //   margin: '7px 0',
+    //   width: 428,
+    //   height: 62,
+    //   justifyContent: 'center',
+    //   paddingLeft: 23,
+    // },
     formContainer: {
       flex: 1,
       justifyContent: 'center',
@@ -53,8 +47,8 @@ const useStyles = makeStyles((theme) =>
       flexDirection: 'column',
     },
     underLogoText: {
-      fontSize: 27,
-      marginTop: 20,
+      fontSize: '27px !important',
+      textAlign: 'center',
     },
     underFormText: {
       fontSize: 18,
@@ -84,8 +78,7 @@ const useStyles = makeStyles((theme) =>
       textAlign: 'center',
     },
     info: {
-      minHeight: '5em',
-      margin: '1em 0',
+      // margin: '1em 0',
     },
   }),
 );

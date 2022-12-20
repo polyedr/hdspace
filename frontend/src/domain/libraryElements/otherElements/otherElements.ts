@@ -289,6 +289,7 @@ export const makeImage = ({
 });
 
 export const makeImagesList = ({
+  ownStyles = {},
   UID = 'master',
 } = {}): ImagesListServerElement => ({
   id: `images-list-${UID}`,
@@ -307,7 +308,7 @@ export const makeImagesList = ({
   },
   styles: {
     classNames: ['imagesList'],
-    ownStyles: {},
+    ownStyles,
     pseudoClassStyles: {},
   },
   name: 'images list',
@@ -798,18 +799,15 @@ export const makeNavbar = (): NavbarServerElement => ({
     navbarItems: [
       // TODO research why we need items here
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
         itemName: 'text desc',
       },
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
         itemName: 'text desc',
       },
       {
-        link:
-          'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
+        link: 'https://i5.walmartimages.com/asr/79b030ef-9b02-43ae-bc88-2b278eebf068_1.cd9af79d4e8b836b8d5a1c476dfe468e.png',
         itemName: 'text desc',
       },
     ],
@@ -834,8 +832,7 @@ export const makeNavbar = (): NavbarServerElement => ({
       buoyancy: 1,
     }),
     makeNavbarItem({
-      link:
-        'https://i5.walmartimages.com/asr/79b030ef-9b0d9af79d4e8b836b8d5a1c476dfe46',
+      link: 'https://i5.walmartimages.com/asr/79b030ef-9b0d9af79d4e8b836b8d5a1c476dfe46',
       itemName: 'text desc',
       UID: 'navbar-3',
       buoyancy: 2,

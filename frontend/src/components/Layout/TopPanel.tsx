@@ -60,7 +60,7 @@ const useStyles = makeStyles(({ typography, palette }) => ({
   title: {
     color: '#81818E',
     fontSize: 14,
-    '&:hover $editButton': {
+    '&:hover .editButton': {
       opacity: 1,
     },
     display: 'flex',

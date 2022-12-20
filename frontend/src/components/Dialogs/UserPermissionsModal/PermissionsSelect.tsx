@@ -61,7 +61,7 @@ const PermissionsSelect: React.FC<Props> = (props: Props) => {
     <Select
       onChange={(e: React.ChangeEvent<any>) => {
         handlePermissionManagement(
-          (e.target.value as unknown) as Array<UserProjectPermission>,
+          e.target.value as unknown as Array<UserProjectPermission>,
         );
       }}
       multiple

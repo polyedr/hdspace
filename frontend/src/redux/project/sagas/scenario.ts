@@ -1393,21 +1393,24 @@ export const updateElementSaga = compose(
 
     if (!useHistory) {
       const oldElement = yield select(selectActiveElement);
-      yield put(
-        Actions.addUndoActions([
-          Actions.updateElement(
-            {
-              elementID,
-              data: {
-                ...oldElement,
+
+      if (elementID === oldElement.id) {
+        yield put(
+          Actions.addUndoActions([
+            Actions.updateElement(
+              {
+                elementID,
+                data: {
+                  ...oldElement,
+                },
               },
-            },
-            {
-              ...action.meta,
-            },
-          ),
-        ]),
-      );
+              {
+                ...action.meta,
+              },
+            ),
+          ]),
+        );
+      }
     }
 
     yield put(Actions.updateStateElement(elementID, { ...data }));

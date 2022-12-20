@@ -138,7 +138,6 @@ export function* updateOrReplaceElementStyles(
 ) {
   try {
     const { id, styles } = action.payload;
-
     if (!action.meta) {
       logger.error(
         `You have to provide metainformation for action ${action.type}`,
@@ -371,16 +370,10 @@ export function* createElements<T extends Entity>(
       },
     );
 
-    const {
-      result,
-      error: updateRecursiveError,
-    }: Result<RecursiveElement> = yield call(
-      reqWrapper,
-      apiChangeRecursiveMultipleElements,
-      {
+    const { result, error: updateRecursiveError }: Result<RecursiveElement> =
+      yield call(reqWrapper, apiChangeRecursiveMultipleElements, {
         elements: recursiveElements,
-      },
-    );
+      });
     if (updateRecursiveError) {
       throw new Error(updateRecursiveError);
     }

@@ -1,116 +1,168 @@
-import { apiGetBoard } from '@Api/pmtools/board/boardApi';
-import * as Board from '@Api/pmtools/board/columnApi';
-import { apiGetMembersOfBoard, fetchTasks } from '@Api/pmtools/board/tasksApi';
-import { panelErrorMsg } from '@Redux/actions';
-import { requestAddHistory } from '@Redux/pmtools/activity/actions';
+import * as columnsApi from '@Api/pmtools/board/columnsApi';
+import * as tasksApi from '@Api/pmtools/board/tasksApi';
+import { BoardColumn } from '@Redux/pmtools/types';
 import { reqWrapper } from '@Redux/project/sagas/shared';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import { put, call, select } from 'redux-saga/effects';
+import { enqueueSnackbar } from '@Redux/notification/actions';
+import * as columnActions from '../actions/columns';
 import {
-  ColumnDeletSagaGenerator,
-  ColumnSagaGenerator,
-  MoveCardGenerator,
-} from '@Src/types/pmtools/generators';
-import { ServerProject } from '@Src/types';
-import { call, put, select } from 'redux-saga/effects';
-import {
-  requestAddColumn,
-  requestDeleteColumn,
-  requestEditColumn,
-  successAddColumn,
-  successDeleteColumn,
-  successEditColumn,
-  successFetchColumn,
-  requestUpdateColumnIndex,
-  successUpdateColumnIndex,
+  addColumn,
+  deleteColumnFromState,
+  setColumns,
+  setColumnsFetching,
+  updateColumnOnState,
 } from '../actions/columns';
-import { successFetchMembers, successFetchTask } from '../actions/tasks';
-import { selectBoardData, selectColumnList } from '../selectors';
+import { setTasks } from '../actions/tasks';
+import { selectColumns } from '../selectors';
+import { setProjectLabels } from '../actions/labels';
 
-export function* columnsFetchSaga() {
-  try {
-    const { id: boardId } = yield select(selectBoardData);
-    const columns = yield call(Board.fetchColumns, boardId);
-    const tasks = yield call(fetchTasks, boardId);
-    const members = yield call(apiGetMembersOfBoard, boardId);
-    yield put(successFetchMembers(members));
-    yield put(successFetchTask(tasks));
-    yield put(successFetchColumn(columns));
-  } catch (e) {
-    yield put(panelErrorMsg(e));
-  }
-}
+export function* fetchBoard({
+  projectId,
+}: ReturnType<typeof columnActions.fetchBoard>) {
+  yield put(setColumnsFetching(true));
 
-export function* columnAddSaga({
-  payload: { project, name, action },
-}: ReturnType<typeof requestAddColumn>): ColumnSagaGenerator {
   try {
-    const board = yield call(reqWrapper, apiGetBoard, { project });
-    const boardId = JSON.parse(board).id;
-    const column = yield call(reqWrapper, Board.createColumn, {
-      data: { name, project, id: boardId },
+    const {
+      data: { projectcolumn: columns, tasklabels: labels },
+    } = yield call(reqWrapper, columnsApi.fetchColumns, {
+      projectId,
     });
-    yield put(successAddColumn(column));
-    yield put(requestAddHistory({ project, ...action }));
+
+    yield put(setColumns(columns));
+    yield put(setProjectLabels(labels));
+
+    const {
+      data: { results: tasks },
+    } = yield call(reqWrapper, tasksApi.fetchTasks, {
+      projectId,
+    });
+
+    yield put(setTasks(tasks));
+
+    yield put(setColumnsFetching(false));
   } catch (e) {
-    yield put(panelErrorMsg(e));
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }
 
-export function* columnEditSaga({
-  payload: { action, project, ...payload },
-}: ReturnType<typeof requestEditColumn>): ColumnSagaGenerator {
-  try {
-    const data = yield call(reqWrapper, Board.updateColumn, { data: payload });
-    yield put(successEditColumn(data));
-    yield put(requestAddHistory({ project, ...action }));
-  } catch (e) {
-    yield put(panelErrorMsg(e));
+export function* updateColumnsOrderSaga({
+  payload: { dropResult, projectId },
+}: ReturnType<typeof columnActions.updateColumnsOrder>) {
+  const { source, destination } = dropResult;
+
+  if (!destination) {
+    return;
   }
+
+  if (
+    source.index === destination?.index &&
+    source.droppableId === destination.droppableId
+  ) {
+    return;
+  }
+
+  const columns: BoardColumn[] = yield select(selectColumns);
+
+  const newColumns = Array.from(columns);
+
+  newColumns.splice(
+    destination.index,
+    0,
+    newColumns.splice(source.index, 1)[0],
+  );
+
+  yield put(setColumns(newColumns));
+
+  yield call(reqWrapper, columnsApi.updateColumnsSequence, {
+    projectId,
+    data: {
+      children: newColumns.map((c) => ({ id: c.id })),
+    },
+  });
 }
 
-export function* columnDeleteSaga({
-  payload: { columnId, action },
-}: ReturnType<typeof requestDeleteColumn>): ColumnDeletSagaGenerator {
+export function* createColumnSaga({
+  column,
+}: ReturnType<typeof columnActions.createColumn>) {
   try {
-    const project: ServerProject['id'] = yield select(selectCurrentProjectId);
-    yield call(reqWrapper, Board.deleteColumn, { columnId });
-    yield put(successDeleteColumn(columnId));
-    yield put(requestAddHistory({ project, ...action }));
-  } catch (e) {
-    yield put(panelErrorMsg(e));
-  }
-}
-
-export function* moveColumnToList({
-  payload: { destination, source },
-}: ReturnType<typeof requestUpdateColumnIndex>): MoveCardGenerator {
-  const columns = yield select(selectColumnList);
-  const removed = columns[source.index];
-  try {
-    yield put(
-      successUpdateColumnIndex({
-        dest: destination.index,
-        source: source.index,
-      }),
+    const { data: createdColumn } = yield call(
+      reqWrapper,
+      columnsApi.createColumn,
+      column,
     );
-    const upIndex =
-      source.index > destination.index
-        ? destination.index - 1
-        : destination.index;
-    const up = columns[upIndex];
-    const down = columns[upIndex + 1];
-    const start = columns[0];
-    const end = columns[columns.length - 1];
-    const pos = up && down && (up.pos + down.pos) / 2;
-    const count =
-      destination.index === columns.length - 1 ? end.pos * 2 : start.pos / 2;
-    yield call(Board.apiUpdateColumnPos, {
-      listId: removed.id,
-      newPos: pos || count,
-    });
-    const res = yield call(Board.fetchColumns, removed.idBoard);
-    yield put(successFetchColumn(res));
+
+    yield put(addColumn(createdColumn));
   } catch (e) {
-    yield put(panelErrorMsg(e));
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
+export function* updateColumnSaga({
+  column: fields,
+  columnId,
+}: ReturnType<typeof columnActions.updateColumn>) {
+  try {
+    yield put(updateColumnOnState(fields, columnId));
+
+    yield call(reqWrapper, columnsApi.updateColumn, {
+      fields,
+      columnId,
+    });
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}
+
+export function* deleteColumnSaga({
+  columnId,
+}: ReturnType<typeof columnActions.deleteColumn>) {
+  try {
+    yield put(deleteColumnFromState(columnId));
+
+    yield call(reqWrapper, tasksApi.deleteColumn, {
+      columnId,
+    });
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
   }
 }

@@ -12,7 +12,7 @@ import {
   IconButtonProps,
   ListProps,
 } from '@material-ui/core';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import Box from '@mui/material/Box';
 import {
@@ -21,7 +21,7 @@ import {
 } from '@Redux/project/selectors/base';
 import {
   selectCurrentScreenId,
-  selectScreensWithoutMaster,
+  selectSortedScreens,
 } from '@Redux/project/selectors/screen';
 import prevent from '@Utils/preventEvent';
 import { Indices } from '@Src/types';
@@ -70,7 +70,7 @@ const Screens = () => {
 
   const currentProjectId = useSelector(selectCurrentProjectId);
   const currentScreenId = useSelector(selectCurrentScreenId);
-  const screens = useSelector(selectScreensWithoutMaster);
+  const screens = useSelector(selectSortedScreens);
   const screenCreateLoader = useSelector(selectScreenCreateLoader);
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -95,7 +95,7 @@ const Screens = () => {
     );
   };
 
-  const handleReorder = ({ destination, source }) => {
+  const handleReorder = ({ destination, source }: DropResult) => {
     if (!destination) return;
     const indices: Indices = {
       newIndex: destination.index,

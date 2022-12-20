@@ -25,6 +25,7 @@ const Marketplace = lazy(
   () => import('@Components/Marketplace/components/MarketPlace/Marketplace'),
 );
 const Team = lazy(() => import('@Components/Marketplace/components/Team/Team'));
+
 const PrivateRoute: React.FC<any> = ({ children, ...rest }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const url = new URL(window.location.href);

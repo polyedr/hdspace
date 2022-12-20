@@ -14,7 +14,7 @@ import {
 } from '@Components/styledComponents';
 import { Entity, LibraryElement, Params } from '@Src/types';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles(({ spacing }) => ({
   title: {
     '& .MuiAccordionSummary-content': {
       padding: '0.5em 1em',
@@ -32,9 +32,11 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
     alignItems: 'center',
   },
   iconButton: {
-    color: palette.common.white,
+    color: '#81818e',
+    marginLeft: 15,
     '&:hover': {
-      backgroundColor: lighten(palette.panel.main, 0.1),
+      color: 'rgba(80, 100, 255, 1)',
+      backgroundColor: lighten('rgba(80, 100, 255, 0.3)', 0.1),
     },
   },
   wrapperCheckbox: {

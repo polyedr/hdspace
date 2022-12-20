@@ -168,13 +168,14 @@ export const updateMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
   data: Partial<StateElement>,
-): Normalized<StateElement> =>
-  produce(state, (draft) => {
+): Normalized<StateElement> => {
+  return produce(state, (draft) => {
     draft[elementId] = {
       ...draft[elementId],
       ...data,
     };
   });
+};
 
 export const moveMapElement = (
   state: Normalized<StateElement>,
@@ -307,6 +308,7 @@ export const restoreMapElement = (
   // eslint-disable-next-line consistent-return
   produce(state, (draft) => {
     const element = draft[elementId];
+
     if (!element.parent) return draft;
     const parent = draft[element.parent];
     parent.children.splice(element.buoyancy, 0, element.id);

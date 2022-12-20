@@ -49,6 +49,7 @@ import {
   VIARegions,
   importData,
   ParsedImagePalette,
+  UserSubscriptionsData,
   Marketplace,
   TemplatesSearchParameter,
 } from '../types';
@@ -74,7 +75,10 @@ export type ProjectDataState = {
   elementInputs: { [id: string]: File };
   assetLists: PaginatedArray<AssetsList>;
   assetResults: AssetResults;
+  assetImageList: boolean;
   imagePalette: ParsedImagePalette | null;
+  backGroundAssetsList: boolean;
+  createProjectError: string | null;
 };
 
 export type MarketplaceDataState = {
@@ -204,6 +208,7 @@ export type UserState = {
     active: boolean;
   };
   chat: ChatCredentials;
+  subscriptionData: UserSubscriptionsData;
 };
 
 export type Notification = {
@@ -261,6 +266,10 @@ export type RestoreChildrenData = {
 
 export type LoadProjects = IPlainAction<typeof TYPES.LOAD_PROJECTS>;
 
+export type GetSubscriptionDataType = IPlainAction<
+  typeof TYPES.SUBSCRIPTION_DATA
+>;
+
 export type SetUsersSearchValue = IAction<
   typeof TYPES.SET_USERS_SEARCH,
   { search: string }
@@ -297,7 +306,8 @@ export type LoadTemplatesSuccess = IAction<
   typeof TYPES.SET_TEMPLATES_LIST,
   { marketplace: Marketplace[] }
 >;
-export type LoadTemplatesFail = IPlainFailAction<'marketplace/LOAD_TEMPLATES_FAIL'>;
+export type LoadTemplatesFail =
+  IPlainFailAction<'marketplace/LOAD_TEMPLATES_FAIL'>;
 
 export type CreateProject = IAction<
   typeof TYPES.CREATE_PROJECT,
@@ -307,6 +317,12 @@ export type DeleteProject = IAction<
   typeof TYPES.DELETE_PROJECT,
   { id: number }
 >;
+
+export type ProjectError = IAction<
+  typeof TYPES.SET_PROJECT_ERROR,
+  { errorResponse: string | null }
+>;
+
 export type GetProject = IAction<typeof TYPES.GET_PROJECT, { id: number }>;
 
 export type LoadTemlates = IPlainAction<typeof TYPES.LOAD_TEMPLATES>;
@@ -941,6 +957,20 @@ export type AddStateAsset = IAction<
   HistoryMeta
 >;
 
+export type AddImageList = IAction<
+  typeof TYPES.SET_IMAGE_LIST,
+  {
+    valueImage: boolean;
+  }
+>;
+
+export type AddBackgroundImageList = IAction<
+  typeof TYPES.SET_BACKGROUND_LIST,
+  {
+    backGroundValue: boolean;
+  }
+>;
+
 export type RemoveAssetListRedux = IAction<
   typeof TYPES.REMOVE_ASSET_LIST_REDUX,
   string
@@ -1378,6 +1408,8 @@ export type Action =
   | AddStateAssetList
   | AddAssetList
   | AddStateAsset
+  | AddImageList
+  | AddBackgroundImageList
   | RemoveAssetList
   | RemoveAssetListRedux
   | RemoveAsset
@@ -1443,8 +1475,10 @@ export type Action =
   | SetStatePseudoClass
   | SetValueCheckRobots
   | GenerateImagePalette
+  | SetImagePalette
+  | GetSubscriptionDataType
   | SetMarketplaceListLoader
-  | SetImagePalette;
+  | ProjectError;
 
 export type SetValueImportLoader = IAction<
   typeof TYPES.SET_VALUE_IMPORT_LOADER,

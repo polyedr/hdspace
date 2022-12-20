@@ -79,21 +79,15 @@ export function* GetScreenFormMarketplaceSaga() {
       selectTemplatesSearchParameter,
     );
     const searchParams = getTemplatesSearchParams(paramData);
-    const {
-      result,
-      error,
-    }: Result<PaginatedResponse<Marketplace>> = yield call(
-      reqWrapper,
-      apiGetProjectWithScreensForTemplates,
-      {
+    const { result, error }: Result<PaginatedResponse<Marketplace>> =
+      yield call(reqWrapper, apiGetProjectWithScreensForTemplates, {
         params: {
           cursor: next,
           ...(paramData[1] && {
             ...searchParams,
           }),
         },
-      },
-    );
+      });
 
     if (result) {
       yield put(Actions.setMarketplaceScreensData(result));
