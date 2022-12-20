@@ -146,3 +146,28 @@ export function* createTaskSaga({
     }
   }
 }
+
+export function* deleteTaskSaga({
+  task,
+}: ReturnType<typeof taskActions.deleteTask>) {
+  const { id } = task;
+  try {
+    yield call(reqWrapper, tasksApi.deleteTask, {
+      taskId: id,
+    });
+
+    yield put(taskActions.removeTask(task));
+  } catch (e) {
+    if (e instanceof Error) {
+      yield put(
+        enqueueSnackbar(
+          {
+            message: e.message,
+            options: { variant: 'error' },
+          },
+          e,
+        ),
+      );
+    }
+  }
+}

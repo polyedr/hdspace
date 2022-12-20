@@ -25,7 +25,6 @@ const NewTaskButton = styled(ButtonBase)(() => ({
   backgroundColor: '#E4E6EB',
   borderRadius: 4,
   color: '#81818E',
-
   '&:hover': {
     color: '#2A2A2D',
   },

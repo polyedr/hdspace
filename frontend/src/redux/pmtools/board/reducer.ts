@@ -107,6 +107,18 @@ const setTasks: ActionHandler<ReturnType<typeof taskActions.setTasks>> = (
   };
 };
 
+const removeTask: ActionHandler<ReturnType<typeof taskActions.addTask>> = (
+  state = INITIAL_STATE,
+  { task },
+) => {
+  const newState = { ...state };
+  const columnIndex = findColumnIndex(state, task.column);
+  const taskIndex = findTaskIndex(state, task);
+
+  newState.columns[columnIndex].tasks.splice(taskIndex, 1);
+  return newState;
+};
+
 const addTask: ActionHandler<ReturnType<typeof taskActions.addTask>> = (
   state = INITIAL_STATE,
   { task },
@@ -302,6 +314,7 @@ const HANDLERS: Handlers<BoardState> = {
   [TYPES.BOARD_SET_COLUMNS]: setColumns,
   [TYPES.BOARD_FETCH_COLUMNS_PENDING]: setColumnsFetching,
   [TYPES.BOARD_SET_TASKS]: setTasks,
+  [TYPES.BOARD_REMOVE_TASK]: removeTask,
   [TYPES.BOARD_ADD_TASK]: addTask,
   [TYPES.BOARD_SET_TASK]: setTask,
   [TYPES.BOARD_ADD_COLUMN]: addColumn,
