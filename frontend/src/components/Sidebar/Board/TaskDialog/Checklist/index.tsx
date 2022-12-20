@@ -93,7 +93,7 @@ const Checklist = ({ task }: Props) => {
   const handleEnterAddItem = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
-        handleAddItem();
+        if (value) handleAddItem();
       }
     },
     [value, task, setAddingItem, handleAddItem],
