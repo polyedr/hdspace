@@ -1,169 +1,148 @@
-/* eslint-disable no-undef */
-import React, { memo } from 'react';
+import React, { useCallback, useState } from 'react';
+import { Stack, Box, styled, Typography, ButtonBase } from '@mui/material';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { setSidebarOpen } from '@Redux/project/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { useDebouncedCallback } from 'use-debounce';
-import SubjectIcon from '@material-ui/icons/Subject';
-import WebIcon from '@material-ui/icons/Web';
+import { selectSidebarOpen } from '@Redux/project/selectors/base';
+import {
+  SettingIcon,
+  BoardIcon,
+  ChatIcon,
+  MemberIcon,
+  ActivityIcon,
+} from './icons';
+import { mainMenu } from './menu';
 
-import {
-  lighten,
-  Theme,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core/styles';
-import { changeMinLPanel } from '@Redux/user/actions';
-import { selectIsLeftPanelMinimized } from '@Redux/user/selectors';
-import { setBordersEnabled } from '@Redux/project/actions';
-import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
-import { IconButton } from '@material-ui/core';
-import FrameworkSection from '@Components/RightPanel/FrameworkSection';
-import {
-  selectCurrentScreen,
-  selectInfoUser,
-} from '@Redux/project/selectors/screen';
-import {
-  LEFT_PANEL_WIDTH,
-  LEFT_PANEL_WIDTH_MIN,
-  PANEL_TRANSITION_DURATION,
-} from '@Src/styles/Theme';
-import Styles from '@Components/LeftPanel/Styles';
-import Screens from './Screens';
-import Scrollbar from '../UI/Scrollbar';
-import ScreenEdits from './Screens/ScreenEdits';
-import LeftTabPanel from './LeftTabPanel';
+const IconButton = styled(ButtonBase)<{ active: boolean }>(
+  ({ active, theme }) => ({
+    width: theme.spacing(9),
+    // height: 50,
+    padding: 4,
+    flexDirection: 'column',
+    opacity: active ? 1 : 0.6,
+    margin: '0 !important',
 
-const useStyles = makeStyles<Theme, { minimized: boolean }>(({ palette }) =>
-  createStyles({
-    root: {
-      maxHeight: '100%',
-      width: ({ minimized }) =>
-        minimized ? LEFT_PANEL_WIDTH_MIN : LEFT_PANEL_WIDTH,
-      backgroundColor: '#ffffff',
-      transition: `width ${PANEL_TRANSITION_DURATION}ms ease`,
+    '& svg': {
+      height: 30,
     },
-    iconContainer: {
-      textAlign: 'center',
+
+    '& path': {
+      fill: active ? 'black' : '',
     },
-    iconButton: {
-      color: palette.common.white,
-      '&:hover': {
-        backgroundColor: lighten(palette.panel.main, 0.1),
-      },
+
+    '& h5': {
+      color: active ? 'black' : '#838995',
     },
-    content: {
-      overflowX: 'hidden', // Custom scrollbars bug
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-    },
-    toggleButton: {
-      alignSelf: 'flex-start',
-      color: palette.common.white,
-      '&:hover': {
-        backgroundColor: lighten(palette.panel.main, 0.1),
-      },
-      '& svg': {
-        transform: ({ minimized }) => `rotate(${minimized ? 90 : -90}deg)`,
-        transition: 'transform 0.25s ease',
-      },
-    },
-    iconCircleContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      marginTop: '10px',
-    },
-    editingUsers: {
-      fontSize: '14px',
-      color: 'white',
-      marginLeft: '10px',
+
+    label: {
+      color: '#838995',
+      fontSize: 12,
     },
   }),
 );
 
-const LeftPanel: React.FC = () => {
-  const dispatch = useDispatch();
-  const currentScreen = useSelector(selectCurrentScreen);
-  const infoUser = useSelector(selectInfoUser);
+const Boxstacked = styled(Box)({
+  backgroundColor: 'white',
+  borderRight: '1px solid #E4E6EB',
+  padding: '10px 0',
+  display: 'flex',
+  flexDirection: 'column',
 
-  const editingUsers = currentScreen.screenData.editableScreenUser.filter(
-    (item) => item.idUser !== infoUser.idUser,
+  '&  hr': {
+    width: '70%',
+    margin: '30px auto',
+    border: 'none',
+    borderTop: '1px solid #E4E6EB',
+  },
+});
+
+const LeftSideBar = () => {
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+
+  const sidebarOpen = useSelector(selectSidebarOpen);
+  const dispatch = useDispatch();
+
+  const ActiveComponent = activeMenu
+    ? mainMenu.find((m) => m.id === activeMenu)?.component
+    : null;
+
+  const handleSidebarToggle = useCallback(() => {
+    dispatch(setSidebarOpen(!sidebarOpen));
+  }, [sidebarOpen]);
+
+  const handleChangeMenu = useCallback(
+    (menu) => {
+      return () => {
+        if (menu === activeMenu) {
+          setActiveMenu(null);
+        } else {
+          setActiveMenu(menu);
+        }
+      };
+    },
+    [activeMenu],
   );
 
-  const minimized = useSelector(selectIsLeftPanelMinimized);
-  const viaMode = useSelector(selectVIAModeEnabled);
-  const classes = useStyles({ minimized });
-
-  const enableBordersDebounce = useDebouncedCallback(() => {
-    dispatch(setBordersEnabled(true));
-  }, PANEL_TRANSITION_DURATION + 120);
-
-  const toggleLeftPanel = () => {
-    dispatch(setBordersEnabled(false));
-    dispatch(changeMinLPanel());
-    enableBordersDebounce.callback();
-  };
-
   return (
-    <aside className={classes.root}>
-      <Scrollbar
-        style={{
-          height: '100%',
-          maxHeight: '100%',
-          minHeight: '100%',
-        }}
-      >
-        <div className={classes.content}>
-          {minimized ? (
-            <div>
-              <div className={classes.iconContainer}>
-                <IconButton
-                  onClick={toggleLeftPanel}
-                  className={classes.iconButton}
-                  color="primary"
-                  title="Screens"
-                >
-                  <WebIcon />
-                </IconButton>
-              </div>
+    <DndProvider backend={HTML5Backend}>
+      <Stack direction="row">
+        <Boxstacked>
+          <Stack spacing={1}>
+            {mainMenu.map(({ id, icon: Icon, label }) => (
+              <IconButton
+                active={activeMenu === id}
+                key={id}
+                onClick={handleChangeMenu(id)}
+              >
+                <Icon />
+                <Typography variant="h5" fontSize={12}>
+                  {label}
+                </Typography>
+              </IconButton>
+            ))}
+          </Stack>
+          <hr />
+          <Stack flex={1} justifyContent="space-between">
+            <Stack spacing={1}>
+              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
+                <BoardIcon />
+                <label>Board</label>
+              </IconButton>
+              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
+                <ChatIcon />
+                <label>Chat</label>
+              </IconButton>
+              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
+                <MemberIcon />
+                <label>Team</label>
+              </IconButton>
+              <IconButton onClick={handleSidebarToggle} active={sidebarOpen}>
+                <ActivityIcon />
+                <label>Activities</label>
+              </IconButton>
+            </Stack>
 
-              <div className={classes.iconContainer}>
-                <IconButton
-                  className={classes.iconButton}
-                  onClick={toggleLeftPanel}
-                  title="Navigator"
-                  color="primary"
-                >
-                  <SubjectIcon />
-                </IconButton>
-              </div>
-              {editingUsers.length > 0 && (
-                <div className={classes.iconCircleContainer}>
-                  <ScreenEdits
-                    editingUsers={editingUsers}
-                    isMinimized={minimized}
-                  />
-                </div>
-              )}
-            </div>
-          ) : (
-            <div>
-              {!viaMode && <Screens />}
-              {editingUsers.length > 0 && (
-                <ScreenEdits
-                  editingUsers={editingUsers}
-                  isMinimized={minimized}
-                />
-              )}
-              <LeftTabPanel />
-              <FrameworkSection />
-              <Styles />
-            </div>
-          )}
-        </div>
-      </Scrollbar>
-    </aside>
+            <IconButton active={false}>
+              <SettingIcon />
+              <label>Setting</label>
+            </IconButton>
+          </Stack>
+        </Boxstacked>
+        {ActiveComponent && (
+          <Box
+            width={248}
+            sx={{
+              borderRight: '1px solid #E4E6EB',
+              backgroundColor: '#ffffff',
+            }}
+          >
+            <ActiveComponent />
+          </Box>
+        )}
+      </Stack>
+    </DndProvider>
   );
 };
 
-export default memo(LeftPanel);
+export default LeftSideBar;

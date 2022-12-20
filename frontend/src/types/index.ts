@@ -1005,6 +1005,13 @@ export type Indents = {
   paddingRight?: string | number;
 };
 
+export type FlexConstraints = Indents & {
+  flexDirection: React.CSSProperties['flexDirection'];
+  alignItems: React.CSSProperties['alignItems'];
+  justifyContent: React.CSSProperties['justifyContent'];
+  flexWrap: React.CSSProperties['flexWrap'];
+};
+
 export type Project = ProjectBase & {
   projectscreen: number[];
   projectTrelloJSON: IBoardForUI | null;
@@ -1439,7 +1446,9 @@ export type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   element: StateElement;
   removeStyles(cssPropertiesNames: string[]): void;
-  updateStyles(payload: React.CSSProperties): void;
+  updateStyles(
+    payload: React.CSSProperties | { [key: string]: React.CSSProperties },
+  ): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
   replaceStyles(payload: React.CSSProperties): void;
   masterScreenEnabled?: boolean;
@@ -1677,6 +1686,8 @@ export const CONTROLS_AFFECT_ON_PARAMS = [
 export const CONTROLS_AFFECT_ON_STYLES = [
   'grid',
   'columns',
+  'constraints',
+  'constraintsChild',
   'nativeColumns',
   'display',
   'position',
