@@ -110,8 +110,8 @@ const ListItem = ({ label, selected, onToggle, onDelete }: Props) => {
       </MuiListItem>
       <ConfirmModal
         show={showDelete}
-        elementText="Label"
-        actionText="Delete"
+        elementText="tag"
+        actionText="delete"
         action={() => onDelete(label.id)}
         hide={handleShowDelete(false)}
       />
