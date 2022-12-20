@@ -78,6 +78,10 @@ const Tags = ({ task, onChange }) => {
     return mergedLabels.sort((a, b) => (a.text > b.text ? 1 : -1));
   }, [selected, labels]);
 
+  const labelsMemonized = useMemo(() => {
+    return [...selectedLabels].map((label) => label.text);
+  }, [selectedLabels]);
+
   useEffect(() => {
     if (mountedRef.current) {
       onChange(selected);
@@ -125,6 +129,7 @@ const Tags = ({ task, onChange }) => {
         }}
       >
         <AllTags
+          tags={labelsMemonized}
           onClose={handleCloseTagPicker}
           selected={selected}
           onChange={setSelected}
