@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) =>
       height: '18px',
       backgroundColor: (props: any) => props.color,
       cursor: 'pointer',
-      border: '1px solid #E4E6EB',
+      // border: '1px solid #E4E6EB',
       borderRadius: 2,
     },
     transparent: {

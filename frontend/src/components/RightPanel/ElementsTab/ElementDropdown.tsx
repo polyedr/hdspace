@@ -19,6 +19,7 @@ const useStyles = makeStyles({
     fontSize: '1em',
   },
   elementDropdown: {
+    width: '33%',
     '& *:first-child': {
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
@@ -28,7 +29,14 @@ const useStyles = makeStyles({
     },
   },
   dropdownButton: {
-    padding: 0,
+    padding: '0 !important',
+    minWidth: 'auto',
+    width: 10,
+    backgroundColor: 'transparent !important',
+
+    '& svg': {
+      fill: '#000 !important',
+    },
   },
   dropdownButtonIcon: {
     height: 16,
@@ -70,7 +78,7 @@ const ElementDropdown: React.FC<Props> = ({ options }) => {
       <ButtonGroup
         ref={anchorRef}
         className={classes.elementDropdown}
-        orientation="vertical"
+        orientation="horizontal"
       >
         <ElementButton elementData={options[selectedIndex]} />
 

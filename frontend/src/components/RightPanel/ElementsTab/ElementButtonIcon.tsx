@@ -16,13 +16,13 @@ const useStyles = makeStyles({
   },
   squareTopLeft: (colors: ColorElementIcon) => ({
     display: 'inline-block',
-    height: '24px',
+    height: '20px',
     width: '13px',
     backgroundColor: colors.squareTopLeft,
   }),
   squareTopRight: (colors: ColorElementIcon) => ({
     display: 'inline-block',
-    height: '24px',
+    height: '20px',
     width: '13px',
     backgroundColor: colors.squareTopRight,
   }),

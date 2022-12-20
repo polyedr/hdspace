@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { Box, BoxProps, Link } from '@material-ui/core';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+// import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { ExitIcon } from '../Icon';
 import logo from '../../../assets/images/logo.png';
 
 const Logo = ({ width, height, ...rest }: BoxProps) => {
@@ -20,7 +21,7 @@ const Logo = ({ width, height, ...rest }: BoxProps) => {
         }}
       >
         {currentScreenId !== -1 ? (
-          <ArrowBackIcon sx={{ width: '16px' }} />
+          <ExitIcon />
         ) : (
           <img src={logo} alt="logo" width="100%" />
         )}
