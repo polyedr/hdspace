@@ -280,9 +280,8 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                         selected={task?.assignee_id?.toString()}
                         onChange={(member) => {
                           if (member)
-                            handleUpdateTask('assignee_id', member?.id)
-                          else
-                            handleUpdateTask('assignee_id', null)
+                            handleUpdateTask('assignee_id', member?.id);
+                          else handleUpdateTask('assignee_id', null);
                         }}
                       />
                     </TableCell>
@@ -297,10 +296,8 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                           selected={task?.responsible_id?.toString()}
                           onChange={(member) => {
                             if (member)
-                              handleUpdateTask('responsible_id', member?.id)
-                            else
-                              handleUpdateTask('responsible_id', null)
-
+                              handleUpdateTask('responsible_id', member?.id);
+                            else handleUpdateTask('responsible_id', null);
                           }}
                         />
                       </IconButton>
