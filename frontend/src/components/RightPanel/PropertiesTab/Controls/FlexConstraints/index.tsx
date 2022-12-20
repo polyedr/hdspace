@@ -62,9 +62,12 @@ const FlexConstraints: React.FC<Props> = ({
     flexWrap,
   });
 
-  const childStyles = element.styles['& > *'];
-
-  console.log(childStyles);
+  const childStyles = element.styles.ownStyles['& > *'] as {
+    marginTop?: string;
+    marginBottom?: string;
+    marginLeft?: string;
+    marginRight?: string;
+  } | null;
 
   const [activeElePos, setActiveElePos] = useState<{
     left: number;
@@ -146,12 +149,13 @@ const FlexConstraints: React.FC<Props> = ({
 
       updateStyles({
         '& > *': {
+          ...(childStyles || {}),
           marginLeft: `${val}px`,
           marginRight: `${val}px`,
         },
       });
     },
-    [],
+    [childStyles],
   );
 
   const handleUpdateVerticalSpacing = useCallback(
@@ -160,12 +164,13 @@ const FlexConstraints: React.FC<Props> = ({
 
       updateStyles({
         '& > *': {
+          ...(childStyles || {}),
           marginTop: `${val}px`,
-          marginButtom: `${val}px`,
+          marginBottom: `${val}px`,
         },
       });
     },
-    [],
+    [childStyles],
   );
 
   const activeElementStyle = useMemo(() => {
@@ -239,11 +244,21 @@ const FlexConstraints: React.FC<Props> = ({
         <div className={classes.inputGroup}>
           <div className={classes.inputWithIcon}>
             <RowIcon />
-            <TextField onChange={handleUpdateHorizontalSpacing} />
+            <TextField
+              value={
+                childStyles?.marginLeft ? parseInt(childStyles.marginLeft) : 0
+              }
+              onChange={handleUpdateHorizontalSpacing}
+            />
           </div>
           <div className={classes.inputWithIcon}>
             <ColumnIcon />
-            <TextField onChange={handleUpdateVerticalSpacing} />
+            <TextField
+              value={
+                childStyles?.marginTop ? parseInt(childStyles.marginTop) : 0
+              }
+              onChange={handleUpdateVerticalSpacing}
+            />
           </div>
         </div>
       </div>

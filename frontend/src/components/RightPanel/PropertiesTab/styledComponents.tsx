@@ -31,31 +31,51 @@ export const InputWithIcon = styled(Box)({
   },
 });
 
-export const IconWithButton = styled(IconButton)({
-  width: 28,
-  height: 28,
-  padding: '0 !important',
-  backgroundColor: '#E4E6EB !important',
-  borderRadius: '4px !important',
-  transition: 'background-color 0.2s ease-in-out',
+export const IconWithButton = styled(IconButton)<{ selected?: boolean }>(
+  ({ selected }) => ({
+    width: 28,
+    height: 28,
+    padding: '0 !important',
+    backgroundColor: `${selected ? '#2A2A2D' : '#E4E6EB'} !important`,
+    borderRadius: '4px !important',
+    transition: 'background-color 0.2s ease-in-out',
 
-  '&:hover': {
-    backgroundColor: '#2A2A2D !important',
+    ...(selected
+      ? {
+          '& path': {
+            stroke: '#E4E6EB',
+            // fill: '#E4E6EB',
+          },
 
-    '& path': {
-      stroke: '#E4E6EB',
-      // fill: '#E4E6EB',
+          '& circle': {
+            // stroke: '#E4E6EB',
+            fill: '#E4E6EB',
+          },
+
+          '& rect': {
+            fill: '#fff',
+          },
+        }
+      : {}),
+
+    '&:hover': {
+      backgroundColor: '#2A2A2D !important',
+
+      '& path': {
+        stroke: '#E4E6EB',
+        // fill: '#E4E6EB',
+      },
+
+      '& circle': {
+        // stroke: '#E4E6EB',
+        fill: '#E4E6EB',
+      },
+
+      '& rect': {
+        fill: '#fff',
+      },
     },
-
-    '& circle': {
-      // stroke: '#E4E6EB',
-      fill: '#E4E6EB',
-    },
-
-    '& rect': {
-      fill: '#fff',
-    },
-  },
-});
+  }),
+);
 
 export default IconWithButton;

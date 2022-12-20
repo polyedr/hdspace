@@ -1446,7 +1446,9 @@ export type Params<T extends LibraryElement<Entity>> = Partial<T['parameters']>;
 export type PropertiesChangeProps<T extends LibraryElement<Entity>> = {
   element: StateElement;
   removeStyles(cssPropertiesNames: string[]): void;
-  updateStyles(payload: React.CSSProperties): void;
+  updateStyles(
+    payload: React.CSSProperties | { [key: string]: React.CSSProperties },
+  ): void;
   updateParams(payload: Params<T>, updatedItemID?: string): void;
   replaceStyles(payload: React.CSSProperties): void;
   masterScreenEnabled?: boolean;
