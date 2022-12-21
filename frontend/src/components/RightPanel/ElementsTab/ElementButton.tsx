@@ -33,11 +33,23 @@ type Props = {
 
 const useButtonStyles = makeStyles(() => ({
   root: {
-    color: '#81818E',
+    width: '33%',
+    minHeight: '65px',
+    paddingTop: '8px',
+    alignItems: 'flex-start',
+    '& svg': {
+      height: 30,
+    },
+    '& span': {
+      fontSize: 11,
+      color: '#81818E',
+      fontWeight: 400,
+    },
     '&:hover': {
-      color: '#000000',
-      boxShadow:
-        '0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)',
+      backgroundColor: 'transparent',
+      '& span': {
+        color: 'black',
+      },
     },
   },
   text: {
@@ -59,14 +71,17 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'flex-end',
-    height: '45%',
+    alignItems: 'flex-start',
     width: '100%',
+
+    '& svg': {
+      height: 30,
+    },
   },
   nameSection: (props: Props) => ({
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     lineHeight: 1.5,
     width: '100%',
     height: props.elementData.icon ? '55%' : '100%',

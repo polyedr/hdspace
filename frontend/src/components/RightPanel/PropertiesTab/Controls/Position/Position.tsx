@@ -33,18 +33,20 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     marginTop: 14,
   },
   wrapper: {
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    // justifyContent: 'space-between',
+    // alignItems: 'flex-end',
+    // flex: 1,
   },
   styleText: {
-    fontSize: '16px',
+    fontSize: '14px',
     color: '#2A2A2D',
-    paddingBottom: '2px',
+    // paddingBottom: '2px',
+    // marginRight: 30,
     fontFamily: 'Roboto',
   },
   icon: { width: 24, height: 24 },
@@ -126,7 +128,7 @@ const Position: React.FC<Props> = ({
   };
 
   return (
-    <div style={{ padding: '0 16px' }}>
+    <div>
       <StyledTextField
         fullWidth
         margin="dense"
@@ -167,7 +169,7 @@ const Position: React.FC<Props> = ({
           name="Relative to"
           value={parentOfActiveElement?.name || 'root'}
           disabled
-          style={{ width: 142 }}
+          // style={{ width: 142 }}
         >
           <div className={classes.targetIcon}>
             <TargetIcon />

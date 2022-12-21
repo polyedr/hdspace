@@ -82,6 +82,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
   text: {
     padding: '5px',
+    fontSize: 11,
   },
 }));
 

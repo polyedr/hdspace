@@ -88,11 +88,11 @@ enum BackgroundClip {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: '0 16px',
+    // padding: '0 16px',
   },
   formControl: {
     width: '100%',
-    marginBottom: theme.spacing(2),
+    // marginBottom: theme.spacing(2),
   },
   imageWrapper: {
     height: 100,
