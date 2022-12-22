@@ -31,10 +31,7 @@ import {
   UserSubscriptionsData,
 } from '@Src/types';
 import { enqueueSnackbar } from '@Redux/notification/actions';
-import {
-  sidebarLogout,
-  updateUISettingsParameters,
-} from '@Redux/project/actions';
+import { updateUISettingsParameters } from '@Redux/project/actions';
 import _ from 'lodash';
 import { USERNAME_VIEW, PASSWORD_VIEW } from '@Constants/defaultParams';
 import TYPES from '../actionTypes';
@@ -142,11 +139,6 @@ export function* loginSaga({
 
 export function* logoutSaga() {
   try {
-    yield put(sidebarLogout());
-
-    // logout chat Zulip
-    localStorage.removeItem('login');
-
     yield put(Actions.logout());
     openSignScreen('signin');
   } catch (e: any) {

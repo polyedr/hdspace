@@ -7,8 +7,8 @@
     "build:production": "webpack --mode=production --progress --color --env MODE=production --stats-error-details",
     "build:staging": "webpack --mode=production --progress --color --env MODE=staging",
     "start:server": "node server.js",
-    "lint:check": "npx eslint src/**/*.{ts,tsx}",
-    "lint:fix": "npx eslint src/**/*.{ts,tsx} --fix",
+    "lint:check": "npx eslint \"src/**/*.{ts,tsx}\"",
+    "lint:fix": "npx eslint \"src/**/*.{ts,tsx}\" --fix",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"

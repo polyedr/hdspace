@@ -1,21 +1,10 @@
 /* eslint-disable import/no-cycle */
 import { ServerUserData } from '@Src/types';
 import { DefaultRootState } from 'react-redux';
-import {
-  ActionTypePM,
-  AuthParams,
-  ChatClient,
-  IMessageZulip,
-} from '@Src/types/pmtools/types';
+import { ActionTypePM } from '@Src/types/pmtools/types';
 import * as actionsActivity from './activity/actions';
 import * as actionsColumns from './board/actions/columns';
 import * as actionsTasks from './board/actions/tasks';
-import {
-  successLoginChatUser,
-  successLogoutChatUser,
-  successProjectStreamMessages,
-  successSendStreamMessage,
-} from './chat/actions';
 import { successSendEmail, sidePanelError } from './invite/actions';
 
 export interface InviteRootState extends DefaultRootState {
@@ -29,17 +18,9 @@ export interface BoardRootState extends DefaultRootState {
 export interface ActivityRootState extends DefaultRootState {
   activity: ActivityState;
 }
-export interface ChatRootState extends DefaultRootState {
-  chat: ChatState;
-}
 
 export type ActivityState = {
   actions: Array<ActionTypePM>;
-};
-
-export type ChatState = {
-  client: ChatClient | null;
-  messages: Array<IMessageZulip> | [];
 };
 
 export interface BoardNewTask {
@@ -147,7 +128,6 @@ export type InviteState = {
 export type UserState = {
   userData: ServerUserData;
   projectId: number;
-  chatCredentials: AuthParams;
 };
 
 // Types for action inside a reducer
@@ -171,13 +151,6 @@ export type BoardAction = ReturnType<
   | typeof actionsTasks.addTask
   | typeof actionsTasks.setTasks
   | typeof actionsTasks.createTask
->;
-
-export type ChatAction = ReturnType<
-  | typeof successLoginChatUser
-  | typeof successLogoutChatUser
-  | typeof successProjectStreamMessages
-  | typeof successSendStreamMessage
 >;
 
 export type memberAction = ReturnType<

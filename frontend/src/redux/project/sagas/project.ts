@@ -3,7 +3,6 @@ import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
 } from '@Api/converters/toRequest';
-import generator from 'generate-password';
 import { setProjectError } from '@Redux/project/actions';
 import {
   apiCreateProject,
@@ -34,16 +33,6 @@ import { CORE_MASTER_ELEMENTS } from '@Components/Editor/MasterScreen/coreElemen
 import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
-// import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
-import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
-// import {
-//   apiGetBoard,
-//   createNewBoard,
-//   createOrganization,
-//   deleteOrganization,
-//   getAddUserToBoard,
-//   getUserByEmail,
-// } from '@Api/pmtools/board/boardApi';
 import logger from 'loglevel';
 import { setStateCurrentUserPermissions } from '@Redux/permissions/actions';
 import { apiGetUser } from '@Api/user';
@@ -296,35 +285,16 @@ export function* createProjectSaga(
       payload: { name },
     } = action;
 
-    const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
-
-    // const organization: IOrganization = yield call(
-    //   createOrganization,
-    //   `${generateName}-adevi-org`,
-    // );
-    // const board: IBoardForUI = yield call(createNewBoard, generateName);
-    yield call(apiCreateNewStreams, generateName);
-
-    // const boardForUI: IBoardForUI = {
-    //   organization,
-    //   ...board,
-    // };
-
-    // const { email } = yield select(selectUserData);
-    // const userTrello = yield call(getUserByEmail, email);
-    // if (!userTrello.error) {
-    //   yield call(getAddUserToBoard, email, board.id);
-    // }
 
     const { result: createdProject, error }: Result<Project> = yield call(
       reqWrapper,
       apiCreateProject,
       {
         data: convertCreatedProjectToRequest(name, {}),
-        // data: [],
       },
     );
+
     yield put(setProjectError(error));
     // yield put(successSavedBoard(boardForUI));
 

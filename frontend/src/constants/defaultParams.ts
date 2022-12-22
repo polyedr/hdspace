@@ -38,7 +38,6 @@ export const DEFAULT_USER_PROFILE: ProfileData = {
       autoSwitchTabs: false,
       dropTargetBordersMode: true,
     },
-    passwordZulip: '',
   },
 };
 

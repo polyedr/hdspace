@@ -22,7 +22,6 @@ import userSaga from './user/sagas';
 import history from './history';
 import DevToolsOptions from './devtools';
 import activityReducer from './pmtools/activity/reducer';
-import chatReducer from './pmtools/chat/reducer';
 import boardReducer from './pmtools/board/reducer';
 import inviteReducer from './pmtools/invite/reducer';
 import pmToolsSaga from './pmtools/sagas';
@@ -36,7 +35,6 @@ const userPersistConfig: PersistConfig = {
     'tokenPair',
     'userData',
     'isLoggedIn',
-    'chat',
   ],
   storage,
 };
@@ -59,7 +57,6 @@ export const rootReducer = combineReducers({
   notification: notificationReducer,
   permissions: permissionsReducer,
   activity: activityReducer,
-  chat: chatReducer,
   invite: inviteReducer,
   board: boardReducer,
   marketplace: marketplaceReducer,
