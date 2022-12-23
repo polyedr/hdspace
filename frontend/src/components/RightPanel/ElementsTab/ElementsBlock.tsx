@@ -2,12 +2,14 @@ import React, { memo } from 'react';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Grid } from '@mui/material';
 import ElementButton from './ElementButton';
 import ElementDropdown from './ElementDropdown';
 import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
+  PropertyAccordion,
+  PropertyAccordianSummary,
+  PropertyAccordionDetails,
 } from '../../styledComponents';
 
 type Props = {
@@ -28,23 +30,51 @@ export const useStyles = makeStyles({
   elementsBlock: {
     display: 'flex',
     flexFlow: 'row wrap',
-    padding: '0 2px 2px',
-    '& > *': {
-      width: '25%',
-      height: 'calc(300px/4)',
+    padding: '0',
+    justifyContent: 'space-between',
+    '& .MuiButton-text ': {
+      width: '33%',
+      height: '70px',
+
+      '& span': {
+        fontSize: 12,
+        color: '#81818E',
+        fontWeight: 400,
+      },
     },
+
+    '& .MuiButton-text:hover': {
+      boxShadow: 'none',
+      backgroundColor: 'transparent',
+
+      '& span': {
+        color: 'black',
+      },
+    },
+  },
+
+  '&.MuiAccordion-root': {
+    boxShadow: 'none',
   },
 });
 
 export const renderElementButtons = (
   elements: Record<string, ElementData | ElementData[]>,
-) =>
-  Object.values(elements).map((element) => {
-    if (Array.isArray(element)) {
-      return <ElementDropdown options={element} key={element[0].key} />;
-    }
-    return <ElementButton elementData={element} key={element.key} />;
-  });
+) => {
+  return (
+    <Grid container>
+      {Object.values(elements).map((element) => (
+        <Grid xs={4} item>
+          {Array.isArray(element) ? (
+            <ElementDropdown options={element} key={element[0].key} />
+          ) : (
+            <ElementButton elementData={element} key={element.key} />
+          )}
+        </Grid>
+      ))}
+    </Grid>
+  );
+};
 
 const ElementsBlock: React.FC<Props> = ({
   title = '',
@@ -56,15 +86,16 @@ const ElementsBlock: React.FC<Props> = ({
   const content = renderElementButtons(elements);
 
   return expandable ? (
-    <StyledAccordion defaultExpanded>
-      <StyledAccordionSummary className={classes.title}>
+    <PropertyAccordion defaultExpanded>
+      <PropertyAccordianSummary
+        className={classes.title}
+        expandIcon={<ExpandMoreIcon />}
+      >
         {splitWords(title)}
-      </StyledAccordionSummary>
+      </PropertyAccordianSummary>
 
-      <StyledAccordionDetails className={classes.elementsBlock}>
-        {content}
-      </StyledAccordionDetails>
-    </StyledAccordion>
+      <PropertyAccordionDetails>{content}</PropertyAccordionDetails>
+    </PropertyAccordion>
   ) : (
     <div className={classes.elementsBlock}>{content}</div>
   );

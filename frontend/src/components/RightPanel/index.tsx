@@ -5,12 +5,12 @@ import {
   PANEL_TRANSITION_DURATION,
   RIGHT_PANEL_WIDTH,
 } from '@Src/styles/Theme';
-import { selectActiveElement } from '@Redux/project/selectors/element';
+// import { selectActiveElement } from '@Redux/project/selectors/element';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { makeStyles } from '@material-ui/core/styles';
-import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
+// import { isAvailableChild } from '@Utils/AvailableChildrenHelper';
 import PropertiesTab from './PropertiesTab';
-import ElementsTab from './ElementsTab';
+// import ElementsTab from './ElementsTab';
 
 const useStyles = makeStyles(({ palette }) => ({
   root: {
@@ -31,14 +31,14 @@ const useStyles = makeStyles(({ palette }) => ({
 
 const RightPanel: React.FC = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
-  const activeElement = useSelector(selectActiveElement);
+  // const activeElement = useSelector(selectActiveElement);
   const classes = useStyles({ open: !isPrototypeMode });
   return (
     <div className={classes.root} id={ELEMENT_IDS.rightPanel}>
       <PropertiesTab />
-      {isAvailableChild(activeElement, activeElement.type) ? (
+      {/* {isAvailableChild(activeElement, activeElement.type) ? (
         <ElementsTab />
-      ) : null}
+      ) : null} */}
     </div>
   );
 };

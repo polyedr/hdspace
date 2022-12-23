@@ -4,12 +4,15 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-import { selectCurrentProjectId } from '@Redux/project/selectors/base';
+import {
+  selectAssetsListsLoader,
+  selectCurrentProjectId,
+} from '@Redux/project/selectors/base';
 import { selectVIAModeEnabled } from '@Redux/project/selectors/via';
 import { selectScreenByIdWrapper } from '@Redux/project/selectors/screen';
 import VIA from '@Components/Editor/VIA';
 import VIARightPanel from '@Components/Editor/VIA/VIARightPanel';
-import { activateScreen } from '@Redux/project/actions';
+import { activateScreen, loadAssetLists } from '@Redux/project/actions';
 import ELEMENT_IDS from '@Constants/elementIds';
 import Tour, { ReactourStep } from 'reactour';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
@@ -21,8 +24,9 @@ import {
 } from '@Redux/user/actions';
 import { Experience } from '@Src/types';
 import { DOMHandler } from '@Components/Editor/Workspace/DOMHandler';
-import Workspace from '../components/Editor/Workspace/Workspace';
-import RightPanel from '../components/RightPanel';
+import { selectAllAssetLists } from '@Redux/project/selectors/asset';
+import Workspace from '@Components/Editor/Workspace/Workspace';
+import RightPanel from '@Components/RightPanel';
 
 const tourSteps: ReactourStep[] = [
   {
@@ -127,6 +131,9 @@ const Screen: React.FC<Props> = ({ screenId }) => {
   const currentProjectId = useSelector(selectCurrentProjectId);
   const viaModeEnabled = useSelector(selectVIAModeEnabled);
 
+  const assetLists = useSelector(selectAllAssetLists);
+  const assetListsLoading = useSelector(selectAssetsListsLoader);
+
   useEffect(() => {
     if (screen) {
       DOMHandler.INSTANCE.removeEmptyEntries();
@@ -135,6 +142,12 @@ const Screen: React.FC<Props> = ({ screenId }) => {
       history.push(`/project/${currentProjectId}`);
     }
   }, [history, dispatch, screen, currentProjectId]);
+
+  useEffect(() => {
+    if (!assetLists && !assetListsLoading) {
+      dispatch(loadAssetLists(String(currentProjectId)));
+    }
+  }, [assetLists, dispatch, currentProjectId, assetListsLoading]);
 
   const userGuideActive = useSelector(selectUserGuideActive);
   const { shape } = useTheme();
@@ -167,7 +180,6 @@ const Screen: React.FC<Props> = ({ screenId }) => {
       ) : (
         <DndProvider backend={HTML5Backend}>
           <Workspace />
-
           <RightPanel />
         </DndProvider>
       )}

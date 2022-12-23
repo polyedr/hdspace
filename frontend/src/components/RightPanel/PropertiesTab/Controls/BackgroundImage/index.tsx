@@ -36,12 +36,17 @@ const useStyles = makeStyles({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%',
   },
   assetListsWrapper: {
     display: 'flex',
     flexDirection: 'column',
-    margin: '15px 10px',
+    margin: '15px 0 0 0',
     width: '100%',
+
+    '& label': {
+      marginBottom: 10,
+    },
   },
   assetsSelector: {
     width: '100%',
