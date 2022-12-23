@@ -8,9 +8,9 @@ import {
   NOT_SELECTED_FRAMEWORK,
 } from '@Constants/frameworks/index';
 import {
-  StyledAccordion,
-  StyledAccordionDetails,
-  StyledAccordionSummary,
+  PropertyAccordianSummary,
+  PropertyAccordion,
+  PropertyAccordionDetails,
   StyledTextField,
 } from '@Components/styledComponents';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
     flexDirection: 'column',
   },
   selectWrapper: {
-    padding: '0 1em',
+    // padding: '0 1em',
   },
   name: {
     textTransrorm: 'capitalize',
@@ -121,14 +121,14 @@ const FrameworkSection = () => {
   );
 
   return (
-    <StyledAccordion>
-      <StyledAccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <PropertyAccordion>
+      <PropertyAccordianSummary expandIcon={<ExpandMoreIcon />}>
         {currentUIFramework?.name === NOT_SELECTED_FRAMEWORK?.name
           ? FRAMEWORKS_LIST[0].label
           : currentUIFramework?.name}
-      </StyledAccordionSummary>
+      </PropertyAccordianSummary>
 
-      <StyledAccordionDetails className={classes.details}>
+      <PropertyAccordionDetails className={classes.details}>
         <div className={classes.selectWrapper}>
           <StyledTextField
             fullWidth
@@ -174,8 +174,8 @@ const FrameworkSection = () => {
             </StyledTextField>
           )}
         </div>
-      </StyledAccordionDetails>
-    </StyledAccordion>
+      </PropertyAccordionDetails>
+    </PropertyAccordion>
   );
 };
 
