@@ -58,18 +58,22 @@ export const rootStyleControls = ['background'] as const;
 export const containerStyleControls = [
   'indents',
   'size',
+  'display',
+  'constraints',
+  'constraintsChild',
   'typography',
   'background',
   'position',
   'backgroundImage',
   'border',
-  'display',
   'flexGrow',
   'opacity',
 ] as const;
 
 export const divBlockStyleControls = [
   'indents',
+  'constraints',
+  'constraintsChild',
   'size',
   'typography',
   'background',

@@ -14,10 +14,10 @@ const useStyles = makeStyles({
     color: '#81818E',
     alignItems: 'center',
     flexDirection: 'row',
-    marginRight: '24px',
+    // marginRight: '24px',
   },
   icon: {
-    width: '16px',
+    width: '20px',
   },
 });
 

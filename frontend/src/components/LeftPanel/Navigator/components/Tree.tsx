@@ -348,7 +348,7 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
   };
 
   const renderItem = (props: RenderItemParams) => {
-    const height = 25;
+    const height = 30;
 
     return (
       <TreeItem
@@ -372,9 +372,9 @@ const Tree: React.FC<Props> = ({ tree, setTree, elements }) => {
     >
       <Scrollbar
         style={{
-          height: '50vh',
-          maxHeight: '50vh',
-          minHeight: '50vh',
+          // height: '50vh',
+          maxHeight: 'calc(100vh - 56px)',
+          minHeight: 'calc(100vh - 56px)',
         }}
       >
         <div
