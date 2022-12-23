@@ -84,9 +84,10 @@ const AddTag = ({
       if (tags?.includes(e.target.value))
         setDuplicateCheck('Tag already exist');
       else {
-        setValue(e.target.value);
         setDuplicateCheck('');
       }
+
+      setValue(e.target.value);
     },
     [setValue],
   );
