@@ -181,16 +181,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     return null;
   }
 
-  // handling div element with divBlock as server using div elements
-  // const ElementRenderer = CustomContextMenu(RENDERERS[element.type]);
-
-  const ElementRenderer = CustomContextMenu(RENDERERS[element.type]);
-
-  // const ElementRenderer = RENDERERS[element.type];
-  // RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
+  // @ts-ignore
+  const ElementRenderer = RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
 
   if (!ElementRenderer) {
-    // eslint-disable-next-line no-console
     logger.warn(`Element dose not exists: ${element.type}`);
     return null;
   }
@@ -218,9 +212,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
         return (
           <DraggableElement
             key={`element-${element.children.indexOf(childId) === index
-              ? childId
-              : childId + Math.random()
-              }`}
+                ? childId
+                : childId + Math.random()
+                }`}
             elementId={childId}
             parentIds={parentsIdsForChildren}
             scrollRef={scrollRef}

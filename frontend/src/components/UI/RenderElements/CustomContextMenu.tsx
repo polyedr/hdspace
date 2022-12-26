@@ -12,7 +12,7 @@ const initialState: State = {
   mouseY: null,
 };
 
-const CustomContextMenu = (Component) => {
+const CustomContextMenu = (Component: any) => {
   const [state, setState] = useState(initialState);
   const currentScreenId = useSelector(selectCurrentScreenId);
 
@@ -44,18 +44,25 @@ const CustomContextMenu = (Component) => {
                 ? { top: state.mouseY, left: state.mouseX }
                 : undefined
             }
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
           >
             <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
             <MenuItem onClick={pasteToBoard}>Paste</MenuItem>
           </Menu>
         )}
         <div
-          data-id="test_contexgt"
           onContextMenu={(e) => {
             e.preventDefault();
             setState({
-              mouseX: e.clientX + 214,
-              mouseY: e.clientY + 44,
+              mouseX: e.clientX,
+              mouseY: e.clientY,
             });
           }}
         >

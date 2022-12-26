@@ -1,11 +1,16 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { BoundingStyles, DropTargetParams } from '@Src/types';
 import { Rnd } from 'react-rnd';
 import cn from 'classnames';
 import { selectIsElementActive } from '@Redux/project/selectors/element';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import { selectShowingGrid } from '@Redux/project/selectors/base';
+import {
+  selectEditorDocument,
+  selectShowingGrid,
+} from '@Redux/project/selectors/base';
+import { Menu, MenuItem } from '@mui/material';
+import ELEMENT_IDS from '@Constants/elementIds';
 import DropPositionMarker from './DropPositionMarker';
 
 type Props = {
@@ -85,6 +90,37 @@ const Borders: React.FC<Props> = ({
   const classes = useStyles({ isActive });
   const rightGridScale = useRef<HTMLDivElement>(null);
 
+  const [contextMenu, setContextMenu] = useState<{
+    mouseX: number;
+    mouseY: number;
+  } | null>(null);
+
+  const handleContextMenu = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      const frame = window.parent.document.getElementById(
+        ELEMENT_IDS.canvas,
+      ) as HTMLIFrameElement;
+
+      const { x, y } = frame.getBoundingClientRect();
+
+      setContextMenu(
+        contextMenu === null
+          ? {
+              mouseX: event.clientX + x,
+              mouseY: event.clientY + y,
+            }
+          : null,
+      );
+    },
+    [elementId],
+  );
+
+  const handleClose = () => {
+    setContextMenu(null);
+  };
+
   if (!elementId || !styles) {
     return null;
   }
@@ -145,6 +181,20 @@ const Borders: React.FC<Props> = ({
 
   return (
     <>
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleClose}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
+      >
+        <MenuItem onClick={handleClose}>Copy</MenuItem>
+        <MenuItem onClick={handleClose}>Duplicate</MenuItem>
+        <MenuItem onClick={handleClose}>Delete</MenuItem>
+      </Menu>
       {isActiveBorder &&
         !showGrid &&
         !['root', 'calendar', 'clock'].includes(type) && (
@@ -195,9 +245,9 @@ const Borders: React.FC<Props> = ({
             >
               {rightGridScale.current?.scrollWidth !== undefined
                 ? `${Math.round(
-                  // eslint-disable-next-line prettier/prettier
+                    // eslint-disable-next-line prettier/prettier
                   (Number(rightGridScale.current?.scrollWidth) * 100) / 100,
-                )}px`
+                  )}px`
                 : null}
             </div>
 
@@ -244,6 +294,16 @@ const Borders: React.FC<Props> = ({
             topRight: true,
           }}
         >
+          <div
+            onContextMenu={handleContextMenu}
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            }}
+          />
           {enableDropTargetBordersMode && isDropTarget && (
             <DropPositionMarker styles={styles} isActive={isActiveBorder} />
           )}
