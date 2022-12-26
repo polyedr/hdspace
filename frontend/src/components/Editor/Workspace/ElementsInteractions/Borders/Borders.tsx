@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BoundingStyles, DropTargetParams } from '@Src/types';
 import { Rnd } from 'react-rnd';
 import cn from 'classnames';
@@ -11,6 +11,8 @@ import {
 } from '@Redux/project/selectors/base';
 import { Menu, MenuItem } from '@mui/material';
 import ELEMENT_IDS from '@Constants/elementIds';
+import { copyActiveElement, pasteCopiedElement } from '@Redux/project/actions';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import DropPositionMarker from './DropPositionMarker';
 
 type Props = {
@@ -89,6 +91,8 @@ const Borders: React.FC<Props> = ({
   const showGrid = useSelector(selectShowingGrid);
   const classes = useStyles({ isActive });
   const rightGridScale = useRef<HTMLDivElement>(null);
+  const currentScreenId = useSelector(selectCurrentScreenId);
+  const dispatch = useDispatch();
 
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
@@ -108,9 +112,9 @@ const Borders: React.FC<Props> = ({
       setContextMenu(
         contextMenu === null
           ? {
-              mouseX: event.clientX + x,
-              mouseY: event.clientY + y,
-            }
+            mouseX: event.clientX + x,
+            mouseY: event.clientY + y,
+          }
           : null,
       );
     },
@@ -175,6 +179,17 @@ const Borders: React.FC<Props> = ({
 
   const lockedAspectRatioElements: [string] = ['carousel'];
   const selectedElementType: string = type;
+
+  const pasteToBoard = () => {
+    dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+    handleClose();
+  };
+
+  const copyToClipBoard = () => {
+    dispatch(copyActiveElement());
+    handleClose();
+  };
+
   if (keepAspectRatio) {
     lockedAspectRatioElements.push(selectedElementType);
   }
@@ -191,9 +206,8 @@ const Borders: React.FC<Props> = ({
             : undefined
         }
       >
-        <MenuItem onClick={handleClose}>Copy</MenuItem>
-        <MenuItem onClick={handleClose}>Duplicate</MenuItem>
-        <MenuItem onClick={handleClose}>Delete</MenuItem>
+        <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
+        {/* <MenuItem onClick={pasteToBoard}>Paste</MenuItem> */}
       </Menu>
       {isActiveBorder &&
         !showGrid &&
@@ -245,9 +259,9 @@ const Borders: React.FC<Props> = ({
             >
               {rightGridScale.current?.scrollWidth !== undefined
                 ? `${Math.round(
-                    // eslint-disable-next-line prettier/prettier
+                  // eslint-disable-next-line prettier/prettier
                   (Number(rightGridScale.current?.scrollWidth) * 100) / 100,
-                  )}px`
+                )}px`
                 : null}
             </div>
 
