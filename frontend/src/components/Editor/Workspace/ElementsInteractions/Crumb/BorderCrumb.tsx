@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-prop-types */
-import React, { memo, useCallback } from 'react';
+import React, { memo, useState, useCallback, useRef, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
@@ -27,6 +27,7 @@ import {
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 
 import { makeStyles } from '@material-ui/core/styles';
+import { Menu, MenuItem } from '@mui/material';
 import Icon from '../../../../UI/Icon';
 
 type Props = {
@@ -37,6 +38,11 @@ type Props = {
   styles: BoundingStyles;
   children?: any;
   masterScreenId: number | null;
+};
+
+export type State = {
+  mouseX: number | null;
+  mouseY: number | null;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -77,15 +83,21 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const BorderCrumb: React.FC<Props> = (props) => {
+  const initialState: State = {
+    mouseX: null,
+    mouseY: null,
+  };
+
+  const borderRef = useRef(null);
+
   const { element, children, show, currentProjectId, masterScreenId } = props;
   const currentGeneratorElements = useSelector(selectCurrentGeneratorElements);
   const rootId = useSelector(selectCurrentRootId);
+  const [state, setState] = useState(initialState);
+
   const dispatch = useDispatch();
-
   const history = useHistory();
-
   const classes = useStyles(props);
-
   const currentScreenId = useSelector(selectCurrentScreenId);
 
   const handleSourceElementClick = useCallback(() => {
@@ -195,6 +207,22 @@ const BorderCrumb: React.FC<Props> = (props) => {
     }
   };
 
+  const pasteToBoard = () => {
+    // navigator.clipboard.readText().then((result) => {
+    //   const data = JSON.parse(result);
+    dispatch(pasteCopiedElement({ screenId: currentScreenId }));
+    // });
+    setState(initialState);
+  };
+
+  const copyToClipBoard = () => {
+    const copyText = JSON.stringify(element);
+    navigator.clipboard.writeText(copyText);
+
+    dispatch(copyActiveElement());
+    setState(initialState);
+  };
+
   const handleDuplicate = () => {
     dispatch(copyActiveElement());
     dispatch(setActiveElement(String(element.parent)));
@@ -202,43 +230,74 @@ const BorderCrumb: React.FC<Props> = (props) => {
   };
 
   return element && show ? (
-    <div className={cn(classes.crumb)}>
-      <span
-        className={classes.label}
-        data-label-id={element.id}
-        data-element-name={element.name}
-      >
-        {element.name}
-      </span>
-      {element.type !== 'root' && element.name.indexOf('Master') < 0 && (
-        <>
-          <span className={classes.icon} onClick={handleDuplicate}>
-            <Icon icon="copy" size={16} color="white" />
-          </span>
-          <span className={classes.icon} onClick={handleDelete}>
-            <Icon icon="delete" size={16} color="white" />
-          </span>
-          {element.name === 'generator' && (
-            <span className={classes.icon} onClick={generatorRandom}>
-              <Icon icon="add" size={16} color="white" />
-            </span>
-          )}
-        </>
-      )}
+    <>
+      <div
+        ref={borderRef}
+        onContextMenu={(e) => {
+          e.preventDefault();
 
-      {element.parameters.sourceElementId && (
-        <>
-          <span className={classes.separator}>|</span>
-          <span
-            className={classes.sourceLabel}
-            onClick={() => handleSourceElementClick()}
+          setState({
+            mouseX: e.clientX + 214,
+            mouseY: e.clientY + 44,
+          });
+        }}
+        className={cn(classes.crumb)}
+      >
+        {state.mouseX && (
+          <Menu
+            onClose={() => setState(initialState)}
+            open={state?.mouseY !== null}
+            anchorReference="anchorPosition"
+            anchorPosition={
+              state.mouseY !== null && state.mouseX !== null
+                ? { top: state.mouseY, left: state.mouseX }
+                : undefined
+            }
           >
-            source
-          </span>
-        </>
-      )}
-      {children}
-    </div>
+            <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
+            <MenuItem onClick={pasteToBoard}>Paste</MenuItem>
+          </Menu>
+        )}
+        <span
+          className={classes.label}
+          data-label-id={element.id}
+          data-element-name={element.name}
+        >
+          {element.name}
+        </span>
+        {element.type !== 'root' && element.name.indexOf('Master') < 0 && (
+          <>
+            <span className={classes.icon} onClick={handleDuplicate}>
+              <Icon icon="copy" size={16} color="white" />
+            </span>
+            <span className={classes.icon} onClick={handleDelete}>
+              <Icon icon="delete" size={16} color="white" />
+            </span>
+            {/* <span className={classes.icon} onClick={copyToClipBoard}>
+              <Icon icon="copy" size={16} color="white" />
+            </span> */}
+            {element.name === 'generator' && (
+              <span className={classes.icon} onClick={generatorRandom}>
+                <Icon icon="add" size={16} color="white" />
+              </span>
+            )}
+          </>
+        )}
+
+        {element.parameters.sourceElementId && (
+          <>
+            <span className={classes.separator}>|</span>
+            <span
+              className={classes.sourceLabel}
+              onClick={() => handleSourceElementClick()}
+            >
+              source
+            </span>
+          </>
+        )}
+        {children}
+      </div>
+    </>
   ) : null;
 };
 

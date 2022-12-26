@@ -17,6 +17,7 @@ import {
 import cn from 'classnames';
 import { makeStyles } from '@material-ui/core/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import CustomContextMenu from '@Components/UI/RenderElements/CustomContextMenu';
 import Borders from './Borders';
 
 const notDraggableElements: Entity[] = [
@@ -176,7 +177,7 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
     );
   };
 
-  const Renderer = RENDERERS[type as Entity];
+  const Renderer = CustomContextMenu(RENDERERS[type as Entity]);
 
   const activeHandle = (dir: string) =>
     resizeDir === dir && classes.activeResizeHandle;
@@ -203,11 +204,11 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
       }}
       {...(width &&
         height && {
-          size: {
-            width,
-            height,
-          },
-        })}
+        size: {
+          width,
+          height,
+        },
+      })}
       onResizeStart={(ev, dir) => {
         handleInteractionStart(ev);
         setResizeDir(dir);

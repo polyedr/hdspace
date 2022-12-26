@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useMemo, useRef, useEffect, useCallback, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
@@ -26,6 +27,7 @@ import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
 import Scrollbars from 'react-custom-scrollbars';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
+import CustomContextMenu from '@Components/UI/RenderElements/CustomContextMenu';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import RENDERERS from '../../UI/RenderElements';
 
@@ -67,9 +69,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     return !parent
       ? null
       : projectClasses.find(
-          (projectClass: ProjectClass) =>
-            projectClass.className === parent.type,
-        );
+        (projectClass: ProjectClass) =>
+          projectClass.className === parent.type,
+      );
   }, [parent, projectClasses]);
 
   const ref = useRef<HTMLElement>(null) as React.MutableRefObject<HTMLElement>;
@@ -114,7 +116,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       const flexDirection = !parent
         ? null
         : parent.styles.ownStyles.flexDirection ||
-          parentElementClass?.rules.flexDirection;
+        parentElementClass?.rules.flexDirection;
       if (clientOffset) {
         dispatch(
           processDropTargetParams(
@@ -180,9 +182,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
   }
 
   // handling div element with divBlock as server using div elements
-  const ElementRenderer =
-    // @ts-ignore
-    RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
+  // const ElementRenderer = CustomContextMenu(RENDERERS[element.type]);
+
+  const ElementRenderer = CustomContextMenu(RENDERERS[element.type]);
+
+  // const ElementRenderer = RENDERERS[element.type];
+  // RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
 
   if (!ElementRenderer) {
     // eslint-disable-next-line no-console
@@ -212,11 +217,10 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       {element.children.map((childId: string, index: number) => {
         return (
           <DraggableElement
-            key={`element-${
-              element.children.indexOf(childId) === index
-                ? childId
-                : childId + Math.random()
-            }`}
+            key={`element-${element.children.indexOf(childId) === index
+              ? childId
+              : childId + Math.random()
+              }`}
             elementId={childId}
             parentIds={parentsIdsForChildren}
             scrollRef={scrollRef}

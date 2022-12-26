@@ -15,6 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DropTargetParams, Normalized, StateElement } from '@Src/types';
 import { selectMasterScreenId } from '@Redux/project/selectors/screen';
 import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
+import CustomContextMenu from '@Components/UI/RenderElements/CustomContextMenu';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';
 
@@ -62,7 +63,7 @@ const MasterElement: React.FC<Props> = (props: Props) => {
 
   const { type } = element;
 
-  const Renderer = RENDERERS[type];
+  const Renderer = CustomContextMenu(RENDERERS[type]);
 
   const handleClick = useCallback(
     (ev: React.MouseEvent<HTMLElement>) => {

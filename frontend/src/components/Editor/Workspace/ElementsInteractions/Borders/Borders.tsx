@@ -195,8 +195,9 @@ const Borders: React.FC<Props> = ({
             >
               {rightGridScale.current?.scrollWidth !== undefined
                 ? `${Math.round(
-                    (Number(rightGridScale.current?.scrollWidth) * 100) / 100,
-                  )}px`
+                  // eslint-disable-next-line prettier/prettier
+                  (Number(rightGridScale.current?.scrollWidth) * 100) / 100,
+                )}px`
                 : null}
             </div>
 
