@@ -50,7 +50,7 @@ const useStyles = makeStyles({
   },
 });
 
-const DisplayAssets = () => {
+function DisplayAssets() {
   const dispatch = useDispatch();
   const classes = useStyles();
   const currentAssetListId = useSelector(selectCurrentAssetListId);
@@ -297,20 +297,24 @@ const DisplayAssets = () => {
               <ImageListItem
                 style={{ width: '100%', margin: '5px', height: '100%' }}
                 key={`asset-${asset.id}`}
-                onMouseEnter={() =>
-                  (selectAsset && setMouseEnterImageShow(index)) ||
-                  (selectBackgroundAssetValue &&
-                    setBackGraundImageEnater(index))
-                }
-                onMouseLeave={() =>
-                  (selectAsset && handleLeaveBtn()) ||
-                  (selectBackgroundAssetValue && handleLeaveBackgroundImage())
-                }
-                onClick={() =>
-                  (selectAsset && handleSetImage(index)) ||
-                  (selectBackgroundAssetValue &&
-                    handleSetBackgroundImage(index))
-                }
+                onMouseEnter={() => {
+                  if (selectAsset) {
+                    setMouseEnterImageShow(index);
+                  }
+
+                  if (selectBackgroundAssetValue) {
+                    setBackGraundImageEnater(index);
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (selectAsset) handleLeaveBtn();
+                  if (selectBackgroundAssetValue) handleLeaveBackgroundImage();
+                }}
+                onClick={() => {
+                  if (selectAsset) handleSetImage(index);
+                  if (selectBackgroundAssetValue)
+                    handleSetBackgroundImage(index);
+                }}
               >
                 <AssetImage
                   asset={asset}
@@ -331,6 +335,6 @@ const DisplayAssets = () => {
       </Scrollbar>
     </div>
   );
-};
+}
 
 export default DisplayAssets;

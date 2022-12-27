@@ -52,10 +52,10 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   activity: ActionTypePM;
   platform: PlatformActionData;
-};
+}
 
 const History: React.FC<Props> = ({ activity, platform }) => {
   const classes = useStyles();

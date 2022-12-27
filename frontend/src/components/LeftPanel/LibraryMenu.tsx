@@ -11,8 +11,8 @@ import React from 'react';
 import AssetLists from './Assets/AssetLists';
 
 interface Props {
-  library: { [key: string]: { [key: string]: ElementData } };
-  templates: { [key: string]: ElementData };
+  library: Record<string, Record<string, ElementData>>;
+  templates: Record<string, ElementData>;
 }
 
 const CustomTabsListUnstyled = styled(TabsListUnstyled)({

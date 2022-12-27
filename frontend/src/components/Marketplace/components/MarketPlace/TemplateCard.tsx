@@ -126,7 +126,7 @@ const Loader = styled.div`
   position: relative;
   left: 16rem;
 `;
-const TemplateCard = () => {
+function TemplateCard() {
   const [show, setShow] = React.useState({});
   const Template = useSelector(selectMarketplacesData);
   const templateListLoader = useSelector(selectAreTemplatesLoading);
@@ -235,6 +235,6 @@ const TemplateCard = () => {
       )}
     </>
   );
-};
+}
 
 export default TemplateCard;

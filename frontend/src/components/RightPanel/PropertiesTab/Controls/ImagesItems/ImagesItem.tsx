@@ -44,13 +44,13 @@ const useStyles = makeStyles(({ spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   id: string;
   parameters: Params<LibraryElement<Entity>>;
   updateParams: (params: Params<LibraryElement<Entity>>, id) => void;
   isLast: boolean;
   canEdit: boolean;
-};
+}
 
 const ImagesItem: React.FC<Props> = ({
   id,

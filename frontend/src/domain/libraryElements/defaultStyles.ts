@@ -1038,12 +1038,10 @@ type ButtonControls = typeof buttonStyleControls[number];
 type TextinputControls = typeof textinputStyleControls[number];
 type TextareaControls = typeof textareaStyleControls[number];
 type CheckboxControls = typeof checkboxStyleControls[number];
-type SwitchControls = typeof switchStyleControls[number];
 type RadiobuttonControls = typeof radiobuttonStyleControls[number];
 type RadiobuttonGroupControls = typeof radiobuttonGroupStyleControls[number];
 type LabelControls = typeof labelStyleControls[number];
 type SelectControls = typeof selectStyleControls[number];
-type SelectMenuControls = typeof selectMenuStyleControls[number];
 type OptionControls = typeof optionStyleControls[number];
 
 export const defaultButtonStyles: {
@@ -1573,7 +1571,7 @@ export const defaultHTMLElementStyles: {
 };
 
 export const DEFAULT_ELEMENTS_STYLES: {
-  [K in Entity]: { [key: string]: React.CSSProperties | undefined };
+  [K in Entity]: Record<string, React.CSSProperties | undefined>;
 } = {
   root: defaultRootStyles,
   container: defaultContainerStyles,

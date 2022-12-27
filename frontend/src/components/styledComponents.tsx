@@ -234,36 +234,30 @@ const MuiAccordionDetails = MuiStyled(AccordionDetails)(() => ({
 }));
 
 export const StyledAccordion = React.forwardRef<any, AccordionProps>(
-  ({ children, ...props }, ref) => {
-    return (
-      <Accordion {...props} ref={ref}>
-        {children as unknown as ReactElement}
-      </Accordion>
-    );
-  },
+  ({ children, ...props }, ref) => (
+    <Accordion {...props} ref={ref}>
+      {children as unknown as ReactElement}
+    </Accordion>
+  ),
 );
 
 export const StyledAccordionSummary: React.FC<AccordionSummaryProps> = ({
   children,
   ...props
-}) => {
-  return <MuiAccordionSummary {...props}>{children}</MuiAccordionSummary>;
-};
+}) => <MuiAccordionSummary {...props}>{children}</MuiAccordionSummary>;
 
 export const StyledAccordionDetails = React.forwardRef<
   any,
   AccordionDetailsProps
->(({ children, ...props }, ref) => {
-  return (
-    <MuiAccordionDetails {...props} ref={ref}>
-      {children}
-    </MuiAccordionDetails>
-  );
-});
+>(({ children, ...props }, ref) => (
+  <MuiAccordionDetails {...props} ref={ref}>
+    {children}
+  </MuiAccordionDetails>
+));
 
-export const StyledSlider: React.FC<SliderProps> = (props) => {
-  return <MuiSlider {...props} />;
-};
+export const StyledSlider: React.FC<SliderProps> = (props) => (
+  <MuiSlider {...props} />
+);
 
 export const StyledTextField: React.FC<TextFieldProps> = (props) => {
   const { select } = props;
@@ -305,15 +299,13 @@ export const PanelTextField: React.FC<
   );
 };
 
-export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => {
-  return <CustomToggleButton {...props} />;
-};
+export const StyledToggleButton: React.FC<ToggleButtonProps> = (props) => (
+  <CustomToggleButton {...props} />
+);
 
 export const StyledToggleButtonGroup: React.FC<ToggleButtonGroupProps> = (
   props,
-) => {
-  return <CustomToggleButtonGroup {...props} />;
-};
+) => <CustomToggleButtonGroup {...props} />;
 
 export const StyledIconButton: React.FC<IconButtonProps> = ({
   children,

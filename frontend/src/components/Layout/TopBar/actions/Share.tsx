@@ -40,9 +40,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   className?: string;
-};
+}
 
 const Share: FC<Props> = () => {
   const dispatch = useDispatch();
@@ -100,8 +100,9 @@ const Share: FC<Props> = () => {
                 apikey: shorten_url_api_key,
               },
             })
-            .then((response) =>
-              navigator.clipboard.writeText(response.data.short_url),
+            .then(
+              async (response) =>
+                await navigator.clipboard.writeText(response.data.short_url),
             );
         });
       handleClose();

@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const PositionSelector = ({ onChange, defaultValue, disabled = false }) => {
+function PositionSelector({ onChange, defaultValue, disabled = false }) {
   const classes = useStyles();
 
   const [activePosition, setActivePosition] = useState(defaultValue ?? '');
@@ -166,6 +166,6 @@ const PositionSelector = ({ onChange, defaultValue, disabled = false }) => {
       ))}
     </div>
   );
-};
+}
 
 export default PositionSelector;

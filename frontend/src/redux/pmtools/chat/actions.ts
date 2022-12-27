@@ -36,7 +36,7 @@ export const successLogoutChatUser = () => ({
   type: TYPES.LOGOUT_PMTOOLS_SUCCESS,
 });
 
-export const successProjectStreamMessages = (payload: Array<any>) => ({
+export const successProjectStreamMessages = (payload: any[]) => ({
   type: TYPES.GET_STREAM_MESSAGES_SUCCESS,
   payload,
 });

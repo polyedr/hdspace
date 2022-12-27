@@ -7,7 +7,9 @@ export type TeamCommandType = LiteralStringForUnion;
 export type TeamEventType = Record<string, unknown>;
 export type TeamMessageType = Record<string, unknown>;
 export type TeamReactionType = Record<string, unknown>;
-export type TeamUserType = { image?: string };
+export interface TeamUserType {
+  image?: string;
+}
 
 const client = StreamChat.getInstance<
   TeamAttachmentType,
@@ -17,6 +19,6 @@ const client = StreamChat.getInstance<
   TeamMessageType,
   TeamReactionType,
   TeamUserType
->(STREAM_CHAT_CLIENT_ID!, { enableInsights: true, enableWSFallback: true });
+>(STREAM_CHAT_CLIENT_ID, { enableInsights: true, enableWSFallback: true });
 
 export default client;

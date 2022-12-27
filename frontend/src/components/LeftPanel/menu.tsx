@@ -22,7 +22,7 @@ import VIANavigator from './VIANavigator';
 const { elements, templates, generators, library } =
   createElementsHierarchy(LIBRARY_ELEMENTS);
 
-const RenderElementGrid = ({ elements }: { elements: object }) => {
+function RenderElementGrid({ elements }: { elements: object }) {
   return (
     <>
       {Object.entries(elements).map(([key, value]) => (
@@ -30,12 +30,12 @@ const RenderElementGrid = ({ elements }: { elements: object }) => {
       ))}
     </>
   );
-};
+}
 
-const Layers = () => {
+function Layers() {
   const viaMode = useSelector(selectVIAModeEnabled);
   return viaMode ? <VIANavigator /> : <Navigator />;
-};
+}
 
 export const mainMenu = [
   {

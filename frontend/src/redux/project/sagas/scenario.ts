@@ -106,7 +106,9 @@ export function* createScenarios(scenario?: Partial<ScenarioItem>) {
     const { result, error }: Result<ScenarioItem[]> = yield call(
       reqWrapper,
       apiCreateScenarios,
-      { data: [omit(['id'], containerToCreate)] },
+      {
+        data: [omit(['id'], containerToCreate)],
+      },
     );
 
     if (result) {
@@ -135,9 +137,9 @@ export function* createGroupsBinding(
 ) {
   const updatedElements = yield select(selectElementsByIds(elementsIds));
   // get list of group elements
-  const newGroupElements = updatedElements.filter((el) => {
-    return !!el.parameters.sourceElementId;
-  });
+  const newGroupElements = updatedElements.filter(
+    (el) => !!el.parameters.sourceElementId,
+  );
 
   if (!newGroupElements.length) {
     return;
@@ -147,9 +149,7 @@ export function* createGroupsBinding(
   const allGroupIds = yield select(
     selectTreeChildIdsByParentsIds(
       newGroupElements.reduce(
-        (allChildIds, element) => {
-          return [...allChildIds, ...element.children];
-        },
+        (allChildIds, element) => [...allChildIds, ...element.children],
         newGroupElements.map((group) => group.id),
       ),
     ),
@@ -348,16 +348,16 @@ export const createLibraryElementsSaga = withActionsHistory(function* (
       selectElementAsTree(parentId || activeElementId),
     );
 
-    const convertedCreatedElements = createdElements.map((dEl) => {
-      return convertCreatedElementToRequest(
+    const convertedCreatedElements = createdElements.map((dEl) =>
+      convertCreatedElementToRequest(
         dEl.type as Entity,
         dEl.name || null,
         null,
         dEl.parameters,
         dEl.shared,
         dEl.styles,
-      );
-    });
+      ),
+    );
     yield call(
       createLibraryElements,
       [
@@ -427,8 +427,8 @@ export const createGroupChildrenSaga = compose(
   const elementGroups = yield select(selectElementTreeGroups);
 
   const elementsToCreate = [parentElement, ...linkedElements].map(
-    (groupItemParent) => {
-      return {
+    (groupItemParent) =>
+      ({
         elements: createdElements.map((dEl) => {
           if (dEl.custom) {
             return convertElementToRequest(
@@ -457,8 +457,7 @@ export const createGroupChildrenSaga = compose(
         }),
         parent: groupItemParent,
         index,
-      } as ElementsToCreate<Entity>;
-    },
+      } as ElementsToCreate<Entity>),
   );
 
   const elementsIds = yield call(createElements, elementsToCreate, {
@@ -503,16 +502,17 @@ export const createGroupChildrenSaga = compose(
         }),
         {},
       ),
-      ...groupElement.children.reduce((allChildrenParams, childId, index) => {
-        return {
+      ...groupElement.children.reduce(
+        (allChildrenParams, childId, index) => ({
           ...allChildrenParams,
           ...getPropertiesToUpdate(
             childId,
             instanceElements.map((el) => el.children[index]),
             allElements,
           ),
-        };
-      }, {}),
+        }),
+        {},
+      ),
     };
   };
 
@@ -527,7 +527,9 @@ export const createGroupChildrenSaga = compose(
     Actions.updateMultipleElementsParameters(
       Object.keys(paramsToUpdate),
       paramsToUpdate,
-      { ...action.meta },
+      {
+        ...action.meta,
+      },
     ),
     UpdateDataActionType.UPDATE,
   );
@@ -733,7 +735,7 @@ export const softDeleteSaga = compose(
           { ...action.meta },
         ),
       ];
-      if (element.shared === true) {
+      if (element.shared) {
         undoActions.push(
           Actions.updateElement(
             {
@@ -890,12 +892,13 @@ export const softDeleteMultipleSaga = compose(
     if (result) {
       const convertedElements = updatedParents
         .map((p) => p.children)
-        .reduce((allParents, children) => {
-          return [
+        .reduce(
+          (allParents, children) => [
             ...allParents,
             ...children.map((child) => convertElementToPatchRequest(child)),
-          ];
-        }, []);
+          ],
+          [],
+        );
       yield call(reqWrapper, apiUpdateElements, { data: convertedElements });
     }
     if (error) throw new Error(error);
@@ -949,7 +952,9 @@ export const restoreElementChildrenSaga = compose(
     yield put(
       Actions.updateElementsTree(
         restoreMapElementChildren(state, elementId, childrenIds),
-        { ...action.meta },
+        {
+          ...action.meta,
+        },
       ),
     );
 
@@ -1012,12 +1017,10 @@ export const restoreMultipleElementsChildrenSaga = withActionsHistory(
       const ids = elements.map((el) => el.id);
 
       const updatedTree = elements.reduce(
-        (tree, element) => {
-          return {
-            ...tree,
-            ...restoreMapElementChildren(tree, element.id, element.children),
-          };
-        },
+        (tree, element) => ({
+          ...tree,
+          ...restoreMapElementChildren(tree, element.id, element.children),
+        }),
         { ...state },
       );
 
@@ -1254,7 +1257,9 @@ export function* wrapIntoContainer(
       const { error }: Result<ServerElement<any>> = yield call(
         reqWrapper,
         apiUpdateElements,
-        { data: convertedElements },
+        {
+          data: convertedElements,
+        },
       );
       if (error) throw new Error(error);
     }
@@ -1430,7 +1435,7 @@ export const updateElementSaga = compose(
     const existsInLibrary = !!customLibraryElements.find(
       (element) => element.id === action.payload.elementID,
     );
-    if (data.shared === true) {
+    if (data.shared) {
       if (!existsInLibrary) {
         yield put(Actions.addCustomElement(updatedElement));
       }
@@ -1533,7 +1538,9 @@ export const redoWrapIntoContainerSaga = compose(
     const { error }: Result<ServerElement<any>> = yield call(
       reqWrapper,
       apiUpdateElements,
-      { data: convertedElements },
+      {
+        data: convertedElements,
+      },
     );
 
     if (error) throw new Error(error);

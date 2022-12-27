@@ -17,13 +17,13 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   updateStyles: PropertiesChangeProps<LibraryElement<Entity>>['updateStyles'];
   flexDirection: React.CSSProperties['flexDirection'];
   justifyContent: React.CSSProperties['justifyContent'];
   alignItems: React.CSSProperties['alignItems'];
   canEdit: boolean;
-};
+}
 
 const FlexProperties: React.FC<Props> = ({
   updateStyles,

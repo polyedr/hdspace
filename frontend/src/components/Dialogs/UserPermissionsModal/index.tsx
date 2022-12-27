@@ -47,10 +47,10 @@ const DialogActions = styled(MuiDialogActions)({
   padding: '0 20px 24px',
 });
 
-type Props = {
+interface Props {
   onClose: () => void;
   projectId: number | null;
-};
+}
 
 const UserPermissionsModal: React.FC<Props> = ({
   onClose,

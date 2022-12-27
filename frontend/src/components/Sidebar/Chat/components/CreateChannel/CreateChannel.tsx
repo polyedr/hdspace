@@ -27,10 +27,10 @@ import type {
   TeamUserType,
 } from '../../client';
 
-type InputProps = {
+interface InputProps {
   channelName: string;
   setChannelName: (value: React.SetStateAction<string>) => void;
-};
+}
 
 const InputWrapper = styled(FormControl)({
   position: 'relative',
@@ -120,11 +120,11 @@ const ChannelNameInput: React.FC<InputProps> = (props) => {
   );
 };
 
-type Props = {
+interface Props {
   createType: string;
   filters: ChannelFilters[];
   setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export const CreateChannel: React.FC<Props> = (props) => {
   const { createType, filters, setIsCreating } = props;

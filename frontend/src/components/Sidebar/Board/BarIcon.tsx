@@ -33,10 +33,8 @@ interface Props {
   priority: PriorityOptions;
 }
 
-const BarIcon = ({ priority, size = 20 }: Props) => {
-  const bars = useMemo(() => {
-    return new Array(5).fill(1);
-  }, []);
+function BarIcon({ priority, size = 20 }: Props) {
+  const bars = useMemo(() => new Array(5).fill(1), []);
 
   const barCount = Object.values(PriorityOptions).indexOf(priority) + 1;
   const color = colors[priority];
@@ -48,6 +46,6 @@ const BarIcon = ({ priority, size = 20 }: Props) => {
       ))}
     </Container>
   );
-};
+}
 
 export default BarIcon;

@@ -32,7 +32,7 @@ const SearchTextField = styled(TextField)({
   },
 });
 
-export const ChannelSearch = () => {
+export function ChannelSearch() {
   const projectId = useSelector(selectCurrentProjectId);
 
   const { client, setActiveChannel } = useChatContext<
@@ -49,19 +49,21 @@ export const ChannelSearch = () => {
     ConcatArray<ChannelOrUserType> | undefined
   >();
   const [teamChannels, setTeamChannels] = useState<
-    | Channel<
-        TeamAttachmentType,
-        TeamChannelType,
-        TeamCommandType,
-        TeamEventType,
-        TeamMessageType,
-        TeamReactionType,
-        TeamUserType
-      >[]
+    | Array<
+        Channel<
+          TeamAttachmentType,
+          TeamChannelType,
+          TeamCommandType,
+          TeamEventType,
+          TeamMessageType,
+          TeamReactionType,
+          TeamUserType
+        >
+      >
     | undefined
   >();
   const [directChannels, setDirectChannels] = useState<
-    UserResponse<TeamUserType>[] | undefined
+    Array<UserResponse<TeamUserType>> | undefined
   >();
 
   const [focused, setFocused] = useState<number>();
@@ -230,4 +232,4 @@ export const ChannelSearch = () => {
       )}
     </div>
   );
-};
+}

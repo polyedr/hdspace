@@ -17,11 +17,11 @@ import { createArrayCustomElements } from '@Utils/createCategoryCustomElement';
 import { CustomElementsCategory } from '@Src/types';
 import CustomElementsBlock from './CustomElementsBlock';
 
-const GeneratedElementsBlocks = () => {
+function GeneratedElementsBlocks() {
   const libraryElements = useSelector(selectCustomLibraryElements);
   const dispatch = useDispatch();
   const hasNext = useSelector(selectCustomElementsHasNext);
-  const lastElementRef = useRef() as MutableRefObject<HTMLButtonElement>;
+  const lastElementRef = useRef();
   const lastDom = lastElementRef && lastElementRef.current;
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -93,6 +93,6 @@ const GeneratedElementsBlocks = () => {
       )}
     </div>
   );
-};
+}
 
 export default memo(GeneratedElementsBlocks);

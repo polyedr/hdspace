@@ -9,10 +9,10 @@ import {
   StyledAccordionSummary,
 } from '../../styledComponents';
 
-type Props = {
+interface Props {
   name: string;
-  elements: Array<ElementData>;
-};
+  elements: ElementData[];
+}
 
 const useStyles = makeStyles({
   title: {
@@ -25,7 +25,7 @@ const useStyles = makeStyles({
 const CustomElementsBlock: React.FC<Props> = ({ name, elements }) => {
   const classes = useStyles();
   const styles = useElementBlockStyles();
-  const lastElementRef = useRef() as MutableRefObject<HTMLButtonElement>;
+  const lastElementRef = useRef();
 
   return (
     <StyledAccordion defaultExpanded>

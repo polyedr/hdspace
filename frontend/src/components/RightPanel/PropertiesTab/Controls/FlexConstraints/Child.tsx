@@ -30,42 +30,35 @@ const ConstrainsChild: React.FC<Props> = ({ element, updateStyles }) => {
   const childStyles = element.styles.ownStyles['& > *'] as FlexProps | null;
 
   const handleChangeFlex = useCallback(
-    (values) => {
-      return () => {
-        updateStyles({
-          '& > *': {
-            ...childStyles,
-            flexGrow: values[0],
-            flexShrink: values[1],
-            flexBasis: values[2],
-          },
-        });
-      };
+    (values) => () => {
+      updateStyles({
+        '& > *': {
+          ...childStyles,
+          flexGrow: values[0],
+          flexShrink: values[1],
+          flexBasis: values[2],
+        },
+      });
     },
     [updateStyles, childStyles],
   );
 
   const handleChangeFlexProperty = useCallback(
-    (property: keyof FlexProps) => {
-      return (e: React.ChangeEvent<HTMLInputElement>) => {
-        updateStyles({
-          '& > *': {
-            ...childStyles,
-            [property]: e.target.value,
-          },
-        });
-      };
+    (property: keyof FlexProps) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      updateStyles({
+        '& > *': {
+          ...childStyles,
+          [property]: e.target.value,
+        },
+      });
     },
     [updateStyles, childStyles],
   );
 
-  const compareFlexProps = (values) => {
-    return (
-      values[0] === childStyles?.flexGrow &&
-      values[1] === childStyles?.flexShrink &&
-      values[2] === childStyles?.flexBasis
-    );
-  };
+  const compareFlexProps = (values) =>
+    values[0] === childStyles?.flexGrow &&
+    values[1] === childStyles?.flexShrink &&
+    values[2] === childStyles?.flexBasis;
 
   return (
     <>

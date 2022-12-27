@@ -13,7 +13,7 @@ import type {
   TeamUserType,
 } from '../../client';
 
-export const ChannelEmptyState = () => {
+export function ChannelEmptyState() {
   const { channel, client } = useChatContext<
     TeamAttachmentType,
     TeamChannelType,
@@ -109,4 +109,4 @@ export const ChannelEmptyState = () => {
       </p>
     </div>
   );
-};
+}

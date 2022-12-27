@@ -25,7 +25,7 @@ import CONTROLS_CLASSES from '@Components/LeftPanel/Styles/controlClasses';
 
 const SECTION_CONTROLS = ['indents', 'typography', 'headingType', 'border'];
 
-const Styles = () => {
+function Styles() {
   const dispatch = useDispatch();
 
   const activeElement = useSelector(selectActiveElement);
@@ -96,6 +96,6 @@ const Styles = () => {
       </ControlSection>
     </>
   );
-};
+}
 
 export default Styles;

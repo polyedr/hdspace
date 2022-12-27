@@ -26,14 +26,14 @@ const useStyles = makeStyles({
   },
 });
 
-const sameSizeElements: (Entity | 'none')[] = ['checkbox', 'radiobutton'];
-const percentSizeElements: (Entity | 'none')[] = ['carousel'];
-const disableWidthElements: (Entity | 'none')[] = [
+const sameSizeElements: Array<Entity | 'none'> = ['checkbox', 'radiobutton'];
+const percentSizeElements: Array<Entity | 'none'> = ['carousel'];
+const disableWidthElements: Array<Entity | 'none'> = [
   'navbar',
   'calendar',
   'clock',
 ];
-const disableHeightElements: (Entity | 'none')[] = [
+const disableHeightElements: Array<Entity | 'none'> = [
   'calendar',
   'calendar',
   'clock',
@@ -49,21 +49,21 @@ type UnitName = keyof typeof Unit;
 
 type MaxMinUnitName = Omit<UnitName, 'auto'>;
 
-type SelectedUnit = {
+interface SelectedUnit {
   width: UnitName;
   height: UnitName;
   minHeight: MaxMinUnitName;
   maxHeight: MaxMinUnitName;
   minWidth: MaxMinUnitName;
   maxWidth: MaxMinUnitName;
-};
+}
 
 type SizeName = keyof SelectedUnit;
 
-type ControlProps = {
+interface ControlProps {
   sizeName: SizeName;
   disabled: boolean;
-};
+}
 
 const getUnitFromValue = (value: string): UnitName => {
   const unit = value.replace(/[0-9, \d+.\d+]/g, '');

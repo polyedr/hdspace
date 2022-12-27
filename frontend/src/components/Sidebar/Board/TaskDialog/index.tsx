@@ -123,22 +123,22 @@ const AuthorButton = styled(MuiButton)({
   },
 });
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement<any, any>;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef(
+  (
+    props: TransitionProps & {
+      children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+  ) => <Slide direction="up" ref={ref} {...props} />,
+);
 
 interface Props {
   task: BoardTask;
   open: boolean;
-  onClose(): void;
+  onClose: () => void;
 }
 
-const TaskDialog = ({ task, open, onClose }: Props) => {
+function TaskDialog({ task, open, onClose }: Props) {
   const dispatch = useDispatch();
 
   const [storyPoints, setStoryPoints] = useState(task.story_points.toString());
@@ -278,9 +278,11 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                     <TableCell>
                       <MemberPicker
                         selected={task?.assignee_id?.toString()}
-                        onChange={(member) =>
-                          handleUpdateTask('assignee_id', member?.id)
-                        }
+                        onChange={(member) => {
+                          if (member)
+                            handleUpdateTask('assignee_id', member?.id);
+                          else handleUpdateTask('assignee_id', null);
+                        }}
                       />
                     </TableCell>
                   </TableRow>
@@ -292,9 +294,11 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
                       <IconButton>
                         <MemberPicker
                           selected={task?.responsible_id?.toString()}
-                          onChange={(member) =>
-                            handleUpdateTask('responsible_id', member?.id)
-                          }
+                          onChange={(member) => {
+                            if (member)
+                              handleUpdateTask('responsible_id', member?.id);
+                            else handleUpdateTask('responsible_id', null);
+                          }}
                         />
                       </IconButton>
                     </TableCell>
@@ -367,6 +371,6 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default TaskDialog;

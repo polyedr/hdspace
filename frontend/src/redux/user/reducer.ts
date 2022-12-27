@@ -5,9 +5,10 @@ import * as Actions from './actions';
 import { UserState } from '../types';
 import { initialUserState } from './initial';
 
-interface ActionHandler<T> {
-  (state: UserState, payload: UnsafeReturnType<T>): UserState;
-}
+type ActionHandler<T> = (
+  state: UserState,
+  payload: UnsafeReturnType<T>,
+) => UserState;
 
 const changeMinLPanel: ActionHandler<
   ReturnType<typeof Actions.changeMinLPanel>

@@ -14,7 +14,7 @@ import { beforeSagaTest } from '../../test-utils';
 
 describe('getProjectListSaga Test', () => {
   describe('WHEN method is called and API is in its working state', () => {
-    // @ts-ignore
+    // @ts-expect-error
     const it = sagaHelper(getProjectListSaga());
 
     it('should set projects list loader flag to true', (result) => {
@@ -69,7 +69,7 @@ describe('getProjectListSaga Test', () => {
     afterAll(() => {
       jest.restoreAllMocks();
     });
-    // @ts-ignore
+    // @ts-expect-error
     const it = sagaHelper(getProjectListSaga());
 
     it('should set projects list loader flag to true', (result) => {

@@ -100,7 +100,7 @@ const Actions: React.FC = () => {
     } else {
       dispatch(
         enqueueSnackbar({
-          message: `Must be expert at least one screen.`,
+          message: 'Must be expert at least one screen.',
           options: {
             variant: 'error',
           },

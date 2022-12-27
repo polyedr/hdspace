@@ -119,15 +119,14 @@ const Layouts: React.FC = () => {
     if (iconType === 'Tablet') return <TabletIcon className={classes.icon} />;
     return null;
   };
-  const renderOption = (additionalLayout, iconType) => {
-    return additionalLayout.map((key) => (
+  const renderOption = (additionalLayout, iconType) =>
+    additionalLayout.map((key) => (
       <MenuItem value={key} key={key} style={{ display: 'flex' }}>
         {iconSelector(iconType)}
 
         <div className={classes.dropdowntext}>{key}</div>
       </MenuItem>
     ));
-  };
 
   return (
     <>

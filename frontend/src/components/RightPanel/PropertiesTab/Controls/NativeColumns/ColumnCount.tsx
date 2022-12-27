@@ -10,11 +10,11 @@ enum Units {
   units = 'units',
 }
 
-type Props = {
+interface Props {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   count: React.CSSProperties['columnCount'];
   canEdit: boolean;
-};
+}
 
 const ColumnCount: React.FC<Props> = ({ updateStyles, count, canEdit }) => {
   const classes = useColumnControlStyles();

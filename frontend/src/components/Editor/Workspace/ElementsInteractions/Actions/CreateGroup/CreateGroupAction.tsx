@@ -11,12 +11,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 
-type Props = {
+interface Props {
   element: StateElement;
   canCreateGroup: boolean;
   selectedElementsIds: string[];
   screenId: number;
-};
+}
 
 const useStyles = makeStyles({
   content: {
@@ -81,7 +81,7 @@ const CreateGroupAction: React.FC<Props> = ({
               vertical: 'top',
               horizontal: 'center',
             }}
-            onEntered={() => inputRef.current!.focus()}
+            onEntered={() => inputRef.current.focus()}
           >
             <div className={cn(classes.content)}>
               <input

@@ -229,6 +229,7 @@ export const mockInitialState: AppReduxState = {
     action: 'POP',
     location: {
       hash: '',
+      query: {},
       key: '',
       pathname: '',
       search: '',

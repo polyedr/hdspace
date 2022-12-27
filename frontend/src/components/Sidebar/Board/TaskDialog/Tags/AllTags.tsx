@@ -65,11 +65,11 @@ const Button = styled(MuiButton)({
 });
 interface Props {
   selected: number[];
-  onChange(labels: number[]): void;
-  onClose(): void;
+  onChange: (labels: number[]) => void;
+  onClose: () => void;
 }
 
-const AllTags = ({ selected, onChange, onClose }: Props) => {
+function AllTags({ selected, onChange, onClose }: Props) {
   const labels = useSelector(selectLabels);
 
   const dispatch = useDispatch();
@@ -80,6 +80,8 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
   const handleHideAddTags = useCallback(() => {
     setShowAddLabel(false);
   }, [setShowAddLabel]);
+
+  const labelsList = useMemo(() => labels.map((item) => item.text), [labels]);
 
   const handleToggle = useCallback(
     (id) => {
@@ -125,7 +127,11 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
   if (showAddLabel) {
     return (
       <Box style={{ padding: '20px' }}>
-        <AddTag onClose={onClose} onBack={handleHideAddTags} />
+        <AddTag
+          tags={labelsList}
+          onClose={onClose}
+          onBack={handleHideAddTags}
+        />
       </Box>
     );
   }
@@ -155,7 +161,7 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
       >
         {filteredLabels.map((label) => (
           <ListItem
-            selected={selected.indexOf(label.id) !== -1}
+            selected={selected.includes(label.id)}
             key={label.id.toString()}
             label={label}
             onToggle={handleToggle}
@@ -165,6 +171,6 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
       </List>
     </SearchWrapper>
   );
-};
+}
 
 export default AllTags;

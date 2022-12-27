@@ -19,9 +19,9 @@ import type {
 
 import { CloseThreadIcon } from '../../assets';
 
-type Props = {
+interface Props {
   setPinsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export const PinnedMessageList: React.FC<Props> = (props) => {
   const { setPinsOpen } = props;

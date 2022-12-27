@@ -39,13 +39,15 @@ export const TeamChannelPreview: React.FC<Props> = (props) => {
     TeamUserType
   >();
 
-  const ChannelPreview = () => (
-    <p className="channel-preview__item">
-      # {channel?.data?.name || channel?.data?.id || 'random'}
-    </p>
-  );
+  function ChannelPreview() {
+    return (
+      <p className="channel-preview__item">
+        # {channel?.data?.name || channel?.data?.id || 'random'}
+      </p>
+    );
+  }
 
-  const DirectPreview = () => {
+  function DirectPreview() {
     const members = Object.values(channel.state.members).filter(
       ({ user }) => user?.id !== client.userID,
     );
@@ -86,7 +88,7 @@ export const TeamChannelPreview: React.FC<Props> = (props) => {
         </p>
       </div>
     );
-  };
+  }
 
   return (
     <div

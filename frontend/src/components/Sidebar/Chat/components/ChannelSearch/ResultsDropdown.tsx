@@ -35,15 +35,7 @@ const SearchResult: React.FC<SearchResultProps> = (props) => {
   >();
 
   if (isChannel(result)) {
-    const channel = result as Channel<
-      TeamAttachmentType,
-      TeamChannelType,
-      TeamCommandType,
-      TeamEventType,
-      TeamMessageType,
-      TeamReactionType,
-      TeamUserType
-    >;
+    const channel = result;
 
     return (
       <div
@@ -59,7 +51,7 @@ const SearchResult: React.FC<SearchResultProps> = (props) => {
       </div>
     );
   }
-  const user = result as UserResponse<TeamUserType>;
+  const user = result;
 
   return (
     <div
@@ -82,17 +74,19 @@ const SearchResult: React.FC<SearchResultProps> = (props) => {
   );
 };
 
-type ResultsDropdownProps = {
-  teamChannels?: Channel<
-    TeamAttachmentType,
-    TeamChannelType,
-    TeamCommandType,
-    TeamEventType,
-    TeamMessageType,
-    TeamReactionType,
-    TeamUserType
-  >[];
-  directChannels?: UserResponse<TeamUserType>[];
+interface ResultsDropdownProps {
+  teamChannels?: Array<
+    Channel<
+      TeamAttachmentType,
+      TeamChannelType,
+      TeamCommandType,
+      TeamEventType,
+      TeamMessageType,
+      TeamReactionType,
+      TeamUserType
+    >
+  >;
+  directChannels?: Array<UserResponse<TeamUserType>>;
   focusedId: string;
   loading: boolean;
   setChannel: (
@@ -107,7 +101,7 @@ type ResultsDropdownProps = {
     >,
   ) => void;
   setQuery: React.Dispatch<React.SetStateAction<string>>;
-};
+}
 
 export const ResultsDropdown: React.FC<ResultsDropdownProps> = (props) => {
   const {

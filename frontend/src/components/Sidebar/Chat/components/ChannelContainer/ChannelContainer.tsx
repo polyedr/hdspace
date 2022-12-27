@@ -23,13 +23,13 @@ import type {
   TeamUserType,
 } from '../../client';
 
-type Props = {
+interface Props {
   createType: string;
   isCreating: boolean;
   isEditing?: boolean;
   setIsCreating: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 type HeaderProps = ThreadHeaderProps & {
   setPinsOpen?: React.Dispatch<React.SetStateAction<boolean>>;

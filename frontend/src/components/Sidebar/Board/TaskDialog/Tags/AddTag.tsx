@@ -30,7 +30,7 @@ const ColorSquare = styled(ButtonBase)<{ color: string; selected: boolean }>(
     height: 24,
     width: 24,
     borderRadius: 4,
-    transform: selected ? `scale(1.1)` : 'scale(1)',
+    transform: selected ? 'scale(1.1)' : 'scale(1)',
 
     '& svg': {
       color: '#81818E',
@@ -64,22 +64,35 @@ const Button = styled(MuiButton)({
   },
 });
 
-const AddTag = ({ onBack, onClose }: { onBack?(): void; onClose(): void }) => {
+function AddTag({
+  tags,
+  onBack,
+  onClose,
+}: {
+  tags: string[] | undefined;
+  onBack?: () => void;
+  onClose: () => void;
+}) {
   const [value, setValue] = useState('');
+  const [duplicateCheckError, setDuplicateCheck] = useState<string>('');
   const [colour, seColour] = useState(colors[0]);
 
   const dispatch = useDispatch();
 
   const handleChangeValue = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (tags?.includes(e.target.value))
+        setDuplicateCheck('Tag already exist');
+      else {
+        setDuplicateCheck('');
+      }
+
       setValue(e.target.value);
     },
     [setValue],
   );
 
-  const handleChangeColor = useCallback((color) => {
-    return () => seColour(color);
-  }, []);
+  const handleChangeColor = useCallback((color) => () => seColour(color), []);
 
   const handleSubmit = useCallback(() => {
     dispatch(createProjectLabel(value, colour));
@@ -115,6 +128,8 @@ const AddTag = ({ onBack, onClose }: { onBack?(): void; onClose(): void }) => {
         fullWidth
         placeholder="Type Tag"
         margin="normal"
+        error={!!duplicateCheckError}
+        helperText={duplicateCheckError}
         onChange={handleChangeValue}
         value={value}
       />
@@ -143,7 +158,7 @@ const AddTag = ({ onBack, onClose }: { onBack?(): void; onClose(): void }) => {
         <Button
           variant="contained"
           color="primary"
-          disabled={value.length < 1}
+          disabled={!!(value.length < 1 || duplicateCheckError)}
           onClick={handleSubmit}
         >
           Add
@@ -151,6 +166,6 @@ const AddTag = ({ onBack, onClose }: { onBack?(): void; onClose(): void }) => {
       </Stack>
     </>
   );
-};
+}
 
 export default AddTag;

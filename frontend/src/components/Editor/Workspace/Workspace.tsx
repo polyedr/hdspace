@@ -80,9 +80,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   elementId?: string;
-};
+}
 
 const Workspace: React.FC<Props> = () => {
   const isPrototypeMode = useSelector(selectIsPrototypeMode);

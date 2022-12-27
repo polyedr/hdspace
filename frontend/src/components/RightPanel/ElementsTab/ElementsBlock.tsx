@@ -12,13 +12,11 @@ import {
   PropertyAccordionDetails,
 } from '../../styledComponents';
 
-type Props = {
+interface Props {
   title?: string;
-  elements: {
-    [key: string]: ElementData | ElementData[];
-  };
+  elements: Record<string, ElementData | ElementData[]>;
   expandable?: boolean;
-};
+}
 
 export const useStyles = makeStyles({
   title: {
@@ -60,21 +58,19 @@ export const useStyles = makeStyles({
 
 export const renderElementButtons = (
   elements: Record<string, ElementData | ElementData[]>,
-) => {
-  return (
-    <Grid container>
-      {Object.values(elements).map((element) => (
-        <Grid xs={4} item>
-          {Array.isArray(element) ? (
-            <ElementDropdown options={element} key={element[0].key} />
-          ) : (
-            <ElementButton elementData={element} key={element.key} />
-          )}
-        </Grid>
-      ))}
-    </Grid>
-  );
-};
+) => (
+  <Grid container>
+    {Object.values(elements).map((element) => (
+      <Grid xs={4} item>
+        {Array.isArray(element) ? (
+          <ElementDropdown options={element} key={element[0].key} />
+        ) : (
+          <ElementButton elementData={element} key={element.key} />
+        )}
+      </Grid>
+    ))}
+  </Grid>
+);
 
 const ElementsBlock: React.FC<Props> = ({
   title = '',

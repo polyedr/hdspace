@@ -19,37 +19,34 @@ const UserAvatar = styled(User)<{ active: boolean }>(({ active, theme }) => ({
 }));
 
 interface Props {
-  onSelected?(id: number): void;
+  onSelected?: (id: number) => void;
   selected?: number[];
 }
 
-const Members = ({ onSelected, selected = [] }: Props) => {
+function Members({ onSelected, selected = [] }: Props) {
   const members = useSelector(selectAllUsersPermissions);
   const activeUser = useSelector(selectUserData);
 
-  const filteredMembers = useMemo(() => {
-    return Object.values(members).filter(
-      (m) => m.userData.id !== activeUser.id,
-    );
-  }, [members, activeUser]);
+  const filteredMembers = useMemo(
+    () => Object.values(members).filter((m) => m.userData.id !== activeUser.id),
+    [members, activeUser],
+  );
 
   return (
-    <>
-      <AvatarGroup max={4}>
-        {filteredMembers.map(({ userData }) => (
-          <UserAvatar
-            active={selected.indexOf(userData.id) !== -1}
-            user={userData}
-            onClick={() => {
-              if (onSelected) {
-                onSelected(userData.id);
-              }
-            }}
-          />
-        ))}
-      </AvatarGroup>
-    </>
+    <AvatarGroup max={4}>
+      {filteredMembers.map(({ userData }) => (
+        <UserAvatar
+          active={selected.includes(userData.id)}
+          user={userData}
+          onClick={() => {
+            if (onSelected) {
+              onSelected(userData.id);
+            }
+          }}
+        />
+      ))}
+    </AvatarGroup>
   );
-};
+}
 
 export default Members;

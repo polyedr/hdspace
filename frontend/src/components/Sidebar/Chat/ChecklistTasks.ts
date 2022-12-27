@@ -35,7 +35,7 @@ const [
   'send-message',
 ];
 
-type ChecklistTaskProps = {
+interface ChecklistTaskProps {
   chatClient: StreamChat<
     TeamAttachmentType,
     TeamChannelType,
@@ -46,7 +46,7 @@ type ChecklistTaskProps = {
     TeamUserType
   >;
   targetOrigin: string;
-};
+}
 
 export const useChecklist = (props: ChecklistTaskProps): void => {
   const { chatClient, targetOrigin } = props;

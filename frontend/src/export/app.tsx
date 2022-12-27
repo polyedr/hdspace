@@ -29,9 +29,9 @@ import {
 const entityClassNames = Object.keys(DEFAULT_ELEMENTS_STYLES);
 
 const createArchive = async (
-  allScreensData: Array<any>,
-  allScreensHtml: Array<any>,
-  allScreensCss: Array<any>,
+  allScreensData: any[],
+  allScreensHtml: any[],
+  allScreensCss: any[],
   state: AppReduxState,
   projectName: string,
 ) => {
@@ -50,13 +50,13 @@ const createArchive = async (
 
   const zip = new JSZip();
 
-  const zipData = allScreensData.map((data) => {
+  const zipData = allScreensData.map(async (data) => {
     const screenFolder = zip.folder(`${data.name}`);
     const cssFolder = zip.folder(`${data.name}/css`);
     const jsFolder = zip.folder(`${data.name}/js`);
     const assetsFolder = zip.folder(`${data.name}/assets`);
 
-    return Promise.all([
+    return await Promise.all([
       processHTML(allScreensHtml[data.name], assetsFolder),
       processCSS(
         allScreensHtml[data.name],
@@ -95,8 +95,8 @@ const createArchive = async (
 
 const exportHTML = (allScreensData, projectName) => {
   const state = store.getState() as AppReduxState;
-  const allScreensHtmlData: Array<any> = [];
-  const allScreensStyleData: Array<any> = [];
+  const allScreensHtmlData: any[] = [];
+  const allScreensStyleData: any[] = [];
 
   allScreensData.forEach((data, index) => {
     const sheets = new ServerStyleSheets();

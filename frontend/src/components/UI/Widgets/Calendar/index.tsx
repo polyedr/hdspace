@@ -7,12 +7,12 @@ import { selectEditorDocument } from '@Redux/project/selectors/base';
 import Calendar from './colorCalendar';
 import './colorCalendar/styles/theme-basic.css';
 
-type Props = {
+interface Props {
   id: string;
   calendarSize?: string;
   ownStyles?: React.CSSProperties;
   disabled?: boolean;
-};
+}
 
 const useStyles = makeStyles((theme) => ({
   calendar: ({ ownStyles }: Props) => ({

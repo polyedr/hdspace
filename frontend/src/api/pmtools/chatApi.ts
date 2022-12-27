@@ -4,8 +4,8 @@ import { AuthParams, ChatClient } from '@Src/types/pmtools/types';
 import zulipInit from 'zulip-js';
 
 (window as any).global = window;
-// @ts-ignore
-window.Buffer = window.Buffer || require('buffer').Buffer;
+// @ts-expect-error
+window.Buffer = window.Buffer || import('buffer').Buffer;
 
 export const apiSendMessage = async (stream, config, message) => {
   try {

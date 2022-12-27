@@ -18,10 +18,10 @@ import type {
   TeamUserType,
 } from '../../client';
 
-type InputProps = {
+interface InputProps {
   channelName: string;
   setChannelName: (value: React.SetStateAction<string>) => void;
-};
+}
 
 const ChannelNameInput: React.FC<InputProps> = (props) => {
   const { channelName = '', setChannelName } = props;
@@ -48,10 +48,10 @@ const ChannelNameInput: React.FC<InputProps> = (props) => {
   );
 };
 
-type Props = {
+interface Props {
   filters: ChannelFilters[];
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 export const EditChannel: React.FC<Props> = (props) => {
   const { filters, setIsEditing } = props;

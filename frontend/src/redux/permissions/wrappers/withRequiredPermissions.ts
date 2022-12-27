@@ -9,9 +9,11 @@ const withRequiredPermissions =
   (fn: any) =>
     function* (action?: Action) {
       const userPermissions = yield select(selectCurrentUserProjectPermissions);
-      const allowToExecute = permissions.reduce((predefinedPerms, perm) => {
-        return predefinedPerms && userPermissions.includes(perm);
-      }, true);
+      const allowToExecute = permissions.reduce(
+        (predefinedPerms, perm) =>
+          predefinedPerms && userPermissions.includes(perm),
+        true,
+      );
       if (!allowToExecute) {
         yield put(
           enqueueSnackbar({

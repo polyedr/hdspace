@@ -2,10 +2,10 @@ import { head } from 'ramda';
 import { PLAYERS } from '@Constants/players';
 import { VideoSettingsType } from '../types';
 
-type LinkInfo = {
+interface LinkInfo {
   player: keyof typeof PLAYERS | 'none';
   link: string;
-};
+}
 
 export function extractPlayerLinkInfo(link: string): LinkInfo {
   if (!link)
@@ -79,8 +79,8 @@ export function getPlayerLink(
           value: autoplay && isPreviewMode,
         },
         playlist: {
-          attribute: loop === true ? playlist : '',
-          value: loop === true ? playlist : '',
+          attribute: loop ? playlist : '',
+          value: loop ? playlist : '',
         },
       };
 

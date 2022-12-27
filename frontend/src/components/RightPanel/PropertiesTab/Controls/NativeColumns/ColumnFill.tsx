@@ -9,11 +9,11 @@ enum Options {
   auto = 'auto',
 }
 
-type Props = {
+interface Props {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   fill: React.CSSProperties['columnFill'];
   canEdit: boolean;
-};
+}
 
 const ColumnFill: React.FC<Props> = ({ updateStyles, fill, canEdit }) => {
   const classes = useColumnControlStyles();

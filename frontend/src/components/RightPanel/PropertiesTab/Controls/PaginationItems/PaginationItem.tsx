@@ -50,13 +50,13 @@ const useStyles = makeStyles(({ palette, spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   id: string;
   parameters: any;
   updateParams: any;
   isLast: boolean;
   canEdit: boolean;
-};
+}
 
 const PaginationItem: React.FC<Props> = ({
   id,
