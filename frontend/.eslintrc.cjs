@@ -29,7 +29,7 @@ module.exports = {
     '@typescript-eslint/member-delimiter-style': 'off',
     '@typescript-eslint/comma-dangle': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'warn',
-    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/naming-convention': 'warn',
     "@typescript-eslint/indent": 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',

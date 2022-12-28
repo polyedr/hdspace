@@ -74,7 +74,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     [parent, projectClasses],
   );
 
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement | null>(null);
 
   const isDisplayed = useLayout(element?.parameters.layouts);
 
@@ -202,6 +202,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           handleScrollIntoView.callback(dom); // need to call inside a timeout to wait for elements to be rendered correctly
         }
         ref.current = dom;
+
         DOMHandler.INSTANCE.addElementDom(elementId, dom);
         if (!NOT_DRAGGABLE_COMPONENTS.includes(element.type)) {
           drag(ref);
@@ -214,11 +215,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     >
       {element.children.map((childId: string, index: number) => (
         <DraggableElement
-          key={`element-${
-            element.children.indexOf(childId) === index
-              ? childId
-              : childId + Math.random()
-          }`}
+          key={childId.toString()}
           elementId={childId}
           parentIds={parentsIdsForChildren}
           scrollRef={scrollRef}

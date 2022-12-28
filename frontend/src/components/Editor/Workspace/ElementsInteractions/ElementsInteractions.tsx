@@ -197,6 +197,7 @@ const ElementsInteractions: React.FC<Props> = (props) => {
           return null;
         }
         const elementDom = DOMHandler.INSTANCE.getDomById(id);
+
         if (!elementDom) {
           return null;
         }
