@@ -756,7 +756,7 @@ export function* getScreensSaga(screens: Screen[]) {
   }
 }
 
-export const changeScreensOrder = function* (
+export function* changeScreensOrder(
   action: ReturnType<typeof Actions.changeScreensOrder>,
 ) {
   try {

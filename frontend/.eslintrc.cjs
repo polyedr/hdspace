@@ -15,7 +15,7 @@ module.exports = {
     sourceType: 'module',
     project: './tsconfig.json',
   },
-  plugins: ['react', 'prettier', 'jsx-a11y'],
+  plugins: ['react', 'prettier', 'jsx-a11y', 'vitest'],
   settings: {
     react: {
       version: 'detect',
@@ -37,7 +37,7 @@ module.exports = {
     '@typescript-eslint/restrict-template-expressions': 'warn',
     'array-callback-return': 'warn',
     '@typescript-eslint/no-unused-vars': 'warn',
-    '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
     '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
     '@typescript-eslint/consistent-type-assertions': 'warn',
     'react/prop-types': 'off',
