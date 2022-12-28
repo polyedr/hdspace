@@ -1,18 +1,19 @@
+import ELEMENT_IDS from '@Constants/elementIds';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import { Menu, MenuItem } from '@mui/material';
+import { copyActiveElement, pasteCopiedElement } from '@Redux/project/actions';
+import { selectShowingGrid } from '@Redux/project/selectors/base';
+import {
+  selectIsElementActive,
+  selectItemToCopyInfo
+} from '@Redux/project/selectors/element';
+import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
+import { BoundingStyles, DropTargetParams, Entity } from '@Src/types';
+import { canElementHaveChildren } from '@Utils/AvailableChildrenHelper';
+import cn from 'classnames';
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BoundingStyles, DropTargetParams } from '@Src/types';
 import { Rnd } from 'react-rnd';
-import cn from 'classnames';
-import { selectIsElementActive } from '@Redux/project/selectors/element';
-import { makeStyles, Theme } from '@material-ui/core/styles';
-import {
-  selectEditorDocument,
-  selectShowingGrid,
-} from '@Redux/project/selectors/base';
-import { Menu, MenuItem } from '@mui/material';
-import ELEMENT_IDS from '@Constants/elementIds';
-import { copyActiveElement, pasteCopiedElement } from '@Redux/project/actions';
-import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import DropPositionMarker from './DropPositionMarker';
 
 type Props = {
@@ -92,6 +93,8 @@ const Borders: React.FC<Props> = ({
   const classes = useStyles({ isActive });
   const rightGridScale = useRef<HTMLDivElement>(null);
   const currentScreenId = useSelector(selectCurrentScreenId);
+  const canHaveChildren = canElementHaveChildren(type as Entity);
+  const emptyClipboard = !useSelector(selectItemToCopyInfo);
   const dispatch = useDispatch();
 
   const [contextMenu, setContextMenu] = useState<{
@@ -207,7 +210,12 @@ const Borders: React.FC<Props> = ({
         }
       >
         <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
-        {/* <MenuItem onClick={pasteToBoard}>Paste</MenuItem> */}
+        <MenuItem
+          disabled={!canHaveChildren || emptyClipboard}
+          onClick={pasteToBoard}
+        >
+          Paste
+        </MenuItem>
       </Menu>
       {isActiveBorder &&
         !showGrid &&
