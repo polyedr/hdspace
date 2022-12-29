@@ -809,7 +809,7 @@ export function* changeScreensOrder(
       ),
     );
   }
-};
+}
 
 export const changeScreensOrderSaga = withRequiredPermissions(
   UserProjectPermission.VIEW_PROJECT,

@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite -l error -l info",
-    "build:staging": "vite build --mode staging -l error",
-    "build:production": "vite build -l error",
+    "build:staging": "vite build --mode staging",
+    "build:production": "vite build",
     "preview": "vite preview --port 8080",
     "lint:check": "npx eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "npx eslint \"src/**/*.{ts,tsx}\" --fix --quiet",
@@ -218,6 +218,8 @@
     "typescript": "^4.9.4",
     "vite": "^4.0.3",
     "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-favicon": "^1.0.8",
+    "vite-plugin-favicons-inject": "^2.1.0",
     "vitest": "^0.26.2"
   }
 }

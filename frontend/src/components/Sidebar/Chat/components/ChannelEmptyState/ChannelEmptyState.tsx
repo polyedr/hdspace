@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { useChatContext } from 'stream-chat-react';
 

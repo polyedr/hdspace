@@ -1,7 +1,7 @@
 import { MyAxiosProps } from '@Src/types';
 import axios from 'axios';
 
-export const env = process.env.APP_ENV;
+export const env = import.meta.env.MODE;
 
 const settings = {
   development: {

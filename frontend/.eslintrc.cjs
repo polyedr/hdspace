@@ -58,5 +58,7 @@ module.exports = {
     'react/jsx-key': 'warn',
     '@typescript-eslint/no-namespace': 'warn',
     '@typescript-eslint/return-await': 'warn',
+    '@typescript-eslint/restrict-template-expressions': 'warn',
+    '@typescript-eslint/no-base-to-string': 'warn',
   },
 };

@@ -1,6 +1,7 @@
 import { defineConfig, splitVendorChunkPlugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import eslint from 'vite-plugin-eslint';
+import vitePluginFaviconsInject from 'vite-plugin-favicons-inject';
 import path from 'path';
 
 // https://vitejs.dev/config/
@@ -18,7 +19,12 @@ export default defineConfig({
       '@Src': path.resolve(__dirname, './src'),
     },
   },
-  plugins: [react(), splitVendorChunkPlugin(), eslint()],
+  plugins: [
+    react(),
+    splitVendorChunkPlugin(),
+    eslint(),
+    vitePluginFaviconsInject('./src/assets/sprites/favicon.png'),
+  ],
   css: {
     preprocessorOptions: {
       scss: {
