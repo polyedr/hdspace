@@ -12,7 +12,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_bulk import ListBulkCreateUpdateDestroyAPIView, BulkModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.pagination import CursorPagination
 # from rest_framework.decorators import permission_classes, action
 from rest_framework_guardian import filters  # Django-Guardian
@@ -70,7 +70,8 @@ from .serializers import (
     ImageSerializer,
     ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
     duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
-    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer)
+    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer, ProjectExportScreenSerializer,
+    ProjectImportScreenSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -291,6 +292,26 @@ class ProjectScreenDetail(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = ProjectScreen.objects.all()
     serializer_class = ProjectScreenSerializer
+
+
+class ProjectExportScreenDetail(generics.RetrieveAPIView):
+    # permission_classes = [AllowAny]
+    """
+    Export a project screen
+    """
+
+    queryset = ProjectScreen.objects.all()
+    serializer_class = ProjectExportScreenSerializer
+
+
+class ProjectImportScreenDetail(generics.CreateAPIView):
+    # permission_classes = [AllowAny]
+    """
+    Import a project screen
+    """
+
+    queryset = ProjectScreen.objects.all()
+    serializer_class = ProjectImportScreenSerializer
 
 
 class ProjectScreenMultipleView(ListBulkCreateUpdateDestroyAPIView):
@@ -1217,3 +1238,6 @@ class TasksReorder(APIView):
             return Response({'affected_rows': affected_rows})
         return Response({}, status.HTTP_204_NO_CONTENT)
 
+
+class ProjectCopyingViewSet(viewsets.ViewSet):
+    pass

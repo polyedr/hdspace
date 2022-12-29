@@ -40,7 +40,8 @@ from .apiviews import (
     ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView,
     ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder, ColumnTaskCheckitemList,
     ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
-    ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject)
+    ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject, ProjectExportScreenDetail,
+    ProjectImportScreenDetail, ProjectCopyingViewSet)
 
 app_name = "projects"
 
@@ -105,6 +106,16 @@ api_project_screen_patterns = [
         "project-screens/<int:pk>/",
         ProjectScreenDetail.as_view(),
         name="api_project_screen",
+    ),
+    path(
+        "project-exportscreens/<int:pk>/",
+        ProjectExportScreenDetail.as_view(),
+        name="api_project_exportscreen",
+    ),
+    path(
+        "project-importscreens/<int:pk>/",
+        ProjectImportScreenDetail.as_view(),
+        name="api_project_importscreen",
     ),
 ]
 
@@ -186,6 +197,11 @@ api_copying_screens = [
     path("screencopy/", ScreencopyView.as_view(),
          name="api_copying_screens"),
 ]
+#
+# api_export_screens = [
+#     path("screenexport/", ScreenexportView.as_view(),
+#          name="api_export_screens"),
+# ]
 
 api_copying_elementsmptt = [
     path("elementmpttcopy/", ElementmpttcopyView.as_view(),
@@ -212,6 +228,7 @@ router.register(r"screen-scenarios", ScreeScenarioViewSet)
 router.register(r"scenario-elements", ScenarioElementViewSet)
 router.register(r"scenario-elements-recursive", ScenarioElementRecursiveViewSet)
 router.register(r"projects", ProjectViewSet)
+router.register(r"projects-copying", ProjectCopyingViewSet, base_name="projects_copying")
 router.register(r"screens-for-project", ProjectWithScreensViewSet)
 router.register(r"columns-for-project", ProjectWithColumnsViewSet)
 router.register(r"members-for-project", ProjectWithMembersViewSet)
@@ -301,6 +318,7 @@ urlpatterns = [
     path("", include(api_permissions_project_patterns)),
     path("", include(api_copying_projects)),
     path("", include(api_copying_screens)),
+    # path("", include(api_export_screens)),
     path("", include(api_copying_elementsmptt)),
     path("", include(api_copying_elements)),
     path("", include(api_update_children_order)),

@@ -3,6 +3,7 @@ import datetime
 import os
 from io import BytesIO
 import json
+import typing
 
 import cv2
 from django.core.files.uploadedfile import UploadedFile
@@ -224,6 +225,32 @@ class ScenarioElementSerializer(serializers.ModelSerializer):
         return node
 
 
+class ScenarioElementImportSerializer(serializers.ModelSerializer):
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+    children = RecursiveField(required=False, allow_null=True, many=True)
+    scenario = serializers.PrimaryKeyRelatedField(source="scenario.id", read_only=True)
+    # image = serializers.ImageField()
+
+    class Meta:
+        model = ScenarioElement
+        fields = (
+            "id",
+            "scenario",
+            "name",
+            "children",
+            "struct_type",
+            "func_type",
+            "direction",
+            "buoyancy",
+            "image",
+            "parameters",
+            "styles",
+            "shared",
+        )
+        ref_name = "ScenarioImportElements"
+
+
 # The serializer to change the children array only
 class ScenarioElementSerializerRecursive(serializers.ModelSerializer):
     children = serializers.PrimaryKeyRelatedField(
@@ -344,6 +371,55 @@ class ScreenScenarioSerializer(serializers.ModelSerializer):
     def setup_eager_loading(qs):
         queryset = qs.prefetch_related("elements")
         return queryset
+
+
+class ScreenScenarioExportSerializer(serializers.ModelSerializer):
+    elements = ScenarioElementSerializer(many=True, read_only=True)
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+
+    class Meta:
+        model = ScreenScenario
+        fields = (
+            "id",
+            "screen",
+            "name",
+            "parent_id",
+            "type",
+            "struct_type",
+            "direction",
+            "buoyancy",
+            "elements",
+            "parameters",
+            "styles",
+        )
+        # extra_kwargs = {"elements": {"read_only": True}}
+        # fields = "__all__"
+
+
+class ScreenScenarioImportSerializer(serializers.ModelSerializer):
+    elements = ScenarioElementImportSerializer(many=True, required=False, allow_null=True)
+    parameters = serializers.JSONField()
+    styles = serializers.JSONField()
+
+    class Meta:
+        model = ScreenScenario
+        fields = (
+            "id",
+            "screen",
+            "name",
+            "parent_id",
+            "type",
+            "struct_type",
+            "direction",
+            "buoyancy",
+            "elements",
+            "parameters",
+            "styles",
+        )
+        # extra_kwargs = {"elements": {"read_only": True}}
+        extra_kwargs = {"id": {"read_only": True}}
+        # fields = "__all__"
 
 
 class ScreenScenarioMultipleSerializer(
@@ -907,3 +983,97 @@ class ElementCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ElementComment
         fields = ("text", "element", "user")
+
+
+class ProjectExportScreenSerializer(serializers.ModelSerializer):
+    screen_data_json = serializers.JSONField()
+    tags = TagListSerializerField(required=False, allow_null=True)
+    screenscenario = ScreenScenarioExportSerializer(many=True)
+
+    class Meta:
+        model = ProjectScreen
+        # fields = ("status", "screen_data", "project", "id", "image")
+        fields = (
+            "status",
+            "project",
+            "name",
+            "buoyancy",
+            "id",
+            "image",
+            "screen_data_text",
+            "screen_data_json",
+            "screenscenario",
+            "created",
+            "updated",
+            "tags",
+        )
+        extra_kwargs = {"screenscenario": {"read_only": True}}
+
+
+class ProjectImportScreenSerializer(serializers.ModelSerializer):
+    screen_data_json = serializers.JSONField()
+    tags = TagListSerializerField(required=False, allow_null=True)
+    screenscenario = ScreenScenarioImportSerializer(many=True, allow_null=True)
+    # screenscenario = ScreenScenarioSerializer(many=True, allow_null=True)
+
+    class Meta:
+        model = ProjectScreen
+        # fields = ("status", "screen_data", "project", "id", "image")
+        fields = (
+            "status",
+            "project",
+            "name",
+            "buoyancy",
+            "id",
+            "image",
+            "screen_data_text",
+            "screen_data_json",
+            "screenscenario",
+            "created",
+            "updated",
+            "tags",
+        )
+        # extra_kwargs = {"screenscenario": {"read_only": True}}
+    def create(self, validated_data):
+        print("validated_data", validated_data)
+        screenscenarios = validated_data.pop("screenscenario", None)
+        node = ProjectScreen.objects.create(**validated_data)
+
+        # Multiple scenarios
+        for screenscenario in screenscenarios:
+            # s = ScreenScenarioSerializer(data=screenscenario, context={"projectscreen": node.id})
+            print(screenscenario)
+            screenscenario["screen"] = node
+            # ancscreen = screenscenario.pop("screen", None)
+            print("screenscenario", screenscenario)
+            scenarioelements = screenscenario.pop("elements", None)
+            print("scenarioelements: ", scenarioelements)
+            '''
+            s = ScreenScenarioImportSerializer(data=screenscenario)
+            s.is_valid(raise_exception=True)
+            s.save()
+            '''
+            s = ScreenScenario.objects.create(**screenscenario)
+            s.save()
+            # Multiple elements
+            if scenarioelements:
+                for scenarioelement in scenarioelements:
+                    # print(scenarioelement)
+                    scenarioelement["scenario"] = s
+                    children = scenarioelement.pop("children", [])
+                    node_se = ScenarioElement.objects.create(
+                        # parent is null only on the root node
+                        parent=self.context.get("parent"),
+                        **scenarioelement
+                    )
+                    node_se.save()
+                    # Multiple level of the recursion
+                    for child_data in children:
+                        print("child_data", child_data)
+                        # w = ScenarioElement.objects.create(**child_data)
+                        w = ScenarioElementImportSerializer(data=child_data, context={"parent": node_se})
+                        w.is_valid(raise_exception=True)
+                        # ScenarioElement.objects.create(child_data)
+                        w.save()
+        node.save()
+        return node
