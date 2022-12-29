@@ -10,22 +10,16 @@
     "preview": "vite preview --port 8080",
     "lint:check": "npx eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "npx eslint \"src/**/*.{ts,tsx}\" --fix --quiet",
-    "test": "vitest",
+    "test": "vitest run",
     "coverage": "vitest run --coverage",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "npm run lint:fix",
       "pre-push": "npm test"
     }
-  },
-  "lint-staged": {
-    "*.(ts|tsx)": [
-      "eslint --fix",
-      "bash -c \"tsc -p ./tsconfig.json --noEmit\""
-    ]
   },
   "dependencies": {
     "@atlaskit/tree": "^8.6.3",
