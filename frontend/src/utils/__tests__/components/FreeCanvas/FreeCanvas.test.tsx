@@ -25,11 +25,11 @@ describe('Free Canvas', () => {
     );
   });
 
-  it('should render a "free canvas" container', async () => {
+  it('should render a "free canvas" container', () => {
     expect(ui.container).toMatchSnapshot();
   });
 
-  it('should set root as active element on click', async () => {
+  it('should set root as active element on click', () => {
     const root: HTMLElement = ui.container.firstChild as HTMLElement;
     fireEvent.click(root);
 
