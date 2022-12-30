@@ -185,7 +185,14 @@ function TemplateCard() {
     <>
       <GridContainer container spacing={4}>
         {sortedTemplateList.map((item, index) => (
-          <Grid item xs={3} sm={6} md={4} style={{ marginTop: 0 }}>
+          <Grid
+            key={item.id.toString()}
+            item
+            xs={3}
+            sm={6}
+            md={4}
+            style={{ marginTop: 0 }}
+          >
             <CustomRoot>
               <CustomCard>
                 <CardActionArea

@@ -1499,13 +1499,12 @@ export interface HistoryMeta {
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
 };
-export interface IPlainAction<T, M = HistoryMeta, R = void> {
+export interface IPlainAction<T, M = HistoryMeta> {
   type: T;
   meta?: M;
 }
 
-export interface IAction<T, P, M = HistoryMeta, R = void>
-  extends IPlainAction<T, M, R> {
+export interface IAction<T, P, M = HistoryMeta> extends IPlainAction<T, M> {
   payload: P;
 }
 

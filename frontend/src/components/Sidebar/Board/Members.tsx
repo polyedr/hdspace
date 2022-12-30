@@ -36,6 +36,7 @@ function Members({ onSelected, selected = [] }: Props) {
     <AvatarGroup max={4}>
       {filteredMembers.map(({ userData }) => (
         <UserAvatar
+          key={userData.id}
           active={selected.includes(userData.id)}
           user={userData}
           onClick={() => {

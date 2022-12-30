@@ -86,7 +86,7 @@ const UserPermissionsModal: React.FC<Props> = ({
 
       onClose();
     }
-  }, [selectedUsers, projectId, writePermission, onClose]);
+  }, [projectId, dispatch, selectedUsers, writePermission, onClose]);
 
   if (!project) {
     return null;

@@ -30,8 +30,7 @@ const SearchResult: React.FC<SearchResultProps> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   if (isChannel(result)) {
@@ -82,8 +81,7 @@ interface ResultsDropdownProps {
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >
   >;
   directChannels?: Array<UserResponse<TeamUserType>>;
@@ -96,8 +94,7 @@ interface ResultsDropdownProps {
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >,
   ) => void;
   setQuery: React.Dispatch<React.SetStateAction<string>>;

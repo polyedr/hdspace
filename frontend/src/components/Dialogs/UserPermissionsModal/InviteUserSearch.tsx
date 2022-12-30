@@ -197,6 +197,7 @@ const InviteUserSearch: React.FC<Props> = ({ onChange, selected }: Props) => {
         renderTags={(value, getTagProps) =>
           value.map((user, index) => (
             <Chip
+              key={user.id}
               avatar={
                 <Avatar
                   alt={user.email}

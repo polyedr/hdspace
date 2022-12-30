@@ -14,7 +14,6 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
 import { CloseThreadIcon } from '../../assets';
@@ -32,8 +31,7 @@ export const PinnedMessageList: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const { channel } = useChannelStateContext<
@@ -42,8 +40,7 @@ export const PinnedMessageList: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   return (

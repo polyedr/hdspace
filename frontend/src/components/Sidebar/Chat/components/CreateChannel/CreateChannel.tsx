@@ -137,8 +137,7 @@ export const CreateChannel: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const projectId = useSelector(selectCurrentProjectId);

@@ -31,7 +31,7 @@ import {
   Layout,
   Marketplace,
 } from '@Src/types';
-import { vi, vitest } from 'vitest';
+import { vi } from 'vitest';
 
 export const mockProject: Project = {
   id: 1,

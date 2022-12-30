@@ -5,7 +5,7 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { differenceInDays, format } from 'date-fns';
-import { BoardLabel, BoardTask } from '@Redux/pmtools/types';
+import { BoardTask } from '@Redux/pmtools/types';
 import { useSelector } from 'react-redux';
 import { selectLabels } from '@Redux/pmtools/board/selectors';
 import TaskDialog from './TaskDialog';

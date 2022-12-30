@@ -58,8 +58,7 @@ export const ChannelInner: React.FC<InnerProps> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const teamPermissions: PinEnabledUserRoles = {

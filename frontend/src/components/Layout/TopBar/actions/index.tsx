@@ -90,7 +90,7 @@ const Actions: React.FC = () => {
       dispatch(changePrototypeMode(!isProtoMode));
     });
     enableBordersDebounce.callback();
-  }, [isProtoMode]);
+  }, [dispatch, enableBordersDebounce, isProtoMode]);
 
   const handleExportScreen = () => {
     if (screens.length > 0) {

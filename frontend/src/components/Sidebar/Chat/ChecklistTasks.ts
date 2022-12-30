@@ -9,7 +9,6 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from './client';
 
 const notifyParent = (parent: string) => (message: any) => {
@@ -42,8 +41,7 @@ interface ChecklistTaskProps {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >;
   targetOrigin: string;
 }
@@ -61,8 +59,7 @@ export const useChecklist = (props: ChecklistTaskProps): void => {
         TeamCommandType,
         TeamEventType,
         TeamMessageType,
-        TeamReactionType,
-        TeamUserType
+        TeamReactionType
       >,
     ) => {
       const { message, type } = props;

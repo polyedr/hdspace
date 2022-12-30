@@ -42,7 +42,11 @@ function BarIcon({ priority, size = 20 }: Props) {
   return (
     <Container size={size}>
       {bars.map((_, i) => (
-        <Bar color={6 - barCount > i ? color : '#dfdfdf'} size={i + 1} />
+        <Bar
+          key={i}
+          color={6 - barCount > i ? color : '#dfdfdf'}
+          size={i + 1}
+        />
       ))}
     </Container>
   );

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useContext } from 'react';
 import {
   ChatAutoComplete,

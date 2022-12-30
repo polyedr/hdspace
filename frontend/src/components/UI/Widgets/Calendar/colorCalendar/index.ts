@@ -8,7 +8,6 @@ import * as weekday from './modules/weekday/weekday';
 import * as day from './modules/day/day';
 
 import {
-  CalendarSize,
   LayoutModifier,
   CalendarOptions,
   Day,
@@ -194,7 +193,7 @@ export default class Calendar {
     this.document = options.document || document;
 
     // Check if HTML element with given selector exists in DOM
-    this.calendar = this.document.querySelector(this.id) as HTMLElement;
+    this.calendar = this.document.querySelector(this.id);
     if (!this.calendar) {
       throw new Error(
         `[COLOR-CALENDAR] Element with selector '${this.id}' not found`,
@@ -258,31 +257,31 @@ export default class Calendar {
     // Store HTML element references
     this.calendarRoot = this.document.querySelector(
       `${this.id} .${this.CAL_NAME}`,
-    ) as HTMLElement;
+    );
     this.calendarHeader = this.document.querySelector(
       `${this.id} .calendar__header`,
-    ) as HTMLElement;
+    );
     this.calendarWeekdays = this.document.querySelector(
       `${this.id} .calendar__weekdays`,
-    ) as HTMLElement;
+    );
     this.calendarDays = this.document.querySelector(
       `${this.id} .calendar__days`,
-    ) as HTMLElement;
+    );
     this.pickerContainer = this.document.querySelector(
       `${this.id} .calendar__picker`,
-    ) as HTMLElement;
+    );
     this.pickerMonthContainer = this.document.querySelector(
       `${this.id} .calendar__picker-month`,
-    ) as HTMLElement;
+    );
     this.pickerYearContainer = this.document.querySelector(
       `${this.id} .calendar__picker-year`,
-    ) as HTMLElement;
+    );
     this.yearPickerChevronLeft = this.document.querySelector(
       `${this.id} .calendar__picker-year-arrow-left`,
-    ) as HTMLElement;
+    );
     this.yearPickerChevronRight = this.document.querySelector(
       `${this.id} .calendar__picker-year-arrow-right`,
-    ) as HTMLElement;
+    );
 
     // Mark today's month in month picker
     this.pickerMonthContainer.children[this.today.getMonth()].classList.add(
@@ -308,19 +307,19 @@ export default class Calendar {
 
     this.monthyearDisplay = this.document.querySelector(
       `${this.id} .calendar__monthyear`,
-    ) as HTMLElement;
+    );
     this.monthDisplay = this.document.querySelector(
       `${this.id} .calendar__month`,
-    ) as HTMLElement;
+    );
     this.yearDisplay = this.document.querySelector(
       `${this.id} .calendar__year`,
-    ) as HTMLElement;
+    );
     this.prevButton = this.document.querySelector(
       `${this.id} .calendar__arrow-prev .calendar__arrow-inner`,
-    ) as HTMLElement;
+    );
     this.nextButton = this.document.querySelector(
       `${this.id} .calendar__arrow-next .calendar__arrow-inner`,
-    ) as HTMLElement;
+    );
 
     // Set initial picker styles
     this.togglePicker(false);

@@ -17,8 +17,7 @@ const client = StreamChat.getInstance<
   TeamCommandType,
   TeamEventType,
   TeamMessageType,
-  TeamReactionType,
-  TeamUserType
+  TeamReactionType
 >(STREAM_CHAT_CLIENT_ID, { enableInsights: true, enableWSFallback: true });
 
 export default client;

@@ -62,8 +62,7 @@ export const EditChannel: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const [channelName, setChannelName] = useState<string>(

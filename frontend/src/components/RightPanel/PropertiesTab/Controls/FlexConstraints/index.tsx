@@ -194,7 +194,9 @@ const FlexConstraints: React.FC<Props> = ({
   }, [activeElePos, flexDirection]);
 
   useEffect(() => {
-    const elem = document.querySelector('.active-flex-grid-item');
+    const elem = document.querySelector<HTMLDivElement>(
+      '.active-flex-grid-item',
+    );
     if (elem) {
       setActiveElePos({
         left: elem.offsetLeft,

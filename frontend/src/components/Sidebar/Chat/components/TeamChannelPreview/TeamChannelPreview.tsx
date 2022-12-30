@@ -35,8 +35,7 @@ export const TeamChannelPreview: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   function ChannelPreview() {

@@ -25,7 +25,6 @@ export const useDebouncedRichInputChange = (
   const debounced = useDebouncedCallback(cb, delay);
 
   const handleChange = (value: EditorState) => {
-    // @ts-expect-error
     setState({
       editor: value,
       id,

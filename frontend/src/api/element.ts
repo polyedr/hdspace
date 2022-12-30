@@ -163,11 +163,7 @@ export const apiDelElement = async (props: MyAxiosProps & { id: string }) =>
     .then(parseResult)
     .catch(onError);
 
-export const apiUpdateElement = async <
-  T extends Entity,
-  K extends Entity,
-  P extends ServerElement<T>['parameters'],
->(
+export const apiUpdateElement = async (
   props: MyAxiosProps & { id: string },
 ): Promise<Result<LibraryElement<any>>> =>
   await myAxios({

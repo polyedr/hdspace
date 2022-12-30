@@ -1,4 +1,4 @@
-import React, { useRef, MutableRefObject, memo } from 'react';
+import React, { useRef, memo } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { ElementData } from '@Src/types';
 import { useStyles as useElementBlockStyles } from '../ElementsTab/ElementsBlock';

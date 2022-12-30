@@ -97,7 +97,7 @@ function DisplayAssets() {
   );
 
   useEffect(() => {
-    assets?.map((data, index) => {
+    assets?.forEach((data, index) => {
       const elementId = element.id;
       const elementData = {
         parameters: {
@@ -112,7 +112,7 @@ function DisplayAssets() {
   }, [mouseEnterImageShow]);
 
   useEffect(() => {
-    assets?.map((data, index) => {
+    assets?.forEach((data, index) => {
       const image = data?.image;
       const elementId = element?.id;
       if (index === backGraundImageEnter) {
@@ -144,12 +144,12 @@ function DisplayAssets() {
   const imageBackground = images?.split('(')[1].split(')')[0];
   useEffect(() => {
     setSecondBackgroundImage(imageBackground);
-  }, [selectBackgroundAssetValue]);
+  }, [imageBackground, selectBackgroundAssetValue]);
 
   const assetsSecondImages = element?.parameters?.imageURL;
   useEffect(() => {
     setAssetImage(assetsSecondImages);
-  }, [selectAsset]);
+  }, [assetsSecondImages, selectAsset]);
 
   const handleLeaveBackgroundImage = () => {
     const elementId = element?.id;
@@ -165,7 +165,7 @@ function DisplayAssets() {
     dispatch(updateStateElement(elementId, secondBackgroundImageData));
   };
   const handleSetImage = (clickIndex) => {
-    assets?.map((data, index) => {
+    assets?.forEach((data, index) => {
       const secondImageData = {
         parameters: {
           ...element?.parameters,
@@ -191,7 +191,7 @@ function DisplayAssets() {
   };
 
   const handleSetBackgroundImage = (clickIndex) => {
-    assets?.map((data, index) => {
+    assets?.forEach((data, index) => {
       const image = data?.image;
       const elementId = element?.id;
       if (index === clickIndex) {

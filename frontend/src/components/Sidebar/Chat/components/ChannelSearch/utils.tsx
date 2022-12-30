@@ -23,8 +23,7 @@ export type ChannelOrUserType =
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >
   | UserResponse<TeamUserType>;
 
@@ -36,8 +35,7 @@ export const isChannel = (
   TeamCommandType,
   TeamEventType,
   TeamMessageType,
-  TeamReactionType,
-  TeamUserType
+  TeamReactionType
 > =>
   (
     channel as Channel<
@@ -46,8 +44,7 @@ export const isChannel = (
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >
   ).cid !== undefined;
 
@@ -58,8 +55,7 @@ interface Props {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >;
   setActiveChannel: (
     newChannel?: Channel<
@@ -68,8 +64,7 @@ interface Props {
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >,
     watchers?: {
       limit?: number;

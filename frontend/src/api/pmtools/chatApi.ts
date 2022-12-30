@@ -16,7 +16,7 @@ export const apiSendMessage = async (stream, config, message) => {
       topic: 'Castle',
       content: message,
     };
-    return await client.messages.send(params);
+    return client.messages.send(params);
   } catch (e) {
     return e;
   }
@@ -31,7 +31,7 @@ export const apiGetMessages = async (stream, config) => {
       num_after: 0,
       narrow: [{ operator: 'stream', operand: stream }],
     };
-    return await client.messages.retrieve(readParams);
+    return client.messages.retrieve(readParams);
   } catch (e) {
     return e;
   }
@@ -41,9 +41,9 @@ export const apiAuthUser = async (login: AuthParams) => {
   try {
     const config: ChatClient = await zulipInit(login);
     if (config.config.username && config.config.apiKey) {
-      return await config.users.me.getProfile();
+      return config.users.me.getProfile();
     }
-    return await config.users.me.getProfile();
+    return config.users.me.getProfile();
   } catch (e) {
     return e;
   }
@@ -55,7 +55,7 @@ export const apiCreateNewStreams = async (name: string) => {
     const meParams = {
       subscriptions: JSON.stringify([{ name }]),
     };
-    return await client.users.me.subscriptions.add(meParams);
+    return client.users.me.subscriptions.add(meParams);
   } catch (e) {
     return e;
   }
@@ -64,7 +64,7 @@ export const apiCreateNewStreams = async (name: string) => {
 export const apiRegisterUser = async (login: AuthParams, register: any) => {
   try {
     const client: ChatClient = await zulipInit(login);
-    return await client.users.create(register);
+    return client.users.create(register);
   } catch (e) {
     return e;
   }
@@ -76,7 +76,7 @@ export const apiDeleteStream = async (nameZulip: string) => {
     const meParams = {
       subscriptions: JSON.stringify([nameZulip]),
     };
-    return await client.users.me.subscriptions.remove(meParams);
+    return client.users.me.subscriptions.remove(meParams);
   } catch (e) {
     return e;
   }
@@ -94,7 +94,7 @@ export const apiAddSubscribeToStream = async (
       subscriptions: JSON.stringify([{ name: nameStream }]),
       principals: JSON.stringify([user.user_id]),
     };
-    return await client.users.me.subscriptions.add(anotherUserParams);
+    return client.users.me.subscriptions.add(anotherUserParams);
   } catch (e) {
     return e;
   }
@@ -112,7 +112,7 @@ export const apiUnsubscribeToStream = async (
       subscriptions: JSON.stringify([nameStream]),
       principals: JSON.stringify([user.user_id]),
     };
-    return await client.users.me.subscriptions.remove(anotherUserParams);
+    return client.users.me.subscriptions.remove(anotherUserParams);
   } catch (e) {
     return e;
   }

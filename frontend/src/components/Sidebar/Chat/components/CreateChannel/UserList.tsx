@@ -160,8 +160,7 @@ export const UserList: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const [error, setError] = useState(false);
@@ -242,7 +241,7 @@ export const UserList: React.FC<Props> = (props) => {
         users?.length &&
         users.map((user) => (
           <UserItem
-            selected={selectedUsers?.indexOf(user.id) !== -1}
+            selected={selectedUsers?.includes(user.id)}
             key={user.id}
             setSelectedUsers={setSelectedUsers}
             user={user}

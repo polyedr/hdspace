@@ -20,7 +20,6 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
 interface Props {
@@ -65,8 +64,7 @@ export const ChannelContainer: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const [pinsOpen, setPinsOpen] = useState(false);

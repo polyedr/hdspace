@@ -18,9 +18,10 @@ export function extractPlayerLinkInfo(link: string): LinkInfo {
       parameters.aliases.some((alias) => link.startsWith(alias)),
     )
     ?.map(([name, parameters]) => {
-      const alias = parameters.aliases.find((targetAlias) =>
-        link.startsWith(targetAlias),
-      )!;
+      const alias =
+        parameters.aliases.find((targetAlias) =>
+          link.startsWith(targetAlias),
+        ) ?? '';
       const linkWithID = link.replace(alias, parameters.playerLink);
       const linkWithoutAttributes = head(linkWithID.split('?')) || linkWithID;
 

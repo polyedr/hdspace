@@ -27,7 +27,6 @@ import {
   radiobuttonStyleControls,
   rootStyleControls,
   optionStyleControls,
-  selectMenuStyleControls,
   selectStyleControls,
   smartContainerStyleControls,
   subscribeFormStyleControls,
@@ -41,7 +40,6 @@ import {
   htmlElementControls,
   paginationStyleControls,
   radiobuttonGroupStyleControls,
-  switchStyleControls,
   listImagesItemStyleControls,
 } from '../core';
 

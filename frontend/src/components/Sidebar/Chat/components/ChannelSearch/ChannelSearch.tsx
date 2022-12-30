@@ -41,8 +41,7 @@ export function ChannelSearch() {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const [allChannels, setAllChannels] = useState<
@@ -56,8 +55,7 @@ export function ChannelSearch() {
           TeamCommandType,
           TeamEventType,
           TeamMessageType,
-          TeamReactionType,
-          TeamUserType
+          TeamReactionType
         >
       >
     | undefined
@@ -131,8 +129,7 @@ export function ChannelSearch() {
       TeamCommandType,
       TeamEventType,
       TeamMessageType,
-      TeamReactionType,
-      TeamUserType
+      TeamReactionType
     >,
   ) => {
     setQuery('');
