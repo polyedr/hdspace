@@ -81,7 +81,9 @@ function AllTags({ selected, onChange, onClose }: Props) {
     setShowAddLabel(false);
   }, [setShowAddLabel]);
 
-  const labelsList = useMemo(() => labels.map((item) => item.text), [labels]);
+  const labelsList = useMemo(() => {
+    return labels.map((item) => item.text);
+  }, [labels]);
 
   const handleToggle = useCallback(
     (id) => {

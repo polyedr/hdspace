@@ -64,7 +64,7 @@ const Button = styled(MuiButton)({
   },
 });
 
-function AddTag({
+const AddTag = ({
   tags,
   onBack,
   onClose,
@@ -72,7 +72,7 @@ function AddTag({
   tags: string[] | undefined;
   onBack?: () => void;
   onClose: () => void;
-}) {
+}) => {
   const [value, setValue] = useState('');
   const [duplicateCheckError, setDuplicateCheck] = useState<string>('');
   const [colour, seColour] = useState(colors[0]);
@@ -166,6 +166,6 @@ function AddTag({
       </Stack>
     </>
   );
-}
+};
 
 export default AddTag;
