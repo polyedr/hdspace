@@ -24,7 +24,6 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
 interface InnerProps {

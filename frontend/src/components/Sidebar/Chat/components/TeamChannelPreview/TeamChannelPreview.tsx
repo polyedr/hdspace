@@ -16,7 +16,6 @@ import type {
   TeamEventType,
   TeamMessageType,
   TeamReactionType,
-  TeamUserType,
 } from '../../client';
 
 type Props = ChannelPreviewUIComponentProps & {
