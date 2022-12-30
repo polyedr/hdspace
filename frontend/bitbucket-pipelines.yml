@@ -6,7 +6,7 @@ pipelines:
     - step:
         # size: 2x
         script:
-            - npm install
+            - npm install --legacy-peer-deps
             - npm run lint:fix
             - npm run build:staging
   branches:
