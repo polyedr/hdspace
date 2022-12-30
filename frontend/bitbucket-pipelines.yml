@@ -6,6 +6,7 @@ pipelines:
     - step:
         # size: 2x
         script:
+            - export NODE_OPTIONS=--max-old-space-size=3072
             - npm install --legacy-peer-deps
             - npm run lint:fix
             - npm run build:staging
