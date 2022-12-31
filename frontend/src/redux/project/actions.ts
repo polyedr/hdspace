@@ -207,6 +207,8 @@ import {
   SetImagePalette,
   UpdateLayoutProjects,
   ProjectError,
+  PasteCopiedElementAtIndex,
+  ElementMetaIndex,
 } from '../types';
 
 import TYPES from '../actionTypes';
@@ -1109,6 +1111,13 @@ export const pasteCopiedElement = (
   meta: ElementHistoryMeta,
 ): PasteCopiedElement => ({
   type: TYPES.PASTE_COPIED_ELEMENT,
+  meta,
+});
+
+export const pasteElementAtIndex = (
+  meta: ElementMetaIndex,
+): PasteCopiedElementAtIndex => ({
+  type: TYPES.PASTE_COPIED_ELEMENT_AT_INDEX,
   meta,
 });
 

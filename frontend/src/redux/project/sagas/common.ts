@@ -163,9 +163,9 @@ export function* updateOrReplaceElementStyles(
             type === 'replace'
               ? styles
               : {
-                  ...state[id].styles.ownStyles,
-                  ...styles,
-                },
+                ...state[id].styles.ownStyles,
+                ...styles,
+              },
         },
       }),
     );
@@ -296,25 +296,27 @@ export function* createElements<T extends Entity>(
       });
     });
 
-    // check if we can add elements
-    const allowToAdd = elementsToCreate.reduce((allowAll, elsToCreate) => {
-      const { elements, parent } = elsToCreate;
-      return (
-        allowAll &&
-        elements.reduce((allow, element) => {
-          return allow && isElementCanBeAdded(parent, element.struct_type);
-        }, true)
-      );
-    }, true);
+    if (meta.index === undefined) {
+      // check if we can add elements
+      const allowToAdd = elementsToCreate.reduce((allowAll, elsToCreate) => {
+        const { elements, parent } = elsToCreate;
+        return (
+          allowAll &&
+          elements.reduce((allow, element) => {
+            return allow && isElementCanBeAdded(parent, element.struct_type);
+          }, true)
+        );
+      }, true);
 
-    if (!allowToAdd) {
-      yield put(
-        enqueueSnackbar({
-          message: 'Creation of some elements is not allowed',
-          options: { variant: 'warning' },
-        }),
-      );
-      return;
+      if (!allowToAdd) {
+        yield put(
+          enqueueSnackbar({
+            message: 'Creation of some elements is not allowed',
+            options: { variant: 'warning' },
+          }),
+        );
+        return;
+      }
     }
 
     const parentIds = elementsToCreate.map(
@@ -359,13 +361,27 @@ export function* createElements<T extends Entity>(
         const newChildElements = newElements.filter(
           (el) => el.parameters.parentId === parent.id,
         );
+
+        let childrenIds = [];
+
+        if (meta.index === undefined) {
+          childrenIds = [
+            ...parent.children.map((childEl) => childEl.id),
+            ...newChildElements.map((childEl) => childEl.id),
+          ];
+        } else {
+          childrenIds = [...parent.children];
+          const newElementIds = newChildElements
+            .map((childEl) => childEl.id)
+            .join();
+
+          childrenIds.splice(meta.index, 0, newElementIds);
+        }
+
         return convertToRecursiveServerElement({
           id: parent.id,
           name: parent.name,
-          children: [
-            ...parent.children.map((childEl) => childEl.id),
-            ...newChildElements.map((childEl) => childEl.id),
-          ],
+          children: childrenIds,
         });
       },
     );
@@ -404,13 +420,16 @@ export function* createElements<T extends Entity>(
             },
           },
         }));
+
       return {
         elements,
         parentId: parent.id,
         index,
       };
     });
+
     yield put(Actions.addStateElements(stateElementsToAdd, { ...meta }));
+
     if (!useHistory) {
       yield put(
         Actions.addRedoActions(

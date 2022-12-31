@@ -64,6 +64,7 @@ import {
   updateOrReplaceElementStyles,
   updateOrReplaceMultipleElementsParameters,
   createElements,
+  createElementsWithIndex,
 } from './common';
 import {
   selectAllAssetLists,
@@ -258,8 +259,8 @@ function* updateElementClassNames(
             type === 'add'
               ? [state[elementId].styles.classNames[0], newClassName]
               : state[elementId].styles.classNames.filter(
-                  (name) => name !== newClassName,
-                ),
+                (name) => name !== newClassName,
+              ),
         },
       }),
     );
@@ -327,18 +328,18 @@ function* removeElementStyles(
           ...element.styles,
           ...(pseudoClass
             ? {
-                pseudoClassStyles: {
-                  ...element.styles.pseudoClassStyles,
-                  [pseudoClass]: updatedStyles,
-                },
-                pseudoClassViewStyles: {
-                  ...element.styles.ownStyles,
-                  ...updatedStyles,
-                },
-              }
+              pseudoClassStyles: {
+                ...element.styles.pseudoClassStyles,
+                [pseudoClass]: updatedStyles,
+              },
+              pseudoClassViewStyles: {
+                ...element.styles.ownStyles,
+                ...updatedStyles,
+              },
+            }
             : {
-                ownStyles: updatedStyles,
-              }),
+              ownStyles: updatedStyles,
+            }),
         },
       }),
     );
@@ -525,31 +526,31 @@ export function* updateOrReplaceMultipleElementsStyles(
       const updatedStyles =
         type === 'replace'
           ? {
-              ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
-            }
+            ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+          }
           : {
-              ...stylesToUpdate,
-              ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
-            };
+            ...stylesToUpdate,
+            ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+          };
       const updatedElement = {
         ...element,
         styles: {
           ...element.styles,
           ...(pseudoClass
             ? {
-                pseudoClassStyles: {
-                  ...element.styles.pseudoClassStyles,
-                  [pseudoClass]: updatedStyles,
-                },
-                pseudoClassViewStyles: {
-                  ...element.styles.ownStyles,
-                  ...updatedStyles,
-                },
-              }
+              pseudoClassStyles: {
+                ...element.styles.pseudoClassStyles,
+                [pseudoClass]: updatedStyles,
+              },
+              pseudoClassViewStyles: {
+                ...element.styles.ownStyles,
+                ...updatedStyles,
+              },
+            }
             : {
-                ownStyles: updatedStyles,
-                pseudoClassViewStyles: null,
-              }),
+              ownStyles: updatedStyles,
+              pseudoClassViewStyles: null,
+            }),
         },
       };
       return updatedElement;
@@ -1408,12 +1409,12 @@ export const setEnabledPseudoClass = function* (
   if (element) {
     const pseudoClassViewStyles = pseudoClass
       ? {
-          ...element.styles.ownStyles,
-          ...(element.styles.pseudoClassStyles &&
+        ...element.styles.ownStyles,
+        ...(element.styles.pseudoClassStyles &&
           element.styles.pseudoClassStyles[pseudoClass]
-            ? element.styles.pseudoClassStyles[pseudoClass]
-            : {}),
-        }
+          ? element.styles.pseudoClassStyles[pseudoClass]
+          : {}),
+      }
       : null;
     yield put(
       Actions.updateStateElement(element.id, {

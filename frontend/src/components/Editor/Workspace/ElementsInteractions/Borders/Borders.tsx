@@ -1,11 +1,19 @@
 import ELEMENT_IDS from '@Constants/elementIds';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Menu, MenuItem } from '@mui/material';
-import { copyActiveElement, pasteCopiedElement } from '@Redux/project/actions';
+import {
+  copyActiveElement,
+  pasteCopiedElement,
+  pasteElementAtIndex,
+} from '@Redux/project/actions';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 import {
+  getIndexOfSelectedElementInParentChildren,
+  selectActiveElement,
+  selectDirectChildren,
   selectIsElementActive,
-  selectItemToCopyInfo
+  selectItemToCopyInfo,
+  selectParentOfActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { BoundingStyles, DropTargetParams, Entity } from '@Src/types';
@@ -92,6 +100,7 @@ const Borders: React.FC<Props> = ({
   const showGrid = useSelector(selectShowingGrid);
   const classes = useStyles({ isActive });
   const rightGridScale = useRef<HTMLDivElement>(null);
+  const index = useSelector(getIndexOfSelectedElementInParentChildren);
   const currentScreenId = useSelector(selectCurrentScreenId);
   const canHaveChildren = canElementHaveChildren(type as Entity);
   const emptyClipboard = !useSelector(selectItemToCopyInfo);
@@ -188,6 +197,14 @@ const Borders: React.FC<Props> = ({
     handleClose();
   };
 
+  const pasteAfterElement = () => {
+    dispatch(pasteElementAtIndex({ index: index + 1 }));
+  };
+
+  const pasteBeforeElement = () => {
+    dispatch(pasteElementAtIndex({ index }));
+  };
+
   const copyToClipBoard = () => {
     dispatch(copyActiveElement());
     handleClose();
@@ -199,24 +216,52 @@ const Borders: React.FC<Props> = ({
 
   return (
     <>
-      <Menu
-        open={contextMenu !== null}
-        onClose={handleClose}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          contextMenu !== null
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-            : undefined
-        }
-      >
-        <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
-        <MenuItem
-          disabled={!canHaveChildren || emptyClipboard}
-          onClick={pasteToBoard}
+      {!canHaveChildren && (
+        <Menu
+          open={contextMenu !== null}
+          onClose={handleClose}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            contextMenu !== null
+              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+              : undefined
+          }
         >
-          Paste
-        </MenuItem>
-      </Menu>
+          <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
+          <MenuItem
+            disabled={canHaveChildren || emptyClipboard}
+            onClick={pasteAfterElement}
+          >
+            Paste After
+          </MenuItem>
+          <MenuItem
+            disabled={canHaveChildren || emptyClipboard}
+            onClick={pasteBeforeElement}
+          >
+            Paste Before
+          </MenuItem>
+        </Menu>
+      )}
+      {canHaveChildren && (
+        <Menu
+          open={contextMenu !== null}
+          onClose={handleClose}
+          anchorReference="anchorPosition"
+          anchorPosition={
+            contextMenu !== null
+              ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+              : undefined
+          }
+        >
+          <MenuItem onClick={copyToClipBoard}>Copy</MenuItem>
+          <MenuItem
+            disabled={!canHaveChildren || emptyClipboard}
+            onClick={pasteToBoard}
+          >
+            Paste
+          </MenuItem>
+        </Menu>
+      )}
       {isActiveBorder &&
         !showGrid &&
         !['root', 'calendar', 'clock'].includes(type) && (

@@ -61,18 +61,18 @@ export const buildGroupElementsTree = (
   const rootElement = elements[rootElementId];
   const rootElementParams = rootElement
     ? {
-        ...(rootElement.parameters
-          ? Object.keys(rootElement.parameters)
-              .filter((paramName) => !paramsToOmit.includes(paramName))
-              .reduce((params, paramName) => {
-                return {
-                  ...params,
-                  [paramName]: rootElement.parameters[paramName],
-                };
-              }, {})
-          : {}),
-        sourceElementId: rootElement.id,
-      }
+      ...(rootElement.parameters
+        ? Object.keys(rootElement.parameters)
+          .filter((paramName) => !paramsToOmit.includes(paramName))
+          .reduce((params, paramName) => {
+            return {
+              ...params,
+              [paramName]: rootElement.parameters[paramName],
+            };
+          }, {})
+        : {}),
+      sourceElementId: rootElement.id,
+    }
     : {};
   return {
     ...rootElement,
