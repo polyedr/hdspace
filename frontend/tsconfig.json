@@ -1,20 +1,22 @@
 {
-  "allowSyntheticDefaultImports": true,
   "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "strict": false,
     "skipLibCheck": true,
+    "noImplicitAny": false,
+    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
     "esModuleInterop": true,
-    "outDir": "./dist/",
-    "sourceMap": true,
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "target": "es6",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
     "jsx": "react",
-    "lib": ["esnext", "es5", "es2015", "es2016", "dom", "scripthost", "dom.iterable"],
-    "noImplicitAny": false,
-    "noImplicitThis": false,
-    "experimentalDecorators": true,
+    "incremental": true,
+    "suppressImplicitAnyIndexErrors": true,
     "baseUrl": ".",
     "paths": {
       "@Components/*": ["src/components/*"],
@@ -26,6 +28,7 @@
       "@Src/*": ["src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*", "*.ts"],
+  "exclude": ["node_modules"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

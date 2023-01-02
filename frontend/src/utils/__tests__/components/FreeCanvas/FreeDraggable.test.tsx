@@ -24,7 +24,7 @@ describe('Free Draggable', () => {
     );
   });
 
-  it('should render free draggable component', () => {
+  it('should render free draggable component', async () => {
     expect(ui.container).toMatchSnapshot();
   });
 

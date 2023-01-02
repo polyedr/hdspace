@@ -111,7 +111,7 @@ const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
   },
 }));
 
-const TopPanel = () => {
+function TopPanel() {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [openEdit, setOpenEdit] = useState(false);
@@ -216,6 +216,6 @@ const TopPanel = () => {
       />
     </Appbar>
   );
-};
+}
 
 export default TopPanel;

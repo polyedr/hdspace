@@ -9,16 +9,16 @@ import { Theme } from '@mui/material';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 import DropPositionMarker from './DropPositionMarker';
 
-type Props = {
+interface Props {
   elementId: string;
   type: string;
   styles: BoundingStyles;
   isActiveBorder: boolean;
   dropTargetParams: DropTargetParams | null;
   enableDropTargetBordersMode: boolean;
-  updateStyles(payload: React.CSSProperties): void;
+  updateStyles: (payload: React.CSSProperties) => void;
   keepAspectRatio: boolean | undefined;
-};
+}
 
 const useStyles = makeStyles<Theme, { isActive: boolean }>({
   resizeHandle: {
@@ -102,7 +102,7 @@ const Borders: React.FC<Props> = ({
       flexGrow: 0,
     });
   };
-  type HandleStyles = {
+  interface HandleStyles {
     bottom?: string;
     bottomLeft?: string;
     bottomRight?: string;
@@ -111,7 +111,7 @@ const Borders: React.FC<Props> = ({
     top?: string;
     topLeft?: string;
     topRight?: string;
-  };
+  }
 
   const resizeHandle: HandleStyles = {
     top: cn(classes.resizeHandle, classes.topHandle),

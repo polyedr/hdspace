@@ -34,12 +34,12 @@ const useStyles = makeStyles<Theme>(({ typography, palette }) => ({
     transition: 'opacity 0.1s ease',
   },
 }));
-const RenameProjectBar = ({
+function RenameProjectBar({
   projectName,
   userIdCreator,
   userId,
   handleEditClick,
-}) => {
+}) {
   const classes = useStyles();
   const currentScreenId = useSelector(selectCurrentScreenId);
   const isRenameProject = userIdCreator === userId;
@@ -60,6 +60,6 @@ const RenameProjectBar = ({
       )}
     </div>
   );
-};
+}
 
 export default RenameProjectBar;

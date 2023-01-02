@@ -7,12 +7,12 @@ import { selectEditableStyles } from '@Redux/project/selectors/base';
 import { Entity } from '@Src/types';
 import ClearIcon from '@mui/icons-material/Clear';
 
-type Props = {
+interface Props {
   propsToRemove?: string[];
-  onClick(propsToRemove: string[] | undefined): void;
+  onClick: (propsToRemove: string[] | undefined) => void;
   type: Entity | 'none';
   editableStyles: string;
-};
+}
 
 const useStyles = makeStyles({
   header: {

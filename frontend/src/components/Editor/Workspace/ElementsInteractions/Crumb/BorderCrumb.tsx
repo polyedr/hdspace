@@ -30,7 +30,7 @@ import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
 import Icon from '../../../../UI/Icon';
 
-type Props = {
+interface Props {
   element: StateElement;
   show: boolean;
   currentProjectId: number;
@@ -38,7 +38,7 @@ type Props = {
   styles: BoundingStyles;
   children?: any;
   masterScreenId: number | null;
-};
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
   crumb: ({ styles, element, rootId }: Props & { rootId: string }) => ({
@@ -211,7 +211,7 @@ const BorderCrumb: React.FC<Props> = (props) => {
       >
         {element.name}
       </span>
-      {element.type !== 'root' && element.name.indexOf('Master') < 0 && (
+      {element.type !== 'root' && !element.name.includes('Master') && (
         <>
           <span className={classes.icon} onClick={handleDuplicate}>
             <Icon icon="copy" size={16} color="white" />

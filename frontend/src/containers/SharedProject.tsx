@@ -40,11 +40,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   projectId: number;
   screenId?: number;
   elementId?: string;
-};
+}
 
 const SharedProject: React.FC<Props> = ({ projectId, screenId }) => {
   const dispatch = useDispatch();

@@ -255,7 +255,7 @@ export function* getProjectSaga(action: ReturnType<typeof Actions.getProject>) {
       yield put(Actions.setAssetLists(null));
       yield put(Actions.setSelectedAssetListId(null));
       const masterScreenId: number =
-        result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ||
+        result.projectscreen.find((screen: Screen) => !screen.buoyancy)?.id ??
         -1;
       yield put(Actions.setMasterScreenId(masterScreenId));
 
@@ -448,7 +448,7 @@ export function* deleteProjectSaga({
       yield put(Actions.setProjectList(newProjectList));
       yield put(
         enqueueSnackbar({
-          message: `Project deleted`,
+          message: 'Project deleted',
           options: {
             variant: 'success',
           },

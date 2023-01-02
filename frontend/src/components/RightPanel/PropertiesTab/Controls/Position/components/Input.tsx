@@ -2,13 +2,13 @@ import React from 'react';
 import { StyledTextField } from '@Components/styledComponents';
 import { makeStyles } from '@mui/styles';
 
-type Props = {
+interface Props {
   name: string;
   value: any;
   handleValueChange?: (name, value) => void;
   disabled: boolean;
   style?: React.CSSProperties;
-};
+}
 
 const useStyles = makeStyles({
   title: {

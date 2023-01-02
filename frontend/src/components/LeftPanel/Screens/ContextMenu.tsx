@@ -29,14 +29,14 @@ const StyledMenu = styled(Menu)({
   },
 });
 
-type Props = {
+interface Props {
   screen: Screen;
   open: boolean;
   onClose: () => void;
   openEdit: () => void;
   openDelete: () => void;
   anchorPosition: any;
-};
+}
 
 const ContextMenu: React.FC<Props> = ({
   screen,

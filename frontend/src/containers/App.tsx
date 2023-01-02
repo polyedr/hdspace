@@ -13,27 +13,25 @@ import Routes from './Routes';
 import { theme, themeOld } from '../styles/Theme';
 import Notifier from '../components/Notifier';
 
-const App: React.FC = () => {
-  return (
-    <SnackbarProvider
-      maxSnack={10}
-      anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-    >
-      <ConnectedRouter history={history}>
-        <MuiThemeProvider theme={themeOld}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <ChatProvider>
-                <Routes />
-              </ChatProvider>
-              <Notifier />
-            </ThemeProvider>
-          </LocalizationProvider>
-        </MuiThemeProvider>
-      </ConnectedRouter>
-    </SnackbarProvider>
-  );
-};
+const App: React.FC = () => (
+  <SnackbarProvider
+    maxSnack={10}
+    anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+  >
+    <ConnectedRouter history={history}>
+      <MuiThemeProvider theme={themeOld}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <ChatProvider>
+              <Routes />
+            </ChatProvider>
+            <Notifier />
+          </ThemeProvider>
+        </LocalizationProvider>
+      </MuiThemeProvider>
+    </ConnectedRouter>
+  </SnackbarProvider>
+);
 
 export default App;

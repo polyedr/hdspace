@@ -18,7 +18,7 @@ import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import DraggableElement from '../Draggable/DraggableElement';
 
-type Props = {
+interface Props {
   allElements: Normalized<StateElement>;
   isDisabled: boolean;
   dropTargetParams: DropTargetParams | null;
@@ -30,7 +30,7 @@ type Props = {
   elementId: string;
   parentId?: string;
   scrollRef: React.RefObject<Scrollbars>;
-};
+}
 
 const useStyles = makeStyles({
   divider: {
@@ -72,11 +72,12 @@ const MasterElement: React.FC<Props> = (props: Props) => {
     [dispatch, elementId],
   );
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       DOMHandler.INSTANCE.removeElementDom(element.id);
-    };
-  }, [element.id]);
+    },
+    [element.id],
+  );
 
   if (!element) {
     return null;

@@ -138,7 +138,7 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-const TabPanel = ({ children, value, index, ...rest }) => {
+function TabPanel({ children, value, index, ...rest }) {
   return (
     <div
       role="tabpanel"
@@ -150,7 +150,7 @@ const TabPanel = ({ children, value, index, ...rest }) => {
       {value === index && children}
     </div>
   );
-};
+}
 
 const TabStyle = styled(Tab)(({ theme }) => ({
   minWidth: 'unset',
@@ -162,12 +162,10 @@ const TabPanelStyle = styled(TabPanel)(({ theme }) => ({
   padding: `${theme.spacing(3)}px 0`,
 }));
 
-const a11yProps = (index) => {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-};
+const a11yProps = (index) => ({
+  id: `simple-tab-${index}`,
+  'aria-controls': `simple-tabpanel-${index}`,
+});
 
 const Profile: React.FC = () => {
   const classes = useStyles();
@@ -367,17 +365,15 @@ const Profile: React.FC = () => {
                       Upload
                       <Field
                         name="avatar"
-                        render={({ input }) => {
-                          return (
-                            <input
-                              {...input}
-                              type="file"
-                              accept=".png, .jpeg"
-                              onChange={handleImageUpload}
-                              className={classes.hidden}
-                            />
-                          );
-                        }}
+                        render={({ input }) => (
+                          <input
+                            {...input}
+                            type="file"
+                            accept=".png, .jpeg"
+                            onChange={handleImageUpload}
+                            className={classes.hidden}
+                          />
+                        )}
                       />
                     </label>
                     <button

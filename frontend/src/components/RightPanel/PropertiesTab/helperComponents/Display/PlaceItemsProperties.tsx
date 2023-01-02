@@ -6,13 +6,13 @@ import { MenuItem } from '@mui/material';
 import { ALIGN_VALUES, JUSTIFY_VALUES } from './constants';
 import { useWrapperStyles } from './styles';
 
-type Props = {
+interface Props {
   reversed: boolean;
   justifyContent?: React.CSSProperties['justifyContent'];
   alignItems?: React.CSSProperties['alignItems'];
   updateStyles: PropertiesChangeProps<LibraryElement<Entity>>['updateStyles'];
   canEdit: boolean;
-};
+}
 
 const PlaceItemsProperties: React.FC<Props> = ({
   updateStyles,

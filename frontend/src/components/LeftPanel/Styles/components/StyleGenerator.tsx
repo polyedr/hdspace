@@ -56,7 +56,7 @@ const containerStyles: SxProps = {
   },
 };
 
-const StyleGenerator = () => {
+function StyleGenerator() {
   const classes = useStyles();
   const buttonClasses = useButtonStyles();
   const dispatch = useDispatch();
@@ -85,6 +85,6 @@ const StyleGenerator = () => {
       </div>
     </Box>
   );
-};
+}
 
 export default StyleGenerator;

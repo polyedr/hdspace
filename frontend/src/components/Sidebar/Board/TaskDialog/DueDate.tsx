@@ -55,10 +55,10 @@ const IconButton = styled(MuiIconButton)({
 
 interface Props {
   date: string;
-  onChange(date?: string | null): void;
+  onChange: (date?: string | null) => void;
 }
 
-const DueDate = ({ date, onChange }: Props) => {
+function DueDate({ date, onChange }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
   const [value, setValue] = React.useState<Date | null | undefined>(
     date ? new Date(date) : new Date(),
@@ -124,6 +124,6 @@ const DueDate = ({ date, onChange }: Props) => {
       </Popover>
     </>
   );
-};
+}
 
 export default DueDate;

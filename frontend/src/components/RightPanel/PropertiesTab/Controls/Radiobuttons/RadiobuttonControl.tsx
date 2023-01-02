@@ -37,13 +37,13 @@ const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   id: string;
   parameters: any;
   updateParams: any;
   isLast: boolean;
   canEdit: boolean;
-};
+}
 
 const RadiobuttonControl: FC<Props> = ({
   parameters: { value, label },

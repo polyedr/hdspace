@@ -23,10 +23,10 @@ import { selectParentOfActiveElement } from '@Redux/project/selectors/element';
 import TargetIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/TargetIcon';
 import ClearIcon from '@Components/RightPanel/PropertiesTab/Controls/Position/components/ClearIcon';
 
-type ParsedInset = {
+interface ParsedInset {
   value: React.CSSProperties['top'] | null;
   name: string;
-};
+}
 
 const useStyles = makeStyles({
   align: {

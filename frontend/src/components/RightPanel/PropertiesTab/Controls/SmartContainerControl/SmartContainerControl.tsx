@@ -8,11 +8,11 @@ import { Button } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import useAnalyzePucture from '@Utils/nn/hooks/useAnalyzePucture';
 
-type Props = {
+interface Props {
   element: StateElement;
   blockType: NNBlockType;
   canEdit: boolean;
-};
+}
 
 const useStyles = makeStyles({
   wrapper: {

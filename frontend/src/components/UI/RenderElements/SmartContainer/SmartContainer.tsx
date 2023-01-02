@@ -24,10 +24,10 @@ import { RendererProps } from '../types';
 import { makeComponentStyles } from '../styles';
 import useEventHandlers from '../../RenderHooks/useEventHandlers';
 
-type SizeProps = {
+interface SizeProps {
   width: number;
   height: number;
-};
+}
 
 const useStyles = makeComponentStyles('smart', {
   innerContentWrapper: {

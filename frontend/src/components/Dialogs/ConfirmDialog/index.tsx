@@ -25,13 +25,13 @@ const useStyles = makeStyles<Theme>(({ spacing, palette }) =>
   }),
 );
 
-type Props = {
+interface Props {
   open: boolean;
   title?: string;
   description?: string;
   onClose: () => void;
   onDelete: (e) => void;
-};
+}
 
 const ConfirmDialog: React.FC<Props> = ({
   open,

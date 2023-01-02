@@ -3,10 +3,10 @@ import { makeStyles, createStyles } from '@mui/styles';
 import React, { useState } from 'react';
 import { EditableScreenUser } from '@Src/types';
 
-type Props = {
-  editingUsers: Array<EditableScreenUser>;
+interface Props {
+  editingUsers: EditableScreenUser[];
   isMinimized: boolean;
-};
+}
 
 const styles = makeStyles((theme: Theme) =>
   createStyles({

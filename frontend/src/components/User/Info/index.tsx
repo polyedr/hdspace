@@ -91,7 +91,7 @@ const Info = ({ title, list, img }) => {
 
       <List>
         {list.map((text) => (
-          <ListItem className={classes.list}>
+          <ListItem key={text} className={classes.list}>
             <ListItemIcon className={classes.listItemIcon}>
               <img src={arrowright} className={classes.arrow} alt="arrow" />
             </ListItemIcon>

@@ -7,9 +7,9 @@ import {
   RadiobuttonGroupElement,
 } from '@Src/types';
 
-type Props = {
+interface Props {
   flexDirection: Alignments;
-};
+}
 
 const Alignment: React.FC<
   Props & PropertiesChangeProps<RadiobuttonGroupElement>

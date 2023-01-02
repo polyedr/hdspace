@@ -66,13 +66,13 @@ const Menu = styled(MuiMenu)({
   },
 });
 
-const Priority = ({
+function Priority({
   task,
   onChange,
 }: {
   task: BoardTask;
-  onChange(priority: PriorityOptions);
-}) => {
+  onChange: (priority: PriorityOptions) => any;
+}) {
   const [priority, setPriority] = useState<PriorityOptions>(task.priority);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -128,6 +128,6 @@ const Priority = ({
       </Menu>
     </>
   );
-};
+}
 
 export default Priority;

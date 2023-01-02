@@ -54,7 +54,7 @@ const TopBar: React.FC = () => {
       <Actions />
 
       <div className={classes.wrapper}>
-        <>{freeCanvasMode ? <div className={classes.magic} /> : null}</>
+        {freeCanvasMode ? <div className={classes.magic} /> : null}
       </div>
     </div>
   ) : (

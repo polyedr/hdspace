@@ -13,7 +13,7 @@ import {
 import { convertToHTML } from 'draft-convert';
 import RichTextContent from '@Components/RightPanel/PropertiesTab/helperComponents/RichTextContent/RichTextContent';
 
-const TextContent = ({ element, updateParams, canEdit }) => {
+function TextContent({ element, updateParams, canEdit }) {
   const { link, isLink, textContent, screenName, screenLink } =
     element.parameters;
   const [input, setInput] = useState(link);
@@ -191,6 +191,6 @@ const TextContent = ({ element, updateParams, canEdit }) => {
       )}
     </>
   );
-};
+}
 
 export default TextContent;

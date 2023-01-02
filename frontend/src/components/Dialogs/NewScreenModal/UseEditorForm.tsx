@@ -35,9 +35,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   onClose: (...args: any) => void;
-};
+}
 
 const UseEditorForm: FC<Props> = ({ onClose }) => {
   const classes = useStyles();

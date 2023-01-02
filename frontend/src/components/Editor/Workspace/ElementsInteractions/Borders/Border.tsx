@@ -5,13 +5,13 @@ import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material';
 import BorderPosition from '../constants';
 
-type Props = {
+interface Props {
   elementId: string;
   position: BorderPosition;
   styles: BoundingStyles;
   isActive: boolean;
   visiblePreSelect: boolean;
-};
+}
 
 const useStyles = makeStyles((theme: Theme) => ({
   '@global': {

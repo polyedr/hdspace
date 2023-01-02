@@ -9,13 +9,13 @@ enum FullSizeDirection {
   HORIZONTAL,
 }
 
-type Props = {
+interface Props {
   asset: Asset;
-};
+}
 
-type StyleProps = {
+interface StyleProps {
   sizeDirection: FullSizeDirection;
-};
+}
 
 const useStyles = makeStyles({
   assetWrapper: {

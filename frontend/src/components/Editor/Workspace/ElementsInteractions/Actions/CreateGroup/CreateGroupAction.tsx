@@ -11,12 +11,12 @@ import { makeStyles } from '@mui/styles';
 import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 
-type Props = {
+interface Props {
   element: StateElement;
   canCreateGroup: boolean;
   selectedElementsIds: string[];
   screenId: number;
-};
+}
 
 const useStyles = makeStyles({
   content: {
@@ -82,7 +82,7 @@ const CreateGroupAction: React.FC<Props> = ({
               horizontal: 'center',
             }}
             TransitionProps={{
-              onEntered: () => inputRef.current!.focus(),
+              onEntered: () => inputRef.current.focus(),
             }}
           >
             <div className={cn(classes.content)}>

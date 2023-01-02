@@ -42,19 +42,17 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, RendererProps>(
       disabled: isDisabled,
       disableToolbar: false,
       label,
-      TextFieldComponent: (props: TextFieldProps) => {
-        return (
-          <TextField
-            {...props}
-            inputProps={{
-              className: cn(
-                classes.ownStyles,
-                isDisabled ? classes.disabled : classes.ownPseudoStyles,
-              ),
-            }}
-          />
-        );
-      },
+      TextFieldComponent: (props: TextFieldProps) => (
+        <TextField
+          {...props}
+          inputProps={{
+            className: cn(
+              classes.ownStyles,
+              isDisabled ? classes.disabled : classes.ownPseudoStyles,
+            ),
+          }}
+        />
+      ),
     };
 
     const renderPicker = useCallback(() => {

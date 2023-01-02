@@ -1,12 +1,12 @@
 import React from 'react';
 
-type Props = {
+interface Props {
   italicState: boolean;
   resetIconState: () => void;
   setItalicState: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
-export const ItalicsIcon = (props: Props) => {
+export function ItalicsIcon(props: Props) {
   const { italicState, resetIconState, setItalicState } = props;
 
   return (
@@ -32,4 +32,4 @@ export const ItalicsIcon = (props: Props) => {
       </svg>
     </div>
   );
-};
+}

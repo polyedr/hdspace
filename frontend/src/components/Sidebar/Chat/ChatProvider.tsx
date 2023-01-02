@@ -11,7 +11,7 @@ const i18nInstance = new Streami18n({
   },
 });
 
-const ChatProvider = ({ children, user, token }) => {
+function ChatProvider({ children, user, token }) {
   useEffect(() => {
     const payload = {
       id: user.id.toString(),
@@ -32,9 +32,9 @@ const ChatProvider = ({ children, user, token }) => {
       {children}
     </Chat>
   );
-};
+}
 
-export default ({ children }) => {
+export default function ({ children }) {
   const token = useSelector(selectTokenPair);
   const user = useSelector(selectUserData);
 
@@ -47,4 +47,4 @@ export default ({ children }) => {
   }
 
   return children;
-};
+}

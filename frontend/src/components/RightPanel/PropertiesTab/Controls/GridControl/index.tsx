@@ -17,10 +17,10 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   gridTemplateColumns: React.CSSProperties['gridTemplateColumns'];
   gridTemplateRows: React.CSSProperties['gridTemplateRows'];
-};
+}
 
 const GridControl: FC<
   Props & PropertiesChangeProps<LibraryElement<Entity>>

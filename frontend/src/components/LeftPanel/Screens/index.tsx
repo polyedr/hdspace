@@ -1,15 +1,15 @@
 import React, { MouseEvent, useState } from 'react';
-import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import {
+  Typography,
   List,
   IconButton,
   CircularProgress,
   Menu,
   MenuItem,
-  Typography,
 } from '@mui/material';
+
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import Box from '@mui/material/Box';
@@ -25,24 +25,24 @@ import prevent from '@Utils/preventEvent';
 import { Indices } from '@Src/types';
 import ScreenListItem from './ScreenListItem';
 import Scrollbar from '../../UI/Scrollbar';
+import { styled } from '@mui/material/styles';
 
-const TitleContainer = styled(Box)`
-  padding-left: 16px;
-  padding-right: 6px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #ffffff;
-`;
+const TitleContainer = styled(Box)({
+  paddingLeft: 16,
+  paddingRight: 6,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  backgroundColor: '#ffffff',
+});
 
-const Title = styled(Typography)`
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: 600 !important;
-  font-size: 10px !important;
-  text-transform: uppercase;
-  line-height: 145%;
-`;
+const Title = styled(Typography)({
+  fontStyle: 'normal',
+  fontWeight: '600 !important',
+  fontSize: '10px !important',
+  textTransform: 'uppercase',
+  lineHeight: '145%',
+});
 
 const StyledIconButton = styled(IconButton)({
   width: '32px',
@@ -60,7 +60,8 @@ const StyledCustomList = styled(List)`
   padding: 0;
   overflow-x: hidden;
 `;
-const Screens = () => {
+
+function Screens() {
   const dispatch = useDispatch();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
@@ -150,7 +151,7 @@ const Screens = () => {
               style={{ backgroundColor: '#ffffff', overflow: 'hidden' }}
             >
               <StyledCustomList
-                innerRef={provided.innerRef}
+                ref={provided.innerRef}
                 {...provided.droppableProps}
               >
                 {screens
@@ -171,6 +172,6 @@ const Screens = () => {
       </DragDropContext>
     </>
   );
-};
+}
 
 export default Screens;

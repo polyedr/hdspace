@@ -4,11 +4,11 @@ export interface IBoardForUI extends IBoard {
 }
 
 export interface IColumnData extends IServerListData {
-  tasks: Array<IServerTaskData>;
+  tasks: IServerTaskData[];
 }
 
 export interface ITaskData extends IServerTaskData {
-  members: Array<any>;
+  members: any[];
 }
 
 // From Server
@@ -42,11 +42,11 @@ export interface IBoard {
   id: string;
   idEnterprise: any;
   idOrganization: string;
-  labelNames: { [key: string]: string } | null;
+  labelNames: Record<string, string> | null;
   limits: unknown;
   name: string;
   pinned: boolean;
-  prefs: { [key: string]: string } | null;
+  prefs: Record<string, string> | null;
   shortUrl: string;
   url: string;
 }
@@ -94,7 +94,7 @@ export interface IServerTaskData {
   url: string;
 }
 
-type BadgesTypes = {
+interface BadgesTypes {
   attachments: number;
   attachmentsByType: {
     trello: {
@@ -115,16 +115,16 @@ type BadgesTypes = {
   subscribed: boolean;
   viewingMemberVoted: boolean;
   votes: number;
-};
+}
 
-type CoverType = {
+interface CoverType {
   brightness: string;
   color: null;
   idAttachment: null;
   idPlugin: null;
   idUploadedBackground: null;
   size: string;
-};
+}
 
 export interface BoardTaskTag {
   text: string;

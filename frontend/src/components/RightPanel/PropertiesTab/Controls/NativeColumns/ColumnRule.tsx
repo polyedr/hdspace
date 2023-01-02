@@ -43,7 +43,7 @@ const ruleStyles = [
 
 const ruleWidths = ['thin', 'medium', 'thick'];
 
-type Props = {
+interface Props {
   element: StateElement;
   canEdit: boolean;
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
@@ -51,7 +51,7 @@ type Props = {
   ruleWidth: React.CSSProperties['columnRuleWidth'];
   ruleStyle: React.CSSProperties['columnRuleStyle'];
   ruleColor: React.CSSProperties['columnRuleColor'];
-};
+}
 
 const ColumnRule: React.FC<Props> = ({
   removeStyles,

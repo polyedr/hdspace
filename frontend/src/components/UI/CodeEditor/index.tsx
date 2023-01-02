@@ -85,7 +85,7 @@ const useStyles = makeStyles({
   },
 });
 
-const CodeEditorEditable = ({
+function CodeEditorEditable({
   width = '500px',
   height = '500px',
   padding = '0',
@@ -95,7 +95,7 @@ const CodeEditorEditable = ({
   language,
   caretColor = 'red',
   tabSize = 2,
-}: CodeEditorProps): ReactElement => {
+}: CodeEditorProps): ReactElement {
   const [caretPos, setCaretPos] = useState(0);
   const validator = useRef<Validator>(new CSSValidator());
 
@@ -240,6 +240,6 @@ const CodeEditorEditable = ({
       </pre>
     </div>
   );
-};
+}
 
 export default CodeEditorEditable;

@@ -103,7 +103,7 @@ const tourSteps: ReactourStep[] = [
     content: 'Here you can enable the master screen of the current project.',
   },
   {
-    selector: ``,
+    selector: '',
     content: 'Congratulation. Well done. Thanks for following me.',
   },
 ];
@@ -118,9 +118,9 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   screenId: number;
-};
+}
 
 const Screen: React.FC<Props> = ({ screenId }) => {
   const classes = useStyles();

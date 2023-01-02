@@ -203,7 +203,7 @@ const IndentsBlock: React.FC<Props> = ({
           paddingRight,
           paddingBottom,
         };
-    setState(styles as Indents);
+    setState(styles);
   }, [
     marginTop,
     marginLeft,

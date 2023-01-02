@@ -65,11 +65,11 @@ const Button = styled(MuiButton)({
 });
 interface Props {
   selected: number[];
-  onChange(labels: number[]): void;
-  onClose(): void;
+  onChange: (labels: number[]) => void;
+  onClose: () => void;
 }
 
-const AllTags = ({ selected, onChange, onClose }: Props) => {
+function AllTags({ selected, onChange, onClose }: Props) {
   const labels = useSelector(selectLabels);
 
   const dispatch = useDispatch();
@@ -163,7 +163,7 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
       >
         {filteredLabels.map((label) => (
           <ListItem
-            selected={selected.indexOf(label.id) !== -1}
+            selected={selected.includes(label.id)}
             key={label.id.toString()}
             label={label}
             onToggle={handleToggle}
@@ -173,6 +173,6 @@ const AllTags = ({ selected, onChange, onClose }: Props) => {
       </List>
     </SearchWrapper>
   );
-};
+}
 
 export default AllTags;

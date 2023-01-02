@@ -37,9 +37,9 @@ const useStyles = makeStyles<Theme>(({ spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   region: VIARegion;
-};
+}
 
 const VIADescription: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();

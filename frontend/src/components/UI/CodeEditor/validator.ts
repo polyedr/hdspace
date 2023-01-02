@@ -1,5 +1,5 @@
 export interface Validator {
-  validate(input: string): ValidationError[];
+  validate: (input: string) => ValidationError[];
 }
 
 export interface ValidationError {

@@ -115,7 +115,9 @@ const ShareStyles: React.FC<Props> = ({
       activeElement.type,
       activeElement.id,
       activeElement.styles.ownStyles,
-      { screenId: currentScreenId },
+      {
+        screenId: currentScreenId,
+      },
     );
 
   const handlePasteButtonClick = (className: string) =>
@@ -174,7 +176,7 @@ const ShareStyles: React.FC<Props> = ({
 
       <div>
         {elementClassNames.length ? (
-          (elementClassNames as string[]).map((className) => (
+          elementClassNames.map((className) => (
             <Chip
               key={className}
               size="small"

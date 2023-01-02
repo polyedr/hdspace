@@ -9,9 +9,9 @@ const useEventHandlers = <T extends HTMLElement>(
   defaultHandlers: EventHandlers<T> = {},
   skipHandlers: string[] = [],
 ): EventHandlers<T> => {
-  const eventNames = Object.keys(props).filter((name) => {
-    return name.startsWith('on') && props[name] instanceof Function;
-  });
+  const eventNames = Object.keys(props).filter(
+    (name) => name.startsWith('on') && props[name] instanceof Function,
+  );
   const isPrototypeMode = useSelector(selectIsPrototypeMode);
 
   const handlers = useMemo(

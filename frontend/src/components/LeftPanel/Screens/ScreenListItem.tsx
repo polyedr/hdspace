@@ -66,15 +66,15 @@ const useStyles = makeStyles<Theme>(({ typography }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   screen: Screen;
   index: number;
   active: boolean;
-};
-type State = {
+}
+interface State {
   mouseX: number | null;
   mouseY: number | null;
-};
+}
 
 const ScreenListItem: React.FC<Props> = ({ screen, index, active }) => {
   const dispatch = useDispatch();

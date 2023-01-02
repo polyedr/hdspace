@@ -10,9 +10,10 @@ import { Provider } from 'react-redux';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import Share from '@Components/Layout/TopBar/actions/Share';
+import { vi } from 'vitest';
 
-const mockWriteText = jest.fn();
-jest.mock('axios');
+const mockWriteText = vi.fn();
+vi.mock('axios');
 
 Object.assign(navigator, {
   clipboard: {

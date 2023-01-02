@@ -123,11 +123,9 @@ const SideModule: FC = () => {
           {Object.values(TABS_PMTOOLS).map((tab, idx) => {
             const Tab = components[tab];
             return (
-              <>
-                <TabPanel value={selectedTabNumber} key={tab} index={idx}>
-                  <Tab />
-                </TabPanel>
-              </>
+              <TabPanel value={selectedTabNumber} key={tab} index={idx}>
+                <Tab />
+              </TabPanel>
             );
           })}
         </TabContent>

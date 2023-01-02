@@ -10,9 +10,9 @@ import { makeStyles } from '@mui/styles';
 import { StateElement } from '@Src/types';
 import { useButtonStyles } from '../hooks/styles';
 
-type Props = {
+interface Props {
   element: StateElement;
-};
+}
 
 const useStyles = makeStyles({
   content: {
@@ -59,7 +59,7 @@ const SaveElementAction: React.FC<Props> = ({ element }) => {
               horizontal: 'center',
             }}
             TransitionProps={{
-              onEntered: () => inputRef.current!.focus(),
+              onEntered: () => inputRef.current.focus(),
             }}
           >
             <div className={cn(classes.content)}>
@@ -71,8 +71,8 @@ const SaveElementAction: React.FC<Props> = ({ element }) => {
                 onKeyPress={(event: React.KeyboardEvent) => {
                   if (event.key === 'Enter') {
                     // Enter pressed
-                    const name = inputRef.current!.value;
-                    inputRef.current!.value = '';
+                    const name = inputRef.current.value;
+                    inputRef.current.value = '';
                     popupState.close();
                     dispatch(
                       updateElement<'section'>({

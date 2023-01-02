@@ -66,9 +66,9 @@ const useStyles = makeStyles<
   },
 });
 
-type Props = {
+interface Props {
   region: VIARegion;
-};
+}
 
 const Region: FC<Props> = ({ region }) => {
   const dispatch = useDispatch();

@@ -147,7 +147,7 @@ const BorderBlock: React.FC<Props> = ({
       return `${MIN_BORDER_RADIUS}px`;
     }
 
-    if (!radius || radius.indexOf('%') === -1) {
+    if (!radius || !radius.includes('%')) {
       return `${value > MAX_BORDER_RADIUS ? MAX_BORDER_RADIUS : value}px`;
     }
 
@@ -276,23 +276,19 @@ const BorderBlock: React.FC<Props> = ({
           }}
         >
           {/* {!isDefaultStyles && ( */}
-          <>
-            <div
-              className={cn(classes.labelTextField, classes.borderWidthLabel)}
-            >
-              W
-            </div>
-            <StyledTextField
-              style={{ marginBottom: 0 }}
-              type="number"
-              value={width ? parseFloat(width as string) : ''}
-              onChange={handleWidthChange}
-              margin="dense"
-              inputProps={{ className: classes.numberInput }}
-              className={classes.text}
-              disabled={!canEdit}
-            />
-          </>
+          <div className={cn(classes.labelTextField, classes.borderWidthLabel)}>
+            W
+          </div>
+          <StyledTextField
+            style={{ marginBottom: 0 }}
+            type="number"
+            value={width ? parseFloat(width as string) : ''}
+            onChange={handleWidthChange}
+            margin="dense"
+            inputProps={{ className: classes.numberInput }}
+            className={classes.text}
+            disabled={!canEdit}
+          />
           {/* )} */}
         </div>
         <StyledTextField

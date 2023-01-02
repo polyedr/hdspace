@@ -44,9 +44,9 @@ const useStyles = makeStyles({
   rightSideColor: {},
 });
 
-type Props = {
+interface Props {
   isDefaultStyles?: boolean;
-};
+}
 
 const AssetLists: React.FC<Props> = ({ isDefaultStyles = false }) => {
   const classes = useStyles();
@@ -128,9 +128,7 @@ const AssetLists: React.FC<Props> = ({ isDefaultStyles = false }) => {
           label="Asset list"
           value={currentAssetListId}
           className={classes.assetsSelector}
-          onChange={(event) =>
-            handleListChange((event.target.value as string) || null)
-          }
+          onChange={(event) => handleListChange(event.target.value || null)}
           inputProps={{
             className: isDefaultStyles
               ? classes.leftSideColor

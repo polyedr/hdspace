@@ -10,11 +10,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   title: string;
   activeSection: string;
   className?: string;
-};
+}
 
 const Section: React.FC<Props> = ({
   activeSection,

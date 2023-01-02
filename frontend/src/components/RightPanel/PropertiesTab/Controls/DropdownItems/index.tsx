@@ -26,10 +26,10 @@ const useStyles = makeStyles<Theme>(({ palette }) => ({
   },
 }));
 
-type StateProps = {
+interface StateProps {
   dropdownMenuID: string;
   dropdownItems: DropdownItemElement[];
-};
+}
 
 function mapState(state: AppReduxState): StateProps {
   const activeElementId = selectActiveElementId(state);

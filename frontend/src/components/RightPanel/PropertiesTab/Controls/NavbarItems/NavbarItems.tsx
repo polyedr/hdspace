@@ -55,11 +55,11 @@ const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   updateParams: any;
   element: any;
   canEdit: boolean;
-};
+}
 
 const NavbarItems: React.FC<Props> = ({ updateParams, element, canEdit }) => {
   const {

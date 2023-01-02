@@ -23,11 +23,11 @@ const parse = (value: string | number | undefined) => {
   return [width, units];
 };
 
-type Props = {
+interface Props {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   value: React.CSSProperties['columnWidth'];
   canEdit: boolean;
-};
+}
 
 const ColumnWidth: React.FC<Props> = ({ updateStyles, value, canEdit }) => {
   const classes = useColumnControlStyles();
