@@ -6,8 +6,8 @@ import {
   makeStyles,
   StylesProvider,
   ThemeProvider,
-} from '@material-ui/core/styles';
-import { CircularProgress } from '@material-ui/core';
+} from '@mui/styles';
+import { CircularProgress } from '@mui/material';
 import Frame, {
   FrameContext,
   FrameContextConsumer,

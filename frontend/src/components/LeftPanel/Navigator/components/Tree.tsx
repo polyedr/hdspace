@@ -51,7 +51,7 @@ import ContextMenu from '@Components/LeftPanel/Navigator/components/ContextMenu'
 import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import ELEMENT_IDS from '@Constants/elementIds';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
 import logger from 'loglevel';
 import Scrollbar from '../../../UI/Scrollbar';

@@ -6,9 +6,9 @@ import { selectActiveElement } from '@Redux/project/selectors/element';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateElement } from '@Redux/project/actions';
 import { selectEditorDocument } from '@Redux/project/selectors/base';
-import { Button, ButtonGroup, MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { capitalize } from '@material-ui/core/utils';
+import { Button, ButtonGroup, MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { capitalize } from '@mui/material/utils';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const useStyles = makeStyles({

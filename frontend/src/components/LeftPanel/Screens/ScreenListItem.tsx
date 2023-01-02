@@ -1,6 +1,6 @@
 import React, { useState, useCallback, MouseEvent } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import cn from 'classnames';
 import { useHistory } from 'react-router';
@@ -10,19 +10,22 @@ import {
   deleteScreen,
 } from '@Redux/project/actions';
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
-import { ListItem, ListItemIcon } from '@material-ui/core';
-
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import {
+  ListItem,
+  ListItemIcon,
+  Box,
+  Modal,
+  Button,
+  Typography,
+  Theme,
+} from '@mui/material';
 import { Screen } from '../../../types';
 import ScreenLogo from './ScreenLogo';
 import ScreenEditDialog from './ScreenEditDialog';
 import ScreenLongName from './ScreenLongName';
 import ContextMenu from './ContextMenu';
 
-const useStyles = makeStyles(({ typography }) => ({
+const useStyles = makeStyles<Theme>(({ typography }) => ({
   listItem: {
     '&:hover': {
       backgroundColor: '#F3F4F6',

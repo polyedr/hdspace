@@ -4,7 +4,8 @@ import { BoundingStyles, DropTargetParams } from '@Src/types';
 import { Rnd } from 'react-rnd';
 import cn from 'classnames';
 import { selectIsElementActive } from '@Redux/project/selectors/element';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
+import { Theme } from '@mui/material';
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 import DropPositionMarker from './DropPositionMarker';
 

@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { addChildrenToElement, deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { MenuItem } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   root: {

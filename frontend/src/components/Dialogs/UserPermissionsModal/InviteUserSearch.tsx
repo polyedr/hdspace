@@ -20,7 +20,7 @@ import {
 import Avatar from '@Components/UI/Avatar';
 import { styled } from '@mui/material/styles';
 import { UserData } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 const InputTitle = styled('p')({
   marginTop: 0,

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-prop-types */
 import React, { useContext, useCallback, memo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   selectActiveElement,
   selectSelectedElementsIds,

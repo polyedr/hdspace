@@ -1,22 +1,30 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import GroupIcon from '@material-ui/icons/Group';
+import { createStyles, makeStyles } from '@mui/styles';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Group as GroupIcon,
+} from '@mui/icons-material';
 import convertDateToRelative from '@Utils/convertDateToRelative';
 import {
   deleteProject,
   updateNameAndTagsProject,
 } from '@Redux/project/actions';
 import { selectUserData } from '@Redux/user/selectors';
-import { TableRow, TableCell, Typography, IconButton } from '@material-ui/core';
+import {
+  TableRow,
+  TableCell,
+  Typography,
+  IconButton,
+  Theme,
+} from '@mui/material';
 import Dialog from '../Dialogs/Dialog';
 import { Project } from '../../types';
 import TagsList from './TagsList';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     link: {
       '&, &:active, &:focus, &:link': {

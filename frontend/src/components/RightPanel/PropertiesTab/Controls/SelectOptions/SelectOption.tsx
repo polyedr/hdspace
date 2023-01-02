@@ -1,11 +1,11 @@
 import React from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton } from '@material-ui/core';
+import { IconButton, lighten, Theme } from '@mui/material';
 import {
   StyledAccordion,
   StyledAccordionDetails,
@@ -13,7 +13,7 @@ import {
   StyledTextField,
 } from '../../../../styledComponents';
 
-const useStyles = makeStyles(({ spacing, palette }) => ({
+const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   title: {
     '& .MuiAccordionSummary-content': {
       padding: '0.5em 1em',

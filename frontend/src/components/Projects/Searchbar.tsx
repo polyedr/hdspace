@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { TextField, MenuItem } from '@material-ui/core';
+import { TextField, MenuItem, Theme } from '@mui/material';
 import cn from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateRange, ProjectsSearchParameter } from '@Src/types';
@@ -12,9 +12,9 @@ import { PROJECT_STATUS_LIST } from '@Constants/defaultParams';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { startOfDay, endOfDay } from 'date-fns';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   input: {
     margin: 0,
   },

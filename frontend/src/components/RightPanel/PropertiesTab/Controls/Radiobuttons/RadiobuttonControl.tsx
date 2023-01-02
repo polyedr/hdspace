@@ -3,17 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import DeleteIcon from '@material-ui/icons/Delete';
-import { IconButton } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton, lighten, Theme } from '@mui/material';
 import {
   StyledAccordion,
   StyledAccordionDetails,
   StyledAccordionSummary,
   StyledTextField,
 } from '@Components/styledComponents';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ spacing, palette }) => ({
+const useStyles = makeStyles<Theme>(({ spacing, palette }) => ({
   title: {
     '& .MuiAccordionSummary-content': {
       padding: '0.5em 1em',

@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
-import {
-  Checkbox,
-  FormControlLabel,
-  MenuItem,
-  FormLabel,
-} from '@material-ui/core';
+import { Checkbox, FormControlLabel, MenuItem, FormLabel } from '@mui/material';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedCallback } from 'use-debounce';
 import ELEMENT_IDS from '@Constants/elementIds';

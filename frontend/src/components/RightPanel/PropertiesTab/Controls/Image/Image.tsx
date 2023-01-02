@@ -15,7 +15,7 @@ import {
   selectImageList,
 } from '@Redux/project/selectors/asset';
 import Button from '@mui/material/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { URL_REGEX } from '@Constants/defaultParams';
 
 const useStyles = makeStyles({

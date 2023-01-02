@@ -2,7 +2,7 @@ import React from 'react';
 import * as CSS from 'csstype';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import { ALIGN_VALUES, JUSTIFY_VALUES } from './constants';
 import { useWrapperStyles } from './styles';
 

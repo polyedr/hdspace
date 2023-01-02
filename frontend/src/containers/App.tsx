@@ -2,7 +2,7 @@ import React from 'react';
 import { ConnectedRouter } from 'connected-react-router';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/styles';
 import { CssBaseline } from '@material-ui/core';
 import ChatProvider from '@Components/Sidebar/Chat/ChatProvider';
 

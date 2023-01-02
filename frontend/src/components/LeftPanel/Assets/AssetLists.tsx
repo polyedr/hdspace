@@ -4,8 +4,7 @@ import {
   selectAllAssetLists,
   selectCurrentAssetListId,
 } from '@Redux/project/selectors/asset';
-import AddIcon from '@material-ui/icons/Add';
-import CloseIcon from '@material-ui/icons/Close';
+import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
 import {
   addAssetList,
   loadAssetLists,
@@ -13,9 +12,9 @@ import {
 } from '@Redux/project/actions';
 import { UserProjectPermission } from '@Src/types';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { Select, MenuItem, IconButton, TextField } from '@material-ui/core';
+import { Select, MenuItem, IconButton, TextField } from '@mui/material';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import {
   selectAssetsListsLoader,
   selectCurrentProjectId,

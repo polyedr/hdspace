@@ -43,7 +43,7 @@ import {
 import CONTROLS from '@Constants/controls';
 import getControlStyles from '@Utils/getControlStyles';
 import { selectIfCurrentUserHasPermission } from '@Redux/permissions/selectors';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 
 import logger from 'loglevel';
 import ToggleButton from '@mui/material/ToggleButton';

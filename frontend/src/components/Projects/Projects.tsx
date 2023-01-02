@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import {
   selectAreProjectsLoading,
   selectProjectCreateLoader,
@@ -21,7 +21,8 @@ import {
   TableContainer,
   Container,
   CircularProgress,
-} from '@material-ui/core';
+  Theme,
+} from '@mui/material';
 import {
   createProject,
   getProjectList,
@@ -34,7 +35,7 @@ import { selectSubscriptionData } from '@Redux/user/selectors';
 import { selectProjectError } from '@Redux/project/selectors/via';
 import ProjectListItem from './ProjectListItem';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       // textAlign: 'center',

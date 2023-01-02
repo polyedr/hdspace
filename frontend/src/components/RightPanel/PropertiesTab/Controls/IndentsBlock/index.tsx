@@ -7,10 +7,10 @@ import {
   LibraryElement,
   PropertiesChangeProps,
 } from '@Src/types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { useSelector } from 'react-redux';
 import { selectCurrentProjectDefaultStyles } from '@Redux/project/selectors/base';
-import { InputBase } from '@material-ui/core';
+import { InputBase } from '@mui/material';
 import RemoveStyles from '../../helperComponents/RemoveStyles';
 
 const initialOnFocusState = {

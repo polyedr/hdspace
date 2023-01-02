@@ -1,7 +1,8 @@
 import React from 'react';
-import { IconButton } from '@material-ui/core';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { IconButton, Theme } from '@mui/material';
+import { lighten } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
@@ -13,7 +14,7 @@ import {
   StyledTextField,
 } from '@Components/styledComponents';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   title: {
     '& .MuiAccordionSummary-content': {
       padding: '0.5em 1em',

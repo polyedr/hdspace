@@ -10,8 +10,8 @@ import {
 import prevent from '@Utils/preventEvent';
 import { setActiveElement, setHoveredElementId } from '@Redux/project/actions';
 import Scrollbars from 'react-custom-scrollbars';
-import { Divider } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Divider } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { DropTargetParams, Normalized, StateElement } from '@Src/types';
 import { selectMasterScreenId } from '@Redux/project/selectors/screen';
 import { selectCurrentProjectClasses } from '@Redux/project/selectors/base';

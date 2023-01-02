@@ -5,9 +5,11 @@ import {
   FormControlLabel,
   MenuItem,
   FormLabel,
-} from '@material-ui/core';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
+  lighten,
+  Theme,
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDebouncedCallback } from 'use-debounce';
 import { deleteElement } from '@Redux/project/actions';
@@ -25,7 +27,7 @@ import { convertToHTML } from 'draft-convert';
 import { useDebouncedRichInputChange } from '@Utils/debounceHooks';
 import RichTextContent from '../../helperComponents/RichTextContent/RichTextContent';
 
-const useStyles = makeStyles(({ palette, spacing }) => ({
+const useStyles = makeStyles<Theme>(({ palette, spacing }) => ({
   title: {
     '& .MuiAccordionSummary-content': {
       padding: '0.5em 1em',

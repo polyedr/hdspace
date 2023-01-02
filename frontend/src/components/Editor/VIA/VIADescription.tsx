@@ -4,8 +4,7 @@ import {
 } from '@Components/styledComponents';
 import { Entity, VIARegion } from '@Src/types';
 import React, { ChangeEvent, FC } from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
+import { Delete, FileCopy } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import {
   copyVIARegion,
@@ -13,13 +12,13 @@ import {
   updateVIARegion,
 } from '@Redux/project/actions';
 import { LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryElements';
-import { capitalize } from '@material-ui/core/utils';
+import { capitalize } from '@mui/material/utils';
 import { splitWords } from '@Utils/stringHelper';
 import isValidAnnotationElement from '@Utils/validators/isValidAnnotationElement';
-import { MenuItem } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { MenuItem, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ spacing }) => ({
+const useStyles = makeStyles<Theme>(({ spacing }) => ({
   container: {
     display: 'flex',
     alignItems: 'center',
@@ -98,11 +97,11 @@ const VIADescription: FC<Props> = ({ region }) => {
         </StyledTextField>
 
         <StyledIconButton title="Copy region" onClick={handleCopyRegion}>
-          <FileCopyIcon />
+          <FileCopy />
         </StyledIconButton>
 
         <StyledIconButton title="Delete region" onClick={handleDeleteRegion}>
-          <DeleteIcon />
+          <Delete />
         </StyledIconButton>
       </div>
 

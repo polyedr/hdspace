@@ -1,14 +1,16 @@
 /* eslint-disable react/no-unused-prop-types */
 import React from 'react';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import EditIcon from '@material-ui/icons/Edit';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { Theme, makeStyles } from '@material-ui/core/styles';
+import {
+  DeleteOutline as DeleteOutlineIcon,
+  Edit as EditIcon,
+  FileCopy as FileCopyIcon,
+} from '@mui/icons-material';
+import { Theme, IconButton } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteScreen, duplicateScreen } from '@Redux/project/actions';
 import { selectScreensLength } from '@Redux/project/selectors/screen';
 import { Screen } from '@Src/types';
-import { IconButton } from '@material-ui/core';
 
 const useStyles = makeStyles<Theme, { show: boolean }>({
   root: {

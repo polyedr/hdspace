@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
-import { Button, IconButton } from '@material-ui/core';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { Button, IconButton, Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+import { lighten } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Entity, LibraryElement, PropertiesChangeProps } from '@Src/types';
 import { StyledTextField } from '@Components/styledComponents';
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles<Theme>(({ palette }) => ({
   flexWrapper: {
     display: 'flex',
     flexDirection: 'column',

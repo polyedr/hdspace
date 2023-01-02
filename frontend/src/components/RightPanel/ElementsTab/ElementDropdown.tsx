@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { splitWords } from '@Utils/stringHelper';
 import { ElementData } from '@Src/types';
-import { ButtonGroup, MenuItem, Menu } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { ButtonGroup, MenuItem, Menu } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import ElementButton from './ElementButton';
 import Button from '../../UI/Button';
 

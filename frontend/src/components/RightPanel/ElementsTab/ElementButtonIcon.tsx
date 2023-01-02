@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import createColorElementIcon from '@Utils/createColorElementIcon';
 import { ColorElementIcon } from '@Src/types';
 

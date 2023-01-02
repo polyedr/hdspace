@@ -1,7 +1,7 @@
 import React, { MouseEvent, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 import {
   List,
   IconButton,
@@ -9,9 +9,7 @@ import {
   Menu,
   MenuItem,
   Typography,
-  IconButtonProps,
-  ListProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { createScreen, changeScreensOrder } from '@Redux/project/actions';
 import Box from '@mui/material/Box';
@@ -46,7 +44,7 @@ const Title = styled(Typography)`
   line-height: 145%;
 `;
 
-const CustomIconButton = styled(IconButton)({
+const StyledIconButton = styled(IconButton)({
   width: '32px',
   height: '32px',
   color: '#81818e',
@@ -56,20 +54,12 @@ const CustomIconButton = styled(IconButton)({
   },
 });
 
-const CustomList = styled(List)`
+const StyledCustomList = styled(List)`
   width: 100%;
   min-height: 259px;
   padding: 0;
   overflow-x: hidden;
 `;
-
-const StyledIconButton: React.FC<IconButtonProps> = (props) => {
-  return <CustomIconButton {...props} />;
-};
-
-const StyledCustomList: React.FC<ListProps> = (props) => {
-  return <CustomList {...props} />;
-};
 const Screens = () => {
   const dispatch = useDispatch();
 

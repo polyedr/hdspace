@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { makeStyles, Theme, darken } from '@material-ui/core/styles';
+import { Theme, darken } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import classNames from 'classnames';
 
 export enum BackgroundPosition {

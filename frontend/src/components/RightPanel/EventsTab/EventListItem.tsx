@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import { ElementEvent, EventType } from '@Src/types';
 import { StyledIconButton } from '@Components/styledComponents';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import ClickEventTitle from '@Components/RightPanel/EventsTab/ClickEventTitle';
-import { makeStyles } from '@material-ui/core/styles';
+import { Theme } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles(({ spacing, shape }) => ({
+const useStyles = makeStyles<Theme>(({ spacing, shape }) => ({
   root: {
     padding: spacing(1),
     border: '1px solid rgba(255, 255, 255, 0.1)',

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import AddIcon from '@material-ui/icons/Add';
-import { lighten, makeStyles } from '@material-ui/core/styles';
+import AddIcon from '@mui/icons-material/Add';
+import { makeStyles } from '@mui/styles';
 import { addChildToElement } from '@Redux/project/actions';
 import { BreadcrumbItemElement, PropertiesChangeProps } from '@Src/types';
 import { selectActiveItemChildren } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
-import { IconButton } from '@material-ui/core';
+import { IconButton, lighten } from '@mui/material';
 import ImagesItem from '@Components/RightPanel/PropertiesTab/Controls/ImagesItems/ImagesItem';
 import { StyledTextField } from '@Components/styledComponents';
 import { useDebouncedCallback } from 'use-debounce';
