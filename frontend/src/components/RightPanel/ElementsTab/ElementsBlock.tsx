@@ -61,7 +61,11 @@ export const renderElementButtons = (
 ) => (
   <Grid container>
     {Object.values(elements).map((element) => (
-      <Grid key={element[0].key.toString()} xs={4} item>
+      <Grid
+        key={Array.isArray(element) ? element[0].key : element.key}
+        xs={4}
+        item
+      >
         {Array.isArray(element) ? (
           <ElementDropdown options={element} key={element[0].key} />
         ) : (
