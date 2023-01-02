@@ -24,6 +24,8 @@ const Projects = lazy(
   async () => await import('../components/Projects/Projects'),
 );
 const Project = lazy(async () => await import('./Project'));
+const Wireframe = lazy(async () => await import('../components/Wireframe'));
+
 const SharedProject = lazy(async () => await import('./SharedProject'));
 const SharedWithLink = lazy(
   async () => await import('@Components/User/SharedWithLink'),
@@ -96,6 +98,17 @@ const Routes: React.FC = () => (
         {({ match: { params } }: any) => (
           <Layout>
             <Project
+              projectId={parseInt(params.projectId)}
+              screenId={parseInt(params.screenId)}
+            />
+          </Layout>
+        )}
+      </PrivateRoute>
+
+      <PrivateRoute path="/wireframe/:projectId/:screenId?">
+        {({ match: { params } }: any) => (
+          <Layout>
+            <Wireframe
               projectId={parseInt(params.projectId)}
               screenId={parseInt(params.screenId)}
             />
