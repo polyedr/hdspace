@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1
 
-exports[`Profile should render profile page 1`] = `
+exports[`Profile > should render profile page 1`] = `
 <div>
   <main>
     <div

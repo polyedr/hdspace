@@ -12,9 +12,9 @@ import { StyledTextField } from '@Components/styledComponents';
 import { MenuItem } from '@material-ui/core';
 import { HEADING_TYPE, HEADING_SETTINGS } from './constants';
 
-type StateProps = {
+interface StateProps {
   headingType: HeadingTagType;
-};
+}
 
 type Props = StateProps & PropertiesChangeProps<HeadingElement>;
 

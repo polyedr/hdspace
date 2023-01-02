@@ -1,11 +1,11 @@
 import React from 'react';
 
-type Props = {
+interface Props {
   closeThread?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   setPinsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
-export const CloseThreadIcon = (props: Props) => {
+export function CloseThreadIcon(props: Props) {
   const { closeThread, setPinsOpen } = props;
 
   return (
@@ -44,4 +44,4 @@ export const CloseThreadIcon = (props: Props) => {
       </svg>
     </div>
   );
-};
+}

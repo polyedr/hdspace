@@ -4,12 +4,13 @@ import configureStore, { MockStoreEnhanced } from 'redux-mock-store';
 import { mockState } from '@Utils/__tests__/test-utils';
 import { AppReduxState } from '@Redux/types';
 import SharedWithLink from '@Components/User/SharedWithLink';
+import { vi } from 'vitest';
 
-const { Provider } = jest.requireActual('react-redux');
+import { Provider } from 'react-redux';
 
-const mockHistoryPush = jest.fn();
+const mockHistoryPush = vi.fn();
 
-jest.mock('react-router', () => ({
+vi.mock('react-router', () => ({
   useHistory: () => ({
     push: mockHistoryPush,
   }),

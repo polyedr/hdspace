@@ -40,10 +40,10 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-type Props = {
+interface Props {
   project: Project;
   onPermissionsManagementClick: (projectId: number) => void;
-};
+}
 
 type Ref = HTMLTableRowElement;
 

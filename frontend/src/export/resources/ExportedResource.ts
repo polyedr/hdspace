@@ -1,4 +1,4 @@
-export type Params = {};
+export interface Params {}
 export type MapParams = Params & {
   API_KEY: string;
 };
@@ -40,9 +40,7 @@ export class ExportedResource<T extends Params> {
 
   private linkWithParams() {
     const paramsString = Object.keys(this._params)
-      .map((paramName: string) => {
-        return `${paramName}=${this._params[paramName]}`;
-      })
+      .map((paramName: string) => `${paramName}=${this._params[paramName]}`)
       .join('&');
     return `${this._link}${paramsString}`;
   }
@@ -53,9 +51,9 @@ export class ExportedResource<T extends Params> {
     this._params = params;
   }
 
-  private _type: ResourceType;
+  private readonly _type: ResourceType;
 
-  private _link: string;
+  private readonly _link: string;
 
-  private _params: T;
+  private readonly _params: T;
 }

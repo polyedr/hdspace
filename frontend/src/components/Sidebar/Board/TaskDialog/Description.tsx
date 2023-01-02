@@ -57,19 +57,17 @@ const Button = styled(MuiButton)({
 });
 
 interface Props {
-  onSubmit(description: string): void;
+  onSubmit: (description: string) => void;
   task: BoardTask;
 }
 
-const Description = ({ onSubmit, task }) => {
+const Description: React.FC<Props> = ({ onSubmit, task }) => {
   const [value, setValue] = useState(JSON.parse(task.description) ?? null);
 
   const [editMode, setEditMode] = useState(false);
 
   const handleSetEditMode = useCallback(
-    (mode: boolean) => {
-      return () => setEditMode(mode);
-    },
+    (mode: boolean) => () => setEditMode(mode),
     [setEditMode],
   );
 

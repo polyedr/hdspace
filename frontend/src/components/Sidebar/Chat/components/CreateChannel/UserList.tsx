@@ -47,7 +47,7 @@ const StyledTableCell = styled(TableCell)({
   },
 });
 
-const ListContainer = (props) => {
+function ListContainer(props) {
   const { children, onChangeAll, selected } = props;
 
   return (
@@ -81,13 +81,13 @@ const ListContainer = (props) => {
       {children}
     </TableContainer>
   );
-};
+}
 
-type ItemProps = {
+interface ItemProps {
   setSelectedUsers: React.Dispatch<React.SetStateAction<string[]>>;
   user: UserResponse<TeamUserType>;
   selected: boolean;
-};
+}
 
 const UserItem: React.FC<ItemProps> = (props) => {
   const { setSelectedUsers, user, selected } = props;
@@ -141,11 +141,11 @@ const UserItem: React.FC<ItemProps> = (props) => {
   );
 };
 
-type Props = {
+interface Props {
   filters: ChannelFilters[];
   setSelectedUsers: React.Dispatch<React.SetStateAction<string[]>>;
   selectedUsers: string[];
-};
+}
 
 export const UserList: React.FC<Props> = (props) => {
   const { filters, setSelectedUsers, selectedUsers } = props;
@@ -160,15 +160,14 @@ export const UserList: React.FC<Props> = (props) => {
     TeamCommandType,
     TeamEventType,
     TeamMessageType,
-    TeamReactionType,
-    TeamUserType
+    TeamReactionType
   >();
 
   const [error, setError] = useState(false);
   const [listEmpty, setListEmpty] = useState(false);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<
-    UserResponse<TeamUserType>[] | undefined
+    Array<UserResponse<TeamUserType>> | undefined
   >();
 
   const handleToggleAll = useCallback(
@@ -242,7 +241,7 @@ export const UserList: React.FC<Props> = (props) => {
         users?.length &&
         users.map((user) => (
           <UserItem
-            selected={selectedUsers?.indexOf(user.id) !== -1}
+            selected={selectedUsers?.includes(user.id)}
             key={user.id}
             setSelectedUsers={setSelectedUsers}
             user={user}

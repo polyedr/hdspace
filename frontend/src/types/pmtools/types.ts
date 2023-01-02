@@ -24,29 +24,29 @@ export type IMessageZulip = any;
 export type ChatClient = any;
 
 // React D&D
-export type DestinationType = {
+export interface DestinationType {
   index: number;
   droppableId: string;
-};
+}
 
-export type UpdateCardIndexType = {
+export interface UpdateCardIndexType {
   destination: DestinationType;
   source: DropResult['source'];
-};
+}
 
-export type UpdateCardIndexTypeSuccess = {
+export interface UpdateCardIndexTypeSuccess {
   dest: number;
   removed: IServerTaskData;
   destList: any;
   source: number;
   sourceList: any;
-};
+}
 
-export type MoveCardToListType = {
+export interface MoveCardToListType {
   cardId: number;
   destination: string;
   newPos: number;
-};
+}
 
 // Board
 export interface CreatorColumnType {
@@ -55,12 +55,12 @@ export interface CreatorColumnType {
   name: string;
 }
 
-export type UpdateColumnIndexTypeSuccess = {
+export interface UpdateColumnIndexTypeSuccess {
   dest: number;
   source: number;
-};
+}
 
-export type UpdateListType = {
+export interface UpdateListType {
   listId: number;
   newPos: number;
-};
+}

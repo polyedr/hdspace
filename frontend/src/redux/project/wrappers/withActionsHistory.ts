@@ -5,8 +5,8 @@ import { selectCurrentHistoryRecordIndex } from '../selectors/control';
 
 export default function withActionsHistory(fn: any) {
   return function* (action: Action) {
-    const useHistory = action.meta && action.meta.useHistory;
-    const actionHistoryRecord = action.meta && action.meta.historyRecordIndex;
+    const useHistory = action.meta?.useHistory ?? false;
+    const actionHistoryRecord = action.meta?.historyRecordIndex ?? false;
     if (!useHistory && !actionHistoryRecord) {
       yield put(Actions.startHistoryRecord(action));
     }

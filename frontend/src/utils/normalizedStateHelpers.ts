@@ -23,7 +23,7 @@ export const mapToArr = <T extends { id: string | number }>(
 ): T[] => Object.values(map);
 
 export const flattenElements = (
-  elements: LibraryElement<any>[],
+  elements: Array<LibraryElement<any>>,
   parent?: string,
 ): Normalized<StateElement> =>
   elements.reduce(
@@ -64,12 +64,13 @@ export const buildGroupElementsTree = (
         ...(rootElement.parameters
           ? Object.keys(rootElement.parameters)
               .filter((paramName) => !paramsToOmit.includes(paramName))
-              .reduce((params, paramName) => {
-                return {
+              .reduce(
+                (params, paramName) => ({
                   ...params,
                   [paramName]: rootElement.parameters[paramName],
-                };
-              }, {})
+                }),
+                {},
+              )
           : {}),
         sourceElementId: rootElement.id,
       }
@@ -132,13 +133,13 @@ export const removeMapElements = (
 
 export const addMapElements = (
   state: Normalized<StateElement>,
-  elements: StateElementsToAdd<Entity>[],
-): Normalized<StateElement> => {
-  return produce(state, (draft) => {
+  elements: Array<StateElementsToAdd<Entity>>,
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
     elements.forEach((elementToAdd) => {
       const { elements, parentId, index: insertIndex } = elementToAdd;
 
-      const updatedChildren: Array<string> = [];
+      const updatedChildren: string[] = [];
       if (insertIndex === undefined) {
         updatedChildren.push(...state[parentId].children);
         updatedChildren.push(...elements.map((el) => el.id));
@@ -162,20 +163,18 @@ export const addMapElements = (
       draft[parentId] = updatedParent;
     });
   });
-};
 
 export const updateMapElement = (
   state: Normalized<StateElement>,
   elementId: string,
   data: Partial<StateElement>,
-): Normalized<StateElement> => {
-  return produce(state, (draft) => {
+): Normalized<StateElement> =>
+  produce(state, (draft) => {
     draft[elementId] = {
       ...draft[elementId],
       ...data,
     };
   });
-};
 
 export const moveMapElement = (
   state: Normalized<StateElement>,
@@ -243,9 +242,7 @@ export const insertMapElementWrapper = (
   element.children = childIds;
   element.buoyancy = minBuoyancy;
   [...childIds]
-    .sort((a, b) => {
-      return newState[a].buoyancy < newState[b].buoyancy ? -1 : 1;
-    })
+    .sort((a, b) => (newState[a].buoyancy < newState[b].buoyancy ? -1 : 1))
     .forEach((childId, index) => {
       newState[childId].parent = element.id;
       newState[childId].buoyancy = index;

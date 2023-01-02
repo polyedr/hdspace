@@ -23,11 +23,11 @@ const useStyles = makeStyles({
   },
 });
 
-type StateProps = {
+interface StateProps {
   editableStyles: string;
   classNames: string[];
   disabled?: boolean;
-};
+}
 
 const mapState = (state: AppReduxState) => {
   const activeElement = selectActiveElement(state);

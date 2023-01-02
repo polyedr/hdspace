@@ -46,10 +46,10 @@ const Chip = styled(MuiChip)({
 
 interface Props {
   task: BoardTask;
-  onChange(tags: BoardLabel[]): void;
+  onChange: (tags: BoardLabel[]) => void;
 }
 
-const Tags = ({ task, onChange }) => {
+const Tags: React.FC<Props> = ({ task, onChange }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [selected, setSelected] = useState<number[]>(task.label_ids);
 
@@ -70,17 +70,15 @@ const Tags = ({ task, onChange }) => {
 
   const selectedLabels = useMemo(() => {
     const mergedLabels = selected
-      .map((id) => {
-        return labels.find((l) => l.id === id) ?? null;
-      })
-      .filter((l) => l !== null) as BoardLabel[];
+      .map((id) => labels.find((l) => l.id === id) ?? null)
+      .filter((l) => l !== null);
 
     return mergedLabels.sort((a, b) => (a.text > b.text ? 1 : -1));
   }, [selected, labels]);
 
   useEffect(() => {
     if (mountedRef.current) {
-      onChange(selected);
+      onChange(selected as unknown as BoardLabel[]);
     } else {
       mountedRef.current = true;
     }

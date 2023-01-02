@@ -45,9 +45,9 @@ const useStyles = makeStyles({
   rightSideColor: {},
 });
 
-type Props = {
+interface Props {
   isDefaultStyles?: boolean;
-};
+}
 
 const AssetLists: React.FC<Props> = ({ isDefaultStyles = false }) => {
   const classes = useStyles();

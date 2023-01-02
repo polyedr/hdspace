@@ -79,8 +79,8 @@ const FlexConstraints: React.FC<Props> = ({
   const classes = useStyles();
 
   const handleUpdateMarginPadding = useCallback(
-    (position: MarginType | PaddingType) => {
-      return (e: React.ChangeEvent<HTMLInputElement>) => {
+    (position: MarginType | PaddingType) =>
+      (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value) {
           updateStyles({ [position]: `${e.target.value}px` });
           setState((state) => ({ ...state, [position]: e.target.value ?? 0 }));
@@ -88,57 +88,48 @@ const FlexConstraints: React.FC<Props> = ({
           setState((state) => ({ ...state, [position]: 0 }));
           removeStyles([position]);
         }
-      };
-    },
+      },
     [updateStyles, setState],
   );
 
   const handleUpdateFlexDirection = useCallback(
-    (flexDirection: React.CSSProperties['flexDirection']) => {
-      return () => {
-        updateStyles({ flexDirection });
-        setState((state) => ({ ...state, flexDirection }));
-      };
+    (flexDirection: React.CSSProperties['flexDirection']) => () => {
+      updateStyles({ flexDirection });
+      setState((state) => ({ ...state, flexDirection }));
     },
     [updateStyles],
   );
 
   const handleChangeFlexPosition = useCallback(
-    (justifyContent, alignItems) => {
-      return () => {
-        if (state.flexDirection === FlexDirection.ROW) {
-          updateStyles({
-            alignItems: justifyContent,
-            justifyContent: alignItems,
-          });
-        } else {
-          updateStyles({ justifyContent, alignItems });
-        }
-        setState((state) => ({ ...state, justifyContent, alignItems }));
-      };
+    (justifyContent, alignItems) => () => {
+      if (state.flexDirection === FlexDirection.ROW) {
+        updateStyles({
+          alignItems: justifyContent,
+          justifyContent: alignItems,
+        });
+      } else {
+        updateStyles({ justifyContent, alignItems });
+      }
+      setState((state) => ({ ...state, justifyContent, alignItems }));
     },
     [updateStyles, setState, state.flexDirection],
   );
 
   const handleUpdateSpacing = useCallback(
-    (value: FlexSpacing) => {
-      return () => {
-        updateStyles({ justifyContent: value });
-        setState((state) => ({
-          ...state,
-          justifyContent: value,
-        }));
-      };
+    (value: FlexSpacing) => () => {
+      updateStyles({ justifyContent: value });
+      setState((state) => ({
+        ...state,
+        justifyContent: value,
+      }));
     },
     [updateStyles, setState, state.flexDirection],
   );
 
   const handleUpdateFlexWrap = useCallback(
-    (wrap: React.CSSProperties['flexWrap']) => {
-      return () => {
-        updateStyles({ flexWrap: wrap });
-        setState((state) => ({ ...state, flexWrap: wrap }));
-      };
+    (wrap: React.CSSProperties['flexWrap']) => () => {
+      updateStyles({ flexWrap: wrap });
+      setState((state) => ({ ...state, flexWrap: wrap }));
     },
     [updateStyles, setState],
   );
@@ -203,9 +194,9 @@ const FlexConstraints: React.FC<Props> = ({
   }, [activeElePos, flexDirection]);
 
   useEffect(() => {
-    const elem = document.querySelector(
+    const elem = document.querySelector<HTMLDivElement>(
       '.active-flex-grid-item',
-    ) as HTMLElement;
+    );
     if (elem) {
       setActiveElePos({
         left: elem.offsetLeft,

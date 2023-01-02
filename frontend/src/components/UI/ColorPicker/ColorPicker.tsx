@@ -26,12 +26,12 @@ const useStyles = makeStyles((theme) =>
   }),
 );
 
-type ColorPickerProps = {
+interface ColorPickerProps {
   color: string;
   colors?: string[];
-  onChangeComplete(color: Pick<ColorResult, 'hex'>): void;
+  onChangeComplete: (color: Pick<ColorResult, 'hex'>) => void;
   disabled?: boolean;
-};
+}
 
 const ColorPicker: React.FC<ColorPickerProps> = ({
   color,

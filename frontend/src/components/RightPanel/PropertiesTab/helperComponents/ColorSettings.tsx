@@ -33,18 +33,18 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   currentColor: string;
   currentOpacity?: React.CSSProperties['opacity'];
   activeElementId: string;
-  onChange(color: string): any | void;
+  onChange: (color: string) => any | void;
   disabled?: boolean;
   labelTextStyle?: string;
   updateStyles?: any;
   propsToRemove?: string[];
-  onClick?(propsToRemove: string[] | undefined): void;
+  onClick?: (propsToRemove: string[] | undefined) => void;
   isDefaultStyles?: boolean;
-};
+}
 
 const CheckedFormControl = styled(FormControlLabel)({
   margin: '10px 0 10px -3px',

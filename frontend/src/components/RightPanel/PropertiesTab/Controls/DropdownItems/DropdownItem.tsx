@@ -22,14 +22,14 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }));
 
-type Props = {
+interface Props {
   id: string;
   textContent: string;
   updateParams: any;
   deleteChildFromElement: any;
   isLast: boolean;
   canEdit: boolean;
-};
+}
 
 const DropdownItem: React.FC<Props> = ({
   id,

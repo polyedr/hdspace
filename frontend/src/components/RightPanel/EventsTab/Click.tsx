@@ -15,10 +15,10 @@ import {
 import { selectCurrentProjectId } from '@Redux/project/selectors/base';
 import { MenuItem } from '@material-ui/core';
 
-type Props = {
+interface Props {
   eventData: ElementClickEvent['data'];
   setEventData: React.Dispatch<any>;
-};
+}
 
 const Click: FC<Props> = ({ eventData, setEventData }) => {
   const screens = useSelector(selectSortedScreens);

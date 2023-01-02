@@ -44,7 +44,7 @@ const Label = React.forwardRef<HTMLLabelElement, RendererProps>(
             aria-label={`Link-${element.id}`}
             target={exportScreenFlag ? '_self' : '_blank'}
             href={link}
-            ref={ref as LegacyRef<HTMLAnchorElement>}
+            ref={ref as unknown as LegacyRef<HTMLAnchorElement>}
             rel="noreferrer"
             style={{ textDecoration: 'none' }}
             {...contentEditableSettings.props}

@@ -1,10 +1,10 @@
 import React, { memo } from 'react';
 
-const styles = require('./styles.scss');
+import styles from './styles.scss';
 
-type Props = {
+interface Props {
   active?: boolean;
-};
+}
 
 const Spinner: React.FC<Props> = ({ active = false }) =>
   active ? (

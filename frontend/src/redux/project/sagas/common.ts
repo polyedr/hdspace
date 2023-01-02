@@ -279,7 +279,7 @@ export function* updateOrReplaceElementParameters(
 }
 
 export function* createElements<T extends Entity>(
-  elementsToCreate: ElementsToCreate<T>[],
+  elementsToCreate: Array<ElementsToCreate<T>>,
   meta: ElementHistoryMeta,
 ) {
   try {
@@ -453,7 +453,8 @@ export function* createElements<T extends Entity>(
         });
         return [...createdElements, ...childElements];
       },
-      [] as ServerElement<Entity>[],
+      // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+      [] as Array<ServerElement<Entity>>,
     );
     const { result: createdElements, error } = yield call(
       reqWrapper,
@@ -485,7 +486,7 @@ export function* createElements<T extends Entity>(
 }
 
 export function* createLibraryElements<T extends Entity>(
-  elementsToCreate: ElementsToCreate<T>[],
+  elementsToCreate: Array<ElementsToCreate<T>>,
   meta: ElementHistoryMeta,
 ) {
   try {

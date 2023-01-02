@@ -19,7 +19,9 @@ function* getActionSaga({
     const { project_data_activity_json } = yield call(
       reqWrapper,
       apiGetActions,
-      { project: payload },
+      {
+        project: payload,
+      },
     );
     yield put(
       actions.successGetAction(

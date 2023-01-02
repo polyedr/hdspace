@@ -60,7 +60,7 @@ const StyledInputAdornment = styled(InputAdornment)({
   },
 });
 
-export const EditColumn = ({ open, onClose, column }) => {
+export function EditColumn({ open, onClose, column }) {
   const dispatch = useDispatch();
 
   const handleUpdateColumn = useCallback(
@@ -189,4 +189,4 @@ export const EditColumn = ({ open, onClose, column }) => {
       />
     </StyledDialog>
   );
-};
+}

@@ -489,7 +489,7 @@ const BackgroundBlock: React.FC<Props> = ({
   );
 };
 
-export default (props) => {
+export default function (props) {
   const assetLists = useSelector(selectAllAssetLists);
 
   if (!assetLists) {
@@ -497,4 +497,4 @@ export default (props) => {
   }
 
   return <BackgroundBlock {...props} assetLists={assetLists} />;
-};
+}

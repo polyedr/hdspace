@@ -2,17 +2,15 @@
 
 To start project on your local machine first clone the repo and go to the project directory.
 
-You have to use **nodejs v12.18.3** (lts at the moment).
+Project tested with **nodejs v16.19.0** (lts at the moment).
 
 Run `npm install` to install all necessary dependencies.
-
-Then run `npm rebuild node-sass` to download the binding for your current environment.
 
 Now you can start the project.
 
 Available scripts:
 
-##### `npm run start`
+##### `npm run dev`
 Runs the app in the development mode.<br /> 
 Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
