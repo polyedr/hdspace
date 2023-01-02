@@ -1503,11 +1503,11 @@ export type HistoryMeta = {
 
 export type ElementHistoryMeta = HistoryMeta & {
   screenId: number;
-  index?: number | undefined;
+  index?: number;
 };
 
 export type ElementMetaIndex = {
-  index?: number | undefined;
+  index?: number;
 };
 
 export interface IPlainAction<T, M = HistoryMeta, R = void> {
