@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     fontSize: '1em',
   },
   elementDropdown: {
-    width: '33%',
+    // width: '33%',
     '& *:first-child': {
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,

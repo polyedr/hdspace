@@ -27,21 +27,30 @@ import ContextMenu from './ContextMenu';
 
 const useStyles = makeStyles<Theme>(({ typography }) => ({
   listItem: {
-    '&:hover': {
-      backgroundColor: '#F3F4F6',
+    '&.MuiListItem-root': {
+      whiteSpace: 'nowrap',
+      padding: '.5em',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      '&:hover': {
+        backgroundColor: '#F3F4F6',
+      },
+      '&, &:hover, &:active, &:link, &:visited, &:focus': {
+        color: 'inherit',
+        textDecoration: 'none',
+      },
     },
-    '&, &:hover, &:active, &:link, &:visited, &:focus': {
-      color: 'inherit',
-      textDecoration: 'none',
+  },
+  icon: {
+    '&.MuiListItemIcon-root': {
+      minWidth: 0,
     },
-    whiteSpace: 'nowrap',
-    padding: '.5em',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   active: {
-    backgroundColor: '#F3F4F6',
+    '&.MuiListItem-root': {
+      backgroundColor: '#F3F4F6',
+    },
   },
   screenData: {
     marginLeft: '6px',
@@ -49,11 +58,11 @@ const useStyles = makeStyles<Theme>(({ typography }) => ({
     alignItems: 'center',
     gap: '15px',
   },
-  icon: {
-    color: '#81818E',
-    minWidth: 0,
-    paddingRight: '.1em',
-  },
+  // icon: {
+  //   color: '#81818E',
+  //   minWidth: 0,
+  //   paddingRight: '.1em',
+  // },
   name: {
     fontFamily: typography.fontFamily,
     fontSize: 11,
