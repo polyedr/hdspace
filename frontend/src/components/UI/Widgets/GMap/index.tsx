@@ -3,7 +3,7 @@ import React from 'react';
 import GoogleMapReact from 'google-map-react';
 import { IMapProps } from '@Src/types';
 
-import styles from './styles.scss';
+import styles from './styles.module.scss?inline';
 
 interface IMarkerProps {
   text: string;
