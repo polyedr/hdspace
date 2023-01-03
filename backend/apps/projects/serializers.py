@@ -1058,22 +1058,30 @@ class ProjectImportScreenSerializer(serializers.ModelSerializer):
             # Multiple elements
             if scenarioelements:
                 for scenarioelement in scenarioelements:
-                    # print(scenarioelement)
+                    print(scenarioelement)
                     scenarioelement["scenario"] = s
                     children = scenarioelement.pop("children", [])
+
+                    '''
                     node_se = ScenarioElement.objects.create(
                         # parent is null only on the root node
-                        parent=self.context.get("parent"),
+                        # parent=self.context.get("parent"),
                         **scenarioelement
                     )
+                    '''
+
+                    node_se = ScenarioElementSerializer(**scenarioelement)
+                    node_se.is_valid(raise_exception=True)
                     node_se.save()
+                    '''
                     # Multiple level of the recursion
                     for child_data in children:
                         print("child_data", child_data)
-                        # w = ScenarioElement.objects.create(**child_data)
-                        w = ScenarioElementImportSerializer(data=child_data, context={"parent": node_se})
-                        w.is_valid(raise_exception=True)
+                        w = ScenarioElement.objects.create(parent=self.context.get("parent"), **child_data)
+                        # w = ScenarioElementImportSerializer(data=child_data, context={"parent": node_se})
+                        # w.is_valid(raise_exception=True)
                         # ScenarioElement.objects.create(child_data)
                         w.save()
+                    '''
         node.save()
         return node
