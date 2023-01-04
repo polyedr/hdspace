@@ -1509,7 +1509,7 @@ export interface ElementMetaIndex {
   index?: number;
 }
 
-export interface IPlainAction<T, M = HistoryMeta, R = void> {
+export interface IPlainAction<T, M = HistoryMeta> {
   type: T;
   meta?: M;
 }

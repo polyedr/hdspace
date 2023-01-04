@@ -9,11 +9,8 @@ import {
 import { selectShowingGrid } from '@Redux/project/selectors/base';
 import {
   getIndexOfSelectedElementInParentChildren,
-  selectActiveElement,
-  selectDirectChildren,
   selectIsElementActive,
   selectItemToCopyInfo,
-  selectParentOfActiveElement,
 } from '@Redux/project/selectors/element';
 import { selectCurrentScreenId } from '@Redux/project/selectors/screen';
 import { BoundingStyles, DropTargetParams, Entity } from '@Src/types';

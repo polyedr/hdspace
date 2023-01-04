@@ -64,7 +64,6 @@ import {
   updateOrReplaceElementStyles,
   updateOrReplaceMultipleElementsParameters,
   createElements,
-  createElementsWithIndex,
 } from './common';
 import {
   selectAllAssetLists,

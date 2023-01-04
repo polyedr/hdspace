@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useMemo, useRef, useEffect, useCallback, memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DropTargetMonitor, useDrag, useDrop } from 'react-dnd';
@@ -27,7 +26,6 @@ import { NOT_DRAGGABLE_COMPONENTS } from '@Constants/defaultParams';
 import useLayout from '@Components/Editor/hooks/useLayout';
 import Scrollbars from 'react-custom-scrollbars';
 import { selectIsPrototypeMode } from '@Redux/user/selectors';
-import CustomContextMenu from '@Components/UI/RenderElements/CustomContextMenu';
 import { DOMHandler } from '../Workspace/DOMHandler';
 import RENDERERS from '../../UI/RenderElements';
 
@@ -70,9 +68,9 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       !parent
         ? null
         : projectClasses.find(
-          (projectClass: ProjectClass) =>
-            projectClass.className === parent.type,
-        ),
+            (projectClass: ProjectClass) =>
+              projectClass.className === parent.type,
+          ),
     [parent, projectClasses],
   );
 
@@ -118,7 +116,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
       const flexDirection = !parent
         ? null
         : parent.styles.ownStyles.flexDirection ||
-        parentElementClass?.rules.flexDirection;
+          parentElementClass?.rules.flexDirection;
       if (clientOffset) {
         dispatch(
           processDropTargetParams(
@@ -190,6 +188,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
     RENDERERS[element.type === 'div' ? 'divBlock' : element.type];
 
   if (!ElementRenderer) {
+    // eslint-disable-next-line no-console
     logger.warn(`Element dose not exists: ${element.type}`);
     return null;
   }
@@ -229,7 +228,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({
           projectClasses={projectClasses}
         />
       ))}
-    </ElementRenderer >
+    </ElementRenderer>
   );
 };
 
