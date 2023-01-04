@@ -8,6 +8,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'standard-with-typescript',
     'plugin:prettier/recommended',
+    'plugin:import/recommended',
   ],
   overrides: [],
   parserOptions: {
@@ -20,6 +21,9 @@ module.exports = {
     react: {
       version: 'detect',
     },
+    'import/resolver': {
+      typescript: true
+    }
   },
   rules: {
     'prettier/prettier': 'error',
