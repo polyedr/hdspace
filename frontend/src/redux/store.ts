@@ -6,11 +6,15 @@ import {
   compose,
   Store,
 } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist';
+import {
+  persistStore,
+  persistReducer,
+  PersistConfig,
+  Persistor,
+} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import createSagaMiddleware from 'redux-saga';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
-import { PersistConfig, Persistor } from 'redux-persist/es/types';
 import createReduxPromiseListener from 'redux-promise-listener';
 import userReducer from './user/reducer';
 import projectReducer from './project/reducers';
