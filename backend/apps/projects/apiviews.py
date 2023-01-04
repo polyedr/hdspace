@@ -70,8 +70,8 @@ from .serializers import (
     ImageSerializer,
     ScenarioElementMultipleRecursiveSerializer, ProjectWithMembersSerializer, ImagePaletteSerializer,
     duplicate_model_with_descendants, copy_element_node, copy_children, ColumnTaskCommentSerializer,
-    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer, ProjectExportScreenSerializer,
-    ProjectImportScreenSerializer)
+    ColumnTaskCheckitemSerializer, ColumnTaskLabelSerializer, ProjectScreenExportSerializer,
+    ProjectScreenImportSerializer)
 
 
 class IsOwner(permissions.BasePermission):
@@ -294,24 +294,24 @@ class ProjectScreenDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProjectScreenSerializer
 
 
-class ProjectExportScreenDetail(generics.RetrieveAPIView):
+class ProjectScreenExportDetail(generics.RetrieveAPIView):
     # permission_classes = [AllowAny]
     """
     Export a project screen
     """
 
     queryset = ProjectScreen.objects.all()
-    serializer_class = ProjectExportScreenSerializer
+    serializer_class = ProjectScreenExportSerializer
 
 
-class ProjectImportScreenDetail(generics.CreateAPIView):
+class ProjectScreenImportDetail(generics.CreateAPIView):
     # permission_classes = [AllowAny]
     """
     Import a project screen
     """
 
     queryset = ProjectScreen.objects.all()
-    serializer_class = ProjectImportScreenSerializer
+    serializer_class = ProjectScreenImportSerializer
 
 
 class ProjectScreenMultipleView(ListBulkCreateUpdateDestroyAPIView):
@@ -598,6 +598,23 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 # Scenarios with elements api views
 class ScreeScenarioViewSet(viewsets.ModelViewSet):
+    queryset = ScreenScenario.objects.all()
+    serializer_class = ScreenScenarioSerializer
+
+    def get_queryset(self):
+        return self.get_serializer_class().setup_eager_loading(self.queryset)
+
+    def filter_queryset(self, queryset):
+        screen_id = self.request.query_params.get('screenId')
+
+        if screen_id and screen_id.isdigit():
+            queryset = queryset.filter(screen=screen_id)
+
+        return queryset
+
+
+# Scenarios with elements import export
+class ScreeScenarioImportExportViewSet(viewsets.ModelViewSet):
     queryset = ScreenScenario.objects.all()
     serializer_class = ScreenScenarioSerializer
 

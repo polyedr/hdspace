@@ -40,8 +40,8 @@ from .apiviews import (
     ProjectWithMembersViewSet, IllustrationSetImagePaletteList, IllustrationSetImagePaletteDetail, ProjectcopyView,
     ScreencopyView, ElementcopyView, ElementmpttcopyView, ColumnsReorder, TasksReorder, ColumnTaskCheckitemList,
     ColumnTaskCheckitemDetail, ColumnTaskCommentList, ColumnTaskCommentDetail, ColumnTaskLabelList,
-    ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject, ProjectExportScreenDetail,
-    ProjectImportScreenDetail, ProjectCopyingViewSet)
+    ColumnTaskLabelDetail, ColumnTaskCheckitemDelete, AssignPermissionsmapsProject, ProjectScreenExportDetail,
+    ProjectScreenImportDetail, ProjectCopyingViewSet, ScreeScenarioImportExportViewSet)
 
 app_name = "projects"
 
@@ -109,12 +109,12 @@ api_project_screen_patterns = [
     ),
     path(
         "project-exportscreens/<int:pk>/",
-        ProjectExportScreenDetail.as_view(),
+        ProjectScreenExportDetail.as_view(),
         name="api_project_exportscreen",
     ),
     path(
         "project-importscreens/<int:pk>/",
-        ProjectImportScreenDetail.as_view(),
+        ProjectScreenImportDetail.as_view(),
         name="api_project_importscreen",
     ),
 ]
@@ -225,6 +225,7 @@ api_update_tasks_order = [
 
 router = routers.DefaultRouter()
 router.register(r"screen-scenarios", ScreeScenarioViewSet)
+router.register(r"screen-scenarioimportexports", ScreeScenarioImportExportViewSet)
 router.register(r"scenario-elements", ScenarioElementViewSet)
 router.register(r"scenario-elements-recursive", ScenarioElementRecursiveViewSet)
 router.register(r"projects", ProjectViewSet)

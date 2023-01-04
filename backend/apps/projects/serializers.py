@@ -985,7 +985,7 @@ class ElementCommentSerializer(serializers.ModelSerializer):
         fields = ("text", "element", "user")
 
 
-class ProjectExportScreenSerializer(serializers.ModelSerializer):
+class ProjectScreenExportSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
     tags = TagListSerializerField(required=False, allow_null=True)
     screenscenario = ScreenScenarioExportSerializer(many=True)
@@ -1010,7 +1010,7 @@ class ProjectExportScreenSerializer(serializers.ModelSerializer):
         extra_kwargs = {"screenscenario": {"read_only": True}}
 
 
-class ProjectImportScreenSerializer(serializers.ModelSerializer):
+class ProjectScreenImportSerializer(serializers.ModelSerializer):
     screen_data_json = serializers.JSONField()
     tags = TagListSerializerField(required=False, allow_null=True)
     screenscenario = ScreenScenarioImportSerializer(many=True, allow_null=True)
@@ -1042,37 +1042,38 @@ class ProjectImportScreenSerializer(serializers.ModelSerializer):
         # Multiple scenarios
         for screenscenario in screenscenarios:
             # s = ScreenScenarioSerializer(data=screenscenario, context={"projectscreen": node.id})
-            print(screenscenario)
-            screenscenario["screen"] = node
-            # ancscreen = screenscenario.pop("screen", None)
-            print("screenscenario", screenscenario)
+
+            screenscenario.pop("screen", None)
             scenarioelements = screenscenario.pop("elements", None)
+            '''
+            screenscenario["screen"] = node
+            print("screenscenario", screenscenario)
             print("scenarioelements: ", scenarioelements)
+            '''
             '''
             s = ScreenScenarioImportSerializer(data=screenscenario)
             s.is_valid(raise_exception=True)
             s.save()
             '''
-            s = ScreenScenario.objects.create(**screenscenario)
+            s = ScreenScenario.objects.create(screen=node, **screenscenario)
             s.save()
             # Multiple elements
             if scenarioelements:
                 for scenarioelement in scenarioelements:
-                    print(scenarioelement)
+                    print("scenarioelement:", scenarioelement)
                     scenarioelement["scenario"] = s
                     children = scenarioelement.pop("children", [])
 
-                    '''
                     node_se = ScenarioElement.objects.create(
                         # parent is null only on the root node
                         # parent=self.context.get("parent"),
                         **scenarioelement
                     )
-                    '''
 
-                    node_se = ScenarioElementSerializer(**scenarioelement)
-                    node_se.is_valid(raise_exception=True)
-                    node_se.save()
+
+                    # node_se = ScenarioElementSerializer(**scenarioelement)
+                    # node_se.is_valid(raise_exception=True)
+                    # node_se.save()
                     '''
                     # Multiple level of the recursion
                     for child_data in children:
