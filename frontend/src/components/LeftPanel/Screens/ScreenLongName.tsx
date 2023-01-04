@@ -1,10 +1,10 @@
 ﻿import React, { useState } from 'react';
 import Popover from '@material-ui/core/Popover';
 
-type Props = {
+interface Props {
   name: string;
   styles: any;
-};
+}
 
 const ScreenLongName: React.FC<Props> = ({ name, styles }) => {
   const [isOpenPopover, setOpenPopover] = useState<HTMLElement | null>(null);

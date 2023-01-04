@@ -6,14 +6,12 @@ import { RendererProps } from './types';
 
 const getComputedStyle = (
   style: React.CSSProperties = {},
-  stylesToOmit: Array<string> = [],
-) => {
-  return stylesToOmit.length ? omit(stylesToOmit, style) : style;
-};
+  stylesToOmit: string[] = [],
+) => (stylesToOmit.length ? omit(stylesToOmit, style) : style);
 
 export const getComputedComponentStyles = (
   props: RendererProps,
-  stylesToOmit?: Array<string>,
+  stylesToOmit?: string[],
 ) => ({
   ownStyles: getComputedStyle(props.element.styles.ownStyles, stylesToOmit),
 });
@@ -21,7 +19,7 @@ export const getComputedComponentStyles = (
 export const makeComponentStyles: any = (
   name: string,
   style: Styles<Theme, any, string> = {},
-  stylesToOmit?: Array<string>,
+  stylesToOmit?: string[],
 ) =>
   makeStyles(
     (theme) => ({

@@ -11,7 +11,7 @@ import {
   TextField,
 } from '@material-ui/core';
 
-type Props = {
+interface Props {
   open: boolean;
   title: string;
   onSubmit: (...args: any) => void;
@@ -20,10 +20,10 @@ type Props = {
   withoutField?: boolean;
   fieldName?: string;
   initialValueName?: any;
-  initialValueTags?: Array<string>;
+  initialValueTags?: string[];
   type?: string;
   validation?: any;
-};
+}
 
 const Dialog: React.FC<Props> = ({
   open,
@@ -37,69 +37,67 @@ const Dialog: React.FC<Props> = ({
   withoutField = false,
   type,
   validation,
-}) => {
-  return (
-    <MuiDialog open={open} onClose={onClose}>
-      <Form
-        onSubmit={onSubmit}
-        render={({ handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
-            <DialogTitle>{title}</DialogTitle>
+}) => (
+  <MuiDialog open={open} onClose={onClose}>
+    <Form
+      onSubmit={onSubmit}
+      render={({ handleSubmit }) => (
+        <form onSubmit={handleSubmit}>
+          <DialogTitle>{title}</DialogTitle>
 
-            <DialogContent>
-              <DialogContentText>{description}</DialogContentText>
+          <DialogContent>
+            <DialogContentText>{description}</DialogContentText>
 
-              {!withoutField && (
-                <>
-                  <Field
-                    name={fieldName}
-                    initialValue={initialValueName}
-                    validate={validation}
-                  >
-                    {({ input }) => (
-                      <TextField
-                        autoFocus
-                        required
-                        margin="normal"
-                        type={type || 'text'}
-                        fullWidth
-                        {...input}
-                      />
-                    )}
-                  </Field>
-                  <Field
-                    name="tags"
-                    initialValue={initialValueTags}
-                    validate={validation}
-                  >
-                    {({ input }) => (
-                      <TextField
-                        margin="normal"
-                        type={type || 'text'}
-                        fullWidth
-                        placeholder="Enter tags"
-                        {...input}
-                      />
-                    )}
-                  </Field>
-                </>
-              )}
-            </DialogContent>
+            {!withoutField && (
+              <>
+                <Field
+                  name={fieldName}
+                  initialValue={initialValueName}
+                  validate={validation}
+                >
+                  {({ input }) => (
+                    <TextField
+                      autoFocus
+                      required
+                      margin="normal"
+                      type={type || 'text'}
+                      fullWidth
+                      {...input}
+                    />
+                  )}
+                </Field>
+                <Field
+                  name="tags"
+                  initialValue={initialValueTags}
+                  validate={validation}
+                >
+                  {({ input }) => (
+                    <TextField
+                      margin="normal"
+                      type={type || 'text'}
+                      fullWidth
+                      placeholder="Enter tags"
+                      {...input}
+                    />
+                  )}
+                </Field>
+              </>
+            )}
+          </DialogContent>
 
-            <DialogActions>
-              <Button onClick={onClose} color="primary" variant="contained">
-                Cancel
-              </Button>
+          <DialogActions>
+            <Button onClick={onClose} color="primary" variant="contained">
+              Cancel
+            </Button>
 
-              <Button type="submit" color="secondary" variant="contained">
-                Confirm
-              </Button>
-            </DialogActions>
-          </form>
-        )}
-      />
-    </MuiDialog>
-  );
-};
+            <Button type="submit" color="secondary" variant="contained">
+              Confirm
+            </Button>
+          </DialogActions>
+        </form>
+      )}
+    />
+  </MuiDialog>
+);
 
 export default Dialog;

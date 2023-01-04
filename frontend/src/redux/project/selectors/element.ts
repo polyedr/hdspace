@@ -33,17 +33,16 @@ import {
 
 export const selectScreenRootElement =
   (screenId: number) =>
-    ({ project }: AppReduxState) => {
-      const rootId = project.data.screens[screenId]?.element;
+  ({ project }: AppReduxState) => {
+    const rootId = project.data.screens[screenId]?.element;
 
-      return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
-    };
+    return buildElementsTree(project.data.elements, rootId) || DEFAULT_ROOT;
+  };
 
 export const selectScreen =
   (screenId: number) =>
-    ({ project }: AppReduxState) => {
-      return project.data.screens[screenId]?.screenData;
-    };
+  ({ project }: AppReduxState) =>
+    project.data.screens[screenId]?.screenData;
 export const selectSavedElementsValues = ({ project }: AppReduxState) =>
   project.ui.savedElementsValues;
 
@@ -71,11 +70,11 @@ export const selectElementsByIds =
 
 export const selectElementAsTree =
   (id: string) =>
-    ({ project }: AppReduxState) => {
-      if (!(id in project.data.elements)) return DEFAULT_ROOT;
+  ({ project }: AppReduxState) => {
+    if (!(id in project.data.elements)) return DEFAULT_ROOT;
 
-      return buildElementsTree(project.data.elements, id);
-    };
+    return buildElementsTree(project.data.elements, id);
+  };
 
 export const selectCurrentRootElement = (state: AppReduxState) => {
   const currentRootId = selectCurrentRootId(state);
@@ -240,9 +239,8 @@ export const selectCurrentEditableStyles = createSelector<
   },
 );
 
-export const selectCustomElementsHasNext = (state: AppReduxState) => {
-  return !!selectProjectState(state).data.customElementsData.next;
-};
+export const selectCustomElementsHasNext = (state: AppReduxState) =>
+  !!selectProjectState(state).data.customElementsData.next;
 
 export const selectActiveElementChildren = createSelector(
   selectActiveElement,
@@ -263,19 +261,18 @@ export const selectActiveItemChildren = (childType: ChildEntity) =>
 
 export const selectElementStyles =
   (elementId: string) =>
-    ({ project }: AppReduxState) =>
-      project.data.elements[elementId]?.styles.ownStyles;
+  ({ project }: AppReduxState) =>
+    project.data.elements[elementId]?.styles.ownStyles;
 
 export const selectElementsStyles =
   (elementsIds: string[]) =>
-    ({ project }: AppReduxState) => {
-      return elementsIds.map((id) => project.data.elements[id]?.styles.ownStyles);
-    };
+  ({ project }: AppReduxState) =>
+    elementsIds.map((id) => project.data.elements[id]?.styles.ownStyles);
 
 export const selectElementParameters =
   (elementId: string) =>
-    ({ project }: AppReduxState) =>
-      project.data.elements[elementId]?.parameters;
+  ({ project }: AppReduxState) =>
+    project.data.elements[elementId]?.parameters;
 
 export const selectActiveItemChildrenStyles =
   makeActiveElementInfoSelector('styles');
@@ -301,9 +298,8 @@ export function selectCustomElementsPagination(
 
 export const selectCustomLibraryElements = (
   state: AppReduxState,
-): LibraryElement<Entity>[] => {
-  return selectProjectState(state).data.customElementsData.results;
-};
+): Array<LibraryElement<Entity>> =>
+  selectProjectState(state).data.customElementsData.results;
 
 export const selectElementsForScreenById = (state, screenId) => {
   const screen = selectScreenById(state, screenId);
@@ -397,14 +393,14 @@ export const selectSelectedElementsIds = (state: AppReduxState) =>
 export const selectSelectedElements = createSelector(
   selectProjectState,
   selectSelectedElementsIds,
-  (state: ProjectState, ids: string[]) => {
-    return ids.reduce((acc, id: string) => {
-      return {
+  (state: ProjectState, ids: string[]) =>
+    ids.reduce(
+      (acc, id: string) => ({
         ...acc,
         [id]: state.data.elements[id],
-      };
-    }, {});
-  },
+      }),
+      {},
+    ),
 );
 
 export const selectIsElementSelected =
@@ -460,32 +456,31 @@ export const selectElementTreeGroups = (state: AppReduxState) => {
 
 export const selectTreeChildElementsIds =
   (elementId: string) =>
-    ({ project }: AppReduxState) => {
-      const parent = project.data.elements[elementId];
-      return !parent
-        ? []
-        : parent.children.reduce((allChildren: string[], childId) => {
-          return [
+  ({ project }: AppReduxState) => {
+    const parent = project.data.elements[elementId];
+    return !parent
+      ? []
+      : parent.children.reduce(
+          (allChildren: string[], childId) => [
             ...allChildren,
             ...getAllElementChildrenIds(project.data.elements, childId),
-          ];
-        }, []);
-    };
+          ],
+          [],
+        );
+  };
 
 export const selectTreeChildIdsByParentsIds =
   (ids: string[]) =>
-    ({ project }: AppReduxState) => {
-      const parentElements = ids.map((id: string) => project.data.elements[id]);
-      return parentElements.reduce(
-        (allChildIds: string[], parentElement: StateElement) => {
-          return [
-            ...allChildIds,
-            ...getAllElementChildrenIds(project.data.elements, parentElement.id),
-          ];
-        },
-        [] as string[],
-      );
-    };
+  ({ project }: AppReduxState) => {
+    const parentElements = ids.map((id: string) => project.data.elements[id]);
+    return parentElements.reduce<string[]>(
+      (allChildIds: string[], parentElement: StateElement) => [
+        ...allChildIds,
+        ...getAllElementChildrenIds(project.data.elements, parentElement.id),
+      ],
+      [],
+    );
+  };
 
 export const selectMasterScreenRoot = (state: AppReduxState) => {
   const masterScreen = selectMasterScreen(state);
@@ -500,9 +495,9 @@ export const selectElementsChildren =
     const allElementsArray = Object.values(selectAllElements(state));
 
     return ids
-      .map((id: string) => {
-        return allElementsArray.filter((element) => element.parent === id);
-      })
+      .map((id: string) =>
+        allElementsArray.filter((element) => element.parent === id),
+      )
       .reduce((children, childrenArray) => [...children, ...childrenArray], []);
   };
 

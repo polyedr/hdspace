@@ -113,7 +113,7 @@ interface Props {
   task: BoardTask;
 }
 
-const Comment = ({ comment, task }: Props) => {
+function Comment({ comment, task }: Props) {
   const [value, setValue] = useState(JSON.parse(comment.text) ?? undefined);
   const [editMode, setEditMode] = useState(false);
 
@@ -122,9 +122,7 @@ const Comment = ({ comment, task }: Props) => {
   const dispatch = useDispatch();
 
   const handleSetEditMode = useCallback(
-    (mode) => {
-      return () => setEditMode(mode);
-    },
+    (mode) => () => setEditMode(mode),
     [setEditMode],
   );
 
@@ -137,14 +135,10 @@ const Comment = ({ comment, task }: Props) => {
     setEditMode(false);
   }, [comment, value, task]);
 
-  const parsedValue = useMemo(() => {
-    return JSON.parse(comment.text);
-  }, [comment.text]);
+  const parsedValue = useMemo(() => JSON.parse(comment.text), [comment.text]);
 
   const handleShowDeleteConfirm = useCallback(
-    (show) => {
-      return () => setDeleteConfirm(show);
-    },
+    (show) => () => setDeleteConfirm(show),
     [setDeleteConfirm],
   );
 
@@ -212,6 +206,6 @@ const Comment = ({ comment, task }: Props) => {
       />
     </>
   );
-};
+}
 
 export default Comment;

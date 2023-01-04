@@ -1,12 +1,12 @@
 import React from 'react';
 
-type Props = {
+interface Props {
   resetIconState: () => void;
   setStrikeThroughState: React.Dispatch<React.SetStateAction<boolean>>;
   strikeThroughState: Boolean;
-};
+}
 
-export const StrikeThroughIcon = (props: Props) => {
+export function StrikeThroughIcon(props: Props) {
   const { resetIconState, strikeThroughState, setStrikeThroughState } = props;
 
   return (
@@ -32,4 +32,4 @@ export const StrikeThroughIcon = (props: Props) => {
       </svg>
     </div>
   );
-};
+}

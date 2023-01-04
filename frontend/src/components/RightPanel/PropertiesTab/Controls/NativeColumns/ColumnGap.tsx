@@ -25,11 +25,11 @@ const parse = (value: string | number | undefined) => {
   return [gap, units];
 };
 
-type Props = {
+interface Props {
   updateStyles: PropertiesChangeProps<ColumnsElement>['updateStyles'];
   value: React.CSSProperties['columnGap'];
   canEdit: boolean;
-};
+}
 
 const ColumnGap: React.FC<Props> = ({ updateStyles, value, canEdit }) => {
   const classes = useColumnControlStyles();

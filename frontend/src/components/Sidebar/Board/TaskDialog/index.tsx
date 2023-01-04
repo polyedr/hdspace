@@ -123,22 +123,22 @@ const AuthorButton = styled(MuiButton)({
   },
 });
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement<any, any>;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef(
+  (
+    props: TransitionProps & {
+      children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+  ) => <Slide direction="up" ref={ref} {...props} />,
+);
 
 interface Props {
   task: BoardTask;
   open: boolean;
-  onClose(): void;
+  onClose: () => void;
 }
 
-const TaskDialog = ({ task, open, onClose }: Props) => {
+function TaskDialog({ task, open, onClose }: Props) {
   const dispatch = useDispatch();
 
   const [storyPoints, setStoryPoints] = useState(task.story_points.toString());
@@ -371,6 +371,6 @@ const TaskDialog = ({ task, open, onClose }: Props) => {
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default TaskDialog;

@@ -26,12 +26,12 @@ const useStyles = makeStyles<Theme, { show: boolean }>({
   },
 });
 
-type Props = {
+interface Props {
   show: boolean;
   screen: Screen;
   openEdit: () => void;
   closeEdit: () => void;
-};
+}
 
 const ScreenControls: React.FC<Props> = ({ screen, show, openEdit }) => {
   const { project, id, name } = screen;

@@ -38,12 +38,12 @@ const StyledMenu = withStyles({
   },
 })((props: MenuProps) => <Menu {...props} />);
 
-type Props = {
+interface Props {
   open: boolean;
   onClose: () => void;
   anchorPosition: any;
   item: TreeItem;
-};
+}
 
 const ContextMenu: React.FC<Props> = ({
   open,

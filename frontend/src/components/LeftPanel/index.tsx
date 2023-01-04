@@ -57,7 +57,7 @@ const Boxstacked = styled(Box)({
   },
 });
 
-const LeftSideBar = () => {
+function LeftSideBar() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
   const sidebarOpen = useSelector(selectSidebarOpen);
@@ -72,14 +72,12 @@ const LeftSideBar = () => {
   }, [sidebarOpen]);
 
   const handleChangeMenu = useCallback(
-    (menu) => {
-      return () => {
-        if (menu === activeMenu) {
-          setActiveMenu(null);
-        } else {
-          setActiveMenu(menu);
-        }
-      };
+    (menu) => () => {
+      if (menu === activeMenu) {
+        setActiveMenu(null);
+      } else {
+        setActiveMenu(menu);
+      }
     },
     [activeMenu],
   );
@@ -143,6 +141,6 @@ const LeftSideBar = () => {
       </Stack>
     </DndProvider>
   );
-};
+}
 
 export default LeftSideBar;

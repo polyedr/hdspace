@@ -78,7 +78,7 @@ export function* duplicateElements(
   meta: ElementHistoryMeta,
 ) {
   try {
-    const elements: LibraryElement<any>[] = [];
+    const elements: Array<LibraryElement<any>> = [];
     // eslint-disable-next-line no-restricted-syntax
     for (const el of itemsToCopyInfo) {
       const element = yield select(selectElementAsTree(el.id));
@@ -86,15 +86,13 @@ export function* duplicateElements(
     }
 
     const convertedItemsToDuplicate = elements.map((item) =>
-      convertElementToRequest(item!, (originalEl, convertedEl) => {
-        return {
-          ...convertedEl,
-          parameters: {
-            ...convertedEl.parameters,
-            originalElementId: originalEl.id,
-          },
-        };
-      }),
+      convertElementToRequest(item, (originalEl, convertedEl) => ({
+        ...convertedEl,
+        parameters: {
+          ...convertedEl.parameters,
+          originalElementId: originalEl.id,
+        },
+      })),
     );
 
     return yield call(
@@ -259,8 +257,8 @@ function* updateElementClassNames(
             type === 'add'
               ? [state[elementId].styles.classNames[0], newClassName]
               : state[elementId].styles.classNames.filter(
-                (name) => name !== newClassName,
-              ),
+                  (name) => name !== newClassName,
+                ),
         },
       }),
     );
@@ -328,18 +326,18 @@ function* removeElementStyles(
           ...element.styles,
           ...(pseudoClass
             ? {
-              pseudoClassStyles: {
-                ...element.styles.pseudoClassStyles,
-                [pseudoClass]: updatedStyles,
-              },
-              pseudoClassViewStyles: {
-                ...element.styles.ownStyles,
-                ...updatedStyles,
-              },
-            }
+                pseudoClassStyles: {
+                  ...element.styles.pseudoClassStyles,
+                  [pseudoClass]: updatedStyles,
+                },
+                pseudoClassViewStyles: {
+                  ...element.styles.ownStyles,
+                  ...updatedStyles,
+                },
+              }
             : {
-              ownStyles: updatedStyles,
-            }),
+                ownStyles: updatedStyles,
+              }),
         },
       }),
     );
@@ -352,7 +350,10 @@ function* removeElementStyles(
     const { error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiUpdateElement,
-      { data: convertedElement, id },
+      {
+        data: convertedElement,
+        id,
+      },
     );
     if (error) throw new Error(error);
   } catch (e) {
@@ -501,12 +502,13 @@ export function* updateOrReplaceMultipleElementsStyles(
     const stateElements = yield select(selectElementsByIds(ids));
 
     if (!action.meta.useHistory) {
-      const stylesState = stateElements.reduce((acc, element) => {
-        return {
+      const stylesState = stateElements.reduce(
+        (acc, element) => ({
           ...acc,
           [element.id]: element.styles.ownStyles,
-        };
-      }, {});
+        }),
+        {},
+      );
       yield put(
         Actions.addUndoActions(
           Actions.replaceMultipleElementsStyles(ids, stylesState, {
@@ -526,42 +528,43 @@ export function* updateOrReplaceMultipleElementsStyles(
       const updatedStyles =
         type === 'replace'
           ? {
-            ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
-          }
+              ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+            }
           : {
-            ...stylesToUpdate,
-            ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
-          };
+              ...stylesToUpdate,
+              ...(styles[element.id] || styles[ALL_ELEMENTS_INDEX]),
+            };
       const updatedElement = {
         ...element,
         styles: {
           ...element.styles,
           ...(pseudoClass
             ? {
-              pseudoClassStyles: {
-                ...element.styles.pseudoClassStyles,
-                [pseudoClass]: updatedStyles,
-              },
-              pseudoClassViewStyles: {
-                ...element.styles.ownStyles,
-                ...updatedStyles,
-              },
-            }
+                pseudoClassStyles: {
+                  ...element.styles.pseudoClassStyles,
+                  [pseudoClass]: updatedStyles,
+                },
+                pseudoClassViewStyles: {
+                  ...element.styles.ownStyles,
+                  ...updatedStyles,
+                },
+              }
             : {
-              ownStyles: updatedStyles,
-              pseudoClassViewStyles: null,
-            }),
+                ownStyles: updatedStyles,
+                pseudoClassViewStyles: null,
+              }),
         },
       };
       return updatedElement;
     });
 
-    const elements = elementsToUpdate.reduce((acc, element) => {
-      return {
+    const elements = elementsToUpdate.reduce(
+      (acc, element) => ({
         ...acc,
         [element.id]: element,
-      };
-    }, {});
+      }),
+      {},
+    );
     yield put(Actions.updateMultipleStateElements(elements));
 
     const data = Object.values(elementsToUpdate).map((el) =>
@@ -571,7 +574,9 @@ export function* updateOrReplaceMultipleElementsStyles(
     const { error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiUpdateElements,
-      { data },
+      {
+        data,
+      },
     );
 
     if (error) throw new Error(error);
@@ -641,12 +646,13 @@ export const removeMultipleElementsStylesSaga = compose(
     const stateElements = yield select(selectElementsByIds(ids));
 
     if (!action.meta.useHistory) {
-      const stylesState = stateElements.reduce((acc, element) => {
-        return {
+      const stylesState = stateElements.reduce(
+        (acc, element) => ({
           ...acc,
           [element.id]: element.styles.ownStyles,
-        };
-      }, {});
+        }),
+        {},
+      );
       yield put(
         Actions.addUndoActions(
           Actions.updateMultipleElementsStyles(ids, stylesState, {
@@ -656,25 +662,24 @@ export const removeMultipleElementsStylesSaga = compose(
       );
     }
 
-    const elementsToUpdate = stateElements.map((elToUpdate) => {
-      return {
-        ...elToUpdate,
-        styles: {
-          ...elToUpdate.styles,
-          ownStyles: Object.keys(elToUpdate.styles.ownStyles)
-            .filter((ruleName) => !cssPropertiesNames.includes(ruleName))
-            .map((ruleName) => ({
-              [ruleName]: elToUpdate.styles.ownStyles[ruleName],
-            })),
-        },
-      };
-    });
+    const elementsToUpdate = stateElements.map((elToUpdate) => ({
+      ...elToUpdate,
+      styles: {
+        ...elToUpdate.styles,
+        ownStyles: Object.keys(elToUpdate.styles.ownStyles)
+          .filter((ruleName) => !cssPropertiesNames.includes(ruleName))
+          .map((ruleName) => ({
+            [ruleName]: elToUpdate.styles.ownStyles[ruleName],
+          })),
+      },
+    }));
 
     yield put(
       Actions.updateMultipleStateElements(
-        elementsToUpdate.reduce((acc, element) => {
-          return { ...acc, [element.id]: element };
-        }, {}),
+        elementsToUpdate.reduce(
+          (acc, element) => ({ ...acc, [element.id]: element }),
+          {},
+        ),
       ),
     );
 
@@ -685,7 +690,9 @@ export const removeMultipleElementsStylesSaga = compose(
     const { error }: Result<LibraryElement<any>> = yield call(
       reqWrapper,
       apiUpdateElements,
-      { data },
+      {
+        data,
+      },
     );
     if (error) throw new Error(error);
   } catch (e) {
@@ -1047,7 +1054,7 @@ export const createElementsGroupSaga = compose(
     const allGroupIds = [groupId, ...childIds];
     const state = yield select(selectAllElements);
 
-    const idsToUpdate: Array<string> = [];
+    const idsToUpdate: string[] = [];
     const paramsToUpdate = allGroupIds.reduce((allParams, id) => {
       const groupElement = state[id];
       const instanceElement = state[groupElement.parameters.originalElementId];
@@ -1077,12 +1084,13 @@ export const createElementsGroupSaga = compose(
       const masterGroupChildrenIds = masterGroupsEl.children.map(
         (child) => child.id,
       );
-      const oldElementsParams = idsToUpdate.reduce((allParams, id) => {
-        return {
+      const oldElementsParams = idsToUpdate.reduce(
+        (allParams, id) => ({
           ...allParams,
           [id]: state[id].parameters,
-        };
-      }, {});
+        }),
+        {},
+      );
       yield put(
         Actions.addUndoActions([
           Actions.unwrapFromContainer(
@@ -1098,7 +1106,10 @@ export const createElementsGroupSaga = compose(
           Actions.replaceMultipleElementsParameters(
             idsToUpdate,
             oldElementsParams,
-            { ...action.meta, useHistory: true },
+            {
+              ...action.meta,
+              useHistory: true,
+            },
           ),
         ]),
       );
@@ -1116,7 +1127,10 @@ export const createElementsGroupSaga = compose(
           Actions.restoreElementChildren(
             masterGroupsEl.id,
             [...masterGroupChildrenIds, groupId],
-            { ...action.meta, useHistory: true },
+            {
+              ...action.meta,
+              useHistory: true,
+            },
           ),
           Actions.updateMultipleElementsParameters(
             allGroupIds,
@@ -1409,12 +1423,12 @@ export const setEnabledPseudoClass = function* (
   if (element) {
     const pseudoClassViewStyles = pseudoClass
       ? {
-        ...element.styles.ownStyles,
-        ...(element.styles.pseudoClassStyles &&
+          ...element.styles.ownStyles,
+          ...(element.styles.pseudoClassStyles &&
           element.styles.pseudoClassStyles[pseudoClass]
-          ? element.styles.pseudoClassStyles[pseudoClass]
-          : {}),
-      }
+            ? element.styles.pseudoClassStyles[pseudoClass]
+            : {}),
+        }
       : null;
     yield put(
       Actions.updateStateElement(element.id, {

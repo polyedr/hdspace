@@ -4,13 +4,13 @@ import { BoundingStyles, StyleProps } from '@Src/types';
 import { makeStyles } from '@material-ui/core/styles';
 import BorderPosition from '../constants';
 
-type Props = {
+interface Props {
   elementId: string;
   position: BorderPosition;
   styles: BoundingStyles;
   isActive: boolean;
   visiblePreSelect: boolean;
-};
+}
 
 const useStyles = makeStyles((theme) => ({
   '@global': {

@@ -89,8 +89,8 @@ const Heading = React.forwardRef<HTMLHeadingElement, RendererProps>(
                   ? `../${screenName}/index.html`
                   : '#'
                 : exportScreenFlag
-                  ? `../${screenName}/index.html`
-                  : ''
+                ? `../${screenName}/index.html`
+                : ''
             }
             style={{ textDecoration: 'none' }}
             rel="noreferrer"

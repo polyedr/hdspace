@@ -25,11 +25,11 @@ import Scrollbars from 'react-custom-scrollbars';
 import PreviewCanvas from '@Components/Editor/PreviewCanvas/index';
 import ElementButtonIcon from './ElementButtonIcon';
 
-const styles = require('./ElementButton.scss');
+import styles from './ElementButton.module.scss';
 
-type Props = {
+interface Props {
   elementData: ElementData;
-};
+}
 
 const useButtonStyles = makeStyles(() => ({
   root: {

@@ -297,9 +297,9 @@ export const updateCurrentUIFramework = (
   payload: { uiFramework },
 });
 
-export const updateCurrentUIFrameworkVariables = (variables: {
-  [name: string]: string;
-}) => ({
+export const updateCurrentUIFrameworkVariables = (
+  variables: Record<string, string>,
+) => ({
   type: TYPES.UPDATE_CURRENT_UI_FRAMEWORK_VARIABLES,
   payload: variables,
 });
@@ -522,7 +522,7 @@ export const updateStateElement = (
 
 // add new elements to existing ones
 export const addStateElements = (
-  stateElementsToAdd: StateElementsToAdd<Entity>[],
+  stateElementsToAdd: Array<StateElementsToAdd<Entity>>,
   meta: ElementHistoryMeta,
 ): AddStateElements => ({
   type: TYPES.ADD_STATE_ELEMENTS,
@@ -744,9 +744,7 @@ export const updateMultipleStateElements = (
 
 export const updateMultipleElementsStyles = (
   ids: string[],
-  styles: {
-    [id: string]: React.CSSProperties;
-  },
+  styles: Record<string, React.CSSProperties>,
   meta: ElementHistoryMeta,
 ): UpdateMultipleElementsStyles => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_STYLES,
@@ -756,9 +754,7 @@ export const updateMultipleElementsStyles = (
 
 export const replaceMultipleElementsStyles = (
   ids: string[],
-  styles: {
-    [id: string]: React.CSSProperties;
-  },
+  styles: Record<string, React.CSSProperties>,
   meta: ElementHistoryMeta,
 ): ReplaceMultipleElementsStyles => ({
   type: TYPES.REPLACE_MULTIPLE_ELEMENTS_STYLES,
@@ -855,9 +851,7 @@ export const updateMultipleElementsParameters = <
   K extends LibraryElement<T>['parameters'],
 >(
   ids: string[],
-  parameters: {
-    [id: string]: K;
-  },
+  parameters: Record<string, K>,
   meta: ElementHistoryMeta,
 ): UpdateMultipleElementsParameters => ({
   type: TYPES.UPDATE_MULTIPLE_ELEMENTS_PARAMETERS,
@@ -873,9 +867,7 @@ export const replaceMultipleElementsParameters = <
   K extends LibraryElement<T>['parameters'],
 >(
   ids: string[],
-  parameters: {
-    [id: string]: K;
-  },
+  parameters: Record<string, K>,
   meta: ElementHistoryMeta,
 ): ReplaceMultipleElementsParameters => ({
   type: TYPES.REPLACE_MULTIPLE_ELEMENTS_PARAMETERS,
@@ -965,10 +957,10 @@ export const createElements = (
 });
 
 export const addChildrenToElement = (
-  children: {
+  children: Array<{
     childType: ChildEntity;
     parameters: ReturnType<ChildrenElements[ChildEntity]>['parameters'];
-  }[],
+  }>,
   elementId: string,
   meta: ElementHistoryMeta,
 ): AddChildrenToElement => ({
@@ -1191,7 +1183,7 @@ export const redoWrapIntoContainer = (
 });
 
 export const addElements = (
-  elements: LibraryElement<any>[],
+  elements: Array<LibraryElement<any>>,
   parentId?: string,
 ): AddElements => ({
   type: TYPES.ADD_ELEMENTS,

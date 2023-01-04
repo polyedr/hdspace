@@ -21,10 +21,10 @@ import {
   handleErrorResponseMessage,
 } from './helper';
 
-export const apiGetProjectList = (
+export const apiGetProjectList = async (
   props: MyAxiosProps,
 ): Promise<Result<PaginatedResponse<Project>>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'GET',
     url: '/projects/projects/',
@@ -39,10 +39,10 @@ export const apiGetProjectList = (
     .catch(handleError);
 
 // TODO: research here IProject or IProjectList in return type:
-export const apiGetProject = (
+export const apiGetProject = async (
   props: MyAxiosProps & { id: string },
 ): Promise<Project> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'GET',
     url: `/projects/projects/${props.id}/`,
@@ -50,10 +50,10 @@ export const apiGetProject = (
     .then((result) => convertProjectFromResponse(result.data))
     .catch(onError);
 
-export const apiGetProjectWithScreens = (
+export const apiGetProjectWithScreens = async (
   props: MyAxiosProps & { id: string },
-): Promise<Result<ProjectWithScreens>> => {
-  return myAxios({
+): Promise<Result<ProjectWithScreens>> =>
+  await myAxios({
     ...props,
     method: 'GET',
     url: `projects/screens-for-project/${props.id}/`,
@@ -62,12 +62,11 @@ export const apiGetProjectWithScreens = (
       result: convertProjectWithScreensFromResponse(res.data),
     }))
     .catch(handleError);
-};
 
-export const apiCreateProject = (
+export const apiCreateProject = async (
   props: MyAxiosProps,
 ): Promise<Result<Project>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'POST',
     url: '/projects/projects/',
@@ -78,8 +77,8 @@ export const apiCreateProject = (
     }))
     .catch(handleErrorResponseMessage);
 
-export const apiDeleteProject = (props: MyAxiosProps & { id: string }) =>
-  myAxios({
+export const apiDeleteProject = async (props: MyAxiosProps & { id: string }) =>
+  await myAxios({
     ...props,
     method: 'DELETE',
     url: `/projects/projects/${props.id}/`,
@@ -89,10 +88,10 @@ export const apiDeleteProject = (props: MyAxiosProps & { id: string }) =>
     }))
     .catch(handleError);
 
-export const apiUpdateProject = (
+export const apiUpdateProject = async (
   props: MyAxiosProps,
 ): Promise<Result<Project>> =>
-  myAxios({
+  await myAxios({
     ...props,
     method: 'PATCH',
     url: `/projects/projects/${props.data.id}/`,
@@ -102,17 +101,16 @@ export const apiUpdateProject = (
     }))
     .catch(handleError);
 
-export const apigetSharedProject = (
+export const apigetSharedProject = async (
   props: MyAxiosProps & { shortuuid_token: string },
-) => {
-  return myAxios({
+) =>
+  await myAxios({
     ...props,
     method: 'GET',
     params: { shortuuid_token: props.shortuuid_token },
-    url: `/accounts/sharedlinks/?shortuuid_token=`,
+    url: '/accounts/sharedlinks/?shortuuid_token=',
   })
     .then((result) => ({
       result: result.data,
     }))
     .catch(onError);
-};

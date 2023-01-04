@@ -63,11 +63,11 @@ const useStyles = makeStyles({
   },
 });
 
-type Props = {
+interface Props {
   elementId: StateElement['id'];
   includesActiveElement?: boolean;
   lockAspectRatio?: boolean;
-};
+}
 
 const FreeDraggable: React.FC<Props> = ({ elementId }) => {
   const dispatch = useDispatch();
@@ -199,16 +199,16 @@ const FreeDraggable: React.FC<Props> = ({ elementId }) => {
       onResizeStop={handleResizeStop}
       onDragStop={handleDragStop}
       position={{
-        x: left as number,
-        y: top as number,
+        x: left,
+        y: top,
       }}
       {...(width &&
         height && {
-        size: {
-          width,
-          height,
-        },
-      })}
+          size: {
+            width,
+            height,
+          },
+        })}
       onResizeStart={(ev, dir) => {
         handleInteractionStart(ev);
         setResizeDir(dir);

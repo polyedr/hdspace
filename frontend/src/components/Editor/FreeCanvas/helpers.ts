@@ -3,11 +3,10 @@ import { VIMEO_HEIGHT_RATIO } from '@Constants/players';
 import { makeStyles } from '@mui/styles';
 import { StateElement } from '../../../types';
 
-export const useElementClassNames = (element: StateElement) => {
-  return makeStyles({
+export const useElementClassNames = (element: StateElement) =>
+  makeStyles({
     ownStyles: { ...(element.styles.ownStyles as Object) },
-  })();
-};
+  })({});
 
 export const getWrapperStyles = (ownStyles: React.CSSProperties) =>
   makeStyles({

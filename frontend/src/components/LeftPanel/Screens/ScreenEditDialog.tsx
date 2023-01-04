@@ -18,7 +18,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { useDispatch } from 'react-redux';
 import { uploadIcoScreen } from '@Redux/project/actions';
 
-type Props = {
+interface Props {
   open: boolean;
   titleDialog: string;
   onSubmit: (...args: any) => void;
@@ -31,7 +31,7 @@ type Props = {
   validation?: any;
   currentScreenId: number;
   project: number;
-};
+}
 const useStyles = makeStyles({
   dialogTitle: {
     padding: '0',

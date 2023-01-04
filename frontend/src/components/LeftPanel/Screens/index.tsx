@@ -63,14 +63,14 @@ const CustomList = styled(List)`
   overflow-x: hidden;
 `;
 
-const StyledIconButton: React.FC<IconButtonProps> = (props) => {
-  return <CustomIconButton {...props} />;
-};
+const StyledIconButton: React.FC<IconButtonProps> = (props) => (
+  <CustomIconButton {...props} />
+);
 
-const StyledCustomList: React.FC<ListProps> = (props) => {
-  return <CustomList {...props} />;
-};
-const Screens = () => {
+const StyledCustomList: React.FC<ListProps> = (props) => (
+  <CustomList {...props} />
+);
+function Screens() {
   const dispatch = useDispatch();
 
   const currentProjectId = useSelector(selectCurrentProjectId);
@@ -181,6 +181,6 @@ const Screens = () => {
       </DragDropContext>
     </>
   );
-};
+}
 
 export default Screens;

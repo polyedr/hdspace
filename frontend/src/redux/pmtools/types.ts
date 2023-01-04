@@ -33,14 +33,14 @@ export interface ChatRootState extends DefaultRootState {
   chat: ChatState;
 }
 
-export type ActivityState = {
-  actions: Array<ActionTypePM>;
-};
+export interface ActivityState {
+  actions: ActionTypePM[];
+}
 
-export type ChatState = {
+export interface ChatState {
   client: ChatClient | null;
-  messages: Array<IMessageZulip> | [];
-};
+  messages: IMessageZulip[] | [];
+}
 
 export interface BoardNewTask {
   title: string;
@@ -128,27 +128,27 @@ export interface BoardNewColumn {
   projectId?: number;
 }
 
-export type BoardState = {
+export interface BoardState {
   fetching: boolean;
   columns: BoardColumn[];
-  members: Array<any>;
+  members: any[];
   labels: BoardLabel[];
   activeTask: BoardTask | null;
-};
+}
 
-export type InviteState = {
-  members: Array<any>;
+export interface InviteState {
+  members: any[];
   searchResult: any;
   email: string;
   loaderSearch: boolean;
   msg: string;
-};
+}
 
-export type UserState = {
+export interface UserState {
   userData: ServerUserData;
   projectId: number;
   chatCredentials: AuthParams;
-};
+}
 
 // Types for action inside a reducer
 export type ActivityAction = ReturnType<

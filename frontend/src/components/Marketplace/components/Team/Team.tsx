@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Team = () => {
+function Team() {
   return <div>Team components</div>;
-};
+}
 export default Team;

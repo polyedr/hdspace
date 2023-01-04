@@ -33,21 +33,23 @@ const ElementGroupsBlock: React.FC = () => {
   const groups = useSelector(selectElementGroups);
   const classes = useStyles();
 
-  const elementsData = useMemo(() => {
-    return Object.values(groups).map(
-      (group) =>
-        ({
-          id: group.id,
-          type: group.type,
-          name: group.name,
-          custom: false,
-          icon: Crop169Icon,
-          parameters: {
-            isGroup: true,
-          },
-        } as ElementData),
-    );
-  }, [groups]);
+  const elementsData = useMemo(
+    () =>
+      Object.values(groups).map(
+        (group) =>
+          ({
+            id: group.id,
+            type: group.type,
+            name: group.name,
+            custom: false,
+            icon: Crop169Icon,
+            parameters: {
+              isGroup: true,
+            },
+          } as ElementData),
+      ),
+    [groups],
+  );
 
   return (
     <StyledAccordion defaultExpanded>

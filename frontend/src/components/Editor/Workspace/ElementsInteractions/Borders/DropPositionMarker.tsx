@@ -5,10 +5,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import { selectCurrentDropTargetParams } from '@Redux/project/selectors/base';
 import { DropPosition } from '@Constants/dragAndDrop';
 
-type Props = {
+interface Props {
   styles: React.CSSProperties;
   isActive: boolean;
-};
+}
 
 const useStyles = makeStyles((theme) => ({
   divider: (isActive) => ({
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   }),
 }));
 
-const DropPositionMarker = ({ styles, isActive }: Props) => {
+function DropPositionMarker({ styles, isActive }: Props) {
   const dropTargetParams = useSelector(selectCurrentDropTargetParams);
   const classes = useStyles();
 
@@ -27,9 +27,8 @@ const DropPositionMarker = ({ styles, isActive }: Props) => {
     null,
   );
 
-  const toNum = (value?: string | number) => {
-    return value ? parseInt(value as string) : 0;
-  };
+  const toNum = (value?: string | number) =>
+    value ? parseInt(value as string) : 0;
 
   useEffect(() => {
     const { top, left, height, width } = styles;
@@ -74,6 +73,6 @@ const DropPositionMarker = ({ styles, isActive }: Props) => {
   }
 
   return <div className={classes.divider} style={styleProps} />;
-};
+}
 
 export default DropPositionMarker;

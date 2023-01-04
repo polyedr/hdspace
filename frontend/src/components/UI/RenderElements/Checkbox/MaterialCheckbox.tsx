@@ -85,7 +85,9 @@ const MaterialCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
             />
           ) : screenLink && screenName && isProtoMode && !exportScreenFlag ? (
             <label
-              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+              }
               id={id}
               role="presentation"
               onClick={() =>
@@ -114,7 +116,9 @@ const MaterialCheckbox = React.forwardRef<HTMLDivElement, RendererProps>(
             />
           ) : (
             <label
-              ref={ref as React.MutableRefObject<HTMLLabelElement | null>}
+              ref={
+                ref as unknown as React.MutableRefObject<HTMLLabelElement | null>
+              }
               id={id}
               data-ls-id={id}
               dangerouslySetInnerHTML={{ __html: element.parameters.value }}

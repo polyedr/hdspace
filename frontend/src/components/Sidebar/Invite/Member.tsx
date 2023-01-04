@@ -10,11 +10,11 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useDispatch } from 'react-redux';
 import ConfirmModal from '@Components/Dialogs/PmToolsModal/ConfirmModal';
 
-type PropsType = {
+interface PropsType {
   project: ServerProject['id'];
   userData: UserData;
-  permissions: Array<string>;
-};
+  permissions: string[];
+}
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.body}`]: {
@@ -64,9 +64,10 @@ const Member: React.FC<PropsType> = ({ userData, permissions, project }) => {
     );
   }, [project, id]);
 
-  const handleRequestDelete = useCallback((show: boolean) => {
-    return () => setShowDeleteConfirm(show);
-  }, []);
+  const handleRequestDelete = useCallback(
+    (show: boolean) => () => setShowDeleteConfirm(show),
+    [],
+  );
 
   return (
     <>

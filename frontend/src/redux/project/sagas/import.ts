@@ -353,7 +353,7 @@ export const importHtmlCheckSaga = withRequiredPermissions(
     const cssFiles = files.filter((file) => file.type === 'text/css');
 
     const externalStyles: string = yield Promise.all(
-      cssFiles.map((file) => file.text()),
+      cssFiles.map(async (file) => await file.text()),
     ).then((result) => result.reduce((acc, curr) => acc + curr, ''));
 
     const htmlStyles = extractStyles(html);
@@ -362,7 +362,7 @@ export const importHtmlCheckSaga = withRequiredPermissions(
     const doc = new DOMParser().parseFromString(clearHtml, 'text/html');
 
     const { cssRules } = CSSOM.parse(css); // the actual type of cssRules is CSSStyleRule[] while the declared one is CSSOM.CSSRule[]
-    // @ts-ignore
+    // @ts-expect-error
     const data = convertHtml(doc, cssRules);
 
     const listOfUnsupportedElement = data?.listOfUnsupportedElement

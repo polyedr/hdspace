@@ -90,7 +90,7 @@ const Actions: React.FC = () => {
       dispatch(changePrototypeMode(!isProtoMode));
     });
     enableBordersDebounce.callback();
-  }, [isProtoMode]);
+  }, [dispatch, enableBordersDebounce, isProtoMode]);
 
   const handleExportScreen = () => {
     if (screens.length > 0) {
@@ -100,7 +100,7 @@ const Actions: React.FC = () => {
     } else {
       dispatch(
         enqueueSnackbar({
-          message: `Must be expert at least one screen.`,
+          message: 'Must be expert at least one screen.',
           options: {
             variant: 'error',
           },

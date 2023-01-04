@@ -34,7 +34,7 @@ export function* executeUndoActionsSaga() {
     }
     yield put(
       enqueueSnackbar({
-        message: `Sucessfully undo.`,
+        message: 'Sucessfully undo.',
         options: {
           variant: 'success',
         },
@@ -84,7 +84,7 @@ export function* executeRedoActionsSaga() {
     }
     yield put(
       enqueueSnackbar({
-        message: `Sucessfully redo.`,
+        message: 'Sucessfully redo.',
         options: {
           variant: 'success',
         },
