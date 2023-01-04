@@ -3,7 +3,6 @@ import {
   convertCreatedElementToRequest,
   convertCreatedProjectToRequest,
 } from '@Api/converters/toRequest';
-import generator from 'generate-password';
 import { setProjectError } from '@Redux/project/actions';
 import {
   apiCreateProject,
@@ -35,7 +34,6 @@ import { CORE_PREVIEW_LIBRARY_ELEMENTS } from '@Domain/libraryElements/libraryEl
 import withRequiredPermissions from '@Redux/permissions/wrappers/withRequiredPermissions';
 import getTagsArr from '@Utils/getTagsArr';
 // import { successSavedBoard } from '@Redux/pmtools/board/actions/columns';
-import { apiCreateNewStreams } from '@Api/pmtools/chatApi';
 // import {
 //   apiGetBoard,
 //   createNewBoard,
@@ -296,7 +294,6 @@ export function* createProjectSaga(
       payload: { name },
     } = action;
 
-    const generateName = generator.generate();
     yield put(Actions.setProjectCreateLoader(true));
 
     // const organization: IOrganization = yield call(
@@ -304,8 +301,6 @@ export function* createProjectSaga(
     //   `${generateName}-adevi-org`,
     // );
     // const board: IBoardForUI = yield call(createNewBoard, generateName);
-    yield call(apiCreateNewStreams, generateName);
-
     // const boardForUI: IBoardForUI = {
     //   organization,
     //   ...board,
