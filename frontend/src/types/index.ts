@@ -1355,7 +1355,6 @@ export interface ProfileData {
 export interface ProfileDataParameters {
   avatarCrop: string;
   profileDataParameters: ProfileDataUIParameters;
-  passwordZulip: string;
 }
 export interface ProfileDataUIParameters {
   autoSwitchTabs: boolean;
@@ -1857,12 +1856,6 @@ export interface FileToUpload {
   name: string;
   imgPreviewUrl?: string;
   stylesOn?: boolean;
-}
-
-export interface ChatCredentials {
-  realm: string;
-  username: string;
-  apiKey: string;
 }
 
 export const CONTROLS_NOT_ALLOW_LINK = ['html'] as const;

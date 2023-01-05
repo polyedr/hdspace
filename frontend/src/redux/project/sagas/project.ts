@@ -317,9 +317,9 @@ export function* createProjectSaga(
       apiCreateProject,
       {
         data: convertCreatedProjectToRequest(name, {}),
-        // data: [],
       },
     );
+
     yield put(setProjectError(error));
     // yield put(successSavedBoard(boardForUI));
 
