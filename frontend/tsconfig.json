@@ -25,7 +25,8 @@
       "@Redux/*": ["src/redux/*"],
       "@Api/*": ["src/api/*"],
       "@Domain/*": ["src/domain/*"],
-      "@Src/*": ["src/*"]
+      "@Src/*": ["src/*"],
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*", "*.ts"],

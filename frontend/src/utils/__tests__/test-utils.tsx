@@ -146,7 +146,6 @@ export const mockUserData: UserData = {
     id: 888,
     experienced: Experience.EXPERIENCED,
     parameters: {
-      passwordZulip: '',
       avatarCrop: '',
       profileDataParameters: {
         autoSwitchTabs: false,
